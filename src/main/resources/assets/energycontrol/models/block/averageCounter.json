@@ -1,0 +1,12 @@
+{
+    "parent": "block/cube",
+    "textures": {
+        "particle": "energycontrol:blocks/averageCounter/input",
+        "down": "energycontrol:blocks/averageCounter/input",
+        "up": "energycontrol:blocks/averageCounter/output",
+        "north": "energycontrol:blocks/averageCounter/input",
+        "east": "energycontrol:blocks/averageCounter/input",
+        "south": "energycontrol:blocks/averageCounter/input",
+        "west": "energycontrol:blocks/averageCounter/input"
+    }
+}

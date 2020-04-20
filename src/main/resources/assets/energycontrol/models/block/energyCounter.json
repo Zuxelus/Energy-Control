@@ -1,0 +1,12 @@
+{
+    "parent": "block/cube",
+    "textures": {
+        "particle": "energycontrol:blocks/energyCounter/input",
+        "down": "energycontrol:blocks/energyCounter/input",
+        "up": "energycontrol:blocks/energyCounter/output",
+        "north": "energycontrol:blocks/energyCounter/input",
+        "east": "energycontrol:blocks/energyCounter/input",
+        "south": "energycontrol:blocks/energyCounter/input",
+        "west": "energycontrol:blocks/energyCounter/input"
+    }
+}

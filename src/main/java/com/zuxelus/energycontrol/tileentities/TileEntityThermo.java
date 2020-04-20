@@ -1,0 +1,203 @@
+package com.zuxelus.energycontrol.tileentities;
+
+import com.zuxelus.energycontrol.blocks.ThermalMonitor;
+import com.zuxelus.energycontrol.utils.ReactorHelper;
+
+import ic2.api.reactor.IReactor;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.util.ITickable;
+
+public class TileEntityThermo extends TileEntityInventory implements ITickable, ITilePacketHandler {
+	private int prevHeatLevel;
+	private int heatLevel;
+	private boolean prevInvertRedstone;
+	private boolean invertRedstone;
+	protected int status;
+	private boolean poweredBlock;
+	
+	protected int updateTicker;
+	protected int tickRate;
+	
+	public TileEntityThermo() {
+		super("block.RemoteThermo");
+		invertRedstone = prevInvertRedstone = false;
+		heatLevel = prevHeatLevel = 500;
+		updateTicker = 0;
+		tickRate = -1;
+	}
+
+	public int getHeatLevel() {
+		return heatLevel;
+	}
+	
+	public void setHeatLevel(int value) {
+		heatLevel = value;
+		if (!worldObj.isRemote && prevHeatLevel != heatLevel)
+			notifyBlockUpdate();
+		prevHeatLevel = heatLevel;
+	}
+	
+	public boolean getInvertRedstone() {
+		return invertRedstone;
+	}
+	
+	public void setInvertRedstone(boolean value) {
+		invertRedstone = value;
+		if (!worldObj.isRemote && prevInvertRedstone != invertRedstone)
+			notifyBlockUpdate();
+		prevInvertRedstone = invertRedstone;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int newStatus) {
+		status = newStatus;
+	}
+
+	@Override
+	public void onServerMessageReceived(NBTTagCompound tag) {
+		if (!tag.hasKey("type"))
+			return;
+		switch (tag.getInteger("type")) {
+		case 1:
+			if (tag.hasKey("value"))
+				setHeatLevel(tag.getInteger("value"));
+			break;
+		case 2:
+			if (tag.hasKey("value"))
+				setInvertRedstone(tag.getInteger("value") == 1);
+			break;
+		}
+	}
+
+	@Override
+	public SPacketUpdateTileEntity getUpdatePacket() {
+		NBTTagCompound tag = new NBTTagCompound();
+		tag = writeProperties(tag);
+		tag.setInteger("status", status);
+		return new SPacketUpdateTileEntity(getPos(), 0, tag);
+	}
+
+	@Override
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+		readProperties(pkt.getNbtCompound());
+	}
+
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		NBTTagCompound tag = super.getUpdateTag();
+		tag = writeProperties(tag);
+		return tag;
+	}
+
+	@Override
+	protected void readProperties(NBTTagCompound tag) {
+		super.readProperties(tag);
+		if (tag.hasKey("heatLevel"))
+			heatLevel = prevHeatLevel = tag.getInteger("heatLevel");
+		if (tag.hasKey("invert"))
+			invertRedstone = prevInvertRedstone = tag.getBoolean("invert");
+		if (tag.hasKey("status"))
+			setStatus(tag.getInteger("status"));
+	}
+
+	@Override
+	public void readFromNBT(NBTTagCompound tag) {
+		super.readFromNBT(tag);
+		readProperties(tag);
+	}
+
+	@Override
+	protected NBTTagCompound writeProperties(NBTTagCompound tag) {
+		tag = super.writeProperties(tag);
+		tag.setInteger("heatLevel", heatLevel);
+		tag.setBoolean("invert", invertRedstone);
+		return tag;
+	}
+
+	@Override
+	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
+		return writeProperties(super.writeToNBT(tag));
+	}
+
+	@Override
+	public void invalidate() {
+		if (status == 1)
+			worldObj.notifyNeighborsOfStateChange(pos, worldObj.getBlockState(pos).getBlock());
+		super.invalidate();
+	}
+
+	@Override
+	public void update() {
+		if (worldObj.isRemote || status == -2)
+			return;
+	
+    	if (updateTicker-- > 0)
+				return;
+		updateTicker = tickRate;
+		checkStatus();
+	}
+	
+
+	protected void checkStatus() {
+		int newStatus;
+		IReactor reactor = ReactorHelper.getReactorAround(worldObj, pos);		
+		if (reactor == null)
+			reactor = ReactorHelper.getReactor3x3(worldObj, pos);
+
+		if (reactor != null) {
+			if (tickRate == -1) {
+				tickRate = reactor.getTickRate() / 2;
+
+				if (tickRate == 0)
+					tickRate = 1;
+
+				updateTicker = tickRate;
+			}
+
+			if (reactor.getHeat() >= heatLevel)// Normally mappedHeatLevel
+				newStatus = 1;
+			else
+				newStatus = 0;
+
+		} else
+			newStatus = -2;
+
+		if (newStatus != status) {
+			status = newStatus;
+			notifyBlockUpdate();
+			worldObj.notifyNeighborsOfStateChange(pos, worldObj.getBlockState(pos).getBlock());
+		}
+	}
+
+	public void notifyBlockUpdate() {
+		IBlockState iblockstate = worldObj.getBlockState(pos);
+		Block block = iblockstate.getBlock();
+		if (block instanceof ThermalMonitor) {
+			boolean newValue = status == 1 ? !invertRedstone : invertRedstone;
+			if (poweredBlock != newValue) {
+				((ThermalMonitor)block).setPowered(status == 1 ? !invertRedstone : invertRedstone);
+				worldObj.notifyNeighborsOfStateChange(pos, block);
+			}
+			poweredBlock = newValue;
+		}
+		worldObj.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
+	}
+
+	@Override
+	public int getSizeInventory() {
+		return 0;
+	}
+
+	@Override
+	public boolean isItemValidForSlot(int index, ItemStack stack) {
+		return false;
+	}
+}

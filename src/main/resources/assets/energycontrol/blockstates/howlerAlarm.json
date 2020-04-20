@@ -1,0 +1,10 @@
+{
+    "variants": {
+        "facing=up":    { "model": "energycontrol:howlerAlarm" },
+        "facing=down":  { "model": "energycontrol:howlerAlarm", "x": 180 },
+        "facing=east":  { "model": "energycontrol:howlerAlarm", "x": 90, "y": 90 },
+        "facing=west":  { "model": "energycontrol:howlerAlarm", "x": 90, "y": 270 },
+        "facing=south": { "model": "energycontrol:howlerAlarm", "x": 90, "y": 180 },
+        "facing=north": { "model": "energycontrol:howlerAlarm", "x": 90 }
+    }
+} 

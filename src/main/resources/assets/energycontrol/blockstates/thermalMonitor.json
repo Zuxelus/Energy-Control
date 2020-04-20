@@ -1,0 +1,10 @@
+{
+    "variants": {
+        "facing=up":    { "model": "energycontrol:thermalMonitor" },
+        "facing=down":  { "model": "energycontrol:thermalMonitor", "x": 180 },
+        "facing=east":  { "model": "energycontrol:thermalMonitor", "x": 90, "y": 90 },
+        "facing=west":  { "model": "energycontrol:thermalMonitor", "x": 90, "y": 270 },
+        "facing=south": { "model": "energycontrol:thermalMonitor", "x": 90, "y": 180 },
+        "facing=north": { "model": "energycontrol:thermalMonitor", "x": 90 }
+    }
+} 

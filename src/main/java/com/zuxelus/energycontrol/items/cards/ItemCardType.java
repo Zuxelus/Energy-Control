@@ -1,0 +1,19 @@
+package com.zuxelus.energycontrol.items.cards;
+
+public class ItemCardType {
+	public static final int CARD_ENERGY = 0;
+	public static final int CARD_COUNTER = 1;
+	public static final int CARD_LIQUID = 2;
+	public static final int CARD_GENERATOR = 3;
+	public static final int CARD_REACTOR = 4;
+	public static final int CARD_REACTOR5X5 = 5;
+	
+	public static final int CARD_TEXT = 8;
+	public static final int CARD_TIME = 9;
+	
+	public static final int CARD_ENERGY_ARRAY = 10;
+	public static final int CARD_LIQUID_ARRAY = 11;
+	public static final int CARD_GENERATOR_ARRAY = 12;
+
+	public static final int CARD_MAX = 12;
+}

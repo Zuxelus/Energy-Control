@@ -1,0 +1,144 @@
+#Tab Name
+ec.creativetab=Energy Control
+
+#Internal Items
+item.itemThermometer.name=Термометр
+item.itemDigitalThermometer.name=Цифровой термометр
+item.ItemKitReactor.name=Набор для реактора
+item.ItemKitEnergy.name=Набор для энергетического хранилища
+item.ItemKitCounter.name=Набор для счётчика энергии
+item.ItemKitLiquid.name=Набор для жидкостного хранилища
+item.ItemKitGenerator.name=Набор для генератора
+item.ItemCardReactor.name=Карта-датчик расположения реактора
+item.ItemCardReactor5x5.name=Карта-датчик расположения 5x5 реактора
+item.ItemCardEnergy.name=Карта-датчик расположения энергии
+item.ItemCardCounter.name=Карта-датчик расположения счётчика
+item.ItemCardLiquid.name=Карта-датчик расположения жидкости
+item.ItemCardGenerator.name=Карта-датчик расположения генератора
+item.ItemCardTime.name=Карта со временем
+item.ItemCardText.name=Текстовая карта
+item.ItemCardEnergyArray.name=Карта-датчик расположения массива с энергией
+item.ItemCardLiquidArray.name=Карта-датчик расположения массива жидкости
+item.ItemCardGeneratorArray.name=Карта-датчик расположения массива генераторов
+item.ItemRangeUpgrade.name=Улучшение «Усиление сигнала»
+item.ItemColorUpgrade.name=Улучшение «Цветность»
+
+#Integration Items
+item.ItemKitBigReactor.name=Набор для дистанционного RF-реактора
+item.ItemCardBigReactor.name=Карта-датчик расположения RF-реактора
+item.ItemCardAppEng.name=Карта для Applied Energistics
+item.ItemKitAppEng.name=Набор с датчиком для Applied Energistics
+item.RFenergyCard.name=Карта-датчик расположения RF энергии
+
+#Internal Blocks
+tile.thermalMonitor.name=Датчик температуры
+tile.industrialAlarm.name=Промышленная сирена
+tile.howlerAlarm.name=Сирена «Ревун»
+tile.remoteThermo.name=Дистанционный датчик температуры
+tile.infoPanel.name=Промышленная информационная панель
+tile.infoPanelExtender.name=Расширитель информационной панели
+tile.advancedInfoPanel.name=Продвинутая информационная панель
+tile.advancedInfoPanelExtender.name=Расширитель продвинутой информационной панели
+tile.nclight0.name=Белый светильник
+tile.nclight1.name=Белый светильник
+tile.nclight2.name=Оранжевый светильник
+tile.nclight3.name=Оранжевый светильник
+tile.energyCounter.name=Энергосчётчик
+tile.averageCounter.name=Стационарный энергосчётчик
+tile.rangeTrigger.name=Дистанционный триггер
+
+#Original Screen Messages
+msg.ec.HowlerAlarmSoundRange=Дальность звука: %s
+msg.ec.HowlerAlarmSound=Звук
+msg.ec.ThermalMonitorSave=Сохранить настройки
+msg.ec.ThermalMonitorSignalAt=Сигнал на %s тепла
+msg.ec.Thermo=Темп. корпуса: %s
+msg.ec.ThermoDigital=Темп. корпуса: %s (Вода испаряется при: %s / плавится: %s)
+msg.ec.SensorKit=Дистанционный датчик установлен, карта-датчик получена
+
+msg.ec.InfoPanelOutOfRange=Вне диапазона
+msg.ec.InfoPanelInvalidCard=Недействительная карта
+msg.ec.InfoPanelNoTarget=Цель не найдена
+
+msg.ec.InfoPanelOn=Включена
+msg.ec.InfoPanelOff=Выключена
+msg.ec.InfoPanelHeat=Т: %s
+msg.ec.InfoPanelMaxHeat=Макс. нагрев: %s
+msg.ec.InfoPanelMelting=Плавление: %s
+msg.ec.InfoPanelOutput=Выход: %sEU/т
+msg.ec.InfoPanelOutputMJ=Выход: %sMJ/т
+msg.ec.InfoPanelOutputHeat=Выход: %s Hu/с
+msg.ec.InfoPanelOutputSteam=Выход: %smB/т
+msg.ec.InfoPanelTimeRemaining=Осталось: %s
+
+msg.ec.InfoPanelEnergyCounter=Энергия: %sEU
+msg.ec.InfoPanelEnergyCounterMJ=Энергия: %s RF
+
+msg.ec.InfoPanelEnergy=Энергия: %s
+msg.ec.InfoPanelFree=Свободно: %s
+msg.ec.InfoPanelStorage=Хранится: %s
+msg.ec.InfoPanelMaxStorage=Объем: %s
+msg.ec.InfoPanelPercentage=Заполнено: %s%%
+
+msg.ec.cbInfoPanelLiquidName=Название жидкости
+msg.ec.cbInfoPanelLiquidAmount=Количество
+msg.ec.cbInfoPanelLiquidCapacity=Ёмкость
+msg.ec.cbInfoPanelLiquidFree=Свободно
+msg.ec.cbInfoPanelLiquidPercentage=Процент заполнения
+
+msg.ec.InfoPanelLiquidName=Название: %s
+msg.ec.InfoPanelLiquidAmount=Количество: %s
+msg.ec.InfoPanelLiquidCapacity=Ёмкость: %s
+msg.ec.InfoPanelLiquidFree=Свободно: %s
+msg.ec.InfoPanelLiquidPercentage=Заполнено: %s%%
+
+msg.ec.InfoPanelNotFoundN=#%d Не найдено
+msg.ec.InfoPanelOutOfRangeN=#%d Вне диапазона
+msg.ec.InfoPanelEnergyN=#%d Энергия: %s
+msg.ec.InfoPanelFreeN=#%d Свободно: %s
+msg.ec.InfoPanelStorageN=#%d Хранилище: %s
+msg.ec.InfoPanelMaxStorageN=#%d Объем: %s
+msg.ec.InfoPanelPercentageN=#%d Заполнено: %s%%
+msg.ec.InfoPanelOutputN=#%d Выход: %s
+msg.ec.InfoPanelLiquidNameN=#%d Название: %s
+msg.ec.InfoPanelLiquidN=#%d Количество: %s
+msg.ec.InfoPanelLiquidFreeN=#%d Свободно: %s
+msg.ec.InfoPanelLiquidCapacityN=#%d Ёмкость: %s
+msg.ec.InfoPanelLiquidPercentageN=#%d Заполнено: %s%%
+
+msg.ec.InfoPanelTime=Время: %s
+
+msg.ec.cbInfoPanelOnOff=Вкл./Выкл. Состояние
+msg.ec.cbInfoPanelHeat=Уровень Нагрева
+msg.ec.cbInfoPanelMaxHeat=Макс. Нагрев
+msg.ec.cbInfoPanelMelting=Температура Плавления
+msg.ec.cbInfoPanelOutput=Выход (EU/т)
+msg.ec.cbInfoPanelTimeRemaining=Время до окончания цикла
+msg.ec.cb24h=24-часовой режим
+
+msg.ec.cbInfoPanelEnergyCurrent=Энергия
+msg.ec.cbInfoPanelStorage=Хранилище
+msg.ec.cbInfoPanelMaxStorage=Объем
+msg.ec.cbInfoPanelFree=Свободно
+msg.ec.cbInfoPanelPercentage=Процент заполнения
+msg.ec.EnergyCardQuantity=Количество карт: %d
+msg.ec.AverageCounterPeriod=Период: %sсек.
+
+msg.ec.LiquidCardQuantity=Количество карт: %d
+
+msg.ec.cbInfoPanelEach=Каждая карта
+msg.ec.cbInfoPanelTotal=Суммарно
+
+msg.ec.Reset=Перезагрузить
+msg.ec.ScreenColor=Цвет экрана
+msg.ec.TextColor=Цвет текста
+msg.ec.None=N/A
+
+#5x5 Reactor Messages
+msg.ec.InfoPanel55.Output=Выход: %s Hu/сек
+msg.ec.InfoPanel55.Temp=Температура ядра: %s%%
+msg.ec.InfoPanel55.tarkin=Внутренний резервуар: %s / 10000 мВ
+msg.ec.InfoPanel55.tankout=Внешний резервуар: %s / 10000 мВ
+msg.ec.InfoPanel55.Out=Выход (Hu/сек)
+msg.ec.InfoPanel55.BufferIn=Резервуар хладагента
+msg.ec.InfoPanel55.BufferOut=Резервуар горячего хладагента

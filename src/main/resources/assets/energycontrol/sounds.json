@@ -1,0 +1,4 @@
+{
+    "alarm-default": {"category": "master","sounds": [{"name": "energycontrol:alarm-default","stream": true}]},
+    "alarm-sci-fi": {"category": "master","sounds": [{"name": "energycontrol:alarm-sci-fi","stream": true}]}
+}

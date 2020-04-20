@@ -1,0 +1,9 @@
+{
+    "parent": "energycontrol:block/mediumBox",
+    "textures": {
+        "particle": "energycontrol:blocks/thermalMonitor/back",
+        "side": "energycontrol:blocks/thermalMonitor/side",
+        "face": "energycontrol:blocks/thermalMonitor/faceGreen",
+        "back": "energycontrol:blocks/thermalMonitor/back"
+    }
+}

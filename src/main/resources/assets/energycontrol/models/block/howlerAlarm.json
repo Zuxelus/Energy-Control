@@ -1,0 +1,9 @@
+{
+    "parent": "energycontrol:block/smallBox",
+    "textures": {
+        "particle": "energycontrol:blocks/howlerAlarm/back",
+        "side": "energycontrol:blocks/howlerAlarm/side",
+        "face": "energycontrol:blocks/howlerAlarm/face",
+        "back": "energycontrol:blocks/howlerAlarm/back"
+    }
+}

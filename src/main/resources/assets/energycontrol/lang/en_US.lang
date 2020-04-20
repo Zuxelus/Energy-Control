@@ -1,0 +1,148 @@
+#Tab Name
+ec.creativetab=Energy Control
+
+#Internal Items
+item.itemThermometer.name=Thermometer
+item.itemDigitalThermometer.name=Digital Thermometer
+item.ItemKitReactor.name=Reactor Sensor Kit
+item.ItemKitEnergy.name=Energy Sensor Kit
+item.ItemKitCounter.name=Counter Sensor Kit
+item.ItemKitLiquid.name=Liquid Sensor Kit
+item.ItemKitGenerator.name=Generator Sensor Kit
+item.ItemCardReactor.name=Reactor Sensor Card
+item.ItemCardReactor5x5.name=5x5 Reactor Sensor Card
+item.ItemCardEnergy.name=Energy Sensor Card
+item.ItemCardCounter.name=Counter Sensor Card
+item.ItemCardLiquid.name=Liquid Sensor Card
+item.ItemCardGenerator.name=Generator Sensor Card
+item.ItemCardTime.name=Time Card
+item.ItemCardText.name=Text Card
+item.ItemCardEnergyArray.name=Energy Array Card
+item.ItemCardLiquidArray.name=Liquid Array Card
+item.ItemCardGeneratorArray.name=Generator Array Card
+item.ItemRangeUpgrade.name=Range Upgrade
+item.ItemColorUpgrade.name=Color Upgrade
+
+#Integration Items
+item.ItemKitBigReactor.name=Remote RF Reactor Kit
+item.ItemCardBigReactor.name=RF Reactor Sensor Location Card
+item.ItemCardAppEng.name=Applied Energistics Card
+item.ItemKitAppEng.name=Applied Energistics Monitor Kit
+item.RFenergyCard.name=RF Energy Sensor Location Card
+item.ItemInventoryScannerCard.name=Inventory Tracking Card
+item.MekRFenergyCard.name=Mekanism Energy Card
+item.GT6EnergyCard.name=GT6 Energy Card
+
+#Internal Blocks
+tile.thermalMonitor.name=Thermal Monitor
+tile.industrialAlarm.name=Industrial Alarm
+tile.howlerAlarm.name=Howler Alarm
+tile.remoteThermo.name=Remote Thermal Monitor
+tile.infoPanel.name=Industrial Information Panel
+tile.infoPanelExtender.name=Information Panel Extender
+tile.advancedInfoPanel.name=Advanced Information Panel
+tile.advancedInfoPanelExtender.name=Advanced Panel Extender
+tile.nclight0.name=White Lamp
+tile.nclight1.name=White Lamp
+tile.nclight2.name=Orange Lamp
+tile.nclight3.name=Orange Lamp
+tile.energyCounter.name=Energy Counter
+tile.averageCounter.name=Average Counter
+tile.rangeTrigger.name=Range Trigger
+
+#Original Screen Messages
+msg.ec.HowlerAlarmSoundRange=Sound range: %s
+msg.ec.HowlerAlarmSound=Sound
+msg.ec.ThermalMonitorSave=Save setting
+msg.ec.ThermalMonitorSignalAt=Signal at %s heat
+msg.ec.Thermo=Hull heat: %s
+msg.ec.ThermoDigital=Hull heat: %s (Water evaporate: %s / melting: %s)
+msg.ec.SensorKit=Remote Sensor mounted, Sensor Location Card received
+
+msg.ec.InfoPanelOutOfRange=Out Of Range
+msg.ec.InfoPanelInvalidCard=Invalid Card
+msg.ec.InfoPanelNoTarget=Target Not Found
+
+msg.ec.InfoPanelOn=On
+msg.ec.InfoPanelOff=Off
+msg.ec.InfoPanelHeat=T: %s
+msg.ec.InfoPanelMaxHeat=MaxHeat: %s
+msg.ec.InfoPanelMelting=Melting: %s
+msg.ec.InfoPanelOutput=Output: %s EU/t
+msg.ec.InfoPanelOutputMJ=Output: %s RF/t
+msg.ec.InfoPanelOutputHeat=Output: %s Hu/s
+msg.ec.InfoPanelOutputSteam=Output: %s mB/t
+msg.ec.InfoPanelTimeRemaining=Remaining: %s
+
+msg.ec.InfoPanelEnergyCounter=Energy: %s EU
+msg.ec.InfoPanelEnergyCounterMJ=Energy: %s RF
+
+msg.ec.InfoPanelEnergy=Energy: %s
+msg.ec.InfoPanelFree=Free: %s
+msg.ec.InfoPanelStorage=Storage: %s
+msg.ec.InfoPanelMaxStorage=MaxStorage: %s
+msg.ec.InfoPanelPercentage=Fill: %s%%
+
+msg.ec.cbInfoPanelLiquidName=Liquid name
+msg.ec.cbInfoPanelLiquidAmount=Amount
+msg.ec.cbInfoPanelLiquidCapacity=Capacity
+msg.ec.cbInfoPanelLiquidFree=Free
+msg.ec.cbInfoPanelLiquidPercentage=Fill percentage
+
+msg.ec.InfoPanelLiquidName=Name: %s
+msg.ec.InfoPanelLiquidAmount=Amount: %s
+msg.ec.InfoPanelLiquidCapacity=Capacity: %s
+msg.ec.InfoPanelLiquidFree=Free: %s
+msg.ec.InfoPanelLiquidPercentage=Fill: %s%%
+
+msg.ec.InfoPanelNotFoundN=#%d Not Found
+msg.ec.InfoPanelOutOfRangeN=#%d Out Of Range
+msg.ec.InfoPanelEnergyN=#%d Energy: %s
+msg.ec.InfoPanelFreeN=#%d Free: %s
+msg.ec.InfoPanelStorageN=#%d Storage: %s
+msg.ec.InfoPanelMaxStorageN=#%d MaxStorage: %s
+msg.ec.InfoPanelPercentageN=#%d Fill: %s%%
+msg.ec.InfoPanelOutputN=#%d Output: %s
+msg.ec.InfoPanelLiquidNameN=#%d Name: %s
+msg.ec.InfoPanelLiquidN=#%d Amount: %s
+msg.ec.InfoPanelLiquidFreeN=#%d Free: %s
+msg.ec.InfoPanelLiquidCapacityN=#%d Capacity: %s
+msg.ec.InfoPanelLiquidPercentageN=#%d Fill: %s%%
+
+msg.ec.InfoPanelTime=Time: %s
+
+msg.ec.cbInfoPanelOnOff=On/Off Status
+msg.ec.cbInfoPanelHeat=Heat Level
+msg.ec.cbInfoPanelMaxHeat=Max Heat
+msg.ec.cbInfoPanelMelting=Melting Temp
+msg.ec.cbInfoPanelOutput=Output (EU/t)
+msg.ec.cbInfoPanelTimeRemaining=Time to cycle end
+msg.ec.cb24h=24h Mode
+
+msg.ec.cbInfoPanelEnergy=Energy
+msg.ec.cbInfoPanelStorage=Storage
+msg.ec.cbInfoPanelMaxStorage=Max Storage
+msg.ec.cbInfoPanelFree=Free
+msg.ec.cbInfoPanelPercentage=Fill percentage
+msg.ec.EnergyCardQuantity=Cards quantity: %d
+msg.ec.AverageCounterPeriod=Period: %ssec
+
+msg.ec.LiquidCardQuantity=Cards quantity: %d
+
+msg.ec.cbInfoPanelEach=Each card info
+msg.ec.cbInfoPanelTotal=Summary
+
+msg.ec.Reset=Reset
+msg.ec.ScreenColor=Screen Color
+msg.ec.TextColor=Text Color
+msg.ec.None=N/A
+
+#5x5 Reactor Messages
+msg.ec.InfoPanel55.Output=Output: %s Hu/s
+msg.ec.InfoPanel55.Temp=Core Temperature: %s%%
+msg.ec.InfoPanel55.tarkin=Tank In: %s / 10000 mB
+msg.ec.InfoPanel55.tankout=Tank Out: %s / 10000 mB
+msg.ec.InfoPanel55.Out=Output (Hu/s)
+msg.ec.InfoPanel55.BufferIn=Coolant Storage Tank
+msg.ec.InfoPanel55.BufferOut=Hot Coolant Buffer Tank
+

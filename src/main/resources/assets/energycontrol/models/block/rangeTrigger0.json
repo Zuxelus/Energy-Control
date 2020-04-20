@@ -1,0 +1,12 @@
+{
+    "parent": "block/cube",
+    "textures": {
+        "particle": "energycontrol:blocks/rangeTrigger/side",
+        "down": "energycontrol:blocks/rangeTrigger/side",
+        "up": "energycontrol:blocks/rangeTrigger/side",
+        "north": "energycontrol:blocks/rangeTrigger/faceGray",
+        "east": "energycontrol:blocks/rangeTrigger/side",
+        "south": "energycontrol:blocks/rangeTrigger/back",
+        "west": "energycontrol:blocks/rangeTrigger/side"
+    }
+}
