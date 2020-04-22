@@ -16,14 +16,13 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiHowlerAlarmListBox extends GuiButton {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(
-			"energycontrol:textures/gui/GUIHowlerAlarm.png");
+			"energycontrol:textures/gui/gui_howler_alarm.png");
 
 	private static final int BASIC_X_OFFSET = 2;
 	private static final int BASIC_Y_OFFSET = 2;
@@ -89,15 +88,15 @@ public class GuiHowlerAlarmListBox extends GuiButton {
 	}
 
 	@Override
-	public void drawButton(Minecraft minecraft, int cursorX, int cursorY) {
+	public void drawButton(Minecraft mc, int mouseX, int mouseY) {
 		if (dragging) {
-			int pos = (cursorY - yPosition - SCROLL_BUTTON_HEIGHT - dragDelta)
+			int pos = (mouseY - yPosition - SCROLL_BUTTON_HEIGHT - dragDelta)
 					* (lineHeight * items.size() + BASIC_Y_OFFSET - height)
 					/ Math.max(height - 2 * SCROLL_BUTTON_HEIGHT - sliderHeight, 1);			
 			scrollTo(pos);
 		}
 
-		FontRenderer fontRenderer = minecraft.fontRendererObj;
+		FontRenderer fontRenderer = mc.fontRendererObj;
 		String currentItem = alarm.getSoundName();
 		if (lineHeight == 0) {
 			lineHeight = fontRenderer.FONT_HEIGHT + 2;
@@ -120,7 +119,6 @@ public class GuiHowlerAlarmListBox extends GuiButton {
 		
 		int rowTop = BASIC_Y_OFFSET;
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
-		Minecraft mc = FMLClientHandler.instance().getClient();
 		ScaledResolution scaler = new ScaledResolution(mc);
 		GL11.glScissor(xPosition * scaler.getScaleFactor(), mc.displayHeight - (yPosition + height) * scaler.getScaleFactor(), (width - SCROLL_WIDTH) * scaler.getScaleFactor(), height * scaler.getScaleFactor());
 
@@ -175,19 +173,19 @@ public class GuiHowlerAlarmListBox extends GuiButton {
 	}
 
 	@Override
-	public boolean mousePressed(Minecraft minecraft, int targetX, int targetY) {
-		if (super.mousePressed(minecraft, targetX, targetY)) {
-			if (targetX > xPosition + width - SCROLL_WIDTH) {// scroll click
-				if (targetY - yPosition < SCROLL_BUTTON_HEIGHT)
+	public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
+		if (super.mousePressed(mc, mouseX, mouseY)) {
+			if (mouseX > xPosition + width - SCROLL_WIDTH) {// scroll click
+				if (mouseY - yPosition < SCROLL_BUTTON_HEIGHT)
 					scrollUp();
-				else if (height + yPosition - targetY < SCROLL_BUTTON_HEIGHT)
+				else if (height + yPosition - mouseY < SCROLL_BUTTON_HEIGHT)
 					scrollDown();
-				else if (targetY >= sliderY && targetY <= sliderY + sliderHeight) {
+				else if (mouseY >= sliderY && mouseY <= sliderY + sliderHeight) {
 					dragging = true;
-					dragDelta = targetY - sliderY;
+					dragDelta = mouseY - sliderY;
 				}
 			} else {
-				setCurrent(targetY);
+				setCurrent(mouseY);
 				return true;
 			}
 		}
@@ -195,8 +193,8 @@ public class GuiHowlerAlarmListBox extends GuiButton {
 	}
 
 	@Override
-	public void mouseReleased(int i, int j) {
-		super.mouseReleased(i, j);
+	public void mouseReleased(int mouseX, int mouseY) {
+		super.mouseReleased(mouseX, mouseY);
 		dragging = false;
 	}
 }

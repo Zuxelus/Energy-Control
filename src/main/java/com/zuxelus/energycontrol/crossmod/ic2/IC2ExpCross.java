@@ -18,6 +18,7 @@ import ic2.core.item.reactor.ItemReactorUranium;
 import ic2.core.item.tool.ItemToolWrench;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
 public class IC2ExpCross extends IC2Cross {
@@ -84,35 +85,35 @@ public class IC2ExpCross extends IC2Cross {
 	}
 
 	@Override
-	public EnergyStorageData getGeneratorData(TileEntity entity) {
+	public NBTTagCompound getGeneratorData(TileEntity te) {
 		try {
-			EnergyStorageData data = new EnergyStorageData();
-			Field field = null;
+			NBTTagCompound tag = new NBTTagCompound();
+			/*Field field = null;
 			Field fieldProd = null;
-			if (entity instanceof TileEntityBaseGenerator) {
+			if (te instanceof TileEntityBaseGenerator) {
 				field = TileEntityBaseGenerator.class.getDeclaredField("energy");
 				fieldProd = TileEntityBaseGenerator.class.getDeclaredField("production");
 				fieldProd.setAccessible(true);
-				if (!((TileEntityBaseGenerator) entity).isConverting())
+				if (!((TileEntityBaseGenerator) te).isConverting())
 					data.values.add((double) 0);
 				else
-					data.values.add((Double) fieldProd.get(entity));
-			} else if (entity instanceof TileEntityGeoGenerator) {
+					data.values.add((Double) fieldProd.get(te));
+			} else if (te instanceof TileEntityGeoGenerator) {
 				field = TileEntityGeoGenerator.class.getDeclaredField("energy");
 				fieldProd = TileEntityGeoGenerator.class.getDeclaredField("production");
 				fieldProd.setAccessible(true);
-				if (!((TileEntityGeoGenerator) entity).isConverting())
+				if (!((TileEntityGeoGenerator) te).isConverting())
 					data.values.add((double) 0);
 				else
-					data.values.add((double) (Integer) fieldProd.get(entity));
+					data.values.add((double) (Integer) fieldProd.get(te));
 			}
 			if (field == null)
 				return null;
 			field.setAccessible(true);
-			Energy energy = (Energy) field.get(entity);
+			Energy energy = (Energy) field.get(te);
 			data.values.add(energy.getEnergy());
 			data.values.add(energy.getCapacity());
-			return data;
+			return data;*/
 		} catch (Throwable t) { }
 		return null;
 	}

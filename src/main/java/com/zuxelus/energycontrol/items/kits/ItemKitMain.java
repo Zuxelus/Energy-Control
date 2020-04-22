@@ -30,7 +30,7 @@ public class ItemKitMain extends Item {
 		register(new ItemKitCounter());
 		register(new ItemKitLiquid());
 		register(new ItemKitGenerator());
-		register(new ItemKitReactor());	
+		register(new ItemKitReactor());
 	}
 	
 	public void register(ItemKitBase item) {
@@ -46,7 +46,7 @@ public class ItemKitMain extends Item {
 	}
 	
 	@Override
-	public void getSubItems(Item item, CreativeTabs par2CreativeTabs, List list) {
+	public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> list) {
 		for (int i = 0; i <= ItemHelper.KIT_MAX; i++)
 			if (kits.containsKey(i))
 				list.add(new ItemStack(this, 1, i));
@@ -58,7 +58,7 @@ public class ItemKitMain extends Item {
 	}
 
 	@Override
-    public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
+	public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
 		if (player == null || !(player instanceof EntityPlayerMP))
 			return EnumActionResult.PASS;
 		
@@ -67,7 +67,7 @@ public class ItemKitMain extends Item {
 			return EnumActionResult.PASS;
 		
 		player.inventory.mainInventory[player.inventory.currentItem] = sensorLocationCard;
-		return EnumActionResult.SUCCESS;		
+		return EnumActionResult.SUCCESS;
 	}	
 	
 	public ItemKitBase getItemKitBase(int metadata) {

@@ -33,7 +33,7 @@ public class ItemThermometer extends Item {
 	public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
 		if (!(player instanceof EntityPlayerMP))
 			return EnumActionResult.PASS;
-		
+
 		if (!canTakeDamage(stack, 2))
 			return EnumActionResult.PASS;
 

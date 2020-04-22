@@ -35,7 +35,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiInfoPanel extends GuiContainer {
 	private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/GUIInfoPanel.png");
+			EnergyControl.MODID + ":textures/gui/gui_info_panel.png");
 
 	protected String name;
 	protected TileEntityInfoPanel panel;
@@ -48,7 +48,7 @@ public class GuiInfoPanel extends GuiContainer {
 		super(container);
 		ySize = 190;
 		this.panel = container.te;
-		name = I18n.format("tile.infoPanel.name");
+		name = I18n.format("tile.info_panel.name");
 		modified = false;
 		// inverted value on start to force initControls
 		isColored = !this.panel.getColored();
@@ -180,15 +180,14 @@ public class GuiInfoPanel extends GuiContainer {
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(int par1, int par2) {
+	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		fontRendererObj.drawString(name, (xSize - fontRendererObj.getStringWidth(name)) / 2, 6, 0x404040);
-		//fontRendererObj.drawString(I18n.format("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 		if (textboxTitle != null)
 			textboxTitle.drawTextBox();
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
+	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.getTextureManager().bindTexture(TEXTURE_LOCATION);
 		int left = (width - xSize) / 2;

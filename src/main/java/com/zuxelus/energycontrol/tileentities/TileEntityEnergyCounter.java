@@ -163,7 +163,7 @@ public class TileEntityEnergyCounter extends TileEntityInventory
 	public void markDirty() {
 		super.markDirty();
 		int upgradeCountTransormer = 0;
-		ItemStack itemStack = inventory[0];
+		ItemStack itemStack = getStackInSlot(0);
 		if (itemStack != null && itemStack.isItemEqual(IC2Items.getItem("upgrade","transformer")))
 			upgradeCountTransormer = itemStack.stackSize;
 		upgradeCountTransormer = Math.min(upgradeCountTransormer, 3);

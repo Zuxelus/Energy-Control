@@ -16,7 +16,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiAverageCounter extends GuiContainer {
 	private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/GUIEnergyCounter.png");
+			EnergyControl.MODID + ":textures/gui/gui_energy_counter.png");
 
 	private String name;
 	private ContainerAverageCounter container;
@@ -24,7 +24,7 @@ public class GuiAverageCounter extends GuiContainer {
 	public GuiAverageCounter(ContainerAverageCounter container) {
 		super(container);
 		this.container = container;
-		name = I18n.format("tile.averageCounter.name");
+		name = I18n.format("tile.average_counter.name");
 	}
 
 	private void initControls() {

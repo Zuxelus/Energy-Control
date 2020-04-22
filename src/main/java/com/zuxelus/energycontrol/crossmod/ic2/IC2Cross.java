@@ -4,6 +4,7 @@ import com.zuxelus.energycontrol.crossmod.EnergyStorageData;
 
 import net.minecraftforge.fml.common.Loader;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -60,5 +61,5 @@ public abstract class IC2Cross {
 
 	public abstract EnergyStorageData getEnergyStorageData(TileEntity entity);
 	
-	public abstract EnergyStorageData getGeneratorData(TileEntity entity);
+	public abstract NBTTagCompound getGeneratorData(TileEntity entity);
 }

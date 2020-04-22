@@ -17,14 +17,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiHowlerAlarm extends GuiBase {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/GUIHowlerAlarm.png");
+			EnergyControl.MODID + ":textures/gui/gui_howler_alarm.png");
 	
 	private TileEntityHowlerAlarm alarm;
 	private GuiHowlerAlarmSlider slider;
 	private GuiHowlerAlarmListBox listBox;
 
 	public GuiHowlerAlarm(TileEntityHowlerAlarm alarm) {
-		super("tile.howlerAlarm.name", 131, 136);
+		super("tile.howler_alarm.name", 131, 136);
 		this.alarm = alarm;
 	}
 
@@ -47,7 +47,7 @@ public class GuiHowlerAlarm extends GuiBase {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		mc.fontRendererObj.drawString(name, (xSize - fontRendererObj.getStringWidth(name)) / 2, 6, 0x404040);
+		fontRendererObj.drawString(name, (xSize - fontRendererObj.getStringWidth(name)) / 2, 6, 0x404040);
 		fontRendererObj.drawString(I18n.format("msg.ec.HowlerAlarmSound"), 12, 53, 0x404040);
 	}
 

@@ -20,7 +20,7 @@ public class ContainerRemoteThermo extends ContainerBase<TileEntityRemoteThermo>
 		addSlotToContainer(new SlotFilter(remoteThermo, 3, 190, 44));
 		addSlotToContainer(new SlotFilter(remoteThermo, 4, 190, 62));
 		// inventory
-		addPlayerInventorySlots(player, 166);
+		addPlayerInventorySlots(player, 216, 166);
 	}
 
 	@Override

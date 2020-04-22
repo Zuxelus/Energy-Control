@@ -28,9 +28,9 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		TEXTUREON = new ResourceLocation[16];
 		for (int i = 0; i < 16; i++) {
 			TEXTUREOFF[i] = new ResourceLocation(
-					EnergyControl.MODID + String.format(":textures/blocks/infoPanel/off/2/all%d.png", i));			
+					EnergyControl.MODID + String.format(":textures/blocks/info_panel/off/2/all%d.png", i));			
 			TEXTUREON[i] = new ResourceLocation(
-					EnergyControl.MODID + String.format(":textures/blocks/infoPanel/on/2/all%d.png", i));
+					EnergyControl.MODID + String.format(":textures/blocks/info_panel/on/2/all%d.png", i));
 		}
 	}
 
@@ -90,7 +90,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			renderText(te);
 		GlStateManager.popMatrix();
 	}
-	
+
 	private int findTexture(TileEntityInfoPanel te) {
 		Screen scr = te.getScreen();
 		if (scr != null) {
@@ -118,11 +118,11 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		}
 		return 15;
 	}
-	
+
 	private int boolToInt(boolean b) {
 		return b ? 1 : 0;
 	}
-	
+
 	private void renderText(TileEntityInfoPanel panel) {
 		List<ItemStack> cards = panel.getCards();
 		boolean anyCardFound = false;
@@ -148,7 +148,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		if (anyCardFound)
 			drawText(panel, joinedData);
 	}
-	
+
 	private void drawText(TileEntityInfoPanel panel, List<PanelString> joinedData) {
 		Screen screen = panel.getScreen();
 		BlockPos pos = panel.getPos();
@@ -238,7 +238,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
 			break;
 		}
-		
+
 		FontRenderer fontRenderer = this.getFontRenderer();
 		// getMaxWidth
 		int maxWidth = 1;
@@ -267,7 +267,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		}
 
 		GlStateManager.disableLighting();
-		
+
 		int row = 0;
 		int colorHex = panel.getColorTextHex();
 		for (PanelString panelString : joinedData) {
@@ -290,7 +290,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			}
 			row++;
 		}
-		
+
 		GlStateManager.enableLighting();
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 	}

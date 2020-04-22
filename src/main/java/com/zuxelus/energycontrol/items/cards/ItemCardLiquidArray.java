@@ -23,12 +23,12 @@ public class ItemCardLiquidArray extends ItemCardBase {
 	private static final int STATUS_OUT_OF_RANGE = Integer.MIN_VALUE + 1;	
 	
 	public ItemCardLiquidArray() {
-		super(ItemCardType.CARD_LIQUID_ARRAY, "cardLiquidArray");
+		super(ItemCardType.CARD_LIQUID_ARRAY, "card_liquid_array");
 	}
 
 	@Override
 	public String getUnlocalizedName() {
-		return "item.ItemCardLiquidArray";
+		return "item.card_liquid_array";
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class ItemCardLiquidArray extends ItemCardBase {
 					if (stack != null) {
 						totalAmount += stack.amount;
 						reader.setInt(String.format("_%damount", i),stack.amount);
-						String name = I18n.format("msg.nc.None");
+						String name = I18n.format("msg.ec.None");
 						if (stack.amount > 0)
 							name = FluidRegistry.getFluidName(stack);
 						reader.setString(String.format("_%dname", i), name);

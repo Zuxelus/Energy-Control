@@ -16,7 +16,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiEnergyCounter extends GuiContainer {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/GUIEnergyCounter.png");
+			EnergyControl.MODID + ":textures/gui/gui_energy_counter.png");
 
 	private String name;
 	private ContainerEnergyCounter container;
@@ -24,7 +24,7 @@ public class GuiEnergyCounter extends GuiContainer {
 	public GuiEnergyCounter(ContainerEnergyCounter container) {
 		super(container);
 		this.container = container;
-		name = I18n.format("tile.energyCounter.name");
+		name = I18n.format("tile.energy_counter.name");
 	}
 
 	private void initControls() {

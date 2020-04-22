@@ -14,7 +14,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiInfoPanelShowLabels extends GuiButton {
 	private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/GUIInfoPanel.png");
+			EnergyControl.MODID + ":textures/gui/gui_info_panel.png");
 
 	private TileEntityInfoPanel panel;
 	private boolean checked;

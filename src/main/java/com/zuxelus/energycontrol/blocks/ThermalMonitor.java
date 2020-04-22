@@ -99,12 +99,12 @@ public class ThermalMonitor extends FacingBlock implements ITileEntityProvider {
 	
 	@Override
     public int getWeakPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
-        return powered ? 15 : 0;
+		return powered ? side != blockState.getValue(FACING) ? 15 : 0 : 0;
     }
 
 	@Override
     public int getStrongPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
-		return powered ? 15 : 0;
+		return powered ? side != blockState.getValue(FACING) ? 15 : 0 : 0;
     }
 
 	@Override
@@ -129,7 +129,7 @@ public class ThermalMonitor extends FacingBlock implements ITileEntityProvider {
 	}
     
 	@Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (world.isRemote)
 			player.openGui(EnergyControl.instance, BlockDamages.DAMAGE_THERMAL_MONITOR, world, pos.getX(), pos.getY(), pos.getZ());
 		return true;

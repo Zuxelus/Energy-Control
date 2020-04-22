@@ -1,8 +1,0 @@
-{
-    "variants": {   
-        "facing=east":  { "model": "energycontrol:remoteThermo", "y": 90 },
-        "facing=west":  { "model": "energycontrol:remoteThermo", "y": 270 },
-        "facing=south": { "model": "energycontrol:remoteThermo", "y": 180 },
-        "facing=north": { "model": "energycontrol:remoteThermo" }
-    }
-} 

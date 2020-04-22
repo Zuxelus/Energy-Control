@@ -14,7 +14,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiRangeTriggerInvertRedstone extends GuiButton {
 	private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/GUIRangeTrigger.png");
+			EnergyControl.MODID + ":textures/gui/gui_range_trigger.png");
 
 	TileEntityRangeTrigger trigger;
 	private boolean checked;

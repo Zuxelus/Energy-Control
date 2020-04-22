@@ -98,7 +98,7 @@ public class RecipesNew {
 				'I', "plateIron", 
 				'W', IC2Items.getItem("fluid_cell#water")});
 
-		ItemStack digitalThermometer = new ItemStack(ItemHelper.itemDigitalThermometer);
+		ItemStack digitalThermometer = new ItemStack(ItemHelper.itemThermometerDigital);
 		Recipes.advRecipes.addRecipe(digitalThermometer, new Object[] { 
 			"RI ", "ITI", " IP", 
 				'R', "itemRubber",
@@ -160,15 +160,21 @@ public class RecipesNew {
 				'F', IC2Items.getItem("frequency_transmitter"), 
 				'R', "dyeOrange" });
 
-		Recipes.advRecipes.addRecipe(new ItemStack(ItemHelper.itemKit, 1, ItemHelper.KIT_LIQUID), new Object[] { 
+		ItemStack kitLiquid = new ItemStack(ItemHelper.itemKit, 1, ItemHelper.KIT_LIQUID);
+		Recipes.advRecipes.addRecipe(kitLiquid, new Object[] { 
 			"CF", "PB", 
 				'P', Items.PAPER, 
 				'C', Items.BUCKET,
 				'F', IC2Items.getItem("frequency_transmitter"), 
 				'B', "dyeBlue" });
 
+		Recipes.advRecipes.addRecipe(new ItemStack(ItemHelper.itemKit, 1, ItemHelper.KIT_LIQUID_ADVANCED), new Object[] { 
+			"BKB", 
+					'B', Items.BUCKET,
+					'K', kitLiquid });
+
 		Recipes.advRecipes.addRecipe(new ItemStack(ItemHelper.itemKit, 1, ItemHelper.KIT_REACTOR), new Object[] { 
-				"DF", "PW", 
+			"DF", "PW", 
 					'P', Items.PAPER, 
 					'D', StackUtil.copyWithWildCard(digitalThermometer), 
 					'F', IC2Items.getItem("frequency_transmitter"), 

@@ -24,7 +24,6 @@ import net.minecraft.world.World;
 public class IndustrialAlarm extends HowlerAlarm {
 	public IndustrialAlarm() {
 		super();
-		setUnlocalizedName("tile.blockIndustrialAlarm");
 	}
 	
 	@Override
@@ -41,7 +40,7 @@ public class IndustrialAlarm extends HowlerAlarm {
 			return 0;
 		return ((TileEntityIndustrialAlarm)te).lightLevel;
 	}
-	
+
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (world.isRemote)

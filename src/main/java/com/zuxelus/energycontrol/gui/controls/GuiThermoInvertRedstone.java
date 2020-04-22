@@ -14,7 +14,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiThermoInvertRedstone extends GuiButton {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/GUIThermalMonitor.png");
+			EnergyControl.MODID + ":textures/gui/gui_thermal_monitor.png");
 
     TileEntityThermo thermo;
     private boolean checked;
@@ -28,14 +28,14 @@ public class GuiThermoInvertRedstone extends GuiButton {
     }
 
     @Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+	public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         if(!visible)
         	return;
     
         mc.getTextureManager().bindTexture(TEXTURE);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         int delta = checked ? 15 : 0;
-        drawTexturedModalRect(xPosition, yPosition + 1, 199, delta, 51, 15);
+		drawTexturedModalRect(xPosition, yPosition + 1, 199, delta, 51, 15);
     }
 
     @Override

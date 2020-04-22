@@ -37,17 +37,17 @@ public abstract class TileEntityInventory extends TileEntityFacing implements II
 	protected NBTTagCompound writeProperties(NBTTagCompound tag) {
 		tag = super.writeProperties(tag);
 
-	    NBTTagList list = new NBTTagList();
-	    for (byte i = 0; i < getSizeInventory(); ++i) {
-	        if (getStackInSlot(i) != null) {
-	            NBTTagCompound stackTag = new NBTTagCompound();
-	            stackTag.setByte("Slot", i);
-	            getStackInSlot(i).writeToNBT(stackTag);
-	            list.appendTag(stackTag);
-	        }
-	    }
-	    tag.setTag("Items", list);
-	    return tag;
+		NBTTagList list = new NBTTagList();
+		for (byte i = 0; i < getSizeInventory(); ++i) {
+			if (getStackInSlot(i) != null) {
+				NBTTagCompound stackTag = new NBTTagCompound();
+				stackTag.setByte("Slot", i);
+				getStackInSlot(i).writeToNBT(stackTag);
+				list.appendTag(stackTag);
+			}
+		}
+		tag.setTag("Items", list);
+		return tag;
 	}
 
 	@Override
@@ -89,7 +89,7 @@ public abstract class TileEntityInventory extends TileEntityFacing implements II
 	public void setInventorySlotContents(int index, ItemStack stack) {
 		inventory[index] = stack;
 		if (stack != null && stack.stackSize > getInventoryStackLimit())
-			stack.stackSize = getInventoryStackLimit();		
+			stack.stackSize = getInventoryStackLimit();
 	}
 
 	@Override
@@ -123,8 +123,8 @@ public abstract class TileEntityInventory extends TileEntityFacing implements II
 
 	@Override
 	public void clear() {
-        for (int i = 0; i < getSizeInventory(); ++i)
-            inventory[i] = null;
+		for (int i = 0; i < getSizeInventory(); ++i)
+			inventory[i] = null;
 	}
 	
 	public void dropItems(World world, BlockPos pos) {

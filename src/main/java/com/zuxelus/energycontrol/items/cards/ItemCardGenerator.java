@@ -14,18 +14,19 @@ import ic2.api.energy.EnergyNet;
 import ic2.core.block.generator.tileentity.TileEntityBaseGenerator;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class ItemCardGenerator extends ItemCardBase {
 	public ItemCardGenerator() {
-		super(ItemCardType.CARD_GENERATOR, "cardGenerator");
+		super(ItemCardType.CARD_GENERATOR, "card_generator");
 	}
 
 	@Override
 	public String getUnlocalizedName() {
-		return "item.ItemCardGenerator";
+		return "item.card_generator";
 	}
 
 	@Override
@@ -35,14 +36,14 @@ public class ItemCardGenerator extends ItemCardBase {
 			return CardState.NO_TARGET;
 		
 		TileEntity entity = world.getTileEntity(target);
-		EnergyStorageData data = CrossModLoader.crossIc2.getGeneratorData(entity);
-		if (data != null) {
-			reader.setDouble("storage", data.values.get(1));
-			reader.setDouble("maxStorage", data.values.get(2));
-			reader.setDouble("production", data.values.get(0));
-			return CardState.OK;
-		}
-		return CardState.NO_TARGET;
+		NBTTagCompound tag = CrossModLoader.crossIc2.getGeneratorData(entity);
+		if (tag == null)
+			return CardState.NO_TARGET;
+		
+		reader.setDouble("storage", tag.getDouble("storage"));
+		reader.setDouble("maxStorage", tag.getDouble("maxStorage"));
+		reader.setDouble("production", tag.getDouble("production"));
+		return CardState.OK;
 	}
 
 	@Override

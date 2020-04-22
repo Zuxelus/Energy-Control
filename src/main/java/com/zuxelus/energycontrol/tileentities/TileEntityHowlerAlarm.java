@@ -13,8 +13,6 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 	private static final float BASE_SOUND_RANGE = 16F;
 	private static final String SOUND_PREFIX = "energycontrol:alarm-";
 
-	protected boolean soundReceived;
-
 	public int range;
 	public boolean powered;
 
@@ -31,7 +29,6 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 		powered = false;
 		soundName = prevSoundName = DEFAULT_SOUND_NAME;
 		range = EnergyControl.config.howlerAlarmRange;
-		soundReceived = false;
 	}
 
 	public int getRange() {
@@ -57,7 +54,6 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 				EnergyControl.logger.info(String.format("Can't set sound '%s' at %d,%d,%d, using default", soundName, pos.getX(), pos.getY(), pos.getZ()));
 				soundName = DEFAULT_SOUND_NAME;
 			}
-			soundReceived = true;
 		}
 		prevSoundName = soundName;
 	}
@@ -168,7 +164,7 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 	protected void checkStatus() {
 		if (sound == null)
 			sound = new TileEntitySound();
-		if (powered && soundReceived && !sound.isPlaying())
+		if (powered && !sound.isPlaying())
 			sound.playAlarm(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, SOUND_PREFIX + soundName, getNormalizedRange(), true);
 		
 		if (!powered && sound.isPlaying())

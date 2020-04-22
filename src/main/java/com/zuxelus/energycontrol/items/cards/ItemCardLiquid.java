@@ -18,12 +18,12 @@ import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 public class ItemCardLiquid extends ItemCardBase {
 	public ItemCardLiquid() {
-		super(ItemCardType.CARD_LIQUID, "cardLiquid");
+		super(ItemCardType.CARD_LIQUID, "card_liquid");
 	}
 
 	@Override
 	public String getUnlocalizedName() {
-		return "item.ItemCardLiquid";
+		return "item.card_liquid";
 	}
 
 	@Override

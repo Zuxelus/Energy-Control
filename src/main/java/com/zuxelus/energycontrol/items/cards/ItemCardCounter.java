@@ -16,12 +16,12 @@ import net.minecraft.world.World;
 
 public class ItemCardCounter extends ItemCardBase {
 	public ItemCardCounter() {
-		super(ItemCardType.CARD_COUNTER, "cardCounter");
+		super(ItemCardType.CARD_COUNTER, "card_counter");
 	}
 
 	@Override
 	public String getUnlocalizedName() {
-		return "item.ItemCardCounter";
+		return "item.card_counter";
 	}
 
 	@Override

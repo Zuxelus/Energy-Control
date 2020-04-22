@@ -193,10 +193,10 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 			return;
 		
 		int upgradeCountRange = 0;
-		ItemStack itemStack = inventory[SLOT_UPGRADE];
+		ItemStack itemStack = getStackInSlot(SLOT_UPGRADE);
 		if (itemStack != null && itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE)
 			upgradeCountRange = itemStack.stackSize;
-		ItemStack card = inventory[SLOT_CARD];
+		ItemStack card = getStackInSlot(SLOT_CARD);
 		int status = STATE_UNKNOWN;
 		if (card != null) {
 			Item item = card.getItem();

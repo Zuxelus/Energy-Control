@@ -14,12 +14,12 @@ import net.minecraft.world.World;
 
 public class ItemCardText extends ItemCardBase {
 	public ItemCardText() {
-		super(ItemCardType.CARD_TEXT, "cardText");
+		super(ItemCardType.CARD_TEXT, "card_text");
 	}
 
 	@Override
 	public String getUnlocalizedName() {
-		return "item.ItemCardText";
+		return "item.card_text";
 	}
 
 	@Override

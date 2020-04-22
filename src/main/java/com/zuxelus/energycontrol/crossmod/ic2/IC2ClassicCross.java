@@ -7,16 +7,17 @@ import ic2.api.tile.IEnergyStorage;
 import ic2.core.item.reactor.ItemReactorUranium;
 import ic2.core.item.tool.ItemToolWrench;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
 public class IC2ClassicCross extends IC2Cross {
 	@Override
-	public int getNuclearCellTimeLeft(ItemStack par1) {
-		if (par1 == null)
+	public int getNuclearCellTimeLeft(ItemStack stack) {
+		if (stack == null)
 			return 0;
 		
-		if (par1.getItem() instanceof ItemReactorUranium)
-			return 10000 - par1.getItemDamage();
+		if (stack.getItem() instanceof ItemReactorUranium)
+			return 10000 - stack.getItemDamage();
 		
 		return 0;
 	}
@@ -60,7 +61,7 @@ public class IC2ClassicCross extends IC2Cross {
 	}
 
 	@Override
-	public EnergyStorageData getGeneratorData(TileEntity entity) {
+	public NBTTagCompound getGeneratorData(TileEntity entity) {
 		// TODO Auto-generated method stub
 		return null;
 	}

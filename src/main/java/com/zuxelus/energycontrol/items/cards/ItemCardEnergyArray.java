@@ -21,12 +21,12 @@ public class ItemCardEnergyArray extends ItemCardBase {
 	private static final int STATUS_OUT_OF_RANGE = Integer.MIN_VALUE + 1;	
 	
 	public ItemCardEnergyArray() {
-		super(ItemCardType.CARD_ENERGY_ARRAY, "cardEnergyArray");
+		super(ItemCardType.CARD_ENERGY_ARRAY, "card_energy_array");
 	}
 
 	@Override
 	public String getUnlocalizedName() {
-		return "item.ItemCardEnergyArray";
+		return "item.card_energy_array";
 	}
 
 	@Override

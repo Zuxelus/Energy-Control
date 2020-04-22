@@ -1,0 +1,10 @@
+{
+    "variants": {
+        "facing=up":    { "model": "energycontrol:energy_counter" },
+        "facing=down":  { "model": "energycontrol:energy_counter", "x": 180 },
+        "facing=east":  { "model": "energycontrol:energy_counter", "x": 90, "y": 90 },
+        "facing=west":  { "model": "energycontrol:energy_counter", "x": 90, "y": 270 },
+        "facing=south": { "model": "energycontrol:energy_counter", "x": 90, "y": 180 },
+        "facing=north": { "model": "energycontrol:energy_counter", "x": 90 }
+    }
+} 

@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiHowlerAlarmSlider extends GuiButton {
 	private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(
-			"energycontrol:textures/gui/GUIHowlerAlarm.png");
+			"energycontrol:textures/gui/gui_howler_alarm.png");
 
 	public float sliderValue;
 	public boolean dragging;
@@ -59,31 +59,30 @@ public class GuiHowlerAlarmSlider extends GuiButton {
 	}
 
 	@Override
-	public void drawButton(Minecraft mc, int targetX, int targetY) {
+	public void drawButton(Minecraft mc, int mouseX, int mouseY) {
 		if (!visible)
 			return;
 		mc.getTextureManager().bindTexture(TEXTURE_LOCATION);
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		if (dragging)
-			setSliderPos(targetX);
+			setSliderPos(mouseX);
 		
 		drawTexturedModalRect(xPosition + (int) (sliderValue * (width - 8)), yPosition, 131, 0, 8, 16);
 		mc.fontRendererObj.drawString(displayString, xPosition, yPosition - 12, 0x404040);
 	}
 
 	@Override
-	public boolean mousePressed(Minecraft minecraft, int targetX, int j) {
-		if (super.mousePressed(minecraft, targetX, j)) {
-			setSliderPos(targetX);
-			dragging = true;
-			return true;
-		}
-		return false;
+	public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
+		if (!super.mousePressed(mc, mouseX, mouseY))
+			return false;
+		setSliderPos(mouseX);
+		dragging = true;
+		return true;
 	}
 
 	@Override
-	public void mouseReleased(int i, int j) {
-		super.mouseReleased(i, j);
+	public void mouseReleased(int mouseX, int mouseY) {
+		super.mouseReleased(mouseX, mouseY);
 		dragging = false;
 	}
 }

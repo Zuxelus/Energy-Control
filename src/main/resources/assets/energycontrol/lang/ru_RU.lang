@@ -2,50 +2,53 @@
 ec.creativetab=Energy Control
 
 #Internal Items
-item.itemThermometer.name=Термометр
-item.itemDigitalThermometer.name=Цифровой термометр
-item.ItemKitReactor.name=Набор для реактора
-item.ItemKitEnergy.name=Набор для энергетического хранилища
-item.ItemKitCounter.name=Набор для счётчика энергии
-item.ItemKitLiquid.name=Набор для жидкостного хранилища
-item.ItemKitGenerator.name=Набор для генератора
-item.ItemCardReactor.name=Карта-датчик расположения реактора
-item.ItemCardReactor5x5.name=Карта-датчик расположения 5x5 реактора
-item.ItemCardEnergy.name=Карта-датчик расположения энергии
-item.ItemCardCounter.name=Карта-датчик расположения счётчика
-item.ItemCardLiquid.name=Карта-датчик расположения жидкости
-item.ItemCardGenerator.name=Карта-датчик расположения генератора
-item.ItemCardTime.name=Карта со временем
-item.ItemCardText.name=Текстовая карта
-item.ItemCardEnergyArray.name=Карта-датчик расположения массива с энергией
-item.ItemCardLiquidArray.name=Карта-датчик расположения массива жидкости
-item.ItemCardGeneratorArray.name=Карта-датчик расположения массива генераторов
-item.ItemRangeUpgrade.name=Улучшение «Усиление сигнала»
-item.ItemColorUpgrade.name=Улучшение «Цветность»
+item.kit_energy.name=Набор для энергетического хранилища
+item.kit_counter.name=Набор для счётчика энергии
+item.kit_liquid.name=Набор для жидкостного хранилища
+item.kit_liquid_advanced.name=Улучш. набор для жидкостного хранилища
+item.kit_generator.name=Набор для генератора
+item.kit_reactor.name=Набор для реактора
+item.card_energy.name=Карта-датчик расположения энергии
+item.card_counter.name=Карта-датчик расположения счётчика
+item.card_liquid.name=Карта-датчик расположения жидкости
+item.card_liquid_advanced.name=Улучш. карта-датчик расположения жидкости
+item.card_generator.name=Карта-датчик расположения генератора
+item.card_generator_kinetic.name=Карта-датчик расположения кинетического генератора
+item.card_generator_heat.name=Карта-датчик расположения теплового генератора
+item.card_reactor.name=Карта-датчик расположения реактора
+item.card_reactor_5x5.name=Карта-датчик расположения 5x5 реактора
+item.card_text.name=Текстовая карта
+item.card_time.name=Карта со временем
+item.card_energy_array.name=Карта-датчик расположения массива с энергией
+item.card_liquid_array.name=Карта-датчик расположения массива жидкости
+item.card_generator_array.name=Карта-датчик расположения массива генераторов
+item.thermometer.name=Термометр
+item.thermometer_digital.name=Цифровой термометр
+item.upgrade_range.name=Улучшение «Усиление сигнала»
+item.upgrade_color.name=Улучшение «Цветность»
 
 #Integration Items
-item.ItemKitBigReactor.name=Набор для дистанционного RF-реактора
-item.ItemCardBigReactor.name=Карта-датчик расположения RF-реактора
-item.ItemCardAppEng.name=Карта для Applied Energistics
-item.ItemKitAppEng.name=Набор с датчиком для Applied Energistics
-item.RFenergyCard.name=Карта-датчик расположения RF энергии
+item.kit_big_reactor.name=Набор для дистанционного RF-реактора
+item.card_big_reactor.name=Карта-датчик расположения RF-реактора
+item.kit_app_eng.name=Набор с датчиком для Applied Energistics
+item.card_app_eng.name=Карта для Applied Energistics
 
 #Internal Blocks
-tile.thermalMonitor.name=Датчик температуры
-tile.industrialAlarm.name=Промышленная сирена
-tile.howlerAlarm.name=Сирена «Ревун»
-tile.remoteThermo.name=Дистанционный датчик температуры
-tile.infoPanel.name=Промышленная информационная панель
-tile.infoPanelExtender.name=Расширитель информационной панели
-tile.advancedInfoPanel.name=Продвинутая информационная панель
-tile.advancedInfoPanelExtender.name=Расширитель продвинутой информационной панели
-tile.nclight0.name=Белый светильник
-tile.nclight1.name=Белый светильник
-tile.nclight2.name=Оранжевый светильник
-tile.nclight3.name=Оранжевый светильник
-tile.energyCounter.name=Энергосчётчик
-tile.averageCounter.name=Стационарный энергосчётчик
-tile.rangeTrigger.name=Дистанционный триггер
+tile.thermal_monitor.name=Датчик температуры
+tile.industrial_alarm.name=Промышленная сирена
+tile.howler_alarm.name=Сирена «Ревун»
+tile.remote_thermo.name=Дистанционный датчик температуры
+tile.info_panel.name=Промышленная информационная панель
+tile.info_panel_extender.name=Расширитель информационной панели
+tile.advanced_info_panel.name=Продвинутая информационная панель
+tile.advanced_info_panel_extender.name=Расширитель продвинутой информационной панели
+tile.eclight0.name=Белый светильник
+tile.eclight1.name=Белый светильник
+tile.eclight2.name=Оранжевый светильник
+tile.eclight3.name=Оранжевый светильник
+tile.energy_counter.name=Энергосчётчик
+tile.average_counter.name=Стационарный энергосчётчик
+tile.range_trigger.name=Дистанционный триггер
 
 #Original Screen Messages
 msg.ec.HowlerAlarmSoundRange=Дальность звука: %s
@@ -133,6 +136,7 @@ msg.ec.Reset=Перезагрузить
 msg.ec.ScreenColor=Цвет экрана
 msg.ec.TextColor=Цвет текста
 msg.ec.None=N/A
+msg.ec.cards=карты: %s
 
 #5x5 Reactor Messages
 msg.ec.InfoPanel55.Output=Выход: %s Hu/сек

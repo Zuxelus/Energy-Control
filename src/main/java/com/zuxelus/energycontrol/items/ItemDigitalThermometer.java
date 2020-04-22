@@ -23,7 +23,7 @@ public class ItemDigitalThermometer extends ItemThermometer implements IElectric
 
 	public ItemDigitalThermometer(int k, int l, int i1) {
 		super();
-		setMaxDamage(101);
+		setMaxDamage(13);
 		setHasSubtypes(true);
 		tier = k;
 		ratio = l;
@@ -45,23 +45,13 @@ public class ItemDigitalThermometer extends ItemThermometer implements IElectric
 
 	@Override
 	protected void damage(ItemStack itemstack, int i, EntityPlayer entityplayer) {
-		ElectricItem.manager.use(itemstack, 50 * i, entityplayer);
+		ElectricItem.rawManager.use(itemstack, 50 * i, entityplayer);
 	}
 
 	@Override
 	public boolean canProvideEnergy(ItemStack itemStack) {
 		return false;
 	}
-
-	/*@Override
-	public Item getChargedItem(ItemStack itemStack) {
-		return this;
-	}
-
-	@Override
-	public Item getEmptyItem(ItemStack itemStack) {
-		return this;
-	}*/
 
 	@Override
 	public double getMaxCharge(ItemStack itemStack) {
@@ -80,7 +70,7 @@ public class ItemDigitalThermometer extends ItemThermometer implements IElectric
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(Item item, CreativeTabs tab, List itemList) {
+	public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> itemList) {
 		ItemStack itemstack = new ItemStack(this, 1);
 		ElectricItem.manager.charge(itemstack, 0x7fffffff, 0x7fffffff, true, false);
 		itemList.add(itemstack);

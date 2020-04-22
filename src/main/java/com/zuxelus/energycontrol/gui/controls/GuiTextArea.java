@@ -76,12 +76,12 @@ public class GuiTextArea extends Gui {
 		}
 		
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer vertexbuffer = tessellator.getBuffer();
+		VertexBuffer vertexbuffer = tessellator.getBuffer();
         GlStateManager.color(0.0F, 0.0F, 255.0F, 255.0F);
         GlStateManager.disableTexture2D();
         GlStateManager.enableColorLogic();
         GlStateManager.colorLogicOp(GL11.GL_OR_REVERSE);
-        vertexbuffer.begin(7, DefaultVertexFormats.POSITION);
+		vertexbuffer.begin(7, DefaultVertexFormats.POSITION);
 		vertexbuffer.pos(left, bottom, 0.0D).endVertex();;
 		vertexbuffer.pos(right, bottom, 0.0D).endVertex();;
 		vertexbuffer.pos(right, top, 0.0D).endVertex();;

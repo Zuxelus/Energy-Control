@@ -9,6 +9,7 @@ import com.zuxelus.energycontrol.utils.CardState;
 import com.zuxelus.energycontrol.utils.PanelSetting;
 import com.zuxelus.energycontrol.utils.PanelString;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -31,8 +32,11 @@ public class ItemCardMain extends Item {
 		register(new ItemCardCounter());
 		register(new ItemCardLiquid());
 		register(new ItemCardGenerator());
+		register(new ItemCardGeneratorKinetic());
+		register(new ItemCardGeneratorHeat());
 		register(new ItemCardReactor());
 		register(new ItemCardReactor5x5());
+		register(new ItemCardLiquidAdvanced());
 		register(new ItemCardText());
 		register(new ItemCardTime());
 		register(new ItemCardEnergyArray());
@@ -53,7 +57,7 @@ public class ItemCardMain extends Item {
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs par2CreativeTabs, List list) {
+	public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> list) {
 		for (int i = 0; i <= ItemCardType.CARD_MAX; i++)
 			if (cards.containsKey(i))
 				list.add(new ItemStack(this, 1, i));
@@ -63,22 +67,22 @@ public class ItemCardMain extends Item {
 	public boolean isDamageable() {
 		return true;
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack itemStack, EntityPlayer player, List info, boolean advanced) {
-		ItemCardReader reader = new ItemCardReader(itemStack);
+	public void addInformation(ItemStack stack, EntityPlayer player, List<String> info, boolean advanced) {
+		ItemCardReader reader = new ItemCardReader(stack);
 		String title = reader.getTitle();
 		if (title != null && !title.isEmpty())
 			info.add(title);
-		switch (itemStack.getItemDamage()) {
+		switch (stack.getItemDamage()) {
 		case ItemCardType.CARD_TEXT:
 		case ItemCardType.CARD_TIME:
 			return;
 		case ItemCardType.CARD_ENERGY_ARRAY:
 		case ItemCardType.CARD_LIQUID_ARRAY:
 		case ItemCardType.CARD_GENERATOR_ARRAY:
-			info.add(String.format("cards: %d", reader.getCardCount()));
+			info.add(I18n.format("msg.ec.cards", reader.getCardCount()));
 			return;
 		}
 		

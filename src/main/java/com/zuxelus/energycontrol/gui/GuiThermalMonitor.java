@@ -16,13 +16,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiThermalMonitor extends GuiBase {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/GUIThermalMonitor.png");
+			EnergyControl.MODID + ":textures/gui/gui_thermal_monitor.png");
 
 	private TileEntityThermo thermo;
 	private GuiTextField textboxHeat = null;
 
 	public GuiThermalMonitor(TileEntityThermo thermo) {
-		super("tile.thermalMonitor.name", 191, 64);
+		super("tile.thermal_monitor.name", 191, 64);
 		this.thermo = thermo;
 	}
 
@@ -97,7 +97,7 @@ public class GuiThermalMonitor extends GuiBase {
 			thermo.setHeatLevel(heat);
 		}
 		textboxHeat.setText(new Integer(heat).toString());
-    }
+	}
 
 	@Override
 	protected void actionPerformed(GuiButton button) {

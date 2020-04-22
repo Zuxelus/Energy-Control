@@ -20,7 +20,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiRangeTrigger extends GuiContainer {
 	private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/GUIRangeTrigger.png");
+			EnergyControl.MODID + ":textures/gui/gui_range_trigger.png");
 
 	private String name;
 	private ContainerRangeTrigger container;
@@ -30,7 +30,7 @@ public class GuiRangeTrigger extends GuiContainer {
 		super(container);
 		ySize = 190;
 		this.container = container;
-		name = I18n.format("tile.rangeTrigger.name");
+		name = I18n.format("tile.range_trigger.name");
 	}
 
 	private void initControls() {
@@ -103,7 +103,7 @@ public class GuiRangeTrigger extends GuiContainer {
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(int par1, int par2) {
+	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		fontRendererObj.drawString(name, (xSize - fontRendererObj.getStringWidth(name)) / 2, 6, 0x404040);
 		fontRendererObj.drawString(I18n.format("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 
@@ -112,7 +112,7 @@ public class GuiRangeTrigger extends GuiContainer {
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
+	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.renderEngine.bindTexture(TEXTURE_LOCATION);
 		int left = (width - xSize) / 2;

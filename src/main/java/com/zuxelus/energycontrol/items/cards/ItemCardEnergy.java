@@ -18,12 +18,12 @@ import net.minecraft.world.World;
 
 public class ItemCardEnergy extends ItemCardBase {
 	public ItemCardEnergy() {
-		super(ItemCardType.CARD_ENERGY, "cardEnergy");
+		super(ItemCardType.CARD_ENERGY, "card_energy");
 	}
 
 	@Override
 	public String getUnlocalizedName() {
-		return "item.ItemCardEnergy";
+		return "item.card_energy";
 	}
 
 	@Override

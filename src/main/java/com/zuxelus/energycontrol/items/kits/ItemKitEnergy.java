@@ -15,12 +15,12 @@ import net.minecraft.world.World;
 public class ItemKitEnergy extends ItemKitBase {
 
 	public ItemKitEnergy() {
-		super(ItemHelper.KIT_ENERGY, "kitEnergy");
+		super(ItemHelper.KIT_ENERGY, "kit_energy");
 	}
 
 	@Override
 	public String getUnlocalizedName() {
-		return "item.ItemKitEnergy";
+		return "item.kit_energy";
 	}
 
 	@Override

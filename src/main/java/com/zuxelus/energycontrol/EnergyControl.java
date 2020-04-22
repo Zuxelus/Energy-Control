@@ -59,7 +59,7 @@ public class EnergyControl {
 		new ItemHelper();
 		proxy.registerModels();
 		
-        CrossModLoader.preinit();
+		CrossModLoader.preinit();
 	}
 
 	@EventHandler

@@ -3,6 +3,7 @@ package com.zuxelus.energycontrol.crossmod.ic2;
 import com.zuxelus.energycontrol.crossmod.EnergyStorageData;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
 public class IC2NoMod extends IC2Cross {
@@ -43,7 +44,7 @@ public class IC2NoMod extends IC2Cross {
 	}
 
 	@Override
-	public EnergyStorageData getGeneratorData(TileEntity entity) {
+	public NBTTagCompound getGeneratorData(TileEntity entity) {
 		return null;
 	}
 

@@ -12,13 +12,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiIndustrialAlarm extends GuiBase {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/GUIIndustrialAlarm.png");
+			EnergyControl.MODID + ":textures/gui/gui_industrial_alarm.png");
 
 	private TileEntityHowlerAlarm alarm;
 	private GuiHowlerAlarmSlider slider;
 
 	public GuiIndustrialAlarm(TileEntityHowlerAlarm alarm) {
-		super("tile.industrialAlarm.name", 131, 64);
+		super("tile.industrial_alarm.name", 131, 64);
 		this.alarm = alarm;
 	}
 

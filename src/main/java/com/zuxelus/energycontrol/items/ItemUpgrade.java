@@ -24,17 +24,17 @@ public class ItemUpgrade extends Item {
 		int damage = itemStack.getItemDamage();
 		switch (damage) {
 		case DAMAGE_RANGE:
-			return "item.ItemRangeUpgrade";
+			return "item.upgrade_range";
 		case DAMAGE_COLOR:
-			return "item.ItemColorUpgrade";
+			return "item.upgrade_color";
 		default:
 			return "";
 		}
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs par2CreativeTabs, List itemList) {
-		itemList.add(new ItemStack(item, 1, DAMAGE_RANGE));
-		itemList.add(new ItemStack(item, 1, DAMAGE_COLOR));
+	public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> itemList) {
+		itemList.add(new ItemStack(ItemHelper.itemUpgrade, 1, DAMAGE_RANGE));
+		itemList.add(new ItemStack(ItemHelper.itemUpgrade, 1, DAMAGE_COLOR));
 	}
 }

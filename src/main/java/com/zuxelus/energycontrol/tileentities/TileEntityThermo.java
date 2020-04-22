@@ -29,6 +29,7 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 		heatLevel = prevHeatLevel = 500;
 		updateTicker = 0;
 		tickRate = -1;
+		status = -1;
 	}
 
 	public int getHeatLevel() {
@@ -129,7 +130,6 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 
 	@Override
 	public void invalidate() {
-		if (status == 1)
 			worldObj.notifyNeighborsOfStateChange(pos, worldObj.getBlockState(pos).getBlock());
 		super.invalidate();
 	}
@@ -148,7 +148,7 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 
 	protected void checkStatus() {
 		int newStatus;
-		IReactor reactor = ReactorHelper.getReactorAround(worldObj, pos);		
+		IReactor reactor = ReactorHelper.getReactorAround(worldObj, pos);
 		if (reactor == null)
 			reactor = ReactorHelper.getReactor3x3(worldObj, pos);
 
@@ -181,9 +181,9 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 		IBlockState iblockstate = worldObj.getBlockState(pos);
 		Block block = iblockstate.getBlock();
 		if (block instanceof ThermalMonitor) {
-			boolean newValue = status == 1 ? !invertRedstone : invertRedstone;
+			boolean newValue = status < 0 ? false : status == 1 ? !invertRedstone : invertRedstone;
 			if (poweredBlock != newValue) {
-				((ThermalMonitor)block).setPowered(status == 1 ? !invertRedstone : invertRedstone);
+				((ThermalMonitor)block).setPowered(newValue);
 				worldObj.notifyNeighborsOfStateChange(pos, block);
 			}
 			poweredBlock = newValue;

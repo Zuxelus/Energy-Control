@@ -2,53 +2,53 @@
 ec.creativetab=Energy Control
 
 #Internal Items
-item.itemThermometer.name=Thermometer
-item.itemDigitalThermometer.name=Digital Thermometer
-item.ItemKitReactor.name=Reactor Sensor Kit
-item.ItemKitEnergy.name=Energy Sensor Kit
-item.ItemKitCounter.name=Counter Sensor Kit
-item.ItemKitLiquid.name=Liquid Sensor Kit
-item.ItemKitGenerator.name=Generator Sensor Kit
-item.ItemCardReactor.name=Reactor Sensor Card
-item.ItemCardReactor5x5.name=5x5 Reactor Sensor Card
-item.ItemCardEnergy.name=Energy Sensor Card
-item.ItemCardCounter.name=Counter Sensor Card
-item.ItemCardLiquid.name=Liquid Sensor Card
-item.ItemCardGenerator.name=Generator Sensor Card
-item.ItemCardTime.name=Time Card
-item.ItemCardText.name=Text Card
-item.ItemCardEnergyArray.name=Energy Array Card
-item.ItemCardLiquidArray.name=Liquid Array Card
-item.ItemCardGeneratorArray.name=Generator Array Card
-item.ItemRangeUpgrade.name=Range Upgrade
-item.ItemColorUpgrade.name=Color Upgrade
+item.kit_energy.name=Energy Sensor Kit
+item.kit_counter.name=Counter Sensor Kit
+item.kit_liquid.name=Liquid Sensor Kit
+item.kit_liquid_advanced.name=Advanced Liquid Sensor Kit
+item.kit_generator.name=Generator Sensor Kit
+item.kit_reactor.name=Reactor Sensor Kit
+item.card_energy.name=Energy Sensor Card
+item.card_counter.name=Counter Sensor Card
+item.card_liquid.name=Liquid Sensor Card
+item.card_liquid_advanced.name=Advanced Liquid Sensor Card
+item.card_generator.name=Generator Sensor Card
+item.card_generator_kinetic.name=Kinetic Generator Sensor Card
+item.card_generator_heat.name=Heat Generator Sensor Card
+item.card_reactor.name=Reactor Sensor Card
+item.card_reactor_5x5.name=5x5 Reactor Sensor Card
+item.card_text.name=Text Card
+item.card_time.name=Time Card
+item.card_energy_array.name=Energy Array Card
+item.card_liquid_array.name=Liquid Array Card
+item.card_generator_array.name=Generator Array Card
+item.thermometer.name=Thermometer
+item.thermometer_digital.name=Digital Thermometer
+item.upgrade_range.name=Range Upgrade
+item.upgrade_color.name=Color Upgrade
 
 #Integration Items
-item.ItemKitBigReactor.name=Remote RF Reactor Kit
-item.ItemCardBigReactor.name=RF Reactor Sensor Location Card
-item.ItemCardAppEng.name=Applied Energistics Card
-item.ItemKitAppEng.name=Applied Energistics Monitor Kit
-item.RFenergyCard.name=RF Energy Sensor Location Card
-item.ItemInventoryScannerCard.name=Inventory Tracking Card
-item.MekRFenergyCard.name=Mekanism Energy Card
-item.GT6EnergyCard.name=GT6 Energy Card
+item.kit_big_reactor.name=Remote RF Reactor Kit
+item.card_big_reactor.name=RF Reactor Sensor Location Card
+item.kit_app_eng.name=Applied Energistics Monitor Kit
+item.card_app_eng.name=Applied Energistics Card
 
 #Internal Blocks
-tile.thermalMonitor.name=Thermal Monitor
-tile.industrialAlarm.name=Industrial Alarm
-tile.howlerAlarm.name=Howler Alarm
-tile.remoteThermo.name=Remote Thermal Monitor
-tile.infoPanel.name=Industrial Information Panel
-tile.infoPanelExtender.name=Information Panel Extender
-tile.advancedInfoPanel.name=Advanced Information Panel
-tile.advancedInfoPanelExtender.name=Advanced Panel Extender
-tile.nclight0.name=White Lamp
-tile.nclight1.name=White Lamp
-tile.nclight2.name=Orange Lamp
-tile.nclight3.name=Orange Lamp
-tile.energyCounter.name=Energy Counter
-tile.averageCounter.name=Average Counter
-tile.rangeTrigger.name=Range Trigger
+tile.thermal_monitor.name=Thermal Monitor
+tile.industrial_alarm.name=Industrial Alarm
+tile.howler_alarm.name=Howler Alarm
+tile.remote_thermo.name=Remote Thermal Monitor
+tile.info_panel.name=Industrial Information Panel
+tile.info_panel_extender.name=Information Panel Extender
+tile.advanced_info_panel.name=Advanced Information Panel
+tile.advanced_info_panel_extender.name=Advanced Panel Extender
+tile.eclight0.name=White Lamp
+tile.eclight1.name=White Lamp
+tile.eclight2.name=Orange Lamp
+tile.eclight3.name=Orange Lamp
+tile.energy_counter.name=Energy Counter
+tile.average_counter.name=Average Counter
+tile.range_trigger.name=Range Trigger
 
 #Original Screen Messages
 msg.ec.HowlerAlarmSoundRange=Sound range: %s
@@ -82,6 +82,7 @@ msg.ec.InfoPanelFree=Free: %s
 msg.ec.InfoPanelStorage=Storage: %s
 msg.ec.InfoPanelMaxStorage=MaxStorage: %s
 msg.ec.InfoPanelPercentage=Fill: %s%%
+msg.ec.InfoPanelMultiplier=Multiplier: %s
 
 msg.ec.cbInfoPanelLiquidName=Liquid name
 msg.ec.cbInfoPanelLiquidAmount=Amount
@@ -136,6 +137,7 @@ msg.ec.Reset=Reset
 msg.ec.ScreenColor=Screen Color
 msg.ec.TextColor=Text Color
 msg.ec.None=N/A
+msg.ec.cards=cards: %s
 
 #5x5 Reactor Messages
 msg.ec.InfoPanel55.Output=Output: %s Hu/s

@@ -90,7 +90,7 @@ public class RangeTrigger extends BlockHorizontal implements ITileEntityProvider
     }
 	
 	@Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (!world.isRemote)
 			player.openGui(EnergyControl.instance, BlockDamages.DAMAGE_RANGE_TRIGGER, world, pos.getX(), pos.getY(), pos.getZ());
 		return true;

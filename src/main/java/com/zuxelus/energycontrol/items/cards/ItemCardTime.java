@@ -15,12 +15,12 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 
 public class ItemCardTime extends ItemCardBase {
 	public ItemCardTime() {
-		super(ItemCardType.CARD_TIME, "cardTime");
+		super(ItemCardType.CARD_TIME, "card_time");
 	}
 
 	@Override
 	public String getUnlocalizedName() {
-		return "item.ItemCardTime";
+		return "item.card_time";
 	}
 
 	@Override

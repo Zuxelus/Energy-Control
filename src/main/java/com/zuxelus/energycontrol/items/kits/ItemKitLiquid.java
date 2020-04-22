@@ -7,17 +7,16 @@ import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 public class ItemKitLiquid extends ItemKitSimple {
 	public ItemKitLiquid() {
-		super(ItemHelper.KIT_LIQUID, "kitLiquid");
+		super(ItemHelper.KIT_LIQUID, "kit_liquid");
 	}
 
 	@Override
 	public String getUnlocalizedName() {
-		return "item.ItemKitLiquid";
+		return "item.kit_liquid";
 	}
 
 	@Override

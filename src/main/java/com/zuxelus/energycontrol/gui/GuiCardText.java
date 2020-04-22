@@ -15,7 +15,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiCardText extends GuiScreen implements ICardGui {
 	private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/GUITextCard.png");
+			EnergyControl.MODID + ":textures/gui/gui_text_card.png");
 
 	private ItemCardSettingsReader wrapper;
 	private ItemCardReader reader;

@@ -355,7 +355,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	// ------- Settings --------
 	public List<ItemStack> getCards() {
 		List<ItemStack> data = new ArrayList<ItemStack>(1);
-		data.add(inventory[SLOT_CARD]);
+		data.add(getStackInSlot(SLOT_CARD));
 		return data;
 	}	
 	
@@ -411,7 +411,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	}
 	
 	private boolean isColoredEval() {
-		ItemStack itemStack = inventory[SLOT_UPGRADE_COLOR];
+		ItemStack itemStack = getStackInSlot(SLOT_UPGRADE_COLOR);
 		return itemStack != null && itemStack.getItem() instanceof ItemUpgrade
 				&& itemStack.getItemDamage() == ItemUpgrade.DAMAGE_COLOR;
 	}
@@ -422,7 +422,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		if (!worldObj.isRemote) {
 			int upgradeCountRange = 0;
 			setColored(isColoredEval());
-			ItemStack itemStack = inventory[SLOT_UPGRADE_RANGE];
+			ItemStack itemStack = getStackInSlot(SLOT_UPGRADE_RANGE);
 			if (itemStack != null && itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE)
 				upgradeCountRange = itemStack.stackSize;
 			for (ItemStack card : getCards())
@@ -437,7 +437,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	}
 	
 	public int getDisplaySettingsForCardInSlot(int slot) {
-		ItemStack card = inventory[slot];
+		ItemStack card = getStackInSlot(slot);
 		if (card == null) {
 			return 0;
 		}
@@ -461,7 +461,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	public void setDisplaySettings(int slot, int settings) {
 		if (slot != SLOT_CARD)
 			return;	
-		ItemStack stack = inventory[slot];
+		ItemStack stack = getStackInSlot(slot);
 		if (stack == null)
 			return;
 		if (!(stack.getItem() instanceof ItemCardMain))

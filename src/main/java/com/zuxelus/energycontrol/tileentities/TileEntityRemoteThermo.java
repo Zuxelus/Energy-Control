@@ -109,8 +109,8 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 		if (energy >= EnergyControl.config.remoteThermalMonitorEnergyConsumption) {
 			IReactor reactor = ReactorHelper.getReactorAt(worldObj, new BlockPos(pos.getX() + deltaX, pos.getY() + deltaY, pos.getZ() + deltaZ));
 			if (reactor == null) {
-				if (inventory[SLOT_CARD] != null) {
-					BlockPos target = new ItemCardReader(inventory[SLOT_CARD]).getTarget();
+				if (getStackInSlot(SLOT_CARD) != null) {
+					BlockPos target = new ItemCardReader(getStackInSlot(SLOT_CARD)).getTarget();
 					if (target != null)
 						reactor = ReactorHelper.getReactor3x3(worldObj, target);
 				}
@@ -143,20 +143,20 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 			return;
 		//If is server
 		int consumption = EnergyControl.config.remoteThermalMonitorEnergyConsumption;
-		if (inventory[SLOT_CHARGER] != null && energy < maxStorage) {
-			if (inventory[SLOT_CHARGER].getItem() instanceof IElectricItem) {
-				IElectricItem ielectricitem = (IElectricItem) inventory[SLOT_CHARGER].getItem();
+		if (getStackInSlot(SLOT_CHARGER) != null && energy < maxStorage) {
+			if (getStackInSlot(SLOT_CHARGER).getItem() instanceof IElectricItem) {
+				IElectricItem ielectricitem = (IElectricItem) getStackInSlot(SLOT_CHARGER).getItem();
 
-				if (ielectricitem.canProvideEnergy(inventory[SLOT_CHARGER])) {
-					double k = ElectricItem.manager.discharge(inventory[SLOT_CHARGER], maxStorage - energy, tier, false, false, false);
+				if (ielectricitem.canProvideEnergy(getStackInSlot(SLOT_CHARGER))) {
+					double k = ElectricItem.manager.discharge(getStackInSlot(SLOT_CHARGER), maxStorage - energy, tier, false, false, false);
 					energy += k;
 				}
-			} else if (Item.getIdFromItem(inventory[SLOT_CHARGER].getItem()) == Item.getIdFromItem((IC2Items.getItem("suBattery")).getItem())){
+			} else if (Item.getIdFromItem(getStackInSlot(SLOT_CHARGER).getItem()) == Item.getIdFromItem((IC2Items.getItem("suBattery")).getItem())){
 				if (ENERGY_SU_BATTERY <= maxStorage - energy || energy == 0) {
-					inventory[SLOT_CHARGER].stackSize--;
+					getStackInSlot(SLOT_CHARGER).stackSize--;
 
-					if (inventory[SLOT_CHARGER].stackSize <= 0)
-						inventory[SLOT_CHARGER] = null;
+					if (getStackInSlot(SLOT_CHARGER).stackSize <= 0)
+						setInventorySlotContents(SLOT_CHARGER, null);
 
 					energy += ENERGY_SU_BATTERY;
 					if (energy > maxStorage)
@@ -179,21 +179,21 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 		int upgradeCountStorage = 0;
 		int upgradeCountRange = 0;
 		for (int i = 2; i < 5; i++) {
-			ItemStack itemStack = inventory[i];
+			ItemStack itemStack = getStackInSlot(i);
 
 			if (itemStack == null)
 				continue;
 
-			if (itemStack.isItemEqual(IC2Items.getItem("transformerUpgrade"))) {
+			if (itemStack.isItemEqual(IC2Items.getItem("upgrade","transformer"))) {
 				upgradeCountTransormer += itemStack.stackSize;
-			} else if (itemStack.isItemEqual(IC2Items.getItem("energyStorageUpgrade"))) {
+			} else if (itemStack.isItemEqual(IC2Items.getItem("upgrade","energy_storage"))) {
 				upgradeCountStorage += itemStack.stackSize;
 			} else if (itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE) {
 				upgradeCountRange += itemStack.stackSize;
 			}
 		}
-		if (inventory[SLOT_CARD] != null) {
-			BlockPos target = new ItemCardReader(inventory[SLOT_CARD]).getTarget();
+		if (getStackInSlot(SLOT_CARD) != null) {
+			BlockPos target = new ItemCardReader(getStackInSlot(SLOT_CARD)).getTarget();
 			if (target != null) {
 				deltaX = target.getX() - pos.getX();
 				deltaY = target.getY() - pos.getY();
@@ -270,8 +270,6 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 			return false;
 		switch (slotIndex) {
 		case SLOT_CHARGER:
-			/*if (itemStack.getItem() == IC2Items.getItem("suBattery").getItem())
-				return true;*/
 			if (itemStack.getItem() instanceof IElectricItem) {
 				IElectricItem item = (IElectricItem) itemStack.getItem();
 				if (item.canProvideEnergy(itemStack) && item.getTier(itemStack) <= tier)
@@ -281,8 +279,8 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 		case SLOT_CARD:
 			return itemStack.getItem() instanceof ItemCardMain && itemStack.getItemDamage() == ItemCardType.CARD_REACTOR;
 		default:
-			return itemStack.isItemEqual(IC2Items.getItem("transformerUpgrade"))
-					|| itemStack.isItemEqual(IC2Items.getItem("energyStorageUpgrade"))
+			return itemStack.isItemEqual(IC2Items.getItem("upgrade","transformer"))
+					|| itemStack.isItemEqual(IC2Items.getItem("upgrade","energy_storage"))
 					|| (itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE);
 		}
 	}

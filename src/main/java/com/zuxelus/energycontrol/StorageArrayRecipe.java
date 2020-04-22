@@ -45,7 +45,7 @@ public class StorageArrayRecipe implements IRecipe {
 				continue;
 			if (!(itemStack.getItem() instanceof ItemCardMain))
 				return null;
-			
+
 			switch (itemStack.getItemDamage())
 			{
 			case ItemCardType.CARD_ENERGY:
@@ -87,7 +87,7 @@ public class StorageArrayRecipe implements IRecipe {
 			return stack;
 		return getCraftingResult(cardCountGenerator, arrayCountGenerator, ItemCardType.CARD_GENERATOR_ARRAY, cards, array);
 	}
-	
+
 	private ItemStack getCraftingResult(int cardCount, int arrayCount, int type, Vector<ItemStack> cards, ItemStack array) {
 		if (cardCount >= 2 && cardCount <= 6 && arrayCount == 0) {
 			ItemStack itemStack = new ItemStack(ItemHelper.itemCard, 1, type);
@@ -109,7 +109,7 @@ public class StorageArrayRecipe implements IRecipe {
 		}
 		return null;
 	}
-	
+
 	private static void initArray(ItemStack stack, Vector<ItemStack> cards) {
 		if (stack.getItemDamage() != ItemCardType.CARD_ENERGY_ARRAY
 				&& stack.getItemDamage() != ItemCardType.CARD_LIQUID_ARRAY

@@ -19,12 +19,12 @@ import net.minecraft.world.World;
 
 public class ItemCardReactor5x5 extends ItemCardBase {
 	public ItemCardReactor5x5() {
-		super(ItemCardType.CARD_REACTOR5X5, "cardReactor5x5");
+		super(ItemCardType.CARD_REACTOR5X5, "card_reactor_5x5");
 	}
 
 	@Override
 	public String getUnlocalizedName() {
-		return "item.ItemCardReactor5x5";
+		return "item.card_reactor_5x5";
 	}
 
 	@Override

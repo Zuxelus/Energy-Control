@@ -31,8 +31,8 @@ public class EnCtrlTab extends CreativeTabs {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public String getTranslatedTabLabel() {
 		return I18n.format("ec.creativetab");
 	}
-
 }

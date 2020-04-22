@@ -11,7 +11,6 @@ public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm {
 		super();
 		internalFire = 0;
 		lightLevel = 0;
-		soundReceived = true;
 	}
 	
 	@Override

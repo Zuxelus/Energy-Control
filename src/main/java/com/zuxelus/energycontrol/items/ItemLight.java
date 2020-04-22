@@ -21,6 +21,6 @@ public class ItemLight extends ItemBlock{
 	
 	@Override
 	public String getUnlocalizedName(ItemStack item) {
-		return "tile.nclight" + item.getItemDamage();
+		return "tile.eclight" + item.getItemDamage();
 	}
 }

@@ -10,12 +10,12 @@ import net.minecraft.world.World;
 
 public class ItemKitAppEng extends ItemKitBase {
 	public ItemKitAppEng() {
-		super(ItemHelper.KIT_APPENG, "kitAppEng");
+		super(ItemHelper.KIT_APPENG, "kit_app_eng");
 	}
 
 	@Override
 	public String getUnlocalizedName() {
-		return "item.ItemKitAppEng";
+		return "item.kit_app_eng";
 	}
 
 	@Override

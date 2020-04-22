@@ -11,12 +11,12 @@ import net.minecraft.world.World;
 public class ItemKitBigReactor extends ItemKitBase {
 
 	public ItemKitBigReactor() {
-		super(ItemHelper.KIT_BIGREACTOR, "kitBigReactor");
+		super(ItemHelper.KIT_BIGREACTOR, "kit_big_reactor");
 	}
 
 	@Override
 	public String getUnlocalizedName() {
-		return "item.ItemKitBigReactor";
+		return "item.kit_big_reactor";
 	}
 
 	@Override
