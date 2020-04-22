@@ -103,7 +103,7 @@ public class TileEntityAverageCounter extends TileEntityInventory
 	
 	private void setPeriod(short p) {
 		period = p;
-		if (!worldObj.isRemote && prevPeriod != period)
+		if (!world.isRemote && prevPeriod != period)
 			notifyBlockUpdate();
 		prevPeriod = period;
 	}
@@ -185,7 +185,7 @@ public class TileEntityAverageCounter extends TileEntityInventory
 	@Override
 	public void validate() {
 		super.validate();
-		if (!worldObj.isRemote && !addedToEnergyNet) {
+		if (!world.isRemote && !addedToEnergyNet) {
 			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
 			addedToEnergyNet = true;
 		}
@@ -194,7 +194,7 @@ public class TileEntityAverageCounter extends TileEntityInventory
 	@Override
 	public void invalidate() {
 		super.invalidate();
-		if (!worldObj.isRemote && addedToEnergyNet) {
+		if (!world.isRemote && addedToEnergyNet) {
 			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
 			addedToEnergyNet = false;
 		}
@@ -206,12 +206,12 @@ public class TileEntityAverageCounter extends TileEntityInventory
 			init = true;
 			markDirty();
 		}
-		if (!worldObj.isRemote) {
+		if (!world.isRemote) {
 			index = (index + 1) % DATA_POINTS;
 			data[index] = 0;
 			getAverage();
 
-			TileEntity neighbor = worldObj.getTileEntity(pos.offset(facing));
+			TileEntity neighbor = world.getTileEntity(pos.offset(facing));
 			if (neighbor instanceof TileEntityCable) {
 				NodeStats node = EnergyNet.instance.getNodeStats(this);
 				if (node != null)
@@ -225,10 +225,10 @@ public class TileEntityAverageCounter extends TileEntityInventory
 		super.markDirty();
 		int upgradeCountTransormer = 0;
 		ItemStack itemStack = getStackInSlot(0);
-		if (itemStack != null && itemStack.isItemEqual(IC2Items.getItem("upgrade","transformer")))
-			upgradeCountTransormer = itemStack.stackSize;
+		if (!itemStack.isEmpty() && itemStack.isItemEqual(IC2Items.getItem("upgrade","transformer")))
+			upgradeCountTransormer = itemStack.getCount();
 		upgradeCountTransormer = Math.min(upgradeCountTransormer, 3);
-		if (worldObj != null && !worldObj.isRemote) {
+		if (world != null && !world.isRemote) {
 			output = BASE_PACKET_SIZE * (int) Math.pow(4D, upgradeCountTransormer);
 			tier = upgradeCountTransormer + 1;
 
@@ -260,8 +260,8 @@ public class TileEntityAverageCounter extends TileEntityInventory
 	}
 
 	private void notifyBlockUpdate() {
-		IBlockState iblockstate = worldObj.getBlockState(pos);
-		worldObj.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
+		IBlockState iblockstate = world.getBlockState(pos);
+		world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
 	}
 
 	@Override

@@ -27,7 +27,7 @@ public class ItemKitEnergy extends ItemKitBase {
 	protected ItemStack getSensorCard(ItemStack stack, EntityPlayer player, World world, BlockPos pos) {
 		EnergyStorageData storage = EnergyCardHelper.getStorageAt(world, pos, EnergyStorageData.TARGET_TYPE_UNKNOWN);
 		if (storage == null)
-			return null;
+			return ItemStack.EMPTY;
 
 		ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_ENERGY);
 		ItemStackHelper.setCoordinates(sensorLocationCard, pos, storage.type);

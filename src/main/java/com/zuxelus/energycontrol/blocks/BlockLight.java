@@ -16,6 +16,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -84,7 +85,7 @@ public class BlockLight extends Block {
 	}
 
 	@Override
-	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block) {
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos) {
 		updateBlockState(world, pos, state);
 	}
 	
@@ -100,9 +101,9 @@ public class BlockLight extends Block {
 	}
 
 	@Override
-	public void getSubBlocks(Item id, CreativeTabs tab, List itemList) {
+	public void getSubBlocks(CreativeTabs itemIn, NonNullList<ItemStack> items) {
 		for (int i = 0; i <= DAMAGE_MAX; i++)
 			if (i % 2 == 0)
-				itemList.add(new ItemStack(this, 1, i));
+				items.add(new ItemStack(this, 1, i));
 	}
 }

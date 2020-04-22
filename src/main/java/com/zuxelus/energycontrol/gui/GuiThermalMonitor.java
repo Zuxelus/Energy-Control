@@ -43,14 +43,14 @@ public class GuiThermalMonitor extends GuiBase {
 
 		buttonList.add(new GuiThermoInvertRedstone(10, guiLeft + 70, guiTop + 38, thermo));
 
-		textboxHeat = new GuiTextField(11, fontRendererObj, 70, 21, 51, 12);
+		textboxHeat = new GuiTextField(11, fontRenderer, 70, 21, 51, 12);
 		textboxHeat.setFocused(true);
 		textboxHeat.setText(Integer.toString(thermo.getHeatLevel()));
 	}
 	
 	@Override
 	protected void drawGuiContainerForegroundLayer(int par1, int par2) {
-		fontRendererObj.drawString(name, (xSize - fontRendererObj.getStringWidth(name)) / 2, 6, 0x404040);
+		fontRenderer.drawString(name, (xSize - fontRenderer.getStringWidth(name)) / 2, 6, 0x404040);
 		
 		if (textboxHeat != null)
 			textboxHeat.drawTextBox();
@@ -97,7 +97,7 @@ public class GuiThermalMonitor extends GuiBase {
 			thermo.setHeatLevel(heat);
 		}
 		textboxHeat.setText(new Integer(heat).toString());
-	}
+    }
 
 	@Override
 	protected void actionPerformed(GuiButton button) {
@@ -111,7 +111,7 @@ public class GuiThermalMonitor extends GuiBase {
 	@Override
 	protected void keyTyped(char typedChar, int keyCode) {
 		if(keyCode == 1) // Esc button
-			mc.thePlayer.closeScreen();
+			mc.player.closeScreen();
 		else if(typedChar == 13) // Enter
 			updateHeat(0);
 		else if(textboxHeat != null && textboxHeat.isFocused() && (Character.isDigit(typedChar) || typedChar == 0 || typedChar == 8))

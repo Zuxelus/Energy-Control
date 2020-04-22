@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.items.cards;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -8,14 +9,18 @@ import com.zuxelus.energycontrol.crossmod.LiquidCardHelper;
 import com.zuxelus.energycontrol.utils.CardState;
 import com.zuxelus.energycontrol.utils.PanelSetting;
 import com.zuxelus.energycontrol.utils.PanelString;
+import com.zuxelus.energycontrol.utils.ReactorHelper;
 
+import ic2.api.reactor.IReactor;
+import ic2.core.block.comp.Fluids.InternalFluidTank;
+import ic2.core.block.reactor.tileentity.TileEntityNuclearReactorElectric;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 public class ItemCardLiquidAdvanced extends ItemCardBase {
 	public ItemCardLiquidAdvanced() {
@@ -33,12 +38,12 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 		if (target == null) 
 			return CardState.NO_TARGET;
 
-		IFluidTankProperties[] tanks = LiquidCardHelper.getAllTanks(world, target);
+		Iterable<InternalFluidTank> tanks = LiquidCardHelper.getAllTanks(world, target);
 		if (tanks == null)
 			return CardState.NO_TARGET;
 		
 		int i = 0;
-		for (IFluidTankProperties tank: tanks) {
+		for (InternalFluidTank tank: tanks) {
 			addTankInfo(reader, tank, i);
 			i++;
 		}
@@ -46,8 +51,8 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 		return CardState.OK;
 	}
 	
-	private void addTankInfo(ItemCardReader reader, IFluidTankProperties tank, int i) {
-		FluidStack stack = tank.getContents();
+	private void addTankInfo(ItemCardReader reader, InternalFluidTank tank, int i) {
+		FluidStack stack = tank.getFluid();
 		int amount = 0;
 		String name = I18n.format("msg.ec.None");
 		if (stack != null) {

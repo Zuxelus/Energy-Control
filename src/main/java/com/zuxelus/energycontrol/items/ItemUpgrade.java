@@ -7,6 +7,7 @@ import com.zuxelus.energycontrol.EnergyControl;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 
 public class ItemUpgrade extends Item {
 	public static final int DAMAGE_RANGE = 0;
@@ -33,8 +34,10 @@ public class ItemUpgrade extends Item {
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> itemList) {
-		itemList.add(new ItemStack(ItemHelper.itemUpgrade, 1, DAMAGE_RANGE));
-		itemList.add(new ItemStack(ItemHelper.itemUpgrade, 1, DAMAGE_COLOR));
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
+		if (!this.isInCreativeTab(tab))
+			return;
+		items.add(new ItemStack(ItemHelper.itemUpgrade, 1, DAMAGE_RANGE));
+		items.add(new ItemStack(ItemHelper.itemUpgrade, 1, DAMAGE_COLOR));
 	}
 }

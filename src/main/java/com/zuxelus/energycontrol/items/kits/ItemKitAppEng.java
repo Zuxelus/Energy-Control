@@ -20,7 +20,7 @@ public class ItemKitAppEng extends ItemKitBase {
 
 	@Override
 	protected ItemStack getSensorCard(ItemStack stack, EntityPlayer player, World world, BlockPos pos) {
-		return null;
+		return ItemStack.EMPTY;
 		//return CrossModLoader.crossAppEng.getSensorCard(stack, world, pos);
 	}
 }

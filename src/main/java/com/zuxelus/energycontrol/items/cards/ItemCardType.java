@@ -11,12 +11,12 @@ public class ItemCardType {
 	public static final int CARD_REACTOR = 7;
 	public static final int CARD_REACTOR5X5 = 8;
 	
-	public static final int CARD_TEXT = 18;
-	public static final int CARD_TIME = 19;
+	public static final int CARD_TEXT = 8;
+	public static final int CARD_TIME = 9;
 	
 	public static final int CARD_ENERGY_ARRAY = 10;
 	public static final int CARD_LIQUID_ARRAY = 11;
 	public static final int CARD_GENERATOR_ARRAY = 12;
 
-	public static final int CARD_MAX = 19;
+	public static final int CARD_MAX = 12;
 }

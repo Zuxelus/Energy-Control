@@ -145,12 +145,12 @@ public class PacketCard implements IMessage, IMessageHandler<PacketCard, IMessag
 
 	@Override
 	public IMessage onMessage(PacketCard message, MessageContext ctx) {
-		TileEntity tileEntity = FMLClientHandler.instance().getClient().theWorld.getTileEntity(new BlockPos(message.x, message.y, message.z));
+		TileEntity tileEntity = FMLClientHandler.instance().getClient().world.getTileEntity(new BlockPos(message.x, message.y, message.z));
 		if (tileEntity == null || !(tileEntity instanceof TileEntityInfoPanel))
 			return null;
 		TileEntityInfoPanel panel = (TileEntityInfoPanel) tileEntity;
 		ItemStack stack = panel.getStackInSlot(message.slot);
-		if (stack == null || !(stack.getItem() instanceof ItemCardMain))
+		if (stack.isEmpty() || !(stack.getItem() instanceof ItemCardMain))
 			return null;
 		
 		ItemCardReader reader = new ItemCardReader(stack);

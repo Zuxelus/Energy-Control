@@ -29,7 +29,6 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 		heatLevel = prevHeatLevel = 500;
 		updateTicker = 0;
 		tickRate = -1;
-		status = -1;
 	}
 
 	public int getHeatLevel() {
@@ -38,7 +37,7 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 	
 	public void setHeatLevel(int value) {
 		heatLevel = value;
-		if (!worldObj.isRemote && prevHeatLevel != heatLevel)
+		if (!world.isRemote && prevHeatLevel != heatLevel)
 			notifyBlockUpdate();
 		prevHeatLevel = heatLevel;
 	}
@@ -49,7 +48,7 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 	
 	public void setInvertRedstone(boolean value) {
 		invertRedstone = value;
-		if (!worldObj.isRemote && prevInvertRedstone != invertRedstone)
+		if (!world.isRemote && prevInvertRedstone != invertRedstone)
 			notifyBlockUpdate();
 		prevInvertRedstone = invertRedstone;
 	}
@@ -130,13 +129,14 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 
 	@Override
 	public void invalidate() {
-			worldObj.notifyNeighborsOfStateChange(pos, worldObj.getBlockState(pos).getBlock());
+		if (status == 1)
+			world.notifyNeighborsOfStateChange(pos, world.getBlockState(pos).getBlock(), false);
 		super.invalidate();
 	}
 
 	@Override
 	public void update() {
-		if (worldObj.isRemote || status == -2)
+		if (world.isRemote || status == -2)
 			return;
 	
     	if (updateTicker-- > 0)
@@ -148,9 +148,9 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 
 	protected void checkStatus() {
 		int newStatus;
-		IReactor reactor = ReactorHelper.getReactorAround(worldObj, pos);
+		IReactor reactor = ReactorHelper.getReactorAround(world, pos);
 		if (reactor == null)
-			reactor = ReactorHelper.getReactor3x3(worldObj, pos);
+			reactor = ReactorHelper.getReactor3x3(world, pos);
 
 		if (reactor != null) {
 			if (tickRate == -1) {
@@ -173,22 +173,22 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 		if (newStatus != status) {
 			status = newStatus;
 			notifyBlockUpdate();
-			worldObj.notifyNeighborsOfStateChange(pos, worldObj.getBlockState(pos).getBlock());
+			world.notifyNeighborsOfStateChange(pos, world.getBlockState(pos).getBlock(), false);
 		}
 	}
 
 	public void notifyBlockUpdate() {
-		IBlockState iblockstate = worldObj.getBlockState(pos);
+		IBlockState iblockstate = world.getBlockState(pos);
 		Block block = iblockstate.getBlock();
 		if (block instanceof ThermalMonitor) {
-			boolean newValue = status < 0 ? false : status == 1 ? !invertRedstone : invertRedstone;
+			boolean newValue = status == 1 ? !invertRedstone : invertRedstone;
 			if (poweredBlock != newValue) {
-				((ThermalMonitor)block).setPowered(newValue);
-				worldObj.notifyNeighborsOfStateChange(pos, block);
+				((ThermalMonitor)block).setPowered(status == 1 ? !invertRedstone : invertRedstone);
+				world.notifyNeighborsOfStateChange(pos, block, false);
 			}
 			poweredBlock = newValue;
 		}
-		worldObj.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
+		world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
 	}
 
 	@Override

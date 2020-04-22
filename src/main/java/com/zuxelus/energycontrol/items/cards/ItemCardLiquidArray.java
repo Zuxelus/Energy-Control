@@ -16,7 +16,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
+import net.minecraftforge.fluids.IFluidTank;
 
 public class ItemCardLiquidArray extends ItemCardBase {
 	private static final int STATUS_NOT_FOUND = Integer.MIN_VALUE;
@@ -48,9 +48,9 @@ public class ItemCardLiquidArray extends ItemCardBase {
 			int dy = target.getY() - pos.getY();
 			int dz = target.getZ() - pos.getZ();
 			if (Math.abs(dx) <= range && Math.abs(dy) <= range && Math.abs(dz) <= range) {
-				IFluidTankProperties storage = LiquidCardHelper.getStorageAt(world, target);
+				IFluidTank storage = LiquidCardHelper.getStorageAt(world, target);
 				if (storage != null) {
-					FluidStack stack = storage.getContents(); 
+					FluidStack stack = storage.getFluid(); 
 					if (stack != null) {
 						totalAmount += stack.amount;
 						reader.setInt(String.format("_%damount", i),stack.amount);

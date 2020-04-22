@@ -56,14 +56,14 @@ public class InfoPanel extends FacingBlock implements ITileEntityProvider {
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		if (!world.isRemote)
 			player.openGui(EnergyControl.instance, BlockDamages.DAMAGE_INFO_PANEL, world, pos.getX(), pos.getY(), pos.getZ());
 		return true;
 	}
 
 	@Override
-	public IBlockState onBlockPlaced(World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
+	public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
 		rotation = placer.getHorizontalFacing().getOpposite();
 		if (placer.rotationPitch >= 65)
 			return getDefaultState().withProperty(FACING, EnumFacing.UP);
@@ -71,7 +71,7 @@ public class InfoPanel extends FacingBlock implements ITileEntityProvider {
 			rotation = placer.getHorizontalFacing();
 			return getDefaultState().withProperty(FACING, EnumFacing.DOWN);			
 		}
-		switch (MathHelper.floor_double(placer.rotationYaw * 4.0F / 360.0F + 0.5D) & 3) {
+		switch (MathHelper.floor(placer.rotationYaw * 4.0F / 360.0F + 0.5D) & 3) {
 		case 0:
 			return getDefaultState().withProperty(FACING, EnumFacing.NORTH);
 		case 1:
@@ -93,7 +93,7 @@ public class InfoPanel extends FacingBlock implements ITileEntityProvider {
 	}
 
 	@Override
-	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block) {
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos) {
 		TileEntity te = world.getTileEntity(pos);
 		if (te instanceof IRedstoneConsumer)
 			((IRedstoneConsumer) te).neighborChanged();

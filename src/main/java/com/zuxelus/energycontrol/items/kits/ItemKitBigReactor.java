@@ -21,7 +21,7 @@ public class ItemKitBigReactor extends ItemKitBase {
 
 	@Override
 	protected ItemStack getSensorCard(ItemStack stack, EntityPlayer player, World world, BlockPos pos) {
-		return null;
+		return ItemStack.EMPTY;
 		//return CrossModLoader.crossBigReactors.getSensorCard(stack, world, pos);
 	}
 }

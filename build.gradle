@@ -1,34 +1,34 @@
 buildscript {
     repositories {
         jcenter()
-        maven { url = "http://files.minecraftforge.net/maven" }
+        maven { url = "https://files.minecraftforge.net/maven" }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.10.2-0.0.1"
-group= "com.zuxelus.energycontrol" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+version = "1.12.2-0.0.1"
+group= "com.zuxelus.energycontrol"
 archivesBaseName = "EnergyControl"
 
-sourceCompatibility = targetCompatibility = "1.6" // Need this here so eclipse task generates correctly.
+sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 compileJava {
-    sourceCompatibility = targetCompatibility = "1.6"
+    sourceCompatibility = targetCompatibility = '1.8'
 }
 
 minecraft {
-    version = "1.10.2-12.18.3.2511"
+    version = "1.12.2-14.23.5.2847"
     runDir = "run"
-  
+
     replaceIn "EnergyControl.java"
-    replace "@VERSION@", project.version  
-    mappings = "snapshot_20161111"
+    replace "@VERSION@", project.version
+    mappings = "snapshot_20171003"
 }
 
 dependencies {
-	compile 'net.industrial-craft:industrialcraft-2:2.6.259-ex110:dev'
+	compile 'net.industrial-craft:industrialcraft-2:2.8.197-ex112:dev'
 }
 
 processResources {

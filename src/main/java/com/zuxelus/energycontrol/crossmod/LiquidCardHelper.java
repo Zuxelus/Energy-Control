@@ -1,28 +1,44 @@
 package com.zuxelus.energycontrol.crossmod;
 
+import ic2.core.block.TileEntityBlock;
+import ic2.core.block.comp.Fluids;
+import ic2.core.block.comp.Fluids.InternalFluidTank;
+import ic2.core.block.reactor.tileentity.TileEntityNuclearReactorElectric;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.IFluidHandler;
-import net.minecraftforge.fluids.capability.FluidTankProperties;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.IFluidTank;
 
 public class LiquidCardHelper {
-	public static IFluidTankProperties[] getAllTanks(World world, BlockPos pos) {
+	public static Iterable<InternalFluidTank> getAllTanks(World world, BlockPos pos) {
 		if (world == null)
 			return null;
 		
 		TileEntity te = world.getTileEntity(pos);
-		if (te instanceof IFluidHandler)
-			return FluidTankProperties.convert(((IFluidHandler) te).getTankInfo(EnumFacing.UP));
-		return null;
-	}
-	
-	public static IFluidTankProperties getStorageAt(World world, BlockPos pos) {
-		IFluidTankProperties[] tanks = getAllTanks(world, pos);
-		if (tanks == null || tanks.length == 0)
+		if (!(te instanceof TileEntityBlock))
 			return null;
-		return tanks[0];
+		
+		if (!((TileEntityBlock)te).hasComponent(Fluids.class))
+			return null;
+
+		Fluids fluid = ((TileEntityBlock)te).getComponent(Fluids.class);
+
+		return fluid.getAllTanks();
 	}
+
+	public static IFluidTank getStorageAt(World world, BlockPos pos) {
+		Iterable<InternalFluidTank> tanks = getAllTanks(world, pos);
+		if (tanks == null)
+			return null;
+
+		return tanks.iterator().next();
+	}
+/*	
+	public static Iterable<InternalFluidTank> getReactorTanks(TileEntityNuclearReactorElectric te) {		
+		if (!(te.hasComponent(Fluids.class)))
+			return null;
+		Fluids fluid = te.getComponent(Fluids.class);
+		return fluid.getAllTanks();
+	}*/
 }

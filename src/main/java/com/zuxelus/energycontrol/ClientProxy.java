@@ -18,11 +18,15 @@ import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+@EventBusSubscriber
 public class ClientProxy extends ServerProxy {
 	@Override
 	public void loadConfig(FMLPreInitializationEvent event) {
@@ -31,8 +35,8 @@ public class ClientProxy extends ServerProxy {
 		EnergyControl.config.init(event.getSuggestedConfigurationFile());
 	}
 	
-	@Override
-	public void registerModels() {
+	@SubscribeEvent
+	public static void onModelRegister(ModelRegistryEvent event) {
 		registerBlockModel(ItemHelper.blockLight, BlockLight.DAMAGE_WHITE_OFF, "lamp0");
 		registerBlockModel(ItemHelper.blockLight, BlockLight.DAMAGE_WHITE_ON, "lamp1");
 		registerBlockModel(ItemHelper.blockLight, BlockLight.DAMAGE_ORANGE_OFF, "lamp2");
@@ -80,7 +84,7 @@ public class ClientProxy extends ServerProxy {
 		registerItemModel(ItemHelper.itemUpgrade, ItemUpgrade.DAMAGE_RANGE, "upgrade_range");
 		registerItemModel(ItemHelper.itemUpgrade, ItemUpgrade.DAMAGE_COLOR, "upgrade_color");
 		registerItemModel(ItemHelper.itemThermometer, 0, "thermometer");
-		registerItemModel(ItemHelper.itemThermometerDigital, 0, "thermometer_digital");
+		registerItemModel(ItemHelper.itemThermometerDigital, 0, "thermometer_digital");		
 	}
 
 	@Override
@@ -122,11 +126,11 @@ public class ClientProxy extends ServerProxy {
 		return null;
 	}
 
-	private void registerItemModel(Item item, int meta, String name) {
+	private static void registerItemModel(Item item, int meta, String name) {
 		ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(EnergyControl.MODID + ":" + name, "inventory"));
 	}
 
-	private void registerBlockModel(Block block, int meta, String name) {
+	private static void registerBlockModel(Block block, int meta, String name) {
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), meta, new ModelResourceLocation(EnergyControl.MODID + ":" + name, "inventory"));
 	}	
 }

@@ -40,16 +40,23 @@ public class GuiAverageCounter extends GuiContainer {
 		super.initGui();
 		initControls();
 	}
+	
+	@Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        //this.drawDefaultBackground();
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        renderHoveredToolTip(mouseX, mouseY);
+    }
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		fontRendererObj.drawString(name, (xSize - fontRendererObj.getStringWidth(name)) / 2, 6, 0x404040);
-		fontRendererObj.drawString(I18n.format("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+		fontRenderer.drawString(name, (xSize - fontRenderer.getStringWidth(name)) / 2, 6, 0x404040);
+		fontRenderer.drawString(I18n.format("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 		String key = "msg.ec.InfoPanelOutput";
 		String value = StringUtils.getFormatted(key, container.te.getClientAverage(), true);
-		fontRendererObj.drawString(value, (xSize - fontRendererObj.getStringWidth(value)) / 2, 22, 0x404040);
+		fontRenderer.drawString(value, (xSize - fontRenderer.getStringWidth(value)) / 2, 22, 0x404040);
 		value = StringUtils.getFormatted("msg.ec.AverageCounterPeriod", container.te.period, true);
-		fontRendererObj.drawString(value, (xSize - fontRendererObj.getStringWidth(value)) / 2, 32, 0x404040);
+		fontRenderer.drawString(value, (xSize - fontRenderer.getStringWidth(value)) / 2, 32, 0x404040);
 	}
 
 	@Override

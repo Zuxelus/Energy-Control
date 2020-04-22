@@ -34,11 +34,11 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 
 	private void updateScreen() {
 		if (partOfScreen && screen == null) {
-			TileEntity core = worldObj.getTileEntity(new BlockPos(coreX, coreY, coreZ));
+			TileEntity core = world.getTileEntity(new BlockPos(coreX, coreY, coreZ));
 			if (core != null && core instanceof TileEntityInfoPanel) {
 				screen = ((TileEntityInfoPanel) core).getScreen();
 				if (screen != null)
-					screen.init(true, worldObj);
+					screen.init(true, world);
 			}
 		}		
 	}
@@ -72,10 +72,10 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 			coreY = tag.getInteger("coreY");
 			coreZ = tag.getInteger("coreZ");
 		}
-		if (worldObj != null) {
+		if (world != null) {
 			updateScreen();
-			if (worldObj.isRemote)
-				worldObj.checkLight(pos);
+			if (world.isRemote)
+				world.checkLight(pos);
 		}
 	}
 
@@ -103,7 +103,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	@Override
 	public void invalidate() {
 		super.invalidate();
-		if (!worldObj.isRemote)
+		if (!world.isRemote)
 			EnergyControl.instance.screenManager.unregisterScreenPart(this);
 	}
 
@@ -124,7 +124,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 		this.screen = screen;
 		if (screen != null) {
 			partOfScreen = true;
-			TileEntityInfoPanel core = screen.getCore(worldObj);
+			TileEntityInfoPanel core = screen.getCore(world);
 			if (core != null) {
 				coreX = core.getPos().getX();
 				coreY = core.getPos().getY();
@@ -148,15 +148,15 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 
 	@Override
 	public void notifyBlockUpdate() {
-		IBlockState iblockstate = worldObj.getBlockState(pos);
+		IBlockState iblockstate = world.getBlockState(pos);
 		Block block = iblockstate.getBlock();
-		worldObj.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
+		world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
 	}
 
 	public boolean getPowered() {
 		if (screen == null)
 			return false;		
-		TileEntityInfoPanel core = screen.getCore(worldObj);
+		TileEntityInfoPanel core = screen.getCore(world);
 		if (core == null)
 			return false;
 		return core.powered;

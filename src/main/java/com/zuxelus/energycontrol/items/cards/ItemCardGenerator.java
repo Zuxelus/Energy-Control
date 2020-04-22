@@ -37,24 +37,43 @@ public class ItemCardGenerator extends ItemCardBase {
 		
 		TileEntity entity = world.getTileEntity(target);
 		NBTTagCompound tag = CrossModLoader.crossIc2.getGeneratorData(entity);
-		if (tag == null)
+		if (tag == null || !tag.hasKey("type"))
 			return CardState.NO_TARGET;
 		
-		reader.setDouble("storage", tag.getDouble("storage"));
-		reader.setDouble("maxStorage", tag.getDouble("maxStorage"));
-		reader.setDouble("production", tag.getDouble("production"));
+		reader.setInt("type", tag.getInteger("type"));
+		switch (tag.getInteger("type")) {
+		case 1:
+			reader.setDouble("storage", tag.getDouble("storage"));
+			reader.setDouble("maxStorage", tag.getDouble("maxStorage"));
+			reader.setDouble("production", tag.getDouble("production"));
+			break;
+		case 2:
+			reader.setDouble("production", tag.getDouble("production"));
+			reader.setDouble("multiplier", tag.getDouble("multiplier"));
+			break;
+		}
 		return CardState.OK;
 	}
 
 	@Override
 	protected List<PanelString> getStringData(int displaySettings, ItemCardReader reader, boolean showLabels) {
 		List<PanelString> result = new LinkedList<PanelString>();
-		if ((displaySettings & 1) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelStorage", reader.getDouble("storage"), showLabels));
-		if ((displaySettings & 2) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelMaxStorage", reader.getDouble("maxStorage"), showLabels));
-		if ((displaySettings & 4) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("production"), showLabels));
+		switch (reader.getInt("type")) {
+		case 1:
+			if ((displaySettings & 1) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelStorage", reader.getDouble("storage"), showLabels));
+			if ((displaySettings & 2) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelMaxStorage", reader.getDouble("maxStorage"), showLabels));
+			if ((displaySettings & 4) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("production"), showLabels));
+			break;
+		case 2:
+			if ((displaySettings & 1) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelMultiplier", reader.getDouble("multiplier"), showLabels));
+			if ((displaySettings & 4) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("production"), showLabels));
+			break;
+		}
 		return result;
 	}
 

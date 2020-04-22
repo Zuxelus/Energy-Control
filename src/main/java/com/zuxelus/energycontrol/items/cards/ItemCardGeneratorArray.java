@@ -5,14 +5,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.crossmod.EnergyStorageData;
 import com.zuxelus.energycontrol.utils.CardState;
 import com.zuxelus.energycontrol.utils.PanelSetting;
 import com.zuxelus.energycontrol.utils.PanelString;
 import com.zuxelus.energycontrol.utils.StringUtils;
 
-import ic2.api.energy.EnergyNet;
-import ic2.core.block.generator.tileentity.TileEntityBaseGenerator;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -50,10 +47,14 @@ public class ItemCardGeneratorArray extends ItemCardBase {
 			if (Math.abs(dx) <= range && Math.abs(dy) <= range && Math.abs(dz) <= range) {
 				TileEntity entity = world.getTileEntity(target);
 				NBTTagCompound tag = CrossModLoader.crossIc2.getGeneratorData(entity);
-				if (tag != null) {
+				if (tag != null && tag.hasKey("type")) {
+					switch (tag.getInteger("type")) {
+					case 1:
 						reader.setDouble(String.format("_%dstorage", i), tag.getDouble("storage"));
 						reader.setDouble(String.format("_%dmaxStorage", i), tag.getDouble("maxStorage"));
 						reader.setDouble(String.format("_%dproduction", i), tag.getDouble("production"));
+						break;
+					}
 					foundAny = true;
 				} else
 					reader.setInt(String.format("_%denergy", i), STATUS_NOT_FOUND);

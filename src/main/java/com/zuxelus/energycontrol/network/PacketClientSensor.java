@@ -111,11 +111,11 @@ public class PacketClientSensor implements IMessage, IMessageHandler<PacketClien
 
 	@Override
 	public IMessage onMessage(PacketClientSensor message, MessageContext ctx) {
-		TileEntity tileEntity = ctx.getServerHandler().playerEntity.worldObj.getTileEntity(new BlockPos(message.x, message.y, message.z));
+		TileEntity tileEntity = ctx.getServerHandler().player.world.getTileEntity(new BlockPos(message.x, message.y, message.z));
 		if (tileEntity instanceof TileEntityInfoPanel) {
 			TileEntityInfoPanel panel = (TileEntityInfoPanel) tileEntity;
 			ItemStack stack = panel.getStackInSlot(message.slot);
-			if (stack == null || !(stack.getItem() instanceof ItemCardMain))
+			if (stack.isEmpty() || !(stack.getItem() instanceof ItemCardMain))
 				return null;
 			if (!stack.getItem().getClass().getName().equals(message.className)) {
 				EnergyControl.logger.warn("Class mismatch: '%s'!='%s'", message.className, stack.getItem().getClass().getName());

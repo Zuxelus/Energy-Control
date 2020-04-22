@@ -17,7 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
+import net.minecraftforge.fluids.IFluidTank;
 
 public class ItemKitLiquidAdvanced extends ItemKitBase {
 	public ItemKitLiquidAdvanced() {
@@ -31,7 +31,7 @@ public class ItemKitLiquidAdvanced extends ItemKitBase {
 	
 	@Override
 	protected ItemStack getSensorCard(ItemStack stack, EntityPlayer player, World world, BlockPos pos) {
-		IFluidTankProperties tank = LiquidCardHelper.getStorageAt(world, pos);
+		IFluidTank tank = LiquidCardHelper.getStorageAt(world, pos);
 		if (tank != null) {
 			ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_LIQUID_ADVANCED);
 			ItemStackHelper.setCoordinates(sensorLocationCard, pos);
@@ -40,7 +40,7 @@ public class ItemKitLiquidAdvanced extends ItemKitBase {
 		
 		Block block = world.getBlockState(pos).getBlock();
 		if (!(block instanceof BlockTileEntity))
-			return null;
+			return ItemStack.EMPTY;
 		
 		TileEntity te = world.getTileEntity(pos);
 		if (te instanceof TileEntityReactorFluidPort || te instanceof TileEntityReactorRedstonePort
@@ -52,7 +52,7 @@ public class ItemKitLiquidAdvanced extends ItemKitBase {
 				return sensorLocationCard;
 			}
 		}		
-		return null;
+		return ItemStack.EMPTY;
 	}
 	
 	private BlockPos get5x5TargetCoordinates(World world, BlockPos pos) {

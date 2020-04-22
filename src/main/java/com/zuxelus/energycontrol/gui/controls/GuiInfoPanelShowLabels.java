@@ -28,14 +28,14 @@ public class GuiInfoPanelShowLabels extends GuiButton {
 	}
 
 	@Override
-	public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+	public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
 		if (!visible)
 			return;
 
 		mc.getTextureManager().bindTexture(TEXTURE_LOCATION);
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		int delta = checked ? 12 : 21;
-		drawTexturedModalRect(xPosition, yPosition + 1, 176, delta, 18, 9);
+		drawTexturedModalRect(x, y + 1, 176, delta, 18, 9);
 	}
 
 	@Override

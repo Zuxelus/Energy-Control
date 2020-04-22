@@ -14,7 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
+import net.minecraftforge.fluids.IFluidTank;
 
 public class ItemCardLiquid extends ItemCardBase {
 	public ItemCardLiquid() {
@@ -32,16 +32,16 @@ public class ItemCardLiquid extends ItemCardBase {
 		if (target == null) 
 			return CardState.NO_TARGET;
 		
-		IFluidTankProperties storage = LiquidCardHelper.getStorageAt(world, target);
+		IFluidTank storage = LiquidCardHelper.getStorageAt(world, target);
 		if (storage == null)
 			return CardState.NO_TARGET;
 		
 		int amount = 0;
 		String name = "";
-		if (storage.getContents() != null) {
-			amount = storage.getContents().amount;
+		if (storage.getFluid() != null) {
+			amount = storage.getFluid().amount;
 			if (amount > 0)
-				name = FluidRegistry.getFluidName(storage.getContents());
+				name = FluidRegistry.getFluidName(storage.getFluid());
 		}
 		reader.setInt("capacity", storage.getCapacity());
 		reader.setInt("amount", amount);

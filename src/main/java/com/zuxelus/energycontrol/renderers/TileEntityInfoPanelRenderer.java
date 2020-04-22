@@ -11,6 +11,7 @@ import com.zuxelus.energycontrol.utils.CardState;
 import com.zuxelus.energycontrol.utils.PanelString;
 
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemStack;
@@ -52,7 +53,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 	}
 
 	@Override
-	public void renderTileEntityAt(TileEntityInfoPanel te, double x, double y, double z, float partialTicks, int destroyStage) {   
+	public void render(TileEntityInfoPanel te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {   
 	    GlStateManager.pushMatrix();	    
 	    GlStateManager.translate((float)x, (float)y, (float)z);
 		EnumFacing facing = te.getFacing();
@@ -128,7 +129,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		boolean anyCardFound = false;
 		List<PanelString> joinedData = new LinkedList<PanelString>();
 		for (ItemStack card : cards) {
-			if (card == null)
+			if (card.isEmpty())
 				continue;
 			int displaySettings = panel.getDisplaySettingsByCard(card);
 			if (displaySettings == 0)

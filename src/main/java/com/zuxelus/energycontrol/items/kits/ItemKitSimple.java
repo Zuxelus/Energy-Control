@@ -17,11 +17,11 @@ public abstract class ItemKitSimple extends ItemKitBase {
 	protected ItemStack getSensorCard(ItemStack stack, EntityPlayer player, World world, BlockPos pos) {
 		BlockPos position = getTargetCoordinates(world, pos, stack);
 		if (position == null)
-			return null;	
+			return ItemStack.EMPTY;	
 			
 		ItemStack sensorLocationCard = getItemCard();
-		if (sensorLocationCard == null)
-			return null;
+		if (sensorLocationCard.isEmpty())
+			return ItemStack.EMPTY;
 		
 		ItemStackHelper.setCoordinates(sensorLocationCard, position);
 		return sensorLocationCard;

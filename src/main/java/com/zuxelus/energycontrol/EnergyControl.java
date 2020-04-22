@@ -22,7 +22,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
-@Mod(name = EnergyControl.NAME, modid = EnergyControl.MODID, version = EnergyControl.VERSION, dependencies="required-after:IC2", guiFactory = "com.zuxelus.energycontrol.config.GuiFactory") 
+@Mod(name = EnergyControl.NAME, modid = EnergyControl.MODID, version = EnergyControl.VERSION, dependencies="required-after:ic2", guiFactory = "com.zuxelus.energycontrol.config.GuiFactory") 
 public class EnergyControl {
 	public static final String NAME = "Energy Control";
     public static final String MODID = "energycontrol";

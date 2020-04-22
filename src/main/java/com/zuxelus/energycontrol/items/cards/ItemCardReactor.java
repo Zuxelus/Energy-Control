@@ -48,7 +48,7 @@ public class ItemCardReactor extends ItemCardBase {
 		int dmgLeft = 0;
 		for (int i = 0; i < slotCount; i++) {
 			ItemStack rStack = inventory.getStackInSlot(i);
-			if (rStack != null)
+			if (!rStack.isEmpty())
 				dmgLeft = Math.max(dmgLeft, ReactorHelper.getNuclearCellTimeLeft(rStack));
 		}
 

@@ -52,12 +52,12 @@ public class InfoPanelExtender extends FacingBlock implements ITileEntityProvide
 	}
 
 	@Override
-	public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
+	public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
 		if (placer.rotationPitch >= 65)
 			return getDefaultState().withProperty(FACING, EnumFacing.UP);
 		if (placer.rotationPitch <= -65)
 			return getDefaultState().withProperty(FACING, EnumFacing.DOWN);
-		switch (MathHelper.floor_double(placer.rotationYaw * 4.0F / 360.0F + 0.5D) & 3) {
+		switch (MathHelper.floor(placer.rotationYaw * 4.0F / 360.0F + 0.5D) & 3) {
 		case 0:
 			return getDefaultState().withProperty(FACING, EnumFacing.NORTH);
 		case 1:

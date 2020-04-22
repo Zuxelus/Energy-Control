@@ -43,7 +43,7 @@ public class PacketAcounter implements IMessage, IMessageHandler<PacketAcounter,
 
 	@Override
 	public IMessage onMessage(PacketAcounter message, MessageContext ctx) {
-		TileEntity tileEntity = FMLClientHandler.instance().getClient().theWorld.getTileEntity(new BlockPos(message.x, message.y, message.z));
+		TileEntity tileEntity = FMLClientHandler.instance().getClient().world.getTileEntity(new BlockPos(message.x, message.y, message.z));
 		if (tileEntity == null || !(tileEntity instanceof TileEntityAverageCounter))
 			return null;
 		((TileEntityAverageCounter) tileEntity).setClientAverage(message.average);

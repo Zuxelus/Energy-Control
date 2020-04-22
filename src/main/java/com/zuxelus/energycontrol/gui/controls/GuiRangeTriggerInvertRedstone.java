@@ -28,13 +28,13 @@ public class GuiRangeTriggerInvertRedstone extends GuiButton {
 	}
 
 	@Override
-	public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+	public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
 		if (!visible)
 			return;
 
 		mc.getTextureManager().bindTexture(TEXTURE_LOCATION);
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		drawTexturedModalRect(xPosition, yPosition + 1, 176, checked ? 15 : 0, 18, 15);
+		drawTexturedModalRect(x, y + 1, 176, checked ? 15 : 0, 18, 15);
 	}
 
 	@Override

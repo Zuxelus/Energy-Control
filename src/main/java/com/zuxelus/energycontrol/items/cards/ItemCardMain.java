@@ -10,12 +10,15 @@ import com.zuxelus.energycontrol.utils.PanelSetting;
 import com.zuxelus.energycontrol.utils.PanelString;
 
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -57,10 +60,12 @@ public class ItemCardMain extends Item {
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> list) {
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
+		if (!this.isInCreativeTab(tab))
+			return;
 		for (int i = 0; i <= ItemCardType.CARD_MAX; i++)
 			if (cards.containsKey(i))
-				list.add(new ItemStack(this, 1, i));
+				items.add(new ItemStack(this, 1, i));
 	}
 
 	@Override
@@ -70,11 +75,11 @@ public class ItemCardMain extends Item {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List<String> info, boolean advanced) {
+	public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
 		ItemCardReader reader = new ItemCardReader(stack);
 		String title = reader.getTitle();
 		if (title != null && !title.isEmpty())
-			info.add(title);
+			tooltip.add(title);
 		switch (stack.getItemDamage()) {
 		case ItemCardType.CARD_TEXT:
 		case ItemCardType.CARD_TIME:
@@ -82,13 +87,13 @@ public class ItemCardMain extends Item {
 		case ItemCardType.CARD_ENERGY_ARRAY:
 		case ItemCardType.CARD_LIQUID_ARRAY:
 		case ItemCardType.CARD_GENERATOR_ARRAY:
-			info.add(I18n.format("msg.ec.cards", reader.getCardCount()));
+			tooltip.add(I18n.format("msg.ec.cards", reader.getCardCount()));
 			return;
 		}
 		
 		BlockPos target = reader.getTarget();
 		if (target != null)
-			info.add(String.format("x: %d, y: %d, z: %d", target.getX(), target.getY(), target.getZ()));
+			tooltip.add(String.format("x: %d, y: %d, z: %d", target.getX(), target.getY(), target.getZ()));
 	}
 
 	public List<PanelString> getStringData(int damage, int settings, ItemCardReader reader, boolean showLabels) {

@@ -31,7 +31,7 @@ public class ItemKitReactor extends ItemKitBase {
 	protected ItemStack getSensorCard(ItemStack stack, EntityPlayer player, World world, BlockPos pos) {
 		Block block = world.getBlockState(pos).getBlock();
 		if (!(block instanceof BlockTileEntity))
-			return null;
+			return ItemStack.EMPTY;
 
 		TileEntity te = world.getTileEntity(pos);
 		if (te instanceof TileEntityNuclearReactorElectric || te instanceof TileEntityReactorChamberElectric) {
@@ -50,7 +50,7 @@ public class ItemKitReactor extends ItemKitBase {
 				return sensorLocationCard;
 			}
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 	
 	private BlockPos getTargetCoordinates(World world, BlockPos pos) {

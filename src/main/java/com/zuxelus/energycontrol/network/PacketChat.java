@@ -29,7 +29,7 @@ public class PacketChat implements IMessage,IMessageHandler<PacketChat, IMessage
 
 	@Override
 	public IMessage onMessage(PacketChat messages, MessageContext ctx) {
-		Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new TextComponentTranslation(messages.message));
+		Minecraft.getMinecraft().player.sendStatusMessage(new TextComponentTranslation(messages.message), false);
 		return null;
 	}
 }

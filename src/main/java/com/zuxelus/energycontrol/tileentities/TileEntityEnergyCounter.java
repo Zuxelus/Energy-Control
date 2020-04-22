@@ -128,7 +128,7 @@ public class TileEntityEnergyCounter extends TileEntityInventory
 	@Override
 	public void validate() {
 		super.validate();
-		if (!worldObj.isRemote && !addedToEnergyNet) {
+		if (!world.isRemote && !addedToEnergyNet) {
 			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
 			addedToEnergyNet = true;
 		}
@@ -137,7 +137,7 @@ public class TileEntityEnergyCounter extends TileEntityInventory
 	@Override
 	public void invalidate() {
 		super.invalidate();
-		if (!worldObj.isRemote && addedToEnergyNet) {
+		if (!world.isRemote && addedToEnergyNet) {
 			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
 			addedToEnergyNet = false;
 		}
@@ -149,8 +149,8 @@ public class TileEntityEnergyCounter extends TileEntityInventory
 			init = true;
 			markDirty();
 		}
-		if (!worldObj.isRemote) {
-			TileEntity neighbor = worldObj.getTileEntity(pos.offset(facing));
+		if (!world.isRemote) {
+			TileEntity neighbor = world.getTileEntity(pos.offset(facing));
 			if (neighbor instanceof TileEntityCable) {
 				NodeStats node = EnergyNet.instance.getNodeStats(this);
 				if (node != null)
@@ -164,10 +164,10 @@ public class TileEntityEnergyCounter extends TileEntityInventory
 		super.markDirty();
 		int upgradeCountTransormer = 0;
 		ItemStack itemStack = getStackInSlot(0);
-		if (itemStack != null && itemStack.isItemEqual(IC2Items.getItem("upgrade","transformer")))
-			upgradeCountTransormer = itemStack.stackSize;
+		if (!itemStack.isEmpty() && itemStack.isItemEqual(IC2Items.getItem("upgrade","transformer")))
+			upgradeCountTransormer = itemStack.getCount();
 		upgradeCountTransormer = Math.min(upgradeCountTransormer, 3);
-		if (worldObj != null && !worldObj.isRemote) {
+		if (world != null && !world.isRemote) {
 			output = BASE_PACKET_SIZE * (int) Math.pow(4D, upgradeCountTransormer);
 			tier = upgradeCountTransormer + 1;
 

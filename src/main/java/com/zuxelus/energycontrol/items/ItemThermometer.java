@@ -30,10 +30,12 @@ public class ItemThermometer extends Item {
 	}
 
 	@Override
-	public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
+	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
 		if (!(player instanceof EntityPlayerMP))
 			return EnumActionResult.PASS;
-
+		ItemStack stack = player.getHeldItem(hand);
+		if (stack.isEmpty())
+			return EnumActionResult.PASS;
 		if (!canTakeDamage(stack, 2))
 			return EnumActionResult.PASS;
 

@@ -35,7 +35,7 @@ public class GuiRangeTrigger extends GuiContainer {
 
 	private void initControls() {
 		ItemStack card = container.getSlot(TileEntityRangeTrigger.SLOT_CARD).getStack();
-		if (card != null && card.equals(prevCard))
+		if (!card.isEmpty() && card.equals(prevCard))
 			return;
 		buttonList.clear();
 		prevCard = card;
@@ -56,13 +56,20 @@ public class GuiRangeTrigger extends GuiContainer {
 		super.initGui();
 		initControls();
 	}
+	
+	@Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        //this.drawDefaultBackground();
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        renderHoveredToolTip(mouseX, mouseY);
+    }
 
 	private void renderValue(double value, int x, int y) {
 		x += 114;
 		for (int i = 0; i < 10; i++) {
 			byte digit = (byte) (value % 10);
 			String str = Byte.toString(digit);
-			fontRendererObj.drawString(str, x - 12 * i - fontRendererObj.getCharWidth(str.charAt(0)) / 2 + (9 - i + 2) / 3 * 6, y, 0x404040);
+			fontRenderer.drawString(str, x - 12 * i - fontRenderer.getCharWidth(str.charAt(0)) / 2 + (9 - i + 2) / 3 * 6, y, 0x404040);
 			value /= 10;
 		}
 	}
@@ -104,8 +111,8 @@ public class GuiRangeTrigger extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		fontRendererObj.drawString(name, (xSize - fontRendererObj.getStringWidth(name)) / 2, 6, 0x404040);
-		fontRendererObj.drawString(I18n.format("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+		fontRenderer.drawString(name, (xSize - fontRenderer.getStringWidth(name)) / 2, 6, 0x404040);
+		fontRenderer.drawString(I18n.format("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 
 		renderValue(container.te.levelStart, 30, 33);
 		renderValue(container.te.levelEnd, 30, 70);

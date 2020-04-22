@@ -48,7 +48,7 @@ public abstract class IC2Cross {
 				if (clz != null)
 					return (IC2Cross) clz.newInstance();
 			} 
-			if (Loader.isModLoaded("IC2")) {
+			if (Loader.isModLoaded("ic2")) {
 				Class clz = Class.forName("com.zuxelus.energycontrol.crossmod.ic2.IC2ExpCross");
 				if (clz != null)
 					return (IC2Cross) clz.newInstance();

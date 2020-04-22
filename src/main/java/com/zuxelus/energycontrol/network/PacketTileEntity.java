@@ -48,7 +48,7 @@ public class PacketTileEntity implements IMessage, IMessageHandler<PacketTileEnt
 		if (ctx.side != Side.SERVER)
 			return null;
 		
-		TileEntity te = ctx.getServerHandler().playerEntity.worldObj.getTileEntity(new BlockPos(message.x, message.y, message.z));
+		TileEntity te = ctx.getServerHandler().player.world.getTileEntity(new BlockPos(message.x, message.y, message.z));
 		if (!(te instanceof ITilePacketHandler))
 			return null;
 		

@@ -34,15 +34,15 @@ public class GuiInfoPanelCheckBox extends GuiButton {
 	}
 
 	@Override
-	public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+	public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
 		if (!visible)
 			return;
 		checked = (panel.getDisplaySettingsForCardInSlot(slot) & setting.displayBit) > 0;
 		mc.getTextureManager().bindTexture(TEXTURE_LOCATION);
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		int delta = checked ? 6 : 0;
-		drawTexturedModalRect(xPosition, yPosition + 1, 176, delta, 6, 6);
-		mc.fontRendererObj.drawString(displayString, xPosition + 8, yPosition, 0x404040);
+		drawTexturedModalRect(x, y + 1, 176, delta, 6, 6);
+		mc.fontRenderer.drawString(displayString, x + 8, y, 0x404040);
 	}
 
 	@Override

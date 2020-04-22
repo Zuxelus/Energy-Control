@@ -11,9 +11,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -88,15 +88,15 @@ public class GuiHowlerAlarmListBox extends GuiButton {
 	}
 
 	@Override
-	public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+	public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
 		if (dragging) {
-			int pos = (mouseY - yPosition - SCROLL_BUTTON_HEIGHT - dragDelta)
+			int pos = (mouseY - y - SCROLL_BUTTON_HEIGHT - dragDelta)
 					* (lineHeight * items.size() + BASIC_Y_OFFSET - height)
 					/ Math.max(height - 2 * SCROLL_BUTTON_HEIGHT - sliderHeight, 1);			
 			scrollTo(pos);
 		}
 
-		FontRenderer fontRenderer = mc.fontRendererObj;
+		FontRenderer fontRenderer = mc.fontRenderer;
 		String currentItem = alarm.getSoundName();
 		if (lineHeight == 0) {
 			lineHeight = fontRenderer.FONT_HEIGHT + 2;
@@ -120,14 +120,14 @@ public class GuiHowlerAlarmListBox extends GuiButton {
 		int rowTop = BASIC_Y_OFFSET;
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
 		ScaledResolution scaler = new ScaledResolution(mc);
-		GL11.glScissor(xPosition * scaler.getScaleFactor(), mc.displayHeight - (yPosition + height) * scaler.getScaleFactor(), (width - SCROLL_WIDTH) * scaler.getScaleFactor(), height * scaler.getScaleFactor());
+		GL11.glScissor(x * scaler.getScaleFactor(), mc.displayHeight - (y + height) * scaler.getScaleFactor(), (width - SCROLL_WIDTH) * scaler.getScaleFactor(), height * scaler.getScaleFactor());
 
 		for (String row : items) {
 			if(row.equals(currentItem)) {
-				drawRect(xPosition, yPosition + rowTop - scrollTop - 1, xPosition + width - SCROLL_WIDTH, yPosition + rowTop - scrollTop + lineHeight - 1, selectedColor);
-				fontRenderer.drawString(row, xPosition + BASIC_X_OFFSET, yPosition + rowTop - scrollTop, selectedFontColor);
+				drawRect(x, y + rowTop - scrollTop - 1, x + width - SCROLL_WIDTH, y + rowTop - scrollTop + lineHeight - 1, selectedColor);
+				fontRenderer.drawString(row, x + BASIC_X_OFFSET, y + rowTop - scrollTop, selectedFontColor);
 			} else
-				fontRenderer.drawString(row, xPosition + BASIC_X_OFFSET, yPosition + rowTop - scrollTop, fontColor);
+				fontRenderer.drawString(row, x + BASIC_X_OFFSET, y + rowTop - scrollTop, fontColor);
 			
 			rowTop += lineHeight;
 		}
@@ -135,8 +135,8 @@ public class GuiHowlerAlarmListBox extends GuiButton {
 		GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
 		// Slider
-		int sliderX = xPosition + width - SCROLL_WIDTH + 1;
-		sliderY = yPosition + SCROLL_BUTTON_HEIGHT + ((height - 2 * SCROLL_BUTTON_HEIGHT - sliderHeight) * scrollTop)
+		int sliderX = x + width - SCROLL_WIDTH + 1;
+		sliderY = y + SCROLL_BUTTON_HEIGHT + ((height - 2 * SCROLL_BUTTON_HEIGHT - sliderHeight) * scrollTop)
 				/ (lineHeight * items.size() + BASIC_Y_OFFSET - height);
 		mc.getTextureManager().bindTexture(TEXTURE);
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -144,14 +144,14 @@ public class GuiHowlerAlarmListBox extends GuiButton {
 		drawTexturedModalRect(sliderX, sliderY, 131, 16, SCROLL_WIDTH - 1, 1);
 
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer vertexbuffer = tessellator.getBuffer();
-		vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-		vertexbuffer.pos((sliderX), sliderY + sliderHeight - 1, zLevel).tex(131 / 256F, (18) / 256F).endVertex();
-		vertexbuffer.pos(sliderX + SCROLL_WIDTH - 1, sliderY + sliderHeight - 1, zLevel).tex(
+		BufferBuilder bufferbuilder = tessellator.getBuffer();
+		bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+		bufferbuilder.pos((sliderX), sliderY + sliderHeight - 1, zLevel).tex(131 / 256F, (18) / 256F).endVertex();
+		bufferbuilder.pos(sliderX + SCROLL_WIDTH - 1, sliderY + sliderHeight - 1, zLevel).tex(
 				(131 + SCROLL_WIDTH - 1) / 256F, (18) / 256F).endVertex();
-		vertexbuffer.pos(sliderX + SCROLL_WIDTH - 1, sliderY + 1, zLevel).tex((131 + SCROLL_WIDTH - 1) / 256F,
+		bufferbuilder.pos(sliderX + SCROLL_WIDTH - 1, sliderY + 1, zLevel).tex((131 + SCROLL_WIDTH - 1) / 256F,
 				(17) / 256F).endVertex();
-		vertexbuffer.pos((sliderX), sliderY + 1, zLevel).tex(131 / 256F, (17) / 256F).endVertex();
+		bufferbuilder.pos((sliderX), sliderY + 1, zLevel).tex(131 / 256F, (17) / 256F).endVertex();
 		tessellator.draw();
 
 		drawTexturedModalRect(sliderX, sliderY + sliderHeight - 1, 131, 19, SCROLL_WIDTH - 1, 1);
@@ -161,7 +161,7 @@ public class GuiHowlerAlarmListBox extends GuiButton {
 		if (lineHeight == 0)
 			return;
 
-		int itemIndex = (targetY - BASIC_Y_OFFSET - yPosition + scrollTop) / lineHeight;
+		int itemIndex = (targetY - BASIC_Y_OFFSET - y + scrollTop) / lineHeight;
 		if (itemIndex >= items.size())
 			itemIndex = items.size() - 1;
 		
@@ -175,10 +175,10 @@ public class GuiHowlerAlarmListBox extends GuiButton {
 	@Override
 	public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
 		if (super.mousePressed(mc, mouseX, mouseY)) {
-			if (mouseX > xPosition + width - SCROLL_WIDTH) {// scroll click
-				if (mouseY - yPosition < SCROLL_BUTTON_HEIGHT)
+			if (mouseX > x + width - SCROLL_WIDTH) {// scroll click
+				if (mouseY - y < SCROLL_BUTTON_HEIGHT)
 					scrollUp();
-				else if (height + yPosition - mouseY < SCROLL_BUTTON_HEIGHT)
+				else if (height + y - mouseY < SCROLL_BUTTON_HEIGHT)
 					scrollDown();
 				else if (mouseY >= sliderY && mouseY <= sliderY + sliderHeight) {
 					dragging = true;

@@ -60,15 +60,15 @@ public class GuiScreenColor extends GuiScreen {
 
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-		mc.getTextureManager().bindTexture(TEXTURE_LOCATION);
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        mc.getTextureManager().bindTexture(TEXTURE_LOCATION);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		int left = (width - xSize) / 2;
 		int top = (height - ySize) / 2;
 		drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
 		drawTexturedModalRect(left + 5 + colorBack * 14, top + 30, 226, 0, 14, 14);
 		drawTexturedModalRect(left + 5 + colorText * 14, top + 61, 226, 0, 14, 14);
-		fontRendererObj.drawString(I18n.format("msg.ec.ScreenColor"), guiLeft + 8, guiTop + 20, 0x404040);
-		fontRendererObj.drawString(I18n.format("msg.ec.TextColor"), guiLeft + 8, guiTop + 52, 0x404040);
+		fontRenderer.drawString(I18n.format("msg.ec.ScreenColor"), guiLeft + 8, guiTop + 20, 0x404040);
+		fontRenderer.drawString(I18n.format("msg.ec.TextColor"), guiLeft + 8, guiTop + 52, 0x404040);
 
 		super.drawScreen(mouseX, mouseY, partialTicks);
 	}

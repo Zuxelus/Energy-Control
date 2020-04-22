@@ -28,14 +28,14 @@ public class GuiThermoInvertRedstone extends GuiButton {
     }
 
     @Override
-	public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+	public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
         if(!visible)
         	return;
     
         mc.getTextureManager().bindTexture(TEXTURE);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         int delta = checked ? 15 : 0;
-		drawTexturedModalRect(xPosition, yPosition + 1, 199, delta, 51, 15);
+		drawTexturedModalRect(x, y + 1, 199, delta, 51, 15);
     }
 
     @Override

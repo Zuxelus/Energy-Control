@@ -8,7 +8,9 @@ import ic2.api.tile.IEnergyStorage;
 import ic2.api.item.ICustomDamageItem;
 import ic2.core.block.comp.Energy;
 import ic2.core.block.generator.tileentity.TileEntityBaseGenerator;
+import ic2.core.block.generator.tileentity.TileEntityConversionGenerator;
 import ic2.core.block.generator.tileentity.TileEntityGeoGenerator;
+import ic2.core.block.generator.tileentity.TileEntityStirlingGenerator;
 import ic2.core.block.reactor.tileentity.TileEntityNuclearReactorElectric;
 import ic2.core.block.reactor.tileentity.TileEntityReactorAccessHatch;
 import ic2.core.block.reactor.tileentity.TileEntityReactorRedstonePort;
@@ -25,7 +27,7 @@ public class IC2ExpCross extends IC2Cross {
 
 	@Override
 	public int getNuclearCellTimeLeft(ItemStack stack) {
-		if (stack == null)
+		if (stack.isEmpty())
 			return 0;
 		Item item = stack.getItem();
 		if (item instanceof ItemReactorUranium || item instanceof ItemReactorLithiumCell
@@ -42,7 +44,7 @@ public class IC2ExpCross extends IC2Cross {
 
 	@Override
 	public boolean isWrench(ItemStack stack) {
-		return stack != null && stack.getItem() instanceof ItemToolWrench;
+		return !stack.isEmpty() && stack.getItem() instanceof ItemToolWrench;
 	}
 
 	@Override
@@ -87,34 +89,46 @@ public class IC2ExpCross extends IC2Cross {
 	@Override
 	public NBTTagCompound getGeneratorData(TileEntity te) {
 		try {
-			NBTTagCompound tag = new NBTTagCompound();
-			/*Field field = null;
-			Field fieldProd = null;
 			if (te instanceof TileEntityBaseGenerator) {
-				field = TileEntityBaseGenerator.class.getDeclaredField("energy");
-				fieldProd = TileEntityBaseGenerator.class.getDeclaredField("production");
-				fieldProd.setAccessible(true);
-				if (!((TileEntityBaseGenerator) te).isConverting())
-					data.values.add((double) 0);
+				NBTTagCompound tag = new NBTTagCompound();
+				tag.setInteger("type", 1);
+				Field field = TileEntityBaseGenerator.class.getDeclaredField("energy");
+				field.setAccessible(true);
+				Energy energy = (Energy) field.get(te);
+				tag.setDouble("storage", energy.getEnergy());
+				tag.setDouble("maxStorage", energy.getCapacity());
+				if (isActive(te)) {
+					field = TileEntityBaseGenerator.class.getDeclaredField("production");
+					field.setAccessible(true);
+					tag.setDouble("production", (Double) field.get(te));
+				}
 				else
-					data.values.add((Double) fieldProd.get(te));
-			} else if (te instanceof TileEntityGeoGenerator) {
-				field = TileEntityGeoGenerator.class.getDeclaredField("energy");
-				fieldProd = TileEntityGeoGenerator.class.getDeclaredField("production");
-				fieldProd.setAccessible(true);
-				if (!((TileEntityGeoGenerator) te).isConverting())
-					data.values.add((double) 0);
-				else
-					data.values.add((double) (Integer) fieldProd.get(te));
+					tag.setDouble("production", 0);
+				return tag;	
 			}
-			if (field == null)
-				return null;
-			field.setAccessible(true);
-			Energy energy = (Energy) field.get(te);
-			data.values.add(energy.getEnergy());
-			data.values.add(energy.getCapacity());
-			return data;*/
+			
+			if (te instanceof TileEntityConversionGenerator) {
+				NBTTagCompound tag = new NBTTagCompound();
+				Field field = TileEntityConversionGenerator.class.getDeclaredField("production");
+				field.setAccessible(true);
+				tag.setDouble("production", (Double) field.get(te));
+				if (te instanceof TileEntityStirlingGenerator) {
+					tag.setInteger("type", 2);
+					field = TileEntityStirlingGenerator.class.getDeclaredField("productionpeerheat");
+					field.setAccessible(true);
+					tag.setDouble("multiplier", (Double) field.get(te));
+				}
+				return tag;
+			}
 		} catch (Throwable t) { }
 		return null;
+	}
+	
+	private boolean isActive(TileEntity te) {
+		if (te instanceof TileEntityGeoGenerator)
+			return ((TileEntityBaseGenerator)te).getActive();
+		if (te instanceof TileEntityBaseGenerator)
+			return ((TileEntityBaseGenerator)te).isConverting();
+		return false;
 	}
 }

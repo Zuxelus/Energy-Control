@@ -18,7 +18,7 @@ public class TEThermoRenderer extends TileEntitySpecialRenderer<TileEntityThermo
 	private final MediumBoxModel model = new MediumBoxModel();
 
 	@Override
-	public void renderTileEntityAt(TileEntityThermo te, double x, double y, double z, float partialTicks, int destroyStage) {
+	public void render(TileEntityThermo te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
 		GlStateManager.pushMatrix();
 		GlStateManager.translate((float)x, (float)y, (float)z);
 		EnumFacing facing = te.getFacing();

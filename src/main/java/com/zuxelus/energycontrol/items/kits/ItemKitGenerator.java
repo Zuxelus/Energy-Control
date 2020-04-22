@@ -7,12 +7,8 @@ import com.zuxelus.energycontrol.utils.ItemStackHelper;
 import ic2.core.block.BlockTileEntity;
 import ic2.core.block.TileEntityHeatSourceInventory;
 import ic2.core.block.generator.tileentity.TileEntityBaseGenerator;
-import ic2.core.block.kineticgenerator.tileentity.TileEntityElectricKineticGenerator;
-import ic2.core.block.kineticgenerator.tileentity.TileEntityManualKineticGenerator;
-import ic2.core.block.kineticgenerator.tileentity.TileEntitySteamKineticGenerator;
-import ic2.core.block.kineticgenerator.tileentity.TileEntityStirlingKineticGenerator;
-import ic2.core.block.kineticgenerator.tileentity.TileEntityWaterKineticGenerator;
-import ic2.core.block.kineticgenerator.tileentity.TileEntityWindKineticGenerator;
+import ic2.core.block.generator.tileentity.TileEntityConversionGenerator;
+import ic2.core.block.kineticgenerator.tileentity.*;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -30,15 +26,15 @@ public class ItemKitGenerator extends ItemKitBase {
 	public String getUnlocalizedName() {
 		return "item.kit_generator";
 	}
-
+	
 	@Override
 	protected ItemStack getSensorCard(ItemStack stack, EntityPlayer player, World world, BlockPos pos) {
 		Block block = world.getBlockState(pos).getBlock();
 		if (!(block instanceof BlockTileEntity))
-			return null;
+			return ItemStack.EMPTY;
 
 		TileEntity te = world.getTileEntity(pos);
-		if (te instanceof TileEntityBaseGenerator) {
+		if (te instanceof TileEntityBaseGenerator || te instanceof TileEntityConversionGenerator) {
 			ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_GENERATOR);
 			ItemStackHelper.setCoordinates(sensorLocationCard, pos);
 			return sensorLocationCard;
@@ -55,6 +51,6 @@ public class ItemKitGenerator extends ItemKitBase {
 			ItemStackHelper.setCoordinates(sensorLocationCard, pos);
 			return sensorLocationCard;
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 }

@@ -41,11 +41,9 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 	private int tier;
 	
 	private double energy;
-//	private boolean addedToEnergyNet;
 	
 	public TileEntityRemoteThermo() {
 		super();
-//		addedToEnergyNet = false;
 		maxStorage = BASE_STORAGE;
 		maxPacketSize = BASE_PACKET_SIZE;
 		tier = 1;
@@ -65,22 +63,14 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 
 	public void setTier(int value) {
 		tier = value;
-		if (!worldObj.isRemote && tier != prevTier)
+		if (!world.isRemote && tier != prevTier)
 			notifyBlockUpdate();
 		prevTier = tier;
 	}
-
-	/*@Override
-	public void setRotation(int value) {
-		rotation = value;
-		if (!worldObj.isRemote && rotation != prevRotation)
-			notifyBlockUpdate();
-		prevRotation = rotation;
-	}*/
 	
 	public void setMaxPacketSize(double value) {
 		maxPacketSize = value;
-		if (!worldObj.isRemote && maxPacketSize != prevMaxPacketSize)
+		if (!world.isRemote && maxPacketSize != prevMaxPacketSize)
 			notifyBlockUpdate();
 		prevMaxPacketSize = maxPacketSize;
 	}
@@ -91,28 +81,23 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 
 	public void setMaxStorage(double value) {
 		maxStorage = value;
-		if (!worldObj.isRemote && maxStorage != prevMaxStorage)
+		if (!world.isRemote && maxStorage != prevMaxStorage)
 			notifyBlockUpdate();
 		prevMaxStorage = maxStorage;
 	}
 	
 	@Override
 	protected void checkStatus() {
-		/*if (!addedToEnergyNet) {
-			EnergyTileLoadEvent event = new EnergyTileLoadEvent(this);
-			MinecraftForge.EVENT_BUS.post(event);
-			addedToEnergyNet = true;
-		}*/
 		markDirty();
 
 		int newStatus;
 		if (energy >= EnergyControl.config.remoteThermalMonitorEnergyConsumption) {
-			IReactor reactor = ReactorHelper.getReactorAt(worldObj, new BlockPos(pos.getX() + deltaX, pos.getY() + deltaY, pos.getZ() + deltaZ));
+			IReactor reactor = ReactorHelper.getReactorAt(world, new BlockPos(pos.getX() + deltaX, pos.getY() + deltaY, pos.getZ() + deltaZ));
 			if (reactor == null) {
-				if (getStackInSlot(SLOT_CARD) != null) {
+				if (!getStackInSlot(SLOT_CARD).isEmpty()) {
 					BlockPos target = new ItemCardReader(getStackInSlot(SLOT_CARD)).getTarget();
 					if (target != null)
-						reactor = ReactorHelper.getReactor3x3(worldObj, target);
+						reactor = ReactorHelper.getReactor3x3(world, target);
 				}
 			}
 
@@ -132,18 +117,18 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 		if (newStatus != status) {
 			status = newStatus;
 			notifyBlockUpdate();
-			worldObj.notifyNeighborsOfStateChange(pos, worldObj.getBlockState(pos).getBlock());
+			world.notifyNeighborsOfStateChange(pos, world.getBlockState(pos).getBlock(), false);
 		}
 	}
 	
 	@Override
 	public void update() {
 		super.update();
-		if (worldObj.isRemote)
+		if (world.isRemote)
 			return;
 		//If is server
 		int consumption = EnergyControl.config.remoteThermalMonitorEnergyConsumption;
-		if (getStackInSlot(SLOT_CHARGER) != null && energy < maxStorage) {
+		if (!getStackInSlot(SLOT_CHARGER).isEmpty() && energy < maxStorage) {
 			if (getStackInSlot(SLOT_CHARGER).getItem() instanceof IElectricItem) {
 				IElectricItem ielectricitem = (IElectricItem) getStackInSlot(SLOT_CHARGER).getItem();
 
@@ -153,10 +138,10 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 				}
 			} else if (Item.getIdFromItem(getStackInSlot(SLOT_CHARGER).getItem()) == Item.getIdFromItem((IC2Items.getItem("suBattery")).getItem())){
 				if (ENERGY_SU_BATTERY <= maxStorage - energy || energy == 0) {
-					getStackInSlot(SLOT_CHARGER).stackSize--;
+					getStackInSlot(SLOT_CHARGER).shrink(1);
 
-					if (getStackInSlot(SLOT_CHARGER).stackSize <= 0)
-						setInventorySlotContents(SLOT_CHARGER, null);
+					if (getStackInSlot(SLOT_CHARGER).getCount() <= 0)
+						setInventorySlotContents(SLOT_CHARGER, ItemStack.EMPTY);
 
 					energy += ENERGY_SU_BATTERY;
 					if (energy > maxStorage)
@@ -181,18 +166,18 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 		for (int i = 2; i < 5; i++) {
 			ItemStack itemStack = getStackInSlot(i);
 
-			if (itemStack == null)
+			if (itemStack.isEmpty())
 				continue;
 
 			if (itemStack.isItemEqual(IC2Items.getItem("upgrade","transformer"))) {
-				upgradeCountTransormer += itemStack.stackSize;
+				upgradeCountTransormer += itemStack.getCount();
 			} else if (itemStack.isItemEqual(IC2Items.getItem("upgrade","energy_storage"))) {
-				upgradeCountStorage += itemStack.stackSize;
+				upgradeCountStorage += itemStack.getCount();
 			} else if (itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE) {
-				upgradeCountRange += itemStack.stackSize;
+				upgradeCountRange += itemStack.getCount();
 			}
 		}
-		if (getStackInSlot(SLOT_CARD) != null) {
+		if (!getStackInSlot(SLOT_CARD).isEmpty()) {
 			BlockPos target = new ItemCardReader(getStackInSlot(SLOT_CARD)).getTarget();
 			if (target != null) {
 				deltaX = target.getX() - pos.getX();
@@ -215,7 +200,7 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 			status = -2;
 		}
 		upgradeCountTransormer = Math.min(upgradeCountTransormer, 4);
-		if (worldObj != null && !worldObj.isRemote) {
+		if (world != null && !world.isRemote) {
 			tier = upgradeCountTransormer + 1;
 			setTier(tier);
 			maxPacketSize = BASE_PACKET_SIZE * Math.pow(4D, upgradeCountTransormer);
@@ -227,17 +212,6 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 			setEnergy(energy);
 		}
 	}
-	
-	/*@Override
-	public void invalidate() {
-		if (!worldObj.isRemote && addedToEnergyNet) {
-			EnergyTileUnloadEvent event = new EnergyTileUnloadEvent(this);
-			MinecraftForge.EVENT_BUS.post(event);
-			addedToEnergyNet = false;
-		}
-
-		super.invalidate();
-	}*/
 	
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
@@ -266,7 +240,7 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 
 	@Override
 	public boolean isItemValid(int slotIndex, ItemStack itemStack) {
-		if (itemStack == null)
+		if (itemStack.isEmpty())
 			return false;
 		switch (slotIndex) {
 		case SLOT_CHARGER:

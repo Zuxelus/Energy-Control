@@ -1,7 +1,5 @@
 package com.zuxelus.energycontrol;
 
-import ic2.api.item.IC2Items;
-
 import java.util.Vector;
 
 import com.zuxelus.energycontrol.items.ItemHelper;
@@ -9,23 +7,23 @@ import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
+import ic2.api.item.IC2Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.oredict.RecipeSorter;
 
-public class StorageArrayRecipe implements IRecipe {
-	static {
+public class StorageArrayRecipe extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
+	/*static {
 		RecipeSorter.register("EnergyControl:storagearrayRecipe", StorageArrayRecipe.class,
 				RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
-	}
+	}*/
 
 	@Override
 	public boolean matches(InventoryCrafting inventory, World world) {
-		return getCraftingResult(inventory) != null;
+		return !getCraftingResult(inventory).isEmpty();
 	}
 
 	@Override
@@ -41,10 +39,10 @@ public class StorageArrayRecipe implements IRecipe {
 		Vector<ItemStack> cards = new Vector<ItemStack>();
 		for (int i = 0; i < inventoryLength; i++) {
 			ItemStack itemStack = inventory.getStackInSlot(i);
-			if (itemStack == null)
+			if (itemStack.isEmpty())
 				continue;
 			if (!(itemStack.getItem() instanceof ItemCardMain))
-				return null;
+				return ItemStack.EMPTY;
 
 			switch (itemStack.getItemDamage())
 			{
@@ -77,13 +75,13 @@ public class StorageArrayRecipe implements IRecipe {
 		if (((cardCount + arrayCount) != 0 && (cardCountLiquid + arrayCountLiquid) != 0)
 				|| ((cardCount + arrayCount) != 0 && (cardCountGenerator + arrayCountGenerator) != 0)
 				|| ((cardCountLiquid + arrayCountLiquid) != 0 && (cardCountGenerator + arrayCountGenerator) != 0))
-			return null;
+			return ItemStack.EMPTY;
 
 		ItemStack stack = getCraftingResult(cardCount, arrayCount, ItemCardType.CARD_ENERGY_ARRAY, cards, array);
-		if (stack != null)
+		if (!stack.isEmpty())
 			return stack;
 		stack = getCraftingResult(cardCountLiquid, arrayCountLiquid, ItemCardType.CARD_LIQUID_ARRAY, cards, array);
-		if (stack != null)
+		if (!stack.isEmpty())
 			return stack;
 		return getCraftingResult(cardCountGenerator, arrayCountGenerator, ItemCardType.CARD_GENERATOR_ARRAY, cards, array);
 	}
@@ -107,7 +105,7 @@ public class StorageArrayRecipe implements IRecipe {
 				return itemStack;
 			}
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	private static void initArray(ItemStack stack, Vector<ItemStack> cards) {
@@ -132,17 +130,17 @@ public class StorageArrayRecipe implements IRecipe {
 	}
 
 	@Override
-	public int getRecipeSize() {
-		return 9;
-	}
-
-	@Override
 	public ItemStack getRecipeOutput() {
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
-	public ItemStack[] getRemainingItems(InventoryCrafting inv) {
-		return new ItemStack[inv.getSizeInventory()];
+	public boolean isDynamic() {
+		return true;
+	}
+
+	@Override
+	public boolean canFit(int width, int height) {
+		return width * height >= 2;
 	}
 }

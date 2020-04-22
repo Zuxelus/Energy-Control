@@ -1,35 +1,40 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import java.util.List;
 import java.util.Random;
 
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.IInventoryChangedListener;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
 public abstract class TileEntityInventory extends TileEntityFacing implements IInventory {
-    protected ItemStack[] inventory;
+    protected NonNullList<ItemStack> inventory;
+    private List<IInventoryChangedListener> listeners;
     private String customName;	
 	
 	public TileEntityInventory(String name) {
-		this.customName = name;
-		this.inventory = new ItemStack[getSizeInventory()];
+		customName = name;
+		inventory = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
 	}
 
 	@Override
 	protected void readProperties(NBTTagCompound tag) {
 		super.readProperties(tag);
 		NBTTagList nbttaglist = tag.getTagList("Items", Constants.NBT.TAG_COMPOUND);
-		inventory = new ItemStack[getSizeInventory()];
+		inventory = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
 		for (int i = 0; i < nbttaglist.tagCount(); i++) {
 			NBTTagCompound stackTag = nbttaglist.getCompoundTagAt(i);
-			setInventorySlotContents(stackTag.getByte("Slot"), ItemStack.loadItemStackFromNBT(stackTag));
+			setInventorySlotContents(stackTag.getByte("Slot"), new ItemStack(stackTag));
 		}
 	}
 	
@@ -39,10 +44,11 @@ public abstract class TileEntityInventory extends TileEntityFacing implements II
 
 		NBTTagList list = new NBTTagList();
 		for (byte i = 0; i < getSizeInventory(); ++i) {
-			if (getStackInSlot(i) != null) {
+			ItemStack stack = this.getStackInSlot(i);
+			if (!stack.isEmpty()) {
 				NBTTagCompound stackTag = new NBTTagCompound();
-				stackTag.setByte("Slot", i);
-				getStackInSlot(i).writeToNBT(stackTag);
+				stackTag.setByte("Slot", (byte) i);
+				stack.writeToNBT(stackTag);
 				list.appendTag(stackTag);
 			}
 		}
@@ -61,35 +67,41 @@ public abstract class TileEntityInventory extends TileEntityFacing implements II
 	}
 
 	@Override
+	public boolean isEmpty() {
+		for (ItemStack itemstack : inventory)
+			if (!itemstack.isEmpty())
+				return false;
+		return true;
+	}
+
+	@Override
 	public ItemStack getStackInSlot(int index) {
-		return index >= 0 && index < getSizeInventory() ? inventory[index] : null;
+		return index >= 0 && index < getSizeInventory() ? inventory.get(index) : ItemStack.EMPTY;
 	}
 
 	@Override
 	public ItemStack decrStackSize(int index, int count) {
-		if (index >= 0 && index < getSizeInventory() && inventory[index] != null && count > 0) {
-			ItemStack itemstack = inventory[index].splitStack(count);
-			if (inventory[index].stackSize == 0)
-				inventory[index] = null;
-			return itemstack;
-		}
-		return null;
+		ItemStack itemstack = ItemStackHelper.getAndSplit(inventory, index, count);
+		/*if (!itemstack.isEmpty())
+			this.markDirty();*/
+		return itemstack;
 	}
 
 	@Override
 	public ItemStack removeStackFromSlot(int index) {
 		ItemStack itemstack = getStackInSlot(index);
-		if (itemstack == null)
-			return null;
-		inventory[index] = null;
+		if (itemstack.isEmpty())
+			return ItemStack.EMPTY;
+		inventory.set(index, ItemStack.EMPTY);
 		return itemstack;
 	}
 
 	@Override
 	public void setInventorySlotContents(int index, ItemStack stack) {
-		inventory[index] = stack;
-		if (stack != null && stack.stackSize > getInventoryStackLimit())
-			stack.stackSize = getInventoryStackLimit();
+		inventory.set(index, stack);
+		if (!stack.isEmpty() && stack.getCount() > this.getInventoryStackLimit())
+			stack.setCount(this.getInventoryStackLimit());
+		//markDirty();
 	}
 
 	@Override
@@ -98,8 +110,8 @@ public abstract class TileEntityInventory extends TileEntityFacing implements II
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer player) {
-		return worldObj.getTileEntity(this.pos) != this ? false : player.getDistanceSq((double)this.pos.getX() + 0.5D, (double)this.pos.getY() + 0.5D, (double)this.pos.getZ() + 0.5D) <= 64.0D;
+	public boolean isUsableByPlayer(EntityPlayer player) {
+		return world.getTileEntity(this.pos) != this ? false : player.getDistanceSq((double)this.pos.getX() + 0.5D, (double)this.pos.getY() + 0.5D, (double)this.pos.getZ() + 0.5D) <= 64.0D;
 	}
 
 	@Override
@@ -123,8 +135,7 @@ public abstract class TileEntityInventory extends TileEntityFacing implements II
 
 	@Override
 	public void clear() {
-		for (int i = 0; i < getSizeInventory(); ++i)
-			inventory[i] = null;
+		inventory.clear();
 	}
 	
 	public void dropItems(World world, BlockPos pos) {
@@ -132,23 +143,23 @@ public abstract class TileEntityInventory extends TileEntityFacing implements II
 		for (int i = 0; i < getSizeInventory(); i++) {
 			ItemStack item = getStackInSlot(i);
 
-			if (item != null && item.stackSize > 0) {
+			if (!item.isEmpty() && item.getCount() > 0) {
 				float rx = rand.nextFloat() * 0.8F + 0.1F;
 				float ry = rand.nextFloat() * 0.8F + 0.1F;
 				float rz = rand.nextFloat() * 0.8F + 0.1F;
 
 				EntityItem entityItem = new EntityItem(world, pos.getX() + rx, pos.getY() + ry, pos.getZ() + rz,
-						new ItemStack(item.getItem(), item.stackSize, item.getItemDamage()));
+						new ItemStack(item.getItem(), item.getCount(), item.getItemDamage()));
 
 				if (item.hasTagCompound())
-					entityItem.getEntityItem().setTagCompound((NBTTagCompound) item.getTagCompound().copy());
+					entityItem.getItem().setTagCompound((NBTTagCompound) item.getTagCompound().copy());
 
 				float factor = 0.05F;
 				entityItem.motionX = rand.nextGaussian() * factor;
 				entityItem.motionY = rand.nextGaussian() * factor + 0.2F;
 				entityItem.motionZ = rand.nextGaussian() * factor;
-				world.spawnEntityInWorld(entityItem);
-				item.stackSize = 0;
+				world.spawnEntity(entityItem);
+				item.setCount(0);
 			}
 		}
 	}

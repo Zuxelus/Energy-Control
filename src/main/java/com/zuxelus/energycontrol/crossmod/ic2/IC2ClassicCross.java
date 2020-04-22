@@ -13,7 +13,7 @@ import net.minecraft.tileentity.TileEntity;
 public class IC2ClassicCross extends IC2Cross {
 	@Override
 	public int getNuclearCellTimeLeft(ItemStack stack) {
-		if (stack == null)
+		if (stack.isEmpty())
 			return 0;
 		
 		if (stack.getItem() instanceof ItemReactorUranium)

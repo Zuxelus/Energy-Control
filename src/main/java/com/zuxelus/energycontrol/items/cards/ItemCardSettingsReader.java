@@ -52,7 +52,7 @@ public class ItemCardSettingsReader {
 	}
 
 	public void closeGui() {
-		gui.prevCard = null;
+		gui.prevCard = ItemStack.EMPTY;
 		FMLClientHandler.instance().getClient().displayGuiScreen(gui);
 	}
 }

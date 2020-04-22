@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol;
 
-import com.zuxelus.energycontrol.blocks.BlockDamages;
 import com.zuxelus.energycontrol.blocks.BlockLight;
 import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
@@ -13,7 +12,6 @@ import ic2.core.util.StackUtil;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 
 public class RecipesNew {
 
@@ -210,7 +208,5 @@ public class RecipesNew {
 		for (int i = 0; i <= ItemCardType.CARD_MAX; i++)
 			if (ItemCardMain.cards.containsKey(i))
 				Recipes.advRecipes.addShapelessRecipe(IC2Items.getItem("crafting","circuit"), new ItemStack(ItemHelper.itemCard, 1, i));
-		
-		CraftingManager.getInstance().getRecipeList().add(new StorageArrayRecipe());
 	}
 }

@@ -30,7 +30,7 @@ public class ContainerRemoteThermo extends ContainerBase<TileEntityRemoteThermo>
 		int energy = (int)te.getEnergy();
 		for (int i = 0; i < listeners.size(); i++)
 			if (lastEnergy != energy)
-				listeners.get(i).sendProgressBarUpdate(this, 0, energy);
+				listeners.get(i).sendWindowProperty(this, 0, energy);
 		lastEnergy = energy;
 		te.setStatus(-1);
 	}

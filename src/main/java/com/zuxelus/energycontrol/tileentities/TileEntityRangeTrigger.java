@@ -65,21 +65,21 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 
 	public void setInvertRedstone(boolean value) {
 		invertRedstone = value;
-		if (!worldObj.isRemote && prevInvertRedstone != invertRedstone)
+		if (!world.isRemote && prevInvertRedstone != invertRedstone)
 			notifyBlockUpdate();
 		prevInvertRedstone = invertRedstone;
 	}
 
 	public void setStatus(int value) {
 		status = value;
-		if (!worldObj.isRemote && prevStatus != status) {
-			IBlockState iblockstate = worldObj.getBlockState(pos);
+		if (!world.isRemote && prevStatus != status) {
+			IBlockState iblockstate = world.getBlockState(pos);
 			Block block = iblockstate.getBlock();
 			if (block instanceof RangeTrigger) {
 				IBlockState newState = block.getDefaultState()
 						.withProperty(((RangeTrigger) block).FACING, iblockstate.getValue(((RangeTrigger) block).FACING))
 						.withProperty(((RangeTrigger) block).STATE, RangeTrigger.EnumState.getState(status));
-				worldObj.setBlockState(pos, newState, 3);
+				world.setBlockState(pos, newState, 3);
 			}
 			notifyBlockUpdate();
 		}
@@ -106,7 +106,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 
 	@Override
 	public void update() {
-		if (!worldObj.isRemote) {
+		if (!world.isRemote) {
 			if (updateTicker-- > 0)
 				return;
 			updateTicker = tickRate;
@@ -189,16 +189,16 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 	@Override
 	public void markDirty() {
 		super.markDirty();
-		if (worldObj == null || worldObj.isRemote)
+		if (world == null || world.isRemote)
 			return;
 		
 		int upgradeCountRange = 0;
 		ItemStack itemStack = getStackInSlot(SLOT_UPGRADE);
-		if (itemStack != null && itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE)
-			upgradeCountRange = itemStack.stackSize;
+		if (itemStack != ItemStack.EMPTY && itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE)
+			upgradeCountRange = itemStack.getCount();
 		ItemStack card = getStackInSlot(SLOT_CARD);
 		int status = STATE_UNKNOWN;
-		if (card != null) {
+		if (!card.isEmpty()) {
 			Item item = card.getItem();
 			if (item instanceof ItemCardMain) {
 				boolean needUpdate = true;
@@ -247,17 +247,17 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 	}
 
 	public void notifyBlockUpdate() {
-		IBlockState iblockstate = worldObj.getBlockState(pos);
+		IBlockState iblockstate = world.getBlockState(pos);
 		Block block = iblockstate.getBlock();
 		if (!(block instanceof RangeTrigger))
 			return;
 		boolean newValue = status == 2 ? !invertRedstone : invertRedstone;
 		if (poweredBlock != newValue) {
 			((RangeTrigger) block).setPowered(status == 2 ? !invertRedstone : invertRedstone);
-			worldObj.notifyNeighborsOfStateChange(pos, block);
+			world.notifyNeighborsOfStateChange(pos, block, false);
 		}
 		poweredBlock = newValue;
-		worldObj.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
+		world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
 	}
 
 	// Inventory

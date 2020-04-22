@@ -15,7 +15,7 @@ public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm {
 	
 	@Override
 	public void update() {
-		if (worldObj.isRemote) {
+		if (world.isRemote) {
 			if (updateTicker-- <= 0) {
 				updateTicker = tickRate;
 				super.checkStatus();
@@ -41,6 +41,6 @@ public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm {
 				internalFire = 0;
 		}
 		if (lightLevel != light)
-			worldObj.checkLight(pos);
+			world.checkLight(pos);
 	}
 }

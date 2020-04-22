@@ -29,24 +29,24 @@ public abstract class ContainerBase<T extends IInventory> extends Container {
 
 	@Override
 	public boolean canInteractWith(EntityPlayer player) {
-		return te.isUseableByPlayer(player);
+		return te.isUsableByPlayer(player);
 	}
 	
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotId) {
 		Slot slot = (Slot) this.inventorySlots.get(slotId);
 		if (slot == null || !slot.getHasStack())
-			return null;
+			return ItemStack.EMPTY;
 
 		ItemStack items = slot.getStack();
-		int initialCount = items.stackSize;
+		int initialCount = items.getCount();
 		if (slotId < te.getSizeInventory()) { // moving from panel to inventory
 			mergeItemStack(items, te.getSizeInventory(), inventorySlots.size(), false);
-			if (items.stackSize == 0) {
-				slot.putStack((ItemStack) null);
+			if (items.getCount() == 0) {
+				slot.putStack(ItemStack.EMPTY);
 			} else {
 				slot.onSlotChanged();
-				if (initialCount != items.stackSize)
+				if (initialCount != items.getCount())
 					return items;
 			}
 		} else { // moving from inventory to panel
@@ -54,18 +54,18 @@ public abstract class ContainerBase<T extends IInventory> extends Container {
 				if (!te.isItemValidForSlot(i, items))
 					continue;
 				ItemStack targetStack = te.getStackInSlot(i);
-				if (targetStack == null) {
+				if (targetStack.isEmpty()) {
 					Slot targetSlot = (Slot) this.inventorySlots.get(i);
 					targetSlot.putStack(items);
-					slot.putStack((ItemStack) null);
+					slot.putStack(ItemStack.EMPTY);
 					break;
 				} else if (items.isStackable() && items.isItemEqual(targetStack)) {
 					mergeItemStack(items, i, i + 1, false);
-					if (items.stackSize == 0) {
-						slot.putStack((ItemStack) null);
+					if (items.getCount() == 0) {
+						slot.putStack(ItemStack.EMPTY);
 					} else {
 						slot.onSlotChanged();
-						if (initialCount != items.stackSize)
+						if (initialCount != items.getCount())
 							return items;
 					}
 					break;
@@ -73,6 +73,6 @@ public abstract class ContainerBase<T extends IInventory> extends Container {
 
 			}
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 }
