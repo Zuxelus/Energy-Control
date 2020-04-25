@@ -20,11 +20,15 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityInfoPanel extends TileEntityInventory implements ITickable, ITilePacketHandler, IScreenPart, IRedstoneConsumer, ISlotItemFilter {	
 	public static final int DISPLAY_DEFAULT = Integer.MAX_VALUE;
@@ -80,6 +84,18 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 				screen.init(true, world);
 		}
 		notifyBlockUpdate();
+	}
+	
+	@Override
+	public void setFacing(int meta) {
+		EnumFacing newFacing = EnumFacing.getFront(meta);
+		if (facing == newFacing)
+			return;
+		facing = newFacing;
+		if (init) {
+			EnergyControl.instance.screenManager.unregisterScreenPart(this);
+			EnergyControl.instance.screenManager.registerInfoPanel(this);
+		}
 	}
 
 	public boolean getShowLabels() {
@@ -480,7 +496,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	public int getSizeInventory() {
 		return 3;
 	}
-	
+
 	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
 		return isItemValid(index, stack);
@@ -526,5 +542,16 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	public void neighborChanged() {
 		if (!world.isRemote)
 			notifyBlockUpdate();
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public double getMaxRenderDistanceSquared() {
+		return 65536.0D;
+	}
+	
+	@Override
+	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
+		return false;
 	}
 }

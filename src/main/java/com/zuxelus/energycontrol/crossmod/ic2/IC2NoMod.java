@@ -48,4 +48,13 @@ public class IC2NoMod extends IC2Cross {
 		return null;
 	}
 
+	@Override
+	public NBTTagCompound getGeneratorKineticData(TileEntity entity) {
+		return null;
+	}
+
+	@Override
+	public NBTTagCompound getGeneratorHeatData(TileEntity entity) {
+		return null;
+	}
 }

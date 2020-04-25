@@ -1,9 +1,15 @@
 package com.zuxelus.energycontrol.blocks;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.tileentities.TileEntityFacing;
 import com.zuxelus.energycontrol.tileentities.TileEntityInventory;
 import com.zuxelus.energycontrol.tileentities.TileEntityRemoteThermo;
 
+import ic2.api.tile.IWrenchable;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -23,7 +29,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class RemoteThermo extends BlockHorizontal implements ITileEntityProvider {
+public class RemoteThermo extends BlockHorizontal implements ITileEntityProvider, IWrenchable {
 	private boolean powered = false;
 
 	public RemoteThermo() {
@@ -52,16 +58,6 @@ public class RemoteThermo extends BlockHorizontal implements ITileEntityProvider
 	@Override
 	public int getMetaFromState(IBlockState state) {
 		return ((EnumFacing) state.getValue(FACING)).getIndex();
-	}
-
-	@Override
-	public IBlockState withRotation(IBlockState state, Rotation rot) {
-		return state.withProperty(FACING, rot.rotate((EnumFacing) state.getValue(FACING)));
-	}
-
-	@Override
-	public IBlockState withMirror(IBlockState state, Mirror mirrorIn) {
-		return state.withRotation(mirrorIn.toRotation((EnumFacing) state.getValue(FACING)));
 	}
 
 	@Override
@@ -94,6 +90,8 @@ public class RemoteThermo extends BlockHorizontal implements ITileEntityProvider
 	
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+		if (CrossModLoader.crossIc2.isWrench(player.getHeldItem(hand)))
+			return true;
 		if (!world.isRemote)
 			player.openGui(EnergyControl.instance, BlockDamages.DAMAGE_REMOTE_THERMO, world, pos.getX(), pos.getY(), pos.getZ());
 		return true;
@@ -111,5 +109,41 @@ public class RemoteThermo extends BlockHorizontal implements ITileEntityProvider
 	@Override
 	public EnumBlockRenderType getRenderType(IBlockState state) {
 		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
+	}
+
+	//IWrenchable
+	@Override
+	public EnumFacing getFacing(World world, BlockPos pos) {
+		TileEntity te = world.getTileEntity(pos);
+		if (te instanceof TileEntityFacing)
+			return ((TileEntityFacing) te).getFacing();
+		return EnumFacing.DOWN;
+	}
+
+	@Override
+	public boolean setFacing(World world, BlockPos pos, EnumFacing newDirection, EntityPlayer player) {
+		TileEntity te = world.getTileEntity(pos);
+		if (te instanceof TileEntityFacing) {
+			if (newDirection == EnumFacing.UP || newDirection == EnumFacing.DOWN)
+				return true;
+			((TileEntityFacing) te).setFacing(newDirection.getIndex());
+			world.setBlockState(pos, getDefaultState().withProperty(FACING, newDirection));
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean wrenchCanRemove(World world, BlockPos pos, EntityPlayer player) {
+		return true;
+	}
+
+	@Override
+	public List<ItemStack> getWrenchDrops(World world, BlockPos pos, IBlockState state, TileEntity te, EntityPlayer player, int fortune) {
+		if (!(te instanceof TileEntityInventory))
+			return Collections.emptyList();
+		List<ItemStack> list = ((TileEntityInventory) te).getDrops(fortune);
+		list.add(new ItemStack(this));
+		return list;
 	}
 }

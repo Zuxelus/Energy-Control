@@ -70,8 +70,12 @@ msg.ec.InfoPanelMaxHeat=MaxHeat: %s
 msg.ec.InfoPanelMelting=Melting: %s
 msg.ec.InfoPanelOutput=Output: %s EU/t
 msg.ec.InfoPanelOutputMJ=Output: %s RF/t
-msg.ec.InfoPanelOutputHeat=Output: %s Hu/s
+msg.ec.InfoPanelOutputHU=Output: %s hU/t
+msg.ec.InfoPanelOutputKU=Output: %s kU/t
+msg.ec.InfoPanelOutputHeat=Output: %s hU/s
 msg.ec.InfoPanelOutputSteam=Output: %s mB/t
+msg.ec.InfoPanelCoils=Coils: %s
+msg.ec.InfoPanelRotorHealth=RotorHealth: %s
 msg.ec.InfoPanelTimeRemaining=Remaining: %s
 
 msg.ec.InfoPanelEnergyCounter=Energy: %s EU
@@ -83,6 +87,8 @@ msg.ec.InfoPanelStorage=Storage: %s
 msg.ec.InfoPanelMaxStorage=MaxStorage: %s
 msg.ec.InfoPanelPercentage=Fill: %s%%
 msg.ec.InfoPanelMultiplier=Multiplier: %s
+msg.ec.InfoPanelHeight=Height: %s
+msg.ec.InfoPanelWindStrength=WindStrength: %s
 
 msg.ec.cbInfoPanelLiquidName=Liquid name
 msg.ec.cbInfoPanelLiquidAmount=Amount

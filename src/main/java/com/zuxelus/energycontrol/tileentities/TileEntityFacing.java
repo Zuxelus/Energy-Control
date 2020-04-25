@@ -13,7 +13,7 @@ public abstract class TileEntityFacing extends TileEntity {
 	}
 	
 	public void setFacing(int meta) {
-		facing = EnumFacing.getFront(meta);		
+		facing = EnumFacing.getFront(meta);
 	}
 	
 	protected boolean hasRotation() {

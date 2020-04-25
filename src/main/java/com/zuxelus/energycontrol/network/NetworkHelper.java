@@ -66,17 +66,6 @@ public class NetworkHelper {
 
 		sendPacketToAllAround(panel.getPos(), 64, panel.getWorld(), new PacketCard(panel.getPos(), slot, fields));
 	}
-/*
-	// client
-	public static void setDisplaySettings(TileEntityInfoPanel panel, byte slot, int settings) {
-		if (panel == null)
-			return;
-
-		if (FMLCommonHandler.instance().getEffectiveSide().isServer())
-			return;
-
-		ChannelHandler.network.sendToServer(new PacketClientApplySettings(panel.xCoord, panel.yCoord, panel.zCoord, slot, settings));
-	}*/
 
 	// client
 	public static void setCardSettings(ItemStack card, TileEntity panelTE, Map<String, Object> fields, byte slot) {
@@ -88,16 +77,7 @@ public class NetworkHelper {
 
 		ChannelHandler.network.sendToServer(new PacketClientSensor(panelTE.getPos(), slot, card.getItem().getClass().getName(), fields));
 	}
-/*
-	// server
-	public static void setSensorCardTitle(TileEntityInfoPanel panel, byte slot, String title) {
-		if (title == null || panel == null)
-			return;
 
-		sendPacketToAllAround(panel.xCoord, panel.yCoord, panel.zCoord, 64, panel.getWorldObj(),
-				new PacketSensorTitle(panel.xCoord, panel.yCoord, panel.zCoord, slot, title));
-	}
-*/
 	public static void chatMessage(EntityPlayer player, String message) {
 		if (player instanceof EntityPlayerMP)
 			ChannelHandler.network.sendTo(new PacketChat(message), (EntityPlayerMP) player);
@@ -116,39 +96,7 @@ public class NetworkHelper {
 		tag.setInteger("value", value);
 		ChannelHandler.network.sendToServer(new PacketTileEntity(pos, tag));
 	}
-	public static void updateSeverTileEntity(BlockPos pos, NBTTagCompound tag) {		
+	public static void updateSeverTileEntity(BlockPos pos, NBTTagCompound tag) {
 		ChannelHandler.network.sendToServer(new PacketTileEntity(pos, tag));
 	}
-/*
-	// client
-	public static void setRangeTrigger(int x, int y, int z, double value, boolean isEnd) {
-		ChannelHandler.network.sendToServer(new PacketClientRangeTrigger(x, y, z, value, isEnd));
-	}
-
-	// client
-	public static void setScreenColor(int x, int y, int z, int back, int text) {
-		ChannelHandler.network.sendToServer(new PacketClientColor(x, y, z, (back << 4) | text));
-	}
-
-	// client
-	public static void requestDisplaySettings(TileEntityInfoPanel panel) {
-		ChannelHandler.network.sendToServer(new PacketClientRequestSettings(panel.xCoord, panel.yCoord, panel.zCoord));
-	}
-
-	// server
-	public static void sendDisplaySettingsToPlayer(int x, int y, int z, EntityPlayerMP player) {
-		TileEntity tileEntity = player.worldObj.getTileEntity(x, y, z);
-		if (!(tileEntity instanceof TileEntityInfoPanel))
-			return;
-		Map<Byte, Map<Integer, Integer>> settings = ((TileEntityInfoPanel) tileEntity).getDisplaySettings();
-		if (settings == null)
-			return;
-		ChannelHandler.network.sendTo(new PacketDispSettingsAll(x, y, z, settings), player);
-	}
-
-	// server
-	public static void sendDisplaySettingsUpdate(TileEntityInfoPanel panel, byte slot, int key, int value) {
-		sendPacketToAllAround(panel.xCoord, panel.yCoord, panel.zCoord, 64, panel.getWorldObj(),
-				new PacketDispSettingsUpdate(panel.xCoord, panel.yCoord, panel.zCoord, slot, key, value));
-	}*/
 }

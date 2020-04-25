@@ -52,6 +52,7 @@ public class ItemCardGenerator extends ItemCardBase {
 			reader.setDouble("multiplier", tag.getDouble("multiplier"));
 			break;
 		}
+		reader.setBoolean("active", tag.getBoolean("active"));
 		return CardState.OK;
 	}
 
@@ -74,6 +75,8 @@ public class ItemCardGenerator extends ItemCardBase {
 				result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("production"), showLabels));
 			break;
 		}
+		if ((displaySettings & 8) > 0)
+			ItemCardType.addOnOff(result, reader, reader.getBoolean("active"));
 		return result;
 	}
 

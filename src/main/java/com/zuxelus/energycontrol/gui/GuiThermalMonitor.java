@@ -97,7 +97,7 @@ public class GuiThermalMonitor extends GuiBase {
 			thermo.setHeatLevel(heat);
 		}
 		textboxHeat.setText(new Integer(heat).toString());
-    }
+	}
 
 	@Override
 	protected void actionPerformed(GuiButton button) {

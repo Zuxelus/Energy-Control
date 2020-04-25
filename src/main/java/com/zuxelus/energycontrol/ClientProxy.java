@@ -84,7 +84,7 @@ public class ClientProxy extends ServerProxy {
 		registerItemModel(ItemHelper.itemUpgrade, ItemUpgrade.DAMAGE_RANGE, "upgrade_range");
 		registerItemModel(ItemHelper.itemUpgrade, ItemUpgrade.DAMAGE_COLOR, "upgrade_color");
 		registerItemModel(ItemHelper.itemThermometer, 0, "thermometer");
-		registerItemModel(ItemHelper.itemThermometerDigital, 0, "thermometer_digital");		
+		registerItemModel(ItemHelper.itemThermometerDigital, 0, "thermometer_digital");
 	}
 
 	@Override

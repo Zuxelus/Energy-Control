@@ -34,11 +34,4 @@ public class LiquidCardHelper {
 
 		return tanks.iterator().next();
 	}
-/*	
-	public static Iterable<InternalFluidTank> getReactorTanks(TileEntityNuclearReactorElectric te) {		
-		if (!(te.hasComponent(Fluids.class)))
-			return null;
-		Fluids fluid = te.getComponent(Fluids.class);
-		return fluid.getAllTanks();
-	}*/
 }

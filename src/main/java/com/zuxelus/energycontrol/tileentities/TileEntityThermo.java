@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import com.zuxelus.energycontrol.blocks.RemoteThermo;
 import com.zuxelus.energycontrol.blocks.ThermalMonitor;
 import com.zuxelus.energycontrol.utils.ReactorHelper;
 
@@ -11,6 +12,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.ITickable;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityThermo extends TileEntityInventory implements ITickable, ITilePacketHandler {
 	private int prevHeatLevel;
@@ -29,6 +32,7 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 		heatLevel = prevHeatLevel = 500;
 		updateTicker = 0;
 		tickRate = -1;
+		status = -1;
 	}
 
 	public int getHeatLevel() {
@@ -94,6 +98,7 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 	public NBTTagCompound getUpdateTag() {
 		NBTTagCompound tag = super.getUpdateTag();
 		tag = writeProperties(tag);
+		tag.setInteger("status", status);
 		return tag;
 	}
 
@@ -129,8 +134,7 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 
 	@Override
 	public void invalidate() {
-		if (status == 1)
-			world.notifyNeighborsOfStateChange(pos, world.getBlockState(pos).getBlock(), false);
+		world.notifyNeighborsOfStateChange(pos, world.getBlockState(pos).getBlock(), false);
 		super.invalidate();
 	}
 
@@ -181,9 +185,17 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 		IBlockState iblockstate = world.getBlockState(pos);
 		Block block = iblockstate.getBlock();
 		if (block instanceof ThermalMonitor) {
-			boolean newValue = status == 1 ? !invertRedstone : invertRedstone;
+			boolean newValue = status < 0 ? false : status == 1 ? !invertRedstone : invertRedstone;
 			if (poweredBlock != newValue) {
-				((ThermalMonitor)block).setPowered(status == 1 ? !invertRedstone : invertRedstone);
+				((ThermalMonitor)block).setPowered(newValue);
+				world.notifyNeighborsOfStateChange(pos, block, false);
+			}
+			poweredBlock = newValue;
+		}
+		if (block instanceof RemoteThermo) { // TODO
+			boolean newValue = status < 0 ? false : status == 1 ? !invertRedstone : invertRedstone;
+			if (poweredBlock != newValue) {
+				((RemoteThermo)block).setPowered(newValue);
 				world.notifyNeighborsOfStateChange(pos, block, false);
 			}
 			poweredBlock = newValue;
@@ -192,6 +204,12 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 	}
 
 	@Override
+	protected boolean hasRotation() {
+		return true;
+	}
+
+	// ------- Inventory ------- 
+	@Override
 	public int getSizeInventory() {
 		return 0;
 	}
@@ -199,5 +217,11 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
 		return false;
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public double getMaxRenderDistanceSquared() {
+		return 65536.0D;
 	}
 }

@@ -29,7 +29,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		TEXTUREON = new ResourceLocation[16];
 		for (int i = 0; i < 16; i++) {
 			TEXTUREOFF[i] = new ResourceLocation(
-					EnergyControl.MODID + String.format(":textures/blocks/info_panel/off/2/all%d.png", i));			
+					EnergyControl.MODID + String.format(":textures/blocks/info_panel/off/2/all%d.png", i));
 			TEXTUREON[i] = new ResourceLocation(
 					EnergyControl.MODID + String.format(":textures/blocks/info_panel/on/2/all%d.png", i));
 		}
@@ -54,10 +54,9 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 
 	@Override
 	public void render(TileEntityInfoPanel te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {   
-	    GlStateManager.pushMatrix();	    
-	    GlStateManager.translate((float)x, (float)y, (float)z);
-		EnumFacing facing = te.getFacing();
-		switch (facing) {
+		GlStateManager.pushMatrix();
+		GlStateManager.translate((float)x, (float)y, (float)z);
+		switch (te.getFacing()) {
 		case UP:
 			break;
 		case NORTH:

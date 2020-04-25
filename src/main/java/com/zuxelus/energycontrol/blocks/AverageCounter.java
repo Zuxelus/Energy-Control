@@ -27,7 +27,7 @@ public class AverageCounter extends FacingBlock implements ITileEntityProvider {
 		te.setFacing(meta);
 		return te;
 	}
-	
+
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		if (!world.isRemote)

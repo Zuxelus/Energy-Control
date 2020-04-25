@@ -26,7 +26,7 @@ public class ItemKitGenerator extends ItemKitBase {
 	public String getUnlocalizedName() {
 		return "item.kit_generator";
 	}
-	
+
 	@Override
 	protected ItemStack getSensorCard(ItemStack stack, EntityPlayer player, World world, BlockPos pos) {
 		Block block = world.getBlockState(pos).getBlock();

@@ -10,6 +10,7 @@ import ic2.api.energy.tile.IEnergyAcceptor;
 import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergySource;
+import ic2.api.info.Info;
 import ic2.api.item.IC2Items;
 import ic2.core.block.wiring.TileEntityCable;
 import net.minecraft.item.ItemStack;
@@ -30,7 +31,7 @@ public class TileEntityEnergyCounter extends TileEntityInventory
 	protected int tickRate;
 
 	public double counter;
-	private boolean addedToEnergyNet;
+	private boolean addedToEnet;
 	
 	  public int tier;
 	  public int output;
@@ -38,37 +39,13 @@ public class TileEntityEnergyCounter extends TileEntityInventory
 
 	public TileEntityEnergyCounter() {
 		super("block.EnergyCounter");
-		addedToEnergyNet = false;
+		addedToEnet = false;
 		counter = 0.0;
 		
 		energy = 0;
 		tier = 1;
 		output = BASE_PACKET_SIZE;
 	}
-
-	/*@Override
-	public short getFacing() {
-		return (short) Facing.oppositeSide[facing];
-	}
-
-	@Override
-	public void setFacing(short facing) {
-		if (addedToEnergyNet)
-			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
-		setSide((short) Facing.oppositeSide[facing]);
-		if (addedToEnergyNet) {
-			addedToEnergyNet = false;
-			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
-			addedToEnergyNet = true;
-		}
-	}
-
-	private void setSide(short f) {
-		facing = f;
-		if (init && prevFacing != f)
-			IC2.network.get().updateTileEntityField(this, "facing");
-		prevFacing = f;
-	}*/
 
 	@Override
 	public void onServerMessageReceived(NBTTagCompound tag) {
@@ -126,39 +103,45 @@ public class TileEntityEnergyCounter extends TileEntityInventory
 	}
 
 	@Override
-	public void validate() {
-		super.validate();
-		if (!world.isRemote && !addedToEnergyNet) {
+	public void onLoad() {
+		if (!addedToEnet && !world.isRemote && Info.isIc2Available()) {
 			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
-			addedToEnergyNet = true;
+			addedToEnet = true;
 		}
 	}
 
 	@Override
 	public void invalidate() {
+		onChunkUnload();
 		super.invalidate();
-		if (!world.isRemote && addedToEnergyNet) {
+	}
+
+	@Override
+	public void onChunkUnload() {
+		if (addedToEnet && !world.isRemote && Info.isIc2Available()) {
 			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
-			addedToEnergyNet = false;
+			addedToEnet = false;
 		}
-	}	
+	}
 
 	@Override
 	public void update() {
+		if (!addedToEnet)
+			onLoad();
 		if (!init) {
 			init = true;
 			markDirty();
 		}
-		if (!world.isRemote) {
-			TileEntity neighbor = world.getTileEntity(pos.offset(facing));
-			if (neighbor instanceof TileEntityCable) {
-				NodeStats node = EnergyNet.instance.getNodeStats(this);
-				if (node != null)
-					counter += node.getEnergyOut();
-			}
+		if (world.isRemote)
+			return;
+		TileEntity neighbor = world.getTileEntity(pos.offset(facing));
+		if (neighbor instanceof TileEntityCable) {
+			NodeStats node = EnergyNet.instance.getNodeStats(this);
+			if (node != null)
+				counter += node.getEnergyOut();
 		}
 	}
-	
+
 	@Override
 	public void markDirty() {
 		super.markDirty();
@@ -171,14 +154,14 @@ public class TileEntityEnergyCounter extends TileEntityInventory
 			output = BASE_PACKET_SIZE * (int) Math.pow(4D, upgradeCountTransormer);
 			tier = upgradeCountTransormer + 1;
 
-			if (addedToEnergyNet) {
+			if (addedToEnet) {
 				EnergyTileUnloadEvent event = new EnergyTileUnloadEvent(this);
 				MinecraftForge.EVENT_BUS.post(event);
 			}
-			addedToEnergyNet = false;
+			addedToEnet = false;
 			EnergyTileLoadEvent event = new EnergyTileLoadEvent(this);
 			MinecraftForge.EVENT_BUS.post(event);
-			addedToEnergyNet = true;
+			addedToEnet = true;
 		}
 	}
 
@@ -229,17 +212,17 @@ public class TileEntityEnergyCounter extends TileEntityInventory
 
 	@Override
 	public double getDemandedEnergy() {
-		return this.output - this.energy;
+		return output - energy;
 	}
 
 	@Override
 	public int getSinkTier() {
-		return this.tier;
+		return tier;
 	}
 
 	@Override
 	public double injectEnergy(EnumFacing directionFrom, double amount, double voltage) {
-		if (this.energy >= this.output)
+		if (energy >= output)
 			return amount;
 		this.energy += amount;
 		return 0.0D;

@@ -21,35 +21,114 @@ public class TEThermoRenderer extends TileEntitySpecialRenderer<TileEntityThermo
 	public void render(TileEntityThermo te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
 		GlStateManager.pushMatrix();
 		GlStateManager.translate((float)x, (float)y, (float)z);
-		EnumFacing facing = te.getFacing();
-		switch (facing) {
+		switch (te.getFacing()) {
 		case UP:
+			switch (te.getRotation()) {
+			case NORTH:
+				GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+				GlStateManager.translate(-1.0F, 0.0F, -1.0F);
+				break;
+			case SOUTH:
+				break;
+			case WEST:
+				GlStateManager.rotate(-90.0F, 0.0F, 1.0F, 0.0F);
+				GlStateManager.translate(0.0F, 0.0F, -1.0F);
+				break;
+			case EAST:
+				GlStateManager.rotate(90.0F, 0.0F, 1.0F, 0.0F);
+				GlStateManager.translate(-1.0F, 0.0F, 0.0F);
+				break;
+			}
 			break;
 		case NORTH:
 			GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
-			GlStateManager.rotate(-180.0F, 0.0F, 1.0F, 0.0F);
+			GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
 			GlStateManager.translate(-1.0F, -1.0F, -1.0F);
+			switch (te.getRotation()) {
+			case UP:
+				GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+				GlStateManager.translate(-1.0F, 0.0F, -1.0F);
+				break;
+			case DOWN:
+				break;
+			case EAST:
+				GlStateManager.rotate(-90.0F, 0.0F, 1.0F, 0.0F);
+				GlStateManager.translate(0.0F, 0.0F, -1.0F);
+				break;
+			case WEST:
+				GlStateManager.rotate(90.0F, 0.0F, 1.0F, 0.0F);
+				GlStateManager.translate(-1.0F, 0.0F, 0.0F);
+				break;
+			}
 			break;
 		case SOUTH:
 			GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
 			GlStateManager.translate(0.0F, 0.0F, -1.0F);
+			switch (te.getRotation()) {
+			case UP:
+				GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+				GlStateManager.translate(-1.0F, 0.0F, -1.0F);
+				break;
+			case DOWN:
+				break;
+			case WEST:
+				GlStateManager.rotate(-90.0F, 0.0F, 1.0F, 0.0F);
+				GlStateManager.translate(0.0F, 0.0F, -1.0F);
+				break;
+			case EAST:
+				GlStateManager.rotate(90.0F, 0.0F, 1.0F, 0.0F);
+				GlStateManager.translate(-1.0F, 0.0F, 0.0F);
+				break;
+			}
 			break;
 		case DOWN:
 			GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
-			GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
-			GlStateManager.translate(-1.0F, -1.0F, 0.0F);
+			GlStateManager.translate(0.0F, -1.0F, -1.0F);
 			break;
 		case WEST:
 			GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
 			GlStateManager.rotate(-90.0F, 0.0F, 1.0F, 0.0F);
 			GlStateManager.translate(0.0F, -1.0F, -1.0F);
+			switch (te.getRotation()) {
+			case UP:
+				GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+				GlStateManager.translate(-1.0F, 0.0F, -1.0F);
+				break;
+			case DOWN:
+				break;
+			case NORTH:
+				GlStateManager.rotate(-90.0F, 0.0F, 1.0F, 0.0F);
+				GlStateManager.translate(0.0F, 0.0F, -1.0F);
+				break;
+			case SOUTH:
+				GlStateManager.rotate(90.0F, 0.0F, 1.0F, 0.0F);
+				GlStateManager.translate(-1.0F, 0.0F, 0.0F);
+				break;
+			}
 			break;
 		case EAST:
 			GlStateManager.rotate(-90.0F, 0.0F, 0.0F, 1.0F);
 			GlStateManager.rotate(90.0F, 0.0F, 1.0F, 0.0F);
 			GlStateManager.translate(-1.0F, 0.0F, -1.0F);
+			switch (te.getRotation()) {
+			case UP:
+				GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+				GlStateManager.translate(-1.0F, 0.0F, -1.0F);
+				break;
+			case DOWN:
+				break;
+			case SOUTH:
+				GlStateManager.rotate(-90.0F, 0.0F, 1.0F, 0.0F);
+				GlStateManager.translate(0.0F, 0.0F, -1.0F);
+				break;
+			case NORTH:
+				GlStateManager.rotate(90.0F, 0.0F, 1.0F, 0.0F);
+				GlStateManager.translate(-1.0F, 0.0F, 0.0F);
+				break;
+			}
 			break;
 		}
+		
 		switch (te.getStatus()) {
 		case 0:
 			bindTexture(TEXTURE1);

@@ -85,28 +85,8 @@ public class ItemCardReactor extends ItemCardBase {
 			result.add(new PanelString("msg.ec.InfoPanelTimeRemaining", String.format("%d:%02d:%02d", hours, minutes, seconds), showLabels));
 		}
 
-		int txtColor = 0;
-		if ((displaySettings & 1) > 0) {
-			String text;
-			boolean reactorPowered = reader.getBoolean("reactorPoweredB");
-			if (reactorPowered) {
-				txtColor = 0x00ff00;
-				text = I18n.format("msg.ec.InfoPanelOn");
-			} else {
-				txtColor = 0xff0000;
-				text = I18n.format("msg.ec.InfoPanelOff");
-			}
-			if (result.size() > 0) {
-				PanelString firstLine = result.get(0);
-				firstLine.textRight = text;
-				firstLine.colorRight = txtColor;
-			} else {
-				PanelString line = new PanelString();
-				line.textLeft = text;
-				line.colorLeft = txtColor;
-				result.add(line);
-			}
-		}
+		if ((displaySettings & 1) > 0)
+			ItemCardType.addOnOff(result, reader, reader.getBoolean("reactorPoweredB"));
 		return result;
 	}
 

@@ -8,9 +8,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITickable, IScreenPart {
 	protected boolean init;
@@ -30,6 +34,18 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 		coreX = 0;
 		coreY = 0;
 		coreZ = 0;
+	}
+	
+	@Override
+	public void setFacing(int meta) {
+		EnumFacing newFacing = EnumFacing.getFront(meta);
+		if (facing == newFacing)
+			return;
+		facing = newFacing;
+		if (init) {
+			EnergyControl.instance.screenManager.unregisterScreenPart(this);
+			EnergyControl.instance.screenManager.registerInfoPanelExtender(this);
+		}
 	}
 
 	private void updateScreen() {
@@ -160,5 +176,16 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 		if (core == null)
 			return false;
 		return core.powered;
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public double getMaxRenderDistanceSquared() {
+		return 65536.0D;
+	}
+	
+	@Override
+	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
+		return false;
 	}
 }

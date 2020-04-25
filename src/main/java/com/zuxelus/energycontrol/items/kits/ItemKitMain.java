@@ -30,7 +30,7 @@ public class ItemKitMain extends Item {
 		kits = new HashMap<Integer, ItemKitBase>();
 		register(new ItemKitEnergy());
 		register(new ItemKitCounter());
-		register(new ItemKitLiquid());		
+		register(new ItemKitLiquid());
 		register(new ItemKitGenerator());
 		register(new ItemKitReactor());
 		register(new ItemKitLiquidAdvanced());
@@ -74,7 +74,7 @@ public class ItemKitMain extends Item {
 		if (sensorLocationCard.isEmpty())
 			return EnumActionResult.PASS;
 		
-		player.replaceItemInInventory(player.inventory.currentItem, sensorLocationCard); // TODO
+		player.replaceItemInInventory(player.inventory.currentItem, sensorLocationCard);
 		return EnumActionResult.SUCCESS;
 	}	
 	

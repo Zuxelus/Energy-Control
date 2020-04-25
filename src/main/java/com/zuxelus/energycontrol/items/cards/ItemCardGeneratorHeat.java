@@ -29,12 +29,45 @@ public class ItemCardGeneratorHeat extends ItemCardBase {
 
 	@Override
 	public CardState update(World world, ItemCardReader reader, int range, BlockPos pos) {
-		return CardState.NO_TARGET;
+		BlockPos target = reader.getTarget();
+		if (target == null) 
+			return CardState.NO_TARGET;
+		
+		TileEntity entity = world.getTileEntity(target);
+		NBTTagCompound tag = CrossModLoader.crossIc2.getGeneratorHeatData(entity);
+		if (tag == null || !tag.hasKey("type"))
+			return CardState.NO_TARGET;
+		
+		reader.setInt("type", tag.getInteger("type"));
+		switch (tag.getInteger("type")) {
+		case 1:
+			reader.setDouble("storage", tag.getDouble("storage"));
+			reader.setDouble("maxStorage", tag.getDouble("maxStorage"));
+			reader.setInt("coils", tag.getInteger("coils"));
+			reader.setInt("output", tag.getInteger("output"));
+			break;
+		}
+		reader.setBoolean("active", tag.getBoolean("active"));
+		return CardState.OK;
 	}
 
 	@Override
 	protected List<PanelString> getStringData(int displaySettings, ItemCardReader reader, boolean showLabels) {
 		List<PanelString> result = new LinkedList<PanelString>();
+		switch (reader.getInt("type")) {
+		case 1:
+			if ((displaySettings & 1) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelStorage", reader.getDouble("storage"), showLabels));
+			if ((displaySettings & 2) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelMaxStorage", reader.getDouble("maxStorage"), showLabels));
+			if ((displaySettings & 4) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelCoils", reader.getInt("coils"), showLabels));
+			if ((displaySettings & 8) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelOutputHU", reader.getInt("output"), showLabels));
+			break;
+		}
+		if ((displaySettings & 16) > 0)
+			ItemCardType.addOnOff(result, reader, reader.getBoolean("active"));
 		return result;
 	}
 

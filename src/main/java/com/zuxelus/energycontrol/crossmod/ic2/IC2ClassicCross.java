@@ -65,4 +65,16 @@ public class IC2ClassicCross extends IC2Cross {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public NBTTagCompound getGeneratorKineticData(TileEntity entity) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public NBTTagCompound getGeneratorHeatData(TileEntity entity) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

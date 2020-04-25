@@ -10,6 +10,7 @@ import ic2.api.energy.tile.IEnergyAcceptor;
 import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergySource;
+import ic2.api.info.Info;
 import ic2.api.item.IC2Items;
 import ic2.core.block.wiring.TileEntityCable;
 import net.minecraft.block.state.IBlockState;
@@ -37,16 +38,16 @@ public class TileEntityAverageCounter extends TileEntityInventory
 	public short period;
 	protected int clientAverage = -1;
 	
-	private double lastReceivedPower = 0; //
-	private boolean addedToEnergyNet;
-	
-	  public int tier;
-	  public int output;
-	  public double energy;	
+	private double lastReceivedPower = 0;
+	private boolean addedToEnet;
+
+	public int tier;
+	public int output;
+	public double energy;
 
 	public TileEntityAverageCounter() {
 		super("block.AverageCounter");
-		addedToEnergyNet = false;
+		addedToEnet = false;
 		data = new double[DATA_POINTS];
 		index = 0;
 		tickRate = 20;
@@ -76,30 +77,6 @@ public class TileEntityAverageCounter extends TileEntityInventory
 		clientAverage = (int) Math.round(sum / period / 20);
 		return clientAverage;
 	}
-
-	/*@Override
-	public short getFacing() {
-		return (short) Facing.oppositeSide[facing];
-	}
-
-	@Override
-	public void setFacing(short facing) {
-		if (addedToEnergyNet)
-			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
-		setSide((short) Facing.oppositeSide[facing]);
-		if (addedToEnergyNet) {
-			addedToEnergyNet = false;
-			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
-			addedToEnergyNet = true;
-		}
-	}
-
-	private void setSide(short f) {
-		facing = f;
-		if (init && prevFacing != f)
-			IC2.network.get().updateTileEntityField(this, "facing");
-		prevFacing = f;
-	}*/
 	
 	private void setPeriod(short p) {
 		period = p;
@@ -164,7 +141,7 @@ public class TileEntityAverageCounter extends TileEntityInventory
 		super.readFromNBT(tag);
 		readProperties(tag);
 	}
-	
+
 	@Override
 	protected NBTTagCompound writeProperties(NBTTagCompound tag) {
 		tag = super.writeProperties(tag);
@@ -183,40 +160,47 @@ public class TileEntityAverageCounter extends TileEntityInventory
 	}
 
 	@Override
-	public void validate() {
-		super.validate();
-		if (!world.isRemote && !addedToEnergyNet) {
+	public void onLoad() {
+		if (!addedToEnet && !world.isRemote && Info.isIc2Available()) {
 			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
-			addedToEnergyNet = true;
+			addedToEnet = true;
 		}
 	}
 
 	@Override
 	public void invalidate() {
+		onChunkUnload();
 		super.invalidate();
-		if (!world.isRemote && addedToEnergyNet) {
+	}
+
+	@Override
+	public void onChunkUnload() {
+		if (addedToEnet && !world.isRemote && Info.isIc2Available()) {
 			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
-			addedToEnergyNet = false;
+			addedToEnet = false;
 		}
-	}	
+	}
 
 	@Override
 	public void update() {
+		if (!addedToEnet)
+			onLoad();
 		if (!init) {
 			init = true;
 			markDirty();
 		}
-		if (!world.isRemote) {
-			index = (index + 1) % DATA_POINTS;
-			data[index] = 0;
-			getAverage();
+		if (world.isRemote)
+			return;
 
-			TileEntity neighbor = world.getTileEntity(pos.offset(facing));
-			if (neighbor instanceof TileEntityCable) {
-				NodeStats node = EnergyNet.instance.getNodeStats(this);
-				if (node != null)
-					data[index] = node.getEnergyOut();
-			}
+		index = (index + 1) % DATA_POINTS;
+		data[index] = 0;
+		getAverage();
+
+		TileEntity neighbor = world.getTileEntity(pos.offset(facing));
+		if (neighbor instanceof TileEntityCable) {
+			NodeStats node = EnergyNet.instance.getNodeStats(this);
+			if (node != null)
+				data[index] = node.getEnergyOut();
 		}
 	}
 	
@@ -232,14 +216,14 @@ public class TileEntityAverageCounter extends TileEntityInventory
 			output = BASE_PACKET_SIZE * (int) Math.pow(4D, upgradeCountTransormer);
 			tier = upgradeCountTransormer + 1;
 
-			if (addedToEnergyNet) {
+			if (addedToEnet) {
 				EnergyTileUnloadEvent event = new EnergyTileUnloadEvent(this);
 				MinecraftForge.EVENT_BUS.post(event);
 			}
-			addedToEnergyNet = false;
+			addedToEnet = false;
 			EnergyTileLoadEvent event = new EnergyTileLoadEvent(this);
 			MinecraftForge.EVENT_BUS.post(event);
-			addedToEnergyNet = true;
+			addedToEnet = true;
 		}
 	}
 
@@ -295,17 +279,17 @@ public class TileEntityAverageCounter extends TileEntityInventory
 
 	@Override
 	public double getDemandedEnergy() {
-		return this.output - this.energy;
+		return output - energy;
 	}
 
 	@Override
 	public int getSinkTier() {
-		return this.tier;
+		return tier;
 	}
 
 	@Override
 	public double injectEnergy(EnumFacing directionFrom, double amount, double voltage) {
-		if (this.energy >= this.output)
+		if (energy >= output)
 			return amount;
 		this.energy += amount;
 		return 0.0D;

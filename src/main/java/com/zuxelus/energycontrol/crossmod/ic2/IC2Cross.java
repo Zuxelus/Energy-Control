@@ -62,4 +62,8 @@ public abstract class IC2Cross {
 	public abstract EnergyStorageData getEnergyStorageData(TileEntity entity);
 	
 	public abstract NBTTagCompound getGeneratorData(TileEntity entity);
+	
+	public abstract NBTTagCompound getGeneratorKineticData(TileEntity entity);
+
+	public abstract NBTTagCompound getGeneratorHeatData(TileEntity entity);
 }

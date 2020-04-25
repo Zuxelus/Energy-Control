@@ -8,20 +8,28 @@ import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.energycontrol.utils.ReactorHelper;
 
+import ic2.api.energy.event.EnergyTileLoadEvent;
+import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergySink;
+import ic2.api.info.Info;
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IC2Items;
 import ic2.api.item.IElectricItem;
 import ic2.api.reactor.IReactor;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergySink, ISlotItemFilter, IInventory {
+public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergySink, ISlotItemFilter {
 	public static final int SLOT_CHARGER = 0;
 	public static final int SLOT_CARD = 1;
 	private static final double BASE_PACKET_SIZE = 32.0D;
@@ -39,11 +47,14 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 	private double maxPacketSize;
 	private int prevTier;
 	private int tier;
+	private int heat;
 	
 	private double energy;
+	private boolean addedToEnet;
 	
 	public TileEntityRemoteThermo() {
 		super();
+		addedToEnet = false;
 		maxStorage = BASE_STORAGE;
 		maxPacketSize = BASE_PACKET_SIZE;
 		tier = 1;
@@ -51,6 +62,11 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 		deltaY = 0;
 		deltaZ = 0;
 		energy = 0;
+		heat = 0;
+	}
+	
+	public int getHeat() {
+		return heat;
 	}
 
 	public double getEnergy() {
@@ -87,10 +103,61 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 	}
 	
 	@Override
+	protected void readProperties(NBTTagCompound tag) {
+		super.readProperties(tag);
+		if (tag.hasKey("heat"))
+			heat = tag.getInteger("heat");
+	}
+
+	@Override
+	public void readFromNBT(NBTTagCompound tag) {
+		super.readFromNBT(tag);
+		energy = tag.getDouble("energy");
+		markDirty();
+	}
+	
+	@Override
+	protected NBTTagCompound writeProperties(NBTTagCompound tag) {
+		tag = super.writeProperties(tag);
+		tag.setInteger("heat", heat);
+		return tag;
+	}
+	
+	@Override
+	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
+		super.writeToNBT(tag);
+		tag.setDouble("energy", energy);
+		return tag;
+	}
+
+	@Override
+	public void onLoad() {
+		if (!addedToEnet && !world.isRemote && Info.isIc2Available()) {
+			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
+			addedToEnet = true;
+		}
+	}
+
+	@Override
+	public void invalidate() {
+		onChunkUnload();
+		super.invalidate();
+	}
+
+	@Override
+	public void onChunkUnload() {
+		if (addedToEnet && !world.isRemote && Info.isIc2Available()) {
+			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
+			addedToEnet = false;
+		}
+	}
+	
+	@Override
 	protected void checkStatus() {
 		markDirty();
 
 		int newStatus;
+		int newHeat = 0;
 		if (energy >= EnergyControl.config.remoteThermalMonitorEnergyConsumption) {
 			IReactor reactor = ReactorHelper.getReactorAt(world, new BlockPos(pos.getX() + deltaX, pos.getY() + deltaY, pos.getZ() + deltaZ));
 			if (reactor == null) {
@@ -108,14 +175,19 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 						tickRate = 1;
 					updateTicker = tickRate;
 				}
-				newStatus = reactor.getHeat();
+				newHeat = reactor.getHeat();
+				if (newHeat > getHeatLevel())
+					newStatus = 1;
+				else
+					newStatus = 0;
 			} else
 				newStatus = -1;
 		} else
 			newStatus = -2;
 
-		if (newStatus != status) {
+		if (newStatus != status || newHeat != heat) {
 			status = newStatus;
+			heat = newHeat;
 			notifyBlockUpdate();
 			world.notifyNeighborsOfStateChange(pos, world.getBlockState(pos).getBlock(), false);
 		}
@@ -124,37 +196,23 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 	@Override
 	public void update() {
 		super.update();
+		if (!addedToEnet)
+			onLoad();
 		if (world.isRemote)
 			return;
-		//If is server
+		// If is server
 		int consumption = EnergyControl.config.remoteThermalMonitorEnergyConsumption;
-		if (!getStackInSlot(SLOT_CHARGER).isEmpty() && energy < maxStorage) {
-			if (getStackInSlot(SLOT_CHARGER).getItem() instanceof IElectricItem) {
-				IElectricItem ielectricitem = (IElectricItem) getStackInSlot(SLOT_CHARGER).getItem();
-
-				if (ielectricitem.canProvideEnergy(getStackInSlot(SLOT_CHARGER))) {
-					double k = ElectricItem.manager.discharge(getStackInSlot(SLOT_CHARGER), maxStorage - energy, tier, false, false, false);
-					energy += k;
-				}
-			} else if (Item.getIdFromItem(getStackInSlot(SLOT_CHARGER).getItem()) == Item.getIdFromItem((IC2Items.getItem("suBattery")).getItem())){
-				if (ENERGY_SU_BATTERY <= maxStorage - energy || energy == 0) {
-					getStackInSlot(SLOT_CHARGER).shrink(1);
-
-					if (getStackInSlot(SLOT_CHARGER).getCount() <= 0)
-						setInventorySlotContents(SLOT_CHARGER, ItemStack.EMPTY);
-
-					energy += ENERGY_SU_BATTERY;
-					if (energy > maxStorage)
-						energy = maxStorage;
-				}
-			}
+		ItemStack stack = getStackInSlot(SLOT_CHARGER);
+		if (!stack.isEmpty() && energy < maxStorage && stack.getItem() instanceof IElectricItem) {
+			IElectricItem ielectricitem = (IElectricItem) stack.getItem();
+			if (ielectricitem.canProvideEnergy(stack))
+				energy += ElectricItem.manager.discharge(stack, maxStorage - energy, tier, false, false, false);
 		}
-		
+
 		if (energy >= consumption) {
 			energy -= consumption;
 		} else 
 			energy = 0;
-		setEnergy(energy);
 	}
 	
 	@Override
@@ -173,9 +231,8 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 				upgradeCountTransormer += itemStack.getCount();
 			} else if (itemStack.isItemEqual(IC2Items.getItem("upgrade","energy_storage"))) {
 				upgradeCountStorage += itemStack.getCount();
-			} else if (itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE) {
+			} else if (itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE)
 				upgradeCountRange += itemStack.getCount();
-			}
 		}
 		if (!getStackInSlot(SLOT_CARD).isEmpty()) {
 			BlockPos target = new ItemCardReader(getStackInSlot(SLOT_CARD)).getTarget();
@@ -209,23 +266,9 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 			setMaxStorage(maxStorage);
 			if (energy > maxStorage)
 				energy = maxStorage;
-			setEnergy(energy);
 		}
 	}
 	
-	@Override
-	public void readFromNBT(NBTTagCompound tag) {
-		super.readFromNBT(tag);		
-		energy = tag.getDouble("energy");
-		markDirty();
-	}
-	
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
-		super.writeToNBT(tag);
-		tag.setDouble("energy", energy);
-		return tag;
-	}
 	
 	// Inventory
 	@Override
@@ -260,13 +303,13 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 	}
 	
 	@Override
-	public boolean acceptsEnergyFrom(IEnergyEmitter arg0, EnumFacing arg1) {
+	public boolean acceptsEnergyFrom(IEnergyEmitter emitter, EnumFacing dir) {
 		return true;
 	}
 
 	@Override
 	public double getDemandedEnergy() {
-		return maxStorage - energy;
+		return Math.max(0, maxStorage - energy);
 	}
 
 	@Override
@@ -275,7 +318,7 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 	}
 
 	@Override
-	public double injectEnergy(EnumFacing arg0, double amount, double voltage) {
+	public double injectEnergy(EnumFacing directionFrom, double amount, double voltage) {
 		energy += amount;
 		double left = 0.0;
 
@@ -283,7 +326,17 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 			left = energy - maxStorage;
 			energy = maxStorage;
 		}
-		setEnergy(energy);
 		return left;
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public double getMaxRenderDistanceSquared() {
+		return 65536.0D;
+	}
+	
+	@Override
+	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
+		return false;
 	}
 }

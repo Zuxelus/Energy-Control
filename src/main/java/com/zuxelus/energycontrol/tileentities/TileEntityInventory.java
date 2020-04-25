@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -138,29 +139,36 @@ public abstract class TileEntityInventory extends TileEntityFacing implements II
 		inventory.clear();
 	}
 	
+	public List<ItemStack> getDrops(int fortune) {
+		List<ItemStack> list = new ArrayList<>();
+		for (int i = 0; i < getSizeInventory(); i++) {
+			ItemStack stack = getStackInSlot(i);
+			if (!stack.isEmpty())
+				list.add(stack);
+		}
+		return list;
+	}
+	
 	public void dropItems(World world, BlockPos pos) {
 		Random rand = new Random();
-		for (int i = 0; i < getSizeInventory(); i++) {
-			ItemStack item = getStackInSlot(i);
+		List<ItemStack> list = getDrops(1);
+		for (ItemStack stack : list) {
+			float rx = rand.nextFloat() * 0.8F + 0.1F;
+			float ry = rand.nextFloat() * 0.8F + 0.1F;
+			float rz = rand.nextFloat() * 0.8F + 0.1F;
 
-			if (!item.isEmpty() && item.getCount() > 0) {
-				float rx = rand.nextFloat() * 0.8F + 0.1F;
-				float ry = rand.nextFloat() * 0.8F + 0.1F;
-				float rz = rand.nextFloat() * 0.8F + 0.1F;
+			EntityItem entityItem = new EntityItem(world, pos.getX() + rx, pos.getY() + ry, pos.getZ() + rz,
+					new ItemStack(stack.getItem(), stack.getCount(), stack.getItemDamage()));
 
-				EntityItem entityItem = new EntityItem(world, pos.getX() + rx, pos.getY() + ry, pos.getZ() + rz,
-						new ItemStack(item.getItem(), item.getCount(), item.getItemDamage()));
+			if (stack.hasTagCompound())
+				entityItem.getItem().setTagCompound((NBTTagCompound) stack.getTagCompound().copy());
 
-				if (item.hasTagCompound())
-					entityItem.getItem().setTagCompound((NBTTagCompound) item.getTagCompound().copy());
-
-				float factor = 0.05F;
-				entityItem.motionX = rand.nextGaussian() * factor;
-				entityItem.motionY = rand.nextGaussian() * factor + 0.2F;
-				entityItem.motionZ = rand.nextGaussian() * factor;
-				world.spawnEntity(entityItem);
-				item.setCount(0);
-			}
+			float factor = 0.05F;
+			entityItem.motionX = rand.nextGaussian() * factor;
+			entityItem.motionY = rand.nextGaussian() * factor + 0.2F;
+			entityItem.motionZ = rand.nextGaussian() * factor;
+			world.spawnEntity(entityItem);
+			stack.setCount(0);
 		}
 	}
 }

@@ -55,11 +55,12 @@ public class TERemoteThermoRenderer extends TileEntitySpecialRenderer<TileEntity
 		GlStateManager.translate(0.0F, -0.5F, 1.001F);
 
 		int status = te.getStatus();
+		int heat = te.getHeat();
 		int level = te.getHeatLevel();
 		if (status > -2) {
 			double rate = 1;
 			if (status > -1)
-				rate = Math.round((1 - Math.min((double) status / level, 1)) * 16) / (double) 16;
+				rate = Math.round((1 - Math.min((double) heat / level, 1)) * 16) / (double) 16;
 			Tessellator tessellator = Tessellator.getInstance();
 			BufferBuilder bufferbuilder = tessellator.getBuffer();
 			bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
