@@ -3,11 +3,15 @@ package com.zuxelus.energycontrol.items.cards;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.zuxelus.energycontrol.api.CardState;
+import com.zuxelus.energycontrol.api.ICardGui;
+import com.zuxelus.energycontrol.api.ICardReader;
+import com.zuxelus.energycontrol.api.PanelSetting;
+import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.gui.GuiCardText;
-import com.zuxelus.energycontrol.utils.CardState;
-import com.zuxelus.energycontrol.utils.PanelSetting;
-import com.zuxelus.energycontrol.utils.PanelString;
 
+import ic2.api.item.IC2Items;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -15,20 +19,16 @@ import net.minecraft.world.World;
 public class ItemCardText extends ItemCardBase {
 	public ItemCardText() {
 		super(ItemCardType.CARD_TEXT, "card_text");
+		//addRecipe(new Object[] { " C ", "PFP", " C ", 'P', Items.PAPER, 'C', "circuitBasic", 'F', IC2Items.getItem("cable", "type:tin,insulation:1") });
 	}
 
 	@Override
-	public String getUnlocalizedName() {
-		return "item.card_text";
-	}
-
-	@Override
-	public CardState update(World world, ItemCardReader reader, int range, BlockPos pos) {
+	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
 		return CardState.OK;
 	}
 
 	@Override
-	protected List<PanelString> getStringData(int displaySettings, ItemCardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
 		List<PanelString> result = new LinkedList<PanelString>();
 		boolean started = false;
 		for (int i = 9; i >= 0; i--) {
@@ -42,12 +42,17 @@ public class ItemCardText extends ItemCardBase {
 	}
 
 	@Override
-	protected List<PanelSetting> getSettingsList(ItemStack stack) {
+	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		return null;
 	}
 	
 	@Override
-	public ICardGui getSettingsScreen(ItemCardReader reader) {
+	public ICardGui getSettingsScreen(ICardReader reader) {
 		return new GuiCardText(reader);
+	}
+
+	@Override
+	public boolean isRemoteCard(int damage) {
+		return false;
 	}
 }

@@ -1,0 +1,27 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "IFI",
+        "IMI",
+        "ITI"
+    ],
+    "key": {
+        "T": {
+            "item": "energycontrol:thermal_monitor"
+        },
+        "M": {
+            "item": "ic2:resource",
+            "data": 12
+        },
+        "F": {
+            "item": "ic2:frequency_transmitter"
+        },
+        "I": {
+            "type": "forge:ore_dict",
+            "ore": "plateIron"
+        }
+    },
+    "result": {
+        "item": "energycontrol:remote_thermo"
+    }
+}

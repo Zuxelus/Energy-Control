@@ -1,0 +1,26 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "CF",
+        "PB"
+    ],
+    "key": {
+        "P": {
+            "item": "minecraft:paper"
+        },
+        "C": {
+            "item": "minecraft:bucket"
+        },
+        "F": {
+            "item": "ic2:frequency_transmitter"
+        },
+        "B": {
+            "type": "forge:ore_dict",
+            "ore": "dyeBlue"
+        }
+    },
+    "result": {
+        "item": "energycontrol:item_kit",
+        "data": 2
+    }
+}

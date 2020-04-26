@@ -1,7 +1,7 @@
 package com.zuxelus.energycontrol.crossmod;
 
+import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
-import com.zuxelus.energycontrol.utils.CardState;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;

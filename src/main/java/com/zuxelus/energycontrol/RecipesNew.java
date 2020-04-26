@@ -5,6 +5,7 @@ import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
+import com.zuxelus.energycontrol.items.kits.ItemKitMain;
 
 import ic2.api.item.IC2Items;
 import ic2.api.recipe.Recipes;
@@ -16,7 +17,7 @@ import net.minecraft.item.ItemStack;
 public class RecipesNew {
 
 	public static void addRecipes() {
-		ItemStack thermalMonitor = new ItemStack(ItemHelper.thermalMonitor);
+		/*ItemStack thermalMonitor = new ItemStack(ItemHelper.thermalMonitor);
 		Recipes.advRecipes.addRecipe(thermalMonitor, new Object[]{ 
 				"LLL", "LCL", "LRL", 
 					'L', "plateLead", 
@@ -72,24 +73,6 @@ public class RecipesNew {
 				'R', "dustRedstone", 
 				'W', "plankWood" });
 
-		/*ItemStack infoPanelAdvanced = new ItemStack(ItemHelper.infoPanelAdvanced);
-		Recipes.advRecipes.addRecipe(infoPanelAdvanced, new Object[] { 
-			"PPP", "1I2", "CAC", 
-				'P', "paneGlassLime", 
-				'I', infoPanel, 
-				'1', new ItemStack(ItemHelper.itemUpgrade, 1, ItemUpgrade.DAMAGE_COLOR),
-				'2', new ItemStack(ItemHelper.itemUpgrade, 1, ItemUpgrade.DAMAGE_RANGE),
-				'A', "circuitAdvanced", 
-				'C', IC2Items.getItem("carbonPlate")});*/
-
-		/*ItemStack infoPanelExtenderAdvanced = new ItemStack(ItemHelper.infoPanelExtenderAdvanced);
-		Recipes.advRecipes.addRecipe(infoPanelExtenderAdvanced, new Object[] { 
-			"PPP", "CEC", "CMC",
-				'P', "paneGlassLime",
-				'M', IC2Items.getItem("machine"), 
-				'E', infoPanelExtender,
-				'C', IC2Items.getItem("carbonPlate")});*/
-
 		Recipes.advRecipes.addRecipe(new ItemStack(ItemHelper.itemThermometer), new Object[]{
 			"IG ", "GWG", " GG", 
 				'G', "blockGlass", 
@@ -103,13 +86,6 @@ public class RecipesNew {
 				'T', ItemHelper.itemThermometer,
 				'I', "plateIron",
 				'P', IC2Items.getItem("crafting#small_power_unit")});
-
-		Recipes.advRecipes.addRecipe(new ItemStack(ItemHelper.itemKit), new Object[] { 
-			"RF", "PO",
-				'P', Items.PAPER,
-				'R', "dustRedstone",
-				'F', IC2Items.getItem("frequency_transmitter"),
-				'O', "dyeRed"});
 
 		Recipes.advRecipes.addRecipe(new ItemStack(ItemHelper.itemUpgrade, 1, ItemUpgrade.DAMAGE_RANGE), new Object[] { 
 			"CCC", "IFI", 
@@ -149,64 +125,13 @@ public class RecipesNew {
 				'F', IC2Items.getItem("frequency_transmitter"),
 				'A', "circuitAdvanced",
 				'M', IC2Items.getItem("resource#machine"),
-				'R', "dustRedstone"});
+				'R', "dustRedstone"});*/
 
-		Recipes.advRecipes.addRecipe(new ItemStack(ItemHelper.itemKit, 1, ItemHelper.KIT_COUNTER), new Object[] { 
-			"CF", "PR", 
-				'P', Items.PAPER, 
-				'C', "circuitBasic", 
-				'F', IC2Items.getItem("frequency_transmitter"), 
-				'R', "dyeOrange" });
-
-		ItemStack kitLiquid = new ItemStack(ItemHelper.itemKit, 1, ItemHelper.KIT_LIQUID);
-		Recipes.advRecipes.addRecipe(kitLiquid, new Object[] { 
-			"CF", "PB", 
-				'P', Items.PAPER, 
-				'C', Items.BUCKET,
-				'F', IC2Items.getItem("frequency_transmitter"), 
-				'B', "dyeBlue" });
-
-		Recipes.advRecipes.addRecipe(new ItemStack(ItemHelper.itemKit, 1, ItemHelper.KIT_LIQUID_ADVANCED), new Object[] { 
-			"BKB", 
-					'B', Items.BUCKET,
-					'K', kitLiquid });
-
-		Recipes.advRecipes.addRecipe(new ItemStack(ItemHelper.itemKit, 1, ItemHelper.KIT_REACTOR), new Object[] { 
-			"DF", "PW", 
-					'P', Items.PAPER, 
-					'D', StackUtil.copyWithWildCard(digitalThermometer), 
-					'F', IC2Items.getItem("frequency_transmitter"), 
-					'W', "dyeYellow" });		
-		
-		Recipes.advRecipes.addRecipe(new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_TEXT), new Object[] { 
-			" C ", "PFP", " C ",
-				'P', Items.PAPER,
-				'C', "circuitBasic",
-				'F', IC2Items.getItem("cable","type:tin,insulation:1")});
-
-		Recipes.advRecipes.addRecipe(new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_TIME), new Object[]{ 
-			" C ", "PWP", " C ", 
-				'C', Items.CLOCK, 
-				'P', Items.PAPER, 
-				'W', IC2Items.getItem("cable","type:tin,insulation:1")});
-
-		Recipes.advRecipes.addRecipe(new ItemStack(ItemHelper.itemKit, 1, ItemHelper.KIT_GENERATOR), new Object[] { 
-			"CF", "PL", 
-				'P', Items.PAPER, 
-				'C', IC2Items.getItem("upgrade","energy_storage"), 
-				'F', IC2Items.getItem("frequency_transmitter"), 
-				'L', "dyeLightGray"});
-
-		/*Recipes.advRecipes.addRecipe(new ItemStack(ItemHelper.itemRemoteMonitor), new Object[]{
-				"A  ", "CMC", "RPP",
-				'A', IC2Items.getItem("cable","type:tin,insulation:1"),
-				'C', IC2Items.getItem("frequency_transmitter"),
-				'M', new ItemStack(ItemHelper.blockMain, 1, BlockDamages.DAMAGE_INFO_PANEL_EXTENDER),
-				'R', ItemHelper.itemUpgrade,
-				'P', IC2Items.getItem("carbonPlate")});*/
+		ItemKitMain.registerRecipes();
+		ItemCardMain.registerRecipes();
 		
 		for (int i = 0; i <= ItemCardType.CARD_MAX; i++)
-			if (ItemCardMain.cards.containsKey(i))
+			if (ItemCardMain.containsCard(i))
 				Recipes.advRecipes.addShapelessRecipe(IC2Items.getItem("crafting","circuit"), new ItemStack(ItemHelper.itemCard, 1, i));
 	}
 }

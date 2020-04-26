@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.zuxelus.energycontrol.api.CardState;
+import com.zuxelus.energycontrol.api.ICardReader;
+import com.zuxelus.energycontrol.api.PanelSetting;
+import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.EnergyStorageData;
-import com.zuxelus.energycontrol.utils.CardState;
-import com.zuxelus.energycontrol.utils.PanelSetting;
-import com.zuxelus.energycontrol.utils.PanelString;
 
 import ic2.api.energy.EnergyNet;
 import ic2.core.block.generator.tileentity.TileEntityBaseGenerator;
@@ -25,12 +26,7 @@ public class ItemCardGenerator extends ItemCardBase {
 	}
 
 	@Override
-	public String getUnlocalizedName() {
-		return "item.card_generator";
-	}
-
-	@Override
-	public CardState update(World world, ItemCardReader reader, int range, BlockPos pos) {
+	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
 		BlockPos target = reader.getTarget();
 		if (target == null) 
 			return CardState.NO_TARGET;
@@ -57,7 +53,7 @@ public class ItemCardGenerator extends ItemCardBase {
 	}
 
 	@Override
-	protected List<PanelString> getStringData(int displaySettings, ItemCardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
 		List<PanelString> result = new LinkedList<PanelString>();
 		switch (reader.getInt("type")) {
 		case 1:
@@ -65,27 +61,29 @@ public class ItemCardGenerator extends ItemCardBase {
 				result.add(new PanelString("msg.ec.InfoPanelStorage", reader.getDouble("storage"), showLabels));
 			if ((displaySettings & 2) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelMaxStorage", reader.getDouble("maxStorage"), showLabels));
-			if ((displaySettings & 4) > 0)
+			if ((displaySettings & 8) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("production"), showLabels));
 			break;
 		case 2:
-			if ((displaySettings & 1) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelMultiplier", reader.getDouble("multiplier"), showLabels));
 			if ((displaySettings & 4) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelMultiplier", reader.getDouble("multiplier"), showLabels));
+			if ((displaySettings & 8) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("production"), showLabels));
 			break;
 		}
-		if ((displaySettings & 8) > 0)
-			ItemCardType.addOnOff(result, reader, reader.getBoolean("active"));
+		if ((displaySettings & 16) > 0)
+			addOnOff(result, reader.getBoolean("active"));
 		return result;
 	}
 
 	@Override
-	protected List<PanelSetting> getSettingsList(ItemStack stack) {
+	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(5);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelStorage"), 1, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMaxStorage"), 2, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOutput"), 4, damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMultiplier"), 4, damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOutput"), 8, damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOnOff"), 16, damage));
 		return result;
 	}
 }

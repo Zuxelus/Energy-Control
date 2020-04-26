@@ -3,30 +3,18 @@ package com.zuxelus.energycontrol.items.kits;
 import com.zuxelus.energycontrol.crossmod.LiquidCardHelper;
 import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
-import com.zuxelus.energycontrol.utils.ItemStackHelper;
-import com.zuxelus.energycontrol.utils.ReactorHelper;
 
-import ic2.api.reactor.IReactor;
-import ic2.core.block.BlockTileEntity;
-import ic2.core.block.reactor.tileentity.TileEntityReactorAccessHatch;
-import ic2.core.block.reactor.tileentity.TileEntityReactorFluidPort;
-import ic2.core.block.reactor.tileentity.TileEntityReactorRedstonePort;
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
+import ic2.api.item.IC2Items;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.IFluidTank;
 
 public class ItemKitLiquid extends ItemKitSimple {
 	public ItemKitLiquid() {
-		super(ItemHelper.KIT_LIQUID, "kit_liquid");
-	}
-
-	@Override
-	public String getUnlocalizedName() {
-		return "item.kit_liquid";
+		super(ItemCardType.KIT_LIQUID, "kit_liquid");
+		//addRecipe(new Object[] { "CF", "PB", 'P', Items.PAPER, 'C', Items.BUCKET, 'F', IC2Items.getItem("frequency_transmitter"), 'B', "dyeBlue" });
 	}
 
 	@Override

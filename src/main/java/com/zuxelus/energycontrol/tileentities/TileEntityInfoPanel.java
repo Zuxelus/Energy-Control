@@ -5,13 +5,12 @@ import java.util.List;
 import java.util.Map;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.api.CardState;
+import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.containers.ISlotItemFilter;
-import com.zuxelus.energycontrol.items.IRemoteSensor;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
-import com.zuxelus.energycontrol.utils.CardState;
-import com.zuxelus.energycontrol.utils.PanelString;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
@@ -404,7 +403,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		int range = LOCATION_RANGE * (int) Math.pow(2, upgradeCountRange);
 		ItemCardReader reader = new ItemCardReader(card);
 
-		if (item instanceof IRemoteSensor) {
+		if (((ItemCardMain)item).isRemoteCard(card.getItemDamage())) {
 			BlockPos target = reader.getTarget();
 			if (target == null) {
 				needUpdate = false;

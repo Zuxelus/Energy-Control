@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.zuxelus.energycontrol.utils.CardState;
-import com.zuxelus.energycontrol.utils.PanelSetting;
-import com.zuxelus.energycontrol.utils.PanelString;
+import com.zuxelus.energycontrol.api.CardState;
+import com.zuxelus.energycontrol.api.ICardReader;
+import com.zuxelus.energycontrol.api.PanelSetting;
+import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.utils.ReactorHelper;
 
 import ic2.api.reactor.IReactor;
@@ -22,12 +23,7 @@ public class ItemCardReactor extends ItemCardBase {
 	}
 
 	@Override
-	public String getUnlocalizedName() {
-		return "item.card_reactor";
-	}
-
-	@Override
-	public CardState update(World world, ItemCardReader reader, int range, BlockPos pos) {
+	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
 		BlockPos target = reader.getTarget();
 		if (target == null) 
 			return CardState.NO_TARGET;
@@ -63,7 +59,7 @@ public class ItemCardReactor extends ItemCardBase {
 	}
 
 	@Override
-	protected List<PanelString> getStringData(int displaySettings, ItemCardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
 		List<PanelString> result = new LinkedList<PanelString>();
 		if ((displaySettings & 2) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelHeat", reader.getInt("heat"), showLabels));
@@ -86,12 +82,12 @@ public class ItemCardReactor extends ItemCardBase {
 		}
 
 		if ((displaySettings & 1) > 0)
-			ItemCardType.addOnOff(result, reader, reader.getBoolean("reactorPoweredB"));
+			addOnOff(result, reader.getBoolean("reactorPoweredB"));
 		return result;
 	}
 
 	@Override
-	protected List<PanelSetting> getSettingsList(ItemStack stack) {
+	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(6);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOnOff"), 1, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelHeat"), 2, damage));

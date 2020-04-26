@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.zuxelus.energycontrol.api.CardState;
+import com.zuxelus.energycontrol.api.ICardReader;
+import com.zuxelus.energycontrol.api.PanelSetting;
+import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.utils.CardState;
-import com.zuxelus.energycontrol.utils.PanelSetting;
-import com.zuxelus.energycontrol.utils.PanelString;
 import com.zuxelus.energycontrol.utils.StringUtils;
 
 import net.minecraft.client.resources.I18n;
@@ -18,20 +19,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class ItemCardGeneratorArray extends ItemCardBase {
-	private static final int STATUS_NOT_FOUND = Integer.MIN_VALUE;
-	private static final int STATUS_OUT_OF_RANGE = Integer.MIN_VALUE + 1;	
+	private static final double STATUS_NOT_FOUND = Integer.MIN_VALUE;
+	private static final double STATUS_OUT_OF_RANGE = Integer.MIN_VALUE + 1;	
 
 	public ItemCardGeneratorArray() {
 		super(ItemCardType.CARD_GENERATOR_ARRAY, "card_generator_array");
 	}
 
 	@Override
-	public String getUnlocalizedName() {
-		return "item.card_generator_array";
-	}
-
-	@Override
-	public CardState update(World world, ItemCardReader reader, int range, BlockPos pos) {
+	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
 		int cardCount = reader.getCardCount();
 		if (cardCount == 0)
 			return CardState.INVALID_CARD;
@@ -48,18 +44,23 @@ public class ItemCardGeneratorArray extends ItemCardBase {
 				TileEntity entity = world.getTileEntity(target);
 				NBTTagCompound tag = CrossModLoader.crossIc2.getGeneratorData(entity);
 				if (tag != null && tag.hasKey("type")) {
-					switch (tag.getInteger("type")) {
+					int type = tag.getInteger("type");
+					reader.setInt(String.format("_%dtype", i), type);
+					switch (type) {
 					case 1:
 						reader.setDouble(String.format("_%dstorage", i), tag.getDouble("storage"));
 						reader.setDouble(String.format("_%dmaxStorage", i), tag.getDouble("maxStorage"));
 						reader.setDouble(String.format("_%dproduction", i), tag.getDouble("production"));
 						break;
+					case 2:
+						reader.setDouble(String.format("_%dproduction", i), tag.getDouble("production"));
+						break;
 					}
 					foundAny = true;
 				} else
-					reader.setInt(String.format("_%denergy", i), STATUS_NOT_FOUND);
+					reader.setDouble(String.format("_%dproduction", i), STATUS_NOT_FOUND);
 			} else {
-				reader.setInt(String.format("_%denergy", i), STATUS_OUT_OF_RANGE);
+				reader.setDouble(String.format("_%dproduction", i), STATUS_OUT_OF_RANGE);
 				outOfRange = true;
 			}
 		}
@@ -72,44 +73,56 @@ public class ItemCardGeneratorArray extends ItemCardBase {
 	}
 
 	@Override
-	protected List<PanelString> getStringData(int displaySettings, ItemCardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
 		List<PanelString> result = new LinkedList<PanelString>();
 		PanelString line;
 		double totalEnergy = 0;
 		double totalStorage = 0;
 		double totalOutput = 0;
-		boolean showSummary = (displaySettings & 16) > 0;
+		boolean showSummary = (displaySettings & 64) > 0;
 		for (int i = 0; i < reader.getCardCount(); i++) {
-			double energy = reader.getDouble(String.format("_%dstorage", i));
-			int storage = reader.getInt(String.format("_%dmaxStorage", i));
-			int output = reader.getInt(String.format("_%dproduction", i));
-			boolean isOutOfRange = energy == STATUS_OUT_OF_RANGE;
-			boolean isNotFound = energy == STATUS_NOT_FOUND;
+			if (reader.hasField(String.format("_%dtype", i))) {
+			int type = reader.getInt(String.format("_%dtype", i));
+			double energy = 0;
+			double storage = 0;
+			double output = 0;
+			switch (type) {
+			case 1:
+				energy = reader.getDouble(String.format("_%dstorage", i));
+				storage = reader.getDouble(String.format("_%dmaxStorage", i));
+				output = reader.getDouble(String.format("_%dproduction", i));
+			case 2:
+				output = reader.getDouble(String.format("_%dproduction", i));
+				break;
+			}
+
+			boolean isOutOfRange = output == STATUS_OUT_OF_RANGE;
+			boolean isNotFound = output == STATUS_NOT_FOUND;
 			if (showSummary && !isOutOfRange && !isNotFound) {
 				totalEnergy += energy;
 				totalStorage += storage;
 				totalOutput += output;
 			}
 		
-			if ((displaySettings & 8) > 0) {
+			if ((displaySettings & 32) > 0) {
 				if (isOutOfRange) {
 					result.add(new PanelString(StringUtils.getFormattedKey("msg.ec.InfoPanelOutOfRangeN", i + 1)));
 				} else if (isNotFound) {
 					result.add(new PanelString(StringUtils.getFormattedKey("msg.ec.InfoPanelNotFoundN", i + 1)));
 				} else {
-					if ((displaySettings & 1) > 0) {
+					if ((displaySettings & 1) > 0 && type == 1) {
 						if (showLabels)
 							result.add(new PanelString(StringUtils.getFormattedKey("msg.ec.InfoPanelStorageN", i + 1, StringUtils.getFormatted("", energy, false))));
 						else
 							result.add(new PanelString(StringUtils.getFormatted("", energy, false)));
 					}
-					if ((displaySettings & 2) > 0) {
+					if ((displaySettings & 2) > 0 && type == 1) {
 						if (showLabels)
 							result.add(new PanelString(StringUtils.getFormattedKey("msg.ec.InfoPanelMaxStorageN", i + 1, StringUtils.getFormatted("", storage, false))));
 						else
 							result.add(new PanelString(StringUtils.getFormatted("", storage, false)));
 					}
-					if ((displaySettings & 4) > 0) {
+					if ((displaySettings & 8) > 0) {
 						if (showLabels)
 							result.add(new PanelString(StringUtils.getFormattedKey("msg.ec.InfoPanelOutputN", i + 1, StringUtils.getFormatted("", output, false))));
 						else
@@ -117,26 +130,32 @@ public class ItemCardGeneratorArray extends ItemCardBase {
 					}
 				}
 			}
+			}
 		}
 		if (showSummary) {
 			if ((displaySettings & 1) > 0) 
 				result.add(new PanelString("msg.ec.InfoPanelStorage", totalEnergy, showLabels));
 			if ((displaySettings & 2) > 0) 
 				result.add(new PanelString("msg.ec.InfoPanelMaxStorage", totalStorage, showLabels));
-			if ((displaySettings & 4) > 0)
+			if ((displaySettings & 8) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelOutput", totalOutput, showLabels));
 		}
 		return result;
 	}
 
 	@Override
-	protected List<PanelSetting> getSettingsList(ItemStack stack) {
+	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(5);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelStorage"), 1, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMaxStorage"), 2, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOutput"), 4, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEach"), 8, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelTotal"), 16, damage));		
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOutput"), 8, damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEach"), 32, damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelTotal"), 64, damage));
 		return result;
+	}
+	
+	@Override
+	public boolean isRemoteCard(int damage) {
+		return false;
 	}
 }

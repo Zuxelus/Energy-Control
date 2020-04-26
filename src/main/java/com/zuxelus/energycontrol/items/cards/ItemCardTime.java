@@ -3,11 +3,14 @@ package com.zuxelus.energycontrol.items.cards;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.zuxelus.energycontrol.utils.CardState;
-import com.zuxelus.energycontrol.utils.PanelSetting;
-import com.zuxelus.energycontrol.utils.PanelString;
+import com.zuxelus.energycontrol.api.CardState;
+import com.zuxelus.energycontrol.api.ICardReader;
+import com.zuxelus.energycontrol.api.PanelSetting;
+import com.zuxelus.energycontrol.api.PanelString;
 
+import ic2.api.item.IC2Items;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -16,20 +19,16 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 public class ItemCardTime extends ItemCardBase {
 	public ItemCardTime() {
 		super(ItemCardType.CARD_TIME, "card_time");
+		//addRecipe(new Object[] { " C ", "PWP", " C ", 'C', Items.CLOCK, 'P', Items.PAPER, 'W', IC2Items.getItem("cable", "type:tin,insulation:1") });
 	}
 
 	@Override
-	public String getUnlocalizedName() {
-		return "item.card_time";
-	}
-
-	@Override
-	public CardState update(World world, ItemCardReader reader, int range, BlockPos pos) {
+	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
 		return CardState.OK;
 	}
 
 	@Override
-	protected List<PanelString> getStringData(int displaySettings, ItemCardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
 		List<PanelString> result = new ArrayList<PanelString>(1);
 		int time = (int) ((FMLClientHandler.instance().getClient().world.getWorldTime() + 6000) % 24000);
 		int hours = time / 1000;
@@ -46,9 +45,14 @@ public class ItemCardTime extends ItemCardBase {
 	}
 
 	@Override
-	protected List<PanelSetting> getSettingsList(ItemStack stack) {
+	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(1);
 		result.add(new PanelSetting(I18n.format("msg.ec.cb24h"), 1, damage));
 		return result;
+	}
+
+	@Override
+	public boolean isRemoteCard(int damage) {
+		return false;
 	}
 }

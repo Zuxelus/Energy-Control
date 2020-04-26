@@ -6,10 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.api.CardState;
+import com.zuxelus.energycontrol.api.ICardReader;
+import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.network.NetworkHelper;
-import com.zuxelus.energycontrol.utils.CardState;
 import com.zuxelus.energycontrol.utils.ItemStackHelper;
-import com.zuxelus.energycontrol.utils.PanelString;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
@@ -18,7 +19,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 
-public class ItemCardReader {
+public class ItemCardReader implements ICardReader {
 	private ItemStack card;
 	private Map<String, Object> updateSet;
 
@@ -29,6 +30,7 @@ public class ItemCardReader {
 		updateSet = new HashMap<String, Object>();
 	}
 
+	@Override
 	public BlockPos getTarget() {
 		NBTTagCompound nbtTagCompound = card.getTagCompound();
 		if (nbtTagCompound == null)
@@ -37,6 +39,7 @@ public class ItemCardReader {
 		return new BlockPos(nbtTagCompound.getInteger("x"), nbtTagCompound.getInteger("y"), nbtTagCompound.getInteger("z"));
 	}
 
+	@Override
 	public void setInt(String name, Integer value) {
 		NBTTagCompound nbtTagCompound = ItemStackHelper.getTagCompound(card);
 		if (nbtTagCompound.hasKey(name)) {
@@ -48,6 +51,7 @@ public class ItemCardReader {
 		nbtTagCompound.setInteger(name, value);
 	}
 
+	@Override
 	public Integer getInt(String name) {
 		NBTTagCompound nbtTagCompound = card.getTagCompound();
 		if (nbtTagCompound == null)
@@ -55,6 +59,7 @@ public class ItemCardReader {
 		return nbtTagCompound.getInteger(name);
 	}
 
+	@Override
 	public void setLong(String name, Long value) {
 		NBTTagCompound nbtTagCompound = ItemStackHelper.getTagCompound(card);
 		if (nbtTagCompound.hasKey(name)) {
@@ -66,6 +71,7 @@ public class ItemCardReader {
 		nbtTagCompound.setLong(name, value);
 	}
 
+	@Override
 	public Long getLong(String name) {
 		NBTTagCompound nbtTagCompound = card.getTagCompound();
 		if (nbtTagCompound == null)
@@ -73,6 +79,7 @@ public class ItemCardReader {
 		return nbtTagCompound.getLong(name);
 	}
 
+	@Override
 	public void setDouble(String name, Double value) {
 		NBTTagCompound nbtTagCompound = ItemStackHelper.getTagCompound(card);
 		if (nbtTagCompound.hasKey(name)) {
@@ -84,6 +91,7 @@ public class ItemCardReader {
 		nbtTagCompound.setDouble(name, value);
 	}
 
+	@Override
 	public Double getDouble(String name) {
 		NBTTagCompound nbtTagCompound = card.getTagCompound();
 		if (nbtTagCompound == null)
@@ -91,6 +99,7 @@ public class ItemCardReader {
 		return nbtTagCompound.getDouble(name);
 	}
 
+	@Override
 	public void setString(String name, String value) {
 		if (name == null)
 			return;
@@ -104,6 +113,7 @@ public class ItemCardReader {
 		nbtTagCompound.setString(name, value);
 	}
 
+	@Override
 	public String getString(String name) {
 		NBTTagCompound nbtTagCompound = card.getTagCompound();
 		if (nbtTagCompound == null)
@@ -111,6 +121,7 @@ public class ItemCardReader {
 		return nbtTagCompound.getString(name);
 	}
 
+	@Override
 	public void setBoolean(String name, Boolean value) {
 		NBTTagCompound nbtTagCompound = ItemStackHelper.getTagCompound(card);
 		if (nbtTagCompound.hasKey(name)) {
@@ -122,6 +133,7 @@ public class ItemCardReader {
 		nbtTagCompound.setBoolean(name, value);
 	}
 
+	@Override
 	public Boolean getBoolean(String name) {
 		NBTTagCompound nbtTagCompound = card.getTagCompound();
 		if (nbtTagCompound == null)
@@ -129,39 +141,38 @@ public class ItemCardReader {
 		return nbtTagCompound.getBoolean(name);
 	}
 
+	@Override
 	public void setTitle(String title) {
 		setString("title", title);
 	}
 
+	@Override
 	public String getTitle() {
 		return getString("title");
 	}
 
+	@Override
 	public CardState getState() {
 		return CardState.fromInteger(getInt("state"));
 	}
 
+	@Override
 	public void setState(CardState state) {
 		setInt("state", state.getIndex());
 	}
 
-	public ItemStack getItemStack() {
-		return card;
-	}
-
+	@Override
 	public boolean hasField(String field) {
 		return ItemStackHelper.getTagCompound(card).hasKey(field);
 	}
 
+	@Override
 	public void commit(TileEntity panel, int slot) {
 		if (!updateSet.isEmpty())
 			NetworkHelper.setSensorCardField(panel, slot, updateSet);
 	}
 
-	public Map<String, Object> getUpdateSet() {
-		return this.updateSet;
-	}
-
+	@Override
 	public void setTag(String name, NBTTagCompound value) {
 		NBTTagCompound nbtTagCompound = ItemStackHelper.getTagCompound(card);
 		if (nbtTagCompound.hasKey(name)) {
@@ -175,16 +186,17 @@ public class ItemCardReader {
 		} else
 			nbtTagCompound.setTag(name, value);
 	}
-	
+
 	public void clearField(String name) {
 		NBTTagCompound nbtTagCompound = ItemStackHelper.getTagCompound(card);
 		nbtTagCompound.removeTag(name);
 	}
-	
+
+	@Override
 	public int getCardCount() {
 		return getInt("cardCount");
 	}
-	
+
 	public static List<PanelString> getStateMessage(CardState state) {
 		List<PanelString> result = new LinkedList<PanelString>();
 		PanelString line = new PanelString();

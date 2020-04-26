@@ -20,7 +20,9 @@ public class ServerProxy implements IGuiHandler {
 		EnergyControl.config.init(event.getSuggestedConfigurationFile());
 	}
 	
-	public void registerModels() { }
+	public void registerSpecialRenderers() { }
+	
+	public void registerExtendedModels() { }
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
@@ -49,4 +51,6 @@ public class ServerProxy implements IGuiHandler {
 	public void registerEventHandlers() {
 		MinecraftForge.EVENT_BUS.register(ServerTickHandler.instance);
 	}
+
+	public void importSound() { }
 }

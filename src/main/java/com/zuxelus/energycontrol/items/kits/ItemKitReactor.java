@@ -8,10 +8,15 @@ import com.zuxelus.energycontrol.utils.ReactorHelper;
 import ic2.api.item.IC2Items;
 import ic2.api.reactor.IReactor;
 import ic2.core.block.BlockTileEntity;
-import ic2.core.block.reactor.tileentity.*;
+import ic2.core.block.reactor.tileentity.TileEntityNuclearReactorElectric;
+import ic2.core.block.reactor.tileentity.TileEntityReactorAccessHatch;
+import ic2.core.block.reactor.tileentity.TileEntityReactorChamberElectric;
+import ic2.core.block.reactor.tileentity.TileEntityReactorFluidPort;
+import ic2.core.block.reactor.tileentity.TileEntityReactorRedstonePort;
+import ic2.core.util.StackUtil;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -19,16 +24,13 @@ import net.minecraft.world.World;
 
 public class ItemKitReactor extends ItemKitBase {
 	public ItemKitReactor() {
-		super(ItemHelper.KIT_REACTOR, "kit_reactor");
+		super(ItemCardType.KIT_REACTOR, "kit_reactor");
+		//addRecipe(new Object[] { "DF", "PW", 'P', Items.PAPER, 'D', StackUtil.copyWithWildCard(new ItemStack(ItemHelper.itemThermometerDigital)), 'F',
+				//IC2Items.getItem("frequency_transmitter"), 'W', "dyeYellow" });
 	}
 
 	@Override
-	public String getUnlocalizedName() {
-		return "item.kit_reactor";
-	}
-	
-	@Override
-	protected ItemStack getSensorCard(ItemStack stack, EntityPlayer player, World world, BlockPos pos) {
+	public ItemStack getSensorCard(ItemStack stack, EntityPlayer player, World world, BlockPos pos) {
 		Block block = world.getBlockState(pos).getBlock();
 		if (!(block instanceof BlockTileEntity))
 			return ItemStack.EMPTY;
@@ -52,7 +54,7 @@ public class ItemKitReactor extends ItemKitBase {
 		}
 		return ItemStack.EMPTY;
 	}
-	
+
 	private BlockPos getTargetCoordinates(World world, BlockPos pos) {
 		IReactor reactor = ReactorHelper.getReactorAt(world, pos);
 		if (reactor != null)

@@ -5,6 +5,8 @@ import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.energycontrol.tileentities.TileEntityAverageCounter;
 import com.zuxelus.energycontrol.tileentities.TileEntityEnergyCounter;
 
+import ic2.api.item.IC2Items;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -12,12 +14,8 @@ import net.minecraft.world.World;
 
 public class ItemKitCounter extends ItemKitSimple {
 	public ItemKitCounter() {
-		super(ItemHelper.KIT_COUNTER, "kit_counter");
-	}
-
-	@Override
-	public String getUnlocalizedName() {
-		return "item.kit_counter";
+		super(ItemCardType.KIT_COUNTER, "kit_counter");
+		//addRecipe(new Object[] { "CF", "PR", 'P', Items.PAPER, 'C', "circuitBasic", 'F', IC2Items.getItem("frequency_transmitter"), 'R', "dyeOrange" });
 	}
 
 	@Override

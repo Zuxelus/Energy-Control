@@ -3,8 +3,9 @@ package com.zuxelus.energycontrol.gui;
 import java.io.IOException;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.api.ICardGui;
+import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.gui.controls.GuiTextArea;
-import com.zuxelus.energycontrol.items.cards.ICardGui;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardSettingsReader;
 
@@ -18,7 +19,7 @@ public class GuiCardText extends GuiScreen implements ICardGui {
 			EnergyControl.MODID + ":textures/gui/gui_text_card.png");
 
 	private ItemCardSettingsReader wrapper;
-	private ItemCardReader reader;
+	private ICardReader reader;
 	private GuiTextArea textArea;
 
 	protected int xSize = 226;
@@ -28,7 +29,7 @@ public class GuiCardText extends GuiScreen implements ICardGui {
 
 	private static final int lineCount = 10;
 
-	public GuiCardText(ItemCardReader helper) {
+	public GuiCardText(ICardReader helper) {
 		this.reader = helper;
 	}
 

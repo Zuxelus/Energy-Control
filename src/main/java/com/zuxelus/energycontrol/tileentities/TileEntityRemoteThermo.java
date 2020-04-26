@@ -35,7 +35,6 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 	private static final double BASE_PACKET_SIZE = 32.0D;
 	private static final int BASE_STORAGE = 600;
 	private static final int STORAGE_PER_UPGRADE = 10000;
-	private static final int ENERGY_SU_BATTERY = 1000;
 	private static final int LOCATION_RANGE = 8;
 	
 	private int deltaX;
@@ -294,7 +293,9 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 			}
 			return false;
 		case SLOT_CARD:
-			return itemStack.getItem() instanceof ItemCardMain && itemStack.getItemDamage() == ItemCardType.CARD_REACTOR;
+			return itemStack.getItem() instanceof ItemCardMain
+					&& (itemStack.getItemDamage() == ItemCardType.CARD_REACTOR
+							|| itemStack.getItemDamage() == ItemCardType.CARD_REACTOR5X5);
 		default:
 			return itemStack.isItemEqual(IC2Items.getItem("upgrade","transformer"))
 					|| itemStack.isItemEqual(IC2Items.getItem("upgrade","energy_storage"))

@@ -1,0 +1,25 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "LLL",
+        "LCL",
+        "LRL"
+    ],
+    "key": {
+        "L": {
+            "type": "forge:ore_dict",
+            "ore": "plateLead"
+        },
+        "R": {
+            "type": "forge:ore_dict",
+            "ore": "dustRedstone"
+        },
+        "C": {
+            "type": "forge:ore_dict",
+            "ore": "circuitAdvanced"
+        }
+    },
+    "result": {
+        "item": "energycontrol:thermal_monitor"
+    }
+}

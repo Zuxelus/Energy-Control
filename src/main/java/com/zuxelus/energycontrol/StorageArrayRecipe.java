@@ -2,6 +2,12 @@ package com.zuxelus.energycontrol;
 
 import java.util.Vector;
 
+import javax.annotation.Nullable;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSyntaxException;
 import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
@@ -9,11 +15,22 @@ import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
 import ic2.api.item.IC2Items;
 import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.JsonUtils;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.IIngredientFactory;
+import net.minecraftforge.common.crafting.IRecipeFactory;
+import net.minecraftforge.common.crafting.JsonContext;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 public class StorageArrayRecipe extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
 	/*static {
@@ -123,7 +140,7 @@ public class StorageArrayRecipe extends net.minecraftforge.registries.IForgeRegi
 			reader.setInt(String.format("_%dx", cardCount), target.getX());
 			reader.setInt(String.format("_%dy", cardCount), target.getY());
 			reader.setInt(String.format("_%dz", cardCount), target.getZ());
-			reader.setInt(String.format("_%dtargetType", cardCount), wrapper.getInt("targetType"));
+			//reader.setInt(String.format("_%dtargetType", cardCount), wrapper.getInt("targetType"));
 			cardCount++;
 		}
 		reader.setInt("cardCount", cardCount);

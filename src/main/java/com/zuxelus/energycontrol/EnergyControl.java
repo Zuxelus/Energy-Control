@@ -13,6 +13,8 @@ import com.zuxelus.energycontrol.network.ChannelHandler;
 import com.zuxelus.energycontrol.tileentities.ScreenManager;
 import com.zuxelus.energycontrol.utils.SoundHelper;
 
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -21,6 +23,8 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @Mod(name = EnergyControl.NAME, modid = EnergyControl.MODID, version = EnergyControl.VERSION, dependencies="required-after:ic2", guiFactory = "com.zuxelus.energycontrol.config.GuiFactory") 
 public class EnergyControl {
@@ -42,8 +46,10 @@ public class EnergyControl {
 	
 	public ScreenManager screenManager = new ScreenManager();
 	
-	public List<String> availableAlarms; //on server
-	public List<String> serverAllowedAlarms = new ArrayList<String>(); // will be loaded from server
+	@SideOnly(Side.CLIENT)
+	public List<String> availableAlarms; //on client
+	@SideOnly(Side.CLIENT)
+	public List<String> serverAllowedAlarms; // will be loaded from server
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -51,14 +57,13 @@ public class EnergyControl {
 
 		// Loads configuration
 		proxy.loadConfig(event);
-		SoundHelper.importSound();
+		proxy.importSound();
 
 		// registers channel handler
 		ChannelHandler.init();
+		//CraftingHelper.register(new ResourceLocation(MODID + ":item_nbt"), new IngredientFactory());
 		
-		new ItemHelper();
-		proxy.registerModels();
-		
+		ItemHelper.registerTileEntities();
 		CrossModLoader.preinit();
 	}
 
@@ -68,6 +73,9 @@ public class EnergyControl {
 		proxy.registerEventHandlers();
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
+		
+		proxy.registerSpecialRenderers();
+		proxy.registerExtendedModels();
 		CrossModLoader.init();
 	}
 

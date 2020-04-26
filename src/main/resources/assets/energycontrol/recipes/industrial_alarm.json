@@ -1,0 +1,24 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "BBB",
+        "BLB",
+        "BHB"
+    ],
+    "key": {
+        "B": {
+            "type": "forge:ore_dict",
+            "ore": "plateBronze"
+        },
+        "L": {
+            "item": "energycontrol:block_light",
+            "data": 2
+        },
+        "H": {
+            "item": "energycontrol:howler_alarm"
+        }
+    },
+    "result": {
+        "item": "energycontrol:industrial_alarm"
+    }
+}

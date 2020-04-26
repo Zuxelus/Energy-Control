@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.zuxelus.energycontrol.api.CardState;
+import com.zuxelus.energycontrol.api.ICardReader;
+import com.zuxelus.energycontrol.api.PanelSetting;
+import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.EnergyStorageData;
-import com.zuxelus.energycontrol.utils.CardState;
-import com.zuxelus.energycontrol.utils.PanelSetting;
-import com.zuxelus.energycontrol.utils.PanelString;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
@@ -22,12 +23,7 @@ public class ItemCardEnergy extends ItemCardBase {
 	}
 
 	@Override
-	public String getUnlocalizedName() {
-		return "item.card_energy";
-	}
-
-	@Override
-	public CardState update(World world, ItemCardReader reader, int range, BlockPos pos) {
+	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
 		BlockPos target = reader.getTarget();
 		if (target == null)
 			return CardState.NO_TARGET;
@@ -43,14 +39,14 @@ public class ItemCardEnergy extends ItemCardBase {
 		return updateCardValues(reader, storage);
 	}
 
-	private CardState updateCardValues(ItemCardReader reader, EnergyStorageData storage) {
+	private CardState updateCardValues(ICardReader reader, EnergyStorageData storage) {
 		reader.setDouble("storage", storage.values.get(0));
 		reader.setDouble("energy", storage.values.get(1));
 		return CardState.OK;
 	}
 
 	@Override
-	public List<PanelString> getStringData(int displaySettings, ItemCardReader card, boolean showLabels) {
+	public List<PanelString> getStringData(int displaySettings, ICardReader card, boolean showLabels) {
 		List<PanelString> result = new LinkedList<PanelString>();
 
 		double energy = card.getDouble("energy");
@@ -68,7 +64,7 @@ public class ItemCardEnergy extends ItemCardBase {
 	}
 
 	@Override
-	protected List<PanelSetting> getSettingsList(ItemStack stack) {
+	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(4);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 1, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelFree"), 2, damage));

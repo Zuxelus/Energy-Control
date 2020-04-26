@@ -3,11 +3,12 @@ package com.zuxelus.energycontrol.items.cards;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.zuxelus.energycontrol.api.CardState;
+import com.zuxelus.energycontrol.api.ICardReader;
+import com.zuxelus.energycontrol.api.PanelSetting;
+import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.tileentities.TileEntityAverageCounter;
 import com.zuxelus.energycontrol.tileentities.TileEntityEnergyCounter;
-import com.zuxelus.energycontrol.utils.CardState;
-import com.zuxelus.energycontrol.utils.PanelSetting;
-import com.zuxelus.energycontrol.utils.PanelString;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -20,12 +21,7 @@ public class ItemCardCounter extends ItemCardBase {
 	}
 
 	@Override
-	public String getUnlocalizedName() {
-		return "item.card_counter";
-	}
-
-	@Override
-	public CardState update(World world, ItemCardReader reader, int range, BlockPos pos) {
+	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
 		BlockPos target = reader.getTarget();
 		if (target == null) 
 			return CardState.NO_TARGET;
@@ -48,7 +44,7 @@ public class ItemCardCounter extends ItemCardBase {
 	}
 
 	@Override
-	protected List<PanelString> getStringData(int displaySettings, ItemCardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
 		List<PanelString> result = new LinkedList<PanelString>();
 		// average counter
 		if (reader.hasField("average")) {
@@ -65,7 +61,7 @@ public class ItemCardCounter extends ItemCardBase {
 	}
 
 	@Override
-	protected List<PanelSetting> getSettingsList(ItemStack stack) {
+	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		return null;
 	}
 }

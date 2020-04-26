@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.zuxelus.energycontrol.api.CardState;
+import com.zuxelus.energycontrol.api.ICardReader;
+import com.zuxelus.energycontrol.api.PanelSetting;
+import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.utils.CardState;
-import com.zuxelus.energycontrol.utils.PanelSetting;
-import com.zuxelus.energycontrol.utils.PanelString;
 
 import ic2.core.block.kineticgenerator.tileentity.TileEntityWindKineticGenerator;
 import net.minecraft.client.resources.I18n;
@@ -24,12 +25,7 @@ public class ItemCardGeneratorKinetic extends ItemCardBase {
 	}
 
 	@Override
-	public String getUnlocalizedName() {
-		return "item.card_generator_kinetic";
-	}
-
-	@Override
-	public CardState update(World world, ItemCardReader reader, int range, BlockPos pos) {
+	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
 		BlockPos target = reader.getTarget();
 		if (target == null) 
 			return CardState.NO_TARGET;
@@ -58,7 +54,7 @@ public class ItemCardGeneratorKinetic extends ItemCardBase {
 	}
 
 	@Override
-	protected List<PanelString> getStringData(int displaySettings, ItemCardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
 		List<PanelString> result = new LinkedList<PanelString>();
 		switch (reader.getInt("type")) {
 		case 1:
@@ -90,7 +86,7 @@ public class ItemCardGeneratorKinetic extends ItemCardBase {
 	}
 
 	@Override
-	protected List<PanelSetting> getSettingsList(ItemStack stack) {
+	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(5);
 		return result;
 	}

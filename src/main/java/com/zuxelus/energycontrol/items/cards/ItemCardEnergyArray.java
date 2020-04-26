@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.zuxelus.energycontrol.api.CardState;
+import com.zuxelus.energycontrol.api.ICardReader;
+import com.zuxelus.energycontrol.api.PanelSetting;
+import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.EnergyCardHelper;
 import com.zuxelus.energycontrol.crossmod.EnergyStorageData;
-import com.zuxelus.energycontrol.utils.CardState;
-import com.zuxelus.energycontrol.utils.PanelSetting;
-import com.zuxelus.energycontrol.utils.PanelString;
 import com.zuxelus.energycontrol.utils.StringUtils;
 
 import net.minecraft.client.resources.I18n;
@@ -25,12 +26,7 @@ public class ItemCardEnergyArray extends ItemCardBase {
 	}
 
 	@Override
-	public String getUnlocalizedName() {
-		return "item.card_energy_array";
-	}
-
-	@Override
-	public CardState update(World world, ItemCardReader reader, int range, BlockPos pos) {
+	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
 		int cardCount = reader.getCardCount();
 		if (cardCount == 0)
 			return CardState.INVALID_CARD;
@@ -69,7 +65,7 @@ public class ItemCardEnergyArray extends ItemCardBase {
 	}
 
 	@Override
-	protected List<PanelString> getStringData(int displaySettings, ItemCardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
 		List<PanelString> result = new LinkedList<PanelString>();
 		double totalEnergy = 0;
 		double totalStorage = 0;
@@ -136,7 +132,7 @@ public class ItemCardEnergyArray extends ItemCardBase {
 	}
 
 	@Override
-	protected List<PanelSetting> getSettingsList(ItemStack stack) {
+	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(6);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEach"), 1,damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 4,damage));
@@ -145,5 +141,10 @@ public class ItemCardEnergyArray extends ItemCardBase {
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelPercentage"), 32, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelTotal"), 2,damage));
 		return result;
+	}
+
+	@Override
+	public boolean isRemoteCard(int damage) {
+		return false;
 	}
 }

@@ -1,0 +1,32 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "PFP",
+        "AMA",
+        " R "
+    ],
+    "key": {
+        "P": {
+            "type": "forge:ore_dict",
+            "ore": "plateIron"
+        },
+        "F": {
+            "item": "ic2:frequency_transmitter"
+        },
+        "A": {
+            "type": "forge:ore_dict",
+            "ore": "circuitAdvanced"
+        },
+        "M": {
+            "item": "ic2:resource",
+            "data": 12
+        },
+        "R": {
+            "type": "forge:ore_dict",
+            "ore": "dustRedstone"
+        }
+    },
+    "result": {
+        "item": "energycontrol:range_trigger"
+    }
+}

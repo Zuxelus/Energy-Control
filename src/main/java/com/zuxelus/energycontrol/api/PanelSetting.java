@@ -1,6 +1,4 @@
-package com.zuxelus.energycontrol.utils;
-
-import java.util.UUID;
+package com.zuxelus.energycontrol.api;
 
 /**
  * Object of PanelSetting class defines one checkbox in the card's settings.

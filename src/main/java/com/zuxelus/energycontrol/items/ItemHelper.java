@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.items;
 
+import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.StorageArrayRecipe;
 import com.zuxelus.energycontrol.blocks.*;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
@@ -7,9 +8,12 @@ import com.zuxelus.energycontrol.items.kits.ItemKitMain;
 import com.zuxelus.energycontrol.tileentities.*;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -17,16 +21,6 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 
 @EventBusSubscriber
 public class ItemHelper {
-	public static final int KIT_MAX = 6;	
-	public static final int KIT_ENERGY = 0;
-	public static final int KIT_COUNTER = 1;
-	public static final int KIT_LIQUID = 2;
-	public static final int KIT_LIQUID_ADVANCED = 3;	
-	public static final int KIT_GENERATOR = 4;
-	public static final int KIT_REACTOR = 5;
-	public static final int KIT_APPENG = 10;
-	public static final int KIT_BIGREACTOR = 11;
-
 	public static BlockLight blockLight;
 	public static HowlerAlarm howlerAlarm;
 	public static IndustrialAlarm industrialAlarm;
@@ -42,10 +36,6 @@ public class ItemHelper {
 	public static Item itemUpgrade;
 	public static Item itemThermometer;
 	public static Item itemThermometerDigital;
-	
-	public ItemHelper() {
-		registerTileEntities();
-	}
 
 	@SubscribeEvent
 	public static void onBlockRegistry(Register<Block> event) {
@@ -103,14 +93,6 @@ public class ItemHelper {
 		event.getRegistry().register(new ItemBlock(averageCounter).setRegistryName("average_counter"));
 		event.getRegistry().register(new ItemBlock(energyCounter).setRegistryName("energy_counter"));		
 		
-		itemKit = new ItemKitMain();
-		setNames(itemKit,"item_kit");
-		event.getRegistry().register(itemKit);
-		
-		itemCard = new ItemCardMain();
-		setNames(itemCard,"item_card");
-		event.getRegistry().register(itemCard);
-		
 		itemUpgrade = new ItemUpgrade();
 		setNames(itemUpgrade,"item_upgrade");
 		event.getRegistry().register(itemUpgrade);
@@ -122,6 +104,16 @@ public class ItemHelper {
 		itemThermometerDigital = new ItemDigitalThermometer(1, 80, 80);
 		setNames(itemThermometerDigital,"thermometer_digital");
 		event.getRegistry().register(itemThermometerDigital);
+		
+		itemKit = new ItemKitMain();
+		((ItemKitMain)itemKit).registerKits();
+		setNames(itemKit,"item_kit");
+		event.getRegistry().register(itemKit);
+		
+		itemCard = new ItemCardMain();
+		((ItemCardMain)itemCard).registerCards();
+		setNames(itemCard,"item_card");
+		event.getRegistry().register(itemCard);
 	}
 	
 	private static void setNames(Object obj, String name) {
@@ -137,7 +129,42 @@ public class ItemHelper {
 			throw new IllegalArgumentException("Item or Block required");
 	}
 	
-	private void registerTileEntities() {
+	@SubscribeEvent
+	public static void onModelRegister(ModelRegistryEvent event) {
+		registerBlockModel(ItemHelper.blockLight, BlockLight.DAMAGE_WHITE_OFF, "lamp0");
+		registerBlockModel(ItemHelper.blockLight, BlockLight.DAMAGE_WHITE_ON, "lamp1");
+		registerBlockModel(ItemHelper.blockLight, BlockLight.DAMAGE_ORANGE_OFF, "lamp2");
+		registerBlockModel(ItemHelper.blockLight, BlockLight.DAMAGE_ORANGE_ON, "lamp3");
+		
+		registerBlockModel(ItemHelper.howlerAlarm, 0, "howler_alarm");
+		registerBlockModel(ItemHelper.industrialAlarm, 0, "industrial_alarm");
+		registerBlockModel(ItemHelper.thermalMonitor, 0, "thermal_Monitor");
+		registerBlockModel(ItemHelper.remoteThermo, 0, "remote_thermo");
+		registerBlockModel(ItemHelper.infoPanel, 0, "info_panel");
+		registerBlockModel(ItemHelper.infoPanelExtender, 0, "info_panel_extender");
+		registerBlockModel(ItemHelper.rangeTrigger, 0, "range_trigger");
+		
+		registerBlockModel(ItemHelper.averageCounter, 0, "average_counter");
+		registerBlockModel(ItemHelper.energyCounter, 0, "energy_counter");
+
+		ItemKitMain.registerModels();
+		ItemCardMain.registerModels();
+		
+		registerItemModel(ItemHelper.itemUpgrade, ItemUpgrade.DAMAGE_RANGE, "upgrade_range");
+		registerItemModel(ItemHelper.itemUpgrade, ItemUpgrade.DAMAGE_COLOR, "upgrade_color");
+		registerItemModel(ItemHelper.itemThermometer, 0, "thermometer");
+		registerItemModel(ItemHelper.itemThermometerDigital, 0, "thermometer_digital");
+	}
+
+	public static void registerItemModel(Item item, int meta, String name) {
+		ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(EnergyControl.MODID + ":" + name, "inventory"));
+	}
+
+	private static void registerBlockModel(Block block, int meta, String name) {
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), meta, new ModelResourceLocation(EnergyControl.MODID + ":" + name, "inventory"));
+	}
+
+	public static void registerTileEntities() {
 		GameRegistry.registerTileEntity(TileEntityHowlerAlarm.class, "energycontrol:howler_alarm");
 		GameRegistry.registerTileEntity(TileEntityIndustrialAlarm.class, "energycontrol:industrial_alarm");
 		GameRegistry.registerTileEntity(TileEntityThermo.class, "energycontrol:thermo");

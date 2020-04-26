@@ -1,4 +1,4 @@
-package com.zuxelus.energycontrol.utils;
+package com.zuxelus.energycontrol.api;
 
 /**
  * Enum of card states. Used as return value of

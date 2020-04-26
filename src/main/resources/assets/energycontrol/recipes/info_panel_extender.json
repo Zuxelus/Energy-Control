@@ -1,0 +1,25 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "PPP",
+        "WRW",
+        "WWW"
+    ],
+    "key": {
+        "P": {
+            "type": "forge:ore_dict",
+            "ore": "paneGlassLime"
+        },
+        "R": {
+            "type": "forge:ore_dict",
+            "ore": "dustRedstone"
+        },
+        "W": {
+            "type": "forge:ore_dict",
+             "ore": "plankWood"
+        }
+    },
+    "result": {
+        "item": "energycontrol:info_panel_extender"
+    }
+}

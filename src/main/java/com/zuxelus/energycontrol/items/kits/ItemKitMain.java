@@ -1,14 +1,15 @@
 package com.zuxelus.energycontrol.items.kits;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.api.IItemKit;
 import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
+import ic2.api.recipe.Recipes;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -21,13 +22,17 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class ItemKitMain extends Item {
-	public static Map<Integer, ItemKitBase> kits;
+	private static Map<Integer, IItemKit> kits;
 	
 	public ItemKitMain() {
 		super();
 		setMaxStackSize(1);
+		canRepair = false;
 		setCreativeTab(EnergyControl.creativeTab);
-		kits = new HashMap<Integer, ItemKitBase>();
+		kits = new HashMap<Integer, IItemKit>();
+	}
+	
+	public final void registerKits() {
 		register(new ItemKitEnergy());
 		register(new ItemKitCounter());
 		register(new ItemKitLiquid());
@@ -36,10 +41,35 @@ public class ItemKitMain extends Item {
 		register(new ItemKitLiquidAdvanced());
 	}
 	
-	public void register(ItemKitBase item) {
+	private void register(ItemKitBase item) {
+		if (checkKit(item))
 		kits.put(item.getDamage(), item);
 	}
-	
+
+	private static boolean checkKit(IItemKit item) {
+		if (!kits.containsKey(item.getDamage()))
+			return true;
+		if (item.getDamage() <= ItemCardType.KIT_MAX)
+			EnergyControl.logger.warn(String.format("Kit %s was not registered. ID %d is already used for standard kit.", item.getUnlocalizedName(), item.getDamage()));
+		else
+			EnergyControl.logger.warn(String.format("Kit %s was not registered. ID %d is already used for extended kit.", item.getUnlocalizedName(), item.getDamage()));
+		return false;
+	}
+
+	public static final void registerKit(IItemKit item) {
+		if (checkKit(item)) {
+			if (item.getDamage() <= ItemCardType.KIT_MAX) {
+				EnergyControl.logger.warn(String.format("Kit %s was not registered. Kit ID should be bigger than %d", item.getUnlocalizedName(), ItemCardType.CARD_MAX));
+				return;
+			}
+			kits.put(item.getDamage(), item);
+		}
+	}
+
+	public static final boolean containsKit(int i) {
+		return kits.containsKey(i) ? true : false;
+	}
+
 	@Override
 	public String getUnlocalizedName(ItemStack stack) {
 		int damage = stack.getItemDamage();
@@ -50,13 +80,15 @@ public class ItemKitMain extends Item {
 	
 	@Override
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
-		if (!this.isInCreativeTab(tab))
+		if (!isInCreativeTab(tab))
 			return;
-		for (int i = 0; i <= ItemHelper.KIT_MAX; i++)
-			if (kits.containsKey(i))
-				items.add(new ItemStack(this, 1, i));
+		for (Map.Entry<Integer, IItemKit> entry : kits.entrySet()) {
+			Integer key = entry.getKey();
+			if (key <= ItemCardType.KIT_MAX)
+				items.add(new ItemStack(this, 1, key));
+		}
 	}
-	
+
 	@Override
 	public boolean isDamageable() {
 		return true;
@@ -78,9 +110,34 @@ public class ItemKitMain extends Item {
 		return EnumActionResult.SUCCESS;
 	}	
 	
-	public ItemKitBase getItemKitBase(int metadata) {
+	public IItemKit getItemKitBase(int metadata) {
 		if (kits.containsKey(metadata))
 			return kits.get(metadata);
 		return null;
+	}
+
+	public static final void registerModels() {
+		for (Map.Entry<Integer, IItemKit> entry : kits.entrySet()) {
+			Integer key = entry.getKey();
+			if (key <= ItemCardType.KIT_MAX)
+				ItemHelper.registerItemModel(ItemHelper.itemKit, key, kits.get(key).getName());
+		}
+	}
+
+	public static final void registerExtendedModels() {
+		for (Map.Entry<Integer, IItemKit> entry : kits.entrySet()) {
+			Integer key = entry.getKey();
+			if (key > ItemCardType.KIT_MAX)
+				ItemHelper.registerItemModel(ItemHelper.itemKit, key, kits.get(key).getName());
+		}
+	}
+
+	public static final void registerRecipes() {
+		for (Map.Entry<Integer, IItemKit> entry : kits.entrySet()) {
+			Integer key = entry.getKey();
+			Object[] recipe = entry.getValue().getRecipe(); 
+			if (recipe != null)
+				Recipes.advRecipes.addRecipe(new ItemStack(ItemHelper.itemKit, 1, key), recipe);
+		}
 	}
 }

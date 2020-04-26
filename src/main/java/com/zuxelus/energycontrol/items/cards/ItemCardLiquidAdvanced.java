@@ -5,10 +5,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.zuxelus.energycontrol.api.CardState;
+import com.zuxelus.energycontrol.api.ICardReader;
+import com.zuxelus.energycontrol.api.PanelSetting;
+import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.LiquidCardHelper;
-import com.zuxelus.energycontrol.utils.CardState;
-import com.zuxelus.energycontrol.utils.PanelSetting;
-import com.zuxelus.energycontrol.utils.PanelString;
 import com.zuxelus.energycontrol.utils.ReactorHelper;
 
 import ic2.api.reactor.IReactor;
@@ -28,12 +29,7 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 	}
 
 	@Override
-	public String getUnlocalizedName() {
-		return "item.card_liquid_advanced";
-	}
-
-	@Override
-	public CardState update(World world, ItemCardReader reader, int range, BlockPos pos) {
+	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
 		BlockPos target = reader.getTarget();
 		if (target == null) 
 			return CardState.NO_TARGET;
@@ -51,7 +47,7 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 		return CardState.OK;
 	}
 	
-	private void addTankInfo(ItemCardReader reader, InternalFluidTank tank, int i) {
+	private void addTankInfo(ICardReader reader, InternalFluidTank tank, int i) {
 		FluidStack stack = tank.getFluid();
 		int amount = 0;
 		String name = I18n.format("msg.ec.None");
@@ -66,16 +62,15 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 	}
 
 	@Override
-	protected List<PanelString> getStringData(int displaySettings, ItemCardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
 		List<PanelString> result = new LinkedList<PanelString>();
 		int count = reader.getInt("count");
-		for (int i = 0; i < count; i++) {
+		for (int i = 0; i < count; i++)
 			addTankData(result, displaySettings, reader, showLabels, i);
-		}
 		return result;
 	}
 	
-	private void addTankData(List<PanelString> result, int displaySettings, ItemCardReader reader, boolean showLabels, int i) {
+	private void addTankData(List<PanelString> result, int displaySettings, ICardReader reader, boolean showLabels, int i) {
 		if (!reader.hasField(String.format("_%dcapacity", i)))
 			return;
 		int capacity = reader.getInt(String.format("_%dcapacity", i));
@@ -98,7 +93,7 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 	}
 
 	@Override
-	protected List<PanelSetting> getSettingsList(ItemStack stack) {
+	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(5);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidName"), 1, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidAmount"), 2, damage));

@@ -1,4 +1,4 @@
-package com.zuxelus.energycontrol.utils;
+package com.zuxelus.energycontrol.api;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -10,7 +10,7 @@ import net.minecraft.client.resources.I18n;
  * sections: left, center, right. At least one of them should be not null. Each
  * section can have its own color.
  * 
- * @see IPanelDataSource#getStringData(int, ICardWrapper, boolean)
+ * @see IItemCard#getStringData(int, ICardWrapper, boolean)
  * @author Shedar
  */
 public class PanelString {

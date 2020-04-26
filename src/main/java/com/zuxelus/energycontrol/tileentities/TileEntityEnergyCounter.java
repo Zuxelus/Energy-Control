@@ -54,7 +54,7 @@ public class TileEntityEnergyCounter extends TileEntityInventory
 		switch (tag.getInteger("type")) {
 		case 1:
 			if (tag.hasKey("value"))
-				energy = tag.getInteger("value");
+				counter = tag.getInteger("value");
 			break;
 		}
 	}

@@ -1,0 +1,27 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "RF",
+        "PO"
+    ],
+    "key": {
+        "P": {
+            "item": "minecraft:paper"
+        },
+        "R": {
+            "type": "forge:ore_dict",
+            "ore": "dustRedstone"
+        },
+        "F": {
+            "item": "ic2:frequency_transmitter"
+        },
+        "O": {
+            "type": "forge:ore_dict",
+            "ore": "dyeRed"
+        }
+    },
+    "result": {
+        "item": "energycontrol:item_kit",
+        "data": 0
+    }
+}

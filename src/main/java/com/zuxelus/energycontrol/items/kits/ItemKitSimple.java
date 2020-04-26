@@ -14,7 +14,7 @@ public abstract class ItemKitSimple extends ItemKitBase {
 	}
 
 	@Override
-	protected ItemStack getSensorCard(ItemStack stack, EntityPlayer player, World world, BlockPos pos) {
+	public ItemStack getSensorCard(ItemStack stack, EntityPlayer player, World world, BlockPos pos) {
 		BlockPos position = getTargetCoordinates(world, pos, stack);
 		if (position == null)
 			return ItemStack.EMPTY;	

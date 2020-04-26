@@ -1,14 +1,13 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.blocks.RangeTrigger;
 import com.zuxelus.energycontrol.containers.ISlotItemFilter;
-import com.zuxelus.energycontrol.items.IRemoteSensor;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
-import com.zuxelus.energycontrol.utils.CardState;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -206,7 +205,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 					upgradeCountRange = 7;
 				int range = LOCATION_RANGE * (int) Math.pow(2, upgradeCountRange);
 				ItemCardReader reader = new ItemCardReader(card);
-				if (item instanceof IRemoteSensor) {
+				if (((ItemCardMain)item).isRemoteCard(card.getItemDamage())) {
 					BlockPos target = reader.getTarget();
 					if (target == null) {
 						needUpdate = false;
