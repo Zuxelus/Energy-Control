@@ -182,7 +182,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 
 	@Override
 	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
-		return false;
+		return oldState.getBlock() != newSate.getBlock();
 	}
 
 	@Override

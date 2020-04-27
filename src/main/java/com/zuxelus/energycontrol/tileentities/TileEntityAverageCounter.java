@@ -211,7 +211,7 @@ public class TileEntityAverageCounter extends TileEntityInventory
 		ItemStack itemStack = getStackInSlot(0);
 		if (!itemStack.isEmpty() && itemStack.isItemEqual(IC2Items.getItem("upgrade","transformer")))
 			upgradeCountTransormer = itemStack.getCount();
-		upgradeCountTransormer = Math.min(upgradeCountTransormer, 3);
+		upgradeCountTransormer = Math.min(upgradeCountTransormer, 4);
 		if (world != null && !world.isRemote) {
 			output = BASE_PACKET_SIZE * (int) Math.pow(4D, upgradeCountTransormer);
 			tier = upgradeCountTransormer + 1;
@@ -279,7 +279,7 @@ public class TileEntityAverageCounter extends TileEntityInventory
 
 	@Override
 	public double getDemandedEnergy() {
-		return output - energy;
+		return Math.min(2 * output - energy, output);
 	}
 
 	@Override
@@ -289,7 +289,7 @@ public class TileEntityAverageCounter extends TileEntityInventory
 
 	@Override
 	public double injectEnergy(EnumFacing directionFrom, double amount, double voltage) {
-		if (energy >= output)
+		if (energy >= 2 * output)
 			return amount;
 		this.energy += amount;
 		return 0.0D;

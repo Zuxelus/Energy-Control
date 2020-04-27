@@ -164,7 +164,7 @@ public class ItemHelper {
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), meta, new ModelResourceLocation(EnergyControl.MODID + ":" + name, "inventory"));
 	}
 
-	public static void registerTileEntities() {
+	public static void registerTileEntities() { // TODO Change to event
 		GameRegistry.registerTileEntity(TileEntityHowlerAlarm.class, "energycontrol:howler_alarm");
 		GameRegistry.registerTileEntity(TileEntityIndustrialAlarm.class, "energycontrol:industrial_alarm");
 		GameRegistry.registerTileEntity(TileEntityThermo.class, "energycontrol:thermo");

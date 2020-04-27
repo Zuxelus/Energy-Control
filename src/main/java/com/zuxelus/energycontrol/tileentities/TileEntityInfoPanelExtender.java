@@ -169,13 +169,31 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 		world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
 	}
 
+	public boolean getColored() {
+		if (screen == null)
+			return false;
+		TileEntityInfoPanel core = screen.getCore(world);
+		if (core == null)
+			return false;
+		return core.getColored();
+	}
+
 	public boolean getPowered() {
 		if (screen == null)
-			return false;		
+			return false;
 		TileEntityInfoPanel core = screen.getCore(world);
 		if (core == null)
 			return false;
 		return core.powered;
+	}
+
+	public int getColorBackground() {
+		if (screen == null)
+			return 2;
+		TileEntityInfoPanel core = screen.getCore(world);
+		if (core == null)
+			return 2;
+		return core.getColorBackground();
 	}
 
 	@Override
@@ -186,6 +204,6 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	
 	@Override
 	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
-		return false;
+		return oldState.getBlock() != newSate.getBlock();
 	}
 }

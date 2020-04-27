@@ -22,17 +22,21 @@ import net.minecraft.util.math.BlockPos;
 public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileEntityInfoPanel> {
 	private static final ResourceLocation TEXTUREOFF[];
 	private static final ResourceLocation TEXTUREON[];
-	private static final CubeBoxModel model = new CubeBoxModel();
+	private static final CubeRenderer model[];
 
 	static {
-		TEXTUREOFF = new ResourceLocation[16];
-		TEXTUREON = new ResourceLocation[16];
-		for (int i = 0; i < 16; i++) {
+		TEXTUREOFF = new ResourceLocation[15];
+		TEXTUREON = new ResourceLocation[15];
+		for (int i = 0; i < 15; i++) {
 			TEXTUREOFF[i] = new ResourceLocation(
-					EnergyControl.MODID + String.format(":textures/blocks/info_panel/off/2/all%d.png", i));
+					EnergyControl.MODID + String.format(":textures/blocks/info_panel/off/all%d.png", i));
 			TEXTUREON[i] = new ResourceLocation(
-					EnergyControl.MODID + String.format(":textures/blocks/info_panel/on/2/all%d.png", i));
+					EnergyControl.MODID + String.format(":textures/blocks/info_panel/on/all%d.png", i));
 		}
+		model = new CubeRenderer[16];
+		for (int i = 0; i < 4; i++)
+			for (int j = 0; j < 4; j++)
+				model[i * 4 + j] = new CubeRenderer(0, 0, 0, 32, 32, 32, 128, 192, i * 32 + 64, j * 32 + 64);
 	}
 
 	private static String implodeArray(String[] inputArray, String glueString) {
@@ -80,12 +84,19 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			GlStateManager.translate(-1.0F, 0.0F, 0.0F);
 			break;
 		}
+
+		int color = 2;
+		if (te.getColored()) {
+			color = te.getColorBackground();
+			if (color > 14 || color < 0)
+				color = 2;
+		}
 		if (te.getPowered())
-			bindTexture(TEXTUREON[findTexture(te)]);
+			bindTexture(TEXTUREON[color]);
 		else
-			bindTexture(TEXTUREOFF[findTexture(te)]);
-			
-		model.render(null, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.03125F);
+			bindTexture(TEXTUREOFF[color]);
+
+		model[findTexture(te)].render(0.03125F);
 		if (te.getPowered())
 			renderText(te);
 		GlStateManager.popMatrix();
@@ -269,7 +280,9 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		GlStateManager.disableLighting();
 
 		int row = 0;
-		int colorHex = panel.getColorTextHex();
+		int colorHex = 0x000000;
+		if (panel.getColored())
+			colorHex = panel.getColorTextHex();
 		for (PanelString panelString : joinedData) {
 			if (panelString.textLeft != null) {
 				fontRenderer.drawString(panelString.textLeft, offsetX - realWidth / 2,

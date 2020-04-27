@@ -49,11 +49,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	protected int tickRate;
 	
 	public boolean showLabels;
-	
-	private int prevColorBackground;
 	public int colorBackground;
-
-	private int prevColorText;
 	public int colorText;
 	
 	private boolean colored;	
@@ -67,7 +63,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		tickRate = EnergyControl.config.screenRefreshPeriod;
 		updateTicker = tickRate;
 		dataTicker = 4;
-		colored = false;		
+		colorBackground = 2;
+		colored = false;
 	}
 	
 	private void initData() {
@@ -122,11 +119,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	}
 	
 	public void setColorBackground(int c) {
-		c &= 0xf;
-		colorBackground = c;
-		if (!world.isRemote && prevColorBackground != colorBackground)
+		if (!world.isRemote && colorBackground != c)
 			notifyBlockUpdate();
-		prevColorBackground = colorBackground;
+		colorBackground = c;
 	}
 	
 	public int getColorText() {
@@ -138,11 +133,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	}
 
 	public void setColorText(int c) {
-		c &= 0xf;
-		colorText = c;
-		if (!world.isRemote && prevColorText != colorText) 
+		if (!world.isRemote && colorText != c) 
 			notifyBlockUpdate();
-		prevColorText = colorText;
+		colorText = c;
 	}
 	
 	public boolean getPowered() {
@@ -551,6 +544,6 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	
 	@Override
 	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
-		return false;
+		return oldState.getBlock() != newSate.getBlock();
 	}
 }

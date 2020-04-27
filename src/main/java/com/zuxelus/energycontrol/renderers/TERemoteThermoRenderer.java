@@ -14,7 +14,7 @@ import net.minecraft.util.ResourceLocation;
 public class TERemoteThermoRenderer extends TileEntitySpecialRenderer<TileEntityRemoteThermo> {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(
 			EnergyControl.MODID + ":textures/blocks/remote_thermo/all.png");
-	private final static CubeBoxModel model = new CubeBoxModel();
+	private static final CubeRenderer model = new CubeRenderer(0, 0, 0, 32, 32, 32, 128, 64, 0, 0);
 
 	@Override
 	public void render(TileEntityRemoteThermo te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
@@ -49,7 +49,7 @@ public class TERemoteThermoRenderer extends TileEntitySpecialRenderer<TileEntity
 			break;
 		}
 		bindTexture(TEXTURE);
-		model.render(null, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.03125F);
+		model.render(0.03125F);
 
 		GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
 		GlStateManager.translate(0.0F, -0.5F, 1.001F);

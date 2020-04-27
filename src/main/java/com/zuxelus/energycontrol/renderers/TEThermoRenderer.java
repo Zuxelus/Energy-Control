@@ -15,7 +15,7 @@ public class TEThermoRenderer extends TileEntitySpecialRenderer<TileEntityThermo
 			EnergyControl.MODID + ":textures/blocks/thermal_monitor/all1.png");
 	private static final ResourceLocation TEXTURE2 = new ResourceLocation(
 			EnergyControl.MODID + ":textures/blocks/thermal_monitor/all2.png");
-	private final MediumBoxModel model = new MediumBoxModel();
+	private static final CubeRenderer model = new CubeRenderer(2, 0, 2, 28, 14, 28, 128, 64, 0, 0);
 
 	@Override
 	public void render(TileEntityThermo te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
@@ -140,7 +140,7 @@ public class TEThermoRenderer extends TileEntitySpecialRenderer<TileEntityThermo
 			bindTexture(TEXTURE0);
 			break;
 		}
-		model.render(null, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.03125F);
+		model.render(0.03125F);
 		int value = te.getHeatLevel();
 		GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
 		GlStateManager.translate(0.5F, 0.45F, -0.4376F);
