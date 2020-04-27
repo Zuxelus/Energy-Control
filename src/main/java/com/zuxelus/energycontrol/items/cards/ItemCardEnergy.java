@@ -16,6 +16,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemCardEnergy extends ItemCardBase {
 	public ItemCardEnergy() {
@@ -46,6 +48,7 @@ public class ItemCardEnergy extends ItemCardBase {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public List<PanelString> getStringData(int displaySettings, ICardReader card, boolean showLabels) {
 		List<PanelString> result = new LinkedList<PanelString>();
 
@@ -64,6 +67,7 @@ public class ItemCardEnergy extends ItemCardBase {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(4);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 1, damage));

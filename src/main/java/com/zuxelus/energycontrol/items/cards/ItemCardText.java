@@ -15,6 +15,8 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemCardText extends ItemCardBase {
 	public ItemCardText() {
@@ -28,6 +30,7 @@ public class ItemCardText extends ItemCardBase {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
 		List<PanelString> result = new LinkedList<PanelString>();
 		boolean started = false;
@@ -42,6 +45,7 @@ public class ItemCardText extends ItemCardBase {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		return null;
 	}

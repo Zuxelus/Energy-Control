@@ -45,7 +45,7 @@ public class GuiRemoteThermo extends GuiContainer {
 		buttonList.add(new CompactButton(4, guiLeft + 12, guiTop - 5 + 42, 57, 12, "-10000"));
 
 		buttonList.add(new CompactButton(5, guiLeft + 122, guiTop - 5 + 20, 22, 12, "+1"));
-		buttonList.add(new CompactButton(6, guiLeft + 122, guiTop - 5 + 31, 22, 2, "+10"));
+		buttonList.add(new CompactButton(6, guiLeft + 122, guiTop - 5 + 31, 22, 12, "+10"));
 		buttonList.add(new CompactButton(7, guiLeft + 143, guiTop - 5 + 20, 36, 12, "+100"));
 		buttonList.add(new CompactButton(8, guiLeft + 143, guiTop - 5 + 31, 36, 12, "+1000"));
 		buttonList.add(new CompactButton(9, guiLeft + 122, guiTop - 5 + 42, 57, 12, "+10000"));
@@ -59,7 +59,7 @@ public class GuiRemoteThermo extends GuiContainer {
 
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-		// this.drawDefaultBackground();
+		drawDefaultBackground();
 		super.drawScreen(mouseX, mouseY, partialTicks);
 		renderHoveredToolTip(mouseX, mouseY);
 	}

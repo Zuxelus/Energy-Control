@@ -22,6 +22,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemCardLiquidAdvanced extends ItemCardBase {
 	public ItemCardLiquidAdvanced() {
@@ -50,7 +52,7 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 	private void addTankInfo(ICardReader reader, InternalFluidTank tank, int i) {
 		FluidStack stack = tank.getFluid();
 		int amount = 0;
-		String name = I18n.format("msg.ec.None");
+		String name = "";
 		if (stack != null) {
 			amount = stack.amount;
 			if (stack.amount > 0)
@@ -62,6 +64,7 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
 		List<PanelString> result = new LinkedList<PanelString>();
 		int count = reader.getInt("count");
@@ -93,6 +96,7 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(5);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidName"), 1, damage));

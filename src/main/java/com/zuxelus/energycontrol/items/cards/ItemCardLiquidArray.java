@@ -18,6 +18,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemCardLiquidArray extends ItemCardBase {
 	private static final int STATUS_NOT_FOUND = Integer.MIN_VALUE;
@@ -50,7 +52,7 @@ public class ItemCardLiquidArray extends ItemCardBase {
 					if (stack != null) {
 						totalAmount += stack.amount;
 						reader.setInt(String.format("_%damount", i),stack.amount);
-						String name = I18n.format("msg.ec.None");
+						String name = "";
 						if (stack.amount > 0)
 							name = FluidRegistry.getFluidName(stack);
 						reader.setString(String.format("_%dname", i), name);
@@ -74,6 +76,7 @@ public class ItemCardLiquidArray extends ItemCardBase {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
 		List<PanelString> result = new LinkedList<PanelString>();
 		double totalAmount = 0;
@@ -156,6 +159,7 @@ public class ItemCardLiquidArray extends ItemCardBase {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(6);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidName"), 1,damage));

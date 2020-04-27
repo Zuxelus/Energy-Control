@@ -18,6 +18,8 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemCardReader implements ICardReader {
 	private ItemStack card;
@@ -197,6 +199,7 @@ public class ItemCardReader implements ICardReader {
 		return getInt("cardCount");
 	}
 
+	@SideOnly(Side.CLIENT)
 	public static List<PanelString> getStateMessage(CardState state) {
 		List<PanelString> result = new LinkedList<PanelString>();
 		PanelString line = new PanelString();

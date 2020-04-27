@@ -129,12 +129,14 @@ public class ItemCardMain extends Item {
 			tooltip.add(String.format("x: %d, y: %d, z: %d", target.getX(), target.getY(), target.getZ()));
 	}
 
+	@SideOnly(Side.CLIENT)
 	public List<PanelString> getStringData(int damage, int settings, ItemCardReader reader, boolean showLabels) {
 		if (cards.containsKey(damage))
 			return cards.get(damage).getStringData(settings, reader, showLabels);
 		return null;
 	}
 
+	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		int damage = stack.getItemDamage();
 		if (cards.containsKey(damage))
