@@ -48,7 +48,7 @@ public class ItemCardCounter extends ItemCardBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
-		List<PanelString> result = new LinkedList<PanelString>();
+		List<PanelString> result = reader.getTitleList();
 		// average counter
 		if (reader.hasField("average")) {
 			if ((displaySettings & 1) > 0)

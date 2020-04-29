@@ -4,7 +4,6 @@ import com.zuxelus.energycontrol.blocks.BlockDamages;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.containers.*;
 import com.zuxelus.energycontrol.tileentities.*;
-import com.zuxelus.energycontrol.utils.SoundHelper;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -26,6 +25,8 @@ public class ServerProxy implements IGuiHandler {
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		if (ID == BlockDamages.GUI_PORTABLE_PANEL)
+			return new ContainerPortablePanel(player);
 		TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
 		switch (ID) {
 		case BlockDamages.DAMAGE_INFO_PANEL:

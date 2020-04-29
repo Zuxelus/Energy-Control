@@ -137,7 +137,7 @@ public class PacketClientSensor implements IMessage, IMessageHandler<PacketClien
 					helper.setBoolean(name, (Boolean) value);
 				}
 			}
-			helper.commit(panel, message.slot);
+			//helper.commit(panel, message.slot);
 		}
 		return null;
 	}

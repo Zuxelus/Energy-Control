@@ -8,9 +8,7 @@ import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 
-import ic2.api.item.IC2Items;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -21,7 +19,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ItemCardTime extends ItemCardBase {
 	public ItemCardTime() {
 		super(ItemCardType.CARD_TIME, "card_time");
-		//addRecipe(new Object[] { " C ", "PWP", " C ", 'C', Items.CLOCK, 'P', Items.PAPER, 'W', IC2Items.getItem("cable", "type:tin,insulation:1") });
 	}
 
 	@Override
@@ -32,7 +29,7 @@ public class ItemCardTime extends ItemCardBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
-		List<PanelString> result = new ArrayList<PanelString>(1);
+		List<PanelString> result = reader.getTitleList();
 		int time = (int) ((FMLClientHandler.instance().getClient().world.getWorldTime() + 6000) % 24000);
 		int hours = time / 1000;
 		int minutes = (time % 1000) * 6 / 100;

@@ -135,10 +135,9 @@ public class GuiInfoPanel extends GuiContainer {
 		}
 		if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain) {
 			int slot = panel.getCardSlot(stack);
-			ItemCardMain card = (ItemCardMain) stack.getItem();
 			if (stack.getItemDamage() == ItemCardType.CARD_TEXT)
 				buttonList.add(new CompactButton(111, guiLeft + xSize - 25, guiTop + 55 + delta, 18, 12, "..."));
-			List<PanelSetting> settingsList = card.getSettingsList(stack);
+			List<PanelSetting> settingsList = ItemCardMain.getSettingsList(stack);
 
 			int hy = fontRenderer.FONT_HEIGHT + 1;
 			int y = 1;
@@ -263,7 +262,7 @@ public class GuiInfoPanel extends GuiContainer {
 				return;
 			if (card.getItem() instanceof ItemCardMain && card.getItemDamage() == ItemCardType.CARD_TEXT) {
 				ItemCardReader reader = new ItemCardReader(card);
-				Object guiObject = ((ItemCardMain) card.getItem()).getSettingsScreen(card.getItemDamage(), reader);
+				Object guiObject = ItemCardMain.getSettingsScreen(reader);
 				if (!(guiObject instanceof GuiScreen)) {
 					EnergyControl.logger.warn("Invalid card, getSettingsScreen method should return GuiScreen object");
 					return;

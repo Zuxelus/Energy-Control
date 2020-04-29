@@ -23,8 +23,12 @@ public abstract class ContainerBase<T extends IInventory> extends Container {
 			for (int i = 0; i < 9; i++)
 				addSlotToContainer(new Slot(player.inventory, i + row * 9 + 9, xStart + i * 18, height - 82 + row * 18));
 
+		addPlayerInventoryTopSlots(player, xStart, height);
+	}
+
+	protected void addPlayerInventoryTopSlots(EntityPlayer player, int width, int height) {
 		for (int col = 0; col < 9; col++)
-			addSlotToContainer(new Slot(player.inventory, col, xStart + col * 18, height - 24));		
+			addSlotToContainer(new Slot(player.inventory, col, width + col * 18, height - 24));
 	}
 
 	@Override

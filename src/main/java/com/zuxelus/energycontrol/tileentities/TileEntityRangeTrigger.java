@@ -191,55 +191,28 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 		if (world == null || world.isRemote)
 			return;
 		
-		int upgradeCountRange = 0;
-		ItemStack itemStack = getStackInSlot(SLOT_UPGRADE);
-		if (itemStack != ItemStack.EMPTY && itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE)
-			upgradeCountRange = itemStack.getCount();
-		ItemStack card = getStackInSlot(SLOT_CARD);
 		int status = STATE_UNKNOWN;
+		ItemStack card = getStackInSlot(SLOT_CARD);
 		if (!card.isEmpty()) {
 			Item item = card.getItem();
 			if (item instanceof ItemCardMain) {
-				boolean needUpdate = true;
-				if (upgradeCountRange > 7)
-					upgradeCountRange = 7;
-				int range = LOCATION_RANGE * (int) Math.pow(2, upgradeCountRange);
 				ItemCardReader reader = new ItemCardReader(card);
-				if (((ItemCardMain)item).isRemoteCard(card.getItemDamage())) {
-					BlockPos target = reader.getTarget();
-					if (target == null) {
-						needUpdate = false;
-						reader.setState(CardState.INVALID_CARD);
-					} else {
-						int dx = target.getX() - pos.getX();
-						int dy = target.getY() - pos.getY();
-						int dz = target.getZ() - pos.getZ();
-						if (Math.abs(dx) > range || Math.abs(dy) > range || Math.abs(dz) > range) {
-							needUpdate = false;
-							reader.setState(CardState.OUT_OF_RANGE);
-							status = STATE_UNKNOWN;
-						}
-					}
-				}
-				if (needUpdate) {
-					CardState state = ((ItemCardMain) item).update(card.getItemDamage(), this, reader, range);
-					reader.setState(state);
-					if (state == CardState.OK) {
-						double min = Math.min(levelStart, levelEnd);
-						double max = Math.max(levelStart, levelEnd);
-						double cur = reader.getDouble("energy");
+				CardState state = ItemCardMain.updateCardNBT(world, pos, reader, getStackInSlot(SLOT_UPGRADE));
+				if (state == CardState.OK) {
+					double min = Math.min(levelStart, levelEnd);
+					double max = Math.max(levelStart, levelEnd);
+					double cur = reader.getDouble("energy");
 
-						if (cur > max) {
-							status = STATE_ACTIVE;
-						} else if (cur < min) {
-							status = STATE_PASSIVE;
-						} else if (status == STATE_UNKNOWN) {
-							status = STATE_PASSIVE;
-						} else
-							status = STATE_PASSIVE;
+					if (cur > max) {
+						status = STATE_ACTIVE;
+					} else if (cur < min) {
+						status = STATE_PASSIVE;
+					} else if (status == STATE_UNKNOWN) {
+						status = STATE_PASSIVE;
 					} else
-						status = STATE_UNKNOWN;
-				}
+						status = STATE_PASSIVE;
+				} else
+					status = STATE_UNKNOWN;
 			}
 		}
 		setStatus(status);

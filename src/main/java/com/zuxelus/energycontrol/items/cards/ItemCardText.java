@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import com.zuxelus.energycontrol.api.CardState;
@@ -10,8 +9,6 @@ import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.gui.GuiCardText;
 
-import ic2.api.item.IC2Items;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -21,7 +18,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ItemCardText extends ItemCardBase {
 	public ItemCardText() {
 		super(ItemCardType.CARD_TEXT, "card_text");
-		//addRecipe(new Object[] { " C ", "PFP", " C ", 'P', Items.PAPER, 'C', "circuitBasic", 'F', IC2Items.getItem("cable", "type:tin,insulation:1") });
 	}
 
 	@Override
@@ -32,7 +28,7 @@ public class ItemCardText extends ItemCardBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
-		List<PanelString> result = new LinkedList<PanelString>();
+		List<PanelString> result = reader.getTitleList();
 		boolean started = false;
 		for (int i = 9; i >= 0; i--) {
 			String text = reader.getString("line_" + i);

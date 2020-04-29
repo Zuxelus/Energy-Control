@@ -37,7 +37,6 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	private static final byte SLOT_CARD = 0;
 	private static final byte SLOT_UPGRADE_RANGE = 1;
 	private static final byte SLOT_UPGRADE_COLOR = 2;
-	private static final byte LOCATION_RANGE = 8;
 	
 	private final Map<Integer, List<PanelString>> cardData;
 	protected final Map<Integer, Map<Integer, Integer>> displaySettings;
@@ -339,17 +338,10 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	}
 	
 	public List<PanelString> getCardData(int settings, ItemStack cardStack, ItemCardReader reader) {
-		ItemCardMain card = (ItemCardMain) cardStack.getItem();
 		int slot = getCardSlot(cardStack);
 		List<PanelString> data = cardData.get(slot);
 		if (data == null) {
-			data = card.getStringData(cardStack.getItemDamage(), settings, reader, getShowLabels());
-			String title = reader.getTitle();
-			if (data != null && title != null && !title.isEmpty()) {
-				PanelString titleString = new PanelString();
-				titleString.textCenter = title;
-				data.add(0, titleString);
-			}
+			data = ItemCardMain.getStringData(settings, reader, getShowLabels());
 			cardData.put(slot, data);
 		}
 		return data;
@@ -382,7 +374,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		return slot;
 	}
 	
-	private void processCard(ItemStack card, int upgradeCountRange, int slot) {
+	private void processCard(ItemStack card, int slot, ItemStack stack) {
 		if (card.isEmpty())
 			return;
 
@@ -390,32 +382,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		if (!(item instanceof ItemCardMain))
 			return;
 
-		boolean needUpdate = true;
-		if (upgradeCountRange > 7)
-			upgradeCountRange = 7;
-		int range = LOCATION_RANGE * (int) Math.pow(2, upgradeCountRange);
 		ItemCardReader reader = new ItemCardReader(card);
-
-		if (((ItemCardMain)item).isRemoteCard(card.getItemDamage())) {
-			BlockPos target = reader.getTarget();
-			if (target == null) {
-				needUpdate = false;
-				reader.setState(CardState.INVALID_CARD);
-			} else {
-				int dx = target.getX() - pos.getX();
-				int dy = target.getY() - pos.getY();
-				int dz = target.getZ() - pos.getZ();
-				if (Math.abs(dx) > range || Math.abs(dy) > range || Math.abs(dz) > range) {
-					needUpdate = false;
-					reader.setState(CardState.OUT_OF_RANGE);
-				}
-			}
-		}
-		if (needUpdate) {
-			CardState state = ((ItemCardMain) item).update(card.getItemDamage(), this, reader, range);
-			reader.setInt("state", state.getIndex());
-		}
-		reader.commit(this, slot);
+		ItemCardMain.updateCardNBT(world, pos, reader, stack);
+		//reader.commit(this, slot);
 	}
 	
 	private boolean isColoredEval() {
@@ -428,13 +397,10 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	public void markDirty() {
 		super.markDirty();
 		if (!world.isRemote) {
-			int upgradeCountRange = 0;
 			setColored(isColoredEval());
 			ItemStack itemStack = getStackInSlot(SLOT_UPGRADE_RANGE);
-			if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE)
-				upgradeCountRange = itemStack.getCount();
 			for (ItemStack card : getCards())
-				processCard(card, upgradeCountRange, getCardSlot(card));
+				processCard(card, getCardSlot(card), itemStack);
 		}
 	}
 	

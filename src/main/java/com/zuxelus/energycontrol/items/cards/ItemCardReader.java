@@ -168,11 +168,11 @@ public class ItemCardReader implements ICardReader {
 		return ItemStackHelper.getTagCompound(card).hasKey(field);
 	}
 
-	@Override
+	/*@Override
 	public void commit(TileEntity panel, int slot) {
 		if (!updateSet.isEmpty())
 			NetworkHelper.setSensorCardField(panel, slot, updateSet);
-	}
+	}*/
 
 	@Override
 	public void setTag(String name, NBTTagCompound value) {
@@ -198,6 +198,11 @@ public class ItemCardReader implements ICardReader {
 	public int getCardCount() {
 		return getInt("cardCount");
 	}
+	
+	@Override
+	public int getCardType() {
+		return card.getItemDamage();
+	}
 
 	@SideOnly(Side.CLIENT)
 	public static List<PanelString> getStateMessage(CardState state) {
@@ -218,6 +223,18 @@ public class ItemCardReader implements ICardReader {
 			break;
 		}
 		result.add(line);
+		return result;
+	}
+
+	@Override
+	public List<PanelString> getTitleList() {
+		List<PanelString> result = new LinkedList<PanelString>();
+		String title = getTitle();
+		if (title != null && !title.isEmpty()) {
+			PanelString titleString = new PanelString();
+			titleString.textCenter = title;
+			result.add(0, titleString);
+		}
 		return result;
 	}
 }

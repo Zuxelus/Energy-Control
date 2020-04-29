@@ -53,6 +53,8 @@ public class ClientProxy extends ServerProxy {
 
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+        if (ID == BlockDamages.GUI_PORTABLE_PANEL)
+            return new GuiPortablePanel(new ContainerPortablePanel(player));
 		TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
 		switch (ID) {
 		case BlockDamages.DAMAGE_THERMAL_MONITOR:

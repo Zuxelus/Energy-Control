@@ -36,50 +36,51 @@ public class ItemHelper {
 	public static Item itemUpgrade;
 	public static Item itemThermometer;
 	public static Item itemThermometerDigital;
+	public static Item itemPortablePanel;
 
 	@SubscribeEvent
 	public static void onBlockRegistry(Register<Block> event) {
 		blockLight = new BlockLight();
-		setNames(blockLight,"block_light");
+		setNames(blockLight, "block_light");
 		event.getRegistry().register(blockLight);
-		
+
 		howlerAlarm = new HowlerAlarm();
-		setNames(howlerAlarm,"howler_alarm");
+		setNames(howlerAlarm, "howler_alarm");
 		event.getRegistry().register(howlerAlarm);
-		
+
 		industrialAlarm = new IndustrialAlarm();
-		setNames(industrialAlarm,"industrial_alarm");
+		setNames(industrialAlarm, "industrial_alarm");
 		event.getRegistry().register(industrialAlarm);
-		
+
 		thermalMonitor = new ThermalMonitor();
-		setNames(thermalMonitor,"thermal_monitor");
+		setNames(thermalMonitor, "thermal_monitor");
 		event.getRegistry().register(thermalMonitor);
-		
+
 		infoPanel = new InfoPanel();
-		setNames(infoPanel,"info_panel");
+		setNames(infoPanel, "info_panel");
 		event.getRegistry().register(infoPanel);
-		
+
 		infoPanelExtender = new InfoPanelExtender();
-		setNames(infoPanelExtender,"info_panel_extender");
+		setNames(infoPanelExtender, "info_panel_extender");
 		event.getRegistry().register(infoPanelExtender);
-		
+
 		rangeTrigger = new RangeTrigger();
-		setNames(rangeTrigger,"range_trigger");
+		setNames(rangeTrigger, "range_trigger");
 		event.getRegistry().register(rangeTrigger);
 
 		remoteThermo = new RemoteThermo();
-		setNames(remoteThermo,"remote_thermo");
+		setNames(remoteThermo, "remote_thermo");
 		event.getRegistry().register(remoteThermo);
-		
+
 		averageCounter = new AverageCounter();
-		setNames(averageCounter,"average_counter");
+		setNames(averageCounter, "average_counter");
 		event.getRegistry().register(averageCounter);
-		
+
 		energyCounter = new EnergyCounter();
-		setNames(energyCounter,"energy_counter");
+		setNames(energyCounter, "energy_counter");
 		event.getRegistry().register(energyCounter);
 	}
-	
+
 	@SubscribeEvent
 	public static void onItemRegistry(Register<Item> event) {
 		event.getRegistry().register(new ItemLight(blockLight).setRegistryName("block_light"));
@@ -91,31 +92,35 @@ public class ItemHelper {
 		event.getRegistry().register(new ItemBlock(rangeTrigger).setRegistryName("range_trigger"));
 		event.getRegistry().register(new ItemBlock(remoteThermo).setRegistryName("remote_thermo"));
 		event.getRegistry().register(new ItemBlock(averageCounter).setRegistryName("average_counter"));
-		event.getRegistry().register(new ItemBlock(energyCounter).setRegistryName("energy_counter"));		
-		
+		event.getRegistry().register(new ItemBlock(energyCounter).setRegistryName("energy_counter"));
+
 		itemUpgrade = new ItemUpgrade();
-		setNames(itemUpgrade,"item_upgrade");
+		setNames(itemUpgrade, "item_upgrade");
 		event.getRegistry().register(itemUpgrade);
-		
+
 		itemThermometer = new ItemThermometer();
-		setNames(itemThermometer,"thermometer");
+		setNames(itemThermometer, "thermometer");
 		event.getRegistry().register(itemThermometer);
-		
+
 		itemThermometerDigital = new ItemDigitalThermometer(1, 80, 80);
-		setNames(itemThermometerDigital,"thermometer_digital");
+		setNames(itemThermometerDigital, "thermometer_digital");
 		event.getRegistry().register(itemThermometerDigital);
-		
+
+		itemPortablePanel = new ItemPortablePanel();
+		setNames(itemPortablePanel, "portable_panel");
+		event.getRegistry().register(itemPortablePanel);
+
 		itemKit = new ItemKitMain();
-		((ItemKitMain)itemKit).registerKits();
-		setNames(itemKit,"item_kit");
+		((ItemKitMain) itemKit).registerKits();
+		setNames(itemKit, "item_kit");
 		event.getRegistry().register(itemKit);
-		
+
 		itemCard = new ItemCardMain();
-		((ItemCardMain)itemCard).registerCards();
-		setNames(itemCard,"item_card");
+		((ItemCardMain) itemCard).registerCards();
+		setNames(itemCard, "item_card");
 		event.getRegistry().register(itemCard);
 	}
-	
+
 	private static void setNames(Object obj, String name) {
 		if (obj instanceof Block) {
 			Block block = (Block) obj;
@@ -128,14 +133,14 @@ public class ItemHelper {
 		} else
 			throw new IllegalArgumentException("Item or Block required");
 	}
-	
+
 	@SubscribeEvent
 	public static void onModelRegister(ModelRegistryEvent event) {
 		registerBlockModel(ItemHelper.blockLight, BlockLight.DAMAGE_WHITE_OFF, "lamp0");
 		registerBlockModel(ItemHelper.blockLight, BlockLight.DAMAGE_WHITE_ON, "lamp1");
 		registerBlockModel(ItemHelper.blockLight, BlockLight.DAMAGE_ORANGE_OFF, "lamp2");
 		registerBlockModel(ItemHelper.blockLight, BlockLight.DAMAGE_ORANGE_ON, "lamp3");
-		
+
 		registerBlockModel(ItemHelper.howlerAlarm, 0, "howler_alarm");
 		registerBlockModel(ItemHelper.industrialAlarm, 0, "industrial_alarm");
 		registerBlockModel(ItemHelper.thermalMonitor, 0, "thermal_Monitor");
@@ -143,17 +148,18 @@ public class ItemHelper {
 		registerBlockModel(ItemHelper.infoPanel, 0, "info_panel");
 		registerBlockModel(ItemHelper.infoPanelExtender, 0, "info_panel_extender");
 		registerBlockModel(ItemHelper.rangeTrigger, 0, "range_trigger");
-		
+
 		registerBlockModel(ItemHelper.averageCounter, 0, "average_counter");
 		registerBlockModel(ItemHelper.energyCounter, 0, "energy_counter");
 
 		ItemKitMain.registerModels();
 		ItemCardMain.registerModels();
-		
+
 		registerItemModel(ItemHelper.itemUpgrade, ItemUpgrade.DAMAGE_RANGE, "upgrade_range");
 		registerItemModel(ItemHelper.itemUpgrade, ItemUpgrade.DAMAGE_COLOR, "upgrade_color");
 		registerItemModel(ItemHelper.itemThermometer, 0, "thermometer");
 		registerItemModel(ItemHelper.itemThermometerDigital, 0, "thermometer_digital");
+		registerItemModel(ItemHelper.itemPortablePanel, 0, "portable_panel");
 	}
 
 	public static void registerItemModel(Item item, int meta, String name) {

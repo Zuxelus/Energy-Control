@@ -1,7 +1,6 @@
 package com.zuxelus.energycontrol.items.cards;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import com.zuxelus.energycontrol.api.CardState;
@@ -10,8 +9,6 @@ import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 
-import ic2.core.block.kineticgenerator.tileentity.TileEntityWindKineticGenerator;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -58,7 +55,7 @@ public class ItemCardGeneratorKinetic extends ItemCardBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
-		List<PanelString> result = new LinkedList<PanelString>();
+		List<PanelString> result = reader.getTitleList();
 		switch (reader.getInt("type")) {
 		case 1:
 			if ((displaySettings & 1) > 0)

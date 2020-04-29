@@ -41,11 +41,6 @@ public abstract class ItemCardBase implements IItemCard {
 	}
 
 	@Override
-	public final CardState update(TileEntity panel, ICardReader reader, int range) {
-		return update(panel.getWorld(), reader, range, panel.getPos());
-	}
-
-	@Override
 	public ICardGui getSettingsScreen(ICardReader reader) {
 		return null;
 	}

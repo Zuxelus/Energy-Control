@@ -1,7 +1,6 @@
 package com.zuxelus.energycontrol.items.cards;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import com.zuxelus.energycontrol.api.CardState;
@@ -78,7 +77,7 @@ public class ItemCardLiquidArray extends ItemCardBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
-		List<PanelString> result = new LinkedList<PanelString>();
+		List<PanelString> result = reader.getTitleList();
 		double totalAmount = 0;
 		double totalCapacity = 0;
 		boolean showName = (displaySettings & 1) > 0;

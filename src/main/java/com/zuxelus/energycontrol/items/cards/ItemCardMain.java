@@ -7,10 +7,12 @@ import java.util.Map;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardGui;
+import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.IItemCard;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.items.ItemUpgrade;
 
 import ic2.api.recipe.Recipes;
 import net.minecraft.client.resources.I18n;
@@ -25,7 +27,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemCardMain extends Item {
+public final class ItemCardMain extends Item {
+	private static final int LOCATION_RANGE = 8;
+	
 	private static Map<Integer, IItemCard> cards;
 
 	public ItemCardMain() {
@@ -53,7 +57,7 @@ public class ItemCardMain extends Item {
 		register(new ItemCardGeneratorArray());
 	}
 
-	private void register(IItemCard item) {
+	private static void register(IItemCard item) {
 		if (checkCard(item))
 			cards.put(item.getDamage(), item);
 	}
@@ -68,7 +72,7 @@ public class ItemCardMain extends Item {
 		return false;
 	}
 
-	public static final void registerCard(IItemCard item) {
+	public static void registerCard(IItemCard item) {
 		if (checkCard(item)) {
 			if (item.getDamage() <= ItemCardType.CARD_MAX) {
 				EnergyControl.logger.warn(String.format("Card %s was not registered. Card ID should be bigger than %d", item.getUnlocalizedName(), ItemCardType.CARD_MAX));
@@ -78,7 +82,7 @@ public class ItemCardMain extends Item {
 		}
 	}
 
-	public static final boolean containsCard(int i) {
+	public static boolean containsCard(int i) {
 		return cards.containsKey(i) ? true : false;
 	}
 
@@ -130,39 +134,69 @@ public class ItemCardMain extends Item {
 	}
 
 	@SideOnly(Side.CLIENT)
-	public List<PanelString> getStringData(int damage, int settings, ItemCardReader reader, boolean showLabels) {
-		if (cards.containsKey(damage))
-			return cards.get(damage).getStringData(settings, reader, showLabels);
+	public static List<PanelString> getStringData(int settings, ItemCardReader reader, boolean showLabels) {
+		if (cards.containsKey(reader.getCardType())) {
+			return cards.get(reader.getCardType()).getStringData(settings, reader, showLabels);
+		}
 		return null;
 	}
 
 	@SideOnly(Side.CLIENT)
-	public List<PanelSetting> getSettingsList(ItemStack stack) {
+	public static List<PanelSetting> getSettingsList(ItemStack stack) {
 		int damage = stack.getItemDamage();
 		if (cards.containsKey(damage))
 			return cards.get(damage).getSettingsList(stack);
 		return null;
 	}
 
-	public CardState update(int damage, TileEntity panel, ItemCardReader reader, int range) {
-		if (cards.containsKey(damage))
-			return cards.get(damage).update(panel, reader, range);
+	public static CardState updateCardNBT(World world, BlockPos pos, ICardReader reader, ItemStack upgradeStack) {
+		int upgradeCountRange = 0;
+		if (upgradeStack != ItemStack.EMPTY && upgradeStack.getItem() instanceof ItemUpgrade && upgradeStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE)
+			upgradeCountRange = upgradeStack.getCount();
+
+		boolean needUpdate = true;
+		int range = LOCATION_RANGE * (int) Math.pow(2, Math.min(upgradeCountRange, 7));
+
+		CardState state = CardState.INVALID_CARD;
+		if (isRemoteCard(reader.getCardType())) {
+			BlockPos target = reader.getTarget();
+			if (target != null) {
+				int dx = target.getX() - pos.getX();
+				int dy = target.getY() - pos.getY();
+				int dz = target.getZ() - pos.getZ();
+				if (Math.abs(dx) > range || Math.abs(dy) > range || Math.abs(dz) > range) {
+					needUpdate = false;
+					state = CardState.OUT_OF_RANGE;
+				}
+			} else
+				needUpdate = false;
+		}
+
+		if (needUpdate)
+			state = update(world, reader, range, pos);
+		reader.setState(state);
+		return state;
+	}
+	
+	private static CardState update(World world, ICardReader reader, int range, BlockPos pos) {
+		if (cards.containsKey(reader.getCardType()))
+			return cards.get(reader.getCardType()).update(world, reader, range, pos);
 		return null;
 	}
 
-	public ICardGui getSettingsScreen(int damage, ItemCardReader reader) {
-		if (damage != ItemCardType.CARD_TEXT)
+	public static ICardGui getSettingsScreen(ItemCardReader reader) {
+		if (reader.getCardType() != ItemCardType.CARD_TEXT)
 			return null;
 		return cards.get(ItemCardType.CARD_TEXT).getSettingsScreen(reader);
 	}
 	
-	public final boolean isRemoteCard(int damage) {
+	public static boolean isRemoteCard(int damage) {
 		if (cards.containsKey(damage))
 			return cards.get(damage).isRemoteCard(damage);
 		return false;
 	}
 
-	public static final void registerModels() {
+	public static void registerModels() {
 		for (Map.Entry<Integer, IItemCard> entry : cards.entrySet()) {
 			Integer key = entry.getKey();
 			if (key <= ItemCardType.CARD_MAX)
@@ -170,7 +204,7 @@ public class ItemCardMain extends Item {
 		}
 	}
 
-	public static final void registerExtendedModels() {
+	public static void registerExtendedModels() {
 		for (Map.Entry<Integer, IItemCard> entry : cards.entrySet()) {
 			Integer key = entry.getKey();
 			if (key > ItemCardType.CARD_MAX)
@@ -178,7 +212,7 @@ public class ItemCardMain extends Item {
 		}
 	}
 
-	public static final void registerRecipes() {
+	public static void registerRecipes() {
 		for (Map.Entry<Integer, IItemCard> entry : cards.entrySet()) {
 			Integer key = entry.getKey();
 			Object[] recipe = entry.getValue().getRecipe(); 

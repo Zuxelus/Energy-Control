@@ -57,7 +57,7 @@ public class ItemCardGenerator extends ItemCardBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
-		List<PanelString> result = new LinkedList<PanelString>();
+		List<PanelString> result = reader.getTitleList();
 		switch (reader.getInt("type")) {
 		case 1:
 			if ((displaySettings & 1) > 0)

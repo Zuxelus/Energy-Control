@@ -49,11 +49,11 @@ public class ItemCardEnergy extends ItemCardBase {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public List<PanelString> getStringData(int displaySettings, ICardReader card, boolean showLabels) {
-		List<PanelString> result = new LinkedList<PanelString>();
+	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
+		List<PanelString> result = reader.getTitleList();
 
-		double energy = card.getDouble("energy");
-		double storage = card.getDouble("storage");
+		double energy = reader.getDouble("energy");
+		double storage = reader.getDouble("storage");
 
 		if ((displaySettings & 1) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelEnergy", energy, showLabels));

@@ -26,6 +26,7 @@ item.thermometer.name=Thermometer
 item.thermometer_digital.name=Digital Thermometer
 item.upgrade_range.name=Range Upgrade
 item.upgrade_color.name=Color Upgrade
+item.portable_panel.name=Portable Panel
 
 #Integration Items
 item.kit_big_reactor.name=Remote RF Reactor Kit

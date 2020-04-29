@@ -26,6 +26,7 @@ item.thermometer.name=Термометр
 item.thermometer_digital.name=Цифровой термометр
 item.upgrade_range.name=Улучшение «Усиление сигнала»
 item.upgrade_color.name=Улучшение «Цветность»
+item.portable_panel.name=Портативная панель
 
 #Integration Items
 item.kit_big_reactor.name=Набор для дистанционного RF-реактора

@@ -1,8 +1,6 @@
 package com.zuxelus.energycontrol.items.cards;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 import com.zuxelus.energycontrol.api.CardState;
@@ -10,13 +8,9 @@ import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.LiquidCardHelper;
-import com.zuxelus.energycontrol.utils.ReactorHelper;
 
-import ic2.api.reactor.IReactor;
 import ic2.core.block.comp.Fluids.InternalFluidTank;
-import ic2.core.block.reactor.tileentity.TileEntityNuclearReactorElectric;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -66,7 +60,7 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
-		List<PanelString> result = new LinkedList<PanelString>();
+		List<PanelString> result = reader.getTitleList();
 		int count = reader.getInt("count");
 		for (int i = 0; i < count; i++)
 			addTankData(result, displaySettings, reader, showLabels, i);

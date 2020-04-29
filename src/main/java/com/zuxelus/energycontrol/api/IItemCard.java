@@ -3,29 +3,26 @@ package com.zuxelus.energycontrol.api;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public interface IItemCard {
 
-	public int getDamage();
+	int getDamage();
 
-	public String getName();
+	String getName();
 
-	public String getUnlocalizedName();
+	String getUnlocalizedName();
 
-	public CardState update(World world, ICardReader reader, int range, BlockPos pos);
+	CardState update(World world, ICardReader reader, int range, BlockPos pos);
 
-	public CardState update(TileEntity panel, ICardReader reader, int range);
+	List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels);
 
-	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels);
-
-	public List<PanelSetting> getSettingsList(ItemStack stack);
+	List<PanelSetting> getSettingsList(ItemStack stack);
 
 	ICardGui getSettingsScreen(ICardReader reader);
 
-	public boolean isRemoteCard(int damage);
+	boolean isRemoteCard(int damage);
 
-	public Object[] getRecipe();
+	Object[] getRecipe();
 }

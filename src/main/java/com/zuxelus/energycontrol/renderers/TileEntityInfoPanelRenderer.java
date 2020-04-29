@@ -147,9 +147,9 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			ItemCardReader reader = new ItemCardReader(card);
 			CardState state = reader.getState();
 			List<PanelString> data;
-			if (state != CardState.OK && state != CardState.CUSTOM_ERROR) {
+			if (state != CardState.OK && state != CardState.CUSTOM_ERROR)
 				data = reader.getStateMessage(state);
-			} else
+			else
 				data = panel.getCardData(displaySettings, card, reader);
 			if (data == null)
 				continue;
