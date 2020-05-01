@@ -1,7 +1,6 @@
 package com.zuxelus.energycontrol.items;
 
 import com.zuxelus.energycontrol.containers.ISlotItemFilter;
-import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -14,15 +13,13 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.util.Constants;
 
-public class PortablePanelInventory implements IInventory, ISlotItemFilter {
-	public static final byte SLOT_CARD = 0;
-	public static final byte SLOT_UPGRADE_RANGE = 1;
+public abstract class ItemInventory implements IInventory, ISlotItemFilter {
 
 	private final ItemStack parent;
 	protected NonNullList<ItemStack> inventory;
 	private String customName;
 
-	public PortablePanelInventory(ItemStack parent, String name) {
+	public ItemInventory(ItemStack parent, String name) {
 		this.parent = parent;
 		customName = name;
 		inventory = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
@@ -80,11 +77,6 @@ public class PortablePanelInventory implements IInventory, ISlotItemFilter {
 	}
 
 	@Override
-	public int getSizeInventory() {
-		return 2;
-	}
-
-	@Override
 	public boolean isEmpty() {
 		for (ItemStack itemstack : inventory)
 			if (!itemstack.isEmpty())
@@ -100,8 +92,9 @@ public class PortablePanelInventory implements IInventory, ISlotItemFilter {
 	@Override
 	public ItemStack decrStackSize(int index, int count) {
 		ItemStack itemstack = ItemStackHelper.getAndSplit(inventory, index, count);
-		/*if (!itemstack.isEmpty())
-			this.markDirty();*/
+		/*
+		 * if (!itemstack.isEmpty()) this.markDirty();
+		 */
 		return itemstack;
 	}
 
@@ -128,7 +121,7 @@ public class PortablePanelInventory implements IInventory, ISlotItemFilter {
 	}
 
 	@Override
-	public void markDirty() { 
+	public void markDirty() {
 		writeToParentNBT();
 	}
 
@@ -138,26 +131,16 @@ public class PortablePanelInventory implements IInventory, ISlotItemFilter {
 	}
 
 	@Override
-	public void openInventory(EntityPlayer player) { }
+	public void openInventory(EntityPlayer player) {
+	}
 
 	@Override
-	public void closeInventory(EntityPlayer player) { }
+	public void closeInventory(EntityPlayer player) {
+	}
 
 	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
 		return isItemValid(index, stack);
-	}
-
-	@Override
-	public boolean isItemValid(int index, ItemStack stack) { // ISlotItemFilter
-		switch (index) {
-		case SLOT_CARD:
-			return stack.getItem() instanceof ItemCardMain;
-		case SLOT_UPGRADE_RANGE:
-			return stack.getItem() instanceof ItemUpgrade && stack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE;
-		default:
-			return false;
-		}
 	}
 
 	@Override
@@ -166,7 +149,8 @@ public class PortablePanelInventory implements IInventory, ISlotItemFilter {
 	}
 
 	@Override
-	public void setField(int id, int value) { }
+	public void setField(int id, int value) {
+	}
 
 	@Override
 	public int getFieldCount() {

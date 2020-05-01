@@ -27,8 +27,8 @@ public class ItemPortablePanel extends Item {
         return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
     }
 
-    @Override
+    /*@Override
     public int getMaxItemUseDuration(ItemStack stack) {
         return 1;
-    }
+    }*/
 }

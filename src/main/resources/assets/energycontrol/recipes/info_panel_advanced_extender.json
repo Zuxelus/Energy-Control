@@ -1,0 +1,28 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "PPP",
+        "CEC",
+        "CMC"
+    ],
+    "key": {
+        "P": {
+            "type": "forge:ore_dict",
+            "ore": "paneGlassLime"
+        },
+        "M": {
+            "item": "ic2:resource",
+            "data": 12
+        },
+        "E": {
+            "item": "energycontrol:info_panel_extender"
+        },
+        "C": {
+            "item": "ic2:crafting",
+            "data": 15
+        }
+    },
+    "result": {
+        "item": "energycontrol:info_panel_advanced_extender"
+    }
+}

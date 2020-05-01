@@ -3,6 +3,7 @@ package com.zuxelus.energycontrol.items;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.StorageArrayRecipe;
 import com.zuxelus.energycontrol.blocks.*;
+import com.zuxelus.energycontrol.items.cards.ItemCardHolder;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.kits.ItemKitMain;
 import com.zuxelus.energycontrol.tileentities.*;
@@ -27,6 +28,8 @@ public class ItemHelper {
 	public static ThermalMonitor thermalMonitor;
 	public static InfoPanel infoPanel;
 	public static InfoPanelExtender infoPanelExtender;
+	public static AdvancedInfoPanel infoPanelAdvanced;
+	public static AdvancedInfoPanelExtender infoPanelAdvancedExtender;
 	public static RangeTrigger rangeTrigger;
 	public static RemoteThermo remoteThermo;
 	public static AverageCounter averageCounter;
@@ -37,6 +40,7 @@ public class ItemHelper {
 	public static Item itemThermometer;
 	public static Item itemThermometerDigital;
 	public static Item itemPortablePanel;
+	public static Item itemCardHolder;
 
 	@SubscribeEvent
 	public static void onBlockRegistry(Register<Block> event) {
@@ -64,6 +68,14 @@ public class ItemHelper {
 		setNames(infoPanelExtender, "info_panel_extender");
 		event.getRegistry().register(infoPanelExtender);
 
+		infoPanelAdvanced = new AdvancedInfoPanel();
+		setNames(infoPanelAdvanced, "info_panel_advanced");
+		event.getRegistry().register(infoPanelAdvanced);
+
+		infoPanelAdvancedExtender = new AdvancedInfoPanelExtender();
+		setNames(infoPanelAdvancedExtender, "info_panel_advanced_extender");
+		event.getRegistry().register(infoPanelAdvancedExtender);
+
 		rangeTrigger = new RangeTrigger();
 		setNames(rangeTrigger, "range_trigger");
 		event.getRegistry().register(rangeTrigger);
@@ -89,6 +101,8 @@ public class ItemHelper {
 		event.getRegistry().register(new ItemBlock(thermalMonitor).setRegistryName("thermal_monitor"));
 		event.getRegistry().register(new ItemBlock(infoPanel).setRegistryName("info_panel"));
 		event.getRegistry().register(new ItemBlock(infoPanelExtender).setRegistryName("info_panel_extender"));
+		event.getRegistry().register(new ItemBlock(infoPanelAdvanced).setRegistryName("info_panel_advanced"));
+		event.getRegistry().register(new ItemBlock(infoPanelAdvancedExtender).setRegistryName("info_panel_advanced_extender"));
 		event.getRegistry().register(new ItemBlock(rangeTrigger).setRegistryName("range_trigger"));
 		event.getRegistry().register(new ItemBlock(remoteThermo).setRegistryName("remote_thermo"));
 		event.getRegistry().register(new ItemBlock(averageCounter).setRegistryName("average_counter"));
@@ -119,6 +133,10 @@ public class ItemHelper {
 		((ItemCardMain) itemCard).registerCards();
 		setNames(itemCard, "item_card");
 		event.getRegistry().register(itemCard);
+
+		itemCardHolder = new ItemCardHolder();
+		setNames(itemCardHolder, "card_holder");
+		event.getRegistry().register(itemCardHolder);
 	}
 
 	private static void setNames(Object obj, String name) {
@@ -147,6 +165,8 @@ public class ItemHelper {
 		registerBlockModel(ItemHelper.remoteThermo, 0, "remote_thermo");
 		registerBlockModel(ItemHelper.infoPanel, 0, "info_panel");
 		registerBlockModel(ItemHelper.infoPanelExtender, 0, "info_panel_extender");
+		registerBlockModel(ItemHelper.infoPanelAdvanced, 0, "info_panel_advanced");
+		registerBlockModel(ItemHelper.infoPanelAdvancedExtender, 0, "info_panel_advanced_extender");
 		registerBlockModel(ItemHelper.rangeTrigger, 0, "range_trigger");
 
 		registerBlockModel(ItemHelper.averageCounter, 0, "average_counter");
@@ -160,6 +180,7 @@ public class ItemHelper {
 		registerItemModel(ItemHelper.itemThermometer, 0, "thermometer");
 		registerItemModel(ItemHelper.itemThermometerDigital, 0, "thermometer_digital");
 		registerItemModel(ItemHelper.itemPortablePanel, 0, "portable_panel");
+		registerItemModel(ItemHelper.itemCardHolder, 0, "card_holder");
 	}
 
 	public static void registerItemModel(Item item, int meta, String name) {
@@ -177,6 +198,8 @@ public class ItemHelper {
 		GameRegistry.registerTileEntity(TileEntityRemoteThermo.class, "energycontrol:remote_thermo");
 		GameRegistry.registerTileEntity(TileEntityInfoPanel.class, "energycontrol:info_panel");
 		GameRegistry.registerTileEntity(TileEntityInfoPanelExtender.class, "energycontrol:info_panel_extender");
+		GameRegistry.registerTileEntity(TileEntityAdvancedInfoPanel.class, "energycontrol:info_panel_advanced");
+		GameRegistry.registerTileEntity(TileEntityAdvancedInfoPanelExtender.class, "energycontrol:info_panel_advanced_extender");
 		GameRegistry.registerTileEntity(TileEntityRangeTrigger.class, "energycontrol:range_trigger");
 		GameRegistry.registerTileEntity(TileEntityAverageCounter.class, "energycontrol:average_counter");
 		GameRegistry.registerTileEntity(TileEntityEnergyCounter.class, "energycontrol:energy_counter");

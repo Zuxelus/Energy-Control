@@ -16,9 +16,9 @@ public class TEInfoPanelExtenderRenderer extends TileEntitySpecialRenderer<TileE
 	private static final CubeRenderer model[];
 
 	static {
-		TEXTUREOFF = new ResourceLocation[15];
-		TEXTUREON = new ResourceLocation[15];
-		for (int i = 0; i < 15; i++) {
+		TEXTUREOFF = new ResourceLocation[16];
+		TEXTUREON = new ResourceLocation[16];
+		for (int i = 0; i < 16; i++) {
 			TEXTUREOFF[i] = new ResourceLocation(
 					EnergyControl.MODID + String.format(":textures/blocks/info_panel/off/all%de.png", i));
 			TEXTUREON[i] = new ResourceLocation(
@@ -63,7 +63,7 @@ public class TEInfoPanelExtenderRenderer extends TileEntitySpecialRenderer<TileE
 		int color = 2;
 		if (te.getColored()) {
 			color = te.getColorBackground();
-			if (color > 14 || color < 0)
+			if (color > 15 || color < 0)
 				color = 2;
 		}
 		if (te.getPowered())
@@ -71,39 +71,7 @@ public class TEInfoPanelExtenderRenderer extends TileEntitySpecialRenderer<TileE
 		else
 			bindTexture(TEXTUREOFF[color]);
 
-		model[findTexture(te)].render(0.03125F);
+		model[te.findTexture()].render(0.03125F);
 		GlStateManager.popMatrix();
-	}
-
-	private int findTexture(TileEntityInfoPanelExtender te) {
-		Screen scr = te.getScreen();
-		if (scr != null) {
-			BlockPos pos = te.getPos();
-			switch (te.getFacing()) {
-			case SOUTH:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX)
-						+ 4 * boolToInt(pos.getY() == scr.minY) + 8 * boolToInt(pos.getY() == scr.maxY);
-			case WEST:
-				return 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ)
-						+ 1 * boolToInt(pos.getY() == scr.minY) + 2 * boolToInt(pos.getY() == scr.maxY);
-			case EAST:
-				return 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ)
-						+ 2 * boolToInt(pos.getY() == scr.minY) + 1 * boolToInt(pos.getY() == scr.maxY);
-			case NORTH:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX)
-						+ 8 * boolToInt(pos.getY() == scr.minY) + 4 * boolToInt(pos.getY() == scr.maxY);
-			case UP:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX)
-						+ 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ);
-			case DOWN:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX)
-						+ 4 * boolToInt(pos.getZ() == scr.minZ) + 8 * boolToInt(pos.getZ() == scr.maxZ);
-			}
-		}
-		return 15;
-	}
-
-	private int boolToInt(boolean b) {
-		return b ? 1 : 0;
 	}
 }

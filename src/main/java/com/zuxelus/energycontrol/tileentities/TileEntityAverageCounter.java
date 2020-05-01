@@ -46,7 +46,7 @@ public class TileEntityAverageCounter extends TileEntityInventory
 	public double energy;
 
 	public TileEntityAverageCounter() {
-		super("block.AverageCounter");
+		super("tile.average_counter.name");
 		addedToEnet = false;
 		data = new double[DATA_POINTS];
 		index = 0;

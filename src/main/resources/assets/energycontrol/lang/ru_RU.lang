@@ -27,6 +27,7 @@ item.thermometer_digital.name=Цифровой термометр
 item.upgrade_range.name=Улучшение «Усиление сигнала»
 item.upgrade_color.name=Улучшение «Цветность»
 item.portable_panel.name=Портативная панель
+item.card_holder.name=Кардхолдер
 
 #Integration Items
 item.kit_big_reactor.name=Набор для дистанционного RF-реактора
@@ -41,8 +42,8 @@ tile.howler_alarm.name=Сирена «Ревун»
 tile.remote_thermo.name=Дистанционный датчик температуры
 tile.info_panel.name=Промышленная информационная панель
 tile.info_panel_extender.name=Расширитель информационной панели
-tile.advanced_info_panel.name=Продвинутая информационная панель
-tile.advanced_info_panel_extender.name=Расширитель продвинутой информационной панели
+tile.info_panel_advanced.name=Продвинутая информационная панель
+tile.info_panel_advanced_extender.name=Расширитель продвинутой информационной панели
 tile.eclight0.name=Белый светильник
 tile.eclight1.name=Белый светильник
 tile.eclight2.name=Оранжевый светильник

@@ -27,6 +27,7 @@ item.thermometer_digital.name=Digital Thermometer
 item.upgrade_range.name=Range Upgrade
 item.upgrade_color.name=Color Upgrade
 item.portable_panel.name=Portable Panel
+item.card_holder.name=Card Holder
 
 #Integration Items
 item.kit_big_reactor.name=Remote RF Reactor Kit
@@ -41,8 +42,8 @@ tile.howler_alarm.name=Howler Alarm
 tile.remote_thermo.name=Remote Thermal Monitor
 tile.info_panel.name=Industrial Information Panel
 tile.info_panel_extender.name=Information Panel Extender
-tile.advanced_info_panel.name=Advanced Information Panel
-tile.advanced_info_panel_extender.name=Advanced Panel Extender
+tile.info_panel_advanced.name=Advanced Information Panel
+tile.info_panel_advanced_extender.name=Advanced Panel Extender
 tile.eclight0.name=White Lamp
 tile.eclight1.name=White Lamp
 tile.eclight2.name=Orange Lamp

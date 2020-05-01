@@ -6,7 +6,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public abstract class ContainerBase<T extends IInventory> extends Container {	
+public abstract class ContainerBase<T extends IInventory> extends Container {
 	public final T te;
 
 	public ContainerBase(T te) {

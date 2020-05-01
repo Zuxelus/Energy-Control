@@ -38,8 +38,8 @@ public class ScreenManager {
 		TileEntity tileEntity = world.getTileEntity(pos);
 		if (!(tileEntity instanceof TileEntityInfoPanelExtender))
 			return false;
-		//if (advanced ^ (tileEntity instanceof TileEntityAdvancedInfoPanelExtender)) //TODO
-			//return false;
+		if (advanced ^ (tileEntity instanceof TileEntityAdvancedInfoPanelExtender))
+			return false;
 		if (((TileEntityInfoPanelExtender) tileEntity).facing != facing)
 			return false;
 		if (((IScreenPart) tileEntity).getScreen() != null)
@@ -130,7 +130,7 @@ public class ScreenManager {
 	}
 
 	private Screen tryBuildFromPanel(TileEntityInfoPanel panel) {
-		boolean advanced = false; //panel instanceof TileEntityAdvancedInfoPanel; //TODO
+		boolean advanced = panel instanceof TileEntityAdvancedInfoPanel;
 		Screen screen = new Screen();
 		BlockPos pos = panel.getPos();
 		screen.maxX = screen.minX = pos.getX();
@@ -251,10 +251,9 @@ public class ScreenManager {
 				screens.get(getWorldKey(extender.getWorld())).add(screen);
 				if (unusedPanels.get(getWorldKey(extender.getWorld())).contains(panel))
 					unusedPanels.get(getWorldKey(extender.getWorld())).remove(panel);
-			} else {
+			} else
 				if (!unusedPanels.get(getWorldKey(extender.getWorld())).contains(panel))
 					unusedPanels.get(getWorldKey(extender.getWorld())).add(panel);
-			}
 		}
 	}
 

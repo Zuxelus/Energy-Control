@@ -22,7 +22,7 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 	protected int updateTicker;
 	protected int tickRate;
 	private TileEntitySound sound;
-	
+
 	public TileEntityHowlerAlarm() {
 		tickRate = 60;
 		updateTicker = 0;
@@ -95,7 +95,7 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 	public SPacketUpdateTileEntity getUpdatePacket() {
 		NBTTagCompound tag = new NBTTagCompound();
 		tag = writeProperties(tag);
-		powered = world.isBlockIndirectlyGettingPowered(pos) > 0 || world.isBlockIndirectlyGettingPowered(pos.up()) > 0;
+		powered = world.isBlockPowered(pos);
 		tag.setBoolean("powered", powered);
 		return new SPacketUpdateTileEntity(getPos(), 0, tag);
 	}
@@ -109,8 +109,8 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 	public NBTTagCompound getUpdateTag() {
 		NBTTagCompound tag = super.getUpdateTag();
 		tag = writeProperties(tag);
-		powered = world.isBlockIndirectlyGettingPowered(pos) > 0 || world.isBlockIndirectlyGettingPowered(pos.up()) > 0; 
-		tag.setBoolean("powered", powered);		
+		powered = world.isBlockPowered(pos); 
+		tag.setBoolean("powered", powered);
 		return tag;
 	}
 
@@ -179,6 +179,6 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 	@Override
 	public void neighborChanged() {
 		if (!world.isRemote)
-			notifyBlockUpdate();		
+			notifyBlockUpdate();
 	}
 }

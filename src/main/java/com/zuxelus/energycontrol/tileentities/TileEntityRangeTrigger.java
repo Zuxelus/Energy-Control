@@ -48,7 +48,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 	public double levelEnd;
 	
 	public TileEntityRangeTrigger() {
-		super("block.RangeTrigger");
+		super("tile.range_trigger.name");
 		init = false;
 		tickRate = EnergyControl.config.rangeTriggerRefreshPeriod;
 		updateTicker = tickRate;

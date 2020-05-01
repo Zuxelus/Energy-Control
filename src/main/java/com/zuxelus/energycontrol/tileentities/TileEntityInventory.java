@@ -21,7 +21,7 @@ import net.minecraftforge.common.util.Constants;
 public abstract class TileEntityInventory extends TileEntityFacing implements IInventory {
     protected NonNullList<ItemStack> inventory;
     private List<IInventoryChangedListener> listeners;
-    private String customName;	
+    protected String customName;	
 	
 	public TileEntityInventory(String name) {
 		customName = name;
@@ -35,7 +35,7 @@ public abstract class TileEntityInventory extends TileEntityFacing implements II
 		inventory = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
 		for (int i = 0; i < nbttaglist.tagCount(); i++) {
 			NBTTagCompound stackTag = nbttaglist.getCompoundTagAt(i);
-			setInventorySlotContents(stackTag.getByte("Slot"), new ItemStack(stackTag));
+			inventory.set(stackTag.getByte("Slot"), new ItemStack(stackTag));
 		}
 	}
 	
@@ -102,7 +102,7 @@ public abstract class TileEntityInventory extends TileEntityFacing implements II
 		inventory.set(index, stack);
 		if (!stack.isEmpty() && stack.getCount() > this.getInventoryStackLimit())
 			stack.setCount(this.getInventoryStackLimit());
-		//markDirty();
+		markDirty();
 	}
 
 	@Override

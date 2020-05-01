@@ -53,6 +53,7 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 	
 	public TileEntityRemoteThermo() {
 		super();
+		customName = "tile.remote_thermo.name";
 		addedToEnet = false;
 		maxStorage = BASE_STORAGE;
 		maxPacketSize = BASE_PACKET_SIZE;

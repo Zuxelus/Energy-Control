@@ -83,7 +83,7 @@ public interface ICardReader {
 	 * 
 	 * @param panel
 	 */
-	//void commit(TileEntity panel, int slot);
+	void updateClient(TileEntity panel, int slot);
 
 	void setTag(String name, NBTTagCompound value);
 	

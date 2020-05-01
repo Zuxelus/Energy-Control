@@ -168,11 +168,11 @@ public class ItemCardReader implements ICardReader {
 		return ItemStackHelper.getTagCompound(card).hasKey(field);
 	}
 
-	/*@Override
-	public void commit(TileEntity panel, int slot) {
+	@Override
+	public void updateClient(TileEntity panel, int slot) {
 		if (!updateSet.isEmpty())
 			NetworkHelper.setSensorCardField(panel, slot, updateSet);
-	}*/
+	}
 
 	@Override
 	public void setTag(String name, NBTTagCompound value) {

@@ -7,10 +7,9 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.containers.ContainerPortablePanel;
-import com.zuxelus.energycontrol.items.PortablePanelInventory;
+import com.zuxelus.energycontrol.items.InventoryPortablePanel;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
-import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -22,18 +21,13 @@ public class GuiPortablePanel extends GuiContainer {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(
 			EnergyControl.MODID + ":textures/gui/gui_portable_panel.png");
 
-	private PortablePanelInventory te;
+	private InventoryPortablePanel te;
 
 	public GuiPortablePanel(ContainerPortablePanel container) {
 		super(container);
 		this.te = container.te;
 		this.xSize = 226;
 		this.ySize = 226;
-	}
-
-	@Override
-	public void initGui() {
-		super.initGui();
 	}
 
 	@Override
@@ -46,7 +40,7 @@ public class GuiPortablePanel extends GuiContainer {
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		mc.renderEngine.bindTexture(new ResourceLocation(EnergyControl.MODID + ":textures/gui/gui_portable_panel.png"));
+		mc.getTextureManager().bindTexture(TEXTURE);
 		int left = (width - xSize) / 2;
 		int top = (height - ySize) / 2;
 		drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
@@ -54,7 +48,7 @@ public class GuiPortablePanel extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		ItemStack stack = te.getStackInSlot(PortablePanelInventory.SLOT_CARD);
+		ItemStack stack = te.getStackInSlot(InventoryPortablePanel.SLOT_CARD);
 		if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain) {
 			ItemCardReader reader = new ItemCardReader(stack);
 
@@ -73,7 +67,7 @@ public class GuiPortablePanel extends GuiContainer {
 					if (panelString.textCenter != null)
 						fontRenderer.drawString(panelString.textCenter, (168 - fontRenderer.getStringWidth(panelString.textCenter)) / 2, row * 10 + 10, 0x06aee4);
 					if (panelString.textRight != null)
-						fontRenderer.drawString(panelString.textRight, 168 - fontRenderer.getStringWidth(panelString.textRight), ((row - 1) * 10) + 10, 0x06aee4);
+						fontRenderer.drawString(panelString.textRight, 168 - fontRenderer.getStringWidth(panelString.textRight), row * 10 + 10, 0x06aee4);
 				} else if (row == 14)
 					fontRenderer.drawString("...", 9, row * 10 + 10, 0x06aee4);
 				row++;

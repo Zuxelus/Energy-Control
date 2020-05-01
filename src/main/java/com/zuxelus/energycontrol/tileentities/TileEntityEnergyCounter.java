@@ -38,7 +38,7 @@ public class TileEntityEnergyCounter extends TileEntityInventory
 	  public double energy;	
 
 	public TileEntityEnergyCounter() {
-		super("block.EnergyCounter");
+		super("tile.energy_counter.name");
 		addedToEnet = false;
 		counter = 0.0;
 		

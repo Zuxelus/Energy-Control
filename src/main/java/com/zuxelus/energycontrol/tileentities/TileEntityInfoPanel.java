@@ -22,6 +22,7 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
@@ -32,7 +33,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class TileEntityInfoPanel extends TileEntityInventory implements ITickable, ITilePacketHandler, IScreenPart, IRedstoneConsumer, ISlotItemFilter {	
 	public static final int DISPLAY_DEFAULT = Integer.MAX_VALUE;
 	private static final int[] COLORS_HEX = { 0x000000, 0xe93535, 0x82e306, 0x702b14, 0x1f3ce7, 0x8f1fea, 0x1fd7e9,
-			0xcbcbcb, 0x222222, 0xe60675, 0x1fe723, 0xe9cc1f, 0x06aee4, 0xb006e3, 0xe7761f };
+			0xcbcbcb, 0x222222, 0xe60675, 0x1fe723, 0xe9cc1f, 0x06aee4, 0xb006e3, 0xe7761f, 0xffffff };
 	
 	private static final byte SLOT_CARD = 0;
 	private static final byte SLOT_UPGRADE_RANGE = 1;
@@ -51,11 +52,11 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	public int colorBackground;
 	public int colorText;
 	
-	private boolean colored;	
+	protected boolean colored;
 	public boolean powered;
 	
 	public TileEntityInfoPanel() {
-		super("block.StatusDisplay");
+		super("tile.info_panel.name");
 		cardData = new HashMap<Integer, List<PanelString>>();
 		displaySettings = new HashMap<Integer, Map<Integer, Integer>>(1);
 		displaySettings.put(0, new HashMap<Integer, Integer>());
@@ -65,12 +66,12 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		colorBackground = 2;
 		colored = false;
 	}
-	
+
 	private void initData() {
-		init = true;		
+		init = true;
 		if (world.isRemote)
 			return;
-		
+
 		if (screenData == null) {
 			EnergyControl.instance.screenManager.registerInfoPanel(this);
 		} else {
@@ -80,7 +81,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		}
 		notifyBlockUpdate();
 	}
-	
+
 	@Override
 	public void setFacing(int meta) {
 		EnumFacing newFacing = EnumFacing.getFront(meta);
@@ -96,60 +97,60 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	public boolean getShowLabels() {
 		return showLabels;
 	}
-	
+
 	public void setShowLabels(boolean newShowLabels) {
 		if (!world.isRemote && showLabels != newShowLabels)
 			notifyBlockUpdate();
 		showLabels = newShowLabels;
 	}
-	
+
 	public boolean getColored() {
 		return colored;
 	}
-	
+
 	public void setColored(boolean newColored) {
 		if (!world.isRemote && colored != newColored)
 			notifyBlockUpdate();
 		colored = newColored;
 	}
-	
+
 	public int getColorBackground() {
 		return colorBackground;
 	}
-	
+
 	public void setColorBackground(int c) {
 		if (!world.isRemote && colorBackground != c)
 			notifyBlockUpdate();
 		colorBackground = c;
 	}
-	
+
 	public int getColorText() {
 		return colorText;
 	}
-	
+
 	public int getColorTextHex() {
 		return COLORS_HEX[colorText];
 	}
 
 	public void setColorText(int c) {
-		if (!world.isRemote && colorText != c) 
+		if (!world.isRemote && colorText != c)
 			notifyBlockUpdate();
 		colorText = c;
 	}
-	
+
 	public boolean getPowered() {
 		return powered;
 	}
 
-	private void calcPowered() { //server
-		boolean newPowered = world.isBlockIndirectlyGettingPowered(pos) > 0 || world.isBlockIndirectlyGettingPowered(pos.up()) > 0;
+	protected void calcPowered() { // server
+		boolean newPowered = world.isBlockPowered(pos);
 		if (newPowered != powered) {
 			powered = newPowered;
 			if (screen != null)
 				screen.turnPower(powered, world);
 		}
 	}
-	
+
 	public void setScreenData(NBTTagCompound nbtTagCompound) {
 		screenData = nbtTagCompound;
 		if (screen != null && FMLCommonHandler.instance().getEffectiveSide().isClient())
@@ -219,10 +220,14 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		return tag;
 	}
 
-	private void deserializeDisplaySettings(NBTTagCompound nbttagcompound, String tagName, int slot) {
-		if (!(nbttagcompound.hasKey(tagName)))
+	protected void deserializeDisplaySettings(NBTTagCompound tag) {
+		deserializeSlotSettings(tag, "dSettings", SLOT_CARD);
+	}
+
+	protected void deserializeSlotSettings(NBTTagCompound tag, String tagName, int slot) {
+		if (!(tag.hasKey(tagName)))
 			return;
-		NBTTagList settingsList = nbttagcompound.getTagList(tagName, Constants.NBT.TAG_COMPOUND);
+		NBTTagList settingsList = tag.getTagList(tagName, Constants.NBT.TAG_COMPOUND);
 		for (int i = 0; i < settingsList.tagCount(); i++) {
 			NBTTagCompound compound = settingsList.getCompoundTagAt(i);
 			try {
@@ -254,7 +259,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 				screenData = (NBTTagCompound) tag.getTag("screenData");
 		} else
 			screenData = null;
-		deserializeDisplaySettings(tag, "dSettings", SLOT_CARD);
+		deserializeDisplaySettings(tag);
 		if (tag.hasKey("powered") && world.isRemote) {
 			boolean newPowered = tag.getBoolean("powered");
 			if (powered != newPowered) {
@@ -269,8 +274,12 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		super.readFromNBT(tag);
 		readProperties(tag);
 	}
-	
-	private NBTTagList serializeSlotSettings(byte slot) {
+
+	protected void serializeDisplaySettings(NBTTagCompound tag) {
+		tag.setTag("dSettings", serializeSlotSettings(SLOT_CARD));
+	}
+
+	protected NBTTagList serializeSlotSettings(int slot) {
 		NBTTagList settingsList = new NBTTagList();
 		for (Map.Entry<Integer, Integer> item : getDisplaySettingsForSlot(slot).entrySet()) {
 			NBTTagCompound compound = new NBTTagCompound();
@@ -287,7 +296,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		tag.setBoolean("showLabels", getShowLabels());
 		tag.setInteger("colorBackground", colorBackground);
 		tag.setInteger("colorText", colorText);
-		tag.setTag("dSettings", serializeSlotSettings(SLOT_CARD));
+		serializeDisplaySettings(tag);
 
 		if (screen != null) {
 			screenData = screen.toTag();
@@ -384,13 +393,12 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 
 		ItemCardReader reader = new ItemCardReader(card);
 		ItemCardMain.updateCardNBT(world, pos, reader, stack);
-		//reader.commit(this, slot);
+		reader.updateClient(this, slot);
 	}
 	
-	private boolean isColoredEval() {
+	protected boolean isColoredEval() {
 		ItemStack itemStack = getStackInSlot(SLOT_UPGRADE_COLOR);
-		return !itemStack.isEmpty() && itemStack.getItem() instanceof ItemUpgrade
-				&& itemStack.getItemDamage() == ItemUpgrade.DAMAGE_COLOR;
+		return !itemStack.isEmpty() && itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_COLOR;
 	}
 	
 	@Override
@@ -398,18 +406,22 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		super.markDirty();
 		if (!world.isRemote) {
 			setColored(isColoredEval());
-			ItemStack itemStack = getStackInSlot(SLOT_UPGRADE_RANGE);
+			ItemStack itemStack = getStackInSlot(getSlotUpgradeRange());
 			for (ItemStack card : getCards())
 				processCard(card, getCardSlot(card), itemStack);
 		}
 	}
-	
+
+	protected byte getSlotUpgradeRange() {
+		return SLOT_UPGRADE_RANGE;
+	}
+
 	public Map<Integer, Integer> getDisplaySettingsForSlot(int slot) {
 		if (!displaySettings.containsKey(slot))
 			displaySettings.put(slot, new HashMap<Integer, Integer>());
 		return displaySettings.get(slot);
 	}
-	
+
 	public int getDisplaySettingsForCardInSlot(int slot) {
 		ItemStack card = getStackInSlot(slot);
 		if (card.isEmpty()) {
@@ -507,9 +519,44 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	public double getMaxRenderDistanceSquared() {
 		return 65536.0D;
 	}
-	
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public AxisAlignedBB getRenderBoundingBox() {
+		if (screen == null)
+			return new AxisAlignedBB(pos.add(0, 0, 0), pos.add(1, 1, 1));
+		return new AxisAlignedBB(new BlockPos(screen.minX, screen.minY, screen.minZ), new BlockPos(screen.maxX + 1, screen.maxY + 1, screen.maxZ + 1));
+	}
+
 	@Override
 	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
 		return oldState.getBlock() != newSate.getBlock();
+	}
+
+	@SideOnly(Side.CLIENT)
+	public int findTexture() {
+		Screen scr = getScreen();
+		if (scr != null) {
+			BlockPos pos = getPos();
+			switch (getFacing()) {
+			case SOUTH:
+				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 4 * boolToInt(pos.getY() == scr.minY) + 8 * boolToInt(pos.getY() == scr.maxY);
+			case WEST:
+				return 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ) + 1 * boolToInt(pos.getY() == scr.minY) + 2 * boolToInt(pos.getY() == scr.maxY);
+			case EAST:
+				return 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ) + 2 * boolToInt(pos.getY() == scr.minY) + 1 * boolToInt(pos.getY() == scr.maxY);
+			case NORTH:
+				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 8 * boolToInt(pos.getY() == scr.minY) + 4 * boolToInt(pos.getY() == scr.maxY);
+			case UP:
+				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ);
+			case DOWN:
+				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 4 * boolToInt(pos.getZ() == scr.minZ) + 8 * boolToInt(pos.getZ() == scr.maxZ);
+			}
+		}
+		return 15;
+	}
+
+	private int boolToInt(boolean b) {
+		return b ? 1 : 0;
 	}
 }

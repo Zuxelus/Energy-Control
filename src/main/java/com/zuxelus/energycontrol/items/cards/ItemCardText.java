@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.items.cards;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import com.zuxelus.energycontrol.api.CardState;
@@ -28,7 +29,7 @@ public class ItemCardText extends ItemCardBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
-		List<PanelString> result = reader.getTitleList();
+		List<PanelString> result = new LinkedList<PanelString>();
 		boolean started = false;
 		for (int i = 9; i >= 0; i--) {
 			String text = reader.getString("line_" + i);
@@ -36,6 +37,12 @@ public class ItemCardText extends ItemCardBase {
 				continue;
 			started = true;
 			result.add(0, new PanelString(text));
+		}
+		String title = reader.getTitle();
+		if (title != null && !title.isEmpty()) {
+			PanelString titleString = new PanelString();
+			titleString.textCenter = title;
+			result.add(0, titleString);
 		}
 		return result;
 	}

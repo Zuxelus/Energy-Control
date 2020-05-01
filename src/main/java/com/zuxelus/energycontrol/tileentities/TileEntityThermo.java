@@ -27,7 +27,7 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 	protected int tickRate;
 	
 	public TileEntityThermo() {
-		super("block.RemoteThermo");
+		super("tile.thermal_monitor.name");
 		invertRedstone = prevInvertRedstone = false;
 		heatLevel = prevHeatLevel = 500;
 		updateTicker = 0;

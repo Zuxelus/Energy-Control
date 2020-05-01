@@ -25,9 +25,9 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 	private static final CubeRenderer model[];
 
 	static {
-		TEXTUREOFF = new ResourceLocation[15];
-		TEXTUREON = new ResourceLocation[15];
-		for (int i = 0; i < 15; i++) {
+		TEXTUREOFF = new ResourceLocation[16];
+		TEXTUREON = new ResourceLocation[16];
+		for (int i = 0; i < 16; i++) {
 			TEXTUREOFF[i] = new ResourceLocation(
 					EnergyControl.MODID + String.format(":textures/blocks/info_panel/off/all%d.png", i));
 			TEXTUREON[i] = new ResourceLocation(
@@ -88,7 +88,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		int color = 2;
 		if (te.getColored()) {
 			color = te.getColorBackground();
-			if (color > 14 || color < 0)
+			if (color > 15 || color < 0)
 				color = 2;
 		}
 		if (te.getPowered())
@@ -96,42 +96,10 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		else
 			bindTexture(TEXTUREOFF[color]);
 
-		model[findTexture(te)].render(0.03125F);
+		model[te.findTexture()].render(0.03125F);
 		if (te.getPowered())
 			renderText(te);
 		GlStateManager.popMatrix();
-	}
-
-	private int findTexture(TileEntityInfoPanel te) {
-		Screen scr = te.getScreen();
-		if (scr != null) {
-			BlockPos pos = te.getPos();
-			switch (te.getFacing()) {
-			case SOUTH:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX)
-						+ 4 * boolToInt(pos.getY() == scr.minY) + 8 * boolToInt(pos.getY() == scr.maxY);
-			case WEST:
-				return 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ)
-						+ 1 * boolToInt(pos.getY() == scr.minY) + 2 * boolToInt(pos.getY() == scr.maxY);
-			case EAST:
-				return 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ)
-						+ 2 * boolToInt(pos.getY() == scr.minY) + 1 * boolToInt(pos.getY() == scr.maxY);
-			case NORTH:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX)
-						+ 8 * boolToInt(pos.getY() == scr.minY) + 4 * boolToInt(pos.getY() == scr.maxY);
-			case UP:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX)
-						+ 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ);
-			case DOWN:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX)
-						+ 4 * boolToInt(pos.getZ() == scr.minZ) + 8 * boolToInt(pos.getZ() == scr.maxZ);
-			}
-		}
-		return 15;
-	}
-
-	private int boolToInt(boolean b) {
-		return b ? 1 : 0;
 	}
 
 	private void renderText(TileEntityInfoPanel panel) {
@@ -250,8 +218,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			break;
 		}
 
-		FontRenderer fontRenderer = this.getFontRenderer();
-		// getMaxWidth
+		FontRenderer fontRenderer = getFontRenderer();
 		int maxWidth = 1;
 		for (PanelString panelString : joinedData) {
 			String currentString = implodeArray(new String[] { panelString.textLeft, panelString.textCenter, panelString.textRight }, " ");
@@ -286,7 +253,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		for (PanelString panelString : joinedData) {
 			if (panelString.textLeft != null) {
 				fontRenderer.drawString(panelString.textLeft, offsetX - realWidth / 2,
-						1 + offsetY - realHeight / 2 + row * lineHeight,
+						offsetY - realHeight / 2 + row * lineHeight,
 						panelString.colorLeft != 0 ? panelString.colorLeft : colorHex);
 			}
 			if (panelString.textCenter != null) {

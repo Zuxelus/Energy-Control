@@ -3,9 +3,14 @@ package com.zuxelus.energycontrol;
 import com.zuxelus.energycontrol.blocks.BlockDamages;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.containers.*;
+import com.zuxelus.energycontrol.gui.GuiAdvancedInfoPanel;
+import com.zuxelus.energycontrol.items.InventoryCardHolder;
+import com.zuxelus.energycontrol.items.cards.ItemCardHolder;
 import com.zuxelus.energycontrol.tileentities.*;
 
+import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.ContainerChest;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -25,12 +30,19 @@ public class ServerProxy implements IGuiHandler {
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-		if (ID == BlockDamages.GUI_PORTABLE_PANEL)
+		switch (ID) {
+		case BlockDamages.GUI_PORTABLE_PANEL:
 			return new ContainerPortablePanel(player);
+		case BlockDamages.GUI_CARD_HOLDER:
+			if (player.getHeldItemMainhand().getItem() instanceof ItemCardHolder)
+				return new ContainerCardHolder(player);
+		}
 		TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
 		switch (ID) {
 		case BlockDamages.DAMAGE_INFO_PANEL:
 			return new ContainerInfoPanel(player, (TileEntityInfoPanel) tileEntity);
+		case BlockDamages.DAMAGE_ADVANCED_PANEL:
+			return new ContainerAdvancedInfoPanel(player, (TileEntityAdvancedInfoPanel) tileEntity);
 		case BlockDamages.DAMAGE_RANGE_TRIGGER:
 			return new ContainerRangeTrigger(player, (TileEntityRangeTrigger) tileEntity);
 		case BlockDamages.DAMAGE_REMOTE_THERMO:
