@@ -173,7 +173,9 @@ public class ItemHelper {
 		registerBlockModel(ItemHelper.energyCounter, 0, "energy_counter");
 
 		ItemKitMain.registerModels();
+		ItemKitMain.registerExtendedModels();
 		ItemCardMain.registerModels();
+		ItemCardMain.registerExtendedModels();
 
 		registerItemModel(ItemHelper.itemUpgrade, ItemUpgrade.DAMAGE_RANGE, "upgrade_range");
 		registerItemModel(ItemHelper.itemUpgrade, ItemUpgrade.DAMAGE_COLOR, "upgrade_color");
@@ -185,6 +187,10 @@ public class ItemHelper {
 
 	public static void registerItemModel(Item item, int meta, String name) {
 		ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(EnergyControl.MODID + ":" + name, "inventory"));
+	}
+
+	public static void registerExternalItemModel(Item item, int meta, String name) {
+		ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(name, "inventory"));
 	}
 
 	private static void registerBlockModel(Block block, int meta, String name) {

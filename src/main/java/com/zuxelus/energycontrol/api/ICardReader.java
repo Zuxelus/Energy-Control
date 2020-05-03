@@ -86,7 +86,9 @@ public interface ICardReader {
 	void updateClient(TileEntity panel, int slot);
 
 	void setTag(String name, NBTTagCompound value);
-	
+
+	NBTTagCompound getTag(String name);
+
 	List<PanelString> getTitleList();
 
 	int getCardCount();

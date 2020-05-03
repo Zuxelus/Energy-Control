@@ -8,9 +8,9 @@ import java.util.Map;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
+import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.network.NetworkHelper;
-import com.zuxelus.energycontrol.utils.ItemStackHelper;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
@@ -187,6 +187,14 @@ public class ItemCardReader implements ICardReader {
 			nbtTagCompound.removeTag(name);
 		} else
 			nbtTagCompound.setTag(name, value);
+	}
+
+	@Override
+	public NBTTagCompound getTag(String name) {
+		NBTTagCompound nbtTagCompound = card.getTagCompound();
+		if (nbtTagCompound == null)
+			return null;
+		return (NBTTagCompound) nbtTagCompound.getTag(name);
 	}
 
 	public void clearField(String name) {

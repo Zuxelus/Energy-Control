@@ -1,0 +1,10 @@
+item.kit_furnace.name=Furnace Kit
+item.card_furnace.name=Furnace Card
+msg.cooking=Cooking: %sx - %s
+msg.fuel=Fuel: %sx - %s
+msg.output=Output: %sx - %s
+msg.burnTime=Burn Time: %s
+msg.cookingText=Cooking
+msg.fuelText=Fuel
+msg.outputText=Output
+msg.burnTimeText=Burn Time

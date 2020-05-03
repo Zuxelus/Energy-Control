@@ -25,8 +25,6 @@ public class ServerProxy implements IGuiHandler {
 	}
 	
 	public void registerSpecialRenderers() { }
-	
-	public void registerExtendedModels() { }
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {

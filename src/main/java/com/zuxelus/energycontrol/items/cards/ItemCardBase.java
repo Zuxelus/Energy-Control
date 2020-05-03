@@ -46,7 +46,7 @@ public abstract class ItemCardBase implements IItemCard {
 	}
 	
 	@Override
-	public boolean isRemoteCard(int damage) {
+	public boolean isRemoteCard() {
 		return true;
 	}
 

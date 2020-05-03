@@ -22,14 +22,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class ItemKitMain extends Item {
-	private static Map<Integer, IItemKit> kits;
+	private static Map<Integer, IItemKit> kits = new HashMap<Integer, IItemKit>();
 	
 	public ItemKitMain() {
 		super();
 		setMaxStackSize(1);
 		canRepair = false;
 		setCreativeTab(EnergyControl.creativeTab);
-		kits = new HashMap<Integer, IItemKit>();
 	}
 	
 	public final void registerKits() {
@@ -84,7 +83,7 @@ public class ItemKitMain extends Item {
 			return;
 		for (Map.Entry<Integer, IItemKit> entry : kits.entrySet()) {
 			Integer key = entry.getKey();
-			if (key <= ItemCardType.KIT_MAX)
+			//if (key <= ItemCardType.KIT_MAX)
 				items.add(new ItemStack(this, 1, key));
 		}
 	}
@@ -102,7 +101,7 @@ public class ItemKitMain extends Item {
 		ItemStack stack = player.getHeldItem(hand);
 		if (stack.isEmpty())
 			return EnumActionResult.PASS;
-		ItemStack sensorLocationCard = getItemKitBase(stack.getItemDamage()).getSensorCard(stack, player, world, pos);
+		ItemStack sensorLocationCard = getItemKitBase(stack.getItemDamage()).getSensorCard(stack, ItemHelper.itemCard, player, world, pos);
 		if (sensorLocationCard.isEmpty())
 			return EnumActionResult.PASS;
 		
@@ -128,7 +127,7 @@ public class ItemKitMain extends Item {
 		for (Map.Entry<Integer, IItemKit> entry : kits.entrySet()) {
 			Integer key = entry.getKey();
 			if (key > ItemCardType.KIT_MAX)
-				ItemHelper.registerItemModel(ItemHelper.itemKit, key, kits.get(key).getName());
+				ItemHelper.registerExternalItemModel(ItemHelper.itemKit, key, kits.get(key).getName());
 		}
 	}
 

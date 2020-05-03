@@ -22,7 +22,7 @@ public interface IItemCard {
 
 	ICardGui getSettingsScreen(ICardReader reader);
 
-	boolean isRemoteCard(int damage);
+	boolean isRemoteCard();
 
 	Object[] getRecipe();
 }

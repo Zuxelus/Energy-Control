@@ -75,13 +75,12 @@ public class EnergyControl {
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
 		
 		proxy.registerSpecialRenderers();
-		proxy.registerExtendedModels();
 		CrossModLoader.init();
 	}
 
 	@EventHandler
 	public static void postInit(FMLPostInitializationEvent event) {
-		CrossModLoader.postinit();
 		RecipesNew.addRecipes();
+		CrossModLoader.postinit();
 	}
 }

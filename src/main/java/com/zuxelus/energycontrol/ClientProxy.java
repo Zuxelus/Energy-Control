@@ -36,12 +36,6 @@ public class ClientProxy extends ServerProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAdvancedInfoPanel.class, new TEAdvancedInfoPanelRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAdvancedInfoPanelExtender.class, new TEAdvancedInfoPanelExtenderRenderer());
 	}
-	
-	@Override
-	public void registerExtendedModels() {
-		ItemKitMain.registerExtendedModels();
-		ItemCardMain.registerExtendedModels();
-	}
 
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
@@ -93,7 +87,7 @@ public class ClientProxy extends ServerProxy {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public void importSound() {
 		SoundHelper.importSound();

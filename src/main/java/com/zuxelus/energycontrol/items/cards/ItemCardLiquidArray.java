@@ -171,7 +171,7 @@ public class ItemCardLiquidArray extends ItemCardBase {
 	}
 
 	@Override
-	public boolean isRemoteCard(int damage) {
+	public boolean isRemoteCard() {
 		return false;
 	}
 }

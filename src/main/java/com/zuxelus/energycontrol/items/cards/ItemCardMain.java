@@ -30,14 +30,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public final class ItemCardMain extends Item {
 	private static final int LOCATION_RANGE = 8;
 	
-	private static Map<Integer, IItemCard> cards;
+	private static Map<Integer, IItemCard> cards = new HashMap<Integer, IItemCard>();
 
 	public ItemCardMain() {
 		super();
 		setMaxStackSize(1);
 		canRepair = false;
 		setCreativeTab(EnergyControl.creativeTab);
-		cards = new HashMap<Integer, IItemCard>();
 	}
 	
 	public final void registerCards() {
@@ -100,7 +99,7 @@ public final class ItemCardMain extends Item {
 			return;
 		for (Map.Entry<Integer, IItemCard> entry : cards.entrySet()) {
 			Integer key = entry.getKey();
-			if (key <= ItemCardType.CARD_MAX)
+			//if (key <= ItemCardType.CARD_MAX)
 				items.add(new ItemStack(this, 1, key));
 		}
 	}
@@ -192,7 +191,7 @@ public final class ItemCardMain extends Item {
 	
 	public static boolean isRemoteCard(int damage) {
 		if (cards.containsKey(damage))
-			return cards.get(damage).isRemoteCard(damage);
+			return cards.get(damage).isRemoteCard();
 		return false;
 	}
 
@@ -208,7 +207,7 @@ public final class ItemCardMain extends Item {
 		for (Map.Entry<Integer, IItemCard> entry : cards.entrySet()) {
 			Integer key = entry.getKey();
 			if (key > ItemCardType.CARD_MAX)
-				ItemHelper.registerItemModel(ItemHelper.itemCard, key, cards.get(key).getName());
+				ItemHelper.registerExternalItemModel(ItemHelper.itemCard, key, cards.get(key).getName());
 		}
 	}
 

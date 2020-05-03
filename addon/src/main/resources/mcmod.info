@@ -1,0 +1,16 @@
+[
+{
+  "modid": "energycontroladdon",
+  "name": "Energy Control Addon",
+  "description": "Example of Energy Control Addon",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Zuxelus"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
