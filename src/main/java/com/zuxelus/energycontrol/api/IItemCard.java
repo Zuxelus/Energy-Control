@@ -24,5 +24,8 @@ public interface IItemCard {
 
 	boolean isRemoteCard();
 
+	int getKitFromCard();
+
 	Object[] getRecipe();
+
 }

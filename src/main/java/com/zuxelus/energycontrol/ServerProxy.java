@@ -3,14 +3,10 @@ package com.zuxelus.energycontrol;
 import com.zuxelus.energycontrol.blocks.BlockDamages;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.containers.*;
-import com.zuxelus.energycontrol.gui.GuiAdvancedInfoPanel;
-import com.zuxelus.energycontrol.items.InventoryCardHolder;
 import com.zuxelus.energycontrol.items.cards.ItemCardHolder;
 import com.zuxelus.energycontrol.tileentities.*;
 
-import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ContainerChest;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -49,6 +45,8 @@ public class ServerProxy implements IGuiHandler {
 			return new ContainerAverageCounter(player, (TileEntityAverageCounter) tileEntity);
 		case BlockDamages.DAMAGE_ENERGY_COUNTER:
 			return new ContainerEnergyCounter(player, (TileEntityEnergyCounter) tileEntity);
+		case BlockDamages.GUI_KIT_ASSEMBER:
+			return new ContainerKitAssembler(player, (TileEntityKitAssembler) tileEntity);
 		default:
 			return null;
 		}

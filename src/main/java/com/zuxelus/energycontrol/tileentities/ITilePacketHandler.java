@@ -6,4 +6,6 @@ public interface ITilePacketHandler {
 
 	void onServerMessageReceived(NBTTagCompound tag);
 
+	void onClientMessageReceived(NBTTagCompound tag);
+
 }

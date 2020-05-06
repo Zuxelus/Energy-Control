@@ -26,7 +26,7 @@ public class ItemKitMain extends Item {
 	
 	public ItemKitMain() {
 		super();
-		setMaxStackSize(1);
+		setMaxStackSize(16);
 		canRepair = false;
 		setCreativeTab(EnergyControl.creativeTab);
 	}
@@ -99,7 +99,7 @@ public class ItemKitMain extends Item {
 			return EnumActionResult.PASS;
 		
 		ItemStack stack = player.getHeldItem(hand);
-		if (stack.isEmpty())
+		if (stack.isEmpty() || stack.getCount() != 1)
 			return EnumActionResult.PASS;
 		ItemStack sensorLocationCard = getItemKitBase(stack.getItemDamage()).getSensorCard(stack, ItemHelper.itemCard, player, world, pos);
 		if (sensorLocationCard.isEmpty())

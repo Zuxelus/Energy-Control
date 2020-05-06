@@ -81,4 +81,9 @@ public class ItemCardLiquid extends ItemCardBase {
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidPercentage"), 16, damage));
 		return result;
 	}
+
+	@Override
+	public int getKitFromCard() {
+		return ItemCardType.KIT_LIQUID;
+	}
 }

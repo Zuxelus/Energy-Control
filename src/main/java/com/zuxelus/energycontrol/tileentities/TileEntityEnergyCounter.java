@@ -60,6 +60,18 @@ public class TileEntityEnergyCounter extends TileEntityInventory
 	}
 
 	@Override
+	public void onClientMessageReceived(NBTTagCompound tag) {
+		if (!tag.hasKey("type"))
+			return;
+		switch (tag.getInteger("type")) {
+		case 1:
+			if (tag.hasKey("value"))
+				counter = tag.getDouble("value");
+			break;
+		}
+	}
+
+	@Override
 	public SPacketUpdateTileEntity getUpdatePacket() {
 		NBTTagCompound tag = new NBTTagCompound();
 		tag = writeProperties(tag);

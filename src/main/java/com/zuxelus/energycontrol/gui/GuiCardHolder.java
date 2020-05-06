@@ -19,8 +19,8 @@ public class GuiCardHolder extends GuiContainer {
 		super(new ContainerCardHolder(player));
 		this.player = player;
 		name = I18n.format("item.card_holder.name");
-		inventoryRows = 3;
-		this.ySize = 114 + inventoryRows * 18;
+		inventoryRows = 6;
+		ySize = 114 + inventoryRows * 18;
 	}
 
 	@Override

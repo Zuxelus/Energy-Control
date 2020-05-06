@@ -91,4 +91,9 @@ public class ItemCardGeneratorKinetic extends ItemCardBase {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(5);
 		return result;
 	}
+
+	@Override
+	public int getKitFromCard() {
+		return ItemCardType.KIT_GENERATOR;
+	}
 }

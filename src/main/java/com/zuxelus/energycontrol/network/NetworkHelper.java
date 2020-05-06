@@ -28,7 +28,7 @@ public class NetworkHelper {
 	public static final int FIELD_LONG = 7;
 
 	// server
-	public static void sendEnergyCounterValue(TileEntityEnergyCounter counter, IContainerListener crafter) {
+	/*public static void sendEnergyCounterValue(TileEntityEnergyCounter counter, IContainerListener crafter) {
 		if (counter == null || !(crafter instanceof EntityPlayerMP))
 			return;
 		ChannelHandler.network.sendTo(new PacketEncounter(counter.getPos(), counter.counter), (EntityPlayerMP) crafter);
@@ -39,7 +39,7 @@ public class NetworkHelper {
 		if (counter == null || !(crafter instanceof EntityPlayerMP))
 			return;
 		ChannelHandler.network.sendTo(new PacketAcounter(counter.getPos(), average), (EntityPlayerMP) crafter);
-	}
+	}*/
 
 	// server
 	private static void sendPacketToAllAround(BlockPos pos, int dist, World world, IMessage packet) {
@@ -81,6 +81,31 @@ public class NetworkHelper {
 	public static void chatMessage(EntityPlayer player, String message) {
 		if (player instanceof EntityPlayerMP)
 			ChannelHandler.network.sendTo(new PacketChat(message), (EntityPlayerMP) player);
+	}
+
+	// server
+	public static void updateClientTileEntity(IContainerListener crafter, BlockPos pos, int type, int value) {
+		if (!(crafter instanceof EntityPlayerMP))
+			return;
+		NBTTagCompound tag = new NBTTagCompound();
+		tag.setInteger("type", type);
+		tag.setInteger("value", value);
+		ChannelHandler.network.sendTo(new PacketTileEntity(pos, tag), (EntityPlayerMP) crafter);
+	}
+
+	public static void updateClientTileEntity(IContainerListener crafter, BlockPos pos, int type, double value) {
+		if (!(crafter instanceof EntityPlayerMP))
+			return;
+		NBTTagCompound tag = new NBTTagCompound();
+		tag.setInteger("type", type);
+		tag.setDouble("value", value);
+		ChannelHandler.network.sendTo(new PacketTileEntity(pos, tag), (EntityPlayerMP) crafter);
+	}
+
+	public static void updateClientTileEntity(IContainerListener crafter, BlockPos pos, NBTTagCompound tag) {
+		if (!(crafter instanceof EntityPlayerMP))
+			return;
+		ChannelHandler.network.sendTo(new PacketTileEntity(pos, tag), (EntityPlayerMP) crafter);
 	}
 
 	// client

@@ -180,19 +180,12 @@ public class GuiInfoPanel extends GuiContainer {
 		super.initGui();
 		initControls();
 	}
-	
-	@Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        drawDefaultBackground();
-        super.drawScreen(mouseX, mouseY, partialTicks);
-        renderHoveredToolTip(mouseX, mouseY);
-    }
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		fontRenderer.drawString(name, (xSize - fontRenderer.getStringWidth(name)) / 2, 6, 0x404040);
-		if (textboxTitle != null)
-			textboxTitle.drawTextBox();
+	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+		drawDefaultBackground();
+		super.drawScreen(mouseX, mouseY, partialTicks);
+		renderHoveredToolTip(mouseX, mouseY);
 	}
 
 	@Override
@@ -205,6 +198,13 @@ public class GuiInfoPanel extends GuiContainer {
 	}
 
 	@Override
+	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+		fontRenderer.drawString(name, (xSize - fontRenderer.getStringWidth(name)) / 2, 6, 0x404040);
+		if (textboxTitle != null)
+			textboxTitle.drawTextBox();
+	}
+
+	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
 		super.mouseClicked(mouseX, mouseY, mouseButton);
 		if (textboxTitle != null) {
@@ -213,11 +213,6 @@ public class GuiInfoPanel extends GuiContainer {
 			if (textboxTitle.isFocused() != focused)
 				updateTitle();
 		}
-	}
-	
-	@Override
-    protected void mouseReleased(int mouseX, int mouseY, int state) {
-		super.mouseReleased(mouseX, mouseY, state);
 	}
 
 	@Override

@@ -195,6 +195,12 @@ public final class ItemCardMain extends Item {
 		return false;
 	}
 
+	public static int getKitFromCard(int damage) {
+		if (cards.containsKey(damage))
+			return cards.get(damage).getKitFromCard();
+		return -1;
+	}
+
 	public static void registerModels() {
 		for (Map.Entry<Integer, IItemCard> entry : cards.entrySet()) {
 			Integer key = entry.getKey();

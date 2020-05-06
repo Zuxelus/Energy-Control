@@ -17,7 +17,7 @@ public class FacingBlock extends Block {
 
 	public FacingBlock() {
 		super(Material.IRON);
-		setHardness(0.5F);
+		setHardness(6.0F);
 		setCreativeTab(EnergyControl.creativeTab);
 	}
 

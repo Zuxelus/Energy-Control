@@ -76,4 +76,9 @@ public class ItemCardEnergy extends ItemCardBase {
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelPercentage"), 8, damage));
 		return result;
 	}
+
+	@Override
+	public int getKitFromCard() {
+		return ItemCardType.KIT_ENERGY;
+	}
 }

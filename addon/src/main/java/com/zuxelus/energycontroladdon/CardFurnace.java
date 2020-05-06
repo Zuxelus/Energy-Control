@@ -111,4 +111,9 @@ public class CardFurnace extends CardBase {
 		result.add(new PanelSetting(I18n.format("msg.outputText"), DISPLAY_SLOT_3, CARD_ID));
 		return result;
 	}
+
+	@Override
+	public int getKitFromCard() {
+		return KitFurnace.KIT_ID;
+	}
 }

@@ -100,4 +100,9 @@ public class ItemCardReactor extends ItemCardBase {
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelTimeRemaining"), 32, damage));
 		return result;
 	}
+
+	@Override
+	public int getKitFromCard() {
+		return ItemCardType.KIT_REACTOR;
+	}
 }

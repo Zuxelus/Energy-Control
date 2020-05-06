@@ -8,7 +8,7 @@
     "key": {
         "P": {
             "type": "forge:ore_dict",
-            "ore": "paneGlassLime"
+            "ore": "paneGlassCyan"
         },
         "M": {
             "item": "ic2:resource",

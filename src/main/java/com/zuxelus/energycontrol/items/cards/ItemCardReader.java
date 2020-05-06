@@ -245,4 +245,48 @@ public class ItemCardReader implements ICardReader {
 		}
 		return result;
 	}
+
+	public List<PanelString> getAllData() {
+		NBTTagCompound nbt = card.getTagCompound();
+		if (nbt == null)
+			return null;
+
+		nbt = card.getTagCompound().copy();
+		List<PanelString> result = new LinkedList<PanelString>();
+		
+		if (nbt.hasKey("title") && nbt.getTag("title").getId() == 8) {
+			String title = nbt.getString("title");
+			if (!title.equals(""))
+				result.add(new PanelString(String.format("title : %s", title)));
+			nbt.removeTag("title");
+		}
+		if (nbt.hasKey("x") && nbt.hasKey("y") && nbt.hasKey("z") && nbt.getTag("x").getId() == 3
+				&& nbt.getTag("y").getId() == 3 && nbt.getTag("z").getId() == 3) {
+			result.add(new PanelString(String.format("xyz : %s %s %s", nbt.getInteger("x"), nbt.getInteger("y"), nbt.getInteger("z"))));
+			nbt.removeTag("x");
+			nbt.removeTag("y");
+			nbt.removeTag("z");
+		}
+		if (nbt.hasKey("cardCount") && nbt.getTag("cardCount").getId() == 3) {
+			int count = nbt.getInteger("cardCount");
+			result.add(new PanelString(String.format("cardCount : %s", count)));
+			nbt.removeTag("cardCount");
+			for (int i = 0; i < count; i++) {
+				String[] value = { String.format("_%dx", i), String.format("_%dy", i), String.format("_%dz", i) };
+				if (nbt.hasKey(value[0]) && nbt.hasKey(value[1]) && nbt.hasKey(value[2])
+						&& nbt.getTag(value[0]).getId() == 3 && nbt.getTag(value[1]).getId() == 3
+						&& nbt.getTag(value[2]).getId() == 3) {
+					result.add(new PanelString(String.format("_%dxyz : %s %s %s", i, nbt.getInteger(value[0]), nbt.getInteger(value[1]), nbt.getInteger(value[2]))));
+					nbt.removeTag(value[0]);
+					nbt.removeTag(value[1]);
+					nbt.removeTag(value[2]);
+				}
+			}
+		}
+		for (String name : nbt.getKeySet()) {
+			NBTBase tag = nbt.getTag(name);
+			result.add(new PanelString(String.format("%s : %s", name, tag.toString())));
+		}
+		return result;
+	}
 }

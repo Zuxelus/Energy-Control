@@ -84,6 +84,10 @@ public class ClientProxy extends ServerProxy {
 			if (tileEntity instanceof TileEntityEnergyCounter)
 				return new GuiEnergyCounter(new ContainerEnergyCounter(player, (TileEntityEnergyCounter) tileEntity));
 			break;
+		case BlockDamages.GUI_KIT_ASSEMBER:
+			if (tileEntity instanceof TileEntityKitAssembler)
+				return new GuiKitAssembler(new ContainerKitAssembler(player, (TileEntityKitAssembler) tileEntity));
+			break;
 		}
 		return null;
 	}

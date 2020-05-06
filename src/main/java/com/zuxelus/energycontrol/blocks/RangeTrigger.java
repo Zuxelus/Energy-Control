@@ -8,6 +8,7 @@ import com.zuxelus.energycontrol.tileentities.TileEntityFacing;
 import com.zuxelus.energycontrol.tileentities.TileEntityInventory;
 import com.zuxelus.energycontrol.tileentities.TileEntityRangeTrigger;
 
+import ic2.api.item.IC2Items;
 import ic2.api.tile.IWrenchable;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
@@ -24,6 +25,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.Mirror;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -35,7 +37,7 @@ public class RangeTrigger extends BlockHorizontal implements ITileEntityProvider
 
 	public RangeTrigger() {
 		super(Material.IRON);
-		setHardness(0.5F);
+		setHardness(6.0F);
 		setCreativeTab(EnergyControl.creativeTab);
 	}
 
@@ -57,16 +59,6 @@ public class RangeTrigger extends BlockHorizontal implements ITileEntityProvider
 	}
 
 	@Override
-	public IBlockState withRotation(IBlockState state, Rotation rot) {
-		return state.withProperty(FACING, rot.rotate((EnumFacing) state.getValue(FACING))).withProperty(STATE, state.getValue(STATE));
-	}
-
-	@Override
-	public IBlockState withMirror(IBlockState state, Mirror mirrorIn) {
-		return state.withRotation(mirrorIn.toRotation((EnumFacing) state.getValue(FACING))).withProperty(STATE, state.getValue(STATE));
-	}
-
-	@Override
 	protected BlockStateContainer createBlockState() {
 		return new BlockStateContainer(this, new IProperty[] { FACING, STATE });
 	}
@@ -83,6 +75,11 @@ public class RangeTrigger extends BlockHorizontal implements ITileEntityProvider
 		if (te instanceof TileEntityInventory)
 			((TileEntityInventory) te).dropItems(world, pos);
 		super.breakBlock(world, pos, state);
+	}
+
+	@Override
+	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
+		drops.add(IC2Items.getItem("resource", "machine"));
 	}
 
 	@Override

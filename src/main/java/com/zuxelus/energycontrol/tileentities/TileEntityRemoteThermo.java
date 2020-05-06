@@ -36,7 +36,7 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 	private static final int BASE_STORAGE = 600;
 	private static final int STORAGE_PER_UPGRADE = 10000;
 	private static final int LOCATION_RANGE = 8;
-	
+
 	private int deltaX;
 	private int deltaY;
 	private int deltaZ;
@@ -47,10 +47,10 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 	private int prevTier;
 	private int tier;
 	private int heat;
-	
+
 	private double energy;
 	private boolean addedToEnet;
-	
+
 	public TileEntityRemoteThermo() {
 		super();
 		customName = "tile.remote_thermo.name";
@@ -64,7 +64,7 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 		energy = 0;
 		heat = 0;
 	}
-	
+
 	public int getHeat() {
 		return heat;
 	}
@@ -83,14 +83,14 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 			notifyBlockUpdate();
 		prevTier = tier;
 	}
-	
+
 	public void setMaxPacketSize(double value) {
 		maxPacketSize = value;
 		if (!world.isRemote && maxPacketSize != prevMaxPacketSize)
 			notifyBlockUpdate();
 		prevMaxPacketSize = maxPacketSize;
 	}
-	
+
 	public double getMaxStorage() {
 		return maxStorage;
 	}
@@ -101,7 +101,7 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 			notifyBlockUpdate();
 		prevMaxStorage = maxStorage;
 	}
-	
+
 	@Override
 	protected void readProperties(NBTTagCompound tag) {
 		super.readProperties(tag);
@@ -115,14 +115,14 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 		energy = tag.getDouble("energy");
 		markDirty();
 	}
-	
+
 	@Override
 	protected NBTTagCompound writeProperties(NBTTagCompound tag) {
 		tag = super.writeProperties(tag);
 		tag.setInteger("heat", heat);
 		return tag;
 	}
-	
+
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
 		super.writeToNBT(tag);
@@ -192,7 +192,7 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 			world.notifyNeighborsOfStateChange(pos, world.getBlockState(pos).getBlock(), false);
 		}
 	}
-	
+
 	@Override
 	public void update() {
 		super.update();
@@ -214,7 +214,7 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 		} else 
 			energy = 0;
 	}
-	
+
 	@Override
 	public void markDirty() {
 		super.markDirty();
@@ -268,8 +268,7 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 				energy = maxStorage;
 		}
 	}
-	
-	
+
 	// Inventory
 	@Override
 	public int getSizeInventory() {
@@ -303,7 +302,7 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 					|| (itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE);
 		}
 	}
-	
+
 	@Override
 	public boolean acceptsEnergyFrom(IEnergyEmitter emitter, EnumFacing dir) {
 		return true;
@@ -330,13 +329,13 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 		}
 		return left;
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public double getMaxRenderDistanceSquared() {
 		return 65536.0D;
 	}
-	
+
 	@Override
 	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
 		return oldState.getBlock() != newSate.getBlock();

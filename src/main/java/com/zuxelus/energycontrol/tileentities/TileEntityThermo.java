@@ -82,6 +82,9 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 	}
 
 	@Override
+	public void onClientMessageReceived(NBTTagCompound tag) { }
+
+	@Override
 	public SPacketUpdateTileEntity getUpdatePacket() {
 		NBTTagCompound tag = new NBTTagCompound();
 		tag = writeProperties(tag);

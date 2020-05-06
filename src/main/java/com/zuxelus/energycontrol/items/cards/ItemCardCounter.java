@@ -68,4 +68,9 @@ public class ItemCardCounter extends ItemCardBase {
 	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		return null;
 	}
+
+	@Override
+	public int getKitFromCard() {
+		return ItemCardType.KIT_COUNTER;
+	}
 }

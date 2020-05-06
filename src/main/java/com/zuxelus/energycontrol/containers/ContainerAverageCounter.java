@@ -25,7 +25,7 @@ public class ContainerAverageCounter extends ContainerBase<TileEntityAverageCoun
 	@Override
 	public void addListener(IContainerListener listener) {
 		super.addListener(listener);
-		NetworkHelper.sendAverageCounterValue(te, listener, te.getClientAverage());
+		NetworkHelper.updateClientTileEntity(listener, te.getPos(), 1, te.getClientAverage());
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public class ContainerAverageCounter extends ContainerBase<TileEntityAverageCoun
 		int average = te.getClientAverage();
 		for (int i = 0; i < listeners.size(); i++) {
 			if (lastAverage != average)
-				NetworkHelper.sendAverageCounterValue(te, listeners.get(i), average);
+				NetworkHelper.updateClientTileEntity(listeners.get(i), te.getPos(), 1, average);
 		}
 		lastAverage = average;
 	}

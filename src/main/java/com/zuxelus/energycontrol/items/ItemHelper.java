@@ -34,6 +34,7 @@ public class ItemHelper {
 	public static RemoteThermo remoteThermo;
 	public static AverageCounter averageCounter;
 	public static EnergyCounter energyCounter;
+	public static KitAssembler kitAssembler;
 	public static Item itemKit;
 	public static Item itemCard;
 	public static Item itemUpgrade;
@@ -91,6 +92,10 @@ public class ItemHelper {
 		energyCounter = new EnergyCounter();
 		setNames(energyCounter, "energy_counter");
 		event.getRegistry().register(energyCounter);
+
+		kitAssembler = new KitAssembler();
+		setNames(kitAssembler, "kit_assembler");
+		event.getRegistry().register(kitAssembler);
 	}
 
 	@SubscribeEvent
@@ -107,6 +112,7 @@ public class ItemHelper {
 		event.getRegistry().register(new ItemBlock(remoteThermo).setRegistryName("remote_thermo"));
 		event.getRegistry().register(new ItemBlock(averageCounter).setRegistryName("average_counter"));
 		event.getRegistry().register(new ItemBlock(energyCounter).setRegistryName("energy_counter"));
+		event.getRegistry().register(new ItemBlock(kitAssembler).setRegistryName("kit_assembler"));
 
 		itemUpgrade = new ItemUpgrade();
 		setNames(itemUpgrade, "item_upgrade");
@@ -171,6 +177,7 @@ public class ItemHelper {
 
 		registerBlockModel(ItemHelper.averageCounter, 0, "average_counter");
 		registerBlockModel(ItemHelper.energyCounter, 0, "energy_counter");
+		registerBlockModel(ItemHelper.kitAssembler, 0, "kit_assembler");
 
 		ItemKitMain.registerModels();
 		ItemKitMain.registerExtendedModels();
@@ -209,6 +216,7 @@ public class ItemHelper {
 		GameRegistry.registerTileEntity(TileEntityRangeTrigger.class, "energycontrol:range_trigger");
 		GameRegistry.registerTileEntity(TileEntityAverageCounter.class, "energycontrol:average_counter");
 		GameRegistry.registerTileEntity(TileEntityEnergyCounter.class, "energycontrol:energy_counter");
+		GameRegistry.registerTileEntity(TileEntityKitAssembler.class, "energycontrol:kit_assembler");
 	}
 
 	@SubscribeEvent

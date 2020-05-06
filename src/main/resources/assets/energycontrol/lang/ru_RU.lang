@@ -51,6 +51,7 @@ tile.eclight3.name=Оранжевый светильник
 tile.energy_counter.name=Энергосчётчик
 tile.average_counter.name=Стационарный энергосчётчик
 tile.range_trigger.name=Дистанционный триггер
+tile.kit_assembler.name=Сборщик наборов
 
 #Original Screen Messages
 msg.ec.HowlerAlarmSoundRange=Дальность звука: %s

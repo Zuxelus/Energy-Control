@@ -51,6 +51,7 @@ tile.eclight3.name=Orange Lamp
 tile.energy_counter.name=Energy Counter
 tile.average_counter.name=Average Counter
 tile.range_trigger.name=Range Trigger
+tile.kit_assembler.name=Kit Assembler
 
 #Original Screen Messages
 msg.ec.HowlerAlarmSoundRange=Sound range: %s

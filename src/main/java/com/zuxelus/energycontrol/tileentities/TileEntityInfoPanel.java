@@ -30,15 +30,15 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityInfoPanel extends TileEntityInventory implements ITickable, ITilePacketHandler, IScreenPart, IRedstoneConsumer, ISlotItemFilter {	
+public class TileEntityInfoPanel extends TileEntityInventory implements ITickable, ITilePacketHandler, IScreenPart, IRedstoneConsumer, ISlotItemFilter {
 	public static final int DISPLAY_DEFAULT = Integer.MAX_VALUE;
 	private static final int[] COLORS_HEX = { 0x000000, 0xe93535, 0x82e306, 0x702b14, 0x1f3ce7, 0x8f1fea, 0x1fd7e9,
 			0xcbcbcb, 0x222222, 0xe60675, 0x1fe723, 0xe9cc1f, 0x06aee4, 0xb006e3, 0xe7761f, 0xffffff };
-	
+
 	private static final byte SLOT_CARD = 0;
 	private static final byte SLOT_UPGRADE_RANGE = 1;
 	private static final byte SLOT_UPGRADE_COLOR = 2;
-	
+
 	private final Map<Integer, List<PanelString>> cardData;
 	protected final Map<Integer, Map<Integer, Integer>> displaySettings;
 	protected Screen screen;
@@ -47,14 +47,14 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	protected int updateTicker;
 	protected int dataTicker;
 	protected int tickRate;
-	
+
 	public boolean showLabels;
 	public int colorBackground;
 	public int colorText;
-	
+
 	protected boolean colored;
 	public boolean powered;
-	
+
 	public TileEntityInfoPanel() {
 		super("tile.info_panel.name");
 		cardData = new HashMap<Integer, List<PanelString>>();
@@ -63,6 +63,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		tickRate = EnergyControl.config.screenRefreshPeriod;
 		updateTicker = tickRate;
 		dataTicker = 4;
+		showLabels = true;
 		colorBackground = 2;
 		colored = false;
 	}
@@ -161,6 +162,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 				screen.init(true, world);
 		}
 	}
+
+	@Override
+	public void onClientMessageReceived(NBTTagCompound tag) { }
 
 	@Override
 	public void onServerMessageReceived(NBTTagCompound tag) {

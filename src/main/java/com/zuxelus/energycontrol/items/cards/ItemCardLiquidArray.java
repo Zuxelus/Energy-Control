@@ -174,4 +174,9 @@ public class ItemCardLiquidArray extends ItemCardBase {
 	public boolean isRemoteCard() {
 		return false;
 	}
+
+	@Override
+	public int getKitFromCard() {
+		return ItemCardType.KIT_LIQUID;
+	}
 }

@@ -58,10 +58,6 @@ public class TileEntityAverageCounter extends TileEntityInventory
 		tier = 1;
 		output = BASE_PACKET_SIZE;
 	}
-	
-	public void setClientAverage(int value) {
-		clientAverage = value;
-	}
 
 	public int getClientAverage() {
 		if (clientAverage == -1)
@@ -102,6 +98,18 @@ public class TileEntityAverageCounter extends TileEntityInventory
 				} else
 					setPeriod((short) event);
 			}
+			break;
+		}
+	}
+
+	@Override
+	public void onClientMessageReceived(NBTTagCompound tag) {
+		if (!tag.hasKey("type"))
+			return;
+		switch (tag.getInteger("type")) {
+		case 1:
+			if (tag.hasKey("value"))
+				clientAverage = tag.getInteger("value");
 			break;
 		}
 	}

@@ -12,7 +12,7 @@ public class InventoryCardHolder extends ItemInventory {
 
 	@Override
 	public int getSizeInventory() {
-		return 27;
+		return 54;
 	}
 	
 	@Override
