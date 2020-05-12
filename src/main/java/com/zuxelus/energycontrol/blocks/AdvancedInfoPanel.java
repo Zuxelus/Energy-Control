@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.renderers.RotationOffset;
+import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInventory;
@@ -20,7 +22,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class AdvancedInfoPanel extends InfoPanel { 
+public class AdvancedInfoPanel extends InfoPanel {
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta) {
 		TileEntityAdvancedInfoPanel te = new TileEntityAdvancedInfoPanel();
@@ -29,31 +31,41 @@ public class AdvancedInfoPanel extends InfoPanel {
 			te.setRotation(rotation.getIndex());
 		return te;
 	}
-	
+
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-		TileEntity te = source.getTileEntity(pos);
+		TileEntity tile = source.getTileEntity(pos);
+		if (!(tile instanceof TileEntityAdvancedInfoPanel))
+			return new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+
+		TileEntityAdvancedInfoPanel te = (TileEntityAdvancedInfoPanel) tile;
+		Screen screen = te.getScreen();
+		if (screen == null)
+			return new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+
+		//RotationOffset offset = new RotationOffset(te.thickness * 2, te.rotateHor / 7, te.rotateVert / 7).addOffset(screen, te.getPos(), te.getFacing(), te.getRotation());
+
 		EnumFacing enumfacing = (EnumFacing) state.getValue(FACING);
 		if (!(te instanceof TileEntityAdvancedInfoPanel) || enumfacing == null)
 			return new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
 		switch (enumfacing) {
 		case EAST:
-			return new AxisAlignedBB(0.0D, 0.0D, 0.0D, 0.0625D * ((TileEntityAdvancedInfoPanel)te).thickness, 1.0D, 1.0D);
+			return new AxisAlignedBB(0.0D, 0.0D, 0.0D, 0.0625D * te.thickness, 1.0D, 1.0D);
 		case WEST:
-			return new AxisAlignedBB(1.0D - 0.0625D * ((TileEntityAdvancedInfoPanel)te).thickness, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+			return new AxisAlignedBB(1.0D - 0.0625D * te.thickness, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
 		case SOUTH:
-			return new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 0.0625D * ((TileEntityAdvancedInfoPanel)te).thickness);
+			return new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 0.0625D * te.thickness);
 		case NORTH:
-			return new AxisAlignedBB(0.0D, 0.0D, 1.0D - 0.0625D * ((TileEntityAdvancedInfoPanel)te).thickness, 1.0D, 1.0D, 1.0D);
+			return new AxisAlignedBB(0.0D, 0.0D, 1.0D - 0.0625D * te.thickness, 1.0D, 1.0D, 1.0D);
 		case UP:
-			return new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.0625D * ((TileEntityAdvancedInfoPanel)te).thickness, 1.0D);
+			return new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.0625D * te.thickness, 1.0D);
 		case DOWN:
-			return new AxisAlignedBB(0.0D, 1.0D - 0.0625D * ((TileEntityAdvancedInfoPanel)te).thickness, 0.0D, 1.0D, 1.0D, 1.0D);
+			return new AxisAlignedBB(0.0D, 1.0D - 0.0625D * te.thickness, 0.0D, 1.0D, 1.0D, 1.0D);
 		default:
 			return new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
 		}
 	}
-	
+
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		if (CrossModLoader.crossIc2.isWrench(player.getHeldItem(hand)))

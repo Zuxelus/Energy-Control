@@ -1,38 +1,23 @@
 package com.zuxelus.energycontrol.crossmod;
 
 import com.zuxelus.energycontrol.crossmod.ic2.IC2Cross;
+import com.zuxelus.energycontrol.crossmod.opencomputers.OpenComputersCross;
 
 public class CrossModLoader {
 	public static IC2Cross crossIc2;
-	//public static CrossRF crossRF;
-	//public static CrossBuildcraft crossBC;
-	public static CrossRailcraft crossRailcraft;
-    //public static CrossAppEng crossAppEng;
-    //public static CrossBigReactors crossBigReactors;
+	public static OpenComputersCross openComputers;
+	public static DraconicEvolutionCross draconicEvolution;
+	//public static CrossRailcraft crossRailcraft;
 
-    public static void preinit() { }
+	public static void preinit() {
+		draconicEvolution = new DraconicEvolutionCross();
+	}
 
-    public static void init() {
-    	crossIc2 = IC2Cross.getIC2Cross();
-    	//crossRF = new CrossRF();
-    	//crossBC = new CrossBuildcraft();
-		crossRailcraft = new CrossRailcraft();
-		//crossAppEng = new CrossAppEng();
-		//crossBigReactors = new CrossBigReactors();
-		/*crossOC = new CrossOpenComputers();
-		crossMekanism = new CrossMekanism();
-		crossTE = new CrossTE();        
-		crossGT6 = new CrossGT6();
-		
-		crossOC.RegisterItems();
-		crossBigReactors.RegisterItems();
-		crossAppEng.RegisterItems();
-		crossMekanism.RegisterItems();
-		crossTE.RegisterItems();*/
-    	
-    	//Registers waila stuff
-        //FMLInterModComms.sendMessage("Waila", "register", "shedar.mods.ic2.nuclearcontrol.crossmod.waila.CrossWaila.callbackRegister");
-    }
+	public static void init() {
+		crossIc2 = IC2Cross.getIC2Cross();
+		//crossRailcraft = new CrossRailcraft();
+		openComputers = new OpenComputersCross();
+	}
 
-    public static void postinit() { }
+	public static void postinit() { }
 }

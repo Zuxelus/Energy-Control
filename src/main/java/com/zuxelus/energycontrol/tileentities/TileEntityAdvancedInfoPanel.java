@@ -5,8 +5,6 @@ import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.NonNullList;
 
 public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
@@ -178,7 +176,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	}
 
 	@Override
-	protected byte getSlotUpgradeRange() {
+	public byte getSlotUpgradeRange() {
 		return SLOT_UPGRADE_RANGE;
 	}
 

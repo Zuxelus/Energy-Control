@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.IItemKit;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
@@ -23,14 +24,14 @@ import net.minecraft.world.World;
 
 public class ItemKitMain extends Item {
 	private static Map<Integer, IItemKit> kits = new HashMap<Integer, IItemKit>();
-	
+
 	public ItemKitMain() {
 		super();
 		setMaxStackSize(16);
 		canRepair = false;
 		setCreativeTab(EnergyControl.creativeTab);
 	}
-	
+
 	public final void registerKits() {
 		register(new ItemKitEnergy());
 		register(new ItemKitCounter());
@@ -38,11 +39,13 @@ public class ItemKitMain extends Item {
 		register(new ItemKitGenerator());
 		register(new ItemKitReactor());
 		register(new ItemKitLiquidAdvanced());
+		if (CrossModLoader.draconicEvolution.modLoaded)
+			register(new ItemKitDraconic());
 	}
-	
+
 	private void register(ItemKitBase item) {
 		if (checkKit(item))
-		kits.put(item.getDamage(), item);
+			kits.put(item.getDamage(), item);
 	}
 
 	private static boolean checkKit(IItemKit item) {
@@ -76,14 +79,13 @@ public class ItemKitMain extends Item {
 			return kits.get(damage).getUnlocalizedName();
 		return "";
 	}
-	
+
 	@Override
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
 		if (!isInCreativeTab(tab))
 			return;
 		for (Map.Entry<Integer, IItemKit> entry : kits.entrySet()) {
 			Integer key = entry.getKey();
-			//if (key <= ItemCardType.KIT_MAX)
 				items.add(new ItemStack(this, 1, key));
 		}
 	}

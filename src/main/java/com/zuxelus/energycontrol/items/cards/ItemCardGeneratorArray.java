@@ -75,7 +75,6 @@ public class ItemCardGeneratorArray extends ItemCardBase {
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
 	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		PanelString line;

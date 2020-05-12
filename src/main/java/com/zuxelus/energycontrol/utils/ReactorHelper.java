@@ -73,10 +73,6 @@ public class ReactorHelper {
 	public static boolean isSteam(IReactor reactor) {
 		return CrossModLoader.crossIc2.isSteamReactor((TileEntity) reactor);
 	}	
-	
-	public static boolean isProducing(World world, BlockPos position) {
-		return world.isBlockIndirectlyGettingPowered(position) > 0;
-	}
 
 	public static int getNuclearCellTimeLeft(ItemStack rStack) {
 		return CrossModLoader.crossIc2.getNuclearCellTimeLeft(rStack);

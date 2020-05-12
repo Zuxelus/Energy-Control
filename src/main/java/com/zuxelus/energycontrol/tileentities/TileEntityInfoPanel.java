@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -212,7 +213,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
 		readProperties(pkt.getNbtCompound());
 	}
-	
+
 	@Override
 	public NBTTagCompound getUpdateTag() {
 		NBTTagCompound tag = super.getUpdateTag();
@@ -272,7 +273,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 			}
 		}
 	}
-	
+
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
@@ -345,16 +346,16 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		IBlockState iblockstate = world.getBlockState(pos);
 		world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
 	}
-	
+
 	public void resetCardData() {
 		cardData.clear();
 	}
-	
-	public List<PanelString> getCardData(int settings, ItemStack cardStack, ItemCardReader reader) {
+
+	public List<PanelString> getCardData(int settings, ItemStack cardStack, ItemCardReader reader, boolean showLabels) {
 		int slot = getCardSlot(cardStack);
 		List<PanelString> data = cardData.get(slot);
 		if (data == null) {
-			data = ItemCardMain.getStringData(settings, reader, getShowLabels());
+			data = ItemCardMain.getStringData(settings, reader, showLabels);
 			cardData.put(slot, data);
 		}
 		return data;
@@ -364,18 +365,45 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	protected boolean hasRotation() {
 		return true;
 	}
-	
+
 	// ------- Settings --------
 	public NonNullList<ItemStack> getCards() {
 		NonNullList<ItemStack> data = NonNullList.create();
 		data.add(getStackInSlot(SLOT_CARD));
 		return data;
-	}	
-	
+	}
+
+	public List<PanelString> getPanelStringList(boolean showLabels) {
+		List<ItemStack> cards = getCards();
+		boolean anyCardFound = false;
+		List<PanelString> joinedData = new LinkedList<PanelString>();
+		for (ItemStack card : cards) {
+			if (card.isEmpty())
+				continue;
+			int settings = getDisplaySettingsByCard(card);
+			if (settings == 0)
+				continue;
+			ItemCardReader reader = new ItemCardReader(card);
+			CardState state = reader.getState();
+			List<PanelString> data;
+			if (state != CardState.OK && state != CardState.CUSTOM_ERROR)
+				data = reader.getStateMessage(state);
+			else
+				data = getCardData(settings, card, reader, showLabels);
+			if (data == null)
+				continue;
+			joinedData.addAll(data);
+			anyCardFound = true;
+		}
+		if (anyCardFound)
+			return joinedData;
+		return null;
+	}
+
 	public int getCardSlot(ItemStack card) {
 		if (card.isEmpty())
 			return 0;
-		
+
 		int slot = 0;
 		for (int i = 0; i < getSizeInventory(); i++) {
 			ItemStack stack = getStackInSlot(i);
@@ -386,7 +414,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		}
 		return slot;
 	}
-	
+
 	private void processCard(ItemStack card, int slot, ItemStack stack) {
 		if (card.isEmpty())
 			return;
@@ -399,12 +427,12 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		ItemCardMain.updateCardNBT(world, pos, reader, stack);
 		reader.updateClient(this, slot);
 	}
-	
+
 	protected boolean isColoredEval() {
 		ItemStack itemStack = getStackInSlot(SLOT_UPGRADE_COLOR);
 		return !itemStack.isEmpty() && itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_COLOR;
 	}
-	
+
 	@Override
 	public void markDirty() {
 		super.markDirty();
@@ -416,7 +444,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		}
 	}
 
-	protected byte getSlotUpgradeRange() {
+	public byte getSlotUpgradeRange() {
 		return SLOT_UPGRADE_RANGE;
 	}
 
@@ -447,7 +475,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		
 		return DISPLAY_DEFAULT;
 	}
-	
+
 	public void setDisplaySettings(int slot, int settings) {
 		if (slot != SLOT_CARD)
 			return;	
@@ -456,7 +484,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 			return;
 		if (!(stack.getItem() instanceof ItemCardMain))
 			return;
-		
+
 		int cardType = stack.getItemDamage();
 		if (!displaySettings.containsKey(slot))
 			displaySettings.put(slot, new HashMap<Integer, Integer>());

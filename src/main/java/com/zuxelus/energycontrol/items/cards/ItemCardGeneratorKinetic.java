@@ -53,7 +53,6 @@ public class ItemCardGeneratorKinetic extends ItemCardBase {
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
 	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		switch (reader.getInt("type")) {

@@ -47,7 +47,6 @@ public class ItemCardLiquid extends ItemCardBase {
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
 	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		int capacity = reader.getInt("capacity");

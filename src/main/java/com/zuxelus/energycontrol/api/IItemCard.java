@@ -16,7 +16,7 @@ public interface IItemCard {
 
 	CardState update(World world, ICardReader reader, int range, BlockPos pos);
 
-	List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels);
+	List<PanelString> getStringData(int settings, ICardReader reader, boolean showLabels);
 
 	List<PanelSetting> getSettingsList(ItemStack stack);
 
@@ -27,5 +27,4 @@ public interface IItemCard {
 	int getKitFromCard();
 
 	Object[] getRecipe();
-
 }

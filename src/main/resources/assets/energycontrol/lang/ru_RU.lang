@@ -30,6 +30,9 @@ item.portable_panel.name=Портативная панель
 item.card_holder.name=Кардхолдер
 
 #Integration Items
+item.card_energy_draconic.name=Карта расположения хранилища Draconic
+item.card_reactor_draconic.name=Карта расположения реактора Draconic
+item.kit_draconic.name=Набор для Draconic Evolution
 item.kit_big_reactor.name=Набор для дистанционного RF-реактора
 item.card_big_reactor.name=Карта-датчик расположения RF-реактора
 item.kit_app_eng.name=Набор с датчиком для Applied Energistics
@@ -156,3 +159,22 @@ msg.ec.InfoPanel55.tankout=Внешний резервуар: %s / 10000 мВ
 msg.ec.InfoPanel55.Out=Выход (Hu/сек)
 msg.ec.InfoPanel55.BufferIn=Резервуар хладагента
 msg.ec.InfoPanel55.BufferOut=Резервуар горячего хладагента
+
+#Draconic Evolution
+msg.ec.Status=Статус: %s
+msg.ec.CoreTemp=Температура: %s
+msg.ec.Diameter=Диаметр: %s
+msg.ec.GenerationRate=Выработка энергии: %s
+msg.ec.InputRate=Энергия для сдерж. поля: %s
+msg.ec.Saturation=Насыщение: %s
+msg.ec.ConvertedFuel=Преобраз. топливо: %s
+msg.ec.FieldStrength=Сила поля: %s
+msg.ec.ConversionRate=Преобразование топлива: %s
+msg.ec.Fuel=Топливо: %s
+
+msg.ec.cbStatus=Статус
+msg.ec.cbDiameter=Диаметр
+msg.ec.cbInputRate=Энергия для сдерж. поля
+msg.ec.cbFieldStrength=Сила поля
+msg.ec.cbSaturation=Насыщение
+msg.ec.cbFuel=Топливо

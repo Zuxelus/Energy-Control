@@ -37,7 +37,7 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		model = new CubeRenderer[16];
 		for (int i = 0; i < 4; i++)
 			for (int j = 0; j < 4; j++)
-				model[i * 4 + j] = new CubeRenderer(0, 0, 0, 32, 32, 32, 128, 192, i * 32 + 64, j * 32 + 64);
+				model[i * 4 + j] = new CubeRenderer(i * 32 + 64, j * 32 + 64);
 	}
 
 	private static String implodeArray(String[] inputArray, String glueString) {
@@ -58,7 +58,7 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 	}
 
 	@Override
-	public void render(TileEntityAdvancedInfoPanel te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {   
+	public void render(TileEntityAdvancedInfoPanel te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
 		GlStateManager.pushMatrix();
 		GlStateManager.translate((float)x, (float)y, (float)z);
 		switch (te.getFacing()) {
@@ -101,42 +101,25 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		byte thickness = te.thickness;
 		if (thickness < 1 || thickness > 16)
 			thickness = 16;
-		if (thickness == 16)
+		int rotateHor = te.rotateHor / 7;
+		int rotateVert = te.rotateVert / 7;
+		RotationOffset offset = new RotationOffset(thickness * 2, rotateHor, rotateVert);
+		Screen screen = te.getScreen();
+		if (thickness == 16 && rotateHor == 0 && rotateVert == 0)
 			model[textureId].render(0.03125F);
-		else
-			new CubeRenderer(0, 0, 0, 32, thickness * 2, 32, 128, 192, textureId / 4 * 32 + 64, textureId % 4 * 32 + 64).render(0.03125F);
-		if (te.powered)
-			renderText(te, thickness);
+		else {
+			new CubeRenderer(textureId / 4 * 32 + 64, textureId % 4 * 32 + 64, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation())).render(0.03125F);
+		}
+		if (te.powered) {
+			boolean anyCardFound = false;
+			List<PanelString> joinedData = te.getPanelStringList(te.getShowLabels());
+			if (joinedData != null)
+				drawText(te, joinedData, thickness, offset);
+		}
 		GlStateManager.popMatrix();
 	}
 
-	private void renderText(TileEntityAdvancedInfoPanel panel, byte thickness) {
-		List<ItemStack> cards = panel.getCards();
-		boolean anyCardFound = false;
-		List<PanelString> joinedData = new LinkedList<PanelString>();
-		for (ItemStack card : cards) {
-			if (card.isEmpty())
-				continue;
-			int displaySettings = panel.getDisplaySettingsByCard(card);
-			if (displaySettings == 0)
-				continue;
-			ItemCardReader reader = new ItemCardReader(card);
-			CardState state = reader.getState();
-			List<PanelString> data;
-			if (state != CardState.OK && state != CardState.CUSTOM_ERROR)
-				data = reader.getStateMessage(state);
-			else
-				data = panel.getCardData(displaySettings, card, reader);
-			if (data == null)
-				continue;
-			joinedData.addAll(data);
-			anyCardFound = true;
-		}
-		if (anyCardFound)
-			drawText(panel, joinedData, thickness);
-	}
-
-	private void drawText(TileEntityAdvancedInfoPanel panel, List<PanelString> joinedData, byte thickness) {
+	private void drawText(TileEntityAdvancedInfoPanel panel, List<PanelString> joinedData, byte thickness, RotationOffset offset) {
 		Screen screen = panel.getScreen();
 		BlockPos pos = panel.getPos();
 		float displayWidth = 1 - 2F / 16;
@@ -153,8 +136,8 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 					displayHeight += screen.maxZ - screen.minZ;
 					break;
 				case SOUTH:
-					dz = (pos.getZ() - screen.maxZ - screen.minZ + pos.getZ());
-					dy = pos.getX() - screen.maxX - screen.minX + pos.getX();
+					dx = screen.minX - pos.getX();
+					dz = pos.getZ() - screen.maxZ;
 					displayWidth += screen.maxX - screen.minX;
 					displayHeight += screen.maxZ - screen.minZ;
 					break;
@@ -165,8 +148,8 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 					displayHeight += screen.maxX - screen.minX;
 					break;
 				case WEST:
-					dz = (pos.getZ() - screen.maxZ - screen.minZ + pos.getZ());
-					dy = pos.getX() - screen.maxX - screen.minX + pos.getX();
+					dx = screen.minX - pos.getX();
+					dz = screen.minZ - pos.getZ();
 					displayWidth += screen.maxZ - screen.minZ;
 					displayHeight += screen.maxX - screen.minX;
 					break;
@@ -176,36 +159,61 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 					break;
 				}
 				break;
+			case DOWN:
+				switch (panel.getRotation()) {
+				case NORTH:
+					dx = pos.getX() - screen.maxX;
+					dz = pos.getZ() - screen.maxZ;
+					displayWidth += screen.maxX - screen.minX;
+					displayHeight += screen.maxZ - screen.minZ;
+					break;
+				case SOUTH:
+					dx = screen.minX - pos.getX();
+					dz = screen.minZ - pos.getZ();
+					displayWidth += screen.maxX - screen.minX;
+					displayHeight += screen.maxZ - screen.minZ;
+					break;
+				case EAST:
+					dx = pos.getX() - screen.maxX;
+					dz = screen.minZ - pos.getZ();
+					displayWidth += screen.maxZ - screen.minZ;
+					displayHeight += screen.maxX - screen.minX;
+					break;
+				case WEST:
+					dx = screen.minX - pos.getX();
+					dz = pos.getZ() - screen.maxZ;
+					displayWidth += screen.maxZ - screen.minZ;
+					displayHeight += screen.maxX - screen.minX;
+					break;
+				case DOWN:
+					break;
+				case UP:
+					break;
+				}
+ 				break;
 			case NORTH:
-				dz = (pos.getY() - screen.maxY - screen.minY + pos.getY());
-				dy = pos.getX() - screen.maxX - screen.minX + pos.getX();
+				dx = pos.getX() - screen.maxX;
 				displayWidth += screen.maxX - screen.minX;
 				displayHeight += screen.maxY - screen.minY;
 				break;
 			case SOUTH:
-				dz = - (pos.getY() - screen.maxY - screen.minY + pos.getY());
-				dy = pos.getX() - screen.maxX - screen.minX + pos.getX();
+				dx = screen.minX - pos.getX();
 				displayWidth += screen.maxX - screen.minX;
 				displayHeight += screen.maxY - screen.minY;
 				break;
-			case DOWN:
- 				break;
 			case WEST:
-				dz = pos.getZ() - screen.maxZ + pos.getZ() - screen.minZ;
-				dy = (pos.getY() - screen.maxY - screen.minY + pos.getY());
+				dz = screen.minZ - pos.getZ();
 				displayWidth += screen.maxZ - screen.minZ;
 				displayHeight += screen.maxY - screen.minY;
 				break;
 			case EAST:
-				dz = pos.getZ() - screen.maxZ + pos.getZ() - screen.minZ;
-				dy = - (pos.getY() - screen.maxY - screen.minY + pos.getY());
+				dz = pos.getZ() - screen.maxZ;
 				displayWidth += screen.maxZ - screen.minZ;
 				displayHeight += screen.maxY - screen.minY;
 				break;
 			}
 		}
 
-		GlStateManager.translate(0.5F - dy / 2, 0.01F - dx / 2 + thickness * 0.0625F, 0.5F - dz / 2);
 		GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
 		switch(panel.getRotation())
 		{
@@ -213,20 +221,33 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			break;
 		case NORTH:
 			GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+			GlStateManager.translate(dx - 1.0F, dz, 0.0F);
 			break;
 		case SOUTH:
+			GlStateManager.translate(dx, dz - 1.0F, 0.0F);
 			break;
 		case DOWN:
 			break;
 		case WEST:
 			GlStateManager.rotate(-90.0F, 0.0F, 0.0F, 1.0F);
+			GlStateManager.translate(dz, dx, 0.0F);
 			break;
 		case EAST:
 			GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
+			GlStateManager.translate(dz - 1.0F, dx - 1.0F, 0.0F);
 			break;
 		}
 
-		FontRenderer fontRenderer = this.getFontRenderer();
+		double a = Math.atan((offset.leftTop - offset.leftBottom) / 32.0F / (displayHeight + 0.125F));
+		double b = Math.atan((offset.leftBottom - offset.rightBottom) / 32.0F / (displayWidth + 0.125F));
+		GlStateManager.translate((displayWidth + 0.125F) / 2, (displayHeight + 0.125F) / 2 + 0.01F,
+				(displayWidth + 0.125F) / 2 * Math.tan(b) + (32 - offset.leftTop + (offset.leftTop - offset.leftBottom) / 2.0F) / 32.0F + 0.01F);
+		GlStateManager.rotate((float) Math.toDegrees(a), -1.0F, 0.0F, 0.0F);
+		GlStateManager.rotate((float) Math.toDegrees(b), 0.0F, -1.0F, 0.0F);
+		displayHeight = (float) (displayHeight / Math.cos(a));
+		displayWidth = (float) (displayWidth / Math.cos(b));
+
+		FontRenderer fontRenderer = getFontRenderer();
 		// getMaxWidth
 		int maxWidth = 1;
 		for (PanelString panelString : joinedData) {

@@ -35,7 +35,7 @@ public class ItemCardReactor extends ItemCardBase {
 		
 		reader.setInt("heat", reactor.getHeat());
 		reader.setInt("maxHeat", reactor.getMaxHeat());
-		reader.setBoolean("reactorPoweredB", ReactorHelper.isProducing(world, target));
+		reader.setBoolean("reactorPoweredB", reactor.produceEnergy());
 		reader.setInt("output", (int) Math.round(reactor.getReactorEUEnergyOutput()));
 		boolean isSteam = ReactorHelper.isSteam(reactor);
 		reader.setBoolean("isSteam", isSteam);
@@ -60,7 +60,6 @@ public class ItemCardReactor extends ItemCardBase {
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
 	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		if ((displaySettings & 2) > 0)

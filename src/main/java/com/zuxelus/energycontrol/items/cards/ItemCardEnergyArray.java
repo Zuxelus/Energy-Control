@@ -67,7 +67,6 @@ public class ItemCardEnergyArray extends ItemCardBase {
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
 	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		double totalEnergy = 0;

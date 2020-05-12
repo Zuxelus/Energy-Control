@@ -44,11 +44,19 @@ public class IC2ExpCross extends IC2Cross {
 		if (stack.isEmpty())
 			return 0;
 		Item item = stack.getItem();
-		if (item instanceof ItemReactorUranium || item instanceof ItemReactorLithiumCell
-				|| item instanceof ItemReactorMOX)
+		if (item instanceof ItemReactorUranium || item instanceof ItemReactorLithiumCell || item instanceof ItemReactorMOX)
 			return ((ICustomDamageItem)item).getMaxCustomDamage(stack) - ((ICustomDamageItem)item).getCustomDamage(stack);
-
+		// Coaxium Mod
+		if (item.getClass().getName() == "com.sm.FirstMod.items.ItemCoaxiumRod"
+				|| item.getClass().getName() == "com.sm.FirstMod.items.ItemCesiumRod")
+			return stack.getMaxDamage() - getCoaxiumDamage(stack);
 		return 0;
+	}
+
+	public int getCoaxiumDamage(ItemStack stack) {
+		if (!stack.hasTagCompound())
+			return 0;
+		return stack.getTagCompound().getInteger("fuelRodDamage");
 	}
 
 	@Override

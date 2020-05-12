@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.brandon3055.draconicevolution.api.IExtendedRFStorage;
+import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalDirectIO;
+import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyInfuser;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
@@ -19,9 +22,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemCardEnergy extends ItemCardBase {
-	public ItemCardEnergy() {
-		super(ItemCardType.CARD_ENERGY, "card_energy");
+public class ItemCardEnergyDraconic extends ItemCardBase {
+	public ItemCardEnergyDraconic() {
+		super(ItemCardType.CARD_ENERGY_DRACONIC, "card_energy_draconic");
 	}
 
 	@Override
@@ -30,15 +33,26 @@ public class ItemCardEnergy extends ItemCardBase {
 		if (target == null)
 			return CardState.NO_TARGET;
 		
-		TileEntity entity = world.getTileEntity(target);
-		if (entity == null)
+		TileEntity te = world.getTileEntity(target);
+		if (te == null)
 			return CardState.NO_TARGET;
 			
-		EnergyStorageData storage = CrossModLoader.crossIc2.getEnergyStorageData(entity);
-		if (storage == null)
-			return CardState.NO_TARGET;
-
-		return updateCardValues(reader, storage);
+		if (te instanceof IExtendedRFStorage) {
+			reader.setDouble("storage", (double) ((IExtendedRFStorage)te).getExtendedCapacity());
+			reader.setDouble("energy", (double) ((IExtendedRFStorage)te).getExtendedCapacity());
+			return CardState.OK;
+		}
+		if (te instanceof TileEnergyInfuser) {
+			reader.setDouble("storage", (double) ((TileEnergyInfuser) te).energyStorage.getMaxEnergyStored());
+			reader.setDouble("energy", (double) ((TileEnergyInfuser) te).energyStorage.getEnergyStored());
+			return CardState.OK;
+		}
+		if (te instanceof TileCrystalDirectIO) {
+			reader.setDouble("storage", (double) ((TileCrystalDirectIO) te).getMaxEnergyStored());
+			reader.setDouble("energy", (double) ((TileCrystalDirectIO) te).getEnergyStored());
+			return CardState.OK;
+		}
+		return CardState.NO_TARGET;
 	}
 
 	private CardState updateCardValues(ICardReader reader, EnergyStorageData storage) {
@@ -78,6 +92,6 @@ public class ItemCardEnergy extends ItemCardBase {
 
 	@Override
 	public int getKitFromCard() {
-		return ItemCardType.KIT_ENERGY;
+		return ItemCardType.KIT_DRACONIC;
 	}
 }

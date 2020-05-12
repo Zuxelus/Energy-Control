@@ -81,7 +81,7 @@ public class InfoPanel extends FacingBlock implements ITileEntityProvider, IWren
 			return getDefaultState().withProperty(FACING, EnumFacing.UP);
 		if (placer.rotationPitch <= -65) {
 			rotation = placer.getHorizontalFacing();
-			return getDefaultState().withProperty(FACING, EnumFacing.DOWN);			
+			return getDefaultState().withProperty(FACING, EnumFacing.DOWN);
 		}
 		switch (MathHelper.floor(placer.rotationYaw * 4.0F / 360.0F + 0.5D) & 3) {
 		case 0:
@@ -127,7 +127,7 @@ public class InfoPanel extends FacingBlock implements ITileEntityProvider, IWren
 		TileEntity te = world.getTileEntity(pos);
 		if (te instanceof TileEntityFacing)
 			return ((TileEntityFacing) te).getFacing();
-		return EnumFacing.DOWN;
+		return EnumFacing.NORTH;
 	}
 
 	@Override

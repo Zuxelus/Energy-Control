@@ -1,21 +1,15 @@
 package com.zuxelus.energycontrol.renderers;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.PanelString;
-import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 
@@ -36,7 +30,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		model = new CubeRenderer[16];
 		for (int i = 0; i < 4; i++)
 			for (int j = 0; j < 4; j++)
-				model[i * 4 + j] = new CubeRenderer(0, 0, 0, 32, 32, 32, 128, 192, i * 32 + 64, j * 32 + 64);
+				model[i * 4 + j] = new CubeRenderer(i * 32 + 64, j * 32 + 64);
 	}
 
 	private static String implodeArray(String[] inputArray, String glueString) {
@@ -97,35 +91,12 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			bindTexture(TEXTUREOFF[color]);
 
 		model[te.findTexture()].render(0.03125F);
-		if (te.getPowered())
-			renderText(te);
-		GlStateManager.popMatrix();
-	}
-
-	private void renderText(TileEntityInfoPanel panel) {
-		List<ItemStack> cards = panel.getCards();
-		boolean anyCardFound = false;
-		List<PanelString> joinedData = new LinkedList<PanelString>();
-		for (ItemStack card : cards) {
-			if (card.isEmpty())
-				continue;
-			int displaySettings = panel.getDisplaySettingsByCard(card);
-			if (displaySettings == 0)
-				continue;
-			ItemCardReader reader = new ItemCardReader(card);
-			CardState state = reader.getState();
-			List<PanelString> data;
-			if (state != CardState.OK && state != CardState.CUSTOM_ERROR)
-				data = reader.getStateMessage(state);
-			else
-				data = panel.getCardData(displaySettings, card, reader);
-			if (data == null)
-				continue;
-			joinedData.addAll(data);
-			anyCardFound = true;
+		if (te.getPowered()) {
+			List<PanelString> joinedData = te.getPanelStringList(te.getShowLabels());
+			if (joinedData != null)
+				drawText(te, joinedData);
 		}
-		if (anyCardFound)
-			drawText(panel, joinedData);
+		GlStateManager.popMatrix();
 	}
 
 	private void drawText(TileEntityInfoPanel panel, List<PanelString> joinedData) {
@@ -197,7 +168,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			}
 		}
 
-		GlStateManager.translate(0.5F - dy / 2, 1.01F - dx / 2 , 0.5F - dz / 2);		
+		GlStateManager.translate(0.5F - dy / 2, 1.01F - dx / 2 , 0.5F - dz / 2);
 		GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
 		switch(panel.getRotation())
 		{

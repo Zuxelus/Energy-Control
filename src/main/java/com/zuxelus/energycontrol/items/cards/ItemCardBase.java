@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public abstract class ItemCardBase implements IItemCard {
 	protected String name;
@@ -71,10 +72,16 @@ public abstract class ItemCardBase implements IItemCard {
 		int txtColor = 0;
 		if (value) {
 			txtColor = 0x00ff00;
-			text = I18n.format("msg.ec.InfoPanelOn");
+			if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+				text = I18n.format("msg.ec.InfoPanelOn");
+			else
+				text = "On";
 		} else {
 			txtColor = 0xff0000;
-			text = I18n.format("msg.ec.InfoPanelOff");
+			if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+				text = I18n.format("msg.ec.InfoPanelOff");
+			else
+				text = "Off";
 		}
 		if (result.size() > 0) {
 			PanelString firstLine = result.get(0);

@@ -30,6 +30,9 @@ item.portable_panel.name=Portable Panel
 item.card_holder.name=Card Holder
 
 #Integration Items
+item.card_energy_draconic.name=Draconic Energy Sensor Card
+item.card_reactor_draconic.name=Draconic Reactor Sensor Card
+item.kit_draconic.name=Draconic Sensor Kit
 item.kit_big_reactor.name=Remote RF Reactor Kit
 item.card_big_reactor.name=RF Reactor Sensor Location Card
 item.kit_app_eng.name=Applied Energistics Monitor Kit
@@ -157,3 +160,21 @@ msg.ec.InfoPanel55.Out=Output (Hu/s)
 msg.ec.InfoPanel55.BufferIn=Coolant Storage Tank
 msg.ec.InfoPanel55.BufferOut=Hot Coolant Buffer Tank
 
+#Draconic Evolution
+msg.ec.Status=Status: %s
+msg.ec.CoreTemp=Core Temp: %s
+msg.ec.Diameter=Diameter: %s
+msg.ec.GenerationRate=Generation Rate: %s
+msg.ec.InputRate=Input Rate: %s
+msg.ec.Saturation=Saturation: %s
+msg.ec.ConvertedFuel=Converted Fuel: %s
+msg.ec.FieldStrength=Field Strength: %s
+msg.ec.ConversionRate=Conversion Rate: %s
+msg.ec.Fuel=Fuel: %s
+
+msg.ec.cbStatus=Status
+msg.ec.cbDiameter=Diameter
+msg.ec.cbInputRate=InputRate
+msg.ec.cbFieldStrength=FieldStrength
+msg.ec.cbSaturation=Saturation
+msg.ec.cbFuel=Fuel

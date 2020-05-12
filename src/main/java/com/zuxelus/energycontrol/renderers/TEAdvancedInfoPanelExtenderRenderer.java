@@ -27,7 +27,7 @@ public class TEAdvancedInfoPanelExtenderRenderer extends TileEntitySpecialRender
 		model = new CubeRenderer[16];
 		for (int i = 0; i < 4; i++)
 			for (int j = 0; j < 4; j++)
-				model[i * 4 + j] = new CubeRenderer(0, 0, 0, 32, 32, 32, 128, 192, i * 32 + 64, j * 32 + 64);
+				model[i * 4 + j] = new CubeRenderer(i * 32 + 64, j * 32 + 64);
 	}
 
 	@Override
@@ -75,10 +75,15 @@ public class TEAdvancedInfoPanelExtenderRenderer extends TileEntitySpecialRender
 		byte thickness = te.getThickness();
 		if (thickness < 1 || thickness > 16)
 			thickness = 16;
-		if (thickness == 16)
+		int rotateHor = te.getRotateHor() / 7;
+		int rotateVert = te.getRotateVert() / 7; 
+		Screen screen = te.getScreen();
+		if (thickness == 16 && rotateHor == 0 && rotateVert == 0)
 			model[textureId].render(0.03125F);
-		else
-			new CubeRenderer(0, 0, 0, 32, thickness * 2, 32, 128, 192, textureId / 4 * 32 + 64, textureId % 4 * 32 + 64).render(0.03125F);
+		else {
+			RotationOffset offset = new RotationOffset(thickness * 2, rotateHor, rotateVert);
+			new CubeRenderer(textureId / 4 * 32 + 64, textureId % 4 * 32 + 64, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation())).render(0.03125F);
+		}
 		GlStateManager.popMatrix();
 	}
 }

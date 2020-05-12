@@ -11,6 +11,7 @@ import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.IItemCard;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 
@@ -28,7 +29,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public final class ItemCardMain extends Item {
-	private static final int LOCATION_RANGE = 8;
+	public static final int LOCATION_RANGE = 8;
 	
 	private static Map<Integer, IItemCard> cards = new HashMap<Integer, IItemCard>();
 
@@ -54,6 +55,10 @@ public final class ItemCardMain extends Item {
 		register(new ItemCardEnergyArray());
 		register(new ItemCardLiquidArray());
 		register(new ItemCardGeneratorArray());
+		if (CrossModLoader.draconicEvolution.modLoaded) {
+			register(new ItemCardEnergyDraconic());
+			register(new ItemCardReactorDraconic());
+		}
 	}
 
 	private static void register(IItemCard item) {
@@ -132,7 +137,6 @@ public final class ItemCardMain extends Item {
 			tooltip.add(String.format("x: %d, y: %d, z: %d", target.getX(), target.getY(), target.getZ()));
 	}
 
-	@SideOnly(Side.CLIENT)
 	public static List<PanelString> getStringData(int settings, ItemCardReader reader, boolean showLabels) {
 		if (cards.containsKey(reader.getCardType())) {
 			return cards.get(reader.getCardType()).getStringData(settings, reader, showLabels);

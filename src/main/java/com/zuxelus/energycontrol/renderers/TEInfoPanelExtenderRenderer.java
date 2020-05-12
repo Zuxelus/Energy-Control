@@ -27,15 +27,14 @@ public class TEInfoPanelExtenderRenderer extends TileEntitySpecialRenderer<TileE
 		model = new CubeRenderer[16];
 		for (int i = 0; i < 4; i++)
 			for (int j = 0; j < 4; j++)
-				model[i * 4 + j] = new CubeRenderer(0, 0, 0, 32, 32, 32, 128, 192, i * 32 + 64, j * 32 + 64);
+				model[i * 4 + j] = new CubeRenderer(i * 32 + 64, j * 32 + 64);
 	}
 
 	@Override
 	public void render(TileEntityInfoPanelExtender te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
-	    GlStateManager.pushMatrix();
-	    GlStateManager.translate((float)x, (float)y, (float)z);
-		EnumFacing facing = te.getFacing();
-		switch (facing) {
+		GlStateManager.pushMatrix();
+		GlStateManager.translate((float)x, (float)y, (float)z);
+		switch (te.getFacing()) {
 		case UP:
 			break;
 		case NORTH:
