@@ -7,12 +7,9 @@ import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
-import com.zuxelus.energycontrol.utils.ReactorHelper;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 
-import ic2.api.reactor.IReactor;
-import ic2.core.block.reactor.tileentity.TileEntityNuclearReactorElectric;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -30,27 +27,7 @@ public class ItemCardReactor5x5 extends ItemCardBase {
 		if (target == null) 
 			return CardState.NO_TARGET;
 		
-		IReactor reactor = ReactorHelper.getReactorAt(world, target);
-		if (reactor == null || !(reactor instanceof TileEntityNuclearReactorElectric))
-			return CardState.NO_TARGET;
-		
-		reader.setInt("heat", reactor.getHeat());
-		reader.setInt("maxHeat", reactor.getMaxHeat());
-		reader.setBoolean("reactorPowered", reactor.produceEnergy());
-		reader.setInt("output", ((TileEntityNuclearReactorElectric)reactor).EmitHeat);
-
-		IInventory inventory = (IInventory) reactor;
-		int slotCount = inventory.getSizeInventory();
-		int dmgLeft = 0;
-		for (int i = 0; i < slotCount; i++) {
-			ItemStack rStack = inventory.getStackInSlot(i);
-			if (!rStack.isEmpty())
-				dmgLeft = Math.max(dmgLeft, ReactorHelper.getNuclearCellTimeLeft(rStack));
-		}
-
-		int timeLeft = dmgLeft * reactor.getTickRate() / 20;
-		reader.setInt("timeLeft", timeLeft);
-		return CardState.OK;
+		return CrossModLoader.ic2.updateCardReactor5x5(world, reader, target);
 	}
 
 	@Override

@@ -32,7 +32,7 @@ public class ItemCardGeneratorHeat extends ItemCardBase {
 			return CardState.NO_TARGET;
 		
 		TileEntity entity = world.getTileEntity(target);
-		NBTTagCompound tag = CrossModLoader.crossIc2.getGeneratorHeatData(entity);
+		NBTTagCompound tag = CrossModLoader.ic2.getGeneratorHeatData(entity);
 		if (tag == null || !tag.hasKey("type"))
 			return CardState.NO_TARGET;
 		

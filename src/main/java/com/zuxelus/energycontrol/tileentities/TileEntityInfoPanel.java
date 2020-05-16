@@ -9,10 +9,13 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.containers.ISlotItemFilter;
+import com.zuxelus.energycontrol.crossmod.computercraft.InfoPanelPeripheral;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 
+import dan200.computercraft.api.peripheral.IPeripheral;
+import dan200.computercraft.api.peripheral.IPeripheralTile;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -31,7 +34,9 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityInfoPanel extends TileEntityInventory implements ITickable, ITilePacketHandler, IScreenPart, IRedstoneConsumer, ISlotItemFilter {
+public class TileEntityInfoPanel extends TileEntityInventory
+		implements ITickable, ITilePacketHandler, IScreenPart, IRedstoneConsumer, ISlotItemFilter, IPeripheralTile {
+	public static final String NAME = "info_panel";
 	public static final int DISPLAY_DEFAULT = Integer.MAX_VALUE;
 	private static final int[] COLORS_HEX = { 0x000000, 0xe93535, 0x82e306, 0x702b14, 0x1f3ce7, 0x8f1fea, 0x1fd7e9,
 			0xcbcbcb, 0x222222, 0xe60675, 0x1fe723, 0xe9cc1f, 0x06aee4, 0xb006e3, 0xe7761f, 0xffffff };
@@ -57,7 +62,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	public boolean powered;
 
 	public TileEntityInfoPanel() {
-		super("tile.info_panel.name");
+		super("tile." + NAME + ".name");
 		cardData = new HashMap<Integer, List<PanelString>>();
 		displaySettings = new HashMap<Integer, Map<Integer, Integer>>(1);
 		displaySettings.put(0, new HashMap<Integer, Integer>());
@@ -590,5 +595,11 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 
 	private int boolToInt(boolean b) {
 		return b ? 1 : 0;
+	}
+
+	// IPeripheralTile
+	@Override
+	public IPeripheral getPeripheral(EnumFacing side) {
+		return new InfoPanelPeripheral(this);
 	}
 }

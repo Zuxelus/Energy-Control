@@ -1,0 +1,37 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " T ",
+        "CMC",
+        "FAA"
+    ],
+    "key": {
+        "T": {
+            "item": "minecraft:crafting_table"
+        },
+        "M": {
+            "item": "ic2:blockmachinelv",
+            "data": 0
+        },
+        "F": {
+            "item": "ic2:itemfreq"
+        },
+        "C": {
+            "type": "forge:ore_dict",
+            "ore": "circuitBasic"
+        },
+        "A": {
+            "item": "ic2:itemcable",
+            "data": 1
+        }
+    },
+    "result": {
+        "item": "energycontrol:kit_assembler"
+    },
+    "conditions": [
+        {
+            "type": "forge:mod_loaded",
+            "modid": "ic2-classic-spmod"
+        }
+    ]
+}

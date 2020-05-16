@@ -95,7 +95,7 @@ public class RemoteThermo extends BlockHorizontal implements ITileEntityProvider
 
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		if (CrossModLoader.crossIc2.isWrench(player.getHeldItem(hand)))
+		if (CrossModLoader.ic2.isWrench(player.getHeldItem(hand)))
 			return true;
 		if (!world.isRemote)
 			player.openGui(EnergyControl.instance, BlockDamages.DAMAGE_REMOTE_THERMO, world, pos.getX(), pos.getY(),

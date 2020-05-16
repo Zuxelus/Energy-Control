@@ -25,5 +25,23 @@
     "result": {
         "item": "energycontrol:thermometer_digital",
         "data": 0
-    }
+    },
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "forge:not",
+                    "value": {
+                        "type": "forge:mod_loaded",
+                        "modid": "ic2-classic-spmod"
+                    }
+                },
+                {
+                    "type": "energycontrol:ic2_config",
+                    "config": "experimental"
+                }
+            ]
+        }
+    ]
 }

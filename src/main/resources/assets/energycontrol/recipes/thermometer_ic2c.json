@@ -1,0 +1,31 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "IG ",
+        "GWG",
+        " GG"
+    ],
+    "key": {
+        "G": {
+            "type": "forge:ore_dict",
+            "ore": "blockGlass"
+        },
+        "I": {
+            "type": "forge:ore_dict",
+            "ore": "ingotIron"
+        },
+        "W": {
+            "item": "ic2:itemcellempty",
+            "data": 1
+        }
+    },
+    "result": {
+        "item": "energycontrol:thermometer"
+    },
+    "conditions": [
+        {
+            "type": "forge:mod_loaded",
+            "modid": "ic2-classic-spmod"
+        }
+    ]
+}

@@ -62,7 +62,7 @@ public class ItemHelper {
 		event.getRegistry().register(thermalMonitor);
 
 		infoPanel = new InfoPanel();
-		setNames(infoPanel, "info_panel");
+		setNames(infoPanel, TileEntityInfoPanel.NAME);
 		event.getRegistry().register(infoPanel);
 
 		infoPanelExtender = new InfoPanelExtender();
@@ -70,7 +70,7 @@ public class ItemHelper {
 		event.getRegistry().register(infoPanelExtender);
 
 		infoPanelAdvanced = new AdvancedInfoPanel();
-		setNames(infoPanelAdvanced, "info_panel_advanced");
+		setNames(infoPanelAdvanced, TileEntityAdvancedInfoPanel.NAME);
 		event.getRegistry().register(infoPanelAdvanced);
 
 		infoPanelAdvancedExtender = new AdvancedInfoPanelExtender();
@@ -104,9 +104,9 @@ public class ItemHelper {
 		event.getRegistry().register(new ItemBlock(howlerAlarm).setRegistryName("howler_alarm"));
 		event.getRegistry().register(new ItemBlock(industrialAlarm).setRegistryName("industrial_alarm"));
 		event.getRegistry().register(new ItemBlock(thermalMonitor).setRegistryName("thermal_monitor"));
-		event.getRegistry().register(new ItemBlock(infoPanel).setRegistryName("info_panel"));
+		event.getRegistry().register(new ItemBlock(infoPanel).setRegistryName(TileEntityInfoPanel.NAME));
 		event.getRegistry().register(new ItemBlock(infoPanelExtender).setRegistryName("info_panel_extender"));
-		event.getRegistry().register(new ItemBlock(infoPanelAdvanced).setRegistryName("info_panel_advanced"));
+		event.getRegistry().register(new ItemBlock(infoPanelAdvanced).setRegistryName(TileEntityAdvancedInfoPanel.NAME));
 		event.getRegistry().register(new ItemBlock(infoPanelAdvancedExtender).setRegistryName("info_panel_advanced_extender"));
 		event.getRegistry().register(new ItemBlock(rangeTrigger).setRegistryName("range_trigger"));
 		event.getRegistry().register(new ItemBlock(remoteThermo).setRegistryName("remote_thermo"));
@@ -169,9 +169,9 @@ public class ItemHelper {
 		registerBlockModel(ItemHelper.industrialAlarm, 0, "industrial_alarm");
 		registerBlockModel(ItemHelper.thermalMonitor, 0, "thermal_Monitor");
 		registerBlockModel(ItemHelper.remoteThermo, 0, "remote_thermo");
-		registerBlockModel(ItemHelper.infoPanel, 0, "info_panel");
+		registerBlockModel(ItemHelper.infoPanel, 0, TileEntityInfoPanel.NAME);
 		registerBlockModel(ItemHelper.infoPanelExtender, 0, "info_panel_extender");
-		registerBlockModel(ItemHelper.infoPanelAdvanced, 0, "info_panel_advanced");
+		registerBlockModel(ItemHelper.infoPanelAdvanced, 0, TileEntityAdvancedInfoPanel.NAME);
 		registerBlockModel(ItemHelper.infoPanelAdvancedExtender, 0, "info_panel_advanced_extender");
 		registerBlockModel(ItemHelper.rangeTrigger, 0, "range_trigger");
 
@@ -205,18 +205,18 @@ public class ItemHelper {
 	}
 
 	public static void registerTileEntities() { // TODO Change to event
-		GameRegistry.registerTileEntity(TileEntityHowlerAlarm.class, "energycontrol:howler_alarm");
-		GameRegistry.registerTileEntity(TileEntityIndustrialAlarm.class, "energycontrol:industrial_alarm");
-		GameRegistry.registerTileEntity(TileEntityThermo.class, "energycontrol:thermo");
-		GameRegistry.registerTileEntity(TileEntityRemoteThermo.class, "energycontrol:remote_thermo");
-		GameRegistry.registerTileEntity(TileEntityInfoPanel.class, "energycontrol:info_panel");
-		GameRegistry.registerTileEntity(TileEntityInfoPanelExtender.class, "energycontrol:info_panel_extender");
-		GameRegistry.registerTileEntity(TileEntityAdvancedInfoPanel.class, "energycontrol:info_panel_advanced");
-		GameRegistry.registerTileEntity(TileEntityAdvancedInfoPanelExtender.class, "energycontrol:info_panel_advanced_extender");
-		GameRegistry.registerTileEntity(TileEntityRangeTrigger.class, "energycontrol:range_trigger");
-		GameRegistry.registerTileEntity(TileEntityAverageCounter.class, "energycontrol:average_counter");
-		GameRegistry.registerTileEntity(TileEntityEnergyCounter.class, "energycontrol:energy_counter");
-		GameRegistry.registerTileEntity(TileEntityKitAssembler.class, "energycontrol:kit_assembler");
+		GameRegistry.registerTileEntity(TileEntityHowlerAlarm.class, EnergyControl.MODID + ":howler_alarm");
+		GameRegistry.registerTileEntity(TileEntityIndustrialAlarm.class, EnergyControl.MODID + ":industrial_alarm");
+		GameRegistry.registerTileEntity(TileEntityThermo.class, EnergyControl.MODID + ":thermo");
+		GameRegistry.registerTileEntity(TileEntityRemoteThermo.class, EnergyControl.MODID + ":remote_thermo");
+		GameRegistry.registerTileEntity(TileEntityInfoPanel.class, EnergyControl.MODID + ":" + TileEntityInfoPanel.NAME);
+		GameRegistry.registerTileEntity(TileEntityInfoPanelExtender.class, EnergyControl.MODID + ":info_panel_extender");
+		GameRegistry.registerTileEntity(TileEntityAdvancedInfoPanel.class, EnergyControl.MODID + ":" + TileEntityAdvancedInfoPanel.NAME);
+		GameRegistry.registerTileEntity(TileEntityAdvancedInfoPanelExtender.class, EnergyControl.MODID + ":info_panel_advanced_extender");
+		GameRegistry.registerTileEntity(TileEntityRangeTrigger.class, EnergyControl.MODID + ":range_trigger");
+		GameRegistry.registerTileEntity(TileEntityAverageCounter.class, EnergyControl.MODID + ":average_counter");
+		GameRegistry.registerTileEntity(TileEntityEnergyCounter.class, EnergyControl.MODID + ":energy_counter");
+		GameRegistry.registerTileEntity(TileEntityKitAssembler.class, EnergyControl.MODID + ":kit_assembler");
 	}
 
 	@SubscribeEvent

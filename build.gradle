@@ -9,7 +9,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.12.2-0.0.7"
+version = "1.12.2-0.0.9"
 group= "com.zuxelus.energycontrol"
 archivesBaseName = "EnergyControl"
 
@@ -29,6 +29,7 @@ minecraft {
 
 dependencies {
 	compile 'net.industrial-craft:industrialcraft-2:2.8.197-ex112:dev'
+	compile files("libs/EnergyControl-1.12.2-0.0.7-api.jar", "libs/Draconic-Evolution-1.12.2-2.3.25.351-universal.jar")
 }
 
 processResources {

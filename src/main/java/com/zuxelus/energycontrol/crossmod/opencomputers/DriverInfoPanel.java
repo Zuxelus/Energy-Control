@@ -1,9 +1,7 @@
 package com.zuxelus.energycontrol.crossmod.opencomputers;
 
-import java.util.LinkedList;
 import java.util.List;
 
-import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
@@ -18,15 +16,14 @@ import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.ManagedEnvironment;
 import li.cil.oc.api.prefab.DriverSidedTileEntity;
 import li.cil.oc.integration.ManagedTileEntityEnvironment;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class DriverInfoPanel extends DriverSidedTileEntity {
-	public static final String NAME = "info_panel";
 
 	@Override
 	public Class<?> getTileEntityClass() {
@@ -43,12 +40,12 @@ public class DriverInfoPanel extends DriverSidedTileEntity {
 
 	public static final class Environment extends ManagedTileEntityEnvironment<TileEntityInfoPanel> implements NamedBlock {
 		public Environment(final TileEntityInfoPanel tileentity) {
-			super(tileentity, NAME);
+			super(tileentity, TileEntityInfoPanel.NAME);
 		}
 
 		@Override
 		public String preferredName() {
-			return NAME;
+			return TileEntityInfoPanel.NAME;
 		}
 
 		@Override
@@ -105,17 +102,34 @@ public class DriverInfoPanel extends DriverSidedTileEntity {
 
 		@Callback(doc = "function(number) -- Set background color.")
 		public Object[] setColorBack(final Context context, final Arguments args) {
-			int newColor = args.checkInteger(0);
-			if (newColor >= 0 && newColor < 16)
-				tileEntity.setColorBackground(newColor);
+			int value = args.checkInteger(0);
+			if (value >= 0 && value < 16)
+				tileEntity.setColorBackground(value);
 			return null;
 		}
 
 		@Callback(doc = "function(number) -- Set font color.")
 		public Object[] setColorText(final Context context, final Arguments args) {
-			int newColor = args.checkInteger(0);
-			if (newColor >= 0 && newColor < 16)
-				tileEntity.setColorText(newColor);
+			int value = args.checkInteger(0);
+			if (value >= 0 && value < 16)
+				tileEntity.setColorText(value);
+			return null;
+		}
+
+		@Callback(doc = "function():string -- Get card title.")
+		public Object[] getCardTitle(final Context context, final Arguments args) {
+			ItemStack stack = tileEntity.getStackInSlot(0);
+			if (stack.isEmpty() || !(stack.getItem() instanceof ItemCardMain))
+				return new Object[] { "" }; 
+			return new Object[] { new ItemCardReader(stack).getTitle() };
+		}
+
+		@Callback(doc = "function(string) -- Set card title.")
+		public Object[] setCardTitle(final Context context, final Arguments args) {
+			String title = args.checkString(0);
+			ItemStack stack = tileEntity.getStackInSlot(0);
+			if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain)
+				new ItemCardReader(stack).setTitle(title);
 			return null;
 		}
 	}

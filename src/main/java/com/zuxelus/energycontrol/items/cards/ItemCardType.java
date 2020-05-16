@@ -29,6 +29,7 @@ public class ItemCardType {
 	public static final int CARD_GENERATOR_HEAT = 6;
 	public static final int CARD_REACTOR = 7;
 	public static final int CARD_REACTOR5X5 = 8;
+	public static final int CARD_ENGINE = 9;
 
 	public static final int CARD_ENERGY_ARRAY = 10;
 	public static final int CARD_LIQUID_ARRAY = 11;

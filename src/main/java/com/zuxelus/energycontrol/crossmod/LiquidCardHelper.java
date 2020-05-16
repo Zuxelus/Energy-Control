@@ -1,37 +1,43 @@
 package com.zuxelus.energycontrol.crossmod;
 
-import ic2.core.block.TileEntityBlock;
-import ic2.core.block.comp.Fluids;
-import ic2.core.block.comp.Fluids.InternalFluidTank;
-import ic2.core.block.reactor.tileentity.TileEntityNuclearReactorElectric;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 public class LiquidCardHelper {
-	public static Iterable<InternalFluidTank> getAllTanks(World world, BlockPos pos) {
+	public static List<IFluidTank> getAllTanks(World world, BlockPos pos) {
 		if (world == null)
 			return null;
-		
+
 		TileEntity te = world.getTileEntity(pos);
-		if (!(te instanceof TileEntityBlock))
-			return null;
-		
-		if (!((TileEntityBlock)te).hasComponent(Fluids.class))
+		if (te == null)
 			return null;
 
-		Fluids fluid = ((TileEntityBlock)te).getComponent(Fluids.class);
+		if (te instanceof IFluidHandler) {
+			IFluidTankProperties[] tanks = ((IFluidHandler) te).getTankProperties();
+			List<IFluidTank> result = new ArrayList<>();
+			for (IFluidTankProperties tank : tanks)
+				result.add(new FluidTank(tank.getContents(), tank.getCapacity()));
+			return result;
+		}
 
-		return fluid.getAllTanks();
+		List<IFluidTank> list = CrossModLoader.ic2.getAllTanks(te);
+		if (list != null)
+			return list;
+		return CrossModLoader.buildCraft.getAllTanks(te);
 	}
 
 	public static IFluidTank getStorageAt(World world, BlockPos pos) {
-		Iterable<InternalFluidTank> tanks = getAllTanks(world, pos);
-		if (tanks == null)
+		List<IFluidTank> tanks = getAllTanks(world, pos);
+		if (tanks == null || tanks.size() == 0)
 			return null;
-
 		return tanks.iterator().next();
 	}
 }

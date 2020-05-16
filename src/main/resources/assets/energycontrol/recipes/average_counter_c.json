@@ -1,0 +1,49 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "   ",
+        "LAL",
+        "FTF"
+    ],
+    "key": {
+        "A": {
+            "type": "forge:ore_dict",
+            "ore": "circuitAdvanced"
+        },
+        "F": {
+            "type": "minecraft:item_nbt",
+            "item": "ic2:cable",
+            "data": 2,
+            "nbt": "{\"type\": 2b, \"insulation\": 0b}"
+        },
+        "T": {
+            "item": "ic2:te",
+            "data": 78
+        },
+        "L": {
+            "type": "forge:ore_dict",
+            "ore": "ingotGold"
+        }
+    },
+    "result": {
+        "item": "energycontrol:average_counter"
+    },
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "forge:not",
+                    "value": {
+                        "type": "forge:mod_loaded",
+                        "modid": "ic2-classic-spmod"
+                    }
+                },
+                {
+                    "type": "energycontrol:ic2_config",
+                    "config": "classic"
+                }
+            ]
+        }
+    ]
+}

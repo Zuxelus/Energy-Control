@@ -193,21 +193,25 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
  				break;
 			case NORTH:
 				dx = pos.getX() - screen.maxX;
+				dz = screen.minY - pos.getY();
 				displayWidth += screen.maxX - screen.minX;
 				displayHeight += screen.maxY - screen.minY;
 				break;
 			case SOUTH:
 				dx = screen.minX - pos.getX();
+				dz = screen.minY - pos.getY();
 				displayWidth += screen.maxX - screen.minX;
 				displayHeight += screen.maxY - screen.minY;
 				break;
 			case WEST:
 				dz = screen.minZ - pos.getZ();
+				dx = screen.minY - pos.getY();
 				displayWidth += screen.maxZ - screen.minZ;
 				displayHeight += screen.maxY - screen.minY;
 				break;
 			case EAST:
 				dz = pos.getZ() - screen.maxZ;
+				dx = screen.minY - pos.getY();
 				displayWidth += screen.maxZ - screen.minZ;
 				displayHeight += screen.maxY - screen.minY;
 				break;
@@ -238,12 +242,14 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			break;
 		}
 
-		double a = Math.atan((offset.leftTop - offset.leftBottom) / 32.0F / (displayHeight + 0.125F));
 		double b = Math.atan((offset.leftBottom - offset.rightBottom) / 32.0F / (displayWidth + 0.125F));
-		GlStateManager.translate((displayWidth + 0.125F) / 2, (displayHeight + 0.125F) / 2 + 0.01F,
-				(displayWidth + 0.125F) / 2 * Math.tan(b) + (32 - offset.leftTop + (offset.leftTop - offset.leftBottom) / 2.0F) / 32.0F + 0.01F);
-		GlStateManager.rotate((float) Math.toDegrees(a), -1.0F, 0.0F, 0.0F);
+		double a = Math.atan(Math.cos(b) * (offset.leftTop - offset.leftBottom) / 32.0F / (displayHeight + 0.125F));
+		int i = offset.rotateVert == 0 ? 0 : offset.rotateVert > 0 ? -1 : 1;
+		GlStateManager.translate((displayWidth + 0.125F) / 2, (displayHeight + 0.125F) / 2,
+				(displayWidth + 0.125F) / 2 * Math.tan(b) + (32 - offset.leftTop + (offset.leftTop - offset.leftBottom) / 2.0F) / 32.0F);
 		GlStateManager.rotate((float) Math.toDegrees(b), 0.0F, -1.0F, 0.0F);
+		GlStateManager.rotate((float) Math.toDegrees(a), -1.0F, 0.0F, 0.0F);
+		GlStateManager.translate(0.0F, 0.001F * i, 0.001F);
 		displayHeight = (float) (displayHeight / Math.cos(a));
 		displayWidth = (float) (displayWidth / Math.cos(b));
 

@@ -1,0 +1,42 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "PPP",
+        "1I2",
+        "CAC"
+    ],
+    "key": {
+        "P": {
+            "type": "forge:ore_dict",
+            "ore": "paneGlassCyan"
+        },
+        "I": {
+            "item": "energycontrol:info_panel"
+        },
+        "1": {
+            "item": "energycontrol:item_upgrade",
+            "data": 0
+        },
+        "2": {
+            "item": "energycontrol:item_upgrade",
+            "data": 1
+        },
+        "A": {
+            "type": "forge:ore_dict",
+            "ore": "circuitAdvanced"
+        },
+        "C": {
+            "item": "ic2:itemmisc",
+            "data": 256
+        }
+    },
+    "result": {
+        "item": "energycontrol:info_panel_advanced"
+    },
+    "conditions": [
+        {
+            "type": "forge:mod_loaded",
+            "modid": "ic2-classic-spmod"
+        }
+    ]
+}

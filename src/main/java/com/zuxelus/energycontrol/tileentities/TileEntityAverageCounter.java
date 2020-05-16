@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.containers.ISlotItemFilter;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.NodeStats;
@@ -12,7 +13,6 @@ import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergySource;
 import ic2.api.info.Info;
 import ic2.api.item.IC2Items;
-import ic2.core.block.wiring.TileEntityCable;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -73,14 +73,14 @@ public class TileEntityAverageCounter extends TileEntityInventory
 		clientAverage = (int) Math.round(sum / period / 20);
 		return clientAverage;
 	}
-	
+
 	private void setPeriod(short p) {
 		period = p;
 		if (!world.isRemote && prevPeriod != period)
 			notifyBlockUpdate();
 		prevPeriod = period;
 	}
-	
+
 	@Override
 	public void onServerMessageReceived(NBTTagCompound tag) {
 		if (!tag.hasKey("type"))
@@ -205,13 +205,13 @@ public class TileEntityAverageCounter extends TileEntityInventory
 		getAverage();
 
 		TileEntity neighbor = world.getTileEntity(pos.offset(facing));
-		if (neighbor instanceof TileEntityCable) {
+		if (CrossModLoader.ic2.isCable(neighbor)) {
 			NodeStats node = EnergyNet.instance.getNodeStats(this);
 			if (node != null)
 				data[index] = node.getEnergyOut();
 		}
 	}
-	
+
 	@Override
 	public void markDirty() {
 		super.markDirty();
@@ -240,15 +240,15 @@ public class TileEntityAverageCounter extends TileEntityInventory
 	public int getSizeInventory() {
 		return 1;
 	}
-	
+
 	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
 		return isItemValid(index, stack);
 	}
-	
+
 	@Override
 	public boolean isItemValid(int slotIndex, ItemStack itemstack) { // ISlotItemFilter
-		return itemstack.isItemEqual(IC2Items.getItem("upgrade","transformer"));
+		return itemstack.isItemEqual(IC2Items.getItem("upgrade", "transformer"));
 	}
 
 	private void notifyBlockUpdate() {
@@ -270,7 +270,7 @@ public class TileEntityAverageCounter extends TileEntityInventory
 	@Override
 	public void drawEnergy(double amount) {
 		this.energy -= amount;
-		
+
 	}
 
 	@Override

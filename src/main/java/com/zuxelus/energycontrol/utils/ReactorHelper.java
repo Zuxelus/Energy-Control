@@ -66,15 +66,29 @@ public class ReactorHelper {
 		return null;
 	}
 
+	public static BlockPos getTargetCoordinates(World world, BlockPos pos) {
+		IReactor reactor = ReactorHelper.getReactorAt(world, pos);
+		if (reactor != null)
+			return reactor.getPosition();
+		return null;
+	}
+
+	public static BlockPos get5x5TargetCoordinates(World world, BlockPos pos) {
+		IReactor reactor = ReactorHelper.getReactor3x3(world, pos);
+		if (reactor != null)
+			return reactor.getPosition();
+		return null;
+	}
+
 	public static int euToSteam(int eu) {
 		return (int) Math.floor((eu) * STEAM_PER_EU);
 	}
-	
+
 	public static boolean isSteam(IReactor reactor) {
-		return CrossModLoader.crossIc2.isSteamReactor((TileEntity) reactor);
-	}	
+		return CrossModLoader.ic2.isSteamReactor((TileEntity) reactor);
+	}
 
 	public static int getNuclearCellTimeLeft(ItemStack rStack) {
-		return CrossModLoader.crossIc2.getNuclearCellTimeLeft(rStack);
+		return CrossModLoader.ic2.getNuclearCellTimeLeft(rStack);
 	}
 }

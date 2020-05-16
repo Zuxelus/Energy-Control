@@ -5,6 +5,7 @@ import java.util.List;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
+import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 
 import li.cil.oc.api.driver.NamedBlock;
@@ -21,7 +22,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class DriverAdvancedInfoPanel extends DriverSidedTileEntity {
-	public static final String NAME = "info_panel_advanced";
 
 	@Override
 	public Class<?> getTileEntityClass() {
@@ -35,12 +35,12 @@ public class DriverAdvancedInfoPanel extends DriverSidedTileEntity {
 
 	public static final class Environment extends ManagedTileEntityEnvironment<TileEntityAdvancedInfoPanel> implements NamedBlock {
 		public Environment(final TileEntityAdvancedInfoPanel tileentity) {
-			super(tileentity, NAME);
+			super(tileentity, TileEntityAdvancedInfoPanel.NAME);
 		}
 
 		@Override
 		public String preferredName() {
-			return NAME;
+			return TileEntityAdvancedInfoPanel.NAME;
 		}
 
 		@Override
@@ -103,6 +103,29 @@ public class DriverAdvancedInfoPanel extends DriverSidedTileEntity {
 			int value = args.checkInteger(0);
 			if (value >= 0 && value < 16)
 				tileEntity.setColorText(value);
+			return null;
+		}
+
+		@Callback(doc = "function(number):string -- Get card title.")
+		public Object[] getCardTitle(final Context context, final Arguments args) {
+			int value = args.checkInteger(0);
+			if (value < 0 || value > 2)
+				return new Object[] { "" };
+			ItemStack stack = tileEntity.getStackInSlot(value);
+			if (stack.isEmpty() || !(stack.getItem() instanceof ItemCardMain))
+				return new Object[] { "" }; 
+			return new Object[] { new ItemCardReader(stack).getTitle() };
+		}
+
+		@Callback(doc = "function(number,string) -- Set card title.")
+		public Object[] setCardTitle(final Context context, final Arguments args) {
+			int value = args.checkInteger(0);
+			String title = args.checkString(1);
+			if (value < 0 || value > 2)
+				return null;
+			ItemStack stack = tileEntity.getStackInSlot(value);
+			if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain)
+				new ItemCardReader(stack).setTitle(title);
 			return null;
 		}
 

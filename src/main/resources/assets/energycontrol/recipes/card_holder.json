@@ -17,5 +17,23 @@
     },
     "result": {
         "item": "energycontrol:card_holder"
-    }
+    },
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "forge:not",
+                    "value": {
+                        "type": "forge:mod_loaded",
+                        "modid": "ic2-classic-spmod"
+                    }
+                },
+                {
+                    "type": "energycontrol:ic2_config",
+                    "config": "experimental"
+                }
+            ]
+        }
+    ]
 }

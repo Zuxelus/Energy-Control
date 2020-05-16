@@ -1,13 +1,17 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import com.zuxelus.energycontrol.crossmod.computercraft.AdvancedInfoPanelPeripheral;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 
+import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 
 public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
+	public static final String NAME = "info_panel_advanced";
 	private static final byte SLOT_CARD1 = 0;
 	private static final byte SLOT_CARD2 = 1;
 	private static final byte SLOT_CARD3 = 2;
@@ -29,7 +33,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 
 	public TileEntityAdvancedInfoPanel() {
 		super();
-		customName = "tile.info_panel_advanced.name";
+		customName = "tile." + NAME + ".name";
 		colorBackground = 6;
 		colored = true;
 		thickness = 16;
@@ -197,5 +201,11 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 		default:
 			return false;
 		}
+	}
+
+	// IPeripheralTile
+	@Override
+	public IPeripheral getPeripheral(EnumFacing side) {
+		return new AdvancedInfoPanelPeripheral(this);
 	}
 }

@@ -44,7 +44,7 @@ public class ItemCardGeneratorArray extends ItemCardBase {
 			int dz = target.getZ() - pos.getZ();
 			if (Math.abs(dx) <= range && Math.abs(dy) <= range && Math.abs(dz) <= range) {
 				TileEntity entity = world.getTileEntity(target);
-				NBTTagCompound tag = CrossModLoader.crossIc2.getGeneratorData(entity);
+				NBTTagCompound tag = CrossModLoader.ic2.getGeneratorData(entity);
 				if (tag != null && tag.hasKey("type")) {
 					int type = tag.getInteger("type");
 					reader.setInt(String.format("_%dtype", i), type);

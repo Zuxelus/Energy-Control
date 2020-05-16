@@ -34,7 +34,7 @@ public class ItemCardEnergy extends ItemCardBase {
 		if (entity == null)
 			return CardState.NO_TARGET;
 			
-		EnergyStorageData storage = CrossModLoader.crossIc2.getEnergyStorageData(entity);
+		EnergyStorageData storage = CrossModLoader.ic2.getEnergyStorageData(entity);
 		if (storage == null)
 			return CardState.NO_TARGET;
 

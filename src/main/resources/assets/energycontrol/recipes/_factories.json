@@ -1,5 +1,8 @@
 {
     "ingredients": {
         "item_nbt": "com.zuxelus.energycontrol.IngredientFactory"
+    },
+    "conditions": {
+        "ic2_config": "com.zuxelus.energycontrol.ConditionFactory"
     }
 }

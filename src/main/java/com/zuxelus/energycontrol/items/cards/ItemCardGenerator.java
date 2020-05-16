@@ -1,7 +1,6 @@
 package com.zuxelus.energycontrol.items.cards;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import com.zuxelus.energycontrol.api.CardState;
@@ -9,10 +8,7 @@ import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.crossmod.EnergyStorageData;
 
-import ic2.api.energy.EnergyNet;
-import ic2.core.block.generator.tileentity.TileEntityBaseGenerator;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -30,14 +26,14 @@ public class ItemCardGenerator extends ItemCardBase {
 	@Override
 	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
 		BlockPos target = reader.getTarget();
-		if (target == null) 
+		if (target == null)
 			return CardState.NO_TARGET;
-		
+
 		TileEntity entity = world.getTileEntity(target);
-		NBTTagCompound tag = CrossModLoader.crossIc2.getGeneratorData(entity);
+		NBTTagCompound tag = CrossModLoader.ic2.getGeneratorData(entity);
 		if (tag == null || !tag.hasKey("type"))
 			return CardState.NO_TARGET;
-		
+
 		reader.setInt("type", tag.getInteger("type"));
 		switch (tag.getInteger("type")) {
 		case 1:
@@ -55,25 +51,25 @@ public class ItemCardGenerator extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int settings, ICardReader reader, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		switch (reader.getInt("type")) {
 		case 1:
-			if ((displaySettings & 1) > 0)
+			if ((settings & 1) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelStorage", reader.getDouble("storage"), showLabels));
-			if ((displaySettings & 2) > 0)
+			if ((settings & 2) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelMaxStorage", reader.getDouble("maxStorage"), showLabels));
-			if ((displaySettings & 8) > 0)
+			if ((settings & 8) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("production"), showLabels));
 			break;
 		case 2:
-			if ((displaySettings & 4) > 0)
+			if ((settings & 4) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelMultiplier", reader.getDouble("multiplier"), showLabels));
-			if ((displaySettings & 8) > 0)
+			if ((settings & 8) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("production"), showLabels));
 			break;
 		}
-		if ((displaySettings & 16) > 0)
+		if ((settings & 16) > 0)
 			addOnOff(result, reader.getBoolean("active"));
 		return result;
 	}

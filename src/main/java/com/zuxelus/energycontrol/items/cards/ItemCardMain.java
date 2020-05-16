@@ -55,6 +55,8 @@ public final class ItemCardMain extends Item {
 		register(new ItemCardEnergyArray());
 		register(new ItemCardLiquidArray());
 		register(new ItemCardGeneratorArray());
+		if (CrossModLoader.buildCraft.modLoaded())
+			register(new ItemCardEngine());
 		if (CrossModLoader.draconicEvolution.modLoaded) {
 			register(new ItemCardEnergyDraconic());
 			register(new ItemCardReactorDraconic());

@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.containers.ISlotItemFilter;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.NodeStats;
@@ -12,7 +13,6 @@ import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergySource;
 import ic2.api.info.Info;
 import ic2.api.item.IC2Items;
-import ic2.core.block.wiring.TileEntityCable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -147,7 +147,7 @@ public class TileEntityEnergyCounter extends TileEntityInventory
 		if (world.isRemote)
 			return;
 		TileEntity neighbor = world.getTileEntity(pos.offset(facing));
-		if (neighbor instanceof TileEntityCable) {
+		if (CrossModLoader.ic2.isCable(neighbor)) {
 			NodeStats node = EnergyNet.instance.getNodeStats(this);
 			if (node != null)
 				counter += node.getEnergyOut();
@@ -182,16 +182,16 @@ public class TileEntityEnergyCounter extends TileEntityInventory
 	public int getSizeInventory() {
 		return 1;
 	}
-	
+
 	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
 		return isItemValid(index, stack);
 	}
-	
+
 	@Override
 	public boolean isItemValid(int slotIndex, ItemStack itemstack) { // ISlotItemFilter
-		return itemstack.isItemEqual(IC2Items.getItem("upgrade","transformer"));
-	}	
+		return itemstack.isItemEqual(IC2Items.getItem("upgrade", "transformer"));
+	}
 
 	@Override
 	public boolean acceptsEnergyFrom(IEnergyEmitter emitter, EnumFacing dir) {
@@ -207,7 +207,7 @@ public class TileEntityEnergyCounter extends TileEntityInventory
 	@Override
 	public void drawEnergy(double amount) {
 		this.energy -= amount;
-		
+
 	}
 
 	@Override

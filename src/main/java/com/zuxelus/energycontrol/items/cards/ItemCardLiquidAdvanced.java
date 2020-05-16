@@ -9,13 +9,13 @@ import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.LiquidCardHelper;
 
-import ic2.core.block.comp.Fluids.InternalFluidTank;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -30,20 +30,20 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 		if (target == null) 
 			return CardState.NO_TARGET;
 
-		Iterable<InternalFluidTank> tanks = LiquidCardHelper.getAllTanks(world, target);
+		List<IFluidTank> tanks = LiquidCardHelper.getAllTanks(world, target);
 		if (tanks == null)
 			return CardState.NO_TARGET;
 		
 		int i = 0;
-		for (InternalFluidTank tank: tanks) {
+		for (IFluidTank tank: tanks) {
 			addTankInfo(reader, tank, i);
 			i++;
 		}
 		reader.setInt("count", i);
 		return CardState.OK;
 	}
-	
-	private void addTankInfo(ICardReader reader, InternalFluidTank tank, int i) {
+
+	private void addTankInfo(ICardReader reader, IFluidTank tank, int i) {
 		FluidStack stack = tank.getFluid();
 		int amount = 0;
 		String name = "";
@@ -65,7 +65,7 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 			addTankData(result, displaySettings, reader, showLabels, i);
 		return result;
 	}
-	
+
 	private void addTankData(List<PanelString> result, int displaySettings, ICardReader reader, boolean showLabels, int i) {
 		if (!reader.hasField(String.format("_%dcapacity", i)))
 			return;

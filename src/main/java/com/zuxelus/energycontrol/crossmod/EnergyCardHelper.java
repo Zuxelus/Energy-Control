@@ -15,13 +15,13 @@ public class EnergyCardHelper {
 		TileEntity entity = world.getTileEntity(pos);
 		switch (type) {
 			case EnergyStorageData.TARGET_TYPE_IC2:
-				return CrossModLoader.crossIc2.getEnergyStorageData(entity);
+				return CrossModLoader.ic2.getEnergyStorageData(entity);
 			/*case EnergyStorageData.TARGET_TYPE_RF:
 				return CrossModLoader.crossRF.getStorageData(entity);
 			case EnergyStorageData.TARGET_TYPE_GT6:
 				return CrossModLoader.crossGT6.getStorageData(entity);*/
 			case EnergyStorageData.TARGET_TYPE_UNKNOWN:
-				EnergyStorageData data = CrossModLoader.crossIc2.getEnergyStorageData(entity);
+				EnergyStorageData data = CrossModLoader.ic2.getEnergyStorageData(entity);
 				/*if (data == null)
 					data = CrossModLoader.crossGT6.getStorageData(entity);
 				if (data == null)
