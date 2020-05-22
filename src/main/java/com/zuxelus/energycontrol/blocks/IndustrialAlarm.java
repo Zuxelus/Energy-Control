@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.blocks;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 import com.zuxelus.energycontrol.tileentities.TileEntityIndustrialAlarm;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
@@ -43,6 +44,8 @@ public class IndustrialAlarm extends HowlerAlarm {
 
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+		if (CrossModLoader.ic2.isWrench(player.getHeldItem(hand)))
+			return true;
 		if (world.isRemote)
 			player.openGui(EnergyControl.instance, BlockDamages.DAMAGE_INDUSTRIAL_ALARM, world, pos.getX(), pos.getY(), pos.getZ());
 		return true;

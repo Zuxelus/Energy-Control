@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.containers.ISlotItemFilter;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.NodeStats;
@@ -10,8 +11,7 @@ import ic2.api.energy.tile.IEnergyAcceptor;
 import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergySource;
-import ic2.api.item.IC2Items;
-import ic2.core.block.wiring.TileEntityCable;
+import ic2.api.info.Info;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -30,45 +30,21 @@ public class TileEntityEnergyCounter extends TileEntityInventory
 	protected int tickRate;
 
 	public double counter;
-	private boolean addedToEnergyNet;
+	private boolean addedToEnet;
 	
 	  public int tier;
 	  public int output;
 	  public double energy;	
 
 	public TileEntityEnergyCounter() {
-		super("block.EnergyCounter");
-		addedToEnergyNet = false;
+		super("tile.energy_counter.name");
+		addedToEnet = false;
 		counter = 0.0;
 		
 		energy = 0;
 		tier = 1;
 		output = BASE_PACKET_SIZE;
 	}
-
-	/*@Override
-	public short getFacing() {
-		return (short) Facing.oppositeSide[facing];
-	}
-
-	@Override
-	public void setFacing(short facing) {
-		if (addedToEnergyNet)
-			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
-		setSide((short) Facing.oppositeSide[facing]);
-		if (addedToEnergyNet) {
-			addedToEnergyNet = false;
-			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
-			addedToEnergyNet = true;
-		}
-	}
-
-	private void setSide(short f) {
-		facing = f;
-		if (init && prevFacing != f)
-			IC2.network.get().updateTileEntityField(this, "facing");
-		prevFacing = f;
-	}*/
 
 	@Override
 	public void onServerMessageReceived(NBTTagCompound tag) {
@@ -77,7 +53,19 @@ public class TileEntityEnergyCounter extends TileEntityInventory
 		switch (tag.getInteger("type")) {
 		case 1:
 			if (tag.hasKey("value"))
-				energy = tag.getInteger("value");
+				counter = tag.getInteger("value");
+			break;
+		}
+	}
+
+	@Override
+	public void onClientMessageReceived(NBTTagCompound tag) {
+		if (!tag.hasKey("type"))
+			return;
+		switch (tag.getInteger("type")) {
+		case 1:
+			if (tag.hasKey("value"))
+				counter = tag.getDouble("value");
 			break;
 		}
 	}
@@ -126,59 +114,65 @@ public class TileEntityEnergyCounter extends TileEntityInventory
 	}
 
 	@Override
-	public void validate() {
-		super.validate();
-		if (!worldObj.isRemote && !addedToEnergyNet) {
+	public void onLoad() {
+		if (!addedToEnet && !worldObj.isRemote && Info.isIc2Available()) {
 			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
-			addedToEnergyNet = true;
+			addedToEnet = true;
 		}
 	}
 
 	@Override
 	public void invalidate() {
+		onChunkUnload();
 		super.invalidate();
-		if (!worldObj.isRemote && addedToEnergyNet) {
+	}
+
+	@Override
+	public void onChunkUnload() {
+		if (addedToEnet && !worldObj.isRemote && Info.isIc2Available()) {
 			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
-			addedToEnergyNet = false;
+			addedToEnet = false;
 		}
-	}	
+	}
 
 	@Override
 	public void update() {
+		if (!addedToEnet)
+			onLoad();
 		if (!init) {
 			init = true;
 			markDirty();
 		}
-		if (!worldObj.isRemote) {
+		if (worldObj.isRemote)
+			return;
 			TileEntity neighbor = worldObj.getTileEntity(pos.offset(facing));
-			if (neighbor instanceof TileEntityCable) {
-				NodeStats node = EnergyNet.instance.getNodeStats(this);
-				if (node != null)
-					counter += node.getEnergyOut();
-			}
+		if (CrossModLoader.ic2.isCable(neighbor)) {
+			NodeStats node = EnergyNet.instance.getNodeStats(this);
+			if (node != null)
+				counter += node.getEnergyOut();
 		}
 	}
-	
+
 	@Override
 	public void markDirty() {
 		super.markDirty();
 		int upgradeCountTransormer = 0;
 		ItemStack itemStack = getStackInSlot(0);
-		if (itemStack != null && itemStack.isItemEqual(IC2Items.getItem("upgrade","transformer")))
+		if (itemStack != null && itemStack.isItemEqual(CrossModLoader.ic2.getItem("transformer")))
 			upgradeCountTransormer = itemStack.stackSize;
-		upgradeCountTransormer = Math.min(upgradeCountTransormer, 3);
+		upgradeCountTransormer = Math.min(upgradeCountTransormer, 4);
 		if (worldObj != null && !worldObj.isRemote) {
 			output = BASE_PACKET_SIZE * (int) Math.pow(4D, upgradeCountTransormer);
 			tier = upgradeCountTransormer + 1;
 
-			if (addedToEnergyNet) {
+			if (addedToEnet) {
 				EnergyTileUnloadEvent event = new EnergyTileUnloadEvent(this);
 				MinecraftForge.EVENT_BUS.post(event);
 			}
-			addedToEnergyNet = false;
+			addedToEnet = false;
 			EnergyTileLoadEvent event = new EnergyTileLoadEvent(this);
 			MinecraftForge.EVENT_BUS.post(event);
-			addedToEnergyNet = true;
+			addedToEnet = true;
 		}
 	}
 
@@ -187,16 +181,16 @@ public class TileEntityEnergyCounter extends TileEntityInventory
 	public int getSizeInventory() {
 		return 1;
 	}
-	
+
 	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
 		return isItemValid(index, stack);
 	}
-	
+
 	@Override
 	public boolean isItemValid(int slotIndex, ItemStack itemstack) { // ISlotItemFilter
-		return itemstack.isItemEqual(IC2Items.getItem("upgrade","transformer"));
-	}	
+		return itemstack.isItemEqual(CrossModLoader.ic2.getItem("transformer"));
+	}
 
 	@Override
 	public boolean acceptsEnergyFrom(IEnergyEmitter emitter, EnumFacing dir) {
@@ -212,7 +206,7 @@ public class TileEntityEnergyCounter extends TileEntityInventory
 	@Override
 	public void drawEnergy(double amount) {
 		this.energy -= amount;
-		
+
 	}
 
 	@Override
@@ -229,17 +223,17 @@ public class TileEntityEnergyCounter extends TileEntityInventory
 
 	@Override
 	public double getDemandedEnergy() {
-		return this.output - this.energy;
+		return Math.min(2 * output - energy, output);
 	}
 
 	@Override
 	public int getSinkTier() {
-		return this.tier;
+		return tier;
 	}
 
 	@Override
 	public double injectEnergy(EnumFacing directionFrom, double amount, double voltage) {
-		if (this.energy >= this.output)
+		if (energy >= 2 * output)
 			return amount;
 		this.energy += amount;
 		return 0.0D;

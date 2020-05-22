@@ -1,14 +1,13 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.blocks.RangeTrigger;
 import com.zuxelus.energycontrol.containers.ISlotItemFilter;
-import com.zuxelus.energycontrol.items.IRemoteSensor;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
-import com.zuxelus.energycontrol.utils.CardState;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -49,7 +48,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 	public double levelEnd;
 	
 	public TileEntityRangeTrigger() {
-		super("block.RangeTrigger");
+		super("tile.range_trigger.name");
 		init = false;
 		tickRate = EnergyControl.config.rangeTriggerRefreshPeriod;
 		updateTicker = tickRate;
@@ -135,6 +134,9 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 	}
 
 	@Override
+	public void onClientMessageReceived(NBTTagCompound tag) { }
+
+	@Override
 	public SPacketUpdateTileEntity getUpdatePacket() {
 		NBTTagCompound tag = new NBTTagCompound();
 		tag = writeProperties(tag);
@@ -183,7 +185,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 
 	@Override
 	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
-		return false;
+		return oldState.getBlock() != newSate.getBlock();
 	}
 
 	@Override
@@ -192,55 +194,28 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 		if (worldObj == null || worldObj.isRemote)
 			return;
 		
-		int upgradeCountRange = 0;
-		ItemStack itemStack = getStackInSlot(SLOT_UPGRADE);
-		if (itemStack != null && itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE)
-			upgradeCountRange = itemStack.stackSize;
-		ItemStack card = getStackInSlot(SLOT_CARD);
 		int status = STATE_UNKNOWN;
+		ItemStack card = getStackInSlot(SLOT_CARD);
 		if (card != null) {
 			Item item = card.getItem();
 			if (item instanceof ItemCardMain) {
-				boolean needUpdate = true;
-				if (upgradeCountRange > 7)
-					upgradeCountRange = 7;
-				int range = LOCATION_RANGE * (int) Math.pow(2, upgradeCountRange);
 				ItemCardReader reader = new ItemCardReader(card);
-				if (item instanceof IRemoteSensor) {
-					BlockPos target = reader.getTarget();
-					if (target == null) {
-						needUpdate = false;
-						reader.setState(CardState.INVALID_CARD);
-					} else {
-						int dx = target.getX() - pos.getX();
-						int dy = target.getY() - pos.getY();
-						int dz = target.getZ() - pos.getZ();
-						if (Math.abs(dx) > range || Math.abs(dy) > range || Math.abs(dz) > range) {
-							needUpdate = false;
-							reader.setState(CardState.OUT_OF_RANGE);
-							status = STATE_UNKNOWN;
-						}
-					}
-				}
-				if (needUpdate) {
-					CardState state = ((ItemCardMain) item).update(card.getItemDamage(), this, reader, range);
-					reader.setState(state);
-					if (state == CardState.OK) {
-						double min = Math.min(levelStart, levelEnd);
-						double max = Math.max(levelStart, levelEnd);
-						double cur = reader.getDouble("energy");
+				CardState state = ItemCardMain.updateCardNBT(worldObj, pos, reader, getStackInSlot(SLOT_UPGRADE));
+				if (state == CardState.OK) {
+					double min = Math.min(levelStart, levelEnd);
+					double max = Math.max(levelStart, levelEnd);
+					double cur = reader.getDouble("energy");
 
-						if (cur > max) {
-							status = STATE_ACTIVE;
-						} else if (cur < min) {
-							status = STATE_PASSIVE;
-						} else if (status == STATE_UNKNOWN) {
-							status = STATE_PASSIVE;
-						} else
-							status = STATE_PASSIVE;
+					if (cur > max) {
+						status = STATE_ACTIVE;
+					} else if (cur < min) {
+						status = STATE_PASSIVE;
+					} else if (status == STATE_UNKNOWN) {
+						status = STATE_PASSIVE;
 					} else
-						status = STATE_UNKNOWN;
-				}
+						status = STATE_PASSIVE;
+				} else
+					status = STATE_UNKNOWN;
 			}
 		}
 		setStatus(status);

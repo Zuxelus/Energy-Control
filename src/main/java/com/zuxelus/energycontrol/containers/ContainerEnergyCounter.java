@@ -21,19 +21,13 @@ public class ContainerEnergyCounter extends ContainerBase<TileEntityEnergyCounte
 		addPlayerInventorySlots(player, 166);
 	}
 
-	/*@Override
-	public void addListener(IContainerListener listener) {
-		super.addListener(listener);
-		NetworkHelper.sendEnergyCounterValue(te, listener);
-	}*/
-
 	@Override
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
 		double counter = te.counter;
 		for (int i = 0; i < listeners.size(); i++)
 			if (lastCounter != counter)
-				NetworkHelper.sendEnergyCounterValue(te, listeners.get(i));
+				NetworkHelper.updateClientTileEntity(listeners.get(i), te.getPos(), 1, counter);
 		lastCounter = counter;
 	}
 

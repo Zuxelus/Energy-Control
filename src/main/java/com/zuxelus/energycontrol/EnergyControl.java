@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.Logger;
@@ -8,10 +7,8 @@ import org.apache.logging.log4j.Logger;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.items.ItemHelper;
-//import com.zuxelus.energycontrol.tileentities.ScreenManager;
 import com.zuxelus.energycontrol.network.ChannelHandler;
 import com.zuxelus.energycontrol.tileentities.ScreenManager;
-import com.zuxelus.energycontrol.utils.SoundHelper;
 
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -21,13 +18,15 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Mod(name = EnergyControl.NAME, modid = EnergyControl.MODID, version = EnergyControl.VERSION, dependencies="required-after:IC2", guiFactory = "com.zuxelus.energycontrol.config.GuiFactory") 
+@Mod(name = EnergyControl.NAME, modid = EnergyControl.MODID, version = EnergyControl.VERSION, dependencies = "required-after:IC2", guiFactory = "com.zuxelus.energycontrol.config.GuiFactory", acceptedMinecraftVersions = "[1.10.2]")
 public class EnergyControl {
 	public static final String NAME = "Energy Control";
-    public static final String MODID = "energycontrol";
-    public static final String VERSION = "@VERSION@";
-    
+	public static final String MODID = "energycontrol";
+	public static final String VERSION = "@VERSION@";
+
 	@SidedProxy(clientSide = "com.zuxelus.energycontrol.ClientProxy", serverSide = "com.zuxelus.energycontrol.ServerProxy")
 	public static ServerProxy proxy;
 	@Instance(MODID)
@@ -42,8 +41,10 @@ public class EnergyControl {
 	
 	public ScreenManager screenManager = new ScreenManager();
 	
-	public List<String> availableAlarms; //on server
-	public List<String> serverAllowedAlarms = new ArrayList<String>(); // will be loaded from server
+	@SideOnly(Side.CLIENT)
+	public List<String> availableAlarms; //on client
+	@SideOnly(Side.CLIENT)
+	public List<String> serverAllowedAlarms; // will be loaded from server
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -51,29 +52,32 @@ public class EnergyControl {
 
 		// Loads configuration
 		proxy.loadConfig(event);
-		SoundHelper.importSound();
+		proxy.importSound();
 
 		// registers channel handler
 		ChannelHandler.init();
-		
-		new ItemHelper();
-		proxy.registerModels();
-		
+
 		CrossModLoader.preinit();
+		ItemHelper.onBlockRegistry();
+		ItemHelper.onItemRegistry();
+		ItemHelper.registerTileEntities();
+		proxy.registerModels();
 	}
 
 	@EventHandler
 	public static void init(FMLInitializationEvent event) {
 		// Register event handlers
 		proxy.registerEventHandlers();
-		
+
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
+
+		proxy.registerSpecialRenderers();
 		CrossModLoader.init();
 	}
 
 	@EventHandler
 	public static void postInit(FMLPostInitializationEvent event) {
-		CrossModLoader.postinit();
 		RecipesNew.addRecipes();
+		CrossModLoader.postinit();
 	}
 }

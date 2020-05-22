@@ -33,8 +33,8 @@ public class ItemUpgrade extends Item {
 	}
 
 	@Override
-	public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> itemList) {
-		itemList.add(new ItemStack(ItemHelper.itemUpgrade, 1, DAMAGE_RANGE));
-		itemList.add(new ItemStack(ItemHelper.itemUpgrade, 1, DAMAGE_COLOR));
+	public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> items) {
+		items.add(new ItemStack(ItemHelper.itemUpgrade, 1, DAMAGE_RANGE));
+		items.add(new ItemStack(ItemHelper.itemUpgrade, 1, DAMAGE_COLOR));
 	}
 }

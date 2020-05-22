@@ -1,23 +1,22 @@
 package com.zuxelus.energycontrol.items.cards;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
+import com.zuxelus.energycontrol.api.CardState;
+import com.zuxelus.energycontrol.api.ICardReader;
+import com.zuxelus.energycontrol.api.PanelSetting;
+import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.crossmod.EnergyStorageData;
-import com.zuxelus.energycontrol.utils.CardState;
-import com.zuxelus.energycontrol.utils.PanelSetting;
-import com.zuxelus.energycontrol.utils.PanelString;
 
-import ic2.api.energy.EnergyNet;
-import ic2.core.block.generator.tileentity.TileEntityBaseGenerator;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemCardGenerator extends ItemCardBase {
 	public ItemCardGenerator() {
@@ -25,45 +24,106 @@ public class ItemCardGenerator extends ItemCardBase {
 	}
 
 	@Override
-	public String getUnlocalizedName() {
-		return "item.card_generator";
-	}
-
-	@Override
-	public CardState update(World world, ItemCardReader reader, int range, BlockPos pos) {
+	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
 		BlockPos target = reader.getTarget();
-		if (target == null) 
+		if (target == null)
 			return CardState.NO_TARGET;
-		
+
 		TileEntity entity = world.getTileEntity(target);
-		NBTTagCompound tag = CrossModLoader.crossIc2.getGeneratorData(entity);
-		if (tag == null)
+		NBTTagCompound tag = CrossModLoader.ic2.getGeneratorData(entity);
+		if (tag == null || !tag.hasKey("type"))
 			return CardState.NO_TARGET;
-		
-		reader.setDouble("storage", tag.getDouble("storage"));
-		reader.setDouble("maxStorage", tag.getDouble("maxStorage"));
-		reader.setDouble("production", tag.getDouble("production"));
+
+		reader.setInt("type", tag.getInteger("type"));
+		switch (tag.getInteger("type")) {
+		case 1:
+			reader.setDouble("storage", tag.getDouble("storage"));
+			reader.setDouble("maxStorage", tag.getDouble("maxStorage"));
+			reader.setDouble("production", tag.getDouble("production"));
+			break;
+		case 2:
+			reader.setDouble("production", tag.getDouble("production"));
+			reader.setDouble("multiplier", tag.getDouble("multiplier"));
+			break;
+		case 3:
+			reader.setDouble("storage", tag.getDouble("storage"));
+			reader.setDouble("maxStorage", tag.getDouble("maxStorage"));
+			reader.setDouble("production", tag.getDouble("production"));
+			reader.setDouble("multiplier", tag.getDouble("multiplier"));
+			break;
+		case 4:
+			reader.setDouble("storage", tag.getDouble("storage"));
+			reader.setDouble("maxStorage", tag.getDouble("maxStorage"));
+			reader.setInt("items", tag.getInteger("items"));
+			reader.setDouble("production", tag.getDouble("production"));
+			reader.setDouble("multiplier", tag.getDouble("multiplier"));
+			break;
+		}
+		reader.setBoolean("active", tag.getBoolean("active"));
 		return CardState.OK;
 	}
 
 	@Override
-	protected List<PanelString> getStringData(int displaySettings, ItemCardReader reader, boolean showLabels) {
-		List<PanelString> result = new LinkedList<PanelString>();
-		if ((displaySettings & 1) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelStorage", reader.getDouble("storage"), showLabels));
-		if ((displaySettings & 2) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelMaxStorage", reader.getDouble("maxStorage"), showLabels));
-		if ((displaySettings & 4) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("production"), showLabels));
+	public List<PanelString> getStringData(int settings, ICardReader reader, boolean showLabels) {
+		List<PanelString> result = reader.getTitleList();
+		switch (reader.getInt("type")) {
+		case 1:
+			if ((settings & 1) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelEnergyEU", reader.getDouble("storage"), showLabels));
+			if ((settings & 2) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelCapacityEU", reader.getDouble("maxStorage"), showLabels));
+			if ((settings & 8) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelOutputEU", reader.getDouble("production"), showLabels));
+			break;
+		case 2:
+			if ((settings & 4) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelMultiplier", reader.getDouble("multiplier"), showLabels));
+			if ((settings & 8) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelOutputEU", reader.getDouble("production"), showLabels));
+			break;
+		case 3:
+			if ((settings & 8) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelOutputEU", reader.getDouble("production"), showLabels));
+			if ((settings & 1) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelEnergyEU", reader.getDouble("storage"), showLabels));
+			if ((settings & 2) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelCapacityEU", reader.getDouble("maxStorage"), showLabels));
+			if ((settings & 4) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelMultiplier", reader.getDouble("multiplier"), showLabels));
+			break;
+		case 4:
+			if ((settings & 8) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelOutputEU", reader.getDouble("production"), showLabels));
+			if ((settings & 1) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelEnergyEU", reader.getDouble("storage"), showLabels));
+			if ((settings & 2) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelCapacityEU", reader.getDouble("maxStorage"), showLabels));
+			if ((settings & 16) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelPellets", reader.getInt("items"), showLabels));
+			if ((settings & 4) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelMultiplier", reader.getDouble("multiplier"), showLabels));
+			break;
+		}
+		if ((settings & 32) > 0)
+			addOnOff(result, reader.getBoolean("active"));
 		return result;
 	}
 
 	@Override
-	protected List<PanelSetting> getSettingsList(ItemStack stack) {
-		List<PanelSetting> result = new ArrayList<PanelSetting>(5);
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelStorage"), 1, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMaxStorage"), 2, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOutput"), 4, damage));
+	@SideOnly(Side.CLIENT)
+	public List<PanelSetting> getSettingsList(ItemStack stack) {
+		List<PanelSetting> result = new ArrayList<PanelSetting>(6);
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 1, damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelCapacity"), 2, damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMultiplier"), 4, damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOutput"), 8, damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelItems"), 16, damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOnOff"), 32, damage));
 		return result;
+	}
+
+	@Override
+	public int getKitFromCard() {
+		return ItemCardType.KIT_GENERATOR;
 	}
 }

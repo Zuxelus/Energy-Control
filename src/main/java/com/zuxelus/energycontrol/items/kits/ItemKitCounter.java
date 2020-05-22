@@ -12,12 +12,7 @@ import net.minecraft.world.World;
 
 public class ItemKitCounter extends ItemKitSimple {
 	public ItemKitCounter() {
-		super(ItemHelper.KIT_COUNTER, "kit_counter");
-	}
-
-	@Override
-	public String getUnlocalizedName() {
-		return "item.kit_counter";
+		super(ItemCardType.KIT_COUNTER, "kit_counter");
 	}
 
 	@Override

@@ -18,7 +18,7 @@ public class GuiScreenColor extends GuiScreen {
 
 	private GuiInfoPanel parentGui;
 
-	protected int xSize = 226;
+	protected int xSize = 234;
 	protected int ySize = 94;
 	protected int guiLeft;
 	protected int guiTop;
@@ -43,7 +43,7 @@ public class GuiScreenColor extends GuiScreen {
 		super.mouseClicked(mouseX, mouseY, mouseButton);
 		mouseX -= guiLeft;
 		mouseY -= guiTop;
-		if (mouseX >= 7 && mouseX <= 212) {
+		if (mouseX >= 7 && mouseX <= 226) {
 			int index = (mouseX - 7) / 14;
 			int shift = (mouseX - 7) % 14;
 			if (mouseY >= 32 && mouseY <= 41 && shift <= 9) {// back
@@ -65,8 +65,8 @@ public class GuiScreenColor extends GuiScreen {
 		int left = (width - xSize) / 2;
 		int top = (height - ySize) / 2;
 		drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
-		drawTexturedModalRect(left + 5 + colorBack * 14, top + 30, 226, 0, 14, 14);
-		drawTexturedModalRect(left + 5 + colorText * 14, top + 61, 226, 0, 14, 14);
+		drawTexturedModalRect(left + 5 + colorBack * 14, top + 30, 234, 0, 14, 14);
+		drawTexturedModalRect(left + 5 + colorText * 14, top + 61, 234, 0, 14, 14);
 		fontRendererObj.drawString(I18n.format("msg.ec.ScreenColor"), guiLeft + 8, guiTop + 20, 0x404040);
 		fontRendererObj.drawString(I18n.format("msg.ec.TextColor"), guiLeft + 8, guiTop + 52, 0x404040);
 

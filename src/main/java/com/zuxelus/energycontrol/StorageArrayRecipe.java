@@ -125,7 +125,7 @@ public class StorageArrayRecipe implements IRecipe {
 			reader.setInt(String.format("_%dx", cardCount), target.getX());
 			reader.setInt(String.format("_%dy", cardCount), target.getY());
 			reader.setInt(String.format("_%dz", cardCount), target.getZ());
-			reader.setInt(String.format("_%dtargetType", cardCount), wrapper.getInt("targetType"));
+			//reader.setInt(String.format("_%dtargetType", cardCount), wrapper.getInt("targetType"));
 			cardCount++;
 		}
 		reader.setInt("cardCount", cardCount);

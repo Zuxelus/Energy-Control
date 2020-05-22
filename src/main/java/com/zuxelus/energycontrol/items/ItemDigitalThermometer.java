@@ -70,10 +70,10 @@ public class ItemDigitalThermometer extends ItemThermometer implements IElectric
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> itemList) {
+	public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> items) {
 		ItemStack itemstack = new ItemStack(this, 1);
 		ElectricItem.manager.charge(itemstack, 0x7fffffff, 0x7fffffff, true, false);
-		itemList.add(itemstack);
-		itemList.add(new ItemStack(this, 1, getMaxDamage()));
+		items.add(itemstack);
+		items.add(new ItemStack(this, 1, getMaxDamage()));
 	}
 }

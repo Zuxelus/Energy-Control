@@ -16,16 +16,34 @@ public class Screen {
 	private BlockPos corePos;
 	private boolean powered = false;
 
+	public Screen(TileEntityInfoPanel panel) {
+		BlockPos pos = panel.getPos();
+		maxX = minX = pos.getX();
+		maxY = minY = pos.getY();
+		maxZ = minZ = pos.getZ();
+
+		corePos = pos;
+		powered = panel.getPowered();
+	}
+
+	public Screen(TileEntityInfoPanel panel, NBTTagCompound tag) {
+		minX = tag.getInteger("minX");
+		minY = tag.getInteger("minY");
+		minZ = tag.getInteger("minZ");
+
+		maxX = tag.getInteger("maxX");
+		maxY = tag.getInteger("maxY");
+		maxZ = tag.getInteger("maxZ");
+
+		corePos = panel.getPos();
+		powered = panel.getPowered();
+	}
+
 	public TileEntityInfoPanel getCore(IBlockAccess world) {
 		TileEntity tileEntity = world.getTileEntity(corePos);
 		if (tileEntity == null || !(tileEntity instanceof TileEntityInfoPanel))
 			return null;
 		return (TileEntityInfoPanel) tileEntity;
-	}
-
-	public void setCore(TileEntityInfoPanel core) {
-		corePos = core.getPos();
-		powered = core.getPowered();
 	}
 
 	public boolean isBlockNearby(TileEntity tileEntity) {
@@ -154,59 +172,9 @@ public class Screen {
 		return maxZ - minZ;
 	}
 
-/*	public int getHeight(TileEntityInfoPanel core) {
-		if (core == null)
-			return 0;
-		int rotation = core.getRotation().getIndex();
-		switch (core.getFacing().getIndex()) {
-		case 0:
-		case 1:
-			if (rotation == 0 || rotation == 3)
-				return getDz() + 1;
-			else
-				return getDx() + 1;
-		case 2:
-		case 3:
-			if (rotation == 0 || rotation == 3)
-				return getDy() + 1;
-			else
-				return getDx() + 1;
-		case 4:
-		case 5:
-			if (rotation == 0 || rotation == 3)
-				return getDy() + 1;
-			else
-				return getDz() + 1;
-		}
-		return 1;
+	public boolean isOneBlock() {
+		return minX == maxX && minY == maxY && minZ == maxZ;
 	}
-
-	public int getWidth(TileEntityInfoPanel core) {
-		if (core == null)
-			return 0;
-		int rotation = core.getRotation().getIndex();
-		switch (core.getFacing().getIndex()) {
-		case 0:
-		case 1:
-			if (rotation == 0 || rotation == 3)
-				return getDx() + 1;
-			else
-				return getDz() + 1;
-		case 2:
-		case 3:
-			if (rotation == 0 || rotation == 3)
-				return getDx() + 1;
-			else
-				return getDy() + 1;
-		case 4:
-		case 5:
-			if (rotation == 0 || rotation == 3)
-				return getDz() + 1;
-			else
-				return getDy() + 1;
-		}
-		return 1;
-	}*/
 
 	@Override
 	public boolean equals(Object obj) {

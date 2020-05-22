@@ -3,7 +3,7 @@
     "textures": {
         "particle": "energycontrol:blocks/info_panel/panel_back",
         "down": "energycontrol:blocks/info_panel/panel_back",
-        "up": "energycontrol:blocks/info_panel/off/2/15",
+        "up": "energycontrol:blocks/info_panel/panel_face",
         "north": "energycontrol:blocks/info_panel/panel_side",
         "east": "energycontrol:blocks/info_panel/panel_side",
         "south": "energycontrol:blocks/info_panel/panel_side",

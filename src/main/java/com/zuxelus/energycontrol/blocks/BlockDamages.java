@@ -12,4 +12,7 @@ public class BlockDamages {
 	public static final int DAMAGE_RANGE_TRIGGER = 8;
 	public static final int DAMAGE_ADVANCED_PANEL = 9;
 	public static final int DAMAGE_ADVANCED_EXTENDER = 10;
+	public static final int GUI_PORTABLE_PANEL = 11;
+	public static final int GUI_CARD_HOLDER = 12;
+	public static final int GUI_KIT_ASSEMBER = 13;
 }

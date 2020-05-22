@@ -17,6 +17,7 @@ item.card_generator_kinetic.name=Kinetic Generator Sensor Card
 item.card_generator_heat.name=Heat Generator Sensor Card
 item.card_reactor.name=Reactor Sensor Card
 item.card_reactor_5x5.name=5x5 Reactor Sensor Card
+item.card_engine.name=Engine Sensor Card
 item.card_text.name=Text Card
 item.card_time.name=Time Card
 item.card_energy_array.name=Energy Array Card
@@ -26,8 +27,13 @@ item.thermometer.name=Thermometer
 item.thermometer_digital.name=Digital Thermometer
 item.upgrade_range.name=Range Upgrade
 item.upgrade_color.name=Color Upgrade
+item.portable_panel.name=Portable Panel
+item.card_holder.name=Card Holder
 
 #Integration Items
+item.card_energy_draconic.name=Draconic Energy Sensor Card
+item.card_reactor_draconic.name=Draconic Reactor Sensor Card
+item.kit_draconic.name=Draconic Sensor Kit
 item.kit_big_reactor.name=Remote RF Reactor Kit
 item.card_big_reactor.name=RF Reactor Sensor Location Card
 item.kit_app_eng.name=Applied Energistics Monitor Kit
@@ -40,8 +46,8 @@ tile.howler_alarm.name=Howler Alarm
 tile.remote_thermo.name=Remote Thermal Monitor
 tile.info_panel.name=Industrial Information Panel
 tile.info_panel_extender.name=Information Panel Extender
-tile.advanced_info_panel.name=Advanced Information Panel
-tile.advanced_info_panel_extender.name=Advanced Panel Extender
+tile.info_panel_advanced.name=Advanced Information Panel
+tile.info_panel_advanced_extender.name=Advanced Panel Extender
 tile.eclight0.name=White Lamp
 tile.eclight1.name=White Lamp
 tile.eclight2.name=Orange Lamp
@@ -49,6 +55,7 @@ tile.eclight3.name=Orange Lamp
 tile.energy_counter.name=Energy Counter
 tile.average_counter.name=Average Counter
 tile.range_trigger.name=Range Trigger
+tile.kit_assembler.name=Kit Assembler
 
 #Original Screen Messages
 msg.ec.HowlerAlarmSoundRange=Sound range: %s
@@ -63,38 +70,69 @@ msg.ec.InfoPanelOutOfRange=Out Of Range
 msg.ec.InfoPanelInvalidCard=Invalid Card
 msg.ec.InfoPanelNoTarget=Target Not Found
 
-msg.ec.InfoPanelOn=On
-msg.ec.InfoPanelOff=Off
-msg.ec.InfoPanelHeat=T: %s
-msg.ec.InfoPanelMaxHeat=MaxHeat: %s
-msg.ec.InfoPanelMelting=Melting: %s
-msg.ec.InfoPanelOutput=Output: %s EU/t
-msg.ec.InfoPanelOutputMJ=Output: %s RF/t
-msg.ec.InfoPanelOutputHeat=Output: %s Hu/s
-msg.ec.InfoPanelOutputSteam=Output: %s mB/t
-msg.ec.InfoPanelTimeRemaining=Remaining: %s
-
-msg.ec.InfoPanelEnergyCounter=Energy: %s EU
-msg.ec.InfoPanelEnergyCounterMJ=Energy: %s RF
-
+msg.ec.InfoPanelAmount=Amount: %s
+msg.ec.InfoPanelBuffer=Buffer: %s
+msg.ec.InfoPanelBufferHU=Buffer: %s HU
+msg.ec.InfoPanelCapacity=Capacity: %s
+msg.ec.InfoPanelCapacityEU=Capacity: %s EU
+msg.ec.InfoPanelCapacityHU=Capacity: %s HU
+msg.ec.InfoPanelCapacityKU=Capacity: %s KU
+msg.ec.InfoPanelCapacityL=Capacity: %s L
+msg.ec.InfoPanelCoils=Coils: %s
+msg.ec.InfoPanelConductors=Conductors: %s
 msg.ec.InfoPanelEnergy=Energy: %s
+msg.ec.InfoPanelEnergyEU=Energy: %s EU
+msg.ec.InfoPanelEnergyHU=Energy: %s HU
+msg.ec.InfoPanelEnergyKU=Energy: %s KU
+msg.ec.InfoPanelEnergyMJ=Energy: %s MJ
+msg.ec.InfoPanelEnergyRF=Energy: %s RF
+msg.ec.InfoPanelFill=Fill: %s%%
 msg.ec.InfoPanelFree=Free: %s
-msg.ec.InfoPanelStorage=Storage: %s
+msg.ec.InfoPanelFreeEU=Free: %s EU
+msg.ec.InfoPanelHeat=T: %s
+msg.ec.InfoPanelHeatPercentage=Heat: %s%%
+msg.ec.InfoPanelHeight=Height: %s
+msg.ec.InfoPanelMaxHeat=MaxHeat: %s
 msg.ec.InfoPanelMaxStorage=MaxStorage: %s
-msg.ec.InfoPanelPercentage=Fill: %s%%
+msg.ec.InfoPanelMaxStorageEU=MaxStorage: %s EU
+msg.ec.InfoPanelMaxStorageHU=MaxStorage: %s HU
+msg.ec.InfoPanelMaxStorageKU=MaxStorage: %s KU
+msg.ec.InfoPanelMaxStorageMJ=MaxStorage: %s MJ
+msg.ec.InfoPanelMelting=Melting: %s
+msg.ec.InfoPanelMotors=Motors: %s
 msg.ec.InfoPanelMultiplier=Multiplier: %s
+msg.ec.InfoPanelName=Name: %s
+msg.ec.InfoPanelOff=Off
+msg.ec.InfoPanelOn=On
+msg.ec.InfoPanelOutput=Output: %s
+msg.ec.InfoPanelOutputEU=Output: %s EU/t
+msg.ec.InfoPanelOutputMJ=Output: %s MJ/t
+msg.ec.InfoPanelOutputRF=Output: %s RF/t
+msg.ec.InfoPanelOutputHU=Output: %s hU/t
+msg.ec.InfoPanelOutputKU=Output: %s kU/t
+msg.ec.InfoPanelOutputHeat=Output: %s hU/s
+msg.ec.InfoPanelOutputSteam=Output: %s mB/t
+msg.ec.InfoPanelPellets=Pellets: %s
+msg.ec.InfoPanelPercentage=Fill: %s%%
+msg.ec.InfoPanelPeriod=Period: %s sec
+msg.ec.InfoPanelSpeed=Speed: %s
+msg.ec.InfoPanelStorage=Storage: %s
+msg.ec.InfoPanelStorageEU=Storage: %s EU
+msg.ec.InfoPanelStorageHU=Storage: %s HU
+msg.ec.InfoPanelStorageKU=Storage: %s KU
+msg.ec.InfoPanelStorageL=Storage: %s L
+msg.ec.InfoPanelStorageMJ=Storage: %s MJ
+msg.ec.InfoPanelTime=Time: %s
+msg.ec.InfoPanelTimeRemaining=Remaining: %s
+msg.ec.InfoPanelRotorHealth=RotorHealth: %s
+msg.ec.InfoPanelWaterFlow=WaterFlow: %s
+msg.ec.InfoPanelWindStrength=WindStrength: %s
 
 msg.ec.cbInfoPanelLiquidName=Liquid name
 msg.ec.cbInfoPanelLiquidAmount=Amount
 msg.ec.cbInfoPanelLiquidCapacity=Capacity
 msg.ec.cbInfoPanelLiquidFree=Free
 msg.ec.cbInfoPanelLiquidPercentage=Fill percentage
-
-msg.ec.InfoPanelLiquidName=Name: %s
-msg.ec.InfoPanelLiquidAmount=Amount: %s
-msg.ec.InfoPanelLiquidCapacity=Capacity: %s
-msg.ec.InfoPanelLiquidFree=Free: %s
-msg.ec.InfoPanelLiquidPercentage=Fill: %s%%
 
 msg.ec.InfoPanelNotFoundN=#%d Not Found
 msg.ec.InfoPanelOutOfRangeN=#%d Out Of Range
@@ -110,28 +148,29 @@ msg.ec.InfoPanelLiquidFreeN=#%d Free: %s
 msg.ec.InfoPanelLiquidCapacityN=#%d Capacity: %s
 msg.ec.InfoPanelLiquidPercentageN=#%d Fill: %s%%
 
-msg.ec.InfoPanelTime=Time: %s
-
-msg.ec.cbInfoPanelOnOff=On/Off Status
-msg.ec.cbInfoPanelHeat=Heat Level
-msg.ec.cbInfoPanelMaxHeat=Max Heat
-msg.ec.cbInfoPanelMelting=Melting Temp
-msg.ec.cbInfoPanelOutput=Output (EU/t)
-msg.ec.cbInfoPanelTimeRemaining=Time to cycle end
 msg.ec.cb24h=24h Mode
-
+msg.ec.cbInfoPanelBuffer=Buffer
+msg.ec.cbInfoPanelCapacity=Capacity
+msg.ec.cbInfoPanelEachCard=Each card info
 msg.ec.cbInfoPanelEnergy=Energy
-msg.ec.cbInfoPanelStorage=Storage
-msg.ec.cbInfoPanelMaxStorage=Max Storage
 msg.ec.cbInfoPanelFree=Free
+msg.ec.cbInfoPanelHeat=Heat Level
+msg.ec.cbInfoPanelHeight=Height
+msg.ec.cbInfoPanelItems=Items
+msg.ec.cbInfoPanelMaxHeat=Max Heat
+msg.ec.cbInfoPanelMaxStorage=Max Storage
+msg.ec.cbInfoPanelMelting=Melting Temp
+msg.ec.cbInfoPanelMultiplier=Multiplier
+msg.ec.cbInfoPanelOnOff=On/Off Status
+msg.ec.cbInfoPanelOutput=Output (EU/t)
 msg.ec.cbInfoPanelPercentage=Fill percentage
+msg.ec.cbInfoPanelStorage=Storage
+msg.ec.cbInfoPanelTimeRemaining=Time to cycle end
+msg.ec.cbInfoPanelTotal=Summary
+
 msg.ec.EnergyCardQuantity=Cards quantity: %d
 msg.ec.AverageCounterPeriod=Period: %ssec
-
 msg.ec.LiquidCardQuantity=Cards quantity: %d
-
-msg.ec.cbInfoPanelEach=Each card info
-msg.ec.cbInfoPanelTotal=Summary
 
 msg.ec.Reset=Reset
 msg.ec.ScreenColor=Screen Color
@@ -148,3 +187,21 @@ msg.ec.InfoPanel55.Out=Output (Hu/s)
 msg.ec.InfoPanel55.BufferIn=Coolant Storage Tank
 msg.ec.InfoPanel55.BufferOut=Hot Coolant Buffer Tank
 
+#Draconic Evolution
+msg.ec.Status=Status: %s
+msg.ec.CoreTemp=Core Temp: %s
+msg.ec.Diameter=Diameter: %s
+msg.ec.GenerationRate=Generation Rate: %s
+msg.ec.InputRate=Input Rate: %s
+msg.ec.Saturation=Saturation: %s
+msg.ec.ConvertedFuel=Converted Fuel: %s
+msg.ec.FieldStrength=Field Strength: %s
+msg.ec.ConversionRate=Conversion Rate: %s
+msg.ec.Fuel=Fuel: %s
+
+msg.ec.cbStatus=Status
+msg.ec.cbDiameter=Diameter
+msg.ec.cbInputRate=InputRate
+msg.ec.cbFieldStrength=FieldStrength
+msg.ec.cbSaturation=Saturation
+msg.ec.cbFuel=Fuel

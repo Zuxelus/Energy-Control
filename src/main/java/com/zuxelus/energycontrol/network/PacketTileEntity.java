@@ -6,6 +6,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -45,14 +46,18 @@ public class PacketTileEntity implements IMessage, IMessageHandler<PacketTileEnt
 
 	@Override
 	public IMessage onMessage(PacketTileEntity message, MessageContext ctx) {
-		if (ctx.side != Side.SERVER)
-			return null;
-		
-		TileEntity te = ctx.getServerHandler().playerEntity.worldObj.getTileEntity(new BlockPos(message.x, message.y, message.z));
-		if (!(te instanceof ITilePacketHandler))
-			return null;
-		
-		((ITilePacketHandler)te).onServerMessageReceived(message.tag);
+		if (ctx.side == Side.SERVER) {
+			TileEntity te = ctx.getServerHandler().playerEntity.worldObj.getTileEntity(new BlockPos(message.x, message.y, message.z));
+			if (!(te instanceof ITilePacketHandler))
+				return null;
+			((ITilePacketHandler) te).onServerMessageReceived(message.tag);
+		}
+		if (ctx.side == Side.CLIENT) {
+			TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(new BlockPos(message.x, message.y, message.z));
+			if (!(te instanceof ITilePacketHandler))
+				return null;
+			((ITilePacketHandler) te).onClientMessageReceived(message.tag);
+		}
 		return null;
 	}
 }

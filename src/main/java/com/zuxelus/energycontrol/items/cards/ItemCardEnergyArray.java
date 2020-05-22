@@ -1,20 +1,23 @@
 package com.zuxelus.energycontrol.items.cards;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
-import com.zuxelus.energycontrol.crossmod.EnergyCardHelper;
-import com.zuxelus.energycontrol.crossmod.EnergyStorageData;
-import com.zuxelus.energycontrol.utils.CardState;
-import com.zuxelus.energycontrol.utils.PanelSetting;
-import com.zuxelus.energycontrol.utils.PanelString;
+import com.zuxelus.energycontrol.api.CardState;
+import com.zuxelus.energycontrol.api.ICardReader;
+import com.zuxelus.energycontrol.api.PanelSetting;
+import com.zuxelus.energycontrol.api.PanelString;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.utils.StringUtils;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemCardEnergyArray extends ItemCardBase {
 	private static final int STATUS_NOT_FOUND = Integer.MIN_VALUE;
@@ -25,12 +28,7 @@ public class ItemCardEnergyArray extends ItemCardBase {
 	}
 
 	@Override
-	public String getUnlocalizedName() {
-		return "item.card_energy_array";
-	}
-
-	@Override
-	public CardState update(World world, ItemCardReader reader, int range, BlockPos pos) {
+	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
 		int cardCount = reader.getCardCount();
 		if (cardCount == 0)
 			return CardState.INVALID_CARD;
@@ -44,15 +42,19 @@ public class ItemCardEnergyArray extends ItemCardBase {
 			int dy = target.getY() - pos.getY();
 			int dz = target.getZ() - pos.getZ();
 			if (Math.abs(dx) <= range && Math.abs(dy) <= range && Math.abs(dz) <= range) {
-				EnergyStorageData storage = EnergyCardHelper.getStorageAt(world, target, reader.getInt(String.format("_%dtargetType", i)));
-				if (storage != null) {
-					double capacity = storage.values.get(0);
-					double stored = storage.values.get(1);
-					totalEnergy += stored;
-					reader.setInt(String.format("_%denergy", i), (int) stored);
-					reader.setInt(String.format("_%dmaxStorage", i), (int) capacity);
-					foundAny = true;
-				} else 
+				TileEntity te = world.getTileEntity(target);
+				if (te != null) {
+					NBTTagCompound tag = CrossModLoader.ic2.getEnergyData(te);
+					if (tag != null) {
+						double stored = tag.getDouble("storage");
+						double capacity = tag.getDouble("maxStorage");
+						totalEnergy += stored;
+						reader.setInt(String.format("_%denergy", i), (int) stored);
+						reader.setInt(String.format("_%dmaxStorage", i), (int) capacity);
+						foundAny = true;
+					} else
+						reader.setInt(String.format("_%denergy", i), STATUS_NOT_FOUND);
+				} else
 					reader.setInt(String.format("_%denergy", i), STATUS_NOT_FOUND);
 			} else {
 				reader.setInt(String.format("_%denergy", i), STATUS_OUT_OF_RANGE);
@@ -69,8 +71,8 @@ public class ItemCardEnergyArray extends ItemCardBase {
 	}
 
 	@Override
-	protected List<PanelString> getStringData(int displaySettings, ItemCardReader reader, boolean showLabels) {
-		List<PanelString> result = new LinkedList<PanelString>();
+	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
+		List<PanelString> result = reader.getTitleList();
 		double totalEnergy = 0;
 		double totalStorage = 0;
 		boolean showEach = (displaySettings & 1) > 0;
@@ -128,7 +130,7 @@ public class ItemCardEnergyArray extends ItemCardBase {
 			if (showFree) 
 				result.add(new PanelString("msg.ec.InfoPanelFree", totalStorage - totalEnergy, showLabels));
 			if (showStorage)
-				result.add(new PanelString("msg.ec.InfoPanelStorage", totalStorage, showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelCapacity", totalStorage, showLabels));
 			if (showPercentage) 
 				result.add(new PanelString("msg.ec.InfoPanelPercentage",totalStorage == 0 ? 100 : ((totalEnergy / totalStorage) * 100), showLabels));
 		}
@@ -136,7 +138,8 @@ public class ItemCardEnergyArray extends ItemCardBase {
 	}
 
 	@Override
-	protected List<PanelSetting> getSettingsList(ItemStack stack) {
+	@SideOnly(Side.CLIENT)
+	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(6);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEach"), 1,damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 4,damage));
@@ -145,5 +148,15 @@ public class ItemCardEnergyArray extends ItemCardBase {
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelPercentage"), 32, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelTotal"), 2,damage));
 		return result;
+	}
+
+	@Override
+	public boolean isRemoteCard() {
+		return false;
+	}
+
+	@Override
+	public int getKitFromCard() {
+		return ItemCardType.KIT_ENERGY;
 	}
 }

@@ -13,7 +13,7 @@ public abstract class TileEntityFacing extends TileEntity {
 	}
 	
 	public void setFacing(int meta) {
-		facing = EnumFacing.getFront(meta);		
+		facing = EnumFacing.getFront(meta);
 	}
 	
 	protected boolean hasRotation() {
@@ -31,8 +31,14 @@ public abstract class TileEntityFacing extends TileEntity {
 	protected void readProperties(NBTTagCompound tag) {
 		if (tag.hasKey("facing"))
 			facing = EnumFacing.getFront(tag.getInteger("facing"));
-		if (hasRotation() && tag.hasKey("rotation"))
-			rotation = EnumFacing.getFront(tag.getInteger("rotation"));
+		else
+			facing = EnumFacing.NORTH;
+		if (hasRotation()) {
+			if (tag.hasKey("rotation"))
+				rotation = EnumFacing.getFront(tag.getInteger("rotation"));
+			else
+				rotation = EnumFacing.NORTH;
+		}
 	}
 	
 	protected NBTTagCompound writeProperties(NBTTagCompound tag) {

@@ -11,12 +11,7 @@ import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 public class ItemKitLiquid extends ItemKitSimple {
 	public ItemKitLiquid() {
-		super(ItemHelper.KIT_LIQUID, "kit_liquid");
-	}
-
-	@Override
-	public String getUnlocalizedName() {
-		return "item.kit_liquid";
+		super(ItemCardType.KIT_LIQUID, "kit_liquid");
 	}
 
 	@Override

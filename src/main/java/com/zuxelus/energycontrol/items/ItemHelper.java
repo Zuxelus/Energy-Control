@@ -1,122 +1,140 @@
 package com.zuxelus.energycontrol.items;
 
+import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.blocks.*;
+import com.zuxelus.energycontrol.items.cards.ItemCardHolder;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.kits.ItemKitMain;
 import com.zuxelus.energycontrol.tileentities.*;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class ItemHelper {
-	public static final int KIT_MAX = 6;	
-	public static final int KIT_ENERGY = 0;
-	public static final int KIT_COUNTER = 1;
-	public static final int KIT_LIQUID = 2;
-	public static final int KIT_LIQUID_ADVANCED = 3;	
-	public static final int KIT_GENERATOR = 4;
-	public static final int KIT_REACTOR = 5;
-	public static final int KIT_APPENG = 10;
-	public static final int KIT_BIGREACTOR = 11;
-
 	public static BlockLight blockLight;
 	public static HowlerAlarm howlerAlarm;
 	public static IndustrialAlarm industrialAlarm;
 	public static ThermalMonitor thermalMonitor;
 	public static InfoPanel infoPanel;
 	public static InfoPanelExtender infoPanelExtender;
+	public static AdvancedInfoPanel infoPanelAdvanced;
+	public static AdvancedInfoPanelExtender infoPanelAdvancedExtender;
 	public static RangeTrigger rangeTrigger;
 	public static RemoteThermo remoteThermo;
 	public static AverageCounter averageCounter;
 	public static EnergyCounter energyCounter;
+	public static KitAssembler kitAssembler;
 	public static Item itemKit;
 	public static Item itemCard;
 	public static Item itemUpgrade;
 	public static Item itemThermometer;
 	public static Item itemThermometerDigital;
-	
-	public ItemHelper() {
-		registerBlocks();
-		registerItems();
-		registerTileEntities();
-	}
+	public static Item itemPortablePanel;
+	public static Item itemCardHolder;
 
-	private void registerBlocks() {
+	public static void onBlockRegistry() {
 		blockLight = new BlockLight();
-		setNames(blockLight,"block_light");
+		setNames(blockLight, "block_light");
 		GameRegistry.register(blockLight);
 		GameRegistry.register(new ItemLight(blockLight).setRegistryName("block_light"));
-		
+
 		howlerAlarm = new HowlerAlarm();
-		setNames(howlerAlarm,"howler_alarm");
+		setNames(howlerAlarm, "howler_alarm");
 		GameRegistry.register(howlerAlarm);
 		GameRegistry.register(new ItemBlock(howlerAlarm).setRegistryName("howler_alarm"));
-		
+
 		industrialAlarm = new IndustrialAlarm();
-		setNames(industrialAlarm,"industrial_alarm");
+		setNames(industrialAlarm, "industrial_alarm");
 		GameRegistry.register(industrialAlarm);
 		GameRegistry.register(new ItemBlock(industrialAlarm).setRegistryName("industrial_alarm"));
-		
+
 		thermalMonitor = new ThermalMonitor();
-		setNames(thermalMonitor,"thermal_monitor");
+		setNames(thermalMonitor, "thermal_monitor");
 		GameRegistry.register(thermalMonitor);
 		GameRegistry.register(new ItemBlock(thermalMonitor).setRegistryName("thermal_monitor"));
-		
+
 		infoPanel = new InfoPanel();
-		setNames(infoPanel,"info_panel");
+		setNames(infoPanel, TileEntityInfoPanel.NAME);
 		GameRegistry.register(infoPanel);
-		GameRegistry.register(new ItemBlock(infoPanel).setRegistryName("info_panel"));
-		
+		GameRegistry.register(new ItemBlock(infoPanel).setRegistryName(TileEntityInfoPanel.NAME));
+
 		infoPanelExtender = new InfoPanelExtender();
-		setNames(infoPanelExtender,"info_panel_extender");
+		setNames(infoPanelExtender, "info_panel_extender");
 		GameRegistry.register(infoPanelExtender);
 		GameRegistry.register(new ItemBlock(infoPanelExtender).setRegistryName("info_panel_extender"));
-		
+
+		infoPanelAdvanced = new AdvancedInfoPanel();
+		setNames(infoPanelAdvanced, TileEntityAdvancedInfoPanel.NAME);
+		GameRegistry.register(infoPanelAdvanced);
+		GameRegistry.register(new ItemBlock(infoPanelAdvanced).setRegistryName(TileEntityAdvancedInfoPanel.NAME));
+
+		infoPanelAdvancedExtender = new AdvancedInfoPanelExtender();
+		setNames(infoPanelAdvancedExtender, "info_panel_advanced_extender");
+		GameRegistry.register(infoPanelAdvancedExtender);
+		GameRegistry.register(new ItemBlock(infoPanelAdvancedExtender).setRegistryName("info_panel_advanced_extender"));
+
 		rangeTrigger = new RangeTrigger();
-		setNames(rangeTrigger,"range_trigger");
+		setNames(rangeTrigger, "range_trigger");
 		GameRegistry.register(rangeTrigger);
 		GameRegistry.register(new ItemBlock(rangeTrigger).setRegistryName("range_trigger"));
 
 		remoteThermo = new RemoteThermo();
-		setNames(remoteThermo,"remote_thermo");
+		setNames(remoteThermo, "remote_thermo");
 		GameRegistry.register(remoteThermo);
 		GameRegistry.register(new ItemBlock(remoteThermo).setRegistryName("remote_thermo"));
-		
+
 		averageCounter = new AverageCounter();
-		setNames(averageCounter,"average_counter");
+		setNames(averageCounter, "average_counter");
 		GameRegistry.register(averageCounter);
 		GameRegistry.register(new ItemBlock(averageCounter).setRegistryName("average_counter"));
-		
+
 		energyCounter = new EnergyCounter();
-		setNames(energyCounter,"energy_counter");
+		setNames(energyCounter, "energy_counter");
 		GameRegistry.register(energyCounter);
 		GameRegistry.register(new ItemBlock(energyCounter).setRegistryName("energy_counter"));
+
+		kitAssembler = new KitAssembler();
+		setNames(kitAssembler, "kit_assembler");
+		GameRegistry.register(kitAssembler);
+		GameRegistry.register(new ItemBlock(kitAssembler).setRegistryName("kit_assembler"));
 	}
-	
-	private void registerItems() {
-		itemKit = new ItemKitMain();
-		setNames(itemKit,"item_kit");
-		GameRegistry.register(itemKit);
-		
-		itemCard = new ItemCardMain();
-		setNames(itemCard,"item_card");
-		GameRegistry.register(itemCard);
-		
+
+	public static void onItemRegistry() {
 		itemUpgrade = new ItemUpgrade();
-		setNames(itemUpgrade,"item_upgrade");
+		setNames(itemUpgrade, "item_upgrade");
 		GameRegistry.register(itemUpgrade);
-		
+
 		itemThermometer = new ItemThermometer();
-		setNames(itemThermometer,"thermometer");
+		setNames(itemThermometer, "thermometer");
 		GameRegistry.register(itemThermometer);
-		
+
 		itemThermometerDigital = new ItemDigitalThermometer(1, 80, 80);
-		setNames(itemThermometerDigital,"thermometer_digital");
+		setNames(itemThermometerDigital, "thermometer_digital");
 		GameRegistry.register(itemThermometerDigital);
+
+		itemPortablePanel = new ItemPortablePanel();
+		setNames(itemPortablePanel, "portable_panel");
+		GameRegistry.register(itemPortablePanel);
+
+		itemKit = new ItemKitMain();
+		((ItemKitMain) itemKit).registerKits();
+		setNames(itemKit, "item_kit");
+		GameRegistry.register(itemKit);
+
+		itemCard = new ItemCardMain();
+		((ItemCardMain) itemCard).registerCards();
+		setNames(itemCard, "item_card");
+		GameRegistry.register(itemCard);
+
+		itemCardHolder = new ItemCardHolder();
+		setNames(itemCardHolder, "card_holder");
+		GameRegistry.register(itemCardHolder);
 	}
-	
+
 	private static void setNames(Object obj, String name) {
 		if (obj instanceof Block) {
 			Block block = (Block) obj;
@@ -129,16 +147,64 @@ public class ItemHelper {
 		} else
 			throw new IllegalArgumentException("Item or Block required");
 	}
-	
-	private void registerTileEntities() {
-		GameRegistry.registerTileEntity(TileEntityHowlerAlarm.class, "energycontrol:howler_alarm");
-		GameRegistry.registerTileEntity(TileEntityIndustrialAlarm.class, "energycontrol:industrial_alarm");
-		GameRegistry.registerTileEntity(TileEntityThermo.class, "energycontrol:thermo");
-		GameRegistry.registerTileEntity(TileEntityRemoteThermo.class, "energycontrol:remote_thermo");
-		GameRegistry.registerTileEntity(TileEntityInfoPanel.class, "energycontrol:info_panel");
-		GameRegistry.registerTileEntity(TileEntityInfoPanelExtender.class, "energycontrol:info_panel_extender");
-		GameRegistry.registerTileEntity(TileEntityRangeTrigger.class, "energycontrol:range_trigger");
-		GameRegistry.registerTileEntity(TileEntityAverageCounter.class, "energycontrol:average_counter");
-		GameRegistry.registerTileEntity(TileEntityEnergyCounter.class, "energycontrol:energy_counter");
+
+	public static void onModelRegister() {
+		registerBlockModel(ItemHelper.blockLight, BlockLight.DAMAGE_WHITE_OFF, "lamp0");
+		registerBlockModel(ItemHelper.blockLight, BlockLight.DAMAGE_WHITE_ON, "lamp1");
+		registerBlockModel(ItemHelper.blockLight, BlockLight.DAMAGE_ORANGE_OFF, "lamp2");
+		registerBlockModel(ItemHelper.blockLight, BlockLight.DAMAGE_ORANGE_ON, "lamp3");
+
+		registerBlockModel(ItemHelper.howlerAlarm, 0, "howler_alarm");
+		registerBlockModel(ItemHelper.industrialAlarm, 0, "industrial_alarm");
+		registerBlockModel(ItemHelper.thermalMonitor, 0, "thermal_monitor");
+		registerBlockModel(ItemHelper.remoteThermo, 0, "remote_thermo");
+		registerBlockModel(ItemHelper.infoPanel, 0, TileEntityInfoPanel.NAME);
+		registerBlockModel(ItemHelper.infoPanelExtender, 0, "info_panel_extender");
+		registerBlockModel(ItemHelper.infoPanelAdvanced, 0, TileEntityAdvancedInfoPanel.NAME);
+		registerBlockModel(ItemHelper.infoPanelAdvancedExtender, 0, "info_panel_advanced_extender");
+		registerBlockModel(ItemHelper.rangeTrigger, 0, "range_trigger");
+
+		registerBlockModel(ItemHelper.averageCounter, 0, "average_counter");
+		registerBlockModel(ItemHelper.energyCounter, 0, "energy_counter");
+		registerBlockModel(ItemHelper.kitAssembler, 0, "kit_assembler");
+
+		ItemKitMain.registerModels();
+		ItemKitMain.registerExtendedModels();
+		ItemCardMain.registerModels();
+		ItemCardMain.registerExtendedModels();
+
+		registerItemModel(ItemHelper.itemUpgrade, ItemUpgrade.DAMAGE_RANGE, "upgrade_range");
+		registerItemModel(ItemHelper.itemUpgrade, ItemUpgrade.DAMAGE_COLOR, "upgrade_color");
+		registerItemModel(ItemHelper.itemThermometer, 0, "thermometer");
+		registerItemModel(ItemHelper.itemThermometerDigital, 0, "thermometer_digital");
+		registerItemModel(ItemHelper.itemPortablePanel, 0, "portable_panel");
+		registerItemModel(ItemHelper.itemCardHolder, 0, "card_holder");
+	}
+
+	public static void registerItemModel(Item item, int meta, String name) {
+		ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(EnergyControl.MODID + ":" + name, "inventory"));
+	}
+
+	public static void registerExternalItemModel(Item item, int meta, String name) {
+		ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(name, "inventory"));
+	}
+
+	private static void registerBlockModel(Block block, int meta, String name) {
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), meta, new ModelResourceLocation(EnergyControl.MODID + ":" + name, "inventory"));
+	}
+
+	public static void registerTileEntities() { // TODO Change to event
+		GameRegistry.registerTileEntity(TileEntityHowlerAlarm.class, EnergyControl.MODID + ":howler_alarm");
+		GameRegistry.registerTileEntity(TileEntityIndustrialAlarm.class, EnergyControl.MODID + ":industrial_alarm");
+		GameRegistry.registerTileEntity(TileEntityThermo.class, EnergyControl.MODID + ":thermo");
+		GameRegistry.registerTileEntity(TileEntityRemoteThermo.class, EnergyControl.MODID + ":remote_thermo");
+		GameRegistry.registerTileEntity(TileEntityInfoPanel.class, EnergyControl.MODID + ":" + TileEntityInfoPanel.NAME);
+		GameRegistry.registerTileEntity(TileEntityInfoPanelExtender.class, EnergyControl.MODID + ":info_panel_extender");
+		GameRegistry.registerTileEntity(TileEntityAdvancedInfoPanel.class, EnergyControl.MODID + ":" + TileEntityAdvancedInfoPanel.NAME);
+		GameRegistry.registerTileEntity(TileEntityAdvancedInfoPanelExtender.class, EnergyControl.MODID + ":info_panel_advanced_extender");
+		GameRegistry.registerTileEntity(TileEntityRangeTrigger.class, EnergyControl.MODID + ":range_trigger");
+		GameRegistry.registerTileEntity(TileEntityAverageCounter.class, EnergyControl.MODID + ":average_counter");
+		GameRegistry.registerTileEntity(TileEntityEnergyCounter.class, EnergyControl.MODID + ":energy_counter");
+		GameRegistry.registerTileEntity(TileEntityKitAssembler.class, EnergyControl.MODID + ":kit_assembler");
 	}
 }

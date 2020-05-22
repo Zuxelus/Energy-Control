@@ -45,7 +45,7 @@ public class GuiRemoteThermo extends GuiContainer {
 		buttonList.add(new CompactButton(4, guiLeft + 12, guiTop - 5 + 42, 57, 12, "-10000"));
 
 		buttonList.add(new CompactButton(5, guiLeft + 122, guiTop - 5 + 20, 22, 12, "+1"));
-		buttonList.add(new CompactButton(6, guiLeft + 122, guiTop - 5 + 31, 22, 2, "+10"));
+		buttonList.add(new CompactButton(6, guiLeft + 122, guiTop - 5 + 31, 22, 12, "+10"));
 		buttonList.add(new CompactButton(7, guiLeft + 143, guiTop - 5 + 20, 36, 12, "+100"));
 		buttonList.add(new CompactButton(8, guiLeft + 143, guiTop - 5 + 31, 36, 12, "+1000"));
 		buttonList.add(new CompactButton(9, guiLeft + 122, guiTop - 5 + 42, 57, 12, "+10000"));
@@ -117,7 +117,7 @@ public class GuiRemoteThermo extends GuiContainer {
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		mc.renderEngine.bindTexture(TEXTURE);
+		mc.getTextureManager().bindTexture(TEXTURE);
 		int left = (width - xSize) / 2;
 		int top = (height - ySize) / 2;
 		drawTexturedModalRect(left, top, 0, 0, xSize, ySize);

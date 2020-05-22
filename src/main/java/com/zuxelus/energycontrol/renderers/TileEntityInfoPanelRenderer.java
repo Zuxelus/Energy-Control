@@ -1,37 +1,36 @@
 package com.zuxelus.energycontrol.renderers;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.items.cards.ItemCardReader;
+import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
-import com.zuxelus.energycontrol.utils.CardState;
-import com.zuxelus.energycontrol.utils.PanelString;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 
 public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileEntityInfoPanel> {
 	private static final ResourceLocation TEXTUREOFF[];
 	private static final ResourceLocation TEXTUREON[];
-	private static final CubeBoxModel model = new CubeBoxModel();
+	private static final CubeRenderer model[];
 
 	static {
 		TEXTUREOFF = new ResourceLocation[16];
 		TEXTUREON = new ResourceLocation[16];
 		for (int i = 0; i < 16; i++) {
 			TEXTUREOFF[i] = new ResourceLocation(
-					EnergyControl.MODID + String.format(":textures/blocks/info_panel/off/2/all%d.png", i));			
+					EnergyControl.MODID + String.format(":textures/blocks/info_panel/off/all%d.png", i));
 			TEXTUREON[i] = new ResourceLocation(
-					EnergyControl.MODID + String.format(":textures/blocks/info_panel/on/2/all%d.png", i));
+					EnergyControl.MODID + String.format(":textures/blocks/info_panel/on/all%d.png", i));
 		}
+		model = new CubeRenderer[16];
+		for (int i = 0; i < 4; i++)
+			for (int j = 0; j < 4; j++)
+				model[i * 4 + j] = new CubeRenderer(i * 32 + 64, j * 32 + 64);
 	}
 
 	private static String implodeArray(String[] inputArray, String glueString) {
@@ -53,10 +52,9 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 
 	@Override
 	public void renderTileEntityAt(TileEntityInfoPanel te, double x, double y, double z, float partialTicks, int destroyStage) {   
-	    GlStateManager.pushMatrix();	    
-	    GlStateManager.translate((float)x, (float)y, (float)z);
-		EnumFacing facing = te.getFacing();
-		switch (facing) {
+		GlStateManager.pushMatrix();
+		GlStateManager.translate((float)x, (float)y, (float)z);
+		switch (te.getFacing()) {
 		case UP:
 			break;
 		case NORTH:
@@ -80,73 +78,25 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			GlStateManager.translate(-1.0F, 0.0F, 0.0F);
 			break;
 		}
+
+		int color = 2;
+		if (te.getColored()) {
+			color = te.getColorBackground();
+			if (color > 15 || color < 0)
+				color = 2;
+		}
 		if (te.getPowered())
-			bindTexture(TEXTUREON[findTexture(te)]);
+			bindTexture(TEXTUREON[color]);
 		else
-			bindTexture(TEXTUREOFF[findTexture(te)]);
-			
-		model.render(null, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.03125F);
-		if (te.getPowered())
-			renderText(te);
+			bindTexture(TEXTUREOFF[color]);
+
+		model[te.findTexture()].render(0.03125F);
+		if (te.getPowered()) {
+			List<PanelString> joinedData = te.getPanelStringList(te.getShowLabels());
+			if (joinedData != null)
+				drawText(te, joinedData);
+		}
 		GlStateManager.popMatrix();
-	}
-
-	private int findTexture(TileEntityInfoPanel te) {
-		Screen scr = te.getScreen();
-		if (scr != null) {
-			BlockPos pos = te.getPos();
-			switch (te.getFacing()) {
-			case SOUTH:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX)
-						+ 4 * boolToInt(pos.getY() == scr.minY) + 8 * boolToInt(pos.getY() == scr.maxY);
-			case WEST:
-				return 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ)
-						+ 1 * boolToInt(pos.getY() == scr.minY) + 2 * boolToInt(pos.getY() == scr.maxY);
-			case EAST:
-				return 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ)
-						+ 2 * boolToInt(pos.getY() == scr.minY) + 1 * boolToInt(pos.getY() == scr.maxY);
-			case NORTH:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX)
-						+ 8 * boolToInt(pos.getY() == scr.minY) + 4 * boolToInt(pos.getY() == scr.maxY);
-			case UP:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX)
-						+ 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ);
-			case DOWN:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX)
-						+ 4 * boolToInt(pos.getZ() == scr.minZ) + 8 * boolToInt(pos.getZ() == scr.maxZ);
-			}
-		}
-		return 15;
-	}
-
-	private int boolToInt(boolean b) {
-		return b ? 1 : 0;
-	}
-
-	private void renderText(TileEntityInfoPanel panel) {
-		List<ItemStack> cards = panel.getCards();
-		boolean anyCardFound = false;
-		List<PanelString> joinedData = new LinkedList<PanelString>();
-		for (ItemStack card : cards) {
-			if (card == null)
-				continue;
-			int displaySettings = panel.getDisplaySettingsByCard(card);
-			if (displaySettings == 0)
-				continue;
-			ItemCardReader reader = new ItemCardReader(card);
-			CardState state = reader.getState();
-			List<PanelString> data;
-			if (state != CardState.OK && state != CardState.CUSTOM_ERROR) {
-				data = reader.getStateMessage(state);
-			} else
-				data = panel.getCardData(displaySettings, card, reader);
-			if (data == null)
-				continue;
-			joinedData.addAll(data);
-			anyCardFound = true;
-		}
-		if (anyCardFound)
-			drawText(panel, joinedData);
 	}
 
 	private void drawText(TileEntityInfoPanel panel, List<PanelString> joinedData) {
@@ -218,7 +168,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			}
 		}
 
-		GlStateManager.translate(0.5F - dy / 2, 1.01F - dx / 2 , 0.5F - dz / 2);		
+		GlStateManager.translate(0.5F - dy / 2, 1.01F - dx / 2 , 0.5F - dz / 2);
 		GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
 		switch(panel.getRotation())
 		{
@@ -239,8 +189,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			break;
 		}
 
-		FontRenderer fontRenderer = this.getFontRenderer();
-		// getMaxWidth
+		FontRenderer fontRenderer = getFontRenderer();
 		int maxWidth = 1;
 		for (PanelString panelString : joinedData) {
 			String currentString = implodeArray(new String[] { panelString.textLeft, panelString.textCenter, panelString.textRight }, " ");
@@ -269,11 +218,13 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		GlStateManager.disableLighting();
 
 		int row = 0;
-		int colorHex = panel.getColorTextHex();
+		int colorHex = 0x000000;
+		if (panel.getColored())
+			colorHex = panel.getColorTextHex();
 		for (PanelString panelString : joinedData) {
 			if (panelString.textLeft != null) {
 				fontRenderer.drawString(panelString.textLeft, offsetX - realWidth / 2,
-						1 + offsetY - realHeight / 2 + row * lineHeight,
+						offsetY - realHeight / 2 + row * lineHeight,
 						panelString.colorLeft != 0 ? panelString.colorLeft : colorHex);
 			}
 			if (panelString.textCenter != null) {

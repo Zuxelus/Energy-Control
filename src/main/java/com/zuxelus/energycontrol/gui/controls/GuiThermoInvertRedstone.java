@@ -16,32 +16,32 @@ public class GuiThermoInvertRedstone extends GuiButton {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(
 			EnergyControl.MODID + ":textures/gui/gui_thermal_monitor.png");
 
-    TileEntityThermo thermo;
-    private boolean checked;
+	TileEntityThermo thermo;
+	private boolean checked;
 
-    public GuiThermoInvertRedstone(int id, int x, int y, TileEntityThermo thermo) {
-        super(id, x, y, 0, 0, "");
-        height = 15;
-        width = 51;
-        this.thermo = thermo;
-        checked = thermo.getInvertRedstone();
-    }
+	public GuiThermoInvertRedstone(int id, int x, int y, TileEntityThermo thermo) {
+		super(id, x, y, 0, 0, "");
+		height = 15;
+		width = 51;
+		this.thermo = thermo;
+		checked = thermo.getInvertRedstone();
+	}
 
-    @Override
+	@Override
 	public void drawButton(Minecraft mc, int mouseX, int mouseY) {
-        if(!visible)
-        	return;
-    
-        mc.getTextureManager().bindTexture(TEXTURE);
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        int delta = checked ? 15 : 0;
-		drawTexturedModalRect(xPosition, yPosition + 1, 199, delta, 51, 15);
-    }
+		if (!visible)
+			return;
 
-    @Override
-    public int getHoverState(boolean flag) {
-        return 0;
-    }
+		mc.getTextureManager().bindTexture(TEXTURE);
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		int delta = checked ? 15 : 0;
+		drawTexturedModalRect(xPosition, yPosition + 1, 199, delta, 51, 15);
+	}
+
+	@Override
+	public int getHoverState(boolean flag) {
+		return 0;
+	}
 
 	@Override
 	public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {

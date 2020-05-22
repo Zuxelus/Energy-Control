@@ -3,7 +3,7 @@
     "textures": {
         "particle": "energycontrol:blocks/info_panel/extender_back",
         "down": "energycontrol:blocks/info_panel/extender_back",
-        "up": "energycontrol:blocks/info_panel/off/2/15",
+        "up": "energycontrol:blocks/info_panel/extender_face",
         "north": "energycontrol:blocks/info_panel/extender_side",
         "east": "energycontrol:blocks/info_panel/extender_side",
         "south": "energycontrol:blocks/info_panel/extender_side",

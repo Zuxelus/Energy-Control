@@ -1,12 +1,16 @@
 package com.zuxelus.energycontrol.crossmod.ic2;
 
-import com.zuxelus.energycontrol.crossmod.EnergyStorageData;
+import com.zuxelus.energycontrol.api.CardState;
+import com.zuxelus.energycontrol.api.ICardReader;
 
-import net.minecraftforge.fml.common.Loader;
+import ic2.api.reactor.IReactor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.capability.FluidTankProperties;
+import net.minecraftforge.fml.common.Loader;
 
 public abstract class IC2Cross {
 	public enum IC2Type{
@@ -15,31 +19,17 @@ public abstract class IC2Cross {
 		NONE
 	}
 
-	public abstract boolean isWrench(ItemStack par1);
+	public abstract boolean isWrench(ItemStack stack);
 
-	public abstract int getNuclearCellTimeLeft(ItemStack par1);
+	public abstract int getNuclearCellTimeLeft(ItemStack stack);
 
-	public abstract boolean isSteamReactor(TileEntity par1);
-
-	//public abstract EnergyStorageData getStorageData(TileEntity target);
-
-	// Is not a IReactor because i have no clue if you implement the IC2 API or
-	// not...
-	// If you have no problems with using IReactor here and at isSteamReactor
-	// then change TileEntity back to IReactor
-	public abstract ReactorInfo getReactorInfo(TileEntity par1);
-
-	public abstract boolean isMultiReactorPart(TileEntity par1);
+	public abstract boolean isSteamReactor(TileEntity te);
+	
+	public abstract boolean isCable(TileEntity te);
 
 	public abstract IC2Type getType();
 
-	public static class ReactorInfo {
-		public boolean isOnline;
-		public int outTank;
-		public int inTank;
-		public int emitHeat;
-		public int coreTemp;
-	}
+	public abstract ItemStack getItem(String name);
 
 	public static IC2Cross getIC2Cross() {
 		try {
@@ -59,7 +49,24 @@ public abstract class IC2Cross {
 		return new IC2NoMod();
 	}
 
-	public abstract EnergyStorageData getEnergyStorageData(TileEntity entity);
+	public abstract ItemStack getEnergyCard(World world, BlockPos pos);
+
+	public abstract NBTTagCompound getEnergyData(TileEntity te);
+
+	public abstract ItemStack getGeneratorCard(World world, BlockPos pos);
+
+	public abstract NBTTagCompound getGeneratorData(TileEntity te);
 	
-	public abstract NBTTagCompound getGeneratorData(TileEntity entity);
+	public abstract NBTTagCompound getGeneratorKineticData(TileEntity te);
+
+	public abstract NBTTagCompound getGeneratorHeatData(TileEntity te);
+	
+	public abstract FluidTankProperties[] getAllTanks(TileEntity te);
+	
+	public abstract ItemStack getReactorCard(World world, BlockPos pos);
+	
+	public abstract ItemStack getLiquidAdvancedCard(World world, BlockPos pos);
+	
+	public abstract CardState updateCardReactor(World world, ICardReader reader, IReactor reactor);
+	public abstract CardState updateCardReactor5x5(World world, ICardReader reader, BlockPos target);
 }

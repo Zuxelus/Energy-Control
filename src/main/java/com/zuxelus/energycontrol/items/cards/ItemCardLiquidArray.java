@@ -1,13 +1,13 @@
 package com.zuxelus.energycontrol.items.cards;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
+import com.zuxelus.energycontrol.api.CardState;
+import com.zuxelus.energycontrol.api.ICardReader;
+import com.zuxelus.energycontrol.api.PanelSetting;
+import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.LiquidCardHelper;
-import com.zuxelus.energycontrol.utils.CardState;
-import com.zuxelus.energycontrol.utils.PanelSetting;
-import com.zuxelus.energycontrol.utils.PanelString;
 import com.zuxelus.energycontrol.utils.StringUtils;
 
 import net.minecraft.client.resources.I18n;
@@ -17,6 +17,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemCardLiquidArray extends ItemCardBase {
 	private static final int STATUS_NOT_FOUND = Integer.MIN_VALUE;
@@ -27,12 +29,7 @@ public class ItemCardLiquidArray extends ItemCardBase {
 	}
 
 	@Override
-	public String getUnlocalizedName() {
-		return "item.card_liquid_array";
-	}
-
-	@Override
-	public CardState update(World world, ItemCardReader reader, int range, BlockPos pos) {
+	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
 		int cardCount = reader.getCardCount();
 		if (cardCount == 0)
 			return CardState.INVALID_CARD;
@@ -50,11 +47,11 @@ public class ItemCardLiquidArray extends ItemCardBase {
 			if (Math.abs(dx) <= range && Math.abs(dy) <= range && Math.abs(dz) <= range) {
 				IFluidTankProperties storage = LiquidCardHelper.getStorageAt(world, target);
 				if (storage != null) {
-					FluidStack stack = storage.getContents(); 
+					FluidStack stack = storage.getContents();
 					if (stack != null) {
 						totalAmount += stack.amount;
 						reader.setInt(String.format("_%damount", i),stack.amount);
-						String name = I18n.format("msg.ec.None");
+						String name = "";
 						if (stack.amount > 0)
 							name = FluidRegistry.getFluidName(stack);
 						reader.setString(String.format("_%dname", i), name);
@@ -78,17 +75,17 @@ public class ItemCardLiquidArray extends ItemCardBase {
 	}
 
 	@Override
-	protected List<PanelString> getStringData(int displaySettings, ItemCardReader reader, boolean showLabels) {
-		List<PanelString> result = new LinkedList<PanelString>();
+	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
+		List<PanelString> result = reader.getTitleList();
 		double totalAmount = 0;
 		double totalCapacity = 0;
-		boolean showEach = (displaySettings & 1) > 0;
-		boolean showSummary = (displaySettings & 2) > 0;
-		boolean showName = (displaySettings & 4) > 0;
-		boolean showAmount = true;// (displaySettings & DISPLAY_AMOUNT) > 0;
-		boolean showFree = (displaySettings & 8) > 0;
-		boolean showCapacity = (displaySettings & 16) > 0;
-		boolean showPercentage = (displaySettings & 32) > 0;
+		boolean showName = (displaySettings & 1) > 0;
+		boolean showAmount = true;
+		boolean showFree = (displaySettings & 2) > 0;
+		boolean showCapacity = (displaySettings & 4) > 0;
+		boolean showPercentage = (displaySettings & 8) > 0;
+		boolean showEach = (displaySettings & 16) > 0;
+		boolean showSummary = (displaySettings & 32) > 0;
 		for (int i = 0; i < reader.getInt("cardCount"); i++) {
 			int amount = reader.getInt(String.format("_%damount", i));
 			int capacity = reader.getInt(String.format("_%dcapacity", i));
@@ -101,41 +98,41 @@ public class ItemCardLiquidArray extends ItemCardBase {
 
 			if (showEach) {
 				if (isOutOfRange) {
-					result.add(new PanelString(StringUtils.getFormattedKey("msg.nc.InfoPanelOutOfRangeN", i + 1)));
+					result.add(new PanelString(StringUtils.getFormattedKey("msg.ec.InfoPanelOutOfRangeN", i + 1)));
 				} else if (isNotFound) {
-					result.add(new PanelString(StringUtils.getFormattedKey("msg.nc.InfoPanelNotFoundN", i + 1)));
+					result.add(new PanelString(StringUtils.getFormattedKey("msg.ec.InfoPanelNotFoundN", i + 1)));
 				} else {
 					if (showName) {
 						if (showLabels)
-							result.add(new PanelString(StringUtils.getFormattedKey("msg.nc.InfoPanelLiquidNameN", i + 1,
+							result.add(new PanelString(StringUtils.getFormattedKey("msg.ec.InfoPanelLiquidNameN", i + 1,
 									reader.getString(String.format("_%dname", i)))));
 						else
 							result.add(new PanelString(StringUtils.getFormatted("", amount, false)));
 					}
 					if (showAmount) {
 						if (showLabels)
-							result.add(new PanelString(StringUtils.getFormattedKey("msg.nc.InfoPanelLiquidN", i + 1,
+							result.add(new PanelString(StringUtils.getFormattedKey("msg.ec.InfoPanelLiquidN", i + 1,
 									StringUtils.getFormatted("", amount, false))));
 						else
 							result.add(new PanelString(StringUtils.getFormatted("", amount, false)));
 					}
 					if (showFree) {
 						if (showLabels)
-							result.add(new PanelString(StringUtils.getFormattedKey("msg.nc.InfoPanelLiquidFreeN", i + 1,
+							result.add(new PanelString(StringUtils.getFormattedKey("msg.ec.InfoPanelLiquidFreeN", i + 1,
 									StringUtils.getFormatted("", capacity - amount, false))));
 						else
 							result.add(new PanelString(StringUtils.getFormatted("", capacity - amount, false)));
 					}
 					if (showCapacity) {
 						if (showLabels)
-							result.add(new PanelString(StringUtils.getFormattedKey("msg.nc.InfoPanelLiquidCapacityN",
+							result.add(new PanelString(StringUtils.getFormattedKey("msg.ec.InfoPanelLiquidCapacityN",
 									i + 1, StringUtils.getFormatted("", capacity, false))));
 						else
 							result.add(new PanelString(StringUtils.getFormatted("", capacity, false)));
 					}
 					if (showPercentage) {
 						if (showLabels)
-							result.add(new PanelString(StringUtils.getFormattedKey("msg.nc.InfoPanelLiquidPercentageN",
+							result.add(new PanelString(StringUtils.getFormattedKey("msg.ec.InfoPanelLiquidPercentageN",
 									i + 1, StringUtils.getFormatted("",
 											capacity == 0 ? 100 : (((double) amount / capacity) * 100), false))));
 						else
@@ -147,27 +144,38 @@ public class ItemCardLiquidArray extends ItemCardBase {
 		}
 		if (showSummary) {
 			if (showAmount)
-				result.add(new PanelString("msg.nc.InfoPanelLiquidAmount", totalAmount, showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelLiquidAmount", totalAmount, showLabels));
 			if (showFree)
-				result.add(new PanelString("msg.nc.InfoPanelLiquidFree", totalCapacity - totalAmount, showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelLiquidFree", totalCapacity - totalAmount, showLabels));
 			if (showName)
-				result.add(new PanelString("msg.nc.InfoPanelLiquidCapacity", totalCapacity, showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelLiquidCapacity", totalCapacity, showLabels));
 			if (showPercentage)
-				result.add(new PanelString("msg.nc.InfoPanelLiquidPercentage",
+				result.add(new PanelString("msg.ec.InfoPanelLiquidPercentage",
 						totalCapacity == 0 ? 100 : ((totalAmount / totalCapacity) * 100), showLabels));
 		}
 		return result;
 	}
 
 	@Override
-	protected List<PanelSetting> getSettingsList(ItemStack stack) {
+	@SideOnly(Side.CLIENT)
+	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(6);
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergyCurrent"), 1,damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergyStorage"), 2,damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergyFree"), 4,damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergyPercentage"), 8, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergyEach"), 16,damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergyTotal"), 32,damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidName"), 1,damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidFree"), 2,damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidCapacity"), 4, damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidPercentage"), 8, damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEach"), 16,damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelTotal"), 32,damage));
 		return result;
+	}
+
+	@Override
+	public boolean isRemoteCard() {
+		return false;
+	}
+
+	@Override
+	public int getKitFromCard() {
+		return ItemCardType.KIT_LIQUID;
 	}
 }

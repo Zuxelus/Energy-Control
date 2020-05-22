@@ -17,6 +17,7 @@ item.card_generator_kinetic.name=Карта-датчик расположени�
 item.card_generator_heat.name=Карта-датчик расположения теплового генератора
 item.card_reactor.name=Карта-датчик расположения реактора
 item.card_reactor_5x5.name=Карта-датчик расположения 5x5 реактора
+item.card_engine.name=Карта-датчик расположения двигателя
 item.card_text.name=Текстовая карта
 item.card_time.name=Карта со временем
 item.card_energy_array.name=Карта-датчик расположения массива с энергией
@@ -26,8 +27,13 @@ item.thermometer.name=Термометр
 item.thermometer_digital.name=Цифровой термометр
 item.upgrade_range.name=Улучшение «Усиление сигнала»
 item.upgrade_color.name=Улучшение «Цветность»
+item.portable_panel.name=Портативная панель
+item.card_holder.name=Кардхолдер
 
 #Integration Items
+item.card_energy_draconic.name=Карта расположения хранилища Draconic
+item.card_reactor_draconic.name=Карта расположения реактора Draconic
+item.kit_draconic.name=Набор для Draconic Evolution
 item.kit_big_reactor.name=Набор для дистанционного RF-реактора
 item.card_big_reactor.name=Карта-датчик расположения RF-реактора
 item.kit_app_eng.name=Набор с датчиком для Applied Energistics
@@ -40,8 +46,8 @@ tile.howler_alarm.name=Сирена «Ревун»
 tile.remote_thermo.name=Дистанционный датчик температуры
 tile.info_panel.name=Промышленная информационная панель
 tile.info_panel_extender.name=Расширитель информационной панели
-tile.advanced_info_panel.name=Продвинутая информационная панель
-tile.advanced_info_panel_extender.name=Расширитель продвинутой информационной панели
+tile.info_panel_advanced.name=Продвинутая информационная панель
+tile.info_panel_advanced_extender.name=Расширитель продвинутой информационной панели
 tile.eclight0.name=Белый светильник
 tile.eclight1.name=Белый светильник
 tile.eclight2.name=Оранжевый светильник
@@ -49,6 +55,7 @@ tile.eclight3.name=Оранжевый светильник
 tile.energy_counter.name=Энергосчётчик
 tile.average_counter.name=Стационарный энергосчётчик
 tile.range_trigger.name=Дистанционный триггер
+tile.kit_assembler.name=Сборщик наборов
 
 #Original Screen Messages
 msg.ec.HowlerAlarmSoundRange=Дальность звука: %s
@@ -66,22 +73,35 @@ msg.ec.InfoPanelNoTarget=Цель не найдена
 msg.ec.InfoPanelOn=Включена
 msg.ec.InfoPanelOff=Выключена
 msg.ec.InfoPanelHeat=Т: %s
+msg.ec.InfoPanelHeatPercentage=Нагрев: %s%%
 msg.ec.InfoPanelMaxHeat=Макс. нагрев: %s
 msg.ec.InfoPanelMelting=Плавление: %s
-msg.ec.InfoPanelOutput=Выход: %sEU/т
-msg.ec.InfoPanelOutputMJ=Выход: %sMJ/т
-msg.ec.InfoPanelOutputHeat=Выход: %s Hu/с
+msg.ec.InfoPanelOutput=Выход: %s EU/т
+msg.ec.InfoPanelOutputMJ=Выход: %s MJ/т
+msg.ec.InfoPanelOutputRF=Выход: %s RF/т
+msg.ec.InfoPanelOutputHU=Выход: %s hU/т
+msg.ec.InfoPanelOutputKU=Выход: %s kU/т
+msg.ec.InfoPanelOutputHeat=Выход: %s hU/с
 msg.ec.InfoPanelOutputSteam=Выход: %smB/т
+msg.ec.InfoPanelCoils=Катушки: %s
+msg.ec.InfoPanelRotorHealth=RotorHealth: %s
 msg.ec.InfoPanelTimeRemaining=Осталось: %s
 
 msg.ec.InfoPanelEnergyCounter=Энергия: %sEU
-msg.ec.InfoPanelEnergyCounterMJ=Энергия: %s RF
+msg.ec.InfoPanelEnergyCounterRF=Энергия: %s RF
 
 msg.ec.InfoPanelEnergy=Энергия: %s
+msg.ec.InfoPanelEnergyMJ=Энергия: %s MJ
 msg.ec.InfoPanelFree=Свободно: %s
 msg.ec.InfoPanelStorage=Хранится: %s
+msg.ec.InfoPanelStorageMJ=Хранится: %s MJ
 msg.ec.InfoPanelMaxStorage=Объем: %s
+msg.ec.InfoPanelMaxStorageMJ=Объем: %s MJ
 msg.ec.InfoPanelPercentage=Заполнено: %s%%
+msg.ec.InfoPanelMultiplier=Множитель: %s
+msg.ec.InfoPanelHeight=Высота: %s
+msg.ec.InfoPanelWindStrength=Сила ветра: %s
+msg.ec.InfoPanelSpeed=Скорость: %s
 
 msg.ec.cbInfoPanelLiquidName=Название жидкости
 msg.ec.cbInfoPanelLiquidAmount=Количество
@@ -146,3 +166,22 @@ msg.ec.InfoPanel55.tankout=Внешний резервуар: %s / 10000 мВ
 msg.ec.InfoPanel55.Out=Выход (Hu/сек)
 msg.ec.InfoPanel55.BufferIn=Резервуар хладагента
 msg.ec.InfoPanel55.BufferOut=Резервуар горячего хладагента
+
+#Draconic Evolution
+msg.ec.Status=Статус: %s
+msg.ec.CoreTemp=Температура: %s
+msg.ec.Diameter=Диаметр: %s
+msg.ec.GenerationRate=Выработка энергии: %s
+msg.ec.InputRate=Энергия для сдерж. поля: %s
+msg.ec.Saturation=Насыщение: %s
+msg.ec.ConvertedFuel=Преобраз. топливо: %s
+msg.ec.FieldStrength=Сила поля: %s
+msg.ec.ConversionRate=Преобразование топлива: %s
+msg.ec.Fuel=Топливо: %s
+
+msg.ec.cbStatus=Статус
+msg.ec.cbDiameter=Диаметр
+msg.ec.cbInputRate=Энергия для сдерж. поля
+msg.ec.cbFieldStrength=Сила поля
+msg.ec.cbSaturation=Насыщение
+msg.ec.cbFuel=Топливо

@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import com.zuxelus.energycontrol.blocks.RemoteThermo;
 import com.zuxelus.energycontrol.blocks.ThermalMonitor;
 import com.zuxelus.energycontrol.utils.ReactorHelper;
 
@@ -11,6 +12,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.ITickable;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityThermo extends TileEntityInventory implements ITickable, ITilePacketHandler {
 	private int prevHeatLevel;
@@ -24,7 +27,7 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 	protected int tickRate;
 	
 	public TileEntityThermo() {
-		super("block.RemoteThermo");
+		super("tile.thermal_monitor.name");
 		invertRedstone = prevInvertRedstone = false;
 		heatLevel = prevHeatLevel = 500;
 		updateTicker = 0;
@@ -79,6 +82,9 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 	}
 
 	@Override
+	public void onClientMessageReceived(NBTTagCompound tag) { }
+
+	@Override
 	public SPacketUpdateTileEntity getUpdatePacket() {
 		NBTTagCompound tag = new NBTTagCompound();
 		tag = writeProperties(tag);
@@ -95,6 +101,7 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 	public NBTTagCompound getUpdateTag() {
 		NBTTagCompound tag = super.getUpdateTag();
 		tag = writeProperties(tag);
+		tag.setInteger("status", status);
 		return tag;
 	}
 
@@ -139,7 +146,7 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 		if (worldObj.isRemote || status == -2)
 			return;
 	
-    	if (updateTicker-- > 0)
+		if (updateTicker-- > 0)
 				return;
 		updateTicker = tickRate;
 		checkStatus();
@@ -188,9 +195,23 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 			}
 			poweredBlock = newValue;
 		}
+		if (block instanceof RemoteThermo) { // TODO
+			boolean newValue = status < 0 ? false : status == 1 ? !invertRedstone : invertRedstone;
+			if (poweredBlock != newValue) {
+				((RemoteThermo)block).setPowered(newValue);
+				worldObj.notifyNeighborsOfStateChange(pos, block);
+			}
+			poweredBlock = newValue;
+		}
 		worldObj.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
 	}
 
+	@Override
+	protected boolean hasRotation() {
+		return true;
+	}
+
+	// ------- Inventory ------- 
 	@Override
 	public int getSizeInventory() {
 		return 0;
@@ -199,5 +220,11 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
 		return false;
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public double getMaxRenderDistanceSquared() {
+		return 65536.0D;
 	}
 }

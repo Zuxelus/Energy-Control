@@ -1,13 +1,13 @@
 package com.zuxelus.energycontrol.items.cards;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
+import com.zuxelus.energycontrol.api.CardState;
+import com.zuxelus.energycontrol.api.ICardReader;
+import com.zuxelus.energycontrol.api.PanelSetting;
+import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.LiquidCardHelper;
-import com.zuxelus.energycontrol.utils.CardState;
-import com.zuxelus.energycontrol.utils.PanelSetting;
-import com.zuxelus.energycontrol.utils.PanelString;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
@@ -16,6 +16,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemCardLiquidAdvanced extends ItemCardBase {
 	public ItemCardLiquidAdvanced() {
@@ -23,12 +25,7 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 	}
 
 	@Override
-	public String getUnlocalizedName() {
-		return "item.card_liquid_advanced";
-	}
-
-	@Override
-	public CardState update(World world, ItemCardReader reader, int range, BlockPos pos) {
+	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
 		BlockPos target = reader.getTarget();
 		if (target == null) 
 			return CardState.NO_TARGET;
@@ -45,11 +42,11 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 		reader.setInt("count", i);
 		return CardState.OK;
 	}
-	
-	private void addTankInfo(ItemCardReader reader, IFluidTankProperties tank, int i) {
+
+	private void addTankInfo(ICardReader reader, IFluidTankProperties tank, int i) {
 		FluidStack stack = tank.getContents();
 		int amount = 0;
-		String name = I18n.format("msg.ec.None");
+		String name = "";
 		if (stack != null) {
 			amount = stack.amount;
 			if (stack.amount > 0)
@@ -61,16 +58,15 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 	}
 
 	@Override
-	protected List<PanelString> getStringData(int displaySettings, ItemCardReader reader, boolean showLabels) {
-		List<PanelString> result = new LinkedList<PanelString>();
+	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
+		List<PanelString> result = reader.getTitleList();
 		int count = reader.getInt("count");
-		for (int i = 0; i < count; i++) {
+		for (int i = 0; i < count; i++)
 			addTankData(result, displaySettings, reader, showLabels, i);
-		}
 		return result;
 	}
-	
-	private void addTankData(List<PanelString> result, int displaySettings, ItemCardReader reader, boolean showLabels, int i) {
+
+	private void addTankData(List<PanelString> result, int displaySettings, ICardReader reader, boolean showLabels, int i) {
 		if (!reader.hasField(String.format("_%dcapacity", i)))
 			return;
 		int capacity = reader.getInt(String.format("_%dcapacity", i));
@@ -80,20 +76,21 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 			String name = reader.getString(String.format("_%dname", i));
 			if (name == "")
 				name = I18n.format("msg.ec.None");
-			result.add(new PanelString("msg.ec.InfoPanelLiquidName", name, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelName", name, showLabels));
 		}
 		if ((displaySettings & 2) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelLiquidAmount", amount, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelAmount", amount, showLabels));
 		if ((displaySettings & 4) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelLiquidFree", capacity - amount, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelFree", capacity - amount, showLabels));
 		if ((displaySettings & 8) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelLiquidCapacity", capacity, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelCapacity", capacity, showLabels));
 		if ((displaySettings & 16) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelLiquidPercentage", capacity == 0 ? 100 : (amount * 100 / capacity), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelPercentage", capacity == 0 ? 100 : (amount * 100 / capacity), showLabels));
 	}
 
 	@Override
-	protected List<PanelSetting> getSettingsList(ItemStack stack) {
+	@SideOnly(Side.CLIENT)
+	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(5);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidName"), 1, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidAmount"), 2, damage));
@@ -101,5 +98,10 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidCapacity"), 8, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidPercentage"), 16, damage));
 		return result;
+	}
+
+	@Override
+	public int getKitFromCard() {
+		return ItemCardType.KIT_LIQUID_ADVANCED;
 	}
 }

@@ -1,5 +1,5 @@
 {
-    "variants": {   
+    "variants": {
         "facing=east":  { "model": "energycontrol:remote_thermo", "y": 90 },
         "facing=west":  { "model": "energycontrol:remote_thermo", "y": 270 },
         "facing=south": { "model": "energycontrol:remote_thermo", "y": 180 },

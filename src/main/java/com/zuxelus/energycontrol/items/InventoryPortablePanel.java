@@ -1,0 +1,31 @@
+package com.zuxelus.energycontrol.items;
+
+import com.zuxelus.energycontrol.items.cards.ItemCardMain;
+
+import net.minecraft.item.ItemStack;
+
+public class InventoryPortablePanel extends ItemInventory {
+	public static final byte SLOT_CARD = 0;
+	public static final byte SLOT_UPGRADE_RANGE = 1;
+
+	public InventoryPortablePanel(ItemStack parent, String name) {
+		super(parent, name);
+	}
+
+	@Override
+	public int getSizeInventory() {
+		return 2;
+	}
+
+	@Override
+	public boolean isItemValid(int index, ItemStack stack) { // ISlotItemFilter
+		switch (index) {
+		case SLOT_CARD:
+			return stack.getItem() instanceof ItemCardMain;
+		case SLOT_UPGRADE_RANGE:
+			return stack.getItem() instanceof ItemUpgrade && stack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE;
+		default:
+			return false;
+		}
+	}
+}

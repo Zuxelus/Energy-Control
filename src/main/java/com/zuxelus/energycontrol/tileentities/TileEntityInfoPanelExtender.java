@@ -8,14 +8,17 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITickable, IScreenPart {
 	protected boolean init;
 
-	private Screen screen;
+	protected Screen screen;
 	private boolean partOfScreen;
 
 	private int coreX;
@@ -31,6 +34,18 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 		coreY = 0;
 		coreZ = 0;
 	}
+	
+	@Override
+	public void setFacing(int meta) {
+		EnumFacing newFacing = EnumFacing.getFront(meta);
+		if (facing == newFacing)
+			return;
+		facing = newFacing;
+		if (init) {
+			EnergyControl.instance.screenManager.unregisterScreenPart(this);
+			EnergyControl.instance.screenManager.registerInfoPanelExtender(this);
+		}
+	}
 
 	private void updateScreen() {
 		if (partOfScreen && screen == null) {
@@ -40,7 +55,9 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 				if (screen != null)
 					screen.init(true, worldObj);
 			}
-		}		
+		}
+		if (worldObj.isRemote && !partOfScreen && screen != null)
+			setScreen(null);
 	}
 
 	@Override
@@ -112,7 +129,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 		if (init)
 			return;
 		
-		if (FMLCommonHandler.instance().getEffectiveSide().isServer() && !partOfScreen)
+		if (!worldObj.isRemote && !partOfScreen)
 			EnergyControl.instance.screenManager.registerInfoPanelExtender(this);
 		
 		updateScreen();
@@ -153,12 +170,68 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 		worldObj.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
 	}
 
+	public boolean getColored() {
+		if (screen == null)
+			return false;
+		TileEntityInfoPanel core = screen.getCore(worldObj);
+		if (core == null)
+			return false;
+		return core.getColored();
+	}
+
 	public boolean getPowered() {
 		if (screen == null)
-			return false;		
+			return false;
 		TileEntityInfoPanel core = screen.getCore(worldObj);
 		if (core == null)
 			return false;
 		return core.powered;
+	}
+
+	public int getColorBackground() {
+		if (screen == null)
+			return 2;
+		TileEntityInfoPanel core = screen.getCore(worldObj);
+		if (core == null)
+			return 2;
+		return core.getColorBackground();
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public double getMaxRenderDistanceSquared() {
+		return 65536.0D;
+	}
+	
+	@Override
+	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
+		return oldState.getBlock() != newSate.getBlock();
+	}
+
+	@SideOnly(Side.CLIENT)
+	public int findTexture() {
+		Screen scr = getScreen();
+		if (scr != null) {
+			BlockPos pos = getPos();
+			switch (getFacing()) {
+			case SOUTH:
+				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 4 * boolToInt(pos.getY() == scr.minY) + 8 * boolToInt(pos.getY() == scr.maxY);
+			case WEST:
+				return 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ) + 1 * boolToInt(pos.getY() == scr.minY) + 2 * boolToInt(pos.getY() == scr.maxY);
+			case EAST:
+				return 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ) + 2 * boolToInt(pos.getY() == scr.minY) + 1 * boolToInt(pos.getY() == scr.maxY);
+			case NORTH:
+				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 8 * boolToInt(pos.getY() == scr.minY) + 4 * boolToInt(pos.getY() == scr.maxY);
+			case UP:
+				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ);
+			case DOWN:
+				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 4 * boolToInt(pos.getZ() == scr.minZ) + 8 * boolToInt(pos.getZ() == scr.maxZ);
+			}
+		}
+		return 15;
+	}
+
+	private int boolToInt(boolean b) {
+		return b ? 1 : 0;
 	}
 }

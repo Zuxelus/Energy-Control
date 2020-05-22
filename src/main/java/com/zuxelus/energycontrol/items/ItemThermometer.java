@@ -34,6 +34,8 @@ public class ItemThermometer extends Item {
 		if (!(player instanceof EntityPlayerMP))
 			return EnumActionResult.PASS;
 
+		if (stack == null)
+			return EnumActionResult.PASS;
 		if (!canTakeDamage(stack, 2))
 			return EnumActionResult.PASS;
 

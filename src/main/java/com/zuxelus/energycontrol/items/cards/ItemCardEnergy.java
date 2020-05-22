@@ -1,20 +1,22 @@
 package com.zuxelus.energycontrol.items.cards;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
+import com.zuxelus.energycontrol.api.CardState;
+import com.zuxelus.energycontrol.api.ICardReader;
+import com.zuxelus.energycontrol.api.PanelSetting;
+import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.crossmod.EnergyStorageData;
-import com.zuxelus.energycontrol.utils.CardState;
-import com.zuxelus.energycontrol.utils.PanelSetting;
-import com.zuxelus.energycontrol.utils.PanelString;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemCardEnergy extends ItemCardBase {
 	public ItemCardEnergy() {
@@ -22,58 +24,60 @@ public class ItemCardEnergy extends ItemCardBase {
 	}
 
 	@Override
-	public String getUnlocalizedName() {
-		return "item.card_energy";
-	}
-
-	@Override
-	public CardState update(World world, ItemCardReader reader, int range, BlockPos pos) {
+	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
 		BlockPos target = reader.getTarget();
 		if (target == null)
 			return CardState.NO_TARGET;
 		
-		TileEntity entity = world.getTileEntity(target);
-		if (entity == null)
+		TileEntity te = world.getTileEntity(target);
+		if (te == null)
 			return CardState.NO_TARGET;
 			
-		EnergyStorageData storage = CrossModLoader.crossIc2.getEnergyStorageData(entity);
-		if (storage == null)
+		NBTTagCompound tag = CrossModLoader.ic2.getEnergyData(te);
+		if (tag == null || !tag.hasKey("type"))
 			return CardState.NO_TARGET;
 
-		return updateCardValues(reader, storage);
-	}
-
-	private CardState updateCardValues(ItemCardReader reader, EnergyStorageData storage) {
-		reader.setDouble("storage", storage.values.get(0));
-		reader.setDouble("energy", storage.values.get(1));
+		reader.setInt("type", tag.getInteger("type"));
+		switch (tag.getInteger("type")) {
+		case 1:
+			reader.setDouble("storage", tag.getDouble("storage"));
+			reader.setDouble("maxStorage", tag.getDouble("maxStorage"));
+			break;
+		}
 		return CardState.OK;
 	}
 
 	@Override
-	public List<PanelString> getStringData(int displaySettings, ItemCardReader card, boolean showLabels) {
-		List<PanelString> result = new LinkedList<PanelString>();
+	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
+		List<PanelString> result = reader.getTitleList();
 
-		double energy = card.getDouble("energy");
-		double storage = card.getDouble("storage");
+		double energy = reader.getDouble("storage");
+		double storage = reader.getDouble("maxStorage");
 
 		if ((displaySettings & 1) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelEnergy", energy, showLabels));
-		if ((displaySettings & 2) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelFree", storage - energy, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelEnergyEU", energy, showLabels));
 		if ((displaySettings & 4) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelStorage", storage, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelCapacityEU", storage, showLabels));
+		if ((displaySettings & 2) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelFreeEU", storage - energy, showLabels));
 		if ((displaySettings & 8) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelPercentage", storage == 0 ? 100 : ((energy / storage) * 100), showLabels));
 		return result;
 	}
 
 	@Override
-	protected List<PanelSetting> getSettingsList(ItemStack stack) {
+	@SideOnly(Side.CLIENT)
+	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(4);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 1, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelFree"), 2, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelStorage"), 4, damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelCapacity"), 4, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelPercentage"), 8, damage));
 		return result;
+	}
+
+	@Override
+	public int getKitFromCard() {
+		return ItemCardType.KIT_ENERGY;
 	}
 }
