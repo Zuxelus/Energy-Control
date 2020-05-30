@@ -1,17 +1,18 @@
 package com.zuxelus.energycontrol.gui;
 
+import org.lwjgl.opengl.GL11;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.containers.ContainerAverageCounter;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.utils.StringUtils;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiAverageCounter extends GuiContainer {
@@ -42,26 +43,19 @@ public class GuiAverageCounter extends GuiContainer {
 	}
 
 	@Override
-	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-		drawDefaultBackground();
-		super.drawScreen(mouseX, mouseY, partialTicks);
-		renderHoveredToolTip(mouseX, mouseY);
-	}
-
-	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		fontRenderer.drawString(name, (xSize - fontRenderer.getStringWidth(name)) / 2, 6, 0x404040);
-		fontRenderer.drawString(I18n.format("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+		fontRendererObj.drawString(name, (xSize - fontRendererObj.getStringWidth(name)) / 2, 6, 0x404040);
+		fontRendererObj.drawString(I18n.format("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 		String key = "msg.ec.InfoPanelOutput";
 		String value = StringUtils.getFormatted(key, container.te.getClientAverage(), true);
-		fontRenderer.drawString(value, (xSize - fontRenderer.getStringWidth(value)) / 2, 22, 0x404040);
+		fontRendererObj.drawString(value, (xSize - fontRendererObj.getStringWidth(value)) / 2, 22, 0x404040);
 		value = StringUtils.getFormatted("msg.ec.AverageCounterPeriod", container.te.period, true);
-		fontRenderer.drawString(value, (xSize - fontRenderer.getStringWidth(value)) / 2, 32, 0x404040);
+		fontRendererObj.drawString(value, (xSize - fontRendererObj.getStringWidth(value)) / 2, 32, 0x404040);
 	}
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.getTextureManager().bindTexture(TEXTURE_LOCATION);
 		int left = (width - xSize) / 2;
 		int top = (height - ySize) / 2;
@@ -87,6 +81,6 @@ public class GuiAverageCounter extends GuiContainer {
 		case 4:
 			event = 10; break;
 		}
-		NetworkHelper.updateSeverTileEntity(container.te.getPos(), 1, event);
+		NetworkHelper.updateSeverTileEntity(container.te.xCoord, container.te.yCoord, container.te.zCoord, 1, event);
 	}
 }

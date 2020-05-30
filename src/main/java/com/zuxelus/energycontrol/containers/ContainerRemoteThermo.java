@@ -3,7 +3,7 @@ package com.zuxelus.energycontrol.containers;
 import com.zuxelus.energycontrol.tileentities.TileEntityRemoteThermo;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IContainerListener;
+import net.minecraft.inventory.ICrafting;
 
 public class ContainerRemoteThermo extends ContainerBase<TileEntityRemoteThermo>
 {
@@ -28,9 +28,9 @@ public class ContainerRemoteThermo extends ContainerBase<TileEntityRemoteThermo>
 	{
 		super.detectAndSendChanges();
 		int energy = (int)te.getEnergy();
-		for (int i = 0; i < listeners.size(); i++)
+		for (int i = 0; i < crafters.size(); i++)
 			if (lastEnergy != energy)
-				listeners.get(i).sendWindowProperty(this, 0, energy);
+				((ICrafting)crafters.get(i)).sendProgressBarUpdate(this, 0, energy);
 		lastEnergy = energy;
 		te.setStatus(-1);
 	}

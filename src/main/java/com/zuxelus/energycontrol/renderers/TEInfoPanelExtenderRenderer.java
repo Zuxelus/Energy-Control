@@ -1,16 +1,15 @@
 package com.zuxelus.energycontrol.renderers;
 
+import org.lwjgl.opengl.GL11;
+
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanelExtender;
 
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 
-public class TEInfoPanelExtenderRenderer extends TileEntitySpecialRenderer<TileEntityInfoPanelExtender> {
+public class TEInfoPanelExtenderRenderer extends TileEntitySpecialRenderer {
 	private static final ResourceLocation TEXTUREOFF[];
 	private static final ResourceLocation TEXTUREON[];
 	private static final CubeRenderer model[];
@@ -30,32 +29,31 @@ public class TEInfoPanelExtenderRenderer extends TileEntitySpecialRenderer<TileE
 				model[i * 4 + j] = new CubeRenderer(i * 32 + 64, j * 32 + 64);
 	}
 
-	@Override
-	public void render(TileEntityInfoPanelExtender te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
-		GlStateManager.pushMatrix();
-		GlStateManager.translate((float)x, (float)y, (float)z);
-		switch (te.getFacing()) {
+	public void renderTileEntityAt(TileEntityInfoPanelExtender te, double x, double y, double z) {
+		GL11.glPushMatrix();
+		GL11.glTranslated(x, y, z);
+		switch (te.getFacingForge()) {
 		case UP:
 			break;
 		case NORTH:
-			GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
-			GlStateManager.translate(0.0F, -1.0F, 0.0F);
+			GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F);
+			GL11.glTranslatef(0.0F, -1.0F, 0.0F);
 			break;
 		case SOUTH:
-			GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
-			GlStateManager.translate(0.0F, 0.0F, -1.0F);
+			GL11.glRotatef(90.0F, 1.0F, 0.0F, 0.0F);
+			GL11.glTranslatef(0.0F, 0.0F, -1.0F);
 			break;
 		case DOWN:
-			GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
-			GlStateManager.translate(0.0F, -1.0F, -1.0F);
+			GL11.glRotatef(180.0F, 1.0F, 0.0F, 0.0F);
+			GL11.glTranslatef(0.0F, -1.0F, -1.0F);
 			break;
 		case WEST:
-			GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
-			GlStateManager.translate(0.0F, -1.0F, 0.0F);
+			GL11.glRotatef(90.0F, 0.0F, 0.0F, 1.0F);
+			GL11.glTranslatef(0.0F, -1.0F, 0.0F);
 			break;
 		case EAST:
-			GlStateManager.rotate(-90.0F, 0.0F, 0.0F, 1.0F);
-			GlStateManager.translate(-1.0F, 0.0F, 0.0F);
+			GL11.glRotatef(-90.0F, 0.0F, 0.0F, 1.0F);
+			GL11.glTranslatef(-1.0F, 0.0F, 0.0F);
 			break;
 		}
 
@@ -71,6 +69,11 @@ public class TEInfoPanelExtenderRenderer extends TileEntitySpecialRenderer<TileE
 			bindTexture(TEXTUREOFF[color]);
 
 		model[te.findTexture()].render(0.03125F);
-		GlStateManager.popMatrix();
+		GL11.glPopMatrix();
+	}
+
+	@Override
+	public void renderTileEntityAt(TileEntity te, double x, double y, double z, float partialTicks) {
+		renderTileEntityAt((TileEntityInfoPanelExtender) te, x, y, z);
 	}
 }

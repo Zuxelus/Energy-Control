@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.crossmod.opencomputers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.zuxelus.energycontrol.api.PanelString;
@@ -18,10 +19,8 @@ import li.cil.oc.api.prefab.DriverSidedTileEntity;
 import li.cil.oc.integration.ManagedTileEntityEnvironment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class DriverInfoPanel extends DriverSidedTileEntity {
 
@@ -31,11 +30,11 @@ public class DriverInfoPanel extends DriverSidedTileEntity {
 	}
 
 	@Override
-	public ManagedEnvironment createEnvironment(final World world, final BlockPos pos, final EnumFacing side) {
-		TileEntity te = world.getTileEntity(pos);
+	public ManagedEnvironment createEnvironment(World world, int x, int y, int z, ForgeDirection dir) {
+		TileEntity te = world.getTileEntity(x, y, z);
 		if (te instanceof TileEntityAdvancedInfoPanel)
 			return null;
-		return new Environment((TileEntityInfoPanel) world.getTileEntity(pos));
+		return new Environment((TileEntityInfoPanel) world.getTileEntity(x, y, z));
 	}
 
 	public static final class Environment extends ManagedTileEntityEnvironment<TileEntityInfoPanel> implements NamedBlock {
@@ -67,15 +66,15 @@ public class DriverInfoPanel extends DriverSidedTileEntity {
 		public Object[] getRange(final Context context, final Arguments args) {
 			ItemStack itemStack = tileEntity.getStackInSlot(tileEntity.getSlotUpgradeRange());
 			int upgradeCountRange = 0;
-			if (itemStack != ItemStack.EMPTY && itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE)
-				upgradeCountRange = itemStack.getCount();
+			if (itemStack != null && itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE)
+				upgradeCountRange = itemStack.stackSize;
 			return new Object[] { ItemCardMain.LOCATION_RANGE * (int) Math.pow(2, Math.min(upgradeCountRange, 7)) };
 		}
 
 		@Callback(doc = "function():list<string> -- Get card data.")
 		public Object[] getCardData(final Context context, final Arguments args) {
 			List<PanelString> joinedData = tileEntity.getPanelStringList(false);
-			List<String> list = NonNullList.create();
+			List<String> list = new ArrayList<String>();
 			if (joinedData == null || joinedData.size() == 0)
 				return new Object[] { list };
 
@@ -119,7 +118,7 @@ public class DriverInfoPanel extends DriverSidedTileEntity {
 		@Callback(doc = "function():string -- Get card title.")
 		public Object[] getCardTitle(final Context context, final Arguments args) {
 			ItemStack stack = tileEntity.getStackInSlot(0);
-			if (stack.isEmpty() || !(stack.getItem() instanceof ItemCardMain))
+			if (stack == null || !(stack.getItem() instanceof ItemCardMain))
 				return new Object[] { "" }; 
 			return new Object[] { new ItemCardReader(stack).getTitle() };
 		}
@@ -128,7 +127,7 @@ public class DriverInfoPanel extends DriverSidedTileEntity {
 		public Object[] setCardTitle(final Context context, final Arguments args) {
 			String title = args.checkString(0);
 			ItemStack stack = tileEntity.getStackInSlot(0);
-			if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain)
+			if (stack != null && stack.getItem() instanceof ItemCardMain)
 				new ItemCardReader(stack).setTitle(title);
 			return null;
 		}

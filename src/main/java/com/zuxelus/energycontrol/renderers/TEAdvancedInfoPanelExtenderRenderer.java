@@ -1,16 +1,17 @@
 package com.zuxelus.energycontrol.renderers;
 
+import org.lwjgl.opengl.GL11;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanelExtender;
 
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.util.ForgeDirection;
 
-public class TEAdvancedInfoPanelExtenderRenderer extends TileEntitySpecialRenderer<TileEntityAdvancedInfoPanelExtender> {
+public class TEAdvancedInfoPanelExtenderRenderer extends TileEntitySpecialRenderer {
 	private static final ResourceLocation TEXTUREOFF[];
 	private static final ResourceLocation TEXTUREON[];
 	private static final CubeRenderer model[];
@@ -30,33 +31,32 @@ public class TEAdvancedInfoPanelExtenderRenderer extends TileEntitySpecialRender
 				model[i * 4 + j] = new CubeRenderer(i * 32 + 64, j * 32 + 64);
 	}
 
-	@Override
-	public void render(TileEntityAdvancedInfoPanelExtender te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
-	    GlStateManager.pushMatrix();
-	    GlStateManager.translate((float)x, (float)y, (float)z);
-		EnumFacing facing = te.getFacing();
+	public void renderTileEntityAt(TileEntityAdvancedInfoPanelExtender te, double x, double y, double z) {
+		GL11.glPushMatrix();
+		GL11.glTranslated(x, y, z);
+		ForgeDirection facing = te.getFacingForge();
 		switch (facing) {
 		case UP:
 			break;
 		case NORTH:
-			GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
-			GlStateManager.translate(0.0F, -1.0F, 0.0F);
+			GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F);
+			GL11.glTranslatef(0.0F, -1.0F, 0.0F);
 			break;
 		case SOUTH:
-			GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
-			GlStateManager.translate(0.0F, 0.0F, -1.0F);
+			GL11.glRotatef(90.0F, 1.0F, 0.0F, 0.0F);
+			GL11.glTranslatef(0.0F, 0.0F, -1.0F);
 			break;
 		case DOWN:
-			GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
-			GlStateManager.translate(0.0F, -1.0F, -1.0F);
+			GL11.glRotatef(180.0F, 1.0F, 0.0F, 0.0F);
+			GL11.glTranslatef(0.0F, -1.0F, -1.0F);
 			break;
 		case WEST:
-			GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
-			GlStateManager.translate(0.0F, -1.0F, 0.0F);
+			GL11.glRotatef(90.0F, 0.0F, 0.0F, 1.0F);
+			GL11.glTranslatef(0.0F, -1.0F, 0.0F);
 			break;
 		case EAST:
-			GlStateManager.rotate(-90.0F, 0.0F, 0.0F, 1.0F);
-			GlStateManager.translate(-1.0F, 0.0F, 0.0F);
+			GL11.glRotatef(-90.0F, 0.0F, 0.0F, 1.0F);
+			GL11.glTranslatef(-1.0F, 0.0F, 0.0F);
 			break;
 		}
 
@@ -82,8 +82,13 @@ public class TEAdvancedInfoPanelExtenderRenderer extends TileEntitySpecialRender
 			model[textureId].render(0.03125F);
 		else {
 			RotationOffset offset = new RotationOffset(thickness * 2, rotateHor, rotateVert);
-			new CubeRenderer(textureId / 4 * 32 + 64, textureId % 4 * 32 + 64, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation())).render(0.03125F);
+			new CubeRenderer(textureId / 4 * 32 + 64, textureId % 4 * 32 + 64, offset.addOffset(screen, te.xCoord, te.yCoord, te.zCoord, te.getFacingForge(), te.getRotation())).render(0.03125F);
 		}
-		GlStateManager.popMatrix();
+		GL11.glPopMatrix();
+	}
+
+	@Override
+	public void renderTileEntityAt(TileEntity te, double x, double y, double z, float partialTicks) {
+		renderTileEntityAt((TileEntityAdvancedInfoPanelExtender) te, x, y, z);
 	}
 }

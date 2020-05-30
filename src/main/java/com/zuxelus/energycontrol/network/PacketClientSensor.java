@@ -8,14 +8,13 @@ import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
+import cpw.mods.fml.common.network.ByteBufUtils;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class PacketClientSensor implements IMessage, IMessageHandler<PacketClientSensor, IMessage> {
 	private int x;
@@ -35,10 +34,10 @@ public class PacketClientSensor implements IMessage, IMessageHandler<PacketClien
 
 	public PacketClientSensor() { }
 
-	public PacketClientSensor(BlockPos pos, byte slot, String className, Map<String, Object> fields) {
-		this.x = pos.getX();
-		this.y = pos.getY();
-		this.z = pos.getZ();
+	public PacketClientSensor(TileEntity panel, byte slot, String className, Map<String, Object> fields) {
+		this.x = panel.xCoord;
+		this.y = panel.yCoord;
+		this.z = panel.zCoord;
 		this.slot = slot;
 		this.className = className;
 		this.fields = fields;
@@ -111,11 +110,11 @@ public class PacketClientSensor implements IMessage, IMessageHandler<PacketClien
 
 	@Override
 	public IMessage onMessage(PacketClientSensor message, MessageContext ctx) {
-		TileEntity tileEntity = ctx.getServerHandler().player.world.getTileEntity(new BlockPos(message.x, message.y, message.z));
+		TileEntity tileEntity = ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y, message.z);
 		if (tileEntity instanceof TileEntityInfoPanel) {
 			TileEntityInfoPanel panel = (TileEntityInfoPanel) tileEntity;
 			ItemStack stack = panel.getStackInSlot(message.slot);
-			if (stack.isEmpty() || !(stack.getItem() instanceof ItemCardMain))
+			if (stack == null || !(stack.getItem() instanceof ItemCardMain))
 				return null;
 			if (!stack.getItem().getClass().getName().equals(message.className)) {
 				EnergyControl.logger.warn("Class mismatch: '%s'!='%s'", message.className, stack.getItem().getClass().getName());

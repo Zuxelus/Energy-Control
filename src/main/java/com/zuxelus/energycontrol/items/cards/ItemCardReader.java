@@ -12,14 +12,14 @@ import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.util.ChunkCoordinates;
 
 public class ItemCardReader implements ICardReader {
 	private ItemStack card;
@@ -33,12 +33,12 @@ public class ItemCardReader implements ICardReader {
 	}
 
 	@Override
-	public BlockPos getTarget() {
+	public ChunkCoordinates getTarget() {
 		NBTTagCompound nbtTagCompound = card.getTagCompound();
 		if (nbtTagCompound == null)
 			return null;
 		
-		return new BlockPos(nbtTagCompound.getInteger("x"), nbtTagCompound.getInteger("y"), nbtTagCompound.getInteger("z"));
+		return new ChunkCoordinates(nbtTagCompound.getInteger("x"), nbtTagCompound.getInteger("y"), nbtTagCompound.getInteger("z"));
 	}
 
 	@Override
@@ -251,7 +251,7 @@ public class ItemCardReader implements ICardReader {
 		if (nbt == null)
 			return null;
 
-		nbt = card.getTagCompound().copy();
+		nbt = (NBTTagCompound)card.getTagCompound().copy();
 		List<PanelString> result = new LinkedList<PanelString>();
 		
 		if (nbt.hasKey("title") && nbt.getTag("title").getId() == 8) {
@@ -283,8 +283,8 @@ public class ItemCardReader implements ICardReader {
 				}
 			}
 		}
-		for (String name : nbt.getKeySet()) {
-			NBTBase tag = nbt.getTag(name);
+		for (Object name : nbt.func_150296_c()) {
+			NBTBase tag = nbt.getTag((String)name);
 			result.add(new PanelString(String.format("%s : %s", name, tag.toString())));
 		}
 		return result;

@@ -1,9 +1,7 @@
 package com.zuxelus.energycontrol.api;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.BlockPos;
 
 public final class ItemStackHelper {
 
@@ -16,18 +14,20 @@ public final class ItemStackHelper {
 		return nbtTagCompound;
 	}
 
-	public static void setCoordinates(ItemStack stack, BlockPos pos) {
+	public static void setCoordinates(ItemStack stack, int x, int y, int z) {
 		NBTTagCompound nbtTagCompound = getTagCompound(stack);
-		nbtTagCompound.setInteger("x", pos.getX());
-		nbtTagCompound.setInteger("y", pos.getY());
-		nbtTagCompound.setInteger("z", pos.getZ());
+		nbtTagCompound.setInteger("x", x);
+		nbtTagCompound.setInteger("y", y);
+		nbtTagCompound.setInteger("z", z);
 	}
 
-	public static void setCoordinates(ItemStack stack, BlockPos pos, int type) {
-		NBTTagCompound nbtTagCompound = getTagCompound(stack);
-		nbtTagCompound.setInteger("x", pos.getX());
-		nbtTagCompound.setInteger("y", pos.getY());
-		nbtTagCompound.setInteger("z", pos.getZ());
-		nbtTagCompound.setInteger("targetType", type);
+	public static ItemStack getAndSplit(ItemStack[] stacks, int index, int amount) {
+		if (index >= 0 && index < stacks.length && stacks[index] != null && amount > 0) {
+			ItemStack itemstack = stacks[index].splitStack(amount);
+			if (stacks[index].stackSize == 0)
+				stacks[index] = null;
+			return itemstack;
+		}
+		return null;
 	}
 }

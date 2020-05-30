@@ -1,10 +1,11 @@
 package com.zuxelus.energycontrol.gui;
 
+import org.lwjgl.opengl.GL11;
+
 import com.zuxelus.energycontrol.containers.ContainerBase;
 import com.zuxelus.energycontrol.containers.ContainerCardHolder;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -24,21 +25,14 @@ public class GuiCardHolder extends GuiContainer {
 	}
 
 	@Override
-	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-		drawDefaultBackground();
-		super.drawScreen(mouseX, mouseY, partialTicks);
-		renderHoveredToolTip(mouseX, mouseY);
-	}
-
-	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		this.fontRenderer.drawString(name, 8, 6, 4210752);
-		this.fontRenderer.drawString(player.inventory.getDisplayName().getUnformattedText(), 8, this.ySize - 96 + 2, 4210752);
+		this.fontRendererObj.drawString(name, 8, 6, 4210752);
+		this.fontRendererObj.drawString(player.inventory.getInventoryName(), 8, this.ySize - 96 + 2, 4210752);
 	}
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.getTextureManager().bindTexture(TEXTURE);
 		int left = (width - xSize) / 2;
 		int top = (height - ySize) / 2;

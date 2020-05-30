@@ -2,11 +2,12 @@ package com.zuxelus.energycontrol;
 
 import com.zuxelus.energycontrol.items.ItemHelper;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class EnCtrlTab extends CreativeTabs {
 	private static ItemStack itemEnergyKit;
@@ -25,8 +26,8 @@ public class EnCtrlTab extends CreativeTabs {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public ItemStack getTabIconItem() {
-		return new ItemStack(ItemHelper.itemKit);
+	public Item getTabIconItem() {
+		return ItemHelper.itemKit;
 	}
 
 	@Override

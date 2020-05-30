@@ -9,12 +9,12 @@ import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemCardReactor5x5 extends ItemCardBase {
 	public ItemCardReactor5x5() {
@@ -22,12 +22,12 @@ public class ItemCardReactor5x5 extends ItemCardBase {
 	}
 
 	@Override
-	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
-		BlockPos target = reader.getTarget();
+	public CardState update(World world, ICardReader reader, int range, int x, int y, int z) {
+		ChunkCoordinates target = reader.getTarget();
 		if (target == null) 
 			return CardState.NO_TARGET;
 		
-		return CrossModLoader.ic2.updateCardReactor5x5(world, reader, target);
+		return CrossModLoader.ic2.updateCardReactor5x5(world, reader, target.posX, target.posY, target.posZ);
 	}
 
 	@Override

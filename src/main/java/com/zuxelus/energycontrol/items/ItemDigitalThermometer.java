@@ -5,6 +5,8 @@ import java.util.List;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
 import ic2.api.reactor.IReactor;
@@ -13,9 +15,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemDigitalThermometer extends ItemThermometer implements IElectricItem {
 
@@ -27,6 +26,7 @@ public class ItemDigitalThermometer extends ItemThermometer implements IElectric
 		super();
 		setMaxDamage(13);
 		setHasSubtypes(true);
+		setTextureName(EnergyControl.MODID + ":" + "thermometer_digital");
 		tier = k;
 		ratio = l;
 		transfer = i1;
@@ -56,6 +56,16 @@ public class ItemDigitalThermometer extends ItemThermometer implements IElectric
 	}
 
 	@Override
+	public Item getChargedItem(ItemStack itemStack) {
+		return this;
+	}
+
+	@Override
+	public Item getEmptyItem(ItemStack itemStack) {
+		return this;
+	}
+
+	@Override
 	public double getMaxCharge(ItemStack itemStack) {
 		return 12000;
 	}
@@ -72,9 +82,7 @@ public class ItemDigitalThermometer extends ItemThermometer implements IElectric
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
-		if (!this.isInCreativeTab(tab))
-			return;
+	public void getSubItems(Item item, CreativeTabs tab, List items) {
 		ItemStack itemstack = new ItemStack(this, 1);
 		ElectricItem.manager.charge(itemstack, 0x7fffffff, 0x7fffffff, true, false);
 		items.add(itemstack);

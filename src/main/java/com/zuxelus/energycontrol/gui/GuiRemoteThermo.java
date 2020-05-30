@@ -1,6 +1,6 @@
 package com.zuxelus.energycontrol.gui;
 
-import java.io.IOException;
+import org.lwjgl.opengl.GL11;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.containers.ContainerRemoteThermo;
@@ -8,14 +8,13 @@ import com.zuxelus.energycontrol.gui.controls.CompactButton;
 import com.zuxelus.energycontrol.gui.controls.GuiThermoInvertRedstone;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiRemoteThermo extends GuiContainer {
@@ -52,16 +51,9 @@ public class GuiRemoteThermo extends GuiContainer {
 
 		buttonList.add(new GuiThermoInvertRedstone(10, guiLeft + 70, guiTop + 33, container.te));
 
-		textboxHeat = new GuiTextField(10, fontRenderer, 70, 16, 51, 12);
+		textboxHeat = new GuiTextField(fontRendererObj, 70, 16, 51, 12);
 		textboxHeat.setFocused(true);
 		textboxHeat.setText(Integer.toString(container.te.getHeatLevel()));
-	}
-
-	@Override
-	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-		drawDefaultBackground();
-		super.drawScreen(mouseX, mouseY, partialTicks);
-		renderHoveredToolTip(mouseX, mouseY);
 	}
 
 	private void updateHeat(int delta) {
@@ -77,8 +69,8 @@ public class GuiRemoteThermo extends GuiContainer {
 				heat = 1;
 			if (heat >= 1000000)
 				heat = 1000000;
-			if (container.te.getWorld().isRemote && container.te.getHeatLevel() != heat) {
-				NetworkHelper.updateSeverTileEntity(container.te.getPos(), 1, heat);
+			if (container.te.getWorldObj().isRemote && container.te.getHeatLevel() != heat) {
+				NetworkHelper.updateSeverTileEntity(container.te.xCoord, container.te.yCoord, container.te.zCoord, 1, heat);
 				container.te.setHeatLevel(heat);
 			}
 			textboxHeat.setText(new Integer(heat).toString());
@@ -100,8 +92,8 @@ public class GuiRemoteThermo extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int par1, int par2) {
-		fontRenderer.drawString(name, (xSize - fontRenderer.getStringWidth(name)) / 2, 6, 0x404040);
-		fontRenderer.drawString(I18n.format("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+		fontRendererObj.drawString(name, (xSize - fontRendererObj.getStringWidth(name)) / 2, 6, 0x404040);
+		fontRendererObj.drawString(I18n.format("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 		if (textboxHeat != null)
 			textboxHeat.drawTextBox();
 	}
@@ -123,7 +115,7 @@ public class GuiRemoteThermo extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.getTextureManager().bindTexture(TEXTURE);
 		int left = (width - xSize) / 2;
 		int top = (height - ySize) / 2;
@@ -139,9 +131,9 @@ public class GuiRemoteThermo extends GuiContainer {
 	}
 
 	@Override
-	protected void keyTyped(char typedChar, int keyCode) throws IOException {
+	protected void keyTyped(char typedChar, int keyCode) {
 		if (keyCode == 1) // Esc
-			mc.player.closeScreen();
+			mc.thePlayer.closeScreen();
 		else if (typedChar == 13) // Enter
 			updateHeat(0);
 		else if (textboxHeat != null && textboxHeat.isFocused() && (Character.isDigit(typedChar) || typedChar == 0 || typedChar == 8))

@@ -1,18 +1,16 @@
 package com.zuxelus.energycontrol.network;
 
 import com.zuxelus.energycontrol.tileentities.ITilePacketHandler;
-import com.zuxelus.energycontrol.tileentities.TileEntityAverageCounter;
 
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.network.ByteBufUtils;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import cpw.mods.fml.relauncher.Side;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
 
 public class PacketTileEntity implements IMessage, IMessageHandler<PacketTileEntity, IMessage> {
 	private int x;
@@ -22,10 +20,10 @@ public class PacketTileEntity implements IMessage, IMessageHandler<PacketTileEnt
 
 	public PacketTileEntity() { }
 	
-	public PacketTileEntity(BlockPos pos, NBTTagCompound tag) {
-		this.x = pos.getX();
-		this.y = pos.getY();
-		this.z = pos.getZ();
+	public PacketTileEntity(int x, int y, int z, NBTTagCompound tag) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
 		this.tag = tag;
 	}
 
@@ -48,13 +46,13 @@ public class PacketTileEntity implements IMessage, IMessageHandler<PacketTileEnt
 	@Override
 	public IMessage onMessage(PacketTileEntity message, MessageContext ctx) {
 		if (ctx.side == Side.SERVER) {
-			TileEntity te = ctx.getServerHandler().player.world.getTileEntity(new BlockPos(message.x, message.y, message.z));
+			TileEntity te = ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y, message.z);
 			if (!(te instanceof ITilePacketHandler))
 				return null;
 			((ITilePacketHandler) te).onServerMessageReceived(message.tag);
 		}
 		if (ctx.side == Side.CLIENT) {
-			TileEntity te = FMLClientHandler.instance().getClient().world.getTileEntity(new BlockPos(message.x, message.y, message.z));
+			TileEntity te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.x, message.y, message.z);
 			if (!(te instanceof ITilePacketHandler))
 				return null;
 			((ITilePacketHandler) te).onClientMessageReceived(message.tag);

@@ -3,22 +3,19 @@ package com.zuxelus.energycontrol.items.cards;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
+import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorCore;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
-import com.zuxelus.energycontrol.utils.ReactorHelper;
 
-import ic2.api.reactor.IReactor;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemCardReactorDraconic extends ItemCardBase {
 	public ItemCardReactorDraconic() {
@@ -26,26 +23,26 @@ public class ItemCardReactorDraconic extends ItemCardBase {
 	}
 
 	@Override
-	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
-		BlockPos target = reader.getTarget();
+	public CardState update(World world, ICardReader reader, int range, int x, int y, int z) {
+		ChunkCoordinates target = reader.getTarget();
 		if (target == null)
 			return CardState.NO_TARGET;
 		
-		TileEntity te = world.getTileEntity(target);
+		TileEntity te = world.getTileEntity(target.posX, target.posY, target.posZ);
 		if (!(te instanceof TileReactorCore))
 			return CardState.NO_TARGET;
 		
-		TileReactorCore reactor = ((TileReactorCore)te);
-		reader.setString("status", reactor.reactorState.value.name());
-		reader.setDouble("temp", reactor.temperature.value);
-		reader.setDouble("rate", reactor.generationRate.value);
-		reader.setDouble("input", reactor.fieldInputRate.value);
+		TileReactorCore reactor = ((TileReactorCore) te);
+		reader.setInt("status", reactor.reactorState);
+		reader.setDouble("temp", reactor.reactionTemperature);
+		reader.setDouble("rate", reactor.generationRate);
+		reader.setDouble("input", reactor.fieldInputRate);
 		reader.setDouble("diam", reactor.getCoreDiameter());
-		reader.setInt("saturation", reactor.saturation.value);
-		reader.setDouble("fuel", reactor.convertedFuel.value);
-		reader.setDouble("shield", reactor.shieldCharge.value);
-		reader.setDouble("fuelMax", reactor.reactableFuel.value);
-		reader.setDouble("fuelRate", reactor.fuelUseRate.value);
+		reader.setInt("saturation", reactor.energySaturation);
+		reader.setInt("fuel", reactor.convertedFuel);
+		reader.setDouble("shield", reactor.fieldCharge);
+		reader.setInt("fuelMax", reactor.reactorFuel);
+		reader.setDouble("fuelRate", reactor.fuelUseRate);
 		return CardState.OK;
 	}
 
@@ -53,7 +50,7 @@ public class ItemCardReactorDraconic extends ItemCardBase {
 	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		if ((displaySettings & 1) > 0)
-			result.add(new PanelString("msg.ec.Status", reader.getString("status"), showLabels));
+			result.add(new PanelString("msg.ec.Status", reader.getInt("status"), showLabels));
 		result.add(new PanelString("msg.ec.CoreTemp", reader.getDouble("temp"), showLabels));
 		if ((displaySettings & 2) > 0)
 			result.add(new PanelString("msg.ec.Diameter", reader.getDouble("diam"), showLabels));
@@ -65,9 +62,9 @@ public class ItemCardReactorDraconic extends ItemCardBase {
 		if ((displaySettings & 16) > 0)
 			result.add(new PanelString("msg.ec.Saturation", reader.getInt("saturation"), showLabels));
 		if ((displaySettings & 32) > 0) {
-			result.add(new PanelString("msg.ec.ConvertedFuel", reader.getDouble("fuel"), showLabels));
+			result.add(new PanelString("msg.ec.ConvertedFuel", reader.getInt("fuel"), showLabels));
 			result.add(new PanelString("msg.ec.ConversionRate", reader.getDouble("fuelRate") * 1000000, showLabels));
-			result.add(new PanelString("msg.ec.Fuel", reader.getDouble("fuelMax"), showLabels));
+			result.add(new PanelString("msg.ec.Fuel", reader.getInt("fuelMax"), showLabels));
 		}
 		return result;
 	}

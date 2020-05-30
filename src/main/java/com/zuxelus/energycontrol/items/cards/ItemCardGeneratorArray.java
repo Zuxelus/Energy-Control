@@ -1,7 +1,6 @@
 package com.zuxelus.energycontrol.items.cards;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import com.zuxelus.energycontrol.api.CardState;
@@ -11,14 +10,14 @@ import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.utils.StringUtils;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemCardGeneratorArray extends ItemCardBase {
 	private static final double STATUS_NOT_FOUND = Integer.MIN_VALUE;
@@ -29,7 +28,7 @@ public class ItemCardGeneratorArray extends ItemCardBase {
 	}
 
 	@Override
-	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
+	public CardState update(World world, ICardReader reader, int range, int x, int y, int z) {
 		int cardCount = reader.getCardCount();
 		if (cardCount == 0)
 			return CardState.INVALID_CARD;
@@ -38,12 +37,12 @@ public class ItemCardGeneratorArray extends ItemCardBase {
 		boolean foundAny = false;
 		boolean outOfRange = false;
 		for (int i = 0; i < cardCount; i++) {
-			BlockPos target = getCoordinates(reader, i);
-			int dx = target.getX() - pos.getX();
-			int dy = target.getY() - pos.getY();
-			int dz = target.getZ() - pos.getZ();
+			ChunkCoordinates target = getCoordinates(reader, i);
+			int dx = target.posX - x;
+			int dy = target.posY - y;
+			int dz = target.posZ - z;
 			if (Math.abs(dx) <= range && Math.abs(dy) <= range && Math.abs(dz) <= range) {
-				TileEntity entity = world.getTileEntity(target);
+				TileEntity entity = world.getTileEntity(target.posX, target.posY, target.posZ);
 				NBTTagCompound tag = CrossModLoader.ic2.getGeneratorData(entity);
 				if (tag != null && tag.hasKey("type")) {
 					int type = tag.getInteger("type");

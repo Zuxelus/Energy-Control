@@ -1,15 +1,16 @@
 package com.zuxelus.energycontrol.gui.controls;
 
+import org.lwjgl.opengl.GL11;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityThermo;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiThermoInvertRedstone extends GuiButton {
@@ -28,14 +29,14 @@ public class GuiThermoInvertRedstone extends GuiButton {
 	}
 
 	@Override
-	public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+	public void drawButton(Minecraft mc, int mouseX, int mouseY) {
 		if (!visible)
 			return;
 
 		mc.getTextureManager().bindTexture(TEXTURE);
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int delta = checked ? 15 : 0;
-		drawTexturedModalRect(x, y + 1, 199, delta, 51, 15);
+		drawTexturedModalRect(xPosition, yPosition + 1, 199, delta, 51, 15);
 	}
 
 	@Override
@@ -48,8 +49,8 @@ public class GuiThermoInvertRedstone extends GuiButton {
 		if (!super.mousePressed(mc, mouseX, mouseY))
 			return false;
 		checked = !checked;
-		if (thermo.getWorld().isRemote && thermo.getInvertRedstone() != checked) {
-			NetworkHelper.updateSeverTileEntity(thermo.getPos(), 2, checked ? (int) 1 : (int) 0);
+		if (thermo.getWorldObj().isRemote && thermo.getInvertRedstone() != checked) {
+			NetworkHelper.updateSeverTileEntity(thermo.xCoord, thermo.yCoord, thermo.zCoord, 2, checked ? (int) 1 : (int) 0);
 			thermo.setInvertRedstone(checked);
 		}
 		return true;

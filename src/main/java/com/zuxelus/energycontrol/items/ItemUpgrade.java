@@ -4,14 +4,17 @@ import java.util.List;
 
 import com.zuxelus.energycontrol.EnergyControl;
 
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
+import net.minecraft.util.IIcon;
 
 public class ItemUpgrade extends Item {
 	public static final int DAMAGE_RANGE = 0;
 	public static final int DAMAGE_COLOR = 1;
+	private IIcon iconRange;
+	private IIcon iconColor;
 
 	public ItemUpgrade() {
 		super();
@@ -21,22 +24,36 @@ public class ItemUpgrade extends Item {
 	}
 
 	@Override
+	public void registerIcons(IIconRegister iconRegister) {
+		iconRange = iconRegister.registerIcon(EnergyControl.MODID + ":" + "upgrade_range");
+		iconColor = iconRegister.registerIcon(EnergyControl.MODID + ":" + "upgrade_color");
+	}
+
+	@Override
 	public String getUnlocalizedName(ItemStack itemStack) {
 		int damage = itemStack.getItemDamage();
 		switch (damage) {
 		case DAMAGE_RANGE:
+		default:
 			return "item.upgrade_range";
 		case DAMAGE_COLOR:
 			return "item.upgrade_color";
-		default:
-			return "";
 		}
 	}
 
 	@Override
-	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
-		if (!this.isInCreativeTab(tab))
-			return;
+	public IIcon getIconFromDamage(int damage) {
+		switch (damage) {
+		case DAMAGE_RANGE:
+		default:
+			return iconRange;
+		case DAMAGE_COLOR:
+			return iconColor;
+		}
+	}
+
+	@Override
+	public void getSubItems(Item item, CreativeTabs tab, List items) {
 		items.add(new ItemStack(ItemHelper.itemUpgrade, 1, DAMAGE_RANGE));
 		items.add(new ItemStack(ItemHelper.itemUpgrade, 1, DAMAGE_COLOR));
 	}

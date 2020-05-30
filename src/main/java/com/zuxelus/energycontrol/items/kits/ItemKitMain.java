@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.items.kits;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.zuxelus.energycontrol.EnergyControl;
@@ -10,16 +11,13 @@ import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
 import ic2.api.recipe.Recipes;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 public class ItemKitMain extends Item {
@@ -81,12 +79,25 @@ public class ItemKitMain extends Item {
 	}
 
 	@Override
-	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
-		if (!isInCreativeTab(tab))
-			return;
+	public void registerIcons(IIconRegister iconRegister) {
+		for (Map.Entry<Integer, IItemKit> entry : kits.entrySet()) {
+			IItemKit value = entry.getValue();
+			value.registerIcon(iconRegister);
+		}
+	}
+
+	@Override
+	public IIcon getIconFromDamage(int damage) {
+		if (kits.containsKey(damage))
+			return kits.get(damage).getIcon();
+		return null;
+	}
+
+	@Override
+	public void getSubItems(Item item, CreativeTabs tab, List items) {
 		for (Map.Entry<Integer, IItemKit> entry : kits.entrySet()) {
 			Integer key = entry.getKey();
-				items.add(new ItemStack(this, 1, key));
+			items.add(new ItemStack(this, 1, key));
 		}
 	}
 
@@ -96,41 +107,24 @@ public class ItemKitMain extends Item {
 	}
 
 	@Override
-	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) { 	
+	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
 		if (player == null || !(player instanceof EntityPlayerMP))
-			return EnumActionResult.PASS;
+			return false;
 		
-		ItemStack stack = player.getHeldItem(hand);
-		if (stack.isEmpty() || stack.getCount() != 1)
-			return EnumActionResult.PASS;
-		ItemStack sensorLocationCard = getItemKitBase(stack.getItemDamage()).getSensorCard(stack, ItemHelper.itemCard, player, world, pos);
-		if (sensorLocationCard.isEmpty())
-			return EnumActionResult.PASS;
+		if (stack == null || stack.stackSize != 1)
+			return false;
+		ItemStack sensorLocationCard = getItemKitBase(stack.getItemDamage()).getSensorCard(stack, ItemHelper.itemCard, player, world, x, y, z);
+		if (sensorLocationCard == null)
+			return false;
 		
-		player.replaceItemInInventory(player.inventory.currentItem, sensorLocationCard);
-		return EnumActionResult.SUCCESS;
+		player.inventory.mainInventory[player.inventory.currentItem] = sensorLocationCard;
+		return true;
 	}	
 	
 	public IItemKit getItemKitBase(int metadata) {
 		if (kits.containsKey(metadata))
 			return kits.get(metadata);
 		return null;
-	}
-
-	public static final void registerModels() {
-		for (Map.Entry<Integer, IItemKit> entry : kits.entrySet()) {
-			Integer key = entry.getKey();
-			if (key <= ItemCardType.KIT_MAX)
-				ItemHelper.registerItemModel(ItemHelper.itemKit, key, kits.get(key).getName());
-		}
-	}
-
-	public static final void registerExtendedModels() {
-		for (Map.Entry<Integer, IItemKit> entry : kits.entrySet()) {
-			Integer key = entry.getKey();
-			if (key > ItemCardType.KIT_MAX)
-				ItemHelper.registerExternalItemModel(ItemHelper.itemKit, key, kits.get(key).getName());
-		}
 	}
 
 	public static final void registerRecipes() {

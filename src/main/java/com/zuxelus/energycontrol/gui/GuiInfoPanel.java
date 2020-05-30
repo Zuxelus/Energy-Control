@@ -1,14 +1,15 @@
 package com.zuxelus.energycontrol.gui;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.ICardGui;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.containers.ContainerBase;
-import com.zuxelus.energycontrol.containers.ContainerInfoPanel;
 import com.zuxelus.energycontrol.gui.controls.CompactButton;
 import com.zuxelus.energycontrol.gui.controls.GuiInfoPanelCheckBox;
 import com.zuxelus.energycontrol.gui.controls.GuiInfoPanelShowLabels;
@@ -19,20 +20,18 @@ import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiInfoPanel extends GuiContainer {
@@ -48,23 +47,22 @@ public class GuiInfoPanel extends GuiContainer {
 
 	public GuiInfoPanel(ContainerBase container) {
 		super(container);
-		ySize = 190;
+		ySize = 201;
 		panel = (TileEntityInfoPanel)container.te;
 		name = I18n.format("tile.info_panel.name");
 		modified = false;
 		// inverted value on start to force initControls
 		isColored = !this.panel.getColored();
-		prevCard = ItemStack.EMPTY;
 	}
 
 	@Override
 	protected void drawHoveringText(List list, int par2, int par3, FontRenderer font) {
 		if (list.isEmpty())
 			return;
-		GlStateManager.disableRescaleNormal();
+		GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 		RenderHelper.disableStandardItemLighting();
-		GlStateManager.disableLighting();
-		GlStateManager.disableDepth();
+		GL11.glDisable(GL11.GL_LIGHTING);
+		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		int k = 0;
 		Iterator iterator = list.iterator();
 
@@ -115,15 +113,15 @@ public class GuiInfoPanel extends GuiContainer {
 
 		this.zLevel = 0.0F;
 		itemRender.zLevel = 0.0F;
-		GlStateManager.enableLighting();
-		GlStateManager.enableDepth();
+		GL11.glEnable(GL11.GL_LIGHTING);
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		RenderHelper.enableStandardItemLighting();
-		GlStateManager.enableRescaleNormal();
+		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 	}
 
 	protected void initControls() {
 		ItemStack stack = panel.getCards().get(0);
-		if (stack.isEmpty() && stack.equals(prevCard) && panel.getColored() == isColored)
+		if (stack == null && prevCard == null && panel.getColored() == isColored)
 			return;
 
 		buttonList.clear();
@@ -135,37 +133,22 @@ public class GuiInfoPanel extends GuiContainer {
 			buttonList.add(new CompactButton(112, guiLeft + xSize - 25, guiTop + 55, 18, 12, "T"));
 			delta = 15;
 		}
-		if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain) {
+		if (stack != null && stack.getItem() instanceof ItemCardMain) {
 			int slot = panel.getCardSlot(stack);
 			if (stack.getItemDamage() == ItemCardType.CARD_TEXT)
 				buttonList.add(new CompactButton(111, guiLeft + xSize - 25, guiTop + 55 + delta, 18, 12, "..."));
 			List<PanelSetting> settingsList = ItemCardMain.getSettingsList(stack);
 
-			int hy = fontRenderer.FONT_HEIGHT + 1;
+			int hy = fontRendererObj.FONT_HEIGHT + 1;
 			int y = 1;
 			int x = guiLeft + 24;
 			if (settingsList != null)
 				for (PanelSetting panelSetting : settingsList) {
-					if (y <= 6) {
-						buttonList.add(new GuiInfoPanelCheckBox(0, x + 4,   guiTop + 32 + hy * y, panelSetting, panel, slot, fontRenderer));
-					} else if (y>=7 && y<=12) {
-						buttonList.add(new GuiInfoPanelCheckBox(0, x + 22,  guiTop + 32 - 6*hy + hy * y, panelSetting, panel, slot, fontRenderer));
-					} else if (y>=13 && y<=18) {
-						buttonList.add(new GuiInfoPanelCheckBox(0, x + 44,  guiTop + 32 - 12*hy + hy * y, panelSetting, panel, slot, fontRenderer));
-					} else if (y>=19 && y<=24) {
-						buttonList.add(new GuiInfoPanelCheckBox(0, x + 68,  guiTop + 32 - 18*hy + hy * y, panelSetting, panel, slot, fontRenderer));
-					} else if (y>=25 && y<=32) {
-						buttonList.add(new GuiInfoPanelCheckBox(0, x + 92,  guiTop + 32 - 24*hy + hy * y, panelSetting, panel, slot, fontRenderer));
-					} else if (y>=31 && y<=38) {
-						buttonList.add(new GuiInfoPanelCheckBox(0, x + 114, guiTop + 32 - 32*hy + hy * y, panelSetting, panel, slot, fontRenderer));
-					} else if (y>=37 && y<=44) {
-						buttonList.add(new GuiInfoPanelCheckBox(0, x + 136, guiTop + 32 - 38*hy + hy * y, panelSetting, panel, slot, fontRenderer));
-					} else
-						buttonList.add(new GuiInfoPanelCheckBox(0, x + 158, guiTop + 32 - 44*hy + hy * y, panelSetting, panel, slot, fontRenderer));
+					buttonList.add(new GuiInfoPanelCheckBox(0, x + 4, guiTop + 28 + hy * y, panelSetting, panel, slot, fontRendererObj));
 					y++;
 				}
 			if (!modified) {
-				textboxTitle = new GuiTextField(0, fontRenderer, 7, 16, 162, 18);
+				textboxTitle = new GuiTextField(fontRendererObj, 7, 16, 162, 18);
 				textboxTitle.setFocused(true);
 				textboxTitle.setText(new ItemCardReader(stack).getTitle());
 			}
@@ -182,15 +165,8 @@ public class GuiInfoPanel extends GuiContainer {
 	}
 
 	@Override
-	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-		drawDefaultBackground();
-		super.drawScreen(mouseX, mouseY, partialTicks);
-		renderHoveredToolTip(mouseX, mouseY);
-	}
-
-	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.getTextureManager().bindTexture(TEXTURE);
 		int left = (width - xSize) / 2;
 		int top = (height - ySize) / 2;
@@ -199,13 +175,13 @@ public class GuiInfoPanel extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		fontRenderer.drawString(name, (xSize - fontRenderer.getStringWidth(name)) / 2, 6, 0x404040);
+		fontRendererObj.drawString(name, (xSize - fontRendererObj.getStringWidth(name)) / 2, 6, 0x404040);
 		if (textboxTitle != null)
 			textboxTitle.drawTextBox();
 	}
 
 	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
 		super.mouseClicked(mouseX, mouseY, mouseButton);
 		if (textboxTitle != null) {
 			boolean focused = textboxTitle.isFocused();
@@ -226,14 +202,14 @@ public class GuiInfoPanel extends GuiContainer {
 	protected void updateTitle() {
 		if (textboxTitle == null)
 			return;
-		if (panel.getWorld().isRemote) {
+		if (panel.getWorldObj().isRemote) {
 			NBTTagCompound tag = new NBTTagCompound();
 			tag.setInteger("type", 4);
 			tag.setInteger("slot", 0);
 			tag.setString("title", textboxTitle.getText());
-			NetworkHelper.updateSeverTileEntity(panel.getPos(), tag);
+			NetworkHelper.updateSeverTileEntity(panel.xCoord, panel.yCoord, panel.zCoord, tag);
 			ItemStack card = panel.getStackInSlot(0);
-			if (!card.isEmpty() && card.getItem() instanceof ItemCardMain)
+			if (card != null && card.getItem() instanceof ItemCardMain)
 				new ItemCardReader(card).setTitle(textboxTitle.getText());
 		}
 	}
@@ -251,7 +227,7 @@ public class GuiInfoPanel extends GuiContainer {
 			mc.displayGuiScreen(colorGui);
 		} else if (button.id == 111) {
 			ItemStack card = panel.getCards().get(0);
-			if (card.isEmpty())
+			if (card == null)
 				return;
 			if (card.getItem() instanceof ItemCardMain && card.getItemDamage() == ItemCardType.CARD_TEXT) {
 				ItemCardReader reader = new ItemCardReader(card);
@@ -269,10 +245,10 @@ public class GuiInfoPanel extends GuiContainer {
 	}
 
 	@Override
-	protected void keyTyped(char typedChar, int keyCode) throws IOException {
+	protected void keyTyped(char typedChar, int keyCode) {
 		if (textboxTitle != null && textboxTitle.isFocused())
 			if (keyCode == 1)
-				mc.player.closeScreen();
+				mc.thePlayer.closeScreen();
 			else if (typedChar == 13)
 				updateTitle();
 			else {

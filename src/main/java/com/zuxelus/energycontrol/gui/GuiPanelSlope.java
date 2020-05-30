@@ -1,16 +1,14 @@
 package com.zuxelus.energycontrol.gui;
 
-import java.io.IOException;
+import org.lwjgl.opengl.GL11;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 
+import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.client.FMLClientHandler;
-
 
 public class GuiPanelSlope extends GuiScreen {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(
@@ -35,7 +33,7 @@ public class GuiPanelSlope extends GuiScreen {
 	}
 
 	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
 		super.mouseClicked(mouseX, mouseY, mouseButton);
 		mouseX -= guiLeft;
 		mouseY -= guiTop;
@@ -55,14 +53,14 @@ public class GuiPanelSlope extends GuiScreen {
 				if (amount < 0)
 					amount = 0;
 			}
-			NetworkHelper.updateSeverTileEntity(panel.getPos(), 10, offset + amount);
+			NetworkHelper.updateSeverTileEntity(panel.xCoord, panel.yCoord, panel.zCoord, 10, offset + amount);
 			panel.setValues(offset + amount);
 		}
 	}
 
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.getTextureManager().bindTexture(TEXTURE);
 		int left = (width - xSize) / 2;
 		int top = (height - ySize) / 2;
@@ -77,7 +75,7 @@ public class GuiPanelSlope extends GuiScreen {
 	}
 
 	@Override
-	protected void keyTyped(char typedChar, int keyCode) throws IOException {
+	protected void keyTyped(char typedChar, int keyCode) {
 		if (keyCode == 1)
 			FMLClientHandler.instance().getClient().displayGuiScreen(parentGui);
 		else

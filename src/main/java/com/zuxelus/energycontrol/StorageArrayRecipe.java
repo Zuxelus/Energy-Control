@@ -1,46 +1,31 @@
 package com.zuxelus.energycontrol;
 
+import ic2.api.item.IC2Items;
+
 import java.util.Vector;
 
-import javax.annotation.Nullable;
-
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSyntaxException;
 import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
-import ic2.api.item.IC2Items;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.JsonUtils;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.IIngredientFactory;
-import net.minecraftforge.common.crafting.IRecipeFactory;
-import net.minecraftforge.common.crafting.JsonContext;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.oredict.RecipeSorter;
 
-public class StorageArrayRecipe extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
-	/*static {
+public class StorageArrayRecipe implements IRecipe {
+	static {
 		RecipeSorter.register("EnergyControl:storagearrayRecipe", StorageArrayRecipe.class,
 				RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
-	}*/
+	}
 
 	@Override
 	public boolean matches(InventoryCrafting inventory, World world) {
-		return !getCraftingResult(inventory).isEmpty();
+		return getCraftingResult(inventory) != null;
 	}
 
 	@Override
@@ -56,10 +41,10 @@ public class StorageArrayRecipe extends net.minecraftforge.registries.IForgeRegi
 		Vector<ItemStack> cards = new Vector<ItemStack>();
 		for (int i = 0; i < inventoryLength; i++) {
 			ItemStack itemStack = inventory.getStackInSlot(i);
-			if (itemStack.isEmpty())
+			if (itemStack == null)
 				continue;
 			if (!(itemStack.getItem() instanceof ItemCardMain))
-				return ItemStack.EMPTY;
+				return null;
 
 			switch (itemStack.getItemDamage())
 			{
@@ -92,13 +77,13 @@ public class StorageArrayRecipe extends net.minecraftforge.registries.IForgeRegi
 		if (((cardCount + arrayCount) != 0 && (cardCountLiquid + arrayCountLiquid) != 0)
 				|| ((cardCount + arrayCount) != 0 && (cardCountGenerator + arrayCountGenerator) != 0)
 				|| ((cardCountLiquid + arrayCountLiquid) != 0 && (cardCountGenerator + arrayCountGenerator) != 0))
-			return ItemStack.EMPTY;
+			return null;
 
 		ItemStack stack = getCraftingResult(cardCount, arrayCount, ItemCardType.CARD_ENERGY_ARRAY, cards, array);
-		if (!stack.isEmpty())
+		if (stack != null)
 			return stack;
 		stack = getCraftingResult(cardCountLiquid, arrayCountLiquid, ItemCardType.CARD_LIQUID_ARRAY, cards, array);
-		if (!stack.isEmpty())
+		if (stack != null)
 			return stack;
 		return getCraftingResult(cardCountGenerator, arrayCountGenerator, ItemCardType.CARD_GENERATOR_ARRAY, cards, array);
 	}
@@ -112,7 +97,7 @@ public class StorageArrayRecipe extends net.minecraftforge.registries.IForgeRegi
 		if (cardCount == 0 && arrayCount == 1) {
 			int cnt = new ItemCardReader(array).getInt("cardCount");
 			if (cnt > 0)
-				return new ItemStack(IC2Items.getItem("crafting","circuit").getItem(), cnt, IC2Items.getItem("crafting","circuit").getItemDamage());
+				return new ItemStack(IC2Items.getItem("electronicCircuit").getItem(), cnt, IC2Items.getItem("electronicCircuit").getItemDamage());
 		} else if (arrayCount == 1 && cardCount > 0) {
 			int cnt = new ItemCardReader(array).getInt("cardCount");
 			if (cnt + cardCount <= 6) {
@@ -122,7 +107,7 @@ public class StorageArrayRecipe extends net.minecraftforge.registries.IForgeRegi
 				return itemStack;
 			}
 		}
-		return ItemStack.EMPTY;
+		return null;
 	}
 
 	private static void initArray(ItemStack stack, Vector<ItemStack> cards) {
@@ -134,12 +119,12 @@ public class StorageArrayRecipe extends net.minecraftforge.registries.IForgeRegi
 		int cardCount = reader.getCardCount();
 		for (ItemStack subCard : cards) {
 			ItemCardReader wrapper = new ItemCardReader(subCard);
-			BlockPos target = wrapper.getTarget();
+			ChunkCoordinates target = wrapper.getTarget();
 			if (target == null)
 				continue;
-			reader.setInt(String.format("_%dx", cardCount), target.getX());
-			reader.setInt(String.format("_%dy", cardCount), target.getY());
-			reader.setInt(String.format("_%dz", cardCount), target.getZ());
+			reader.setInt(String.format("_%dx", cardCount), target.posX);
+			reader.setInt(String.format("_%dy", cardCount), target.posY);
+			reader.setInt(String.format("_%dz", cardCount), target.posZ);
 			//reader.setInt(String.format("_%dtargetType", cardCount), wrapper.getInt("targetType"));
 			cardCount++;
 		}
@@ -147,17 +132,12 @@ public class StorageArrayRecipe extends net.minecraftforge.registries.IForgeRegi
 	}
 
 	@Override
+	public int getRecipeSize() {
+		return 9;
+	}
+
+	@Override
 	public ItemStack getRecipeOutput() {
-		return ItemStack.EMPTY;
-	}
-
-	@Override
-	public boolean isDynamic() {
-		return true;
-	}
-
-	@Override
-	public boolean canFit(int width, int height) {
-		return width * height >= 2;
+		return null;
 	}
 }

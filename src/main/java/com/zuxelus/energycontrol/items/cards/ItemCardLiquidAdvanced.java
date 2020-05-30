@@ -9,15 +9,15 @@ import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.LiquidCardHelper;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.fluids.FluidTankInfo;
 
 public class ItemCardLiquidAdvanced extends ItemCardBase {
 	public ItemCardLiquidAdvanced() {
@@ -25,17 +25,17 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 	}
 
 	@Override
-	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
-		BlockPos target = reader.getTarget();
+	public CardState update(World world, ICardReader reader, int range, int x, int y, int z) {
+		ChunkCoordinates target = reader.getTarget();
 		if (target == null) 
 			return CardState.NO_TARGET;
 
-		List<IFluidTank> tanks = LiquidCardHelper.getAllTanks(world, target);
+		FluidTankInfo[] tanks = LiquidCardHelper.getAllTanks(world, target.posX, target.posY, target.posZ);
 		if (tanks == null)
 			return CardState.NO_TARGET;
 		
 		int i = 0;
-		for (IFluidTank tank: tanks) {
+		for (FluidTankInfo tank: tanks) {
 			addTankInfo(reader, tank, i);
 			i++;
 		}
@@ -43,18 +43,17 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 		return CardState.OK;
 	}
 
-	private void addTankInfo(ICardReader reader, IFluidTank tank, int i) {
-		FluidStack stack = tank.getFluid();
+	private void addTankInfo(ICardReader reader, FluidTankInfo tank, int i) {
 		int amount = 0;
 		String name = "";
-		if (stack != null) {
-			amount = stack.amount;
-			if (stack.amount > 0)
-				name = FluidRegistry.getFluidName(stack);
+		if (tank.fluid != null) {
+			amount = tank.fluid.amount;
+			if (tank.fluid.amount > 0)
+				name = FluidRegistry.getFluidName(tank.fluid);
 		}
 		reader.setInt(String.format("_%damount", i), amount);
 		reader.setString(String.format("_%dname", i), name);
-		reader.setInt(String.format("_%dcapacity", i), tank.getCapacity());
+		reader.setInt(String.format("_%dcapacity", i), tank.capacity);
 	}
 
 	@Override
@@ -76,16 +75,16 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 			String name = reader.getString(String.format("_%dname", i));
 			if (name == "")
 				name = I18n.format("msg.ec.None");
-			result.add(new PanelString("msg.ec.InfoPanelLiquidName", name, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelName", name, showLabels));
 		}
 		if ((displaySettings & 2) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelLiquidAmount", amount, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelAmount", amount, showLabels));
 		if ((displaySettings & 4) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelLiquidFree", capacity - amount, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelFree", capacity - amount, showLabels));
 		if ((displaySettings & 8) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelLiquidCapacity", capacity, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelCapacity", capacity, showLabels));
 		if ((displaySettings & 16) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelLiquidPercentage", capacity == 0 ? 100 : (amount * 100 / capacity), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelPercentage", capacity == 0 ? 100 : (amount * 100 / capacity), showLabels));
 	}
 
 	@Override

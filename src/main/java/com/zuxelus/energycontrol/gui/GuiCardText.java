@@ -2,6 +2,8 @@ package com.zuxelus.energycontrol.gui;
 
 import java.io.IOException;
 
+import org.lwjgl.opengl.GL11;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.ICardGui;
 import com.zuxelus.energycontrol.api.ICardReader;
@@ -11,7 +13,6 @@ import com.zuxelus.energycontrol.items.cards.ItemCardSettingsReader;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiCardText extends GuiScreen implements ICardGui {
@@ -46,7 +47,7 @@ public class GuiCardText extends GuiScreen implements ICardGui {
 	private void initControls() {
 		buttonList.clear();
 		buttonList.add(new GuiButton(1, guiLeft + xSize - 60 - 8, guiTop + 120, 60, 20, "Ok"));
-		textArea = new GuiTextArea(fontRenderer, guiLeft + 8, guiTop + 5, xSize - 16, ySize - 35, lineCount);
+		textArea = new GuiTextArea(fontRendererObj, guiLeft + 8, guiTop + 5, xSize - 16, ySize - 35, lineCount);
 		textArea.setFocused(true);
 		String[] data = textArea.getText();
 		for (int i = 0; i < lineCount; i++)
@@ -54,7 +55,7 @@ public class GuiCardText extends GuiScreen implements ICardGui {
 	}
 
 	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
 		super.mouseClicked(mouseX, mouseY, mouseButton);
 		if (textArea != null)
 			textArea.mouseClicked(mouseX, mouseY, mouseButton);
@@ -76,8 +77,8 @@ public class GuiCardText extends GuiScreen implements ICardGui {
 
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        mc.getTextureManager().bindTexture(TEXTURE_LOCATION);
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		mc.getTextureManager().bindTexture(TEXTURE_LOCATION);
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int left = (width - xSize) / 2;
 		int top = (height - ySize) / 2;
 		drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
@@ -87,7 +88,7 @@ public class GuiCardText extends GuiScreen implements ICardGui {
 	}
 
 	@Override
-	protected void keyTyped(char typedChar, int keyCode) throws IOException {
+	protected void keyTyped(char typedChar, int keyCode) {
 		if (keyCode == 1 || (keyCode == this.mc.gameSettings.keyBindInventory.getKeyCode() && (textArea == null || !textArea.isFocused())))
 			actionPerformed(null);
 		else if (textArea != null && textArea.isFocused())

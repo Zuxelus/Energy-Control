@@ -1,15 +1,16 @@
 package com.zuxelus.energycontrol.gui.controls;
 
+import org.lwjgl.opengl.GL11;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiInfoPanelShowLabels extends GuiButton {
@@ -28,14 +29,14 @@ public class GuiInfoPanelShowLabels extends GuiButton {
 	}
 
 	@Override
-	public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+	public void drawButton(Minecraft mc, int mouseX, int mouseY) {
 		if (!visible)
 			return;
 
 		mc.getTextureManager().bindTexture(TEXTURE_LOCATION);
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int delta = checked ? 12 : 21;
-		drawTexturedModalRect(x, y + 1, 176, delta, 18, 9);
+		drawTexturedModalRect(xPosition, yPosition + 1, 176, delta, 18, 9);
 	}
 
 	@Override
@@ -47,8 +48,8 @@ public class GuiInfoPanelShowLabels extends GuiButton {
 	public boolean mousePressed(Minecraft minecraft, int i, int j) {
 		if (super.mousePressed(minecraft, i, j)) {
 			checked = !checked;
-			if (panel.getWorld().isRemote && panel.getShowLabels() != checked) {
-				NetworkHelper.updateSeverTileEntity(panel.getPos(), 3, checked ? 1 : 0);
+			if (panel.getWorldObj().isRemote && panel.getShowLabels() != checked) {
+				NetworkHelper.updateSeverTileEntity(panel.xCoord, panel.yCoord, panel.zCoord, 3, checked ? 1 : 0);
 				panel.setShowLabels(checked);
 			}
 			return true;

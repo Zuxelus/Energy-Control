@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -8,34 +9,33 @@ import java.util.Map;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.PanelString;
+import com.zuxelus.energycontrol.blocks.BlockDamages;
 import com.zuxelus.energycontrol.containers.ISlotItemFilter;
-import com.zuxelus.energycontrol.crossmod.computercraft.InfoPanelPeripheral;
+import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 
-import dan200.computercraft.api.peripheral.IPeripheral;
-import dan200.computercraft.api.peripheral.IPeripheralTile;
-import net.minecraft.block.state.IBlockState;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import ic2.api.tile.IWrenchable;
+import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEntityInfoPanel extends TileEntityInventory
-		implements ITickable, ITilePacketHandler, IScreenPart, IRedstoneConsumer, ISlotItemFilter, IPeripheralTile {
+		implements ITilePacketHandler, IScreenPart, IRedstoneConsumer, ISlotItemFilter, IWrenchable {
 	public static final String NAME = "info_panel";
 	public static final int DISPLAY_DEFAULT = Integer.MAX_VALUE;
 	private static final int[] COLORS_HEX = { 0x000000, 0xe93535, 0x82e306, 0x702b14, 0x1f3ce7, 0x8f1fea, 0x1fd7e9,
@@ -76,7 +76,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 
 	private void initData() {
 		init = true;
-		if (world.isRemote)
+		if (worldObj.isRemote)
 			return;
 
 		if (screenData == null) {
@@ -84,14 +84,14 @@ public class TileEntityInfoPanel extends TileEntityInventory
 		} else {
 			screen = EnergyControl.instance.screenManager.loadScreen(this);
 			if (screen != null)
-				screen.init(true, world);
+				screen.init(true, worldObj);
 		}
 		notifyBlockUpdate();
 	}
 
 	@Override
 	public void setFacing(int meta) {
-		EnumFacing newFacing = EnumFacing.getFront(meta);
+		ForgeDirection newFacing = ForgeDirection.getOrientation(meta);
 		if (facing == newFacing)
 			return;
 		facing = newFacing;
@@ -106,7 +106,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 	}
 
 	public void setShowLabels(boolean newShowLabels) {
-		if (!world.isRemote && showLabels != newShowLabels)
+		if (!worldObj.isRemote && showLabels != newShowLabels)
 			notifyBlockUpdate();
 		showLabels = newShowLabels;
 	}
@@ -116,7 +116,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 	}
 
 	public void setColored(boolean newColored) {
-		if (!world.isRemote && colored != newColored)
+		if (!worldObj.isRemote && colored != newColored)
 			notifyBlockUpdate();
 		colored = newColored;
 	}
@@ -126,7 +126,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 	}
 
 	public void setColorBackground(int c) {
-		if (!world.isRemote && colorBackground != c)
+		if (!worldObj.isRemote && colorBackground != c)
 			notifyBlockUpdate();
 		colorBackground = c;
 	}
@@ -140,7 +140,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 	}
 
 	public void setColorText(int c) {
-		if (!world.isRemote && colorText != c)
+		if (!worldObj.isRemote && colorText != c)
 			notifyBlockUpdate();
 		colorText = c;
 	}
@@ -150,22 +150,22 @@ public class TileEntityInfoPanel extends TileEntityInventory
 	}
 
 	protected void calcPowered() { // server
-		boolean newPowered = world.isBlockPowered(pos);
+		boolean newPowered = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
 		if (newPowered != powered) {
 			powered = newPowered;
 			if (screen != null)
-				screen.turnPower(powered, world);
+				screen.turnPower(powered, worldObj);
 		}
 	}
 
 	public void setScreenData(NBTTagCompound nbtTagCompound) {
 		screenData = nbtTagCompound;
-		if (screen != null && FMLCommonHandler.instance().getEffectiveSide().isClient())
-			screen.destroy(true, world);
+		if (screen != null && worldObj.isRemote)
+			screen.destroy(true, worldObj);
 		if (screenData != null) {
 			screen = EnergyControl.instance.screenManager.loadScreen(this);
 			if (screen != null)
-				screen.init(true, world);
+				screen.init(true, worldObj);
 		}
 	}
 
@@ -195,7 +195,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 		case 4:
 			if (tag.hasKey("slot") && tag.hasKey("title")) {
 				ItemStack itemStack = getStackInSlot(tag.getInteger("slot"));
-				if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemCardMain) {
+				if (itemStack != null && itemStack.getItem() instanceof ItemCardMain) {
 					new ItemCardReader(itemStack).setTitle(tag.getString("title"));
 					resetCardData();
 				}
@@ -204,30 +204,21 @@ public class TileEntityInfoPanel extends TileEntityInventory
 	}
 
 	@Override
-	public SPacketUpdateTileEntity getUpdatePacket() {
+	public Packet getDescriptionPacket() {
 		NBTTagCompound tag = new NBTTagCompound();
 		tag = writeProperties(tag);
 		calcPowered();
 		tag.setBoolean("powered", powered);
 		colored = isColoredEval();
 		tag.setBoolean("colored", colored);
-		return new SPacketUpdateTileEntity(getPos(), 0, tag);
+		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, tag);
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-		readProperties(pkt.getNbtCompound());
-	}
-
-	@Override
-	public NBTTagCompound getUpdateTag() {
-		NBTTagCompound tag = super.getUpdateTag();
-		tag = writeProperties(tag);
-		calcPowered();
-		tag.setBoolean("powered", powered);
-		colored = isColoredEval();
-		tag.setBoolean("colored", colored);
-		return tag;
+	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+		if (!worldObj.isRemote)
+			return;
+		readProperties(pkt.func_148857_g());
 	}
 
 	protected void deserializeDisplaySettings(NBTTagCompound tag) {
@@ -263,18 +254,18 @@ public class TileEntityInfoPanel extends TileEntityInventory
 			setColored(tag.getBoolean("colored"));
 
 		if (tag.hasKey("screenData")) {
-			if (world != null)
+			if (worldObj != null)
 				setScreenData((NBTTagCompound) tag.getTag("screenData"));
 			else
 				screenData = (NBTTagCompound) tag.getTag("screenData");
 		} else
 			screenData = null;
 		deserializeDisplaySettings(tag);
-		if (tag.hasKey("powered") && world.isRemote) {
+		if (tag.hasKey("powered") && worldObj.isRemote) {
 			boolean newPowered = tag.getBoolean("powered");
 			if (powered != newPowered) {
 				powered = newPowered; 
-				world.checkLight(pos);
+				worldObj.func_147451_t(xCoord, yCoord, zCoord);
 			}
 		}
 	}
@@ -316,19 +307,20 @@ public class TileEntityInfoPanel extends TileEntityInventory
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
-		return writeProperties(super.writeToNBT(tag));
+	public void writeToNBT(NBTTagCompound tag) {
+		super.writeToNBT(tag);
+		writeProperties(tag);
 	}
 
 	@Override
 	public void invalidate() {
-		if (FMLCommonHandler.instance().getEffectiveSide().isServer())
+		if (!worldObj.isRemote)
 			EnergyControl.instance.screenManager.unregisterScreenPart(this);
 		super.invalidate();
 	}
 
 	@Override
-	public void update() {
+	public void updateEntity() {
 		if (!init)
 			initData();
 		if (!powered)
@@ -338,7 +330,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 			resetCardData();
 			dataTicker = 4;
 		}
-		if (!world.isRemote) {
+		if (!worldObj.isRemote) {
 			if (updateTicker-- > 0)
 				return;
 			updateTicker = tickRate;
@@ -348,8 +340,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 
 	@Override
 	public void notifyBlockUpdate() {
-		IBlockState iblockstate = world.getBlockState(pos);
-		world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 
 	public void resetCardData() {
@@ -372,8 +363,8 @@ public class TileEntityInfoPanel extends TileEntityInventory
 	}
 
 	// ------- Settings --------
-	public NonNullList<ItemStack> getCards() {
-		NonNullList<ItemStack> data = NonNullList.create();
+	public List<ItemStack> getCards() {
+		List<ItemStack> data = new ArrayList<ItemStack>(1);
 		data.add(getStackInSlot(SLOT_CARD));
 		return data;
 	}
@@ -383,7 +374,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 		boolean anyCardFound = false;
 		List<PanelString> joinedData = new LinkedList<PanelString>();
 		for (ItemStack card : cards) {
-			if (card.isEmpty())
+			if (card == null)
 				continue;
 			int settings = getDisplaySettingsByCard(card);
 			if (settings == 0)
@@ -406,13 +397,13 @@ public class TileEntityInfoPanel extends TileEntityInventory
 	}
 
 	public int getCardSlot(ItemStack card) {
-		if (card.isEmpty())
+		if (card == null)
 			return 0;
 
 		int slot = 0;
 		for (int i = 0; i < getSizeInventory(); i++) {
 			ItemStack stack = getStackInSlot(i);
-			if (!stack.isEmpty() && stack.equals(card)) {
+			if (stack != null && stack.equals(card)) {
 				slot = i;
 				break;
 			}
@@ -421,7 +412,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 	}
 
 	private void processCard(ItemStack card, int slot, ItemStack stack) {
-		if (card.isEmpty())
+		if (card == null)
 			return;
 
 		Item item = card.getItem();
@@ -429,19 +420,19 @@ public class TileEntityInfoPanel extends TileEntityInventory
 			return;
 
 		ItemCardReader reader = new ItemCardReader(card);
-		ItemCardMain.updateCardNBT(world, pos, reader, stack);
+		ItemCardMain.updateCardNBT(worldObj, xCoord, yCoord, zCoord, reader, stack);
 		reader.updateClient(this, slot);
 	}
 
 	protected boolean isColoredEval() {
 		ItemStack itemStack = getStackInSlot(SLOT_UPGRADE_COLOR);
-		return !itemStack.isEmpty() && itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_COLOR;
+		return itemStack != null && itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_COLOR;
 	}
 
 	@Override
 	public void markDirty() {
 		super.markDirty();
-		if (!world.isRemote) {
+		if (!worldObj.isRemote) {
 			setColored(isColoredEval());
 			ItemStack itemStack = getStackInSlot(getSlotUpgradeRange());
 			for (ItemStack card : getCards())
@@ -461,7 +452,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 
 	public int getDisplaySettingsForCardInSlot(int slot) {
 		ItemStack card = getStackInSlot(slot);
-		if (card.isEmpty()) {
+		if (card == null) {
 			return 0;
 		}
 		return getDisplaySettingsByCard(card);
@@ -469,7 +460,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 
 	public int getDisplaySettingsByCard(ItemStack card) {
 		int slot = getCardSlot(card);
-		if (card.isEmpty())
+		if (card == null)
 			return 0;
 		
 		if (!displaySettings.containsKey(slot))
@@ -485,7 +476,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 		if (slot != SLOT_CARD)
 			return;	
 		ItemStack stack = getStackInSlot(slot);
-		if (stack.isEmpty())
+		if (stack == null)
 			return;
 		if (!(stack.getItem() instanceof ItemCardMain))
 			return;
@@ -494,7 +485,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 		if (!displaySettings.containsKey(slot))
 			displaySettings.put(slot, new HashMap<Integer, Integer>());
 		displaySettings.get(slot).put(cardType, settings);
-		if (!world.isRemote)
+		if (!worldObj.isRemote)
 			notifyBlockUpdate();
 	}
 
@@ -535,7 +526,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 
 	@Override
 	public void updateData() {
-		if (world.isRemote)
+		if (worldObj.isRemote)
 			return;
 		
 		if (screen == null) {
@@ -547,7 +538,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 
 	@Override
 	public void neighborChanged() {
-		if (!world.isRemote)
+		if (!worldObj.isRemote)
 			notifyBlockUpdate();
 	}
 
@@ -561,33 +552,32 @@ public class TileEntityInfoPanel extends TileEntityInventory
 	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox() {
 		if (screen == null)
-			return new AxisAlignedBB(pos.add(0, 0, 0), pos.add(1, 1, 1));
-		return new AxisAlignedBB(new BlockPos(screen.minX, screen.minY, screen.minZ), new BlockPos(screen.maxX + 1, screen.maxY + 1, screen.maxZ + 1));
+			return AxisAlignedBB.getBoundingBox(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+		return AxisAlignedBB.getBoundingBox(screen.minX, screen.minY, screen.minZ, screen.maxX + 1, screen.maxY + 1, screen.maxZ + 1);
 	}
 
 	@Override
-	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
-		return oldState.getBlock() != newSate.getBlock();
+	public boolean shouldRefresh(Block oldBlock, Block newBlock, int oldMeta, int newMeta, World world, int x, int y, int z) {
+		return oldBlock != newBlock;
 	}
 
 	@SideOnly(Side.CLIENT)
 	public int findTexture() {
 		Screen scr = getScreen();
 		if (scr != null) {
-			BlockPos pos = getPos();
-			switch (getFacing()) {
+			switch (getFacingForge()) {
 			case SOUTH:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 4 * boolToInt(pos.getY() == scr.minY) + 8 * boolToInt(pos.getY() == scr.maxY);
+				return 1 * boolToInt(xCoord == scr.minX) + 2 * boolToInt(xCoord == scr.maxX) + 4 * boolToInt(yCoord == scr.minY) + 8 * boolToInt(yCoord == scr.maxY);
 			case WEST:
-				return 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ) + 1 * boolToInt(pos.getY() == scr.minY) + 2 * boolToInt(pos.getY() == scr.maxY);
+				return 8 * boolToInt(zCoord == scr.minZ) + 4 * boolToInt(zCoord == scr.maxZ) + 1 * boolToInt(yCoord == scr.minY) + 2 * boolToInt(yCoord == scr.maxY);
 			case EAST:
-				return 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ) + 2 * boolToInt(pos.getY() == scr.minY) + 1 * boolToInt(pos.getY() == scr.maxY);
+				return 8 * boolToInt(zCoord == scr.minZ) + 4 * boolToInt(zCoord == scr.maxZ) + 2 * boolToInt(yCoord == scr.minY) + 1 * boolToInt(yCoord == scr.maxY);
 			case NORTH:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 8 * boolToInt(pos.getY() == scr.minY) + 4 * boolToInt(pos.getY() == scr.maxY);
+				return 1 * boolToInt(xCoord == scr.minX) + 2 * boolToInt(xCoord == scr.maxX) + 8 * boolToInt(yCoord == scr.minY) + 4 * boolToInt(yCoord == scr.maxY);
 			case UP:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ);
+				return 1 * boolToInt(xCoord == scr.minX) + 2 * boolToInt(xCoord == scr.maxX) + 8 * boolToInt(zCoord == scr.minZ) + 4 * boolToInt(zCoord == scr.maxZ);
 			case DOWN:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 4 * boolToInt(pos.getZ() == scr.minZ) + 8 * boolToInt(pos.getZ() == scr.maxZ);
+				return 1 * boolToInt(xCoord == scr.minX) + 2 * boolToInt(xCoord == scr.maxX) + 4 * boolToInt(zCoord == scr.minZ) + 8 * boolToInt(zCoord == scr.maxZ);
 			}
 		}
 		return 15;
@@ -597,9 +587,35 @@ public class TileEntityInfoPanel extends TileEntityInventory
 		return b ? 1 : 0;
 	}
 
-	// IPeripheralTile
+	// IWrenchable
 	@Override
-	public IPeripheral getPeripheral(EnumFacing side) {
-		return new InfoPanelPeripheral(this);
+	public boolean wrenchCanSetFacing(EntityPlayer entityPlayer, int side) {
+		return facing.ordinal() != side;
+	}
+
+	@Override
+	public short getFacing() {
+		return (short) facing.ordinal();
+	}
+
+	@Override
+	public void setFacing(short facing) {
+		setFacing((int) facing);
+		notifyBlockUpdate();
+	}
+
+	@Override
+	public boolean wrenchCanRemove(EntityPlayer entityPlayer) {
+		return true;
+	}
+
+	@Override
+	public float getWrenchDropRate() {
+		return 1;
+	}
+
+	@Override
+	public ItemStack getWrenchDrop(EntityPlayer entityPlayer) {
+		return new ItemStack(ItemHelper.blockMain, 1, BlockDamages.DAMAGE_INFO_PANEL);
 	}
 }

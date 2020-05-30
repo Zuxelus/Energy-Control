@@ -10,14 +10,13 @@ import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.utils.ReactorHelper;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ic2.api.reactor.IReactor;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemCardReactor extends ItemCardBase {
 	public ItemCardReactor() {
@@ -25,12 +24,12 @@ public class ItemCardReactor extends ItemCardBase {
 	}
 
 	@Override
-	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
-		BlockPos target = reader.getTarget();
+	public CardState update(World world, ICardReader reader, int range, int x, int y, int z) {
+		ChunkCoordinates target = reader.getTarget();
 		if (target == null) 
 			return CardState.NO_TARGET;
 		
-		IReactor reactor = ReactorHelper.getReactorAt(world, target);
+		IReactor reactor = ReactorHelper.getReactorAt(world, target.posX, target.posY, target.posZ);
 		if (reactor == null)
 			return CardState.NO_TARGET;
 		
@@ -50,7 +49,7 @@ public class ItemCardReactor extends ItemCardBase {
 			if (reader.getBoolean("isSteam")) {
 				result.add(new PanelString("msg.ec.InfoPanelOutputSteam", ReactorHelper.euToSteam(reader.getInt("output")), showLabels));
 			} else
-				result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getInt("output"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelOutputEU", reader.getInt("output"), showLabels));
 		}
 		int timeLeft = reader.getInt("timeLeft");
 		if ((displaySettings & 32) > 0) {

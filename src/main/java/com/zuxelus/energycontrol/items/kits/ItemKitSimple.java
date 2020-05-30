@@ -5,7 +5,7 @@ import com.zuxelus.energycontrol.api.ItemStackHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 
 public abstract class ItemKitSimple extends ItemKitBase {
@@ -15,20 +15,20 @@ public abstract class ItemKitSimple extends ItemKitBase {
 	}
 
 	@Override
-	public ItemStack getSensorCard(ItemStack stack, Item card, EntityPlayer player, World world, BlockPos pos) {
-		BlockPos position = getTargetCoordinates(world, pos, stack);
+	public ItemStack getSensorCard(ItemStack stack, Item card, EntityPlayer player, World world, int x, int y, int z) {
+		ChunkCoordinates position = getTargetCoordinates(world, x, y, z, stack);
 		if (position == null)
-			return ItemStack.EMPTY;	
+			return null;
 			
 		ItemStack sensorLocationCard = getItemCard();
-		if (sensorLocationCard.isEmpty())
-			return ItemStack.EMPTY;
+		if (sensorLocationCard == null)
+			return null;
 		
-		ItemStackHelper.setCoordinates(sensorLocationCard, position);
+		ItemStackHelper.setCoordinates(sensorLocationCard, position.posX, position.posY, position.posZ);
 		return sensorLocationCard;
 	}
 
-	protected abstract BlockPos getTargetCoordinates(World world, BlockPos pos, ItemStack stack);
+	protected abstract ChunkCoordinates getTargetCoordinates(World world, int x, int y, int z, ItemStack stack);
 	
 	protected abstract ItemStack getItemCard();
 }

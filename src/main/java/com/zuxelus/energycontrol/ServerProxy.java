@@ -6,20 +6,20 @@ import com.zuxelus.energycontrol.containers.*;
 import com.zuxelus.energycontrol.items.cards.ItemCardHolder;
 import com.zuxelus.energycontrol.tileentities.*;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.network.IGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.network.IGuiHandler;
 
 public class ServerProxy implements IGuiHandler {
+
 	public void loadConfig(FMLPreInitializationEvent event) {
 		EnergyControl.config = new ConfigHandler();
 		EnergyControl.config.init(event.getSuggestedConfigurationFile());
 	}
-	
+
 	public void registerSpecialRenderers() { }
 
 	@Override
@@ -28,10 +28,10 @@ public class ServerProxy implements IGuiHandler {
 		case BlockDamages.GUI_PORTABLE_PANEL:
 			return new ContainerPortablePanel(player);
 		case BlockDamages.GUI_CARD_HOLDER:
-			if (player.getHeldItemMainhand().getItem() instanceof ItemCardHolder)
+			if (player.getCurrentEquippedItem().getItem() instanceof ItemCardHolder)
 				return new ContainerCardHolder(player);
 		}
-		TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
 		switch (ID) {
 		case BlockDamages.DAMAGE_INFO_PANEL:
 			return new ContainerInfoPanel(player, (TileEntityInfoPanel) tileEntity);
@@ -58,7 +58,7 @@ public class ServerProxy implements IGuiHandler {
 	}
 
 	public void registerEventHandlers() {
-		MinecraftForge.EVENT_BUS.register(ServerTickHandler.instance);
+		FMLCommonHandler.instance().bus().register(ServerTickHandler.instance);
 	}
 
 	public void importSound() { }

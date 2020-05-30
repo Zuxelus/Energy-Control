@@ -2,8 +2,9 @@ package com.zuxelus.energycontrol.api;
 
 import java.util.List;
 
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 public interface IItemCard {
@@ -14,7 +15,7 @@ public interface IItemCard {
 
 	String getUnlocalizedName();
 
-	CardState update(World world, ICardReader reader, int range, BlockPos pos);
+	CardState update(World world, ICardReader reader, int range, int x, int y, int z);
 
 	List<PanelString> getStringData(int settings, ICardReader reader, boolean showLabels);
 
@@ -27,4 +28,8 @@ public interface IItemCard {
 	int getKitFromCard();
 
 	Object[] getRecipe();
+
+	void registerIcon(IIconRegister iconRegister);
+
+	IIcon getIcon();
 }

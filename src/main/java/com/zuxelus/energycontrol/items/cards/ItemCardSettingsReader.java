@@ -7,9 +7,9 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.gui.GuiInfoPanel;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 
+import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fml.client.FMLClientHandler;
 
 public class ItemCardSettingsReader {
 	private ItemStack card;
@@ -52,7 +52,7 @@ public class ItemCardSettingsReader {
 	}
 
 	public void closeGui() {
-		gui.prevCard = ItemStack.EMPTY;
+		gui.prevCard = null;
 		FMLClientHandler.instance().getClient().displayGuiScreen(gui);
 	}
 }

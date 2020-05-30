@@ -1,13 +1,14 @@
 package com.zuxelus.energycontrol.gui;
 
+import org.lwjgl.opengl.GL11;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.gui.controls.GuiHowlerAlarmSlider;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 
-import net.minecraft.client.renderer.GlStateManager;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiIndustrialAlarm extends GuiBase {
@@ -34,19 +35,19 @@ public class GuiIndustrialAlarm extends GuiBase {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		fontRenderer.drawString(name, (xSize - fontRenderer.getStringWidth(name)) / 2, 6, 0x404040);
+		fontRendererObj.drawString(name, (xSize - fontRendererObj.getStringWidth(name)) / 2, 6, 0x404040);
 	}
 
 	@Override
-	protected void mouseReleased(int mouseX, int mouseY, int which) {
-		super.mouseReleased(mouseX, mouseY, which);
+	protected void mouseMovedOrUp(int mouseX, int mouseY, int which) {
+		super.mouseMovedOrUp(mouseX, mouseY, which);
 		if ((which == 0 || which == 1) && slider.dragging)
 			slider.mouseReleased(mouseX, mouseY);
 	}
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.getTextureManager().bindTexture(TEXTURE);
 		int left = (width - xSize) / 2;
 		int top = (height - ySize) / 2;

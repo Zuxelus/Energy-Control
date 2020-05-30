@@ -2,13 +2,12 @@ package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.EnergyControl;
 
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.util.ITickable;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 
-public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable, IRedstoneConsumer, ITilePacketHandler {
+public class TileEntityHowlerAlarm extends TileEntityFacing implements IRedstoneConsumer, ITilePacketHandler {
 	private static final String DEFAULT_SOUND_NAME = "default";
 	private static final float BASE_SOUND_RANGE = 16F;
 	private static final String SOUND_PREFIX = "energycontrol:alarm-";
@@ -36,7 +35,7 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 	}
 
 	public void setRange(int r) {
-		if (!world.isRemote && range != r)
+		if (!worldObj.isRemote && range != r)
 			notifyBlockUpdate();
 		range = r;
 	}
@@ -47,11 +46,11 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 
 	public void setSoundName(String name) {
 		soundName = name;
-		if (!world.isRemote && !prevSoundName.equals(soundName))
+		if (!worldObj.isRemote && !prevSoundName.equals(soundName))
 			notifyBlockUpdate();
-		if (world.isRemote) {
+		if (worldObj.isRemote) {
 			if (EnergyControl.instance.availableAlarms != null && !EnergyControl.instance.availableAlarms.contains(soundName)) {
-				EnergyControl.logger.info(String.format("Can't set sound '%s' at %d,%d,%d, using default", soundName, pos.getX(), pos.getY(), pos.getZ()));
+				EnergyControl.logger.info(String.format("Can't set sound '%s' at %d,%d,%d, using default", soundName, xCoord, yCoord, zCoord));
 				soundName = DEFAULT_SOUND_NAME;
 			}
 		}
@@ -63,14 +62,14 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 	}
 
 	public void updatePowered(boolean isPowered) {
-		if (world.isRemote) {
+		if (worldObj.isRemote) {
 			powered = isPowered;
 			checkStatus();
 		}
 	}
 
 	private float getNormalizedRange() {
-		if (world.isRemote)
+		if (worldObj.isRemote)
 			return Math.min(range, EnergyControl.config.SMPMaxAlarmRange) / BASE_SOUND_RANGE;
 		return range / BASE_SOUND_RANGE;
 	}
@@ -95,26 +94,19 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 	public void onClientMessageReceived(NBTTagCompound tag) { }
 
 	@Override
-	public SPacketUpdateTileEntity getUpdatePacket() {
+	public Packet getDescriptionPacket() {
 		NBTTagCompound tag = new NBTTagCompound();
 		tag = writeProperties(tag);
-		powered = world.isBlockPowered(pos);
+		powered = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
 		tag.setBoolean("powered", powered);
-		return new SPacketUpdateTileEntity(getPos(), 0, tag);
+		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, tag);
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-		readProperties(pkt.getNbtCompound());
-	}
-
-	@Override
-	public NBTTagCompound getUpdateTag() {
-		NBTTagCompound tag = super.getUpdateTag();
-		tag = writeProperties(tag);
-		powered = world.isBlockPowered(pos); 
-		tag.setBoolean("powered", powered);
-		return tag;
+	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+		if (!worldObj.isRemote)
+			return;
+		readProperties(pkt.func_148857_g());
 	}
 
 	@Override
@@ -143,20 +135,21 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
-		return writeProperties(super.writeToNBT(tag));
+	public void writeToNBT(NBTTagCompound tag) {
+		super.writeToNBT(tag);
+		writeProperties(tag);
 	}
 
 	@Override
 	public void invalidate() {
-		if (world.isRemote)
+		if (worldObj.isRemote && sound != null)
 			sound.stopAlarm();
 		super.invalidate();
 	}
 
 	@Override
-	public void update() {
-		if (world.isRemote) {
+	public void updateEntity() {
+		if (worldObj.isRemote) {
 			if (updateTicker-- > 0)
 					return;
 			updateTicker = tickRate;
@@ -168,20 +161,19 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 		if (sound == null)
 			sound = new TileEntitySound();
 		if (powered && !sound.isPlaying())
-			sound.playAlarm(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, SOUND_PREFIX + soundName, getNormalizedRange(), true);
+			sound.playAlarm(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, SOUND_PREFIX + soundName, getNormalizedRange(), true);
 		
 		if (!powered && sound.isPlaying())
 			sound.stopAlarm();
 	}	
 
 	private void notifyBlockUpdate() {
-		IBlockState iblockstate = world.getBlockState(pos);
-		world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 	
 	@Override
 	public void neighborChanged() {
-		if (!world.isRemote)
+		if (!worldObj.isRemote)
 			notifyBlockUpdate();
 	}
 }

@@ -5,7 +5,7 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.ChunkCoordinates;
 
 public interface ICardReader {
 
@@ -15,7 +15,7 @@ public interface ICardReader {
 	 * 
 	 * @return
 	 */
-	BlockPos getTarget();
+	ChunkCoordinates getTarget();
 
 	void setInt(String name, Integer value);
 

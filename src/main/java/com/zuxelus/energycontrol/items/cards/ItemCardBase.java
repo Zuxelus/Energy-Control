@@ -2,21 +2,20 @@ package com.zuxelus.energycontrol.items.cards;
 
 import java.util.List;
 
-import com.zuxelus.energycontrol.api.CardState;
+import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.ICardGui;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.IItemCard;
-import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.IIcon;
 
 public abstract class ItemCardBase implements IItemCard {
+	private IIcon icon;
 	protected String name;
 	protected int damage;
 	private Object[] recipe;
@@ -41,6 +40,14 @@ public abstract class ItemCardBase implements IItemCard {
 		return "item." + name;
 	}
 
+	public void registerIcon(IIconRegister iconRegister) {
+		icon = iconRegister.registerIcon(EnergyControl.MODID + ":" + name);
+	}
+
+	public IIcon getIcon() {
+		return icon;
+	}
+
 	@Override
 	public ICardGui getSettingsScreen(ICardReader reader) {
 		return null;
@@ -51,10 +58,10 @@ public abstract class ItemCardBase implements IItemCard {
 		return true;
 	}
 
-	protected BlockPos getCoordinates(ICardReader reader, int cardNumber) {
+	protected ChunkCoordinates getCoordinates(ICardReader reader, int cardNumber) {
 		if (cardNumber >= reader.getCardCount())
 			return null;
-		return new BlockPos(reader.getInt(String.format("_%dx", cardNumber)),
+		return new ChunkCoordinates(reader.getInt(String.format("_%dx", cardNumber)),
 				reader.getInt(String.format("_%dy", cardNumber)), reader.getInt(String.format("_%dz", cardNumber)));
 	}
 
@@ -85,13 +92,21 @@ public abstract class ItemCardBase implements IItemCard {
 		}
 		if (result.size() > 0) {
 			PanelString firstLine = result.get(0);
-			firstLine.textRight = text;
-			firstLine.colorRight = txtColor;
-		} else {
-			PanelString line = new PanelString();
-			line.textLeft = text;
-			line.colorLeft = txtColor;
-			result.add(line);
+			if (firstLine.textCenter == null) {
+				firstLine.textRight = text;
+				firstLine.colorRight = txtColor;
+				return;
+			}
+			if (result.size() > 1) {
+				firstLine = result.get(1);
+				firstLine.textRight = text;
+				firstLine.colorRight = txtColor;
+				return;
+			}
 		}
+		PanelString line = new PanelString();
+		line.textLeft = text;
+		line.colorLeft = txtColor;
+		result.add(line);
 	}
 }

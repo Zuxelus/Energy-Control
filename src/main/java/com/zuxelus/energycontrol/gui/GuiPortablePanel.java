@@ -3,6 +3,8 @@ package com.zuxelus.energycontrol.gui;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.lwjgl.opengl.GL11;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.PanelString;
@@ -12,7 +14,6 @@ import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -31,15 +32,8 @@ public class GuiPortablePanel extends GuiContainer {
 	}
 
 	@Override
-	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-		drawDefaultBackground();
-		super.drawScreen(mouseX, mouseY, partialTicks);
-		renderHoveredToolTip(mouseX, mouseY);
-	}
-
-	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.getTextureManager().bindTexture(TEXTURE);
 		int left = (width - xSize) / 2;
 		int top = (height - ySize) / 2;
@@ -49,7 +43,7 @@ public class GuiPortablePanel extends GuiContainer {
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		ItemStack stack = te.getStackInSlot(InventoryPortablePanel.SLOT_CARD);
-		if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain) {
+		if (stack != null && stack.getItem() instanceof ItemCardMain) {
 			ItemCardReader reader = new ItemCardReader(stack);
 
 			CardState state = reader.getState();
@@ -63,13 +57,13 @@ public class GuiPortablePanel extends GuiContainer {
 			for (PanelString panelString : joinedData) {
 				if (row < 14) {
 					if (panelString.textLeft != null)
-						fontRenderer.drawString(panelString.textLeft, 9, row * 10 + 10, 0x06aee4);
+						fontRendererObj.drawString(panelString.textLeft, 9, row * 10 + 10, 0x06aee4);
 					if (panelString.textCenter != null)
-						fontRenderer.drawString(panelString.textCenter, (168 - fontRenderer.getStringWidth(panelString.textCenter)) / 2, row * 10 + 10, 0x06aee4);
+						fontRendererObj.drawString(panelString.textCenter, (168 - fontRendererObj.getStringWidth(panelString.textCenter)) / 2, row * 10 + 10, 0x06aee4);
 					if (panelString.textRight != null)
-						fontRenderer.drawString(panelString.textRight, 168 - fontRenderer.getStringWidth(panelString.textRight), row * 10 + 10, 0x06aee4);
+						fontRendererObj.drawString(panelString.textRight, 168 - fontRendererObj.getStringWidth(panelString.textRight), row * 10 + 10, 0x06aee4);
 				} else if (row == 14)
-					fontRenderer.drawString("...", 9, row * 10 + 10, 0x06aee4);
+					fontRendererObj.drawString("...", 9, row * 10 + 10, 0x06aee4);
 				row++;
 			}
 		}
@@ -96,7 +90,7 @@ public class GuiPortablePanel extends GuiContainer {
 	public void updateScreen() {
 		super.updateScreen();
 
-		if (mc.player.getHeldItemMainhand().isEmpty())
-			mc.player.closeScreen();
+		if (mc.thePlayer.getHeldItem() == null)
+			mc.thePlayer.closeScreen();
 	}
 }

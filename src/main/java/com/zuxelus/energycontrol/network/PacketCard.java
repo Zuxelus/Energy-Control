@@ -12,20 +12,18 @@ import java.util.Map;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
-//import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.network.ByteBufUtils;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class PacketCard implements IMessage, IMessageHandler<PacketCard, IMessage> {
 	private int x;
@@ -44,10 +42,10 @@ public class PacketCard implements IMessage, IMessageHandler<PacketCard, IMessag
 
 	public PacketCard() {	}
 
-	public PacketCard(BlockPos pos, int slot, Map<String, Object> fields) {
-		this.x = pos.getX();
-		this.y = pos.getY();
-		this.z = pos.getZ();
+	public PacketCard(TileEntity panel, int slot, Map<String, Object> fields) {
+		this.x = panel.xCoord;
+		this.y = panel.yCoord;
+		this.z = panel.zCoord;
 		this.slot = slot;
 		this.fields = fields;
 	}
@@ -145,12 +143,12 @@ public class PacketCard implements IMessage, IMessageHandler<PacketCard, IMessag
 
 	@Override
 	public IMessage onMessage(PacketCard message, MessageContext ctx) {
-		TileEntity tileEntity = FMLClientHandler.instance().getClient().world.getTileEntity(new BlockPos(message.x, message.y, message.z));
+		TileEntity tileEntity = FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.x, message.y, message.z);
 		if (tileEntity == null || !(tileEntity instanceof TileEntityInfoPanel))
 			return null;
 		TileEntityInfoPanel panel = (TileEntityInfoPanel) tileEntity;
 		ItemStack stack = panel.getStackInSlot(message.slot);
-		if (stack.isEmpty() || !(stack.getItem() instanceof ItemCardMain))
+		if (stack == null || !(stack.getItem() instanceof ItemCardMain))
 			return null;
 		
 		ItemCardReader reader = new ItemCardReader(stack);

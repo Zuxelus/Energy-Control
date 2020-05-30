@@ -1,18 +1,19 @@
 package com.zuxelus.energycontrol.gui.controls;
 
+import org.lwjgl.opengl.GL11;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiInfoPanelCheckBox extends GuiButton {
@@ -34,15 +35,15 @@ public class GuiInfoPanelCheckBox extends GuiButton {
 	}
 
 	@Override
-	public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+	public void drawButton(Minecraft mc, int mouseX, int mouseY) {
 		if (!visible)
 			return;
 		checked = (panel.getDisplaySettingsForCardInSlot(slot) & setting.displayBit) > 0;
 		mc.getTextureManager().bindTexture(TEXTURE_LOCATION);
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int delta = checked ? 6 : 0;
-		drawTexturedModalRect(x, y + 1, 176, delta, 6, 6);
-		mc.fontRenderer.drawString(displayString, x + 8, y, 0x404040);
+		drawTexturedModalRect(xPosition, yPosition + 1, 176, delta, 6, 6);
+		mc.fontRenderer.drawString(displayString, xPosition + 8, yPosition, 0x404040);
 	}
 
 	@Override
@@ -71,6 +72,6 @@ public class GuiInfoPanelCheckBox extends GuiButton {
 		tag.setInteger("type", 1);
 		tag.setInteger("slot", slot);
 		tag.setInteger("value", value);
-		NetworkHelper.updateSeverTileEntity(panel.getPos(), tag);
+		NetworkHelper.updateSeverTileEntity(panel.xCoord, panel.yCoord, panel.zCoord, tag);
 	}
 }

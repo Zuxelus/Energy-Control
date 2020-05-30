@@ -15,18 +15,18 @@ import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ic2.api.recipe.Recipes;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public final class ItemCardMain extends Item {
 	public static final int LOCATION_RANGE = 8;
@@ -55,8 +55,6 @@ public final class ItemCardMain extends Item {
 		register(new ItemCardEnergyArray());
 		register(new ItemCardLiquidArray());
 		register(new ItemCardGeneratorArray());
-		if (CrossModLoader.buildCraft.modLoaded())
-			register(new ItemCardEngine());
 		if (CrossModLoader.draconicEvolution.modLoaded) {
 			register(new ItemCardEnergyDraconic());
 			register(new ItemCardReactorDraconic());
@@ -101,13 +99,25 @@ public final class ItemCardMain extends Item {
 	}
 
 	@Override
-	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
-		if (!isInCreativeTab(tab))
-			return;
+	public void registerIcons(IIconRegister iconRegister) {
+		for (Map.Entry<Integer, IItemCard> entry : cards.entrySet()) {
+			IItemCard value = entry.getValue();
+			value.registerIcon(iconRegister);
+		}
+	}
+
+	@Override
+	public IIcon getIconFromDamage(int damage) {
+		if (cards.containsKey(damage))
+			return cards.get(damage).getIcon();
+		return null;
+	}
+
+	@Override
+	public void getSubItems(Item itemIn, CreativeTabs tab, List items) {
 		for (Map.Entry<Integer, IItemCard> entry : cards.entrySet()) {
 			Integer key = entry.getKey();
-			//if (key <= ItemCardType.CARD_MAX)
-				items.add(new ItemStack(this, 1, key));
+			items.add(new ItemStack(this, 1, key));
 		}
 	}
 
@@ -118,7 +128,7 @@ public final class ItemCardMain extends Item {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+	public void addInformation(ItemStack stack, EntityPlayer player, List tooltip, boolean advanced) {
 		ItemCardReader reader = new ItemCardReader(stack);
 		String title = reader.getTitle();
 		if (title != null && !title.isEmpty())
@@ -134,9 +144,9 @@ public final class ItemCardMain extends Item {
 			return;
 		}
 		
-		BlockPos target = reader.getTarget();
+		ChunkCoordinates target = reader.getTarget();
 		if (target != null)
-			tooltip.add(String.format("x: %d, y: %d, z: %d", target.getX(), target.getY(), target.getZ()));
+			tooltip.add(String.format("x: %d, y: %d, z: %d", target.posX, target.posY, target.posZ));
 	}
 
 	public static List<PanelString> getStringData(int settings, ItemCardReader reader, boolean showLabels) {
@@ -154,21 +164,21 @@ public final class ItemCardMain extends Item {
 		return null;
 	}
 
-	public static CardState updateCardNBT(World world, BlockPos pos, ICardReader reader, ItemStack upgradeStack) {
+	public static CardState updateCardNBT(World world, int x, int y, int z, ICardReader reader, ItemStack upgradeStack) {
 		int upgradeCountRange = 0;
-		if (upgradeStack != ItemStack.EMPTY && upgradeStack.getItem() instanceof ItemUpgrade && upgradeStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE)
-			upgradeCountRange = upgradeStack.getCount();
+		if (upgradeStack != null && upgradeStack.getItem() instanceof ItemUpgrade && upgradeStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE)
+			upgradeCountRange = upgradeStack.stackSize;
 
 		boolean needUpdate = true;
 		int range = LOCATION_RANGE * (int) Math.pow(2, Math.min(upgradeCountRange, 7));
 
 		CardState state = CardState.INVALID_CARD;
 		if (isRemoteCard(reader.getCardType())) {
-			BlockPos target = reader.getTarget();
+			ChunkCoordinates target = reader.getTarget();
 			if (target != null) {
-				int dx = target.getX() - pos.getX();
-				int dy = target.getY() - pos.getY();
-				int dz = target.getZ() - pos.getZ();
+				int dx = target.posX - x;
+				int dy = target.posY - y;
+				int dz = target.posZ - z;
 				if (Math.abs(dx) > range || Math.abs(dy) > range || Math.abs(dz) > range) {
 					needUpdate = false;
 					state = CardState.OUT_OF_RANGE;
@@ -178,14 +188,14 @@ public final class ItemCardMain extends Item {
 		}
 
 		if (needUpdate)
-			state = update(world, reader, range, pos);
+			state = update(world, reader, range, x, y, z);
 		reader.setState(state);
 		return state;
 	}
 	
-	private static CardState update(World world, ICardReader reader, int range, BlockPos pos) {
+	private static CardState update(World world, ICardReader reader, int range, int x, int y, int z) {
 		if (cards.containsKey(reader.getCardType()))
-			return cards.get(reader.getCardType()).update(world, reader, range, pos);
+			return cards.get(reader.getCardType()).update(world, reader, range, x, y, z);
 		return null;
 	}
 
@@ -205,22 +215,6 @@ public final class ItemCardMain extends Item {
 		if (cards.containsKey(damage))
 			return cards.get(damage).getKitFromCard();
 		return -1;
-	}
-
-	public static void registerModels() {
-		for (Map.Entry<Integer, IItemCard> entry : cards.entrySet()) {
-			Integer key = entry.getKey();
-			if (key <= ItemCardType.CARD_MAX)
-				ItemHelper.registerItemModel(ItemHelper.itemCard, key, cards.get(key).getName());
-		}
-	}
-
-	public static void registerExtendedModels() {
-		for (Map.Entry<Integer, IItemCard> entry : cards.entrySet()) {
-			Integer key = entry.getKey();
-			if (key > ItemCardType.CARD_MAX)
-				ItemHelper.registerExternalItemModel(ItemHelper.itemCard, key, cards.get(key).getName());
-		}
 	}
 
 	public static void registerRecipes() {

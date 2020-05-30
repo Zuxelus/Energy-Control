@@ -1,10 +1,10 @@
 package com.zuxelus.energycontrol.gui;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class IconButton extends GuiButton {
@@ -20,14 +20,14 @@ public class IconButton extends GuiButton {
 	}
 
 	@Override
-	public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+	public void drawButton(Minecraft mc, int mouseX, int mouseY) {
 		if(!visible)
 			return;
 		
 		mc.getTextureManager().bindTexture(textureLocation);
-		if (mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height)
-			drawGradientRect(x, y, x + width, y + height, 0x80FFFFFF, 0x80FFFFFF);
-		drawTexturedModalRect(x, y, textureLeft, textureTop, width, height);
+		if (mouseX >= xPosition && mouseY >= yPosition && mouseX < xPosition + width && mouseY < yPosition + height)
+			drawGradientRect(xPosition, yPosition, xPosition + width, yPosition + height, 0x80FFFFFF, 0x80FFFFFF);
+		drawTexturedModalRect(xPosition, yPosition, textureLeft, textureTop, width, height);
 		mouseDragged(mc, mouseX, mouseY);
 	}
 }

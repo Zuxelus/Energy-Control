@@ -1,16 +1,17 @@
 package com.zuxelus.energycontrol.gui.controls;
 
+import org.lwjgl.opengl.GL11;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiHowlerAlarmSlider extends GuiButton {
@@ -28,10 +29,10 @@ public class GuiHowlerAlarmSlider extends GuiButton {
 		super(id, x, y, 107, 16, "");
 		this.alarm = alarm;
 		dragging = false;
-		if (alarm.getWorld().isRemote)
+		if (alarm.getWorldObj().isRemote)
 			maxValue = EnergyControl.config.maxAlarmRange;
 		int currentRange = alarm.getRange();
-		if (alarm.getWorld().isRemote && currentRange > maxValue)
+		if (alarm.getWorldObj().isRemote && currentRange > maxValue)
 			currentRange = maxValue;
 		sliderValue = ((float) currentRange - minValue) / (maxValue - minValue);
 		displayString = I18n.format("msg.ec.HowlerAlarmSoundRange", getNormalizedValue());
@@ -42,7 +43,7 @@ public class GuiHowlerAlarmSlider extends GuiButton {
 	}
 
 	private void setSliderPos(int targetX) {
-		sliderValue = (float) (targetX - (x + 4)) / (float) (width - 8);
+		sliderValue = (float) (targetX - (xPosition + 4)) / (float) (width - 8);
 		
 		if (sliderValue < 0.0F)
 			sliderValue = 0.0F;
@@ -51,24 +52,24 @@ public class GuiHowlerAlarmSlider extends GuiButton {
 			sliderValue = 1.0F;
 		
 		int newValue = getNormalizedValue();
-		if (alarm.getWorld().isRemote && alarm.getRange() != newValue) {
-			NetworkHelper.updateSeverTileEntity(alarm.getPos(), 2, newValue);
+		if (alarm.getWorldObj().isRemote && alarm.getRange() != newValue) {
+			NetworkHelper.updateSeverTileEntity(alarm.xCoord, alarm.yCoord, alarm.zCoord, 2, newValue);
 			alarm.setRange(newValue);
 		}
 		displayString = I18n.format("msg.ec.HowlerAlarmSoundRange", newValue);
 	}
 
 	@Override
-	public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+	public void drawButton(Minecraft mc, int mouseX, int mouseY) {
 		if (!visible)
 			return;
 		mc.getTextureManager().bindTexture(TEXTURE_LOCATION);
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		if (dragging)
 			setSliderPos(mouseX);
 		
-		drawTexturedModalRect(x + (int) (sliderValue * (width - 8)), y, 131, 0, 8, 16);
-		mc.fontRenderer.drawString(displayString, x, y - 12, 0x404040);
+		drawTexturedModalRect(xPosition + (int) (sliderValue * (width - 8)), yPosition, 131, 0, 8, 16);
+		mc.fontRenderer.drawString(displayString, xPosition, yPosition - 12, 0x404040);
 	}
 
 	@Override

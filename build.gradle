@@ -1,35 +1,41 @@
 buildscript {
     repositories {
-        jcenter()
-        maven { url = "https://files.minecraftforge.net/maven" }
+        mavenCentral()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
     }
 }
-apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.12.2-0.0.9"
-group= "com.zuxelus.energycontrol"
+apply plugin: 'forge'
+
+version = "1.7.10-0.0.1"
+group= "com.zuxelus.energycontrol" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "EnergyControl"
 
-sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
 compileJava {
-    sourceCompatibility = targetCompatibility = '1.8'
+    sourceCompatibility = targetCompatibility = "1.8"
 }
 
 minecraft {
-    version = "1.12.2-14.23.5.2847"
-    runDir = "run"
+    version = "1.7.10-10.13.4.1614-1.7.10"
+    runDir = "eclipse"
 
     replaceIn "EnergyControl.java"
     replace "@VERSION@", project.version
-    mappings = "snapshot_20171003"
 }
 
 dependencies {
-	compile 'net.industrial-craft:industrialcraft-2:2.8.197-ex112:dev'
-	compile files("libs/EnergyControl-1.12.2-0.0.7-api.jar", "libs/Draconic-Evolution-1.12.2-2.3.25.351-universal.jar")
+	compile files("libs/industrialcraft-2-2.6.259-ex110.jar")
 }
 
 processResources {
@@ -44,15 +50,4 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
-}
-
-task apiJar(type: Jar) {
-	from sourceSets.main.allSource
-	from sourceSets.main.output
-	include 'com/zuxelus/energycontrol/api/**'
-	classifier = 'api'
-}
-
-artifacts {
-	archives apiJar
 }

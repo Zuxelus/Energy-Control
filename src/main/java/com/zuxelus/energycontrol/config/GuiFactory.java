@@ -1,11 +1,12 @@
 package com.zuxelus.energycontrol.config;
 
-import java.util.Collections;
 import java.util.Set;
 
+import cpw.mods.fml.client.IModGuiFactory;
+import cpw.mods.fml.client.IModGuiFactory.RuntimeOptionCategoryElement;
+import cpw.mods.fml.client.IModGuiFactory.RuntimeOptionGuiHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraftforge.fml.client.IModGuiFactory;
 
 public class GuiFactory implements IModGuiFactory {
 
@@ -13,17 +14,17 @@ public class GuiFactory implements IModGuiFactory {
 	public void initialize(Minecraft minecraftInstance) {}
 
 	@Override
-	public boolean hasConfigGui() {
-		return true;
-	}
-
-	@Override
-	public GuiScreen createConfigGui(GuiScreen parentScreen) {
-		return new ConfigGui(parentScreen);
+	public Class<? extends GuiScreen> mainConfigGuiClass() {
+		return ConfigGui.class;
 	}
 
 	@Override
 	public Set<RuntimeOptionCategoryElement> runtimeGuiCategories() {
-		return Collections.emptySet();
+		return null;
+	}
+
+	@Override
+	public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element) {
+		return null;
 	}
 }

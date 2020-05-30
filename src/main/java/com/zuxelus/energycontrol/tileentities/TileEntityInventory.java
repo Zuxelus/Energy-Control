@@ -4,51 +4,47 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.zuxelus.energycontrol.api.ItemStackHelper;
+
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.IInventoryChangedListener;
-import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
 public abstract class TileEntityInventory extends TileEntityFacing implements IInventory {
-    protected NonNullList<ItemStack> inventory;
-    private List<IInventoryChangedListener> listeners;
-    protected String customName;	
-	
+	protected ItemStack[] inventory;
+	protected String customName;
+
 	public TileEntityInventory(String name) {
 		customName = name;
-		inventory = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
+		inventory = new ItemStack[getSizeInventory()];
 	}
 
 	@Override
 	protected void readProperties(NBTTagCompound tag) {
 		super.readProperties(tag);
 		NBTTagList nbttaglist = tag.getTagList("Items", Constants.NBT.TAG_COMPOUND);
-		inventory = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
+		inventory = new ItemStack[getSizeInventory()];
 		for (int i = 0; i < nbttaglist.tagCount(); i++) {
 			NBTTagCompound stackTag = nbttaglist.getCompoundTagAt(i);
-			inventory.set(stackTag.getByte("Slot"), new ItemStack(stackTag));
+			inventory[stackTag.getByte("Slot")] = ItemStack.loadItemStackFromNBT(stackTag);
 		}
 	}
-	
+
 	@Override
 	protected NBTTagCompound writeProperties(NBTTagCompound tag) {
 		tag = super.writeProperties(tag);
 
 		NBTTagList list = new NBTTagList();
-		for (byte i = 0; i < getSizeInventory(); ++i) {
-			ItemStack stack = this.getStackInSlot(i);
-			if (!stack.isEmpty()) {
+		for (byte i = 0; i < getSizeInventory(); i++) {
+			ItemStack stack = getStackInSlot(i);
+			if (stack != null) {
 				NBTTagCompound stackTag = new NBTTagCompound();
-				stackTag.setByte("Slot", (byte) i);
+				stackTag.setByte("Slot", i);
 				stack.writeToNBT(stackTag);
 				list.appendTag(stackTag);
 			}
@@ -58,50 +54,41 @@ public abstract class TileEntityInventory extends TileEntityFacing implements II
 	}
 
 	@Override
-	public String getName() {
+	public String getInventoryName() {
 		return customName;
 	}
 
 	@Override
-	public boolean hasCustomName() {
+	public boolean hasCustomInventoryName() {
 		return false;
 	}
 
 	@Override
-	public boolean isEmpty() {
-		for (ItemStack itemstack : inventory)
-			if (!itemstack.isEmpty())
-				return false;
-		return true;
-	}
-
-	@Override
 	public ItemStack getStackInSlot(int index) {
-		return index >= 0 && index < getSizeInventory() ? inventory.get(index) : ItemStack.EMPTY;
+		return index >= 0 && index < getSizeInventory() ? inventory[index] : null;
 	}
 
 	@Override
 	public ItemStack decrStackSize(int index, int count) {
 		ItemStack itemstack = ItemStackHelper.getAndSplit(inventory, index, count);
-		/*if (!itemstack.isEmpty())
-			this.markDirty();*/
+		//if (!itemstack.isEmpty()) markDirty();
 		return itemstack;
 	}
 
 	@Override
-	public ItemStack removeStackFromSlot(int index) {
+	public ItemStack getStackInSlotOnClosing(int index) {
 		ItemStack itemstack = getStackInSlot(index);
-		if (itemstack.isEmpty())
-			return ItemStack.EMPTY;
-		inventory.set(index, ItemStack.EMPTY);
+		if (itemstack == null)
+			return null;
+		inventory[index] = null;
 		return itemstack;
 	}
 
 	@Override
 	public void setInventorySlotContents(int index, ItemStack stack) {
-		inventory.set(index, stack);
-		if (!stack.isEmpty() && stack.getCount() > this.getInventoryStackLimit())
-			stack.setCount(this.getInventoryStackLimit());
+		inventory[index] = stack;
+		if (stack != null && stack.stackSize > getInventoryStackLimit())
+			stack.stackSize = getInventoryStackLimit();
 		markDirty();
 	}
 
@@ -111,64 +98,49 @@ public abstract class TileEntityInventory extends TileEntityFacing implements II
 	}
 
 	@Override
-	public boolean isUsableByPlayer(EntityPlayer player) {
-		return world.getTileEntity(this.pos) != this ? false : player.getDistanceSq((double)this.pos.getX() + 0.5D, (double)this.pos.getY() + 0.5D, (double)this.pos.getZ() + 0.5D) <= 64.0D;
+	public boolean isUseableByPlayer(EntityPlayer player) {
+		return worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) != this ? false : player.getDistanceSq((double)this.xCoord + 0.5D, (double)this.yCoord + 0.5D, (double)this.zCoord + 0.5D) <= 64.0D;
 	}
 
 	@Override
-	public void openInventory(EntityPlayer player) { }
+	public void openInventory() { }
 
 	@Override
-	public void closeInventory(EntityPlayer player) { }
+	public void closeInventory() { }
 
-	@Override
-	public int getField(int id) {
-		return 0;
-	}
-
-	@Override
-	public void setField(int id, int value) { }
-
-	@Override
-	public int getFieldCount() {
-		return 0;
-	}
-
-	@Override
-	public void clear() {
-		inventory.clear();
-	}
-	
 	public List<ItemStack> getDrops(int fortune) {
-		List<ItemStack> list = new ArrayList<>();
+		List<ItemStack> list = new ArrayList<ItemStack>();
 		for (int i = 0; i < getSizeInventory(); i++) {
 			ItemStack stack = getStackInSlot(i);
-			if (!stack.isEmpty())
+			if (stack != null)
 				list.add(stack);
 		}
 		return list;
 	}
-	
-	public void dropItems(World world, BlockPos pos) {
+
+	public void dropItems(World world, int x, int y, int z) {
 		Random rand = new Random();
-		List<ItemStack> list = getDrops(1);
-		for (ItemStack stack : list) {
-			float rx = rand.nextFloat() * 0.8F + 0.1F;
-			float ry = rand.nextFloat() * 0.8F + 0.1F;
-			float rz = rand.nextFloat() * 0.8F + 0.1F;
+		for (int i = 0; i < getSizeInventory(); i++) {
+			ItemStack item = getStackInSlot(i);
 
-			EntityItem entityItem = new EntityItem(world, pos.getX() + rx, pos.getY() + ry, pos.getZ() + rz,
-					new ItemStack(stack.getItem(), stack.getCount(), stack.getItemDamage()));
+			if (item != null && item.stackSize > 0) {
+				float rx = rand.nextFloat() * 0.8F + 0.1F;
+				float ry = rand.nextFloat() * 0.8F + 0.1F;
+				float rz = rand.nextFloat() * 0.8F + 0.1F;
 
-			if (stack.hasTagCompound())
-				entityItem.getItem().setTagCompound((NBTTagCompound) stack.getTagCompound().copy());
+				EntityItem entityItem = new EntityItem(world, x + rx, y + ry, z + rz,
+						new ItemStack(item.getItem(), item.stackSize, item.getItemDamage()));
 
-			float factor = 0.05F;
-			entityItem.motionX = rand.nextGaussian() * factor;
-			entityItem.motionY = rand.nextGaussian() * factor + 0.2F;
-			entityItem.motionZ = rand.nextGaussian() * factor;
-			world.spawnEntity(entityItem);
-			stack.setCount(0);
+				if (item.hasTagCompound())
+					entityItem.getEntityItem().setTagCompound((NBTTagCompound) item.getTagCompound().copy());
+
+				float factor = 0.05F;
+				entityItem.motionX = rand.nextGaussian() * factor;
+				entityItem.motionY = rand.nextGaussian() * factor + 0.2F;
+				entityItem.motionZ = rand.nextGaussian() * factor;
+				world.spawnEntityInWorld(entityItem);
+				item.stackSize = 0;
+			}
 		}
 	}
 }

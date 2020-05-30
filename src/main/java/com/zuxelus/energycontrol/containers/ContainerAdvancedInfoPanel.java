@@ -19,7 +19,7 @@ public class ContainerAdvancedInfoPanel extends ContainerBase<TileEntityAdvanced
 		// range upgrade
 		addSlotToContainer(new SlotFilter(panel, 3, 8 + 54, 24 + 18));
 		// inventory
-		addPlayerInventorySlots(player, 212);
+		addPlayerInventorySlots(player, 223);
 	}
 
 	@Override

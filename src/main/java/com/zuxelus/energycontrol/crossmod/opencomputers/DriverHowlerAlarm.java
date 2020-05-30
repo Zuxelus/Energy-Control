@@ -9,9 +9,8 @@ import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.ManagedEnvironment;
 import li.cil.oc.api.prefab.DriverSidedTileEntity;
 import li.cil.oc.integration.ManagedTileEntityEnvironment;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class DriverHowlerAlarm extends DriverSidedTileEntity {
 	public static final String NAME = "howler_alarm";
@@ -22,8 +21,8 @@ public class DriverHowlerAlarm extends DriverSidedTileEntity {
 	}
 
 	@Override
-	public ManagedEnvironment createEnvironment(final World world, final BlockPos pos, final EnumFacing side) {
-		return new Environment((TileEntityHowlerAlarm) world.getTileEntity(pos));
+	public ManagedEnvironment createEnvironment(World world, int x, int y, int z, ForgeDirection dir) {
+		return new Environment((TileEntityHowlerAlarm) world.getTileEntity(x, y, z));
 	}
 
 	public static final class Environment extends ManagedTileEntityEnvironment<TileEntityHowlerAlarm> implements NamedBlock {

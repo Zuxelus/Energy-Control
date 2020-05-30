@@ -2,7 +2,6 @@ package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.CardState;
-import com.zuxelus.energycontrol.blocks.RangeTrigger;
 import com.zuxelus.energycontrol.containers.ISlotItemFilter;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
@@ -10,17 +9,15 @@ import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.util.ITickable;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.world.World;
 
-public class TileEntityRangeTrigger extends TileEntityInventory implements ITickable, ISlotItemFilter, ITilePacketHandler {
+public class TileEntityRangeTrigger extends TileEntityInventory implements ISlotItemFilter, ITilePacketHandler, IBlockHorizontal {
 
 	public static final int SLOT_CARD = 0;
 	public static final int SLOT_UPGRADE = 1;
@@ -34,17 +31,10 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 	protected int tickRate;
 	protected boolean init;
 
-	private int prevStatus;
 	private int status;
 	private boolean poweredBlock;
-
-	private boolean prevInvertRedstone;
 	private boolean invertRedstone;
-
-	private double prevLevelStart;
 	public double levelStart;
-
-	private double prevLevelEnd;
 	public double levelEnd;
 	
 	public TileEntityRangeTrigger() {
@@ -52,8 +42,8 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 		init = false;
 		tickRate = EnergyControl.config.rangeTriggerRefreshPeriod;
 		updateTicker = tickRate;
-		status = prevStatus = 0;
-		prevInvertRedstone = invertRedstone = false;
+		status = 0;
+		invertRedstone = false;
 		levelStart = 10000000;
 		levelEnd = 9000000;
 	}
@@ -63,49 +53,40 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 	}
 
 	public void setInvertRedstone(boolean value) {
-		invertRedstone = value;
-		if (!world.isRemote && prevInvertRedstone != invertRedstone)
+		if (!worldObj.isRemote && invertRedstone != value)
 			notifyBlockUpdate();
-		prevInvertRedstone = invertRedstone;
+		invertRedstone = value;
 	}
 
 	public void setStatus(int value) {
-		status = value;
-		if (!world.isRemote && prevStatus != status) {
-			IBlockState iblockstate = world.getBlockState(pos);
-			Block block = iblockstate.getBlock();
-			if (block instanceof RangeTrigger) {
-				IBlockState newState = block.getDefaultState()
-						.withProperty(((RangeTrigger) block).FACING, iblockstate.getValue(((RangeTrigger) block).FACING))
-						.withProperty(((RangeTrigger) block).STATE, RangeTrigger.EnumState.getState(status));
-				world.setBlockState(pos, newState, 3);
-			}
+		if (!worldObj.isRemote && status != value)
 			notifyBlockUpdate();
-		}
-		prevStatus = status;
+		status = value;
 	}
 
 	public void setLevelStart(double start) {
-		levelStart = start;
-		if (prevLevelStart != levelStart)
+		if (!worldObj.isRemote && levelStart != start)
 			notifyBlockUpdate();
-		prevLevelStart = levelStart;
+		levelStart = start;
 	}
 
 	public void setLevelEnd(double end) {
-		levelEnd = end;
-		if (prevLevelEnd != levelEnd)
+		if (!worldObj.isRemote && levelEnd != end)
 			notifyBlockUpdate();
-		prevLevelEnd = levelEnd;
+		levelEnd = end;
 	}
 
 	public int getStatus() {
 		return status;
 	}
 
+	public boolean getPowered() {
+		return poweredBlock;
+	}
+
 	@Override
-	public void update() {
-		if (!world.isRemote) {
+	public void updateEntity() {
+		if (!worldObj.isRemote) {
 			if (updateTicker-- > 0)
 				return;
 			updateTicker = tickRate;
@@ -137,30 +118,32 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 	public void onClientMessageReceived(NBTTagCompound tag) { }
 
 	@Override
-	public SPacketUpdateTileEntity getUpdatePacket() {
+	public Packet getDescriptionPacket() {
 		NBTTagCompound tag = new NBTTagCompound();
 		tag = writeProperties(tag);
-		return new SPacketUpdateTileEntity(getPos(), 0, tag);
+		tag.setInteger("status", status);
+		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, tag);
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-		readProperties(pkt.getNbtCompound());
-	}
-	
-	@Override
-	public NBTTagCompound getUpdateTag() {
-		NBTTagCompound tag = super.getUpdateTag();
-		tag = writeProperties(tag);
-		return tag;
+	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+		if (!worldObj.isRemote)
+			return;
+		readProperties(pkt.func_148857_g());
 	}
 
 	@Override
 	protected void readProperties(NBTTagCompound tag) {
 		super.readProperties(tag);
-		prevInvertRedstone = invertRedstone = tag.getBoolean("invert");
+		invertRedstone = tag.getBoolean("invert");
 		levelStart = tag.getDouble("levelStart");
 		levelEnd = tag.getDouble("levelEnd");
+		if (tag.hasKey("status")) {
+			int old = status;
+			status = tag.getInteger("status");
+			if (worldObj.isRemote && status != old)
+				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		}
 	}
 
 	@Override
@@ -172,39 +155,40 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 	@Override
 	protected NBTTagCompound writeProperties(NBTTagCompound tag) {
 		tag = super.writeProperties(tag);
-		tag.setBoolean("invert", getInvertRedstone());
+		tag.setBoolean("invert", invertRedstone);
 		tag.setDouble("levelStart", levelStart);
 		tag.setDouble("levelEnd", levelEnd);
 		return tag;
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
-		return writeProperties(super.writeToNBT(tag));
+	public void writeToNBT(NBTTagCompound tag) {
+		super.writeToNBT(tag);
+		writeProperties(tag);
 	}
 
 	@Override
-	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
-		return oldState.getBlock() != newSate.getBlock();
+	public boolean shouldRefresh(Block oldBlock, Block newBlock, int oldMeta, int newMeta, World world, int x, int y, int z) {
+		return oldBlock != newBlock;
 	}
 
 	@Override
 	public void markDirty() {
 		super.markDirty();
-		if (world == null || world.isRemote)
+		if (worldObj == null || worldObj.isRemote)
 			return;
 		
 		int status = STATE_UNKNOWN;
 		ItemStack card = getStackInSlot(SLOT_CARD);
-		if (!card.isEmpty()) {
+		if (card != null) {
 			Item item = card.getItem();
 			if (item instanceof ItemCardMain) {
 				ItemCardReader reader = new ItemCardReader(card);
-				CardState state = ItemCardMain.updateCardNBT(world, pos, reader, getStackInSlot(SLOT_UPGRADE));
+				CardState state = ItemCardMain.updateCardNBT(worldObj, xCoord, yCoord, zCoord, reader, getStackInSlot(SLOT_UPGRADE));
 				if (state == CardState.OK) {
 					double min = Math.min(levelStart, levelEnd);
 					double max = Math.max(levelStart, levelEnd);
-					double cur = reader.getDouble("energy");
+					double cur = reader.getDouble("storage");
 
 					if (cur > max) {
 						status = STATE_ACTIVE;
@@ -222,17 +206,12 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 	}
 
 	public void notifyBlockUpdate() {
-		IBlockState iblockstate = world.getBlockState(pos);
-		Block block = iblockstate.getBlock();
-		if (!(block instanceof RangeTrigger))
-			return;
+		Block block = worldObj.getBlock(xCoord, yCoord, zCoord);
 		boolean newValue = status == 2 ? !invertRedstone : invertRedstone;
-		if (poweredBlock != newValue) {
-			((RangeTrigger) block).setPowered(status == 2 ? !invertRedstone : invertRedstone);
-			world.notifyNeighborsOfStateChange(pos, block, false);
-		}
+		if (poweredBlock != newValue)
+			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, block);
 		poweredBlock = newValue;
-		world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 
 	// Inventory

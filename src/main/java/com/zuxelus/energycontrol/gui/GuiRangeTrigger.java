@@ -1,5 +1,7 @@
 package com.zuxelus.energycontrol.gui;
 
+import org.lwjgl.opengl.GL11;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.containers.ContainerRangeTrigger;
 import com.zuxelus.energycontrol.gui.controls.CompactButton;
@@ -7,15 +9,14 @@ import com.zuxelus.energycontrol.gui.controls.GuiRangeTriggerInvertRedstone;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityRangeTrigger;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiRangeTrigger extends GuiContainer {
@@ -35,7 +36,7 @@ public class GuiRangeTrigger extends GuiContainer {
 
 	private void initControls() {
 		ItemStack card = container.getSlot(TileEntityRangeTrigger.SLOT_CARD).getStack();
-		if (!card.isEmpty() && card.equals(prevCard))
+		if (card != null && card.equals(prevCard))
 			return;
 		buttonList.clear();
 		prevCard = card;
@@ -56,20 +57,13 @@ public class GuiRangeTrigger extends GuiContainer {
 		super.initGui();
 		initControls();
 	}
-	
-	@Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        drawDefaultBackground();
-        super.drawScreen(mouseX, mouseY, partialTicks);
-        renderHoveredToolTip(mouseX, mouseY);
-    }
 
 	private void renderValue(double value, int x, int y) {
 		x += 114;
 		for (int i = 0; i < 10; i++) {
 			byte digit = (byte) (value % 10);
 			String str = Byte.toString(digit);
-			fontRenderer.drawString(str, x - 12 * i - fontRenderer.getCharWidth(str.charAt(0)) / 2 + (9 - i + 2) / 3 * 6, y, 0x404040);
+			fontRendererObj.drawString(str, x - 12 * i - fontRendererObj.getCharWidth(str.charAt(0)) / 2 + (9 - i + 2) / 3 * 6, y, 0x404040);
 			value /= 10;
 		}
 	}
@@ -99,11 +93,11 @@ public class GuiRangeTrigger extends GuiContainer {
 			tag.setDouble("value", newValue);			
 			if (isEnd) {
 				tag.setInteger("type", 3);
-				NetworkHelper.updateSeverTileEntity(trigger.getPos(), tag);
+				NetworkHelper.updateSeverTileEntity(trigger.xCoord, trigger.yCoord, trigger.zCoord, tag);
 				trigger.setLevelEnd(newValue);
 			} else {
 				tag.setInteger("type", 1);
-				NetworkHelper.updateSeverTileEntity(trigger.getPos(), tag);
+				NetworkHelper.updateSeverTileEntity(trigger.xCoord, trigger.yCoord, trigger.zCoord, tag);
 				trigger.setLevelStart(newValue);
 			}
 		}
@@ -111,8 +105,8 @@ public class GuiRangeTrigger extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		fontRenderer.drawString(name, (xSize - fontRenderer.getStringWidth(name)) / 2, 6, 0x404040);
-		fontRenderer.drawString(I18n.format("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+		fontRendererObj.drawString(name, (xSize - fontRendererObj.getStringWidth(name)) / 2, 6, 0x404040);
+		fontRendererObj.drawString(I18n.format("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 
 		renderValue(container.te.levelStart, 30, 33);
 		renderValue(container.te.levelEnd, 30, 70);
@@ -120,7 +114,7 @@ public class GuiRangeTrigger extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.getTextureManager().bindTexture(TEXTURE);
 		int left = (width - xSize) / 2;
 		int top = (height - ySize) / 2;

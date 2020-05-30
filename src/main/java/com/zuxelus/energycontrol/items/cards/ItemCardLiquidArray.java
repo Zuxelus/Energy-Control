@@ -10,15 +10,15 @@ import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.LiquidCardHelper;
 import com.zuxelus.energycontrol.utils.StringUtils;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.fluids.FluidTankInfo;
 
 public class ItemCardLiquidArray extends ItemCardBase {
 	private static final int STATUS_NOT_FOUND = Integer.MIN_VALUE;
@@ -29,7 +29,7 @@ public class ItemCardLiquidArray extends ItemCardBase {
 	}
 
 	@Override
-	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
+	public CardState update(World world, ICardReader reader, int range, int x, int y, int z) {
 		int cardCount = reader.getCardCount();
 		if (cardCount == 0)
 			return CardState.INVALID_CARD;
@@ -40,14 +40,14 @@ public class ItemCardLiquidArray extends ItemCardBase {
 		boolean outOfRange = false;
 		int liquidId = 0;
 		for (int i = 0; i < cardCount; i++) {
-			BlockPos target = getCoordinates(reader, i);
-			int dx = target.getX() - pos.getX();
-			int dy = target.getY() - pos.getY();
-			int dz = target.getZ() - pos.getZ();
+			ChunkCoordinates target = getCoordinates(reader, i);
+			int dx = target.posX - x;
+			int dy = target.posY - y;
+			int dz = target.posZ - z;
 			if (Math.abs(dx) <= range && Math.abs(dy) <= range && Math.abs(dz) <= range) {
-				IFluidTank storage = LiquidCardHelper.getStorageAt(world, target);
+				FluidTankInfo storage = LiquidCardHelper.getStorageAt(world, target.posX, target.posY, target.posZ);
 				if (storage != null) {
-					FluidStack stack = storage.getFluid(); 
+					FluidStack stack = storage.fluid;
 					if (stack != null) {
 						totalAmount += stack.amount;
 						reader.setInt(String.format("_%damount", i),stack.amount);
@@ -56,7 +56,7 @@ public class ItemCardLiquidArray extends ItemCardBase {
 							name = FluidRegistry.getFluidName(stack);
 						reader.setString(String.format("_%dname", i), name);
 					}
-					reader.setInt(String.format("_%dcapacity", i), storage.getCapacity());
+					reader.setInt(String.format("_%dcapacity", i), storage.capacity);
 					foundAny = true;
 				} else
 					reader.setInt(String.format("_%damount", i), STATUS_NOT_FOUND);

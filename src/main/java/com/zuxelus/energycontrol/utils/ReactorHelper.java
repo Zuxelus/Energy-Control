@@ -6,75 +6,75 @@ import ic2.api.reactor.IReactor;
 import ic2.api.reactor.IReactorChamber;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class ReactorHelper {
 	private static final double STEAM_PER_EU = 3.2D;
 	
-	public static IReactor getReactorAround(World world, BlockPos pos) {
+	public static IReactor getReactorAround(World world, int x, int y, int z) {
 		if (world == null)
 			return null;
 		
-		IReactor reactor = getReactorAt(world, pos);
+		IReactor reactor = getReactorAt(world, x, y, z);
 		if (reactor != null)
 			return reactor;
 		
-		return getReactorNextBlock(world, pos);
+		return getReactorNextBlock(world, x, y, z);
 	}	
 	
-	public static IReactor getReactorNextBlock(World world, BlockPos pos) {
+	public static IReactor getReactorNextBlock(World world, int x, int y, int z) {
 		if (world == null)
 			return null;
 		
 		IReactor reactor = null;
-		for (EnumFacing dir : EnumFacing.VALUES) {
-			reactor = getReactorAt(world, pos.offset(dir));
+		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+			reactor = getReactorAt(world, x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
 			if (reactor != null)
 				break;
 		}
 		return reactor;
 	}
 	
-	public static IReactor getReactorAt(World world, BlockPos pos) {
+	public static IReactor getReactorAt(World world, int x, int y, int z) {
 		if (world == null)
 			return null;
 		
-		TileEntity entity = world.getTileEntity(pos);
+		TileEntity entity = world.getTileEntity(x, y, z);
 		if (entity instanceof IReactor)
 			return (IReactor) entity;
 		if (entity instanceof IReactorChamber)
-			return ((IReactorChamber) entity).getReactorInstance();
+			return ((IReactorChamber) entity).getReactor();
 		return null;
 	}
 	
-	public static IReactor getReactor3x3(World world, BlockPos pos) {
+	public static IReactor getReactor3x3(World world, int x, int y, int z) {
 		if (world == null)
 			return null;
 		for (int xoffset = -1; xoffset < 2; xoffset++) {
 			for (int yoffset = -1; yoffset < 2; yoffset++) {
 				for (int zoffset = -1; zoffset < 2; zoffset++) {
-					TileEntity te = world.getTileEntity(pos.east(xoffset).up(yoffset).south(zoffset));
+					TileEntity te = world.getTileEntity(x + xoffset, y + yoffset, z + zoffset);
 					if (te instanceof IReactor)
 						return (IReactor) te;
 					if (te instanceof IReactorChamber)
-						return ((IReactorChamber) te).getReactorInstance();
+						return ((IReactorChamber) te).getReactor();
 				}
 			}
 		}
 		return null;
 	}
 
-	public static BlockPos getTargetCoordinates(World world, BlockPos pos) {
-		IReactor reactor = ReactorHelper.getReactorAt(world, pos);
+	public static ChunkCoordinates getTargetCoordinates(World world, int x, int y, int z) {
+		IReactor reactor = ReactorHelper.getReactorAt(world, x, y, z);
 		if (reactor != null)
 			return reactor.getPosition();
 		return null;
 	}
 
-	public static BlockPos get5x5TargetCoordinates(World world, BlockPos pos) {
-		IReactor reactor = ReactorHelper.getReactor3x3(world, pos);
+	public static ChunkCoordinates get5x5TargetCoordinates(World world, int x, int y, int z) {
+		IReactor reactor = ReactorHelper.getReactor3x3(world, x, y, z);
 		if (reactor != null)
 			return reactor.getPosition();
 		return null;

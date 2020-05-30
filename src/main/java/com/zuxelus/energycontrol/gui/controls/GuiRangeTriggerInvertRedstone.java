@@ -1,15 +1,16 @@
 package com.zuxelus.energycontrol.gui.controls;
 
+import org.lwjgl.opengl.GL11;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityRangeTrigger;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiRangeTriggerInvertRedstone extends GuiButton {
@@ -28,13 +29,13 @@ public class GuiRangeTriggerInvertRedstone extends GuiButton {
 	}
 
 	@Override
-	public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+	public void drawButton(Minecraft mc, int mouseX, int mouseY) {
 		if (!visible)
 			return;
 
 		mc.getTextureManager().bindTexture(TEXTURE_LOCATION);
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		drawTexturedModalRect(x, y + 1, 176, checked ? 15 : 0, 18, 15);
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		drawTexturedModalRect(xPosition, yPosition + 1, 176, checked ? 15 : 0, 18, 15);
 	}
 
 	@Override
@@ -49,8 +50,8 @@ public class GuiRangeTriggerInvertRedstone extends GuiButton {
 
 		checked = !checked;
 
-		if (trigger.getWorld().isRemote && trigger.getInvertRedstone() != checked) {
-			NetworkHelper.updateSeverTileEntity(trigger.getPos(), 2, checked ? (int) 1 : (int) 0);
+		if (trigger.getWorldObj().isRemote && trigger.getInvertRedstone() != checked) {
+			NetworkHelper.updateSeverTileEntity(trigger.xCoord, trigger.yCoord, trigger.zCoord, 2, checked ? (int) 1 : (int) 0);
 			trigger.setInvertRedstone(checked);
 		}
 		return true;

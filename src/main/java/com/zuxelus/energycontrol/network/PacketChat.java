@@ -1,12 +1,12 @@
 package com.zuxelus.energycontrol.network;
 
+import cpw.mods.fml.common.network.ByteBufUtils;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.util.ChatComponentText;
 
 public class PacketChat implements IMessage,IMessageHandler<PacketChat, IMessage> {
 	private String message;
@@ -29,7 +29,7 @@ public class PacketChat implements IMessage,IMessageHandler<PacketChat, IMessage
 
 	@Override
 	public IMessage onMessage(PacketChat messages, MessageContext ctx) {
-		Minecraft.getMinecraft().player.sendStatusMessage(new TextComponentTranslation(messages.message), false);
+		Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(messages.message));
 		return null;
 	}
 }

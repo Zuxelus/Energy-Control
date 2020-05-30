@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import com.zuxelus.energycontrol.api.CardState;
@@ -10,12 +9,12 @@ import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.tileentities.TileEntityAverageCounter;
 import com.zuxelus.energycontrol.tileentities.TileEntityEnergyCounter;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemCardCounter extends ItemCardBase {
 	public ItemCardCounter() {
@@ -23,12 +22,12 @@ public class ItemCardCounter extends ItemCardBase {
 	}
 
 	@Override
-	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
-		BlockPos target = reader.getTarget();
+	public CardState update(World world, ICardReader reader, int range, int x, int y, int z) {
+		ChunkCoordinates target = reader.getTarget();
 		if (target == null) 
 			return CardState.NO_TARGET;
 		
-		TileEntity tileEntity = world.getTileEntity(target);
+		TileEntity tileEntity = world.getTileEntity(target.posX, target.posY, target.posZ);
 		if (tileEntity == null)
 			return CardState.NO_TARGET;
 		
@@ -40,6 +39,7 @@ public class ItemCardCounter extends ItemCardBase {
 		if (tileEntity instanceof TileEntityAverageCounter) {
 			TileEntityAverageCounter avgCounter = (TileEntityAverageCounter) tileEntity;
 			reader.setInt("average", avgCounter.getClientAverage());
+			reader.setInt("period", (int) avgCounter.period);
 			return CardState.OK;
 		}
 		return CardState.NO_TARGET;
@@ -51,13 +51,15 @@ public class ItemCardCounter extends ItemCardBase {
 		// average counter
 		if (reader.hasField("average")) {
 			if ((displaySettings & 1) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getInt("average"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelOutputEU", reader.getInt("average"), showLabels));
+			if ((displaySettings & 2) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelPeriod", reader.getInt("period"), showLabels));
 			return result;
 		}
 		// energy counter
 		if ((displaySettings & 1) > 0) {
 			double energy = reader.getDouble("energy");
-			result.add(new PanelString("msg.ec.InfoPanelEnergy", energy, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelEnergyEU", energy, showLabels));
 		}
 		return result;
 	}

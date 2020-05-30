@@ -1,13 +1,18 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import net.minecraft.util.EnumFacing;
+import com.zuxelus.energycontrol.blocks.BlockDamages;
+import com.zuxelus.energycontrol.items.ItemHelper;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEntityAdvancedInfoPanelExtender extends TileEntityInfoPanelExtender {
 
 	public byte getThickness() {
 		if (screen == null)
 			return 16;
-		TileEntityInfoPanel core = screen.getCore(world);
+		TileEntityInfoPanel core = screen.getCore(worldObj);
 		if (core == null || !(core instanceof TileEntityAdvancedInfoPanel))
 			return 16;
 		return ((TileEntityAdvancedInfoPanel) core).thickness;
@@ -16,7 +21,7 @@ public class TileEntityAdvancedInfoPanelExtender extends TileEntityInfoPanelExte
 	public byte getRotateHor() {
 		if (screen == null)
 			return 0;
-		TileEntityInfoPanel core = screen.getCore(world);
+		TileEntityInfoPanel core = screen.getCore(worldObj);
 		if (core == null || !(core instanceof TileEntityAdvancedInfoPanel))
 			return 0;
 		return ((TileEntityAdvancedInfoPanel) core).rotateHor;
@@ -25,19 +30,24 @@ public class TileEntityAdvancedInfoPanelExtender extends TileEntityInfoPanelExte
 	public byte getRotateVert() {
 		if (screen == null)
 			return 0;
-		TileEntityInfoPanel core = screen.getCore(world);
+		TileEntityInfoPanel core = screen.getCore(worldObj);
 		if (core == null || !(core instanceof TileEntityAdvancedInfoPanel))
 			return 0;
 		return ((TileEntityAdvancedInfoPanel) core).rotateVert;
 	}
 
 	@Override
-	public EnumFacing getRotation() {
+	public ForgeDirection getRotation() {
 		if (screen == null)
-			return EnumFacing.NORTH;
-		TileEntityInfoPanel core = screen.getCore(world);
+			return ForgeDirection.NORTH;
+		TileEntityInfoPanel core = screen.getCore(worldObj);
 		if (core == null || !(core instanceof TileEntityAdvancedInfoPanel))
-			return EnumFacing.NORTH;
+			return ForgeDirection.NORTH;
 		return ((TileEntityAdvancedInfoPanel) core).getRotation();
+	}
+
+	@Override
+	public ItemStack getWrenchDrop(EntityPlayer entityPlayer) {
+		return new ItemStack(ItemHelper.blockMain, 1, BlockDamages.DAMAGE_ADVANCED_EXTENDER);
 	}
 }

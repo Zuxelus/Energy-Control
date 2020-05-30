@@ -1,28 +1,25 @@
 package com.zuxelus.energycontrol.items;
 
+import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.containers.ISlotItemFilter;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.util.Constants;
 
 public abstract class ItemInventory implements IInventory, ISlotItemFilter {
 
 	private final ItemStack parent;
-	protected NonNullList<ItemStack> inventory;
+	protected ItemStack[] inventory;
 	private String customName;
 
 	public ItemInventory(ItemStack parent, String name) {
 		this.parent = parent;
 		customName = name;
-		inventory = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
+		inventory = new ItemStack[getSizeInventory()];
 		readFromParentNBT();
 	}
 
@@ -36,23 +33,26 @@ public abstract class ItemInventory implements IInventory, ISlotItemFilter {
 		NBTTagList nbttaglist = tag.getTagList("Items", Constants.NBT.TAG_COMPOUND);
 		for (int i = 0; i < nbttaglist.tagCount(); i++) {
 			NBTTagCompound stackTag = nbttaglist.getCompoundTagAt(i);
-			setInventorySlotContents(stackTag.getByte("Slot"), new ItemStack(stackTag));
+			setInventorySlotContents(stackTag.getByte("Slot"), ItemStack.loadItemStackFromNBT(stackTag));
 		}
 	}
 
-	private void writeToParentNBT() {
-		NBTTagCompound tag = parent.getTagCompound();
+	public void writeToParentNBT(EntityPlayer player) {
+		if (player.getHeldItem() == null)
+			return;
+
+		NBTTagCompound tag = player.getHeldItem().getTagCompound();
 		if (tag == null) {
 			tag = new NBTTagCompound();
 			parent.setTagCompound(tag);
 		}
 
 		NBTTagList list = new NBTTagList();
-		for (int i = 0; i < getSizeInventory(); i++) {
+		for (byte i = 0; i < getSizeInventory(); i++) {
 			ItemStack stack = getStackInSlot(i);
-			if (!stack.isEmpty()) {
+			if (stack != null) {
 				NBTTagCompound stackTag = new NBTTagCompound();
-				stackTag.setByte("Slot", (byte) i);
+				stackTag.setByte("Slot", i);
 				stack.writeToNBT(stackTag);
 				list.appendTag(stackTag);
 			}
@@ -62,57 +62,42 @@ public abstract class ItemInventory implements IInventory, ISlotItemFilter {
 	}
 
 	@Override
-	public String getName() {
+	public String getInventoryName() {
 		return customName;
 	}
 
 	@Override
-	public boolean hasCustomName() {
+	public boolean hasCustomInventoryName() {
 		return false;
 	}
 
 	@Override
-	public ITextComponent getDisplayName() {
-		return new TextComponentString(customName);
-	}
-
-	@Override
-	public boolean isEmpty() {
-		for (ItemStack itemstack : inventory)
-			if (!itemstack.isEmpty())
-				return false;
-		return true;
-	}
-
-	@Override
 	public ItemStack getStackInSlot(int index) {
-		return index >= 0 && index < getSizeInventory() ? inventory.get(index) : ItemStack.EMPTY;
+		return index >= 0 && index < getSizeInventory() ? inventory[index] : null;
 	}
 
 	@Override
 	public ItemStack decrStackSize(int index, int count) {
 		ItemStack itemstack = ItemStackHelper.getAndSplit(inventory, index, count);
-		/*
-		 * if (!itemstack.isEmpty()) this.markDirty();
-		 */
+		if (itemstack != null) markDirty();
 		return itemstack;
 	}
 
 	@Override
-	public ItemStack removeStackFromSlot(int index) {
+	public ItemStack getStackInSlotOnClosing(int index) {
 		ItemStack itemstack = getStackInSlot(index);
-		if (itemstack.isEmpty())
-			return ItemStack.EMPTY;
-		inventory.set(index, ItemStack.EMPTY);
+		if (itemstack == null)
+			return null;
+		inventory[index] = null;
 		return itemstack;
 	}
 
 	@Override
 	public void setInventorySlotContents(int index, ItemStack stack) {
-		inventory.set(index, stack);
-		if (!stack.isEmpty() && stack.getCount() > this.getInventoryStackLimit())
-			stack.setCount(this.getInventoryStackLimit());
-		markDirty();
+		inventory[index] = stack;
+		if (stack != null && stack.stackSize > getInventoryStackLimit())
+			stack.stackSize = getInventoryStackLimit();
+		//markDirty();
 	}
 
 	@Override
@@ -121,44 +106,21 @@ public abstract class ItemInventory implements IInventory, ISlotItemFilter {
 	}
 
 	@Override
-	public void markDirty() {
-		writeToParentNBT();
-	}
+	public void markDirty() { }
 
 	@Override
-	public boolean isUsableByPlayer(EntityPlayer player) {
+	public boolean isUseableByPlayer(EntityPlayer player) {
 		return true;
 	}
 
 	@Override
-	public void openInventory(EntityPlayer player) {
-	}
+	public void openInventory() { }
 
 	@Override
-	public void closeInventory(EntityPlayer player) {
-	}
+	public void closeInventory() { }
 
 	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
 		return isItemValid(index, stack);
-	}
-
-	@Override
-	public int getField(int id) {
-		return 0;
-	}
-
-	@Override
-	public void setField(int id, int value) {
-	}
-
-	@Override
-	public int getFieldCount() {
-		return 0;
-	}
-
-	@Override
-	public void clear() {
-		inventory.clear();
 	}
 }

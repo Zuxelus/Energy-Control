@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import com.zuxelus.energycontrol.blocks.KitAssembler;
 import com.zuxelus.energycontrol.containers.ISlotItemFilter;
 import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
@@ -8,30 +7,27 @@ import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
-import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.info.Info;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityKitAssembler extends TileEntityInventory implements ITickable, ITilePacketHandler, ISlotItemFilter, IEnergySink {
+public class TileEntityKitAssembler extends TileEntityInventory implements ITilePacketHandler, ISlotItemFilter, IEnergySink, IBlockHorizontal {
 	public static final byte SLOT_INFO = 0;
 	public static final byte SLOT_CARD1 = 1;
 	public static final byte SLOT_ITEM = 2;
 	public static final byte SLOT_CARD2 = 3;
 	public static final byte SLOT_KIT = 4;
 	private static final double CONSUMPTION = 1;
-	private static final double PRODUCTION_TIME = 6000;
+	private static final double PRODUCTION_TIME = 60;
 	private double maxStorage;
 	private double energy;
 	private double production;
@@ -63,6 +59,10 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 		return (int) Math.round(production / PRODUCTION_TIME * 24);
 	}
 
+	public boolean getActive() {
+		return active;
+	}
+
 	@Override
 	public void onServerMessageReceived(NBTTagCompound tag) {
 		if (!tag.hasKey("type"))
@@ -71,7 +71,7 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 		case 4:
 			if (tag.hasKey("slot") && tag.hasKey("title")) {
 				ItemStack itemStack = getStackInSlot(tag.getInteger("slot"));
-				if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemCardMain) {
+				if (itemStack != null && itemStack.getItem() instanceof ItemCardMain) {
 					new ItemCardReader(itemStack).setTitle(tag.getString("title"));
 				}
 			}
@@ -94,25 +94,18 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 	}
 
 	@Override
-	public SPacketUpdateTileEntity getUpdatePacket() {
+	public Packet getDescriptionPacket() {
 		NBTTagCompound tag = new NBTTagCompound();
 		tag = writeProperties(tag);
 		tag.setBoolean("active", active);
-		return new SPacketUpdateTileEntity(getPos(), 0, tag);
+		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, tag);
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-		readProperties(pkt.getNbtCompound());
-	}
-
-	@Override
-	public NBTTagCompound getUpdateTag() {
-		NBTTagCompound tag = super.getUpdateTag();
-		tag = writeProperties(tag);
-		updateActive();
-		tag.setBoolean("active", active);
-		return tag;
+	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+		if (!worldObj.isRemote)
+			return;
+		readProperties(pkt.func_148857_g());
 	}
 
 	@Override
@@ -122,8 +115,12 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 			energy = tag.getDouble("energy");
 		if (tag.hasKey("production"))
 			production = tag.getDouble("production");
-		if (tag.hasKey("active"))
+		if (tag.hasKey("active")) {
+			boolean old = active;
 			active = tag.getBoolean("active");
+			if (worldObj.isRemote && active != old)
+				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		}
 	}
 
 	@Override
@@ -141,15 +138,16 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
-		return writeProperties(super.writeToNBT(tag));
+	public void writeToNBT(NBTTagCompound tag) {
+		super.writeToNBT(tag);
+		writeProperties(tag);
 	}
 
-	@Override
 	public void onLoad() {
-		if (!addedToEnet && !world.isRemote && Info.isIc2Available()) {
+		if (!addedToEnet && !worldObj.isRemote && Info.isIc2Available()) {
 			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
 			addedToEnet = true;
+			updateActive();
 		}
 	}
 
@@ -161,17 +159,17 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 
 	@Override
 	public void onChunkUnload() {
-		if (addedToEnet && !world.isRemote && Info.isIc2Available()) {
+		if (addedToEnet && !worldObj.isRemote && Info.isIc2Available()) {
 			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
 			addedToEnet = false;
 		}
 	}
 
 	@Override
-	public void update() {
+	public void updateEntity() {
 		if (!addedToEnet)
 			onLoad();
-		if (world.isRemote || !active)
+		if (worldObj.isRemote || !active)
 			return;
 		if (energy >= CONSUMPTION) {
 			energy -= CONSUMPTION;
@@ -180,12 +178,12 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 				ItemStack stack1 = getStackInSlot(SLOT_CARD1);
 				ItemStack stack2 = getStackInSlot(SLOT_CARD2);
 				ItemStack kit = getStackInSlot(SLOT_KIT);
-				if (!stack1.isEmpty() && stack1.getItem() instanceof ItemCardMain && !stack2.isEmpty()
+				if (stack1 != null && stack1.getItem() instanceof ItemCardMain && stack2 != null
 						&& stack2.getItem() instanceof ItemCardMain && stack1.getItemDamage() == stack2.getItemDamage()
-						&& kit.isEmpty()) {
+						&& kit == null) {
 					int kit_damage = ItemCardMain.getKitFromCard(stack1.getItemDamage());
-					removeStackFromSlot(SLOT_CARD1);
-					removeStackFromSlot(SLOT_CARD2);
+					getStackInSlotOnClosing(SLOT_CARD1);
+					getStackInSlotOnClosing(SLOT_CARD2);
 					if (kit_damage != -1)
 						setInventorySlotContents(SLOT_KIT, new ItemStack(ItemHelper.itemKit, 2, kit_damage));
 				}
@@ -200,14 +198,13 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 	}
 
 	public void notifyBlockUpdate() {
-		IBlockState iblockstate = world.getBlockState(pos);
-		world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 
 	@Override
 	public void markDirty() {
 		super.markDirty();
-		if (world == null || world.isRemote)
+		if (worldObj == null || worldObj.isRemote)
 			return;
 		updateState();
 	}
@@ -217,15 +214,15 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 		if (energy < CONSUMPTION)
 			return;
 		ItemStack stack1 = getStackInSlot(SLOT_CARD1);
-		if (stack1.isEmpty() || !(stack1.getItem() instanceof ItemCardMain))
+		if (stack1 == null || !(stack1.getItem() instanceof ItemCardMain))
 			return;
 		ItemStack stack2 = getStackInSlot(SLOT_CARD2);
-		if (stack2.isEmpty() || !(stack2.getItem() instanceof ItemCardMain)
+		if (stack2 == null || !(stack2.getItem() instanceof ItemCardMain)
 				|| stack1.getItemDamage() != stack2.getItemDamage()
 				|| ItemCardMain.getKitFromCard(stack1.getItemDamage()) == -1)
 			return;
 		ItemStack kit = getStackInSlot(SLOT_KIT);
-		if (!kit.isEmpty())
+		if (kit != null)
 			return;
 		active = true;
 	}
@@ -237,15 +234,7 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 			return;
 
 		production = 0;
-
-		IBlockState iblockstate = world.getBlockState(pos);
-		Block block = iblockstate.getBlock();
-		if (!(block instanceof KitAssembler) || iblockstate.getValue(KitAssembler.ACTIVE) == active)
-			return;
-		IBlockState newState = block.getDefaultState()
-				.withProperty(KitAssembler.FACING, iblockstate.getValue(KitAssembler.FACING))
-				.withProperty(KitAssembler.ACTIVE, active);
-		world.setBlockState(pos, newState, 3);
+		notifyBlockUpdate();
 	}
 
 	// ------- Inventory -------
@@ -276,7 +265,7 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 
 	// IEnergySink
 	@Override
-	public boolean acceptsEnergyFrom(IEnergyEmitter emitter, EnumFacing side) {
+	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction) {
 		return true;
 	}
 
@@ -291,7 +280,8 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 	}
 
 	@Override
-	public double injectEnergy(EnumFacing directionFrom, double amount, double voltage) {
+	public double injectEnergy(ForgeDirection directionFrom, double amount, double voltage) {
+		double old = energy;
 		energy += amount;
 		double left = 0.0;
 
@@ -299,11 +289,13 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 			left = energy - maxStorage;
 			energy = maxStorage;
 		}
+		if (energy > 0 && old == 0 && !worldObj.isRemote)
+			updateState();
 		return left;
 	}
 
 	@Override
-	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
-		return oldState.getBlock() != newSate.getBlock();
+	public boolean shouldRefresh(Block oldBlock, Block newBlock, int oldMeta, int newMeta, World world, int x, int y, int z) {
+		return oldBlock != newBlock;
 	}
 }

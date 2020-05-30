@@ -1,26 +1,24 @@
 package com.zuxelus.energycontrol.items.kits;
 
-import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.LiquidCardHelper;
 import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
 
 public class ItemKitLiquid extends ItemKitSimple {
 	public ItemKitLiquid() {
 		super(ItemCardType.KIT_LIQUID, "kit_liquid");
-		//addRecipe(new Object[] { "CF", "PB", 'P', Items.PAPER, 'C', Items.BUCKET, 'F', IC2Items.getItem("frequency_transmitter"), 'B', "dyeBlue" });
 	}
 
 	@Override
-	protected BlockPos getTargetCoordinates(World world, BlockPos pos, ItemStack stack) {
-		IFluidTank tank = LiquidCardHelper.getStorageAt(world, pos);
+	protected ChunkCoordinates getTargetCoordinates(World world, int x, int y, int z, ItemStack stack) {
+		FluidTankInfo tank = LiquidCardHelper.getStorageAt(world, x, y, z);
 		if (tank != null)
-			return pos;
+			return new ChunkCoordinates(x, y, z);
 		return null;
 	}
 

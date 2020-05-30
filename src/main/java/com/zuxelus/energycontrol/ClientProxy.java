@@ -4,6 +4,7 @@ import com.zuxelus.energycontrol.blocks.BlockDamages;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.containers.*;
 import com.zuxelus.energycontrol.gui.*;
+import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.cards.ItemCardHolder;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.kits.ItemKitMain;
@@ -11,13 +12,13 @@ import com.zuxelus.energycontrol.renderers.*;
 import com.zuxelus.energycontrol.tileentities.*;
 import com.zuxelus.energycontrol.utils.SoundHelper;
 
+import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 public class ClientProxy extends ServerProxy {
 	@Override
@@ -26,7 +27,7 @@ public class ClientProxy extends ServerProxy {
 		MinecraftForge.EVENT_BUS.register(EnergyControl.config);
 		EnergyControl.config.init(event.getSuggestedConfigurationFile());
 	}
-	
+
 	@Override
 	public void registerSpecialRenderers() {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityThermo.class, new TEThermoRenderer());
@@ -35,6 +36,9 @@ public class ClientProxy extends ServerProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityInfoPanelExtender.class, new TEInfoPanelExtenderRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAdvancedInfoPanel.class, new TEAdvancedInfoPanelRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAdvancedInfoPanelExtender.class, new TEAdvancedInfoPanelExtenderRenderer());
+		int modelId = RenderingRegistry.getNextAvailableRenderId();
+		EnergyControl.instance.modelId = modelId;
+		RenderingRegistry.registerBlockHandler(new MainBlockRenderer(modelId));
 	}
 
 	@Override
@@ -44,10 +48,10 @@ public class ClientProxy extends ServerProxy {
 		case BlockDamages.GUI_PORTABLE_PANEL:
 			return new GuiPortablePanel(new ContainerPortablePanel(player));
 		case BlockDamages.GUI_CARD_HOLDER:
-			if (player.getHeldItemMainhand().getItem() instanceof ItemCardHolder)
+			if (player.getCurrentEquippedItem().getItem() instanceof ItemCardHolder)
 				return new GuiCardHolder(player);
 		}
-		TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
 		switch (ID) {
 		case BlockDamages.DAMAGE_THERMAL_MONITOR:
 			if (tileEntity instanceof TileEntityThermo)

@@ -5,10 +5,7 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ChatAllowedCharacters;
 
 public class GuiTextArea extends Gui {
@@ -74,21 +71,20 @@ public class GuiTextArea extends Gui {
 			top = bottom;
 			bottom = var5;
 		}
-		
-        Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferbuilder = tessellator.getBuffer();
-        GlStateManager.color(0.0F, 0.0F, 255.0F, 255.0F);
-        GlStateManager.disableTexture2D();
-        GlStateManager.enableColorLogic();
-        GlStateManager.colorLogicOp(GL11.GL_OR_REVERSE);
-		bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
-		bufferbuilder.pos(left, bottom, 0.0D).endVertex();;
-		bufferbuilder.pos(right, bottom, 0.0D).endVertex();;
-		bufferbuilder.pos(right, top, 0.0D).endVertex();;
-		bufferbuilder.pos(left, top, 0.0D).endVertex();;
+
+		Tessellator tessellator = Tessellator.instance;
+		GL11.glColor4f(0.0F, 0.0F, 255.0F, 255.0F);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GL11.glEnable(GL11.GL_COLOR_LOGIC_OP);
+		GL11.glLogicOp(GL11.GL_OR_REVERSE);
+		tessellator.startDrawingQuads();
+		tessellator.addVertex(left, bottom, 0.0D);
+		tessellator.addVertex(right, bottom, 0.0D);
+		tessellator.addVertex(right, top, 0.0D);
+		tessellator.addVertex(left, top, 0.0D);
 		tessellator.draw();
-        GlStateManager.disableColorLogic();
-        GlStateManager.enableTexture2D();
+		GL11.glDisable(GL11.GL_COLOR_LOGIC_OP);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
 
 	public void setCursorPosition(int x, int y) {
@@ -128,7 +124,7 @@ public class GuiTextArea extends Gui {
 
 	public void writeText(String additionalText) {
 		String newLine = "";
-		String filteredText = ChatAllowedCharacters.filterAllowedCharacters(additionalText);
+		String filteredText = ChatAllowedCharacters.filerAllowedCharacters(additionalText);
 		int freeCharCount = this.maxStringLength - text[cursorLine].length();
 
 		if (text[cursorLine].length() > 0)

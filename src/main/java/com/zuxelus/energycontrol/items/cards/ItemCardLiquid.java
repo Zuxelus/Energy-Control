@@ -9,14 +9,14 @@ import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.LiquidCardHelper;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.fluids.FluidTankInfo;
 
 public class ItemCardLiquid extends ItemCardBase {
 	public ItemCardLiquid() {
@@ -24,23 +24,23 @@ public class ItemCardLiquid extends ItemCardBase {
 	}
 
 	@Override
-	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
-		BlockPos target = reader.getTarget();
+	public CardState update(World world, ICardReader reader, int range, int x, int y, int z) {
+		ChunkCoordinates target = reader.getTarget();
 		if (target == null) 
 			return CardState.NO_TARGET;
 		
-		IFluidTank storage = LiquidCardHelper.getStorageAt(world, target);
+		FluidTankInfo storage = LiquidCardHelper.getStorageAt(world, target.posX, target.posY, target.posZ);
 		if (storage == null)
 			return CardState.NO_TARGET;
-		
+
 		int amount = 0;
 		String name = "";
-		if (storage.getFluid() != null) {
-			amount = storage.getFluid().amount;
+		if (storage.fluid != null) {
+			amount = storage.fluid.amount;
 			if (amount > 0)
-				name = FluidRegistry.getFluidName(storage.getFluid());
+				name = FluidRegistry.getFluidName(storage.fluid);
 		}
-		reader.setInt("capacity", storage.getCapacity());
+		reader.setInt("capacity", storage.capacity);
 		reader.setInt("amount", amount);
 		reader.setString("name", name);
 		return CardState.OK;
@@ -56,16 +56,16 @@ public class ItemCardLiquid extends ItemCardBase {
 			String name = reader.getString("name");
 			if (name == "")
 				name = I18n.format("msg.ec.None");
-			result.add(new PanelString("msg.ec.InfoPanelLiquidName", name, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelName", name, showLabels));
 		}
 		if ((displaySettings & 2) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelLiquidAmount", amount, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelAmount", amount, showLabels));
 		if ((displaySettings & 4) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelLiquidFree", capacity - amount, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelFree", capacity - amount, showLabels));
 		if ((displaySettings & 8) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelLiquidCapacity", capacity, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelCapacity", capacity, showLabels));
 		if ((displaySettings & 16) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelLiquidPercentage", capacity == 0 ? 100 : (amount * 100 / capacity), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelPercentage", capacity == 0 ? 100 : (amount * 100 / capacity), showLabels));
 		return result;
 	}
 

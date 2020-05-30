@@ -1,30 +1,30 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import com.zuxelus.energycontrol.blocks.BlockDamages;
 import com.zuxelus.energycontrol.containers.ISlotItemFilter;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.items.ItemHelper;
 
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.NodeStats;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
-import ic2.api.energy.tile.IEnergyAcceptor;
-import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergySource;
 import ic2.api.info.Info;
-import ic2.api.item.IC2Items;
-import net.minecraft.block.state.IBlockState;
+import ic2.api.tile.IWrenchable;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEntityAverageCounter extends TileEntityInventory
-		implements ITickable, ISlotItemFilter, IEnergySink, IEnergySource, ITilePacketHandler {
+		implements ISlotItemFilter, IEnergySink, IEnergySource, ITilePacketHandler, IWrenchable {
 	private static final int BASE_PACKET_SIZE = 32;
 	protected static final int DATA_POINTS = 11 * 20;
 	private boolean init;
@@ -76,7 +76,7 @@ public class TileEntityAverageCounter extends TileEntityInventory
 
 	private void setPeriod(short p) {
 		period = p;
-		if (!world.isRemote && prevPeriod != period)
+		if (!worldObj.isRemote && prevPeriod != period)
 			notifyBlockUpdate();
 		prevPeriod = period;
 	}
@@ -115,22 +115,17 @@ public class TileEntityAverageCounter extends TileEntityInventory
 	}
 
 	@Override
-	public SPacketUpdateTileEntity getUpdatePacket() {
+	public Packet getDescriptionPacket() {
 		NBTTagCompound tag = new NBTTagCompound();
 		tag = writeProperties(tag);
-		return new SPacketUpdateTileEntity(getPos(), 0, tag);
+		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, tag);
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-		readProperties(pkt.getNbtCompound());
-	}
-
-	@Override
-	public NBTTagCompound getUpdateTag() {
-		NBTTagCompound tag = super.getUpdateTag();
-		tag = writeProperties(tag);
-		return tag;
+	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+		if (!worldObj.isRemote)
+			return;
+		readProperties(pkt.func_148857_g());
 	}
 
 	@Override
@@ -163,13 +158,13 @@ public class TileEntityAverageCounter extends TileEntityInventory
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
-		return writeProperties(super.writeToNBT(tag));
+	public void writeToNBT(NBTTagCompound tag) {
+		super.writeToNBT(tag);
+		writeProperties(tag);
 	}
 
-	@Override
 	public void onLoad() {
-		if (!addedToEnet && !world.isRemote && Info.isIc2Available()) {
+		if (!addedToEnet && !worldObj.isRemote && Info.isIc2Available()) {
 			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
 			addedToEnet = true;
 		}
@@ -183,28 +178,28 @@ public class TileEntityAverageCounter extends TileEntityInventory
 
 	@Override
 	public void onChunkUnload() {
-		if (addedToEnet && !world.isRemote && Info.isIc2Available()) {
+		if (addedToEnet && !worldObj.isRemote && Info.isIc2Available()) {
 			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
 			addedToEnet = false;
 		}
 	}
 
 	@Override
-	public void update() {
+	public void updateEntity() {
 		if (!addedToEnet)
 			onLoad();
 		if (!init) {
 			init = true;
 			markDirty();
 		}
-		if (world.isRemote)
+		if (worldObj.isRemote)
 			return;
 
 		index = (index + 1) % DATA_POINTS;
 		data[index] = 0;
 		getAverage();
 
-		TileEntity neighbor = world.getTileEntity(pos.offset(facing));
+		TileEntity neighbor = worldObj.getTileEntity(xCoord + facing.offsetX, yCoord + facing.offsetY, zCoord + facing.offsetZ);
 		if (CrossModLoader.ic2.isCable(neighbor)) {
 			NodeStats node = EnergyNet.instance.getNodeStats(this);
 			if (node != null)
@@ -217,10 +212,10 @@ public class TileEntityAverageCounter extends TileEntityInventory
 		super.markDirty();
 		int upgradeCountTransormer = 0;
 		ItemStack itemStack = getStackInSlot(0);
-		if (!itemStack.isEmpty() && itemStack.isItemEqual(IC2Items.getItem("upgrade","transformer")))
-			upgradeCountTransormer = itemStack.getCount();
+		if (itemStack != null && itemStack.isItemEqual(CrossModLoader.ic2.getItem("transformer")))
+			upgradeCountTransormer = itemStack.stackSize;
 		upgradeCountTransormer = Math.min(upgradeCountTransormer, 4);
-		if (world != null && !world.isRemote) {
+		if (worldObj != null && !worldObj.isRemote) {
 			output = BASE_PACKET_SIZE * (int) Math.pow(4D, upgradeCountTransormer);
 			tier = upgradeCountTransormer + 1;
 
@@ -248,23 +243,21 @@ public class TileEntityAverageCounter extends TileEntityInventory
 
 	@Override
 	public boolean isItemValid(int slotIndex, ItemStack itemstack) { // ISlotItemFilter
-		return itemstack.isItemEqual(IC2Items.getItem("upgrade", "transformer"));
+		return itemstack.isItemEqual(CrossModLoader.ic2.getItem("transformer"));
 	}
 
 	private void notifyBlockUpdate() {
-		IBlockState iblockstate = world.getBlockState(pos);
-		world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 
 	@Override
-	public boolean acceptsEnergyFrom(IEnergyEmitter emitter, EnumFacing dir) {
-		return dir != getFacing();
-
+	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection dir) {
+		return dir != getFacingForge();
 	}
 
 	@Override
-	public boolean emitsEnergyTo(IEnergyAcceptor receiver, EnumFacing dir) {
-		return dir == getFacing();
+	public boolean emitsEnergyTo(TileEntity receiver, ForgeDirection dir) {
+		return dir == getFacingForge();
 	}
 
 	@Override
@@ -296,10 +289,41 @@ public class TileEntityAverageCounter extends TileEntityInventory
 	}
 
 	@Override
-	public double injectEnergy(EnumFacing directionFrom, double amount, double voltage) {
+	public double injectEnergy(ForgeDirection directionFrom, double amount, double voltage) {
 		if (energy >= 2 * output)
 			return amount;
 		this.energy += amount;
 		return 0.0D;
+	}
+
+	// IWrenchable
+	@Override
+	public boolean wrenchCanSetFacing(EntityPlayer entityPlayer, int side) {
+		return facing.ordinal() != side;
+	}
+
+	@Override
+	public short getFacing() {
+		return (short) facing.ordinal();
+	}
+
+	@Override
+	public void setFacing(short facing) {
+		setFacing((int) facing);
+	}
+
+	@Override
+	public boolean wrenchCanRemove(EntityPlayer entityPlayer) {
+		return true;
+	}
+
+	@Override
+	public float getWrenchDropRate() {
+		return 1;
+	}
+
+	@Override
+	public ItemStack getWrenchDrop(EntityPlayer entityPlayer) {
+		return new ItemStack(ItemHelper.blockMain, 1, BlockDamages.DAMAGE_AVERAGE_COUNTER);
 	}
 }

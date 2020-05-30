@@ -10,13 +10,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
 
 public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel> {
 	private EntityPlayer player;
 	
 	public ContainerPortablePanel(EntityPlayer player) {
-		super(new InventoryPortablePanel(player.getHeldItemMainhand(), "item.portable_panel.name"));
+		super(new InventoryPortablePanel(player.getHeldItem(), "item.portable_panel.name"));
 		this.player = player;
 
 		addSlotToContainer(new SlotFilter(te, 0, 174, 17));
@@ -38,7 +37,7 @@ public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel
 
 	private void processCard() {
 		ItemStack card = te.getStackInSlot(InventoryPortablePanel.SLOT_CARD);
-		if (card.isEmpty())
+		if (card == null)
 			return;
 
 		Item item = card.getItem();
@@ -46,6 +45,12 @@ public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel
 			return;
 
 		ItemCardReader reader = new ItemCardReader(card);
-		ItemCardMain.updateCardNBT(player.world, player.getPosition(), reader, te.getStackInSlot(InventoryPortablePanel.SLOT_UPGRADE_RANGE));
+		ItemCardMain.updateCardNBT(player.worldObj, (int) player.posX, (int) player.posY, (int) player.posZ, reader, te.getStackInSlot(InventoryPortablePanel.SLOT_UPGRADE_RANGE));
+	}
+
+	@Override
+	public void onContainerClosed(EntityPlayer player) {
+		super.onContainerClosed(player);
+		te.writeToParentNBT(player);
 	}
 }

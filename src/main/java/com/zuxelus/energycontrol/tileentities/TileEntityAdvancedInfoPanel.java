@@ -1,14 +1,16 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import com.zuxelus.energycontrol.crossmod.computercraft.AdvancedInfoPanelPeripheral;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.zuxelus.energycontrol.blocks.BlockDamages;
+import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 
-import dan200.computercraft.api.peripheral.IPeripheral;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 
 public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	public static final String NAME = "info_panel_advanced";
@@ -45,7 +47,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 
 	public void setPowerMode(byte mode) {
 		powerMode = mode;
-		if (world != null && !world.isRemote)
+		if (worldObj != null && !worldObj.isRemote)
 			calcPowered();
 	}
 
@@ -65,7 +67,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 
 	@Override
 	protected void calcPowered() { //server
-		boolean newPowered = world.isBlockPowered(pos);
+		boolean newPowered = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
 		switch (powerMode) {
 		case POWER_ON:
 			newPowered = true;
@@ -82,7 +84,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 		if (newPowered != powered) {
 			powered = newPowered;
 			if (screen != null)
-				screen.turnPower(powered, world);
+				screen.turnPower(powered, worldObj);
 		}
 	}
 
@@ -166,8 +168,8 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	}
 
 	@Override
-	public NonNullList<ItemStack> getCards() {
-		NonNullList<ItemStack> data = NonNullList.create();
+	public List<ItemStack> getCards() {
+		List<ItemStack> data = new ArrayList<ItemStack>();
 		data.add(getStackInSlot(SLOT_CARD1));
 		data.add(getStackInSlot(SLOT_CARD2));
 		data.add(getStackInSlot(SLOT_CARD3));
@@ -203,9 +205,8 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 		}
 	}
 
-	// IPeripheralTile
 	@Override
-	public IPeripheral getPeripheral(EnumFacing side) {
-		return new AdvancedInfoPanelPeripheral(this);
+	public ItemStack getWrenchDrop(EntityPlayer entityPlayer) {
+		return new ItemStack(ItemHelper.blockMain, 1, BlockDamages.DAMAGE_ADVANCED_PANEL);
 	}
 }

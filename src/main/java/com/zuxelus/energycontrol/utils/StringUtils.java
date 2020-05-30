@@ -32,25 +32,4 @@ public class StringUtils {
 	public static String getFormattedKey(String resourceName, Object... arguments) {
 		return I18n.format(resourceName, arguments);
 	}
-/*
-	public static List<PanelString> getStateMessage(CardState state) {
-		List<PanelString> result = new LinkedList<PanelString>();
-		PanelString line = new PanelString();
-		switch (state) {
-		case OUT_OF_RANGE: line.textCenter = I18n.format("msg.ec.InfoPanelOutOfRange");
-			break;
-		case INVALID_CARD: line.textCenter = I18n.format("msg.ec.InfoPanelInvalidCard");
-			break;
-		case NO_TARGET: line.textCenter = I18n.format("msg.ec.InfoPanelNoTarget");
-			break;
-		case CUSTOM_ERROR:
-			break;
-		case OK:
-			break;
-		default:
-			break;
-		}
-		result.add(line);
-		return result;
-	}*/
 }

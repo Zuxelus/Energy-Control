@@ -1,13 +1,13 @@
 package com.zuxelus.energycontrol.renderers;
 
+import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.model.PositionTextureVertex;
 import net.minecraft.client.model.TexturedQuad;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class CubeRenderer {
 	private boolean compiled;
@@ -35,16 +35,16 @@ public class CubeRenderer {
 	public void render(float scale) {
 		if (!compiled)
 			compileDisplayList(scale);
-		GlStateManager.callList(this.displayList);
+		GL11.glCallList(displayList);
 	}
 
 	@SideOnly(Side.CLIENT)
 	private void compileDisplayList(float scale) {
 		displayList = GLAllocation.generateDisplayLists(1);
-		GlStateManager.glNewList(this.displayList, 4864);
-		BufferBuilder bufferbuilder = Tessellator.getInstance().getBuffer();
-		cube.render(bufferbuilder, scale);
-		GlStateManager.glEndList();
+		GL11.glNewList(displayList, GL11.GL_COMPILE);
+		Tessellator tessellator = Tessellator.instance;
+		cube.render(tessellator, scale);
+		GL11.glEndList();
 		compiled = true;
 	}
 
@@ -85,7 +85,7 @@ public class CubeRenderer {
 		}
 
 		@SideOnly(Side.CLIENT)
-		public void render(BufferBuilder renderer, float scale) {
+		public void render(Tessellator renderer, float scale) {
 			for (TexturedQuad texturedquad : this.quadList)
 				texturedquad.draw(renderer, scale);
 		}

@@ -4,8 +4,7 @@ import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityEnergyCounter;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.IContainerListener;
+import net.minecraft.inventory.ICrafting;
 import net.minecraft.item.ItemStack;
 
 public class ContainerEnergyCounter extends ContainerBase<TileEntityEnergyCounter>
@@ -25,14 +24,14 @@ public class ContainerEnergyCounter extends ContainerBase<TileEntityEnergyCounte
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
 		double counter = te.counter;
-		for (int i = 0; i < listeners.size(); i++)
+		for (int i = 0; i < crafters.size(); i++)
 			if (lastCounter != counter)
-				NetworkHelper.updateClientTileEntity(listeners.get(i), te.getPos(), 1, counter);
+				NetworkHelper.updateClientTileEntity((ICrafting)crafters.get(i), te.xCoord, te.yCoord, te.zCoord, 1, counter);
 		lastCounter = counter;
 	}
 
 	@Override
-	public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player) {
+	public ItemStack slotClick(int slotId, int dragType, int clickTypeIn, EntityPlayer player) {
 		ItemStack stack = super.slotClick(slotId, dragType, clickTypeIn, player);
 		te.markDirty();
 		return stack;

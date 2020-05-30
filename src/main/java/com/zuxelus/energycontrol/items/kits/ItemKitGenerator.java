@@ -6,22 +6,19 @@ import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class ItemKitGenerator extends ItemKitBase {
 
 	public ItemKitGenerator() {
 		super(ItemCardType.KIT_GENERATOR, "kit_generator");
-		//addRecipe(new Object[] { "CF", "PL", 'P', Items.PAPER, 'C', IC2Items.getItem("upgrade", "energy_storage"), 'F',
-				//IC2Items.getItem("frequency_transmitter"), 'L', "dyeLightGray" });
 	}
 
 	@Override
-	public ItemStack getSensorCard(ItemStack stack, Item card, EntityPlayer player, World world, BlockPos pos) {
-		ItemStack result = CrossModLoader.ic2.getGeneratorCard(world, pos);
-		if (!result.isEmpty())
+	public ItemStack getSensorCard(ItemStack stack, Item card, EntityPlayer player, World world, int x, int y, int z) {
+		ItemStack result = CrossModLoader.ic2.getGeneratorCard(world, x, y, z);
+		if (result != null)
 			return result;
-		return CrossModLoader.buildCraft.getGeneratorCard(world, pos);
+		return null;
 	}
 }

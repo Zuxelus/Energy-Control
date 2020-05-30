@@ -2,18 +2,19 @@ package com.zuxelus.energycontrol.renderers;
 
 import java.util.List;
 
+import org.lwjgl.opengl.GL11;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 
-public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileEntityInfoPanel> {
+public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
 	private static final ResourceLocation TEXTUREOFF[];
 	private static final ResourceLocation TEXTUREON[];
 	private static final CubeRenderer model[];
@@ -50,32 +51,31 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		return output;
 	}
 
-	@Override
-	public void render(TileEntityInfoPanel te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {   
-		GlStateManager.pushMatrix();
-		GlStateManager.translate((float)x, (float)y, (float)z);
-		switch (te.getFacing()) {
+	public void renderTileEntityAt(TileEntityInfoPanel te, double x, double y, double z) {
+		GL11.glPushMatrix();
+		GL11.glTranslated(x, y, z);
+		switch (te.getFacingForge()) {
 		case UP:
 			break;
 		case NORTH:
-			GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
-			GlStateManager.translate(0.0F, -1.0F, 0.0F);
+			GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F);
+			GL11.glTranslatef(0.0F, -1.0F, 0.0F);
 			break;
 		case SOUTH:
-			GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
-			GlStateManager.translate(0.0F, 0.0F, -1.0F);
+			GL11.glRotatef(90.0F, 1.0F, 0.0F, 0.0F);
+			GL11.glTranslatef(0.0F, 0.0F, -1.0F);
 			break;
 		case DOWN:
-			GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
-			GlStateManager.translate(0.0F, -1.0F, -1.0F);
+			GL11.glRotatef(180.0F, 1.0F, 0.0F, 0.0F);
+			GL11.glTranslatef(0.0F, -1.0F, -1.0F);
 			break;
 		case WEST:
-			GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
-			GlStateManager.translate(0.0F, -1.0F, 0.0F);
+			GL11.glRotatef(90.0F, 0.0F, 0.0F, 1.0F);
+			GL11.glTranslatef(0.0F, -1.0F, 0.0F);
 			break;
 		case EAST:
-			GlStateManager.rotate(-90.0F, 0.0F, 0.0F, 1.0F);
-			GlStateManager.translate(-1.0F, 0.0F, 0.0F);
+			GL11.glRotatef(-90.0F, 0.0F, 0.0F, 1.0F);
+			GL11.glTranslatef(-1.0F, 0.0F, 0.0F);
 			break;
 		}
 
@@ -96,40 +96,39 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			if (joinedData != null)
 				drawText(te, joinedData);
 		}
-		GlStateManager.popMatrix();
+		GL11.glPopMatrix();
 	}
 
 	private void drawText(TileEntityInfoPanel panel, List<PanelString> joinedData) {
 		Screen screen = panel.getScreen();
-		BlockPos pos = panel.getPos();
 		float displayWidth = 1 - 2F / 16;
 		float displayHeight = 1 - 2F / 16;
 		float dx = 0; float dy = 0; float dz = 0;
 		if (screen != null) {
-			switch (panel.getFacing()) {
+			switch (panel.getFacingForge()) {
 			case UP:
 				switch (panel.getRotation()) {
 				case NORTH:
-					dz = (pos.getZ() - screen.maxZ - screen.minZ + pos.getZ());
-					dy = pos.getX() - screen.maxX - screen.minX + pos.getX();
+					dz = (panel.zCoord - screen.maxZ - screen.minZ + panel.zCoord);
+					dy = panel.xCoord - screen.maxX - screen.minX + panel.xCoord;
 					displayWidth += screen.maxX - screen.minX;
 					displayHeight += screen.maxZ - screen.minZ;
 					break;
 				case SOUTH:
-					dz = (pos.getZ() - screen.maxZ - screen.minZ + pos.getZ());
-					dy = pos.getX() - screen.maxX - screen.minX + pos.getX();
+					dz = (panel.zCoord - screen.maxZ - screen.minZ + panel.zCoord);
+					dy = panel.xCoord - screen.maxX - screen.minX + panel.xCoord;
 					displayWidth += screen.maxX - screen.minX;
 					displayHeight += screen.maxZ - screen.minZ;
 					break;
 				case EAST:
-					dz = (pos.getZ() - screen.maxZ - screen.minZ + pos.getZ());
-					dy = pos.getX() - screen.maxX - screen.minX + pos.getX();
+					dz = (panel.zCoord - screen.maxZ - screen.minZ + panel.zCoord);
+					dy = panel.xCoord - screen.maxX - screen.minX + panel.xCoord;
 					displayWidth += screen.maxZ - screen.minZ;
 					displayHeight += screen.maxX - screen.minX;
 					break;
 				case WEST:
-					dz = (pos.getZ() - screen.maxZ - screen.minZ + pos.getZ());
-					dy = pos.getX() - screen.maxX - screen.minX + pos.getX();
+					dz = (panel.zCoord - screen.maxZ - screen.minZ + panel.zCoord);
+					dy = panel.xCoord - screen.maxX - screen.minX + panel.xCoord;
 					displayWidth += screen.maxZ - screen.minZ;
 					displayHeight += screen.maxX - screen.minX;
 					break;
@@ -140,56 +139,56 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 				}
 				break;
 			case NORTH:
-				dz = (pos.getY() - screen.maxY - screen.minY + pos.getY());
-				dy = pos.getX() - screen.maxX - screen.minX + pos.getX();
+				dz = (panel.yCoord - screen.maxY - screen.minY + panel.yCoord);
+				dy = panel.xCoord - screen.maxX - screen.minX + panel.xCoord;
 				displayWidth += screen.maxX - screen.minX;
 				displayHeight += screen.maxY - screen.minY;
 				break;
 			case SOUTH:
-				dz = - (pos.getY() - screen.maxY - screen.minY + pos.getY());
-				dy = pos.getX() - screen.maxX - screen.minX + pos.getX();
+				dz = - (panel.yCoord - screen.maxY - screen.minY + panel.yCoord);
+				dy = panel.xCoord - screen.maxX - screen.minX + panel.xCoord;
 				displayWidth += screen.maxX - screen.minX;
 				displayHeight += screen.maxY - screen.minY;
 				break;
 			case DOWN:
  				break;
 			case WEST:
-				dz = pos.getZ() - screen.maxZ + pos.getZ() - screen.minZ;
-				dy = (pos.getY() - screen.maxY - screen.minY + pos.getY());
+				dz = panel.zCoord - screen.maxZ + panel.zCoord - screen.minZ;
+				dy = (panel.yCoord - screen.maxY - screen.minY + panel.yCoord);
 				displayWidth += screen.maxZ - screen.minZ;
 				displayHeight += screen.maxY - screen.minY;
 				break;
 			case EAST:
-				dz = pos.getZ() - screen.maxZ + pos.getZ() - screen.minZ;
-				dy = - (pos.getY() - screen.maxY - screen.minY + pos.getY());
+				dz = panel.zCoord - screen.maxZ + panel.zCoord - screen.minZ;
+				dy = - (panel.yCoord - screen.maxY - screen.minY + panel.yCoord);
 				displayWidth += screen.maxZ - screen.minZ;
 				displayHeight += screen.maxY - screen.minY;
 				break;
 			}
 		}
 
-		GlStateManager.translate(0.5F - dy / 2, 1.01F - dx / 2 , 0.5F - dz / 2);
-		GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
+		GL11.glTranslatef(0.5F - dy / 2, 1.01F - dx / 2 , 0.5F - dz / 2);
+		GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F);
 		switch(panel.getRotation())
 		{
 		case UP:
 			break;
 		case NORTH:
-			GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
 			break;
 		case SOUTH:
 			break;
 		case DOWN:
 			break;
 		case WEST:
-			GlStateManager.rotate(-90.0F, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(-90.0F, 0.0F, 0.0F, 1.0F);
 			break;
 		case EAST:
-			GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(90.0F, 0.0F, 0.0F, 1.0F);
 			break;
 		}
 
-		FontRenderer fontRenderer = getFontRenderer();
+		FontRenderer fontRenderer = func_147498_b();
 		int maxWidth = 1;
 		for (PanelString panelString : joinedData) {
 			String currentString = implodeArray(new String[] { panelString.textLeft, panelString.textCenter, panelString.textRight }, " ");
@@ -202,7 +201,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		float scaleX = displayWidth / maxWidth;
 		float scaleY = displayHeight / requiredHeight;
 		float scale = Math.min(scaleX, scaleY);
-		GlStateManager.scale(scale, -scale, scale);
+		GL11.glScalef(scale, -scale, scale);
 		int realHeight = (int) Math.floor(displayHeight / scale);
 		int realWidth = (int) Math.floor(displayWidth / scale);
 		int offsetX;
@@ -215,7 +214,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			offsetY = 0;
 		}
 
-		GlStateManager.disableLighting();
+		GL11.glDisable(GL11.GL_LIGHTING);
 
 		int row = 0;
 		int colorHex = 0x000000;
@@ -242,7 +241,12 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			row++;
 		}
 
-		GlStateManager.enableLighting();
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GL11.glEnable(GL11.GL_LIGHTING);
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
-}	
+
+	@Override
+	public void renderTileEntityAt(TileEntity te, double x, double y, double z, float partialTicks) {
+		renderTileEntityAt((TileEntityInfoPanel) te, x, y, z);
+	}
+}

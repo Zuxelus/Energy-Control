@@ -2,7 +2,6 @@ package com.zuxelus.energycontrol.tileentities;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -13,26 +12,45 @@ public class Screen {
 	public int maxX;
 	public int maxY;
 	public int maxZ;
-	private BlockPos corePos;
+	private int coreX;
+	private int coreY;
+	private int coreZ;
 	private boolean powered = false;
 
+	public Screen(TileEntityInfoPanel panel) {
+		maxX = minX = coreX = panel.xCoord;
+		maxY = minY = coreY = panel.yCoord;
+		maxZ = minZ = coreZ = panel.zCoord;
+
+		powered = panel.getPowered();
+	}
+
+	public Screen(TileEntityInfoPanel panel, NBTTagCompound tag) {
+		minX = tag.getInteger("minX");
+		minY = tag.getInteger("minY");
+		minZ = tag.getInteger("minZ");
+
+		maxX = tag.getInteger("maxX");
+		maxY = tag.getInteger("maxY");
+		maxZ = tag.getInteger("maxZ");
+
+		coreX = panel.xCoord;
+		coreY = panel.yCoord;
+		coreZ = panel.zCoord;
+		powered = panel.getPowered();
+	}
+
 	public TileEntityInfoPanel getCore(IBlockAccess world) {
-		TileEntity tileEntity = world.getTileEntity(corePos);
+		TileEntity tileEntity = world.getTileEntity(coreX, coreY, coreZ);
 		if (tileEntity == null || !(tileEntity instanceof TileEntityInfoPanel))
 			return null;
 		return (TileEntityInfoPanel) tileEntity;
 	}
 
-	public void setCore(TileEntityInfoPanel core) {
-		corePos = core.getPos();
-		powered = core.getPowered();
-	}
-
 	public boolean isBlockNearby(TileEntity tileEntity) {
-		BlockPos pos = tileEntity.getPos();
-		int x = pos.getX();
-		int y = pos.getY();
-		int z = pos.getZ();
+		int x = tileEntity.xCoord;
+		int y = tileEntity.yCoord;
+		int z = tileEntity.zCoord;
 		return (x == minX - 1 && y >= minY && y <= maxY && z >= minZ && z <= maxZ)
 				|| (x == maxX + 1 && y >= minY && y <= maxY && z >= minZ && z <= maxZ)
 				|| (x >= minX && x <= maxX && y == minY - 1 && z >= minZ && z <= maxZ)
@@ -42,10 +60,9 @@ public class Screen {
 	}
 
 	public boolean isBlockPartOf(TileEntity tileEntity) {
-		BlockPos pos = tileEntity.getPos();
-		int x = pos.getX();
-		int y = pos.getY();
-		int z = pos.getZ();
+		int x = tileEntity.xCoord;
+		int y = tileEntity.yCoord;
+		int z = tileEntity.zCoord;
 		return x >= minX && x <= maxX && y >= minY && y <= maxY && z >= minZ && z <= maxZ;
 	}
 
@@ -53,7 +70,7 @@ public class Screen {
 		for (int x = minX; x <= maxX; x++) {
 			for (int y = minY; y <= maxY; y++) {
 				for (int z = minZ; z <= maxZ; z++) {
-					TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
+					TileEntity tileEntity = world.getTileEntity(x, y, z);
 					if (tileEntity == null || !(tileEntity instanceof IScreenPart))
 						continue;
 					((IScreenPart) tileEntity).setScreen(this);
@@ -70,7 +87,7 @@ public class Screen {
 		for (int x = minX; x <= maxX; x++) {
 			for (int y = minY; y <= maxY; y++) {
 				for (int z = minZ; z <= maxZ; z++) {
-					TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
+					TileEntity tileEntity = world.getTileEntity(x, y, z);
 					if (tileEntity == null || !(tileEntity instanceof IScreenPart))
 						continue;
 					IScreenPart part = (IScreenPart) tileEntity;
@@ -99,7 +116,7 @@ public class Screen {
 		for (int x = minX; x <= maxX; x++) {
 			for (int y = minY; y <= maxY; y++) {
 				for (int z = minZ; z <= maxZ; z++) {
-					TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
+					TileEntity te = world.getTileEntity(x, y, z);
 					if (te instanceof IScreenPart)
 						((IScreenPart)te).notifyBlockUpdate();
 						//world.checkLight(new BlockPos(x, y, z));
@@ -126,9 +143,9 @@ public class Screen {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + corePos.getX();
-		result = prime * result + corePos.getY();
-		result = prime * result + corePos.getZ();
+		result = prime * result + coreX;
+		result = prime * result + coreY;
+		result = prime * result + coreZ;
 		result = prime * result + maxX;
 		result = prime * result + maxY;
 		result = prime * result + maxZ;
@@ -139,7 +156,7 @@ public class Screen {
 	}
 
 	public boolean isCore(int x, int y, int z) {
-		return x == corePos.getX() && y == corePos.getY() && z == corePos.getZ();
+		return x == coreX && y == coreY && z == coreZ;
 	}
 
 	public int getDx() {
@@ -154,59 +171,9 @@ public class Screen {
 		return maxZ - minZ;
 	}
 
-/*	public int getHeight(TileEntityInfoPanel core) {
-		if (core == null)
-			return 0;
-		int rotation = core.getRotation().getIndex();
-		switch (core.getFacing().getIndex()) {
-		case 0:
-		case 1:
-			if (rotation == 0 || rotation == 3)
-				return getDz() + 1;
-			else
-				return getDx() + 1;
-		case 2:
-		case 3:
-			if (rotation == 0 || rotation == 3)
-				return getDy() + 1;
-			else
-				return getDx() + 1;
-		case 4:
-		case 5:
-			if (rotation == 0 || rotation == 3)
-				return getDy() + 1;
-			else
-				return getDz() + 1;
-		}
-		return 1;
+	public boolean isOneBlock() {
+		return minX == maxX && minY == maxY && minZ == maxZ;
 	}
-
-	public int getWidth(TileEntityInfoPanel core) {
-		if (core == null)
-			return 0;
-		int rotation = core.getRotation().getIndex();
-		switch (core.getFacing().getIndex()) {
-		case 0:
-		case 1:
-			if (rotation == 0 || rotation == 3)
-				return getDx() + 1;
-			else
-				return getDz() + 1;
-		case 2:
-		case 3:
-			if (rotation == 0 || rotation == 3)
-				return getDx() + 1;
-			else
-				return getDy() + 1;
-		case 4:
-		case 5:
-			if (rotation == 0 || rotation == 3)
-				return getDz() + 1;
-			else
-				return getDy() + 1;
-		}
-		return 1;
-	}*/
 
 	@Override
 	public boolean equals(Object obj) {
@@ -217,11 +184,11 @@ public class Screen {
 		if (getClass() != obj.getClass())
 			return false;
 		Screen other = (Screen) obj;
-		if (corePos.getX() != other.corePos.getX())
+		if (coreX != other.coreX)
 			return false;
-		if (corePos.getY() != other.corePos.getY())
+		if (coreY != other.coreY)
 			return false;
-		if (corePos.getZ() != other.corePos.getZ())
+		if (coreZ != other.coreZ)
 			return false;
 		if (maxX != other.maxX)
 			return false;

@@ -4,10 +4,7 @@ import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityAverageCounter;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IContainerListener;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.ICrafting;
 import net.minecraft.item.ItemStack;
 
 public class ContainerAverageCounter extends ContainerBase<TileEntityAverageCounter>
@@ -23,24 +20,23 @@ public class ContainerAverageCounter extends ContainerBase<TileEntityAverageCoun
 	}
 
 	@Override
-	public void addListener(IContainerListener listener) {
-		super.addListener(listener);
-		NetworkHelper.updateClientTileEntity(listener, te.getPos(), 1, te.getClientAverage());
+	public void addCraftingToCrafters(ICrafting listener) {
+		super.addCraftingToCrafters(listener);
+		NetworkHelper.updateClientTileEntity(listener, te.xCoord, te.yCoord, te.zCoord, 1, te.getClientAverage());
 	}
 
 	@Override
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
 		int average = te.getClientAverage();
-		for (int i = 0; i < listeners.size(); i++) {
+		for (int i = 0; i < crafters.size(); i++)
 			if (lastAverage != average)
-				NetworkHelper.updateClientTileEntity(listeners.get(i), te.getPos(), 1, average);
-		}
+				NetworkHelper.updateClientTileEntity((ICrafting)crafters.get(i), te.xCoord, te.yCoord, te.zCoord, 1, average);
 		lastAverage = average;
 	}
 
 	@Override
-	public ItemStack slotClick(int slotId, int dragType, ClickType clickType, EntityPlayer player) {	
+	public ItemStack slotClick(int slotId, int dragType, int clickType, EntityPlayer player) {
 		ItemStack stack = super.slotClick(slotId, dragType, clickType, player);
 		te.markDirty();
 		return stack;

@@ -2,8 +2,7 @@ package com.zuxelus.energycontrol.renderers;
 
 import com.zuxelus.energycontrol.tileentities.Screen;
 
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class RotationOffset {
 	public float leftTop;
@@ -64,7 +63,7 @@ public class RotationOffset {
 		rightBottom = 32 - (32 - rightBottom) / 32 * thickness;
 	}
 
-	public RotationOffset addOffset(Screen screen, BlockPos pos, EnumFacing facing, EnumFacing rotation) {
+	public RotationOffset addOffset(Screen screen, int x, int y, int z, ForgeDirection facing, ForgeDirection rotation) {
 		if (rotateHor == 0 && rotateVert == 0)
 			return this;
 
@@ -78,28 +77,28 @@ public class RotationOffset {
 		switch (facing) {
 		case NORTH:
 			if (rotateVert > 0) {
-				int posY = screen.maxY - pos.getY();
+				int posY = screen.maxY - y;
 				leftTop += (this.leftBottom - this.leftTop) / lengthY * (posY + 1);
 				rightTop += (this.leftBottom - this.leftTop) / lengthY * posY;
 				leftBottom += (this.leftBottom - this.leftTop) / lengthY * (posY + 1);
 				rightBottom += (this.leftBottom - this.leftTop) / lengthY * posY;
 			}
 			if (rotateVert < 0) {
-				int posY = pos.getY() - screen.minY;
+				int posY = y - screen.minY;
 				leftTop += (this.leftTop - this.leftBottom) / lengthY * posY;
 				rightTop += (this.leftTop - this.leftBottom) / lengthY * (posY + 1);
 				leftBottom += (this.leftTop - this.leftBottom) / lengthY * posY;
 				rightBottom += (this.leftTop - this.leftBottom) / lengthY * (posY + 1);
 			}
 			if (rotateHor > 0) {
-				int posX = screen.maxX - pos.getX();
+				int posX = screen.maxX - x;
 				leftTop += (this.rightTop - this.leftTop) / lengthX * posX;
 				rightTop += (this.rightTop - this.leftTop) / lengthX * posX;
 				leftBottom += (this.rightTop - this.leftTop) / lengthX * (posX + 1);
 				rightBottom += (this.rightTop - this.leftTop) / lengthX * (posX + 1);
 			}
 			if (rotateHor < 0) {
-				int posX = pos.getX() - screen.minX;
+				int posX = x - screen.minX;
 				leftTop += (this.leftTop - this.rightTop) / lengthX * (posX + 1);
 				rightTop += (this.leftTop - this.rightTop) / lengthX * (posX + 1);
 				leftBottom += (this.leftTop - this.rightTop) / lengthX * posX;
@@ -108,28 +107,28 @@ public class RotationOffset {
 			break;
 		case SOUTH:
 			if (rotateVert > 0) {
-				int posY = screen.maxY - pos.getY();
+				int posY = screen.maxY - y;
 				leftTop += (this.leftBottom - this.leftTop) / lengthY * posY;
 				rightTop += (this.leftBottom - this.leftTop) / lengthY * (posY + 1);
 				leftBottom += (this.leftBottom - this.leftTop) / lengthY * posY;
 				rightBottom += (this.leftBottom - this.leftTop) / lengthY * (posY + 1);
 			}
 			if (rotateVert < 0) {
-				int posY = pos.getY() - screen.minY;
+				int posY = y - screen.minY;
 				leftTop += (this.leftTop - this.leftBottom) / lengthY * (posY + 1);
 				rightTop += (this.leftTop - this.leftBottom) / lengthY * posY;
 				leftBottom += (this.leftTop - this.leftBottom) / lengthY * (posY + 1);
 				rightBottom += (this.leftTop - this.leftBottom) / lengthY * posY;
 			}
 			if (rotateHor > 0) {
-				int posX = pos.getX() - screen.minX;
+				int posX = x - screen.minX;
 				leftTop += (this.rightTop - this.leftTop) / lengthX * (posX + 1);
 				rightTop += (this.rightTop - this.leftTop) / lengthX * (posX + 1);
 				leftBottom += (this.rightTop - this.leftTop) / lengthX * posX;
 				rightBottom += (this.rightTop - this.leftTop) / lengthX * posX;
 			}
 			if (rotateHor < 0) {
-				int posX = screen.maxX - pos.getX();
+				int posX = screen.maxX - x;
 				leftTop += (this.leftTop - this.rightTop) / lengthX * posX;
 				rightTop += (this.leftTop - this.rightTop) / lengthX * posX;
 				leftBottom += (this.leftTop - this.rightTop) / lengthX * (posX + 1);
@@ -138,28 +137,28 @@ public class RotationOffset {
 			break;
 		case EAST:
 			if (rotateVert > 0) {
-				int posY = screen.maxY - pos.getY();
+				int posY = screen.maxY - y;
 				leftTop += (this.leftBottom - this.leftTop) / lengthY * (posY + 1);
 				rightTop += (this.leftBottom - this.leftTop) / lengthY * (posY + 1);
 				leftBottom += (this.leftBottom - this.leftTop) / lengthY * posY;
 				rightBottom += (this.leftBottom - this.leftTop) / lengthY * posY;
 			}
 			if (rotateVert < 0) {
-				int posY = pos.getY() - screen.minY;
+				int posY = y - screen.minY;
 				leftTop += (this.leftTop - this.leftBottom) / lengthY * posY;
 				rightTop += (this.leftTop - this.leftBottom) / lengthY * posY;
 				leftBottom += (this.leftTop - this.leftBottom) / lengthY * (posY + 1);
 				rightBottom += (this.leftTop - this.leftBottom) / lengthY * (posY + 1);
 			}
 			if (rotateHor > 0) {
-				int posZ = screen.maxZ - pos.getZ();
+				int posZ = screen.maxZ - z;
 				leftTop += (this.rightTop - this.leftTop) / lengthZ * (posZ + 1);
 				rightTop += (this.rightTop - this.leftTop) / lengthZ * posZ;
 				leftBottom += (this.rightTop - this.leftTop) / lengthZ * (posZ + 1);
 				rightBottom += (this.rightTop - this.leftTop) / lengthZ * posZ;
 			}
 			if (rotateHor < 0) {
-				int posZ = pos.getZ() - screen.minZ;
+				int posZ = z - screen.minZ;
 				leftTop += (this.leftTop - this.rightTop) / lengthZ * posZ;
 				rightTop += (this.leftTop - this.rightTop) / lengthZ * (posZ + 1);
 				leftBottom += (this.leftTop - this.rightTop) / lengthZ * posZ;
@@ -168,28 +167,28 @@ public class RotationOffset {
 			break;
 		case WEST:
 			if (rotateVert > 0) {
-				int posY = screen.maxY - pos.getY();
+				int posY = screen.maxY - y;
 				leftTop += (this.leftBottom - this.leftTop) / lengthY * posY;
 				rightTop += (this.leftBottom - this.leftTop) / lengthY * posY;
 				leftBottom += (this.leftBottom - this.leftTop) / lengthY * (posY + 1);
 				rightBottom += (this.leftBottom - this.leftTop) / lengthY * (posY + 1);
 			}
 			if (rotateVert < 0) {
-				int posY = pos.getY() - screen.minY;
+				int posY = y - screen.minY;
 				leftTop += (this.leftTop - this.leftBottom) / lengthY * (posY + 1);
 				rightTop += (this.leftTop - this.leftBottom) / lengthY * (posY + 1);
 				leftBottom += (this.leftTop - this.leftBottom) / lengthY * posY;
 				rightBottom += (this.leftTop - this.leftBottom) / lengthY * posY;
 			}
 			if (rotateHor > 0) {
-				int posZ = pos.getZ() - screen.minZ;
+				int posZ = z - screen.minZ;
 				leftTop += (this.rightTop - this.leftTop) / lengthZ * posZ;
 				rightTop += (this.rightTop - this.leftTop) / lengthZ * (posZ + 1);
 				leftBottom += (this.rightTop - this.leftTop) / lengthZ * posZ;
 				rightBottom += (this.rightTop - this.leftTop) / lengthZ * (posZ + 1);
 			}
 			if (rotateHor < 0) {
-				int posZ = screen.maxZ - pos.getZ();
+				int posZ = screen.maxZ - z;
 				leftTop += (this.leftTop - this.rightTop) / lengthZ * (posZ + 1);
 				rightTop += (this.leftTop - this.rightTop) / lengthZ * posZ;
 				leftBottom += (this.leftTop - this.rightTop) / lengthZ * (posZ + 1);
@@ -200,28 +199,28 @@ public class RotationOffset {
 			switch (rotation) {
 			case NORTH:
 				if (rotateVert > 0) {
-					int posZ = screen.maxZ - pos.getZ();
+					int posZ = screen.maxZ - z;
 					leftTop += (this.leftBottom - this.leftTop) / lengthZ * (posZ + 1);
 					rightTop += (this.leftBottom - this.leftTop) / lengthZ * posZ;
 					leftBottom += (this.leftBottom - this.leftTop) / lengthZ * (posZ + 1);
 					rightBottom += (this.leftBottom - this.leftTop) / lengthZ * posZ;
 				}
 				if (rotateVert < 0) {
-					int posZ = pos.getZ() - screen.minZ;
+					int posZ = z - screen.minZ;
 					leftTop += (this.leftTop - this.leftBottom) / lengthZ * posZ;
 					rightTop += (this.leftTop - this.leftBottom) / lengthZ * (posZ + 1);
 					leftBottom += (this.leftTop - this.leftBottom) / lengthZ * posZ;
 					rightBottom += (this.leftTop - this.leftBottom) / lengthZ * (posZ + 1);
 				}
 				if (rotateHor > 0) {
-					int posX = pos.getX() - screen.minX;
+					int posX = x - screen.minX;
 					leftTop += (this.rightTop - this.leftTop) / lengthX * posX;
 					rightTop += (this.rightTop - this.leftTop) / lengthX * posX;
 					leftBottom += (this.rightTop - this.leftTop) / lengthX * (posX + 1);
 					rightBottom += (this.rightTop - this.leftTop) / lengthX * (posX + 1);
 				}
 				if (rotateHor < 0) {
-					int posX = screen.maxX - pos.getX();
+					int posX = screen.maxX - x;
 					leftTop += (this.leftTop - this.rightTop) / lengthX * (posX + 1);
 					rightTop += (this.leftTop - this.rightTop) / lengthX * (posX + 1);
 					leftBottom += (this.leftTop - this.rightTop) / lengthX * posX;
@@ -230,28 +229,28 @@ public class RotationOffset {
 				break;
 			case SOUTH:
 				if (rotateVert > 0) {
-					int posZ = pos.getZ() - screen.minZ;
+					int posZ = z - screen.minZ;
 					leftTop += (this.leftBottom - this.leftTop) / lengthZ * posZ;
 					rightTop += (this.leftBottom - this.leftTop) / lengthZ * (posZ + 1);
 					leftBottom += (this.leftBottom - this.leftTop) / lengthZ * posZ;
 					rightBottom += (this.leftBottom - this.leftTop) / lengthZ * (posZ + 1);
 				}
 				if (rotateVert < 0) {
-					int posZ = screen.maxZ - pos.getZ();
+					int posZ = screen.maxZ - z;
 					leftTop += (this.leftTop - this.leftBottom) / lengthZ * (posZ + 1);
 					rightTop += (this.leftTop - this.leftBottom) / lengthZ * posZ;
 					leftBottom += (this.leftTop - this.leftBottom) / lengthZ * (posZ + 1);
 					rightBottom += (this.leftTop - this.leftBottom) / lengthZ * posZ;
 				}
 				if (rotateHor > 0) {
-					int posX = pos.getX() - screen.minX;
+					int posX = x - screen.minX;
 					leftTop += (this.rightTop - this.leftTop) / lengthX * (posX + 1);
 					rightTop += (this.rightTop - this.leftTop) / lengthX * (posX + 1);
 					leftBottom += (this.rightTop - this.leftTop) / lengthX * posX;
 					rightBottom += (this.rightTop - this.leftTop) / lengthX * posX;
 				}
 				if (rotateHor < 0) {
-					int posX = screen.maxX - pos.getX();
+					int posX = screen.maxX - x;
 					leftTop += (this.leftTop - this.rightTop) / lengthX * posX;
 					rightTop += (this.leftTop - this.rightTop) / lengthX * posX;
 					leftBottom += (this.leftTop - this.rightTop) / lengthX * (posX + 1);
@@ -260,28 +259,28 @@ public class RotationOffset {
 				break;
 			case EAST:
 				if (rotateVert > 0) {
-					int posX = pos.getX() - screen.minX;
+					int posX = x - screen.minX;
 					leftTop += (this.leftBottom - this.leftTop) / lengthX * (posX + 1);
 					rightTop += (this.leftBottom - this.leftTop) / lengthX * (posX + 1);
 					leftBottom += (this.leftBottom - this.leftTop) / lengthX * posX;
 					rightBottom += (this.leftBottom - this.leftTop) / lengthX * posX;
 				}
 				if (rotateVert < 0) {
-					int posX = screen.maxX - pos.getX();
+					int posX = screen.maxX - x;
 					leftTop += (this.leftTop - this.leftBottom) / lengthX * posX;
 					rightTop += (this.leftTop - this.leftBottom) / lengthX * posX;
 					leftBottom += (this.leftTop - this.leftBottom) / lengthX * (posX + 1);
 					rightBottom += (this.leftTop - this.leftBottom) / lengthX * (posX + 1);
 				}
 				if (rotateHor > 0) {
-					int posZ = screen.maxZ - pos.getZ();
+					int posZ = screen.maxZ - z;
 					leftTop += (this.rightTop - this.leftTop) / lengthZ * (posZ + 1);
 					rightTop += (this.rightTop - this.leftTop) / lengthZ * posZ;
 					leftBottom += (this.rightTop - this.leftTop) / lengthZ * (posZ + 1);
 					rightBottom += (this.rightTop - this.leftTop) / lengthZ * posZ;
 				}
 				if (rotateHor < 0) {
-					int posZ = pos.getZ() - screen.minZ;
+					int posZ = z - screen.minZ;
 					leftTop += (this.leftTop - this.rightTop) / lengthZ * posZ;
 					rightTop += (this.leftTop - this.rightTop) / lengthZ * (posZ + 1);
 					leftBottom += (this.leftTop - this.rightTop) / lengthZ * posZ;
@@ -290,28 +289,28 @@ public class RotationOffset {
 				break;
 			case WEST:
 				if (rotateVert > 0) {
-					int posX = screen.maxX - pos.getX();
+					int posX = screen.maxX - x;
 					leftTop += (this.leftBottom - this.leftTop) / lengthX * posX;
 					rightTop += (this.leftBottom - this.leftTop) / lengthX * posX;
 					leftBottom += (this.leftBottom - this.leftTop) / lengthX * (posX + 1);
 					rightBottom += (this.leftBottom - this.leftTop) / lengthX * (posX + 1);
 				}
 				if (rotateVert < 0) {
-					int posX = pos.getX() - screen.minX;
+					int posX = x - screen.minX;
 					leftTop += (this.leftTop - this.leftBottom) / lengthX * (posX + 1);
 					rightTop += (this.leftTop - this.leftBottom) / lengthX * (posX + 1);
 					leftBottom += (this.leftTop - this.leftBottom) / lengthX * posX;
 					rightBottom += (this.leftTop - this.leftBottom) / lengthX * posX;
 				}
 				if (rotateHor > 0) {
-					int posZ = pos.getZ() - screen.minZ;
+					int posZ = z - screen.minZ;
 					leftTop += (this.rightTop - this.leftTop) / lengthZ * posZ;
 					rightTop += (this.rightTop - this.leftTop) / lengthZ * (posZ + 1);
 					leftBottom += (this.rightTop - this.leftTop) / lengthZ * posZ;
 					rightBottom += (this.rightTop - this.leftTop) / lengthZ * (posZ + 1);
 				}
 				if (rotateHor < 0) {
-					int posZ = screen.maxZ - pos.getZ();
+					int posZ = screen.maxZ - z;
 					leftTop += (this.leftTop - this.rightTop) / lengthZ * (posZ + 1);
 					rightTop += (this.leftTop - this.rightTop) / lengthZ * posZ;
 					leftBottom += (this.leftTop - this.rightTop) / lengthZ * (posZ + 1);
@@ -323,28 +322,28 @@ public class RotationOffset {
 			switch (rotation) {
 			case SOUTH:
 				if (rotateVert > 0) {
-					int posZ = screen.maxZ - pos.getZ();
+					int posZ = screen.maxZ - z;
 					leftTop += (this.leftBottom - this.leftTop) / lengthZ * posZ;
 					rightTop += (this.leftBottom - this.leftTop) / lengthZ * (posZ + 1);
 					leftBottom += (this.leftBottom - this.leftTop) / lengthZ * posZ;
 					rightBottom += (this.leftBottom - this.leftTop) / lengthZ * (posZ + 1);
 				}
 				if (rotateVert < 0) {
-					int posZ = pos.getZ() - screen.minZ;
+					int posZ = z - screen.minZ;
 					leftTop += (this.leftTop - this.leftBottom) / lengthZ * (posZ + 1);
 					rightTop += (this.leftTop - this.leftBottom) / lengthZ * posZ;
 					leftBottom += (this.leftTop - this.leftBottom) / lengthZ * (posZ + 1);
 					rightBottom += (this.leftTop - this.leftBottom) / lengthZ * posZ;
 				}
 				if (rotateHor > 0) {
-					int posX = pos.getX() - screen.minX;
+					int posX = x - screen.minX;
 					leftTop += (this.rightTop - this.leftTop) / lengthX * (posX + 1);
 					rightTop += (this.rightTop - this.leftTop) / lengthX * (posX + 1);
 					leftBottom += (this.rightTop - this.leftTop) / lengthX * posX;
 					rightBottom += (this.rightTop - this.leftTop) / lengthX * posX;
 				}
 				if (rotateHor < 0) {
-					int posX = screen.maxX - pos.getX();
+					int posX = screen.maxX - x;
 					leftTop += (this.leftTop - this.rightTop) / lengthX * posX;
 					rightTop += (this.leftTop - this.rightTop) / lengthX * posX;
 					leftBottom += (this.leftTop - this.rightTop) / lengthX * (posX + 1);
@@ -353,28 +352,28 @@ public class RotationOffset {
 				break;
 			case NORTH:
 				if (rotateVert > 0) {
-					int posZ = pos.getZ() - screen.minZ;
+					int posZ = z - screen.minZ;
 					leftTop += (this.leftBottom - this.leftTop) / lengthZ * (posZ + 1);
 					rightTop += (this.leftBottom - this.leftTop) / lengthZ * posZ;
 					leftBottom += (this.leftBottom - this.leftTop) / lengthZ * (posZ + 1);
 					rightBottom += (this.leftBottom - this.leftTop) / lengthZ * posZ;
 				}
 				if (rotateVert < 0) {
-					int posZ = screen.maxZ - pos.getZ();
+					int posZ = screen.maxZ - z;
 					leftTop += (this.leftTop - this.leftBottom) / lengthZ * posZ;
 					rightTop += (this.leftTop - this.leftBottom) / lengthZ * (posZ + 1);
 					leftBottom += (this.leftTop - this.leftBottom) / lengthZ * posZ;
 					rightBottom += (this.leftTop - this.leftBottom) / lengthZ * (posZ + 1);
 				}
 				if (rotateHor > 0) {
-					int posX = screen.maxX - pos.getX();
+					int posX = screen.maxX - x;
 					leftTop += (this.rightTop - this.leftTop) / lengthX * posX;
 					rightTop += (this.rightTop - this.leftTop) / lengthX * posX;
 					leftBottom += (this.rightTop - this.leftTop) / lengthX * (posX + 1);
 					rightBottom += (this.rightTop - this.leftTop) / lengthX * (posX + 1);
 				}
 				if (rotateHor < 0) {
-					int posX = pos.getX() - screen.minX;
+					int posX = x - screen.minX;
 					leftTop += (this.leftTop - this.rightTop) / lengthX * (posX + 1);
 					rightTop += (this.leftTop - this.rightTop) / lengthX * (posX + 1);
 					leftBottom += (this.leftTop - this.rightTop) / lengthX * posX;
@@ -383,28 +382,28 @@ public class RotationOffset {
 				break;
 			case WEST:
 				if (rotateVert > 0) {
-					int posX = screen.maxX - pos.getX();
+					int posX = screen.maxX - x;
 					leftTop += (this.leftBottom - this.leftTop) / lengthX * posX;
 					rightTop += (this.leftBottom - this.leftTop) / lengthX * posX;
 					leftBottom += (this.leftBottom - this.leftTop) / lengthX * (posX + 1);
 					rightBottom += (this.leftBottom - this.leftTop) / lengthX * (posX + 1);
 				}
 				if (rotateVert < 0) {
-					int posX = pos.getX() - screen.minX;
+					int posX = x - screen.minX;
 					leftTop += (this.leftTop - this.leftBottom) / lengthX * (posX + 1);
 					rightTop += (this.leftTop - this.leftBottom) / lengthX * (posX + 1);
 					leftBottom += (this.leftTop - this.leftBottom) / lengthX * posX;
 					rightBottom += (this.leftTop - this.leftBottom) / lengthX * posX;
 				}
 				if (rotateHor > 0) {
-					int posZ = screen.maxZ - pos.getZ();
+					int posZ = screen.maxZ - z;
 					leftTop += (this.rightTop - this.leftTop) / lengthZ * posZ;
 					rightTop += (this.rightTop - this.leftTop) / lengthZ * (posZ + 1);
 					leftBottom += (this.rightTop - this.leftTop) / lengthZ * posZ;
 					rightBottom += (this.rightTop - this.leftTop) / lengthZ * (posZ + 1);
 				}
 				if (rotateHor < 0) {
-					int posZ = pos.getZ() - screen.minZ;
+					int posZ = z - screen.minZ;
 					leftTop += (this.leftTop - this.rightTop) / lengthZ * (posZ + 1);
 					rightTop += (this.leftTop - this.rightTop) / lengthZ * posZ;
 					leftBottom += (this.leftTop - this.rightTop) / lengthZ * (posZ + 1);
@@ -413,28 +412,28 @@ public class RotationOffset {
 				break;
 			case EAST:
 				if (rotateVert > 0) {
-					int posX = screen.maxX - pos.getX();
+					int posX = screen.maxX - x;
 					leftTop += (this.leftBottom - this.leftTop) / lengthX * (posX + 1);
 					rightTop += (this.leftBottom - this.leftTop) / lengthX * (posX + 1);
 					leftBottom += (this.leftBottom - this.leftTop) / lengthX * posX;
 					rightBottom += (this.leftBottom - this.leftTop) / lengthX * posX;
 				}
 				if (rotateVert < 0) {
-					int posX = pos.getX() - screen.minX;
+					int posX = x - screen.minX;
 					leftTop += (this.leftTop - this.leftBottom) / lengthX * posX;
 					rightTop += (this.leftTop - this.leftBottom) / lengthX * posX;
 					leftBottom += (this.leftTop - this.leftBottom) / lengthX * (posX + 1);
 					rightBottom += (this.leftTop - this.leftBottom) / lengthX * (posX + 1);
 				}
 				if (rotateHor > 0) {
-					int posZ = pos.getZ() - screen.minZ;
+					int posZ = z - screen.minZ;
 					leftTop += (this.rightTop - this.leftTop) / lengthZ * (posZ + 1);
 					rightTop += (this.rightTop - this.leftTop) / lengthZ * posZ;
 					leftBottom += (this.rightTop - this.leftTop) / lengthZ * (posZ + 1);
 					rightBottom += (this.rightTop - this.leftTop) / lengthZ * posZ;
 				}
 				if (rotateHor < 0) {
-					int posZ = screen.maxZ - pos.getZ();
+					int posZ = screen.maxZ - z;
 					leftTop += (this.leftTop - this.rightTop) / lengthZ * posZ;
 					rightTop += (this.leftTop - this.rightTop) / lengthZ * (posZ + 1);
 					leftBottom += (this.leftTop - this.rightTop) / lengthZ * posZ;

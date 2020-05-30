@@ -2,7 +2,7 @@ package com.zuxelus.energycontrol.crossmod;
 
 import com.zuxelus.energycontrol.EnergyControl;
 
-import net.minecraftforge.fml.common.Loader;
+import cpw.mods.fml.common.Loader;
 
 public abstract class CrossModBase {
 	public boolean modLoaded = false;

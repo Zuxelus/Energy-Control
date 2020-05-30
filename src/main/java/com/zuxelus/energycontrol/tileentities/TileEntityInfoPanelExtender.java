@@ -1,22 +1,25 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.blocks.BlockDamages;
+import com.zuxelus.energycontrol.items.ItemHelper;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import ic2.api.tile.IWrenchable;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITickable, IScreenPart {
+public class TileEntityInfoPanelExtender extends TileEntityFacing implements IScreenPart, IWrenchable {
 	protected boolean init;
 
 	protected Screen screen;
@@ -38,7 +41,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	
 	@Override
 	public void setFacing(int meta) {
-		EnumFacing newFacing = EnumFacing.getFront(meta);
+		ForgeDirection newFacing = ForgeDirection.getOrientation(meta);
 		if (facing == newFacing)
 			return;
 		facing = newFacing;
@@ -50,32 +53,29 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 
 	private void updateScreen() {
 		if (partOfScreen && screen == null) {
-			TileEntity core = world.getTileEntity(new BlockPos(coreX, coreY, coreZ));
+			TileEntity core = worldObj.getTileEntity(coreX, coreY, coreZ);
 			if (core != null && core instanceof TileEntityInfoPanel) {
 				screen = ((TileEntityInfoPanel) core).getScreen();
 				if (screen != null)
-					screen.init(true, world);
+					screen.init(true, worldObj);
 			}
-		}		
+		}
+		if (worldObj.isRemote && !partOfScreen && screen != null)
+			setScreen(null);
 	}
 
 	@Override
-	public SPacketUpdateTileEntity getUpdatePacket() {
+	public Packet getDescriptionPacket() {
 		NBTTagCompound tag = new NBTTagCompound();
 		tag = writeProperties(tag);
-		return new SPacketUpdateTileEntity(getPos(), 0, tag);
+		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, tag);
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-		readProperties(pkt.getNbtCompound());
-	}
-	
-	@Override
-	public NBTTagCompound getUpdateTag() {
-		NBTTagCompound tag = super.getUpdateTag();
-		tag = writeProperties(tag);
-		return tag;
+	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+		if (!worldObj.isRemote)
+			return;
+		readProperties(pkt.func_148857_g());
 	}
 
 	@Override
@@ -88,10 +88,10 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 			coreY = tag.getInteger("coreY");
 			coreZ = tag.getInteger("coreZ");
 		}
-		if (world != null) {
+		if (worldObj != null) {
 			updateScreen();
-			if (world.isRemote)
-				world.checkLight(pos);
+			if (worldObj.isRemote)
+				worldObj.func_147451_t(xCoord, yCoord, zCoord);
 		}
 	}
 
@@ -112,23 +112,24 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
-		return writeProperties(super.writeToNBT(tag));
+	public void writeToNBT(NBTTagCompound tag) {
+		super.writeToNBT(tag);
+		writeProperties(tag);
 	}
 
 	@Override
 	public void invalidate() {
 		super.invalidate();
-		if (!world.isRemote)
+		if (!worldObj.isRemote)
 			EnergyControl.instance.screenManager.unregisterScreenPart(this);
 	}
 
 	@Override
-	public void update() {
+	public void updateEntity() {
 		if (init)
 			return;
 		
-		if (FMLCommonHandler.instance().getEffectiveSide().isServer() && !partOfScreen)
+		if (!worldObj.isRemote && !partOfScreen)
 			EnergyControl.instance.screenManager.registerInfoPanelExtender(this);
 		
 		updateScreen();
@@ -140,11 +141,11 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 		this.screen = screen;
 		if (screen != null) {
 			partOfScreen = true;
-			TileEntityInfoPanel core = screen.getCore(world);
+			TileEntityInfoPanel core = screen.getCore(worldObj);
 			if (core != null) {
-				coreX = core.getPos().getX();
-				coreY = core.getPos().getY();
-				coreZ = core.getPos().getZ();
+				coreX = core.xCoord;
+				coreY = core.yCoord;
+				coreZ = core.zCoord;
 				return;
 			}
 		}
@@ -164,15 +165,13 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 
 	@Override
 	public void notifyBlockUpdate() {
-		IBlockState iblockstate = world.getBlockState(pos);
-		Block block = iblockstate.getBlock();
-		world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 
 	public boolean getColored() {
 		if (screen == null)
 			return false;
-		TileEntityInfoPanel core = screen.getCore(world);
+		TileEntityInfoPanel core = screen.getCore(worldObj);
 		if (core == null)
 			return false;
 		return core.getColored();
@@ -181,7 +180,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	public boolean getPowered() {
 		if (screen == null)
 			return false;
-		TileEntityInfoPanel core = screen.getCore(world);
+		TileEntityInfoPanel core = screen.getCore(worldObj);
 		if (core == null)
 			return false;
 		return core.powered;
@@ -190,7 +189,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	public int getColorBackground() {
 		if (screen == null)
 			return 2;
-		TileEntityInfoPanel core = screen.getCore(world);
+		TileEntityInfoPanel core = screen.getCore(worldObj);
 		if (core == null)
 			return 2;
 		return core.getColorBackground();
@@ -203,28 +202,27 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	}
 	
 	@Override
-	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
-		return oldState.getBlock() != newSate.getBlock();
+	public boolean shouldRefresh(Block oldBlock, Block newBlock, int oldMeta, int newMeta, World world, int x, int y, int z) {
+		return oldBlock != newBlock;
 	}
 
 	@SideOnly(Side.CLIENT)
 	public int findTexture() {
 		Screen scr = getScreen();
 		if (scr != null) {
-			BlockPos pos = getPos();
-			switch (getFacing()) {
+			switch (getFacingForge()) {
 			case SOUTH:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 4 * boolToInt(pos.getY() == scr.minY) + 8 * boolToInt(pos.getY() == scr.maxY);
+				return 1 * boolToInt(xCoord == scr.minX) + 2 * boolToInt(xCoord == scr.maxX) + 4 * boolToInt(yCoord == scr.minY) + 8 * boolToInt(yCoord == scr.maxY);
 			case WEST:
-				return 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ) + 1 * boolToInt(pos.getY() == scr.minY) + 2 * boolToInt(pos.getY() == scr.maxY);
+				return 8 * boolToInt(zCoord == scr.minZ) + 4 * boolToInt(zCoord == scr.maxZ) + 1 * boolToInt(yCoord == scr.minY) + 2 * boolToInt(yCoord == scr.maxY);
 			case EAST:
-				return 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ) + 2 * boolToInt(pos.getY() == scr.minY) + 1 * boolToInt(pos.getY() == scr.maxY);
+				return 8 * boolToInt(zCoord == scr.minZ) + 4 * boolToInt(zCoord == scr.maxZ) + 2 * boolToInt(yCoord == scr.minY) + 1 * boolToInt(yCoord == scr.maxY);
 			case NORTH:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 8 * boolToInt(pos.getY() == scr.minY) + 4 * boolToInt(pos.getY() == scr.maxY);
+				return 1 * boolToInt(xCoord == scr.minX) + 2 * boolToInt(xCoord == scr.maxX) + 8 * boolToInt(yCoord == scr.minY) + 4 * boolToInt(yCoord == scr.maxY);
 			case UP:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ);
+				return 1 * boolToInt(xCoord == scr.minX) + 2 * boolToInt(xCoord == scr.maxX) + 8 * boolToInt(zCoord == scr.minZ) + 4 * boolToInt(zCoord == scr.maxZ);
 			case DOWN:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 4 * boolToInt(pos.getZ() == scr.minZ) + 8 * boolToInt(pos.getZ() == scr.maxZ);
+				return 1 * boolToInt(xCoord == scr.minX) + 2 * boolToInt(xCoord == scr.maxX) + 4 * boolToInt(zCoord == scr.minZ) + 8 * boolToInt(zCoord == scr.maxZ);
 			}
 		}
 		return 15;
@@ -232,5 +230,37 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 
 	private int boolToInt(boolean b) {
 		return b ? 1 : 0;
+	}
+
+	// IWrenchable
+	@Override
+	public boolean wrenchCanSetFacing(EntityPlayer entityPlayer, int side) {
+		return facing.ordinal() != side;
+	}
+
+	@Override
+	public short getFacing() {
+		return (short) facing.ordinal();
+	}
+
+	@Override
+	public void setFacing(short facing) {
+		setFacing((int) facing);
+		notifyBlockUpdate();
+	}
+
+	@Override
+	public boolean wrenchCanRemove(EntityPlayer entityPlayer) {
+		return true;
+	}
+
+	@Override
+	public float getWrenchDropRate() {
+		return 1;
+	}
+
+	@Override
+	public ItemStack getWrenchDrop(EntityPlayer entityPlayer) {
+		return new ItemStack(ItemHelper.blockMain, 1, BlockDamages.DAMAGE_INFO_PANEL_EXTENDER);
 	}
 }
