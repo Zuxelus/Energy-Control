@@ -143,7 +143,7 @@ public final class ItemCardMain extends Item {
 			tooltip.add(I18n.format("msg.ec.cards", reader.getCardCount()));
 			return;
 		}
-		
+
 		ChunkCoordinates target = reader.getTarget();
 		if (target != null)
 			tooltip.add(String.format("x: %d, y: %d, z: %d", target.posX, target.posY, target.posZ));
@@ -192,7 +192,7 @@ public final class ItemCardMain extends Item {
 		reader.setState(state);
 		return state;
 	}
-	
+
 	private static CardState update(World world, ICardReader reader, int range, int x, int y, int z) {
 		if (cards.containsKey(reader.getCardType()))
 			return cards.get(reader.getCardType()).update(world, reader, range, x, y, z);
@@ -204,7 +204,7 @@ public final class ItemCardMain extends Item {
 			return null;
 		return cards.get(ItemCardType.CARD_TEXT).getSettingsScreen(reader);
 	}
-	
+
 	public static boolean isRemoteCard(int damage) {
 		if (cards.containsKey(damage))
 			return cards.get(damage).isRemoteCard();
@@ -220,7 +220,7 @@ public final class ItemCardMain extends Item {
 	public static void registerRecipes() {
 		for (Map.Entry<Integer, IItemCard> entry : cards.entrySet()) {
 			Integer key = entry.getKey();
-			Object[] recipe = entry.getValue().getRecipe(); 
+			Object[] recipe = entry.getValue().getRecipe();
 			if (recipe != null)
 				Recipes.advRecipes.addRecipe(new ItemStack(ItemHelper.itemCard, 1, key), recipe);
 		}

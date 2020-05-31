@@ -21,10 +21,10 @@ public class TileEntityThermo extends TileEntityInventory implements ITilePacket
 	private boolean invertRedstone;
 	protected int status;
 	private boolean poweredBlock;
-	
+
 	protected int updateTicker;
 	protected int tickRate;
-	
+
 	public TileEntityThermo() {
 		super("tile.thermal_monitor.name");
 		invertRedstone = prevInvertRedstone = false;
@@ -37,18 +37,18 @@ public class TileEntityThermo extends TileEntityInventory implements ITilePacket
 	public int getHeatLevel() {
 		return heatLevel;
 	}
-	
+
 	public void setHeatLevel(int value) {
 		heatLevel = value;
 		if (!worldObj.isRemote && prevHeatLevel != heatLevel)
 			notifyBlockUpdate();
 		prevHeatLevel = heatLevel;
 	}
-	
+
 	public boolean getInvertRedstone() {
 		return invertRedstone;
 	}
-	
+
 	public void setInvertRedstone(boolean value) {
 		invertRedstone = value;
 		if (!worldObj.isRemote && prevInvertRedstone != invertRedstone)

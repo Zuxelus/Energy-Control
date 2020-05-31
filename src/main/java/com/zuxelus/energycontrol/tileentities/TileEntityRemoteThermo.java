@@ -147,7 +147,7 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 			addedToEnet = false;
 		}
 	}
-	
+
 	@Override
 	protected void checkStatus() {
 		markDirty();

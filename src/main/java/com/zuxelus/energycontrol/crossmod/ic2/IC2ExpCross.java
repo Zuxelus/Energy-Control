@@ -222,7 +222,7 @@ public class IC2ExpCross extends IC2Cross {
 					tag.setDouble("production", 0);
 				return tag;
 			}
-			
+
 			if (te instanceof TileEntitySemifluidGenerator) {
 				tag.setInteger("type", 1);
 				tag.setDouble("storage", ((TileEntitySemifluidGenerator) te).storage);
@@ -235,7 +235,7 @@ public class IC2ExpCross extends IC2Cross {
 				tag.setBoolean("active", ((TileEntitySemifluidGenerator) te).isConverting());
 				return tag;
 			}
-			
+
 			if (te instanceof TileEntityStirlingGenerator) {
 				tag.setInteger("type", 3);
 				tag.setDouble("storage", ((TileEntityStirlingGenerator) te).EUstorage);
@@ -257,7 +257,7 @@ public class IC2ExpCross extends IC2Cross {
 					tag.setDouble("production", 0);
 				return tag;
 			}
-			
+
 			if (te instanceof TileEntityKineticGenerator) {
 				tag.setInteger("type", 3);
 				active = ((TileEntityKineticGenerator)te).getActive();
@@ -275,7 +275,7 @@ public class IC2ExpCross extends IC2Cross {
 		} catch (Throwable t) { }
 		return null;
 	}
-	
+
 	@Override
 	public NBTTagCompound getGeneratorKineticData(TileEntity te) {
 		try {

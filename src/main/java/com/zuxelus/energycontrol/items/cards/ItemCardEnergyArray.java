@@ -131,7 +131,7 @@ public class ItemCardEnergyArray extends ItemCardBase {
 				result.add(new PanelString("msg.ec.InfoPanelFree", totalStorage - totalEnergy, showLabels));
 			if (showStorage)
 				result.add(new PanelString("msg.ec.InfoPanelCapacity", totalStorage, showLabels));
-			if (showPercentage) 
+			if (showPercentage)
 				result.add(new PanelString("msg.ec.InfoPanelPercentage",totalStorage == 0 ? 100 : ((totalEnergy / totalStorage) * 100), showLabels));
 		}
 		return result;

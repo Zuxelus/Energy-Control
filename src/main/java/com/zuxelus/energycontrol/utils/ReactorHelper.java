@@ -12,22 +12,22 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 public class ReactorHelper {
 	private static final double STEAM_PER_EU = 3.2D;
-	
+
 	public static IReactor getReactorAround(World world, int x, int y, int z) {
 		if (world == null)
 			return null;
-		
+
 		IReactor reactor = getReactorAt(world, x, y, z);
 		if (reactor != null)
 			return reactor;
-		
+
 		return getReactorNextBlock(world, x, y, z);
-	}	
-	
+	}
+
 	public static IReactor getReactorNextBlock(World world, int x, int y, int z) {
 		if (world == null)
 			return null;
-		
+
 		IReactor reactor = null;
 		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
 			reactor = getReactorAt(world, x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
@@ -36,11 +36,11 @@ public class ReactorHelper {
 		}
 		return reactor;
 	}
-	
+
 	public static IReactor getReactorAt(World world, int x, int y, int z) {
 		if (world == null)
 			return null;
-		
+
 		TileEntity entity = world.getTileEntity(x, y, z);
 		if (entity instanceof IReactor)
 			return (IReactor) entity;
@@ -48,7 +48,7 @@ public class ReactorHelper {
 			return ((IReactorChamber) entity).getReactor();
 		return null;
 	}
-	
+
 	public static IReactor getReactor3x3(World world, int x, int y, int z) {
 		if (world == null)
 			return null;

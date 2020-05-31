@@ -249,7 +249,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 			colorText = tag.getInteger("colorText");
 			colorBackground = tag.getInteger("colorBackground");
 		}
-		
+
 		if (tag.hasKey("colored"))
 			setColored(tag.getBoolean("colored"));
 
@@ -528,12 +528,12 @@ public class TileEntityInfoPanel extends TileEntityInventory
 	public void updateData() {
 		if (worldObj.isRemote)
 			return;
-		
+
 		if (screen == null) {
 			screenData = null;
 		} else
 			screenData = screen.toTag();
-		notifyBlockUpdate();		
+		notifyBlockUpdate();
 	}
 
 	@Override

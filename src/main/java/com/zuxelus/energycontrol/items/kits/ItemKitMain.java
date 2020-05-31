@@ -120,7 +120,7 @@ public class ItemKitMain extends Item {
 		player.inventory.mainInventory[player.inventory.currentItem] = sensorLocationCard;
 		return true;
 	}	
-	
+
 	public IItemKit getItemKitBase(int metadata) {
 		if (kits.containsKey(metadata))
 			return kits.get(metadata);
@@ -130,7 +130,7 @@ public class ItemKitMain extends Item {
 	public static final void registerRecipes() {
 		for (Map.Entry<Integer, IItemKit> entry : kits.entrySet()) {
 			Integer key = entry.getKey();
-			Object[] recipe = entry.getValue().getRecipe(); 
+			Object[] recipe = entry.getValue().getRecipe();
 			if (recipe != null)
 				Recipes.advRecipes.addRecipe(new ItemStack(ItemHelper.itemKit, 1, key), recipe);
 		}

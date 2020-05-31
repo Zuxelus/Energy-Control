@@ -38,7 +38,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ISc
 		coreY = 0;
 		coreZ = 0;
 	}
-	
+
 	@Override
 	public void setFacing(int meta) {
 		ForgeDirection newFacing = ForgeDirection.getOrientation(meta);
@@ -200,7 +200,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ISc
 	public double getMaxRenderDistanceSquared() {
 		return 65536.0D;
 	}
-	
+
 	@Override
 	public boolean shouldRefresh(Block oldBlock, Block newBlock, int oldMeta, int newMeta, World world, int x, int y, int z) {
 		return oldBlock != newBlock;

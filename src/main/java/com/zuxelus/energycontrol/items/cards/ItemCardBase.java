@@ -52,7 +52,7 @@ public abstract class ItemCardBase implements IItemCard {
 	public ICardGui getSettingsScreen(ICardReader reader) {
 		return null;
 	}
-	
+
 	@Override
 	public boolean isRemoteCard() {
 		return true;
@@ -73,7 +73,7 @@ public abstract class ItemCardBase implements IItemCard {
 	protected final void addRecipe(Object[] recipe) {
 		this.recipe = recipe;
 	}
-	
+
 	protected void addOnOff(List<PanelString> result, Boolean value) {
 		String text;
 		int txtColor = 0;

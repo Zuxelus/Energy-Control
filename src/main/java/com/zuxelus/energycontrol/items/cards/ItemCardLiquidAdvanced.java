@@ -33,7 +33,7 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 		FluidTankInfo[] tanks = LiquidCardHelper.getAllTanks(world, target.posX, target.posY, target.posZ);
 		if (tanks == null)
 			return CardState.NO_TARGET;
-		
+
 		int i = 0;
 		for (FluidTankInfo tank: tanks) {
 			addTankInfo(reader, tank, i);

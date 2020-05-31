@@ -27,11 +27,11 @@ public class ItemCardReactorDraconic extends ItemCardBase {
 		ChunkCoordinates target = reader.getTarget();
 		if (target == null)
 			return CardState.NO_TARGET;
-		
+
 		TileEntity te = world.getTileEntity(target.posX, target.posY, target.posZ);
 		if (!(te instanceof TileReactorCore))
 			return CardState.NO_TARGET;
-		
+
 		TileReactorCore reactor = ((TileReactorCore) te);
 		reader.setInt("status", reactor.reactorState);
 		reader.setDouble("temp", reactor.reactionTemperature);

@@ -49,7 +49,7 @@ public class HowlerAlarm extends BlockBase {
 
 	@Override
 	public float[] getBlockBounds(TileEntity te) {
-		if (te == null)
+		if (!(te instanceof TileEntityFacing))
 			return AABB_UP;
 		switch (((TileEntityFacing) te).getFacingForge()) {
 		case EAST:

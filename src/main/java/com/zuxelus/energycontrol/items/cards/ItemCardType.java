@@ -1,11 +1,5 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import java.util.List;
-
-import com.zuxelus.energycontrol.api.PanelString;
-
-import net.minecraft.client.resources.I18n;
-
 public class ItemCardType {
 	public static final int KIT_ENERGY = 0;
 	public static final int KIT_COUNTER = 1;
@@ -37,7 +31,7 @@ public class ItemCardType {
 
 	public static final int CARD_TEXT = 18;
 	public static final int CARD_TIME = 19;
-	
+
 	public static final int CARD_ENERGY_DRACONIC = 20;
 	public static final int CARD_REACTOR_DRACONIC = 21;
 

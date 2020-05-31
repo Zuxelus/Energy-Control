@@ -12,7 +12,7 @@ public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm {
 		internalFire = 0;
 		lightLevel = 0;
 	}
-	
+
 	@Override
 	public void updateEntity() {
 		if (worldObj.isRemote) {

@@ -28,7 +28,7 @@ public class ItemCardLiquid extends ItemCardBase {
 		ChunkCoordinates target = reader.getTarget();
 		if (target == null) 
 			return CardState.NO_TARGET;
-		
+
 		FluidTankInfo storage = LiquidCardHelper.getStorageAt(world, target.posX, target.posY, target.posZ);
 		if (storage == null)
 			return CardState.NO_TARGET;

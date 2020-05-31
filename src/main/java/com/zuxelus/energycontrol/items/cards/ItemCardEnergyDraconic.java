@@ -31,7 +31,7 @@ public class ItemCardEnergyDraconic extends ItemCardBase {
 		ChunkCoordinates target = reader.getTarget();
 		if (target == null)
 			return CardState.NO_TARGET;
-		
+
 		TileEntity te = world.getTileEntity(target.posX, target.posY, target.posZ);
 		if (te == null)
 			return CardState.NO_TARGET;

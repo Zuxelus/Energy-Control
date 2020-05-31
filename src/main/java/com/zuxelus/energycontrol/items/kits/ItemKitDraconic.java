@@ -44,7 +44,7 @@ public class ItemKitDraconic extends ItemKitBase {
 		TileReactorCore reactor = null;
 		if (te instanceof TileReactorCore)
 			reactor = (TileReactorCore) te;
-		if (te instanceof TileReactorStabilizer) 
+		if (te instanceof TileReactorStabilizer)
 			reactor = (TileReactorCore) ((TileReactorStabilizer)te).masterLocation.getTileEntity(world);
 		if (reactor != null) {
 			ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_REACTOR_DRACONIC);

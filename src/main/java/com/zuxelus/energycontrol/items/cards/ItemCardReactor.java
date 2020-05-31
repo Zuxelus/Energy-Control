@@ -28,7 +28,7 @@ public class ItemCardReactor extends ItemCardBase {
 		ChunkCoordinates target = reader.getTarget();
 		if (target == null) 
 			return CardState.NO_TARGET;
-		
+
 		IReactor reactor = ReactorHelper.getReactorAt(world, target.posX, target.posY, target.posZ);
 		if (reactor == null)
 			return CardState.NO_TARGET;

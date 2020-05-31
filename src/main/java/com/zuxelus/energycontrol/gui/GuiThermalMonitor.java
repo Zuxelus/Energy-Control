@@ -48,7 +48,7 @@ public class GuiThermalMonitor extends GuiBase {
 		textboxHeat.setFocused(true);
 		textboxHeat.setText(Integer.toString(thermo.getHeatLevel()));
 	}
-	
+
 	@Override
 	protected void drawGuiContainerForegroundLayer(int par1, int par2) {
 		fontRendererObj.drawString(name, (xSize - fontRendererObj.getStringWidth(name)) / 2, 6, 0x404040);
@@ -56,7 +56,7 @@ public class GuiThermalMonitor extends GuiBase {
 		if (textboxHeat != null)
 			textboxHeat.drawTextBox();
 	}
-	
+
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -104,7 +104,7 @@ public class GuiThermalMonitor extends GuiBase {
 	protected void actionPerformed(GuiButton button) {
 		if (button.id >= 10)
 			return;
-		
+
 		int delta = Integer.parseInt(button.displayString.replace("+", ""));
 		updateHeat(delta);
 	}

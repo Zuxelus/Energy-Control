@@ -28,11 +28,11 @@ public class ItemCardEnergy extends ItemCardBase {
 		ChunkCoordinates target = reader.getTarget();
 		if (target == null)
 			return CardState.NO_TARGET;
-		
+
 		TileEntity te = world.getTileEntity(target.posX, target.posY, target.posZ);
 		if (te == null)
 			return CardState.NO_TARGET;
-			
+
 		NBTTagCompound tag = CrossModLoader.ic2.getEnergyData(te);
 		if (tag == null || !tag.hasKey("type"))
 			return CardState.NO_TARGET;

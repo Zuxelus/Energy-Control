@@ -263,7 +263,6 @@ public class TileEntityAverageCounter extends TileEntityInventory
 	@Override
 	public void drawEnergy(double amount) {
 		this.energy -= amount;
-
 	}
 
 	@Override

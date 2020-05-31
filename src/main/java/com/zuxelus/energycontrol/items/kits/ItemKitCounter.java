@@ -11,6 +11,7 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 
 public class ItemKitCounter extends ItemKitSimple {
+
 	public ItemKitCounter() {
 		super(ItemCardType.KIT_COUNTER, "kit_counter");
 	}

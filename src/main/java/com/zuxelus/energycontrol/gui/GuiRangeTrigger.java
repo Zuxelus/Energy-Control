@@ -90,7 +90,7 @@ public class GuiRangeTrigger extends GuiContainer {
 			TileEntityRangeTrigger trigger = container.te;
 			
 			NBTTagCompound tag = new NBTTagCompound();
-			tag.setDouble("value", newValue);			
+			tag.setDouble("value", newValue);
 			if (isEnd) {
 				tag.setInteger("type", 3);
 				NetworkHelper.updateSeverTileEntity(trigger.xCoord, trigger.yCoord, trigger.zCoord, tag);

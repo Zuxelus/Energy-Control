@@ -36,7 +36,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ISlot
 	private boolean invertRedstone;
 	public double levelStart;
 	public double levelEnd;
-	
+
 	public TileEntityRangeTrigger() {
 		super("tile.range_trigger.name");
 		init = false;

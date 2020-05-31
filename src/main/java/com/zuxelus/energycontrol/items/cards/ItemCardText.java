@@ -50,7 +50,7 @@ public class ItemCardText extends ItemCardBase {
 	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		return null;
 	}
-	
+
 	@Override
 	public ICardGui getSettingsScreen(ICardReader reader) {
 		return new GuiCardText(reader);

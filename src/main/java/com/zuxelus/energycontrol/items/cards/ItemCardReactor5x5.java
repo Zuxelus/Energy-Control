@@ -26,7 +26,7 @@ public class ItemCardReactor5x5 extends ItemCardBase {
 		ChunkCoordinates target = reader.getTarget();
 		if (target == null) 
 			return CardState.NO_TARGET;
-		
+
 		return CrossModLoader.ic2.updateCardReactor5x5(world, reader, target.posX, target.posY, target.posZ);
 	}
 

@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public class ItemCardTime extends ItemCardBase {
+
 	public ItemCardTime() {
 		super(ItemCardType.CARD_TIME, "card_time");
 	}

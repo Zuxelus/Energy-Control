@@ -29,12 +29,12 @@ public class ItemCardGeneratorHeat extends ItemCardBase {
 		ChunkCoordinates target = reader.getTarget();
 		if (target == null) 
 			return CardState.NO_TARGET;
-		
+
 		TileEntity entity = world.getTileEntity(target.posX, target.posY, target.posZ);
 		NBTTagCompound tag = CrossModLoader.ic2.getGeneratorHeatData(entity);
 		if (tag == null || !tag.hasKey("type"))
 			return CardState.NO_TARGET;
-		
+
 		reader.setInt("type", tag.getInteger("type"));
 		switch (tag.getInteger("type")) {
 		case 1: // TileEntityElectricHeatGenerator
@@ -119,5 +119,5 @@ public class ItemCardGeneratorHeat extends ItemCardBase {
 	@Override
 	public int getKitFromCard() {
 		return ItemCardType.KIT_GENERATOR;
-	}	
+	}
 }

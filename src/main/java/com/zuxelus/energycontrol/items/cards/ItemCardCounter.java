@@ -26,11 +26,11 @@ public class ItemCardCounter extends ItemCardBase {
 		ChunkCoordinates target = reader.getTarget();
 		if (target == null) 
 			return CardState.NO_TARGET;
-		
+
 		TileEntity tileEntity = world.getTileEntity(target.posX, target.posY, target.posZ);
 		if (tileEntity == null)
 			return CardState.NO_TARGET;
-		
+
 		if (tileEntity instanceof TileEntityEnergyCounter) {
 			TileEntityEnergyCounter counter = (TileEntityEnergyCounter) tileEntity;
 			reader.setDouble("energy", counter.counter);

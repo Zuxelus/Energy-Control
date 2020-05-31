@@ -23,12 +23,12 @@ public abstract class ItemKitSimple extends ItemKitBase {
 		ItemStack sensorLocationCard = getItemCard();
 		if (sensorLocationCard == null)
 			return null;
-		
+
 		ItemStackHelper.setCoordinates(sensorLocationCard, position.posX, position.posY, position.posZ);
 		return sensorLocationCard;
 	}
 
 	protected abstract ChunkCoordinates getTargetCoordinates(World world, int x, int y, int z, ItemStack stack);
-	
+
 	protected abstract ItemStack getItemCard();
 }
