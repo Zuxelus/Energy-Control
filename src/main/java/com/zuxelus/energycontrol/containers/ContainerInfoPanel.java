@@ -17,8 +17,10 @@ public class ContainerInfoPanel extends ContainerBase<TileEntityInfoPanel> {
 		addSlotToContainer(new SlotFilter(panel, 1, 8, 24 + 18 * 2));
 		// color upgrade
 		addSlotToContainer(new SlotFilter(panel, 2, 8, 24 + 18 * 3));
+		// touch upgrade
+		addSlotToContainer(new SlotFilter(panel, 3, 8, 24 + 18 * 4));
 		// inventory
-		addPlayerInventorySlots(player, 190);
+		addPlayerInventorySlots(player, 201);
 	}
 
 	@Override

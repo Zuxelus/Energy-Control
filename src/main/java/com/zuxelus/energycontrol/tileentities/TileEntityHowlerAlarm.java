@@ -8,7 +8,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.ITickable;
 
-public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable, IRedstoneConsumer, ITilePacketHandler {
+public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable, ITilePacketHandler {
 	private static final String DEFAULT_SOUND_NAME = "default";
 	private static final float BASE_SOUND_RANGE = 16F;
 	private static final String SOUND_PREFIX = "energycontrol:alarm-";
@@ -96,11 +96,7 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 
 	@Override
 	public SPacketUpdateTileEntity getUpdatePacket() {
-		NBTTagCompound tag = new NBTTagCompound();
-		tag = writeProperties(tag);
-		powered = world.isBlockPowered(pos);
-		tag.setBoolean("powered", powered);
-		return new SPacketUpdateTileEntity(getPos(), 0, tag);
+		return new SPacketUpdateTileEntity(pos, 0, getUpdateTag());
 	}
 
 	@Override
@@ -112,7 +108,7 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 	public NBTTagCompound getUpdateTag() {
 		NBTTagCompound tag = super.getUpdateTag();
 		tag = writeProperties(tag);
-		powered = world.isBlockPowered(pos); 
+		powered = world.isBlockPowered(pos);
 		tag.setBoolean("powered", powered);
 		return tag;
 	}
@@ -177,11 +173,5 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 	private void notifyBlockUpdate() {
 		IBlockState iblockstate = world.getBlockState(pos);
 		world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
-	}
-	
-	@Override
-	public void neighborChanged() {
-		if (!world.isRemote)
-			notifyBlockUpdate();
 	}
 }

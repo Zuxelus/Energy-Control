@@ -4,11 +4,11 @@ import java.util.Collections;
 import java.util.List;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.tileentities.TileEntityFacing;
 import com.zuxelus.energycontrol.tileentities.TileEntityInventory;
 import com.zuxelus.energycontrol.tileentities.TileEntityRangeTrigger;
 
-import ic2.api.item.IC2Items;
 import ic2.api.tile.IWrenchable;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
@@ -33,7 +33,6 @@ import net.minecraft.world.World;
 
 public class RangeTrigger extends BlockHorizontal implements ITileEntityProvider, IWrenchable {
 	public static final PropertyEnum<EnumState> STATE = PropertyEnum.<EnumState>create("state", EnumState.class);
-	private boolean powered = false;
 
 	public RangeTrigger() {
 		super(Material.IRON);
@@ -65,8 +64,7 @@ public class RangeTrigger extends BlockHorizontal implements ITileEntityProvider
 
 	@Override
 	public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-		return getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite()).withProperty(STATE,
-				EnumState.OFF);
+		return getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite()).withProperty(STATE, EnumState.OFF);
 	}
 
 	@Override
@@ -79,17 +77,20 @@ public class RangeTrigger extends BlockHorizontal implements ITileEntityProvider
 
 	@Override
 	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-		drops.add(IC2Items.getItem("resource", "machine"));
+		drops.add(CrossModLoader.ic2.getItem("machine"));
 	}
 
 	@Override
 	public int getWeakPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
-		return powered ? 15 : 0;
+		return getStrongPower(blockState, blockAccess, pos, side);
 	}
 
 	@Override
 	public int getStrongPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
-		return powered ? 15 : 0;
+		TileEntity te = blockAccess.getTileEntity(pos);
+		if (!(te instanceof TileEntityRangeTrigger))
+			return 0;
+		return ((TileEntityRangeTrigger) te).getPowered() ? 15 : 0;
 	}
 
 	@Override
@@ -102,10 +103,6 @@ public class RangeTrigger extends BlockHorizontal implements ITileEntityProvider
 	@Override
 	public boolean canProvidePower(IBlockState state) {
 		return true;
-	}
-
-	public void setPowered(boolean value) {
-		powered = value;
 	}
 
 	public static enum EnumState implements IStringSerializable {

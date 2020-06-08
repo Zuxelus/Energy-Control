@@ -22,7 +22,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemCardLiquidArray extends ItemCardBase {
 	private static final int STATUS_NOT_FOUND = Integer.MIN_VALUE;
-	private static final int STATUS_OUT_OF_RANGE = Integer.MIN_VALUE + 1;	
+	private static final int STATUS_OUT_OF_RANGE = Integer.MIN_VALUE + 1;
 	
 	public ItemCardLiquidArray() {
 		super(ItemCardType.CARD_LIQUID_ARRAY, "card_liquid_array");

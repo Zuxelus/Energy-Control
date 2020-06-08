@@ -2,6 +2,7 @@ package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.containers.ISlotItemFilter;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
@@ -14,12 +15,9 @@ import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.info.Info;
 import ic2.api.item.ElectricItem;
-import ic2.api.item.IC2Items;
 import ic2.api.item.IElectricItem;
 import ic2.api.reactor.IReactor;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -151,7 +149,7 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 			addedToEnet = false;
 		}
 	}
-	
+
 	@Override
 	protected void checkStatus() {
 		markDirty();
@@ -227,9 +225,9 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 			if (itemStack.isEmpty())
 				continue;
 
-			if (itemStack.isItemEqual(IC2Items.getItem("upgrade","transformer"))) {
+			if (itemStack.isItemEqual(CrossModLoader.ic2.getItem("transformer"))) {
 				upgradeCountTransormer += itemStack.getCount();
-			} else if (itemStack.isItemEqual(IC2Items.getItem("upgrade","energy_storage"))) {
+			} else if (itemStack.isItemEqual(CrossModLoader.ic2.getItem("energy_storage"))) {
 				upgradeCountStorage += itemStack.getCount();
 			} else if (itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE)
 				upgradeCountRange += itemStack.getCount();
@@ -281,25 +279,25 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 	}
 
 	@Override
-	public boolean isItemValid(int slotIndex, ItemStack itemStack) {
-		if (itemStack.isEmpty())
+	public boolean isItemValid(int slotIndex, ItemStack stack) {
+		if (stack.isEmpty())
 			return false;
 		switch (slotIndex) {
 		case SLOT_CHARGER:
-			if (itemStack.getItem() instanceof IElectricItem) {
-				IElectricItem item = (IElectricItem) itemStack.getItem();
-				if (item.canProvideEnergy(itemStack) && item.getTier(itemStack) <= tier)
+			if (stack.getItem() instanceof IElectricItem) {
+				IElectricItem item = (IElectricItem) stack.getItem();
+				if (item.canProvideEnergy(stack) && item.getTier(stack) <= tier)
 					return true;
 			}
 			return false;
 		case SLOT_CARD:
-			return itemStack.getItem() instanceof ItemCardMain
-					&& (itemStack.getItemDamage() == ItemCardType.CARD_REACTOR
-							|| itemStack.getItemDamage() == ItemCardType.CARD_REACTOR5X5);
+			return stack.getItem() instanceof ItemCardMain
+					&& (stack.getItemDamage() == ItemCardType.CARD_REACTOR
+							|| stack.getItemDamage() == ItemCardType.CARD_REACTOR5X5);
 		default:
-			return itemStack.isItemEqual(IC2Items.getItem("upgrade","transformer"))
-					|| itemStack.isItemEqual(IC2Items.getItem("upgrade","energy_storage"))
-					|| (itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE);
+			return stack.isItemEqual(CrossModLoader.ic2.getItem("transformer"))
+					|| stack.isItemEqual(CrossModLoader.ic2.getItem("energy_storage"))
+					|| (stack.getItem() instanceof ItemUpgrade && stack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE);
 		}
 	}
 

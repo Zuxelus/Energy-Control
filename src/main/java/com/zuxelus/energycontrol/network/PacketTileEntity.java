@@ -1,7 +1,6 @@
 package com.zuxelus.energycontrol.network;
 
 import com.zuxelus.energycontrol.tileentities.ITilePacketHandler;
-import com.zuxelus.energycontrol.tileentities.TileEntityAverageCounter;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,7 +20,7 @@ public class PacketTileEntity implements IMessage, IMessageHandler<PacketTileEnt
 	private NBTTagCompound tag;
 
 	public PacketTileEntity() { }
-	
+
 	public PacketTileEntity(BlockPos pos, NBTTagCompound tag) {
 		this.x = pos.getX();
 		this.y = pos.getY();

@@ -26,7 +26,7 @@ public class ClientProxy extends ServerProxy {
 		MinecraftForge.EVENT_BUS.register(EnergyControl.config);
 		EnergyControl.config.init(event.getSuggestedConfigurationFile());
 	}
-	
+
 	@Override
 	public void registerSpecialRenderers() {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityThermo.class, new TEThermoRenderer());
@@ -47,46 +47,50 @@ public class ClientProxy extends ServerProxy {
 			if (player.getHeldItemMainhand().getItem() instanceof ItemCardHolder)
 				return new GuiCardHolder(player);
 		}
-		TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
+		TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
 		switch (ID) {
 		case BlockDamages.DAMAGE_THERMAL_MONITOR:
-			if (tileEntity instanceof TileEntityThermo)
-				return new GuiThermalMonitor((TileEntityThermo) tileEntity);
+			if (te instanceof TileEntityThermo)
+				return new GuiThermalMonitor((TileEntityThermo) te);
 			break;
 		case BlockDamages.DAMAGE_HOWLER_ALARM:
-			if (tileEntity instanceof TileEntityHowlerAlarm)
-				return new GuiHowlerAlarm((TileEntityHowlerAlarm) tileEntity);
+			if (te instanceof TileEntityHowlerAlarm)
+				return new GuiHowlerAlarm((TileEntityHowlerAlarm) te);
 		case BlockDamages.DAMAGE_INDUSTRIAL_ALARM:
-			if (tileEntity instanceof TileEntityIndustrialAlarm)
-				return new GuiIndustrialAlarm((TileEntityIndustrialAlarm) tileEntity);
+			if (te instanceof TileEntityIndustrialAlarm)
+				return new GuiIndustrialAlarm((TileEntityIndustrialAlarm) te);
 			break;
 		case BlockDamages.DAMAGE_INFO_PANEL:
-			if (tileEntity instanceof TileEntityInfoPanel)
-				return new GuiInfoPanel(new ContainerInfoPanel(player, (TileEntityInfoPanel) tileEntity));
+			if (te instanceof TileEntityInfoPanel)
+				return new GuiInfoPanel(new ContainerInfoPanel(player, (TileEntityInfoPanel) te));
 			break;
 		case BlockDamages.DAMAGE_ADVANCED_PANEL:
-			if (tileEntity instanceof TileEntityAdvancedInfoPanel)
-				return new GuiAdvancedInfoPanel(new ContainerAdvancedInfoPanel(player, (TileEntityAdvancedInfoPanel) tileEntity));
+			if (te instanceof TileEntityAdvancedInfoPanel)
+				return new GuiAdvancedInfoPanel(new ContainerAdvancedInfoPanel(player, (TileEntityAdvancedInfoPanel) te));
 			break;
 		case BlockDamages.DAMAGE_RANGE_TRIGGER:
-			if (tileEntity instanceof TileEntityRangeTrigger)
-				return new GuiRangeTrigger(new ContainerRangeTrigger(player, (TileEntityRangeTrigger) tileEntity));
+			if (te instanceof TileEntityRangeTrigger)
+				return new GuiRangeTrigger(new ContainerRangeTrigger(player, (TileEntityRangeTrigger) te));
 			break;
 		case BlockDamages.DAMAGE_REMOTE_THERMO:
-			if (tileEntity instanceof TileEntityRemoteThermo)
-				return new GuiRemoteThermo(new ContainerRemoteThermo(player, (TileEntityRemoteThermo) tileEntity));
+			if (te instanceof TileEntityRemoteThermo)
+				return new GuiRemoteThermo(new ContainerRemoteThermo(player, (TileEntityRemoteThermo) te));
 			break;
 		case BlockDamages.DAMAGE_AVERAGE_COUNTER:
-			if (tileEntity instanceof TileEntityAverageCounter)
-				return new GuiAverageCounter(new ContainerAverageCounter(player, (TileEntityAverageCounter) tileEntity));
+			if (te instanceof TileEntityAverageCounter)
+				return new GuiAverageCounter(new ContainerAverageCounter(player, (TileEntityAverageCounter) te));
 			break;
 		case BlockDamages.DAMAGE_ENERGY_COUNTER:
-			if (tileEntity instanceof TileEntityEnergyCounter)
-				return new GuiEnergyCounter(new ContainerEnergyCounter(player, (TileEntityEnergyCounter) tileEntity));
+			if (te instanceof TileEntityEnergyCounter)
+				return new GuiEnergyCounter(new ContainerEnergyCounter(player, (TileEntityEnergyCounter) te));
 			break;
 		case BlockDamages.GUI_KIT_ASSEMBER:
-			if (tileEntity instanceof TileEntityKitAssembler)
-				return new GuiKitAssembler(new ContainerKitAssembler(player, (TileEntityKitAssembler) tileEntity));
+			if (te instanceof TileEntityKitAssembler)
+				return new GuiKitAssembler(new ContainerKitAssembler(player, (TileEntityKitAssembler) te));
+			break;
+		case BlockDamages.DAMAGE_AFSU:
+			if (te instanceof TileEntityAFSU)
+				return new GuiAFSU(new ContainerAFSU(player, (TileEntityAFSU) te));
 			break;
 		}
 		return null;

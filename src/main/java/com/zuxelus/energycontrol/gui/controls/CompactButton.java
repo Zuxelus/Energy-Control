@@ -24,14 +24,14 @@ public class CompactButton extends GuiButton {
 		if (!visible)
 			return;
 
-		FontRenderer fontrenderer = mc.fontRenderer;
-        mc.getTextureManager().bindTexture(TEXTURE);
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
-        int i = this.getHoverState(this.hovered);
-		this.drawTexturedModalRect(this.x, this.y, 0, 64 + i * 12, this.width / 2 + width % 2, this.height);
-		this.drawTexturedModalRect(this.x + this.width / 2 + width % 2, this.y, 200 - this.width / 2, 64 + i * 12, this.width / 2, this.height);
-		this.mouseDragged(mc, mouseX, mouseY);
-		fontrenderer.drawString(displayString, x + (width - fontrenderer.getStringWidth(displayString)) / 2, y + 2, 0x404040);
+		FontRenderer fontRenderer = mc.fontRenderer;
+		mc.getTextureManager().bindTexture(TEXTURE);
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		this.hovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
+		int i = this.getHoverState(hovered);
+		drawTexturedModalRect(x, y, 0, 64 + i * 12, width / 2 + width % 2, height);
+		drawTexturedModalRect(x + width / 2 + width % 2, y, 200 - width / 2, 64 + i * 12, width / 2, height);
+		mouseDragged(mc, mouseX, mouseY);
+		fontRenderer.drawString(displayString, x + (width - fontRenderer.getStringWidth(displayString)) / 2, y + 2, 0x404040);
 	}
 }

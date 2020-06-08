@@ -12,7 +12,6 @@ import java.util.Map;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
-//import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
 import io.netty.buffer.ByteBuf;
@@ -152,7 +151,7 @@ public class PacketCard implements IMessage, IMessageHandler<PacketCard, IMessag
 		ItemStack stack = panel.getStackInSlot(message.slot);
 		if (stack.isEmpty() || !(stack.getItem() instanceof ItemCardMain))
 			return null;
-		
+
 		ItemCardReader reader = new ItemCardReader(stack);
 		for (Map.Entry<String, Object> entry : message.fields.entrySet()) {
 			String name = entry.getKey();

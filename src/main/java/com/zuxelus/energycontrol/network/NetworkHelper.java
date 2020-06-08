@@ -28,20 +28,6 @@ public class NetworkHelper {
 	public static final int FIELD_LONG = 7;
 
 	// server
-	/*public static void sendEnergyCounterValue(TileEntityEnergyCounter counter, IContainerListener crafter) {
-		if (counter == null || !(crafter instanceof EntityPlayerMP))
-			return;
-		ChannelHandler.network.sendTo(new PacketEncounter(counter.getPos(), counter.counter), (EntityPlayerMP) crafter);
-	}
-
-	// server
-	public static void sendAverageCounterValue(TileEntityAverageCounter counter, IContainerListener crafter, int average) {
-		if (counter == null || !(crafter instanceof EntityPlayerMP))
-			return;
-		ChannelHandler.network.sendTo(new PacketAcounter(counter.getPos(), average), (EntityPlayerMP) crafter);
-	}*/
-
-	// server
 	private static void sendPacketToAllAround(BlockPos pos, int dist, World world, IMessage packet) {
 		List<EntityPlayer> players = world.playerEntities;
 		for (EntityPlayer player : players) {
@@ -68,14 +54,14 @@ public class NetworkHelper {
 	}
 
 	// client
-	public static void setCardSettings(ItemStack card, TileEntity panelTE, Map<String, Object> fields, byte slot) {
-		if (card == null || fields == null || fields.isEmpty() || panelTE == null || !(panelTE instanceof TileEntityInfoPanel))
+	public static void setCardSettings(ItemStack card, TileEntity panel, Map<String, Object> fields, byte slot) {
+		if (card == null || fields == null || fields.isEmpty() || panel == null || !(panel instanceof TileEntityInfoPanel))
 			return;
 
-		if (FMLCommonHandler.instance().getEffectiveSide().isServer())
+		if (!panel.getWorld().isRemote)
 			return;
 
-		ChannelHandler.network.sendToServer(new PacketClientSensor(panelTE.getPos(), slot, card.getItem().getClass().getName(), fields));
+		ChannelHandler.network.sendToServer(new PacketClientSensor(panel.getPos(), slot, card.getItem().getClass().getName(), fields));
 	}
 
 	public static void chatMessage(EntityPlayer player, String message) {
@@ -112,15 +98,17 @@ public class NetworkHelper {
 	public static void updateSeverTileEntity(BlockPos pos, int type, String string) {
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setInteger("type", type);
-		tag.setString("string", string);		
+		tag.setString("string", string);
 		ChannelHandler.network.sendToServer(new PacketTileEntity(pos, tag));
 	}
+
 	public static void updateSeverTileEntity(BlockPos pos, int type, int value) {
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setInteger("type", type);
 		tag.setInteger("value", value);
 		ChannelHandler.network.sendToServer(new PacketTileEntity(pos, tag));
 	}
+
 	public static void updateSeverTileEntity(BlockPos pos, NBTTagCompound tag) {
 		ChannelHandler.network.sendToServer(new PacketTileEntity(pos, tag));
 	}

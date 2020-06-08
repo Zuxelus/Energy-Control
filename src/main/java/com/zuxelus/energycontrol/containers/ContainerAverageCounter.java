@@ -40,7 +40,7 @@ public class ContainerAverageCounter extends ContainerBase<TileEntityAverageCoun
 	}
 
 	@Override
-	public ItemStack slotClick(int slotId, int dragType, ClickType clickType, EntityPlayer player) {	
+	public ItemStack slotClick(int slotId, int dragType, ClickType clickType, EntityPlayer player) {
 		ItemStack stack = super.slotClick(slotId, dragType, clickType, player);
 		te.markDirty();
 		return stack;

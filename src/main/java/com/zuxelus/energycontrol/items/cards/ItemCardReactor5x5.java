@@ -26,7 +26,7 @@ public class ItemCardReactor5x5 extends ItemCardBase {
 		BlockPos target = reader.getTarget();
 		if (target == null) 
 			return CardState.NO_TARGET;
-		
+
 		return CrossModLoader.ic2.updateCardReactor5x5(world, reader, target);
 	}
 
@@ -34,7 +34,7 @@ public class ItemCardReactor5x5 extends ItemCardBase {
 	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		if ((displaySettings & 2) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelHeat", reader.getInt("heat"), showLabels));
+			addHeat(result, reader.getInt("heat"), reader.getInt("maxHeat"), showLabels);
 		if ((displaySettings & 4) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelMaxHeat", reader.getInt("maxHeat"), showLabels));
 		if ((displaySettings & 8) > 0)

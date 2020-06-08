@@ -21,14 +21,9 @@ public class ItemPortablePanel extends Item {
 
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
-        ItemStack stack = player.getHeldItem(hand);
-        if (!player.isSneaking() && !world.isRemote && stack.getCount() == 1)
-            player.openGui(EnergyControl.instance, BlockDamages.GUI_PORTABLE_PANEL, world, 0, 0, 0);
-        return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
-    }
-
-    /*@Override
-    public int getMaxItemUseDuration(ItemStack stack) {
-        return 1;
-    }*/
+		ItemStack stack = player.getHeldItem(hand);
+		if (!player.isSneaking() && !world.isRemote && stack.getCount() == 1)
+			player.openGui(EnergyControl.instance, BlockDamages.GUI_PORTABLE_PANEL, world, 0, 0, 0);
+		return ActionResult.newResult(EnumActionResult.SUCCESS, stack);
+	}
 }

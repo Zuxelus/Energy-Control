@@ -39,6 +39,7 @@ public class ItemKitMain extends Item {
 		register(new ItemKitGenerator());
 		register(new ItemKitReactor());
 		register(new ItemKitLiquidAdvanced());
+		register(new ItemKitToggle());
 		if (CrossModLoader.draconicEvolution.modLoaded)
 			register(new ItemKitDraconic());
 	}
@@ -86,7 +87,7 @@ public class ItemKitMain extends Item {
 			return;
 		for (Map.Entry<Integer, IItemKit> entry : kits.entrySet()) {
 			Integer key = entry.getKey();
-				items.add(new ItemStack(this, 1, key));
+			items.add(new ItemStack(this, 1, key));
 		}
 	}
 
@@ -110,7 +111,7 @@ public class ItemKitMain extends Item {
 		player.replaceItemInInventory(player.inventory.currentItem, sensorLocationCard);
 		return EnumActionResult.SUCCESS;
 	}	
-	
+
 	public IItemKit getItemKitBase(int metadata) {
 		if (kits.containsKey(metadata))
 			return kits.get(metadata);
@@ -136,7 +137,7 @@ public class ItemKitMain extends Item {
 	public static final void registerRecipes() {
 		for (Map.Entry<Integer, IItemKit> entry : kits.entrySet()) {
 			Integer key = entry.getKey();
-			Object[] recipe = entry.getValue().getRecipe(); 
+			Object[] recipe = entry.getValue().getRecipe();
 			if (recipe != null)
 				Recipes.advRecipes.addRecipe(new ItemStack(ItemHelper.itemKit, 1, key), recipe);
 		}

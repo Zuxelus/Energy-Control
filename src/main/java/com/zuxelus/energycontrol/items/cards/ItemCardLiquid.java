@@ -28,11 +28,11 @@ public class ItemCardLiquid extends ItemCardBase {
 		BlockPos target = reader.getTarget();
 		if (target == null) 
 			return CardState.NO_TARGET;
-		
+
 		IFluidTank storage = LiquidCardHelper.getStorageAt(world, target);
 		if (storage == null)
 			return CardState.NO_TARGET;
-		
+
 		int amount = 0;
 		String name = "";
 		if (storage.getFluid() != null) {
@@ -56,16 +56,16 @@ public class ItemCardLiquid extends ItemCardBase {
 			String name = reader.getString("name");
 			if (name == "")
 				name = I18n.format("msg.ec.None");
-			result.add(new PanelString("msg.ec.InfoPanelLiquidName", name, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelName", name, showLabels));
 		}
 		if ((displaySettings & 2) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelLiquidAmount", amount, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelAmount", amount, showLabels));
 		if ((displaySettings & 4) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelLiquidFree", capacity - amount, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelFree", capacity - amount, showLabels));
 		if ((displaySettings & 8) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelLiquidCapacity", capacity, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelCapacity", capacity, showLabels));
 		if ((displaySettings & 16) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelLiquidPercentage", capacity == 0 ? 100 : (amount * 100 / capacity), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelPercentage", capacity == 0 ? 100 : (amount * 100 / capacity), showLabels));
 		return result;
 	}
 

@@ -1,7 +1,6 @@
 package com.zuxelus.energycontrol.items.cards;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import com.brandon3055.draconicevolution.api.IExtendedRFStorage;
@@ -11,8 +10,6 @@ import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
-import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.crossmod.EnergyStorageData;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
@@ -32,11 +29,11 @@ public class ItemCardEnergyDraconic extends ItemCardBase {
 		BlockPos target = reader.getTarget();
 		if (target == null)
 			return CardState.NO_TARGET;
-		
+
 		TileEntity te = world.getTileEntity(target);
 		if (te == null)
 			return CardState.NO_TARGET;
-			
+
 		if (te instanceof IExtendedRFStorage) {
 			reader.setDouble("storage", (double) ((IExtendedRFStorage)te).getExtendedCapacity());
 			reader.setDouble("energy", (double) ((IExtendedRFStorage)te).getExtendedCapacity());
@@ -55,12 +52,6 @@ public class ItemCardEnergyDraconic extends ItemCardBase {
 		return CardState.NO_TARGET;
 	}
 
-	private CardState updateCardValues(ICardReader reader, EnergyStorageData storage) {
-		reader.setDouble("storage", storage.values.get(0));
-		reader.setDouble("energy", storage.values.get(1));
-		return CardState.OK;
-	}
-
 	@Override
 	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
@@ -69,11 +60,11 @@ public class ItemCardEnergyDraconic extends ItemCardBase {
 		double storage = reader.getDouble("storage");
 
 		if ((displaySettings & 1) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelEnergy", energy, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelEnergyRF", energy, showLabels));
 		if ((displaySettings & 2) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelFree", storage - energy, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelFreeRF", storage - energy, showLabels));
 		if ((displaySettings & 4) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelStorage", storage, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelCapacityRF", storage, showLabels));
 		if ((displaySettings & 8) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelPercentage", storage == 0 ? 100 : ((energy / storage) * 100), showLabels));
 		return result;
@@ -85,7 +76,7 @@ public class ItemCardEnergyDraconic extends ItemCardBase {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(4);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 1, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelFree"), 2, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelStorage"), 4, damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelCapacity"), 4, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelPercentage"), 8, damage));
 		return result;
 	}

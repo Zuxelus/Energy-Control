@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
-import com.zuxelus.energycontrol.crossmod.EnergyStorageData;
 
 import ic2.api.reactor.IReactor;
 import net.minecraft.item.ItemStack;
@@ -27,11 +26,6 @@ public class IC2NoMod extends IC2Cross {
 	}
 
 	@Override
-	public EnergyStorageData getEnergyStorageData(TileEntity target) {
-		return null;
-	}
-
-	@Override
 	public IC2Type getType() {
 		return IC2Type.NONE;
 	}
@@ -39,6 +33,11 @@ public class IC2NoMod extends IC2Cross {
 	@Override
 	public int getProfile() {
 		return -1;
+	}
+
+	@Override
+	public ItemStack getItem(String name) {
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -52,22 +51,32 @@ public class IC2NoMod extends IC2Cross {
 	}
 
 	@Override
+	public ItemStack getEnergyCard(World world, BlockPos pos) {
+		return null;
+	}
+
+	@Override
+	public NBTTagCompound getEnergyData(TileEntity te) {
+		return null;
+	}
+
+	@Override
 	public ItemStack getGeneratorCard(World world, BlockPos pos) {
 		return ItemStack.EMPTY;
 	}
 
 	@Override
-	public NBTTagCompound getGeneratorData(TileEntity entity) {
+	public NBTTagCompound getGeneratorData(TileEntity te) {
 		return null;
 	}
 
 	@Override
-	public NBTTagCompound getGeneratorKineticData(TileEntity entity) {
+	public NBTTagCompound getGeneratorKineticData(TileEntity te) {
 		return null;
 	}
 
 	@Override
-	public NBTTagCompound getGeneratorHeatData(TileEntity entity) {
+	public NBTTagCompound getGeneratorHeatData(TileEntity te) {
 		return null;
 	}
 

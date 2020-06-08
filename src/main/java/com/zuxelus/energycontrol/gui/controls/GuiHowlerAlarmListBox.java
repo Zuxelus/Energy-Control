@@ -92,7 +92,7 @@ public class GuiHowlerAlarmListBox extends GuiButton {
 		if (dragging) {
 			int pos = (mouseY - y - SCROLL_BUTTON_HEIGHT - dragDelta)
 					* (lineHeight * items.size() + BASIC_Y_OFFSET - height)
-					/ Math.max(height - 2 * SCROLL_BUTTON_HEIGHT - sliderHeight, 1);			
+					/ Math.max(height - 2 * SCROLL_BUTTON_HEIGHT - sliderHeight, 1);
 			scrollTo(pos);
 		}
 
@@ -167,7 +167,7 @@ public class GuiHowlerAlarmListBox extends GuiButton {
 		
 		String newSound = items.get(itemIndex);
 		if (alarm.getWorld().isRemote && !newSound.equals(alarm.getSoundName())) {
-			NetworkHelper.updateSeverTileEntity(alarm.getPos(), 1, newSound);			
+			NetworkHelper.updateSeverTileEntity(alarm.getPos(), 1, newSound);
 			alarm.setSoundName(newSound);
 		}
 	}

@@ -23,7 +23,7 @@ public class IconButton extends GuiButton {
 	public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
 		if(!visible)
 			return;
-		
+
 		mc.getTextureManager().bindTexture(textureLocation);
 		if (mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height)
 			drawGradientRect(x, y, x + width, y + height, 0x80FFFFFF, 0x80FFFFFF);

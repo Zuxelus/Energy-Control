@@ -7,11 +7,11 @@ import java.util.List;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
-import com.zuxelus.energycontrol.crossmod.EnergyStorageData;
 import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.energycontrol.utils.ReactorHelper;
 
+import ic2.api.item.IC2Items;
 import ic2.api.item.ICustomDamageItem;
 import ic2.api.reactor.IReactor;
 import ic2.api.tile.IEnergyStorage;
@@ -92,6 +92,21 @@ public class IC2ExpCross extends IC2Cross {
 	}
 
 	@Override
+	public ItemStack getItem(String name) {
+		switch (name) {
+		case "transformer":
+			return IC2Items.getItem("upgrade", "transformer");
+		case "energy_storage":
+			return IC2Items.getItem("upgrade", "energy_storage");
+		case "machine":
+			return IC2Items.getItem("resource", "machine");
+		case "mfsu":
+			return IC2Items.getItem("te","mfsu");
+		}
+		return ItemStack.EMPTY;
+	}
+
+	@Override
 	public boolean isWrench(ItemStack stack) {
 		return !stack.isEmpty() && stack.getItem() instanceof ItemToolWrench;
 	}
@@ -107,39 +122,30 @@ public class IC2ExpCross extends IC2Cross {
 	}
 
 	@Override
-	public EnergyStorageData getEnergyStorageData(TileEntity target) {
-		if (target instanceof IEnergyStorage) {
-			IEnergyStorage storage = (IEnergyStorage) target;
-			EnergyStorageData result = new EnergyStorageData();
-			result.values.add((double) storage.getCapacity());
-			result.values.add((double) storage.getStored());
-			result.type = EnergyStorageData.TARGET_TYPE_IC2;
-			return result;
+	public ItemStack getEnergyCard(World world, BlockPos pos) {
+		TileEntity te = world.getTileEntity(pos);
+		if (te instanceof IEnergyStorage) {
+			ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_ENERGY);
+			ItemStackHelper.setCoordinates(sensorLocationCard, pos);
+			return sensorLocationCard;
+		}
+		return ItemStack.EMPTY;
+	}
+
+	@Override
+	public NBTTagCompound getEnergyData(TileEntity te) {
+		if (te instanceof IEnergyStorage) {
+			NBTTagCompound tag = new NBTTagCompound();
+			IEnergyStorage storage = (IEnergyStorage) te;
+			tag.setInteger("type", 1);
+			tag.setDouble("storage", storage.getStored());
+			tag.setDouble("maxStorage", storage.getCapacity());
+			return tag;
 		}
 		return null;
 	}
 
-	/*@Override
-	public ReactorInfo getReactorInfo(TileEntity par1) {
-		if (par1 == null || !(par1 instanceof TileEntityNuclearReactorElectric))
-			return null;
-		TileEntityNuclearReactorElectric reactor = (TileEntityNuclearReactorElectric) par1;
-		ReactorInfo info = new ReactorInfo();
-		info.isOnline = reactor.getActive();
-		info.outTank = reactor.getoutputtank().getFluidAmount();
-		info.inTank = reactor.getinputtank().getFluidAmount();
-		info.emitHeat = reactor.EmitHeat;
-		info.coreTemp = (int) (((double) reactor.getHeat() / (double) reactor.getMaxHeat()) * 100D);
-		return info;
-	}
-
 	@Override
-	public boolean isMultiReactorPart(TileEntity par1) {
-		if (par1 instanceof TileEntityReactorRedstonePort || par1 instanceof TileEntityReactorAccessHatch)
-			return true;
-		return false;
-	}*/
-
 	public ItemStack getGeneratorCard(World world, BlockPos pos) {
 		Block block = world.getBlockState(pos).getBlock();
 		if (!(block instanceof BlockTileEntity))
@@ -179,15 +185,21 @@ public class IC2ExpCross extends IC2Cross {
 				tag.setDouble("maxStorage", energy.getCapacity());
 				if (te instanceof TileEntitySolarGenerator) {
 					float light = ((TileEntitySolarGenerator)te).skyLight;
-					tag.setBoolean("active", light > 0);
-					tag.setDouble("production", (double) light);
+					active = light > 0 && energy.getEnergy() < energy.getCapacity();
+					tag.setBoolean("active", active);
+					if (active)
+						tag.setDouble("production", (double) light);
+					else
+						tag.setDouble("production", 0);
 					return tag;
 				}
 				if (te instanceof TileEntityRTGenerator) {
+					tag.setInteger("type", 4);
 					int counter = 0;
 					for (int i = 0; i < ((TileEntityRTGenerator) te).fuelSlot.size(); i++)
 						if (!((TileEntityRTGenerator) te).fuelSlot.isEmpty(i))
 							counter++;
+					tag.setInteger("items", counter);
 					if (counter == 0 || energy.getEnergy() >= energy.getCapacity()) {
 						tag.setBoolean("active", false);
 						tag.setDouble("production", 0);
@@ -196,6 +208,7 @@ public class IC2ExpCross extends IC2Cross {
 					tag.setBoolean("active", true);
 					Field field = TileEntityRTGenerator.class.getDeclaredField("efficiency");
 					field.setAccessible(true);
+					tag.setDouble("multiplier", (double) (float) field.get(te));
 					tag.setDouble("production", (double) Math.pow(2.0D, (counter - 1)) * (float) field.get(te));
 					return tag;
 				}
@@ -217,7 +230,8 @@ public class IC2ExpCross extends IC2Cross {
 					tag.setDouble("production", 0);
 				return tag;
 			}
-			
+
+
 			if (te instanceof TileEntityConversionGenerator) {
 				if (active) {
 					Field field = TileEntityConversionGenerator.class.getDeclaredField("lastProduction");
@@ -232,7 +246,10 @@ public class IC2ExpCross extends IC2Cross {
 					tag.setDouble("multiplier", (Double) field.get(te));
 				}
 				if (te instanceof TileEntityKineticGenerator) {
-					tag.setInteger("type", 2);
+					tag.setInteger("type", 3);
+					Energy energy = ((TileEntityKineticGenerator) te).getComponent(Energy.class);
+					tag.setDouble("storage", energy.getEnergy());
+					tag.setDouble("maxStorage", energy.getCapacity());
 					Field field = TileEntityKineticGenerator.class.getDeclaredField("euPerKu");
 					field.setAccessible(true);
 					tag.setDouble("multiplier", (Double) field.get(te));

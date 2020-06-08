@@ -19,7 +19,7 @@ public class TERemoteThermoRenderer extends TileEntitySpecialRenderer<TileEntity
 	@Override
 	public void render(TileEntityRemoteThermo te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
 		GlStateManager.pushMatrix();
-		GlStateManager.translate((float)x, (float)y, (float)z);
+		GlStateManager.translate(x, y, z);
 		EnumFacing facing = te.getFacing();
 		switch (facing) {
 		case UP:

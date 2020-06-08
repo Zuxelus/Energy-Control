@@ -12,6 +12,7 @@ import net.minecraft.util.NonNullList;
 public class ItemUpgrade extends Item {
 	public static final int DAMAGE_RANGE = 0;
 	public static final int DAMAGE_COLOR = 1;
+	public static final int DAMAGE_TOUCH = 2;
 
 	public ItemUpgrade() {
 		super();
@@ -28,6 +29,8 @@ public class ItemUpgrade extends Item {
 			return "item.upgrade_range";
 		case DAMAGE_COLOR:
 			return "item.upgrade_color";
+		case DAMAGE_TOUCH:
+			return "item.upgrade_touch";
 		default:
 			return "";
 		}
@@ -39,5 +42,6 @@ public class ItemUpgrade extends Item {
 			return;
 		items.add(new ItemStack(ItemHelper.itemUpgrade, 1, DAMAGE_RANGE));
 		items.add(new ItemStack(ItemHelper.itemUpgrade, 1, DAMAGE_COLOR));
+		items.add(new ItemStack(ItemHelper.itemUpgrade, 1, DAMAGE_TOUCH));
 	}
 }

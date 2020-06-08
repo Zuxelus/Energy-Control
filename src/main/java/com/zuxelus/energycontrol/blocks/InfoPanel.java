@@ -2,24 +2,20 @@ package com.zuxelus.energycontrol.blocks;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.tileentities.IRedstoneConsumer;
 import com.zuxelus.energycontrol.tileentities.TileEntityFacing;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInventory;
 
-import ic2.api.item.IC2Items;
 import ic2.api.tile.IWrenchable;
+import ic2.api.util.Keys;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
@@ -56,7 +52,7 @@ public class InfoPanel extends FacingBlock implements ITileEntityProvider, IWren
 	public boolean isFullCube(IBlockState state) {
 		return false;
 	}
-	
+
 	@Override
 	public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
 		TileEntity te = world.getTileEntity(pos);
@@ -67,6 +63,12 @@ public class InfoPanel extends FacingBlock implements ITileEntityProvider, IWren
 
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+		TileEntity te = world.getTileEntity(pos);
+		if (!(te instanceof TileEntityInfoPanel))
+			return true;
+		if (!world.isRemote && Keys.instance.isAltKeyDown(player) && ((TileEntityInfoPanel) te).getFacing() == facing)
+			if (((TileEntityInfoPanel) te).runTouchAction(pos, hitX, hitY, hitZ))
+				return true;
 		if (CrossModLoader.ic2.isWrench(player.getHeldItem(hand)))
 			return true;
 		if (!world.isRemote)
@@ -106,14 +108,21 @@ public class InfoPanel extends FacingBlock implements ITileEntityProvider, IWren
 
 	@Override
 	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-		drops.add(IC2Items.getItem("resource", "machine"));
+		drops.add(CrossModLoader.ic2.getItem("machine"));
 	}
 
 	@Override
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos) {
+		if (!world.isRemote)
+			world.notifyBlockUpdate(pos, state, state, 2);
+	}
+
+	@Override
+	public boolean canConnectRedstone(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
 		TileEntity te = world.getTileEntity(pos);
-		if (te instanceof IRedstoneConsumer)
-			((IRedstoneConsumer) te).neighborChanged();
+		if (te instanceof TileEntityFacing)
+			return side == ((TileEntityFacing) te).getFacing();
+		return false;
 	}
 
 	@Override

@@ -8,6 +8,7 @@ item.kit_liquid.name=Набор для жидкостного хранилища
 item.kit_liquid_advanced.name=Улучш. набор для жидкостного хранилища
 item.kit_generator.name=Набор для генератора
 item.kit_reactor.name=Набор для реактора
+item.kit_toggle.name=Набор для удаленного переключения
 item.card_energy.name=Карта-датчик расположения энергии
 item.card_counter.name=Карта-датчик расположения счётчика
 item.card_liquid.name=Карта-датчик расположения жидкости
@@ -18,6 +19,7 @@ item.card_generator_heat.name=Карта-датчик расположения �
 item.card_reactor.name=Карта-датчик расположения реактора
 item.card_reactor_5x5.name=Карта-датчик расположения 5x5 реактора
 item.card_engine.name=Карта-датчик расположения двигателя
+item.card_toggle.name=Карта удаленного переключения
 item.card_text.name=Текстовая карта
 item.card_time.name=Карта со временем
 item.card_energy_array.name=Карта-датчик расположения массива с энергией
@@ -27,8 +29,11 @@ item.thermometer.name=Термометр
 item.thermometer_digital.name=Цифровой термометр
 item.upgrade_range.name=Улучшение «Усиление сигнала»
 item.upgrade_color.name=Улучшение «Цветность»
+item.upgrade_touch.name=Улучшение «Сенсорный экран»
 item.portable_panel.name=Портативная панель
 item.card_holder.name=Кардхолдер
+item.nano_bow.name=Нано-лук
+ic2.afb=AFB
 
 #Integration Items
 item.card_energy_draconic.name=Карта расположения хранилища Draconic
@@ -56,6 +61,7 @@ tile.energy_counter.name=Энергосчётчик
 tile.average_counter.name=Стационарный энергосчётчик
 tile.range_trigger.name=Дистанционный триггер
 tile.kit_assembler.name=Сборщик наборов
+tile.afsu.name=AFSU
 
 #Original Screen Messages
 msg.ec.HowlerAlarmSoundRange=Дальность звука: %s
@@ -70,50 +76,71 @@ msg.ec.InfoPanelOutOfRange=Вне диапазона
 msg.ec.InfoPanelInvalidCard=Недействительная карта
 msg.ec.InfoPanelNoTarget=Цель не найдена
 
-msg.ec.InfoPanelOn=Включена
-msg.ec.InfoPanelOff=Выключена
+msg.ec.InfoPanelAmount=Количество: %s
+msg.ec.InfoPanelBuffer=Буфер: %s
+msg.ec.InfoPanelBufferHU=Буфер: %s HU
+msg.ec.InfoPanelCapacity=Ёмкость: %s
+msg.ec.InfoPanelCapacityEU=Ёмкость: %s EU
+msg.ec.InfoPanelCapacityHU=Ёмкость: %s HU
+msg.ec.InfoPanelCapacityKU=Ёмкость: %s KU
+msg.ec.InfoPanelCapacityL=Ёмкость: %s L
+msg.ec.InfoPanelCapacityRF=Ёмкость: %s RF
+msg.ec.InfoPanelCoils=Катушки: %s
+msg.ec.InfoPanelConductors=Проводники: %s
+msg.ec.InfoPanelEnergy=Энергия: %s
+msg.ec.InfoPanelEnergyEU=Энергия: %s EU
+msg.ec.InfoPanelEnergyHU=Энергия: %s HU
+msg.ec.InfoPanelEnergyKU=Энергия: %s KU
+msg.ec.InfoPanelEnergyMJ=Энергия: %s MJ
+msg.ec.InfoPanelEnergyRF=Энергия: %s RF
+msg.ec.InfoPanelFill=Заполнено: %s%%
+msg.ec.InfoPanelFree=Свободно: %s
+msg.ec.InfoPanelFreeEU=Свободно: %s EU
+msg.ec.InfoPanelFreeRF=Свободно: %s RF
 msg.ec.InfoPanelHeat=Т: %s
 msg.ec.InfoPanelHeatPercentage=Нагрев: %s%%
+msg.ec.InfoPanelHeight=Высота: %s
 msg.ec.InfoPanelMaxHeat=Макс. нагрев: %s
+msg.ec.InfoPanelMaxStorage=Объем: %s
+msg.ec.InfoPanelMaxStorageEU=Объем: %s EU
+msg.ec.InfoPanelMaxStorageHU=Объем: %s HU
+msg.ec.InfoPanelMaxStorageKU=Объем: %s KU
+msg.ec.InfoPanelMaxStorageMJ=Объем: %s MJ
 msg.ec.InfoPanelMelting=Плавление: %s
-msg.ec.InfoPanelOutput=Выход: %s EU/т
+msg.ec.InfoPanelMotors=Моторы: %s
+msg.ec.InfoPanelMultiplier=Множитель: %s
+msg.ec.InfoPanelName=Название: %s
+msg.ec.InfoPanelOff=Выключена
+msg.ec.InfoPanelOn=Включена
+msg.ec.InfoPanelOutput=Выход: %s
+msg.ec.InfoPanelOutputEU=Выход: %s EU/т
 msg.ec.InfoPanelOutputMJ=Выход: %s MJ/т
 msg.ec.InfoPanelOutputRF=Выход: %s RF/т
 msg.ec.InfoPanelOutputHU=Выход: %s hU/т
 msg.ec.InfoPanelOutputKU=Выход: %s kU/т
 msg.ec.InfoPanelOutputHeat=Выход: %s hU/с
 msg.ec.InfoPanelOutputSteam=Выход: %smB/т
-msg.ec.InfoPanelCoils=Катушки: %s
-msg.ec.InfoPanelRotorHealth=RotorHealth: %s
-msg.ec.InfoPanelTimeRemaining=Осталось: %s
-
-msg.ec.InfoPanelEnergyCounter=Энергия: %sEU
-msg.ec.InfoPanelEnergyCounterRF=Энергия: %s RF
-
-msg.ec.InfoPanelEnergy=Энергия: %s
-msg.ec.InfoPanelEnergyMJ=Энергия: %s MJ
-msg.ec.InfoPanelFree=Свободно: %s
-msg.ec.InfoPanelStorage=Хранится: %s
-msg.ec.InfoPanelStorageMJ=Хранится: %s MJ
-msg.ec.InfoPanelMaxStorage=Объем: %s
-msg.ec.InfoPanelMaxStorageMJ=Объем: %s MJ
+msg.ec.InfoPanelPellets=Гранулы: %s
 msg.ec.InfoPanelPercentage=Заполнено: %s%%
-msg.ec.InfoPanelMultiplier=Множитель: %s
-msg.ec.InfoPanelHeight=Высота: %s
-msg.ec.InfoPanelWindStrength=Сила ветра: %s
+msg.ec.InfoPanelPeriod=Период: %s сек
 msg.ec.InfoPanelSpeed=Скорость: %s
+msg.ec.InfoPanelStorage=Хранится: %s
+msg.ec.InfoPanelStorageEU=Хранится: %s EU
+msg.ec.InfoPanelStorageHU=Хранится: %s HU
+msg.ec.InfoPanelStorageKU=Хранится: %s KU
+msg.ec.InfoPanelStorageL=Хранится: %s L
+msg.ec.InfoPanelStorageMJ=Хранится: %s MJ
+msg.ec.InfoPanelTime=Время: %s
+msg.ec.InfoPanelTimeRemaining=Осталось: %s
+msg.ec.InfoPanelRotorHealth=RotorHealth: %s
+msg.ec.InfoPanelWaterFlow=Поток воды: %s
+msg.ec.InfoPanelWindStrength=Сила ветра: %s
 
 msg.ec.cbInfoPanelLiquidName=Название жидкости
 msg.ec.cbInfoPanelLiquidAmount=Количество
 msg.ec.cbInfoPanelLiquidCapacity=Ёмкость
 msg.ec.cbInfoPanelLiquidFree=Свободно
 msg.ec.cbInfoPanelLiquidPercentage=Процент заполнения
-
-msg.ec.InfoPanelLiquidName=Название: %s
-msg.ec.InfoPanelLiquidAmount=Количество: %s
-msg.ec.InfoPanelLiquidCapacity=Ёмкость: %s
-msg.ec.InfoPanelLiquidFree=Свободно: %s
-msg.ec.InfoPanelLiquidPercentage=Заполнено: %s%%
 
 msg.ec.InfoPanelNotFoundN=#%d Не найдено
 msg.ec.InfoPanelOutOfRangeN=#%d Вне диапазона
@@ -129,34 +156,36 @@ msg.ec.InfoPanelLiquidFreeN=#%d Свободно: %s
 msg.ec.InfoPanelLiquidCapacityN=#%d Ёмкость: %s
 msg.ec.InfoPanelLiquidPercentageN=#%d Заполнено: %s%%
 
-msg.ec.InfoPanelTime=Время: %s
-
-msg.ec.cbInfoPanelOnOff=Вкл./Выкл. Состояние
-msg.ec.cbInfoPanelHeat=Уровень Нагрева
-msg.ec.cbInfoPanelMaxHeat=Макс. Нагрев
-msg.ec.cbInfoPanelMelting=Температура Плавления
-msg.ec.cbInfoPanelOutput=Выход (EU/т)
-msg.ec.cbInfoPanelTimeRemaining=Время до окончания цикла
 msg.ec.cb24h=24-часовой режим
-
-msg.ec.cbInfoPanelEnergyCurrent=Энергия
-msg.ec.cbInfoPanelStorage=Хранилище
-msg.ec.cbInfoPanelMaxStorage=Объем
+msg.ec.cbInfoPanelBuffer=Буфер
+msg.ec.cbInfoPanelCapacity=Ёмкость
+msg.ec.cbInfoPanelEach=Каждая карта
+msg.ec.cbInfoPanelEnergy=Энергия
 msg.ec.cbInfoPanelFree=Свободно
+msg.ec.cbInfoPanelHeat=Уровень Нагрева
+msg.ec.cbInfoPanelHeight=Высота
+msg.ec.cbInfoPanelItems=Предметы
+msg.ec.cbInfoPanelMaxHeat=Макс. Нагрев
+msg.ec.cbInfoPanelMaxStorage=Объем
+msg.ec.cbInfoPanelMelting=Температура Плавления
+msg.ec.cbInfoPanelMultiplier=Множитель
+msg.ec.cbInfoPanelOnOff=Вкл./Выкл. Состояние
+msg.ec.cbInfoPanelOutput=Выход (EU/т)
 msg.ec.cbInfoPanelPercentage=Процент заполнения
+msg.ec.cbInfoPanelStorage=Хранилище
+msg.ec.cbInfoPanelTimeRemaining=Время до окончания цикла
+msg.ec.cbInfoPanelTotal=Суммарно
+
 msg.ec.EnergyCardQuantity=Количество карт: %d
 msg.ec.AverageCounterPeriod=Период: %sсек.
-
 msg.ec.LiquidCardQuantity=Количество карт: %d
-
-msg.ec.cbInfoPanelEach=Каждая карта
-msg.ec.cbInfoPanelTotal=Суммарно
 
 msg.ec.Reset=Перезагрузить
 msg.ec.ScreenColor=Цвет экрана
 msg.ec.TextColor=Цвет текста
 msg.ec.None=N/A
 msg.ec.cards=карты: %s
+msg.ec.touch_card=Сенсорная карта
 
 #5x5 Reactor Messages
 msg.ec.InfoPanel55.Output=Выход: %s Hu/сек
@@ -166,6 +195,24 @@ msg.ec.InfoPanel55.tankout=Внешний резервуар: %s / 10000 мВ
 msg.ec.InfoPanel55.Out=Выход (Hu/сек)
 msg.ec.InfoPanel55.BufferIn=Резервуар хладагента
 msg.ec.InfoPanel55.BufferOut=Резервуар горячего хладагента
+
+#Nano Bow
+info.modeenabled=Режим: %s.
+info.normal=стандартный
+info.rapidfire=скорострельный
+info.spread=разбросной
+info.sniper=снайперский
+info.flame=зажигательный
+info.explosive=взрывной
+
+info.redstoneMode=Красный сигнал:
+info.redstoneMode0=Без действия
+info.redstoneMode1=Излучать, если заполнено
+info.redstoneMode2=Излучать, если частично заполнено
+info.redstoneMode3=Излучать, если частично заполнено или пусто
+info.redstoneMode4=Излучать, если пусто
+info.redstoneMode5=Не подавать энергию
+info.redstoneMode6=Не подавать энергию, если не заполнено
 
 #Draconic Evolution
 msg.ec.Status=Статус: %s

@@ -12,7 +12,6 @@ import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergySource;
 import ic2.api.info.Info;
-import ic2.api.item.IC2Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -22,29 +21,16 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.common.MinecraftForge;
 
-public class TileEntityEnergyCounter extends TileEntityInventory
-		implements ITickable, ISlotItemFilter, IEnergySink, IEnergySource, ITilePacketHandler {
+public class TileEntityEnergyCounter extends TileEntityEnergyStorage implements ITickable, ISlotItemFilter, ITilePacketHandler {
 	private static final int BASE_PACKET_SIZE = 32;
 	private boolean init;
-
 	protected int updateTicker;
 	protected int tickRate;
-
 	public double counter;
-	private boolean addedToEnet;
-	
-	  public int tier;
-	  public int output;
-	  public double energy;	
 
 	public TileEntityEnergyCounter() {
-		super("tile.energy_counter.name");
-		addedToEnet = false;
+		super("tile.energy_counter.name", 1, BASE_PACKET_SIZE, BASE_PACKET_SIZE * 2);
 		counter = 0.0;
-		
-		energy = 0;
-		tier = 1;
-		output = BASE_PACKET_SIZE;
 	}
 
 	@Override
@@ -115,31 +101,7 @@ public class TileEntityEnergyCounter extends TileEntityInventory
 	}
 
 	@Override
-	public void onLoad() {
-		if (!addedToEnet && !world.isRemote && Info.isIc2Available()) {
-			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
-			addedToEnet = true;
-		}
-	}
-
-	@Override
-	public void invalidate() {
-		onChunkUnload();
-		super.invalidate();
-	}
-
-	@Override
-	public void onChunkUnload() {
-		if (addedToEnet && !world.isRemote && Info.isIc2Available()) {
-			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
-			addedToEnet = false;
-		}
-	}
-
-	@Override
 	public void update() {
-		if (!addedToEnet)
-			onLoad();
 		if (!init) {
 			init = true;
 			markDirty();
@@ -159,11 +121,12 @@ public class TileEntityEnergyCounter extends TileEntityInventory
 		super.markDirty();
 		int upgradeCountTransormer = 0;
 		ItemStack itemStack = getStackInSlot(0);
-		if (!itemStack.isEmpty() && itemStack.isItemEqual(IC2Items.getItem("upgrade","transformer")))
+		if (!itemStack.isEmpty() && itemStack.isItemEqual(CrossModLoader.ic2.getItem("transformer")))
 			upgradeCountTransormer = itemStack.getCount();
 		upgradeCountTransormer = Math.min(upgradeCountTransormer, 4);
 		if (world != null && !world.isRemote) {
 			output = BASE_PACKET_SIZE * (int) Math.pow(4D, upgradeCountTransormer);
+			capacity = output * 2;
 			tier = upgradeCountTransormer + 1;
 
 			if (addedToEnet) {
@@ -190,53 +153,6 @@ public class TileEntityEnergyCounter extends TileEntityInventory
 
 	@Override
 	public boolean isItemValid(int slotIndex, ItemStack itemstack) { // ISlotItemFilter
-		return itemstack.isItemEqual(IC2Items.getItem("upgrade", "transformer"));
-	}
-
-	@Override
-	public boolean acceptsEnergyFrom(IEnergyEmitter emitter, EnumFacing dir) {
-		return dir != getFacing();
-
-	}
-
-	@Override
-	public boolean emitsEnergyTo(IEnergyAcceptor receiver, EnumFacing dir) {
-		return dir == getFacing();
-	}
-
-	@Override
-	public void drawEnergy(double amount) {
-		this.energy -= amount;
-
-	}
-
-	@Override
-	public double getOfferedEnergy() {
-		if (this.energy >= this.output)
-			return Math.min(this.energy, this.output);
-		return 0.0D;
-	}
-
-	@Override
-	public int getSourceTier() {
-		return this.tier;
-	}
-
-	@Override
-	public double getDemandedEnergy() {
-		return Math.min(2 * output - energy, output);
-	}
-
-	@Override
-	public int getSinkTier() {
-		return tier;
-	}
-
-	@Override
-	public double injectEnergy(EnumFacing directionFrom, double amount, double voltage) {
-		if (energy >= 2 * output)
-			return amount;
-		this.energy += amount;
-		return 0.0D;
+		return itemstack.isItemEqual(CrossModLoader.ic2.getItem("transformer"));
 	}
 }

@@ -74,21 +74,21 @@ public class GuiTextArea extends Gui {
 			top = bottom;
 			bottom = var5;
 		}
-		
-        Tessellator tessellator = Tessellator.getInstance();
+
+		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferbuilder = tessellator.getBuffer();
-        GlStateManager.color(0.0F, 0.0F, 255.0F, 255.0F);
-        GlStateManager.disableTexture2D();
-        GlStateManager.enableColorLogic();
-        GlStateManager.colorLogicOp(GL11.GL_OR_REVERSE);
+		GlStateManager.color(0.0F, 0.0F, 255.0F, 255.0F);
+		GlStateManager.disableTexture2D();
+		GlStateManager.enableColorLogic();
+		GlStateManager.colorLogicOp(GL11.GL_OR_REVERSE);
 		bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
 		bufferbuilder.pos(left, bottom, 0.0D).endVertex();;
 		bufferbuilder.pos(right, bottom, 0.0D).endVertex();;
 		bufferbuilder.pos(right, top, 0.0D).endVertex();;
 		bufferbuilder.pos(left, top, 0.0D).endVertex();;
 		tessellator.draw();
-        GlStateManager.disableColorLogic();
-        GlStateManager.enableTexture2D();
+		GlStateManager.disableColorLogic();
+		GlStateManager.enableTexture2D();
 	}
 
 	public void setCursorPosition(int x, int y) {

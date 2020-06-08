@@ -1,22 +1,15 @@
 package com.zuxelus.energycontrol.renderers;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.PanelString;
-import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
-import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 
@@ -60,7 +53,7 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 	@Override
 	public void render(TileEntityAdvancedInfoPanel te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
 		GlStateManager.pushMatrix();
-		GlStateManager.translate((float)x, (float)y, (float)z);
+		GlStateManager.translate(x, y, z);
 		switch (te.getFacing()) {
 		case UP:
 			break;
@@ -122,8 +115,8 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 	private void drawText(TileEntityAdvancedInfoPanel panel, List<PanelString> joinedData, byte thickness, RotationOffset offset) {
 		Screen screen = panel.getScreen();
 		BlockPos pos = panel.getPos();
-		float displayWidth = 1 - 2F / 16;
-		float displayHeight = 1 - 2F / 16;
+		float displayWidth = 1.0F;
+		float displayHeight = 1.0F;
 		float dx = 0; float dy = 0; float dz = 0;
 		if (screen != null) {
 			switch (panel.getFacing()) {
@@ -242,16 +235,20 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			break;
 		}
 
-		double b = Math.atan((offset.leftBottom - offset.rightBottom) / 32.0F / (displayWidth + 0.125F));
-		double a = Math.atan(Math.cos(b) * (offset.leftTop - offset.leftBottom) / 32.0F / (displayHeight + 0.125F));
+		double h = (offset.leftBottom - offset.rightBottom) / 32;
+		double v = (offset.leftTop - offset.leftBottom) / 32;
+		double b = Math.atan(h / displayWidth);
+		double a = Math.atan(Math.cos(b) * v / displayHeight);
 		int i = offset.rotateVert == 0 ? 0 : offset.rotateVert > 0 ? -1 : 1;
-		GlStateManager.translate((displayWidth + 0.125F) / 2, (displayHeight + 0.125F) / 2,
-				(displayWidth + 0.125F) / 2 * Math.tan(b) + (32 - offset.leftTop + (offset.leftTop - offset.leftBottom) / 2.0F) / 32.0F);
+		int j = offset.rotateHor == 0 ? 0 : offset.rotateHor > 0 ? -1 : 1;
+		GlStateManager.translate(displayWidth / 2, displayHeight / 2, 1 + (32 * h - offset.leftTop - offset.leftBottom) / 64);
 		GlStateManager.rotate((float) Math.toDegrees(b), 0.0F, -1.0F, 0.0F);
 		GlStateManager.rotate((float) Math.toDegrees(a), -1.0F, 0.0F, 0.0F);
+		GlStateManager.rotate(90.0F - (float) Math.toDegrees( // Law of cosines
+			Math.acos((h * h + v * v) / 2 / Math.sqrt(displayWidth * displayWidth + h * h) / Math.sqrt(displayHeight * displayHeight + v * v))), 0.0F, 0.0F, i * j);
 		GlStateManager.translate(0.0F, 0.001F * i, 0.001F);
-		displayHeight = (float) (displayHeight / Math.cos(a));
-		displayWidth = (float) (displayWidth / Math.cos(b));
+		displayHeight = (float) ((displayHeight - 0.125F) / Math.cos(a));
+		displayWidth = (float) ((displayWidth - 0.125F) / Math.cos(b));
 
 		FontRenderer fontRenderer = getFontRenderer();
 		// getMaxWidth
@@ -310,4 +307,4 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		GlStateManager.enableLighting();
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 	}
-}	
+}

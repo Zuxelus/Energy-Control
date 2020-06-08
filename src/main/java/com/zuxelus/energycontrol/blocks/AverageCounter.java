@@ -4,11 +4,11 @@ import java.util.Collections;
 import java.util.List;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.tileentities.TileEntityAverageCounter;
 import com.zuxelus.energycontrol.tileentities.TileEntityFacing;
 import com.zuxelus.energycontrol.tileentities.TileEntityInventory;
 
-import ic2.api.item.IC2Items;
 import ic2.api.tile.IWrenchable;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
@@ -72,7 +72,7 @@ public class AverageCounter extends FacingBlock implements ITileEntityProvider, 
 
 	@Override
 	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-		drops.add(IC2Items.getItem("resource", "machine"));
+		drops.add(CrossModLoader.ic2.getItem("machine"));
 	}
 
 	//IWrenchable

@@ -2,18 +2,13 @@ package com.zuxelus.energycontrol.items.cards;
 
 import java.util.List;
 
-import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardGui;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.IItemCard;
-import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public abstract class ItemCardBase implements IItemCard {
@@ -45,7 +40,7 @@ public abstract class ItemCardBase implements IItemCard {
 	public ICardGui getSettingsScreen(ICardReader reader) {
 		return null;
 	}
-	
+
 	@Override
 	public boolean isRemoteCard() {
 		return true;
@@ -66,7 +61,14 @@ public abstract class ItemCardBase implements IItemCard {
 	protected final void addRecipe(Object[] recipe) {
 		this.recipe = recipe;
 	}
-	
+
+	protected void addHeat(List<PanelString> result, int heat, int maxHeat, boolean showLabels) {
+		PanelString line = new PanelString("msg.ec.InfoPanelHeat", heat, showLabels);
+		int rate = 10 * heat / maxHeat;
+		line.colorLeft = rate < 4 ? 0x00ff00 : rate < 8 ? 0xffff00 : 0xff0000;
+		result.add(line);
+	}
+
 	protected void addOnOff(List<PanelString> result, Boolean value) {
 		String text;
 		int txtColor = 0;
@@ -85,13 +87,21 @@ public abstract class ItemCardBase implements IItemCard {
 		}
 		if (result.size() > 0) {
 			PanelString firstLine = result.get(0);
-			firstLine.textRight = text;
-			firstLine.colorRight = txtColor;
-		} else {
-			PanelString line = new PanelString();
-			line.textLeft = text;
-			line.colorLeft = txtColor;
-			result.add(line);
+			if (firstLine.textCenter == null) {
+				firstLine.textRight = text;
+				firstLine.colorRight = txtColor;
+				return;
+			}
+			if (result.size() > 1) {
+				firstLine = result.get(1);
+				firstLine.textRight = text;
+				firstLine.colorRight = txtColor;
+				return;
+			}
 		}
+		PanelString line = new PanelString();
+		line.textLeft = text;
+		line.colorLeft = txtColor;
+		result.add(line);
 	}
 }

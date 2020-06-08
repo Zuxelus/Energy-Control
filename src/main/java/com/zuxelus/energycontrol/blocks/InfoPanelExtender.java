@@ -1,17 +1,15 @@
 package com.zuxelus.energycontrol.blocks;
 
-import java.util.Collections;
 import java.util.List;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.tileentities.IRedstoneConsumer;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.tileentities.TileEntityFacing;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanelExtender;
-import com.zuxelus.energycontrol.tileentities.TileEntityInventory;
 
 import ic2.api.tile.IWrenchable;
-import net.minecraft.block.Block;
+import ic2.api.util.Keys;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -55,6 +53,24 @@ public class InfoPanelExtender extends FacingBlock implements ITileEntityProvide
 		if (!(te instanceof TileEntityInfoPanelExtender))
 			return 0;
 		return ((TileEntityInfoPanelExtender)te).getPowered() ? 10 : 0;
+	}
+
+	@Override
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+		if (CrossModLoader.ic2.isWrench(player.getHeldItem(hand)))
+			return true;
+		if (world.isRemote)
+			return true;
+		TileEntity te = world.getTileEntity(pos);
+		if (!(te instanceof TileEntityInfoPanelExtender))
+			return true;
+		TileEntityInfoPanel panel = ((TileEntityInfoPanelExtender) te).getCore();
+		if (Keys.instance.isAltKeyDown(player) && panel.getFacing() == facing)
+			if (panel.runTouchAction(pos, hitX, hitY, hitZ))
+				return true;
+		if (panel != null)
+			player.openGui(EnergyControl.instance, BlockDamages.DAMAGE_INFO_PANEL, world, panel.getPos().getX(), panel.getPos().getY(), panel.getPos().getZ());
+		return true;
 	}
 
 	@Override

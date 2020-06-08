@@ -31,7 +31,7 @@ public class TileEntitySound {
 			return false;
 		return Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(sound);
 	}
-	
+
 	public PositionedSoundRecord playAlarm(double x, double y, double z, String name, float volume) {
 		float range = DEFAULT_RANGE;
 

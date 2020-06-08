@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.items.kits;
 
-import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.LiquidCardHelper;
 import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
@@ -13,7 +12,6 @@ import net.minecraftforge.fluids.IFluidTank;
 public class ItemKitLiquid extends ItemKitSimple {
 	public ItemKitLiquid() {
 		super(ItemCardType.KIT_LIQUID, "kit_liquid");
-		//addRecipe(new Object[] { "CF", "PB", 'P', Items.PAPER, 'C', Items.BUCKET, 'F', IC2Items.getItem("frequency_transmitter"), 'B', "dyeBlue" });
 	}
 
 	@Override

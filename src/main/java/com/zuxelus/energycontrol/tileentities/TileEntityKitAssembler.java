@@ -13,7 +13,6 @@ import ic2.api.energy.tile.IEnergySink;
 import ic2.api.info.Info;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -150,6 +149,7 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 		if (!addedToEnet && !world.isRemote && Info.isIc2Available()) {
 			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
 			addedToEnet = true;
+			updateActive();
 		}
 	}
 

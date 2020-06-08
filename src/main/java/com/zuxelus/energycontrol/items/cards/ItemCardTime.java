@@ -17,6 +17,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemCardTime extends ItemCardBase {
+
 	public ItemCardTime() {
 		super(ItemCardType.CARD_TIME, "card_time");
 	}

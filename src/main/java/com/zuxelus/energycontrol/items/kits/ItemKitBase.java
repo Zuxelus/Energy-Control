@@ -6,12 +6,12 @@ public abstract class ItemKitBase implements IItemKit {
 	protected String name;
 	protected int damage;
 	private Object[] recipe;
-	
+
 	public ItemKitBase(int damage, String name) {
 		this.damage = damage;
 		this.name = name;
 	}
-	
+
 	@Override
 	public final int getDamage() {
 		return damage;
@@ -31,7 +31,7 @@ public abstract class ItemKitBase implements IItemKit {
 	public Object[] getRecipe() {
 		return recipe;
 	}
-	
+
 	protected final void addRecipe(Object[] recipe) {
 		this.recipe = recipe;
 	}

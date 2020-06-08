@@ -3,6 +3,7 @@ package com.zuxelus.energycontrol;
 import com.zuxelus.energycontrol.blocks.BlockDamages;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.containers.*;
+import com.zuxelus.energycontrol.gui.GuiAFSU;
 import com.zuxelus.energycontrol.items.cards.ItemCardHolder;
 import com.zuxelus.energycontrol.tileentities.*;
 
@@ -19,7 +20,7 @@ public class ServerProxy implements IGuiHandler {
 		EnergyControl.config = new ConfigHandler();
 		EnergyControl.config.init(event.getSuggestedConfigurationFile());
 	}
-	
+
 	public void registerSpecialRenderers() { }
 
 	@Override
@@ -31,22 +32,24 @@ public class ServerProxy implements IGuiHandler {
 			if (player.getHeldItemMainhand().getItem() instanceof ItemCardHolder)
 				return new ContainerCardHolder(player);
 		}
-		TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
+		TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
 		switch (ID) {
 		case BlockDamages.DAMAGE_INFO_PANEL:
-			return new ContainerInfoPanel(player, (TileEntityInfoPanel) tileEntity);
+			return new ContainerInfoPanel(player, (TileEntityInfoPanel) te);
 		case BlockDamages.DAMAGE_ADVANCED_PANEL:
-			return new ContainerAdvancedInfoPanel(player, (TileEntityAdvancedInfoPanel) tileEntity);
+			return new ContainerAdvancedInfoPanel(player, (TileEntityAdvancedInfoPanel) te);
 		case BlockDamages.DAMAGE_RANGE_TRIGGER:
-			return new ContainerRangeTrigger(player, (TileEntityRangeTrigger) tileEntity);
+			return new ContainerRangeTrigger(player, (TileEntityRangeTrigger) te);
 		case BlockDamages.DAMAGE_REMOTE_THERMO:
-			return new ContainerRemoteThermo(player, (TileEntityRemoteThermo) tileEntity);
+			return new ContainerRemoteThermo(player, (TileEntityRemoteThermo) te);
 		case BlockDamages.DAMAGE_AVERAGE_COUNTER:
-			return new ContainerAverageCounter(player, (TileEntityAverageCounter) tileEntity);
+			return new ContainerAverageCounter(player, (TileEntityAverageCounter) te);
 		case BlockDamages.DAMAGE_ENERGY_COUNTER:
-			return new ContainerEnergyCounter(player, (TileEntityEnergyCounter) tileEntity);
+			return new ContainerEnergyCounter(player, (TileEntityEnergyCounter) te);
 		case BlockDamages.GUI_KIT_ASSEMBER:
-			return new ContainerKitAssembler(player, (TileEntityKitAssembler) tileEntity);
+			return new ContainerKitAssembler(player, (TileEntityKitAssembler) te);
+		case BlockDamages.DAMAGE_AFSU:
+			return new ContainerAFSU(player, (TileEntityAFSU) te);
 		default:
 			return null;
 		}

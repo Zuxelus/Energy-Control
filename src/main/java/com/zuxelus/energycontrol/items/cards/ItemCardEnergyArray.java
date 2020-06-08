@@ -1,19 +1,19 @@
 package com.zuxelus.energycontrol.items.cards;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
-import com.zuxelus.energycontrol.crossmod.EnergyCardHelper;
-import com.zuxelus.energycontrol.crossmod.EnergyStorageData;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.utils.StringUtils;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -42,15 +42,19 @@ public class ItemCardEnergyArray extends ItemCardBase {
 			int dy = target.getY() - pos.getY();
 			int dz = target.getZ() - pos.getZ();
 			if (Math.abs(dx) <= range && Math.abs(dy) <= range && Math.abs(dz) <= range) {
-				EnergyStorageData storage = EnergyCardHelper.getStorageAt(world, target, reader.getInt(String.format("_%dtargetType", i)));
-				if (storage != null) {
-					double capacity = storage.values.get(0);
-					double stored = storage.values.get(1);
-					totalEnergy += stored;
-					reader.setInt(String.format("_%denergy", i), (int) stored);
-					reader.setInt(String.format("_%dmaxStorage", i), (int) capacity);
-					foundAny = true;
-				} else 
+				TileEntity te = world.getTileEntity(target);
+				if (te != null) {
+					NBTTagCompound tag = CrossModLoader.ic2.getEnergyData(te);
+					if (tag != null) {
+						double stored = tag.getDouble("storage");
+						double capacity = tag.getDouble("maxStorage");
+						totalEnergy += stored;
+						reader.setInt(String.format("_%denergy", i), (int) stored);
+						reader.setInt(String.format("_%dmaxStorage", i), (int) capacity);
+						foundAny = true;
+					} else
+						reader.setInt(String.format("_%denergy", i), STATUS_NOT_FOUND);
+				} else
 					reader.setInt(String.format("_%denergy", i), STATUS_NOT_FOUND);
 			} else {
 				reader.setInt(String.format("_%denergy", i), STATUS_OUT_OF_RANGE);
@@ -126,8 +130,8 @@ public class ItemCardEnergyArray extends ItemCardBase {
 			if (showFree) 
 				result.add(new PanelString("msg.ec.InfoPanelFree", totalStorage - totalEnergy, showLabels));
 			if (showStorage)
-				result.add(new PanelString("msg.ec.InfoPanelStorage", totalStorage, showLabels));
-			if (showPercentage) 
+				result.add(new PanelString("msg.ec.InfoPanelCapacity", totalStorage, showLabels));
+			if (showPercentage)
 				result.add(new PanelString("msg.ec.InfoPanelPercentage",totalStorage == 0 ? 100 : ((totalEnergy / totalStorage) * 100), showLabels));
 		}
 		return result;

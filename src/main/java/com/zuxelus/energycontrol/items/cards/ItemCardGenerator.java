@@ -45,6 +45,19 @@ public class ItemCardGenerator extends ItemCardBase {
 			reader.setDouble("production", tag.getDouble("production"));
 			reader.setDouble("multiplier", tag.getDouble("multiplier"));
 			break;
+		case 3:
+			reader.setDouble("storage", tag.getDouble("storage"));
+			reader.setDouble("maxStorage", tag.getDouble("maxStorage"));
+			reader.setDouble("production", tag.getDouble("production"));
+			reader.setDouble("multiplier", tag.getDouble("multiplier"));
+			break;
+		case 4:
+			reader.setDouble("storage", tag.getDouble("storage"));
+			reader.setDouble("maxStorage", tag.getDouble("maxStorage"));
+			reader.setInt("items", tag.getInteger("items"));
+			reader.setDouble("production", tag.getDouble("production"));
+			reader.setDouble("multiplier", tag.getDouble("multiplier"));
+			break;
 		}
 		reader.setBoolean("active", tag.getBoolean("active"));
 		return CardState.OK;
@@ -56,20 +69,42 @@ public class ItemCardGenerator extends ItemCardBase {
 		switch (reader.getInt("type")) {
 		case 1:
 			if ((settings & 1) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelStorage", reader.getDouble("storage"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelEnergyEU", reader.getDouble("storage"), showLabels));
 			if ((settings & 2) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelMaxStorage", reader.getDouble("maxStorage"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelCapacityEU", reader.getDouble("maxStorage"), showLabels));
 			if ((settings & 8) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("production"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelOutputEU", reader.getDouble("production"), showLabels));
 			break;
 		case 2:
 			if ((settings & 4) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelMultiplier", reader.getDouble("multiplier"), showLabels));
 			if ((settings & 8) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("production"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelOutputEU", reader.getDouble("production"), showLabels));
+			break;
+		case 3:
+			if ((settings & 8) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelOutputEU", reader.getDouble("production"), showLabels));
+			if ((settings & 1) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelEnergyEU", reader.getDouble("storage"), showLabels));
+			if ((settings & 2) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelCapacityEU", reader.getDouble("maxStorage"), showLabels));
+			if ((settings & 4) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelMultiplier", reader.getDouble("multiplier"), showLabels));
+			break;
+		case 4:
+			if ((settings & 8) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelOutputEU", reader.getDouble("production"), showLabels));
+			if ((settings & 1) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelEnergyEU", reader.getDouble("storage"), showLabels));
+			if ((settings & 2) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelCapacityEU", reader.getDouble("maxStorage"), showLabels));
+			if ((settings & 16) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelPellets", reader.getInt("items"), showLabels));
+			if ((settings & 4) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelMultiplier", reader.getDouble("multiplier"), showLabels));
 			break;
 		}
-		if ((settings & 16) > 0)
+		if ((settings & 32) > 0)
 			addOnOff(result, reader.getBoolean("active"));
 		return result;
 	}
@@ -77,12 +112,13 @@ public class ItemCardGenerator extends ItemCardBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList(ItemStack stack) {
-		List<PanelSetting> result = new ArrayList<PanelSetting>(5);
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelStorage"), 1, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMaxStorage"), 2, damage));
+		List<PanelSetting> result = new ArrayList<PanelSetting>(6);
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 1, damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelCapacity"), 2, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMultiplier"), 4, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOutput"), 8, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOnOff"), 16, damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelItems"), 16, damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOnOff"), 32, damage));
 		return result;
 	}
 

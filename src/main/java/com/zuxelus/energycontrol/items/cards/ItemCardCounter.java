@@ -27,11 +27,11 @@ public class ItemCardCounter extends ItemCardBase {
 		BlockPos target = reader.getTarget();
 		if (target == null) 
 			return CardState.NO_TARGET;
-		
+
 		TileEntity tileEntity = world.getTileEntity(target);
 		if (tileEntity == null)
 			return CardState.NO_TARGET;
-		
+
 		if (tileEntity instanceof TileEntityEnergyCounter) {
 			TileEntityEnergyCounter counter = (TileEntityEnergyCounter) tileEntity;
 			reader.setDouble("energy", counter.counter);
@@ -40,6 +40,7 @@ public class ItemCardCounter extends ItemCardBase {
 		if (tileEntity instanceof TileEntityAverageCounter) {
 			TileEntityAverageCounter avgCounter = (TileEntityAverageCounter) tileEntity;
 			reader.setInt("average", avgCounter.getClientAverage());
+			reader.setInt("period", (int) avgCounter.period);
 			return CardState.OK;
 		}
 		return CardState.NO_TARGET;
@@ -51,13 +52,15 @@ public class ItemCardCounter extends ItemCardBase {
 		// average counter
 		if (reader.hasField("average")) {
 			if ((displaySettings & 1) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getInt("average"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelOutputEU", reader.getInt("average"), showLabels));
+			if ((displaySettings & 2) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelPeriod", reader.getInt("period"), showLabels));
 			return result;
 		}
 		// energy counter
 		if ((displaySettings & 1) > 0) {
 			double energy = reader.getDouble("energy");
-			result.add(new PanelString("msg.ec.InfoPanelEnergy", energy, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelEnergyEU", energy, showLabels));
 		}
 		return result;
 	}

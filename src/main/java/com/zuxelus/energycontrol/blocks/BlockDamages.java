@@ -15,4 +15,5 @@ public class BlockDamages {
 	public static final int GUI_PORTABLE_PANEL = 11;
 	public static final int GUI_CARD_HOLDER = 12;
 	public static final int GUI_KIT_ASSEMBER = 13;
+	public static final int DAMAGE_AFSU = 14;
 }

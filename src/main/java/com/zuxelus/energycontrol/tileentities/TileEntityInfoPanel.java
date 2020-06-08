@@ -13,10 +13,12 @@ import com.zuxelus.energycontrol.crossmod.computercraft.InfoPanelPeripheral;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
+import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralTile;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -30,12 +32,11 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityInfoPanel extends TileEntityInventory
-		implements ITickable, ITilePacketHandler, IScreenPart, IRedstoneConsumer, ISlotItemFilter, IPeripheralTile {
+		implements ITickable, ITilePacketHandler, IScreenPart, ISlotItemFilter, IPeripheralTile {
 	public static final String NAME = "info_panel";
 	public static final int DISPLAY_DEFAULT = Integer.MAX_VALUE;
 	private static final int[] COLORS_HEX = { 0x000000, 0xe93535, 0x82e306, 0x702b14, 0x1f3ce7, 0x8f1fea, 0x1fd7e9,
@@ -44,6 +45,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 	private static final byte SLOT_CARD = 0;
 	private static final byte SLOT_UPGRADE_RANGE = 1;
 	private static final byte SLOT_UPGRADE_COLOR = 2;
+	private static final byte SLOT_UPGRADE_TOUCH = 3;
 
 	private final Map<Integer, List<PanelString>> cardData;
 	protected final Map<Integer, Map<Integer, Integer>> displaySettings;
@@ -160,7 +162,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 
 	public void setScreenData(NBTTagCompound nbtTagCompound) {
 		screenData = nbtTagCompound;
-		if (screen != null && FMLCommonHandler.instance().getEffectiveSide().isClient())
+		if (screen != null && world.isRemote)
 			screen.destroy(true, world);
 		if (screenData != null) {
 			screen = EnergyControl.instance.screenManager.loadScreen(this);
@@ -258,7 +260,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 			colorText = tag.getInteger("colorText");
 			colorBackground = tag.getInteger("colorBackground");
 		}
-		
+
 		if (tag.hasKey("colored"))
 			setColored(tag.getBoolean("colored"));
 
@@ -322,7 +324,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 
 	@Override
 	public void invalidate() {
-		if (FMLCommonHandler.instance().getEffectiveSide().isServer())
+		if (!world.isRemote)
 			EnergyControl.instance.screenManager.unregisterScreenPart(this);
 		super.invalidate();
 	}
@@ -501,7 +503,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 	// ------- Inventory ------- 
 	@Override
 	public int getSizeInventory() {
-		return 3;
+		return 4;
 	}
 
 	@Override
@@ -518,6 +520,8 @@ public class TileEntityInfoPanel extends TileEntityInventory
 			return stack.getItem() instanceof ItemUpgrade && stack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE;
 		case SLOT_UPGRADE_COLOR:
 			return stack.getItem() instanceof ItemUpgrade && stack.getItemDamage() == ItemUpgrade.DAMAGE_COLOR;
+		case SLOT_UPGRADE_TOUCH:
+			return stack.getItem() instanceof ItemUpgrade && stack.getItemDamage() == ItemUpgrade.DAMAGE_TOUCH;
 		default:
 			return false;
 		}
@@ -537,18 +541,12 @@ public class TileEntityInfoPanel extends TileEntityInventory
 	public void updateData() {
 		if (world.isRemote)
 			return;
-		
+
 		if (screen == null) {
 			screenData = null;
 		} else
 			screenData = screen.toTag();
-		notifyBlockUpdate();		
-	}
-
-	@Override
-	public void neighborChanged() {
-		if (!world.isRemote)
-			notifyBlockUpdate();
+		notifyBlockUpdate();
 	}
 
 	@Override
@@ -595,6 +593,43 @@ public class TileEntityInfoPanel extends TileEntityInventory
 
 	private int boolToInt(boolean b) {
 		return b ? 1 : 0;
+	}
+
+	public boolean runTouchAction(BlockPos pos, float hitX, float hitY, float hitZ) {
+		if (world.isRemote)
+			return false;
+		ItemStack stack = getStackInSlot(SLOT_CARD);
+		if (getStackInSlot(SLOT_UPGRADE_TOUCH).isEmpty() || stack.isEmpty() || stack.getItemDamage() != ItemCardType.CARD_TOGGLE)
+			return false;
+		switch (facing) { // TODO
+		case DOWN:
+			break;
+		case EAST:
+			break;
+		case NORTH:
+			break;
+		case SOUTH:
+			break;
+		case UP:
+			break;
+		case WEST:
+			break;
+		default:
+			break;
+		}
+		ItemCardMain.runTouchAction(world, stack);
+		return true;
+	}
+
+	public boolean isTouchCard() {
+		ItemStack stack = getStackInSlot(SLOT_CARD);
+		return !stack.isEmpty() && stack.getItemDamage() == ItemCardType.CARD_TOGGLE;
+	}
+
+	public void renderImage(TextureManager manager) {
+		ItemStack stack = getStackInSlot(SLOT_CARD);
+		if (!stack.isEmpty() && stack.getItemDamage() == ItemCardType.CARD_TOGGLE)
+			ItemCardMain.renderImage(manager, stack);
 	}
 
 	// IPeripheralTile

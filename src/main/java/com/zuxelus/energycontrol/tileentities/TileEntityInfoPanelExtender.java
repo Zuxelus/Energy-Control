@@ -12,7 +12,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -35,7 +34,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 		coreY = 0;
 		coreZ = 0;
 	}
-	
+
 	@Override
 	public void setFacing(int meta) {
 		EnumFacing newFacing = EnumFacing.getFront(meta);
@@ -56,7 +55,9 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 				if (screen != null)
 					screen.init(true, world);
 			}
-		}		
+		}
+		if (world.isRemote && !partOfScreen && screen != null)
+			setScreen(null);
 	}
 
 	@Override
@@ -70,7 +71,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
 		readProperties(pkt.getNbtCompound());
 	}
-	
+
 	@Override
 	public NBTTagCompound getUpdateTag() {
 		NBTTagCompound tag = super.getUpdateTag();
@@ -128,7 +129,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 		if (init)
 			return;
 		
-		if (FMLCommonHandler.instance().getEffectiveSide().isServer() && !partOfScreen)
+		if (!world.isRemote && !partOfScreen)
 			EnergyControl.instance.screenManager.registerInfoPanelExtender(this);
 		
 		updateScreen();
@@ -157,6 +158,12 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	@Override
 	public Screen getScreen() {
 		return screen;
+	}
+
+	public TileEntityInfoPanel getCore() {
+		if (screen == null)
+			return null;
+		return screen.getCore(world);
 	}
 
 	@Override
@@ -201,7 +208,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	public double getMaxRenderDistanceSquared() {
 		return 65536.0D;
 	}
-	
+
 	@Override
 	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
 		return oldState.getBlock() != newSate.getBlock();

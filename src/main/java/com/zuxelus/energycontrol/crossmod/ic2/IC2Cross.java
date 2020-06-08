@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
-import com.zuxelus.energycontrol.crossmod.EnergyStorageData;
 
 import ic2.api.reactor.IReactor;
 import net.minecraft.item.ItemStack;
@@ -34,13 +33,7 @@ public abstract class IC2Cross {
 	
 	public abstract int getProfile();
 
-	/*public static class ReactorInfo {
-		public boolean isOnline;
-		public int outTank;
-		public int inTank;
-		public int emitHeat;
-		public int coreTemp;
-	}*/
+	public abstract ItemStack getItem(String name);
 
 	public static IC2Cross getIC2Cross() {
 		try {
@@ -60,14 +53,17 @@ public abstract class IC2Cross {
 		return new IC2NoMod();
 	}
 
-	public abstract EnergyStorageData getEnergyStorageData(TileEntity entity);
-	
-	public abstract ItemStack getGeneratorCard(World world, BlockPos pos);
-	public abstract NBTTagCompound getGeneratorData(TileEntity entity);
-	
-	public abstract NBTTagCompound getGeneratorKineticData(TileEntity entity);
+	public abstract ItemStack getEnergyCard(World world, BlockPos pos);
 
-	public abstract NBTTagCompound getGeneratorHeatData(TileEntity entity);
+	public abstract NBTTagCompound getEnergyData(TileEntity te);
+
+	public abstract ItemStack getGeneratorCard(World world, BlockPos pos);
+
+	public abstract NBTTagCompound getGeneratorData(TileEntity te);
+	
+	public abstract NBTTagCompound getGeneratorKineticData(TileEntity te);
+
+	public abstract NBTTagCompound getGeneratorHeatData(TileEntity te);
 	
 	public abstract List<IFluidTank> getAllTanks(TileEntity te);
 	

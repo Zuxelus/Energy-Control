@@ -1,13 +1,7 @@
-package com.zuxelus.energycontrol;
+package com.zuxelus.energycontrol.recipes;
 
 import java.util.Vector;
 
-import javax.annotation.Nullable;
-
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSyntaxException;
 import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
@@ -15,28 +9,13 @@ import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
 import ic2.api.item.IC2Items;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.JsonUtils;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.IIngredientFactory;
-import net.minecraftforge.common.crafting.IRecipeFactory;
-import net.minecraftforge.common.crafting.JsonContext;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 public class StorageArrayRecipe extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
-	/*static {
-		RecipeSorter.register("EnergyControl:storagearrayRecipe", StorageArrayRecipe.class,
-				RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
-	}*/
 
 	@Override
 	public boolean matches(InventoryCrafting inventory, World world) {

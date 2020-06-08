@@ -1,4 +1,4 @@
-package com.zuxelus.energycontrol;
+package com.zuxelus.energycontrol.recipes;
 
 import java.util.function.BooleanSupplier;
 

@@ -10,12 +10,12 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 
 public class ServerTickHandler {
 	public final static ServerTickHandler instance = new ServerTickHandler();
-/*
+
 	@SubscribeEvent
 	public void onWorldUnload(WorldEvent.Unload event) {
-		EnergyControl.instance.screenManager.clearWorld(event.world);
+		EnergyControl.instance.screenManager.clearWorld(event.getWorld());
 	}
-*/
+
 	@SubscribeEvent
 	public void onPlayerLogin(PlayerLoggedInEvent event) {
 		ChannelHandler.network.sendTo(

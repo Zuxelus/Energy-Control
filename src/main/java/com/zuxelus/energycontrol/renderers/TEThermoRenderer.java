@@ -20,7 +20,7 @@ public class TEThermoRenderer extends TileEntitySpecialRenderer<TileEntityThermo
 	@Override
 	public void render(TileEntityThermo te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
 		GlStateManager.pushMatrix();
-		GlStateManager.translate((float)x, (float)y, (float)z);
+		GlStateManager.translate(x, y, z);
 		switch (te.getFacing()) {
 		case UP:
 			switch (te.getRotation()) {

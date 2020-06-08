@@ -8,8 +8,8 @@ import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.tileentities.TileEntityFacing;
 import com.zuxelus.energycontrol.tileentities.TileEntityInventory;
 import com.zuxelus.energycontrol.tileentities.TileEntityRemoteThermo;
+import com.zuxelus.energycontrol.tileentities.TileEntityThermo;
 
-import ic2.api.item.IC2Items;
 import ic2.api.tile.IWrenchable;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
@@ -30,7 +30,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class RemoteThermo extends BlockHorizontal implements ITileEntityProvider, IWrenchable {
-	private boolean powered = false;
 
 	public RemoteThermo() {
 		super(Material.IRON);
@@ -80,17 +79,20 @@ public class RemoteThermo extends BlockHorizontal implements ITileEntityProvider
 
 	@Override
 	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-		drops.add(IC2Items.getItem("resource", "machine"));
+		drops.add(CrossModLoader.ic2.getItem("machine"));
 	}
 
 	@Override
 	public int getWeakPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
-		return powered ? 15 : 0;
+		return getStrongPower(blockState, blockAccess, pos, side);
 	}
 
 	@Override
 	public int getStrongPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
-		return powered ? 15 : 0;
+		TileEntity te = blockAccess.getTileEntity(pos);
+		if (!(te instanceof TileEntityThermo))
+			return 0;
+		return ((TileEntityThermo) te).getPowered() ? 15 : 0;
 	}
 
 	@Override
@@ -98,18 +100,13 @@ public class RemoteThermo extends BlockHorizontal implements ITileEntityProvider
 		if (CrossModLoader.ic2.isWrench(player.getHeldItem(hand)))
 			return true;
 		if (!world.isRemote)
-			player.openGui(EnergyControl.instance, BlockDamages.DAMAGE_REMOTE_THERMO, world, pos.getX(), pos.getY(),
-					pos.getZ());
+			player.openGui(EnergyControl.instance, BlockDamages.DAMAGE_REMOTE_THERMO, world, pos.getX(), pos.getY(), pos.getZ());
 		return true;
 	}
 
 	@Override
 	public boolean canProvidePower(IBlockState state) {
 		return true;
-	}
-
-	public void setPowered(boolean value) {
-		powered = value;
 	}
 
 	@Override

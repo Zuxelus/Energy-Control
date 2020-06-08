@@ -13,8 +13,6 @@ public class ItemKitGenerator extends ItemKitBase {
 
 	public ItemKitGenerator() {
 		super(ItemCardType.KIT_GENERATOR, "kit_generator");
-		//addRecipe(new Object[] { "CF", "PL", 'P', Items.PAPER, 'C', IC2Items.getItem("upgrade", "energy_storage"), 'F',
-				//IC2Items.getItem("frequency_transmitter"), 'L', "dyeLightGray" });
 	}
 
 	@Override

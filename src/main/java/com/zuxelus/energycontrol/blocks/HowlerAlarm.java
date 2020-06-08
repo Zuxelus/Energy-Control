@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.tileentities.IRedstoneConsumer;
 import com.zuxelus.energycontrol.tileentities.TileEntityFacing;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 
@@ -24,12 +23,12 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class HowlerAlarm extends FacingBlock implements ITileEntityProvider, IWrenchable {
-    protected static final AxisAlignedBB AABB_DOWN = new AxisAlignedBB(0.125D, 0.5625D, 0.125D, 0.875D, 1.0D, 0.875D); // 2 9 2 14 16 14
-    protected static final AxisAlignedBB AABB_UP = new AxisAlignedBB(0.125D, 0.0D, 0.125D, 0.875D, 0.4375D, 0.875D); // 2 0 2 14 7 14
-    protected static final AxisAlignedBB AABB_NORTH = new AxisAlignedBB(0.125D, 0.125D, 0.5625D, 0.875D, 0.875D, 1.0D); // 2 2 9 14 14 16
-    protected static final AxisAlignedBB AABB_SOUTH = new AxisAlignedBB(0.125D, 0.125D, 0.4375D, 0.875D, 0.875D, 0.0D); // 2 2 7 14 14 0
-    protected static final AxisAlignedBB AABB_WEST = new AxisAlignedBB(0.5625D, 0.125D, 0.125D, 1.0D, 0.875D, 0.875D); // 9 2 2 16 14 14
-    protected static final AxisAlignedBB AABB_EAST = new AxisAlignedBB(0.0D, 0.125D, 0.125D, 0.4375D, 0.875D, 0.875D);	// 0 2 2 7 14 14
+	protected static final AxisAlignedBB AABB_DOWN = new AxisAlignedBB(0.125D, 0.5625D, 0.125D, 0.875D, 1.0D, 0.875D);
+	protected static final AxisAlignedBB AABB_UP = new AxisAlignedBB(0.125D, 0.0D, 0.125D, 0.875D, 0.4375D, 0.875D);
+	protected static final AxisAlignedBB AABB_NORTH = new AxisAlignedBB(0.125D, 0.125D, 0.5625D, 0.875D, 0.875D, 1.0D);
+	protected static final AxisAlignedBB AABB_SOUTH = new AxisAlignedBB(0.125D, 0.125D, 0.0D, 0.875D, 0.875D, 0.4375D);
+	protected static final AxisAlignedBB AABB_WEST = new AxisAlignedBB(0.5625D, 0.125D, 0.125D, 1.0D, 0.875D, 0.875D);
+	protected static final AxisAlignedBB AABB_EAST = new AxisAlignedBB(0.0D, 0.125D, 0.125D, 0.4375D, 0.875D, 0.875D);
 
 	public HowlerAlarm() {
 		super();
@@ -76,16 +75,14 @@ public class HowlerAlarm extends FacingBlock implements ITileEntityProvider, IWr
 		return canPlaceBlock(worldIn, pos, facing.getOpposite()) ? this.getDefaultState().withProperty(FACING, facing) : this.getDefaultState().withProperty(FACING, EnumFacing.DOWN);
 	}
 
-    @Override
+	@Override
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos) {
 		if (this.checkForDrop(world, pos, state) && !canPlaceBlock(world, pos, ((EnumFacing) state.getValue(FACING)).getOpposite())) {
 			this.dropBlockAsItem(world, pos, state, 0);
 			world.setBlockToAir(pos);
-		} else {
-			TileEntity te = world.getTileEntity(pos);
-			if (te instanceof IRedstoneConsumer)
-				((IRedstoneConsumer) te).neighborChanged();
-		}
+		} else 
+			if (!world.isRemote)
+				world.notifyBlockUpdate(pos, state, state, 2);
 	}
 
 	private boolean checkForDrop(World worldIn, BlockPos pos, IBlockState state) {

@@ -1,4 +1,4 @@
-package com.zuxelus.energycontrol;
+package com.zuxelus.energycontrol.recipes;
 
 import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;

@@ -7,22 +7,19 @@ import java.util.Random;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.IInventoryChangedListener;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
 public abstract class TileEntityInventory extends TileEntityFacing implements IInventory {
-    protected NonNullList<ItemStack> inventory;
-    private List<IInventoryChangedListener> listeners;
-    protected String customName;	
-	
+	protected NonNullList<ItemStack> inventory;
+	protected String customName;
+
 	public TileEntityInventory(String name) {
 		customName = name;
 		inventory = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
@@ -38,17 +35,17 @@ public abstract class TileEntityInventory extends TileEntityFacing implements II
 			inventory.set(stackTag.getByte("Slot"), new ItemStack(stackTag));
 		}
 	}
-	
+
 	@Override
 	protected NBTTagCompound writeProperties(NBTTagCompound tag) {
 		tag = super.writeProperties(tag);
 
 		NBTTagList list = new NBTTagList();
-		for (byte i = 0; i < getSizeInventory(); ++i) {
-			ItemStack stack = this.getStackInSlot(i);
+		for (byte i = 0; i < getSizeInventory(); i++) {
+			ItemStack stack = getStackInSlot(i);
 			if (!stack.isEmpty()) {
 				NBTTagCompound stackTag = new NBTTagCompound();
-				stackTag.setByte("Slot", (byte) i);
+				stackTag.setByte("Slot", i);
 				stack.writeToNBT(stackTag);
 				list.appendTag(stackTag);
 			}
@@ -83,8 +80,7 @@ public abstract class TileEntityInventory extends TileEntityFacing implements II
 	@Override
 	public ItemStack decrStackSize(int index, int count) {
 		ItemStack itemstack = ItemStackHelper.getAndSplit(inventory, index, count);
-		/*if (!itemstack.isEmpty())
-			this.markDirty();*/
+		//if (!itemstack.isEmpty()) markDirty();
 		return itemstack;
 	}
 
@@ -138,7 +134,7 @@ public abstract class TileEntityInventory extends TileEntityFacing implements II
 	public void clear() {
 		inventory.clear();
 	}
-	
+
 	public List<ItemStack> getDrops(int fortune) {
 		List<ItemStack> list = new ArrayList<>();
 		for (int i = 0; i < getSizeInventory(); i++) {
@@ -148,7 +144,7 @@ public abstract class TileEntityInventory extends TileEntityFacing implements II
 		}
 		return list;
 	}
-	
+
 	public void dropItems(World world, BlockPos pos) {
 		Random rand = new Random();
 		List<ItemStack> list = getDrops(1);

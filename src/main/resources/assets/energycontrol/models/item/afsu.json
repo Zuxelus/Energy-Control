@@ -1,0 +1,9 @@
+{
+  "parent": "energycontrol:block/afsu",
+    "textures": {
+        "down": "energycontrol:blocks/afsu/top",
+        "up": "energycontrol:blocks/afsu/top",
+        "north": "energycontrol:blocks/afsu/face",
+        "south": "energycontrol:blocks/afsu/side"
+    }
+}

@@ -41,7 +41,7 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
 
 	public GuiAdvancedInfoPanel(ContainerAdvancedInfoPanel container) {
 		super(container);
-		ySize = 212;
+		ySize = 223;
 		panel = container.te;
 		name = I18n.format("tile.info_panel_advanced.name");
 		activeTab = 0;
@@ -77,22 +77,7 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
 			int x = guiLeft + 24;
 			if (settingsList != null)
 				for (PanelSetting panelSetting : settingsList) {
-					if (y <= 6) {
-						buttonList.add(new GuiInfoPanelCheckBox(0, x + 4, guiTop + 55 + hy * y, panelSetting, panel, slot, fontRenderer));
-					} else if (y >= 7 && y <= 12) {
-						buttonList.add(new GuiInfoPanelCheckBox(0, x + 22, guiTop + 55 - 6 * hy + hy * y, panelSetting, panel, slot, fontRenderer));
-					} else if (y >= 13 && y <= 18) {
-						buttonList.add(new GuiInfoPanelCheckBox(0, x + 44, guiTop + 55 - 12 * hy + hy * y, panelSetting, panel, slot, fontRenderer));
-					} else if (y >= 19 && y <= 24) {
-						buttonList.add(new GuiInfoPanelCheckBox(0, x + 68, guiTop + 55 - 18 * hy + hy * y, panelSetting, panel, slot, fontRenderer));
-					} else if (y >= 25 && y <= 32) {
-						buttonList.add(new GuiInfoPanelCheckBox(0, x + 92, guiTop + 55 - 24 * hy + hy * y, panelSetting, panel, slot, fontRenderer));
-					} else if (y >= 31 && y <= 38) {
-						buttonList.add(new GuiInfoPanelCheckBox(0, x + 114, guiTop + 55 - 32 * hy + hy * y, panelSetting, panel, slot, fontRenderer));
-					} else if (y >= 37 && y <= 44) {
-						buttonList.add(new GuiInfoPanelCheckBox(0, x + 136, guiTop + 55 - 38 * hy + hy * y, panelSetting, panel, slot, fontRenderer));
-					} else
-						buttonList.add(new GuiInfoPanelCheckBox(0, x + 158, guiTop + 55 - 44 * hy + hy * y, panelSetting, panel, slot, fontRenderer));
+					buttonList.add(new GuiInfoPanelCheckBox(0, x + 4, guiTop + 51 + hy * y, panelSetting, panel, slot, fontRenderer));
 					y++;
 				}
 			if (!modified) {

@@ -92,9 +92,7 @@ public abstract class ItemInventory implements IInventory, ISlotItemFilter {
 	@Override
 	public ItemStack decrStackSize(int index, int count) {
 		ItemStack itemstack = ItemStackHelper.getAndSplit(inventory, index, count);
-		/*
-		 * if (!itemstack.isEmpty()) this.markDirty();
-		 */
+		//if (!itemstack.isEmpty()) markDirty();
 		return itemstack;
 	}
 
@@ -131,12 +129,10 @@ public abstract class ItemInventory implements IInventory, ISlotItemFilter {
 	}
 
 	@Override
-	public void openInventory(EntityPlayer player) {
-	}
+	public void openInventory(EntityPlayer player) { }
 
 	@Override
-	public void closeInventory(EntityPlayer player) {
-	}
+	public void closeInventory(EntityPlayer player) { }
 
 	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
@@ -149,8 +145,7 @@ public abstract class ItemInventory implements IInventory, ISlotItemFilter {
 	}
 
 	@Override
-	public void setField(int id, int value) {
-	}
+	public void setField(int id, int value) { }
 
 	@Override
 	public int getFieldCount() {

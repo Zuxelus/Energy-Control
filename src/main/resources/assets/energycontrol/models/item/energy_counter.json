@@ -1,3 +1,7 @@
 {
-  "parent": "energycontrol:block/energy_counter"
+  "parent": "energycontrol:block/energy_counter",
+    "textures": {
+        "up": "energycontrol:blocks/energy_counter/input",
+        "north": "energycontrol:blocks/energy_counter/output"
+    }
 }

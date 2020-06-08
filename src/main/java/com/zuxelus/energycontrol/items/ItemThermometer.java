@@ -57,4 +57,9 @@ public class ItemThermometer extends Item {
 	protected void damage(ItemStack itemstack, int i, EntityPlayer entityplayer) {
 		itemstack.damageItem(10, entityplayer);
 	}
+
+	@Override
+	public boolean isEnchantable(ItemStack stack) {
+		return false;
+	}
 }

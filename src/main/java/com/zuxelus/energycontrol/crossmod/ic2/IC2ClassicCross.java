@@ -6,12 +6,12 @@ import java.util.List;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
-import com.zuxelus.energycontrol.crossmod.EnergyStorageData;
 import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.energycontrol.utils.ReactorHelper;
 
 import ic2.api.classic.reactor.IChamberReactor;
+import ic2.api.item.IC2Items;
 import ic2.api.item.ICustomDamageItem;
 import ic2.api.reactor.IReactor;
 import ic2.api.tile.IEnergyStorage;
@@ -60,21 +60,21 @@ public class IC2ClassicCross extends IC2Cross {
 	}
 
 	@Override
-	public boolean isWrench(ItemStack par1) {
-		return par1 != null && par1.getItem() instanceof ItemToolWrench;
+	public ItemStack getItem(String name) {
+		switch (name) {
+		case "transformer":
+			return IC2Items.getItem("upgrade", "transformer");
+		case "energy_storage":
+			return IC2Items.getItem("upgrade", "energy_storage");
+		case "machine":
+			return IC2Items.getItem("resource", "machine");
+		}
+		return ItemStack.EMPTY;
 	}
 
 	@Override
-	public EnergyStorageData getEnergyStorageData(TileEntity target) {
-		if (target instanceof IEnergyStorage) {
-			IEnergyStorage storage = (IEnergyStorage) target;
-			EnergyStorageData result = new EnergyStorageData();
-			result.values.add((double) storage.getCapacity());
-			result.values.add((double) storage.getStored());
-			result.type = EnergyStorageData.TARGET_TYPE_IC2;
-			return result;
-		}
-		return null;
+	public boolean isWrench(ItemStack par1) {
+		return par1 != null && par1.getItem() instanceof ItemToolWrench;
 	}
 
 	@Override
@@ -192,6 +192,18 @@ public class IC2ClassicCross extends IC2Cross {
 
 	@Override
 	public CardState updateCardReactor5x5(World world, ICardReader reader, BlockPos target) {
+		// TODO Auto-generated method stub
+		return CardState.NO_TARGET;
+	}
+
+	@Override
+	public ItemStack getEnergyCard(World world, BlockPos pos) {
+		// TODO Auto-generated method stub
+		return ItemStack.EMPTY;
+	}
+
+	@Override
+	public NBTTagCompound getEnergyData(TileEntity te) {
 		// TODO Auto-generated method stub
 		return null;
 	}

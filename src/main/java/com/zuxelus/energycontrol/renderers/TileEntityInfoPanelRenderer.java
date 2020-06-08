@@ -53,7 +53,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 	@Override
 	public void render(TileEntityInfoPanel te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {   
 		GlStateManager.pushMatrix();
-		GlStateManager.translate((float)x, (float)y, (float)z);
+		GlStateManager.translate(x, y, z);
 		switch (te.getFacing()) {
 		case UP:
 			break;
@@ -189,6 +189,16 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			break;
 		}
 
+		if (panel.isTouchCard()) {
+			GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+			GlStateManager.disableLighting();
+			panel.renderImage(rendererDispatcher.renderEngine);
+			GlStateManager.enableLighting();
+		} else 
+			renderText(panel, joinedData, displayWidth, displayHeight);
+	}
+
+	private void renderText(TileEntityInfoPanel panel, List<PanelString> joinedData, float displayWidth, float displayHeight) {
 		FontRenderer fontRenderer = getFontRenderer();
 		int maxWidth = 1;
 		for (PanelString panelString : joinedData) {
@@ -245,4 +255,4 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		GlStateManager.enableLighting();
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 	}
-}	
+}

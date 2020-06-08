@@ -12,8 +12,6 @@ import net.minecraft.world.World;
 public class ItemKitReactor extends ItemKitBase {
 	public ItemKitReactor() {
 		super(ItemCardType.KIT_REACTOR, "kit_reactor");
-		//addRecipe(new Object[] { "DF", "PW", 'P', Items.PAPER, 'D', StackUtil.copyWithWildCard(new ItemStack(ItemHelper.itemThermometerDigital)), 'F',
-				//IC2Items.getItem("frequency_transmitter"), 'W', "dyeYellow" });
 	}
 
 	@Override

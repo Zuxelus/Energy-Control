@@ -7,15 +7,15 @@ import net.minecraft.util.EnumFacing;
 public abstract class TileEntityFacing extends TileEntity {
 	protected EnumFacing facing;
 	protected EnumFacing rotation;
-	
+
 	public EnumFacing getFacing() {
 		return facing;
 	}
-	
+
 	public void setFacing(int meta) {
 		facing = EnumFacing.getFront(meta);
 	}
-	
+
 	protected boolean hasRotation() {
 		return false;
 	}
@@ -23,11 +23,15 @@ public abstract class TileEntityFacing extends TileEntity {
 	public EnumFacing getRotation() {
 		return rotation;
 	}
-	
+
 	public void setRotation(int meta) {
-		rotation = EnumFacing.getFront(meta);		
+		rotation = EnumFacing.getFront(meta);
 	}
-	
+
+	public void setRotation(EnumFacing meta) {
+		rotation = meta;
+	}
+
 	protected void readProperties(NBTTagCompound tag) {
 		if (tag.hasKey("facing"))
 			facing = EnumFacing.getFront(tag.getInteger("facing"));
@@ -40,7 +44,7 @@ public abstract class TileEntityFacing extends TileEntity {
 				rotation = EnumFacing.NORTH;
 		}
 	}
-	
+
 	protected NBTTagCompound writeProperties(NBTTagCompound tag) {
 		tag.setInteger("facing", facing.getIndex());
 		if (hasRotation() && rotation != null)
