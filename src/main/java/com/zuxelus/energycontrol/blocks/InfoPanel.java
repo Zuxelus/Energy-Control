@@ -108,7 +108,7 @@ public class InfoPanel extends FacingBlock implements ITileEntityProvider, IWren
 
 	@Override
 	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-		drops.add(CrossModLoader.ic2.getItem("machine"));
+		drops.add(CrossModLoader.ic2.getItemStack("machine"));
 	}
 
 	@Override

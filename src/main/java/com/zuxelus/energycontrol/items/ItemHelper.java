@@ -2,6 +2,8 @@ package com.zuxelus.energycontrol.items;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.blocks.*;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.ic2.IC2Cross.IC2Type;
 import com.zuxelus.energycontrol.items.cards.ItemCardHolder;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.kits.ItemKitMain;
@@ -101,9 +103,11 @@ public class ItemHelper {
 		setNames(kitAssembler, "kit_assembler");
 		event.getRegistry().register(kitAssembler);
 
-		afsu = new AFSU();
-		setNames(afsu, "afsu");
-		event.getRegistry().register(afsu);
+		if (CrossModLoader.ic2.getProfile() == 0) {
+			afsu = new AFSU();
+			setNames(afsu, "afsu");
+			event.getRegistry().register(afsu);
+		}
 	}
 
 	@SubscribeEvent
@@ -121,7 +125,8 @@ public class ItemHelper {
 		event.getRegistry().register(new ItemBlock(averageCounter).setRegistryName("average_counter"));
 		event.getRegistry().register(new ItemBlock(energyCounter).setRegistryName("energy_counter"));
 		event.getRegistry().register(new ItemBlock(kitAssembler).setRegistryName("kit_assembler"));
-		event.getRegistry().register(new ItemAFSU(afsu).setRegistryName("afsu"));
+		if (CrossModLoader.ic2.getProfile() == 0)
+			event.getRegistry().register(new ItemAFSU(afsu).setRegistryName("afsu"));
 
 		itemUpgrade = new ItemUpgrade();
 		setNames(itemUpgrade, "item_upgrade");
@@ -139,9 +144,11 @@ public class ItemHelper {
 		setNames(itemNanoBow, "nano_bow");
 		event.getRegistry().register(itemNanoBow);
 
-		itemAFB = new ItemAFB();
-		setNames(itemAFB, "afb");
-		event.getRegistry().register(itemAFB);
+		if (CrossModLoader.ic2.getProfile() == 0) {
+			itemAFB = CrossModLoader.ic2.getItem("afb");
+			setNames(itemAFB, "afb");
+			event.getRegistry().register(itemAFB);
+		}
 
 		itemPortablePanel = new ItemPortablePanel();
 		setNames(itemPortablePanel, "portable_panel");
@@ -195,7 +202,8 @@ public class ItemHelper {
 		registerBlockModel(ItemHelper.averageCounter, 0, "average_counter");
 		registerBlockModel(ItemHelper.energyCounter, 0, "energy_counter");
 		registerBlockModel(ItemHelper.kitAssembler, 0, "kit_assembler");
-		registerBlockModel(ItemHelper.afsu, 0, "afsu");
+		if (CrossModLoader.ic2.getProfile() == 0)
+			registerBlockModel(ItemHelper.afsu, 0, "afsu");
 
 		ItemKitMain.registerModels();
 		ItemKitMain.registerExtendedModels();
@@ -210,7 +218,8 @@ public class ItemHelper {
 		registerItemModel(ItemHelper.itemPortablePanel, 0, "portable_panel");
 		registerItemModel(ItemHelper.itemCardHolder, 0, "card_holder");
 		registerItemModel(ItemHelper.itemNanoBow, 0, "nano_bow");
-		registerItemModel(ItemHelper.itemAFB, 0, "afb");
+		if (CrossModLoader.ic2.getProfile() == 0)
+			registerItemModel(ItemHelper.itemAFB, 0, "afb");
 	}
 
 	public static void registerItemModel(Item item, int meta, String name) {
@@ -238,7 +247,8 @@ public class ItemHelper {
 		GameRegistry.registerTileEntity(TileEntityAverageCounter.class, EnergyControl.MODID + ":average_counter");
 		GameRegistry.registerTileEntity(TileEntityEnergyCounter.class, EnergyControl.MODID + ":energy_counter");
 		GameRegistry.registerTileEntity(TileEntityKitAssembler.class, EnergyControl.MODID + ":kit_assembler");
-		GameRegistry.registerTileEntity(TileEntityAFSU.class, EnergyControl.MODID + ":afsu");
+		if (CrossModLoader.ic2.getProfile() == 0)
+			GameRegistry.registerTileEntity(TileEntityAFSU.class, EnergyControl.MODID + ":afsu");
 	}
 
 	@SubscribeEvent

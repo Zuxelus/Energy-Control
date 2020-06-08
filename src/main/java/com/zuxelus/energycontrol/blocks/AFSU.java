@@ -8,7 +8,6 @@ import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.tileentities.TileEntityAFSU;
 import com.zuxelus.energycontrol.tileentities.TileEntityFacing;
 import com.zuxelus.energycontrol.tileentities.TileEntityInventory;
-import com.zuxelus.energycontrol.tileentities.TileEntityRangeTrigger;
 
 import ic2.api.tile.IWrenchable;
 import net.minecraft.block.Block;
@@ -24,7 +23,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -47,25 +45,6 @@ public class AFSU extends FacingBlock implements ITileEntityProvider, IWrenchabl
 	@Override
 	public boolean canProvidePower(IBlockState state) {
 		return true;
-	}
-
-	@Override
-	public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-		if (placer.rotationPitch >= 65)
-			return getDefaultState().withProperty(FACING, EnumFacing.UP);
-		if (placer.rotationPitch <= -65)
-			return getDefaultState().withProperty(FACING, EnumFacing.DOWN);
-		switch (MathHelper.floor(placer.rotationYaw * 4.0F / 360.0F + 0.5D) & 3) {
-		case 0:
-			return getDefaultState().withProperty(FACING, EnumFacing.NORTH);
-		case 1:
-			return getDefaultState().withProperty(FACING, EnumFacing.EAST);
-		case 2:
-			return getDefaultState().withProperty(FACING, EnumFacing.SOUTH);
-		case 3:
-			return getDefaultState().withProperty(FACING, EnumFacing.WEST);
-		}		
-		return getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
 	}
 
 	@Override
@@ -96,16 +75,11 @@ public class AFSU extends FacingBlock implements ITileEntityProvider, IWrenchabl
 
 	@Override
 	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-		drops.add(CrossModLoader.ic2.getItem("mfsu"));
+		drops.add(CrossModLoader.ic2.getItemStack("mfsu"));
 	}
 
 	@Override
 	public int getWeakPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
-		return getStrongPower(blockState, blockAccess, pos, side);
-	}
-
-	@Override
-	public int getStrongPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
 		TileEntity te = blockAccess.getTileEntity(pos);
 		if (!(te instanceof TileEntityAFSU))
 			return 0;

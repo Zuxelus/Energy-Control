@@ -181,7 +181,7 @@ public class TileEntityAverageCounter extends TileEntityEnergyStorage implements
 		super.markDirty();
 		int upgradeCountTransormer = 0;
 		ItemStack itemStack = getStackInSlot(0);
-		if (!itemStack.isEmpty() && itemStack.isItemEqual(CrossModLoader.ic2.getItem("transformer")))
+		if (!itemStack.isEmpty() && itemStack.isItemEqual(CrossModLoader.ic2.getItemStack("transformer")))
 			upgradeCountTransormer = itemStack.getCount();
 		upgradeCountTransormer = Math.min(upgradeCountTransormer, 4);
 		if (world != null && !world.isRemote) {
@@ -213,7 +213,7 @@ public class TileEntityAverageCounter extends TileEntityEnergyStorage implements
 
 	@Override
 	public boolean isItemValid(int slotIndex, ItemStack itemstack) { // ISlotItemFilter
-		return itemstack.isItemEqual(CrossModLoader.ic2.getItem("transformer"));
+		return itemstack.isItemEqual(CrossModLoader.ic2.getItemStack("transformer"));
 	}
 
 	private void notifyBlockUpdate() {

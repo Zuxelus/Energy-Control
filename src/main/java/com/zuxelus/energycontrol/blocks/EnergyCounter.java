@@ -12,7 +12,6 @@ import com.zuxelus.energycontrol.tileentities.TileEntityInventory;
 import ic2.api.tile.IWrenchable;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -20,7 +19,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -44,25 +42,6 @@ public class EnergyCounter extends FacingBlock implements ITileEntityProvider, I
 	}
 
 	@Override
-	public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-		if (placer.rotationPitch >= 65)
-			return getDefaultState().withProperty(FACING, EnumFacing.UP);
-		if (placer.rotationPitch <= -65)
-			return getDefaultState().withProperty(FACING, EnumFacing.DOWN);
-		switch (MathHelper.floor(placer.rotationYaw * 4.0F / 360.0F + 0.5D) & 3) {
-		case 0:
-			return getDefaultState().withProperty(FACING, EnumFacing.NORTH);
-		case 1:
-			return getDefaultState().withProperty(FACING, EnumFacing.EAST);
-		case 2:
-			return getDefaultState().withProperty(FACING, EnumFacing.SOUTH);
-		case 3:
-			return getDefaultState().withProperty(FACING, EnumFacing.WEST);
-		}		
-		return getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
-	}
-
-	@Override
 	public void breakBlock(World world, BlockPos pos, IBlockState state) {
 		TileEntity te = world.getTileEntity(pos);
 		if (te instanceof TileEntityInventory)
@@ -72,7 +51,7 @@ public class EnergyCounter extends FacingBlock implements ITileEntityProvider, I
 
 	@Override
 	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-		drops.add(CrossModLoader.ic2.getItem("machine"));
+		drops.add(CrossModLoader.ic2.getItemStack("machine"));
 	}
 
 	//IWrenchable

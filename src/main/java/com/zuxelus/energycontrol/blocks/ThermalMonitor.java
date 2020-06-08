@@ -113,11 +113,6 @@ public class ThermalMonitor extends FacingBlock implements ITileEntityProvider, 
 
 	@Override
 	public int getWeakPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
-		return getStrongPower(blockState, blockAccess, pos, side);
-	}
-
-	@Override
-	public int getStrongPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
 		TileEntity te = blockAccess.getTileEntity(pos);
 		if (!(te instanceof TileEntityThermo))
 			return 0;

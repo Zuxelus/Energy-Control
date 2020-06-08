@@ -83,7 +83,7 @@ public class KitAssembler extends BlockHorizontal implements ITileEntityProvider
 
 	@Override
 	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-		drops.add(CrossModLoader.ic2.getItem("machine"));
+		drops.add(CrossModLoader.ic2.getItemStack("machine"));
 	}
 
 	@Override

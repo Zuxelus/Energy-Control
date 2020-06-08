@@ -6,6 +6,7 @@ import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 
 import ic2.api.reactor.IReactor;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -33,7 +34,9 @@ public abstract class IC2Cross {
 	
 	public abstract int getProfile();
 
-	public abstract ItemStack getItem(String name);
+	public abstract ItemStack getItemStack(String name);
+
+	public abstract Item getItem(String name);
 
 	public static IC2Cross getIC2Cross() {
 		try {

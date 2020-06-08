@@ -3,13 +3,13 @@ package com.zuxelus.energycontrol.items;
 import java.util.List;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.entities.EntityTechArrow;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
 import ic2.api.util.Keys;
-import ic2.core.util.StackUtil;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -57,7 +57,7 @@ public class ItemNanoBow extends ItemBow implements IElectricItem /* , IItemUpgr
 		if (!(entity instanceof EntityPlayer))
 			return;
 
-		NBTTagCompound nbt = StackUtil.getOrCreateNbtData(stack);
+		NBTTagCompound nbt = ItemStackHelper.getOrCreateNbtData(stack);
 		int mode = nbt.getInteger("bowMode");
 		
 		EntityPlayer player = (EntityPlayer) entity;
@@ -163,7 +163,7 @@ public class ItemNanoBow extends ItemBow implements IElectricItem /* , IItemUpgr
 
 	@Override
 	public int getMaxItemUseDuration(ItemStack stack) {
-		NBTTagCompound nbt = StackUtil.getOrCreateNbtData(stack);
+		NBTTagCompound nbt = ItemStackHelper.getOrCreateNbtData(stack);
 		switch (nbt.getInteger("bowMode")) {
 		case SNIPER:
 		case EXPLOSIVE:
@@ -178,7 +178,7 @@ public class ItemNanoBow extends ItemBow implements IElectricItem /* , IItemUpgr
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
 		ItemStack stack = player.getHeldItem(hand);
-		NBTTagCompound nbt = StackUtil.getOrCreateNbtData(stack);
+		NBTTagCompound nbt = ItemStackHelper.getOrCreateNbtData(stack);
 		int mode = nbt.getInteger("bowMode");
 		if (!world.isRemote && Keys.instance.isModeSwitchKeyDown(player) && nbt.getByte("toggleTimer") == 0) {
 			byte toggle = 10;
@@ -212,7 +212,7 @@ public class ItemNanoBow extends ItemBow implements IElectricItem /* , IItemUpgr
 
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
-		NBTTagCompound nbt = StackUtil.getOrCreateNbtData(stack);
+		NBTTagCompound nbt = ItemStackHelper.getOrCreateNbtData(stack);
 		byte toggle = nbt.getByte("toggleTimer");
 		if (toggle > 0)
 			nbt.setByte("toggleTimer", --toggle);
@@ -223,7 +223,7 @@ public class ItemNanoBow extends ItemBow implements IElectricItem /* , IItemUpgr
 
 	@Override
 	public void onUsingTick(ItemStack stack, EntityLivingBase player, int count) {
-		NBTTagCompound nbt = StackUtil.getOrCreateNbtData(stack);
+		NBTTagCompound nbt = ItemStackHelper.getOrCreateNbtData(stack);
 		int mode = nbt.getInteger("bowMode");
 		if (mode == RAPID) {
 			int j = getMaxItemUseDuration(stack) - count;
@@ -235,7 +235,7 @@ public class ItemNanoBow extends ItemBow implements IElectricItem /* , IItemUpgr
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
-		NBTTagCompound nbt = StackUtil.getOrCreateNbtData(stack);
+		NBTTagCompound nbt = ItemStackHelper.getOrCreateNbtData(stack);
 		IElectricItem item = (IElectricItem) stack.getItem();
 		if (!nbt.hasKey("loaded")) {
 			if (nbt.getInteger("tier") == 0)
@@ -276,7 +276,7 @@ public class ItemNanoBow extends ItemBow implements IElectricItem /* , IItemUpgr
 
 	@Override
 	public double getMaxCharge(ItemStack stack) {
-		NBTTagCompound nbt = StackUtil.getOrCreateNbtData(stack);
+		NBTTagCompound nbt = ItemStackHelper.getOrCreateNbtData(stack);
 		if (nbt.getInteger("maxCharge") == 0)
 			nbt.setInteger("maxCharge", getDefaultMaxCharge());
 		return nbt.getInteger("maxCharge");
@@ -284,7 +284,7 @@ public class ItemNanoBow extends ItemBow implements IElectricItem /* , IItemUpgr
 
 	@Override
 	public int getTier(ItemStack stack) {
-		NBTTagCompound nbt = StackUtil.getOrCreateNbtData(stack);
+		NBTTagCompound nbt = ItemStackHelper.getOrCreateNbtData(stack);
 		if (nbt.getInteger("tier") == 0)
 			nbt.setInteger("tier", getDefaultTier());
 		return nbt.getInteger("tier");
@@ -292,7 +292,7 @@ public class ItemNanoBow extends ItemBow implements IElectricItem /* , IItemUpgr
 
 	@Override
 	public double getTransferLimit(ItemStack stack) {
-		NBTTagCompound nbt = StackUtil.getOrCreateNbtData(stack);
+		NBTTagCompound nbt = ItemStackHelper.getOrCreateNbtData(stack);
 		if (nbt.getInteger("transferLimit") == 0)
 			nbt.setInteger("transferLimit", getDefaultTransferLimit());
 		return nbt.getInteger("transferLimit");

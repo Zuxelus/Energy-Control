@@ -6,6 +6,7 @@ import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 
 import ic2.api.reactor.IReactor;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -36,8 +37,13 @@ public class IC2NoMod extends IC2Cross {
 	}
 
 	@Override
-	public ItemStack getItem(String name) {
+	public ItemStack getItemStack(String name) {
 		return ItemStack.EMPTY;
+	}
+
+	@Override
+	public Item getItem(String name) {
+		return null;
 	}
 
 	@Override

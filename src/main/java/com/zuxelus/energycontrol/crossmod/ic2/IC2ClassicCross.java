@@ -60,7 +60,7 @@ public class IC2ClassicCross extends IC2Cross {
 	}
 
 	@Override
-	public ItemStack getItem(String name) {
+	public ItemStack getItemStack(String name) {
 		switch (name) {
 		case "transformer":
 			return IC2Items.getItem("upgrade", "transformer");
@@ -70,6 +70,11 @@ public class IC2ClassicCross extends IC2Cross {
 			return IC2Items.getItem("resource", "machine");
 		}
 		return ItemStack.EMPTY;
+	}
+
+	@Override
+	public Item getItem(String name) {
+		return null;
 	}
 
 	@Override

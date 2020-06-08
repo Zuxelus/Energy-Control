@@ -7,6 +7,7 @@ import java.util.List;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
+import com.zuxelus.energycontrol.items.ItemAFB;
 import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.energycontrol.utils.ReactorHelper;
@@ -92,7 +93,7 @@ public class IC2ExpCross extends IC2Cross {
 	}
 
 	@Override
-	public ItemStack getItem(String name) {
+	public ItemStack getItemStack(String name) {
 		switch (name) {
 		case "transformer":
 			return IC2Items.getItem("upgrade", "transformer");
@@ -104,6 +105,16 @@ public class IC2ExpCross extends IC2Cross {
 			return IC2Items.getItem("te","mfsu");
 		}
 		return ItemStack.EMPTY;
+	}
+
+	@Override
+	public Item getItem(String name) {
+		switch (name) {
+		case "afb":
+			return new ItemAFB();
+		default:
+			return null;
+		}
 	}
 
 	@Override

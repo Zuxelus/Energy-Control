@@ -225,9 +225,9 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 			if (itemStack.isEmpty())
 				continue;
 
-			if (itemStack.isItemEqual(CrossModLoader.ic2.getItem("transformer"))) {
+			if (itemStack.isItemEqual(CrossModLoader.ic2.getItemStack("transformer"))) {
 				upgradeCountTransormer += itemStack.getCount();
-			} else if (itemStack.isItemEqual(CrossModLoader.ic2.getItem("energy_storage"))) {
+			} else if (itemStack.isItemEqual(CrossModLoader.ic2.getItemStack("energy_storage"))) {
 				upgradeCountStorage += itemStack.getCount();
 			} else if (itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE)
 				upgradeCountRange += itemStack.getCount();
@@ -295,8 +295,8 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 					&& (stack.getItemDamage() == ItemCardType.CARD_REACTOR
 							|| stack.getItemDamage() == ItemCardType.CARD_REACTOR5X5);
 		default:
-			return stack.isItemEqual(CrossModLoader.ic2.getItem("transformer"))
-					|| stack.isItemEqual(CrossModLoader.ic2.getItem("energy_storage"))
+			return stack.isItemEqual(CrossModLoader.ic2.getItemStack("transformer"))
+					|| stack.isItemEqual(CrossModLoader.ic2.getItemStack("energy_storage"))
 					|| (stack.getItem() instanceof ItemUpgrade && stack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE);
 		}
 	}

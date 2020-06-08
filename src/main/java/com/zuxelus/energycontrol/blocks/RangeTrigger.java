@@ -77,16 +77,11 @@ public class RangeTrigger extends BlockHorizontal implements ITileEntityProvider
 
 	@Override
 	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-		drops.add(CrossModLoader.ic2.getItem("machine"));
+		drops.add(CrossModLoader.ic2.getItemStack("machine"));
 	}
 
 	@Override
 	public int getWeakPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
-		return getStrongPower(blockState, blockAccess, pos, side);
-	}
-
-	@Override
-	public int getStrongPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
 		TileEntity te = blockAccess.getTileEntity(pos);
 		if (!(te instanceof TileEntityRangeTrigger))
 			return 0;
