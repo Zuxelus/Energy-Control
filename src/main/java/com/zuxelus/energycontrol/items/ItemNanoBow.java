@@ -41,8 +41,6 @@ public class ItemNanoBow extends ItemBow implements IElectricItem /* , IItemUpgr
 	static final int SNIPER = 4;
 	static final int FLAME = 5;
 	static final int EXPLOSIVE = 6;
-	static String[] modeName = { I18n.format("info.normal"), I18n.format("info.rapidfire"), I18n.format("info.spread"),
-			I18n.format("info.sniper"), I18n.format("info.flame"), I18n.format("info.explosive") };
 	static final int[] CHARGE = { 300, 150, 400, 1000, 200, 800 };
 
 	public ItemNanoBow() {
@@ -111,7 +109,6 @@ public class ItemNanoBow extends ItemBow implements IElectricItem /* , IItemUpgr
 				arrow.setExplosive(true);
 
 			arrow.pickupStatus = EntityArrow.PickupStatus.DISALLOWED;
-			world.spawnEntity(arrow);
 
 			switch (mode) {
 			case NORMAL:
@@ -199,7 +196,7 @@ public class ItemNanoBow extends ItemBow implements IElectricItem /* , IItemUpgr
 				mode -= EXPLOSIVE;
 			}
 			nbt.setInteger("bowMode", mode);
-			NetworkHelper.chatMessage(player, I18n.format("info.modeenabled", modeName[(mode - 1)]));
+			NetworkHelper.chatMessage(player, "info.modeenabled", 1, mode - 1);
 			return new ActionResult(EnumActionResult.FAIL, player.getHeldItem(hand));
 		}
 

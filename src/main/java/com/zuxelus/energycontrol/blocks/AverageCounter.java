@@ -1,16 +1,10 @@
 package com.zuxelus.energycontrol.blocks;
 
-import java.util.Collections;
-import java.util.List;
-
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.tileentities.TileEntityAverageCounter;
-import com.zuxelus.energycontrol.tileentities.TileEntityFacing;
 import com.zuxelus.energycontrol.tileentities.TileEntityInventory;
 
-import ic2.api.tile.IWrenchable;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -22,7 +16,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class AverageCounter extends FacingBlock implements ITileEntityProvider, IWrenchable {
+public class AverageCounter extends FacingBlock {
 	public AverageCounter() {
 		super();
 	}
@@ -52,39 +46,5 @@ public class AverageCounter extends FacingBlock implements ITileEntityProvider, 
 	@Override
 	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
 		drops.add(CrossModLoader.ic2.getItemStack("machine"));
-	}
-
-	//IWrenchable
-	@Override
-	public EnumFacing getFacing(World world, BlockPos pos) {
-		TileEntity te = world.getTileEntity(pos);
-		if (te instanceof TileEntityFacing)
-			return ((TileEntityFacing) te).getFacing();
-		return EnumFacing.DOWN;
-	}
-
-	@Override
-	public boolean setFacing(World world, BlockPos pos, EnumFacing newDirection, EntityPlayer player) {
-		TileEntity te = world.getTileEntity(pos);
-		if (te instanceof TileEntityFacing) {
-			((TileEntityFacing) te).setFacing(newDirection.getIndex());
-			world.setBlockState(pos, getDefaultState().withProperty(FACING, newDirection));
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean wrenchCanRemove(World world, BlockPos pos, EntityPlayer player) {
-		return true;
-	}
-
-	@Override
-	public List<ItemStack> getWrenchDrops(World world, BlockPos pos, IBlockState state, TileEntity te, EntityPlayer player, int fortune) {
-		if (!(te instanceof TileEntityInventory))
-			return Collections.emptyList();
-		List<ItemStack> list = ((TileEntityInventory) te).getDrops(fortune);
-		list.add(new ItemStack(this));
-		return list;
 	}
 }

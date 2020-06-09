@@ -65,8 +65,12 @@ public class NetworkHelper {
 	}
 
 	public static void chatMessage(EntityPlayer player, String message) {
+		chatMessage(player, message, 0, 0);
+	}
+
+	public static void chatMessage(EntityPlayer player, String message, int type, int value) {
 		if (player instanceof EntityPlayerMP)
-			ChannelHandler.network.sendTo(new PacketChat(message), (EntityPlayerMP) player);
+			ChannelHandler.network.sendTo(new PacketChat(message, type, value), (EntityPlayerMP) player);
 	}
 
 	// server

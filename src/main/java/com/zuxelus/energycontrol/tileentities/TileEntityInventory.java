@@ -66,15 +66,15 @@ public abstract class TileEntityInventory extends TileEntityFacing implements II
 
 	@Override
 	public boolean isEmpty() {
-		for (ItemStack itemstack : inventory)
-			if (!itemstack.isEmpty())
+		for (ItemStack stack : inventory)
+			if (!stack.isEmpty())
 				return false;
 		return true;
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int index) {
-		return index >= 0 && index < getSizeInventory() ? inventory.get(index) : ItemStack.EMPTY;
+	public ItemStack getStackInSlot(int slot) {
+		return slot >= 0 && slot < getSizeInventory() ? inventory.get(slot) : ItemStack.EMPTY;
 	}
 
 	@Override
@@ -85,17 +85,17 @@ public abstract class TileEntityInventory extends TileEntityFacing implements II
 	}
 
 	@Override
-	public ItemStack removeStackFromSlot(int index) {
-		ItemStack itemstack = getStackInSlot(index);
-		if (itemstack.isEmpty())
+	public ItemStack removeStackFromSlot(int slot) {
+		ItemStack stack = getStackInSlot(slot);
+		if (stack.isEmpty())
 			return ItemStack.EMPTY;
-		inventory.set(index, ItemStack.EMPTY);
-		return itemstack;
+		inventory.set(slot, ItemStack.EMPTY);
+		return stack;
 	}
 
 	@Override
-	public void setInventorySlotContents(int index, ItemStack stack) {
-		inventory.set(index, stack);
+	public void setInventorySlotContents(int slot, ItemStack stack) {
+		inventory.set(slot, stack);
 		if (!stack.isEmpty() && stack.getCount() > this.getInventoryStackLimit())
 			stack.setCount(this.getInventoryStackLimit());
 		markDirty();

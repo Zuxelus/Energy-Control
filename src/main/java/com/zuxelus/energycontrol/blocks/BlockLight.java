@@ -110,6 +110,7 @@ public class BlockLight extends Block implements IWrenchable {
 				items.add(new ItemStack(this, 1, i));
 	}
 
+	// IWrenchable
 	@Override
 	public EnumFacing getFacing(World world, BlockPos pos) {
 		return EnumFacing.UP;

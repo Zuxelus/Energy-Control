@@ -1,20 +1,29 @@
 package com.zuxelus.energycontrol.blocks;
 
-import com.zuxelus.energycontrol.EnergyControl;
+import java.util.List;
 
+import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.tileentities.TileEntityFacing;
+import com.zuxelus.energycontrol.tileentities.TileEntityInventory;
+
+import ic2.api.tile.IWrenchable;
 import net.minecraft.block.Block;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
-public class FacingBlock extends Block {
+public abstract class FacingBlock extends Block implements ITileEntityProvider, IWrenchable {
 	public static final PropertyDirection FACING = PropertyDirection.create("facing");
 
 	public FacingBlock() {
@@ -55,5 +64,39 @@ public class FacingBlock extends Block {
 			return getDefaultState().withProperty(FACING, EnumFacing.WEST);
 		}		
 		return getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
+	}
+
+	//IWrenchable
+	@Override
+	public EnumFacing getFacing(World world, BlockPos pos) {
+		TileEntity te = world.getTileEntity(pos);
+		if (te instanceof TileEntityFacing)
+			return ((TileEntityFacing) te).getFacing();
+		return EnumFacing.NORTH;
+	}
+
+	@Override
+	public boolean setFacing(World world, BlockPos pos, EnumFacing newDirection, EntityPlayer player) {
+		TileEntity te = world.getTileEntity(pos);
+		if (te instanceof TileEntityFacing) {
+			((TileEntityFacing) te).setFacing(newDirection.getIndex());
+			world.setBlockState(pos, getDefaultState().withProperty(FACING, newDirection));
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean wrenchCanRemove(World world, BlockPos pos, EntityPlayer player) {
+		return true;
+	}
+
+	@Override
+	public List<ItemStack> getWrenchDrops(World world, BlockPos pos, IBlockState state, TileEntity te, EntityPlayer player, int fortune) {
+		if (!(te instanceof TileEntityInventory))
+			return getDrops(world, pos, state, 1);
+		List<ItemStack> list = ((TileEntityInventory) te).getDrops(fortune);
+		list.add(new ItemStack(this));
+		return list;
 	}
 }
