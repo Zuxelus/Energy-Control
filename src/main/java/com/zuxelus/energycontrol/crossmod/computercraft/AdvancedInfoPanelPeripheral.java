@@ -9,7 +9,6 @@ import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
-import dan200.computercraft.api.lua.ArgumentHelper;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -63,7 +62,7 @@ public class AdvancedInfoPanelPeripheral implements IPeripheral {
 				if (panelString.textRight != null)
 					list.add(panelString.textRight);
 			}
-			return new Object[] { list };
+			return list.toArray();
 		case 3:
 			return new Object[] { te.getColorBackground() };
 		case 4:

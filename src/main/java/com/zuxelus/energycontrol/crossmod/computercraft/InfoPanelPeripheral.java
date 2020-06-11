@@ -8,7 +8,6 @@ import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
-import dan200.computercraft.api.lua.ArgumentHelper;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -63,7 +62,7 @@ public class InfoPanelPeripheral implements IPeripheral {
 				if (panelString.textRight != null)
 					list.add(panelString.textRight);
 			}
-			return new Object[] { list };
+			return list.toArray();
 		case 4:
 			return new Object[] { te.getColorBackground() };
 		case 5:
@@ -86,7 +85,7 @@ public class InfoPanelPeripheral implements IPeripheral {
 		case 9:
 			String title = ArgumentHelper.getString(args, 0);
 			stack = te.getStackInSlot(0);
-			if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain)
+			if (title != null && !stack.isEmpty() && stack.getItem() instanceof ItemCardMain)
 				new ItemCardReader(stack).setTitle(title);
 			return null;
 		}

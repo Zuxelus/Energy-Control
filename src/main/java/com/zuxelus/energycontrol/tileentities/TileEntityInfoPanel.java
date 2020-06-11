@@ -9,14 +9,11 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.containers.ISlotItemFilter;
-import com.zuxelus.energycontrol.crossmod.computercraft.InfoPanelPeripheral;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
-import dan200.computercraft.api.peripheral.IPeripheral;
-import dan200.computercraft.api.peripheral.IPeripheralTile;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.Item;
@@ -36,7 +33,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityInfoPanel extends TileEntityInventory
-		implements ITickable, ITilePacketHandler, IScreenPart, ISlotItemFilter, IPeripheralTile {
+		implements ITickable, ITilePacketHandler, IScreenPart, ISlotItemFilter {
 	public static final String NAME = "info_panel";
 	public static final int DISPLAY_DEFAULT = Integer.MAX_VALUE;
 	private static final int[] COLORS_HEX = { 0x000000, 0xe93535, 0x82e306, 0x702b14, 0x1f3ce7, 0x8f1fea, 0x1fd7e9,
@@ -630,11 +627,5 @@ public class TileEntityInfoPanel extends TileEntityInventory
 		ItemStack stack = getStackInSlot(SLOT_CARD);
 		if (!stack.isEmpty() && stack.getItemDamage() == ItemCardType.CARD_TOGGLE)
 			ItemCardMain.renderImage(manager, stack);
-	}
-
-	// IPeripheralTile
-	@Override
-	public IPeripheral getPeripheral(EnumFacing side) {
-		return new InfoPanelPeripheral(this);
 	}
 }
