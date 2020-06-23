@@ -55,7 +55,7 @@ public class GuiPortablePanel extends GuiContainer {
 			CardState state = reader.getState();
 			List<PanelString> joinedData;
 			if (state != CardState.OK && state != CardState.CUSTOM_ERROR)
-				joinedData = reader.getStateMessage(state);
+				joinedData = ItemCardReader.getStateMessage(state);
 			else
 				joinedData = ItemCardMain.getStringData(Integer.MAX_VALUE, reader, true);
 

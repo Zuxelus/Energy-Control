@@ -21,6 +21,9 @@ public class ItemKitEnergy extends ItemKitBase {
 		if (!result.isEmpty())
 			return result;
 		result = CrossModLoader.appEng.getEnergyCard(world, pos);
+		if (!result.isEmpty())
+			return result;
+		result = CrossModLoader.galacticraft.getEnergyCard(world, pos);
 		return result;
 	}
 }

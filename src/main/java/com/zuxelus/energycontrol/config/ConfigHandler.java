@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ConfigHandler {
 	public Configuration configuration;
-	
+
 	public int howlerAlarmRange;
 	public int maxAlarmRange;
 	public String allowedAlarms;	
@@ -18,7 +18,6 @@ public class ConfigHandler {
 	public int screenRefreshPeriod;
 	public int rangeTriggerRefreshPeriod;
 	public int SMPMaxAlarmRange;
-	public boolean disableCapes;
 
 	public void init(File configFile) {
 		if (configuration == null)

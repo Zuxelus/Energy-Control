@@ -52,6 +52,13 @@ public class ItemCardEnergy extends ItemCardBase {
 			reader.setDouble("maxStorage", tag.getDouble("maxStorage"));
 			return CardState.OK;
 		}
+		tag = CrossModLoader.galacticraft.getEnergyData(te);
+		if (tag != null) {
+			reader.setInt("type", 11);
+			reader.setDouble("storage", tag.getDouble("storage"));
+			reader.setDouble("maxStorage", tag.getDouble("maxStorage"));
+			return CardState.OK;
+		}
 		return CardState.NO_TARGET;
 	}
 
@@ -66,6 +73,9 @@ public class ItemCardEnergy extends ItemCardBase {
 		switch (reader.getInt("type")) {
 		case 10:
 			euType = "AE";
+			break;
+		case 11:
+			euType = "gJ";
 			break;
 		default:
 			euType = "EU";

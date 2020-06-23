@@ -391,7 +391,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 			CardState state = reader.getState();
 			List<PanelString> data;
 			if (state != CardState.OK && state != CardState.CUSTOM_ERROR)
-				data = reader.getStateMessage(state);
+				data = ItemCardReader.getStateMessage(state);
 			else
 				data = getCardData(settings, card, reader, showLabels);
 			if (data == null)

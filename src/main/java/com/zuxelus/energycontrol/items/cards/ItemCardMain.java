@@ -67,6 +67,8 @@ public final class ItemCardMain extends Item {
 		}
 		if (Loader.isModLoaded("appliedenergistics2"))
 			register(new ItemCardAppEng());
+		if (Loader.isModLoaded("galacticraftcore") && Loader.isModLoaded("galacticraftplanets"))
+			register(new ItemCardGalacticraft());
 	}
 
 	private static void register(IItemCard item) {

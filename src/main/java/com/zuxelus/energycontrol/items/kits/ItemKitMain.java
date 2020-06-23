@@ -7,6 +7,7 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.IItemKit;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.items.cards.ItemCardGalacticraft;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
 import ic2.api.recipe.Recipes;
@@ -45,6 +46,8 @@ public class ItemKitMain extends Item {
 			register(new ItemKitDraconic());
 		if (Loader.isModLoaded("appliedenergistics2"))
 			register(new ItemKitAppEng());
+		if (Loader.isModLoaded("galacticraftcore") && Loader.isModLoaded("galacticraftplanets"))
+			register(new ItemKitGalacticraft());
 	}
 
 	private void register(ItemKitBase item) {

@@ -28,10 +28,10 @@ public abstract class TileEntityInventory extends TileEntityFacing implements II
 	@Override
 	protected void readProperties(NBTTagCompound tag) {
 		super.readProperties(tag);
-		NBTTagList nbttaglist = tag.getTagList("Items", Constants.NBT.TAG_COMPOUND);
+		NBTTagList list = tag.getTagList("Items", Constants.NBT.TAG_COMPOUND);
 		inventory = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
-		for (int i = 0; i < nbttaglist.tagCount(); i++) {
-			NBTTagCompound stackTag = nbttaglist.getCompoundTagAt(i);
+		for (int i = 0; i < list.tagCount(); i++) {
+			NBTTagCompound stackTag = list.getCompoundTagAt(i);
 			inventory.set(stackTag.getByte("Slot"), new ItemStack(stackTag));
 		}
 	}

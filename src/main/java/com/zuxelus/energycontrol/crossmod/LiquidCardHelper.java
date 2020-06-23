@@ -31,6 +31,9 @@ public class LiquidCardHelper {
 		List<IFluidTank> list = CrossModLoader.ic2.getAllTanks(te);
 		if (list != null)
 			return list;
+		list = CrossModLoader.galacticraft.getAllTanks(te);
+		if (list != null)
+			return list;
 		return CrossModLoader.buildCraft.getAllTanks(te);
 	}
 

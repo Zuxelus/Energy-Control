@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.tileentities.TileEntityFacing;
+import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInventory;
 
 import ic2.api.tile.IWrenchable;
@@ -80,6 +81,8 @@ public abstract class FacingBlock extends Block implements ITileEntityProvider, 
 		TileEntity te = world.getTileEntity(pos);
 		if (te instanceof TileEntityFacing) {
 			((TileEntityFacing) te).setFacing(newDirection.getIndex());
+			if (newDirection.getIndex() > 1 && te instanceof TileEntityInfoPanel)
+				((TileEntityFacing) te).setRotation(newDirection.getIndex());
 			world.setBlockState(pos, getDefaultState().withProperty(FACING, newDirection));
 			return true;
 		}

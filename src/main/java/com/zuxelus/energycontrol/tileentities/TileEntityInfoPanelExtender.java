@@ -119,9 +119,9 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 
 	@Override
 	public void invalidate() {
-		super.invalidate();
 		if (!world.isRemote)
 			EnergyControl.instance.screenManager.unregisterScreenPart(this);
+		super.invalidate();
 	}
 
 	@Override
@@ -172,7 +172,6 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	@Override
 	public void notifyBlockUpdate() {
 		IBlockState iblockstate = world.getBlockState(pos);
-		Block block = iblockstate.getBlock();
 		world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
 	}
 
