@@ -18,8 +18,9 @@ public class ItemKitEnergy extends ItemKitBase {
 	@Override
 	public ItemStack getSensorCard(ItemStack stack, Item card, EntityPlayer player, World world, BlockPos pos) {
 		ItemStack result = CrossModLoader.ic2.getEnergyCard(world, pos);
-		if (result != null)
+		if (!result.isEmpty())
 			return result;
-		return null;
+		result = CrossModLoader.appEng.getEnergyCard(world, pos);
+		return result;
 	}
 }

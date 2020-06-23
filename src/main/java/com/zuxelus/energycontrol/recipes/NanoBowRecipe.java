@@ -4,16 +4,12 @@ import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.items.ItemHelper;
 
 import ic2.api.item.IC2Items;
-import ic2.api.item.IElectricItem;
-import li.cil.oc.integration.ic2.ElectricItemManager;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.common.crafting.IngredientNBT;
 
 public class NanoBowRecipe extends ShapedRecipes {
 

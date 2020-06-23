@@ -36,6 +36,7 @@ public class ItemCardType {
 
 	public static final int CARD_ENERGY_DRACONIC = 20;
 	public static final int CARD_REACTOR_DRACONIC = 21;
+	public static final int CARD_APPENG = 22;
 
 	public static final int CARD_MAX = 49;
 }

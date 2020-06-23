@@ -15,11 +15,13 @@ public class CrossModLoader {
 	public static BCCross buildCraft;
 	public static OpenComputersCross openComputers;
 	public static DraconicEvolutionCross draconicEvolution;
+	public static CrossAppEng appEng;
 
 	public static void preinit() {
 		draconicEvolution = new DraconicEvolutionCross();
 		buildCraft = BCCross.getBuildCraftCross();
 		ic2 = IC2Cross.getIC2Cross();
+		appEng = new CrossAppEng();
 	}
 
 	public static void init() {

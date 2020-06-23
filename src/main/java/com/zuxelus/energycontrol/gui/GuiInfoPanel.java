@@ -8,7 +8,6 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.ICardGui;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.containers.ContainerBase;
-import com.zuxelus.energycontrol.containers.ContainerInfoPanel;
 import com.zuxelus.energycontrol.gui.controls.CompactButton;
 import com.zuxelus.energycontrol.gui.controls.GuiInfoPanelCheckBox;
 import com.zuxelus.energycontrol.gui.controls.GuiInfoPanelShowLabels;
@@ -27,7 +26,6 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -43,6 +41,7 @@ public class GuiInfoPanel extends GuiContainer {
 	private TileEntityInfoPanel panel;
 	public ItemStack prevCard;
 	protected GuiTextField textboxTitle;
+	protected byte activeTab;
 	protected boolean modified;
 	public boolean isColored;
 
@@ -55,6 +54,7 @@ public class GuiInfoPanel extends GuiContainer {
 		// inverted value on start to force initControls
 		isColored = !this.panel.getColored();
 		prevCard = ItemStack.EMPTY;
+		activeTab = 0;
 	}
 
 	@Override
@@ -214,10 +214,10 @@ public class GuiInfoPanel extends GuiContainer {
 		if (panel.getWorld().isRemote) {
 			NBTTagCompound tag = new NBTTagCompound();
 			tag.setInteger("type", 4);
-			tag.setInteger("slot", 0);
+			tag.setInteger("slot", activeTab);
 			tag.setString("title", textboxTitle.getText());
 			NetworkHelper.updateSeverTileEntity(panel.getPos(), tag);
-			ItemStack card = panel.getStackInSlot(0);
+			ItemStack card = panel.getStackInSlot(activeTab);
 			if (!card.isEmpty() && card.getItem() instanceof ItemCardMain)
 				new ItemCardReader(card).setTitle(textboxTitle.getText());
 		}

@@ -28,7 +28,7 @@ public abstract class FacingBlock extends Block implements ITileEntityProvider, 
 
 	public FacingBlock() {
 		super(Material.IRON);
-		setHardness(6.0F);
+		setHardness(12.0F);
 		setCreativeTab(EnergyControl.creativeTab);
 	}
 

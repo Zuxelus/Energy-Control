@@ -80,6 +80,7 @@ msg.ec.InfoPanelAmount=Количество: %s
 msg.ec.InfoPanelBuffer=Буфер: %s
 msg.ec.InfoPanelBufferHU=Буфер: %s HU
 msg.ec.InfoPanelCapacity=Ёмкость: %s
+msg.ec.InfoPanelCapacityAE=Ёмкость: %s AE
 msg.ec.InfoPanelCapacityEU=Ёмкость: %s EU
 msg.ec.InfoPanelCapacityHU=Ёмкость: %s HU
 msg.ec.InfoPanelCapacityKU=Ёмкость: %s KU
@@ -88,6 +89,7 @@ msg.ec.InfoPanelCapacityRF=Ёмкость: %s RF
 msg.ec.InfoPanelCoils=Катушки: %s
 msg.ec.InfoPanelConductors=Проводники: %s
 msg.ec.InfoPanelEnergy=Энергия: %s
+msg.ec.InfoPanelEnergyAE=Энергия: %s AE
 msg.ec.InfoPanelEnergyEU=Энергия: %s EU
 msg.ec.InfoPanelEnergyHU=Энергия: %s HU
 msg.ec.InfoPanelEnergyKU=Энергия: %s KU
@@ -95,6 +97,7 @@ msg.ec.InfoPanelEnergyMJ=Энергия: %s MJ
 msg.ec.InfoPanelEnergyRF=Энергия: %s RF
 msg.ec.InfoPanelFill=Заполнено: %s%%
 msg.ec.InfoPanelFree=Свободно: %s
+msg.ec.InfoPanelFreeAE=Свободно: %s AE
 msg.ec.InfoPanelFreeEU=Свободно: %s EU
 msg.ec.InfoPanelFreeRF=Свободно: %s RF
 msg.ec.InfoPanelHeat=Т: %s
@@ -186,6 +189,10 @@ msg.ec.TextColor=Цвет текста
 msg.ec.None=N/A
 msg.ec.cards=карты: %s
 msg.ec.touch_card=Сенсорная карта
+
+msg.ec.InfoPanelBytesUsed=%d из %d байт использовано
+msg.ec.InfoPanelTypes=%d из %d типов
+msg.ec.InfoPanelTotalItems=Всего предметов %d
 
 #5x5 Reactor Messages
 msg.ec.InfoPanel55.Output=Выход: %s Hu/сек

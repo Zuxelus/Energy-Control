@@ -15,6 +15,7 @@ import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
+import com.zuxelus.energycontrol.items.kits.ItemKitAppEng;
 
 import ic2.api.recipe.Recipes;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -26,6 +27,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -63,6 +65,8 @@ public final class ItemCardMain extends Item {
 			register(new ItemCardEnergyDraconic());
 			register(new ItemCardReactorDraconic());
 		}
+		if (Loader.isModLoaded("appliedenergistics2"))
+			register(new ItemCardAppEng());
 	}
 
 	private static void register(IItemCard item) {

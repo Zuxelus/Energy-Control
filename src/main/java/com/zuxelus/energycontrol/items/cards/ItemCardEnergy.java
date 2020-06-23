@@ -34,17 +34,25 @@ public class ItemCardEnergy extends ItemCardBase {
 			return CardState.NO_TARGET;
 
 		NBTTagCompound tag = CrossModLoader.ic2.getEnergyData(te);
-		if (tag == null || !tag.hasKey("type"))
-			return CardState.NO_TARGET;
+		if (tag != null && tag.hasKey("type")) {
+			reader.setInt("type", tag.getInteger("type"));
+			switch (tag.getInteger("type")) {
+			case 1:
+				reader.setDouble("storage", tag.getDouble("storage"));
+				reader.setDouble("maxStorage", tag.getDouble("maxStorage"));
+				break;
+			}
+			return CardState.OK;
+		}
 
-		reader.setInt("type", tag.getInteger("type"));
-		switch (tag.getInteger("type")) {
-		case 1:
+		tag = CrossModLoader.appEng.getEnergyData(te);
+		if (tag != null) {
+			reader.setInt("type", 10);
 			reader.setDouble("storage", tag.getDouble("storage"));
 			reader.setDouble("maxStorage", tag.getDouble("maxStorage"));
-			break;
+			return CardState.OK;
 		}
-		return CardState.OK;
+		return CardState.NO_TARGET;
 	}
 
 	@Override
@@ -53,13 +61,22 @@ public class ItemCardEnergy extends ItemCardBase {
 
 		double energy = reader.getDouble("storage");
 		double storage = reader.getDouble("maxStorage");
+		String euType = "";
 
+		switch (reader.getInt("type")) {
+		case 10:
+			euType = "AE";
+			break;
+		default:
+			euType = "EU";
+			break;
+		}
 		if ((displaySettings & 1) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelEnergyEU", energy, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelEnergy" + euType, energy, showLabels));
 		if ((displaySettings & 4) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelCapacityEU", storage, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelCapacity" + euType, storage, showLabels));
 		if ((displaySettings & 2) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelFreeEU", storage - energy, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelFree" + euType, storage - energy, showLabels));
 		if ((displaySettings & 8) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelPercentage", storage == 0 ? 100 : ((energy / storage) * 100), showLabels));
 		return result;

@@ -21,6 +21,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Loader;
 
 public class ItemKitMain extends Item {
 	private static Map<Integer, IItemKit> kits = new HashMap<Integer, IItemKit>();
@@ -42,6 +43,8 @@ public class ItemKitMain extends Item {
 		register(new ItemKitToggle());
 		if (CrossModLoader.draconicEvolution.modLoaded)
 			register(new ItemKitDraconic());
+		if (Loader.isModLoaded("appliedenergistics2"))
+			register(new ItemKitAppEng());
 	}
 
 	private void register(ItemKitBase item) {

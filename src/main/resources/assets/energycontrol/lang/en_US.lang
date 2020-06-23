@@ -41,7 +41,7 @@ item.card_reactor_draconic.name=Draconic Reactor Sensor Card
 item.kit_draconic.name=Draconic Sensor Kit
 item.kit_big_reactor.name=Remote RF Reactor Kit
 item.card_big_reactor.name=RF Reactor Sensor Location Card
-item.kit_app_eng.name=Applied Energistics Monitor Kit
+item.kit_app_eng.name=Applied Energistics Kit
 item.card_app_eng.name=Applied Energistics Card
 
 #Internal Blocks
@@ -80,6 +80,7 @@ msg.ec.InfoPanelAmount=Amount: %s
 msg.ec.InfoPanelBuffer=Buffer: %s
 msg.ec.InfoPanelBufferHU=Buffer: %s HU
 msg.ec.InfoPanelCapacity=Capacity: %s
+msg.ec.InfoPanelCapacityAE=Capacity: %s AE
 msg.ec.InfoPanelCapacityEU=Capacity: %s EU
 msg.ec.InfoPanelCapacityHU=Capacity: %s HU
 msg.ec.InfoPanelCapacityKU=Capacity: %s KU
@@ -88,6 +89,7 @@ msg.ec.InfoPanelCapacityRF=Capacity: %s RF
 msg.ec.InfoPanelCoils=Coils: %s
 msg.ec.InfoPanelConductors=Conductors: %s
 msg.ec.InfoPanelEnergy=Energy: %s
+msg.ec.InfoPanelEnergyAE=Energy: %s AE
 msg.ec.InfoPanelEnergyEU=Energy: %s EU
 msg.ec.InfoPanelEnergyHU=Energy: %s HU
 msg.ec.InfoPanelEnergyKU=Energy: %s KU
@@ -95,6 +97,7 @@ msg.ec.InfoPanelEnergyMJ=Energy: %s MJ
 msg.ec.InfoPanelEnergyRF=Energy: %s RF
 msg.ec.InfoPanelFill=Fill: %s%%
 msg.ec.InfoPanelFree=Free: %s
+msg.ec.InfoPanelFreeAE=Free: %s AE
 msg.ec.InfoPanelFreeEU=Free: %s EU
 msg.ec.InfoPanelFreeRF=Free: %s RF
 msg.ec.InfoPanelHeat=T: %s
@@ -186,6 +189,10 @@ msg.ec.TextColor=Text Color
 msg.ec.None=N/A
 msg.ec.cards=cards: %s
 msg.ec.touch_card=Touch Card
+
+msg.ec.InfoPanelBytesUsed=%d of %d Bytes Used
+msg.ec.InfoPanelTypes=%d of %d Types
+msg.ec.InfoPanelTotalItems=Total Items %d
 
 #5x5 Reactor Messages
 msg.ec.InfoPanel55.Output=Output: %s Hu/s

@@ -440,7 +440,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 	@Override
 	public void markDirty() {
 		super.markDirty();
-		if (!world.isRemote) {
+		if (!world.isRemote && powered) {
 			setColored(isColoredEval());
 			ItemStack itemStack = getStackInSlot(getSlotUpgradeRange());
 			for (ItemStack card : getCards())
@@ -450,6 +450,10 @@ public class TileEntityInfoPanel extends TileEntityInventory
 
 	public byte getSlotUpgradeRange() {
 		return SLOT_UPGRADE_RANGE;
+	}
+
+	public boolean isCardSlot(int slot) {
+		return slot == SLOT_CARD;
 	}
 
 	public Map<Integer, Integer> getDisplaySettingsForSlot(int slot) {
@@ -470,19 +474,19 @@ public class TileEntityInfoPanel extends TileEntityInventory
 		int slot = getCardSlot(card);
 		if (card.isEmpty())
 			return 0;
-		
+
 		if (!displaySettings.containsKey(slot))
 			return DISPLAY_DEFAULT;
-		
+
 		if (displaySettings.get(slot).containsKey(card.getItemDamage()))
 			return displaySettings.get(slot).get(card.getItemDamage());
-		
+
 		return DISPLAY_DEFAULT;
 	}
 
 	public void setDisplaySettings(int slot, int settings) {
-		if (slot != SLOT_CARD)
-			return;	
+		if (!isCardSlot(slot))
+			return;
 		ItemStack stack = getStackInSlot(slot);
 		if (stack.isEmpty())
 			return;
