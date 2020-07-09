@@ -22,7 +22,7 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable, ISlotItemFilter, ITilePacketHandler {
+public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable, ISlotItemFilter, ITilePacketHandler, IEnergyStorage {
 	public static final int TIER = 5;
 	public static final int CAPACITY = 400000000;
 	public static final int OUTPUT = 8192;
@@ -204,5 +204,36 @@ public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable
 		if ((item.canProvideEnergy(stack) || slot == SLOT_CHARGER) && item.getTier(stack) <= TIER)
 			return true;
 		return false;
+	}
+
+	// IEnergyStorage
+	@Override
+	public int getStored() {
+		return (int) getEnergy();
+	}
+
+	@Override
+	public void setStored(int energy) { }
+
+	@Override
+	public int addEnergy(int amount) {
+		amount = (int) Math.min(capacity - energy, amount);
+		energy += amount;
+		return amount;
+	}
+
+	@Override
+	public int getCapacity() {
+		return (int) capacity;
+	}
+
+	@Override
+	public double getOutputEnergyUnitsPerTick() {
+		return OUTPUT;
+	}
+
+	@Override
+	public boolean isTeleporterCompatible(EnumFacing side) {
+		return true;
 	}
 }

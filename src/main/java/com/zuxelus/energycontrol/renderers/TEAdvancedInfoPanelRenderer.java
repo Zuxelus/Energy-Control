@@ -123,7 +123,7 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			case UP:
 				switch (panel.getRotation()) {
 				case NORTH:
-					dz = (pos.getZ() - screen.maxZ - screen.minZ + pos.getZ());
+					dz = pos.getZ() - screen.maxZ - screen.minZ + pos.getZ();
 					dy = pos.getX() - screen.maxX - screen.minX + pos.getX();
 					displayWidth += screen.maxX - screen.minX;
 					displayHeight += screen.maxZ - screen.minZ;
@@ -135,7 +135,7 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 					displayHeight += screen.maxZ - screen.minZ;
 					break;
 				case EAST:
-					dz = (pos.getZ() - screen.maxZ - screen.minZ + pos.getZ());
+					dz = pos.getZ() - screen.maxZ - screen.minZ + pos.getZ();
 					dy = pos.getX() - screen.maxX - screen.minX + pos.getX();
 					displayWidth += screen.maxZ - screen.minZ;
 					displayHeight += screen.maxX - screen.minX;

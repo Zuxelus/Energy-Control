@@ -152,7 +152,7 @@ public class ItemCardGeneratorArray extends ItemCardBase {
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelStorage"), 1, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMaxStorage"), 2, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOutput"), 8, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEach"), 32, damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEachCard"), 32, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelTotal"), 64, damage));
 		return result;
 	}

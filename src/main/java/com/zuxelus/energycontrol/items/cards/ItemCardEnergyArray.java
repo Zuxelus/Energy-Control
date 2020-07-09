@@ -141,7 +141,7 @@ public class ItemCardEnergyArray extends ItemCardBase {
 	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(6);
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEach"), 1,damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEachCard"), 1,damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 4,damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelFree"), 8, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelStorage"), 16, damage));

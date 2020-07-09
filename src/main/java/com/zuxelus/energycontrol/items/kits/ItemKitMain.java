@@ -30,6 +30,8 @@ public class ItemKitMain extends Item {
 	public ItemKitMain() {
 		super();
 		setMaxStackSize(16);
+		setHasSubtypes(true);
+		setMaxDamage(0);
 		canRepair = false;
 		setCreativeTab(EnergyControl.creativeTab);
 	}

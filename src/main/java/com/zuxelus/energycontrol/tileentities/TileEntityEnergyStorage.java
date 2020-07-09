@@ -37,10 +37,6 @@ public abstract class TileEntityEnergyStorage extends TileEntityInventory implem
 		return output;
 	}
 
-	public double getCapacity() {
-		return capacity;
-	}
-
 	@Override
 	public void setFacing(int meta) {
 		onChunkUnload();

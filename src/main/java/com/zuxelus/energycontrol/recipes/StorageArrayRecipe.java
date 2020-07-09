@@ -83,7 +83,7 @@ public class StorageArrayRecipe extends net.minecraftforge.registries.IForgeRegi
 	}
 
 	private ItemStack getCraftingResult(int cardCount, int arrayCount, int type, Vector<ItemStack> cards, ItemStack array) {
-		if (cardCount >= 2 && cardCount <= 6 && arrayCount == 0) {
+		if (cardCount >= 2 && cardCount <= 16 && arrayCount == 0) {
 			ItemStack itemStack = new ItemStack(ItemHelper.itemCard, 1, type);
 			initArray(itemStack, cards);
 			return itemStack;
@@ -94,7 +94,7 @@ public class StorageArrayRecipe extends net.minecraftforge.registries.IForgeRegi
 				return new ItemStack(IC2Items.getItem("crafting","circuit").getItem(), cnt, IC2Items.getItem("crafting","circuit").getItemDamage());
 		} else if (arrayCount == 1 && cardCount > 0) {
 			int cnt = new ItemCardReader(array).getInt("cardCount");
-			if (cnt + cardCount <= 6) {
+			if (cnt + cardCount <= 16) {
 				ItemStack itemStack = new ItemStack(ItemHelper.itemCard, 1, type);
 				itemStack.setTagCompound((NBTTagCompound) array.getTagCompound().copy());
 				initArray(itemStack, cards);
