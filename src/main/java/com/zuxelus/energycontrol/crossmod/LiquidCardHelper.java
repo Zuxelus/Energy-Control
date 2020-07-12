@@ -34,6 +34,9 @@ public class LiquidCardHelper {
 		list = CrossModLoader.galacticraft.getAllTanks(te);
 		if (list != null)
 			return list;
+		list = CrossModLoader.bigReactors.getAllTanks(te);
+		if (list != null)
+			return list;
 		return CrossModLoader.buildCraft.getAllTanks(te);
 	}
 

@@ -5,19 +5,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.api.CardState;
-import com.zuxelus.energycontrol.api.ICardGui;
-import com.zuxelus.energycontrol.api.ICardReader;
-import com.zuxelus.energycontrol.api.IItemCard;
-import com.zuxelus.energycontrol.api.ITouchAction;
-import com.zuxelus.energycontrol.api.PanelSetting;
-import com.zuxelus.energycontrol.api.PanelString;
+import com.zuxelus.energycontrol.api.*;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
-import com.zuxelus.energycontrol.items.kits.ItemKitAppEng;
 
-import ic2.api.recipe.Recipes;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -61,7 +53,7 @@ public final class ItemCardMain extends Item {
 		register(new ItemCardToggle());
 		if (CrossModLoader.buildCraft.modLoaded())
 			register(new ItemCardEngine());
-		if (CrossModLoader.draconicEvolution.modLoaded) {
+		if (Loader.isModLoaded("draconicevolution")) {
 			register(new ItemCardEnergyDraconic());
 			register(new ItemCardReactorDraconic());
 		}
@@ -69,6 +61,8 @@ public final class ItemCardMain extends Item {
 			register(new ItemCardAppEng());
 		if (Loader.isModLoaded("galacticraftcore") && Loader.isModLoaded("galacticraftplanets"))
 			register(new ItemCardGalacticraft());
+		if (Loader.isModLoaded("bigreactors"))
+			register(new ItemCardBigReactors());
 	}
 
 	private static void register(IItemCard item) {
@@ -250,15 +244,6 @@ public final class ItemCardMain extends Item {
 			Integer key = entry.getKey();
 			if (key > ItemCardType.CARD_MAX)
 				ItemHelper.registerExternalItemModel(ItemHelper.itemCard, key, cards.get(key).getName());
-		}
-	}
-
-	public static void registerRecipes() {
-		for (Map.Entry<Integer, IItemCard> entry : cards.entrySet()) {
-			Integer key = entry.getKey();
-			Object[] recipe = entry.getValue().getRecipe();
-			if (recipe != null)
-				Recipes.advRecipes.addRecipe(new ItemStack(ItemHelper.itemCard, 1, key), recipe);
 		}
 	}
 }

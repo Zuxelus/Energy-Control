@@ -33,7 +33,7 @@ public class CrossGalacticraft extends CrossModBase {
 		if (te instanceof IEnergyHandlerGC) {
 			NBTTagCompound tag = new NBTTagCompound();
 			IEnergyHandlerGC storage = (IEnergyHandlerGC) te;
-			tag.setInteger("type", 1);
+			tag.setInteger("type", 11);
 			tag.setDouble("storage", storage.getEnergyStoredGC(null));
 			tag.setDouble("maxStorage", storage.getMaxEnergyStoredGC(null));
 			return tag;

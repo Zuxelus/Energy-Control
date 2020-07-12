@@ -146,7 +146,7 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
 					return;
 				}
 				GuiScreen gui = (GuiScreen) guiObject;
-				ItemCardSettingsReader wrapper = new ItemCardSettingsReader(card, panel, this, (byte) 0);
+				ItemCardSettingsReader wrapper = new ItemCardSettingsReader(card, panel, this, (byte) activeTab);
 				((ICardGui) gui).setCardSettingsHelper(wrapper);
 				mc.displayGuiScreen(gui);
 			}

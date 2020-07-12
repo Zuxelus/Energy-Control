@@ -14,16 +14,16 @@ public class CrossModLoader {
 	public static IC2Cross ic2;
 	public static BCCross buildCraft;
 	public static OpenComputersCross openComputers;
-	public static DraconicEvolutionCross draconicEvolution;
 	public static CrossAppEng appEng;
 	public static CrossGalacticraft galacticraft;
+	public static CrossBigReactors bigReactors;
 
 	public static void preinit() {
-		draconicEvolution = new DraconicEvolutionCross();
 		buildCraft = BCCross.getBuildCraftCross();
 		ic2 = IC2Cross.getIC2Cross();
 		appEng = new CrossAppEng();
 		galacticraft = new CrossGalacticraft();
+		bigReactors = new CrossBigReactors();
 	}
 
 	public static void init() {

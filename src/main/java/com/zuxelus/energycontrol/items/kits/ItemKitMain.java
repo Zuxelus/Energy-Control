@@ -7,10 +7,8 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.IItemKit;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.items.ItemHelper;
-import com.zuxelus.energycontrol.items.cards.ItemCardGalacticraft;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
-import ic2.api.recipe.Recipes;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -44,12 +42,14 @@ public class ItemKitMain extends Item {
 		register(new ItemKitReactor());
 		register(new ItemKitLiquidAdvanced());
 		register(new ItemKitToggle());
-		if (CrossModLoader.draconicEvolution.modLoaded)
+		if (Loader.isModLoaded("draconicevolution"))
 			register(new ItemKitDraconic());
 		if (Loader.isModLoaded("appliedenergistics2"))
 			register(new ItemKitAppEng());
 		if (Loader.isModLoaded("galacticraftcore") && Loader.isModLoaded("galacticraftplanets"))
 			register(new ItemKitGalacticraft());
+		if (Loader.isModLoaded("bigreactors"))
+			register(new ItemKitBigReactors());
 	}
 
 	private void register(ItemKitBase item) {
@@ -139,15 +139,6 @@ public class ItemKitMain extends Item {
 			Integer key = entry.getKey();
 			if (key > ItemCardType.KIT_MAX)
 				ItemHelper.registerExternalItemModel(ItemHelper.itemKit, key, kits.get(key).getName());
-		}
-	}
-
-	public static final void registerRecipes() {
-		for (Map.Entry<Integer, IItemKit> entry : kits.entrySet()) {
-			Integer key = entry.getKey();
-			Object[] recipe = entry.getValue().getRecipe();
-			if (recipe != null)
-				Recipes.advRecipes.addRecipe(new ItemStack(ItemHelper.itemKit, 1, key), recipe);
 		}
 	}
 }

@@ -10,17 +10,6 @@ import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.GalacticraftHelper;
 
-import appeng.api.AEApi;
-import appeng.api.networking.IGridHost;
-import appeng.api.networking.IGridNode;
-import appeng.api.storage.ICellInventory;
-import appeng.api.storage.ICellInventoryHandler;
-import appeng.api.storage.IStorageChannel;
-import appeng.api.util.IReadOnlyCollection;
-import appeng.me.helpers.IGridProxyable;
-import appeng.tile.storage.TileChest;
-import appeng.tile.storage.TileDrive;
-import ic2.core.block.generator.tileentity.TileEntityRTGenerator;
 import micdoodle8.mods.galacticraft.core.blocks.BlockOxygenDetector;
 import micdoodle8.mods.galacticraft.core.tile.TileEntityEnergyStorageModule;
 import micdoodle8.mods.galacticraft.core.tile.TileEntityOxygenCollector;
@@ -37,14 +26,12 @@ import micdoodle8.mods.galacticraft.planets.mars.tile.TileEntityMethaneSynthesiz
 import micdoodle8.mods.galacticraft.planets.venus.tile.TileEntitySolarArrayController;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
 
 public class ItemCardGalacticraft extends ItemCardBase {
 	private static DecimalFormat df = new DecimalFormat("0.0");
