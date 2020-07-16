@@ -31,6 +31,7 @@ public final class ItemCardMain extends Item {
 	public ItemCardMain() {
 		super();
 		setMaxStackSize(1);
+		setHasSubtypes(true);
 		canRepair = false;
 		setCreativeTab(EnergyControl.creativeTab);
 	}
@@ -40,10 +41,12 @@ public final class ItemCardMain extends Item {
 		register(new ItemCardCounter());
 		register(new ItemCardLiquid());
 		register(new ItemCardGenerator());
-		register(new ItemCardGeneratorKinetic());
-		register(new ItemCardGeneratorHeat());
-		register(new ItemCardReactor());
-		register(new ItemCardReactor5x5());
+		if (Loader.isModLoaded("ic2")) {
+			register(new ItemCardGeneratorKinetic());
+			register(new ItemCardGeneratorHeat());
+			register(new ItemCardReactor());
+			register(new ItemCardReactor5x5());
+		}
 		register(new ItemCardLiquidAdvanced());
 		register(new ItemCardText());
 		register(new ItemCardTime());
@@ -51,7 +54,7 @@ public final class ItemCardMain extends Item {
 		register(new ItemCardLiquidArray());
 		register(new ItemCardGeneratorArray());
 		register(new ItemCardToggle());
-		if (CrossModLoader.buildCraft.modLoaded())
+		if (Loader.isModLoaded("buildcraftcore"))
 			register(new ItemCardEngine());
 		if (Loader.isModLoaded("draconicevolution")) {
 			register(new ItemCardEnergyDraconic());

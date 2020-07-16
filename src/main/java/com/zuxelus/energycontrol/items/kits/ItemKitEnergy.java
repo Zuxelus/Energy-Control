@@ -20,6 +20,9 @@ public class ItemKitEnergy extends ItemKitBase {
 		ItemStack result = CrossModLoader.ic2.getEnergyCard(world, pos);
 		if (!result.isEmpty())
 			return result;
+		result = CrossModLoader.techReborn.getEnergyCard(world, pos);
+		if (!result.isEmpty())
+			return result;
 		result = CrossModLoader.appEng.getEnergyCard(world, pos);
 		if (!result.isEmpty())
 			return result;

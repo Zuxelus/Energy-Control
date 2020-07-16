@@ -1,0 +1,42 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "RF",
+        "PB"
+    ],
+    "key": {
+        "P": {
+            "item": "minecraft:paper"
+        },
+        "R": {
+            "type": "forge:ore_dict",
+            "ore": "dustRedstone"
+        },
+        "F": {
+            "item": "techreborn:frequencytransmitter"
+        },
+        "B": {
+            "type": "forge:ore_dict",
+            "ore": "ingotYellorium"
+        }
+    },
+    "result": {
+        "item": "energycontrol:item_kit",
+        "data": 11
+    },
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "forge:mod_loaded",
+                    "modid": "bigreactors"
+                },
+                {
+                    "type": "forge:mod_loaded",
+                    "modid": "techreborn"
+                }
+            ]
+        }
+    ]
+}

@@ -34,29 +34,18 @@ public class ItemCardEnergy extends ItemCardBase {
 			return CardState.NO_TARGET;
 
 		NBTTagCompound tag = CrossModLoader.ic2.getEnergyData(te);
+		if (tag == null)
+			tag = CrossModLoader.techReborn.getEnergyData(te);
+		if (tag == null)
+		tag = CrossModLoader.appEng.getEnergyData(te);
+		if (tag == null)
+		tag = CrossModLoader.galacticraft.getEnergyData(te);
 		if (tag != null && tag.hasKey("type")) {
 			reader.setInt("type", tag.getInteger("type"));
-			switch (tag.getInteger("type")) {
-			case 1:
-				reader.setDouble("storage", tag.getDouble("storage"));
-				reader.setDouble("maxStorage", tag.getDouble("maxStorage"));
-				break;
-			}
-			return CardState.OK;
-		}
-
-		tag = CrossModLoader.appEng.getEnergyData(te);
-		if (tag != null) {
-			reader.setInt("type", 10);
 			reader.setDouble("storage", tag.getDouble("storage"));
 			reader.setDouble("maxStorage", tag.getDouble("maxStorage"));
-			return CardState.OK;
-		}
-		tag = CrossModLoader.galacticraft.getEnergyData(te);
-		if (tag != null) {
-			reader.setInt("type", 11);
-			reader.setDouble("storage", tag.getDouble("storage"));
-			reader.setDouble("maxStorage", tag.getDouble("maxStorage"));
+			if (tag.getInteger("type") == 12)
+				reader.setString("euType", tag.getString("euType"));
 			return CardState.OK;
 		}
 		return CardState.NO_TARGET;
@@ -76,6 +65,9 @@ public class ItemCardEnergy extends ItemCardBase {
 			break;
 		case 11:
 			euType = "gJ";
+			break;
+		case 12:
+			euType = reader.getString("euType");
 			break;
 		default:
 			euType = "EU";

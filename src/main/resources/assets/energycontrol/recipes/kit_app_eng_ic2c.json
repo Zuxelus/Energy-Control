@@ -1,0 +1,42 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "IT",
+        "PD"
+    ],
+    "key": {
+        "I": {
+            "item": "appliedenergistics2:material",
+            "data": 7
+        },
+        "T": {
+            "item": "ic2:itemfreq"
+        },
+        "P": {
+            "item": "minecraft:paper"
+        },
+        "D": {
+            "type": "forge:ore_dict",
+            "ore": "dyePurple"
+        }
+    },
+    "result": {
+        "item": "energycontrol:item_kit",
+        "data": 10
+    },
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "forge:mod_loaded",
+                    "modid": "appliedenergistics2"
+                },
+                {
+                    "type": "forge:mod_loaded",
+                    "modid": "ic2-classic-spmod"
+                }
+            ]
+        }
+    ]
+}

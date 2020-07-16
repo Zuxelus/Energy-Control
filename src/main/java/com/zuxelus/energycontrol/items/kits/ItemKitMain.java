@@ -39,7 +39,8 @@ public class ItemKitMain extends Item {
 		register(new ItemKitCounter());
 		register(new ItemKitLiquid());
 		register(new ItemKitGenerator());
-		register(new ItemKitReactor());
+		if (Loader.isModLoaded("ic2"))
+			register(new ItemKitReactor());
 		register(new ItemKitLiquidAdvanced());
 		register(new ItemKitToggle());
 		if (Loader.isModLoaded("draconicevolution"))

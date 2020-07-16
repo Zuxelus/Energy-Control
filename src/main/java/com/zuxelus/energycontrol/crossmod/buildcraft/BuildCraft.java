@@ -21,7 +21,7 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
-public class BuildCraftCross extends BCCross {
+public class BuildCraft extends CrossBC {
 
 	@Override
 	public boolean modLoaded() {

@@ -1,0 +1,41 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " R ",
+        "ICI",
+        " A " 
+    ],
+    "key": {
+        "R": {
+            "type": "forge:ore_dict",
+            "ore": "plateTin"
+        },
+        "I": {
+            "item": "techreborn:cable",
+            "data": 5
+        },
+        "C": {
+            "type": "forge:ore_dict",
+            "ore": "circuitBasic"
+        },
+        "A": {
+            "item": "techreborn:plates",
+            "data": 2
+        }
+    },
+    "result": {
+        "item": "energycontrol:item_upgrade",
+        "data": 2
+    },
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "forge:mod_loaded",
+                    "modid": "techreborn"
+                }
+            ]
+        }
+    ]
+}

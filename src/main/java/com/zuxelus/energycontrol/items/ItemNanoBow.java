@@ -7,12 +7,8 @@ import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.entities.EntityTechArrow;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 
-import ic2.api.item.ElectricItem;
-import ic2.api.item.IElectricItem;
-import ic2.api.util.Keys;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -28,13 +24,12 @@ import net.minecraft.stats.StatList;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemNanoBow extends ItemBow implements IElectricItem /* , IItemUpgradeable */ {
+public abstract class ItemNanoBow extends ItemBow /* , IItemUpgradeable */ {
 	static final int NORMAL = 1;
 	static final int RAPID = 2;
 	static final int SPREAD = 3;
@@ -46,8 +41,6 @@ public class ItemNanoBow extends ItemBow implements IElectricItem /* , IItemUpgr
 	public ItemNanoBow() {
 		super();
 		setCreativeTab(EnergyControl.creativeTab);
-		setMaxDamage(27);
-		setNoRepair();
 		setFull3D();
 	}
 
@@ -116,11 +109,11 @@ public class ItemNanoBow extends ItemBow implements IElectricItem /* , IItemUpgr
 			case SNIPER:
 			case FLAME:
 			case EXPLOSIVE:
-				ElectricItem.manager.use(stack, CHARGE[mode - 1], player);
+				discharge(stack, CHARGE[mode - 1], player);
 				world.spawnEntity(arrow);
 				break;
 			case SPREAD:
-				ElectricItem.manager.use(stack, 350, player);
+				discharge(stack, 350, player);
 				world.spawnEntity(arrow);
 				if (arrow.getIsCritical()) {
 					EntityTechArrow arrow2 = new EntityTechArrow(world, player);
@@ -177,7 +170,7 @@ public class ItemNanoBow extends ItemBow implements IElectricItem /* , IItemUpgr
 		ItemStack stack = player.getHeldItem(hand);
 		NBTTagCompound nbt = ItemStackHelper.getOrCreateNbtData(stack);
 		int mode = nbt.getInteger("bowMode");
-		if (!world.isRemote && Keys.instance.isModeSwitchKeyDown(player) && nbt.getByte("toggleTimer") == 0) {
+		if (!world.isRemote && isModeSwitchKeyDown(player) && nbt.getByte("toggleTimer") == 0) {
 			byte toggle = 10;
 			nbt.setByte("toggleTimer", toggle);
 
@@ -200,7 +193,7 @@ public class ItemNanoBow extends ItemBow implements IElectricItem /* , IItemUpgr
 			return new ActionResult(EnumActionResult.FAIL, player.getHeldItem(hand));
 		}
 
-		if (ElectricItem.manager.canUse(stack, CHARGE[mode - 1])) {
+		if (canUse(stack, CHARGE[mode - 1])) {
 			player.setActiveHand(hand);
 			return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
 		}
@@ -224,75 +217,21 @@ public class ItemNanoBow extends ItemBow implements IElectricItem /* , IItemUpgr
 		int mode = nbt.getInteger("bowMode");
 		if (mode == RAPID) {
 			int j = getMaxItemUseDuration(stack) - count;
-			if ((j >= 10) && (ElectricItem.manager.canUse(stack, CHARGE[RAPID - 1])))
+			if ((j >= 10) && (canUse(stack, CHARGE[RAPID - 1])))
 				player.stopActiveHand();
 		}
 	}
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
-		NBTTagCompound nbt = ItemStackHelper.getOrCreateNbtData(stack);
-		IElectricItem item = (IElectricItem) stack.getItem();
-		if (!nbt.hasKey("loaded")) {
-			if (nbt.getInteger("tier") == 0)
-				nbt.setInteger("tier", item.getTier(stack));
-			if (nbt.getInteger("transferLimit") == 0)
-				nbt.setDouble("transferLimit", item.getTransferLimit(stack));
-			if (nbt.getInteger("maxCharge") == 0)
-				nbt.setDouble("maxCharge", item.getMaxCharge(stack));
-			nbt.setBoolean("loaded", true);
-		}
-		if (nbt.getInteger("transferLimit") != item.getTransferLimit(stack))
-			tooltip.add(String.format(I18n.format("info.transferspeed"), nbt.getDouble("transferLimit")));
-		if (nbt.getInteger("tier") != item.getTier(stack))
-			tooltip.add(String.format(I18n.format("info.chargingtier"), nbt.getInteger("tier")));
-	}
+	protected abstract void discharge(ItemStack stack, double amount, EntityLivingBase entity);
+	
+	protected abstract boolean canUse(ItemStack stack, double amount);
+	
+	protected abstract boolean isModeSwitchKeyDown(EntityPlayer player);
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public EnumRarity getRarity(ItemStack itemstack) {
 		return EnumRarity.UNCOMMON;
-	}
-
-	@Override
-	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
-		if (!isInCreativeTab(tab))
-			return;
-		ItemStack charged = new ItemStack(this, 1);
-		ElectricItem.manager.charge(charged, 2147483647, 2147483647, true, false);
-		items.add(charged);
-		items.add(new ItemStack(this, 1, getMaxDamage()));
-	}
-
-	// IElectricItem
-	@Override
-	public boolean canProvideEnergy(ItemStack stack) {
-		return false;
-	}
-
-	@Override
-	public double getMaxCharge(ItemStack stack) {
-		NBTTagCompound nbt = ItemStackHelper.getOrCreateNbtData(stack);
-		if (nbt.getInteger("maxCharge") == 0)
-			nbt.setInteger("maxCharge", getDefaultMaxCharge());
-		return nbt.getInteger("maxCharge");
-	}
-
-	@Override
-	public int getTier(ItemStack stack) {
-		NBTTagCompound nbt = ItemStackHelper.getOrCreateNbtData(stack);
-		if (nbt.getInteger("tier") == 0)
-			nbt.setInteger("tier", getDefaultTier());
-		return nbt.getInteger("tier");
-	}
-
-	@Override
-	public double getTransferLimit(ItemStack stack) {
-		NBTTagCompound nbt = ItemStackHelper.getOrCreateNbtData(stack);
-		if (nbt.getInteger("transferLimit") == 0)
-			nbt.setInteger("transferLimit", getDefaultTransferLimit());
-		return nbt.getInteger("transferLimit");
 	}
 
 	// IItemUpgradeable

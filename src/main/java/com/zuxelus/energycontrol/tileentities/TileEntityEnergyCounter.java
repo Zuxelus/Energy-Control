@@ -3,25 +3,16 @@ package com.zuxelus.energycontrol.tileentities;
 import com.zuxelus.energycontrol.containers.ISlotItemFilter;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 
-import ic2.api.energy.EnergyNet;
-import ic2.api.energy.NodeStats;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
-import ic2.api.energy.tile.IEnergyAcceptor;
-import ic2.api.energy.tile.IEnergyEmitter;
-import ic2.api.energy.tile.IEnergySink;
-import ic2.api.energy.tile.IEnergySource;
 import ic2.api.info.Info;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
 import net.minecraftforge.common.MinecraftForge;
 
-public class TileEntityEnergyCounter extends TileEntityEnergyStorage implements ITickable, ISlotItemFilter, ITilePacketHandler {
+public class TileEntityEnergyCounter extends TileEntityEnergyStorage implements ISlotItemFilter, ITilePacketHandler {
 	private static final int BASE_PACKET_SIZE = 32;
 	private boolean init;
 	protected int updateTicker;
@@ -101,19 +92,18 @@ public class TileEntityEnergyCounter extends TileEntityEnergyStorage implements 
 	}
 
 	@Override
-	public void update() {
+	public void onLoad() {
+		super.onLoad();
 		if (!init) {
 			init = true;
 			markDirty();
 		}
-		if (world.isRemote)
-			return;
-		TileEntity neighbor = world.getTileEntity(pos.offset(facing));
-		if (CrossModLoader.ic2.isCable(neighbor)) {
-			NodeStats node = EnergyNet.instance.getNodeStats(this);
-			if (node != null)
-				counter += node.getEnergyOut();
-		}
+	}
+
+	@Override
+	public void drawEnergy(double amount) {
+		super.drawEnergy(amount);
+		counter += amount;
 	}
 
 	@Override
@@ -129,14 +119,16 @@ public class TileEntityEnergyCounter extends TileEntityEnergyStorage implements 
 			capacity = output * 2;
 			tier = upgradeCountTransormer + 1;
 
-			if (addedToEnet) {
-				EnergyTileUnloadEvent event = new EnergyTileUnloadEvent(this);
+			if (Info.isIc2Available() ) {
+				if (addedToEnet) {
+					EnergyTileUnloadEvent event = new EnergyTileUnloadEvent(this);
+					MinecraftForge.EVENT_BUS.post(event);
+				}
+				addedToEnet = false;
+				EnergyTileLoadEvent event = new EnergyTileLoadEvent(this);
 				MinecraftForge.EVENT_BUS.post(event);
+				addedToEnet = true;
 			}
-			addedToEnet = false;
-			EnergyTileLoadEvent event = new EnergyTileLoadEvent(this);
-			MinecraftForge.EVENT_BUS.post(event);
-			addedToEnet = true;
 		}
 	}
 

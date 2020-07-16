@@ -10,13 +10,16 @@ import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.items.ItemAFB;
 import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
+import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.utils.ReactorHelper;
 
+import ic2.api.item.ElectricItem;
 import ic2.api.item.IC2Items;
 import ic2.api.item.ICustomDamageItem;
 import ic2.api.reactor.IReactor;
 import ic2.api.tile.IEnergyStorage;
 import ic2.core.block.BlockTileEntity;
+import ic2.core.block.TileEntityBarrel;
 import ic2.core.block.TileEntityBlock;
 import ic2.core.block.TileEntityHeatSourceInventory;
 import ic2.core.block.comp.Energy;
@@ -51,6 +54,7 @@ import ic2.core.item.tool.ItemToolWrench;
 import ic2.core.profile.ProfileManager;
 import ic2.core.profile.Version;
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -61,7 +65,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
 
-public class IC2ExpCross extends IC2Cross {
+public class IC2Exp extends CrossIC2 {
 
 	@Override
 	public int getNuclearCellTimeLeft(ItemStack stack) {
@@ -103,6 +107,8 @@ public class IC2ExpCross extends IC2Cross {
 			return IC2Items.getItem("resource", "machine");
 		case "mfsu":
 			return IC2Items.getItem("te","mfsu");
+		case "circuit":
+			return IC2Items.getItem("crafting","circuit");
 		}
 		return ItemStack.EMPTY;
 	}
@@ -118,6 +124,12 @@ public class IC2ExpCross extends IC2Cross {
 	}
 
 	@Override
+	public ItemStack getChargedStack(ItemStack stack) {
+		ElectricItem.manager.charge(stack, Integer.MAX_VALUE, Integer.MAX_VALUE, true, false);
+		return stack;
+	}
+
+	@Override
 	public boolean isWrench(ItemStack stack) {
 		return !stack.isEmpty() && stack.getItem() instanceof ItemToolWrench;
 	}
@@ -125,11 +137,6 @@ public class IC2ExpCross extends IC2Cross {
 	@Override
 	public boolean isSteamReactor(TileEntity par1) {
 		return false;
-	}
-
-	@Override
-	public boolean isCable(TileEntity te) {
-		return te instanceof TileEntityCable;
 	}
 
 	@Override
@@ -189,6 +196,7 @@ public class IC2ExpCross extends IC2Cross {
 			NBTTagCompound tag = new NBTTagCompound();
 			Boolean active = isActive(te);
 			tag.setBoolean("active", active);
+			tag.setString("euType", "EU");
 			if (te instanceof TileEntityBaseGenerator) {
 				tag.setInteger("type", 1);
 				Energy energy = ((TileEntityBaseGenerator) te).getComponent(Energy.class);
@@ -486,5 +494,23 @@ public class IC2ExpCross extends IC2Cross {
 		int timeLeft = dmgLeft * reactor.getTickRate() / 20;
 		reader.setInt("timeLeft", timeLeft);
 		return CardState.OK;
+	}
+
+	@Override
+	public void showBarrelInfo(EntityPlayer player, TileEntity te) {
+		if (te instanceof TileEntityBarrel) {
+			int age = -1;
+			int boozeAmount = 0;
+			try {
+				Field field = TileEntityBarrel.class.getDeclaredField("age");
+				field.setAccessible(true);
+				age = (int) field.get(te);
+				field = TileEntityBarrel.class.getDeclaredField("boozeAmount");
+				field.setAccessible(true);
+				boozeAmount = (int) field.get(te);
+			} catch (Throwable t) { }
+			if (age >= 0)
+				NetworkHelper.chatMessage(player, age + " / " + ((TileEntityBarrel) te).timeNedForRum(boozeAmount));
+		}
 	}
 }

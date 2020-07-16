@@ -1,0 +1,35 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "CCC",
+        "IFI"
+    ],
+    "key": {
+        "I": {
+            "item": "techreborn:cable",
+            "data": 5
+        },
+        "F": {
+            "item": "techreborn:frequencytransmitter"
+        },
+        "C": {
+            "item": "techreborn:part",
+            "data": 36
+        }
+    },
+    "result": {
+        "item": "energycontrol:item_upgrade",
+        "data": 0
+    },
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "forge:mod_loaded",
+                    "modid": "techreborn"
+                }
+            ]
+        }
+    ]
+}

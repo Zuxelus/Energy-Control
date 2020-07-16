@@ -1,0 +1,39 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "   ",
+        "IAI",
+        "FTF"
+    ],
+    "key": {
+        "A": {
+            "type": "forge:ore_dict",
+            "ore": "circuitAdvanced"
+        },
+        "F": {
+            "item": "techreborn:cable",
+            "data": 2
+        },
+        "T": {
+            "item": "techreborn:mv_transformer"
+        },
+        "I": {
+            "type": "forge:ore_dict",
+            "ore": "plateIron"
+        }
+    },
+    "result": {
+        "item": "energycontrol:energy_counter"
+    },
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "forge:mod_loaded",
+                    "modid": "techreborn"
+                }
+            ]
+        }
+    ]
+}

@@ -6,6 +6,7 @@ import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 
 import ic2.api.reactor.IReactor;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -15,7 +16,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fml.common.Loader;
 
-public abstract class IC2Cross {
+public abstract class CrossIC2 {
 	public enum IC2Type{
 		SPEIGER,
 		EXP,
@@ -27,8 +28,6 @@ public abstract class IC2Cross {
 	public abstract int getNuclearCellTimeLeft(ItemStack stack);
 
 	public abstract boolean isSteamReactor(TileEntity te);
-	
-	public abstract boolean isCable(TileEntity te);
 
 	public abstract IC2Type getType();
 	
@@ -38,17 +37,19 @@ public abstract class IC2Cross {
 
 	public abstract Item getItem(String name);
 
-	public static IC2Cross getIC2Cross() {
+	public abstract ItemStack getChargedStack(ItemStack stack);
+
+	public static CrossIC2 getMod() {
 		try {
 			if (Loader.isModLoaded("ic2-classic-spmod")) {
-				Class clz = Class.forName("com.zuxelus.energycontrol.crossmod.ic2.IC2ClassicCross");
+				Class clz = Class.forName("com.zuxelus.energycontrol.crossmod.ic2.IC2Classic");
 				if (clz != null)
-					return (IC2Cross) clz.newInstance();
+					return (CrossIC2) clz.newInstance();
 			} 
 			if (Loader.isModLoaded("ic2")) {
-				Class clz = Class.forName("com.zuxelus.energycontrol.crossmod.ic2.IC2ExpCross");
+				Class clz = Class.forName("com.zuxelus.energycontrol.crossmod.ic2.IC2Exp");
 				if (clz != null)
-					return (IC2Cross) clz.newInstance();
+					return (CrossIC2) clz.newInstance();
 			}
 		} catch (Exception e) {
 
@@ -76,4 +77,6 @@ public abstract class IC2Cross {
 	
 	public abstract CardState updateCardReactor(World world, ICardReader reader, IReactor reactor);
 	public abstract CardState updateCardReactor5x5(World world, ICardReader reader, BlockPos target);
+	
+	public abstract void showBarrelInfo(EntityPlayer player, TileEntity te);
 }

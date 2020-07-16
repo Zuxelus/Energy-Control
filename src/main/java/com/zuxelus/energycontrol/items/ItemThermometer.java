@@ -1,14 +1,11 @@
 package com.zuxelus.energycontrol.items;
 
-import java.lang.reflect.Field;
-
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.utils.ReactorHelper;
 
 import ic2.api.reactor.IReactor;
-import ic2.core.block.TileEntityBarrel;
-import ic2.core.block.generator.tileentity.TileEntityConversionGenerator;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -54,20 +51,7 @@ public class ItemThermometer extends Item {
 		}
 
 		TileEntity te = world.getTileEntity(pos);
-		if (te instanceof TileEntityBarrel) {
-			int age = -1;
-			int boozeAmount = 0;
-			try {
-				Field field = TileEntityBarrel.class.getDeclaredField("age");
-				field.setAccessible(true);
-				age = (int) field.get(te);
-				field = TileEntityBarrel.class.getDeclaredField("boozeAmount");
-				field.setAccessible(true);
-				boozeAmount = (int) field.get(te);
-			} catch (Throwable t) { }
-			if (age >= 0)
-				NetworkHelper.chatMessage(player, age + " / " + ((TileEntityBarrel) te).timeNedForRum(boozeAmount));
-		}
+		CrossModLoader.ic2.showBarrelInfo(player, te);
 		return EnumActionResult.PASS;
 	}
 

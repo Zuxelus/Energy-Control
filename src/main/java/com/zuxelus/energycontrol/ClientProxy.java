@@ -11,20 +11,26 @@ import com.zuxelus.energycontrol.renderers.*;
 import com.zuxelus.energycontrol.tileentities.*;
 import com.zuxelus.energycontrol.utils.SoundHelper;
 
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 public class ClientProxy extends ServerProxy {
+	public static final KeyBinding modeSwitchKey = new KeyBinding("Mode Switch Key", 50, "Energy Control");
+
 	@Override
 	public void loadConfig(FMLPreInitializationEvent event) {
 		EnergyControl.config = new ConfigHandler();
 		MinecraftForge.EVENT_BUS.register(EnergyControl.config);
 		EnergyControl.config.init(event.getSuggestedConfigurationFile());
+		if (!Loader.isModLoaded("ic2"))
+			ClientRegistry.registerKeyBinding(modeSwitchKey);
 	}
 
 	@Override

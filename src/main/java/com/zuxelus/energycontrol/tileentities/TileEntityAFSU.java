@@ -146,6 +146,8 @@ public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable
 	public void update() {
 		if (world.isRemote)
 			return;
+		
+		onLoad();
 		ItemStack stack = getStackInSlot(SLOT_DISCHARGER);
 		if (!stack.isEmpty() && energy < CAPACITY && stack.getItem() instanceof IElectricItem) {
 			IElectricItem ielectricitem = (IElectricItem) stack.getItem();

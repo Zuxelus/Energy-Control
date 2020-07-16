@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.items;
 
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 
 import ic2.api.item.ElectricItem;
@@ -14,18 +15,13 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemDigitalThermometer extends ItemThermometer implements IElectricItem {
+	protected final static int CAPACITY = 12000;
+	protected final static int TRANSFER_LIMIT = 250;
 
-	public int tier;
-	public int ratio;
-	public int transfer;
-
-	public ItemDigitalThermometer(int k, int l, int i1) {
+	public ItemDigitalThermometer() {
 		super();
 		setMaxDamage(13);
 		setHasSubtypes(true);
-		tier = k;
-		ratio = l;
-		transfer = i1;
 	}
 
 	@Override
@@ -42,28 +38,29 @@ public class ItemDigitalThermometer extends ItemThermometer implements IElectric
 	}
 
 	@Override
-	protected void damage(ItemStack itemstack, int i, EntityPlayer entityplayer) {
-		ElectricItem.rawManager.use(itemstack, 50 * i, entityplayer);
+	protected void damage(ItemStack stack, int i, EntityPlayer player) {
+		ElectricItem.manager.use(stack, 50 * i, player);
 	}
 
+	// IElectricItem
 	@Override
-	public boolean canProvideEnergy(ItemStack itemStack) {
+	public boolean canProvideEnergy(ItemStack stack) {
 		return false;
 	}
 
 	@Override
-	public double getMaxCharge(ItemStack itemStack) {
-		return 12000;
+	public double getMaxCharge(ItemStack stack) {
+		return CAPACITY;
 	}
 
 	@Override
-	public int getTier(ItemStack itemStack) {
-		return tier;
+	public int getTier(ItemStack stack) {
+		return 1;
 	}
 
 	@Override
-	public double getTransferLimit(ItemStack itemStack) {
-		return 250;
+	public double getTransferLimit(ItemStack stack) {
+		return TRANSFER_LIMIT;
 	}
 
 	@Override
@@ -71,9 +68,7 @@ public class ItemDigitalThermometer extends ItemThermometer implements IElectric
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
 		if (!isInCreativeTab(tab))
 			return;
-		ItemStack itemstack = new ItemStack(this, 1);
-		ElectricItem.manager.charge(itemstack, 0x7fffffff, 0x7fffffff, true, false);
-		items.add(itemstack);
+		items.add(CrossModLoader.ic2.getChargedStack(new ItemStack(this, 1)));
 		items.add(new ItemStack(this, 1, getMaxDamage()));
 	}
 }

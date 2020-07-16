@@ -3,11 +3,12 @@ package com.zuxelus.energycontrol.items;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.blocks.*;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.crossmod.ic2.IC2Cross.IC2Type;
+import com.zuxelus.energycontrol.crossmod.ic2.CrossIC2.IC2Type;
 import com.zuxelus.energycontrol.items.cards.ItemCardHolder;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.kits.ItemKitMain;
 import com.zuxelus.energycontrol.recipes.NanoBowRecipe;
+import com.zuxelus.energycontrol.recipes.NanoBowRecipeTR;
 import com.zuxelus.energycontrol.recipes.StorageArrayRecipe;
 import com.zuxelus.energycontrol.tileentities.*;
 
@@ -19,6 +20,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent.Register;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -48,6 +50,7 @@ public class ItemHelper {
 	public static Item itemCardHolder;
 	public static Item itemNanoBow;
 	public static Item itemAFB;
+	public static Item itemAFSUUpgradeKit;
 
 	@SubscribeEvent
 	public static void onBlockRegistry(Register<Block> event) {
@@ -63,9 +66,11 @@ public class ItemHelper {
 		setNames(industrialAlarm, "industrial_alarm");
 		event.getRegistry().register(industrialAlarm);
 
-		thermalMonitor = new ThermalMonitor();
-		setNames(thermalMonitor, "thermal_monitor");
-		event.getRegistry().register(thermalMonitor);
+		if (Loader.isModLoaded("ic2")) {
+			thermalMonitor = new ThermalMonitor();
+			setNames(thermalMonitor, "thermal_monitor");
+			event.getRegistry().register(thermalMonitor);
+		}
 
 		infoPanel = new InfoPanel();
 		setNames(infoPanel, TileEntityInfoPanel.NAME);
@@ -87,9 +92,11 @@ public class ItemHelper {
 		setNames(rangeTrigger, "range_trigger");
 		event.getRegistry().register(rangeTrigger);
 
-		remoteThermo = new RemoteThermo();
-		setNames(remoteThermo, "remote_thermo");
-		event.getRegistry().register(remoteThermo);
+		if (Loader.isModLoaded("ic2")) {
+			remoteThermo = new RemoteThermo();
+			setNames(remoteThermo, "remote_thermo");
+			event.getRegistry().register(remoteThermo);
+		}
 
 		averageCounter = new AverageCounter();
 		setNames(averageCounter, "average_counter");
@@ -115,13 +122,15 @@ public class ItemHelper {
 		event.getRegistry().register(new ItemLight(blockLight).setRegistryName("block_light"));
 		event.getRegistry().register(new ItemBlock(howlerAlarm).setRegistryName("howler_alarm"));
 		event.getRegistry().register(new ItemBlock(industrialAlarm).setRegistryName("industrial_alarm"));
-		event.getRegistry().register(new ItemBlock(thermalMonitor).setRegistryName("thermal_monitor"));
+		if (Loader.isModLoaded("ic2"))
+			event.getRegistry().register(new ItemBlock(thermalMonitor).setRegistryName("thermal_monitor"));
 		event.getRegistry().register(new ItemBlock(infoPanel).setRegistryName(TileEntityInfoPanel.NAME));
 		event.getRegistry().register(new ItemBlock(infoPanelExtender).setRegistryName("info_panel_extender"));
 		event.getRegistry().register(new ItemBlock(infoPanelAdvanced).setRegistryName(TileEntityAdvancedInfoPanel.NAME));
 		event.getRegistry().register(new ItemBlock(infoPanelAdvancedExtender).setRegistryName("info_panel_advanced_extender"));
 		event.getRegistry().register(new ItemBlock(rangeTrigger).setRegistryName("range_trigger"));
-		event.getRegistry().register(new ItemBlock(remoteThermo).setRegistryName("remote_thermo"));
+		if (Loader.isModLoaded("ic2"))
+			event.getRegistry().register(new ItemBlock(remoteThermo).setRegistryName("remote_thermo"));
 		event.getRegistry().register(new ItemBlock(averageCounter).setRegistryName("average_counter"));
 		event.getRegistry().register(new ItemBlock(energyCounter).setRegistryName("energy_counter"));
 		event.getRegistry().register(new ItemBlock(kitAssembler).setRegistryName("kit_assembler"));
@@ -132,22 +141,33 @@ public class ItemHelper {
 		setNames(itemUpgrade, "item_upgrade");
 		event.getRegistry().register(itemUpgrade);
 
-		itemThermometer = new ItemThermometer();
-		setNames(itemThermometer, "thermometer");
-		event.getRegistry().register(itemThermometer);
+		if (Loader.isModLoaded("ic2")) {
+			itemThermometer = new ItemThermometer();
+			setNames(itemThermometer, "thermometer");
+			event.getRegistry().register(itemThermometer);
 
-		itemThermometerDigital = new ItemDigitalThermometer(1, 80, 80);
-		setNames(itemThermometerDigital, "thermometer_digital");
-		event.getRegistry().register(itemThermometerDigital);
+			itemThermometerDigital = new ItemDigitalThermometer();
+			setNames(itemThermometerDigital, "thermometer_digital");
+			event.getRegistry().register(itemThermometerDigital);
+		}
 
-		itemNanoBow = new ItemNanoBow();
-		setNames(itemNanoBow, "nano_bow");
-		event.getRegistry().register(itemNanoBow);
+		if (Loader.isModLoaded("ic2"))
+			itemNanoBow = new ItemNanoBowIC2();
+		else if (Loader.isModLoaded("techreborn"))
+			itemNanoBow = new ItemNanoBowTR();
+		if (itemNanoBow != null) {
+			setNames(itemNanoBow, "nano_bow");
+			event.getRegistry().register(itemNanoBow);
+		}
 
 		if (CrossModLoader.ic2.getProfile() == 0) {
 			itemAFB = CrossModLoader.ic2.getItem("afb");
 			setNames(itemAFB, "afb");
 			event.getRegistry().register(itemAFB);
+
+			itemAFSUUpgradeKit = new ItemAFSUUpgradeKit();
+			setNames(itemAFSUUpgradeKit, "afsu_upgrade_kit");
+			event.getRegistry().register(itemAFSUUpgradeKit);
 		}
 
 		itemPortablePanel = new ItemPortablePanel();
@@ -191,8 +211,10 @@ public class ItemHelper {
 
 		registerBlockModel(ItemHelper.howlerAlarm, 0, "howler_alarm");
 		registerBlockModel(ItemHelper.industrialAlarm, 0, "industrial_alarm");
-		registerBlockModel(ItemHelper.thermalMonitor, 0, "thermal_monitor");
-		registerBlockModel(ItemHelper.remoteThermo, 0, "remote_thermo");
+		if (Loader.isModLoaded("ic2")) {
+			registerBlockModel(ItemHelper.thermalMonitor, 0, "thermal_monitor");
+			registerBlockModel(ItemHelper.remoteThermo, 0, "remote_thermo");
+		}
 		registerBlockModel(ItemHelper.infoPanel, 0, TileEntityInfoPanel.NAME);
 		registerBlockModel(ItemHelper.infoPanelExtender, 0, "info_panel_extender");
 		registerBlockModel(ItemHelper.infoPanelAdvanced, 0, TileEntityAdvancedInfoPanel.NAME);
@@ -213,13 +235,18 @@ public class ItemHelper {
 		registerItemModel(ItemHelper.itemUpgrade, ItemUpgrade.DAMAGE_RANGE, "upgrade_range");
 		registerItemModel(ItemHelper.itemUpgrade, ItemUpgrade.DAMAGE_COLOR, "upgrade_color");
 		registerItemModel(ItemHelper.itemUpgrade, ItemUpgrade.DAMAGE_TOUCH, "upgrade_touch");
-		registerItemModel(ItemHelper.itemThermometer, 0, "thermometer");
-		registerItemModel(ItemHelper.itemThermometerDigital, 0, "thermometer_digital");
+		if (Loader.isModLoaded("ic2")) {
+			registerItemModel(ItemHelper.itemThermometer, 0, "thermometer");
+			registerItemModel(ItemHelper.itemThermometerDigital, 0, "thermometer_digital");
+		}
 		registerItemModel(ItemHelper.itemPortablePanel, 0, "portable_panel");
 		registerItemModel(ItemHelper.itemCardHolder, 0, "card_holder");
-		registerItemModel(ItemHelper.itemNanoBow, 0, "nano_bow");
-		if (CrossModLoader.ic2.getProfile() == 0)
+		if (ItemHelper.itemNanoBow != null)
+			registerItemModel(ItemHelper.itemNanoBow, 0, "nano_bow");
+		if (CrossModLoader.ic2.getProfile() == 0) {
 			registerItemModel(ItemHelper.itemAFB, 0, "afb");
+			registerItemModel(ItemHelper.itemAFSUUpgradeKit, 0, "afsu_upgrade_kit");
+		}
 	}
 
 	public static void registerItemModel(Item item, int meta, String name) {
@@ -237,8 +264,10 @@ public class ItemHelper {
 	public static void registerTileEntities() { // TODO Change to event
 		GameRegistry.registerTileEntity(TileEntityHowlerAlarm.class, EnergyControl.MODID + ":howler_alarm");
 		GameRegistry.registerTileEntity(TileEntityIndustrialAlarm.class, EnergyControl.MODID + ":industrial_alarm");
-		GameRegistry.registerTileEntity(TileEntityThermo.class, EnergyControl.MODID + ":thermo");
-		GameRegistry.registerTileEntity(TileEntityRemoteThermo.class, EnergyControl.MODID + ":remote_thermo");
+		if (Loader.isModLoaded("ic2")) {
+			GameRegistry.registerTileEntity(TileEntityThermo.class, EnergyControl.MODID + ":thermo");
+			GameRegistry.registerTileEntity(TileEntityRemoteThermo.class, EnergyControl.MODID + ":remote_thermo");
+		}
 		GameRegistry.registerTileEntity(TileEntityInfoPanel.class, EnergyControl.MODID + ":" + TileEntityInfoPanel.NAME);
 		GameRegistry.registerTileEntity(TileEntityInfoPanelExtender.class, EnergyControl.MODID + ":info_panel_extender");
 		GameRegistry.registerTileEntity(TileEntityAdvancedInfoPanel.class, EnergyControl.MODID + ":" + TileEntityAdvancedInfoPanel.NAME);
@@ -254,6 +283,9 @@ public class ItemHelper {
 	@SubscribeEvent
 	public static void registerRecipes(Register<IRecipe> event) {
 		event.getRegistry().register(new StorageArrayRecipe().setRegistryName("array_card_recipe"));
-		event.getRegistry().register(new NanoBowRecipe().setRegistryName("nano_bow_recipe"));
+		if (Loader.isModLoaded("ic2"))
+			event.getRegistry().register(new NanoBowRecipe().setRegistryName("nano_bow_recipe"));
+		if (Loader.isModLoaded("techreborn"))
+			event.getRegistry().register(new NanoBowRecipeTR().setRegistryName("nano_bow_recipe_tr"));
 	}
 }

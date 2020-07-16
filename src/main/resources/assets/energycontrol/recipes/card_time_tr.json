@@ -1,0 +1,35 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " C ",
+        "PWP",
+        " C "
+    ],
+    "key": {
+        "C": {
+            "item": "minecraft:clock"
+        },
+        "P": {
+            "item": "minecraft:paper"
+        },
+        "W": {
+            "item": "techreborn:cable",
+            "data": 1
+        }
+    },
+    "result": {
+        "item": "energycontrol:item_card",
+        "data": 19
+    },
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "forge:mod_loaded",
+                    "modid": "techreborn"
+                }
+            ]
+        }
+    ]
+}

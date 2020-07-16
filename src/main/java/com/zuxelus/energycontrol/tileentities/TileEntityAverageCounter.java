@@ -21,6 +21,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Loader;
 
 public class TileEntityAverageCounter extends TileEntityEnergyStorage implements ITickable, ISlotItemFilter, ITilePacketHandler {
 	private static final int BASE_PACKET_SIZE = 32;
@@ -156,24 +157,28 @@ public class TileEntityAverageCounter extends TileEntityEnergyStorage implements
 	}
 
 	@Override
-	public void update() {
+	public void onLoad() {
+		super.onLoad();
 		if (!init) {
 			init = true;
 			markDirty();
 		}
+	}
+
+	@Override
+	public void drawEnergy(double amount) {
+		super.drawEnergy(amount);
+		data[index] += amount;
+	}
+
+	@Override
+	public void update() {
 		if (world.isRemote)
 			return;
 
 		index = (index + 1) % DATA_POINTS;
 		data[index] = 0;
 		getAverage();
-
-		TileEntity neighbor = world.getTileEntity(pos.offset(facing));
-		if (CrossModLoader.ic2.isCable(neighbor)) {
-			NodeStats node = EnergyNet.instance.getNodeStats(this);
-			if (node != null)
-				data[index] = node.getEnergyOut();
-		}
 	}
 
 	@Override
@@ -189,14 +194,16 @@ public class TileEntityAverageCounter extends TileEntityEnergyStorage implements
 			capacity = output * 2;
 			tier = upgradeCountTransormer + 1;
 
-			if (addedToEnet) {
-				EnergyTileUnloadEvent event = new EnergyTileUnloadEvent(this);
+			if (Info.isIc2Available()) {
+				if (addedToEnet) {
+					EnergyTileUnloadEvent event = new EnergyTileUnloadEvent(this);
+					MinecraftForge.EVENT_BUS.post(event);
+				}
+				addedToEnet = false;
+				EnergyTileLoadEvent event = new EnergyTileLoadEvent(this);
 				MinecraftForge.EVENT_BUS.post(event);
+				addedToEnet = true;
 			}
-			addedToEnet = false;
-			EnergyTileLoadEvent event = new EnergyTileLoadEvent(this);
-			MinecraftForge.EVENT_BUS.post(event);
-			addedToEnet = true;
 		}
 	}
 

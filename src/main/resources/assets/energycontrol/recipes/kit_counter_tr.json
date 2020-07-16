@@ -1,0 +1,38 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "CF",
+        "PR"
+    ],
+    "key": {
+        "P": {
+            "item": "minecraft:paper"
+        },
+        "C": {
+            "type": "forge:ore_dict",
+            "ore": "circuitBasic"
+        },
+        "F": {
+            "item": "techreborn:frequencytransmitter"
+        },
+        "R": {
+            "type": "forge:ore_dict",
+            "ore": "dyeOrange"
+        }
+    },
+    "result": {
+        "item": "energycontrol:item_kit",
+        "data": 1
+    },
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "forge:mod_loaded",
+                    "modid": "techreborn"
+                }
+            ]
+        }
+    ]
+}

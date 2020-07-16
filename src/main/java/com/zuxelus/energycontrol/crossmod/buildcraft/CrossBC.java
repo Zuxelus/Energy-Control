@@ -10,17 +10,19 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fml.common.Loader;
 
-public abstract class BCCross {
-	public static BCCross getBuildCraftCross() {
+public abstract class CrossBC {
+
+	public static CrossBC getMod() {
 		try {
 			if (Loader.isModLoaded("buildcraftcore")) {
-				Class clz = Class.forName("com.zuxelus.energycontrol.crossmod.buildcraft.BuildCraftCross");
+				Class clz = Class.forName("com.zuxelus.energycontrol.crossmod.buildcraft.BuildCraft");
 				if (clz != null)
-					return (BCCross) clz.newInstance();
+					return (CrossBC) clz.newInstance();
 			} 
 		} catch (Exception e) { }
 		return new BuildCraftNoMod();
 	}
+
 	public abstract boolean modLoaded();
 	
 	public abstract List<IFluidTank> getAllTanks(TileEntity te);

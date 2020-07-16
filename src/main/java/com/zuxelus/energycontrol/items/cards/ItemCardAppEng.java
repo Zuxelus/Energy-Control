@@ -45,19 +45,22 @@ public class ItemCardAppEng extends ItemCardBase {
 		if (list == null)
 			return CardState.NO_TARGET;
 
+		int cells = 0;
 		for (IGridNode node : list) {
 			IGridHost host = node.getMachine();
 			if (host instanceof TileChest) {
 				ItemStack stack = ((TileChest) host).getCell();
-				calcValues(stack, values);
+				cells += calcValues(stack, values);
 			} else if (host instanceof TileDrive) {
 				for (int i = 0; i < ((TileDrive) host).getInternalInventory().getSlots(); i++) {
 					ItemStack stack = ((TileDrive) host).getInternalInventory().getStackInSlot(i);
-					calcValues(stack, values);
+					cells += calcValues(stack, values);
 				}
 			}
 		}
 
+		reader.setInt("nodes", list.size());
+		reader.setInt("cells", cells);
 		reader.setInt("bytesTotal", values[0]);
 		reader.setInt("bytesUsed", values[1]);
 		reader.setInt("typesTotal", values[2]);
@@ -66,10 +69,11 @@ public class ItemCardAppEng extends ItemCardBase {
 		return CardState.OK;
 	}
 	
-	private void calcValues(ItemStack stack, int[] values) {
+	private int calcValues(ItemStack stack, int[] values) {
 		if (stack == null)
-			return;
+			return 0;
 		
+		int cells = 0;
 		for (IStorageChannel channel : AEApi.instance().storage().storageChannels()) {
 			ICellInventoryHandler handler = AEApi.instance().registries().cell().getCellInventory(stack, null, channel);
 			if (handler != null) {
@@ -80,14 +84,18 @@ public class ItemCardAppEng extends ItemCardBase {
 					values[2] += inv.getTotalItemTypes();
 					values[3] += inv.getStoredItemTypes();
 					values[4] += inv.getStoredItemCount();
+					cells++;
 				}
 			}
 		}
+		return cells;
 	}
 
 	@Override
 	public List<PanelString> getStringData(int settings, ICardReader reader, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
+		result.add(new PanelString("msg.ec.InfoPanelTotalNodes", reader.getInt("nodes"), true));
+		result.add(new PanelString("msg.ec.InfoPanelStorageCells", reader.getInt("cells"), true));
 		result.add(new PanelString(I18n.format("msg.ec.InfoPanelBytesUsed", reader.getInt("bytesUsed"),reader.getInt("bytesTotal"))));
 		result.add(new PanelString(I18n.format("msg.ec.InfoPanelTypes", reader.getInt("typesUsed"), reader.getInt("typesTotal"))));
 		result.add(new PanelString("msg.ec.InfoPanelTotalItems", reader.getInt("items"), true));

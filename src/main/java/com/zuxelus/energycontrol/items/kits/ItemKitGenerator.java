@@ -20,6 +20,9 @@ public class ItemKitGenerator extends ItemKitBase {
 		ItemStack result = CrossModLoader.ic2.getGeneratorCard(world, pos);
 		if (!result.isEmpty())
 			return result;
+		result = CrossModLoader.techReborn.getGeneratorCard(world, pos);
+		if (!result.isEmpty())
+			return result;
 		return CrossModLoader.buildCraft.getGeneratorCard(world, pos);
 	}
 }

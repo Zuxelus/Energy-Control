@@ -9,7 +9,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.IFluidTank;
 
-public class BuildCraftNoMod extends BCCross {
+public class BuildCraftNoMod extends CrossBC {
 
 	@Override
 	public boolean modLoaded() {
