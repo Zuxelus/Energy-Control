@@ -151,7 +151,7 @@ public class PacketCard implements IMessage, IMessageHandler<PacketCard, IMessag
 		ItemStack stack = panel.getStackInSlot(message.slot);
 		if (stack == null || !(stack.getItem() instanceof ItemCardMain))
 			return null;
-		
+
 		ItemCardReader reader = new ItemCardReader(stack);
 		for (Map.Entry<String, Object> entry : message.fields.entrySet()) {
 			String name = entry.getKey();

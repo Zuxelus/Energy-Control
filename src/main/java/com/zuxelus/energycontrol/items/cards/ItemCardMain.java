@@ -9,23 +9,25 @@ import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardGui;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.IItemCard;
+import com.zuxelus.energycontrol.api.ITouchAction;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
-import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 
-import ic2.api.recipe.Recipes;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 
 public final class ItemCardMain extends Item {
 	public static final int LOCATION_RANGE = 8;
@@ -35,6 +37,7 @@ public final class ItemCardMain extends Item {
 	public ItemCardMain() {
 		super();
 		setMaxStackSize(1);
+		setHasSubtypes(true);
 		canRepair = false;
 		setCreativeTab(EnergyControl.creativeTab);
 	}
@@ -44,20 +47,29 @@ public final class ItemCardMain extends Item {
 		register(new ItemCardCounter());
 		register(new ItemCardLiquid());
 		register(new ItemCardGenerator());
-		register(new ItemCardGeneratorKinetic());
-		register(new ItemCardGeneratorHeat());
-		register(new ItemCardReactor());
-		register(new ItemCardReactor5x5());
+		if (Loader.isModLoaded("IC2")) {
+			register(new ItemCardGeneratorKinetic());
+			register(new ItemCardGeneratorHeat());
+			register(new ItemCardReactor());
+			register(new ItemCardReactor5x5());
+		}
 		register(new ItemCardLiquidAdvanced());
 		register(new ItemCardText());
 		register(new ItemCardTime());
 		register(new ItemCardEnergyArray());
 		register(new ItemCardLiquidArray());
 		register(new ItemCardGeneratorArray());
-		if (CrossModLoader.draconicEvolution.modLoaded) {
+		register(new ItemCardToggle());
+		if (Loader.isModLoaded("draconicevolution")) {
 			register(new ItemCardEnergyDraconic());
 			register(new ItemCardReactorDraconic());
 		}
+		if (Loader.isModLoaded("appliedenergistics2"))
+			register(new ItemCardAppEng());
+		if (Loader.isModLoaded("galacticraftcore") && Loader.isModLoaded("galacticraftplanets"))
+			register(new ItemCardGalacticraft());
+		if (Loader.isModLoaded("bigreactors"))
+			register(new ItemCardBigReactors());
 	}
 
 	private static void register(IItemCard item) {
@@ -111,6 +123,11 @@ public final class ItemCardMain extends Item {
 	}
 
 	@Override
+	public boolean isItemTool(ItemStack stack) {
+		return false;
+	}
+
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced) {
 		ItemCardReader reader = new ItemCardReader(stack);
@@ -126,8 +143,10 @@ public final class ItemCardMain extends Item {
 		case ItemCardType.CARD_GENERATOR_ARRAY:
 			tooltip.add(I18n.format("msg.ec.cards", reader.getCardCount()));
 			return;
+		case ItemCardType.CARD_TOGGLE:
+			tooltip.add(I18n.format("msg.ec.touch_card"));
 		}
-		
+
 		BlockPos target = reader.getTarget();
 		if (target != null)
 			tooltip.add(String.format("x: %d, y: %d, z: %d", target.getX(), target.getY(), target.getZ()));
@@ -176,7 +195,7 @@ public final class ItemCardMain extends Item {
 		reader.setState(state);
 		return state;
 	}
-	
+
 	private static CardState update(World world, ICardReader reader, int range, BlockPos pos) {
 		if (cards.containsKey(reader.getCardType()))
 			return cards.get(reader.getCardType()).update(world, reader, range, pos);
@@ -188,7 +207,7 @@ public final class ItemCardMain extends Item {
 			return null;
 		return cards.get(ItemCardType.CARD_TEXT).getSettingsScreen(reader);
 	}
-	
+
 	public static boolean isRemoteCard(int damage) {
 		if (cards.containsKey(damage))
 			return cards.get(damage).isRemoteCard();
@@ -199,6 +218,22 @@ public final class ItemCardMain extends Item {
 		if (cards.containsKey(damage))
 			return cards.get(damage).getKitFromCard();
 		return -1;
+	}
+
+	public static void runTouchAction(World world, ItemStack stack) {
+		if (stack.getItem() instanceof ItemCardMain && cards.containsKey(stack.getItemDamage())) {
+			IItemCard card = cards.get(stack.getItemDamage());
+			if (card instanceof ITouchAction)
+				((ITouchAction) card).runTouchAction(world, new ItemCardReader(stack));
+		}
+	}
+
+	public static void renderImage(TextureManager manager, ItemStack stack) {
+		if (stack.getItem() instanceof ItemCardMain && cards.containsKey(stack.getItemDamage())) {
+			IItemCard card = cards.get(stack.getItemDamage());
+			if (card instanceof ITouchAction)
+				((ITouchAction) card).renderImage(manager, new ItemCardReader(stack));
+		}
 	}
 
 	public static void registerModels() {
@@ -220,9 +255,9 @@ public final class ItemCardMain extends Item {
 	public static void registerRecipes() {
 		for (Map.Entry<Integer, IItemCard> entry : cards.entrySet()) {
 			Integer key = entry.getKey();
-			Object[] recipe = entry.getValue().getRecipe(); 
+			Object[] recipe = entry.getValue().getRecipe();
 			if (recipe != null)
-				Recipes.advRecipes.addRecipe(new ItemStack(ItemHelper.itemCard, 1, key), recipe);
+				GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ItemHelper.itemCard, 1, key), recipe));
 		}
 	}
 }

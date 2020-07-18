@@ -1,15 +1,11 @@
 package com.zuxelus.energycontrol.blocks;
 
-import java.util.List;
-
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.tileentities.TileEntityFacing;
 import com.zuxelus.energycontrol.tileentities.TileEntityThermo;
 
-import ic2.api.tile.IWrenchable;
 import net.minecraft.block.Block;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,25 +19,18 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class ThermalMonitor extends FacingBlock implements ITileEntityProvider, IWrenchable {
-    protected static final AxisAlignedBB AABB_DOWN = new AxisAlignedBB(0.0625F, 0.5625D, 0.0625F, 0.9375F, 1.0D, 0.9375F); // 1 9 1 15 16 15
-    protected static final AxisAlignedBB AABB_UP = new AxisAlignedBB(0.0625F, 0.0D, 0.0625F, 0.9375F, 0.4375D, 0.9375F);
-    protected static final AxisAlignedBB AABB_NORTH = new AxisAlignedBB(0.0625F, 0.0625F, 0.5625D, 0.9375F, 0.9375F, 1.0D);
-    protected static final AxisAlignedBB AABB_SOUTH = new AxisAlignedBB(0.0625F, 0.0625F, 0.4375D, 0.9375F, 0.9375F, 0.0D);
-    protected static final AxisAlignedBB AABB_WEST = new AxisAlignedBB(0.5625D, 0.0625F, 0.0625F, 1.0D, 0.9375F, 0.9375F);
-    protected static final AxisAlignedBB AABB_EAST = new AxisAlignedBB(0.0D, 0.0625F, 0.0625F, 0.4375D, 0.9375F, 0.9375F);
-    EnumFacing rotation;
-    private boolean powered = false;
-
-	public ThermalMonitor() {
-		super();
-	}
+public class ThermalMonitor extends FacingBlock {
+	protected static final AxisAlignedBB AABB_DOWN = new AxisAlignedBB(0.0625F, 0.5625D, 0.0625F, 0.9375F, 1.0D, 0.9375F);
+	protected static final AxisAlignedBB AABB_UP = new AxisAlignedBB(0.0625F, 0.0D, 0.0625F, 0.9375F, 0.4375D, 0.9375F);
+	protected static final AxisAlignedBB AABB_NORTH = new AxisAlignedBB(0.0625F, 0.0625F, 0.5625D, 0.9375F, 0.9375F, 1.0D);
+	protected static final AxisAlignedBB AABB_SOUTH = new AxisAlignedBB(0.0625F, 0.0625F, 0.0D, 0.9375F, 0.9375F, 0.4375D);
+	protected static final AxisAlignedBB AABB_WEST = new AxisAlignedBB(0.5625D, 0.0625F, 0.0625F, 1.0D, 0.9375F, 0.9375F);
+	protected static final AxisAlignedBB AABB_EAST = new AxisAlignedBB(0.0D, 0.0625F, 0.0625F, 0.4375D, 0.9375F, 0.9375F);
 
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta) {
 		TileEntityThermo te = new TileEntityThermo();
-		if (rotation != null)
-			te.setRotation(rotation.getIndex());
+		te.setRotation(0);
 		te.setFacing(meta);
 		return te;
 	}
@@ -76,20 +65,26 @@ public class ThermalMonitor extends FacingBlock implements ITileEntityProvider, 
 	}
 
 	@Override
-	public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-		switch (facing) {
-		case UP:
-		case DOWN:
-			rotation = placer.getHorizontalFacing().getOpposite();
-			break;
-		case NORTH:
-		case SOUTH:
-		case EAST:
-		case WEST:
-			rotation = EnumFacing.DOWN;
-			break;
-		}
-		return canPlaceBlock(worldIn, pos, facing.getOpposite()) ? getDefaultState().withProperty(FACING, facing) : getDefaultState().withProperty(FACING, EnumFacing.DOWN);
+	public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, ItemStack stack) {
+		return canPlaceBlock(world, pos, facing.getOpposite()) ? getDefaultState().withProperty(FACING, facing) : getDefaultState().withProperty(FACING, EnumFacing.DOWN);
+	}
+
+	@Override
+	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+		TileEntity te = world.getTileEntity(pos);
+		if (te instanceof TileEntityThermo)
+			switch (((TileEntityThermo) te).getFacing()) {
+			case UP:
+			case DOWN:
+				((TileEntityThermo) te).setRotation(placer.getHorizontalFacing().getOpposite());
+				break;
+			case NORTH:
+			case SOUTH:
+			case EAST:
+			case WEST:
+				((TileEntityThermo) te).setRotation(EnumFacing.DOWN);
+				break;
+			}
 	}
 
 	@Override
@@ -107,15 +102,13 @@ public class ThermalMonitor extends FacingBlock implements ITileEntityProvider, 
 		world.setBlockToAir(pos);
 		return false;
 	}
-	
-	@Override
-	public int getWeakPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
-		return powered ? side != blockState.getValue(FACING) ? 15 : 0 : 0;
-	}
 
 	@Override
-	public int getStrongPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
-		return powered ? side != blockState.getValue(FACING) ? 15 : 0 : 0;
+	public int getWeakPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
+		TileEntity te = blockAccess.getTileEntity(pos);
+		if (!(te instanceof TileEntityThermo))
+			return 0;
+		return ((TileEntityThermo) te).getPowered() ? side != blockState.getValue(FACING) ? 15 : 0 : 0;
 	}
 
 	@Override
@@ -140,7 +133,7 @@ public class ThermalMonitor extends FacingBlock implements ITileEntityProvider, 
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		if (CrossModLoader.ic2.isWrench(player.getHeldItem(hand)))
 			return true;
 		if (world.isRemote)
@@ -152,25 +145,13 @@ public class ThermalMonitor extends FacingBlock implements ITileEntityProvider, 
 	public boolean canProvidePower(IBlockState state) {
 		return true;
 	}
-	
+
 	@Override
 	public EnumBlockRenderType getRenderType(IBlockState state) {
 		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
 	}
-	
-	public void setPowered(boolean value) {
-		powered = value; 
-	}
 
 	// IWrenchable
-	@Override
-	public EnumFacing getFacing(World world, BlockPos pos) {
-		TileEntity te = world.getTileEntity(pos);
-		if (te instanceof TileEntityFacing)
-			return ((TileEntityFacing) te).getFacing();
-		return EnumFacing.DOWN;
-	}
-
 	@Override
 	public boolean setFacing(World world, BlockPos pos, EnumFacing newDirection, EntityPlayer player) {
 		TileEntity te = world.getTileEntity(pos);
@@ -179,15 +160,5 @@ public class ThermalMonitor extends FacingBlock implements ITileEntityProvider, 
 			return true;
 		}
 		return false;
-	}
-
-	@Override
-	public boolean wrenchCanRemove(World world, BlockPos pos, EntityPlayer player) {
-		return true;
-	}
-
-	@Override
-	public List<ItemStack> getWrenchDrops(World world, BlockPos pos, IBlockState state, TileEntity te, EntityPlayer player, int fortune) {
-		return getDrops(world, pos, state, 1);
 	}
 }

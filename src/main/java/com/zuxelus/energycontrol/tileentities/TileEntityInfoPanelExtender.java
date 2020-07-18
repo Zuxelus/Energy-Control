@@ -34,7 +34,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 		coreY = 0;
 		coreZ = 0;
 	}
-	
+
 	@Override
 	public void setFacing(int meta) {
 		EnumFacing newFacing = EnumFacing.getFront(meta);
@@ -71,7 +71,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
 		readProperties(pkt.getNbtCompound());
 	}
-	
+
 	@Override
 	public NBTTagCompound getUpdateTag() {
 		NBTTagCompound tag = super.getUpdateTag();
@@ -119,9 +119,9 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 
 	@Override
 	public void invalidate() {
-		super.invalidate();
 		if (!worldObj.isRemote)
 			EnergyControl.instance.screenManager.unregisterScreenPart(this);
+		super.invalidate();
 	}
 
 	@Override
@@ -160,13 +160,18 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 		return screen;
 	}
 
+	public TileEntityInfoPanel getCore() {
+		if (screen == null)
+			return null;
+		return screen.getCore(worldObj);
+	}
+
 	@Override
 	public void updateData() { }
 
 	@Override
 	public void notifyBlockUpdate() {
 		IBlockState iblockstate = worldObj.getBlockState(pos);
-		Block block = iblockstate.getBlock();
 		worldObj.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
 	}
 
@@ -202,7 +207,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	public double getMaxRenderDistanceSquared() {
 		return 65536.0D;
 	}
-	
+
 	@Override
 	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
 		return oldState.getBlock() != newSate.getBlock();

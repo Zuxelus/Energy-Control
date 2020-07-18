@@ -2,6 +2,8 @@ package com.zuxelus.energycontrol.items;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.blocks.*;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.ic2.CrossIC2.IC2Type;
 import com.zuxelus.energycontrol.items.cards.ItemCardHolder;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.kits.ItemKitMain;
@@ -12,6 +14,7 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class ItemHelper {
@@ -28,6 +31,7 @@ public class ItemHelper {
 	public static AverageCounter averageCounter;
 	public static EnergyCounter energyCounter;
 	public static KitAssembler kitAssembler;
+	public static AFSU afsu;
 	public static Item itemKit;
 	public static Item itemCard;
 	public static Item itemUpgrade;
@@ -35,6 +39,9 @@ public class ItemHelper {
 	public static Item itemThermometerDigital;
 	public static Item itemPortablePanel;
 	public static Item itemCardHolder;
+	public static Item itemNanoBow;
+	public static Item itemAFB;
+	public static Item itemAFSUUpgradeKit;
 
 	public static void onBlockRegistry() {
 		blockLight = new BlockLight();
@@ -52,10 +59,12 @@ public class ItemHelper {
 		GameRegistry.register(industrialAlarm);
 		GameRegistry.register(new ItemBlock(industrialAlarm).setRegistryName("industrial_alarm"));
 
-		thermalMonitor = new ThermalMonitor();
-		setNames(thermalMonitor, "thermal_monitor");
-		GameRegistry.register(thermalMonitor);
-		GameRegistry.register(new ItemBlock(thermalMonitor).setRegistryName("thermal_monitor"));
+		if (Loader.isModLoaded("IC2")) {
+			thermalMonitor = new ThermalMonitor();
+			setNames(thermalMonitor, "thermal_monitor");
+			GameRegistry.register(thermalMonitor);
+			GameRegistry.register(new ItemBlock(thermalMonitor).setRegistryName("thermal_monitor"));
+		}
 
 		infoPanel = new InfoPanel();
 		setNames(infoPanel, TileEntityInfoPanel.NAME);
@@ -82,10 +91,12 @@ public class ItemHelper {
 		GameRegistry.register(rangeTrigger);
 		GameRegistry.register(new ItemBlock(rangeTrigger).setRegistryName("range_trigger"));
 
-		remoteThermo = new RemoteThermo();
-		setNames(remoteThermo, "remote_thermo");
-		GameRegistry.register(remoteThermo);
-		GameRegistry.register(new ItemBlock(remoteThermo).setRegistryName("remote_thermo"));
+		if (Loader.isModLoaded("IC2")) {
+			remoteThermo = new RemoteThermo();
+			setNames(remoteThermo, "remote_thermo");
+			GameRegistry.register(remoteThermo);
+			GameRegistry.register(new ItemBlock(remoteThermo).setRegistryName("remote_thermo"));
+		}
 
 		averageCounter = new AverageCounter();
 		setNames(averageCounter, "average_counter");
@@ -101,6 +112,13 @@ public class ItemHelper {
 		setNames(kitAssembler, "kit_assembler");
 		GameRegistry.register(kitAssembler);
 		GameRegistry.register(new ItemBlock(kitAssembler).setRegistryName("kit_assembler"));
+
+		if (CrossModLoader.ic2.getType() == IC2Type.EXP) {
+			afsu = new AFSU();
+			setNames(afsu, "afsu");
+			GameRegistry.register(afsu);
+			GameRegistry.register(new ItemBlock(afsu).setRegistryName("afsu"));
+		}
 	}
 
 	public static void onItemRegistry() {
@@ -108,13 +126,34 @@ public class ItemHelper {
 		setNames(itemUpgrade, "item_upgrade");
 		GameRegistry.register(itemUpgrade);
 
-		itemThermometer = new ItemThermometer();
-		setNames(itemThermometer, "thermometer");
-		GameRegistry.register(itemThermometer);
+		if (Loader.isModLoaded("IC2")) {
+			itemThermometer = new ItemThermometer();
+			setNames(itemThermometer, "thermometer");
+			GameRegistry.register(itemThermometer);
 
-		itemThermometerDigital = new ItemDigitalThermometer(1, 80, 80);
-		setNames(itemThermometerDigital, "thermometer_digital");
-		GameRegistry.register(itemThermometerDigital);
+			itemThermometerDigital = new ItemDigitalThermometer();
+			setNames(itemThermometerDigital, "thermometer_digital");
+			GameRegistry.register(itemThermometerDigital);
+		}
+
+		if (Loader.isModLoaded("IC2"))
+			itemNanoBow = new ItemNanoBowIC2();
+		else if (Loader.isModLoaded("techreborn"))
+			itemNanoBow = new ItemNanoBowTR();
+		if (itemNanoBow != null) {
+			setNames(itemNanoBow, "nano_bow");
+			GameRegistry.register(itemNanoBow);
+		}
+
+		if (CrossModLoader.ic2.getType() == IC2Type.EXP) {
+			itemAFB = CrossModLoader.ic2.getItem("afb");
+			setNames(itemAFB, "afb");
+			GameRegistry.register(itemAFB);
+	
+			itemAFSUUpgradeKit = CrossModLoader.ic2.getItem("afsu_upgrade_kit");
+			setNames(itemAFSUUpgradeKit, "afsu_upgrade_kit");
+			GameRegistry.register(itemAFSUUpgradeKit);
+		}
 
 		itemPortablePanel = new ItemPortablePanel();
 		setNames(itemPortablePanel, "portable_panel");
@@ -156,8 +195,10 @@ public class ItemHelper {
 
 		registerBlockModel(ItemHelper.howlerAlarm, 0, "howler_alarm");
 		registerBlockModel(ItemHelper.industrialAlarm, 0, "industrial_alarm");
-		registerBlockModel(ItemHelper.thermalMonitor, 0, "thermal_monitor");
-		registerBlockModel(ItemHelper.remoteThermo, 0, "remote_thermo");
+		if (Loader.isModLoaded("IC2")) {
+			registerBlockModel(ItemHelper.thermalMonitor, 0, "thermal_monitor");
+			registerBlockModel(ItemHelper.remoteThermo, 0, "remote_thermo");
+		}
 		registerBlockModel(ItemHelper.infoPanel, 0, TileEntityInfoPanel.NAME);
 		registerBlockModel(ItemHelper.infoPanelExtender, 0, "info_panel_extender");
 		registerBlockModel(ItemHelper.infoPanelAdvanced, 0, TileEntityAdvancedInfoPanel.NAME);
@@ -167,6 +208,8 @@ public class ItemHelper {
 		registerBlockModel(ItemHelper.averageCounter, 0, "average_counter");
 		registerBlockModel(ItemHelper.energyCounter, 0, "energy_counter");
 		registerBlockModel(ItemHelper.kitAssembler, 0, "kit_assembler");
+		if (CrossModLoader.ic2.getType() == IC2Type.EXP)
+			registerBlockModel(ItemHelper.afsu, 0, "afsu");
 
 		ItemKitMain.registerModels();
 		ItemKitMain.registerExtendedModels();
@@ -175,10 +218,19 @@ public class ItemHelper {
 
 		registerItemModel(ItemHelper.itemUpgrade, ItemUpgrade.DAMAGE_RANGE, "upgrade_range");
 		registerItemModel(ItemHelper.itemUpgrade, ItemUpgrade.DAMAGE_COLOR, "upgrade_color");
-		registerItemModel(ItemHelper.itemThermometer, 0, "thermometer");
-		registerItemModel(ItemHelper.itemThermometerDigital, 0, "thermometer_digital");
+		registerItemModel(ItemHelper.itemUpgrade, ItemUpgrade.DAMAGE_TOUCH, "upgrade_touch");
+		if (Loader.isModLoaded("IC2")) {
+			registerItemModel(ItemHelper.itemThermometer, 0, "thermometer");
+			registerItemModel(ItemHelper.itemThermometerDigital, 0, "thermometer_digital");
+		}
 		registerItemModel(ItemHelper.itemPortablePanel, 0, "portable_panel");
 		registerItemModel(ItemHelper.itemCardHolder, 0, "card_holder");
+		if (ItemHelper.itemNanoBow != null)
+			registerItemModel(ItemHelper.itemNanoBow, 0, "nano_bow");
+		if (CrossModLoader.ic2.getType() == IC2Type.EXP) {
+			registerItemModel(ItemHelper.itemAFB, 0, "afb");
+			registerItemModel(ItemHelper.itemAFSUUpgradeKit, 0, "afsu_upgrade_kit");
+		}
 	}
 
 	public static void registerItemModel(Item item, int meta, String name) {
@@ -196,8 +248,10 @@ public class ItemHelper {
 	public static void registerTileEntities() { // TODO Change to event
 		GameRegistry.registerTileEntity(TileEntityHowlerAlarm.class, EnergyControl.MODID + ":howler_alarm");
 		GameRegistry.registerTileEntity(TileEntityIndustrialAlarm.class, EnergyControl.MODID + ":industrial_alarm");
-		GameRegistry.registerTileEntity(TileEntityThermo.class, EnergyControl.MODID + ":thermo");
-		GameRegistry.registerTileEntity(TileEntityRemoteThermo.class, EnergyControl.MODID + ":remote_thermo");
+		if (Loader.isModLoaded("IC2")) {
+			GameRegistry.registerTileEntity(TileEntityThermo.class, EnergyControl.MODID + ":thermo");
+			GameRegistry.registerTileEntity(TileEntityRemoteThermo.class, EnergyControl.MODID + ":remote_thermo");
+		}
 		GameRegistry.registerTileEntity(TileEntityInfoPanel.class, EnergyControl.MODID + ":" + TileEntityInfoPanel.NAME);
 		GameRegistry.registerTileEntity(TileEntityInfoPanelExtender.class, EnergyControl.MODID + ":info_panel_extender");
 		GameRegistry.registerTileEntity(TileEntityAdvancedInfoPanel.class, EnergyControl.MODID + ":" + TileEntityAdvancedInfoPanel.NAME);
@@ -206,5 +260,7 @@ public class ItemHelper {
 		GameRegistry.registerTileEntity(TileEntityAverageCounter.class, EnergyControl.MODID + ":average_counter");
 		GameRegistry.registerTileEntity(TileEntityEnergyCounter.class, EnergyControl.MODID + ":energy_counter");
 		GameRegistry.registerTileEntity(TileEntityKitAssembler.class, EnergyControl.MODID + ":kit_assembler");
+		if (CrossModLoader.ic2.getType() == IC2Type.EXP)
+			GameRegistry.registerTileEntity(TileEntityAFSU.class, EnergyControl.MODID + ":afsu");
 	}
 }

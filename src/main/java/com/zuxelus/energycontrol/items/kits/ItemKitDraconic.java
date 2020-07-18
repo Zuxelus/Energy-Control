@@ -42,9 +42,8 @@ public class ItemKitDraconic extends ItemKitBase {
 			return sensorLocationCard;
 		}
 		TileReactorCore reactor = null;
-		if (te instanceof TileReactorStabilizer) {
+		if (te instanceof TileReactorStabilizer)
 			reactor = ((TileReactorStabilizer)te).tryGetCore();
-		}
 		if (reactor != null) {
 			ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_REACTOR_DRACONIC);
 			ItemStackHelper.setCoordinates(sensorLocationCard, reactor.getPos());

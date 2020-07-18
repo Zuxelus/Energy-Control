@@ -30,11 +30,11 @@ public class ItemCardReactorDraconic extends ItemCardBase {
 		BlockPos target = reader.getTarget();
 		if (target == null)
 			return CardState.NO_TARGET;
-		
+
 		TileEntity te = world.getTileEntity(target);
 		if (!(te instanceof TileReactorCore))
 			return CardState.NO_TARGET;
-		
+
 		TileReactorCore reactor = ((TileReactorCore)te);
 		reader.setString("status", reactor.reactorState.value.name());
 		reader.setDouble("temp", reactor.temperature.value);

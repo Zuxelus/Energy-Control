@@ -20,7 +20,7 @@ public class PacketTileEntity implements IMessage, IMessageHandler<PacketTileEnt
 	private NBTTagCompound tag;
 
 	public PacketTileEntity() { }
-	
+
 	public PacketTileEntity(BlockPos pos, NBTTagCompound tag) {
 		this.x = pos.getX();
 		this.y = pos.getY();

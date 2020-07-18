@@ -184,6 +184,11 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	}
 
 	@Override
+	public boolean isCardSlot(int slot) {
+		return slot == SLOT_CARD1 || slot == SLOT_CARD2 || slot == SLOT_CARD3;
+	}
+
+	@Override
 	public int getSizeInventory() {
 		return 4;
 	}
@@ -201,6 +206,4 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 			return false;
 		}
 	}
-
-	// IPeripheralTile
 }

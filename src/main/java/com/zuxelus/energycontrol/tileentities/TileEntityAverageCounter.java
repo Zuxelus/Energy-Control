@@ -22,8 +22,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.common.MinecraftForge;
 
-public class TileEntityAverageCounter extends TileEntityInventory
-		implements ITickable, ISlotItemFilter, IEnergySink, IEnergySource, ITilePacketHandler {
+public class TileEntityAverageCounter extends TileEntityEnergyStorage implements ITickable, ISlotItemFilter, ITilePacketHandler {
 	private static final int BASE_PACKET_SIZE = 32;
 	protected static final int DATA_POINTS = 11 * 20;
 	private boolean init;
@@ -38,24 +37,14 @@ public class TileEntityAverageCounter extends TileEntityInventory
 	protected int clientAverage = -1;
 	
 	private double lastReceivedPower = 0;
-	private boolean addedToEnet;
-
-	public int tier;
-	public int output;
-	public double energy;
 
 	public TileEntityAverageCounter() {
-		super("tile.average_counter.name");
-		addedToEnet = false;
+		super("tile.average_counter.name", 1, BASE_PACKET_SIZE, BASE_PACKET_SIZE * 2);
 		data = new double[DATA_POINTS];
 		index = 0;
 		tickRate = 20;
 		updateTicker = tickRate;
 		prevPeriod = period = 1;
-		
-		energy = 0;
-		tier = 1;
-		output = BASE_PACKET_SIZE;
 	}
 
 	public int getClientAverage() {
@@ -168,69 +157,56 @@ public class TileEntityAverageCounter extends TileEntityInventory
 
 	@Override
 	public void onLoad() {
-		if (!addedToEnet && !worldObj.isRemote && Info.isIc2Available()) {
-			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
-			addedToEnet = true;
+		super.onLoad();
+		if (!init) {
+			init = true;
+			refreshData();
 		}
 	}
 
 	@Override
-	public void invalidate() {
-		onChunkUnload();
-		super.invalidate();
-	}
-
-	@Override
-	public void onChunkUnload() {
-		if (addedToEnet && !worldObj.isRemote && Info.isIc2Available()) {
-			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
-			addedToEnet = false;
-		}
+	public void drawEnergy(double amount) {
+		super.drawEnergy(amount);
+		data[index] += amount;
 	}
 
 	@Override
 	public void update() {
-		if (!addedToEnet)
-			onLoad();
-		if (!init) {
-			init = true;
-			markDirty();
-		}
 		if (worldObj.isRemote)
 			return;
 
 		index = (index + 1) % DATA_POINTS;
 		data[index] = 0;
 		getAverage();
-
-		TileEntity neighbor = worldObj.getTileEntity(pos.offset(facing));
-		if (CrossModLoader.ic2.isCable(neighbor)) {
-			NodeStats node = EnergyNet.instance.getNodeStats(this);
-			if (node != null)
-				data[index] = node.getEnergyOut();
-		}
 	}
 
 	@Override
 	public void markDirty() {
 		super.markDirty();
+		refreshData();
+	}
+
+	private void refreshData() {
 		int upgradeCountTransormer = 0;
 		ItemStack itemStack = getStackInSlot(0);
-		if (itemStack != null && itemStack.isItemEqual(CrossModLoader.ic2.getItem("transformer")))
+		if (itemStack != null && itemStack.isItemEqual(CrossModLoader.ic2.getItemStack("transformer")))
 			upgradeCountTransormer = itemStack.stackSize;
 		upgradeCountTransormer = Math.min(upgradeCountTransormer, 4);
 		if (worldObj != null && !worldObj.isRemote) {
 			output = BASE_PACKET_SIZE * (int) Math.pow(4D, upgradeCountTransormer);
+			capacity = output * 2;
 			tier = upgradeCountTransormer + 1;
 
-			if (addedToEnet) {
-				EnergyTileUnloadEvent event = new EnergyTileUnloadEvent(this);
+			if (Info.isIc2Available()) {
+				if (addedToEnet) {
+					EnergyTileUnloadEvent event = new EnergyTileUnloadEvent(this);
+					MinecraftForge.EVENT_BUS.post(event);
+				}
+				addedToEnet = false;
+				EnergyTileLoadEvent event = new EnergyTileLoadEvent(this);
 				MinecraftForge.EVENT_BUS.post(event);
+				addedToEnet = true;
 			}
-			addedToEnet = false;
-			EnergyTileLoadEvent event = new EnergyTileLoadEvent(this);
-			MinecraftForge.EVENT_BUS.post(event);
-			addedToEnet = true;
 		}
 	}
 
@@ -247,58 +223,11 @@ public class TileEntityAverageCounter extends TileEntityInventory
 
 	@Override
 	public boolean isItemValid(int slotIndex, ItemStack itemstack) { // ISlotItemFilter
-		return itemstack.isItemEqual(CrossModLoader.ic2.getItem("transformer"));
+		return itemstack.isItemEqual(CrossModLoader.ic2.getItemStack("transformer"));
 	}
 
 	private void notifyBlockUpdate() {
 		IBlockState iblockstate = worldObj.getBlockState(pos);
 		worldObj.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
-	}
-
-	@Override
-	public boolean acceptsEnergyFrom(IEnergyEmitter emitter, EnumFacing dir) {
-		return dir != getFacing();
-
-	}
-
-	@Override
-	public boolean emitsEnergyTo(IEnergyAcceptor receiver, EnumFacing dir) {
-		return dir == getFacing();
-	}
-
-	@Override
-	public void drawEnergy(double amount) {
-		this.energy -= amount;
-
-	}
-
-	@Override
-	public double getOfferedEnergy() {
-		if (this.energy >= this.output)
-			return Math.min(this.energy, this.output);
-		return 0.0D;
-	}
-
-	@Override
-	public int getSourceTier() {
-		return this.tier;
-	}
-
-	@Override
-	public double getDemandedEnergy() {
-		return Math.min(2 * output - energy, output);
-	}
-
-	@Override
-	public int getSinkTier() {
-		return tier;
-	}
-
-	@Override
-	public double injectEnergy(EnumFacing directionFrom, double amount, double voltage) {
-		if (energy >= 2 * output)
-			return amount;
-		this.energy += amount;
-		return 0.0D;
 	}
 }

@@ -37,7 +37,7 @@ public class ItemCardReader implements ICardReader {
 		NBTTagCompound nbtTagCompound = card.getTagCompound();
 		if (nbtTagCompound == null)
 			return null;
-		
+
 		return new BlockPos(nbtTagCompound.getInteger("x"), nbtTagCompound.getInteger("y"), nbtTagCompound.getInteger("z"));
 	}
 
@@ -160,7 +160,10 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public void setState(CardState state) {
-		setInt("state", state.getIndex());
+		if (state != null)
+			setInt("state", state.getIndex());
+		else
+			setInt("state", CardState.NO_TARGET.getIndex());
 	}
 
 	@Override
@@ -240,7 +243,7 @@ public class ItemCardReader implements ICardReader {
 		String title = getTitle();
 		if (title != null && !title.isEmpty()) {
 			PanelString titleString = new PanelString();
-			titleString.textLeft = title;
+			titleString.textCenter = title;
 			result.add(0, titleString);
 		}
 		return result;
@@ -253,7 +256,7 @@ public class ItemCardReader implements ICardReader {
 
 		nbt = card.getTagCompound().copy();
 		List<PanelString> result = new LinkedList<PanelString>();
-		
+
 		if (nbt.hasKey("title") && nbt.getTag("title").getId() == 8) {
 			String title = nbt.getString("title");
 			if (!title.equals(""))

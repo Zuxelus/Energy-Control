@@ -22,7 +22,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemCardGeneratorArray extends ItemCardBase {
 	private static final double STATUS_NOT_FOUND = Integer.MIN_VALUE;
-	private static final double STATUS_OUT_OF_RANGE = Integer.MIN_VALUE + 1;	
+	private static final double STATUS_OUT_OF_RANGE = Integer.MIN_VALUE + 1;
 
 	public ItemCardGeneratorArray() {
 		super(ItemCardType.CARD_GENERATOR_ARRAY, "card_generator_array");
@@ -105,7 +105,7 @@ public class ItemCardGeneratorArray extends ItemCardBase {
 				totalStorage += storage;
 				totalOutput += output;
 			}
-		
+
 			if ((displaySettings & 32) > 0) {
 				if (isOutOfRange) {
 					result.add(new PanelString(StringUtils.getFormattedKey("msg.ec.InfoPanelOutOfRangeN", i + 1)));
@@ -152,11 +152,11 @@ public class ItemCardGeneratorArray extends ItemCardBase {
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelStorage"), 1, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMaxStorage"), 2, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOutput"), 8, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEach"), 32, damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEachCard"), 32, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelTotal"), 64, damage));
 		return result;
 	}
-	
+
 	@Override
 	public boolean isRemoteCard() {
 		return false;

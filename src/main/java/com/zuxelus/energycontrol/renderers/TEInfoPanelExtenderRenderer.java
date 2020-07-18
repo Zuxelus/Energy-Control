@@ -33,7 +33,7 @@ public class TEInfoPanelExtenderRenderer extends TileEntitySpecialRenderer<TileE
 	@Override
 	public void renderTileEntityAt(TileEntityInfoPanelExtender te, double x, double y, double z, float partialTicks, int destroyStage) {
 		GlStateManager.pushMatrix();
-		GlStateManager.translate((float)x, (float)y, (float)z);
+		GlStateManager.translate(x, y, z);
 		switch (te.getFacing()) {
 		case UP:
 			break;

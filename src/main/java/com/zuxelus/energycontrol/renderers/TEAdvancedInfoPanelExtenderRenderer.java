@@ -33,7 +33,7 @@ public class TEAdvancedInfoPanelExtenderRenderer extends TileEntitySpecialRender
 	@Override
 	public void renderTileEntityAt(TileEntityAdvancedInfoPanelExtender te, double x, double y, double z, float partialTicks, int destroyStage) {
 		GlStateManager.pushMatrix();
-		GlStateManager.translate((float)x, (float)y, (float)z);
+		GlStateManager.translate(x, y, z);
 		EnumFacing facing = te.getFacing();
 		switch (facing) {
 		case UP:

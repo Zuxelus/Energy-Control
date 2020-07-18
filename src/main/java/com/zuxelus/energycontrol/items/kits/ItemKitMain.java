@@ -6,11 +6,9 @@ import java.util.Map;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.IItemKit;
-import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
-import ic2.api.recipe.Recipes;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -21,6 +19,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 
 public class ItemKitMain extends Item {
 	private static Map<Integer, IItemKit> kits = new HashMap<Integer, IItemKit>();
@@ -28,6 +29,8 @@ public class ItemKitMain extends Item {
 	public ItemKitMain() {
 		super();
 		setMaxStackSize(16);
+		setHasSubtypes(true);
+		setMaxDamage(0);
 		canRepair = false;
 		setCreativeTab(EnergyControl.creativeTab);
 	}
@@ -37,10 +40,18 @@ public class ItemKitMain extends Item {
 		register(new ItemKitCounter());
 		register(new ItemKitLiquid());
 		register(new ItemKitGenerator());
-		register(new ItemKitReactor());
+		if (Loader.isModLoaded("IC2"))
+			register(new ItemKitReactor());
 		register(new ItemKitLiquidAdvanced());
-		if (CrossModLoader.draconicEvolution.modLoaded)
+		register(new ItemKitToggle());
+		if (Loader.isModLoaded("draconicevolution"))
 			register(new ItemKitDraconic());
+		if (Loader.isModLoaded("appliedenergistics2"))
+			register(new ItemKitAppEng());
+		if (Loader.isModLoaded("galacticraftcore") && Loader.isModLoaded("galacticraftplanets"))
+			register(new ItemKitGalacticraft());
+		if (Loader.isModLoaded("bigreactors"))
+			register(new ItemKitBigReactors());
 	}
 
 	private void register(ItemKitBase item) {
@@ -84,7 +95,7 @@ public class ItemKitMain extends Item {
 	public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> items) {
 		for (Map.Entry<Integer, IItemKit> entry : kits.entrySet()) {
 			Integer key = entry.getKey();
-				items.add(new ItemStack(this, 1, key));
+			items.add(new ItemStack(this, 1, key));
 		}
 	}
 
@@ -107,7 +118,7 @@ public class ItemKitMain extends Item {
 		player.replaceItemInInventory(player.inventory.currentItem, sensorLocationCard);
 		return EnumActionResult.SUCCESS;
 	}	
-	
+
 	public IItemKit getItemKitBase(int metadata) {
 		if (kits.containsKey(metadata))
 			return kits.get(metadata);
@@ -133,9 +144,9 @@ public class ItemKitMain extends Item {
 	public static final void registerRecipes() {
 		for (Map.Entry<Integer, IItemKit> entry : kits.entrySet()) {
 			Integer key = entry.getKey();
-			Object[] recipe = entry.getValue().getRecipe(); 
+			Object[] recipe = entry.getValue().getRecipe();
 			if (recipe != null)
-				Recipes.advRecipes.addRecipe(new ItemStack(ItemHelper.itemKit, 1, key), recipe);
+				GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ItemHelper.itemKit, 1, key), recipe));
 		}
 	}
 }

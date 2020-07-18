@@ -27,11 +27,11 @@ public class ItemCardCounter extends ItemCardBase {
 		BlockPos target = reader.getTarget();
 		if (target == null) 
 			return CardState.NO_TARGET;
-		
+
 		TileEntity tileEntity = world.getTileEntity(target);
 		if (tileEntity == null)
 			return CardState.NO_TARGET;
-		
+
 		if (tileEntity instanceof TileEntityEnergyCounter) {
 			TileEntityEnergyCounter counter = (TileEntityEnergyCounter) tileEntity;
 			reader.setDouble("energy", counter.counter);

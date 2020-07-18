@@ -12,22 +12,22 @@ import net.minecraft.world.World;
 
 public class ReactorHelper {
 	private static final double STEAM_PER_EU = 3.2D;
-	
+
 	public static IReactor getReactorAround(World world, BlockPos pos) {
 		if (world == null)
 			return null;
-		
+
 		IReactor reactor = getReactorAt(world, pos);
 		if (reactor != null)
 			return reactor;
-		
+
 		return getReactorNextBlock(world, pos);
-	}	
-	
+	}
+
 	public static IReactor getReactorNextBlock(World world, BlockPos pos) {
 		if (world == null)
 			return null;
-		
+
 		IReactor reactor = null;
 		for (EnumFacing dir : EnumFacing.VALUES) {
 			reactor = getReactorAt(world, pos.offset(dir));
@@ -36,11 +36,11 @@ public class ReactorHelper {
 		}
 		return reactor;
 	}
-	
+
 	public static IReactor getReactorAt(World world, BlockPos pos) {
 		if (world == null)
 			return null;
-		
+
 		TileEntity entity = world.getTileEntity(pos);
 		if (entity instanceof IReactor)
 			return (IReactor) entity;
@@ -48,7 +48,7 @@ public class ReactorHelper {
 			return ((IReactorChamber) entity).getReactorInstance();
 		return null;
 	}
-	
+
 	public static IReactor getReactor3x3(World world, BlockPos pos) {
 		if (world == null)
 			return null;
@@ -90,5 +90,9 @@ public class ReactorHelper {
 
 	public static int getNuclearCellTimeLeft(ItemStack rStack) {
 		return CrossModLoader.ic2.getNuclearCellTimeLeft(rStack);
+	}
+
+	public static int getReactorHeat(World world, BlockPos pos) {
+		return CrossModLoader.bigReactors.getReactorHeat(world, pos);
 	}
 }

@@ -19,10 +19,16 @@ public class LiquidCardHelper {
 		if (te instanceof IFluidHandler)
 			return ((IFluidHandler) te).getTankProperties();
 
-		FluidTankProperties[] list = CrossModLoader.ic2.getAllTanks(te);
+		IFluidTankProperties[] list = CrossModLoader.ic2.getAllTanks(te);
 		if (list != null)
 			return list;
-		return null;
+		list = CrossModLoader.techReborn.getAllTanks(te);
+		if (list != null)
+			return list;
+		list = CrossModLoader.galacticraft.getAllTanks(te);
+		if (list != null)
+			return list;
+		return CrossModLoader.bigReactors.getAllTanks(te);
 	}
 
 	public static IFluidTankProperties getStorageAt(World world, BlockPos pos) {

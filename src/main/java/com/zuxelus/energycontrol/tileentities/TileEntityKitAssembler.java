@@ -149,6 +149,7 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 		if (!addedToEnet && !worldObj.isRemote && Info.isIc2Available()) {
 			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
 			addedToEnet = true;
+			updateActive();
 		}
 	}
 

@@ -34,7 +34,7 @@ public class ItemCardGeneratorKinetic extends ItemCardBase {
 		NBTTagCompound tag = CrossModLoader.ic2.getGeneratorKineticData(entity);
 		if (tag == null || !tag.hasKey("type"))
 			return CardState.NO_TARGET;
-		
+
 		reader.setInt("type", tag.getInteger("type"));
 		switch (tag.getInteger("type")) {
 		case 1: // TileEntityElectricKineticGenerator

@@ -1,0 +1,6 @@
+{
+    "parent": "item/bow",
+    "textures": {
+        "layer0": "energycontrol:items/nano_bow_pulling_1"
+    }
+}

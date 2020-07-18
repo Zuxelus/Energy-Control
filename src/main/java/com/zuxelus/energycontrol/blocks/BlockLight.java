@@ -24,13 +24,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockLight extends Block implements IWrenchable{
+public class BlockLight extends Block implements IWrenchable {
 	public static final int DAMAGE_WHITE_OFF = 0;
 	public static final int DAMAGE_WHITE_ON = 1;
 	public static final int DAMAGE_ORANGE_OFF = 2;
 	public static final int DAMAGE_ORANGE_ON = 3;
 	public static final int DAMAGE_MAX = 3;
-	
+
 	public static final PropertyInteger TYPE = PropertyInteger.create("type", 0, DAMAGE_MAX);
 
 	public static Map<Integer, Boolean> blocks;
@@ -50,24 +50,24 @@ public class BlockLight extends Block implements IWrenchable{
 	public void register(int damage, boolean isOn) {
 		blocks.put(damage, isOn);
 	}
-	
+
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, new IProperty[] {TYPE});
+		return new BlockStateContainer(this, new IProperty[] { TYPE });
 	}
-	
+
 	@Override
 	public final IBlockState getStateFromMeta(final int meta) {
 		return this.getDefaultState().withProperty(TYPE, meta);
 	}
-	
+
 	@Override
 	public final int getMetaFromState(final IBlockState state) {
 		return state.getValue(TYPE);
 	}
 
 	@Override
-    public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
+	public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
 		int meta = getMetaFromState(state);
 		if (meta == 1 || meta % 2 == 1)
 			return 15;
@@ -75,12 +75,12 @@ public class BlockLight extends Block implements IWrenchable{
 	}
 
 	@Override
-    public int damageDropped(IBlockState state) {
+	public int damageDropped(IBlockState state) {
 		int i = getMetaFromState(state);
 		if (i % 2 == 0)
 			return i;
 		return i - 1;
-    }
+	}
 
 	@Override
 	public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
@@ -91,7 +91,7 @@ public class BlockLight extends Block implements IWrenchable{
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block) {
 		updateBlockState(world, pos, state);
 	}
-	
+
 	private void updateBlockState(World world, BlockPos pos, IBlockState state) {
 		if (world.isRemote)
 			return;
@@ -110,6 +110,7 @@ public class BlockLight extends Block implements IWrenchable{
 				items.add(new ItemStack(this, 1, i));
 	}
 
+	// IWrenchable
 	@Override
 	public EnumFacing getFacing(World world, BlockPos pos) {
 		return EnumFacing.UP;

@@ -33,7 +33,6 @@ import net.minecraft.world.World;
 
 public class RangeTrigger extends BlockHorizontal implements ITileEntityProvider, IWrenchable {
 	public static final PropertyEnum<EnumState> STATE = PropertyEnum.<EnumState>create("state", EnumState.class);
-	private boolean powered = false;
 
 	public RangeTrigger() {
 		super(Material.IRON);
@@ -79,22 +78,20 @@ public class RangeTrigger extends BlockHorizontal implements ITileEntityProvider
 	@Override
 	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
 		List<ItemStack> drops = new ArrayList<ItemStack>();
-		drops.add(CrossModLoader.ic2.getItem("machine"));
+		drops.add(CrossModLoader.ic2.getItemStack("machine"));
 		return drops;
 	}
 
 	@Override
 	public int getWeakPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
-		return powered ? 15 : 0;
+		TileEntity te = blockAccess.getTileEntity(pos);
+		if (!(te instanceof TileEntityRangeTrigger))
+			return 0;
+		return ((TileEntityRangeTrigger) te).getPowered() ? 15 : 0;
 	}
 
 	@Override
-	public int getStrongPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
-		return powered ? 15 : 0;
-	}
-
-	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		if (!world.isRemote)
 			player.openGui(EnergyControl.instance, BlockDamages.DAMAGE_RANGE_TRIGGER, world, pos.getX(), pos.getY(), pos.getZ());
 		return true;
@@ -103,10 +100,6 @@ public class RangeTrigger extends BlockHorizontal implements ITileEntityProvider
 	@Override
 	public boolean canProvidePower(IBlockState state) {
 		return true;
-	}
-
-	public void setPowered(boolean value) {
-		powered = value;
 	}
 
 	public static enum EnumState implements IStringSerializable {

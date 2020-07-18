@@ -16,20 +16,18 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityThermo extends TileEntityInventory implements ITickable, ITilePacketHandler {
-	private int prevHeatLevel;
 	private int heatLevel;
-	private boolean prevInvertRedstone;
 	private boolean invertRedstone;
 	protected int status;
 	private boolean poweredBlock;
-	
+
 	protected int updateTicker;
 	protected int tickRate;
-	
+
 	public TileEntityThermo() {
 		super("tile.thermal_monitor.name");
-		invertRedstone = prevInvertRedstone = false;
-		heatLevel = prevHeatLevel = 500;
+		invertRedstone = false;
+		heatLevel = 500;
 		updateTicker = 0;
 		tickRate = -1;
 		status = -1;
@@ -38,23 +36,23 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 	public int getHeatLevel() {
 		return heatLevel;
 	}
-	
+
 	public void setHeatLevel(int value) {
+		int old = heatLevel;
 		heatLevel = value;
-		if (!worldObj.isRemote && prevHeatLevel != heatLevel)
+		if (!worldObj.isRemote && heatLevel != old)
 			notifyBlockUpdate();
-		prevHeatLevel = heatLevel;
 	}
-	
+
 	public boolean getInvertRedstone() {
 		return invertRedstone;
 	}
-	
+
 	public void setInvertRedstone(boolean value) {
+		boolean old = invertRedstone;
 		invertRedstone = value;
-		if (!worldObj.isRemote && prevInvertRedstone != invertRedstone)
+		if (!worldObj.isRemote && invertRedstone != old)
 			notifyBlockUpdate();
-		prevInvertRedstone = invertRedstone;
 	}
 
 	public int getStatus() {
@@ -63,6 +61,10 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 
 	public void setStatus(int newStatus) {
 		status = newStatus;
+	}
+
+	public boolean getPowered() {
+		return poweredBlock;
 	}
 
 	@Override
@@ -89,6 +91,7 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 		NBTTagCompound tag = new NBTTagCompound();
 		tag = writeProperties(tag);
 		tag.setInteger("status", status);
+		tag.setBoolean("poweredBlock", poweredBlock);
 		return new SPacketUpdateTileEntity(getPos(), 0, tag);
 	}
 
@@ -102,6 +105,7 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 		NBTTagCompound tag = super.getUpdateTag();
 		tag = writeProperties(tag);
 		tag.setInteger("status", status);
+		tag.setBoolean("poweredBlock", poweredBlock);
 		return tag;
 	}
 
@@ -109,11 +113,13 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 	protected void readProperties(NBTTagCompound tag) {
 		super.readProperties(tag);
 		if (tag.hasKey("heatLevel"))
-			heatLevel = prevHeatLevel = tag.getInteger("heatLevel");
+			heatLevel = tag.getInteger("heatLevel");
 		if (tag.hasKey("invert"))
-			invertRedstone = prevInvertRedstone = tag.getBoolean("invert");
+			invertRedstone = tag.getBoolean("invert");
 		if (tag.hasKey("status"))
 			setStatus(tag.getInteger("status"));
+		if (tag.hasKey("poweredBlock"))
+			poweredBlock = tag.getBoolean("poweredBlock");
 	}
 
 	@Override
@@ -137,13 +143,13 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 
 	@Override
 	public void invalidate() {
-			worldObj.notifyNeighborsOfStateChange(pos, worldObj.getBlockState(pos).getBlock());
+		worldObj.notifyNeighborsOfStateChange(pos, worldObj.getBlockState(pos).getBlock());
 		super.invalidate();
 	}
 
 	@Override
 	public void update() {
-		if (worldObj.isRemote || status == -2)
+		if (worldObj.isRemote)
 			return;
 	
 		if (updateTicker-- > 0)
@@ -174,8 +180,10 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 			else
 				newStatus = 0;
 
-		} else
-			newStatus = -2;
+		} else {
+			int heat = ReactorHelper.getReactorHeat(worldObj, pos);
+			newStatus = heat == -1 ? -2 : heat >= heatLevel ? 1 : 0;
+		}
 
 		if (newStatus != status) {
 			status = newStatus;
@@ -187,23 +195,14 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 	public void notifyBlockUpdate() {
 		IBlockState iblockstate = worldObj.getBlockState(pos);
 		Block block = iblockstate.getBlock();
-		if (block instanceof ThermalMonitor) {
+		if (block instanceof ThermalMonitor || block instanceof RemoteThermo) {
 			boolean newValue = status < 0 ? false : status == 1 ? !invertRedstone : invertRedstone;
 			if (poweredBlock != newValue) {
-				((ThermalMonitor)block).setPowered(newValue);
+				poweredBlock = newValue;
 				worldObj.notifyNeighborsOfStateChange(pos, block);
 			}
-			poweredBlock = newValue;
+			worldObj.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
 		}
-		if (block instanceof RemoteThermo) { // TODO
-			boolean newValue = status < 0 ? false : status == 1 ? !invertRedstone : invertRedstone;
-			if (poweredBlock != newValue) {
-				((RemoteThermo)block).setPowered(newValue);
-				worldObj.notifyNeighborsOfStateChange(pos, block);
-			}
-			poweredBlock = newValue;
-		}
-		worldObj.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
 	}
 
 	@Override

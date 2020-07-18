@@ -63,23 +63,20 @@ public class GuiKitAssembler extends GuiContainer {
 		initControls();
 	}
 
-	/*@Override
-	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-		drawDefaultBackground();
-		super.drawScreen(mouseX, mouseY, partialTicks);
+	@Override
+	protected void renderToolTip(ItemStack stack, int mouseX, int mouseY) {
 		Slot slot = container.getSlot(TileEntityKitAssembler.SLOT_INFO);
-		if (isPointInRegion(slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, mouseX, mouseY) && slot.isEnabled())
+		if (isPointInRegion(slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, mouseX, mouseY) && slot.canBeHovered())
 			renderInfoToolTip(slot, mouseX, mouseY);
 		else
-			renderHoveredToolTip(mouseX, mouseY);
-	}*/
+			super.renderToolTip(stack, mouseX, mouseY);
+	}
 
 	private void renderInfoToolTip(Slot slot, int x, int y) {
 		ItemStack stack = slot.getStack();
 		if (stack == null || !(stack.getItem() instanceof ItemCardMain))
 			return;
 		FontRenderer font = stack.getItem().getFontRenderer(stack);
-		net.minecraftforge.fml.client.config.GuiUtils.preItemToolTip(stack);
 		List<String> stackList = stack.getTooltip(mc.thePlayer, mc.gameSettings.advancedItemTooltips);
 		List<String> list = Lists.<String>newArrayList();
 		if (stackList.size() > 0)
@@ -90,6 +87,7 @@ public class GuiKitAssembler extends GuiContainer {
 				if (panelString.textLeft != null)
 					list.add(TextFormatting.GRAY + panelString.textLeft);
 			}
+		net.minecraftforge.fml.client.config.GuiUtils.preItemToolTip(stack);
 		drawHoveringText(list, x, y, (font == null ? fontRendererObj : font));
 		net.minecraftforge.fml.client.config.GuiUtils.postItemToolTip();
 	}

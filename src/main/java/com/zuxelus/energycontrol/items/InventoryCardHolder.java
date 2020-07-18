@@ -14,7 +14,7 @@ public class InventoryCardHolder extends ItemInventory {
 	public int getSizeInventory() {
 		return 54;
 	}
-	
+
 	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
 		return isItemValid(index, stack);

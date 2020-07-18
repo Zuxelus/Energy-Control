@@ -54,19 +54,23 @@ public class NetworkHelper {
 	}
 
 	// client
-	public static void setCardSettings(ItemStack card, TileEntity panelTE, Map<String, Object> fields, byte slot) {
-		if (card == null || fields == null || fields.isEmpty() || panelTE == null || !(panelTE instanceof TileEntityInfoPanel))
+	public static void setCardSettings(ItemStack card, TileEntity panel, Map<String, Object> fields, byte slot) {
+		if (card == null || fields == null || fields.isEmpty() || panel == null || !(panel instanceof TileEntityInfoPanel))
 			return;
 
-		if (FMLCommonHandler.instance().getEffectiveSide().isServer())
+		if (!panel.getWorld().isRemote)
 			return;
 
-		ChannelHandler.network.sendToServer(new PacketClientSensor(panelTE.getPos(), slot, card.getItem().getClass().getName(), fields));
+		ChannelHandler.network.sendToServer(new PacketClientSensor(panel.getPos(), slot, card.getItem().getClass().getName(), fields));
 	}
 
 	public static void chatMessage(EntityPlayer player, String message) {
+		chatMessage(player, message, 0, 0);
+	}
+
+	public static void chatMessage(EntityPlayer player, String message, int type, int value) {
 		if (player instanceof EntityPlayerMP)
-			ChannelHandler.network.sendTo(new PacketChat(message), (EntityPlayerMP) player);
+			ChannelHandler.network.sendTo(new PacketChat(message, type, value), (EntityPlayerMP) player);
 	}
 
 	// server

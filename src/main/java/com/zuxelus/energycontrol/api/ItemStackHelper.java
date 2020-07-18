@@ -23,11 +23,20 @@ public final class ItemStackHelper {
 		nbtTagCompound.setInteger("z", pos.getZ());
 	}
 
-	public static void setCoordinates(ItemStack stack, BlockPos pos, int type) {
-		NBTTagCompound nbtTagCompound = getTagCompound(stack);
-		nbtTagCompound.setInteger("x", pos.getX());
-		nbtTagCompound.setInteger("y", pos.getY());
-		nbtTagCompound.setInteger("z", pos.getZ());
-		nbtTagCompound.setInteger("targetType", type);
+	public static NBTTagCompound getOrCreateNbtData(ItemStack stack) {
+		NBTTagCompound tag = stack.getTagCompound();
+		if (tag == null) {
+			tag = new NBTTagCompound();
+			stack.setTagCompound(tag);
+		}
+		return tag;
+	}
+
+	public static ItemStack getStackWithEnergy(Item item, String name, double energy) {
+		ItemStack stack = new ItemStack(item);
+		NBTTagCompound tag = new NBTTagCompound();
+		stack.setTagCompound(tag);
+		tag.setDouble(name, energy);
+		return stack;
 	}
 }

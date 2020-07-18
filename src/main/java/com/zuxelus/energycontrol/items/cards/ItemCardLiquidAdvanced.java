@@ -33,7 +33,7 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 		IFluidTankProperties[] tanks = LiquidCardHelper.getAllTanks(world, target);
 		if (tanks == null)
 			return CardState.NO_TARGET;
-		
+
 		int i = 0;
 		for (IFluidTankProperties tank: tanks) {
 			addTankInfo(reader, tank, i);
@@ -79,11 +79,11 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 			result.add(new PanelString("msg.ec.InfoPanelName", name, showLabels));
 		}
 		if ((displaySettings & 2) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelAmount", amount, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelAmountmB", amount, showLabels));
 		if ((displaySettings & 4) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelFree", capacity - amount, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelFreemB", capacity - amount, showLabels));
 		if ((displaySettings & 8) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelCapacity", capacity, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelCapacitymB", capacity, showLabels));
 		if ((displaySettings & 16) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelPercentage", capacity == 0 ? 100 : (amount * 100 / capacity), showLabels));
 	}
