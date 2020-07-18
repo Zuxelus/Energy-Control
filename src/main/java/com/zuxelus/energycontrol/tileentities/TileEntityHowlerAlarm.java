@@ -145,7 +145,7 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 
 	@Override
 	public void invalidate() {
-		if (world.isRemote)
+		if (world.isRemote && sound != null)
 			sound.stopAlarm();
 		super.invalidate();
 	}

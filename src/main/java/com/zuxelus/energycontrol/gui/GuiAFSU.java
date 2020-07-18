@@ -39,7 +39,6 @@ public class GuiAFSU extends GuiContainer {
 
 	private String name;
 	private ContainerAFSU container;
-	private ItemStack prevStack;
 	private GuiTextField textboxTitle;
 	private boolean modified;
 
@@ -48,7 +47,6 @@ public class GuiAFSU extends GuiContainer {
 		this.container = container;
 		ySize = 196;
 		name = I18n.format("tile.afsu.name");
-		prevStack = ItemStack.EMPTY;
 	}
 
 	@Override

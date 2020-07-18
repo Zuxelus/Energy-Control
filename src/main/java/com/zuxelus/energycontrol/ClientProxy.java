@@ -22,15 +22,17 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 public class ClientProxy extends ServerProxy {
-	public static final KeyBinding modeSwitchKey = new KeyBinding("Mode Switch Key", 50, "Energy Control");
+	public static KeyBinding modeSwitchKey;
 
 	@Override
 	public void loadConfig(FMLPreInitializationEvent event) {
 		EnergyControl.config = new ConfigHandler();
 		MinecraftForge.EVENT_BUS.register(EnergyControl.config);
 		EnergyControl.config.init(event.getSuggestedConfigurationFile());
-		if (!Loader.isModLoaded("ic2"))
+		if (!Loader.isModLoaded("ic2") && Loader.isModLoaded("techreborn")) {
+			modeSwitchKey = new KeyBinding("Mode Switch Key", 50, "Energy Control");
 			ClientRegistry.registerKeyBinding(modeSwitchKey);
+		}
 	}
 
 	@Override

@@ -41,8 +41,7 @@ public class TileEntitySound {
 		Entity person = FMLClientHandler.instance().getClient().getRenderViewEntity();
 
 		if (person != null && volume > 0 && person.getDistanceSq(x, y, z) < range * range) {
-			PositionedSoundRecord sound = 
-					new PositionedSoundRecord(new SoundEvent(new ResourceLocation(name)), SoundCategory.MASTER, volume, 1.0F, (float) x, (float) y, (float) z);
+			PositionedSoundRecord sound = new PositionedSoundRecord(new SoundEvent(new ResourceLocation(name)), SoundCategory.MASTER, volume, 1.0F, (float) x, (float) y, (float) z);
 			Minecraft.getMinecraft().getSoundHandler().playSound(sound);
 			return sound;
 		}

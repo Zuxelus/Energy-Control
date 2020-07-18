@@ -25,28 +25,11 @@ import ic2.core.block.TileEntityHeatSourceInventory;
 import ic2.core.block.comp.Energy;
 import ic2.core.block.comp.Fluids;
 import ic2.core.block.comp.Fluids.InternalFluidTank;
-import ic2.core.block.generator.tileentity.TileEntityBaseGenerator;
-import ic2.core.block.generator.tileentity.TileEntityConversionGenerator;
-import ic2.core.block.generator.tileentity.TileEntityGeoGenerator;
-import ic2.core.block.generator.tileentity.TileEntityKineticGenerator;
-import ic2.core.block.generator.tileentity.TileEntityRTGenerator;
-import ic2.core.block.generator.tileentity.TileEntitySolarGenerator;
-import ic2.core.block.generator.tileentity.TileEntityStirlingGenerator;
-import ic2.core.block.generator.tileentity.TileEntityWaterGenerator;
+import ic2.core.block.generator.tileentity.*;
 import ic2.core.block.heatgenerator.tileentity.TileEntityElectricHeatGenerator;
-import ic2.core.block.kineticgenerator.tileentity.TileEntityElectricKineticGenerator;
-import ic2.core.block.kineticgenerator.tileentity.TileEntityManualKineticGenerator;
-import ic2.core.block.kineticgenerator.tileentity.TileEntitySteamKineticGenerator;
-import ic2.core.block.kineticgenerator.tileentity.TileEntityStirlingKineticGenerator;
-import ic2.core.block.kineticgenerator.tileentity.TileEntityWaterKineticGenerator;
-import ic2.core.block.kineticgenerator.tileentity.TileEntityWindKineticGenerator;
+import ic2.core.block.kineticgenerator.tileentity.*;
 import ic2.core.block.machine.tileentity.TileEntityLiquidHeatExchanger;
-import ic2.core.block.reactor.tileentity.TileEntityNuclearReactorElectric;
-import ic2.core.block.reactor.tileentity.TileEntityReactorAccessHatch;
-import ic2.core.block.reactor.tileentity.TileEntityReactorChamberElectric;
-import ic2.core.block.reactor.tileentity.TileEntityReactorFluidPort;
-import ic2.core.block.reactor.tileentity.TileEntityReactorRedstonePort;
-import ic2.core.block.wiring.TileEntityCable;
+import ic2.core.block.reactor.tileentity.*;
 import ic2.core.item.reactor.ItemReactorLithiumCell;
 import ic2.core.item.reactor.ItemReactorMOX;
 import ic2.core.item.reactor.ItemReactorUranium;
@@ -278,7 +261,7 @@ public class IC2Exp extends CrossIC2 {
 		} catch (Throwable t) { }
 		return null;
 	}
-	
+
 	@Override
 	public NBTTagCompound getGeneratorKineticData(TileEntity te) {
 		try {
@@ -307,7 +290,6 @@ public class IC2Exp extends CrossIC2 {
 					 tag.setDouble("health", (double)(100.0F - entity.rotorSlot.get().getItemDamage() * 100.0F / entity.rotorSlot.get().getMaxDamage()));
 				return tag;
 			}
-			
 			if (te instanceof TileEntityWaterKineticGenerator) {
 				TileEntityWaterKineticGenerator entity = ((TileEntityWaterKineticGenerator) te);
 				tag.setInteger("type", 2);

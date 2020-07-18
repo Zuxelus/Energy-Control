@@ -146,7 +146,7 @@ public class GuiInfoPanel extends GuiContainer {
 			int x = guiLeft + 24;
 			if (settingsList != null)
 				for (PanelSetting panelSetting : settingsList) {
-						buttonList.add(new GuiInfoPanelCheckBox(0, x + 4, guiTop + 28 + hy * y, panelSetting, panel, slot, fontRenderer));
+					buttonList.add(new GuiInfoPanelCheckBox(0, x + 4, guiTop + 28 + hy * y, panelSetting, panel, slot, fontRenderer));
 					y++;
 				}
 			if (!modified) {

@@ -35,6 +35,6 @@ public class NanoBowRecipe extends ShapedRecipes {
 		if (tag == null || !tag.hasKey("charge"))
 			return new ItemStack(ItemHelper.itemNanoBow);
 		double energy = tag.getDouble("charge");
-		return ItemStackHelper.getStackWithEnergy(ItemHelper.itemNanoBow, Math.min(energy, 40000.0D));
+		return ItemStackHelper.getStackWithEnergy(ItemHelper.itemNanoBow, "charge", Math.min(energy, 40000.0D));
 	}
 }

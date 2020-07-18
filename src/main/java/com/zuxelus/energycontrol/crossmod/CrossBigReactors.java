@@ -3,11 +3,11 @@ package com.zuxelus.energycontrol.crossmod;
 import java.util.ArrayList;
 import java.util.List;
 
+import erogenousbeef.bigreactors.common.multiblock.IInputOutputPort;
 import erogenousbeef.bigreactors.common.multiblock.MultiblockReactor;
 import erogenousbeef.bigreactors.common.multiblock.MultiblockTurbine;
 import erogenousbeef.bigreactors.common.multiblock.tileentity.TileEntityReactorController;
 import erogenousbeef.bigreactors.common.multiblock.tileentity.TileEntityTurbineController;
-import erogenousbeef.bigreactors.common.multiblock.IInputOutputPort;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -23,7 +23,7 @@ public class CrossBigReactors extends CrossModBase {
 	public List<IFluidTank> getAllTanks(TileEntity te) {
 		if (!modLoaded)
 			return null;
-		
+
 		if (te instanceof TileEntityReactorController) {
 			MultiblockReactor reactor = ((TileEntityReactorController) te).getReactorController();
 			if (reactor == null)
@@ -40,7 +40,7 @@ public class CrossBigReactors extends CrossModBase {
 			MultiblockTurbine turbine = ((TileEntityTurbineController) te).getTurbine();
 			if (turbine == null)
 				return null;
-			
+
 			IFluidHandler input = turbine.getFluidHandler(IInputOutputPort.Direction.Input);
 			IFluidHandler output = turbine.getFluidHandler(IInputOutputPort.Direction.Output);
 			List<IFluidTank> result = new ArrayList<>();
