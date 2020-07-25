@@ -41,7 +41,7 @@ public abstract class CrossIC2 {
 				Class clz = Class.forName("com.zuxelus.energycontrol.crossmod.ic2.IC2Classic");
 				if (clz != null)
 					return (CrossIC2) clz.newInstance();
-			} 
+			}
 			if (Loader.isModLoaded("IC2")) {
 				Class clz = Class.forName("com.zuxelus.energycontrol.crossmod.ic2.IC2Exp");
 				if (clz != null)

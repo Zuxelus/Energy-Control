@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import com.zuxelus.energycontrol.containers.ISlotItemFilter;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 
 import ic2.api.energy.event.EnergyTileLoadEvent;
@@ -12,7 +11,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraftforge.common.MinecraftForge;
 
-public class TileEntityEnergyCounter extends TileEntityEnergyStorage implements ISlotItemFilter, ITilePacketHandler {
+public class TileEntityEnergyCounter extends TileEntityEnergyStorage {
 	private static final int BASE_PACKET_SIZE = 32;
 	private boolean init;
 	protected int updateTicker;

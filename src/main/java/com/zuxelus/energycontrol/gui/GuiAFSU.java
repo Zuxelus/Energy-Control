@@ -87,7 +87,7 @@ public class GuiAFSU extends GuiContainer {
 	}
 
 	@Override
-	protected void actionPerformed(GuiButton button) throws IOException {
+	protected void actionPerformed(GuiButton button) {
 		if (button.id == 1) {
 			byte mode = container.te.getRedstoneMode();
 			mode++;

@@ -125,14 +125,14 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 		if (reader.getBoolean("value"))
 			manager.bindTexture(new ResourceLocation(EnergyControl.MODID + ":textures/gui/green.png"));
 		else
-			manager.bindTexture(new ResourceLocation(EnergyControl.MODID + ":textures/gui/grey.png"));	
-        Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer vertexbuffer = tessellator.getBuffer();
-        vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-        vertexbuffer.pos((x + 0), (y + height), z).tex((double)((float)(textureX + 0)), (double)((float)(textureY + height))).endVertex();
-        vertexbuffer.pos((x + width), (y + height), z).tex((double)((float)(textureX + width)), (double)((float)(textureY + height))).endVertex();
-        vertexbuffer.pos((x + width), (y + 0), z).tex((double)((float)(textureX + width)), (double)((float)(textureY + 0))).endVertex();
-        vertexbuffer.pos((x + 0), (y + 0), z).tex((double)((float)(textureX + 0)), (double)((float)(textureY + 0))).endVertex();
-        tessellator.draw();
+			manager.bindTexture(new ResourceLocation(EnergyControl.MODID + ":textures/gui/grey.png"));
+		Tessellator tessellator = Tessellator.getInstance();
+		VertexBuffer vertexbuffer = tessellator.getBuffer();
+		vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+		vertexbuffer.pos(x + 0, y + height, z).tex((double)((float)(textureX + 0)), (double)((float)(textureY + height))).endVertex();
+		vertexbuffer.pos(x + width, y + height, z).tex((double)((float)(textureX + width)), (double)((float)(textureY + height))).endVertex();
+		vertexbuffer.pos(x + width, y + 0, z).tex((double)((float)(textureX + width)), (double)((float)(textureY + 0))).endVertex();
+		vertexbuffer.pos(x + 0, y + 0, z).tex((double)((float)(textureX + 0)), (double)((float)(textureY + 0))).endVertex();
+		tessellator.draw();
 	}
 }

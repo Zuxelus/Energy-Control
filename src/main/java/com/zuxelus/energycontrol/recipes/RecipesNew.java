@@ -304,6 +304,13 @@ public class RecipesNew {
 				'F', IC2Items.getItem("frequency_transmitter"),
 				'C', IC2Items.getItem("heat_storage")});
 
+		Recipes.advRecipes.addRecipe(new ItemStack(ItemHelper.itemUpgrade, 1, ItemUpgrade.DAMAGE_TOUCH), new Object[] {
+				" R ", "ICI", " A ",
+					'R', "plateTin",
+					'I', IC2Items.getItem("cable","type:copper,insulation:1"),
+					'C', "circuitBasic",
+					'A', IC2Items.getItem("crafting","carbon_plate")});
+
 		Recipes.advRecipes.addRecipe(new ItemStack(ItemHelper.itemPortablePanel), new Object[] {
 				"A  ", "CMC", "RPP",
 				'A', IC2Items.getItem("cable","type:tin,insulation:1"),

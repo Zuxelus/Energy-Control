@@ -35,7 +35,7 @@ public class ItemCardReactorDraconic extends ItemCardBase {
 		if (!(te instanceof TileReactorCore))
 			return CardState.NO_TARGET;
 
-		TileReactorCore reactor = ((TileReactorCore)te);
+		TileReactorCore reactor = ((TileReactorCore) te);
 		reader.setString("status", reactor.reactorState.value.name());
 		reader.setDouble("temp", reactor.temperature.value);
 		reader.setDouble("rate", reactor.generationRate.value);

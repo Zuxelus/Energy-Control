@@ -122,8 +122,10 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
 			byte newTab = (byte) ((mouseY - guiTop - 62) / 14);
 			if (newTab > 2)
 				newTab = 2;
-			if (newTab != activeTab && modified)
+			if (newTab != activeTab && modified) {
 				updateTitle();
+				modified = false;
+			}
 			activeTab = newTab;
 		}
 	}

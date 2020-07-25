@@ -1,17 +1,8 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import com.zuxelus.energycontrol.blocks.RangeTrigger;
-import com.zuxelus.energycontrol.containers.ISlotItemFilter;
-import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-
-import ic2.api.energy.tile.IEnergyAcceptor;
-import ic2.api.energy.tile.IEnergyEmitter;
-import ic2.api.energy.tile.IEnergySink;
-import ic2.api.energy.tile.IEnergySource;
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
 import ic2.api.tile.IEnergyStorage;
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -22,7 +13,7 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable, ISlotItemFilter, ITilePacketHandler, IEnergyStorage {
+public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable, IEnergyStorage {
 	public static final int TIER = 5;
 	public static final int CAPACITY = 400000000;
 	public static final int OUTPUT = 8192;

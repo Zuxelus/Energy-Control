@@ -15,6 +15,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 
 public class ServerProxy implements IGuiHandler {
+
 	public void loadConfig(FMLPreInitializationEvent event) {
 		EnergyControl.config = new ConfigHandler();
 		EnergyControl.config.init(event.getSuggestedConfigurationFile());

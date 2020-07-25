@@ -9,7 +9,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.10.2-0.1.0"
+version = "1.10.2-0.1.1"
 group= "com.zuxelus.energycontrol" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "EnergyControl"
 
@@ -29,6 +29,7 @@ minecraft {
 
 dependencies {
 	compile 'net.industrial-craft:industrialcraft-2:2.6.259-ex110:dev'
+	compile files("libs/Draconic-Evolution-1.10.2-2.1.8.273-universal.jar", "libs/Galacticraft-Planets-1.10.2-4.0.2.190.jar", "libs/MicdoodleCore-1.10.2-4.0.2.190.jar")
 }
 
 processResources {
