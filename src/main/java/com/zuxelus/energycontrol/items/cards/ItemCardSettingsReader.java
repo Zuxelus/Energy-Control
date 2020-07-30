@@ -6,19 +6,19 @@ import java.util.Map;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.gui.GuiInfoPanel;
 import com.zuxelus.energycontrol.network.NetworkHelper;
+import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.client.FMLClientHandler;
 
 public class ItemCardSettingsReader {
 	private ItemStack card;
-	private TileEntity panel;
+	private TileEntityInfoPanel panel;
 	private Map<String, Object> updateSet;
 	private GuiInfoPanel gui;
 	private byte slot;
 
-	public ItemCardSettingsReader(ItemStack card, TileEntity panel, GuiInfoPanel gui, byte slot) {
+	public ItemCardSettingsReader(ItemStack card, TileEntityInfoPanel panel, GuiInfoPanel gui, byte slot) {
 		if (!(card.getItem() instanceof ItemCardMain))
 			EnergyControl.logger.error("ItemCardSettingsReader sould be used for ItemCard items.");
 		this.card = card;

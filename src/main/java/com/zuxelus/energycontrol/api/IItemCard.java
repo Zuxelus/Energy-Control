@@ -18,7 +18,7 @@ public interface IItemCard {
 
 	List<PanelString> getStringData(int settings, ICardReader reader, boolean showLabels);
 
-	List<PanelSetting> getSettingsList(ItemStack stack);
+	List<PanelSetting> getSettingsList();
 
 	ICardGui getSettingsScreen(ICardReader reader);
 

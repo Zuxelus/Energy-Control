@@ -27,8 +27,8 @@ public class CompactButton extends GuiButton {
 		FontRenderer fontRenderer = mc.fontRenderer;
 		mc.getTextureManager().bindTexture(TEXTURE);
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		this.hovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
-		int i = this.getHoverState(hovered);
+		hovered = mouseX > x && mouseY > y && mouseX < x + width && mouseY < y + height;
+		int i = getHoverState(hovered);
 		drawTexturedModalRect(x, y, 0, 64 + i * 12, width / 2 + width % 2, height);
 		drawTexturedModalRect(x + width / 2 + width % 2, y, 200 - width / 2, 64 + i * 12, width / 2, height);
 		mouseDragged(mc, mouseX, mouseY);

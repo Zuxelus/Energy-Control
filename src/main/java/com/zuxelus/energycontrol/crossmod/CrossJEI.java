@@ -2,20 +2,7 @@ package com.zuxelus.energycontrol.crossmod;
 
 import javax.annotation.Nonnull;
 
-import com.zuxelus.energycontrol.blocks.AFSU;
-import com.zuxelus.energycontrol.blocks.AdvancedInfoPanel;
-import com.zuxelus.energycontrol.blocks.AdvancedInfoPanelExtender;
-import com.zuxelus.energycontrol.blocks.AverageCounter;
 import com.zuxelus.energycontrol.blocks.BlockLight;
-import com.zuxelus.energycontrol.blocks.EnergyCounter;
-import com.zuxelus.energycontrol.blocks.HowlerAlarm;
-import com.zuxelus.energycontrol.blocks.IndustrialAlarm;
-import com.zuxelus.energycontrol.blocks.InfoPanel;
-import com.zuxelus.energycontrol.blocks.InfoPanelExtender;
-import com.zuxelus.energycontrol.blocks.KitAssembler;
-import com.zuxelus.energycontrol.blocks.RangeTrigger;
-import com.zuxelus.energycontrol.blocks.RemoteThermo;
-import com.zuxelus.energycontrol.blocks.ThermalMonitor;
 import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
@@ -28,7 +15,6 @@ import net.minecraft.block.Block;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.Loader;
 
 @JEIPlugin
 public class CrossJEI implements IModPlugin {

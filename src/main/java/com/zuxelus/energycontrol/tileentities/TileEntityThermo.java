@@ -180,8 +180,10 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 			else
 				newStatus = 0;
 
-		} else
-			newStatus = -2;
+		} else {
+			int heat = ReactorHelper.getReactorHeat(world, pos);
+			newStatus = heat == -1 ? -2 : heat >= heatLevel ? 1 : 0;
+		}
 
 		if (newStatus != status) {
 			status = newStatus;

@@ -19,6 +19,8 @@ public class SlotArmor extends Slot {
 
 	@Override
 	public boolean isItemValid(ItemStack stack) {
+		if (stack.isEmpty())
+			return false;
 		Item item = stack.getItem();
 		if (item == null)
 			return false;

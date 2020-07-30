@@ -32,10 +32,9 @@ public class ContainerAverageCounter extends ContainerBase<TileEntityAverageCoun
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
 		int average = te.getClientAverage();
-		for (int i = 0; i < listeners.size(); i++) {
+		for (int i = 0; i < listeners.size(); i++)
 			if (lastAverage != average)
 				NetworkHelper.updateClientTileEntity(listeners.get(i), te.getPos(), 1, average);
-		}
 		lastAverage = average;
 	}
 

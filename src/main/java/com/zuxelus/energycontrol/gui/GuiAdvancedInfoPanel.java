@@ -54,18 +54,18 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
 		prevCard = stack;
 
 		// labels
-		buttonList.add(new IconButton(ID_LABELS, guiLeft + 83, guiTop + 42, 16, 16, TEXTURE, 192 - 16, getIconLabelsTopOffset(panel.getShowLabels())));
+		addButton(new IconButton(ID_LABELS, guiLeft + 83, guiTop + 42, 16, 16, TEXTURE, 192 - 16, getIconLabelsTopOffset(panel.getShowLabels())));
 		// slope
-		buttonList.add(new IconButton(ID_SLOPE, guiLeft + 83 + 17 * 1, guiTop + 42, 16, 16, TEXTURE, 192, 15));
+		addButton(new IconButton(ID_SLOPE, guiLeft + 83 + 17 * 1, guiTop + 42, 16, 16, TEXTURE, 192, 15));
 		// colors
-		buttonList.add(new IconButton(ID_COLORS, guiLeft + 83 + 17 * 2, guiTop + 42, 16, 16, TEXTURE, 192, 15 + 16));
+		addButton(new IconButton(ID_COLORS, guiLeft + 83 + 17 * 2, guiTop + 42, 16, 16, TEXTURE, 192, 15 + 16));
 		// power
-		buttonList.add(new IconButton(ID_POWER, guiLeft + 83 + 17 * 3, guiTop + 42, 16, 16, TEXTURE, 192 - 16, getIconPowerTopOffset(panel.getPowerMode())));
+		addButton(new IconButton(ID_POWER, guiLeft + 83 + 17 * 3, guiTop + 42, 16, 16, TEXTURE, 192 - 16, getIconPowerTopOffset(panel.getPowerMode())));
 
 		if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain) {
 			int slot = panel.getCardSlot(stack);
 			if (stack.getItemDamage() == ItemCardType.CARD_TEXT)
-				buttonList.add(new IconButton(ID_SETTINGS, guiLeft + 83 + 17 * 4, guiTop + 42, 16, 16, TEXTURE, 192, 15 + 16 * 2));
+				addButton(new IconButton(ID_SETTINGS, guiLeft + 83 + 17 * 4, guiTop + 42, 16, 16, TEXTURE, 192, 15 + 16 * 2));
 			List<PanelSetting> settingsList = ItemCardMain.getSettingsList(stack);
 
 			int hy = fontRenderer.FONT_HEIGHT + 1;
@@ -73,7 +73,7 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
 			int x = guiLeft + 24;
 			if (settingsList != null)
 				for (PanelSetting panelSetting : settingsList) {
-					buttonList.add(new GuiInfoPanelCheckBox(0, x + 4, guiTop + 51 + hy * y, panelSetting, panel, slot, fontRenderer));
+					addButton(new GuiInfoPanelCheckBox(0, x + 4, guiTop + 51 + hy * y, panelSetting, panel, slot, fontRenderer));
 					y++;
 				}
 			if (!modified) {
@@ -122,8 +122,10 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
 			byte newTab = (byte) ((mouseY - guiTop - 62) / 14);
 			if (newTab > 2)
 				newTab = 2;
-			if (newTab != activeTab && modified)
+			if (newTab != activeTab && modified) {
 				updateTitle();
+				modified = false;
+			}
 			activeTab = newTab;
 		}
 	}

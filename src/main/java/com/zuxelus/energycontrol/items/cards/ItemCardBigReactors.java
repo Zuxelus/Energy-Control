@@ -11,8 +11,8 @@ import com.zuxelus.energycontrol.api.PanelString;
 
 import erogenousbeef.bigreactors.common.multiblock.MultiblockReactor;
 import erogenousbeef.bigreactors.common.multiblock.MultiblockTurbine;
-import erogenousbeef.bigreactors.common.multiblock.tileentity.TileEntityReactorController;
-import erogenousbeef.bigreactors.common.multiblock.tileentity.TileEntityTurbineController;
+import erogenousbeef.bigreactors.common.multiblock.tileentity.TileEntityReactorPartBase;
+import erogenousbeef.bigreactors.common.multiblock.tileentity.TileEntityTurbinePartBase;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -35,8 +35,8 @@ public class ItemCardBigReactors extends ItemCardBase {
 			return CardState.NO_TARGET;
 
 		TileEntity te = world.getTileEntity(target);
-		if (te instanceof TileEntityReactorController) {
-			MultiblockReactor reactor = ((TileEntityReactorController) te).getReactorController();
+		if (te instanceof TileEntityReactorPartBase) {
+			MultiblockReactor reactor = ((TileEntityReactorPartBase) te).getReactorController();
 			if (reactor == null)
 				return CardState.NO_TARGET;
 
@@ -59,8 +59,8 @@ public class ItemCardBigReactors extends ItemCardBase {
 			reader.setString("size", String.format("%sx%sx%s",max.getX() - min.getX() + 1, max.getY() - min.getY() + 1, max.getZ() - min.getZ() + 1));
 			return CardState.OK;
 		}
-		if (te instanceof TileEntityTurbineController) {
-			MultiblockTurbine turbine = ((TileEntityTurbineController) te).getTurbine();
+		if (te instanceof TileEntityTurbinePartBase) {
+			MultiblockTurbine turbine = ((TileEntityTurbinePartBase) te).getTurbine();
 			if (turbine == null)
 				return CardState.NO_TARGET;
 			
@@ -145,7 +145,7 @@ public class ItemCardBigReactors extends ItemCardBase {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public List<PanelSetting> getSettingsList(ItemStack stack) {
+	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(6);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOnOff"), 1, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelHeat"), 2, damage));

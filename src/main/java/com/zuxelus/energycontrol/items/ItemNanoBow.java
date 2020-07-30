@@ -1,14 +1,10 @@
 package com.zuxelus.energycontrol.items;
 
-import java.util.List;
-
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.entities.EntityTechArrow;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 
-import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -26,6 +22,7 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -52,14 +49,14 @@ public abstract class ItemNanoBow extends ItemBow /* , IItemUpgradeable */ {
 		int mode = nbt.getInteger("bowMode");
 		
 		EntityPlayer player = (EntityPlayer) entity;
-		int i = this.getMaxItemUseDuration(stack) - timeLeft;
-		i = net.minecraftforge.event.ForgeEventFactory.onArrowLoose(stack, world, player, i, true);
-		if (i < 0)
+		int charge = getMaxItemUseDuration(stack) - timeLeft;
+		charge = ForgeEventFactory.onArrowLoose(stack, world, player, charge, true);
+		if (charge < 0)
 			return;
 
 		if (mode == RAPID)
-			i = i * 2;
-		float f = getArrowVelocity(i);
+			charge = charge * 2;
+		float f = getArrowVelocity(charge);
 		if (f < 0.1)
 			return;
 
@@ -168,6 +165,10 @@ public abstract class ItemNanoBow extends ItemBow /* , IItemUpgradeable */ {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
 		ItemStack stack = player.getHeldItem(hand);
+		ActionResult<ItemStack> result = ForgeEventFactory.onArrowNock(stack, world, player, hand, true);
+		if (result != null)
+			return result;
+
 		NBTTagCompound nbt = ItemStackHelper.getOrCreateNbtData(stack);
 		int mode = nbt.getInteger("bowMode");
 		if (!world.isRemote && isModeSwitchKeyDown(player) && nbt.getByte("toggleTimer") == 0) {

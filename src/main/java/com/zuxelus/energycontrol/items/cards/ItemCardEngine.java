@@ -75,7 +75,7 @@ public class ItemCardEngine extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelSetting> getSettingsList(ItemStack stack) {
+	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(5);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelHeat"), 1, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelStorage"), 2, damage));

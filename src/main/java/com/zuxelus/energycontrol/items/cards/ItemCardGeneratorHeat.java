@@ -104,7 +104,7 @@ public class ItemCardGeneratorHeat extends ItemCardBase {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public List<PanelSetting> getSettingsList(ItemStack stack) {
+	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(7);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOutput"), 1, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelBuffer"), 2, damage));

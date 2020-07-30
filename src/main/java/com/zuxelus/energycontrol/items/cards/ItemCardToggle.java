@@ -77,7 +77,7 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public List<PanelSetting> getSettingsList(ItemStack stack) {
+	public List<PanelSetting> getSettingsList() {
 		return null;
 	}
 
@@ -126,15 +126,15 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 		if (reader.getBoolean("value"))
 			manager.bindTexture(new ResourceLocation(EnergyControl.MODID + ":textures/gui/green.png"));
 		else
-			manager.bindTexture(new ResourceLocation(EnergyControl.MODID + ":textures/gui/grey.png"));	
-        Tessellator tessellator = Tessellator.getInstance();
+			manager.bindTexture(new ResourceLocation(EnergyControl.MODID + ":textures/gui/grey.png"));
+		Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-        bufferbuilder.pos((x + 0), (y + height), z).tex((double)((float)(textureX + 0)), (double)((float)(textureY + height))).endVertex();
-        bufferbuilder.pos((x + width), (y + height), z).tex((double)((float)(textureX + width)), (double)((float)(textureY + height))).endVertex();
-        bufferbuilder.pos((x + width), (y + 0), z).tex((double)((float)(textureX + width)), (double)((float)(textureY + 0))).endVertex();
-        bufferbuilder.pos((x + 0), (y + 0), z).tex((double)((float)(textureX + 0)), (double)((float)(textureY + 0))).endVertex();
-        tessellator.draw();
+        bufferbuilder.pos(x + 0, y + height, z).tex((double)((float)(textureX + 0)), (double)((float)(textureY + height))).endVertex();
+        bufferbuilder.pos(x + width, y + height, z).tex((double)((float)(textureX + width)), (double)((float)(textureY + height))).endVertex();
+        bufferbuilder.pos(x + width, y + 0, z).tex((double)((float)(textureX + width)), (double)((float)(textureY + 0))).endVertex();
+        bufferbuilder.pos(x + 0, y + 0, z).tex((double)((float)(textureX + 0)), (double)((float)(textureY + 0))).endVertex();
+		tessellator.draw();
 		
 		
 		/*Tessellator tessellator = Tessellator.getInstance();

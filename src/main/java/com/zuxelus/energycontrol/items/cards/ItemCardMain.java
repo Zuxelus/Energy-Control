@@ -5,8 +5,13 @@ import java.util.List;
 import java.util.Map;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.api.*;
-import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.api.CardState;
+import com.zuxelus.energycontrol.api.ICardGui;
+import com.zuxelus.energycontrol.api.ICardReader;
+import com.zuxelus.energycontrol.api.IItemCard;
+import com.zuxelus.energycontrol.api.ITouchAction;
+import com.zuxelus.energycontrol.api.PanelSetting;
+import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 
@@ -127,7 +132,7 @@ public final class ItemCardMain extends Item {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+	public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
 		ItemCardReader reader = new ItemCardReader(stack);
 		String title = reader.getTitle();
 		if (title != null && !title.isEmpty())
@@ -161,7 +166,7 @@ public final class ItemCardMain extends Item {
 	public static List<PanelSetting> getSettingsList(ItemStack stack) {
 		int damage = stack.getItemDamage();
 		if (cards.containsKey(damage))
-			return cards.get(damage).getSettingsList(stack);
+			return cards.get(damage).getSettingsList();
 		return null;
 	}
 

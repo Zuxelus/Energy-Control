@@ -3,25 +3,16 @@ package com.zuxelus.energycontrol.tileentities;
 import com.zuxelus.energycontrol.containers.ISlotItemFilter;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 
-import ic2.api.energy.EnergyNet;
-import ic2.api.energy.NodeStats;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
-import ic2.api.energy.tile.IEnergyAcceptor;
-import ic2.api.energy.tile.IEnergyEmitter;
-import ic2.api.energy.tile.IEnergySink;
-import ic2.api.energy.tile.IEnergySource;
 import ic2.api.info.Info;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.Loader;
 
 public class TileEntityAverageCounter extends TileEntityEnergyStorage implements ITickable, ISlotItemFilter, ITilePacketHandler {
 	private static final int BASE_PACKET_SIZE = 32;
@@ -161,7 +152,7 @@ public class TileEntityAverageCounter extends TileEntityEnergyStorage implements
 		super.onLoad();
 		if (!init) {
 			init = true;
-			markDirty();
+			refreshData();
 		}
 	}
 
@@ -184,6 +175,10 @@ public class TileEntityAverageCounter extends TileEntityEnergyStorage implements
 	@Override
 	public void markDirty() {
 		super.markDirty();
+		refreshData();
+	}
+
+	private void refreshData() {
 		int upgradeCountTransormer = 0;
 		ItemStack itemStack = getStackInSlot(0);
 		if (!itemStack.isEmpty() && itemStack.isItemEqual(CrossModLoader.ic2.getItemStack("transformer")))

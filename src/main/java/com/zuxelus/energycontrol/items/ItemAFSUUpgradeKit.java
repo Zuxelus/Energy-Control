@@ -10,6 +10,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -27,7 +28,7 @@ public class ItemAFSUUpgradeKit extends Item {
 	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
 		if (world.isRemote)
 			return EnumActionResult.PASS;
-		
+
 		Block block = world.getBlockState(pos).getBlock();
 		if (!(block instanceof BlockTileEntity))
 			return EnumActionResult.PASS;
@@ -35,14 +36,24 @@ public class ItemAFSUUpgradeKit extends Item {
 		if (!(te instanceof TileEntityElectricMFSU))
 			return EnumActionResult.PASS;
 
-		int facing = ((TileEntityElectricMFSU) te).getFacing().getIndex();
+		TileEntityElectricMFSU mfsu = ((TileEntityElectricMFSU) te);
+		int eustored = mfsu.getStored();
+		int facing = mfsu.getFacing().getIndex();
+		byte mode = mfsu.redstoneMode;
+		ItemStack[] items = new ItemStack[mfsu.getSizeInventory()];
+		for (int i = 0; i < items.length; i++)
+			items[i] = mfsu.getStackInSlot(i);
 		world.removeTileEntity(pos);
 		IBlockState state = ItemHelper.afsu.getStateFromMeta(facing);
 		world.setBlockState(pos, state);
 		TileEntityAFSU afsu = new TileEntityAFSU();
+		afsu.addEnergy(eustored);
 		afsu.setFacing(facing);
-		afsu.addEnergy(((TileEntityElectricMFSU) te).getStored());
+		afsu.setRedstoneMode(mode);
+		for (int j = 0; j < items.length; j++)
+			afsu.setInventorySlotContents(j, items[j]);
 		world.setTileEntity(pos, afsu);
+		afsu.markDirty();
 		StackUtil.consumeOrError(player, hand, 1);
 		return EnumActionResult.SUCCESS;
 	}

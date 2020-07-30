@@ -96,7 +96,7 @@ public class TileEntityEnergyCounter extends TileEntityEnergyStorage implements 
 		super.onLoad();
 		if (!init) {
 			init = true;
-			markDirty();
+			refreshData();
 		}
 	}
 
@@ -109,6 +109,10 @@ public class TileEntityEnergyCounter extends TileEntityEnergyStorage implements 
 	@Override
 	public void markDirty() {
 		super.markDirty();
+		refreshData();
+	}
+
+	private void refreshData() {
 		int upgradeCountTransormer = 0;
 		ItemStack itemStack = getStackInSlot(0);
 		if (!itemStack.isEmpty() && itemStack.isItemEqual(CrossModLoader.ic2.getItemStack("transformer")))

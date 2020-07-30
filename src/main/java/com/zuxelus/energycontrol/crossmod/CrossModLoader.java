@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.crossmod;
 
+import com.zuxelus.energycontrol.crossmod.bigreactors.CrossBigReactors;
 import com.zuxelus.energycontrol.crossmod.buildcraft.CrossBC;
 import com.zuxelus.energycontrol.crossmod.computercraft.PeripheralProvider;
 import com.zuxelus.energycontrol.crossmod.ic2.CrossIC2;
@@ -25,7 +26,7 @@ public class CrossModLoader {
 		buildCraft = CrossBC.getMod();
 		appEng = new CrossAppEng();
 		galacticraft = new CrossGalacticraft();
-		bigReactors = new CrossBigReactors();
+		bigReactors = CrossBigReactors.getMod();
 	}
 
 	public static void init() {

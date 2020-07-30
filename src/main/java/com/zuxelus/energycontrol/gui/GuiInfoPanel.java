@@ -129,16 +129,16 @@ public class GuiInfoPanel extends GuiContainer {
 		buttonList.clear();
 		prevCard = stack;
 		isColored = panel.getColored();
-		buttonList.add(new GuiInfoPanelShowLabels(0, guiLeft + xSize - 25, guiTop + 42, panel));
+		addButton(new GuiInfoPanelShowLabels(0, guiLeft + xSize - 25, guiTop + 42, panel));
 		int delta = 0;
 		if (isColored) {
-			buttonList.add(new CompactButton(112, guiLeft + xSize - 25, guiTop + 55, 18, 12, "T"));
+			addButton(new CompactButton(112, guiLeft + xSize - 25, guiTop + 55, 18, 12, "T"));
 			delta = 15;
 		}
 		if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain) {
 			int slot = panel.getCardSlot(stack);
 			if (stack.getItemDamage() == ItemCardType.CARD_TEXT)
-				buttonList.add(new CompactButton(111, guiLeft + xSize - 25, guiTop + 55 + delta, 18, 12, "..."));
+				addButton(new CompactButton(111, guiLeft + xSize - 25, guiTop + 55 + delta, 18, 12, "..."));
 			List<PanelSetting> settingsList = ItemCardMain.getSettingsList(stack);
 
 			int hy = fontRenderer.FONT_HEIGHT + 1;
@@ -146,7 +146,7 @@ public class GuiInfoPanel extends GuiContainer {
 			int x = guiLeft + 24;
 			if (settingsList != null)
 				for (PanelSetting panelSetting : settingsList) {
-					buttonList.add(new GuiInfoPanelCheckBox(0, x + 4, guiTop + 28 + hy * y, panelSetting, panel, slot, fontRenderer));
+					addButton(new GuiInfoPanelCheckBox(0, x + 4, guiTop + 28 + hy * y, panelSetting, panel, slot, fontRenderer));
 					y++;
 				}
 			if (!modified) {

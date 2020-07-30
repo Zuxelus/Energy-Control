@@ -438,9 +438,9 @@ public class IC2Exp extends CrossIC2 {
 		int slotCount = inventory.getSizeInventory();
 		int dmgLeft = 0;
 		for (int i = 0; i < slotCount; i++) {
-			ItemStack rStack = inventory.getStackInSlot(i);
-			if (!rStack.isEmpty())
-				dmgLeft = Math.max(dmgLeft, ReactorHelper.getNuclearCellTimeLeft(rStack));
+			ItemStack stack = inventory.getStackInSlot(i);
+			if (!stack.isEmpty())
+				dmgLeft = Math.max(dmgLeft, ReactorHelper.getNuclearCellTimeLeft(stack));
 		}
 
 		int timeLeft = 0;
@@ -468,9 +468,9 @@ public class IC2Exp extends CrossIC2 {
 		int slotCount = inventory.getSizeInventory();
 		int dmgLeft = 0;
 		for (int i = 0; i < slotCount; i++) {
-			ItemStack rStack = inventory.getStackInSlot(i);
-			if (!rStack.isEmpty())
-				dmgLeft = Math.max(dmgLeft, ReactorHelper.getNuclearCellTimeLeft(rStack));
+			ItemStack stack = inventory.getStackInSlot(i);
+			if (!stack.isEmpty())
+				dmgLeft = Math.max(dmgLeft, ReactorHelper.getNuclearCellTimeLeft(stack));
 		}
 
 		int timeLeft = dmgLeft * reactor.getTickRate() / 20;

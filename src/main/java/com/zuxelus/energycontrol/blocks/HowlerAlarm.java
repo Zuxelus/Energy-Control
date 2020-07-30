@@ -65,14 +65,14 @@ public class HowlerAlarm extends FacingBlock {
 	}
 
 	@Override
-	public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-		return canPlaceBlock(worldIn, pos, facing.getOpposite()) ? this.getDefaultState().withProperty(FACING, facing) : this.getDefaultState().withProperty(FACING, EnumFacing.DOWN);
+	public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
+		return canPlaceBlock(world, pos, facing.getOpposite()) ? this.getDefaultState().withProperty(FACING, facing) : this.getDefaultState().withProperty(FACING, EnumFacing.DOWN);
 	}
 
 	@Override
-	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos) {
-		if (this.checkForDrop(world, pos, state) && !canPlaceBlock(world, pos, ((EnumFacing) state.getValue(FACING)).getOpposite())) {
-			this.dropBlockAsItem(world, pos, state, 0);
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos fromPos) {
+		if (checkForDrop(world, pos, state) && !canPlaceBlock(world, pos, ((EnumFacing) state.getValue(FACING)).getOpposite())) {
+			dropBlockAsItem(world, pos, state, 0);
 			world.setBlockToAir(pos);
 		} else 
 			if (!world.isRemote)
@@ -80,9 +80,9 @@ public class HowlerAlarm extends FacingBlock {
 	}
 
 	private boolean checkForDrop(World worldIn, BlockPos pos, IBlockState state) {
-		if (this.canPlaceBlockAt(worldIn, pos))
+		if (canPlaceBlockAt(worldIn, pos))
 			return true;
-		this.dropBlockAsItem(worldIn, pos, state, 0);
+		dropBlockAsItem(worldIn, pos, state, 0);
 		worldIn.setBlockToAir(pos);
 		return false;
 	}

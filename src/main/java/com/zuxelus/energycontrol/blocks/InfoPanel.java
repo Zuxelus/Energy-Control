@@ -109,7 +109,7 @@ public class InfoPanel extends FacingBlock {
 	}
 
 	@Override
-	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos) {
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos fromPos) {
 		if (!world.isRemote)
 			world.notifyBlockUpdate(pos, state, state, 2);
 	}

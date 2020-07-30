@@ -35,7 +35,7 @@ public class ItemCardReactorDraconic extends ItemCardBase {
 		if (!(te instanceof TileReactorCore))
 			return CardState.NO_TARGET;
 
-		TileReactorCore reactor = ((TileReactorCore)te);
+		TileReactorCore reactor = ((TileReactorCore) te);
 		reader.setString("status", reactor.reactorState.value.name());
 		reader.setDouble("temp", reactor.temperature.value);
 		reader.setDouble("rate", reactor.generationRate.value);
@@ -74,7 +74,7 @@ public class ItemCardReactorDraconic extends ItemCardBase {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public List<PanelSetting> getSettingsList(ItemStack stack) {
+	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(6);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbStatus"), 1, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbDiameter"), 2, damage));
