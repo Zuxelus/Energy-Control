@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.crossmod;
 
+import com.zuxelus.energycontrol.crossmod.bigreactors.CrossBigReactors;
 import com.zuxelus.energycontrol.crossmod.ic2.CrossIC2;
 import com.zuxelus.energycontrol.crossmod.opencomputers.CrossOpenComputers;
 import com.zuxelus.energycontrol.crossmod.techreborn.CrossTechReborn;
@@ -19,7 +20,7 @@ public class CrossModLoader {
 		techReborn = CrossTechReborn.getMod();
 		appEng = new CrossAppEng();
 		galacticraft = new CrossGalacticraft();
-		bigReactors = new CrossBigReactors();
+		bigReactors = CrossBigReactors.getMod();
 	}
 
 	public static void init() {

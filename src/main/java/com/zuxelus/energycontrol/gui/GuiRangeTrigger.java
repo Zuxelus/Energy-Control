@@ -41,14 +41,14 @@ public class GuiRangeTrigger extends GuiContainer {
 		prevCard = card;
 		// ten digits, up to 10 billions
 		for (int i = 0; i < 10; i++) {
-			buttonList.add(new CompactButton(i * 10, guiLeft + 30 + i * 12 + (i + 2) / 3 * 6, guiTop + 20, 12, 12, "-"));
-			buttonList.add(new CompactButton(i * 10 + 1, guiLeft + 30 + i * 12 + (i + 2) / 3 * 6, guiTop + 42, 12, 12, "+"));
+			addButton(new CompactButton(i * 10, guiLeft + 30 + i * 12 + (i + 2) / 3 * 6, guiTop + 20, 12, 12, "-"));
+			addButton(new CompactButton(i * 10 + 1, guiLeft + 30 + i * 12 + (i + 2) / 3 * 6, guiTop + 42, 12, 12, "+"));
 		}
 		for (int i = 0; i < 10; i++) {
-			buttonList.add(new CompactButton(100 + i * 10, guiLeft + 30 + i * 12 + (i + 2) / 3 * 6, guiTop + 57, 12, 12, "-"));
-			buttonList.add(new CompactButton(100 + i * 10 + 1, guiLeft + 30 + i * 12 + (i + 2) / 3 * 6, guiTop + 79, 12, 12, "+"));
+			addButton(new CompactButton(100 + i * 10, guiLeft + 30 + i * 12 + (i + 2) / 3 * 6, guiTop + 57, 12, 12, "-"));
+			addButton(new CompactButton(100 + i * 10 + 1, guiLeft + 30 + i * 12 + (i + 2) / 3 * 6, guiTop + 79, 12, 12, "+"));
 		}
-		buttonList.add(new GuiRangeTriggerInvertRedstone(10, guiLeft + 8, guiTop + 62, container.te));
+		addButton(new GuiRangeTriggerInvertRedstone(10, guiLeft + 8, guiTop + 62, container.te));
 	}
 
 	@Override

@@ -29,7 +29,7 @@ public class GuiEnergyCounter extends GuiContainer {
 
 	private void initControls() {
 		buttonList.clear();
-		buttonList.add(new GuiButton(0, guiLeft + 35, guiTop + 42, 127, 20, I18n.format("msg.ec.Reset")));
+		addButton(new GuiButton(0, guiLeft + 35, guiTop + 42, 127, 20, I18n.format("msg.ec.Reset")));
 	}
 
 	@Override

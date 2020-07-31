@@ -54,8 +54,8 @@ public class NetworkHelper {
 	}
 
 	// client
-	public static void setCardSettings(ItemStack card, TileEntity panel, Map<String, Object> fields, byte slot) {
-		if (card == null || fields == null || fields.isEmpty() || panel == null || !(panel instanceof TileEntityInfoPanel))
+	public static void setCardSettings(ItemStack card, TileEntityInfoPanel panel, Map<String, Object> fields, byte slot) {
+		if (card == null || fields == null || fields.isEmpty() || panel == null)
 			return;
 
 		if (!panel.getWorld().isRemote)

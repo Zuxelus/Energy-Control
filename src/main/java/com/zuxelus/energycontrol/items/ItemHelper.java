@@ -149,7 +149,7 @@ public class ItemHelper {
 			itemAFB = CrossModLoader.ic2.getItem("afb");
 			setNames(itemAFB, "afb");
 			GameRegistry.register(itemAFB);
-	
+
 			itemAFSUUpgradeKit = CrossModLoader.ic2.getItem("afsu_upgrade_kit");
 			setNames(itemAFSUUpgradeKit, "afsu_upgrade_kit");
 			GameRegistry.register(itemAFSUUpgradeKit);

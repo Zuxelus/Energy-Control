@@ -45,7 +45,7 @@ public class GuiCardText extends GuiScreen implements ICardGui {
 
 	private void initControls() {
 		buttonList.clear();
-		buttonList.add(new GuiButton(1, guiLeft + xSize - 60 - 8, guiTop + 120, 60, 20, "Ok"));
+		addButton(new GuiButton(1, guiLeft + xSize - 60 - 8, guiTop + 120, 60, 20, "Ok"));
 		textArea = new GuiTextArea(fontRendererObj, guiLeft + 8, guiTop + 5, xSize - 16, ySize - 35, lineCount);
 		textArea.setFocused(true);
 		String[] data = textArea.getText();

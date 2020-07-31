@@ -20,9 +20,7 @@ public class GuiInfoPanelShowLabels extends GuiButton {
 	private boolean checked;
 
 	public GuiInfoPanelShowLabels(int id, int x, int y, TileEntityInfoPanel panel) {
-		super(id, x, y, 0, 0, "");
-		height = 9;
-		width = 18;
+		super(id, x, y, 18, 9, "");
 		this.panel = panel;
 		checked = panel.getShowLabels();
 	}
@@ -35,12 +33,7 @@ public class GuiInfoPanelShowLabels extends GuiButton {
 		mc.getTextureManager().bindTexture(TEXTURE_LOCATION);
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		int delta = checked ? 12 : 21;
-		drawTexturedModalRect(xPosition, yPosition + 1, 176, delta, 18, 9);
-	}
-
-	@Override
-	public int getHoverState(boolean flag) {
-		return 0;
+		drawTexturedModalRect(xPosition, yPosition + 1, 176, delta, width, height);
 	}
 
 	@Override

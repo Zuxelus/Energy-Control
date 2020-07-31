@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.api;
 
-import com.zuxelus.energycontrol.items.ICardSettingsWrapper;
 import com.zuxelus.energycontrol.items.cards.ItemCardSettingsReader;
 
 /**

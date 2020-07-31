@@ -163,7 +163,7 @@ public final class ItemCardMain extends Item {
 	public static List<PanelSetting> getSettingsList(ItemStack stack) {
 		int damage = stack.getItemDamage();
 		if (cards.containsKey(damage))
-			return cards.get(damage).getSettingsList(stack);
+			return cards.get(damage).getSettingsList();
 		return null;
 	}
 

@@ -8,7 +8,6 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.ICardGui;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.containers.ContainerBase;
-import com.zuxelus.energycontrol.containers.ContainerInfoPanel;
 import com.zuxelus.energycontrol.gui.controls.CompactButton;
 import com.zuxelus.energycontrol.gui.controls.GuiInfoPanelCheckBox;
 import com.zuxelus.energycontrol.gui.controls.GuiInfoPanelShowLabels;
@@ -27,7 +26,6 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -130,16 +128,16 @@ public class GuiInfoPanel extends GuiContainer {
 		buttonList.clear();
 		prevCard = stack;
 		isColored = panel.getColored();
-		buttonList.add(new GuiInfoPanelShowLabels(0, guiLeft + xSize - 25, guiTop + 42, panel));
+		addButton(new GuiInfoPanelShowLabels(0, guiLeft + xSize - 25, guiTop + 42, panel));
 		int delta = 0;
 		if (isColored) {
-			buttonList.add(new CompactButton(112, guiLeft + xSize - 25, guiTop + 55, 18, 12, "T"));
+			addButton(new CompactButton(112, guiLeft + xSize - 25, guiTop + 55, 18, 12, "T"));
 			delta = 15;
 		}
 		if (stack != null && stack.getItem() instanceof ItemCardMain) {
 			int slot = panel.getCardSlot(stack);
 			if (stack.getItemDamage() == ItemCardType.CARD_TEXT)
-				buttonList.add(new CompactButton(111, guiLeft + xSize - 25, guiTop + 55 + delta, 18, 12, "..."));
+				addButton(new CompactButton(111, guiLeft + xSize - 25, guiTop + 55 + delta, 18, 12, "..."));
 			List<PanelSetting> settingsList = ItemCardMain.getSettingsList(stack);
 
 			int hy = fontRendererObj.FONT_HEIGHT + 1;
@@ -147,7 +145,7 @@ public class GuiInfoPanel extends GuiContainer {
 			int x = guiLeft + 24;
 			if (settingsList != null)
 				for (PanelSetting panelSetting : settingsList) {
-					buttonList.add(new GuiInfoPanelCheckBox(0, x + 4, guiTop + 28 + hy * y, panelSetting, panel, slot, fontRendererObj));
+					addButton(new GuiInfoPanelCheckBox(0, x + 4, guiTop + 28 + hy * y, panelSetting, panel, slot, fontRendererObj));
 					y++;
 				}
 			if (!modified) {

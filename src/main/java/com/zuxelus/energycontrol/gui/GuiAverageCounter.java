@@ -29,10 +29,10 @@ public class GuiAverageCounter extends GuiContainer {
 
 	private void initControls() {
 		buttonList.clear();
-		buttonList.add(new GuiButton(1, guiLeft + 35, guiTop + 42, 30, 20, I18n.format("1")));
-		buttonList.add(new GuiButton(2, guiLeft + 35 + 30, guiTop + 42, 30, 20, I18n.format("3")));
-		buttonList.add(new GuiButton(3, guiLeft + 35 + 60, guiTop + 42, 30, 20, I18n.format("5")));
-		buttonList.add(new GuiButton(4, guiLeft + 35 + 90, guiTop + 42, 30, 20, I18n.format("10")));
+		addButton(new GuiButton(1, guiLeft + 35, guiTop + 42, 30, 20, I18n.format("1")));
+		addButton(new GuiButton(2, guiLeft + 35 + 30, guiTop + 42, 30, 20, I18n.format("3")));
+		addButton(new GuiButton(3, guiLeft + 35 + 60, guiTop + 42, 30, 20, I18n.format("5")));
+		addButton(new GuiButton(4, guiLeft + 35 + 90, guiTop + 42, 30, 20, I18n.format("10")));
 	}
 
 	@Override

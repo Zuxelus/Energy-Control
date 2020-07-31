@@ -25,11 +25,9 @@ public class GuiInfoPanelCheckBox extends GuiButton {
 	private int slot;
 
 	public GuiInfoPanelCheckBox(int id, int x, int y, PanelSetting setting, TileEntityInfoPanel panel, int slot, FontRenderer renderer) {
-		super(id, x, y, 0, 0, setting.title);
+		super(id, x, y, renderer.getStringWidth(setting.title) + 8, renderer.FONT_HEIGHT + 1, setting.title);
 		this.setting = setting;
 		this.slot = slot;
-		height = renderer.FONT_HEIGHT + 1;
-		width = renderer.getStringWidth(setting.title) + 8;
 		this.panel = panel;
 	}
 

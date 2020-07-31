@@ -29,7 +29,7 @@ public class GuiIndustrialAlarm extends GuiBase {
 		guiTop = (this.height - ySize) / 2;
 		buttonList.clear();
 		slider = new GuiHowlerAlarmSlider(3, guiLeft + 12, guiTop + 33, alarm);
-		buttonList.add(slider);
+		addButton(slider);
 	}
 
 	@Override

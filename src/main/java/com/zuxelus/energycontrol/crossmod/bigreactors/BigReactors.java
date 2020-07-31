@@ -1,4 +1,4 @@
-package com.zuxelus.energycontrol.crossmod;
+package com.zuxelus.energycontrol.crossmod.bigreactors;
 
 import erogenousbeef.bigreactors.common.multiblock.IInputOutputPort.Direction;
 import erogenousbeef.bigreactors.common.multiblock.MultiblockReactor;
@@ -12,16 +12,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
-public class CrossBigReactors extends CrossModBase {
+public class BigReactors extends CrossBigReactors {
 
-	public CrossBigReactors() {
-		super("bigreactors", null, null);
-	}
-
+	@Override
 	public IFluidTankProperties[] getAllTanks(TileEntity te) {
-		if (!modLoaded)
-			return null;
-
 		if (te instanceof TileEntityReactorPartBase) {
 			MultiblockReactor reactor = ((TileEntityReactorPartBase) te).getReactorController();
 			if (reactor == null)
@@ -43,6 +37,7 @@ public class CrossBigReactors extends CrossModBase {
 		return null;
 	}
 
+	@Override
 	public int getReactorHeat(World world, BlockPos pos) {
 		TileEntity te;
 		for (EnumFacing dir : EnumFacing.VALUES) {

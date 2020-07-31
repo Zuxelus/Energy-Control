@@ -104,7 +104,7 @@ public class ItemCardAppEng extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelSetting> getSettingsList(ItemStack stack) {
+	public List<PanelSetting> getSettingsList() {
 		return null;
 	}
 

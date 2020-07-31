@@ -61,18 +61,16 @@ public class GuiTextArea extends Gui {
 	}
 
 	private void drawCursorVertical(int left, int top, int right, int bottom) {
-		int var5;
-
 		if (left < right) {
-			var5 = left;
+			int i = left;
 			left = right;
-			right = var5;
+			right = i;
 		}
 
 		if (top < bottom) {
-			var5 = top;
+			int j = top;
 			top = bottom;
-			bottom = var5;
+			bottom = j;
 		}
 
 		Tessellator tessellator = Tessellator.getInstance();
@@ -101,8 +99,8 @@ public class GuiTextArea extends Gui {
 		if (cursorPosition < 0)
 			cursorPosition = 0;
 
-		if (this.cursorPosition > lineLength)
-			this.cursorPosition = lineLength;
+		if (cursorPosition > lineLength)
+			cursorPosition = lineLength;
 	}
 
 	public void deleteFromCursor(int count) {
@@ -168,11 +166,11 @@ public class GuiTextArea extends Gui {
 		isFocused = focused;
 	}
 
-	public boolean textAreaKeyTyped(char par1, int par2) {
+	public boolean textAreaKeyTyped(char typedChar, int keyCode) {
 		if (!isFocused)
 			return false;
 		
-		switch (par1) {
+		switch (typedChar) {
 		case 1:
 			setCursorPosition(text[cursorLine].length(), cursorLine);
 			return true;
@@ -180,7 +178,7 @@ public class GuiTextArea extends Gui {
 			setCursorLine(1);
 			return true;
 		default:
-			switch (par2) {
+			switch (keyCode) {
 			case 14:// backspace
 				deleteFromCursor(-1);
 				return true;
@@ -206,8 +204,8 @@ public class GuiTextArea extends Gui {
 				deleteFromCursor(1);
 				return true;
 			default:
-				if (ChatAllowedCharacters.isAllowedCharacter(par1)) {
-					this.writeText(Character.toString(par1));
+				if (ChatAllowedCharacters.isAllowedCharacter(typedChar)) {
+					writeText(Character.toString(typedChar));
 					return true;
 				}
 				return false;
