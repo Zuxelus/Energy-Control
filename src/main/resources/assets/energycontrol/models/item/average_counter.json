@@ -1,7 +1,0 @@
-{
-  "parent": "energycontrol:block/average_counter",
-    "textures": {
-        "up": "energycontrol:blocks/average_counter/input",
-        "north": "energycontrol:blocks/average_counter/output"
-    }
-}

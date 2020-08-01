@@ -1,10 +1,16 @@
 {
     "variants": {
-        "facing=up":    { "model": "energycontrol:info_panel_extender" },
-        "facing=down":  { "model": "energycontrol:info_panel_extender", "x": 180 },
-        "facing=east":  { "model": "energycontrol:info_panel_extender", "x": 90, "y": 90 },
-        "facing=west":  { "model": "energycontrol:info_panel_extender", "x": 90, "y": 270 },
-        "facing=south": { "model": "energycontrol:info_panel_extender", "x": 90, "y": 180 },
-        "facing=north": { "model": "energycontrol:info_panel_extender", "x": 90 }
+        "facing=up,powered=false":    { "model": "energycontrol:block/info_panel_extender" },
+        "facing=down,powered=false":  { "model": "energycontrol:block/info_panel_extender", "x": 180 },
+        "facing=east,powered=false":  { "model": "energycontrol:block/info_panel_extender", "x": 90, "y": 90 },
+        "facing=west,powered=false":  { "model": "energycontrol:block/info_panel_extender", "x": 90, "y": 270 },
+        "facing=south,powered=false": { "model": "energycontrol:block/info_panel_extender", "x": 90, "y": 180 },
+        "facing=north,powered=false": { "model": "energycontrol:block/info_panel_extender", "x": 90 },
+        "facing=up,powered=true":    { "model": "energycontrol:block/info_panel_extender" },
+        "facing=down,powered=true":  { "model": "energycontrol:block/info_panel_extender", "x": 180 },
+        "facing=east,powered=true":  { "model": "energycontrol:block/info_panel_extender", "x": 90, "y": 90 },
+        "facing=west,powered=true":  { "model": "energycontrol:block/info_panel_extender", "x": 90, "y": 270 },
+        "facing=south,powered=true": { "model": "energycontrol:block/info_panel_extender", "x": 90, "y": 180 },
+        "facing=north,powered=true": { "model": "energycontrol:block/info_panel_extender", "x": 90 }
     }
 } 

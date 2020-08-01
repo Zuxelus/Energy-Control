@@ -1,0 +1,28 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"PPP",
+		"CMC",
+		"IRI"
+	],
+	"key": {
+		"P": {
+			"item": "minecraft:lime_stained_glass_pane"
+		},
+		"C": {
+			"item": "techreborn:electronic_circuit"
+		},
+		"I": {
+			"item": "minecraft:black_dye"
+		},
+		"R": {
+			"item": "minecraft:redstone"
+		},
+		"M": {
+			"item": "techreborn:basic_machine_frame"
+		}
+	},
+	"result": {
+		"item": "energycontrol:info_panel"
+	}
+}

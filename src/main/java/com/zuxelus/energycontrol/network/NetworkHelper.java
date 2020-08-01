@@ -1,22 +1,21 @@
 package com.zuxelus.energycontrol.network;
 
-import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
-import com.zuxelus.energycontrol.tileentities.TileEntityAverageCounter;
-import com.zuxelus.energycontrol.tileentities.TileEntityEnergyCounter;
-import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
+import com.zuxelus.energycontrol.blockentities.InfoPanelBlockEntity;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.IContainerListener;
+import io.netty.buffer.Unpooled;
+import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.server.PlayerStream;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class NetworkHelper {
 	public static final int FIELD_DOUBLE = 1;
@@ -28,92 +27,95 @@ public class NetworkHelper {
 	public static final int FIELD_LONG = 7;
 
 	// server
-	private static void sendPacketToAllAround(BlockPos pos, int dist, World world, IMessage packet) {
-		List<EntityPlayer> players = world.playerEntities;
-		for (EntityPlayer player : players) {
-			if (player instanceof EntityPlayerMP) {
-				double dx = pos.getX() - player.posX;
-				double dy = pos.getY() - player.posY;
-				double dz = pos.getZ() - player.posZ;
-	
-				if (dx * dx + dy * dy + dz * dz < dist * dist)
-					ChannelHandler.network.sendTo(packet, (EntityPlayerMP)player);
-			}
-		}
+	private static void sendPacketToAllAround(BlockPos pos, World world, PacketByteBuf data) {
+		Stream<PlayerEntity> watchingPlayers = PlayerStream.watching(world, pos);
+
+		watchingPlayers.forEach(player -> ServerSidePacketRegistry.INSTANCE.sendToPlayer(player,
+				ChannelHandler.SERVER_PLAYERS_PACKET_ID, data));
 	}
-
+	
 	// server
-	public static void setSensorCardField(TileEntity panel, int slot, Map<String, Object> fields) {
-		if (fields == null || fields.isEmpty() || panel == null || !(panel instanceof TileEntityInfoPanel) || slot == -1)
+	public static void setSensorCardField(BlockEntity panel, int slot, Map<String, Object> fields) {
+		if (fields == null || fields.isEmpty() || panel == null || !(panel instanceof InfoPanelBlockEntity) || slot == -1)
 			return;
 
-		if (panel.getWorld().isRemote)
+		if (panel.getWorld().isClient)
 			return;
-
-		sendPacketToAllAround(panel.getPos(), 64, panel.getWorld(), new PacketCard(panel.getPos(), slot, fields));
+		
+		PacketByteBuf data = fieldsToPacket(panel, slot, "", fields);
+		sendPacketToAllAround(panel.getPos(), panel.getWorld(), data);
 	}
 
 	// client
-	public static void setCardSettings(ItemStack card, TileEntityInfoPanel panel, Map<String, Object> fields, byte slot) {
+	public static void setCardSettings(ItemStack card, InfoPanelBlockEntity panel, Map<String, Object> fields, byte slot) {
 		if (card.isEmpty() || fields == null || fields.isEmpty() || panel == null)
 			return;
 
-		if (!panel.getWorld().isRemote)
+		if (!panel.getWorld().isClient)
 			return;
 
-		ChannelHandler.network.sendToServer(new PacketClientSensor(panel.getPos(), slot, card.getItem().getClass().getName(), fields));
+		PacketByteBuf data = fieldsToPacket(panel, slot, card.getItem().getClass().getName(), fields);
+		ClientSidePacketRegistry.INSTANCE.sendToServer(ChannelHandler.CLIENT_CARD_SETTINGS_PACKET_ID, data);
 	}
-
-	public static void chatMessage(EntityPlayer player, String message) {
-		chatMessage(player, message, 0, 0);
-	}
-
-	public static void chatMessage(EntityPlayer player, String message, int type, int value) {
-		if (player instanceof EntityPlayerMP)
-			ChannelHandler.network.sendTo(new PacketChat(message, type, value), (EntityPlayerMP) player);
-	}
-
-	// server
-	public static void updateClientTileEntity(IContainerListener crafter, BlockPos pos, int type, int value) {
-		if (!(crafter instanceof EntityPlayerMP))
-			return;
-		NBTTagCompound tag = new NBTTagCompound();
-		tag.setInteger("type", type);
-		tag.setInteger("value", value);
-		ChannelHandler.network.sendTo(new PacketTileEntity(pos, tag), (EntityPlayerMP) crafter);
-	}
-
-	public static void updateClientTileEntity(IContainerListener crafter, BlockPos pos, int type, double value) {
-		if (!(crafter instanceof EntityPlayerMP))
-			return;
-		NBTTagCompound tag = new NBTTagCompound();
-		tag.setInteger("type", type);
-		tag.setDouble("value", value);
-		ChannelHandler.network.sendTo(new PacketTileEntity(pos, tag), (EntityPlayerMP) crafter);
-	}
-
-	public static void updateClientTileEntity(IContainerListener crafter, BlockPos pos, NBTTagCompound tag) {
-		if (!(crafter instanceof EntityPlayerMP))
-			return;
-		ChannelHandler.network.sendTo(new PacketTileEntity(pos, tag), (EntityPlayerMP) crafter);
-	}
-
+	
 	// client
 	public static void updateSeverTileEntity(BlockPos pos, int type, String string) {
-		NBTTagCompound tag = new NBTTagCompound();
-		tag.setInteger("type", type);
-		tag.setString("string", string);
-		ChannelHandler.network.sendToServer(new PacketTileEntity(pos, tag));
+		CompoundTag tag = new CompoundTag();
+		tag.putInt("type", type);
+		tag.putString("string", string);
+		PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+		data.writeBlockPos(pos);
+		data.writeCompoundTag(tag);
+		ClientSidePacketRegistry.INSTANCE.sendToServer(ChannelHandler.CLIENT_BLOCK_ENTITY_PACKET_ID, data);
 	}
 
 	public static void updateSeverTileEntity(BlockPos pos, int type, int value) {
-		NBTTagCompound tag = new NBTTagCompound();
-		tag.setInteger("type", type);
-		tag.setInteger("value", value);
-		ChannelHandler.network.sendToServer(new PacketTileEntity(pos, tag));
+		CompoundTag tag = new CompoundTag();
+		tag.putInt("type", type);
+		tag.putInt("value", value);
+		PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+		data.writeBlockPos(pos);
+		data.writeCompoundTag(tag);
+		ClientSidePacketRegistry.INSTANCE.sendToServer(ChannelHandler.CLIENT_BLOCK_ENTITY_PACKET_ID, data);
 	}
 
-	public static void updateSeverTileEntity(BlockPos pos, NBTTagCompound tag) {
-		ChannelHandler.network.sendToServer(new PacketTileEntity(pos, tag));
+	public static void updateSeverTileEntity(BlockPos pos, CompoundTag tag) {
+		PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+		data.writeBlockPos(pos);
+		data.writeCompoundTag(tag);
+		ClientSidePacketRegistry.INSTANCE.sendToServer(ChannelHandler.CLIENT_BLOCK_ENTITY_PACKET_ID, data);
+	}
+	
+	private static PacketByteBuf fieldsToPacket(BlockEntity be, int slot, String name, Map<String, Object> fields) {
+		PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+		data.writeBlockPos(be.getPos());
+		data.writeByte(slot);
+		data.writeString(name);
+		data.writeShort(fields.size());
+		for (Map.Entry<String, Object> entry : fields.entrySet()) {
+			data.writeString(entry.getKey());
+			Object value = entry.getValue();
+			if (value instanceof Long) {
+				data.writeByte(FIELD_LONG);
+				data.writeLong((Long) value);
+			} else if (value instanceof Double) {
+				data.writeByte(FIELD_DOUBLE);
+				data.writeDouble((Double) value);
+			} else if (value instanceof Integer) {
+				data.writeByte(FIELD_INT);
+				data.writeInt((Integer) value);
+			} else if (value instanceof String) {
+				data.writeByte(FIELD_STRING);
+				data.writeString((String) value);
+			} else if (value instanceof Boolean) {
+				data.writeByte(FIELD_BOOLEAN);
+				data.writeBoolean((Boolean) value);
+			} else if (value instanceof CompoundTag) {
+				data.writeByte(FIELD_TAG);
+				data.writeCompoundTag((CompoundTag) value);
+			} else if (value == null)
+				data.writeByte(FIELD_NULL);
+		}
+		return data;
 	}
 }

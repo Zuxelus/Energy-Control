@@ -1,0 +1,21 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"CCC",
+		"IFI"
+	],
+	"key": {
+		"I": {
+			"item": "techreborn:insulated_copper_cable"
+		},
+		"F": {
+			"item": "techreborn:frequency_transmitter"
+		},
+		"C": {
+			"item": "techreborn:water_coolant_cell_10k"
+		}
+	},
+	"result": {
+		"item": "energycontrol:upgrade_range"
+	}
+}

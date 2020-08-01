@@ -1,0 +1,24 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"RF",
+		"PO"
+	],
+	"key": {
+		"P": {
+			"item": "minecraft:paper"
+		},
+		"R": {
+			"item": "minecraft:redstone"
+		},
+		"F": {
+			"item": "techreborn:frequency_transmitter"
+		},
+		"O": {
+			"item": "red_dye"
+		}
+	},
+	"result": {
+		"item": "energycontrol:kit_energy"
+	}
+}

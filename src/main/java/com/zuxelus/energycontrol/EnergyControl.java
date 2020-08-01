@@ -1,81 +1,46 @@
 package com.zuxelus.energycontrol;
 
-import java.util.List;
-
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.zuxelus.energycontrol.config.ConfigHandler;
-import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.blockentities.InfoPanelBlockEntity;
+import com.zuxelus.energycontrol.blockentities.ScreenManager;
+import com.zuxelus.energycontrol.blocks.InfoPanelBlock;
+import com.zuxelus.energycontrol.blocks.LightBlock;
+import com.zuxelus.energycontrol.containers.InfoPanelContainer;
+import com.zuxelus.energycontrol.init.ModItems;
+import com.zuxelus.energycontrol.items.UpgradeColorItem;
+import com.zuxelus.energycontrol.items.cards.TextItemCard;
+import com.zuxelus.energycontrol.items.cards.TimeItemCard;
+import com.zuxelus.energycontrol.items.kits.EnergyItemKit;
 import com.zuxelus.energycontrol.network.ChannelHandler;
-import com.zuxelus.energycontrol.recipes.RecipesNew;
-import com.zuxelus.energycontrol.tileentities.ScreenManager;
 
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.Mod.Instance;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
+import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
+import net.minecraft.block.Block;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
+import net.minecraft.util.registry.Registry;
 
-@Mod(name = EnergyControl.NAME, modid = EnergyControl.MODID, version = EnergyControl.VERSION, dependencies="after:ic2;after:techreborn", guiFactory = "com.zuxelus.energycontrol.config.GuiFactory", acceptedMinecraftVersions = "[1.12.2]")
-public class EnergyControl {
-	public static final String NAME = "Energy Control";
+public class EnergyControl implements ModInitializer {
 	public static final String MODID = "energycontrol";
-	public static final String VERSION = "@VERSION@";
-
-	@SidedProxy(clientSide = "com.zuxelus.energycontrol.ClientProxy", serverSide = "com.zuxelus.energycontrol.ServerProxy")
-	public static ServerProxy proxy;
-	@Instance(MODID)
-	public static EnergyControl instance;
-
-	// Mod's creative tab
-	public static EnCtrlTab creativeTab = new EnCtrlTab();
-
-	// For logging purposes
-	public static Logger logger;
-	public static ConfigHandler config;
+	public static final Logger LOGGER = LogManager.getLogger(MODID);
 	
-	public ScreenManager screenManager = new ScreenManager();
+	public static ScreenManager screenManager = new ScreenManager();
 	
-	@SideOnly(Side.CLIENT)
-	public List<String> availableAlarms; //on client
-	@SideOnly(Side.CLIENT)
-	public List<String> serverAllowedAlarms; // will be loaded from server
+	public static final ItemGroup ITEM_GROUP = FabricItemGroupBuilder.build(
+			new Identifier(MODID, "general"), () -> new ItemStack(ModItems.ENERGY_ITEM_KIT));
 
-	@EventHandler
-	public void preInit(FMLPreInitializationEvent event) {
-		logger = event.getModLog();
-
-		// Loads configuration
-		proxy.loadConfig(event);
-		proxy.importSound();
-
-		// registers channel handler
+	@Override
+	public void onInitialize() {
+		ModItems.init();
 		ChannelHandler.init();
-
-		CrossModLoader.preinit();
-		ItemHelper.registerTileEntities();
-	}
-
-	@EventHandler
-	public static void init(FMLInitializationEvent event) {
-		// Register event handlers
-		proxy.registerEventHandlers();
-
-		NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
-
-		proxy.registerSpecialRenderers();
-		CrossModLoader.init();
-	}
-
-	@EventHandler
-	public static void postInit(FMLPostInitializationEvent event) {
-		RecipesNew.addRecipes();
-		CrossModLoader.postinit();
 	}
 }

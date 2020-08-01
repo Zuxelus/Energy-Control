@@ -1,51 +1,43 @@
 package com.zuxelus.energycontrol.gui.controls;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.blockentities.InfoPanelBlockEntity;
 import com.zuxelus.energycontrol.network.NetworkHelper;
-import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.widget.AbstractPressableButtonWidget;
+import net.minecraft.util.Identifier;
 
-@SideOnly(Side.CLIENT)
-public class GuiInfoPanelShowLabels extends GuiButton {
-	private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/gui_info_panel.png");
+@Environment(EnvType.CLIENT)
+public class GuiInfoPanelShowLabels extends AbstractPressableButtonWidget {
+	private static final Identifier TEXTURE = new Identifier(EnergyControl.MODID, "textures/gui/gui_info_panel.png");
 
-	private TileEntityInfoPanel panel;
+	private InfoPanelBlockEntity panel;
 	private boolean checked;
 
-	public GuiInfoPanelShowLabels(int id, int x, int y, TileEntityInfoPanel panel) {
-		super(id, x, y, 18, 9, "");
+	public GuiInfoPanelShowLabels(int x, int y, InfoPanelBlockEntity panel) {
+		super(x, y, 18, 9, "");
 		this.panel = panel;
-		checked = panel.getShowLabels();
+		this.checked = panel.getShowLabels();
 	}
 
 	@Override
-	public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
-		if (!visible)
-			return;
-
-		mc.getTextureManager().bindTexture(TEXTURE_LOCATION);
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		int delta = checked ? 12 : 21;
-		drawTexturedModalRect(x, y + 1, 176, delta, width, height);
+	public void renderButton(int mouseX, int mouseY, float delta) {
+		MinecraftClient.getInstance().getTextureManager().bindTexture(TEXTURE);
+		RenderSystem.color4f(1.0F, 1.0F, 1.0F, alpha);
+		int deltauv = checked ? 12 : 21;
+		blit(x, y + 1, 176, deltauv, 18, 9);
 	}
 
 	@Override
-	public boolean mousePressed(Minecraft minecraft, int i, int j) {
-		if (super.mousePressed(minecraft, i, j)) {
-			checked = !checked;
-			if (panel.getWorld().isRemote && panel.getShowLabels() != checked) {
-				NetworkHelper.updateSeverTileEntity(panel.getPos(), 3, checked ? 1 : 0);
-				panel.setShowLabels(checked);
-			}
-			return true;
+	public void onPress() {
+		checked = !checked;
+		if (panel.getWorld().isClient && panel.getShowLabels() != checked) {
+			NetworkHelper.updateSeverTileEntity(panel.getPos(), 3, checked ? 1 : 0);
+			panel.setShowLabels(checked);
 		}
-		return false;
 	}
 }

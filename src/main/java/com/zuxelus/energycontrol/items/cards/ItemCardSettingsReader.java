@@ -4,23 +4,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.gui.GuiInfoPanel;
+import com.zuxelus.energycontrol.blockentities.InfoPanelBlockEntity;
+import com.zuxelus.energycontrol.gui.InfoPanelScreen;
 import com.zuxelus.energycontrol.network.NetworkHelper;
-import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.client.FMLClientHandler;
 
 public class ItemCardSettingsReader {
 	private ItemStack card;
-	private TileEntityInfoPanel panel;
+	private InfoPanelBlockEntity panel;
 	private Map<String, Object> updateSet;
-	private GuiInfoPanel gui;
+	private InfoPanelScreen gui;
 	private byte slot;
 
-	public ItemCardSettingsReader(ItemStack card, TileEntityInfoPanel panel, GuiInfoPanel gui, byte slot) {
-		if (!(card.getItem() instanceof ItemCardMain))
-			EnergyControl.logger.error("ItemCardSettingsReader sould be used for ItemCard items.");
+	public ItemCardSettingsReader(ItemStack card, InfoPanelBlockEntity panel, InfoPanelScreen gui, byte slot) {
+		if (!(card.getItem() instanceof MainCardItem))
+			EnergyControl.LOGGER.error("ItemCardSettingsReader sould be used for ItemCard items.");
 		this.card = card;
 		this.panel = panel;
 		updateSet = new HashMap<String, Object>();
@@ -53,6 +53,6 @@ public class ItemCardSettingsReader {
 
 	public void closeGui() {
 		gui.prevCard = ItemStack.EMPTY;
-		FMLClientHandler.instance().getClient().displayGuiScreen(gui);
+		MinecraftClient.getInstance().openScreen(gui);
 	}
 }

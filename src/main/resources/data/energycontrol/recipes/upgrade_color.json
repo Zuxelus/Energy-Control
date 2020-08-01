@@ -1,0 +1,40 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"RYG",
+		"WCM",
+		"IAB"
+	],
+	"key": {
+		"R": {
+			"item": "red_dye"
+		},
+		"Y": {
+			"item": "yellow_dye"
+		},
+		"G": {
+			"item": "green_dye"
+		},
+		"W": {
+			"item": "white_dye"
+		},
+		"C": {
+			"item": "techreborn:electronic_circuit"
+		},
+		"M": {
+			"item": "magenta_dye"
+		},
+		"I": {
+			"item": "black_dye"
+		},
+		"A": {
+			"item": "cyan_dye"
+		},
+		"B": {
+			"item": "blue_dye"
+		}
+	},
+	"result": {
+		"item": "energycontrol:upgrade_color"
+	}
+}

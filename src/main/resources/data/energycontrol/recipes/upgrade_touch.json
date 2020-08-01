@@ -1,0 +1,25 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		" R ",
+		"ICI",
+		" A "
+	],
+	"key": {
+		"R": {
+			"tag": "c:tin_plate"
+		},
+		"I": {
+			"item": "techreborn:insulated_copper_cable"
+		},
+		"C": {
+			"item": "techreborn:electronic_circuit"
+		},
+		"A": {
+			"item": "techreborn:carbon_plate"
+		}
+	},
+	"result": {
+		"item": "energycontrol:upgrade_touch"
+	}
+}

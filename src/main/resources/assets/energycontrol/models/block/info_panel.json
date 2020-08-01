@@ -1,12 +1,12 @@
 {
     "parent": "block/cube",
     "textures": {
-        "particle": "energycontrol:blocks/info_panel/panel_back",
-        "down": "energycontrol:blocks/info_panel/panel_back",
-        "up": "energycontrol:blocks/info_panel/panel_face",
-        "north": "energycontrol:blocks/info_panel/panel_side",
-        "east": "energycontrol:blocks/info_panel/panel_side",
-        "south": "energycontrol:blocks/info_panel/panel_side",
-        "west": "energycontrol:blocks/info_panel/panel_side"
+        "particle": "energycontrol:block/info_panel/panel_back",
+        "down": "energycontrol:block/info_panel/panel_back",
+        "up": "energycontrol:block/info_panel/panel_face",
+        "north": "energycontrol:block/info_panel/panel_side",
+        "east": "energycontrol:block/info_panel/panel_side",
+        "south": "energycontrol:block/info_panel/panel_side",
+        "west": "energycontrol:block/info_panel/panel_side"
     }
 }
