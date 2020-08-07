@@ -1,7 +1,5 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import com.zuxelus.energycontrol.containers.ISlotItemFilter;
-
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
 import ic2.api.tile.IEnergyStorage;
@@ -15,7 +13,7 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable, ISlotItemFilter, ITilePacketHandler, IEnergyStorage {
+public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable, IEnergyStorage {
 	public static final int TIER = 5;
 	public static final int CAPACITY = 400000000;
 	public static final int OUTPUT = 8192;

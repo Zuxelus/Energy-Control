@@ -52,11 +52,6 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 			reader.setBoolean("value", value);
 			return CardState.OK;
 		}
-		/*if () {
-			boolean value = ((Boolean)state.getValue(POWERED)).booleanValue();
-			reader.setBoolean("value", value);
-			return CardState.OK;
-		}*/
 		return CardState.NO_TARGET;
 	}
 
@@ -105,12 +100,11 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 			world.notifyNeighborsOfStateChange(pos.offset(enumfacing.getOpposite()), state.getBlock(), false);
 		}
 		if (state.getBlock() instanceof BlockButton) {
-            world.setBlockState(pos, state.withProperty(POWERED, Boolean.valueOf(true)), 3);
-            world.markBlockRangeForRenderUpdate(pos, pos);
-            //playClickSound(playerIn, worldIn, pos);
-            world.notifyNeighborsOfStateChange(pos, block, false);
-            world.notifyNeighborsOfStateChange(pos.offset(state.getValue(BlockButton.FACING).getOpposite()), block, false);
-            world.scheduleUpdate(pos, block, block.tickRate(world));
+			world.setBlockState(pos, state.withProperty(POWERED, Boolean.valueOf(true)), 3);
+			world.markBlockRangeForRenderUpdate(pos, pos);
+			world.notifyNeighborsOfStateChange(pos, block, false);
+			world.notifyNeighborsOfStateChange(pos.offset(state.getValue(BlockButton.FACING).getOpposite()), block, false);
+			world.scheduleUpdate(pos, block, block.tickRate(world));
 		}
 	}
 
@@ -128,12 +122,12 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 		else
 			manager.bindTexture(new ResourceLocation(EnergyControl.MODID + ":textures/gui/grey.png"));
 		Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuffer();
-        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-        bufferbuilder.pos(x + 0, y + height, z).tex((double)((float)(textureX + 0)), (double)((float)(textureY + height))).endVertex();
-        bufferbuilder.pos(x + width, y + height, z).tex((double)((float)(textureX + width)), (double)((float)(textureY + height))).endVertex();
-        bufferbuilder.pos(x + width, y + 0, z).tex((double)((float)(textureX + width)), (double)((float)(textureY + 0))).endVertex();
-        bufferbuilder.pos(x + 0, y + 0, z).tex((double)((float)(textureX + 0)), (double)((float)(textureY + 0))).endVertex();
+		BufferBuilder bufferbuilder = tessellator.getBuffer();
+		bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+		bufferbuilder.pos(x + 0, y + height, z).tex((double)((float)(textureX + 0)), (double)((float)(textureY + height))).endVertex();
+		bufferbuilder.pos(x + width, y + height, z).tex((double)((float)(textureX + width)), (double)((float)(textureY + height))).endVertex();
+		bufferbuilder.pos(x + width, y + 0, z).tex((double)((float)(textureX + width)), (double)((float)(textureY + 0))).endVertex();
+		bufferbuilder.pos(x + 0, y + 0, z).tex((double)((float)(textureX + 0)), (double)((float)(textureY + 0))).endVertex();
 		tessellator.draw();
 		
 		

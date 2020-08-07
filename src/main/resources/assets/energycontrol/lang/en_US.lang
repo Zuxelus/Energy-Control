@@ -66,6 +66,16 @@ tile.range_trigger.name=Range Trigger
 tile.kit_assembler.name=Kit Assembler
 tile.afsu.name=AFSU
 
+#Config
+ec.config.howlerAlarmRange=Howler Alarm Range
+ec.config.maxAlarmRange=Max Alarm Range
+ec.config.allowedAlarms=Allowed Alarms
+ec.config.remoteThermalMonitorEnergyConsumption=Remote Thermal Monitor EU Cons.
+ec.config.infoPanelRefreshPeriod=Info Panel Refresh Period
+ec.config.rangeTriggerRefreshPeriod=Range Trigger Refresh Period
+ec.config.SMPMaxAlarmRange=SMP Max Alarm Range
+ec.config.useCustomSounds=Use Custom Sounds
+
 #Original Screen Messages
 msg.ec.HowlerAlarmSoundRange=Sound range: %s
 msg.ec.HowlerAlarmSound=Sound

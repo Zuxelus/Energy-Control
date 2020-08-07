@@ -1,5 +1,7 @@
 package com.zuxelus.energycontrol;
 
+import java.io.File;
+
 import com.zuxelus.energycontrol.blocks.BlockDamages;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.containers.*;
@@ -11,6 +13,8 @@ import com.zuxelus.energycontrol.renderers.*;
 import com.zuxelus.energycontrol.tileentities.*;
 import com.zuxelus.energycontrol.utils.SoundHelper;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -105,7 +109,9 @@ public class ClientProxy extends ServerProxy {
 	}
 
 	@Override
-	public void importSound() {
+	public void importSound(File configFolder) {
+		SoundHelper.initSound(configFolder);
+		((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(new SoundHelper.SoundLoader());
 		SoundHelper.importSound();
 	}
 }

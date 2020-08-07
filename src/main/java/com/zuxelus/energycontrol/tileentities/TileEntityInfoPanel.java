@@ -65,7 +65,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 		cardData = new HashMap<Integer, List<PanelString>>();
 		displaySettings = new HashMap<Integer, Map<Integer, Integer>>(1);
 		displaySettings.put(0, new HashMap<Integer, Integer>());
-		tickRate = EnergyControl.config.screenRefreshPeriod - 1;
+		tickRate = EnergyControl.config.infoPanelRefreshPeriod - 1;
 		updateTicker = tickRate;
 		dataTicker = 4;
 		showLabels = true;

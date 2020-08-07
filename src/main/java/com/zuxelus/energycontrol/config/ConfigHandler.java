@@ -15,9 +15,10 @@ public class ConfigHandler {
 	public int maxAlarmRange;
 	public String allowedAlarms;	
 	public int remoteThermalMonitorEnergyConsumption;
-	public int screenRefreshPeriod;
+	public int infoPanelRefreshPeriod;
 	public int rangeTriggerRefreshPeriod;
 	public int SMPMaxAlarmRange;
+	public boolean useCustomSounds;
 
 	public void init(File configFile) {
 		if (configuration == null)
@@ -28,13 +29,14 @@ public class ConfigHandler {
 
 	private void loadConfiguration() {
 		try {
-			howlerAlarmRange = configuration.get(Configuration.CATEGORY_GENERAL, "howlerAlarmRange", 64).getInt();
-			maxAlarmRange = configuration.get(Configuration.CATEGORY_GENERAL, "maxAlarmRange", 128).getInt();
-			allowedAlarms = configuration.get(Configuration.CATEGORY_GENERAL, "allowedAlarms", "default,sci-fi,siren").getString().replaceAll(" ", "");
-			remoteThermalMonitorEnergyConsumption = configuration.get(Configuration.CATEGORY_GENERAL, "remoteThermalMonitorEnergyConsumption", 1).getInt();
-			screenRefreshPeriod = configuration.get(Configuration.CATEGORY_GENERAL, "infoPanelRefreshPeriod",20).getInt();
-			rangeTriggerRefreshPeriod = configuration.get(Configuration.CATEGORY_GENERAL, "rangeTriggerRefreshPeriod", 20).getInt();
-			SMPMaxAlarmRange = configuration.get(Configuration.CATEGORY_GENERAL, "SMPMaxAlarmRange", 256).getInt();
+			howlerAlarmRange = configuration.getInt("howlerAlarmRange", Configuration.CATEGORY_GENERAL, 64, 0, 256, "", "ec.config.howlerAlarmRange");
+			maxAlarmRange = configuration.getInt("maxAlarmRange", Configuration.CATEGORY_GENERAL, 128, 0, 256, "", "ec.config.maxAlarmRange");
+			allowedAlarms = configuration.getString("allowedAlarms", Configuration.CATEGORY_GENERAL, "default,sci-fi,siren", "", "ec.config.allowedAlarms").replaceAll(" ", "");
+			remoteThermalMonitorEnergyConsumption = configuration.getInt("remoteThermalMonitorEnergyConsumption", Configuration.CATEGORY_GENERAL, 1, 0, 1000, "", "ec.config.remoteThermalMonitorEnergyConsumption");
+			infoPanelRefreshPeriod = configuration.getInt("infoPanelRefreshPeriod", Configuration.CATEGORY_GENERAL, 20, 0, 2000, "", "ec.config.screenRefreshPeriod");
+			rangeTriggerRefreshPeriod = configuration.getInt("rangeTriggerRefreshPeriod", Configuration.CATEGORY_GENERAL, 20, 0, 2000, "", "ec.config.rangeTriggerRefreshPeriod");
+			SMPMaxAlarmRange = configuration.getInt("SMPMaxAlarmRange", Configuration.CATEGORY_GENERAL, 256, 0, 512, "", "ec.config.SMPMaxAlarmRange");
+			useCustomSounds = configuration.getBoolean("useCustomSounds", Configuration.CATEGORY_GENERAL, false, "", "ec.config.useCustomSounds");
 		} catch (Exception e) {
 			EnergyControl.logger.error("Mod has a problem loading it's configuration", e);
 		} finally {

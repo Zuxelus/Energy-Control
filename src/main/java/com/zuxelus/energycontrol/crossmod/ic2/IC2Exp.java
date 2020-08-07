@@ -367,16 +367,16 @@ public class IC2Exp extends CrossIC2 {
 	public List<IFluidTank> getAllTanks(TileEntity te) {
 		if (!(te instanceof TileEntityBlock))
 			return null;
-		
+
 		if (!((TileEntityBlock)te).hasComponent(Fluids.class))
 			return null;
 
 		Fluids fluid = ((TileEntityBlock)te).getComponent(Fluids.class);
-		
+
 		List<IFluidTank> result = new ArrayList<>();
 		for (FluidTank tank: fluid.getAllTanks())
 			result.add(tank);
-		
+
 		return result;
 	}
 

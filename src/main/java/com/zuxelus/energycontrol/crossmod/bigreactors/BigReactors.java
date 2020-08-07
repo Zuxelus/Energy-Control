@@ -19,6 +19,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 public class BigReactors extends CrossBigReactors {
 
+	@Override
 	public List<IFluidTank> getAllTanks(TileEntity te) {
 		if (te instanceof TileEntityReactorPartBase) {
 			MultiblockReactor reactor = ((TileEntityReactorPartBase) te).getReactorController();
@@ -47,6 +48,7 @@ public class BigReactors extends CrossBigReactors {
 		return null;
 	}
 
+	@Override
 	public int getReactorHeat(World world, BlockPos pos) {
 		TileEntity te;
 		for (EnumFacing dir : EnumFacing.VALUES) {

@@ -52,7 +52,7 @@ public class ItemCardEnergy extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int settings, ICardReader reader, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 
 		double energy = reader.getDouble("storage");
@@ -73,13 +73,13 @@ public class ItemCardEnergy extends ItemCardBase {
 			euType = "EU";
 			break;
 		}
-		if ((displaySettings & 1) > 0)
+		if ((settings & 1) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelEnergy" + euType, energy, showLabels));
-		if ((displaySettings & 4) > 0)
+		if ((settings & 4) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelCapacity" + euType, storage, showLabels));
-		if ((displaySettings & 2) > 0)
+		if ((settings & 2) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelFree" + euType, storage - energy, showLabels));
-		if ((displaySettings & 8) > 0)
+		if ((settings & 8) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelPercentage", storage == 0 ? 100 : ((energy / storage) * 100), showLabels));
 		return result;
 	}

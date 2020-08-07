@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import com.zuxelus.energycontrol.containers.ISlotItemFilter;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 
 import ic2.api.energy.event.EnergyTileLoadEvent;
@@ -14,7 +13,7 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.common.MinecraftForge;
 
-public class TileEntityAverageCounter extends TileEntityEnergyStorage implements ITickable, ISlotItemFilter, ITilePacketHandler {
+public class TileEntityAverageCounter extends TileEntityEnergyStorage implements ITickable {
 	private static final int BASE_PACKET_SIZE = 32;
 	protected static final int DATA_POINTS = 11 * 20;
 	private boolean init;

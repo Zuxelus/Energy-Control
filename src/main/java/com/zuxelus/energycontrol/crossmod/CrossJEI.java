@@ -18,7 +18,7 @@ import net.minecraft.item.ItemStack;
 
 @JEIPlugin
 public class CrossJEI implements IModPlugin {
-	
+
 	@Override
 	public void register(@Nonnull IModRegistry registry) {
 		registerBlock(registry, ItemHelper.blockLight,"ec.jei.blockLightWhite");

@@ -1,5 +1,7 @@
 package com.zuxelus.energycontrol;
 
+import java.io.File;
+
 import com.zuxelus.energycontrol.blocks.BlockDamages;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.containers.*;
@@ -63,5 +65,5 @@ public class ServerProxy implements IGuiHandler {
 		MinecraftForge.EVENT_BUS.register(ServerTickHandler.instance);
 	}
 
-	public void importSound() { }
+	public void importSound(File configFolder) { }
 }

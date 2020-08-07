@@ -1,5 +1,7 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import com.zuxelus.energycontrol.containers.ISlotItemFilter;
+
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergyAcceptor;
@@ -11,7 +13,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
 
-public abstract class TileEntityEnergyStorage extends TileEntityInventory implements IEnergySink, IEnergySource {
+public abstract class TileEntityEnergyStorage extends TileEntityInventory implements IEnergySink, IEnergySource, ISlotItemFilter, ITilePacketHandler {
 	protected boolean addedToEnet;
 	protected boolean allowEmit;
 	protected int tier;

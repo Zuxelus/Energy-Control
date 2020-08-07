@@ -26,8 +26,7 @@ public class CubeRenderer {
 		this(0.0F, 0.0F, 0.0F, 32, 32, 32, 128, 192, faceOffsetX, faceOffsetY, offset);
 	}
 
-	public CubeRenderer(float x, float y, float z, int dx, int dy, int dz, float textureWidth,
-			float textureHeight, int faceTexU, int faceTexV, RotationOffset offset) {
+	public CubeRenderer(float x, float y, float z, int dx, int dy, int dz, float textureWidth, float textureHeight, int faceTexU, int faceTexV, RotationOffset offset) {
 		cube = new CubeBox(x, y, z, dx, dy, dz, textureWidth, textureHeight, faceTexU, faceTexV, offset.leftTop, offset.leftBottom, offset.rightTop, offset.rightBottom);
 	}
 
@@ -52,8 +51,7 @@ public class CubeRenderer {
 		private final PositionTextureVertex[] vertexPositions;
 		private final TexturedQuad[] quadList;
 
-		public CubeBox(float x, float y, float z, int dx, int dy, int dz, float textureWidth, float textureHeight,
-				int faceTexU, int faceTexV, float leftTop, float leftBottom, float rightTop, float rightBottom) {
+		public CubeBox(float x, float y, float z, int dx, int dy, int dz, float textureWidth, float textureHeight, int faceTexU, int faceTexV, float leftTop, float leftBottom, float rightTop, float rightBottom) {
 			vertexPositions = new PositionTextureVertex[8];
 			quadList = new TexturedQuad[6];
 			float f = x + (float) dx;
