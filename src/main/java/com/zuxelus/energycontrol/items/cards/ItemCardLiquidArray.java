@@ -164,7 +164,7 @@ public class ItemCardLiquidArray extends ItemCardBase {
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidFree"), 2,damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidCapacity"), 4, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidPercentage"), 8, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEach"), 16,damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEachCard"), 16,damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelTotal"), 32,damage));
 		return result;
 	}

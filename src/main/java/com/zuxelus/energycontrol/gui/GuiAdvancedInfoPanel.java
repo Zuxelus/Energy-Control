@@ -37,7 +37,6 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
 	private static final int ID_SETTINGS = 5;
 
 	private TileEntityAdvancedInfoPanel panel;
-	private byte activeTab;
 	private boolean initialized;
 
 	public GuiAdvancedInfoPanel(ContainerAdvancedInfoPanel container) {
@@ -45,14 +44,13 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
 		ySize = 223;
 		panel = container.te;
 		name = I18n.format("tile.info_panel_advanced.name");
-		activeTab = 0;
 		initialized = false;
 	}
-	
+
 	@Override
 	protected void initControls() {
 		ItemStack stack = panel.getCards().get(activeTab);
-		if (stack == null && prevCard == null && initialized)
+		if (stack == null && ItemStack.areItemStacksEqual(prevCard, stack) && initialized)
 			return;
 		initialized = true;
 		buttonList.clear();
@@ -91,7 +89,7 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
 			textboxTitle = null;
 		}
 	}
-	
+
 	private int getIconLabelsTopOffset(boolean checked) {
 		return checked ? 15 : 31;
 	}
@@ -119,7 +117,7 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
 		drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
 		drawTexturedModalRect(left + 24, top + 62 + activeTab * 14, 182, 0, 1, 15);
 	}
-	
+
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
 		super.mouseClicked(mouseX, mouseY, mouseButton);
@@ -127,12 +125,13 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
 			byte newTab = (byte) ((mouseY - guiTop - 62) / 14);
 			if (newTab > 2)
 				newTab = 2;
-			if (newTab != activeTab && modified)
+			if (newTab != activeTab && modified) {
 				updateTitle();
+				modified = false;
+			}
 			activeTab = newTab;
 		}
 	}
-	
 
 	@Override
 	protected void actionPerformed(GuiButton button) {
@@ -152,7 +151,7 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
 					return;
 				}
 				GuiScreen gui = (GuiScreen) guiObject;
-				ItemCardSettingsReader wrapper = new ItemCardSettingsReader(card, panel, this, (byte) 0);
+				ItemCardSettingsReader wrapper = new ItemCardSettingsReader(card, panel, this, (byte) activeTab);
 				((ICardGui) gui).setCardSettingsHelper(wrapper);
 				mc.displayGuiScreen(gui);
 			}
@@ -182,6 +181,4 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
 			break;
 		}
 	}
-
-
 }

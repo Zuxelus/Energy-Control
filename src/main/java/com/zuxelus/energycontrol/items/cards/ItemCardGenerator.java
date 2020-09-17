@@ -29,12 +29,15 @@ public class ItemCardGenerator extends ItemCardBase {
 		if (target == null)
 			return CardState.NO_TARGET;
 
-		TileEntity entity = world.getTileEntity(target.posX, target.posY, target.posZ);
-		NBTTagCompound tag = CrossModLoader.ic2.getGeneratorData(entity);
+		TileEntity te = world.getTileEntity(target.posX, target.posY, target.posZ);
+		NBTTagCompound tag = CrossModLoader.ic2.getGeneratorData(te);
+		if (tag == null)
+			 tag = CrossModLoader.techReborn.getGeneratorData(te);
 		if (tag == null || !tag.hasKey("type"))
 			return CardState.NO_TARGET;
 
 		reader.setInt("type", tag.getInteger("type"));
+		reader.setString("euType", tag.getString("euType"));
 		switch (tag.getInteger("type")) {
 		case 1:
 			reader.setDouble("storage", tag.getDouble("storage"));
@@ -58,6 +61,19 @@ public class ItemCardGenerator extends ItemCardBase {
 			reader.setDouble("production", tag.getDouble("production"));
 			reader.setDouble("multiplier", tag.getDouble("multiplier"));
 			break;
+		case 5:
+			reader.setDouble("storage", tag.getDouble("storage"));
+			reader.setDouble("maxStorage", tag.getDouble("maxStorage"));
+			reader.setDouble("production", tag.getDouble("production"));
+			reader.setInt("burnTime", tag.getInteger("burnTime"));
+			break;
+		case 6:
+			reader.setDouble("storage", tag.getDouble("storage"));
+			reader.setDouble("maxStorage", tag.getDouble("maxStorage"));
+			reader.setDouble("production", tag.getDouble("production"));
+			reader.setInt("progress", tag.getInteger("progress"));
+			reader.setInt("coilCount", tag.getInteger("coilCount"));
+			break;
 		}
 		reader.setBoolean("active", tag.getBoolean("active"));
 		return CardState.OK;
@@ -66,42 +82,65 @@ public class ItemCardGenerator extends ItemCardBase {
 	@Override
 	public List<PanelString> getStringData(int settings, ICardReader reader, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
+		String euType = reader.getString("euType");
 		switch (reader.getInt("type")) {
 		case 1:
 			if ((settings & 1) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelEnergyEU", reader.getDouble("storage"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelEnergy" + euType, reader.getDouble("storage"), showLabels));
 			if ((settings & 2) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelCapacityEU", reader.getDouble("maxStorage"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelCapacity" + euType, reader.getDouble("maxStorage"), showLabels));
 			if ((settings & 8) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelOutputEU", reader.getDouble("production"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelOutput" + euType, reader.getDouble("production"), showLabels));
 			break;
 		case 2:
 			if ((settings & 4) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelMultiplier", reader.getDouble("multiplier"), showLabels));
 			if ((settings & 8) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelOutputEU", reader.getDouble("production"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelOutput" + euType, reader.getDouble("production"), showLabels));
 			break;
 		case 3:
 			if ((settings & 8) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelOutputEU", reader.getDouble("production"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelOutput" + euType, reader.getDouble("production"), showLabels));
 			if ((settings & 1) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelEnergyEU", reader.getDouble("storage"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelEnergy" + euType, reader.getDouble("storage"), showLabels));
 			if ((settings & 2) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelCapacityEU", reader.getDouble("maxStorage"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelCapacity" + euType, reader.getDouble("maxStorage"), showLabels));
 			if ((settings & 4) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelMultiplier", reader.getDouble("multiplier"), showLabels));
 			break;
 		case 4:
 			if ((settings & 8) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelOutputEU", reader.getDouble("production"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelOutput" + euType, reader.getDouble("production"), showLabels));
 			if ((settings & 1) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelEnergyEU", reader.getDouble("storage"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelEnergy" + euType, reader.getDouble("storage"), showLabels));
 			if ((settings & 2) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelCapacityEU", reader.getDouble("maxStorage"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelCapacity" + euType, reader.getDouble("maxStorage"), showLabels));
 			if ((settings & 16) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelPellets", reader.getInt("items"), showLabels));
 			if ((settings & 4) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelMultiplier", reader.getDouble("multiplier"), showLabels));
+			break;
+		case 5:
+			if ((settings & 1) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelEnergy" + euType, reader.getDouble("storage"), showLabels));
+			if ((settings & 2) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelCapacity" + euType, reader.getDouble("maxStorage"), showLabels));
+			if ((settings & 8) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelOutput" + euType, reader.getDouble("production"), showLabels));
+			if ((settings & 64) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelBurnTime", reader.getInt("burnTime"), showLabels));
+			break;
+		case 6:
+			if ((settings & 1) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelEnergy" + euType, reader.getDouble("storage"), showLabels));
+			if ((settings & 2) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelCapacity" + euType, reader.getDouble("maxStorage"), showLabels));
+			if ((settings & 8) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelOutput" + euType, reader.getDouble("production"), showLabels));
+			if ((settings & 64) > 0) {
+				result.add(new PanelString("msg.ec.InfoPanelProgress", reader.getInt("progress"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelCoils", reader.getInt("coilCount"), showLabels));
+			}
 			break;
 		}
 		if ((settings & 32) > 0)
@@ -112,13 +151,14 @@ public class ItemCardGenerator extends ItemCardBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList(ItemStack stack) {
-		List<PanelSetting> result = new ArrayList<PanelSetting>(6);
+		List<PanelSetting> result = new ArrayList<PanelSetting>(7);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 1, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelCapacity"), 2, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMultiplier"), 4, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOutput"), 8, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelItems"), 16, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOnOff"), 32, damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelAdditionalInfo"), 64, damage));
 		return result;
 	}
 

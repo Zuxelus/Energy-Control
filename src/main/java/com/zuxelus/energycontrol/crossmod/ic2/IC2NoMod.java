@@ -4,13 +4,15 @@ import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 
 import ic2.api.reactor.IReactor;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidTankInfo;
 
-public class IC2NoMod extends IC2Cross {
+public class IC2NoMod extends CrossIC2 {
 
 	@Override
 	public int getNuclearCellTimeLeft(ItemStack stack) {
@@ -28,17 +30,22 @@ public class IC2NoMod extends IC2Cross {
 	}
 
 	@Override
-	public ItemStack getItem(String name) {
+	public ItemStack getItemStack(String name) {
+		return null;
+	}
+
+	@Override
+	public Item getItem(String name) {
+		return null;
+	}
+
+	@Override
+	public ItemStack getChargedStack(ItemStack stack) {
 		return null;
 	}
 
 	@Override
 	public boolean isSteamReactor(TileEntity te) {
-		return false;
-	}
-
-	@Override
-	public boolean isCable(TileEntity te) {
 		return false;
 	}
 
@@ -97,4 +104,6 @@ public class IC2NoMod extends IC2Cross {
 		return CardState.NO_TARGET;
 	}
 
+	@Override
+	public void showBarrelInfo(EntityPlayer player, TileEntity te) { }
 }

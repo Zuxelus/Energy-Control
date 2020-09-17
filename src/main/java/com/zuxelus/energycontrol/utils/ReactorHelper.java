@@ -91,4 +91,8 @@ public class ReactorHelper {
 	public static int getNuclearCellTimeLeft(ItemStack rStack) {
 		return CrossModLoader.ic2.getNuclearCellTimeLeft(rStack);
 	}
+
+	public static int getReactorHeat(World world, int x, int y, int z) {
+		return CrossModLoader.bigReactors.getReactorHeat(world, x, y, z);
+	}
 }

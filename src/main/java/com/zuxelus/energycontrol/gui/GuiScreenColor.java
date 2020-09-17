@@ -12,7 +12,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiScreenColor extends GuiScreen {
-	private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(
+	private static final ResourceLocation TEXTURE = new ResourceLocation(
 			EnergyControl.MODID + ":textures/gui/gui_colors.png");
 
 	private GuiInfoPanel parentGui;
@@ -59,7 +59,7 @@ public class GuiScreenColor extends GuiScreen {
 
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-		mc.getTextureManager().bindTexture(TEXTURE_LOCATION);
+		mc.getTextureManager().bindTexture(TEXTURE);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int left = (width - xSize) / 2;
 		int top = (height - ySize) / 2;

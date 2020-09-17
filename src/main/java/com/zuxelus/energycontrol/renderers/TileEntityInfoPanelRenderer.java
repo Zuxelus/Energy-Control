@@ -188,6 +188,16 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
 			break;
 		}
 
+		if (panel.isTouchCard()) {
+			GL11.glRotatef(180.0F, 0.0F, 1.0F, 0.0F);
+			GL11.glDisable(GL11.GL_LIGHTING);
+			panel.renderImage(field_147501_a.field_147553_e);
+			GL11.glEnable(GL11.GL_LIGHTING);
+		} else 
+			renderText(panel, joinedData, displayWidth, displayHeight);
+	}
+
+	private void renderText(TileEntityInfoPanel panel, List<PanelString> joinedData, float displayWidth, float displayHeight) {
 		FontRenderer fontRenderer = func_147498_b();
 		int maxWidth = 1;
 		for (PanelString panelString : joinedData) {

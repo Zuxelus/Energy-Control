@@ -8,6 +8,7 @@ import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.network.ChannelHandler;
+import com.zuxelus.energycontrol.recipes.RecipesNew;
 import com.zuxelus.energycontrol.tileentities.ScreenManager;
 
 import cpw.mods.fml.common.Mod;

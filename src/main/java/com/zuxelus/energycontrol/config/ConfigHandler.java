@@ -4,13 +4,13 @@ import java.io.File;
 
 import com.zuxelus.energycontrol.EnergyControl;
 
-import cpw.mods.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
+import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.common.config.Configuration;
 
 public class ConfigHandler {
 	public Configuration configuration;
-	
+
 	public int howlerAlarmRange;
 	public int maxAlarmRange;
 	public String allowedAlarms;	
@@ -18,7 +18,6 @@ public class ConfigHandler {
 	public int screenRefreshPeriod;
 	public int rangeTriggerRefreshPeriod;
 	public int SMPMaxAlarmRange;
-	public boolean disableCapes;
 
 	public void init(File configFile) {
 		if (configuration == null)
@@ -31,7 +30,7 @@ public class ConfigHandler {
 		try {
 			howlerAlarmRange = configuration.get(Configuration.CATEGORY_GENERAL, "howlerAlarmRange", 64).getInt();
 			maxAlarmRange = configuration.get(Configuration.CATEGORY_GENERAL, "maxAlarmRange", 128).getInt();
-			allowedAlarms = configuration.get(Configuration.CATEGORY_GENERAL, "allowedAlarms", "default,sci-fi").getString().replaceAll(" ", "");
+			allowedAlarms = configuration.get(Configuration.CATEGORY_GENERAL, "allowedAlarms", "default,sci-fi,siren").getString().replaceAll(" ", "");
 			remoteThermalMonitorEnergyConsumption = configuration.get(Configuration.CATEGORY_GENERAL, "remoteThermalMonitorEnergyConsumption", 1).getInt();
 			screenRefreshPeriod = configuration.get(Configuration.CATEGORY_GENERAL, "infoPanelRefreshPeriod",20).getInt();
 			rangeTriggerRefreshPeriod = configuration.get(Configuration.CATEGORY_GENERAL, "rangeTriggerRefreshPeriod", 20).getInt();
@@ -50,7 +49,7 @@ public class ConfigHandler {
 	}
 
 	@SubscribeEvent
-	public void onConfigurationChangedEvent(OnConfigChangedEvent event) {
+	public void onConfigurationChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event) {
 		if (event.modID.equals(EnergyControl.MODID))
 			loadConfiguration();
 	}

@@ -7,19 +7,8 @@ import java.util.Random;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.tileentities.IBlockHorizontal;
-import com.zuxelus.energycontrol.tileentities.IEnergyCounter;
-import com.zuxelus.energycontrol.tileentities.IRedstoneConsumer;
-import com.zuxelus.energycontrol.tileentities.TileEntityFacing;
-import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
-import com.zuxelus.energycontrol.tileentities.TileEntityIndustrialAlarm;
-import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
-import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanelExtender;
-import com.zuxelus.energycontrol.tileentities.TileEntityInventory;
-import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
-import com.zuxelus.energycontrol.tileentities.TileEntityRangeTrigger;
-import com.zuxelus.energycontrol.tileentities.TileEntityRemoteThermo;
-import com.zuxelus.energycontrol.tileentities.TileEntityThermo;
+import com.zuxelus.energycontrol.crossmod.ic2.CrossIC2.IC2Type;
+import com.zuxelus.energycontrol.tileentities.*;
 import com.zuxelus.energycontrol.utils.ReactorHelper;
 
 import cpw.mods.fml.relauncher.Side;
@@ -81,6 +70,8 @@ public class BlockMain extends BlockContainer {
 		register(new AdvancedInfoPanel());
 		register(new AdvancedInfoPanelExtender());
 		register(new KitAssembler());
+		if (CrossModLoader.ic2.getType() == IC2Type.EXP)
+			register(new AFSU());
 	}
 
 	public void register(BlockBase block) {
@@ -107,7 +98,7 @@ public class BlockMain extends BlockContainer {
 		return false;
 	}
 
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, int side, int meta) {
+	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, int side, int meta, ItemStack stack) {
 		TileEntity te = world.getTileEntity(x, y, z);
 		if (isSolidBlockRequired(meta)) {
 			ForgeDirection sidedir = ForgeDirection.getOrientation(side);
@@ -130,6 +121,14 @@ public class BlockMain extends BlockContainer {
 				((TileEntityFacing) te).setRotation(getHorizontalFacing(player).getOpposite());
 			else
 				((TileEntityFacing) te).setRotation(getHorizontalFacing(player));
+		}
+		if (te instanceof TileEntityAFSU) {
+			NBTTagCompound tag = stack.getTagCompound();
+			if (tag != null) {
+				double energy = tag.getDouble("energy");
+				if (energy != 0)
+					((TileEntityAFSU) te).setEnergy(energy);
+			}
 		}
 	}
 
@@ -197,10 +196,8 @@ public class BlockMain extends BlockContainer {
 
 	@Override
 	public void onNeighborBlockChange(World world, int x, int y, int z, Block neighbor) {
-		TileEntity te = world.getTileEntity(x, y, z);
-		if (checkForDrop(world, x, y, z, te, world.getBlockMetadata(x, y, z)))
-			if (te instanceof IRedstoneConsumer)
-				((IRedstoneConsumer) te).neighborChanged();
+		if (!world.isRemote)
+			world.markBlockForUpdate(x, y, z);
 	}
 
 	public static float[] getBlockBounds(int damage, TileEntity te) {
@@ -239,16 +236,13 @@ public class BlockMain extends BlockContainer {
 
 	@Override
 	public int isProvidingWeakPower(IBlockAccess iblockaccess, int x, int y, int z, int direction) {
-		return isProvidingStrongPower(iblockaccess, x, y, z, direction);
-	}
-
-	@Override
-	public int isProvidingStrongPower(IBlockAccess iblockaccess, int x, int y, int z, int direction) {
 		TileEntity te = iblockaccess.getTileEntity(x, y, z);
 		if (te instanceof TileEntityThermo)
 			return ((TileEntityThermo) te).getPowered() ? ((TileEntityThermo) te).getFacingForge().ordinal() != direction ? 15 : 0 : 0;
 		if (te instanceof TileEntityRangeTrigger)
 			return ((TileEntityRangeTrigger) te).getPowered() ? 15 : 0;
+		if (te instanceof TileEntityAFSU)
+			return ((TileEntityAFSU) te).getPowered() ? 15 : 0;
 		return 0;
 	}
 
@@ -285,10 +279,22 @@ public class BlockMain extends BlockContainer {
 				}
 			return getIcon(face, meta);
 		}
+		if (te instanceof TileEntityAFSU) {
+			switch (side) {
+			case 1:
+				if (((TileEntityFacing) te).getFacingForge().ordinal() == 1)
+					return getIcon(1, meta);
+				return getIcon(2, meta);
+			default:
+				if (((TileEntityFacing) te).getFacingForge().ordinal() == side)
+					return getIcon(1, meta);
+				return getIcon(0, meta);
+			}
+		}
 		return getIcon(getFacingSide((TileEntityFacing) te, side), meta);
 	}
 	
-	private int getFacingSide(TileEntityFacing te, int side) {
+	private static int getFacingSide(TileEntityFacing te, int side) {
 		if (te instanceof TileEntityKitAssembler)
 			return horMapping[te.getFacingForge().ordinal()][side];
 		return mapping[te.getFacingForge().ordinal()][side];
@@ -329,7 +335,11 @@ public class BlockMain extends BlockContainer {
 	@Override
 	public void getSubBlocks(Item id, CreativeTabs tab, List itemList) {
 		for (BlockBase block : blocks.values())
-			itemList.add(new ItemStack(this, 1, block.damage));
+			if (block.damage == BlockDamages.DAMAGE_AFSU) {
+				itemList.add(AFSU.getStackwithEnergy(0));
+				itemList.add(AFSU.getStackwithEnergy(TileEntityAFSU.CAPACITY));
+			} else
+				itemList.add(new ItemStack(this, 1, block.damage));
 	}
 
 	@Override
@@ -338,7 +348,7 @@ public class BlockMain extends BlockContainer {
 		super.breakBlock(world, x, y, z, par5, par6);
 	}
 
-	private void dropItems(World world, int x, int y, int z) {
+	public static void dropItems(World world, int x, int y, int z) {
 		Random rand = new Random();
 
 		TileEntity te = world.getTileEntity(x, y, z);

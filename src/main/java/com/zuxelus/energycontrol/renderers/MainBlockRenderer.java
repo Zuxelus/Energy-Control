@@ -37,7 +37,7 @@ public class MainBlockRenderer implements ISimpleBlockRenderingHandler {
 		renderer.setRenderBoundsFromBlock(block);
 		Tessellator tesselator = Tessellator.instance;
 		if (meta == BlockDamages.DAMAGE_RANGE_TRIGGER || meta == BlockDamages.DAMAGE_REMOTE_THERMO
-				|| meta == BlockDamages.GUI_KIT_ASSEMBER) {
+				|| meta == BlockDamages.GUI_KIT_ASSEMBER || meta == BlockDamages.DAMAGE_AFSU) {
 			GL11.glRotatef(-90.0F, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(180.0F, 0.0F, 1.0F, 0.0F);
 		}

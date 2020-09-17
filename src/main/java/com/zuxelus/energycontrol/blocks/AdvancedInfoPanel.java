@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 
-public class AdvancedInfoPanel  extends BlockBase {
+public class AdvancedInfoPanel extends BlockBase {
 	private IIcon[] icons = new IIcon[3];
 
 	public AdvancedInfoPanel() {

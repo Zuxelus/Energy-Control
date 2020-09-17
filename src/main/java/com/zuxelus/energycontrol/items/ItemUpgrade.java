@@ -13,8 +13,10 @@ import net.minecraft.util.IIcon;
 public class ItemUpgrade extends Item {
 	public static final int DAMAGE_RANGE = 0;
 	public static final int DAMAGE_COLOR = 1;
+	public static final int DAMAGE_TOUCH = 2;
 	private IIcon iconRange;
 	private IIcon iconColor;
+	private IIcon iconTouch;
 
 	public ItemUpgrade() {
 		super();
@@ -27,6 +29,7 @@ public class ItemUpgrade extends Item {
 	public void registerIcons(IIconRegister iconRegister) {
 		iconRange = iconRegister.registerIcon(EnergyControl.MODID + ":" + "upgrade_range");
 		iconColor = iconRegister.registerIcon(EnergyControl.MODID + ":" + "upgrade_color");
+		iconTouch = iconRegister.registerIcon(EnergyControl.MODID + ":" + "upgrade_touch");
 	}
 
 	@Override
@@ -38,6 +41,8 @@ public class ItemUpgrade extends Item {
 			return "item.upgrade_range";
 		case DAMAGE_COLOR:
 			return "item.upgrade_color";
+		case DAMAGE_TOUCH:
+			return "item.upgrade_touch";
 		}
 	}
 
@@ -49,6 +54,8 @@ public class ItemUpgrade extends Item {
 			return iconRange;
 		case DAMAGE_COLOR:
 			return iconColor;
+		case DAMAGE_TOUCH:
+			return iconTouch;
 		}
 	}
 
@@ -56,5 +63,6 @@ public class ItemUpgrade extends Item {
 	public void getSubItems(Item item, CreativeTabs tab, List items) {
 		items.add(new ItemStack(ItemHelper.itemUpgrade, 1, DAMAGE_RANGE));
 		items.add(new ItemStack(ItemHelper.itemUpgrade, 1, DAMAGE_COLOR));
+		items.add(new ItemStack(ItemHelper.itemUpgrade, 1, DAMAGE_TOUCH));
 	}
 }

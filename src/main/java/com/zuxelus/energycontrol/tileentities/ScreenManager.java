@@ -160,7 +160,7 @@ public class ScreenManager {
 	}
 
 	public void registerInfoPanelExtender(TileEntityInfoPanelExtender extender) {
-		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+		if (extender.getWorldObj().isRemote)
 			return;
 		if (!screens.containsKey(getWorldKey(extender.getWorldObj())))
 			screens.put(getWorldKey(extender.getWorldObj()), new ArrayList<Screen>());
@@ -205,7 +205,7 @@ public class ScreenManager {
 	}
 
 	public void unregisterScreenPart(TileEntity part) {
-		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+		if (part.getWorldObj().isRemote)
 			return;
 		if (!screens.containsKey(getWorldKey(part.getWorldObj())))
 			return;

@@ -5,16 +5,21 @@ import java.lang.reflect.Field;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
+import com.zuxelus.energycontrol.items.ItemAFB;
+import com.zuxelus.energycontrol.items.ItemAFSUUpgradeKit;
 import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
+import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.utils.ReactorHelper;
 
+import ic2.api.item.ElectricItem;
 import ic2.api.item.IC2Items;
 import ic2.api.item.ICustomDamageItem;
 import ic2.api.reactor.IReactor;
 import ic2.api.tile.IEnergyStorage;
 import ic2.core.block.BlockMultiID;
 import ic2.core.block.BlockTileEntity;
+import ic2.core.block.TileEntityBarrel;
 import ic2.core.block.TileEntityBlock;
 import ic2.core.block.TileEntityHeatSourceInventory;
 import ic2.core.block.comp.Energy;
@@ -50,6 +55,7 @@ import ic2.core.item.reactor.ItemReactorMOX;
 import ic2.core.item.reactor.ItemReactorUranium;
 import ic2.core.item.tool.ItemToolWrench;
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -63,7 +69,7 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class IC2ExpCross extends IC2Cross {
+public class IC2Exp extends CrossIC2 {
 
 	@Override
 	public int getNuclearCellTimeLeft(ItemStack stack) {
@@ -90,7 +96,7 @@ public class IC2ExpCross extends IC2Cross {
 	}
 
 	@Override
-	public ItemStack getItem(String name) {
+	public ItemStack getItemStack(String name) {
 		switch (name) {
 		case "transformer":
 			return IC2Items.getItem("transformerUpgrade");
@@ -98,8 +104,30 @@ public class IC2ExpCross extends IC2Cross {
 			return IC2Items.getItem("energyStorageUpgrade");
 		case "machine":
 			return IC2Items.getItem("machine");
+		case "mfsu":
+			return IC2Items.getItem("mfsu");
+		case "circuit":
+			return IC2Items.getItem("circuit");
 		}
 		return null;
+	}
+
+	@Override
+	public Item getItem(String name) {
+		switch (name) {
+		case "afb":
+			return new ItemAFB();
+		case "afsu_upgrade_kit":
+			return new ItemAFSUUpgradeKit();
+		default:
+			return null;
+		}
+	}
+
+	@Override
+	public ItemStack getChargedStack(ItemStack stack) {
+		ElectricItem.manager.charge(stack, Integer.MAX_VALUE, Integer.MAX_VALUE, true, false);
+		return stack;
 	}
 
 	@Override
@@ -110,11 +138,6 @@ public class IC2ExpCross extends IC2Cross {
 	@Override
 	public boolean isSteamReactor(TileEntity par1) {
 		return false;
-	}
-
-	@Override
-	public boolean isCable(TileEntity te) {
-		return te instanceof TileEntityCable;
 	}
 
 	@Override
@@ -176,6 +199,7 @@ public class IC2ExpCross extends IC2Cross {
 			NBTTagCompound tag = new NBTTagCompound();
 			Boolean active = isActive(te);
 			tag.setBoolean("active", active);
+			tag.setString("euType", "EU");
 			if (te instanceof TileEntityBaseGenerator) {
 				tag.setInteger("type", 1);
 				tag.setDouble("storage", ((TileEntityBaseGenerator) te).storage);
@@ -449,25 +473,6 @@ public class IC2ExpCross extends IC2Cross {
 	}
 
 	@Override
-	public ItemStack getLiquidAdvancedCard(World world, int x, int y, int z) {
-		Block block = world.getBlock(x, y, z);
-		if (!(block instanceof BlockTileEntity))
-			return null;
-		
-		TileEntity te = world.getTileEntity(x, y, z);
-		if (te instanceof TileEntityReactorFluidPort || te instanceof TileEntityReactorRedstonePort
-				|| te instanceof TileEntityReactorAccessHatch) {
-			ChunkCoordinates position = ReactorHelper.get5x5TargetCoordinates(world, x, y, z);
-			if (position != null) {
-				ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_LIQUID_ADVANCED);
-				ItemStackHelper.setCoordinates(sensorLocationCard, position.posX, position.posY, position.posZ);
-				return sensorLocationCard;
-			}
-		}
-		return null;
-	}
-
-	@Override
 	public FluidTankInfo[] getAllTanks(TileEntity te) {
 		if (!(te instanceof IFluidHandler))
 			return null;
@@ -498,6 +503,25 @@ public class IC2ExpCross extends IC2Cross {
 	}
 
 	@Override
+	public ItemStack getLiquidAdvancedCard(World world, int x, int y, int z) {
+		Block block = world.getBlock(x, y, z);
+		if (!(block instanceof BlockTileEntity))
+			return null;
+		
+		TileEntity te = world.getTileEntity(x, y, z);
+		if (te instanceof TileEntityReactorFluidPort || te instanceof TileEntityReactorRedstonePort
+				|| te instanceof TileEntityReactorAccessHatch) {
+			ChunkCoordinates position = ReactorHelper.get5x5TargetCoordinates(world, x, y, z);
+			if (position != null) {
+				ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_LIQUID_ADVANCED);
+				ItemStackHelper.setCoordinates(sensorLocationCard, position.posX, position.posY, position.posZ);
+				return sensorLocationCard;
+			}
+		}
+		return null;
+	}
+
+	@Override
 	public CardState updateCardReactor(World world, ICardReader reader, IReactor reactor) {
 		reader.setInt("heat", reactor.getHeat());
 		reader.setInt("maxHeat", reactor.getMaxHeat());
@@ -510,9 +534,9 @@ public class IC2ExpCross extends IC2Cross {
 		int slotCount = inventory.getSizeInventory();
 		int dmgLeft = 0;
 		for (int i = 0; i < slotCount; i++) {
-			ItemStack rStack = inventory.getStackInSlot(i);
-			if (rStack != null)
-				dmgLeft = Math.max(dmgLeft, ReactorHelper.getNuclearCellTimeLeft(rStack));
+			ItemStack stack = inventory.getStackInSlot(i);
+			if (stack != null)
+				dmgLeft = Math.max(dmgLeft, ReactorHelper.getNuclearCellTimeLeft(stack));
 		}
 
 		int timeLeft = 0;
@@ -548,5 +572,23 @@ public class IC2ExpCross extends IC2Cross {
 		int timeLeft = dmgLeft * reactor.getTickRate() / 20;
 		reader.setInt("timeLeft", timeLeft);
 		return CardState.OK;
+	}
+
+	@Override
+	public void showBarrelInfo(EntityPlayer player, TileEntity te) {
+		if (te instanceof TileEntityBarrel) {
+			int age = -1;
+			int boozeAmount = 0;
+			try {
+				Field field = TileEntityBarrel.class.getDeclaredField("age");
+				field.setAccessible(true);
+				age = (int) field.get(te);
+				field = TileEntityBarrel.class.getDeclaredField("boozeAmount");
+				field.setAccessible(true);
+				boozeAmount = (int) field.get(te);
+			} catch (Throwable t) { }
+			if (age >= 0)
+				NetworkHelper.chatMessage(player, age + " / " + ((TileEntityBarrel) te).timeNedForRum(boozeAmount));
+		}
 	}
 }

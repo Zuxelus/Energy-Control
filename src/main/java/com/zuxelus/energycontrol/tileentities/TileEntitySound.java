@@ -10,8 +10,7 @@ public class TileEntitySound {
 	private static final float DEFAULT_RANGE = 16F;
 	private PositionedSoundRecord sound;
 
-	public TileEntitySound() {
-	}
+	public TileEntitySound() { }
 
 	public void stopAlarm() {
 		if (sound != null) {

@@ -19,6 +19,7 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 
 public class ItemCardReactor extends ItemCardBase {
+
 	public ItemCardReactor() {
 		super(ItemCardType.CARD_REACTOR, "card_reactor");
 	}
@@ -40,17 +41,13 @@ public class ItemCardReactor extends ItemCardBase {
 	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		if ((displaySettings & 2) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelHeat", reader.getInt("heat"), showLabels));
+			addHeat(result, reader.getInt("heat"), reader.getInt("maxHeat"), showLabels);
 		if ((displaySettings & 4) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelMaxHeat", reader.getInt("maxHeat"), showLabels));
 		if ((displaySettings & 8) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelMelting", reader.getInt("maxHeat") * 85 / 100, showLabels));
-		if ((displaySettings & 16) > 0) {
-			if (reader.getBoolean("isSteam")) {
-				result.add(new PanelString("msg.ec.InfoPanelOutputSteam", ReactorHelper.euToSteam(reader.getInt("output")), showLabels));
-			} else
-				result.add(new PanelString("msg.ec.InfoPanelOutputEU", reader.getInt("output"), showLabels));
-		}
+		if ((displaySettings & 16) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelOutputEU", reader.getInt("output"), showLabels));
 		int timeLeft = reader.getInt("timeLeft");
 		if ((displaySettings & 32) > 0) {
 			int hours = timeLeft / 3600;

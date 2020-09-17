@@ -14,18 +14,27 @@ import com.zuxelus.energycontrol.utils.SoundHelper;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
 public class ClientProxy extends ServerProxy {
+	public static KeyBinding modeSwitchKey;
+
 	@Override
 	public void loadConfig(FMLPreInitializationEvent event) {
 		EnergyControl.config = new ConfigHandler();
 		MinecraftForge.EVENT_BUS.register(EnergyControl.config);
 		EnergyControl.config.init(event.getSuggestedConfigurationFile());
+		if (!Loader.isModLoaded("IC2") && Loader.isModLoaded("techreborn")) {
+			modeSwitchKey = new KeyBinding("Mode Switch Key", 50, "Energy Control");
+			ClientRegistry.registerKeyBinding(modeSwitchKey);
+		}
 	}
 
 	@Override
@@ -51,51 +60,75 @@ public class ClientProxy extends ServerProxy {
 			if (player.getCurrentEquippedItem().getItem() instanceof ItemCardHolder)
 				return new GuiCardHolder(player);
 		}
-		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		TileEntity te = world.getTileEntity(x, y, z);
 		switch (ID) {
 		case BlockDamages.DAMAGE_THERMAL_MONITOR:
-			if (tileEntity instanceof TileEntityThermo)
-				return new GuiThermalMonitor((TileEntityThermo) tileEntity);
+			if (te instanceof TileEntityThermo)
+				return new GuiThermalMonitor((TileEntityThermo) te);
 			break;
 		case BlockDamages.DAMAGE_HOWLER_ALARM:
-			if (tileEntity instanceof TileEntityHowlerAlarm)
-				return new GuiHowlerAlarm((TileEntityHowlerAlarm) tileEntity);
+			if (te instanceof TileEntityHowlerAlarm)
+				return new GuiHowlerAlarm((TileEntityHowlerAlarm) te);
 		case BlockDamages.DAMAGE_INDUSTRIAL_ALARM:
-			if (tileEntity instanceof TileEntityIndustrialAlarm)
-				return new GuiIndustrialAlarm((TileEntityIndustrialAlarm) tileEntity);
+			if (te instanceof TileEntityIndustrialAlarm)
+				return new GuiIndustrialAlarm((TileEntityIndustrialAlarm) te);
 			break;
 		case BlockDamages.DAMAGE_INFO_PANEL:
-			if (tileEntity instanceof TileEntityInfoPanel)
-				return new GuiInfoPanel(new ContainerInfoPanel(player, (TileEntityInfoPanel) tileEntity));
+			if (te instanceof TileEntityInfoPanel)
+				return new GuiInfoPanel(new ContainerInfoPanel(player, (TileEntityInfoPanel) te));
+			break;
+		case BlockDamages.DAMAGE_INFO_PANEL_EXTENDER:
+			if (te instanceof TileEntityInfoPanelExtender) {
+				TileEntityInfoPanel panel = ((TileEntityInfoPanelExtender) te).getCore();
+				if (panel != null)
+					return new GuiInfoPanel(new ContainerInfoPanel(player, (TileEntityInfoPanel) panel));
+			}
 			break;
 		case BlockDamages.DAMAGE_ADVANCED_PANEL:
-			if (tileEntity instanceof TileEntityAdvancedInfoPanel)
-				return new GuiAdvancedInfoPanel(new ContainerAdvancedInfoPanel(player, (TileEntityAdvancedInfoPanel) tileEntity));
+			if (te instanceof TileEntityAdvancedInfoPanel)
+				return new GuiAdvancedInfoPanel(new ContainerAdvancedInfoPanel(player, (TileEntityAdvancedInfoPanel) te));
 			break;
 		case BlockDamages.DAMAGE_RANGE_TRIGGER:
-			if (tileEntity instanceof TileEntityRangeTrigger)
-				return new GuiRangeTrigger(new ContainerRangeTrigger(player, (TileEntityRangeTrigger) tileEntity));
+			if (te instanceof TileEntityRangeTrigger)
+				return new GuiRangeTrigger(new ContainerRangeTrigger(player, (TileEntityRangeTrigger) te));
 			break;
 		case BlockDamages.DAMAGE_REMOTE_THERMO:
-			if (tileEntity instanceof TileEntityRemoteThermo)
-				return new GuiRemoteThermo(new ContainerRemoteThermo(player, (TileEntityRemoteThermo) tileEntity));
+			if (te instanceof TileEntityRemoteThermo)
+				return new GuiRemoteThermo(new ContainerRemoteThermo(player, (TileEntityRemoteThermo) te));
 			break;
 		case BlockDamages.DAMAGE_AVERAGE_COUNTER:
-			if (tileEntity instanceof TileEntityAverageCounter)
-				return new GuiAverageCounter(new ContainerAverageCounter(player, (TileEntityAverageCounter) tileEntity));
+			if (te instanceof TileEntityAverageCounter)
+				return new GuiAverageCounter(new ContainerAverageCounter(player, (TileEntityAverageCounter) te));
 			break;
 		case BlockDamages.DAMAGE_ENERGY_COUNTER:
-			if (tileEntity instanceof TileEntityEnergyCounter)
-				return new GuiEnergyCounter(new ContainerEnergyCounter(player, (TileEntityEnergyCounter) tileEntity));
+			if (te instanceof TileEntityEnergyCounter)
+				return new GuiEnergyCounter(new ContainerEnergyCounter(player, (TileEntityEnergyCounter) te));
 			break;
 		case BlockDamages.GUI_KIT_ASSEMBER:
-			if (tileEntity instanceof TileEntityKitAssembler)
-				return new GuiKitAssembler(new ContainerKitAssembler(player, (TileEntityKitAssembler) tileEntity));
+			if (te instanceof TileEntityKitAssembler)
+				return new GuiKitAssembler(new ContainerKitAssembler(player, (TileEntityKitAssembler) te));
+			break;
+		case BlockDamages.DAMAGE_AFSU:
+			if (te instanceof TileEntityAFSU)
+				return new GuiAFSU(new ContainerAFSU(player, (TileEntityAFSU) te));
+			break;
+		case 20:
+			if (te instanceof TileEntitySeedAnalyzer)
+				return new GuiSeedAnalyzer(new ContainerSeedAnalyzer(player, (TileEntitySeedAnalyzer) te));
+			break;
+		case 21:
+			if (te instanceof TileEntitySeedLibrary)
+				return new GuiSeedLibrary(new ContainerSeedLibrary(player, (TileEntitySeedLibrary) te));
 			break;
 		}
 		return null;
 	}
 
+	@Override
+	public void registerEventHandlers() {
+		FMLCommonHandler.instance().bus().register(EnergyControl.config);
+	}
+	
 	@Override
 	public void importSound() {
 		SoundHelper.importSound();

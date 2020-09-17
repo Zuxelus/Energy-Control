@@ -3,6 +3,7 @@ package com.zuxelus.energycontrol.items;
 import java.util.List;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 
 import cpw.mods.fml.relauncher.Side;
@@ -17,19 +18,14 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class ItemDigitalThermometer extends ItemThermometer implements IElectricItem {
+	protected final static int CAPACITY = 12000;
+	protected final static int TRANSFER_LIMIT = 250;
 
-	public int tier;
-	public int ratio;
-	public int transfer;
-
-	public ItemDigitalThermometer(int k, int l, int i1) {
+	public ItemDigitalThermometer() {
 		super();
 		setMaxDamage(13);
 		setHasSubtypes(true);
 		setTextureName(EnergyControl.MODID + ":" + "thermometer_digital");
-		tier = k;
-		ratio = l;
-		transfer = i1;
 	}
 
 	@Override
@@ -46,12 +42,13 @@ public class ItemDigitalThermometer extends ItemThermometer implements IElectric
 	}
 
 	@Override
-	protected void damage(ItemStack itemstack, int i, EntityPlayer entityplayer) {
-		ElectricItem.rawManager.use(itemstack, 50 * i, entityplayer);
+	protected void damage(ItemStack stack, int i, EntityPlayer player) {
+		ElectricItem.manager.use(stack, 50 * i, player);
 	}
 
+	// IElectricItem
 	@Override
-	public boolean canProvideEnergy(ItemStack itemStack) {
+	public boolean canProvideEnergy(ItemStack stack) {
 		return false;
 	}
 
@@ -66,26 +63,24 @@ public class ItemDigitalThermometer extends ItemThermometer implements IElectric
 	}
 
 	@Override
-	public double getMaxCharge(ItemStack itemStack) {
-		return 12000;
+	public double getMaxCharge(ItemStack stack) {
+		return CAPACITY;
 	}
 
 	@Override
-	public int getTier(ItemStack itemStack) {
-		return tier;
+	public int getTier(ItemStack stack) {
+		return 1;
 	}
 
 	@Override
-	public double getTransferLimit(ItemStack itemStack) {
-		return 250;
+	public double getTransferLimit(ItemStack stack) {
+		return TRANSFER_LIMIT;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(Item item, CreativeTabs tab, List items) {
-		ItemStack itemstack = new ItemStack(this, 1);
-		ElectricItem.manager.charge(itemstack, 0x7fffffff, 0x7fffffff, true, false);
-		items.add(itemstack);
+		items.add(CrossModLoader.ic2.getChargedStack(new ItemStack(this, 1)));
 		items.add(new ItemStack(this, 1, getMaxDamage()));
 	}
 }

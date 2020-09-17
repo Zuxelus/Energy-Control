@@ -160,6 +160,12 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ISc
 		return screen;
 	}
 
+	public TileEntityInfoPanel getCore() {
+		if (screen == null)
+			return null;
+		return screen.getCore(worldObj);
+	}
+
 	@Override
 	public void updateData() { }
 

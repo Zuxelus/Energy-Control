@@ -8,8 +8,11 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.IItemKit;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.items.cards.ItemCardGregTech;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.registry.GameRegistry;
 import ic2.api.recipe.Recipes;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -19,6 +22,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 
 public class ItemKitMain extends Item {
 	private static Map<Integer, IItemKit> kits = new HashMap<Integer, IItemKit>();
@@ -26,6 +30,8 @@ public class ItemKitMain extends Item {
 	public ItemKitMain() {
 		super();
 		setMaxStackSize(16);
+		setHasSubtypes(true);
+		setMaxDamage(0);
 		canRepair = false;
 		setCreativeTab(EnergyControl.creativeTab);
 	}
@@ -37,8 +43,17 @@ public class ItemKitMain extends Item {
 		register(new ItemKitGenerator());
 		register(new ItemKitReactor());
 		register(new ItemKitLiquidAdvanced());
-		if (CrossModLoader.draconicEvolution.modLoaded)
+		register(new ItemKitToggle());
+		if (Loader.isModLoaded("DraconicEvolution"))
 			register(new ItemKitDraconic());
+		if (Loader.isModLoaded("appliedenergistics2"))
+			register(new ItemKitAppEng());
+		if (Loader.isModLoaded("GalacticraftCore") && Loader.isModLoaded("GalacticraftMars"))
+			register(new ItemKitGalacticraft());
+		if (Loader.isModLoaded("BigReactors"))
+			register(new ItemKitBigReactors());
+		if (Loader.isModLoaded("gregtech"))
+			register(new ItemKitGregTech());
 	}
 
 	private void register(ItemKitBase item) {
@@ -132,7 +147,7 @@ public class ItemKitMain extends Item {
 			Integer key = entry.getKey();
 			Object[] recipe = entry.getValue().getRecipe();
 			if (recipe != null)
-				Recipes.advRecipes.addRecipe(new ItemStack(ItemHelper.itemKit, 1, key), recipe);
+				GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ItemHelper.itemKit, 1, key), recipe));
 		}
 	}
 }

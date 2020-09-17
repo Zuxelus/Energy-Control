@@ -59,45 +59,45 @@ public class ItemCardGeneratorHeat extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int settings, ICardReader reader, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
-		if ((displaySettings & 1) > 0)
+		if ((settings & 1) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelOutputHU", reader.getInt("output"), showLabels));
-		if ((displaySettings & 2) > 0)
+		if ((settings & 2) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelBufferHU", reader.getInt("energy"), showLabels));
 		switch (reader.getInt("type")) {
 		case 1: // TileEntityElectricHeatGenerator
-			if ((displaySettings & 4) > 0)
+			if ((settings & 4) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelStorageEU", reader.getDouble("storage"), showLabels));
-			if ((displaySettings & 8) > 0)
+			if ((settings & 8) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelCapacityEU", reader.getDouble("maxStorage"), showLabels));
-			if ((displaySettings & 16) > 0)
+			if ((settings & 16) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelCoils", reader.getInt("items"), showLabels));
 			break;
 		case 2: // TileEntityFluidHeatGenerator
-			if ((displaySettings & 4) > 0)
+			if ((settings & 4) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelStorageL", reader.getDouble("storage"), showLabels));
-			if ((displaySettings & 8) > 0)
+			if ((settings & 8) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelCapacityL", reader.getDouble("maxStorage"), showLabels));
 			break;
 		case 3: // TileEntityLiquidHeatExchanger
-			if ((displaySettings & 4) > 0)
+			if ((settings & 4) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelStorageL", reader.getDouble("storage"), showLabels));
-			if ((displaySettings & 8) > 0)
+			if ((settings & 8) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelCapacityL", reader.getDouble("maxStorage"), showLabels));
-			if ((displaySettings & 16) > 0)
+			if ((settings & 16) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelConductors", reader.getInt("items"), showLabels));
 			break;
 		case 4: // TileEntityRTHeatGenerator
-			if ((displaySettings & 16) > 0)
+			if ((settings & 16) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelPellets", reader.getInt("items"), showLabels));
-			if ((displaySettings & 32) > 0)
+			if ((settings & 32) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelMultiplier", reader.getInt("multiplier"), showLabels));
 			break;
 		case 5: // TileEntitySolidHeatGenerator
 			break;
 		}
-		if ((displaySettings & 64) > 0)
+		if ((settings & 64) > 0)
 			addOnOff(result, reader.getBoolean("active"));
 		return result;
 	}

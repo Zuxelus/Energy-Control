@@ -28,11 +28,11 @@ public class CompactButton extends GuiButton {
 		FontRenderer fontRenderer = mc.fontRenderer;
 		mc.getTextureManager().bindTexture(TEXTURE);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		this.field_146123_n = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
-		int i = this.getHoverState(this.field_146123_n);
-		this.drawTexturedModalRect(this.xPosition, this.yPosition, 0, 64 + i * 12, this.width / 2 + width % 2, this.height);
-		this.drawTexturedModalRect(this.xPosition + this.width / 2 + width % 2, this.yPosition, 200 - this.width / 2, 64 + i * 12, this.width / 2, this.height);
-		this.mouseDragged(mc, mouseX, mouseY);
+		field_146123_n = mouseX >= xPosition && mouseY >= yPosition && mouseX < xPosition + width && mouseY < yPosition + height;
+		int i = this.getHoverState(field_146123_n);
+		drawTexturedModalRect(xPosition, yPosition, 0, 64 + i * 12, width / 2 + width % 2, height);
+		drawTexturedModalRect(xPosition + width / 2 + width % 2, yPosition, 200 - width / 2, 64 + i * 12, width / 2, height);
+		mouseDragged(mc, mouseX, mouseY);
 		fontRenderer.drawString(displayString, xPosition + (width - fontRenderer.getStringWidth(displayString)) / 2, yPosition + 2, 0x404040);
 	}
 }

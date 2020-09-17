@@ -176,8 +176,18 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 					newStatus = 1;
 				else
 					newStatus = 0;
-			} else
+			} else {
 				newStatus = -1;
+				if (getStackInSlot(SLOT_CARD) != null) {
+					ChunkCoordinates target = new ItemCardReader(getStackInSlot(SLOT_CARD)).getTarget();
+					if (target != null) {
+						newHeat = ReactorHelper.getReactorHeat(worldObj, target.posX, target.posY, target.posZ);
+						newStatus = newHeat == -1 ? -1 : newHeat >= getHeatLevel() ? 1 : 0;
+						if (newHeat == -1)
+							newHeat = 0;
+					}
+				}
+			}
 		} else
 			newStatus = -2;
 
@@ -223,9 +233,9 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 			if (itemStack == null)
 				continue;
 
-			if (itemStack.isItemEqual(CrossModLoader.ic2.getItem("transformer"))) {
+			if (itemStack.isItemEqual(CrossModLoader.ic2.getItemStack("transformer"))) {
 				upgradeCountTransormer += itemStack.stackSize;
-			} else if (itemStack.isItemEqual(CrossModLoader.ic2.getItem("energy_storage"))) {
+			} else if (itemStack.isItemEqual(CrossModLoader.ic2.getItemStack("energy_storage"))) {
 				upgradeCountStorage += itemStack.stackSize;
 			} else if (itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE)
 				upgradeCountRange += itemStack.stackSize;
@@ -277,25 +287,25 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 	}
 
 	@Override
-	public boolean isItemValid(int slotIndex, ItemStack itemStack) {
-		if (itemStack == null)
+	public boolean isItemValid(int slotIndex, ItemStack stack) {
+		if (stack == null)
 			return false;
 		switch (slotIndex) {
 		case SLOT_CHARGER:
-			if (itemStack.getItem() instanceof IElectricItem) {
-				IElectricItem item = (IElectricItem) itemStack.getItem();
-				if (item.canProvideEnergy(itemStack) && item.getTier(itemStack) <= tier)
+			if (stack.getItem() instanceof IElectricItem) {
+				IElectricItem item = (IElectricItem) stack.getItem();
+				if (item.canProvideEnergy(stack) && item.getTier(stack) <= tier)
 					return true;
 			}
 			return false;
 		case SLOT_CARD:
-			return itemStack.getItem() instanceof ItemCardMain
-					&& (itemStack.getItemDamage() == ItemCardType.CARD_REACTOR
-							|| itemStack.getItemDamage() == ItemCardType.CARD_REACTOR5X5);
+			return stack.getItem() instanceof ItemCardMain && (stack.getItemDamage() == ItemCardType.CARD_REACTOR
+					|| stack.getItemDamage() == ItemCardType.CARD_REACTOR5X5
+					|| stack.getItemDamage() == ItemCardType.CARD_BIG_REACTORS);
 		default:
-			return itemStack.isItemEqual(CrossModLoader.ic2.getItem("transformer"))
-					|| itemStack.isItemEqual(CrossModLoader.ic2.getItem("energy_storage"))
-					|| (itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE);
+			return stack.isItemEqual(CrossModLoader.ic2.getItemStack("transformer"))
+					|| stack.isItemEqual(CrossModLoader.ic2.getItemStack("energy_storage"))
+					|| (stack.getItem() instanceof ItemUpgrade && stack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE);
 		}
 	}
 

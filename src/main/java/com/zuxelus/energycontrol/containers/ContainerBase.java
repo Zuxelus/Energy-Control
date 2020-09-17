@@ -35,7 +35,7 @@ public abstract class ContainerBase<T extends IInventory> extends Container {
 	public boolean canInteractWith(EntityPlayer player) {
 		return te.isUseableByPlayer(player);
 	}
-	
+
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotId) {
 		Slot slot = (Slot) this.inventorySlots.get(slotId);
@@ -43,40 +43,17 @@ public abstract class ContainerBase<T extends IInventory> extends Container {
 			return null;
 
 		ItemStack items = slot.getStack();
-		int initialCount = items.stackSize;
+		ItemStack stack = items.copy();
 		if (slotId < te.getSizeInventory()) { // moving from panel to inventory
-			mergeItemStack(items, te.getSizeInventory(), inventorySlots.size(), false);
-			if (items.stackSize == 0) {
-				slot.putStack((ItemStack) null);
-			} else {
-				slot.onSlotChanged();
-				if (initialCount != items.stackSize)
-					return items;
-			}
-		} else { // moving from inventory to panel
-			for (int i = 0; i < te.getSizeInventory(); i++) {
-				if (!te.isItemValidForSlot(i, items))
-					continue;
-				ItemStack targetStack = te.getStackInSlot(i);
-				if (targetStack == null) {
-					Slot targetSlot = (Slot) this.inventorySlots.get(i);
-					targetSlot.putStack(items);
-					slot.putStack((ItemStack) null);
-					break;
-				} else if (items.isStackable() && items.isItemEqual(targetStack)) {
-					mergeItemStack(items, i, i + 1, false);
-					if (items.stackSize == 0) {
-						slot.putStack((ItemStack) null);
-					} else {
-						slot.onSlotChanged();
-						if (initialCount != items.stackSize)
-							return items;
-					}
-					break;
-				}
-
-			}
-		}
-		return null;
+			if (!mergeItemStack(items, te.getSizeInventory(), inventorySlots.size(), true))
+				return null;
+		} else // moving from inventory to panel
+			if (!mergeItemStack(items, 0, te.getSizeInventory(), false))
+				return null;
+		if (items.stackSize == 0)
+			slot.putStack(null);
+		else 
+			slot.onSlotChanged();
+		return stack;
 	}
 }

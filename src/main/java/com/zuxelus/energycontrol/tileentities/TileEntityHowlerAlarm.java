@@ -7,7 +7,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 
-public class TileEntityHowlerAlarm extends TileEntityFacing implements IRedstoneConsumer, ITilePacketHandler {
+public class TileEntityHowlerAlarm extends TileEntityFacing implements ITilePacketHandler {
 	private static final String DEFAULT_SOUND_NAME = "default";
 	private static final float BASE_SOUND_RANGE = 16F;
 	private static final String SOUND_PREFIX = "energycontrol:alarm-";
@@ -169,11 +169,5 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements IRedstone
 
 	private void notifyBlockUpdate() {
 		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-	}
-	
-	@Override
-	public void neighborChanged() {
-		if (!worldObj.isRemote)
-			notifyBlockUpdate();
 	}
 }

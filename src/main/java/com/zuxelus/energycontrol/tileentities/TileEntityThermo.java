@@ -15,9 +15,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 
 public class TileEntityThermo extends TileEntityInventory implements ITilePacketHandler {
-	private int prevHeatLevel;
 	private int heatLevel;
-	private boolean prevInvertRedstone;
 	private boolean invertRedstone;
 	protected int status;
 	private boolean poweredBlock;
@@ -27,8 +25,8 @@ public class TileEntityThermo extends TileEntityInventory implements ITilePacket
 
 	public TileEntityThermo() {
 		super("tile.thermal_monitor.name");
-		invertRedstone = prevInvertRedstone = false;
-		heatLevel = prevHeatLevel = 500;
+		invertRedstone = false;
+		heatLevel = 500;
 		updateTicker = 0;
 		tickRate = -1;
 		status = -1;
@@ -39,10 +37,10 @@ public class TileEntityThermo extends TileEntityInventory implements ITilePacket
 	}
 
 	public void setHeatLevel(int value) {
+		int old = heatLevel;
 		heatLevel = value;
-		if (!worldObj.isRemote && prevHeatLevel != heatLevel)
+		if (!worldObj.isRemote && heatLevel != old)
 			notifyBlockUpdate();
-		prevHeatLevel = heatLevel;
 	}
 
 	public boolean getInvertRedstone() {
@@ -50,10 +48,10 @@ public class TileEntityThermo extends TileEntityInventory implements ITilePacket
 	}
 
 	public void setInvertRedstone(boolean value) {
+		boolean old = invertRedstone;
 		invertRedstone = value;
-		if (!worldObj.isRemote && prevInvertRedstone != invertRedstone)
+		if (!worldObj.isRemote && invertRedstone != old)
 			notifyBlockUpdate();
-		prevInvertRedstone = invertRedstone;
 	}
 
 	public int getStatus() {
@@ -106,9 +104,9 @@ public class TileEntityThermo extends TileEntityInventory implements ITilePacket
 	protected void readProperties(NBTTagCompound tag) {
 		super.readProperties(tag);
 		if (tag.hasKey("heatLevel"))
-			heatLevel = prevHeatLevel = tag.getInteger("heatLevel");
+			heatLevel = tag.getInteger("heatLevel");
 		if (tag.hasKey("invert"))
-			invertRedstone = prevInvertRedstone = tag.getBoolean("invert");
+			invertRedstone = tag.getBoolean("invert");
 		if (tag.hasKey("status"))
 			setStatus(tag.getInteger("status"));
 	}
@@ -141,7 +139,7 @@ public class TileEntityThermo extends TileEntityInventory implements ITilePacket
 
 	@Override
 	public void updateEntity() {
-		if (worldObj.isRemote || status == -2)
+		if (worldObj.isRemote)
 			return;
 	
 		if (updateTicker-- > 0)
@@ -172,8 +170,10 @@ public class TileEntityThermo extends TileEntityInventory implements ITilePacket
 			else
 				newStatus = 0;
 
-		} else
-			newStatus = -2;
+		} else {
+			int heat = ReactorHelper.getReactorHeat(worldObj, xCoord, yCoord, zCoord);
+			newStatus = heat == -1 ? -2 : heat >= heatLevel ? 1 : 0;
+		}
 
 		if (newStatus != status) {
 			status = newStatus;

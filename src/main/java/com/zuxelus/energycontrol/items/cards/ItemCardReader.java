@@ -160,7 +160,10 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public void setState(CardState state) {
-		setInt("state", state.getIndex());
+		if (state != null)
+			setInt("state", state.getIndex());
+		else
+			setInt("state", CardState.NO_TARGET.getIndex());
 	}
 
 	@Override

@@ -19,6 +19,12 @@ public class ItemKitEnergy extends ItemKitBase {
 		ItemStack result = CrossModLoader.ic2.getEnergyCard(world, x, y, z);
 		if (result != null)
 			return result;
-		return null;
+		result = CrossModLoader.techReborn.getEnergyCard(world, x, y, z);
+		if (result != null)
+			return result;
+		result = CrossModLoader.appEng.getEnergyCard(world, x, y, z);
+		if (result != null)
+			return result;
+		return CrossModLoader.galacticraft.getEnergyCard(world, x, y, z);
 	}
 }

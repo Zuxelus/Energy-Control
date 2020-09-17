@@ -23,29 +23,16 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityEnergyCounter extends TileEntityInventory
-		implements ISlotItemFilter, IEnergySink, IEnergySource, ITilePacketHandler, IWrenchable {
+public class TileEntityEnergyCounter extends TileEntityEnergyStorage implements IWrenchable {
 	private static final int BASE_PACKET_SIZE = 32;
 	private boolean init;
-
 	protected int updateTicker;
 	protected int tickRate;
-
 	public double counter;
-	private boolean addedToEnet;
-
-	public int tier;
-	public int output;
-	public double energy;
 
 	public TileEntityEnergyCounter() {
-		super("tile.energy_counter.name");
-		addedToEnet = false;
+		super("tile.energy_counter.name", 1, BASE_PACKET_SIZE, BASE_PACKET_SIZE * 2);
 		counter = 0.0;
-		
-		energy = 0;
-		tier = 1;
-		output = BASE_PACKET_SIZE;
 	}
 
 	@Override
@@ -111,65 +98,53 @@ public class TileEntityEnergyCounter extends TileEntityInventory
 		writeProperties(tag);
 	}
 
+	@Override
 	public void onLoad() {
-		if (!addedToEnet && !worldObj.isRemote && Info.isIc2Available()) {
-			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
-			addedToEnet = true;
+		super.onLoad();
+		if (!init) {
+			init = true;
+			refreshData();
 		}
 	}
 
 	@Override
-	public void invalidate() {
-		onChunkUnload();
-		super.invalidate();
-	}
-
-	@Override
-	public void onChunkUnload() {
-		if (addedToEnet && !worldObj.isRemote && Info.isIc2Available()) {
-			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
-			addedToEnet = false;
-		}
+	public void drawEnergy(double amount) {
+		super.drawEnergy(amount);
+		counter += amount;
 	}
 
 	@Override
 	public void updateEntity() {
-		if (!addedToEnet)
-			onLoad();
-		if (!init) {
-			init = true;
-			markDirty();
-		}
-		if (worldObj.isRemote)
-			return;
-		TileEntity neighbor = worldObj.getTileEntity(xCoord + facing.offsetX, yCoord + facing.offsetY, zCoord + facing.offsetZ);
-		if (CrossModLoader.ic2.isCable(neighbor)) {
-			NodeStats node = EnergyNet.instance.getNodeStats(this);
-			if (node != null)
-				counter += node.getEnergyOut();
-		}
+		onLoad();
 	}
 
 	@Override
 	public void markDirty() {
 		super.markDirty();
+		refreshData();
+	}
+
+	private void refreshData() {
 		int upgradeCountTransormer = 0;
 		ItemStack itemStack = getStackInSlot(0);
-		if (itemStack != null && itemStack.isItemEqual(CrossModLoader.ic2.getItem("transformer")))
+		if (itemStack != null && itemStack.isItemEqual(CrossModLoader.ic2.getItemStack("transformer")))
 			upgradeCountTransormer = itemStack.stackSize;
 		upgradeCountTransormer = Math.min(upgradeCountTransormer, 4);
 		if (worldObj != null && !worldObj.isRemote) {
 			output = BASE_PACKET_SIZE * (int) Math.pow(4D, upgradeCountTransormer);
+			capacity = output * 2;
 			tier = upgradeCountTransormer + 1;
 
-			if (addedToEnet) {
-				EnergyTileUnloadEvent event = new EnergyTileUnloadEvent(this);
+			if (Info.isIc2Available() ) {
+				if (addedToEnet) {
+					EnergyTileUnloadEvent event = new EnergyTileUnloadEvent(this);
+					MinecraftForge.EVENT_BUS.post(event);
+				}
+				addedToEnet = false;
+				EnergyTileLoadEvent event = new EnergyTileLoadEvent(this);
 				MinecraftForge.EVENT_BUS.post(event);
+				addedToEnet = true;
 			}
-			addedToEnet = false;
-			EnergyTileLoadEvent event = new EnergyTileLoadEvent(this);
-			MinecraftForge.EVENT_BUS.post(event);
-			addedToEnet = true;
 		}
 	}
 
@@ -186,52 +161,7 @@ public class TileEntityEnergyCounter extends TileEntityInventory
 
 	@Override
 	public boolean isItemValid(int slotIndex, ItemStack itemstack) { // ISlotItemFilter
-		return itemstack.isItemEqual(CrossModLoader.ic2.getItem("transformer"));
-	}
-
-	@Override
-	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection dir) {
-		return dir != getFacingForge();
-	}
-
-	@Override
-	public boolean emitsEnergyTo(TileEntity receiver, ForgeDirection dir) {
-		return dir == getFacingForge();
-	}
-
-	@Override
-	public void drawEnergy(double amount) {
-		this.energy -= amount;
-	}
-
-	@Override
-	public double getOfferedEnergy() {
-		if (this.energy >= this.output)
-			return Math.min(this.energy, this.output);
-		return 0.0D;
-	}
-
-	@Override
-	public int getSourceTier() {
-		return this.tier;
-	}
-
-	@Override
-	public double getDemandedEnergy() {
-		return Math.min(2 * output - energy, output);
-	}
-
-	@Override
-	public int getSinkTier() {
-		return tier;
-	}
-
-	@Override
-	public double injectEnergy(ForgeDirection directionFrom, double amount, double voltage) {
-		if (energy >= 2 * output)
-			return amount;
-		this.energy += amount;
-		return 0.0D;
+		return itemstack.isItemEqual(CrossModLoader.ic2.getItemStack("transformer"));
 	}
 
 	// IWrenchable

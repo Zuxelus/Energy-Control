@@ -9,13 +9,14 @@ import com.zuxelus.energycontrol.api.ItemStackHelper;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
-public abstract class TileEntityInventory extends TileEntityFacing implements IInventory {
+public abstract class TileEntityInventory extends TileEntityFacing implements ISidedInventory {
 	protected ItemStack[] inventory;
 	protected String customName;
 
@@ -142,5 +143,21 @@ public abstract class TileEntityInventory extends TileEntityFacing implements II
 				item.stackSize = 0;
 			}
 		}
+	}
+
+	// ISidedInventory
+	@Override
+	public int[] getAccessibleSlotsFromSide(int side) {
+		return null;
+	}
+
+	@Override
+	public boolean canInsertItem(int slot, ItemStack stack, int side) {
+		return false;
+	}
+
+	@Override
+	public boolean canExtractItem(int slot, ItemStack stack, int side) {
+		return false;
 	}
 }

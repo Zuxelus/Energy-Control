@@ -74,21 +74,22 @@ public abstract class ItemCardBase implements IItemCard {
 		this.recipe = recipe;
 	}
 
+	protected void addHeat(List<PanelString> result, int heat, int maxHeat, boolean showLabels) {
+		PanelString line = new PanelString("msg.ec.InfoPanelHeat", heat, showLabels);
+		int rate = maxHeat == 0? 0 : 10 * heat / maxHeat;
+		line.colorLeft = rate < 4 ? 0x00ff00 : rate < 8 ? 0xffff00 : 0xff0000;
+		result.add(line);
+	}
+
 	protected void addOnOff(List<PanelString> result, Boolean value) {
 		String text;
 		int txtColor = 0;
 		if (value) {
 			txtColor = 0x00ff00;
-			if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-				text = I18n.format("msg.ec.InfoPanelOn");
-			else
-				text = "On";
+			text = FMLCommonHandler.instance().getEffectiveSide().isClient() ? I18n.format("msg.ec.InfoPanelOn") : "On";
 		} else {
 			txtColor = 0xff0000;
-			if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-				text = I18n.format("msg.ec.InfoPanelOff");
-			else
-				text = "Off";
+			text = FMLCommonHandler.instance().getEffectiveSide().isClient() ? I18n.format("msg.ec.InfoPanelOff") : "Off";
 		}
 		if (result.size() > 0) {
 			PanelString firstLine = result.get(0);
