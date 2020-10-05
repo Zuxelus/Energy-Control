@@ -10,6 +10,7 @@ import com.zuxelus.energycontrol.containers.InfoPanelContainer;
 import com.zuxelus.energycontrol.gui.controls.CompactButton;
 import com.zuxelus.energycontrol.gui.controls.GuiInfoPanelCheckBox;
 import com.zuxelus.energycontrol.gui.controls.GuiInfoPanelShowLabels;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardSettingsReader;
 import com.zuxelus.energycontrol.items.cards.MainCardItem;
@@ -22,7 +23,7 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
 public class InfoPanelScreen extends ContainerScreen<InfoPanelContainer> {
@@ -34,8 +35,8 @@ public class InfoPanelScreen extends ContainerScreen<InfoPanelContainer> {
 	protected boolean modified;
 	public boolean isColored;
 
-	public InfoPanelScreen(InfoPanelContainer container, PlayerInventory playerInventory, Text name) {
-		super(container, playerInventory, name);
+	public InfoPanelScreen(InfoPanelContainer container, PlayerInventory playerInventory) {
+		super(container, playerInventory, new TranslatableText(ModItems.INFO_PANEL_TRANSLATION_KEY));
 		containerHeight = 201;
 		modified = false;
 		isColored = !container.be.getColored();

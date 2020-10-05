@@ -1,8 +1,10 @@
 package com.zuxelus.energycontrol.init;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.blockentities.HowlerAlarmBlockEntity;
 import com.zuxelus.energycontrol.blockentities.InfoPanelBlockEntity;
 import com.zuxelus.energycontrol.blockentities.InfoPanelExtenderBlockEntity;
+import com.zuxelus.energycontrol.blocks.HowlerAlarmBlock;
 import com.zuxelus.energycontrol.blocks.InfoPanelBlock;
 import com.zuxelus.energycontrol.blocks.InfoPanelExtenderBlock;
 import com.zuxelus.energycontrol.blocks.LightBlock;
@@ -34,19 +36,23 @@ public class ModItems {
 	public static final Item ENERGY_ITEM_CARD = new EnergyItemCard();
 	public static final Item TIME_ITEM_CARD = new TimeItemCard();
 	public static final Item TEXT_ITEM_CARD = new TextItemCard();
-	
+
 	public static final Item ENERGY_ITEM_KIT = new EnergyItemKit();
-	
+
 	public static final Block WHITE_LAMP_BLOCK = new LightBlock();
 	public static final Block ORANGE_LAMP_BLOCK = new LightBlock();
-	
+
+	public static final Block HOWLER_ALARM_BLOCK = new HowlerAlarmBlock();
+	public static final Identifier HOWLER_ALARM = new Identifier(EnergyControl.MODID, "howler_alarm");
+
 	public static final Block INFO_PANEL_BLOCK = new InfoPanelBlock();
 	public static final Identifier INFO_PANEL = new Identifier(EnergyControl.MODID, "info_panel");
 	public static final String INFO_PANEL_TRANSLATION_KEY = Util.createTranslationKey("container", INFO_PANEL);
 
 	public static final Block INFO_PANEL_EXTENDER_BLOCK = new InfoPanelExtenderBlock();
 	public static final Identifier INFO_PANEL_EXTENDER = new Identifier(EnergyControl.MODID, "info_panel_extender");
-	
+
+	public static BlockEntityType<HowlerAlarmBlockEntity> HOWLER_ALARM_BLOCK_ENTITY;
 	public static BlockEntityType<InfoPanelBlockEntity> INFO_PANEL_BLOCK_ENTITY;
 	public static BlockEntityType<InfoPanelExtenderBlockEntity> INFO_PANEL_EXTENDER_BLOCK_ENTITY;
 
@@ -59,6 +65,7 @@ public class ModItems {
 	private static void registerBlocks() {
 		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID + ":white_lamp"), WHITE_LAMP_BLOCK);
 		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID + ":orange_lamp"), ORANGE_LAMP_BLOCK);
+		Registry.register(Registry.BLOCK, HOWLER_ALARM, HOWLER_ALARM_BLOCK);
 		Registry.register(Registry.BLOCK, INFO_PANEL, INFO_PANEL_BLOCK);
 		Registry.register(Registry.BLOCK, INFO_PANEL_EXTENDER, INFO_PANEL_EXTENDER_BLOCK);
 	}
@@ -66,18 +73,19 @@ public class ModItems {
 	private static void registerItems() {
 		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID + ":white_lamp"), new BlockItem(WHITE_LAMP_BLOCK, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
 		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID + ":orange_lamp"), new BlockItem(ORANGE_LAMP_BLOCK, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
+		Registry.register(Registry.ITEM, HOWLER_ALARM, new BlockItem(HOWLER_ALARM_BLOCK, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
 		Registry.register(Registry.ITEM, INFO_PANEL, new BlockItem(INFO_PANEL_BLOCK, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
 		Registry.register(Registry.ITEM, INFO_PANEL_EXTENDER, new BlockItem(INFO_PANEL_EXTENDER_BLOCK, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
-		
+
 		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID + ":card_holder"), FABRIC_ITEM);
 		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID + ":upgrade_range"), UPGRADE_RANGE_ITEM);
 		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID + ":upgrade_color"), UPGRADE_COLOR_ITEM);
 		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID + ":upgrade_touch"), UPGRADE_TOUCH_ITEM);
-		
+
 		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID + ":card_energy"), ENERGY_ITEM_CARD);
 		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID + ":card_time"), TIME_ITEM_CARD);
 		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID + ":card_text"), TEXT_ITEM_CARD);
-		
+
 		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID + ":kit_energy"), ENERGY_ITEM_KIT);
 	}
 
@@ -88,5 +96,6 @@ public class ModItems {
 			return new InfoPanelContainer(syncId, player.inventory, (InfoPanelBlockEntity) be);
 		});
 		INFO_PANEL_EXTENDER_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, INFO_PANEL_EXTENDER.toString(), BlockEntityType.Builder.create(InfoPanelExtenderBlockEntity::new, INFO_PANEL_EXTENDER_BLOCK).build(null));
+		HOWLER_ALARM_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, HOWLER_ALARM.toString(), BlockEntityType.Builder.create(HowlerAlarmBlockEntity::new, HOWLER_ALARM_BLOCK).build(null));
 	}
 }

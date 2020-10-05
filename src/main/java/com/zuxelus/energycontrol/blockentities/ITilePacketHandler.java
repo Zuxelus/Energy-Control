@@ -9,6 +9,6 @@ public interface ITilePacketHandler {
 	void onServerMessageReceived(CompoundTag tag);
 
 	void onClientMessageReceived(CompoundTag tag);
-	
+
 	void onDataPacket(BlockEntityCustomUpdatePacket pkt);
 }

@@ -26,6 +26,7 @@ public class ConfigHandler implements ModMenuApi {
 	public static int infoPanelRefreshPeriod = 20;
 	public static int rangeTriggerRefreshPeriod = 20;
 	public static int SMPMaxAlarmRange = 256;
+	public static boolean useCustomSounds = false; 
 
 	public ConfigHandler() {
 		loadConfig(CONFIG_FILE);
@@ -76,7 +77,11 @@ public class ConfigHandler implements ModMenuApi {
 				entryBuilder.startIntField("config." + EnergyControl.MODID + ".SMPMaxAlarmRange", SMPMaxAlarmRange)
 						.setDefaultValue(256).setTooltip("SMPMaxAlarmRange")
 						.setSaveConsumer(value -> SMPMaxAlarmRange = value).build());
-		
+		general.addEntry(
+				entryBuilder.startBooleanToggle("config." + EnergyControl.MODID + ".useCustomSounds", useCustomSounds)
+						.setDefaultValue(true).setTooltip("useCustomSounds")
+						.setSaveConsumer(value -> useCustomSounds = value).build());
+
 		return builder.setSavingRunnable(() -> {
 			saveConfig(CONFIG_FILE);
 			loadConfig(CONFIG_FILE);

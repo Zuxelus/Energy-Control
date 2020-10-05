@@ -8,6 +8,7 @@ import java.util.Map;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.PanelString;
+import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.containers.InfoPanelContainer;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.UpgradeColorItem;
@@ -65,7 +66,7 @@ public class InfoPanelBlockEntity extends InventoryBlockEntity implements Tickab
 		cardData = new HashMap<Integer, List<PanelString>>();
 		displaySettings = new HashMap<Integer, Map<Integer, Integer>>(1);
 		displaySettings.put(0, new HashMap<Integer, Integer>());
-		tickRate = 19; //EnergyControl.config.screenRefreshPeriod - 1;
+		tickRate = ConfigHandler.infoPanelRefreshPeriod - 1;
 		updateTicker = tickRate;
 		dataTicker = 4;
 		showLabels = true;
@@ -157,9 +158,6 @@ public class InfoPanelBlockEntity extends InventoryBlockEntity implements Tickab
 	}
 
 	@Override
-	public void onClientMessageReceived(CompoundTag tag) { }
-
-	@Override
 	public void onServerMessageReceived(CompoundTag tag) {
 		if (!tag.contains("type"))
 			return;
@@ -189,6 +187,9 @@ public class InfoPanelBlockEntity extends InventoryBlockEntity implements Tickab
 			}
 		}
 	}
+
+	@Override
+	public void onClientMessageReceived(CompoundTag tag) { }
 
 	@Override
 	public BlockEntityUpdateS2CPacket toUpdatePacket() {

@@ -38,8 +38,13 @@
 	"item.energycontrol.card_holder": "Card Holder",
 	"block.energycontrol.white_lamp": "White Lamp",
 	"block.energycontrol.orange_lamp": "Orange Lamp",
+	"block.energycontrol.howler_alarm": "Howler Alarm",
+	"block.energycontrol.industrial_alarm": "Industrial Alarm",
 	"block.energycontrol.info_panel": "Industrial Information Panel",
 	"container.energycontrol.info_panel": "Industrial Information Panel",
+	
+	"msg.ec.HowlerAlarmSoundRange": "Sound range: %s",
+	"msg.ec.HowlerAlarmSound": "Sound",
 	
 	"msg.ec.InfoPanelAmountmB": "Amount: %s mB",
 	"msg.ec.InfoPanelAtmosphericValve": "Atmospheric Valve: %s",

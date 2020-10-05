@@ -1,0 +1,25 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "NNN",
+        "IMI",
+        "ICI"
+    ],
+    "key": {
+        "I": {
+            "tag": "c:iron_plate"
+        },
+        "M": {
+            "item": "minecraft:iron_ingot"
+        },
+        "N": {
+            "item": "minecraft:note_block"
+        },
+        "C": {
+            "item": "techreborn:electronic_circuit"
+        }
+    },
+    "result": {
+        "item": "energycontrol:howler_alarm"
+    }
+}
