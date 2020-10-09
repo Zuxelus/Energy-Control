@@ -1,0 +1,9 @@
+{
+    "parent": "energycontrol:block/small_box",
+    "textures": {
+        "particle": "energycontrol:block/industrial_alarm/side",
+        "side": "energycontrol:block/industrial_alarm/side",
+        "face": "energycontrol:block/industrial_alarm/face",
+        "back": "energycontrol:block/industrial_alarm/back"
+    }
+}

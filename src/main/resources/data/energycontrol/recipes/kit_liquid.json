@@ -1,0 +1,24 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "CF",
+        "PB"
+    ],
+    "key": {
+        "P": {
+            "item": "minecraft:paper"
+        },
+        "C": {
+            "item": "minecraft:bucket"
+        },
+        "F": {
+            "item": "techreborn:frequency_transmitter"
+        },
+        "B": {
+            "item": "blue_dye"
+        }
+    },
+    "result": {
+        "item": "energycontrol:kit_liquid"
+    }
+}

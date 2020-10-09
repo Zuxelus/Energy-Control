@@ -8,13 +8,13 @@ import com.zuxelus.energycontrol.utils.BlockEntitySound;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.network.packet.BlockEntityUpdateS2CPacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Tickable;
 
 public class HowlerAlarmBlockEntity extends BlockEntity implements Tickable, ITilePacketHandler {
 	private static final String DEFAULT_SOUND_NAME = "default";
-	private static final float BASE_SOUND_RANGE = 16F;
 	private static final String SOUND_PREFIX = "energycontrol:alarm-";
 
 	public int range;
@@ -28,7 +28,11 @@ public class HowlerAlarmBlockEntity extends BlockEntity implements Tickable, ITi
 	private BlockEntitySound sound;
 
 	public HowlerAlarmBlockEntity() {
-		super(ModItems.HOWLER_ALARM_BLOCK_ENTITY);
+		this(ModItems.HOWLER_ALARM_BLOCK_ENTITY);
+	}
+
+	public HowlerAlarmBlockEntity(BlockEntityType<?> type) {
+		super(type);
 		tickRate = 60;
 		updateTicker = 0;
 		powered = false;
@@ -68,16 +72,10 @@ public class HowlerAlarmBlockEntity extends BlockEntity implements Tickable, ITi
 	}
 
 	public void updatePowered(boolean isPowered) {
-		if (world.isClient) {
+		if (world.isClient && isPowered != powered) {
 			powered = isPowered;
 			checkStatus();
 		}
-	}
-
-	private float getNormalizedRange() {
-		if (world.isClient)
-			return Math.min(range, ConfigHandler.SMPMaxAlarmRange) / BASE_SOUND_RANGE;
-		return range / BASE_SOUND_RANGE;
 	}
 
 	@Override
@@ -159,7 +157,7 @@ public class HowlerAlarmBlockEntity extends BlockEntity implements Tickable, ITi
 	public void tick() {
 		if (world.isClient) {
 			if (updateTicker-- > 0)
-					return;
+				return;
 			updateTicker = tickRate;
 			checkStatus();
 		}
@@ -169,11 +167,10 @@ public class HowlerAlarmBlockEntity extends BlockEntity implements Tickable, ITi
 		if (sound == null)
 			sound = new BlockEntitySound();
 		if (powered && !sound.isPlaying())
-			sound.playAlarm(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, SOUND_PREFIX + soundName, getNormalizedRange(), true);
-		
+			sound.playAlarm(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, SOUND_PREFIX + soundName, range);
 		if (!powered && sound.isPlaying())
 			sound.stopAlarm();
-	}	
+	}
 
 	private void notifyBlockUpdate() {
 		BlockState iblockstate = world.getBlockState(pos);

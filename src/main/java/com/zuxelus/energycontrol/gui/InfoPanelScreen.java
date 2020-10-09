@@ -100,19 +100,19 @@ public class InfoPanelScreen extends ContainerScreen<InfoPanelContainer> {
 	}
 
 	@Override
+	protected void drawForeground(int mouseX, int mouseY) {
+		font.draw(title.asFormattedString(), (containerWidth - font.getStringWidth(title.asFormattedString())) / 2, 6, 0x404040);
+		if (textboxTitle != null)
+			textboxTitle.renderButton(mouseX, mouseY, 0);
+	}
+
+	@Override
 	protected void drawBackground(float delta, int mouseX, int mouseY) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		minecraft.getTextureManager().bindTexture(TEXTURE);
 		int left = (width - containerWidth) / 2;
 		int top = (height - containerHeight) / 2;
 		blit(left, top, 0, 0, containerWidth, containerHeight);
-	}
-
-	@Override
-	protected void drawForeground(int mouseX, int mouseY) {
-		font.draw(title.asFormattedString(), (containerWidth - font.getStringWidth(title.asFormattedString())) / 2, 6, 0x404040);
-		if (textboxTitle != null)
-			textboxTitle.renderButton(mouseX, mouseY, 0);
 	}
 
 	@Override

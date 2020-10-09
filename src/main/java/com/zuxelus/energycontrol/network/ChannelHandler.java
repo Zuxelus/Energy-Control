@@ -1,11 +1,15 @@
 package com.zuxelus.energycontrol.network;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.blockentities.ITilePacketHandler;
 import com.zuxelus.energycontrol.blockentities.InfoPanelBlockEntity;
+import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.MainCardItem;
 
@@ -20,8 +24,10 @@ import net.minecraft.util.math.BlockPos;
 
 public class ChannelHandler {
 	public static final Identifier SERVER_PLAYERS_PACKET_ID = new Identifier(EnergyControl.MODID, "server_players");
+	public static final Identifier SERVER_ALARM_LIST_PACKET_ID = new Identifier(EnergyControl.MODID, "alarm_list");
 	public static final Identifier CLIENT_BLOCK_ENTITY_PACKET_ID = new Identifier(EnergyControl.MODID, "client_block_entity");
 	public static final Identifier CLIENT_CARD_SETTINGS_PACKET_ID = new Identifier(EnergyControl.MODID, "client_card_settings");
+	public static final Identifier CLIENT_KEYS_PACKET_ID = new Identifier(EnergyControl.MODID, "client_keys");
 
 	public static void init() {
 		ServerSidePacketRegistry.INSTANCE.register(CLIENT_BLOCK_ENTITY_PACKET_ID, (packetContext, data) -> {
@@ -70,6 +76,16 @@ public class ChannelHandler {
 				}
 			});
 		});
+
+		ServerSidePacketRegistry.INSTANCE.register(CLIENT_KEYS_PACKET_ID, (packetContext, data) -> {
+			UUID id = data.readUuid();
+			boolean mode = data.readBoolean();
+			boolean alt = data.readBoolean();
+			packetContext.getTaskQueue().execute(() -> {
+				EnergyControl.modeSwitchKeyPressed.put(id, mode);
+				EnergyControl.altPressed.put(id, alt);
+			});
+		});
 	}
 	
 	public static void initClient() {
@@ -111,8 +127,16 @@ public class ChannelHandler {
 				panel.resetCardData();
 			});
 		});
+		ClientSidePacketRegistry.INSTANCE.register(SERVER_ALARM_LIST_PACKET_ID, (packetContext, data) -> {
+			int maxAlarmRange = data.readInt();
+			String allowedAlarms = data.readString();
+			packetContext.getTaskQueue().execute(() -> {
+				ConfigHandler.maxAlarmRange = maxAlarmRange;
+				EnergyControl.INSTANCE.serverAllowedAlarms = new ArrayList<String>(Arrays.asList(allowedAlarms.split(",")));
+			});
+		});
 	}
-	
+
 	public static Map<String, Object> fieldsFromData(int fieldCount, PacketByteBuf data) {
 		Map<String, Object> fields = new HashMap<String, Object>();
 		for (int i = 0; i < fieldCount; i++) {

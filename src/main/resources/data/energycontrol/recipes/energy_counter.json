@@ -1,0 +1,25 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "   ",
+        "IAI",
+        "FTF"
+    ],
+    "key": {
+        "A": {
+            "item": "techreborn:advanced_circuit"
+        },
+        "F": {
+            "item": "techreborn:gold_cable"
+        },
+        "T": {
+            "item": "techreborn:mv_transformer"
+        },
+        "I": {
+            "tag": "c:iron_plate"
+        }
+    },
+    "result": {
+        "item": "energycontrol:energy_counter"
+    }
+}

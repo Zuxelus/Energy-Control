@@ -2,7 +2,6 @@ package com.zuxelus.energycontrol.renderers;
 
 import java.util.List;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.blockentities.InfoPanelBlockEntity;
@@ -109,8 +108,9 @@ public class InfoPanelBlockEntityRenderer extends BlockEntityRenderer<InfoPanelB
 		model[be.findTexture()].render(matrices, vertexConsumer, lightBE, overlay);
 		if (be.getPowered()) {
 			List<PanelString> joinedData = be.getPanelStringList(be.getShowLabels());
-			if (joinedData != null)
+			if (joinedData != null) {
 				drawText(be, joinedData, matrices, vertexConsumers, light);
+			}
 		}
 		matrices.pop();
 	}
@@ -223,12 +223,10 @@ public class InfoPanelBlockEntityRenderer extends BlockEntityRenderer<InfoPanelB
 			break;
 		}
 
-		/*if (panel.isTouchCard()) {
-			GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
-			RenderSystem.disableLighting();
-			panel.renderImage(rendererDispatcher.renderEngine);
-			RenderSystem.enableLighting();
-		} else */
+		if (panel.isTouchCard()) {
+			matrices.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(180));
+			panel.renderImage(dispatcher.textureManager, matrices.peek().getModel());
+		} else 
 			renderText(panel, joinedData, displayWidth, displayHeight, matrices, vertexConsumers, light);
 	}
 

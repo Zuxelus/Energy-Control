@@ -32,11 +32,11 @@ public final class ItemStackHelper {
 		return tag;
 	}
 
-	public static ItemStack getStackWithEnergy(Item item, double energy) {
+	public static ItemStack getStackWithEnergy(Item item, String name, double energy) {
 		ItemStack stack = new ItemStack(item);
 		CompoundTag tag = new CompoundTag();
 		stack.setTag(tag);
-		tag.putDouble("charge", energy);
+		tag.putDouble(name, energy);
 		return stack;
 	}
 }

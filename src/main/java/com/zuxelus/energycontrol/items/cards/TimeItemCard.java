@@ -47,7 +47,7 @@ public class TimeItemCard extends MainCardItem {
 	}
 
 	@Override
-	public int getCradType() {
+	public int getCardType() {
 		return ItemCardType.CARD_TIME;
 	}
 }

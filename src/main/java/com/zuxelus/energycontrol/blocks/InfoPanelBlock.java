@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.blocks;
 
+import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.blockentities.InfoPanelBlockEntity;
 import com.zuxelus.energycontrol.init.ModItems;
 
@@ -70,12 +71,17 @@ public class InfoPanelBlock extends FacingBlock implements BlockEntityProvider {
 
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+		BlockEntity be = world.getBlockEntity(pos);
+		if (!(be instanceof InfoPanelBlockEntity))
+			return ActionResult.PASS;
+		if (!world.isClient && EnergyControl.altPressed.get(player.getGameProfile().getId()) && ((InfoPanelBlockEntity) be).getFacing() == hit.getSide())
+			if (((InfoPanelBlockEntity) be).runTouchAction(pos, hit))
+				return ActionResult.SUCCESS;
 		if (!world.isClient) {
-			BlockEntity be = world.getBlockEntity(pos);
-			if (be instanceof InfoPanelBlockEntity)
-				ContainerProviderRegistry.INSTANCE.openContainer(ModItems.INFO_PANEL, player, buf -> buf.writeBlockPos(pos));
+			ContainerProviderRegistry.INSTANCE.openContainer(ModItems.INFO_PANEL, player, buf -> buf.writeBlockPos(pos));
+			return ActionResult.SUCCESS;
 		}
-		return ActionResult.SUCCESS;
+		return ActionResult.PASS;
 	}
 
 	@Override
@@ -111,14 +117,4 @@ public class InfoPanelBlock extends FacingBlock implements BlockEntityProvider {
 	public BlockRenderType getRenderType(BlockState state) {
 		return BlockRenderType.ENTITYBLOCK_ANIMATED;
 	}
-
-	/*@Override
-	public boolean hasComparatorOutput(BlockState state) {
-		return true;
-	}
-
-	@Override
-	public int getComparatorOutput(BlockState state, World world, BlockPos pos) {
-		return Container.calculateComparatorOutput(world.getBlockEntity(pos));
-	}*/
 }

@@ -8,6 +8,8 @@
 	"config.energycontrol.infoPanelRefreshPeriod": "Info Panel Refresh Period",
 	"config.energycontrol.rangeTriggerRefreshPeriod": "Range Trigger Refresh Period",
 	"config.energycontrol.SMPMaxAlarmRange": "SMP Max Alarm Range",
+	"config.energycontrol.useCustomSounds": "Use Custom Sounds",
+	"key.energycontrol.mode_switch_key": "Mode Switch Key",
 
 	"item.energycontrol.kit_energy": "Energy Sensor Kit",
 	"item.energycontrol.kit_counter": "Counter Sensor Kit",
@@ -32,20 +34,26 @@
 	"item.energycontrol.card_energy_array": "Energy Array Card",
 	"item.energycontrol.card_liquid_array": "Liquid Array Card",
 	"item.energycontrol.card_generator_array": "Generator Array Card",
+	"item.energycontrol.card_holder": "Card Holder",
+	"item.energycontrol.nano_bow": "Nano Bow",
+	"item.energycontrol.portable_panel": "Portable Panel",
 	"item.energycontrol.upgrade_range": "Range Upgrade",
 	"item.energycontrol.upgrade_color": "Color Upgrade",
 	"item.energycontrol.upgrade_touch": "Touch Screen Upgrade",
-	"item.energycontrol.card_holder": "Card Holder",
 	"block.energycontrol.white_lamp": "White Lamp",
 	"block.energycontrol.orange_lamp": "Orange Lamp",
 	"block.energycontrol.howler_alarm": "Howler Alarm",
 	"block.energycontrol.industrial_alarm": "Industrial Alarm",
 	"block.energycontrol.info_panel": "Industrial Information Panel",
+	"block.energycontrol.info_panel_extender": "Information Panel Extender",
+	"block.energycontrol.average_counter": "Average Counter",
+	"block.energycontrol.energy_counter": "Energy Counter",
 	"container.energycontrol.info_panel": "Industrial Information Panel",
-	
+
 	"msg.ec.HowlerAlarmSoundRange": "Sound range: %s",
 	"msg.ec.HowlerAlarmSound": "Sound",
-	
+	"msg.ec.touch_card": "Touch Card",
+
 	"msg.ec.InfoPanelAmountmB": "Amount: %s mB",
 	"msg.ec.InfoPanelAtmosphericValve": "Atmospheric Valve: %s",
 	"msg.ec.InfoPanelBlades": "Blades: %s",
@@ -100,6 +108,7 @@
 	"msg.ec.InfoPanelHeatPercentage": "Heat: %s%%",
 	"msg.ec.InfoPanelHeight": "Height: %s",
 	"msg.ec.InfoPanelHydrogen": "Hydrogen: %s",
+	"msg.ec.InfoPanelInvalidCard": "Invalid Card",
 	"msg.ec.InfoPanelMaxHeat": "MaxHeat: %s",
 	"msg.ec.InfoPanelMaxSpeed": "Max Speed: %s RPM",
 	"msg.ec.InfoPanelMaxStorage": "MaxStorage: %s",
@@ -112,10 +121,13 @@
 	"msg.ec.InfoPanelMotors": "Motors: %s",
 	"msg.ec.InfoPanelMultiplier": "Multiplier: %s",
 	"msg.ec.InfoPanelName": "Name: %s",
+	"msg.ec.InfoPanelNoTarget": "Target Not Found",
 	"msg.ec.InfoPanelOff": "Off",
 	"msg.ec.InfoPanelOilTank": "Oil Tank: %s",
 	"msg.ec.InfoPanelOn": "On",
+	"msg.ec.InfoPanelOutOfRange": "Out Of Range",
 	"msg.ec.InfoPanelOutput": "Output: %s",
+	"msg.ec.InfoPanelOutputE": "Output: %s E/t",
 	"msg.ec.InfoPanelOutputEU": "Output: %s EU/t",
 	"msg.ec.InfoPanelOutputFE": "Output: %s FE/t",
 	"msg.ec.InfoPanelOutputgJ": "Output: %s gJ/t",
@@ -161,7 +173,7 @@
 	"msg.ec.InfoPanelWaterFlow": "WaterFlow: %s",
 	"msg.ec.InfoPanelWater": "Water: %s",
 	"msg.ec.InfoPanelWindStrength": "WindStrength: %s",
-	
+
 	"msg.ec.cb24h": "24h Mode",
 	"msg.ec.cbInfoPanelAdditionalInfo": "Additional Info",
 	"msg.ec.cbInfoPanelBuffer": "Buffer",
@@ -182,5 +194,13 @@
 	"msg.ec.cbInfoPanelPercentage": "Fill Percentage",
 	"msg.ec.cbInfoPanelStorage": "Storage",
 	"msg.ec.cbInfoPanelTimeRemaining": "Time to cycle end",
-	"msg.ec.cbInfoPanelTotal": "Summary"
+	"msg.ec.cbInfoPanelTotal": "Summary",
+
+	"bow.energycontrol.normal": "Normal mode enabled.",
+	"bow.energycontrol.rapidfire": "Rapid fire mode enabled.",
+	"bow.energycontrol.spread": "Spread mode enabled.",
+	"bow.energycontrol.sniper": "Sniper mode enabled.",
+	"bow.energycontrol.flame": "Flame mode enabled.",
+	"bow.energycontrol.explosive": "Explosive mode enabled."
+	
 }

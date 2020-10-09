@@ -12,6 +12,7 @@ import com.zuxelus.energycontrol.api.PanelString;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralText;
@@ -33,7 +34,7 @@ public abstract class MainCardItem extends Item {
 		String title = reader.getTitle();
 		if (title != null && !title.isEmpty())
 			tooltip.add(new LiteralText(title));
-		switch (((MainCardItem) stack.getItem()).getCradType()) {
+		switch (((MainCardItem) stack.getItem()).getCardType()) {
 		case ItemCardType.CARD_TEXT:
 		case ItemCardType.CARD_TIME:
 			return;
@@ -101,5 +102,35 @@ public abstract class MainCardItem extends Item {
 		return -1;
 	}
 	
-	public abstract int getCradType();
+	public abstract int getCardType();
+
+	protected void addOnOff(List<PanelString> result, boolean value, boolean isClient) {
+		String text;
+		int txtColor = 0;
+		if (value) {
+			txtColor = 0x00ff00;
+			text = isClient ? I18n.translate("msg.ec.InfoPanelOn") : "On";
+		} else {
+			txtColor = 0xff0000;
+			text = isClient ? I18n.translate("msg.ec.InfoPanelOff") : "Off";
+		}
+		if (result.size() > 0) {
+			PanelString firstLine = result.get(0);
+			if (firstLine.textCenter == null) {
+				firstLine.textRight = text;
+				firstLine.colorRight = txtColor;
+				return;
+			}
+			if (result.size() > 1) {
+				firstLine = result.get(1);
+				firstLine.textRight = text;
+				firstLine.colorRight = txtColor;
+				return;
+			}
+		}
+		PanelString line = new PanelString();
+		line.textLeft = text;
+		line.colorLeft = txtColor;
+		result.add(line);
+	}
 }

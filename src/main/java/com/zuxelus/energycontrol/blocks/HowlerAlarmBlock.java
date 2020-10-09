@@ -1,10 +1,8 @@
 package com.zuxelus.energycontrol.blocks;
 
 import com.zuxelus.energycontrol.blockentities.HowlerAlarmBlockEntity;
-import com.zuxelus.energycontrol.gui.HowlerAlarmScreen;
-import com.zuxelus.energycontrol.init.ModItems;
+import com.zuxelus.energycontrol.gui.ScreenHandler;
 
-import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
@@ -12,8 +10,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.FacingBlock;
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.enums.WallMountLocation;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.EntityContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
@@ -45,7 +41,7 @@ public class HowlerAlarmBlock extends FacingBlock implements BlockEntityProvider
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
 		builder.add(FACING);
 	}
-	
+
 	@Override
 	public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
 		return canPlaceAt(world, pos, state.get(FACING).getOpposite());
@@ -90,13 +86,13 @@ public class HowlerAlarmBlock extends FacingBlock implements BlockEntityProvider
 			return AABB_DOWN;
 		}
 	}
-	
+
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
 		if (world.isClient) {
 			BlockEntity be = world.getBlockEntity(pos);
 			if (be instanceof HowlerAlarmBlockEntity)
-				MinecraftClient.getInstance().openScreen(new HowlerAlarmScreen((HowlerAlarmBlockEntity) be));
+				ScreenHandler.openHowlerAlarmScreen((HowlerAlarmBlockEntity) be);
 		}
 		return ActionResult.SUCCESS;
 	}

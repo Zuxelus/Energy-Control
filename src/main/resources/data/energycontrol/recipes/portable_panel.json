@@ -1,0 +1,28 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "A  ",
+        "CMC",
+        "RPP"
+    ],
+    "key": {
+        "A": {
+            "item": "techreborn:tin_cable"
+        },
+        "C": {
+            "item": "techreborn:frequency_transmitter"
+        },
+        "M": {
+            "item": "energycontrol:info_panel_extender"
+        },
+        "R": {
+            "item": "energycontrol:upgrade_range"
+        },
+        "P": {
+            "tag": "c:carbon_plate"
+        }
+    },
+    "result": {
+        "item": "energycontrol:portable_panel"
+    }
+}

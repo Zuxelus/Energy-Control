@@ -10,6 +10,8 @@ import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.gui.CardTextScreen;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -41,6 +43,7 @@ public class TextItemCard extends MainCardItem {
 	}
 
 	@Override
+	@Environment(EnvType.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		return null;
 	}
@@ -51,7 +54,7 @@ public class TextItemCard extends MainCardItem {
 	}
 
 	@Override
-	public int getCradType() {
+	public int getCardType() {
 		return ItemCardType.CARD_TEXT;
 	}
 }

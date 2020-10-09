@@ -1,0 +1,24 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "CF",
+        "PL"
+    ],
+    "key": {
+        "P": {
+            "item": "minecraft:paper"
+        },
+        "C": {
+            "item": "techreborn:energy_storage_upgrade"
+        },
+        "F": {
+            "item": "techreborn:frequency_transmitter"
+        },
+        "L": {
+            "item": "light_gray_dye"
+        }
+    },
+    "result": {
+        "item": "energycontrol:kit_generator"
+    }
+}

@@ -1,0 +1,22 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "BBB",
+        "BLB",
+        "BHB"
+    ],
+    "key": {
+        "B": {
+            "tag": "c:bronze_plate"
+        },
+        "L": {
+            "item": "energycontrol:orange_lamp"
+        },
+        "H": {
+            "item": "energycontrol:howler_alarm"
+        }
+    },
+    "result": {
+        "item": "energycontrol:industrial_alarm"
+    }
+}

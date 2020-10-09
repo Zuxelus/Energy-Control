@@ -10,7 +10,8 @@
   ],
   "contact": {
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/energy-control",
-    "sources": "https://github.com/Zuxelus/Energy-Control"
+    "sources": "https://github.com/Zuxelus/Energy-Control",
+    "issues": "https://github.com/Zuxelus/Energy-Control/issues"
   },
 
   "license": "GPL v3",
@@ -27,7 +28,7 @@
       }
     ],
     "modmenu": [
-      "com.zuxelus.energycontrol.config.ConfigHandler"
+      "com.zuxelus.energycontrol.config.ModMenu"
     ]
   },
   "mixins": [

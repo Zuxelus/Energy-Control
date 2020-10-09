@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import com.zuxelus.energycontrol.blockentities.InfoPanelBlockEntity;
+import com.zuxelus.energycontrol.config.ConfigHandler;
 
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
@@ -33,7 +34,7 @@ public class NetworkHelper {
 		watchingPlayers.forEach(player -> ServerSidePacketRegistry.INSTANCE.sendToPlayer(player,
 				ChannelHandler.SERVER_PLAYERS_PACKET_ID, data));
 	}
-	
+
 	// server
 	public static void setSensorCardField(BlockEntity panel, int slot, Map<String, Object> fields) {
 		if (fields == null || fields.isEmpty() || panel == null || !(panel instanceof InfoPanelBlockEntity) || slot == -1)
@@ -44,6 +45,14 @@ public class NetworkHelper {
 		
 		PacketByteBuf data = fieldsToPacket(panel, slot, "", fields);
 		sendPacketToAllAround(panel.getPos(), panel.getWorld(), data);
+	}
+
+	// server
+	public static void sendAlarmList(PlayerEntity player) {
+		PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+		data.writeInt(ConfigHandler.maxAlarmRange);
+		data.writeString(ConfigHandler.allowedAlarms);
+		ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, ChannelHandler.SERVER_ALARM_LIST_PACKET_ID, data);
 	}
 
 	// client
@@ -57,8 +66,15 @@ public class NetworkHelper {
 		PacketByteBuf data = fieldsToPacket(panel, slot, card.getItem().getClass().getName(), fields);
 		ClientSidePacketRegistry.INSTANCE.sendToServer(ChannelHandler.CLIENT_CARD_SETTINGS_PACKET_ID, data);
 	}
-	
-	// client
+
+	public static void updateSeverKeys(PlayerEntity player, boolean mode, boolean alt) {
+		PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+		data.writeUuid(player.getGameProfile().getId());
+		data.writeBoolean(mode);
+		data.writeBoolean(alt);
+		ClientSidePacketRegistry.INSTANCE.sendToServer(ChannelHandler.CLIENT_KEYS_PACKET_ID, data);
+	}
+
 	public static void updateSeverTileEntity(BlockPos pos, int type, String string) {
 		CompoundTag tag = new CompoundTag();
 		tag.putInt("type", type);

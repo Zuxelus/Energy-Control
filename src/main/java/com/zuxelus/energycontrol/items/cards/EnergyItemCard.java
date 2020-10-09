@@ -8,6 +8,8 @@ import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.nbt.CompoundTag;
@@ -73,12 +75,13 @@ public class EnergyItemCard extends MainCardItem {
 	}
 
 	@Override
+	@Environment(EnvType.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(4);
-		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelEnergy"), 1, ItemCardType.CARD_ENERGY));
-		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelFree"), 2, ItemCardType.CARD_ENERGY));
-		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelCapacity"), 4, ItemCardType.CARD_ENERGY));
-		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelPercentage"), 8, ItemCardType.CARD_ENERGY));
+		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelEnergy"), 1, getCardType()));
+		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelFree"), 2, getCardType()));
+		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelCapacity"), 4, getCardType()));
+		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelPercentage"), 8, getCardType()));
 		return result;
 	}
 
@@ -96,7 +99,7 @@ public class EnergyItemCard extends MainCardItem {
 	}
 
 	@Override
-	public int getCradType() {
+	public int getCardType() {
 		return ItemCardType.CARD_ENERGY;
 	}
 }

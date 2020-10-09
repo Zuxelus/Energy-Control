@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.CardState;
+import com.zuxelus.energycontrol.api.ITouchAction;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.containers.InfoPanelContainer;
@@ -22,6 +23,8 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.network.packet.BlockEntityUpdateS2CPacket;
+import net.minecraft.client.texture.TextureManager;
+import net.minecraft.client.util.math.Matrix4f;
 import net.minecraft.container.Container;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
@@ -30,6 +33,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Tickable;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
@@ -466,7 +470,7 @@ public class InfoPanelBlockEntity extends InventoryBlockEntity implements Tickab
 		if (!displaySettings.containsKey(slot))
 			return DISPLAY_DEFAULT;
 
-		int cardType = ((MainCardItem) card.getItem()).getCradType();
+		int cardType = ((MainCardItem) card.getItem()).getCardType();
 		if (displaySettings.get(slot).containsKey(cardType))
 			return displaySettings.get(slot).get(cardType);
 
@@ -482,7 +486,7 @@ public class InfoPanelBlockEntity extends InventoryBlockEntity implements Tickab
 		if (!(stack.getItem() instanceof MainCardItem))
 			return;
 
-		int cardType = ((MainCardItem) stack.getItem()).getCradType();
+		int cardType = ((MainCardItem) stack.getItem()).getCardType();
 		if (!displaySettings.containsKey(slot))
 			displaySettings.put(slot, new HashMap<Integer, Integer>());
 		displaySettings.get(slot).put(cardType, settings);
@@ -586,5 +590,43 @@ public class InfoPanelBlockEntity extends InventoryBlockEntity implements Tickab
 
 	private int boolToInt(boolean b) {
 		return b ? 1 : 0;
+	}
+
+	public boolean runTouchAction(BlockPos pos, BlockHitResult hit) {
+		if (world.isClient)
+			return false;
+		ItemStack stack = getInvStack(SLOT_CARD);
+		if (getInvStack(SLOT_UPGRADE_TOUCH).isEmpty() || stack.isEmpty() || !(stack.getItem() instanceof ITouchAction))
+			return false;
+		/*switch (facing) { // TODO
+		case DOWN:
+			break;
+		case EAST:
+			break;
+		case NORTH:
+			break;
+		case SOUTH:
+			break;
+		case UP:
+			break;
+		case WEST:
+			break;
+		default:
+			break;
+		}*/
+		((ITouchAction) stack.getItem()).runTouchAction(world, new ItemCardReader(stack));
+		return true;
+	}
+
+	public boolean isTouchCard() {
+		ItemStack stack = getInvStack(SLOT_CARD);
+		return !stack.isEmpty() && stack.getItem() == ModItems.TOGGLE_ITEM_CARD;
+	}
+
+	@Environment(EnvType.CLIENT)
+	public void renderImage(TextureManager manager, Matrix4f matrix4f) {
+		ItemStack stack = getInvStack(SLOT_CARD);
+		if (stack.getItem() instanceof ITouchAction)
+			((ITouchAction) stack.getItem()).renderImage(manager, matrix4f, new ItemCardReader(stack));
 	}
 }

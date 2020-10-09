@@ -9,12 +9,13 @@ import com.zuxelus.energycontrol.blockentities.HowlerAlarmBlockEntity;
 import com.zuxelus.energycontrol.gui.controls.GuiHowlerAlarmListBox;
 import com.zuxelus.energycontrol.gui.controls.GuiHowlerAlarmSlider;
 
-import net.minecraft.client.gui.screen.Screen;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
+@Environment(EnvType.CLIENT)
 public class HowlerAlarmScreen extends ScreenBase {
 	private static final Identifier TEXTURE = new Identifier(EnergyControl.MODID, "textures/gui/gui_howler_alarm.png");
 	private HowlerAlarmBlockEntity alarm;
@@ -41,9 +42,8 @@ public class HowlerAlarmScreen extends ScreenBase {
 
 	@Override
 	protected void drawForeground(int mouseX, int mouseY) {
-		
-		minecraft.textRenderer.draw(getTitle().asFormattedString(), (containerWidth - minecraft.textRenderer.getStringWidth(getTitle().asFormattedString())) / 2, 6, 0x404040);
-		minecraft.textRenderer.draw(I18n.translate("msg.ec.HowlerAlarmSound"), 12, 53, 0x404040);
+		font.draw(getTitle().asFormattedString(), (containerWidth - font.getStringWidth(getTitle().asFormattedString())) / 2, 6, 0x404040);
+		font.draw(I18n.translate("msg.ec.HowlerAlarmSound"), 12, 53, 0x404040);
 	}
 
 	@Override

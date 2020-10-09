@@ -5,18 +5,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
-import java.util.function.Function;
 
 import com.zuxelus.energycontrol.EnergyControl;
 
-import io.github.prospector.modmenu.api.ModMenuApi;
-import me.shedaniel.clothconfig2.api.ConfigBuilder;
-import me.shedaniel.clothconfig2.api.ConfigCategory;
-import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.gui.screen.Screen;
 
-public class ConfigHandler implements ModMenuApi {
+public class ConfigHandler {
 	public static final File CONFIG_FILE = new File(FabricLoader.getInstance().getConfigDirectory(), EnergyControl.MODID + ".config");
 
 	public static int howlerAlarmRange = 64;
@@ -26,69 +20,13 @@ public class ConfigHandler implements ModMenuApi {
 	public static int infoPanelRefreshPeriod = 20;
 	public static int rangeTriggerRefreshPeriod = 20;
 	public static int SMPMaxAlarmRange = 256;
-	public static boolean useCustomSounds = false; 
+	public static boolean useCustomSounds = false;
 
 	public ConfigHandler() {
 		loadConfig(CONFIG_FILE);
 	}
 
-	@Override
-	public String getModId() {
-		return EnergyControl.MODID;
-	}
-
-	@Override
-	public Function<Screen, ? extends Screen> getConfigScreenFactory() {
-		return this::create;
-	}
-
-	public Screen create(Screen screen) {
-		ConfigBuilder builder = ConfigBuilder.create().setParentScreen(screen)
-				.setTitle("title." + EnergyControl.MODID + ".config");
-
-		ConfigEntryBuilder entryBuilder = builder.entryBuilder();
-		ConfigCategory general = builder.getOrCreateCategory("config." + EnergyControl.MODID + ".general");
-
-		general.addEntry(
-				entryBuilder.startIntField("config." + EnergyControl.MODID + ".howlerAlarmRange", howlerAlarmRange)
-						.setDefaultValue(64).setTooltip("howlerAlarmRange")
-						.setSaveConsumer(value -> howlerAlarmRange = value).build());
-		general.addEntry(
-				entryBuilder.startIntField("config." + EnergyControl.MODID + ".maxAlarmRange", maxAlarmRange)
-						.setDefaultValue(128).setTooltip("maxAlarmRange")
-						.setSaveConsumer(value -> maxAlarmRange = value).build());
-		general.addEntry(
-				entryBuilder.startStrField("config." + EnergyControl.MODID + ".allowedAlarms", allowedAlarms)
-						.setDefaultValue("default,sci-fi,siren").setTooltip("allowedAlarms")
-						.setSaveConsumer(value -> allowedAlarms = value).build());
-		general.addEntry(
-				entryBuilder.startIntField("config." + EnergyControl.MODID + ".remoteThermalMonitorEnergyConsumption", remoteThermalMonitorEnergyConsumption)
-						.setDefaultValue(1).setTooltip("remoteThermalMonitorEnergyConsumption")
-						.setSaveConsumer(value -> remoteThermalMonitorEnergyConsumption = value).build());
-		general.addEntry(
-				entryBuilder.startIntField("config." + EnergyControl.MODID + ".infoPanelRefreshPeriod", infoPanelRefreshPeriod)
-						.setDefaultValue(20).setTooltip("infoPanelRefreshPeriod")
-						.setSaveConsumer(value -> infoPanelRefreshPeriod = value).build());
-		general.addEntry(
-				entryBuilder.startIntField("config." + EnergyControl.MODID + ".rangeTriggerRefreshPeriod", rangeTriggerRefreshPeriod)
-						.setDefaultValue(20).setTooltip("rangeTriggerRefreshPeriod")
-						.setSaveConsumer(value -> rangeTriggerRefreshPeriod = value).build());
-		general.addEntry(
-				entryBuilder.startIntField("config." + EnergyControl.MODID + ".SMPMaxAlarmRange", SMPMaxAlarmRange)
-						.setDefaultValue(256).setTooltip("SMPMaxAlarmRange")
-						.setSaveConsumer(value -> SMPMaxAlarmRange = value).build());
-		general.addEntry(
-				entryBuilder.startBooleanToggle("config." + EnergyControl.MODID + ".useCustomSounds", useCustomSounds)
-						.setDefaultValue(true).setTooltip("useCustomSounds")
-						.setSaveConsumer(value -> useCustomSounds = value).build());
-
-		return builder.setSavingRunnable(() -> {
-			saveConfig(CONFIG_FILE);
-			loadConfig(CONFIG_FILE);
-		}).build();
-	}
-
-	public void loadConfig(File file) {
+	public static void loadConfig(File file) {
 		try {
 			Properties cfg = new Properties();
 			if (!file.exists())
@@ -106,7 +44,7 @@ public class ConfigHandler implements ModMenuApi {
 		}
 	}
 
-	public void saveConfig(File file) {
+	public static void saveConfig(File file) {
 		try {
 			FileOutputStream fos = new FileOutputStream(file, false);
 			fos.write(("howlerAlarmRange=" + howlerAlarmRange + "\n").getBytes());

@@ -1,9 +1,6 @@
 package com.zuxelus.energycontrol.renderers;
 
-import java.util.List;
-
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.blockentities.InfoPanelExtenderBlockEntity;
 
 import net.minecraft.client.render.RenderLayer;
