@@ -2,7 +2,6 @@ package com.zuxelus.energycontrol.blockentities;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.init.ModItems;
-import com.zuxelus.energycontrol.network.BlockEntityCustomUpdatePacket;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -59,11 +58,11 @@ public class InfoPanelExtenderBlockEntity extends BlockEntity implements Tickabl
 	public BlockEntityUpdateS2CPacket toUpdatePacket() {
 		CompoundTag tag = new CompoundTag();
 		tag = writeProperties(tag);
-		return new BlockEntityCustomUpdatePacket(getPos(), 0, tag);
+		return new BlockEntityUpdateS2CPacket(getPos(), 0, tag);
 	}
 
 	@Override
-	public void onDataPacket(BlockEntityCustomUpdatePacket pkt) {
+	public void onDataPacket(BlockEntityUpdateS2CPacket pkt) {
 		readProperties(pkt.getCompoundTag());
 	}
 

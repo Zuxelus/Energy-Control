@@ -3,7 +3,6 @@ package com.zuxelus.energycontrol.blockentities;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.init.ModItems;
-import com.zuxelus.energycontrol.network.BlockEntityCustomUpdatePacket;
 import com.zuxelus.energycontrol.utils.BlockEntitySound;
 
 import net.minecraft.block.BlockState;
@@ -99,11 +98,11 @@ public class HowlerAlarmBlockEntity extends BlockEntity implements Tickable, ITi
 
 	@Override
 	public BlockEntityUpdateS2CPacket toUpdatePacket() {
-		return new BlockEntityCustomUpdatePacket(getPos(), 0, toInitialChunkDataTag());
+		return new BlockEntityUpdateS2CPacket(getPos(), 0, toInitialChunkDataTag());
 	}
 
 	@Override
-	public void onDataPacket(BlockEntityCustomUpdatePacket pkt) {
+	public void onDataPacket(BlockEntityUpdateS2CPacket pkt) {
 		readProperties(pkt.getCompoundTag());
 	}
 

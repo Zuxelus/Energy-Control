@@ -34,7 +34,7 @@ public abstract class NanoBowItem extends BowItem {
 	static final String[] MODE = { "normal", "rapidfire", "spread", "sniper", "flame", "explosive" };
 
 	public NanoBowItem() {
-		super(new Item.Settings().group(EnergyControl.ITEM_GROUP));
+		super(new Item.Settings().maxCount(1).group(EnergyControl.ITEM_GROUP));
 	}
 
 	@Override

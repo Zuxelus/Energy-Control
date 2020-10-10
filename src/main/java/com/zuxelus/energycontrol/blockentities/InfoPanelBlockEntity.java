@@ -17,7 +17,6 @@ import com.zuxelus.energycontrol.items.UpgradeRangeItem;
 import com.zuxelus.energycontrol.items.UpgradeTouchItem;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.MainCardItem;
-import com.zuxelus.energycontrol.network.BlockEntityCustomUpdatePacket;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -203,11 +202,11 @@ public class InfoPanelBlockEntity extends InventoryBlockEntity implements Tickab
 		tag.putBoolean("powered", powered);
 		colored = isColoredEval();
 		tag.putBoolean("colored", colored);
-		return new BlockEntityCustomUpdatePacket(getPos(), 0, tag);
+		return new BlockEntityUpdateS2CPacket(getPos(), 0, tag);
 	}
 
 	@Override
-	public void onDataPacket(BlockEntityCustomUpdatePacket pkt) {
+	public void onDataPacket(BlockEntityUpdateS2CPacket pkt) {
 		readProperties(pkt.getCompoundTag());
 	}
 

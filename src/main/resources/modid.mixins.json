@@ -4,9 +4,10 @@
   "package": "com.zuxelus.energycontrol.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "PlayerManagerMixin"
   ],
   "client": [
-    "PlayerManagerMixin"
+    "ClientPlayNetworkHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

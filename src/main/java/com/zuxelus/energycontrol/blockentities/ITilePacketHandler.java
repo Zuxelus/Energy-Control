@@ -1,7 +1,6 @@
 package com.zuxelus.energycontrol.blockentities;
 
-import com.zuxelus.energycontrol.network.BlockEntityCustomUpdatePacket;
-
+import net.minecraft.client.network.packet.BlockEntityUpdateS2CPacket;
 import net.minecraft.nbt.CompoundTag;
 
 public interface ITilePacketHandler {
@@ -10,5 +9,5 @@ public interface ITilePacketHandler {
 
 	void onClientMessageReceived(CompoundTag tag);
 
-	void onDataPacket(BlockEntityCustomUpdatePacket pkt);
+	void onDataPacket(BlockEntityUpdateS2CPacket pkt);
 }
