@@ -1,4 +1,4 @@
-package com.zuxelus.energycontrol.gui.controls;
+package com.zuxelus.energycontrol.screen.controls;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.zuxelus.energycontrol.blockentities.HowlerAlarmBlockEntity;
@@ -10,6 +10,8 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.AbstractPressableButtonWidget;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
@@ -24,7 +26,7 @@ public class GuiHowlerAlarmSlider extends AbstractPressableButtonWidget {
 	private HowlerAlarmBlockEntity alarm;
 
 	public GuiHowlerAlarmSlider(int id, int x, int y, HowlerAlarmBlockEntity alarm) {
-		super(x, y, 107, 16, "");
+		super(x, y, 107, 16, new LiteralText(""));
 		this.alarm = alarm;
 		dragging = false;
 		if (alarm.getWorld().isClient)
@@ -33,7 +35,7 @@ public class GuiHowlerAlarmSlider extends AbstractPressableButtonWidget {
 		if (alarm.getWorld().isClient && currentRange > maxValue)
 			currentRange = maxValue;
 		sliderValue = ((float) currentRange - minValue) / (maxValue - minValue);
-		setMessage(I18n.translate("msg.ec.HowlerAlarmSoundRange", getNormalizedValue()));
+		setMessage(new LiteralText(I18n.translate("msg.ec.HowlerAlarmSoundRange", getNormalizedValue())));
 	}
 
 	private int getNormalizedValue() {
@@ -54,19 +56,19 @@ public class GuiHowlerAlarmSlider extends AbstractPressableButtonWidget {
 			NetworkHelper.updateSeverTileEntity(alarm.getPos(), 2, newValue);
 			alarm.setRange(newValue);
 		}
-		setMessage(I18n.translate("msg.ec.HowlerAlarmSoundRange", newValue));
+		setMessage(new LiteralText(I18n.translate("msg.ec.HowlerAlarmSoundRange", newValue)));
 	}
 
 	@Override
-	public void renderButton(int mouseX, int mouseY, float delta) {
+	public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		MinecraftClient mc = MinecraftClient.getInstance();
 		mc.getTextureManager().bindTexture(TEXTURE);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, alpha);
 		if (dragging)
 			setSliderPos(mouseX);
 		
-		blit(x + (int) (sliderValue * (width - 8)), y, 131, 0, 8, 16);
-		mc.textRenderer.draw(getMessage(), x, y - 12, 0x404040);
+		drawTexture(matrices, x + (int) (sliderValue * (width - 8)), y, 131, 0, 8, 16);
+		mc.textRenderer.draw(matrices, getMessage(), x, y - 12, 0x404040);
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package com.zuxelus.energycontrol.gui;
+package com.zuxelus.energycontrol.screen;
 
 import com.zuxelus.energycontrol.blockentities.HowlerAlarmBlockEntity;
 import com.zuxelus.energycontrol.blockentities.IndustrialAlarmBlockEntity;

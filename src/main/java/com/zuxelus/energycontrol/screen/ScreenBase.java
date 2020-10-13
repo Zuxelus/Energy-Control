@@ -1,10 +1,11 @@
-package com.zuxelus.energycontrol.gui;
+package com.zuxelus.energycontrol.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
 @Environment(EnvType.CLIENT)
@@ -26,26 +27,26 @@ public abstract class ScreenBase extends Screen {
 		y = (height - containerHeight) / 2;
 	}
 
-	public void render(int mouseX, int mouseY, float delta) {
-		renderBackground();
-		drawBackground(delta, mouseX, mouseY);
+	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+		renderBackground(matrices);
+		drawBackground(matrices, delta, mouseX, mouseY);
 		RenderSystem.disableRescaleNormal();
 		RenderSystem.disableDepthTest();
-		super.render(mouseX, mouseY, delta);
+		super.render(matrices, mouseX, mouseY, delta);
 		RenderSystem.pushMatrix();
 		RenderSystem.translatef((float) x, (float) y, 0.0F);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.enableRescaleNormal();
 		RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		drawForeground(mouseX, mouseY);
+		drawForeground(matrices, mouseX, mouseY);
 		RenderSystem.popMatrix();
 		RenderSystem.enableDepthTest();
 	}
 
-	protected abstract void drawBackground(float delta, int mouseX, int mouseY);
+	protected abstract void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY);
 
-	protected abstract void drawForeground(int mouseX, int mouseY);
+	protected abstract void drawForeground(MatrixStack matrices, int mouseX, int mouseY);
 
 	@Override
 	public boolean isPauseScreen() {

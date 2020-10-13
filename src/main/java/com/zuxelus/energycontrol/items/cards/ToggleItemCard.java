@@ -19,16 +19,18 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.LeverBlock;
 import net.minecraft.block.WallMountedBlock;
+import net.minecraft.block.WoodenButtonBlock;
 import net.minecraft.block.enums.WallMountLocation;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.texture.TextureManager;
-import net.minecraft.client.util.math.Matrix4f;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Matrix4f;
 import net.minecraft.world.World;
 
 public class ToggleItemCard extends MainCardItem implements ITouchAction {
@@ -83,7 +85,7 @@ public class ToggleItemCard extends MainCardItem implements ITouchAction {
 	}
 
 	@Override
-	public void runTouchAction(World world, ICardReader reader) {
+	public void runTouchAction(PlayerEntity player, World world, ICardReader reader) {
 		BlockPos pos = reader.getTarget();
 		if (pos == null)
 			return;
@@ -93,17 +95,17 @@ public class ToggleItemCard extends MainCardItem implements ITouchAction {
 			return;
 		
 		Block block = state.getBlock();
-		if (block == Blocks.LEVER) {
-			state = state.cycle(LeverBlock.POWERED);
-			world.setBlockState(pos, state, 3);
-			world.updateNeighborsAlways(pos, block);
-			world.updateNeighborsAlways(pos.offset(getDirection(state).getOpposite()), block);
+		if (block instanceof LeverBlock) {
+			((LeverBlock) block).method_21846(state, world, pos);
 		}
 		if (state.getBlock() instanceof AbstractButtonBlock) {
 			world.setBlockState(pos, state.with(AbstractButtonBlock.POWERED, true), 3);
 			world.updateNeighborsAlways(pos, block);
 			world.updateNeighborsAlways(pos.offset(getDirection(state).getOpposite()), block);
-			world.getBlockTickScheduler().schedule(pos, block, block.getTickRate(world));
+			if (state.getBlock() instanceof WoodenButtonBlock)
+				world.getBlockTickScheduler().schedule(pos, block, 30);
+			else
+				world.getBlockTickScheduler().schedule(pos, block, 20);
 		}
 	}
 

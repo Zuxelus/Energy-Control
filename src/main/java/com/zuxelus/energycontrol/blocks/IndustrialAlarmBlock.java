@@ -1,10 +1,12 @@
 package com.zuxelus.energycontrol.blocks;
 
 import com.zuxelus.energycontrol.blockentities.IndustrialAlarmBlockEntity;
-import com.zuxelus.energycontrol.gui.ScreenHandler;
+import com.zuxelus.energycontrol.screen.ScreenHandler;
 
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.StateManager;
@@ -21,7 +23,7 @@ public class IndustrialAlarmBlock extends HowlerAlarmBlock {
 	private static final int[] lightSteps = { 0, 7, 14, 7, 0};
 
 	public IndustrialAlarmBlock() {
-		super();
+		super(FabricBlockSettings.of(Material.METAL).strength(12.0F).lightLevel(state -> lightSteps[state.get(LIGHT)]));
 		setDefaultState(getDefaultState().with(LIGHT, 0));
 	}
 
@@ -33,11 +35,6 @@ public class IndustrialAlarmBlock extends HowlerAlarmBlock {
 	@Override
 	public BlockEntity createBlockEntity(BlockView view) {
 		return new IndustrialAlarmBlockEntity();
-	}
-
-	@Override
-	public int getLuminance(BlockState state) {
-		return lightSteps[state.get(LIGHT)];
 	}
 
 	@Override

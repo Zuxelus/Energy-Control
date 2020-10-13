@@ -11,7 +11,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.hit.HitResult.Type;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.RayTraceContext;
+import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 
 public class MainKitItem extends Item {
@@ -26,7 +26,7 @@ public class MainKitItem extends Item {
 		if (stack.isEmpty() || stack.getCount() != 1)
 			return TypedActionResult.pass(stack);
 		
-		HitResult hitResult = rayTrace(world, player, RayTraceContext.FluidHandling.NONE);
+		HitResult hitResult = raycast(world, player, RaycastContext.FluidHandling.NONE);
 		if (hitResult.getType() != Type.BLOCK)
 			return TypedActionResult.pass(stack);
 		

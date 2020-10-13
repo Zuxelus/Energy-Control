@@ -10,33 +10,39 @@ import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ITouchAction;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.config.ConfigHandler;
-import com.zuxelus.energycontrol.containers.InfoPanelContainer;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.UpgradeColorItem;
 import com.zuxelus.energycontrol.items.UpgradeRangeItem;
 import com.zuxelus.energycontrol.items.UpgradeTouchItem;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.MainCardItem;
+import com.zuxelus.energycontrol.screen.handlers.InfoPanelScreenHandler;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.network.packet.BlockEntityUpdateS2CPacket;
 import net.minecraft.client.texture.TextureManager;
-import net.minecraft.client.util.math.Matrix4f;
-import net.minecraft.container.Container;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.util.DefaultedList;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Tickable;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Matrix4f;
 
-public class InfoPanelBlockEntity extends InventoryBlockEntity implements Tickable, ITilePacketHandler, IScreenPart, IFacingBlock {
+public class InfoPanelBlockEntity extends InventoryBlockEntity implements Tickable, ITilePacketHandler, IScreenPart, IFacingBlock, ExtendedScreenHandlerFactory {
 	public static final int DISPLAY_DEFAULT = Integer.MAX_VALUE;
 	private static final int[] COLORS_HEX = { 0x000000, 0xe93535, 0x82e306, 0x702b14, 0x1f3ce7, 0x8f1fea, 0x1fd7e9,
 			0xcbcbcb, 0x222222, 0xe60675, 0x1fe723, 0xe9cc1f, 0x06aee4, 0xb006e3, 0xe7761f, 0xffffff };
@@ -182,7 +188,7 @@ public class InfoPanelBlockEntity extends InventoryBlockEntity implements Tickab
 			break;
 		case 4:
 			if (tag.contains("slot") && tag.contains("title")) {
-				ItemStack itemStack = getInvStack(tag.getInt("slot"));
+				ItemStack itemStack = getStack(tag.getInt("slot"));
 				if (!itemStack.isEmpty() && itemStack.getItem() instanceof MainCardItem) {
 					new ItemCardReader(itemStack).setTitle(tag.getString("title"));
 					resetCardData();
@@ -272,8 +278,8 @@ public class InfoPanelBlockEntity extends InventoryBlockEntity implements Tickab
 	}
 
 	@Override
-	public void fromTag(CompoundTag tag) {
-		super.fromTag(tag);
+	public void fromTag(BlockState state, CompoundTag tag) {
+		super.fromTag(state, tag);
 		readProperties(tag);
 	}
 
@@ -362,7 +368,7 @@ public class InfoPanelBlockEntity extends InventoryBlockEntity implements Tickab
 	// ------- Settings --------
 	public DefaultedList<ItemStack> getCards() {
 		DefaultedList<ItemStack> data = DefaultedList.of();
-		data.add(getInvStack(SLOT_CARD));
+		data.add(getStack(SLOT_CARD));
 		return data;
 	}
 
@@ -398,8 +404,8 @@ public class InfoPanelBlockEntity extends InventoryBlockEntity implements Tickab
 			return 0;
 
 		int slot = 0;
-		for (int i = 0; i < getInvSize(); i++) {
-			ItemStack stack = getInvStack(i);
+		for (int i = 0; i < size(); i++) {
+			ItemStack stack = getStack(i);
 			if (!stack.isEmpty() && stack.equals(card)) {
 				slot = i;
 				break;
@@ -422,7 +428,7 @@ public class InfoPanelBlockEntity extends InventoryBlockEntity implements Tickab
 	}
 
 	protected boolean isColoredEval() {
-		ItemStack itemStack = getInvStack(SLOT_UPGRADE_COLOR);
+		ItemStack itemStack = getStack(SLOT_UPGRADE_COLOR);
 		return !itemStack.isEmpty() && itemStack.getItem() instanceof UpgradeColorItem;
 	}
 
@@ -432,7 +438,7 @@ public class InfoPanelBlockEntity extends InventoryBlockEntity implements Tickab
 		if (!world.isClient) {
 			setColored(isColoredEval());
 			if (powered) {
-				ItemStack itemStack = getInvStack(getSlotUpgradeRange());
+				ItemStack itemStack = getStack(getSlotUpgradeRange());
 				for (ItemStack card : getCards())
 					processCard(card, getCardSlot(card), itemStack);
 			}
@@ -454,7 +460,7 @@ public class InfoPanelBlockEntity extends InventoryBlockEntity implements Tickab
 	}
 
 	public int getDisplaySettingsForCardInSlot(int slot) {
-		ItemStack card = getInvStack(slot);
+		ItemStack card = getStack(slot);
 		if (card.isEmpty()) {
 			return 0;
 		}
@@ -479,7 +485,7 @@ public class InfoPanelBlockEntity extends InventoryBlockEntity implements Tickab
 	public void setDisplaySettings(int slot, int settings) {
 		if (!isCardSlot(slot))
 			return;
-		ItemStack stack = getInvStack(slot);
+		ItemStack stack = getStack(slot);
 		if (stack.isEmpty())
 			return;
 		if (!(stack.getItem() instanceof MainCardItem))
@@ -495,8 +501,18 @@ public class InfoPanelBlockEntity extends InventoryBlockEntity implements Tickab
 
 	// ------- Inventory ------- 
 	@Override
-	protected Container createContainer(int syncId, PlayerInventory playerInventory) {
-		return new InfoPanelContainer(syncId, playerInventory, this);
+	protected ScreenHandler createScreenHandler(int syncId, PlayerInventory playerInventory) {
+		return new InfoPanelScreenHandler(syncId, playerInventory, this);
+	}
+
+	@Override
+	public Text getDisplayName() {
+		return new TranslatableText("block.energycontrol.info_panel");
+	}
+
+	@Override
+	public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
+		buf.writeBlockPos(pos);
 	}
 
 	@Override
@@ -591,11 +607,11 @@ public class InfoPanelBlockEntity extends InventoryBlockEntity implements Tickab
 		return b ? 1 : 0;
 	}
 
-	public boolean runTouchAction(BlockPos pos, BlockHitResult hit) {
+	public boolean runTouchAction(PlayerEntity player, BlockPos pos, BlockHitResult hit) {
 		if (world.isClient)
 			return false;
-		ItemStack stack = getInvStack(SLOT_CARD);
-		if (getInvStack(SLOT_UPGRADE_TOUCH).isEmpty() || stack.isEmpty() || !(stack.getItem() instanceof ITouchAction))
+		ItemStack stack = getStack(SLOT_CARD);
+		if (getStack(SLOT_UPGRADE_TOUCH).isEmpty() || stack.isEmpty() || !(stack.getItem() instanceof ITouchAction))
 			return false;
 		/*switch (facing) { // TODO
 		case DOWN:
@@ -613,18 +629,18 @@ public class InfoPanelBlockEntity extends InventoryBlockEntity implements Tickab
 		default:
 			break;
 		}*/
-		((ITouchAction) stack.getItem()).runTouchAction(world, new ItemCardReader(stack));
+		((ITouchAction) stack.getItem()).runTouchAction(player, world, new ItemCardReader(stack));
 		return true;
 	}
 
 	public boolean isTouchCard() {
-		ItemStack stack = getInvStack(SLOT_CARD);
+		ItemStack stack = getStack(SLOT_CARD);
 		return !stack.isEmpty() && stack.getItem() == ModItems.TOGGLE_ITEM_CARD;
 	}
 
 	@Environment(EnvType.CLIENT)
 	public void renderImage(TextureManager manager, Matrix4f matrix4f) {
-		ItemStack stack = getInvStack(SLOT_CARD);
+		ItemStack stack = getStack(SLOT_CARD);
 		if (stack.getItem() instanceof ITouchAction)
 			((ITouchAction) stack.getItem()).renderImage(manager, matrix4f, new ItemCardReader(stack));
 	}

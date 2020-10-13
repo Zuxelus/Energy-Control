@@ -2,9 +2,7 @@ package com.zuxelus.energycontrol.blocks;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.blockentities.InfoPanelBlockEntity;
-import com.zuxelus.energycontrol.init.ModItems;
 
-import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
@@ -18,6 +16,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
@@ -34,7 +33,7 @@ public class InfoPanelBlock extends FacingBlock implements BlockEntityProvider {
 	public static final BooleanProperty POWERED = Properties.POWERED;
 
 	public InfoPanelBlock() {
-		super(FabricBlockSettings.of(Material.METAL).strength(12.0F));
+		super(FabricBlockSettings.of(Material.METAL).strength(12.0F).lightLevel(state -> state.get(POWERED) ? 10 : 0));
 		setDefaultState(getDefaultState().with(FACING, Direction.NORTH).with(POWERED, false));
 	}
 
@@ -54,11 +53,6 @@ public class InfoPanelBlock extends FacingBlock implements BlockEntityProvider {
 	}
 
 	@Override
-	public int getLuminance(BlockState state) {
-		return (Boolean) state.get(POWERED) ? 10 : 0;
-	}
-
-	@Override
 	public void neighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos neighborPos, boolean moved) {
 		if (world.isClient)
 			return;
@@ -71,14 +65,17 @@ public class InfoPanelBlock extends FacingBlock implements BlockEntityProvider {
 
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+		if (world.isClient || hand != Hand.MAIN_HAND)
+			return ActionResult.PASS;
 		BlockEntity be = world.getBlockEntity(pos);
 		if (!(be instanceof InfoPanelBlockEntity))
 			return ActionResult.PASS;
-		if (!world.isClient && EnergyControl.altPressed.get(player.getGameProfile().getId()) && ((InfoPanelBlockEntity) be).getFacing() == hit.getSide())
-			if (((InfoPanelBlockEntity) be).runTouchAction(pos, hit))
+		if (EnergyControl.altPressed.get(player.getGameProfile().getId()) && ((InfoPanelBlockEntity) be).getFacing() == hit.getSide())
+			if (((InfoPanelBlockEntity) be).runTouchAction(player, pos, hit))
 				return ActionResult.SUCCESS;
-		if (!world.isClient) {
-			ContainerProviderRegistry.INSTANCE.openContainer(ModItems.INFO_PANEL, player, buf -> buf.writeBlockPos(pos));
+		NamedScreenHandlerFactory factory = state.createScreenHandlerFactory(world, pos);
+		if (factory != null) {
+			player.openHandledScreen(factory);
 			return ActionResult.SUCCESS;
 		}
 		return ActionResult.PASS;
@@ -101,16 +98,24 @@ public class InfoPanelBlock extends FacingBlock implements BlockEntityProvider {
 	}
 
 	@Override
-	public void onBlockRemoved(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-		if (state.getBlock() != newState.getBlock()) {
+	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
+		if (!state.isOf(newState.getBlock())) {
 			BlockEntity be = world.getBlockEntity(pos);
 			if (be instanceof InfoPanelBlockEntity) {
 				ItemScatterer.spawn(world, (BlockPos) pos, (Inventory) ((InfoPanelBlockEntity) be));
 				// update comparators
-				world.updateHorizontalAdjacent(pos, this);
+				world.updateComparators(pos, this);
 			}
-			super.onBlockRemoved(state, world, pos, newState, moved);
+			super.onStateReplaced(state, world, pos, newState, moved);
 		}
+	}
+
+	@Override
+	public NamedScreenHandlerFactory createScreenHandlerFactory(BlockState state, World world, BlockPos pos) {
+		BlockEntity be = world.getBlockEntity(pos);
+		if (be instanceof InfoPanelBlockEntity)
+			return (InfoPanelBlockEntity) be;
+		return null;
 	}
 
 	@Override

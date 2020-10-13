@@ -8,8 +8,8 @@ import com.zuxelus.energycontrol.utils.BlockEntitySound;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.network.packet.BlockEntityUpdateS2CPacket;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.util.Tickable;
 
 public class HowlerAlarmBlockEntity extends BlockEntity implements Tickable, ITilePacketHandler {
@@ -127,8 +127,8 @@ public class HowlerAlarmBlockEntity extends BlockEntity implements Tickable, ITi
 	}
 
 	@Override
-	public void fromTag(CompoundTag tag) {
-		super.fromTag(tag);
+	public void fromTag(BlockState state, CompoundTag tag) {
+		super.fromTag(state, tag);
 		readProperties(tag);
 	}
 

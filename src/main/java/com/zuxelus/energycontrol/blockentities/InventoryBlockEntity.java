@@ -1,6 +1,6 @@
 package com.zuxelus.energycontrol.blockentities;
 
-import com.zuxelus.energycontrol.containers.ISlotItemFilter;
+import com.zuxelus.energycontrol.screen.handlers.ISlotItemFilter;
 
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.LockableContainerBlockEntity;
@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.DefaultedList;
+import net.minecraft.util.collection.DefaultedList;
 
 public abstract class InventoryBlockEntity extends LockableContainerBlockEntity implements ISlotItemFilter {
 	private int size;
@@ -47,22 +47,22 @@ public abstract class InventoryBlockEntity extends LockableContainerBlockEntity 
 	}
 
 	@Override
-	public int getInvSize() {
+	public int size() {
 		return size;
 	}
 
 	@Override
-	public boolean isInvEmpty() {
+	public boolean isEmpty() {
 		return inventory.stream().allMatch(ItemStack::isEmpty);
 	}
 
 	@Override
-	public ItemStack getInvStack(int slot) {
+	public ItemStack getStack(int slot) {
 		return inventory.get(slot);
 	}
 
 	@Override
-	public ItemStack takeInvStack(int slot, int amount) {
+	public ItemStack removeStack(int slot, int amount) {
 		ItemStack stack = Inventories.splitStack(inventory, slot, amount);
 		if (!stack.isEmpty())
 			markDirty();
@@ -70,20 +70,20 @@ public abstract class InventoryBlockEntity extends LockableContainerBlockEntity 
 	}
 
 	@Override
-	public ItemStack removeInvStack(int slot) {
+	public ItemStack removeStack(int slot) {
 		return Inventories.removeStack(inventory, slot);
 	}
 
 	@Override
-	public void setInvStack(int slot, ItemStack stack) {
+	public void setStack(int slot, ItemStack stack) {
 		inventory.set(slot, stack);
-		if (stack.getCount() > getInvMaxStackAmount())
-			stack.setCount(getInvMaxStackAmount());
+		if (stack.getCount() > getMaxCountPerStack())
+			stack.setCount(getMaxCountPerStack());
 		//markDirty();
 	}
 
 	@Override
-	public boolean canPlayerUseInv(PlayerEntity player) {
+	public boolean canPlayerUse(PlayerEntity player) {
 		return true;
 	}
 

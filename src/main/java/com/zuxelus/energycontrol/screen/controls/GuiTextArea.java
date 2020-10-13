@@ -1,4 +1,4 @@
-package com.zuxelus.energycontrol.gui.controls;
+package com.zuxelus.energycontrol.screen.controls;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -10,6 +10,7 @@ import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.NarratorManager;
+import net.minecraft.client.util.math.MatrixStack;
 
 public class GuiTextArea extends Screen {
 	private final int lineCount;
@@ -44,18 +45,18 @@ public class GuiTextArea extends Screen {
 		return text;
 	}
 
-	public void drawTextBox() {
-		fill(xPos - 1, yPos - 1, xPos + width + 1, yPos + height + 1, 0xFFA0A0A0);
-		fill(xPos, yPos, xPos + width, yPos + height, 0xFF000000);
+	public void drawTextBox(MatrixStack matrices) {
+		fill(matrices, xPos - 1, yPos - 1, xPos + width + 1, yPos + height + 1, 0xFFA0A0A0);
+		fill(matrices, xPos, yPos, xPos + width, yPos + height, 0xFF000000);
 		int textColor = 0xE0E0E0;
 
 		int textLeft = xPos + 4;
 		int textTop = yPos + (height - lineCount * (fontRenderer.fontHeight + 1)) / 2;
 
 		for (int i = 0; i < lineCount; i++)
-			fontRenderer.drawWithShadow(text[i], textLeft, textTop + (fontRenderer.fontHeight + 1) * i, textColor);
+			fontRenderer.drawWithShadow(matrices, text[i], textLeft, textTop + (fontRenderer.fontHeight + 1) * i, textColor);
 		textTop += (fontRenderer.fontHeight + 1) * cursorLine;
-		int cursorPositionX = textLeft + fontRenderer.getStringWidth(text[cursorLine].substring(0, Math.min(text[cursorLine].length(), cursorPosition))) - 1;
+		int cursorPositionX = textLeft + fontRenderer.getWidth(text[cursorLine].substring(0, Math.min(text[cursorLine].length(), cursorPosition))) - 1;
 		boolean drawCursor = isFocused && cursorCounter / 6 % 2 == 0;
 		if (drawCursor)
 			drawCursorVertical(cursorPositionX, textTop - 1, cursorPositionX + 1, textTop + 1 + fontRenderer.fontHeight);

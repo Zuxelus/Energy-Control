@@ -1,10 +1,9 @@
 package com.zuxelus.energycontrol.blocks;
 
+import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.blockentities.InfoPanelBlockEntity;
 import com.zuxelus.energycontrol.blockentities.InfoPanelExtenderBlockEntity;
-import com.zuxelus.energycontrol.init.ModItems;
 
-import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
@@ -17,6 +16,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
@@ -32,7 +32,7 @@ public class InfoPanelExtenderBlock extends FacingBlock implements BlockEntityPr
 	public static final BooleanProperty POWERED = Properties.POWERED;
 
 	public InfoPanelExtenderBlock() {
-		super(FabricBlockSettings.of(Material.METAL).strength(12.0F));
+		super(FabricBlockSettings.of(Material.METAL).strength(12.0F).lightLevel(state -> state.get(POWERED) ? 10 : 0));
 		setDefaultState(getDefaultState().with(FACING, Direction.NORTH).with(POWERED, false));
 	}
 
@@ -52,18 +52,24 @@ public class InfoPanelExtenderBlock extends FacingBlock implements BlockEntityPr
 	}
 
 	@Override
-	public int getLuminance(BlockState state) {
-		return (Boolean) state.get(POWERED) ? 10 : 0;
-	}
-
-	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-		if (!world.isClient) {
-			BlockEntity be = world.getBlockEntity(pos);
-			if (be instanceof InfoPanelBlockEntity)
-				ContainerProviderRegistry.INSTANCE.openContainer(ModItems.INFO_PANEL, player, buf -> buf.writeBlockPos(pos));
+		if (world.isClient || hand != Hand.MAIN_HAND)
+			return ActionResult.PASS;
+		BlockEntity be = world.getBlockEntity(pos);
+		if (!(be instanceof InfoPanelExtenderBlockEntity))
+			return ActionResult.PASS;
+		InfoPanelBlockEntity panel = ((InfoPanelExtenderBlockEntity) be).getCore();
+		if (panel != null) {
+			if (EnergyControl.altPressed.get(player.getGameProfile().getId()) && ((InfoPanelExtenderBlockEntity) be).getFacing() == hit.getSide())
+				if (panel.runTouchAction(player, panel.getPos(), hit))
+					return ActionResult.SUCCESS;
+			NamedScreenHandlerFactory factory = state.createScreenHandlerFactory(world, panel.getPos());
+			if (factory != null) {
+				player.openHandledScreen(factory);
+				return ActionResult.SUCCESS;
+			}
 		}
-		return ActionResult.SUCCESS;
+		return ActionResult.PASS;
 	}
 
 	@Override
@@ -80,6 +86,14 @@ public class InfoPanelExtenderBlock extends FacingBlock implements BlockEntityPr
 		boolean power = world.isReceivingRedstonePower(pos);
 		if (powered != power)
 			world.setBlockState(pos, getDefaultState().with(FACING, state.get(FACING)).with(POWERED, power), 2);*/
+	}
+
+	@Override
+	public NamedScreenHandlerFactory createScreenHandlerFactory(BlockState state, World world, BlockPos pos) {
+		BlockEntity be = world.getBlockEntity(pos);
+		if (be instanceof InfoPanelBlockEntity)
+			return (InfoPanelBlockEntity) be;
+		return null;
 	}
 
 	@Override

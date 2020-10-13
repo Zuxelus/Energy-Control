@@ -1,16 +1,18 @@
-package com.zuxelus.energycontrol.gui;
+package com.zuxelus.energycontrol.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.ICardGui;
 import com.zuxelus.energycontrol.api.ICardReader;
-import com.zuxelus.energycontrol.gui.controls.GuiTextArea;
 import com.zuxelus.energycontrol.items.cards.ItemCardSettingsReader;
+import com.zuxelus.energycontrol.screen.controls.GuiTextArea;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.NarratorManager;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
 
 public class CardTextScreen extends Screen implements ICardGui {
@@ -44,8 +46,8 @@ public class CardTextScreen extends Screen implements ICardGui {
 
 	private void initControls() {
 		buttons.clear();
-		addButton(new ButtonWidget(guiLeft + xSize - 60 - 8, guiTop + 120, 60, 20, "Ok", (buttonWidget) -> { actionPerformed(); }));
-		textArea = new GuiTextArea(font, guiLeft + 8, guiTop + 5, xSize - 16, ySize - 35, lineCount);
+		addButton(new ButtonWidget(guiLeft + xSize - 60 - 8, guiTop + 120, 60, 20, new LiteralText("Ok"), (buttonWidget) -> { actionPerformed(); }));
+		textArea = new GuiTextArea(textRenderer, guiLeft + 8, guiTop + 5, xSize - 16, ySize - 35, lineCount);
 		textArea.setFocused(true);
 		String[] data = textArea.getText();
 		for (int i = 0; i < lineCount; i++)
@@ -74,16 +76,16 @@ public class CardTextScreen extends Screen implements ICardGui {
 	}
 
 	@Override
-	public void render(int mouseX, int mouseY, float delta) {
+	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		MinecraftClient mc = MinecraftClient.getInstance();
 		mc.getTextureManager().bindTexture(TEXTURE);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int left = (width - xSize) / 2;
 		int top = (height - ySize) / 2;
-		blit(left, top, 0, 0, xSize, ySize);
+		drawTexture(matrices, left, top, 0, 0, xSize, ySize);
 		if (textArea != null)
-			textArea.drawTextBox();
-		super.render(mouseX, mouseY, delta);
+			textArea.drawTextBox(matrices);
+		super.render(matrices, mouseX, mouseY, delta);
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package com.zuxelus.energycontrol.gui.controls;
+package com.zuxelus.energycontrol.screen.controls;
 
 import java.util.List;
 
@@ -17,6 +17,8 @@ import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
@@ -41,7 +43,7 @@ public class GuiHowlerAlarmListBox extends AbstractPressableButtonWidget {
 	private int dragDelta;
 
 	public GuiHowlerAlarmListBox(int id, int left, int top, int width, int height, List<String> items, HowlerAlarmBlockEntity alarm) {
-		super(left, top, width, height, "");
+		super(left, top, width, height, new LiteralText(""));
 		this.items = items;
 		this.alarm = alarm;
 		fontColor = 0x404040;
@@ -87,7 +89,7 @@ public class GuiHowlerAlarmListBox extends AbstractPressableButtonWidget {
 	}
 
 	@Override
-	public void renderButton(int mouseX, int mouseY, float delta) {
+	public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		if (dragging) {
 			int pos = (mouseY - y - SCROLL_BUTTON_HEIGHT - dragDelta)
 					* (lineHeight * items.size() + BASIC_Y_OFFSET - height)
@@ -124,10 +126,10 @@ public class GuiHowlerAlarmListBox extends AbstractPressableButtonWidget {
 
 		for (String row : items) {
 			if(row.equals(currentItem)) {
-				fill(x, y + rowTop - scrollTop - 1, x + width - SCROLL_WIDTH, y + rowTop - scrollTop + lineHeight - 1, selectedColor);
-				textRenderer.draw(row, x + BASIC_X_OFFSET, y + rowTop - scrollTop, selectedFontColor);
+				fill(matrices, x, y + rowTop - scrollTop - 1, x + width - SCROLL_WIDTH, y + rowTop - scrollTop + lineHeight - 1, selectedColor);
+				textRenderer.draw(matrices, row, x + BASIC_X_OFFSET, y + rowTop - scrollTop, selectedFontColor);
 			} else
-				textRenderer.draw(row, x + BASIC_X_OFFSET, y + rowTop - scrollTop, fontColor);
+				textRenderer.draw(matrices, row, x + BASIC_X_OFFSET, y + rowTop - scrollTop, fontColor);
 			
 			rowTop += lineHeight;
 		}
@@ -140,18 +142,18 @@ public class GuiHowlerAlarmListBox extends AbstractPressableButtonWidget {
 				/ (lineHeight * items.size() + BASIC_Y_OFFSET - height);
 		mc.getTextureManager().bindTexture(TEXTURE);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		blit(sliderX, sliderY, 131, 16, SCROLL_WIDTH - 1, 1);
+		drawTexture(matrices, sliderX, sliderY, 131, 16, SCROLL_WIDTH - 1, 1);
 
 		BufferBuilder bufferbuilder = Tessellator.getInstance().getBuffer();
 		bufferbuilder.begin(7, VertexFormats.POSITION_TEXTURE);
-		bufferbuilder.vertex((sliderX), sliderY + sliderHeight - 1, getBlitOffset()).texture(131 / 256F, (18) / 256F).next();
-		bufferbuilder.vertex(sliderX + SCROLL_WIDTH - 1, sliderY + sliderHeight - 1, getBlitOffset()).texture((131 + SCROLL_WIDTH - 1) / 256F, (18) / 256F).next();
-		bufferbuilder.vertex(sliderX + SCROLL_WIDTH - 1, sliderY + 1, getBlitOffset()).texture((131 + SCROLL_WIDTH - 1) / 256F, (17) / 256F).next();
-		bufferbuilder.vertex((sliderX), sliderY + 1, getBlitOffset()).texture(131 / 256F, (17) / 256F).next();
+		bufferbuilder.vertex((sliderX), sliderY + sliderHeight - 1, getZOffset()).texture(131 / 256F, (18) / 256F).next();
+		bufferbuilder.vertex(sliderX + SCROLL_WIDTH - 1, sliderY + sliderHeight - 1, getZOffset()).texture((131 + SCROLL_WIDTH - 1) / 256F, (18) / 256F).next();
+		bufferbuilder.vertex(sliderX + SCROLL_WIDTH - 1, sliderY + 1, getZOffset()).texture((131 + SCROLL_WIDTH - 1) / 256F, (17) / 256F).next();
+		bufferbuilder.vertex((sliderX), sliderY + 1, getZOffset()).texture(131 / 256F, (17) / 256F).next();
 		bufferbuilder.end();
 		BufferRenderer.draw(bufferbuilder);
 
-		blit(sliderX, sliderY + sliderHeight - 1, 131, 19, SCROLL_WIDTH - 1, 1);
+		drawTexture(matrices, sliderX, sliderY + sliderHeight - 1, 131, 19, SCROLL_WIDTH - 1, 1);
 	}
 
 	private void setCurrent(int targetY) {

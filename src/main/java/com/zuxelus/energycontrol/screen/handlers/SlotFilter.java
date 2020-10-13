@@ -1,8 +1,8 @@
-package com.zuxelus.energycontrol.containers;
+package com.zuxelus.energycontrol.screen.handlers;
 
-import net.minecraft.container.Slot;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.slot.Slot;
 
 public class SlotFilter extends Slot {
 	private final int slotIndex;

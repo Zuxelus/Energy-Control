@@ -1,4 +1,4 @@
-package com.zuxelus.energycontrol.gui;
+package com.zuxelus.energycontrol.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.zuxelus.energycontrol.EnergyControl;
@@ -9,6 +9,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.NarratorManager;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
 public class ColorGuiScreen extends Screen {
@@ -59,25 +60,25 @@ public class ColorGuiScreen extends Screen {
 	}
 
 	@Override
-	public void render(int mouseX, int mouseY, float delta) {
+	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		MinecraftClient mc = MinecraftClient.getInstance();
 		mc.getTextureManager().bindTexture(TEXTURE);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int left = (width - xSize) / 2;
 		int top = (height - ySize) / 2;
-		blit(left, top, 0, 0, xSize, ySize);
-		blit(left + 5 + colorBack * 14, top + 30, 234, 0, 14, 14);
-		blit(left + 5 + colorText * 14, top + 61, 234, 0, 14, 14);
-		mc.textRenderer.draw(I18n.translate("msg.ec.ScreenColor"), guiLeft + 8, guiTop + 20, 0x404040);
-		mc.textRenderer.draw(I18n.translate("msg.ec.TextColor"), guiLeft + 8, guiTop + 52, 0x404040);
+		drawTexture(matrices, left, top, 0, 0, xSize, ySize);
+		drawTexture(matrices, left + 5 + colorBack * 14, top + 30, 234, 0, 14, 14);
+		drawTexture(matrices, left + 5 + colorText * 14, top + 61, 234, 0, 14, 14);
+		mc.textRenderer.draw(matrices, I18n.translate("msg.ec.ScreenColor"), guiLeft + 8, guiTop + 20, 0x404040);
+		mc.textRenderer.draw(matrices, I18n.translate("msg.ec.TextColor"), guiLeft + 8, guiTop + 52, 0x404040);
 
-		super.render(mouseX, mouseY, delta);
+		super.render(matrices, mouseX, mouseY, delta);
 	}
 
 	@Override
 	public void onClose() {
 		parentGui.isColored = !panel.getColored();
-		minecraft.openScreen(parentGui);
+		client.openScreen(parentGui);
 	}
 
 	@Override

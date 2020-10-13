@@ -5,19 +5,19 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.config.ConfigHandler;
@@ -36,25 +36,10 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.profiler.Profiler;
 
-public class SoundHelper extends SinglePreparationResourceReloadListener<Map<Identifier, Properties>> implements IdentifiableResourceReloadListener {
+public class SoundHelper extends SinglePreparationResourceReloadListener<Map<String, SoundEntry>> implements IdentifiableResourceReloadListener {
 	private static File alarms;
 	private static final Gson GSON = (new GsonBuilder()).registerTypeHierarchyAdapter(Text.class, new Text.Serializer()).registerTypeAdapter(SoundEntry.class, new SoundEntryDeserializer()).create();
-	private static final ParameterizedType TYPE = new ParameterizedType() {
-		@Override
-		public Type[] getActualTypeArguments() {
-			return new Type[] { String.class, SoundEntry.class };
-		}
-
-		@Override
-		public Type getRawType() {
-			return Map.class;
-		}
-
-		@Override
-		public Type getOwnerType() {
-			return null;
-		}
-	};
+	private static final TypeToken<Map<String, SoundEntry>> TYPE = new TypeToken<Map<String, SoundEntry>>() {};
 
 	public SoundHelper() {
 		File configFolder = FabricLoader.getInstance().getConfigDirectory();
@@ -85,11 +70,11 @@ public class SoundHelper extends SinglePreparationResourceReloadListener<Map<Ide
 
 	@Override
 	public Identifier getFabricId() {
-		return new Identifier("energycontrol","custom_sounds");
+		return new Identifier(EnergyControl.MODID, "custom_sounds");
 	}
 
 	@Override
-	protected Map<Identifier, Properties> prepare(ResourceManager manager, Profiler profiler) {
+	protected Map<String, SoundEntry> prepare(ResourceManager manager, Profiler profiler) {
 		if (alarms != null) {
 			DirectoryResourcePack pack = new DirectoryResourcePack(alarms);
 			((ReloadableResourceManagerImpl) manager).addPack(pack);
@@ -97,17 +82,17 @@ public class SoundHelper extends SinglePreparationResourceReloadListener<Map<Ide
 		EnergyControl.INSTANCE.availableAlarms = new ArrayList<String>();
 
 		try {
-			List<Resource> list = manager.getAllResources(new Identifier("energycontrol", "sounds.json"));
+			List<Resource> list = manager.getAllResources(new Identifier(EnergyControl.MODID, "sounds.json"));
 
 			for (int i = list.size() - 1; i >= 0; --i) {
 				Resource resource = (Resource) list.get(i);
 
 				try {
-					Map map = (Map) JsonHelper.deserialize(GSON, (Reader) (new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8)), (Type) TYPE);
-					Iterator iterator = map.entrySet().iterator();
+					Map<String, SoundEntry> map = (Map<String, SoundEntry>) JsonHelper.deserialize(GSON, new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8), TYPE);
+					Iterator<Entry<String, SoundEntry>> iterator = map.entrySet().iterator();
 
 					while (iterator.hasNext()) {
-						Entry<String, SoundEntry> entry = (Entry) iterator.next();
+						Entry<String, SoundEntry> entry = (Entry<String, SoundEntry>) iterator.next();
 						EnergyControl.INSTANCE.availableAlarms.add(((String) entry.getKey()).replace("alarm-", ""));
 					}
 				} catch (RuntimeException runtimeexception) { }
@@ -119,5 +104,15 @@ public class SoundHelper extends SinglePreparationResourceReloadListener<Map<Ide
 	}
 
 	@Override
-	protected void apply(Map<Identifier, Properties> loader, ResourceManager manager, Profiler profiler) { }
+	protected void apply(Map<String, SoundEntry> loader, ResourceManager manager, Profiler profiler) { }
+
+	public static <T> T deserialize(Gson gson, Reader reader, TypeToken<T> typeToken, boolean lenient) {
+		try {
+			JsonReader jsonReader = new JsonReader(reader);
+			jsonReader.setLenient(lenient);
+			return gson.getAdapter(typeToken).read(jsonReader);
+		} catch (IOException var5) {
+			throw new JsonParseException(var5);
+		}
+	}
 }

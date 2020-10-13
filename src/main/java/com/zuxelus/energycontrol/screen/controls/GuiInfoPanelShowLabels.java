@@ -1,4 +1,4 @@
-package com.zuxelus.energycontrol.gui.controls;
+package com.zuxelus.energycontrol.screen.controls;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.zuxelus.energycontrol.EnergyControl;
@@ -9,6 +9,8 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.AbstractPressableButtonWidget;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
@@ -19,17 +21,17 @@ public class GuiInfoPanelShowLabels extends AbstractPressableButtonWidget {
 	private boolean checked;
 
 	public GuiInfoPanelShowLabels(int x, int y, InfoPanelBlockEntity panel) {
-		super(x, y, 18, 9, "");
+		super(x, y, 18, 9, new LiteralText(""));
 		this.panel = panel;
 		this.checked = panel.getShowLabels();
 	}
 
 	@Override
-	public void renderButton(int mouseX, int mouseY, float delta) {
+	public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		MinecraftClient.getInstance().getTextureManager().bindTexture(TEXTURE);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, alpha);
 		int deltauv = checked ? 12 : 21;
-		blit(x, y + 1, 176, deltauv, 18, 9);
+		drawTexture(matrices, x, y + 1, 176, deltauv, 18, 9);
 	}
 
 	@Override

@@ -3,31 +3,34 @@ package com.zuxelus.energycontrol.init;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.blockentities.*;
 import com.zuxelus.energycontrol.blocks.*;
-import com.zuxelus.energycontrol.containers.*;
 import com.zuxelus.energycontrol.items.*;
 import com.zuxelus.energycontrol.items.cards.*;
 import com.zuxelus.energycontrol.items.kits.*;
+import com.zuxelus.energycontrol.screen.handlers.*;
 
-import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
+import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.block.Block;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
 import net.minecraft.util.registry.Registry;
 
 public class ModItems {
 	public static final Item FABRIC_ITEM = new Item(new Item.Settings().group(EnergyControl.ITEM_GROUP));
 	public static final Identifier CARD_HOLDER = new Identifier(EnergyControl.MODID, "card_holder");
 	public static final Item CARD_HOLDER_ITEM = new CardHolderItem();
+	public static final ScreenHandlerType<CardHolderScreenHandler> CARD_HOLDER_SCREEN_HANDLER = ScreenHandlerRegistry.registerSimple(new Identifier(EnergyControl.MODID, "card_holder_container"), CardHolderScreenHandler::new);
+
 	public static final Identifier PORTABLE_PANEL = new Identifier(EnergyControl.MODID, "portable_panel");
 	public static final Item PORTABLE_PANEL_ITEM = new PortablePanelItem();
+	public static final ScreenHandlerType<PortablePanelScreenHandler> PORTABLE_PANEL_SCREEN_HANDLER = ScreenHandlerRegistry.registerSimple(new Identifier(EnergyControl.MODID, "portable_panel_container"), PortablePanelScreenHandler::new);;
+
 	public static final Item UPGRADE_RANGE_ITEM = new UpgradeRangeItem();
 	public static final Item UPGRADE_COLOR_ITEM = new UpgradeColorItem();
 	public static final Item UPGRADE_TOUCH_ITEM = new UpgradeTouchItem();
-	
+
 	public static final Item NANO_BOW_ITEM = new NanoBowTRItem();
 	public static final Item ENERGY_ITEM_CARD = new EnergyItemCard();
 	public static final Item GENERATOR_ITEM_CARD = new GeneratorItemCard();
@@ -53,7 +56,7 @@ public class ModItems {
 
 	public static final Block INFO_PANEL_BLOCK = new InfoPanelBlock();
 	public static final Identifier INFO_PANEL = new Identifier(EnergyControl.MODID, "info_panel");
-	public static final String INFO_PANEL_TRANSLATION_KEY = Util.createTranslationKey("container", INFO_PANEL);
+	public static final ScreenHandlerType<InfoPanelScreenHandler> INFO_PANEL_SCREEN_HANDLER = ScreenHandlerRegistry.registerExtended(new Identifier(EnergyControl.MODID, "info_panel_container"), InfoPanelScreenHandler::new);
 
 	public static final Block INFO_PANEL_EXTENDER_BLOCK = new InfoPanelExtenderBlock();
 	public static final Identifier INFO_PANEL_EXTENDER = new Identifier(EnergyControl.MODID, "info_panel_extender");
@@ -72,7 +75,6 @@ public class ModItems {
 		registerBlocks();
 		registerItems();
 		registerBlockEntities();
-		registerContainers();
 	}
 
 	private static void registerBlocks() {
@@ -123,18 +125,5 @@ public class ModItems {
 		INFO_PANEL_EXTENDER_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, INFO_PANEL_EXTENDER.toString(), BlockEntityType.Builder.create(InfoPanelExtenderBlockEntity::new, INFO_PANEL_EXTENDER_BLOCK).build(null));
 		HOWLER_ALARM_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, HOWLER_ALARM.toString(), BlockEntityType.Builder.create(HowlerAlarmBlockEntity::new, HOWLER_ALARM_BLOCK).build(null));
 		INDUSTRIAL_ALARM_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, INDUSTRIAL_ALARM.toString(), BlockEntityType.Builder.create(IndustrialAlarmBlockEntity::new, INDUSTRIAL_ALARM_BLOCK).build(null));
-	}
-
-	private static void registerContainers() {
-		ContainerProviderRegistry.INSTANCE.registerFactory(INFO_PANEL, (syncId, identifier, player, buf) -> {
-			final BlockEntity be = player.world.getBlockEntity(buf.readBlockPos());
-			return new InfoPanelContainer(syncId, player.inventory, (InfoPanelBlockEntity) be);
-		});
-		ContainerProviderRegistry.INSTANCE.registerFactory(CARD_HOLDER, (syncId, identifier, player, buf) -> {
-			return new CardHolderContainer(syncId, player);
-		});
-		ContainerProviderRegistry.INSTANCE.registerFactory(PORTABLE_PANEL, (syncId, identifier, player, buf) -> {
-			return new PortablePanelContainer(syncId, player);
-		});
 	}
 }

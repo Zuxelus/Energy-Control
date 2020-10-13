@@ -1,4 +1,4 @@
-package com.zuxelus.energycontrol.containers;
+package com.zuxelus.energycontrol.screen.handlers;
 
 import net.minecraft.item.ItemStack;
 

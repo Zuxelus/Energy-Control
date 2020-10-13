@@ -19,7 +19,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.PacketByteBuf;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
 
 public class ChannelHandler {
@@ -52,7 +52,7 @@ public class ChannelHandler {
 					return;
 
 				InfoPanelBlockEntity panel = (InfoPanelBlockEntity) be;
-				ItemStack stack = panel.getInvStack(slot);
+				ItemStack stack = panel.getStack(slot);
 				if (stack.isEmpty() || !(stack.getItem() instanceof MainCardItem))
 					return;
 				if (!stack.getItem().getClass().getName().equals(className)) {
@@ -101,7 +101,7 @@ public class ChannelHandler {
 					return;
 
 				InfoPanelBlockEntity panel = (InfoPanelBlockEntity) be;
-				ItemStack stack = panel.getInvStack(slot);
+				ItemStack stack = panel.getStack(slot);
 				if (stack.isEmpty() || !(stack.getItem() instanceof MainCardItem))
 					return;
 				

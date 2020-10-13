@@ -5,8 +5,8 @@ import java.util.Map;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.blockentities.InfoPanelBlockEntity;
-import com.zuxelus.energycontrol.gui.InfoPanelScreen;
 import com.zuxelus.energycontrol.network.NetworkHelper;
+import com.zuxelus.energycontrol.screen.InfoPanelScreen;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;

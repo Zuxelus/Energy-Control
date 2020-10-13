@@ -1,5 +1,7 @@
 package com.zuxelus.energycontrol.items;
 
+import java.util.function.Predicate;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.entities.TechArrowEntity;
@@ -9,7 +11,7 @@ import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
+import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.BowItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -17,6 +19,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
+import net.minecraft.tag.ItemTags;
+import net.minecraft.tag.Tag;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Rarity;
@@ -94,7 +98,7 @@ public abstract class NanoBowItem extends BowItem {
 			if (mode == EXPLOSIVE && arrow.isCritical())
 				arrow.setExplosive(true);
 
-			arrow.pickupType = ProjectileEntity.PickupPermission.DISALLOWED;
+			arrow.pickupType = PersistentProjectileEntity.PickupPermission.DISALLOWED;
 
 			switch (mode) {
 			case NORMAL:
@@ -112,19 +116,19 @@ public abstract class NanoBowItem extends BowItem {
 					TechArrowEntity arrow2 = new TechArrowEntity(world, player);
 					arrow2.setProperties(player, player.pitch + 2.0F, player.yaw, 0.0F, f * 3.0F, 1.0F);
 					arrow2.setCritical(true);
-					arrow2.pickupType = ProjectileEntity.PickupPermission.DISALLOWED;
+					arrow2.pickupType = PersistentProjectileEntity.PickupPermission.DISALLOWED;
 					TechArrowEntity arrow3 = new TechArrowEntity(world, player);
 					arrow3.setProperties(player, player.pitch - 2.0F, player.yaw, 0.0F, f * 3.0F, 1.0F);
 					arrow3.setCritical(true);
-					arrow3.pickupType = ProjectileEntity.PickupPermission.DISALLOWED;
+					arrow3.pickupType = PersistentProjectileEntity.PickupPermission.DISALLOWED;
 					TechArrowEntity arrow4 = new TechArrowEntity(world, player);
 					arrow4.setProperties(player, player.pitch, player.yaw + 2.0F, 0.0F, f * 3.0F, 1.0F);
 					arrow4.setCritical(true);
-					arrow4.pickupType = ProjectileEntity.PickupPermission.DISALLOWED;
+					arrow4.pickupType = PersistentProjectileEntity.PickupPermission.DISALLOWED;
 					TechArrowEntity arrow5 = new TechArrowEntity(world, player);
 					arrow5.setProperties(player, player.pitch, player.yaw - 2.0F, 0.0F, f * 3.0F, 1.0F);
 					arrow5.setCritical(true);
-					arrow5.pickupType = ProjectileEntity.PickupPermission.DISALLOWED;
+					arrow5.pickupType = PersistentProjectileEntity.PickupPermission.DISALLOWED;
 					world.spawnEntity(arrow2);
 					world.spawnEntity(arrow3);
 					world.spawnEntity(arrow4);
@@ -181,7 +185,7 @@ public abstract class NanoBowItem extends BowItem {
 				mode -= EXPLOSIVE;
 			}
 			nbt.putInt("bowMode", mode);
-			player.sendMessage(new TranslatableText("bow.energycontrol." + MODE[mode - 1]));
+			player.sendMessage(new TranslatableText("bow.energycontrol." + MODE[mode - 1]), false);
 			//NetworkHelper.chatMessage(player, "info.modeenabled", 1, mode - 1);
 			return TypedActionResult.fail(stack);
 		}
@@ -213,6 +217,11 @@ public abstract class NanoBowItem extends BowItem {
 			if ((j >= 10) && (canUse(stack, CHARGE[RAPID - 1])))
 				player.stopUsingItem();
 		}
+	}
+
+	@Override
+	public Predicate<ItemStack> getProjectiles() {
+		return (stack) -> { return true; };
 	}
 
 	protected abstract void discharge(ItemStack stack, double amount, LivingEntity entity);

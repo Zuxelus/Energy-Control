@@ -10,13 +10,13 @@ import com.zuxelus.energycontrol.blockentities.ITilePacketHandler;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.network.packet.BlockEntityUpdateS2CPacket;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.world.World;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public class ClientPlayNetworkHandlerMixin {
 
-	@Inject(method = "onBlockEntityUpdate(Lnet/minecraft/client/network/packet/BlockEntityUpdateS2CPacket;)V", at = @At("RETURN"))
+	@Inject(method = "onBlockEntityUpdate(Lnet/minecraft/network/packet/s2c/play/BlockEntityUpdateS2CPacket;)V", at = @At("RETURN"))
 	private void onBlockEntityUpdate(BlockEntityUpdateS2CPacket packet, CallbackInfo ci) {
 		World world = MinecraftClient.getInstance().world;
 		if (world == null)

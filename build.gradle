@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.4-SNAPSHOT'
+	id 'fabric-loom' version '0.5-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -18,8 +18,13 @@ dependencies {
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	modApi "me.shedaniel.cloth:config-2:2.14.2"
+	modApi("me.shedaniel.cloth:config-2:4.8.2") {
+		exclude(group: "net.fabricmc.fabric-api")
+	}
 	modApi "teamreborn:energy:0.1.0"
+	modImplementation "io.github.prospector:modmenu:1.14.6+build.31"
+	modImplementation "reborncore:RebornCore-1.16-4.4.2+build.75-dev"
+	modImplementation "techreborn:TechReborn-1.16-3.5.4+build.129-dev"
 
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	// You may need to force-disable transitiveness on them.

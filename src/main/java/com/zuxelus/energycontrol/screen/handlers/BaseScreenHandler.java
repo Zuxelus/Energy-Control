@@ -1,20 +1,21 @@
-package com.zuxelus.energycontrol.containers;
+package com.zuxelus.energycontrol.screen.handlers;
 
-import net.minecraft.container.Container;
-import net.minecraft.container.Slot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.screen.slot.Slot;
 
-public class BaseContainer<T extends Inventory> extends Container {
+public class BaseScreenHandler<T extends Inventory> extends ScreenHandler {
 	public final T be;
 
-	protected BaseContainer(int syncId, PlayerInventory playerInventory, T be) {
-		super(null, syncId);
+	protected BaseScreenHandler(ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory, T be) {
+		super(type, syncId);
 		this.be = be;
-		be.onInvOpen(playerInventory.player);
+		be.onOpen(playerInventory.player);
 	}
 
 	protected void addPlayerInventorySlots(PlayerEntity player, int height) {
@@ -40,7 +41,7 @@ public class BaseContainer<T extends Inventory> extends Container {
 
 	protected void addPlayerInventoryTopSlots(PlayerEntity player, int width, int height, Item filter) {
 		for (int col = 0; col < 9; col++) {
-			ItemStack stack = player.inventory.getInvStack(col);
+			ItemStack stack = player.inventory.getStack(col);
 			if (!stack.isEmpty() && stack.getItem() == filter)
 				addSlot(new Slot(player.inventory, col, width + col * 18, height - 24) {
 					@Override
@@ -60,7 +61,7 @@ public class BaseContainer<T extends Inventory> extends Container {
 
 	@Override
 	public boolean canUse(PlayerEntity player) {
-		return be.canPlayerUseInv(player);
+		return be.canPlayerUse(player);
 	}
 
 	@Override
@@ -70,10 +71,10 @@ public class BaseContainer<T extends Inventory> extends Container {
 		if (slot != null && slot.hasStack()) {
 			ItemStack originalStack = slot.getStack();
 			newStack = originalStack.copy();
-			if (invSlot < be.getInvSize()) {
-				if (!this.insertItem(originalStack, be.getInvSize(), this.slots.size(), true))
+			if (invSlot < be.size()) {
+				if (!this.insertItem(originalStack, be.size(), this.slots.size(), true))
 					return ItemStack.EMPTY;
-			} else if (!this.insertItem(originalStack, 0, be.getInvSize(), false))
+			} else if (!this.insertItem(originalStack, 0, be.size(), false))
 				return ItemStack.EMPTY;
 
 			if (originalStack.isEmpty())
@@ -98,7 +99,7 @@ public class BaseContainer<T extends Inventory> extends Container {
 
 				if (!itemstack.isEmpty() && canStacksCombine(stack, itemstack) && slot.canInsert(stack)) {
 					int j = itemstack.getCount() + stack.getCount();
-					int maxSize = Math.min(slot.getMaxStackAmount(), stack.getMaxCount());
+					int maxSize = Math.min(slot.getMaxItemCount(), stack.getMaxCount());
 					if (j <= maxSize) {
 						stack.setCount(0);
 						itemstack.setCount(j);
@@ -130,8 +131,8 @@ public class BaseContainer<T extends Inventory> extends Container {
 				ItemStack itemstack = slot.getStack();
 
 				if (itemstack.isEmpty() && slot.canInsert(stack)) {
-					if (stack.getCount() > slot.getMaxStackAmount())
-						slot.setStack(stack.split(slot.getMaxStackAmount()));
+					if (stack.getCount() > slot.getMaxItemCount())
+						slot.setStack(stack.split(slot.getMaxItemCount()));
 					else
 						slot.setStack(stack.split(stack.getCount()));
 					slot.markDirty();

@@ -1,16 +1,17 @@
 package com.zuxelus.energycontrol.blocks;
 
 import com.zuxelus.energycontrol.blockentities.HowlerAlarmBlockEntity;
-import com.zuxelus.energycontrol.gui.ScreenHandler;
+import com.zuxelus.energycontrol.screen.ScreenHandler;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FacingBlock;
 import net.minecraft.block.Material;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.EntityContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
@@ -34,6 +35,11 @@ public class HowlerAlarmBlock extends FacingBlock implements BlockEntityProvider
 
 	public HowlerAlarmBlock() {
 		super(FabricBlockSettings.of(Material.METAL).strength(12.0F));
+		setDefaultState(getDefaultState().with(FACING, Direction.NORTH));
+	}
+
+	public HowlerAlarmBlock(AbstractBlock.Settings settings) {
+		super(settings);
 		setDefaultState(getDefaultState().with(FACING, Direction.NORTH));
 	}
 
@@ -69,7 +75,8 @@ public class HowlerAlarmBlock extends FacingBlock implements BlockEntityProvider
 		return new HowlerAlarmBlockEntity();
 	}
 
-	public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, EntityContext ePos) {
+	@Override
+	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
 		switch (state.get(FACING)) {
 		case EAST:
 			return AABB_EAST;

@@ -48,7 +48,6 @@
 	"block.energycontrol.info_panel_extender": "Information Panel Extender",
 	"block.energycontrol.average_counter": "Average Counter",
 	"block.energycontrol.energy_counter": "Energy Counter",
-	"container.energycontrol.info_panel": "Industrial Information Panel",
 
 	"msg.ec.HowlerAlarmSoundRange": "Sound range: %s",
 	"msg.ec.HowlerAlarmSound": "Sound",

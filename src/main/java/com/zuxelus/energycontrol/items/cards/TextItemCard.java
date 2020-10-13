@@ -8,7 +8,7 @@ import com.zuxelus.energycontrol.api.ICardGui;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
-import com.zuxelus.energycontrol.gui.CardTextScreen;
+import com.zuxelus.energycontrol.screen.CardTextScreen;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

@@ -11,9 +11,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.ShapedRecipe;
-import net.minecraft.util.DefaultedList;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.PacketByteBuf;
+import net.minecraft.network.PacketByteBuf;
 import techreborn.init.TRContent;
 
 public class NanoBowRecipeTR extends ShapedRecipe {
@@ -29,7 +29,7 @@ public class NanoBowRecipeTR extends ShapedRecipe {
 
 	@Override
 	public ItemStack craft(CraftingInventory inv) {
-		ItemStack stack = inv.getInvStack(3);
+		ItemStack stack = inv.getStack(3);
 		if (stack.isEmpty() || stack.getItem() != TRContent.ENERGY_CRYSTAL)
 			return ItemStack.EMPTY;
 		CompoundTag tag = stack.getTag();

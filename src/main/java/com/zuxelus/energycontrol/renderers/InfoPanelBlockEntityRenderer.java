@@ -235,7 +235,7 @@ public class InfoPanelBlockEntityRenderer extends BlockEntityRenderer<InfoPanelB
 		int maxWidth = 1;
 		for (PanelString panelString : joinedData) {
 			String currentString = implodeArray(new String[] { panelString.textLeft, panelString.textCenter, panelString.textRight }, " ");
-			maxWidth = Math.max(fontRenderer.getStringWidth(currentString), maxWidth);
+			maxWidth = Math.max(fontRenderer.getWidth(currentString), maxWidth);
 		}
 		maxWidth += 4;
 
@@ -271,13 +271,13 @@ public class InfoPanelBlockEntityRenderer extends BlockEntityRenderer<InfoPanelB
 			}
 			if (panelString.textCenter != null) {
 				fontRenderer.draw(panelString.textCenter,
-						-fontRenderer.getStringWidth(panelString.textCenter) / 2,
+						-fontRenderer.getWidth(panelString.textCenter) / 2,
 						offsetY - realHeight / 2 + row * lineHeight,
 						panelString.colorCenter != 0 ? panelString.colorCenter : colorHex, false, matrices.peek().getModel(), vertexConsumers, false, 0, light);
 			}
 			if (panelString.textRight != null) {
 				fontRenderer.draw(panelString.textRight,
-						realWidth / 2 - fontRenderer.getStringWidth(panelString.textRight),
+						realWidth / 2 - fontRenderer.getWidth(panelString.textRight),
 						offsetY - realHeight / 2 + row * lineHeight,
 						panelString.colorRight != 0 ? panelString.colorRight : colorHex, false, matrices.peek().getModel(), vertexConsumers, false, 0, light);
 			}

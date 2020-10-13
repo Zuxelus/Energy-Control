@@ -1,13 +1,13 @@
 package com.zuxelus.energycontrol.items;
 
-import com.zuxelus.energycontrol.containers.ISlotItemFilter;
+import com.zuxelus.energycontrol.screen.handlers.ISlotItemFilter;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.DefaultedList;
+import net.minecraft.util.collection.DefaultedList;
 
 public abstract class InventoryItem implements Inventory, ISlotItemFilter {
 	private final ItemStack parent;
@@ -15,7 +15,7 @@ public abstract class InventoryItem implements Inventory, ISlotItemFilter {
 
 	public InventoryItem(ItemStack parent) {
 		this.parent = parent;
-		inventory = DefaultedList.ofSize(getInvSize(), ItemStack.EMPTY);
+		inventory = DefaultedList.ofSize(size(), ItemStack.EMPTY);
 		readFromParentNBT();
 	}
 
@@ -38,7 +38,7 @@ public abstract class InventoryItem implements Inventory, ISlotItemFilter {
 	}
 
 	@Override
-	public boolean isValidInvStack(int slot, ItemStack stack) {
+	public boolean isValid(int slot, ItemStack stack) {
 		return canInsert(slot, stack);
 	}
 
@@ -49,7 +49,7 @@ public abstract class InventoryItem implements Inventory, ISlotItemFilter {
 	}
 
 	@Override
-	public boolean isInvEmpty() {
+	public boolean isEmpty() {
 		for (ItemStack itemstack : inventory)
 			if (!itemstack.isEmpty())
 				return false;
@@ -57,12 +57,12 @@ public abstract class InventoryItem implements Inventory, ISlotItemFilter {
 	}
 
 	@Override
-	public ItemStack getInvStack(int slot) {
+	public ItemStack getStack(int slot) {
 		return slot >= 0 && slot < inventory.size() ? (ItemStack)inventory.get(slot) : ItemStack.EMPTY;
 	}
 
 	@Override
-	public ItemStack takeInvStack(int slot, int amount) {
+	public ItemStack removeStack(int slot, int amount) {
 		ItemStack stack = Inventories.splitStack(inventory, slot, amount);
 		if (!stack.isEmpty())
 			markDirty();
@@ -70,8 +70,8 @@ public abstract class InventoryItem implements Inventory, ISlotItemFilter {
 	}
 
 	@Override
-	public ItemStack removeInvStack(int slot) {
-		ItemStack stack = getInvStack(slot);
+	public ItemStack removeStack(int slot) {
+		ItemStack stack = getStack(slot);
 		if (stack.isEmpty())
 			return ItemStack.EMPTY;
 		inventory.set(slot, ItemStack.EMPTY);
@@ -79,10 +79,10 @@ public abstract class InventoryItem implements Inventory, ISlotItemFilter {
 	}
 
 	@Override
-	public void setInvStack(int slot, ItemStack stack) {
+	public void setStack(int slot, ItemStack stack) {
 		inventory.set(slot, stack);
-		if (!stack.isEmpty() && stack.getCount() > getInvMaxStackAmount())
-			stack.setCount(getInvMaxStackAmount());
+		if (!stack.isEmpty() && stack.getCount() > getMaxCountPerStack())
+			stack.setCount(getMaxCountPerStack());
 		markDirty();
 	}
 
@@ -92,7 +92,7 @@ public abstract class InventoryItem implements Inventory, ISlotItemFilter {
 	}
 
 	@Override
-	public boolean canPlayerUseInv(PlayerEntity player) {
+	public boolean canPlayerUse(PlayerEntity player) {
 		return true;
 	}
 }

@@ -1,4 +1,4 @@
-package com.zuxelus.energycontrol.gui;
+package com.zuxelus.energycontrol.screen;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,12 +6,13 @@ import java.util.List;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.blockentities.HowlerAlarmBlockEntity;
-import com.zuxelus.energycontrol.gui.controls.GuiHowlerAlarmListBox;
-import com.zuxelus.energycontrol.gui.controls.GuiHowlerAlarmSlider;
+import com.zuxelus.energycontrol.screen.controls.GuiHowlerAlarmListBox;
+import com.zuxelus.energycontrol.screen.controls.GuiHowlerAlarmSlider;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
@@ -41,17 +42,17 @@ public class HowlerAlarmScreen extends ScreenBase {
 	}
 
 	@Override
-	protected void drawForeground(int mouseX, int mouseY) {
-		font.draw(getTitle().asFormattedString(), (containerWidth - font.getStringWidth(getTitle().asFormattedString())) / 2, 6, 0x404040);
-		font.draw(I18n.translate("msg.ec.HowlerAlarmSound"), 12, 53, 0x404040);
+	protected void drawForeground(MatrixStack matrices, int mouseX, int mouseY) {
+		textRenderer.draw(matrices, getTitle().getString(), (containerWidth - textRenderer.getWidth(getTitle().getString())) / 2, 6, 0x404040);
+		textRenderer.draw(matrices, I18n.translate("msg.ec.HowlerAlarmSound"), 12, 53, 0x404040);
 	}
 
 	@Override
-	protected void drawBackground(float delta, int mouseX, int mouseY) {
+	protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		minecraft.getTextureManager().bindTexture(TEXTURE);
+		client.getTextureManager().bindTexture(TEXTURE);
 		int left = (width - containerWidth) / 2;
 		int top = (height - containerHeight) / 2;
-		blit(left, top, 0, 0, containerWidth, containerHeight);
+		drawTexture(matrices, left, top, 0, 0, containerWidth, containerHeight);
 	}
 }

@@ -16,18 +16,13 @@ public class LightBlock extends Block {
 	public static final BooleanProperty LIT = Properties.LIT;
 
 	public LightBlock() {
-		super(FabricBlockSettings.of(Material.REDSTONE_LAMP).sounds(BlockSoundGroup.GLASS));
+		super(FabricBlockSettings.of(Material.REDSTONE_LAMP).sounds(BlockSoundGroup.GLASS).lightLevel(state -> state.get(LIT) ? 15 : 0));
 		setDefaultState(getStateManager().getDefaultState().with(LIT, false));
 	}
 
 	@Override
 	protected void appendProperties(StateManager.Builder<Block, BlockState> stateManager) {
 		stateManager.add(LIT);
-	}
-
-	@Override
-	public int getLuminance(BlockState state) {
-		return (Boolean) state.get(LIT) ? 15 : 0;
 	}
 
 	@Override

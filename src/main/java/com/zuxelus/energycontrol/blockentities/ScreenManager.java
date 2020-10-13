@@ -11,26 +11,27 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 
 public class ScreenManager {
 
-	private final Map<Integer, List<Screen>> screens;
-	private final Map<Integer, List<InfoPanelBlockEntity>> unusedPanels;
+	private final Map<DimensionType, List<Screen>> screens;
+	private final Map<DimensionType, List<InfoPanelBlockEntity>> unusedPanels;
 
 	public ScreenManager() {
-		screens = new HashMap<Integer, List<Screen>>();
-		unusedPanels = new HashMap<Integer, List<InfoPanelBlockEntity>>();
+		screens = new HashMap<DimensionType, List<Screen>>();
+		unusedPanels = new HashMap<DimensionType, List<InfoPanelBlockEntity>>();
 	}
 
-	private int getWorldKey(World world) {
+	private DimensionType getWorldKey(World world) {
 		if (world == null)
-			return -10;
-		if (world.dimension == null)
-			return -10;
-		return world.dimension.getType().getRawId();
+			return null;
+		if (world.getDimension() == null)
+			return null;
+		return world.getDimension();
 	}
 
-	private void checkWorldLists(Integer key) {
+	private void checkWorldLists(DimensionType key) {
 		if (!screens.containsKey(key))
 			screens.put(key, new ArrayList<Screen>());
 		if (!unusedPanels.containsKey(key))
@@ -38,7 +39,7 @@ public class ScreenManager {
 	}
 
 	public void clearWorld(World world) {
-		Integer key = getWorldKey(world);
+		DimensionType key = getWorldKey(world);
 		if (screens.containsKey(key))
 			screens.get(key).clear();
 		if (unusedPanels.containsKey(key))
@@ -150,7 +151,7 @@ public class ScreenManager {
 		
 		Screen screen = new Screen(panel, panel.screenData);
 		if (!panel.getWorld().isClient) {
-			Integer key = getWorldKey(panel.getWorld());
+			DimensionType key = getWorldKey(panel.getWorld());
 			checkWorldLists(key);
 			if (!screens.get(key).contains(screen))
 				screens.get(key).add(screen);
