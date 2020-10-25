@@ -1,7 +1,7 @@
 package com.zuxelus.energycontrol.crossmod;
 
 import com.zuxelus.energycontrol.api.ItemStackHelper;
-import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
 import appeng.api.networking.energy.IAEPowerStorage;
@@ -35,7 +35,7 @@ public class CrossAppEng extends CrossModBase {
 	public ItemStack getEnergyCard(World world, BlockPos pos) {
 		TileEntity te = world.getTileEntity(pos);
 		if (te instanceof IAEPowerStorage) {
-			ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_ENERGY);
+			ItemStack sensorLocationCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_ENERGY);
 			ItemStackHelper.setCoordinates(sensorLocationCard, pos);
 			return sensorLocationCard;
 		}

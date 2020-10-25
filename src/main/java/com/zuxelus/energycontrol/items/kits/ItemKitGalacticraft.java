@@ -1,7 +1,7 @@
 package com.zuxelus.energycontrol.items.kits;
 
 import com.zuxelus.energycontrol.api.ItemStackHelper;
-import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
 import micdoodle8.mods.galacticraft.core.tile.*;
@@ -29,7 +29,7 @@ public class ItemKitGalacticraft extends ItemKitBase {
 				|| te instanceof TileEntityGasLiquefier || te instanceof TileEntityOxygenStorageModule
 				|| te instanceof TileEntityEnergyStorageModule || te instanceof TileEntitySolar
 				|| te instanceof TileEntityLaunchController || te instanceof TileEntitySolarArrayController) {
-			ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_GALACTICRAFT);
+			ItemStack sensorLocationCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_GALACTICRAFT);
 			ItemStackHelper.setCoordinates(sensorLocationCard, pos);
 			return sensorLocationCard;
 		}

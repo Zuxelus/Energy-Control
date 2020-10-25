@@ -64,19 +64,22 @@ public abstract class CrossIC2 {
 	public abstract ItemStack getGeneratorCard(World world, BlockPos pos);
 
 	public abstract NBTTagCompound getGeneratorData(TileEntity te);
-	
+
 	public abstract NBTTagCompound getGeneratorKineticData(TileEntity te);
 
 	public abstract NBTTagCompound getGeneratorHeatData(TileEntity te);
-	
+
 	public abstract List<IFluidTank> getAllTanks(TileEntity te);
-	
+
 	public abstract ItemStack getReactorCard(World world, BlockPos pos);
-	
+
 	public abstract ItemStack getLiquidAdvancedCard(World world, BlockPos pos);
-	
+
 	public abstract CardState updateCardReactor(World world, ICardReader reader, IReactor reactor);
+
 	public abstract CardState updateCardReactor5x5(World world, ICardReader reader, BlockPos target);
-	
+
+	public abstract void loadOreInfo();
+
 	public abstract void showBarrelInfo(EntityPlayer player, TileEntity te);
 }

@@ -17,14 +17,14 @@ public class IndustrialAlarm extends HowlerAlarm {
 	public IndustrialAlarm() {
 		super();
 	}
-	
+
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta) {
 		TileEntityIndustrialAlarm te = new TileEntityIndustrialAlarm();
 		te.setFacing(meta);
 		return te;
 	}
-	
+
 	@Override
 	public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
 		TileEntity te = world.getTileEntity(pos);

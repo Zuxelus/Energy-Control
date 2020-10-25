@@ -19,23 +19,20 @@ public abstract class GuiBase extends GuiScreen {
 
 	public GuiBase(String name, int xSize, int ySize) {
 		this.xSize = xSize;
-		this.ySize = ySize;		
+		this.ySize = ySize;
 		this.name = I18n.format(name);
 	}
 
 	@Override
 	public void initGui() {
 		super.initGui();
-		guiLeft = (this.width - xSize) / 2;
-		guiTop = (this.height - ySize) / 2;
-		buttonList.clear();
+		guiLeft = (width - xSize) / 2;
+		guiTop = (height - ySize) / 2;
 	}
 
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		drawDefaultBackground();
-		int i = this.guiLeft;
-		int j = this.guiTop;
 		drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
 		GlStateManager.disableRescaleNormal();
 		RenderHelper.disableStandardItemLighting();
@@ -44,7 +41,7 @@ public abstract class GuiBase extends GuiScreen {
 		super.drawScreen(mouseX, mouseY, partialTicks);
 		RenderHelper.enableGUIStandardItemLighting();
 		GlStateManager.pushMatrix();
-		GlStateManager.translate((float) i, (float) j, 0.0F);
+		GlStateManager.translate((float) guiLeft, (float) guiTop, 0.0F);
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		GlStateManager.enableRescaleNormal();
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);

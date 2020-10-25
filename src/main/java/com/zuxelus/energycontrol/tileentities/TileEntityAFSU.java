@@ -3,6 +3,10 @@ package com.zuxelus.energycontrol.tileentities;
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
 import ic2.api.tile.IEnergyStorage;
+import micdoodle8.mods.galacticraft.api.power.EnergySource;
+import micdoodle8.mods.galacticraft.api.power.IEnergyHandlerGC;
+import micdoodle8.mods.galacticraft.api.transmission.NetworkType;
+import micdoodle8.mods.galacticraft.api.transmission.tile.IElectrical;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,7 +17,7 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable, IEnergyStorage {
+public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable, IEnergyStorage, IEnergyHandlerGC, IElectrical {
 	public static final int TIER = 5;
 	public static final int CAPACITY = 400000000;
 	public static final int OUTPUT = 8192;
@@ -137,23 +141,10 @@ public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable
 	public void update() {
 		if (world.isRemote)
 			return;
-		
+
 		onLoad();
-		ItemStack stack = getStackInSlot(SLOT_DISCHARGER);
-		if (!stack.isEmpty() && energy < CAPACITY && stack.getItem() instanceof IElectricItem) {
-			IElectricItem ielectricitem = (IElectricItem) stack.getItem();
-			if (ielectricitem.canProvideEnergy(stack))
-				energy += ElectricItem.manager.discharge(stack, CAPACITY - energy, TIER, false, false, false);
-		}
-		stack = getStackInSlot(SLOT_CHARGER);
-		if (!stack.isEmpty() && energy > 0 && stack.getItem() instanceof IElectricItem) {
-			IElectricItem item = (IElectricItem) stack.getItem();
-			int tier = item.getTier(stack);
-			double amount = ElectricItem.manager.charge(stack, Double.POSITIVE_INFINITY, tier, true, true);
-			amount = Math.min(amount, energy);
-			if (amount > 0)
-				energy -= ElectricItem.manager.charge(stack, amount, tier, false, false);
-		}
+		handleDischarger(SLOT_DISCHARGER);
+		handleCharger(SLOT_CHARGER);
 		updateState();
 	}
 
@@ -228,5 +219,66 @@ public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable
 	@Override
 	public boolean isTeleporterCompatible(EnumFacing side) {
 		return true;
+	}
+
+	// IEnergyHandlerGC
+	@Override
+	public float receiveEnergyGC(EnergySource from, float amount, boolean simulate) {
+		float energyReceived = (float) Math.min(capacity - energy, amount);
+		if (!simulate)
+			energy += energyReceived;
+		return energyReceived;
+	}
+
+	@Override
+	public float extractEnergyGC(EnergySource from, float amount, boolean simulate) {
+		return 0;
+	}
+
+	@Override
+	public boolean nodeAvailable(EnergySource from) {
+		return true;
+	}
+
+	@Override
+	public float getEnergyStoredGC(EnergySource from) {
+		return (float) energy;
+	}
+
+	@Override
+	public float getMaxEnergyStoredGC(EnergySource from) {
+		return (float) capacity;
+	}
+
+	@Override
+	public boolean canConnect(EnumFacing direction, NetworkType type) {
+		return direction != facing;
+	}
+
+	@Override
+	public float receiveElectricity(EnumFacing from, float receive, int tierProduced, boolean doReceive) {
+		if (from == facing)
+			return 0;
+		return receiveEnergyGC(null, receive, !doReceive);
+	}
+
+	@Override
+	public float provideElectricity(EnumFacing from, float request, boolean doProvide) {
+		return extractEnergyGC(null, request, !doProvide);
+	}
+
+	@Override
+	public float getRequest(EnumFacing direction) {
+		return (float) (capacity - energy);
+	}
+
+	@Override
+	public float getProvide(EnumFacing direction) {
+		return 0;
+	}
+
+	@Override
+	public int getTierGC() {
+		return 3;
 	}
 }

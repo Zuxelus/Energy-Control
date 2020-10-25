@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.items;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.tileentities.TileEntityAFSU;
 
 import ic2.core.block.BlockTileEntity;
@@ -44,7 +45,7 @@ public class ItemAFSUUpgradeKit extends Item {
 		for (int i = 0; i < items.length; i++)
 			items[i] = mfsu.getStackInSlot(i);
 		world.removeTileEntity(pos);
-		IBlockState state = ItemHelper.afsu.getStateFromMeta(facing);
+		IBlockState state = ModItems.blockAfsu.getStateFromMeta(facing);
 		world.setBlockState(pos, state);
 		TileEntityAFSU afsu = new TileEntityAFSU();
 		afsu.addEnergy(eustored);

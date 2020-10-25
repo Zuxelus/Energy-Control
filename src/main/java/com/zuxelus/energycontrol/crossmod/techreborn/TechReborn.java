@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.zuxelus.energycontrol.api.ItemStackHelper;
-import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
 import net.minecraft.item.Item;
@@ -43,7 +43,7 @@ public class TechReborn extends CrossTechReborn {
 	public ItemStack getEnergyCard(World world, BlockPos pos) {
 		TileEntity te = world.getTileEntity(pos);
 		if (te instanceof IEnergyInterfaceTile) {
-			ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_ENERGY);
+			ItemStack sensorLocationCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_ENERGY);
 			ItemStackHelper.setCoordinates(sensorLocationCard, pos);
 			return sensorLocationCard;
 		}
@@ -75,7 +75,7 @@ public class TechReborn extends CrossTechReborn {
 		if (te instanceof TileFluidGenerator || te instanceof TileSolidFuelGenerator || te instanceof TileSolarPanel
 				|| te instanceof TileCreativeSolarPanel || te instanceof TileWaterMill || te instanceof TileWindMill
 				|| te instanceof TileFusionControlComputer) {
-			ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_GENERATOR);
+			ItemStack sensorLocationCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_GENERATOR);
 			ItemStackHelper.setCoordinates(sensorLocationCard, pos);
 			return sensorLocationCard;
 		}

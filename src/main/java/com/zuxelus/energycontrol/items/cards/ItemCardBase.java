@@ -69,7 +69,7 @@ public abstract class ItemCardBase implements IItemCard {
 		result.add(line);
 	}
 
-	protected void addOnOff(List<PanelString> result, Boolean value) {
+	protected void addOnOff(List<PanelString> result, boolean value) {
 		String text;
 		int txtColor = 0;
 		if (value) {

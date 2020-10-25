@@ -3,6 +3,7 @@ package com.zuxelus.energycontrol.items;
 import java.util.List;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.init.ModItems;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -40,8 +41,8 @@ public class ItemUpgrade extends Item {
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
 		if (!this.isInCreativeTab(tab))
 			return;
-		items.add(new ItemStack(ItemHelper.itemUpgrade, 1, DAMAGE_RANGE));
-		items.add(new ItemStack(ItemHelper.itemUpgrade, 1, DAMAGE_COLOR));
-		items.add(new ItemStack(ItemHelper.itemUpgrade, 1, DAMAGE_TOUCH));
+		items.add(new ItemStack(ModItems.itemUpgrade, 1, DAMAGE_RANGE));
+		items.add(new ItemStack(ModItems.itemUpgrade, 1, DAMAGE_COLOR));
+		items.add(new ItemStack(ModItems.itemUpgrade, 1, DAMAGE_TOUCH));
 	}
 }

@@ -18,10 +18,6 @@ import net.minecraft.world.World;
 
 public class InfoPanelExtender extends FacingBlock {
 
-	public InfoPanelExtender() {
-		super();
-	}
-
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta) {
 		TileEntityInfoPanelExtender te = new TileEntityInfoPanelExtender();
@@ -45,6 +41,11 @@ public class InfoPanelExtender extends FacingBlock {
 		if (!(te instanceof TileEntityInfoPanelExtender))
 			return 0;
 		return ((TileEntityInfoPanelExtender)te).getPowered() ? 10 : 0;
+	}
+
+	@Override
+	protected int getBlockGuiId() {
+		return BlockDamages.DAMAGE_INFO_PANEL;
 	}
 
 	@Override

@@ -46,6 +46,8 @@ item.kit_app_eng.name=Набор с датчиком для Applied Energistics
 item.card_app_eng.name=Карта-датчик для Applied Energistics
 item.kit_galacticraft.name=Набор с датчиком для Galacticraft
 item.card_galacticraft.name=Карта-датчик для Galacticraft
+item.kit_nuclearcraft.name=NuclearCraft Sensor Kit
+item.card_nuclearcraft.name=NuclearCraft Sensor Card
 
 #Internal Blocks
 tile.thermal_monitor.name=Датчик температуры
@@ -65,6 +67,8 @@ tile.average_counter.name=Стационарный энергосчётчик
 tile.range_trigger.name=Дистанционный триггер
 tile.kit_assembler.name=Сборщик наборов
 tile.afsu.name=УФСУ
+tile.seed_analyzer.name=Seed Analyzer
+tile.seed_library.name=Seed Library
 
 #Config
 ec.config.howlerAlarmRange=Howler Alarm Range
@@ -177,12 +181,17 @@ msg.ec.InfoPanelPassiveCooling=Passive Cooling: %s
 msg.ec.InfoPanelPellets=Гранулы: %s
 msg.ec.InfoPanelPercentage=Заполнено: %s%%
 msg.ec.InfoPanelPeriod=Период: %s сек
+msg.ec.InfoPanelPowerMultiplierRF=Power Multiplier: x%s
+msg.ec.InfoPanelProcessPowerRF=ProcessPower: %s RF/t
+msg.ec.InfoPanelProcessTime=Process Time: %s t
 msg.ec.InfoPanelProgress=Прогресс: %s%%
+msg.ec.InfoPanelRadiation=Radiation: %s
 msg.ec.InfoPanelRotorEfficiency=Rotor Efficiency: %s
 msg.ec.InfoPanelRotorMass=Rotor Mass: %s
 msg.ec.InfoPanelRotorSpeed=Скорость ротора: %s об/мин
 msg.ec.InfoPanelSize=Size: %s
 msg.ec.InfoPanelSpeed=Скорость: %s
+msg.ec.InfoPanelSpeedMultiplierRF=Speed Multiplier: x%s
 msg.ec.InfoPanelStatus=Статус: %s
 msg.ec.InfoPanelStorage=Хранится: %s
 msg.ec.InfoPanelStorageCells=Storage Cells: %s
@@ -327,7 +336,6 @@ ec.jei.blockAFSU=  Next tier IC2 MFSU block.
 ec.jei.itemAFB=
 ec.jei.itemCardHolder=  Portable storage for 54 sensor cards.
 ec.jei.itemPortablePanel=  Portable variant of information panel.
-        
 ec.jei.upgradeColor=  Used to change the font and background color in information panel.
 ec.jei.upgradeRange=  Used to increase working range in information, advanced and portable panels.
 ec.jei.upgradeTouch=  Used to enable touch screen functionality in information panel.

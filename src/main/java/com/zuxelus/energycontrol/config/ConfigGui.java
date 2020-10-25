@@ -9,7 +9,7 @@ import net.minecraftforge.fml.client.config.GuiConfig;
 
 public class ConfigGui extends GuiConfig {
 	public ConfigGui(GuiScreen parent) {
-		super(parent, new ConfigElement(EnergyControl.config.configuration.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(),
-				EnergyControl.MODID, false, false,GuiConfig.getAbridgedConfigPath(EnergyControl.config.configuration.toString()));
+		super(parent, new ConfigElement(EnergyControl.config.config.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(),
+				EnergyControl.MODID, false, false,GuiConfig.getAbridgedConfigPath(EnergyControl.config.config.toString()));
 	}
 }

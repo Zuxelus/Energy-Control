@@ -7,7 +7,7 @@ import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyCoreStabili
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyInfuser;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyStorageCore;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
-import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -32,12 +32,12 @@ public class ItemKitDraconic extends ItemKitBase {
 		if (te instanceof TileEnergyStorageCore)
 			core = (TileEnergyStorageCore)te;
 		if (core != null) {
-			ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_ENERGY_DRACONIC);
+			ItemStack sensorLocationCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_ENERGY_DRACONIC);
 			ItemStackHelper.setCoordinates(sensorLocationCard, core.getPos());
 			return sensorLocationCard;
 		}
 		if (te instanceof TileEnergyInfuser || te instanceof TileCrystalDirectIO) {
-			ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_ENERGY_DRACONIC);
+			ItemStack sensorLocationCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_ENERGY_DRACONIC);
 			ItemStackHelper.setCoordinates(sensorLocationCard, te.getPos());
 			return sensorLocationCard;
 		}
@@ -45,7 +45,7 @@ public class ItemKitDraconic extends ItemKitBase {
 		if (te instanceof TileReactorStabilizer)
 			reactor = ((TileReactorStabilizer)te).tryGetCore();
 		if (reactor != null) {
-			ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_REACTOR_DRACONIC);
+			ItemStack sensorLocationCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_REACTOR_DRACONIC);
 			ItemStackHelper.setCoordinates(sensorLocationCard, reactor.getPos());
 			return sensorLocationCard;
 		}

@@ -98,6 +98,10 @@ public class NetworkHelper {
 		ChannelHandler.network.sendTo(new PacketTileEntity(pos, tag), (EntityPlayerMP) crafter);
 	}
 
+	public static void updateClientTileEntity(World world, BlockPos pos, NBTTagCompound tag) {
+		sendPacketToAllAround(pos, 64, world, new PacketTileEntity(pos, tag));
+	}
+
 	// client
 	public static void updateSeverTileEntity(BlockPos pos, int type, String string) {
 		NBTTagCompound tag = new NBTTagCompound();

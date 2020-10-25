@@ -1,0 +1,12 @@
+{
+    "parent": "block/cube",
+    "textures": {
+        "particle": "energycontrol:blocks/seed_library/side",
+        "down": "energycontrol:blocks/seed_library/bottom",
+        "up": "energycontrol:blocks/seed_library/top_active",
+        "north": "energycontrol:blocks/seed_library/face_active",
+        "east": "energycontrol:blocks/seed_library/side",
+        "south": "energycontrol:blocks/seed_library/side",
+        "west": "energycontrol:blocks/seed_library/side"
+    }
+}

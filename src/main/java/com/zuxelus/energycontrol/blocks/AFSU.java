@@ -3,7 +3,6 @@ package com.zuxelus.energycontrol.blocks;
 import java.util.Collections;
 import java.util.List;
 
-import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.tileentities.TileEntityAFSU;
 import com.zuxelus.energycontrol.tileentities.TileEntityInventory;
@@ -17,7 +16,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -33,10 +31,8 @@ public class AFSU extends FacingBlock {
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		if (!world.isRemote)
-			player.openGui(EnergyControl.instance, BlockDamages.DAMAGE_AFSU, world, pos.getX(), pos.getY(), pos.getZ());
-		return true;
+	protected int getBlockGuiId() {
+		return BlockDamages.DAMAGE_AFSU;
 	}
 
 	@Override
@@ -60,14 +56,6 @@ public class AFSU extends FacingBlock {
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos) {
 		if (!world.isRemote)
 			world.notifyBlockUpdate(pos, state, state, 2);
-	}
-
-	@Override
-	public void breakBlock(World world, BlockPos pos, IBlockState state) {
-		TileEntity te = world.getTileEntity(pos);
-		if (te instanceof TileEntityInventory)
-			((TileEntityInventory)te).dropItems(world, pos);
-		super.breakBlock(world, pos, state);
 	}
 
 	@Override

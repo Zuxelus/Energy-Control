@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.blocks;
 
-import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.tileentities.TileEntityFacing;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
@@ -26,10 +25,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class InfoPanel extends FacingBlock {
 	EnumFacing rotation;
-
-	public InfoPanel() {
-		super();
-	}
 
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta) {
@@ -59,6 +54,11 @@ public class InfoPanel extends FacingBlock {
 	}
 
 	@Override
+	protected int getBlockGuiId() {
+		return BlockDamages.DAMAGE_INFO_PANEL;
+	}
+
+	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		TileEntity te = world.getTileEntity(pos);
 		if (!(te instanceof TileEntityInfoPanel))
@@ -66,11 +66,7 @@ public class InfoPanel extends FacingBlock {
 		if (!world.isRemote && Keys.instance.isAltKeyDown(player) && ((TileEntityInfoPanel) te).getFacing() == facing)
 			if (((TileEntityInfoPanel) te).runTouchAction(pos, hitX, hitY, hitZ))
 				return true;
-		if (CrossModLoader.ic2.isWrench(player.getHeldItem(hand)))
-			return true;
-		if (!world.isRemote)
-			player.openGui(EnergyControl.instance, BlockDamages.DAMAGE_INFO_PANEL, world, pos.getX(), pos.getY(), pos.getZ());
-		return true;
+		return super.onBlockActivated(world, pos, state, player, hand, facing, hitX, hitY, hitZ);
 	}
 
 	@Override
@@ -93,14 +89,6 @@ public class InfoPanel extends FacingBlock {
 			return getDefaultState().withProperty(FACING, EnumFacing.WEST);
 		}
 		return getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
-	}
-
-	@Override
-	public void breakBlock(World world, BlockPos pos, IBlockState state) {
-		TileEntity te = world.getTileEntity(pos);
-		if (te instanceof TileEntityInventory)
-			((TileEntityInventory) te).dropItems(world, pos);
-		super.breakBlock(world, pos, state);
 	}
 
 	@Override

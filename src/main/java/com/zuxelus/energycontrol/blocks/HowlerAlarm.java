@@ -1,7 +1,5 @@
 package com.zuxelus.energycontrol.blocks;
 
-import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 
 import net.minecraft.block.Block;
@@ -10,7 +8,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -23,10 +20,6 @@ public class HowlerAlarm extends FacingBlock {
 	protected static final AxisAlignedBB AABB_SOUTH = new AxisAlignedBB(0.125D, 0.125D, 0.0D, 0.875D, 0.875D, 0.4375D);
 	protected static final AxisAlignedBB AABB_WEST = new AxisAlignedBB(0.5625D, 0.125D, 0.125D, 1.0D, 0.875D, 0.875D);
 	protected static final AxisAlignedBB AABB_EAST = new AxisAlignedBB(0.0D, 0.125D, 0.125D, 0.4375D, 0.875D, 0.875D);
-
-	public HowlerAlarm() {
-		super();
-	}
 
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta) {
@@ -109,12 +102,8 @@ public class HowlerAlarm extends FacingBlock {
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		if (CrossModLoader.ic2.isWrench(player.getHeldItem(hand)))
-			return true;
-		if (world.isRemote)
-			player.openGui(EnergyControl.instance, BlockDamages.DAMAGE_HOWLER_ALARM, world, pos.getX(), pos.getY(), pos.getZ());
-		return true;
+	protected int getBlockGuiId() {
+		return BlockDamages.DAMAGE_HOWLER_ALARM;
 	}
 
 	@Override

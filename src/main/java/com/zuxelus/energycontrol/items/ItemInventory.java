@@ -108,8 +108,8 @@ public abstract class ItemInventory implements IInventory, ISlotItemFilter {
 	@Override
 	public void setInventorySlotContents(int index, ItemStack stack) {
 		inventory.set(index, stack);
-		if (!stack.isEmpty() && stack.getCount() > this.getInventoryStackLimit())
-			stack.setCount(this.getInventoryStackLimit());
+		if (!stack.isEmpty() && stack.getCount() > getInventoryStackLimit())
+			stack.setCount(getInventoryStackLimit());
 		markDirty();
 	}
 

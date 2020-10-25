@@ -47,7 +47,7 @@ public abstract class ItemNanoBow extends ItemBow /* , IItemUpgradeable */ {
 
 		NBTTagCompound nbt = ItemStackHelper.getOrCreateNbtData(stack);
 		int mode = nbt.getInteger("bowMode");
-		
+
 		EntityPlayer player = (EntityPlayer) entity;
 		int charge = getMaxItemUseDuration(stack) - timeLeft;
 		charge = ForgeEventFactory.onArrowLoose(stack, world, player, charge, true);
@@ -231,7 +231,7 @@ public abstract class ItemNanoBow extends ItemBow /* , IItemUpgradeable */ {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public EnumRarity getRarity(ItemStack itemstack) {
+	public EnumRarity getRarity(ItemStack stack) {
 		return EnumRarity.UNCOMMON;
 	}
 

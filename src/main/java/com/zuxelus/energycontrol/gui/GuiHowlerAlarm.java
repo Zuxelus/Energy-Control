@@ -35,7 +35,7 @@ public class GuiHowlerAlarm extends GuiBase {
 
 		List<String> items = new ArrayList<String>(EnergyControl.instance.availableAlarms);
 		items.retainAll(EnergyControl.instance.serverAllowedAlarms);
-		
+
 		listBox = new GuiHowlerAlarmListBox(4, guiLeft + 13, guiTop + 63, 105, 65, items, alarm);
 		addButton(slider);
 		addButton(listBox);

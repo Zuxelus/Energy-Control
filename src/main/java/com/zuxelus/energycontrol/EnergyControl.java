@@ -1,12 +1,13 @@
 package com.zuxelus.energycontrol;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
 
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.network.ChannelHandler;
 import com.zuxelus.energycontrol.recipes.RecipesNew;
 import com.zuxelus.energycontrol.tileentities.ScreenManager;
@@ -18,6 +19,7 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -39,6 +41,7 @@ public class EnergyControl {
 	// For logging purposes
 	public static Logger logger;
 	public static ConfigHandler config;
+	public static Map<String, OreHelper> oreHelper;
 	
 	public ScreenManager screenManager = new ScreenManager();
 	
@@ -54,12 +57,13 @@ public class EnergyControl {
 		// Loads configuration
 		proxy.loadConfig(event);
 		proxy.importSound(event.getModConfigurationDirectory());
+		proxy.registerModelLoader();
 
 		// registers channel handler
 		ChannelHandler.init();
 
 		CrossModLoader.preinit();
-		ItemHelper.registerTileEntities();
+		ModItems.registerTileEntities();
 	}
 
 	@EventHandler
@@ -77,5 +81,10 @@ public class EnergyControl {
 	public static void postInit(FMLPostInitializationEvent event) {
 		RecipesNew.addRecipes();
 		CrossModLoader.postinit();
+	}
+
+	@EventHandler
+	public void onServerStarting(FMLServerStartingEvent event) {
+		OreHelper.initList(event.getServer().worlds);
 	}
 }

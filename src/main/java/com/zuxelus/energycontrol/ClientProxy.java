@@ -9,6 +9,7 @@ import com.zuxelus.energycontrol.gui.*;
 import com.zuxelus.energycontrol.items.cards.ItemCardHolder;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.kits.ItemKitMain;
+import com.zuxelus.energycontrol.models.CustomModelLoader;
 import com.zuxelus.energycontrol.renderers.*;
 import com.zuxelus.energycontrol.tileentities.*;
 import com.zuxelus.energycontrol.utils.SoundHelper;
@@ -20,6 +21,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Loader;
@@ -104,6 +106,14 @@ public class ClientProxy extends ServerProxy {
 			if (te instanceof TileEntityAFSU)
 				return new GuiAFSU(new ContainerAFSU(player, (TileEntityAFSU) te));
 			break;
+		case BlockDamages.DAMAGE_SEED_ANALYZER:
+			if (te instanceof TileEntitySeedAnalyzer)
+				return new GuiSeedAnalyzer(new ContainerSeedAnalyzer(player, (TileEntitySeedAnalyzer) te));
+			break;
+		case BlockDamages.DAMAGE_SEED_LIBRARY:
+			if (te instanceof TileEntitySeedLibrary)
+				return new GuiSeedLibrary(new ContainerSeedLibrary(player, (TileEntitySeedLibrary) te));
+			break;
 		}
 		return null;
 	}
@@ -113,5 +123,9 @@ public class ClientProxy extends ServerProxy {
 		SoundHelper.initSound(configFolder);
 		((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(new SoundHelper.SoundLoader());
 		SoundHelper.importSound();
+	}
+
+	public void registerModelLoader() {
+		ModelLoaderRegistry.registerLoader(new CustomModelLoader());
 	}
 }

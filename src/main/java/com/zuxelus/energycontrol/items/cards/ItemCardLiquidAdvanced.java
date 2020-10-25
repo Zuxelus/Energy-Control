@@ -27,7 +27,7 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 	@Override
 	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
 		BlockPos target = reader.getTarget();
-		if (target == null) 
+		if (target == null)
 			return CardState.NO_TARGET;
 
 		List<IFluidTank> tanks = LiquidCardHelper.getAllTanks(world, target);

@@ -103,7 +103,7 @@ public class GuiKitAssembler extends GuiContainer {
 		int left = (width - xSize) / 2;
 		int top = (height - ySize) / 2;
 		drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
-		
+
 		int energyHeight = container.te.getEnergyFactor();
 		if (energyHeight > 0)
 			drawTexturedModalRect(left + 9, top + 62 + (14 - energyHeight), 176, 14 - energyHeight, 14, energyHeight);

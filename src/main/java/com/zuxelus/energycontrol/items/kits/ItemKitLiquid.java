@@ -1,7 +1,7 @@
 package com.zuxelus.energycontrol.items.kits;
 
 import com.zuxelus.energycontrol.crossmod.LiquidCardHelper;
-import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
 import net.minecraft.item.ItemStack;
@@ -24,6 +24,6 @@ public class ItemKitLiquid extends ItemKitSimple {
 
 	@Override
 	protected ItemStack getItemCard() {
-		return new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_LIQUID);
+		return new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_LIQUID);
 	}
 }

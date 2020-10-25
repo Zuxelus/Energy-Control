@@ -12,8 +12,9 @@ import com.zuxelus.energycontrol.api.IItemCard;
 import com.zuxelus.energycontrol.api.ITouchAction;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
-import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
+import com.zuxelus.energycontrol.items.kits.ItemKitNuclearCraft;
 
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.I18n;
@@ -71,6 +72,8 @@ public final class ItemCardMain extends Item {
 			register(new ItemCardGalacticraft());
 		if (Loader.isModLoaded("bigreactors"))
 			register(new ItemCardBigReactors());
+		if (Loader.isModLoaded("nuclearcraft"))
+			register(new ItemCardNuclearCraft());
 	}
 
 	private static void register(IItemCard item) {
@@ -243,7 +246,7 @@ public final class ItemCardMain extends Item {
 		for (Map.Entry<Integer, IItemCard> entry : cards.entrySet()) {
 			Integer key = entry.getKey();
 			if (key <= ItemCardType.CARD_MAX)
-				ItemHelper.registerItemModel(ItemHelper.itemCard, key, cards.get(key).getName());
+				ModItems.registerItemModel(ModItems.itemCard, key, cards.get(key).getName());
 		}
 	}
 
@@ -251,7 +254,7 @@ public final class ItemCardMain extends Item {
 		for (Map.Entry<Integer, IItemCard> entry : cards.entrySet()) {
 			Integer key = entry.getKey();
 			if (key > ItemCardType.CARD_MAX)
-				ItemHelper.registerExternalItemModel(ItemHelper.itemCard, key, cards.get(key).getName());
+				ModItems.registerExternalItemModel(ModItems.itemCard, key, cards.get(key).getName());
 		}
 	}
 }

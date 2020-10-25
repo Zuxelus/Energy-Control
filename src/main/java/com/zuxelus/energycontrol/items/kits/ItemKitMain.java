@@ -6,7 +6,7 @@ import java.util.Map;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.IItemKit;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
 import net.minecraft.creativetab.CreativeTabs;
@@ -51,6 +51,8 @@ public class ItemKitMain extends Item {
 			register(new ItemKitGalacticraft());
 		if (Loader.isModLoaded("bigreactors"))
 			register(new ItemKitBigReactors());
+		if (Loader.isModLoaded("nuclearcraft"))
+			register(new ItemKitNuclearCraft());
 	}
 
 	private void register(ItemKitBase item) {
@@ -113,7 +115,7 @@ public class ItemKitMain extends Item {
 		ItemStack stack = player.getHeldItem(hand);
 		if (stack.isEmpty() || stack.getCount() != 1)
 			return EnumActionResult.PASS;
-		ItemStack sensorLocationCard = getItemKitBase(stack.getItemDamage()).getSensorCard(stack, ItemHelper.itemCard, player, world, pos);
+		ItemStack sensorLocationCard = getItemKitBase(stack.getItemDamage()).getSensorCard(stack, ModItems.itemCard, player, world, pos);
 		if (sensorLocationCard.isEmpty())
 			return EnumActionResult.PASS;
 		
@@ -131,7 +133,7 @@ public class ItemKitMain extends Item {
 		for (Map.Entry<Integer, IItemKit> entry : kits.entrySet()) {
 			Integer key = entry.getKey();
 			if (key <= ItemCardType.KIT_MAX)
-				ItemHelper.registerItemModel(ItemHelper.itemKit, key, kits.get(key).getName());
+				ModItems.registerItemModel(ModItems.itemKit, key, kits.get(key).getName());
 		}
 	}
 
@@ -139,7 +141,7 @@ public class ItemKitMain extends Item {
 		for (Map.Entry<Integer, IItemKit> entry : kits.entrySet()) {
 			Integer key = entry.getKey();
 			if (key > ItemCardType.KIT_MAX)
-				ItemHelper.registerExternalItemModel(ItemHelper.itemKit, key, kits.get(key).getName());
+				ModItems.registerExternalItemModel(ModItems.itemKit, key, kits.get(key).getName());
 		}
 	}
 }

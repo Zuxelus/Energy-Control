@@ -74,29 +74,4 @@ public class GuiPortablePanel extends GuiContainer {
 			}
 		}
 	}
-
-	private List<PanelString> getRemoteCustomMSG() {
-		List<PanelString> result = new LinkedList<PanelString>();
-		PanelString line = new PanelString();
-		line.textCenter = I18n.format("nc.msg.notValid");
-		result.add(line);
-		line = new PanelString();
-		line.textCenter = I18n.format("nc.msg.notValid2");
-		result.add(line);
-		line = new PanelString();
-		line.textCenter = "";
-		result.add(line);
-		line = new PanelString();
-		line.textCenter = I18n.format("nc.msg.notValid3");
-		result.add(line);
-		return result;
-	}
-
-	@Override
-	public void updateScreen() {
-		super.updateScreen();
-
-		if (mc.player.getHeldItemMainhand().isEmpty())
-			mc.player.closeScreen();
-	}
 }

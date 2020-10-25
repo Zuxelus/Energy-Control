@@ -9,7 +9,7 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEve
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ConfigHandler {
-	public Configuration configuration;
+	public Configuration config;
 
 	public int howlerAlarmRange;
 	public int maxAlarmRange;
@@ -21,38 +21,32 @@ public class ConfigHandler {
 	public boolean useCustomSounds;
 
 	public void init(File configFile) {
-		if (configuration == null)
-			configuration = new Configuration(configFile);
-		
-		loadConfiguration();
+		if (config == null)
+			config = new Configuration(configFile);
+		loadConfig();
 	}
 
-	private void loadConfiguration() {
+	private void loadConfig() {
 		try {
-			howlerAlarmRange = configuration.getInt("howlerAlarmRange", Configuration.CATEGORY_GENERAL, 64, 0, 256, "", "ec.config.howlerAlarmRange");
-			maxAlarmRange = configuration.getInt("maxAlarmRange", Configuration.CATEGORY_GENERAL, 128, 0, 256, "", "ec.config.maxAlarmRange");
-			allowedAlarms = configuration.getString("allowedAlarms", Configuration.CATEGORY_GENERAL, "default,sci-fi,siren", "", "ec.config.allowedAlarms").replaceAll(" ", "");
-			remoteThermalMonitorEnergyConsumption = configuration.getInt("remoteThermalMonitorEnergyConsumption", Configuration.CATEGORY_GENERAL, 1, 0, 1000, "", "ec.config.remoteThermalMonitorEnergyConsumption");
-			infoPanelRefreshPeriod = configuration.getInt("infoPanelRefreshPeriod", Configuration.CATEGORY_GENERAL, 20, 0, 2000, "", "ec.config.screenRefreshPeriod");
-			rangeTriggerRefreshPeriod = configuration.getInt("rangeTriggerRefreshPeriod", Configuration.CATEGORY_GENERAL, 20, 0, 2000, "", "ec.config.rangeTriggerRefreshPeriod");
-			SMPMaxAlarmRange = configuration.getInt("SMPMaxAlarmRange", Configuration.CATEGORY_GENERAL, 256, 0, 512, "", "ec.config.SMPMaxAlarmRange");
-			useCustomSounds = configuration.getBoolean("useCustomSounds", Configuration.CATEGORY_GENERAL, false, "", "ec.config.useCustomSounds");
+			howlerAlarmRange = config.getInt("howlerAlarmRange", Configuration.CATEGORY_GENERAL, 64, 0, 256, "", "ec.config.howlerAlarmRange");
+			maxAlarmRange = config.getInt("maxAlarmRange", Configuration.CATEGORY_GENERAL, 128, 0, 256, "", "ec.config.maxAlarmRange");
+			allowedAlarms = config.getString("allowedAlarms", Configuration.CATEGORY_GENERAL, "default,sci-fi,siren", "", "ec.config.allowedAlarms").replaceAll(" ", "");
+			remoteThermalMonitorEnergyConsumption = config.getInt("remoteThermalMonitorEnergyConsumption", Configuration.CATEGORY_GENERAL, 1, 0, 1000, "", "ec.config.remoteThermalMonitorEnergyConsumption");
+			infoPanelRefreshPeriod = config.getInt("infoPanelRefreshPeriod", Configuration.CATEGORY_GENERAL, 20, 0, 2000, "", "ec.config.screenRefreshPeriod");
+			rangeTriggerRefreshPeriod = config.getInt("rangeTriggerRefreshPeriod", Configuration.CATEGORY_GENERAL, 20, 0, 2000, "", "ec.config.rangeTriggerRefreshPeriod");
+			SMPMaxAlarmRange = config.getInt("SMPMaxAlarmRange", Configuration.CATEGORY_GENERAL, 256, 0, 512, "", "ec.config.SMPMaxAlarmRange");
+			useCustomSounds = config.getBoolean("useCustomSounds", Configuration.CATEGORY_GENERAL, false, "", "ec.config.useCustomSounds");
 		} catch (Exception e) {
 			EnergyControl.logger.error("Mod has a problem loading it's configuration", e);
 		} finally {
-			if (configuration.hasChanged())
-				configuration.save();
+			if (config.hasChanged())
+				config.save();
 		}
-	}
-
-	public void save() {
-		if (configuration.hasChanged())
-			configuration.save();
 	}
 
 	@SubscribeEvent
 	public void onConfigurationChangedEvent(OnConfigChangedEvent event) {
 		if (event.getModID().equals(EnergyControl.MODID))
-			loadConfiguration();
+			loadConfig();
 	}
 }

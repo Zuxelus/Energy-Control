@@ -629,7 +629,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 
 	public void renderImage(TextureManager manager) {
 		ItemStack stack = getStackInSlot(SLOT_CARD);
-		if (!stack.isEmpty() && stack.getItemDamage() == ItemCardType.CARD_TOGGLE)
+		if (isTouchCard())
 			ItemCardMain.renderImage(manager, stack);
 	}
 }

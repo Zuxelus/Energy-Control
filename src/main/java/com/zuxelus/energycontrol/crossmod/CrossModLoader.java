@@ -19,6 +19,7 @@ public class CrossModLoader {
 	public static CrossAppEng appEng;
 	public static CrossGalacticraft galacticraft;
 	public static CrossBigReactors bigReactors;
+	public static CrossNuclearCraft nuclearCraft;
 
 	public static void preinit() {
 		ic2 = CrossIC2.getMod();
@@ -27,6 +28,7 @@ public class CrossModLoader {
 		appEng = new CrossAppEng();
 		galacticraft = new CrossGalacticraft();
 		bigReactors = CrossBigReactors.getMod();
+		nuclearCraft = new CrossNuclearCraft();
 	}
 
 	public static void init() {

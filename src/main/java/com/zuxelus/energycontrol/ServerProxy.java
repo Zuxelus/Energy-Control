@@ -5,6 +5,8 @@ import java.io.File;
 import com.zuxelus.energycontrol.blocks.BlockDamages;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.containers.*;
+import com.zuxelus.energycontrol.gui.GuiSeedAnalyzer;
+import com.zuxelus.energycontrol.gui.GuiSeedLibrary;
 import com.zuxelus.energycontrol.items.cards.ItemCardHolder;
 import com.zuxelus.energycontrol.tileentities.*;
 
@@ -51,9 +53,15 @@ public class ServerProxy implements IGuiHandler {
 			return new ContainerKitAssembler(player, (TileEntityKitAssembler) te);
 		case BlockDamages.DAMAGE_AFSU:
 			return new ContainerAFSU(player, (TileEntityAFSU) te);
-		default:
-			return null;
+		case BlockDamages.DAMAGE_SEED_ANALYZER:
+			if (te instanceof TileEntitySeedAnalyzer)
+				return new ContainerSeedAnalyzer(player, (TileEntitySeedAnalyzer) te);
+		case BlockDamages.DAMAGE_SEED_LIBRARY:
+			if (te instanceof TileEntitySeedLibrary)
+				return new ContainerSeedLibrary(player, (TileEntitySeedLibrary) te);
+			break;
 		}
+		return null;
 	}
 
 	@Override
@@ -66,4 +74,6 @@ public class ServerProxy implements IGuiHandler {
 	}
 
 	public void importSound(File configFolder) { }
+
+	public void registerModelLoader() { }
 }

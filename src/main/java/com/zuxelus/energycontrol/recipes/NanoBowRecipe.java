@@ -1,7 +1,7 @@
 package com.zuxelus.energycontrol.recipes;
 
 import com.zuxelus.energycontrol.api.ItemStackHelper;
-import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.init.ModItems;
 
 import ic2.api.item.IC2Items;
 import net.minecraft.inventory.InventoryCrafting;
@@ -14,7 +14,7 @@ import net.minecraft.util.NonNullList;
 public class NanoBowRecipe extends ShapedRecipes {
 
 	public NanoBowRecipe() {
-		super("", 3, 3, NonNullList.withSize(9, Ingredient.EMPTY), new ItemStack(ItemHelper.itemNanoBow));
+		super("", 3, 3, NonNullList.withSize(9, Ingredient.EMPTY), new ItemStack(ModItems.itemNanoBow));
 		recipeItems.set(1, Ingredient.fromStacks(IC2Items.getItem("crafting", "carbon_plate")));
 		recipeItems.set(2, Ingredient.fromStacks(IC2Items.getItem("cable", "type:glass,insulation:0")));
 		ItemStack stack = new ItemStack(IC2Items.getItem("energy_crystal").getItem(), 1, Short.MAX_VALUE);
@@ -33,8 +33,8 @@ public class NanoBowRecipe extends ShapedRecipes {
 			return ItemStack.EMPTY;
 		NBTTagCompound tag = stack.getTagCompound();
 		if (tag == null || !tag.hasKey("charge"))
-			return new ItemStack(ItemHelper.itemNanoBow);
+			return new ItemStack(ModItems.itemNanoBow);
 		double energy = tag.getDouble("charge");
-		return ItemStackHelper.getStackWithEnergy(ItemHelper.itemNanoBow, "charge", Math.min(energy, 40000.0D));
+		return ItemStackHelper.getStackWithEnergy(ModItems.itemNanoBow, "charge", Math.min(energy, 40000.0D));
 	}
 }

@@ -4,11 +4,13 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.OreHelper;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.ItemAFB;
-import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.utils.ReactorHelper;
@@ -30,14 +32,20 @@ import ic2.core.block.heatgenerator.tileentity.TileEntityElectricHeatGenerator;
 import ic2.core.block.kineticgenerator.tileentity.*;
 import ic2.core.block.machine.tileentity.TileEntityLiquidHeatExchanger;
 import ic2.core.block.reactor.tileentity.*;
+import ic2.core.block.type.ResourceBlock;
+import ic2.core.init.MainConfig;
 import ic2.core.item.reactor.ItemReactorLithiumCell;
 import ic2.core.item.reactor.ItemReactorMOX;
 import ic2.core.item.reactor.ItemReactorUranium;
 import ic2.core.item.tool.ItemToolWrench;
 import ic2.core.profile.ProfileManager;
 import ic2.core.profile.Version;
+import ic2.core.ref.BlockName;
+import ic2.core.util.Config;
+import ic2.core.util.ConfigUtil;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -101,6 +109,8 @@ public class IC2Exp extends CrossIC2 {
 		switch (name) {
 		case "afb":
 			return new ItemAFB();
+		case "seed":
+			return IC2Items.getItem("crop_seed_bag").getItem();
 		default:
 			return null;
 		}
@@ -126,7 +136,7 @@ public class IC2Exp extends CrossIC2 {
 	public ItemStack getEnergyCard(World world, BlockPos pos) {
 		TileEntity te = world.getTileEntity(pos);
 		if (te instanceof IEnergyStorage) {
-			ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_ENERGY);
+			ItemStack sensorLocationCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_ENERGY);
 			ItemStackHelper.setCoordinates(sensorLocationCard, pos);
 			return sensorLocationCard;
 		}
@@ -154,19 +164,19 @@ public class IC2Exp extends CrossIC2 {
 
 		TileEntity te = world.getTileEntity(pos);
 		if (te instanceof TileEntityBaseGenerator || te instanceof TileEntityConversionGenerator) {
-			ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_GENERATOR);
+			ItemStack sensorLocationCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_GENERATOR);
 			ItemStackHelper.setCoordinates(sensorLocationCard, pos);
 			return sensorLocationCard;
 		}
 		if (te instanceof TileEntityElectricKineticGenerator || te instanceof TileEntityManualKineticGenerator
 				|| te instanceof TileEntitySteamKineticGenerator || te instanceof TileEntityStirlingKineticGenerator
 				|| te instanceof TileEntityWaterKineticGenerator || te instanceof TileEntityWindKineticGenerator) {
-			ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_GENERATOR_KINETIC);
+			ItemStack sensorLocationCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_GENERATOR_KINETIC);
 			ItemStackHelper.setCoordinates(sensorLocationCard, pos);
 			return sensorLocationCard;
 		}
 		if (te instanceof TileEntityHeatSourceInventory) {
-			ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_GENERATOR_HEAT);
+			ItemStack sensorLocationCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_GENERATOR_HEAT);
 			ItemStackHelper.setCoordinates(sensorLocationCard, pos);
 			return sensorLocationCard;
 		}
@@ -248,10 +258,7 @@ public class IC2Exp extends CrossIC2 {
 					tag.setDouble("multiplier", (Double) field.get(te));
 				}
 				if (te instanceof TileEntityKineticGenerator) {
-					tag.setInteger("type", 3);
-					Energy energy = ((TileEntityKineticGenerator) te).getComponent(Energy.class);
-					tag.setDouble("storage", energy.getEnergy());
-					tag.setDouble("maxStorage", energy.getCapacity());
+					tag.setInteger("type", 2);
 					Field field = TileEntityKineticGenerator.class.getDeclaredField("euPerKu");
 					field.setAccessible(true);
 					tag.setDouble("multiplier", (Double) field.get(te));
@@ -277,7 +284,7 @@ public class IC2Exp extends CrossIC2 {
 			Boolean active = ((TileEntityBlock) te).getActive();
 			if (te instanceof TileEntityWindKineticGenerator) {
 				TileEntityWindKineticGenerator entity = ((TileEntityWindKineticGenerator) te);
-				tag.setInteger("type", 2);
+				tag.setInteger("type", 5);
 				tag.setDouble("output", entity.getKuOutput());
 				Field field = TileEntityWindKineticGenerator.class.getDeclaredField("windStrength");
 				field.setAccessible(true);
@@ -292,7 +299,7 @@ public class IC2Exp extends CrossIC2 {
 			}
 			if (te instanceof TileEntityWaterKineticGenerator) {
 				TileEntityWaterKineticGenerator entity = ((TileEntityWaterKineticGenerator) te);
-				tag.setInteger("type", 2);
+				tag.setInteger("type", 6);
 				tag.setDouble("output", entity.getKuOutput());
 				Field field = TileEntityWaterKineticGenerator.class.getDeclaredField("waterFlow");
 				field.setAccessible(true);
@@ -390,7 +397,7 @@ public class IC2Exp extends CrossIC2 {
 		if (te instanceof TileEntityNuclearReactorElectric || te instanceof TileEntityReactorChamberElectric) {
 			BlockPos position = ReactorHelper.getTargetCoordinates(world, pos);
 			if (position != null) {
-				ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_REACTOR);
+				ItemStack sensorLocationCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_REACTOR);
 				ItemStackHelper.setCoordinates(sensorLocationCard, position);
 				return sensorLocationCard;
 			}
@@ -398,7 +405,7 @@ public class IC2Exp extends CrossIC2 {
 				|| te instanceof TileEntityReactorAccessHatch) {
 			BlockPos position = ReactorHelper.get5x5TargetCoordinates(world, pos);
 			if (position != null) {
-				ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_REACTOR5X5);
+				ItemStack sensorLocationCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_REACTOR5X5);
 				ItemStackHelper.setCoordinates(sensorLocationCard, position);
 				return sensorLocationCard;
 			}
@@ -417,7 +424,7 @@ public class IC2Exp extends CrossIC2 {
 				|| te instanceof TileEntityReactorAccessHatch) {
 			BlockPos position = ReactorHelper.get5x5TargetCoordinates(world, pos);
 			if (position != null) {
-				ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_LIQUID_ADVANCED);
+				ItemStack sensorLocationCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_LIQUID_ADVANCED);
 				ItemStackHelper.setCoordinates(sensorLocationCard, position);
 				return sensorLocationCard;
 			}
@@ -476,6 +483,20 @@ public class IC2Exp extends CrossIC2 {
 		int timeLeft = dmgLeft * reactor.getTickRate() / 20;
 		reader.setInt("timeLeft", timeLeft);
 		return CardState.OK;
+	}
+
+	@Override
+	public void loadOreInfo() {
+		Config config = MainConfig.get().getSub("worldgen");
+		loadOre(BlockName.resource.getBlockState(ResourceBlock.copper_ore).getBlock(), 1,config.getSub("copper"));
+		loadOre(BlockName.resource.getBlockState(ResourceBlock.lead_ore).getBlock(), 2,config.getSub("lead"));
+		loadOre(BlockName.resource.getBlockState(ResourceBlock.tin_ore).getBlock(), 3,config.getSub("tin"));
+		loadOre(BlockName.resource.getBlockState(ResourceBlock.uranium_ore).getBlock(), 4,config.getSub("uranium"));
+	}
+
+	private void loadOre(Block block, int meta, Config config) {
+		EnergyControl.oreHelper.put(OreHelper.getId(block, meta),
+			new OreHelper(ConfigUtil.getInt(config, "minHeight"), ConfigUtil.getInt(config, "maxHeight"), ConfigUtil.getInt(config, "size"), ConfigUtil.getInt(config, "count")));
 	}
 
 	@Override

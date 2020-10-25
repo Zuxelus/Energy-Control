@@ -113,5 +113,8 @@ public class IC2NoMod extends CrossIC2 {
 	}
 
 	@Override
+	public void loadOreInfo() { }
+
+	@Override
 	public void showBarrelInfo(EntityPlayer player, TileEntity te) { }
 }
