@@ -5,16 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.api.CardState;
-import com.zuxelus.energycontrol.api.ICardGui;
-import com.zuxelus.energycontrol.api.ICardReader;
-import com.zuxelus.energycontrol.api.IItemCard;
-import com.zuxelus.energycontrol.api.ITouchAction;
-import com.zuxelus.energycontrol.api.PanelSetting;
-import com.zuxelus.energycontrol.api.PanelString;
+import com.zuxelus.energycontrol.api.*;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
-import com.zuxelus.energycontrol.items.kits.ItemKitNuclearCraft;
 
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.I18n;
@@ -60,6 +53,9 @@ public final class ItemCardMain extends Item {
 		register(new ItemCardLiquidArray());
 		register(new ItemCardGeneratorArray());
 		register(new ItemCardToggle());
+		register(new ItemCardVanilla());
+		register(new ItemCardInventory());
+		register(new ItemCardRedstone());
 		if (Loader.isModLoaded("buildcraftcore"))
 			register(new ItemCardEngine());
 		if (Loader.isModLoaded("draconicevolution")) {

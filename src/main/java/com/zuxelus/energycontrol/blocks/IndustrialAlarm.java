@@ -14,9 +14,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class IndustrialAlarm extends HowlerAlarm {
-	public IndustrialAlarm() {
-		super();
-	}
 
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta) {
@@ -34,11 +31,7 @@ public class IndustrialAlarm extends HowlerAlarm {
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		if (CrossModLoader.ic2.isWrench(player.getHeldItem(hand)))
-			return true;
-		if (world.isRemote)
-			player.openGui(EnergyControl.instance, BlockDamages.DAMAGE_INDUSTRIAL_ALARM, world, pos.getX(), pos.getY(), pos.getZ());
-		return true;
+	protected int getBlockGuiId() {
+		return BlockDamages.DAMAGE_INDUSTRIAL_ALARM;
 	}
 }

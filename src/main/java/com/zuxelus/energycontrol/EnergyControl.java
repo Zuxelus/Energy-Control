@@ -57,7 +57,7 @@ public class EnergyControl {
 		// Loads configuration
 		proxy.loadConfig(event);
 		proxy.importSound(event.getModConfigurationDirectory());
-		proxy.registerModelLoader();
+		//proxy.registerModelLoader();
 
 		// registers channel handler
 		ChannelHandler.init();

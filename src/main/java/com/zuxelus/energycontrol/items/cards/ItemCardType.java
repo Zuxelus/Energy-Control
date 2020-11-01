@@ -8,6 +8,9 @@ public class ItemCardType {
 	public static final int KIT_GENERATOR = 4;
 	public static final int KIT_REACTOR = 5;
 	public static final int KIT_TOGGLE = 6;
+	public static final int KIT_VANILLA = 7;
+	public static final int KIT_INVENTORY = 8;
+	public static final int KIT_REDSTONE = 9;
 
 	public static final int KIT_APPENG = 10;
 	public static final int KIT_BIG_REACTORS = 11;
@@ -32,6 +35,9 @@ public class ItemCardType {
 	public static final int CARD_LIQUID_ARRAY = 11;
 	public static final int CARD_GENERATOR_ARRAY = 12;
 	public static final int CARD_TOGGLE = 13;
+	public static final int CARD_VANILLA = 14;
+	public static final int CARD_INVENTORY = 15;
+	public static final int CARD_REDSTONE = 16;
 
 	public static final int CARD_TEXT = 18;
 	public static final int CARD_TIME = 19;

@@ -43,6 +43,9 @@ public class ItemKitMain extends Item {
 			register(new ItemKitReactor());
 		register(new ItemKitLiquidAdvanced());
 		register(new ItemKitToggle());
+		register(new ItemKitVanilla());
+		register(new ItemKitInventory());
+		register(new ItemKitRedstone());
 		if (Loader.isModLoaded("draconicevolution"))
 			register(new ItemKitDraconic());
 		if (Loader.isModLoaded("appliedenergistics2"))

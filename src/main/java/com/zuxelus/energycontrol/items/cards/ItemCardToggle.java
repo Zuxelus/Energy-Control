@@ -30,8 +30,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 	private static final PropertyBool POWERED = PropertyBool.create("powered");
-	private static final ResourceLocation TEXTURE = new ResourceLocation(
-			EnergyControl.MODID + ":textures/blocks/remote_thermo/all.png");
 
 	public ItemCardToggle() {
 		super(ItemCardType.CARD_TOGGLE, "card_toggle");
@@ -129,15 +127,5 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 		bufferbuilder.pos(x + width, y + 0, z).tex((double)((float)(textureX + width)), (double)((float)(textureY + 0))).endVertex();
 		bufferbuilder.pos(x + 0, y + 0, z).tex((double)((float)(textureX + 0)), (double)((float)(textureY + 0))).endVertex();
 		tessellator.draw();
-		
-		
-		/*Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferbuilder = tessellator.getBuffer();
-		bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-		bufferbuilder.pos(0, 0, 0).tex(1,0).endVertex();
-		bufferbuilder.pos(1, 0, 0).tex(1,0).endVertex();
-		bufferbuilder.pos(1, 0, 0).tex(1,1).endVertex();
-		bufferbuilder.pos(0, 0, 0).tex(rate * 0.25,0.1875).endVertex();
-		tessellator.draw();*/
 	}
 }

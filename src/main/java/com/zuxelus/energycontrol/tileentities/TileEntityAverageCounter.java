@@ -213,8 +213,8 @@ public class TileEntityAverageCounter extends TileEntityEnergyStorage implements
 	}
 
 	@Override
-	public boolean isItemValid(int slotIndex, ItemStack itemstack) { // ISlotItemFilter
-		return itemstack.isItemEqual(CrossModLoader.ic2.getItemStack("transformer"));
+	public boolean isItemValid(int slotIndex, ItemStack stack) { // ISlotItemFilter
+		return stack.isItemEqual(CrossModLoader.ic2.getItemStack("transformer"));
 	}
 
 	private void notifyBlockUpdate() {

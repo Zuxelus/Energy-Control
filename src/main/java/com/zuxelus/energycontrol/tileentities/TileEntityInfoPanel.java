@@ -65,8 +65,8 @@ public class TileEntityInfoPanel extends TileEntityInventory
 		cardData = new HashMap<Integer, List<PanelString>>();
 		displaySettings = new HashMap<Integer, Map<Integer, Integer>>(1);
 		displaySettings.put(0, new HashMap<Integer, Integer>());
-		tickRate = EnergyControl.config.infoPanelRefreshPeriod - 1;
-		updateTicker = tickRate;
+		tickRate = EnergyControl.config.infoPanelRefreshPeriod;
+		updateTicker = tickRate - 1;
 		dataTicker = 4;
 		showLabels = true;
 		colorBackground = 2;
@@ -108,6 +108,16 @@ public class TileEntityInfoPanel extends TileEntityInventory
 		if (!world.isRemote && showLabels != newShowLabels)
 			notifyBlockUpdate();
 		showLabels = newShowLabels;
+	}
+
+	public int getTickRate() {
+		return tickRate;
+	}
+
+	public void setTickRate(int newValue) {
+		if (!world.isRemote && tickRate != newValue)
+			notifyBlockUpdate();
+		tickRate = newValue;
 	}
 
 	public boolean getColored() {
@@ -199,6 +209,10 @@ public class TileEntityInfoPanel extends TileEntityInventory
 					resetCardData();
 				}
 			}
+		case 5:
+			if (tag.hasKey("value"))
+				setTickRate(tag.getInteger("value"));
+			break;
 		}
 	}
 
@@ -250,6 +264,8 @@ public class TileEntityInfoPanel extends TileEntityInventory
 	@Override
 	protected void readProperties(NBTTagCompound tag) {
 		super.readProperties(tag);
+		if (tag.hasKey("tickRate"))
+			tickRate = tag.getInteger("tickRate");
 		if (tag.hasKey("showLabels"))
 			showLabels = tag.getBoolean("showLabels");
 
@@ -302,6 +318,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 	@Override
 	protected NBTTagCompound writeProperties(NBTTagCompound tag) {
 		tag = super.writeProperties(tag);
+		tag.setInteger("tickRate",tickRate);
 		tag.setBoolean("showLabels", getShowLabels());
 		tag.setInteger("colorBackground", colorBackground);
 		tag.setInteger("colorText", colorText);
@@ -340,7 +357,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 		if (!world.isRemote) {
 			if (updateTicker-- > 0)
 				return;
-			updateTicker = tickRate;
+			updateTicker = tickRate - 1;
 			markDirty();
 		}
 	}
@@ -440,11 +457,13 @@ public class TileEntityInfoPanel extends TileEntityInventory
 	@Override
 	public void markDirty() {
 		super.markDirty();
-		if (!world.isRemote && powered) {
+		if (!world.isRemote) {
 			setColored(isColoredEval());
-			ItemStack itemStack = getStackInSlot(getSlotUpgradeRange());
-			for (ItemStack card : getCards())
-				processCard(card, getCardSlot(card), itemStack);
+			if (powered) {
+				ItemStack itemStack = getStackInSlot(getSlotUpgradeRange());
+				for (ItemStack card : getCards())
+					processCard(card, getCardSlot(card), itemStack);
+			}
 		}
 	}
 

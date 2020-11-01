@@ -230,6 +230,9 @@ public class TileEntitySeedAnalyzer extends TileEntityInventory implements ITick
 		if (level == 4) {
 			setInventorySlotContents(SLOT_OUT, getStackInSlot(SLOT_IN));
 			setInventorySlotContents(SLOT_IN, ItemStack.EMPTY);
+
+			IBlockState iblockstate = world.getBlockState(pos);
+			world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
 			return;
 		}
 		productionMax = COST_TO_UPGRADE[level];
@@ -271,7 +274,7 @@ public class TileEntitySeedAnalyzer extends TileEntityInventory implements ITick
 		case SLOT_IN:
 			return stack.getItem() == CrossModLoader.ic2.getItem("seed");
 		case SLOT_DISCHARGER:
-			return (stack.getItem() instanceof IElectricItem && ((IElectricItem) stack.getItem()).getTier(stack) <= TIER);
+			return stack.getItem() instanceof IElectricItem && ((IElectricItem) stack.getItem()).getTier(stack) <= TIER;
 		case SLOT_OUT:
 		default:
 			return false;
@@ -332,7 +335,7 @@ public class TileEntitySeedAnalyzer extends TileEntityInventory implements ITick
 			left = energy - CAPACITY;
 			energy = CAPACITY;
 		}
-		if (energy >= CONSUMPTION && old == 0 && !world.isRemote)
+		if (energy >= CONSUMPTION && old < CONSUMPTION && !world.isRemote)
 			updateState();
 		return left;
 	}

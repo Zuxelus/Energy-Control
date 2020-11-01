@@ -2,8 +2,14 @@ package com.zuxelus.energycontrol.utils;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.List;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class StringUtils {
 	private static DecimalFormat formatter = null;
@@ -31,5 +37,13 @@ public class StringUtils {
 
 	public static String getFormattedKey(String resourceName, Object... arguments) {
 		return I18n.format(resourceName, arguments);
+	}
+
+	@SideOnly(Side.CLIENT)
+	public static String getItemName(ItemStack stack) {
+		List<String> list = stack.getTooltip(Minecraft.getMinecraft().player, TooltipFlags.NORMAL);
+		if (list.size() == 0)
+			return stack.getItem().getUnlocalizedName();
+		return list.get(0);
 	}
 }

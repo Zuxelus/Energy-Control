@@ -16,6 +16,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -32,6 +33,8 @@ public class ItemNanoBowIC2 extends ItemNanoBow implements IElectricItem {
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
 		NBTTagCompound nbt = ItemStackHelper.getOrCreateNbtData(stack);
+		tooltip.add(TextFormatting.RED + "Will be removed from this mod!");
+		tooltip.add(TextFormatting.RED + "Use Combo Armors mod");
 		IElectricItem item = (IElectricItem) stack.getItem();
 		if (!nbt.hasKey("loaded")) {
 			if (nbt.getInteger("tier") == 0)

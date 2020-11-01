@@ -200,7 +200,8 @@ public class ItemCardReader implements ICardReader {
 		return (NBTTagCompound) nbtTagCompound.getTag(name);
 	}
 
-	public void clearField(String name) {
+	@Override
+	public void removeField(String name) {
 		NBTTagCompound nbtTagCompound = ItemStackHelper.getTagCompound(card);
 		nbtTagCompound.removeTag(name);
 	}

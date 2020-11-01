@@ -78,7 +78,10 @@ public class TEAdvancedInfoPanelExtenderRenderer extends TileEntitySpecialRender
 		int rotateHor = te.getRotateHor() / 7;
 		int rotateVert = te.getRotateVert() / 7; 
 		Screen screen = te.getScreen();
-		if (screen != null) {
+		if (screen == null) {
+			if (thickness == 16 && rotateHor == 0 && rotateVert == 0)
+				model[textureId].render(0.03125F);
+		} else {
 			if (thickness == 16 && rotateHor == 0 && rotateVert == 0)
 				model[textureId].render(0.03125F);
 			else {

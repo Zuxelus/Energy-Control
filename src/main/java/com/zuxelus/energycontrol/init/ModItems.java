@@ -84,7 +84,7 @@ public class ModItems {
 		blockKitAssembler = register(event, new KitAssembler(), "kit_assembler");
 		if (CrossModLoader.ic2.getProfile() == 0) {
 			blockAfsu = register(event, new AFSU(), "afsu");
-			blockIc2Cable = register(event, new IC2Cable(), "ic2_cable");
+			//blockIc2Cable = register(event, new IC2Cable(), "ic2_cable");
 		}
 		if (Loader.isModLoaded("ic2")) {
 			blockSeedAnalyzer = register(event, new SeedAnalyzer(), "seed_analyzer");
@@ -111,7 +111,7 @@ public class ModItems {
 		event.getRegistry().register(new ItemBlock(blockKitAssembler).setRegistryName("kit_assembler"));
 		if (CrossModLoader.ic2.getProfile() == 0) {
 			event.getRegistry().register(new ItemAFSU(blockAfsu).setRegistryName("afsu"));
-			event.getRegistry().register(new ItemBlock(blockIc2Cable).setRegistryName("ic2_cable"));
+			//event.getRegistry().register(new ItemBlock(blockIc2Cable).setRegistryName("ic2_cable"));
 		}
 		if (Loader.isModLoaded("ic2")) {
 			event.getRegistry().register(new ItemBlock(blockSeedAnalyzer).setRegistryName("seed_analyzer"));
@@ -188,8 +188,8 @@ public class ModItems {
 		if (CrossModLoader.ic2.getProfile() == 0) {
 			registerBlockModel(ModItems.blockAfsu, 0, "afsu");
 
-			((IC2Cable) blockIc2Cable).initModel();
-			registerBlockModel(ModItems.blockIc2Cable, 0, "ic2_cable");
+			/*((IC2Cable) blockIc2Cable).initModel();
+			registerBlockModel(ModItems.blockIc2Cable, 0, "ic2_cable");*/
 		}
 		registerBlockModel(blockSeedAnalyzer, 0, "seed_analyzer");
 		registerBlockModel(blockSeedLibrary, 0, "seed_library");

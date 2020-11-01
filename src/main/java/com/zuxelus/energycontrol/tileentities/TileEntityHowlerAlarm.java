@@ -10,7 +10,6 @@ import net.minecraft.util.ITickable;
 
 public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable, ITilePacketHandler {
 	private static final String DEFAULT_SOUND_NAME = "default";
-	private static final float BASE_SOUND_RANGE = 16F;
 	private static final String SOUND_PREFIX = "energycontrol:alarm-";
 
 	public int range;
@@ -63,16 +62,10 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 	}
 
 	public void updatePowered(boolean isPowered) {
-		if (world.isRemote) {
+		if (world.isRemote && isPowered != powered) {
 			powered = isPowered;
 			checkStatus();
 		}
-	}
-
-	private float getNormalizedRange() {
-		if (world.isRemote)
-			return Math.min(range, EnergyControl.config.SMPMaxAlarmRange) / BASE_SOUND_RANGE;
-		return range / BASE_SOUND_RANGE;
 	}
 
 	@Override
@@ -154,7 +147,7 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 	public void update() {
 		if (world.isRemote) {
 			if (updateTicker-- > 0)
-					return;
+				return;
 			updateTicker = tickRate;
 			checkStatus();
 		}
@@ -164,11 +157,10 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 		if (sound == null)
 			sound = new TileEntitySound();
 		if (powered && !sound.isPlaying())
-			sound.playAlarm(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, SOUND_PREFIX + soundName, getNormalizedRange(), true);
-		
+			sound.playAlarm(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, SOUND_PREFIX + soundName, range);
 		if (!powered && sound.isPlaying())
 			sound.stopAlarm();
-	}	
+	}
 
 	private void notifyBlockUpdate() {
 		IBlockState iblockstate = world.getBlockState(pos);

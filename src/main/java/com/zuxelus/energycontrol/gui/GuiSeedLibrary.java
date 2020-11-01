@@ -7,23 +7,19 @@ import java.util.List;
 import org.lwjgl.opengl.GL11;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.containers.ContainerKitAssembler;
 import com.zuxelus.energycontrol.containers.ContainerSeedLibrary;
-import com.zuxelus.energycontrol.gui.controls.ImageTooltipButton;
+import com.zuxelus.energycontrol.gui.controls.GuiButtonGeneral;
 import com.zuxelus.energycontrol.network.NetworkHelper;
-import com.zuxelus.energycontrol.tileentities.TileEntitySeedLibrary;
 import com.zuxelus.energycontrol.utils.SeedLibraryFilter;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiButtonImage;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class GuiSeedLibrary extends GuiContainer {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID + ":textures/gui/gui_seed_library.png");
 
@@ -57,7 +53,7 @@ public class GuiSeedLibrary extends GuiContainer {
 	public static final int BORDER = 4;
 	public int main_width, main_height, left, top, center, middle, right, bottom, sliders_x, sliders_y, sliders_spacing;
 	public int current_slider = -1, drag_start_x = 0, drag_start_value = 0;
-	public ImageTooltipButton unk_type_button, unk_ggr_button;
+	public GuiButtonGeneral unk_type_button, unk_ggr_button;
 
 	public GuiSeedLibrary(ContainerSeedLibrary container) {
 		super(container);
@@ -83,19 +79,19 @@ public class GuiSeedLibrary extends GuiContainer {
 	@Override
 	public void initGui() {
 		super.initGui();
-		ImageTooltipButton importButton = new ImageTooltipButton(0, guiLeft + 132, guiTop + 88, 18, 20, 176, 0, 21, TEXTURE);
-		// importButton.tooltip = "Import seeds";
+		GuiButtonGeneral importButton = new GuiButtonGeneral(0, guiLeft + 132, guiTop + 88, 18, 20, TEXTURE, 176, 0, 21);
+		importButton.tooltip = "Import seeds";
 		addButton(importButton);
 
-		ImageTooltipButton exportButton = new ImageTooltipButton(1, guiLeft + 151, guiTop + 88, 18, 20, 176, 42, 21, TEXTURE);
-		// exportButton.tooltip = "Export seeds";
+		GuiButtonGeneral exportButton = new GuiButtonGeneral(1, guiLeft + 151, guiTop + 88, 18, 20, TEXTURE, 176, 42, 21);
+		exportButton.tooltip = "Export seeds";
 		addButton(exportButton);
 
-		unk_type_button = new ImageTooltipButton(2, guiLeft + left + main_width / 8 - 9, guiTop + middle + 20, 18, 20, 176, 84, 21, TEXTURE);
+		unk_type_button = new GuiButtonGeneral(2, guiLeft + left + main_width / 8 - 9, guiTop + middle + 20, 18, 20, TEXTURE, 176, 84, 21);
 		// unk_type_button.tooltip = "Seeds with unknown type included";
 		addButton(unk_type_button);
 
-		unk_ggr_button = new ImageTooltipButton(3, guiLeft + left + (main_width * 3) / 8 - 9, guiTop + middle + 20, 18, 20, 176, 84, 21, TEXTURE);
+		unk_ggr_button = new GuiButtonGeneral(3, guiLeft + left + (main_width * 3) / 8 - 9, guiTop + middle + 20, 18, 20, TEXTURE, 176, 84, 21);
 		// unk_ggr_button.tooltip = "Seeds with unknown GGR included";
 		addButton(unk_ggr_button);
 
@@ -114,6 +110,13 @@ public class GuiSeedLibrary extends GuiContainer {
 		int label_height = 9;
 
 		realControls = buttonList;
+	}
+
+	@Override
+	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+		drawDefaultBackground();
+		super.drawScreen(mouseX, mouseY, partialTicks);
+		renderHoveredToolTip(mouseX, mouseY);
 	}
 
 	@Override
@@ -159,24 +162,24 @@ public class GuiSeedLibrary extends GuiContainer {
 		drawCenteredString("GGR", left + (main_width * 3) / 8, middle + 11, 0x404040);
 
 		if (filter.unknown_type == 0) {
-			unk_type_button.setTextureY(168);
+			unk_type_button.setTextureTop(168);
 			unk_type_button.tooltip = "Seeds with unknown type " + RED + "excluded";
 		} else if (filter.unknown_type == 1) {
-			unk_type_button.setTextureY(84);
+			unk_type_button.setTextureTop(84);
 			unk_type_button.tooltip = "Seeds with unknown type included";
 		} else {
-			unk_type_button.setTextureY(126);
+			unk_type_button.setTextureTop(126);
 			unk_type_button.tooltip = "Seeds with unknown type " + GREEN + "only";
 		}
 
 		if (filter.unknown_ggr == 0) {
-			unk_ggr_button.setTextureY(168);
+			unk_ggr_button.setTextureTop(168);
 			unk_ggr_button.tooltip = "Seeds with unknown GGR " + RED + "excluded";
 		} else if (filter.unknown_ggr == 1) {
-			unk_ggr_button.setTextureY(84);
+			unk_ggr_button.setTextureTop(84);
 			unk_ggr_button.tooltip = "Seeds with unknown GGR included";
 		} else {
-			unk_ggr_button.setTextureY(126);
+			unk_ggr_button.setTextureTop(126);
 			unk_ggr_button.tooltip = "Seeds with unknown GGR " + GREEN + "only";
 		}
 
@@ -445,8 +448,8 @@ public class GuiSeedLibrary extends GuiContainer {
 		}
 
 		for (Object control : buttonList) {
-			if (control instanceof ImageTooltipButton) {
-				String tooltip = ((ImageTooltipButton) control).getActiveTooltip(x, y);
+			if (control instanceof GuiButtonGeneral) {
+				String tooltip = ((GuiButtonGeneral) control).getActiveTooltip(x, y);
 				if (tooltip != null)
 					return tooltip;
 			}

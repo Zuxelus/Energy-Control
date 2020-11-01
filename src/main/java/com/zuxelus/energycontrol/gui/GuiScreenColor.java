@@ -11,10 +11,12 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class GuiScreenColor extends GuiScreen {
-	private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/gui_colors.png");
+	private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(EnergyControl.MODID + ":textures/gui/gui_colors.png");
 
 	private GuiInfoPanel parentGui;
 

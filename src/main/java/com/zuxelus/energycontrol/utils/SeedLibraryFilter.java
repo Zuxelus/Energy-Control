@@ -112,7 +112,7 @@ public class SeedLibraryFilter {
 			return (unknown_type > 0) && (unknown_ggr > 0);
 		if (unknown_type == 2)
 			return false;
-		if (seed_type != card)
+		if (seed_type != null && seed_type != card)
 			return false;
 		if (scan < 4)
 			return (unknown_ggr > 0);
@@ -198,15 +198,10 @@ public class SeedLibraryFilter {
 
 	// Save/load
 	public void loadFromNBT(NBTTagCompound input) {
-		if (input.hasKey("allow_unknown_type")) {
-			// Upgrade path for pre-3.0.
-			unknown_type = input.getByte("allow_unknown_type");
-			unknown_ggr = input.getByte("allow_unknown_ggr");
-		} else {
-			unknown_type = input.getByte("unknown_type");
-			unknown_ggr = input.getByte("unknown_ggr");
-		}
-		seed_type = Crops.instance.getCropCard(input.getString("owner"),input.getString("id"));
+		unknown_type = input.getByte("unknown_type");
+		unknown_ggr = input.getByte("unknown_ggr");
+		if (input.hasKey("owner") && input.hasKey("id"))
+			seed_type = Crops.instance.getCropCard(input.getString("owner"),input.getString("id"));
 		min_growth = input.getInteger("min_growth");
 		min_gain = input.getInteger("min_gain");
 		min_resistance = input.getInteger("min_resistance");
@@ -226,8 +221,10 @@ public class SeedLibraryFilter {
 	public void writeToNBT(NBTTagCompound output) {
 		output.setByte("unknown_type", (byte) unknown_type);
 		output.setByte("unknown_ggr", (byte) unknown_ggr);
-		output.setString("owner", seed_type.getOwner()); 
-		output.setString("id", seed_type.getId());
+		if (seed_type != null) {
+			output.setString("owner", seed_type.getOwner()); 
+			output.setString("id", seed_type.getId());
+		}
 		output.setInteger("min_growth", min_growth);
 		output.setInteger("min_gain", min_gain);
 		output.setInteger("min_resistance", min_resistance);

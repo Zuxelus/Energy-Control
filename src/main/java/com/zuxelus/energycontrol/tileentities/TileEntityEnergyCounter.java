@@ -147,7 +147,7 @@ public class TileEntityEnergyCounter extends TileEntityEnergyStorage {
 	}
 
 	@Override
-	public boolean isItemValid(int slotIndex, ItemStack itemstack) { // ISlotItemFilter
-		return itemstack.isItemEqual(CrossModLoader.ic2.getItemStack("transformer"));
+	public boolean isItemValid(int slotIndex, ItemStack stack) { // ISlotItemFilter
+		return stack.isItemEqual(CrossModLoader.ic2.getItemStack("transformer"));
 	}
 }
