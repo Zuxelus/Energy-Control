@@ -16,6 +16,6 @@ public class BigReactorsNoMod extends CrossBigReactors {
 
 	@Override
 	public int getReactorHeat(World world, BlockPos pos) {
-		return 0;
+		return -1;
 	}
 }

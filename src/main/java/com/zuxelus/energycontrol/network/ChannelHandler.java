@@ -14,5 +14,6 @@ public class ChannelHandler {
 		network.registerMessage(PacketTileEntity.class, PacketTileEntity.class, 5, Side.CLIENT);
 		network.registerMessage(PacketTileEntity.class, PacketTileEntity.class, 6, Side.SERVER);
 		network.registerMessage(PacketClientSensor.class, PacketClientSensor.class, 7, Side.SERVER);
+		network.registerMessage(PacketOreHelper.class, PacketOreHelper.class, 8, Side.CLIENT);
 	}
 }

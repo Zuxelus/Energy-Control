@@ -40,6 +40,9 @@ public class LiquidCardHelper {
 		list = CrossModLoader.bigReactors.getAllTanks(te);
 		if (list != null)
 			return list;
+		list = CrossModLoader.nuclearCraft.getAllTanks(te);
+		if (list != null)
+			return list;
 		return CrossModLoader.buildCraft.getAllTanks(te);
 	}
 

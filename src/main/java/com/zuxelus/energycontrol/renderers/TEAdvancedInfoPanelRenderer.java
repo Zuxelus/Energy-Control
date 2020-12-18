@@ -106,7 +106,7 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			}
 			if (te.powered) {
 				boolean anyCardFound = false;
-				List<PanelString> joinedData = te.getPanelStringList(te.getShowLabels());
+				List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
 				if (joinedData != null)
 					drawText(te, joinedData, thickness, offset);
 			}

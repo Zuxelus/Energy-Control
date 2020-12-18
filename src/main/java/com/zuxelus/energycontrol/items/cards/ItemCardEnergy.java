@@ -52,7 +52,7 @@ public class ItemCardEnergy extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int settings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 
 		double energy = reader.getDouble("storage");

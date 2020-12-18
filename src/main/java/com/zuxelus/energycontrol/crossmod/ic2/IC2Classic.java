@@ -7,7 +7,7 @@ import java.util.List;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
-import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.energycontrol.utils.ReactorHelper;
 
@@ -98,7 +98,7 @@ public class IC2Classic extends CrossIC2 {
 	public ItemStack getEnergyCard(World world, BlockPos pos) {
 		TileEntity te = world.getTileEntity(pos);
 		if (te instanceof IEnergyStorage) {
-			ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_ENERGY);
+			ItemStack sensorLocationCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_ENERGY);
 			ItemStackHelper.setCoordinates(sensorLocationCard, pos);
 			return sensorLocationCard;
 		}
@@ -122,7 +122,7 @@ public class IC2Classic extends CrossIC2 {
 	public ItemStack getGeneratorCard(World world, BlockPos pos) {
 		TileEntity te = world.getTileEntity(pos);
 		if (te instanceof TileEntitySolarPanel || te instanceof TileEntityGeneratorBase) {
-			ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_GENERATOR);
+			ItemStack sensorLocationCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_GENERATOR);
 			ItemStackHelper.setCoordinates(sensorLocationCard, pos);
 			return sensorLocationCard;
 		}
@@ -203,7 +203,7 @@ public class IC2Classic extends CrossIC2 {
 		if (te instanceof TileEntityNuclearReactorElectric || te instanceof TileEntityReactorChamberElectric || te instanceof TileEntityNuclearSteamReactor) {
 			BlockPos position = ReactorHelper.getTargetCoordinates(world, pos);
 			if (position != null) {
-				ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_REACTOR);
+				ItemStack sensorLocationCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_REACTOR);
 				ItemStackHelper.setCoordinates(sensorLocationCard, position);
 				return sensorLocationCard;
 			}
@@ -262,6 +262,12 @@ public class IC2Classic extends CrossIC2 {
 	public CardState updateCardReactor5x5(World world, ICardReader reader, BlockPos target) {
 		// TODO Auto-generated method stub
 		return CardState.NO_TARGET;
+	}
+
+	@Override
+	public void loadOreInfo() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override

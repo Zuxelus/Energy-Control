@@ -49,7 +49,7 @@ public class InfoPanelPeripheral implements IPeripheral {
 				upgradeCountRange = itemStack.getCount();
 			return new Object[] { ItemCardMain.LOCATION_RANGE * (int) Math.pow(2, Math.min(upgradeCountRange, 7)) };
 		case 3:
-			List<PanelString> joinedData = te.getPanelStringList(false);
+			List<PanelString> joinedData = te.getPanelStringList(true, false);
 			List<String> list = NonNullList.create();
 			if (joinedData == null || joinedData.size() == 0)
 				return new Object[] { list };

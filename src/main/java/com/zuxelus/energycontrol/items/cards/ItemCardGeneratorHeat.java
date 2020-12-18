@@ -59,7 +59,7 @@ public class ItemCardGeneratorHeat extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int settings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		if ((settings & 1) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelOutputHU", reader.getInt("output"), showLabels));
@@ -98,7 +98,7 @@ public class ItemCardGeneratorHeat extends ItemCardBase {
 			break;
 		}
 		if ((settings & 64) > 0)
-			addOnOff(result, reader.getBoolean("active"));
+			addOnOff(result, isServer, reader.getBoolean("active"));
 		return result;
 	}
 

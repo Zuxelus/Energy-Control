@@ -92,7 +92,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 
 		model[te.findTexture()].render(0.03125F);
 		if (te.getPowered()) {
-			List<PanelString> joinedData = te.getPanelStringList(te.getShowLabels());
+			List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
 			if (joinedData != null)
 				drawText(te, joinedData);
 		}

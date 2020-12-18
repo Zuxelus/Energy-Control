@@ -4,8 +4,11 @@ import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
+import nc.tile.energy.battery.TileBattery;
 import nc.tile.generator.TileDecayGenerator;
+import nc.tile.generator.TileFissionController;
 import nc.tile.generator.TileSolarPanel;
+import nc.tile.processor.TileFluidProcessor;
 import nc.tile.processor.TileItemFluidProcessor;
 import nc.tile.processor.TileItemProcessor;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,7 +27,7 @@ public class ItemKitNuclearCraft extends ItemKitBase {
 	@Override
 	public ItemStack getSensorCard(ItemStack stack, Item card, EntityPlayer player, World world, BlockPos pos) {
 		TileEntity te = world.getTileEntity(pos);
-		if (te instanceof TileDecayGenerator || te instanceof TileSolarPanel || te instanceof TileItemProcessor || te instanceof TileItemFluidProcessor) {
+		if (te instanceof TileDecayGenerator || te instanceof TileSolarPanel || te instanceof TileItemProcessor || te instanceof TileItemFluidProcessor || te instanceof TileBattery || te instanceof TileFluidProcessor || te instanceof TileFissionController) {
 			ItemStack sensorLocationCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_NUCLEARCRAFT);
 			ItemStackHelper.setCoordinates(sensorLocationCard, pos);
 			return sensorLocationCard;

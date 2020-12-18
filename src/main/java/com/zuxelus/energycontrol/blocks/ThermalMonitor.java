@@ -20,12 +20,12 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class ThermalMonitor extends FacingBlock {
-	protected static final AxisAlignedBB AABB_DOWN = new AxisAlignedBB(0.0625F, 0.5625D, 0.0625F, 0.9375F, 1.0D, 0.9375F);
-	protected static final AxisAlignedBB AABB_UP = new AxisAlignedBB(0.0625F, 0.0D, 0.0625F, 0.9375F, 0.4375D, 0.9375F);
-	protected static final AxisAlignedBB AABB_NORTH = new AxisAlignedBB(0.0625F, 0.0625F, 0.5625D, 0.9375F, 0.9375F, 1.0D);
-	protected static final AxisAlignedBB AABB_SOUTH = new AxisAlignedBB(0.0625F, 0.0625F, 0.0D, 0.9375F, 0.9375F, 0.4375D);
-	protected static final AxisAlignedBB AABB_WEST = new AxisAlignedBB(0.5625D, 0.0625F, 0.0625F, 1.0D, 0.9375F, 0.9375F);
-	protected static final AxisAlignedBB AABB_EAST = new AxisAlignedBB(0.0D, 0.0625F, 0.0625F, 0.4375D, 0.9375F, 0.9375F);
+	protected static final AxisAlignedBB AABB_DOWN = new AxisAlignedBB(0.0625D, 0.5625D, 0.0625D, 0.9375D, 1.0D, 0.9375D);
+	protected static final AxisAlignedBB AABB_UP = new AxisAlignedBB(0.0625D, 0.0D, 0.0625D, 0.9375D, 0.4375D, 0.9375D);
+	protected static final AxisAlignedBB AABB_NORTH = new AxisAlignedBB(0.0625D, 0.0625D, 0.5625D, 0.9375D, 0.9375D, 1.0D);
+	protected static final AxisAlignedBB AABB_SOUTH = new AxisAlignedBB(0.0625D, 0.0625D, 0.0D, 0.9375D, 0.9375D, 0.4375D);
+	protected static final AxisAlignedBB AABB_WEST = new AxisAlignedBB(0.5625D, 0.0625D, 0.0625D, 1.0D, 0.9375D, 0.9375D);
+	protected static final AxisAlignedBB AABB_EAST = new AxisAlignedBB(0.0D, 0.0625D, 0.0625D, 0.4375D, 0.9375D, 0.9375D);
 
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta) {
@@ -133,6 +133,15 @@ public class ThermalMonitor extends FacingBlock {
 	}
 
 	@Override
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+		if (CrossModLoader.ic2.isWrench(player.getHeldItem(hand)))
+			return true;
+		if (world.isRemote)
+			player.openGui(EnergyControl.instance, getBlockGuiId(), world, pos.getX(), pos.getY(), pos.getZ());
+		return true;
+	}
+
+	@Override
 	protected int getBlockGuiId() {
 		return BlockDamages.DAMAGE_THERMAL_MONITOR;
 	}
@@ -145,16 +154,5 @@ public class ThermalMonitor extends FacingBlock {
 	@Override
 	public EnumBlockRenderType getRenderType(IBlockState state) {
 		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
-	}
-
-	// IWrenchable
-	@Override
-	public boolean setFacing(World world, BlockPos pos, EnumFacing newDirection, EntityPlayer player) {
-		TileEntity te = world.getTileEntity(pos);
-		if (te instanceof TileEntityFacing && newDirection != ((TileEntityFacing) te).getRotation()) {
-			((TileEntityFacing) te).setRotation(newDirection.getIndex());
-			return true;
-		}
-		return false;
 	}
 }

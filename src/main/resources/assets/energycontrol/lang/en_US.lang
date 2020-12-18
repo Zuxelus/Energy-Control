@@ -75,6 +75,7 @@ tile.kit_assembler.name=Kit Assembler
 tile.afsu.name=AFSU
 tile.seed_analyzer.name=Seed Analyzer
 tile.seed_library.name=Seed Library
+tile.timer.name=Timer
 
 #Config
 ec.config.howlerAlarmRange=Howler Alarm Range
@@ -123,8 +124,10 @@ msg.ec.InfoPanelCapacityRF=Capacity: %s RF
 msg.ec.InfoPanelCapacityT=Capacity: %s T
 msg.ec.InfoPanelCarbonDioxide=Carbon Dioxide: %s
 msg.ec.InfoPanelCasingHeat=Casing Heat: %s
+msg.ec.InfoPanelCells=Cells: %s
 msg.ec.InfoPanelCoils=Coils: %s
 msg.ec.InfoPanelCollecting=Collecting: %s/s
+msg.ec.InfoPanelCoolingRate=Cooling Rate: %s H/t
 msg.ec.InfoPanelCoreHeat=Core Heat: %s
 msg.ec.InfoPanelConductors=Conductors: %s
 msg.ec.InfoPanelEnergy=Energy: %s
@@ -154,6 +157,7 @@ msg.ec.InfoPanelFuelmb=Fuel: %s mB
 msg.ec.InfoPanelFuelRods=Fuel Rods: %s
 msg.ec.InfoPanelGas=Gas: %s
 msg.ec.InfoPanelHeat=T: %s
+msg.ec.InfoPanelHeatChange=Heat Change: %s H/t
 msg.ec.InfoPanelHeatPercentage=Heat: %s%%
 msg.ec.InfoPanelHeight=Height: %s
 msg.ec.InfoPanelHydrogen=Hydrogen: %s

@@ -1,7 +1,6 @@
 package com.zuxelus.energycontrol.utils;
 
 import ic2.api.crops.ICropSeed;
-import ic2.core.item.ItemCropSeed;
 import net.minecraft.item.ItemStack;
 
 public class SeedLibrarySort implements java.util.Comparator<ItemStack> {

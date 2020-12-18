@@ -85,7 +85,7 @@ public class ItemCardBigReactors extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		String euType = reader.getString("system");
 		switch (reader.getInt("type")) {
@@ -139,7 +139,7 @@ public class ItemCardBigReactors extends ItemCardBase {
 			break;
 		}
 		if ((displaySettings & 1) > 0)
-			addOnOff(result, reader.getBoolean("reactorPoweredB"));
+			addOnOff(result, isServer, reader.getBoolean("reactorPoweredB"));
 		return result;
 	}
 

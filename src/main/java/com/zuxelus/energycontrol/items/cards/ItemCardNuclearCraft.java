@@ -8,24 +8,17 @@ import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
-import com.zuxelus.energycontrol.crossmod.GalacticraftHelper;
 
-import micdoodle8.mods.galacticraft.core.blocks.BlockOxygenDetector;
-import micdoodle8.mods.galacticraft.core.tile.*;
-import micdoodle8.mods.galacticraft.planets.asteroids.items.ItemAtmosphericValve;
-import micdoodle8.mods.galacticraft.planets.mars.tile.*;
-import micdoodle8.mods.galacticraft.planets.venus.tile.TileEntitySolarArrayController;
+import nc.tile.energy.battery.TileBattery;
 import nc.tile.generator.TileDecayGenerator;
+import nc.tile.generator.TileFissionController;
 import nc.tile.generator.TileSolarPanel;
+import nc.tile.processor.TileFluidProcessor;
 import nc.tile.processor.TileItemProcessor;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidStack;
 
 public class ItemCardNuclearCraft extends ItemCardBase {
 	private static DecimalFormat df = new DecimalFormat("0.0");
@@ -59,18 +52,52 @@ public class ItemCardNuclearCraft extends ItemCardBase {
 			reader.setInt("time", ((TileItemProcessor) te).getProcessTime());
 			return CardState.OK;
 		}
+		if (te instanceof TileFluidProcessor) {
+			reader.setInt("type", 2);
+			reader.setInt("stored", ((TileFluidProcessor) te).getEnergyStored());
+			reader.setInt("capacity", ((TileFluidProcessor) te).getMaxEnergyStored());
+			reader.setInt("power", ((TileFluidProcessor) te).getProcessPower());
+			reader.setDouble("speedM", ((TileFluidProcessor) te).getSpeedMultiplier());
+			reader.setDouble("powerM", ((TileFluidProcessor) te).getPowerMultiplier());
+			reader.setInt("time", ((TileFluidProcessor) te).getProcessTime());
+			return CardState.OK;
+		}
 		if (te instanceof TileSolarPanel) {
-			reader.setInt("type", 3);
+			reader.setInt("type", 4);
 			reader.setInt("stored", ((TileSolarPanel) te).getEnergyStored());
 			reader.setInt("capacity", ((TileSolarPanel) te).getMaxEnergyStored());
 			reader.setInt("output", ((TileSolarPanel) te).getGenerated());
+			return CardState.OK;
+		}
+		if (te instanceof TileBattery) {
+			reader.setInt("type", 5);
+			reader.setInt("stored", ((TileBattery) te).getEnergyStored());
+			reader.setInt("capacity", ((TileBattery) te).getMaxEnergyStored());
+			return CardState.OK;
+		}
+		if (te instanceof TileFissionController) {
+			reader.setInt("type", 6);
+			TileFissionController reactor = (TileFissionController) te;
+			reader.setBoolean("active", reactor.isProcessing);
+			reader.setString("size", reactor.getLengthX() + "*" + reactor.getLengthY() + "*" + reactor.getLengthZ());
+			reader.setString("fuel", reactor.getFuelName());
+			reader.setInt("stored", reactor.getEnergyStored());
+			reader.setInt("capacity", reactor.getMaxEnergyStored());
+			reader.setDouble("efficiency", reactor.efficiency);
+			reader.setDouble("heat", reactor.heat);
+			reader.setInt("maxHeat", reactor.getMaxHeat());
+			reader.setDouble("heatChange", reactor.heatChange);
+			reader.setDouble("cooling", reactor.cooling);
+			reader.setDouble("heatMult", reactor.heatMult);
+			reader.setDouble("power", reactor.processPower);
+			reader.setInt("cells", reactor.cells);
 			return CardState.OK;
 		}
 		return CardState.NO_TARGET;
 	}
 
 	@Override
-	public List<PanelString> getStringData(int settings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		if (!reader.hasField("type"))
 			return result;
@@ -94,19 +121,27 @@ public class ItemCardNuclearCraft extends ItemCardBase {
 		case 3:
 			result.add(new PanelString("msg.ec.InfoPanelEnergyRF", reader.getInt("stored"), showLabels));
 			result.add(new PanelString("msg.ec.InfoPanelCapacityRF", reader.getInt("capacity"), showLabels));
+			break;
+		case 4:
+			result.add(new PanelString("msg.ec.InfoPanelEnergyRF", reader.getInt("stored"), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelCapacityRF", reader.getInt("capacity"), showLabels));
 			result.add(new PanelString("msg.ec.InfoPanelOutputRF", reader.getInt("output"), showLabels));
 			break;
 		case 5:
-			result.add(new PanelString("msg.ec.InfoPanelWater", reader.getString("waterTank"), showLabels));
-			result.add(new PanelString("msg.ec.InfoPanelOxygen", reader.getString("gasTank1"), showLabels));
-			result.add(new PanelString("msg.ec.InfoPanelHydrogen", reader.getString("gasTank2"), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelEnergyRF", reader.getInt("stored"), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelCapacityRF", reader.getInt("capacity"), showLabels));
 			break;
 		case 6:
-			result.add(new PanelString("msg.ec.InfoPanelAtmosphericValve", reader.getInt("valve"), showLabels));
-			result.add(new PanelString("msg.ec.InfoPanelHydrogen", reader.getString("gasTank1"), showLabels));
-			result.add(new PanelString("msg.ec.InfoPanelCarbonDioxide", reader.getString("gasTank2"), showLabels));
-			result.add(new PanelString("msg.ec.InfoPanelMethane", reader.getString("methaneTank"), showLabels));
-			result.add(new PanelString("msg.ec.InfoPanelFragmentedCarbon", reader.getInt("items"), showLabels));
+			addHeat(result, (int) Math.round(reader.getDouble("heat")), reader.getInt("maxHeat"), showLabels);
+			result.add(new PanelString("msg.ec.InfoPanelHeatChange", reader.getDouble("heatChange"), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelSize", reader.getString("size"), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelFuel", reader.getString("fuel"), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelProcessPowerRF", reader.getDouble("power"), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelEnergyRF", reader.getInt("stored"), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelCapacityRF", reader.getInt("capacity"), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelCoolingRate", reader.getDouble("cooling"), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelCells", reader.getInt("cells"), showLabels));
+			addOnOff(result, isServer, reader.getBoolean("active"));
 			break;
 		case 7:
 			if (!reader.getString("gasTankName").equals(""))

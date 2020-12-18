@@ -50,7 +50,7 @@ public class ItemCardReactorDraconic extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		if ((displaySettings & 1) > 0)
 			result.add(new PanelString("msg.ec.Status", reader.getString("status"), showLabels));

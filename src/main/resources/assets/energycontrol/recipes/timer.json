@@ -1,0 +1,28 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "ICI",
+        "IBI",
+        " R "
+    ],
+    "key": {
+        "I": {
+            "type": "forge:ore_dict",
+            "ore": "ingotIron"
+        },
+        "R": {
+            "type": "forge:ore_dict",
+            "ore": "dustRedstone"
+        },
+        "C": {
+            "item": "minecraft:clock"
+        },
+        "B": {
+            "type": "forge:ore_dict",
+            "ore": "circuitBasic"
+        }
+    },
+    "result": {
+        "item": "energycontrol:timer"
+    }
+}

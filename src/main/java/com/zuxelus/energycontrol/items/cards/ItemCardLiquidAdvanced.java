@@ -58,7 +58,7 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		int count = reader.getInt("count");
 		for (int i = 0; i < count; i++)

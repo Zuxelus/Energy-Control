@@ -372,11 +372,11 @@ public class TileEntityInfoPanel extends TileEntityInventory
 		cardData.clear();
 	}
 
-	public List<PanelString> getCardData(int settings, ItemStack cardStack, ItemCardReader reader, boolean showLabels) {
+	public List<PanelString> getCardData(int settings, ItemStack cardStack, ItemCardReader reader, boolean isServer, boolean showLabels) {
 		int slot = getCardSlot(cardStack);
 		List<PanelString> data = cardData.get(slot);
 		if (data == null) {
-			data = ItemCardMain.getStringData(settings, reader, showLabels);
+			data = ItemCardMain.getStringData(settings, reader, isServer, showLabels);
 			cardData.put(slot, data);
 		}
 		return data;
@@ -394,7 +394,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 		return data;
 	}
 
-	public List<PanelString> getPanelStringList(boolean showLabels) {
+	public List<PanelString> getPanelStringList(boolean isServer, boolean showLabels) {
 		List<ItemStack> cards = getCards();
 		boolean anyCardFound = false;
 		List<PanelString> joinedData = new LinkedList<PanelString>();
@@ -410,7 +410,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 			if (state != CardState.OK && state != CardState.CUSTOM_ERROR)
 				data = ItemCardReader.getStateMessage(state);
 			else
-				data = getCardData(settings, card, reader, showLabels);
+				data = getCardData(settings, card, reader, isServer, showLabels);
 			if (data == null)
 				continue;
 			joinedData.addAll(data);

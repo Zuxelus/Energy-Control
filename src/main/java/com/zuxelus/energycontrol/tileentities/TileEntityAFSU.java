@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
 import ic2.api.tile.IEnergyStorage;
 import micdoodle8.mods.galacticraft.api.power.EnergySource;

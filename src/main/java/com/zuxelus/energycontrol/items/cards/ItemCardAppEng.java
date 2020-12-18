@@ -2,6 +2,7 @@ package com.zuxelus.energycontrol.items.cards;
 
 import java.util.List;
 
+import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
@@ -15,6 +16,7 @@ import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.util.IReadOnlyCollection;
 import appeng.me.helpers.IGridProxyable;
+import appeng.tile.crafting.TileCraftingMonitorTile;
 import appeng.tile.storage.TileChest;
 import appeng.tile.storage.TileDrive;
 import net.minecraft.client.resources.I18n;
@@ -39,6 +41,17 @@ public class ItemCardAppEng extends ItemCardBase {
 		IReadOnlyCollection<IGridNode> list = null;
 
 		TileEntity te = world.getTileEntity(target);
+		if (te instanceof TileCraftingMonitorTile) {
+			TileCraftingMonitorTile tile = (TileCraftingMonitorTile) te;
+			reader.setInt("type", 0);
+			if (tile.getJobProgress() != null) {
+				reader.setInt("type", 2);
+				reader.setString("name", EnergyControl.proxy.getItemName(tile.getJobProgress().createItemStack()));
+				reader.setInt("size", (int) tile.getJobProgress().getStackSize());
+			}
+			return CardState.OK;
+		}
+
 		if (te instanceof IGridProxyable)
 			list = ((IGridProxyable) te).getProxy().getNode().getGrid().getNodes();
 
@@ -59,6 +72,7 @@ public class ItemCardAppEng extends ItemCardBase {
 			}
 		}
 
+		reader.setInt("type", 1);
 		reader.setInt("nodes", list.size());
 		reader.setInt("cells", cells);
 		reader.setInt("bytesTotal", values[0]);
@@ -92,13 +106,21 @@ public class ItemCardAppEng extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int settings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
-		result.add(new PanelString("msg.ec.InfoPanelTotalNodes", reader.getInt("nodes"), true));
-		result.add(new PanelString("msg.ec.InfoPanelStorageCells", reader.getInt("cells"), true));
-		result.add(new PanelString(I18n.format("msg.ec.InfoPanelBytesUsed", reader.getInt("bytesUsed"),reader.getInt("bytesTotal"))));
-		result.add(new PanelString(I18n.format("msg.ec.InfoPanelTypes", reader.getInt("typesUsed"), reader.getInt("typesTotal"))));
-		result.add(new PanelString("msg.ec.InfoPanelTotalItems", reader.getInt("items"), true));
+		switch (reader.getInt("type")) {
+		case 1:
+			result.add(new PanelString("msg.ec.InfoPanelTotalNodes", reader.getInt("nodes"), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelStorageCells", reader.getInt("cells"), showLabels));
+			result.add(new PanelString(I18n.format("msg.ec.InfoPanelBytesUsed", reader.getInt("bytesUsed"), reader.getInt("bytesTotal"))));
+			result.add(new PanelString(I18n.format("msg.ec.InfoPanelTypes", reader.getInt("typesUsed"), reader.getInt("typesTotal"))));
+			result.add(new PanelString("msg.ec.InfoPanelTotalItems", reader.getInt("items"), showLabels));
+			break;
+		case 2:
+			result.add(new PanelString("msg.ec.InfoPanelName", reader.getString("name"), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelSize", reader.getInt("size"), showLabels));
+			break;
+		}
 		return result;
 	}
 

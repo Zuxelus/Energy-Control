@@ -28,7 +28,7 @@ public class ItemCardTime extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int settings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		int time = (int) ((FMLClientHandler.instance().getClient().world.getWorldTime() + 6000) % 24000);
 		int hours = time / 1000;

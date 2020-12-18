@@ -54,6 +54,7 @@ public class ModItems {
 	public static Block blockIc2Cable;
 	public static Block blockSeedAnalyzer;
 	public static Block blockSeedLibrary;
+	public static Block blockTimer;
 	public static Item itemKit;
 	public static Item itemCard;
 	public static Item itemUpgrade;
@@ -90,6 +91,7 @@ public class ModItems {
 			blockSeedAnalyzer = register(event, new SeedAnalyzer(), "seed_analyzer");
 			blockSeedLibrary = register(event, new SeedLibrary(), "seed_library");
 		}
+		blockTimer = register(event, new TimerBlock(), "timer");
 	}
 
 	@SubscribeEvent
@@ -117,6 +119,7 @@ public class ModItems {
 			event.getRegistry().register(new ItemBlock(blockSeedAnalyzer).setRegistryName("seed_analyzer"));
 			event.getRegistry().register(new ItemBlock(blockSeedLibrary).setRegistryName("seed_library"));
 		}
+		event.getRegistry().register(new ItemBlock(blockTimer).setRegistryName("timer"));
 
 		itemUpgrade = register(event, new ItemUpgrade(), "item_upgrade");
 		if (Loader.isModLoaded("ic2")) {
@@ -191,8 +194,11 @@ public class ModItems {
 			/*((IC2Cable) blockIc2Cable).initModel();
 			registerBlockModel(ModItems.blockIc2Cable, 0, "ic2_cable");*/
 		}
-		registerBlockModel(blockSeedAnalyzer, 0, "seed_analyzer");
-		registerBlockModel(blockSeedLibrary, 0, "seed_library");
+		if (Loader.isModLoaded("ic2")) {
+			registerBlockModel(blockSeedAnalyzer, 0, "seed_analyzer");
+			registerBlockModel(blockSeedLibrary, 0, "seed_library");
+		}
+		registerBlockModel(ModItems.blockTimer, 0, "timer");
 
 		ItemKitMain.registerModels();
 		ItemKitMain.registerExtendedModels();
@@ -245,8 +251,11 @@ public class ModItems {
 		GameRegistry.registerTileEntity(TileEntityKitAssembler.class, EnergyControl.MODID + ":kit_assembler");
 		if (CrossModLoader.ic2.getProfile() == 0)
 			GameRegistry.registerTileEntity(TileEntityAFSU.class, EnergyControl.MODID + ":afsu");
-		GameRegistry.registerTileEntity(TileEntitySeedAnalyzer.class, EnergyControl.MODID + ":seed_analyzer");
-		GameRegistry.registerTileEntity(TileEntitySeedLibrary.class, EnergyControl.MODID + ":seed_library");
+		if (Loader.isModLoaded("ic2")) {
+			GameRegistry.registerTileEntity(TileEntitySeedAnalyzer.class, EnergyControl.MODID + ":seed_analyzer");
+			GameRegistry.registerTileEntity(TileEntitySeedLibrary.class, EnergyControl.MODID + ":seed_library");
+		}
+		GameRegistry.registerTileEntity(TileEntityTimer.class, EnergyControl.MODID + ":timer");
 	}
 
 	@SubscribeEvent

@@ -122,10 +122,4 @@ public class HowlerAlarm extends FacingBlock {
 	public boolean canProvidePower(IBlockState state) {
 		return true;
 	}
-
-	//IWrenchable
-	@Override
-	public boolean setFacing(World world, BlockPos pos, EnumFacing newDirection, EntityPlayer player) {
-		return false;
-	}
 }

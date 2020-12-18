@@ -52,8 +52,8 @@ public class ReactorHelper {
 	public static IReactor getReactor3x3(World world, BlockPos pos) {
 		if (world == null)
 			return null;
-		for (int xoffset = -1; xoffset < 2; xoffset++) {
-			for (int yoffset = -1; yoffset < 2; yoffset++) {
+		for (int xoffset = -1; xoffset < 2; xoffset++)
+			for (int yoffset = -1; yoffset < 2; yoffset++)
 				for (int zoffset = -1; zoffset < 2; zoffset++) {
 					TileEntity te = world.getTileEntity(pos.east(xoffset).up(yoffset).south(zoffset));
 					if (te instanceof IReactor)
@@ -61,8 +61,6 @@ public class ReactorHelper {
 					if (te instanceof IReactorChamber)
 						return ((IReactorChamber) te).getReactorInstance();
 				}
-			}
-		}
 		return null;
 	}
 
@@ -93,6 +91,9 @@ public class ReactorHelper {
 	}
 
 	public static int getReactorHeat(World world, BlockPos pos) {
-		return CrossModLoader.bigReactors.getReactorHeat(world, pos);
+		int heat = CrossModLoader.bigReactors.getReactorHeat(world, pos);
+		if (heat > -1)
+			return heat;
+		return CrossModLoader.nuclearCraft.getReactorHeat(world, pos);
 	}
 }

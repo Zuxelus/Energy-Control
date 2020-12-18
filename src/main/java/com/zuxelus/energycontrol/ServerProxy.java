@@ -7,10 +7,12 @@ import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.containers.*;
 import com.zuxelus.energycontrol.gui.GuiSeedAnalyzer;
 import com.zuxelus.energycontrol.gui.GuiSeedLibrary;
+import com.zuxelus.energycontrol.gui.GuiTimer;
 import com.zuxelus.energycontrol.items.cards.ItemCardHolder;
 import com.zuxelus.energycontrol.tileentities.*;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -60,6 +62,10 @@ public class ServerProxy implements IGuiHandler {
 			if (te instanceof TileEntitySeedLibrary)
 				return new ContainerSeedLibrary(player, (TileEntitySeedLibrary) te);
 			break;
+		case BlockDamages.DAMAGE_TIMER:
+			if (te instanceof TileEntityTimer)
+				return new ContainerTimer((TileEntityTimer) te);
+			break;
 		}
 		return null;
 	}
@@ -76,4 +82,8 @@ public class ServerProxy implements IGuiHandler {
 	public void importSound(File configFolder) { }
 
 	public void registerModelLoader() { }
+
+	public String getItemName(ItemStack stack) {
+		return stack.getItem().getUnlocalizedName();
+	}
 }

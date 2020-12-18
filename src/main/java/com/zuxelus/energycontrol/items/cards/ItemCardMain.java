@@ -154,9 +154,9 @@ public final class ItemCardMain extends Item {
 			tooltip.add(String.format("x: %d, y: %d, z: %d", target.getX(), target.getY(), target.getZ()));
 	}
 
-	public static List<PanelString> getStringData(int settings, ItemCardReader reader, boolean showLabels) {
+	public static List<PanelString> getStringData(int settings, ItemCardReader reader, boolean isServer, boolean showLabels) {
 		if (cards.containsKey(reader.getCardType())) {
-			return cards.get(reader.getCardType()).getStringData(settings, reader, showLabels);
+			return cards.get(reader.getCardType()).getStringData(settings, reader, isServer, showLabels);
 		}
 		return null;
 	}

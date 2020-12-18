@@ -82,7 +82,7 @@ public class ItemCardGenerator extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int settings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		String euType = reader.getString("euType");
 		switch (reader.getInt("type")) {
@@ -149,7 +149,7 @@ public class ItemCardGenerator extends ItemCardBase {
 			break;
 		}
 		if ((settings & 32) > 0)
-			addOnOff(result, reader.getBoolean("active"));
+			addOnOff(result, isServer, reader.getBoolean("active"));
 		return result;
 	}
 

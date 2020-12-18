@@ -468,7 +468,7 @@ public class IC2Exp extends CrossIC2 {
 		
 		reader.setInt("heat", reactor.getHeat());
 		reader.setInt("maxHeat", reactor.getMaxHeat());
-		reader.setBoolean("reactorPowered", reactor.produceEnergy());
+		reader.setBoolean("reactorPoweredB", reactor.produceEnergy());
 		reader.setInt("output", ((TileEntityNuclearReactorElectric)reactor).EmitHeat);
 
 		IInventory inventory = (IInventory) reactor;

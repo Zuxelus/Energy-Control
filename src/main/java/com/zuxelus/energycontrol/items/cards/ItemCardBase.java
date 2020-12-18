@@ -69,15 +69,15 @@ public abstract class ItemCardBase implements IItemCard {
 		result.add(line);
 	}
 
-	protected void addOnOff(List<PanelString> result, boolean value) {
+	protected void addOnOff(List<PanelString> result, boolean isServer, boolean value) {
 		String text;
 		int txtColor = 0;
 		if (value) {
 			txtColor = 0x00ff00;
-			text = FMLCommonHandler.instance().getEffectiveSide().isClient() ? I18n.format("msg.ec.InfoPanelOn") : "On";
+			text = isServer ? "On" : I18n.format("msg.ec.InfoPanelOn");
 		} else {
 			txtColor = 0xff0000;
-			text = FMLCommonHandler.instance().getEffectiveSide().isClient() ? I18n.format("msg.ec.InfoPanelOff") : "Off";
+			text = isServer ? "Off" : I18n.format("msg.ec.InfoPanelOff");
 		}
 		if (result.size() > 0) {
 			PanelString firstLine = result.get(0);

@@ -16,7 +16,7 @@ public interface IItemCard {
 
 	CardState update(World world, ICardReader reader, int range, BlockPos pos);
 
-	List<PanelString> getStringData(int settings, ICardReader reader, boolean showLabels);
+	List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels);
 
 	List<PanelSetting> getSettingsList();
 

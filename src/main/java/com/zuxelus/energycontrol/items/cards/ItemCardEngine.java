@@ -50,7 +50,7 @@ public class ItemCardEngine extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int settings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		switch (reader.getInt("type")) {
 		case 1:
@@ -70,7 +70,7 @@ public class ItemCardEngine extends ItemCardBase {
 			break;
 		}
 		if ((settings & 16) > 0)
-			addOnOff(result, reader.getBoolean("active"));
+			addOnOff(result, isServer, reader.getBoolean("active"));
 		return result;
 	}
 

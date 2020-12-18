@@ -4,6 +4,7 @@ import com.zuxelus.energycontrol.crossmod.bigreactors.CrossBigReactors;
 import com.zuxelus.energycontrol.crossmod.buildcraft.CrossBC;
 import com.zuxelus.energycontrol.crossmod.computercraft.PeripheralProvider;
 import com.zuxelus.energycontrol.crossmod.ic2.CrossIC2;
+import com.zuxelus.energycontrol.crossmod.nuclearcraft.CrossNuclearCraft;
 import com.zuxelus.energycontrol.crossmod.opencomputers.CrossOpenComputers;
 import com.zuxelus.energycontrol.crossmod.techreborn.CrossTechReborn;
 
@@ -28,7 +29,7 @@ public class CrossModLoader {
 		appEng = new CrossAppEng();
 		galacticraft = new CrossGalacticraft();
 		bigReactors = CrossBigReactors.getMod();
-		nuclearCraft = new CrossNuclearCraft();
+		nuclearCraft = CrossNuclearCraft.getMod();
 	}
 
 	public static void init() {

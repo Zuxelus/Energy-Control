@@ -78,7 +78,7 @@ public class ItemCardGeneratorKinetic extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int settings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		switch (reader.getInt("type")) {
 		case 1: // TileEntityElectricKineticGenerator
@@ -96,7 +96,7 @@ public class ItemCardGeneratorKinetic extends ItemCardBase {
 				result.add(new PanelString("msg.ec.InfoPanelMotors", reader.getInt("items"), showLabels));
 			if ((settings & 32) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelMultiplier", reader.getDouble("multiplier"), showLabels));
-				addOnOff(result, reader.getBoolean("active"));
+				addOnOff(result, isServer, reader.getBoolean("active"));
 			break;
 		case 2: // TileEntityManualKineticGenerator
 			if ((settings & 2) > 0)
@@ -111,7 +111,7 @@ public class ItemCardGeneratorKinetic extends ItemCardBase {
 				result.add(new PanelString("msg.ec.InfoPanelStorageL", reader.getDouble("storage"), showLabels));
 			if ((settings & 4) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelCapacityL", reader.getDouble("maxStorage"), showLabels));
-			addOnOff(result, reader.getBoolean("active"));
+			addOnOff(result, isServer, reader.getBoolean("active"));
 			break;
 		case 4: // TileEntityStirlingKineticGenerator
 			if ((settings & 2) > 0)
@@ -124,7 +124,7 @@ public class ItemCardGeneratorKinetic extends ItemCardBase {
 				result.add(new PanelString("msg.ec.InfoPanelCapacityHU", reader.getDouble("maxEnergy"), showLabels));
 			if ((settings & 32) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelMultiplier", reader.getDouble("multiplier"), showLabels));
-				addOnOff(result, reader.getBoolean("active"));
+				addOnOff(result, isServer, reader.getBoolean("active"));
 			break;
 		case 5: // TileEntityWaterKineticGenerator
 			if ((settings & 1) > 0)

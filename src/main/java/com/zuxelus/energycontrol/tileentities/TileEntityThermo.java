@@ -157,7 +157,6 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 		updateTicker = tickRate;
 		checkStatus();
 	}
-	
 
 	protected void checkStatus() {
 		int newStatus;
@@ -201,7 +200,7 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 				poweredBlock = newValue;
 				world.notifyNeighborsOfStateChange(pos, block, false);
 			}
-		world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
+			world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
 		}
 	}
 

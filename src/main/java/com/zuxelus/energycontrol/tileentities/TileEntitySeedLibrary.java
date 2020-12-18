@@ -1,7 +1,6 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import java.util.HashMap;
-import java.util.Vector;
 
 import com.zuxelus.energycontrol.blocks.SeedLibrary;
 import com.zuxelus.energycontrol.containers.ISlotItemFilter;
@@ -18,19 +17,14 @@ import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.info.Info;
 import ic2.api.item.ElectricItem;
-import ic2.api.item.IC2Items;
 import ic2.api.item.IElectricItem;
-import ic2.core.crop.IC2Crops;
-import ic2.core.item.ItemCropSeed;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;

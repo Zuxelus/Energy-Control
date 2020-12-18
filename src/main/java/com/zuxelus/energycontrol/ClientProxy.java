@@ -1,14 +1,13 @@
 package com.zuxelus.energycontrol;
 
 import java.io.File;
+import java.util.List;
 
 import com.zuxelus.energycontrol.blocks.BlockDamages;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.containers.*;
 import com.zuxelus.energycontrol.gui.*;
 import com.zuxelus.energycontrol.items.cards.ItemCardHolder;
-import com.zuxelus.energycontrol.items.cards.ItemCardMain;
-import com.zuxelus.energycontrol.items.kits.ItemKitMain;
 import com.zuxelus.energycontrol.models.CustomModelLoader;
 import com.zuxelus.energycontrol.renderers.*;
 import com.zuxelus.energycontrol.tileentities.*;
@@ -17,7 +16,9 @@ import com.zuxelus.energycontrol.utils.SoundHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -26,6 +27,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ClientProxy extends ServerProxy {
 	public static KeyBinding modeSwitchKey;
@@ -49,6 +52,7 @@ public class ClientProxy extends ServerProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityInfoPanelExtender.class, new TEInfoPanelExtenderRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAdvancedInfoPanel.class, new TEAdvancedInfoPanelRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAdvancedInfoPanelExtender.class, new TEAdvancedInfoPanelExtenderRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTimer.class, new TileEntityTimerRenderer());
 	}
 
 	@Override
@@ -114,8 +118,17 @@ public class ClientProxy extends ServerProxy {
 			if (te instanceof TileEntitySeedLibrary)
 				return new GuiSeedLibrary(new ContainerSeedLibrary(player, (TileEntitySeedLibrary) te));
 			break;
+		case BlockDamages.DAMAGE_TIMER:
+			if (te instanceof TileEntityTimer)
+				return new GuiTimer((TileEntityTimer) te);
+			break;
 		}
 		return null;
+	}
+
+	@Override
+	public void registerEventHandlers() {
+		MinecraftForge.EVENT_BUS.register(ClientTickHandler.instance);
 	}
 
 	@Override
@@ -127,5 +140,14 @@ public class ClientProxy extends ServerProxy {
 
 	public void registerModelLoader() {
 		ModelLoaderRegistry.registerLoader(new CustomModelLoader());
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public String getItemName(ItemStack stack) {
+		List<String> list = stack.getTooltip((EntityPlayer)(Minecraft.getMinecraft()).player, ITooltipFlag.TooltipFlags.NORMAL);
+		if (list.size() == 0)
+			return stack.getItem().getUnlocalizedName();
+		return list.get(0);
 	}
 }

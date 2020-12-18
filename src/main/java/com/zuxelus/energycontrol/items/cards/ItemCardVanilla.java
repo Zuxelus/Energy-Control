@@ -60,7 +60,7 @@ public class ItemCardVanilla extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int settings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = new LinkedList<PanelString>();
 		boolean isBurning = reader.getBoolean("burning");
 		int burnTime = reader.getInt("burnTime");
@@ -96,7 +96,7 @@ public class ItemCardVanilla extends ItemCardBase {
 				result.add(new PanelString(String.format("%sx - %s", tagCompound.getInteger("Osize"), slot3pre)));
 		}
 		if ((settings & DISPLAY_BURNING) > 0)
-			addOnOff(result, reader.getBoolean("burning"));
+			addOnOff(result, isServer, reader.getBoolean("burning"));
 		return result;
 	}
 

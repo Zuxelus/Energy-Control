@@ -75,6 +75,7 @@ tile.kit_assembler.name=Сборщик наборов
 tile.afsu.name=УФСУ
 tile.seed_analyzer.name=Seed Analyzer
 tile.seed_library.name=Seed Library
+tile.timer.name=Таймер
 
 #Config
 ec.config.howlerAlarmRange=Howler Alarm Range
@@ -123,8 +124,10 @@ msg.ec.InfoPanelCapacityRF=Ёмкость: %s RF
 msg.ec.InfoPanelCapacityT=Ёмкость: %s T
 msg.ec.InfoPanelCarbonDioxide=Углекислый газ: %s
 msg.ec.InfoPanelCasingHeat=Casing Heat: %s
+msg.ec.InfoPanelCells=Cells: %s
 msg.ec.InfoPanelCoils=Катушки: %s
 msg.ec.InfoPanelCollecting=Сбор: %s/s
+msg.ec.InfoPanelCoolingRate=Cooling Rate: %s H/t
 msg.ec.InfoPanelCoreHeat=Core Heat: %s
 msg.ec.InfoPanelConductors=Проводники: %s
 msg.ec.InfoPanelEnergy=Энергия: %s
@@ -154,6 +157,7 @@ msg.ec.InfoPanelFuelmb=Топливо: %s mB
 msg.ec.InfoPanelFuelRods=Fuel Rods: %s
 msg.ec.InfoPanelGas=Газ: %s
 msg.ec.InfoPanelHeat=Т: %s
+msg.ec.InfoPanelHeatChange=Heat Change: %s H/t
 msg.ec.InfoPanelHeatPercentage=Нагрев: %s%%
 msg.ec.InfoPanelHeight=Высота: %s
 msg.ec.InfoPanelHydrogen=Водород: %s

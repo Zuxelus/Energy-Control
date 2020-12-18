@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 
+import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockStone;
 import net.minecraft.init.Blocks;
@@ -17,7 +18,6 @@ import net.minecraft.world.gen.ChunkGeneratorSettings;
 import net.minecraft.world.gen.IChunkGenerator;
 
 public class OreHelper {
-	public Block block;
 	int minHeight, maxHeight, size, count;
 
 	public OreHelper(int minHeight, int maxHeight, int size, int count) {
@@ -25,6 +25,13 @@ public class OreHelper {
 		this.maxHeight = maxHeight;
 		this.size = size;
 		this.count = count;
+	}
+
+	public OreHelper(ByteBuf buf) {
+		this.minHeight = buf.readInt();
+		this.maxHeight = buf.readInt();
+		this.size = buf.readInt();
+		this.count = buf.readInt();
 	}
 
 	public String getDescription() {
@@ -62,5 +69,12 @@ public class OreHelper {
 				CrossModLoader.ic2.loadOreInfo();
 			}
 		}
+	}
+
+	public void writeToBuf(ByteBuf buf) {
+		buf.writeInt(minHeight);
+		buf.writeInt(maxHeight);
+		buf.writeInt(size);
+		buf.writeInt(count);
 	}
 }

@@ -38,7 +38,7 @@ public class ItemCardReactor extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int settings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		if ((settings & 2) > 0)
 			addHeat(result, reader.getInt("heat"), reader.getInt("maxHeat"), showLabels);
@@ -57,7 +57,7 @@ public class ItemCardReactor extends ItemCardBase {
 		}
 
 		if ((settings & 1) > 0)
-			addOnOff(result, reader.getBoolean("reactorPoweredB"));
+			addOnOff(result, isServer, reader.getBoolean("reactorPoweredB"));
 		return result;
 	}
 
