@@ -93,7 +93,7 @@ public class ItemCardAppEng extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int settings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		result.add(new PanelString("msg.ec.InfoPanelTotalNodes", reader.getInt("nodes"), true));
 		result.add(new PanelString("msg.ec.InfoPanelStorageCells", reader.getInt("cells"), true));
@@ -104,7 +104,7 @@ public class ItemCardAppEng extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelSetting> getSettingsList(ItemStack stack) {
+	public List<PanelSetting> getSettingsList() {
 		return null;
 	}
 

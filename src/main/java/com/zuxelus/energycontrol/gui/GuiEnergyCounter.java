@@ -4,8 +4,8 @@ import org.lwjgl.opengl.GL11;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.containers.ContainerEnergyCounter;
-import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.utils.StringUtils;
+import com.zuxelus.zlib.network.NetworkHelper;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

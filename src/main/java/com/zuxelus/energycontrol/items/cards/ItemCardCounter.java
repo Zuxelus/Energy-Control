@@ -46,7 +46,7 @@ public class ItemCardCounter extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		// average counter
 		if (reader.hasField("average")) {
@@ -66,7 +66,7 @@ public class ItemCardCounter extends ItemCardBase {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public List<PanelSetting> getSettingsList(ItemStack stack) {
+	public List<PanelSetting> getSettingsList() {
 		return null;
 	}
 

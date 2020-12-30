@@ -18,7 +18,8 @@ public class ServerTickHandler {
 
 	@SubscribeEvent
 	public void onPlayerLogin(PlayerLoggedInEvent event) {
-		ChannelHandler.network.sendTo(
-				new PacketAlarm(EnergyControl.config.maxAlarmRange, EnergyControl.config.allowedAlarms), (EntityPlayerMP) event.player);
+		if (event.player instanceof EntityPlayerMP)
+			ChannelHandler.network.sendTo(
+					new PacketAlarm(EnergyControl.config.maxAlarmRange, EnergyControl.config.allowedAlarms), (EntityPlayerMP) event.player);
 	}
 }

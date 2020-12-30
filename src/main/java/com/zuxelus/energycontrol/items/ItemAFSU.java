@@ -5,6 +5,8 @@ import java.util.List;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityAFSU;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ic2.api.energy.EnergyNet;
 import net.minecraft.block.Block;
 import net.minecraft.client.resources.I18n;
@@ -22,6 +24,7 @@ public class ItemAFSU extends ItemBlock {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List tooltip, boolean advanced) {
 		super.addInformation(stack, player, tooltip, advanced);
 		tooltip.add(I18n.format("ic2.item.tooltip.PowerTier",TileEntityAFSU.TIER));

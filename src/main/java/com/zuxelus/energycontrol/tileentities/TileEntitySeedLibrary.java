@@ -3,11 +3,15 @@ package com.zuxelus.energycontrol.tileentities;
 import java.util.HashMap;
 import java.util.Vector;
 
-import com.zuxelus.energycontrol.containers.ISlotItemFilter;
-import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.utils.SeedLibraryFilter;
+import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
+import com.zuxelus.zlib.network.NetworkHelper;
+import com.zuxelus.zlib.tileentities.IBlockHorizontal;
+import com.zuxelus.zlib.tileentities.ITilePacketHandler;
+import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import ic2.api.crops.CropCard;
 import ic2.api.crops.Crops;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
@@ -358,8 +362,8 @@ public class TileEntitySeedLibrary extends TileEntityInventory implements ITileP
 	}
 
 	public String getKey(ItemStack seed) {
-		NBTTagCompound tag = seed.getTagCompound();
-		int id = tag.getShort("id");
+		CropCard card = Crops.instance.getCropCard(seed);
+		int id = card.getId();
 		byte growth = ItemCropSeed.getGrowthFromStack(seed);
 		byte gain = ItemCropSeed.getGainFromStack(seed);
 		byte resistance = ItemCropSeed.getResistanceFromStack(seed);

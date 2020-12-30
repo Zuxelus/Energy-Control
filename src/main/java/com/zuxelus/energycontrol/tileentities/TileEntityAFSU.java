@@ -3,9 +3,11 @@ package com.zuxelus.energycontrol.tileentities;
 import com.zuxelus.energycontrol.blocks.AFSU;
 import com.zuxelus.energycontrol.blocks.BlockDamages;
 import com.zuxelus.energycontrol.blocks.RangeTrigger;
-import com.zuxelus.energycontrol.containers.ISlotItemFilter;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
+import com.zuxelus.zlib.tileentities.ITilePacketHandler;
+import com.zuxelus.zlib.tileentities.TileEntityEnergyStorage;
 
 import ic2.api.energy.tile.IEnergyAcceptor;
 import ic2.api.energy.tile.IEnergyEmitter;
@@ -22,11 +24,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityAFSU extends TileEntityEnergyStorage implements ISlotItemFilter, ITilePacketHandler, IEnergyStorage, IWrenchable {
+public class TileEntityAFSU extends TileEntityEnergyStorage implements IEnergySource, IWrenchable {
 	public static final int TIER = 5;
 	public static final int CAPACITY = 400000000;
 	public static final int OUTPUT = 8192;
@@ -148,23 +151,10 @@ public class TileEntityAFSU extends TileEntityEnergyStorage implements ISlotItem
 	public void updateEntity() {
 		if (worldObj.isRemote)
 			return;
-		
+
 		onLoad();
-		ItemStack stack = getStackInSlot(SLOT_DISCHARGER);
-		if (stack != null && energy < CAPACITY && stack.getItem() instanceof IElectricItem) {
-			IElectricItem ielectricitem = (IElectricItem) stack.getItem();
-			if (ielectricitem.canProvideEnergy(stack))
-				energy += ElectricItem.manager.discharge(stack, CAPACITY - energy, TIER, false, false, false);
-		}
-		stack = getStackInSlot(SLOT_CHARGER);
-		if (stack != null && energy > 0 && stack.getItem() instanceof IElectricItem) {
-			IElectricItem item = (IElectricItem) stack.getItem();
-			int tier = item.getTier(stack);
-			double amount = ElectricItem.manager.charge(stack, Double.POSITIVE_INFINITY, tier, true, true);
-			amount = Math.min(amount, energy);
-			if (amount > 0)
-				energy -= ElectricItem.manager.charge(stack, amount, tier, false, false);
-		}
+		handleDischarger(SLOT_DISCHARGER);
+		handleCharger(SLOT_CHARGER);
 		updateState();
 	}
 
@@ -209,32 +199,28 @@ public class TileEntityAFSU extends TileEntityEnergyStorage implements ISlotItem
 		return false;
 	}
 
+	// IEnergySource
+	@Override
+	public boolean emitsEnergyTo(TileEntity receiver, ForgeDirection dir) {
+		return dir == getFacingForge();
+	}
+
+	@Override
+	public void drawEnergy(double amount) {
+		energy -= amount;
+	}
+
+	@Override
+	public double getOfferedEnergy() {
+		return allowEmit ? energy >= output ? output : 0.0D : 0.0D; 
+	}
+
+	@Override
+	public int getSourceTier() {
+		return tier;
+	}
+
 	// IEnergyStorage
-	@Override
-	public int getStored() {
-		return (int) getEnergy();
-	}
-
-	@Override
-	public void setStored(int energy) { }
-
-	@Override
-	public int addEnergy(int amount) {
-		amount = (int) Math.min(capacity - energy, amount);
-		energy += amount;
-		return amount;
-	}
-
-	@Override
-	public int getCapacity() {
-		return (int) capacity;
-	}
-
-	@Override
-	public double getOutputEnergyUnitsPerTick() {
-		return OUTPUT;
-	}
-
 	@Override
 	public boolean isTeleporterCompatible(ForgeDirection side) {
 		return true;

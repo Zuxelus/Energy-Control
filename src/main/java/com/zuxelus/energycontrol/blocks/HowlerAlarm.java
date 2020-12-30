@@ -1,7 +1,7 @@
 package com.zuxelus.energycontrol.blocks;
 
-import com.zuxelus.energycontrol.tileentities.TileEntityFacing;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
+import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;

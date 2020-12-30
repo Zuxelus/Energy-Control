@@ -3,7 +3,7 @@ package com.zuxelus.energycontrol.items;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.entities.EntityTechArrow;
-import com.zuxelus.energycontrol.network.NetworkHelper;
+import com.zuxelus.zlib.network.NetworkHelper;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -17,6 +17,7 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -31,6 +32,7 @@ public abstract class ItemNanoBow extends ItemBow /* , IItemUpgradeable */ {
 	static final int FLAME = 5;
 	static final int EXPLOSIVE = 6;
 	static final int[] CHARGE = { 300, 150, 400, 1000, 200, 800 };
+	static final String[] MODE = { "normal", "rapidfire", "spread", "sniper", "flame", "explosive" };
 	public IIcon[] icons;
 
 	public ItemNanoBow() {
@@ -51,15 +53,15 @@ public abstract class ItemNanoBow extends ItemBow /* , IItemUpgradeable */ {
 
 	@Override
 	public IIcon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining) {
-		if (usingItem != null && (usingItem.getItem() instanceof ItemNanoBow)) {
+		if (usingItem != null && usingItem.getItem() instanceof ItemNanoBow) {
 			NBTTagCompound nbt = ItemStackHelper.getOrCreateNbtData(stack);
 			int mode = nbt.getInteger("bowMode");
 			int i1 = 18;
 			int i2 = 13;
-			if ((mode == 4) || (mode == 6)) {
+			if (mode == SNIPER || mode == EXPLOSIVE) {
 				i1 = 36;
 				i2 = 26;
-			} else if (mode == 2) {
+			} else if (mode == RAPID) {
 				i1 = 5;
 				i2 = 3;
 			}
@@ -83,17 +85,18 @@ public abstract class ItemNanoBow extends ItemBow /* , IItemUpgradeable */ {
 	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int timeLeft) {
 		NBTTagCompound nbt = ItemStackHelper.getOrCreateNbtData(stack);
 		int mode = nbt.getInteger("bowMode");
-		
-		int charge = this.getMaxItemUseDuration(stack) - timeLeft;
-		
+
+		int charge = getMaxItemUseDuration(stack) - timeLeft;
+
 		ArrowLooseEvent event = new ArrowLooseEvent(player, stack, charge);
 		MinecraftForge.EVENT_BUS.post(event);
 		if (event.isCanceled())
 			return;
 		charge = event.charge;
-
+		if (mode == SNIPER || mode == EXPLOSIVE)
+			charge /= 2;
 		if (mode == RAPID)
-			charge = charge * 2;
+			charge = charge * 4;
 		float f = getArrowVelocity(charge);
 		if (f < 0.1)
 			return;
@@ -207,30 +210,29 @@ public abstract class ItemNanoBow extends ItemBow /* , IItemUpgradeable */ {
 
 		NBTTagCompound nbt = ItemStackHelper.getOrCreateNbtData(stack);
 		int mode = nbt.getInteger("bowMode");
-		if (!world.isRemote && isModeSwitchKeyDown(player) && nbt.getByte("toggleTimer") == 0) {
-			byte toggle = 10;
-			nbt.setByte("toggleTimer", toggle);
+		if (isModeSwitchKeyDown(player) && nbt.getByte("toggleTimer") == 0) {
+			if (!world.isRemote) {
+				byte toggle = 10;
+				nbt.setByte("toggleTimer", toggle);
 
-			mode++;
-			/*if (mode == RAPID && !IC2CA.rapidFireMode)
 				mode++;
-			if (mode == SPREAD && !IC2CA.spreadMode)
-				mode++;
-			if (mode == SNIPER && !IC2CA.sniperMode)
-				mode++;
-			if (mode == FLAME && !IC2CA.flameMode)
-				mode++;
-			if (mode == EXPLOSIVE && !IC2CA.explosiveMode)
-				mode++;*/
-			if (mode > EXPLOSIVE) {
-				mode -= EXPLOSIVE;
+				/*if (mode == RAPID && !IC2CA.rapidFireMode)
+					mode++;
+				if (mode == SPREAD && !IC2CA.spreadMode)
+					mode++;
+				if (mode == SNIPER && !IC2CA.sniperMode)
+					mode++;
+				if (mode == FLAME && !IC2CA.flameMode)
+					mode++;
+				if (mode == EXPLOSIVE && !IC2CA.explosiveMode)
+					mode++;*/
+				if (mode > EXPLOSIVE)
+					mode -= EXPLOSIVE;
+				nbt.setInteger("bowMode", mode);
+				//NetworkHelper.chatMessage(player, "info.modeenabled", 1, mode - 1);
+				player.addChatMessage(new ChatComponentTranslation("info.nanobow." + MODE[mode - 1]));
 			}
-			nbt.setInteger("bowMode", mode);
-			NetworkHelper.chatMessage(player, "info.modeenabled", 1, mode - 1);
-			return stack;
-		}
-
-		if (canUse(stack, CHARGE[mode - 1]))
+		} else if (player.capabilities.isCreativeMode || canUse(stack, CHARGE[mode - 1]))
 			player.setItemInUse(stack, getMaxItemUseDuration(stack));
 		return stack;
 	}

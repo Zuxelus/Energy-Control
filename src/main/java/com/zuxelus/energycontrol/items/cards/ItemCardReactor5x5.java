@@ -31,7 +31,7 @@ public class ItemCardReactor5x5 extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		if ((displaySettings & 2) > 0)
 			addHeat(result, reader.getInt("heat"), reader.getInt("maxHeat"), showLabels);
@@ -76,7 +76,7 @@ public class ItemCardReactor5x5 extends ItemCardBase {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public List<PanelSetting> getSettingsList(ItemStack stack) {
+	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(6);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOnOff"), 1, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelHeat"), 2, damage));

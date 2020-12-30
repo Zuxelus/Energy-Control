@@ -1,7 +1,7 @@
 package com.zuxelus.energycontrol.items;
 
 import com.zuxelus.energycontrol.api.ItemStackHelper;
-import com.zuxelus.energycontrol.containers.ISlotItemFilter;
+import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;

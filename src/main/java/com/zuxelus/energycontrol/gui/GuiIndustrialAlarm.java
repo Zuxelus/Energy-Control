@@ -5,6 +5,7 @@ import org.lwjgl.opengl.GL11;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.gui.controls.GuiHowlerAlarmSlider;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
+import com.zuxelus.zlib.gui.GuiBase;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -12,14 +13,11 @@ import net.minecraft.util.ResourceLocation;
 
 @SideOnly(Side.CLIENT)
 public class GuiIndustrialAlarm extends GuiBase {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/gui_industrial_alarm.png");
-
 	private TileEntityHowlerAlarm alarm;
 	private GuiHowlerAlarmSlider slider;
 
 	public GuiIndustrialAlarm(TileEntityHowlerAlarm alarm) {
-		super("tile.industrial_alarm.name", 131, 64);
+		super("tile.industrial_alarm.name", 131, 64, EnergyControl.MODID + ":textures/gui/gui_industrial_alarm.png");
 		this.alarm = alarm;
 	}
 
@@ -43,14 +41,5 @@ public class GuiIndustrialAlarm extends GuiBase {
 		super.mouseMovedOrUp(mouseX, mouseY, which);
 		if ((which == 0 || which == 1) && slider.dragging)
 			slider.mouseReleased(mouseX, mouseY);
-	}
-
-	@Override
-	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		mc.getTextureManager().bindTexture(TEXTURE);
-		int left = (width - xSize) / 2;
-		int top = (height - ySize) / 2;
-		drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
 	}
 }

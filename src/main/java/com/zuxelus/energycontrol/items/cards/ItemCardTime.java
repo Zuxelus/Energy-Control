@@ -27,7 +27,7 @@ public class ItemCardTime extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		int time = (int) ((FMLClientHandler.instance().getClient().theWorld.getWorldTime() + 6000) % 24000);
 		int hours = time / 1000;
@@ -45,7 +45,7 @@ public class ItemCardTime extends ItemCardBase {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public List<PanelSetting> getSettingsList(ItemStack stack) {
+	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(1);
 		result.add(new PanelSetting(I18n.format("msg.ec.cb24h"), 1, damage));
 		return result;

@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.network.NetworkHelper;
+import com.zuxelus.zlib.network.NetworkHelper;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -16,6 +16,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentTranslation;
 
 public class ItemDigitalThermometer extends ItemThermometer implements IElectricItem {
 	protected final static int CAPACITY = 12000;
@@ -35,10 +36,10 @@ public class ItemDigitalThermometer extends ItemThermometer implements IElectric
 	}
 
 	@Override
-	protected void messagePlayer(EntityPlayer entityplayer, IReactor reactor) {
-		int heat = reactor.getHeat();
+	protected void messagePlayer(EntityPlayer player, IReactor reactor) {
 		int maxHeat = reactor.getMaxHeat();
-		NetworkHelper.chatMessage(entityplayer, I18n.format("msg.ec.ThermoDigital", heat, maxHeat * 50 / 100, maxHeat * 85 / 100));
+		player.addChatMessage(new ChatComponentTranslation("msg.ec.ThermoDigital", reactor.getHeat(), maxHeat * 50 / 100, maxHeat * 85 / 100));
+		//NetworkHelper.chatMessage(entityplayer, I18n.format("msg.ec.ThermoDigital", heat, maxHeat * 50 / 100, maxHeat * 85 / 100));
 	}
 
 	@Override

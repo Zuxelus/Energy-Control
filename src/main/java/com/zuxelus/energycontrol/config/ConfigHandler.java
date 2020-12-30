@@ -9,48 +9,44 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.common.config.Configuration;
 
 public class ConfigHandler {
-	public Configuration configuration;
+	public Configuration config;
 
 	public int howlerAlarmRange;
 	public int maxAlarmRange;
 	public String allowedAlarms;	
 	public int remoteThermalMonitorEnergyConsumption;
-	public int screenRefreshPeriod;
+	public int infoPanelRefreshPeriod;
 	public int rangeTriggerRefreshPeriod;
 	public int SMPMaxAlarmRange;
+	public boolean useCustomSounds;
 
 	public void init(File configFile) {
-		if (configuration == null)
-			configuration = new Configuration(configFile);
-		
-		loadConfiguration();
+		if (config == null)
+			config = new Configuration(configFile);
+		loadConfig();
 	}
 
-	private void loadConfiguration() {
+	private void loadConfig() {
 		try {
-			howlerAlarmRange = configuration.get(Configuration.CATEGORY_GENERAL, "howlerAlarmRange", 64).getInt();
-			maxAlarmRange = configuration.get(Configuration.CATEGORY_GENERAL, "maxAlarmRange", 128).getInt();
-			allowedAlarms = configuration.get(Configuration.CATEGORY_GENERAL, "allowedAlarms", "default,sci-fi,siren").getString().replaceAll(" ", "");
-			remoteThermalMonitorEnergyConsumption = configuration.get(Configuration.CATEGORY_GENERAL, "remoteThermalMonitorEnergyConsumption", 1).getInt();
-			screenRefreshPeriod = configuration.get(Configuration.CATEGORY_GENERAL, "infoPanelRefreshPeriod",20).getInt();
-			rangeTriggerRefreshPeriod = configuration.get(Configuration.CATEGORY_GENERAL, "rangeTriggerRefreshPeriod", 20).getInt();
-			SMPMaxAlarmRange = configuration.get(Configuration.CATEGORY_GENERAL, "SMPMaxAlarmRange", 256).getInt();
+			howlerAlarmRange = config.get(Configuration.CATEGORY_GENERAL, "howlerAlarmRange", 64).getInt();
+			maxAlarmRange = config.get(Configuration.CATEGORY_GENERAL, "maxAlarmRange", 128).getInt();
+			allowedAlarms = config.get(Configuration.CATEGORY_GENERAL, "allowedAlarms", "default,sci-fi,siren").getString().replaceAll(" ", "");
+			remoteThermalMonitorEnergyConsumption = config.get(Configuration.CATEGORY_GENERAL, "remoteThermalMonitorEnergyConsumption", 1).getInt();
+			infoPanelRefreshPeriod = config.get(Configuration.CATEGORY_GENERAL, "infoPanelRefreshPeriod",20).getInt();
+			rangeTriggerRefreshPeriod = config.get(Configuration.CATEGORY_GENERAL, "rangeTriggerRefreshPeriod", 20).getInt();
+			SMPMaxAlarmRange = config.get(Configuration.CATEGORY_GENERAL, "SMPMaxAlarmRange", 256).getInt();
+			useCustomSounds = config.get(Configuration.CATEGORY_GENERAL, "useCustomSounds", false).getBoolean();
 		} catch (Exception e) {
 			EnergyControl.logger.error("Mod has a problem loading it's configuration", e);
 		} finally {
-			if (configuration.hasChanged())
-				configuration.save();
+			if (config.hasChanged())
+				config.save();
 		}
-	}
-
-	public void save() {
-		if (configuration.hasChanged())
-			configuration.save();
 	}
 
 	@SubscribeEvent
 	public void onConfigurationChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event) {
 		if (event.modID.equals(EnergyControl.MODID))
-			loadConfiguration();
+			loadConfig();
 	}
 }

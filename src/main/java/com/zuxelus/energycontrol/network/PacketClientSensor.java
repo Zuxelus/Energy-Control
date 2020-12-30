@@ -56,19 +56,19 @@ public class PacketClientSensor implements IMessage, IMessageHandler<PacketClien
 			String name = ByteBufUtils.readUTF8String(buf);
 			byte type = buf.readByte();
 			switch (type) {
-			case NetworkHelper.FIELD_INT:
+			case FIELD_INT:
 				fields.put(name, buf.readInt());
 				break;
-			case NetworkHelper.FIELD_BOOLEAN:
+			case FIELD_BOOLEAN:
 				fields.put(name, buf.readBoolean());
 				break;
-			case NetworkHelper.FIELD_LONG:
+			case FIELD_LONG:
 				fields.put(name, buf.readLong());
 				break;
-			case NetworkHelper.FIELD_DOUBLE:
+			case FIELD_DOUBLE:
 				fields.put(name, buf.readDouble());
 				break;
-			case NetworkHelper.FIELD_STRING:
+			case FIELD_STRING:
 				fields.put(name, ByteBufUtils.readUTF8String(buf));
 				break;
 			default:

@@ -75,7 +75,9 @@ public interface ICardReader {
 	 *            field name
 	 * @return
 	 */
-	boolean hasField(String field);
+	boolean hasField(String name);
+
+	void removeField(String name);
 
 	/**
 	 * Used to send changed data to nearby players. In most cases shouldn't be

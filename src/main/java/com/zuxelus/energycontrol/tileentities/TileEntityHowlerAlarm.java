@@ -1,6 +1,8 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.zlib.tileentities.ITilePacketHandler;
+import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;

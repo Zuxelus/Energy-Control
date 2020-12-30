@@ -2,8 +2,8 @@ package com.zuxelus.energycontrol.gui;
 
 import org.lwjgl.opengl.GL11;
 
-import com.zuxelus.energycontrol.containers.ContainerBase;
 import com.zuxelus.energycontrol.containers.ContainerCardHolder;
+import com.zuxelus.zlib.containers.ContainerBase;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;

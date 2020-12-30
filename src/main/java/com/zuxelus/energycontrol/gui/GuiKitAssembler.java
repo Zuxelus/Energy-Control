@@ -10,8 +10,8 @@ import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.containers.ContainerKitAssembler;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
-import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
+import com.zuxelus.zlib.network.NetworkHelper;
 
 import cpw.mods.fml.client.config.GuiUtils;
 import cpw.mods.fml.relauncher.Side;
@@ -98,12 +98,12 @@ public class GuiKitAssembler extends GuiContainer {
 		int left = (width - xSize) / 2;
 		int top = (height - ySize) / 2;
 		drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
-		
+
 		int energyHeight = container.te.getEnergyFactor();
 		if (energyHeight > 0)
 			drawTexturedModalRect(left + 9, top + 62 + (14 - energyHeight), 176, 14 - energyHeight, 14, energyHeight);
 		int productionWidth = container.te.getProductionFactor();
-		if (energyHeight > 0)
+		if (productionWidth > 0)
 			drawTexturedModalRect(left + 86, top + 60, 176, 15, productionWidth, 17);
 	}
 

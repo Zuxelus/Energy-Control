@@ -6,8 +6,8 @@ import org.lwjgl.opengl.GL11;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.containers.ContainerAFSU;
-import com.zuxelus.energycontrol.gui.controls.GuiButtonImage;
-import com.zuxelus.energycontrol.network.NetworkHelper;
+import com.zuxelus.zlib.gui.controls.GuiButtonImage;
+import com.zuxelus.zlib.network.NetworkHelper;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -19,8 +19,7 @@ import net.minecraft.util.ResourceLocation;
 
 @SideOnly(Side.CLIENT)
 public class GuiAFSU extends GuiContainer {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/gui_afsu.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID + ":textures/gui/gui_afsu.png");
 
 	private String name;
 	private ContainerAFSU container;
@@ -37,7 +36,7 @@ public class GuiAFSU extends GuiContainer {
 	@Override
 	public void initGui() {
 		super.initGui();
-		buttonList.add((GuiButton) new GuiButtonImage(1, guiLeft + 152, guiTop + 4, 20, 20, 176, 32, 20, TEXTURE));
+		buttonList.add(new GuiButtonImage(1, guiLeft + 152, guiTop + 4, 20, 20, 176, 32, 20, TEXTURE));
 	}
 
 	@Override

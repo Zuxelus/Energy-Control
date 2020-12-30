@@ -9,7 +9,6 @@ import org.lwjgl.opengl.GL12;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.ICardGui;
 import com.zuxelus.energycontrol.api.PanelSetting;
-import com.zuxelus.energycontrol.containers.ContainerBase;
 import com.zuxelus.energycontrol.gui.controls.CompactButton;
 import com.zuxelus.energycontrol.gui.controls.GuiInfoPanelCheckBox;
 import com.zuxelus.energycontrol.gui.controls.GuiInfoPanelShowLabels;
@@ -17,8 +16,9 @@ import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardSettingsReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
-import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
+import com.zuxelus.zlib.containers.ContainerBase;
+import com.zuxelus.zlib.network.NetworkHelper;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

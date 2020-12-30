@@ -1,11 +1,5 @@
 package com.zuxelus.energycontrol.network;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,7 +15,6 @@ import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
@@ -62,38 +55,29 @@ public class PacketCard implements IMessage, IMessageHandler<PacketCard, IMessag
 			String name = ByteBufUtils.readUTF8String(buf);
 			byte type = buf.readByte();
 			switch (type) {
-			case NetworkHelper.FIELD_INT:
+			case FIELD_INT:
 				fields.put(name, buf.readInt());
 				break;
-			case NetworkHelper.FIELD_BOOLEAN:
+			case FIELD_BOOLEAN:
 				fields.put(name, buf.readBoolean());
 				break;
-			case NetworkHelper.FIELD_LONG:
+			case FIELD_LONG:
 				fields.put(name, buf.readLong());
 				break;
-			case NetworkHelper.FIELD_DOUBLE:
+			case FIELD_DOUBLE:
 				fields.put(name, buf.readDouble());
 				break;
-			case NetworkHelper.FIELD_STRING:
+			case FIELD_STRING:
 				fields.put(name, ByteBufUtils.readUTF8String(buf));
 				break;
-			case NetworkHelper.FIELD_TAG:
-				NBTTagCompound tag;
-				try {
-					int size = buf.readInt();
-					DataInputStream dat = new DataInputStream(new ByteArrayInputStream(
-							Arrays.copyOfRange(buf.array(), buf.readerIndex() + 1, buf.readerIndex() + 1 + size)));
-					tag = CompressedStreamTools.readCompressed(dat);
-					fields.put(name, tag);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+			case FIELD_TAG:
+				fields.put(name, ByteBufUtils.readTag(buf));
 				break;
-			case NetworkHelper.FIELD_NULL:
+			case FIELD_NULL:
 				fields.put(name, null);
 				break;
 			default:
-				EnergyControl.logger.warn("Invalid field type in PacketCard: %d", type);
+				EnergyControl.logger.warn(String.format("Invalid field type in PacketCard: %d", type));
 				break;
 			}
 		}
@@ -126,15 +110,7 @@ public class PacketCard implements IMessage, IMessageHandler<PacketCard, IMessag
 				buf.writeBoolean((Boolean) value);
 			} else if (value instanceof NBTTagCompound) {
 				buf.writeByte(FIELD_TAG);
-				try {
-					ByteArrayOutputStream stream = new ByteArrayOutputStream();
-					DataOutputStream output = new DataOutputStream(stream);
-					CompressedStreamTools.writeCompressed((NBTTagCompound) value, output);
-					buf.writeInt(stream.size());
-					buf.writeBytes(stream.toByteArray());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				ByteBufUtils.writeTag(buf, (NBTTagCompound) value);
 			} else if (value == null) {
 				buf.writeByte(FIELD_NULL);
 			}
@@ -168,7 +144,7 @@ public class PacketCard implements IMessage, IMessageHandler<PacketCard, IMessag
 			} else if (value instanceof NBTTagCompound) {
 				reader.setTag(name, (NBTTagCompound) value);
 			} else if (value == null)
-				reader.clearField(name);
+				reader.removeField(name);
 		}
 		panel.resetCardData();
 		return null;

@@ -1,14 +1,11 @@
-package com.zuxelus.energycontrol.tileentities;
+package com.zuxelus.zlib.tileentities;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import com.zuxelus.energycontrol.api.ItemStackHelper;
-
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -71,18 +68,28 @@ public abstract class TileEntityInventory extends TileEntityFacing implements IS
 
 	@Override
 	public ItemStack decrStackSize(int index, int count) {
-		ItemStack itemstack = ItemStackHelper.getAndSplit(inventory, index, count);
-		//if (!itemstack.isEmpty()) markDirty();
-		return itemstack;
+		ItemStack stack = getAndSplit(inventory, index, count);
+		//if (!stack.isEmpty()) markDirty();
+		return stack;
+	}
+
+	private static ItemStack getAndSplit(ItemStack[] stacks, int index, int amount) {
+		if (index >= 0 && index < stacks.length && stacks[index] != null && amount > 0) {
+			ItemStack stack = stacks[index].splitStack(amount);
+			if (stacks[index].stackSize == 0)
+				stacks[index] = null;
+			return stack;
+		}
+		return null;
 	}
 
 	@Override
 	public ItemStack getStackInSlotOnClosing(int index) {
-		ItemStack itemstack = getStackInSlot(index);
-		if (itemstack == null)
+		ItemStack stack = getStackInSlot(index);
+		if (stack == null)
 			return null;
 		inventory[index] = null;
-		return itemstack;
+		return stack;
 	}
 
 	@Override

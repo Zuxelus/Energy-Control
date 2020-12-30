@@ -1,8 +1,10 @@
-package com.zuxelus.energycontrol.tileentities;
+package com.zuxelus.zlib.tileentities;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public abstract class TileEntityFacing extends TileEntity {
@@ -61,5 +63,19 @@ public abstract class TileEntityFacing extends TileEntity {
 		if (hasRotation() && rotation != null)
 			tag.setInteger("rotation", rotation.ordinal());
 		return tag;
+	}
+
+	public static ForgeDirection getHorizontalFacing(EntityLivingBase placer) {
+		switch (MathHelper.floor_double(placer.rotationYaw * 4.0F / 360.0F + 0.5D) & 3) {
+		case 0:
+			return ForgeDirection.NORTH;
+		case 1:
+			return ForgeDirection.EAST;
+		case 2:
+			return ForgeDirection.SOUTH;
+		case 3:
+			return ForgeDirection.WEST;
+		}
+		return ForgeDirection.NORTH;
 	}
 }

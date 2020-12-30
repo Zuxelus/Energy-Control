@@ -47,7 +47,7 @@ public class ItemCardLiquid extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		int capacity = reader.getInt("capacity");
 		int amount = reader.getInt("amount");
@@ -71,7 +71,7 @@ public class ItemCardLiquid extends ItemCardBase {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public List<PanelSetting> getSettingsList(ItemStack stack) {
+	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(5);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidName"), 1, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidAmount"), 2, damage));

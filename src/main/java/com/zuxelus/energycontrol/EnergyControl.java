@@ -33,10 +33,9 @@ public class EnergyControl {
 	@Instance(MODID)
 	public static EnergyControl instance;
 
-	// Mod's creative tab
+
 	public static EnCtrlTab creativeTab = new EnCtrlTab();
 
-	// For logging purposes
 	public static Logger logger;
 	public static ConfigHandler config;
 	
@@ -52,11 +51,9 @@ public class EnergyControl {
 	public void preInit(FMLPreInitializationEvent event) {
 		logger = event.getModLog();
 
-		// Loads configuration
 		proxy.loadConfig(event);
 		proxy.importSound();
 
-		// registers channel handler
 		ChannelHandler.init();
 
 		CrossModLoader.preinit();

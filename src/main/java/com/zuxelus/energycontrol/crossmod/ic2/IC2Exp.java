@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.crossmod.ic2;
 
 import java.lang.reflect.Field;
+import java.util.Map.Entry;
 
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
@@ -9,8 +10,8 @@ import com.zuxelus.energycontrol.items.ItemAFB;
 import com.zuxelus.energycontrol.items.ItemAFSUUpgradeKit;
 import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
-import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.utils.ReactorHelper;
+import com.zuxelus.zlib.network.NetworkHelper;
 
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IC2Items;
@@ -23,32 +24,14 @@ import ic2.core.block.TileEntityBarrel;
 import ic2.core.block.TileEntityBlock;
 import ic2.core.block.TileEntityHeatSourceInventory;
 import ic2.core.block.comp.Energy;
+import ic2.core.block.comp.TileEntityComponent;
 import ic2.core.block.generator.block.BlockGenerator;
-import ic2.core.block.generator.tileentity.TileEntityBaseGenerator;
-import ic2.core.block.generator.tileentity.TileEntityGeoGenerator;
-import ic2.core.block.generator.tileentity.TileEntityKineticGenerator;
-import ic2.core.block.generator.tileentity.TileEntityRTGenerator;
-import ic2.core.block.generator.tileentity.TileEntitySemifluidGenerator;
-import ic2.core.block.generator.tileentity.TileEntitySolarGenerator;
-import ic2.core.block.generator.tileentity.TileEntityStirlingGenerator;
-import ic2.core.block.generator.tileentity.TileEntityWaterGenerator;
-import ic2.core.block.heatgenerator.tileentity.TileEntityElectricHeatGenerator;
-import ic2.core.block.heatgenerator.tileentity.TileEntityFluidHeatGenerator;
-import ic2.core.block.heatgenerator.tileentity.TileEntityRTHeatGenerator;
-import ic2.core.block.heatgenerator.tileentity.TileEntitySolidHeatGenerator;
-import ic2.core.block.kineticgenerator.tileentity.TileEntityElectricKineticGenerator;
-import ic2.core.block.kineticgenerator.tileentity.TileEntityManualKineticGenerator;
-import ic2.core.block.kineticgenerator.tileentity.TileEntitySteamKineticGenerator;
-import ic2.core.block.kineticgenerator.tileentity.TileEntityStirlingKineticGenerator;
-import ic2.core.block.kineticgenerator.tileentity.TileEntityWaterKineticGenerator;
-import ic2.core.block.kineticgenerator.tileentity.TileEntityWindKineticGenerator;
+import ic2.core.block.generator.tileentity.*;
+import ic2.core.block.heatgenerator.tileentity.*;
+import ic2.core.block.kineticgenerator.tileentity.*;
 import ic2.core.block.machine.tileentity.TileEntityLiquidHeatExchanger;
 import ic2.core.block.machine.tileentity.TileEntitySteamGenerator;
-import ic2.core.block.reactor.tileentity.TileEntityNuclearReactorElectric;
-import ic2.core.block.reactor.tileentity.TileEntityReactorAccessHatch;
-import ic2.core.block.reactor.tileentity.TileEntityReactorChamberElectric;
-import ic2.core.block.reactor.tileentity.TileEntityReactorFluidPort;
-import ic2.core.block.reactor.tileentity.TileEntityReactorRedstonePort;
+import ic2.core.block.reactor.tileentity.*;
 import ic2.core.block.wiring.TileEntityCable;
 import ic2.core.item.reactor.ItemReactorLithiumCell;
 import ic2.core.item.reactor.ItemReactorMOX;
@@ -61,6 +44,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
@@ -205,7 +189,10 @@ public class IC2Exp extends CrossIC2 {
 				tag.setDouble("storage", ((TileEntityBaseGenerator) te).storage);
 				tag.setDouble("maxStorage", ((TileEntityBaseGenerator) te).maxStorage);
 				if (te instanceof TileEntitySolarGenerator) {
-					double light = ((TileEntitySolarGenerator)te).sunIsVisible ? ((TileEntitySolarGenerator)te).solarbasevalue : 0.0D;
+					Field field = TileEntitySolarGenerator.class.getDeclaredField("solarbasevalue");
+					field.setAccessible(true);
+					double solarbasevalue = (Double) field.get(te);
+					double light = ((TileEntitySolarGenerator)te).sunIsVisible ? solarbasevalue : 0.0D; //((TileEntitySolarGenerator) te).solarbasevalue : 0.0D;
 					active = light > 0 && ((TileEntityBaseGenerator) te).storage < ((TileEntityBaseGenerator) te).maxStorage;
 					tag.setBoolean("active", active);
 					if (active)
@@ -236,8 +223,12 @@ public class IC2Exp extends CrossIC2 {
 				if (te instanceof TileEntityWaterGenerator) {
 					active = ((TileEntityWaterGenerator)te).water > 0 || ((TileEntityWaterGenerator)te).fuel > 0;
 					tag.setBoolean("active", active);
-					if (((TileEntityWaterGenerator) te).fuel <= 0)
-						tag.setDouble("production", ((TileEntityWaterGenerator) te).waterbasevalue * ((TileEntityWaterGenerator) te).water / 100);
+					if (((TileEntityWaterGenerator) te).fuel <= 0) {
+						Field field = TileEntityWaterGenerator.class.getDeclaredField("waterbasevalue");
+						field.setAccessible(true);
+						double waterbasevalue = (Float) field.get(te);
+						tag.setDouble("production", waterbasevalue * ((TileEntityWaterGenerator) te).water / 100);
+					}
 					return tag;
 				}
 				if (active)
@@ -319,11 +310,14 @@ public class IC2Exp extends CrossIC2 {
 				tag.setDouble("output", entity.getMaxKU());
 				tag.setDouble("storage", ((TileEntityElectricKineticGenerator)te).ku);
 				tag.setDouble("maxStorage", ((TileEntityElectricKineticGenerator)te).maxKU);
-				Energy energy = (Energy) ((TileEntityElectricKineticGenerator) te).getComponent("energy");
+				//Energy energy = (Energy) ((TileEntityElectricKineticGenerator) te).getComponent("energy");
+				Field field = TileEntityElectricKineticGenerator.class.getDeclaredField("energy");
+				field.setAccessible(true);
+				Energy energy = (Energy) field.get(te);
 				tag.setDouble("energy", energy.getEnergy());
 				tag.setDouble("maxEnergy", energy.getCapacity());
 				tag.setDouble("items", counter);
-				Field field = TileEntityElectricKineticGenerator.class.getDeclaredField("kuPerEU");
+				field = TileEntityElectricKineticGenerator.class.getDeclaredField("kuPerEU");
 				field.setAccessible(true);
 				tag.setDouble("multiplier", (double) (float) field.get(te));
 				return tag;
@@ -418,7 +412,10 @@ public class IC2Exp extends CrossIC2 {
 
 			if (te instanceof TileEntityElectricHeatGenerator) {
 				tag.setInteger("type", 1);
-				Energy energy = (Energy) ((TileEntityHeatSourceInventory) te).getComponent("energy");
+				//Energy energy = (Energy) ((TileEntityElectricHeatGenerator) te).getComponent("energy");
+				Field field = TileEntityElectricHeatGenerator.class.getDeclaredField("energy");
+				field.setAccessible(true);
+				Energy energy = (Energy) field.get(te);
 				tag.setDouble("storage", energy.getEnergy());
 				tag.setDouble("maxStorage", energy.getCapacity());
 				int counter = 0;
@@ -588,7 +585,7 @@ public class IC2Exp extends CrossIC2 {
 				boozeAmount = (int) field.get(te);
 			} catch (Throwable t) { }
 			if (age >= 0)
-				NetworkHelper.chatMessage(player, age + " / " + ((TileEntityBarrel) te).timeNedForRum(boozeAmount));
+				player.addChatMessage(new ChatComponentText(age + " / " + ((TileEntityBarrel) te).timeNedForRum(boozeAmount)));
 		}
 	}
 }

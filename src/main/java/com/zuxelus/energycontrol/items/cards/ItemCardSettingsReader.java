@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.gui.GuiInfoPanel;
-import com.zuxelus.energycontrol.network.NetworkHelper;
+import com.zuxelus.energycontrol.network.ChannelHandler;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.item.ItemStack;
@@ -46,7 +46,7 @@ public class ItemCardSettingsReader {
 
 	public void commit() {
 		if (!updateSet.isEmpty()) {
-			NetworkHelper.setCardSettings(card, panel, updateSet, slot);
+			ChannelHandler.setCardSettings(card, panel, updateSet, slot);
 			updateSet = new HashMap<String, Object>();
 		}
 	}

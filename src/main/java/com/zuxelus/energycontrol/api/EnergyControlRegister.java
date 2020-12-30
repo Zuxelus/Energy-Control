@@ -3,7 +3,7 @@ package com.zuxelus.energycontrol.api;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.kits.ItemKitMain;
 
-public final class EnergyContolRegister {
+public final class EnergyControlRegister {
 
 	public static void registerKit(IItemKit kit) {
 		ItemKitMain.registerKit(kit);

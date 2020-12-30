@@ -26,15 +26,15 @@ public class ItemUpgrade extends Item {
 	}
 
 	@Override
-	public void registerIcons(IIconRegister iconRegister) {
-		iconRange = iconRegister.registerIcon(EnergyControl.MODID + ":" + "upgrade_range");
-		iconColor = iconRegister.registerIcon(EnergyControl.MODID + ":" + "upgrade_color");
-		iconTouch = iconRegister.registerIcon(EnergyControl.MODID + ":" + "upgrade_touch");
+	public void registerIcons(IIconRegister ir) {
+		iconRange = ir.registerIcon(EnergyControl.MODID + ":" + "upgrade_range");
+		iconColor = ir.registerIcon(EnergyControl.MODID + ":" + "upgrade_color");
+		iconTouch = ir.registerIcon(EnergyControl.MODID + ":" + "upgrade_touch");
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack itemStack) {
-		int damage = itemStack.getItemDamage();
+	public String getUnlocalizedName(ItemStack stack) {
+		int damage = stack.getItemDamage();
 		switch (damage) {
 		case DAMAGE_RANGE:
 		default:

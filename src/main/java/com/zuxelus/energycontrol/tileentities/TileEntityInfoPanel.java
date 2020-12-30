@@ -10,12 +10,14 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.blocks.BlockDamages;
-import com.zuxelus.energycontrol.containers.ISlotItemFilter;
 import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
+import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
+import com.zuxelus.zlib.tileentities.ITilePacketHandler;
+import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -69,7 +71,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 		cardData = new HashMap<Integer, List<PanelString>>();
 		displaySettings = new HashMap<Integer, Map<Integer, Integer>>(1);
 		displaySettings.put(0, new HashMap<Integer, Integer>());
-		tickRate = EnergyControl.config.screenRefreshPeriod - 1;
+		tickRate = EnergyControl.config.infoPanelRefreshPeriod - 1;
 		updateTicker = tickRate;
 		dataTicker = 4;
 		showLabels = true;

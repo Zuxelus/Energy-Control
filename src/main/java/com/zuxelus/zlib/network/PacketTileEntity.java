@@ -1,6 +1,6 @@
-package com.zuxelus.energycontrol.network;
+package com.zuxelus.zlib.network;
 
-import com.zuxelus.energycontrol.tileentities.ITilePacketHandler;
+import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.ByteBufUtils;

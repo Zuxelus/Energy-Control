@@ -8,10 +8,10 @@ import org.lwjgl.opengl.GL11;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.containers.ContainerKitAssembler;
 import com.zuxelus.energycontrol.containers.ContainerSeedLibrary;
-import com.zuxelus.energycontrol.gui.controls.GuiButtonImage;
-import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntitySeedLibrary;
 import com.zuxelus.energycontrol.utils.SeedLibraryFilter;
+import com.zuxelus.zlib.gui.controls.GuiButtonImage;
+import com.zuxelus.zlib.network.NetworkHelper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;

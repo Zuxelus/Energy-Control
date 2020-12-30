@@ -10,7 +10,7 @@ import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.api.PanelString;
-import com.zuxelus.energycontrol.network.NetworkHelper;
+import com.zuxelus.energycontrol.network.ChannelHandler;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -174,7 +174,7 @@ public class ItemCardReader implements ICardReader {
 	@Override
 	public void updateClient(TileEntity panel, int slot) {
 		if (!updateSet.isEmpty())
-			NetworkHelper.setSensorCardField(panel, slot, updateSet);
+			ChannelHandler.setSensorCardField(panel, slot, updateSet);
 	}
 
 	@Override
@@ -200,7 +200,8 @@ public class ItemCardReader implements ICardReader {
 		return (NBTTagCompound) nbtTagCompound.getTag(name);
 	}
 
-	public void clearField(String name) {
+	@Override
+	public void removeField(String name) {
 		NBTTagCompound nbtTagCompound = ItemStackHelper.getTagCompound(card);
 		nbtTagCompound.removeTag(name);
 	}

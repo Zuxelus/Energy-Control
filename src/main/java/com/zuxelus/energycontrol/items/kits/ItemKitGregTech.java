@@ -3,6 +3,7 @@ package com.zuxelus.energycontrol.items.kits;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
+
 import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
 import gregtech.tileentity.energy.converters.MultiTileEntityBoilerTank;
 import gregtech.tileentity.energy.converters.MultiTileEntityDynamoElectric;
@@ -16,33 +17,33 @@ import net.minecraft.world.World;
 
 public class ItemKitGregTech extends ItemKitBase {
 
-    public ItemKitGregTech() {
-        super(ItemCardType.KIT_GREGTECH, "kit_gregtech");
-    }
+	public ItemKitGregTech() {
+		super(ItemCardType.KIT_GREGTECH, "kit_gregtech");
+	}
 
-    @Override
-    public ItemStack getSensorCard(ItemStack stack, Item card, EntityPlayer player, World world, int x, int y, int z) {
-        TileEntity te = world.getTileEntity(x, y, z);
-
-        try {
-            Class.forName("gregtech.GT6_Main");
-            if (te instanceof MultiTileEntityGeneratorSolid || te instanceof MultiTileEntityBoilerTank
-                    || te instanceof MultiTileEntityTurbineSteam || te instanceof MultiTileEntityDynamoElectric) {
-                ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_GREGTECH);
-                ItemStackHelper.setCoordinates(sensorLocationCard, x, y, z);
-                return sensorLocationCard;
-            }
-        } catch (Exception ignored) {}
+	@Override
+	public ItemStack getSensorCard(ItemStack stack, Item card, EntityPlayer player, World world, int x, int y, int z) {
+		TileEntity te = world.getTileEntity(x, y, z);
 
 		try {
-			Class.forName("gregtech.GT_Mod");
-			if (((te instanceof IGregTechDeviceInformation)) && (((IGregTechDeviceInformation) te).isGivingInformation())) {
+			Class.forName("gregtech.GT6_Main");
+			if (te instanceof MultiTileEntityGeneratorSolid || te instanceof MultiTileEntityBoilerTank
+					|| te instanceof MultiTileEntityTurbineSteam || te instanceof MultiTileEntityDynamoElectric) {
 				ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_GREGTECH);
 				ItemStackHelper.setCoordinates(sensorLocationCard, x, y, z);
 				return sensorLocationCard;
 			}
-		} catch (Exception ignored) {}
+		} catch (Exception ignored) { }
 
-        return null;
-    }
+		try {
+			Class.forName("gregtech.GT_Mod");
+			if (te instanceof IGregTechDeviceInformation && ((IGregTechDeviceInformation) te).isGivingInformation()) {
+				ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_GREGTECH);
+				ItemStackHelper.setCoordinates(sensorLocationCard, x, y, z);
+				return sensorLocationCard;
+			}
+		} catch (Exception ignored) { }
+
+		return null;
+	}
 }

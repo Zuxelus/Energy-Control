@@ -21,6 +21,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemMain extends ItemBlock {
+
 	public ItemMain(Block block) {
 		super(block);
 		setMaxDamage(0);

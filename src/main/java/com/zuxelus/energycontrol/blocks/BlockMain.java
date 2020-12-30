@@ -3,44 +3,31 @@ package com.zuxelus.energycontrol.blocks;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ic2.CrossIC2.IC2Type;
 import com.zuxelus.energycontrol.tileentities.*;
-import com.zuxelus.energycontrol.utils.ReactorHelper;
+import com.zuxelus.zlib.tileentities.IBlockHorizontal;
+import com.zuxelus.zlib.tileentities.TileEntityFacing;
+import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import ic2.api.tile.IWrenchable;
-import ic2.core.item.tool.ItemToolPainter;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.Facing;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.event.world.BlockEvent.PlaceEvent;
 
 public class BlockMain extends BlockContainer {
 	static int[][] mapping = {
@@ -114,13 +101,13 @@ public class BlockMain extends BlockContainer {
 					}
 			checkForDrop(world, x, y, z, te, meta);
 		} else if (te instanceof IBlockHorizontal) {
-			((TileEntityFacing) te).setFacing(getHorizontalFacing(player));
+			((TileEntityFacing) te).setFacing(TileEntityFacing.getHorizontalFacing(player));
 		} else if (te instanceof TileEntityFacing) {
 			((TileEntityFacing) te).setFacing(getBlockDirection(player));
 			if (player.rotationPitch <= -65)
-				((TileEntityFacing) te).setRotation(getHorizontalFacing(player).getOpposite());
+				((TileEntityFacing) te).setRotation(TileEntityFacing.getHorizontalFacing(player).getOpposite());
 			else
-				((TileEntityFacing) te).setRotation(getHorizontalFacing(player));
+				((TileEntityFacing) te).setRotation(TileEntityFacing.getHorizontalFacing(player));
 		}
 		if (te instanceof TileEntityAFSU) {
 			NBTTagCompound tag = stack.getTagCompound();
@@ -162,28 +149,14 @@ public class BlockMain extends BlockContainer {
 			return ForgeDirection.UP;
 		if (placer.rotationPitch <= -65)
 			return ForgeDirection.DOWN;
-		return getHorizontalFacing(placer);
-	}
-
-	private static ForgeDirection getHorizontalFacing(EntityLivingBase placer) {
-		switch (MathHelper.floor_double(placer.rotationYaw * 4.0F / 360.0F + 0.5D) & 3) {
-		case 0:
-			return ForgeDirection.NORTH;
-		case 1:
-			return ForgeDirection.EAST;
-		case 2:
-			return ForgeDirection.SOUTH;
-		case 3:
-			return ForgeDirection.WEST;
-		}
-		return ForgeDirection.NORTH;
+		return TileEntityFacing.getHorizontalFacing(placer);
 	}
 
 	private static void setRotation(TileEntityFacing te, EntityLivingBase placer) {
 		switch (te.getFacingForge()) {
 		case UP:
 		case DOWN:
-			te.setRotation(getHorizontalFacing(placer));
+			te.setRotation(TileEntityFacing.getHorizontalFacing(placer));
 			break;
 		case NORTH:
 		case SOUTH:
@@ -226,7 +199,10 @@ public class BlockMain extends BlockContainer {
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float f1, float f2, float f3) {
 		if (CrossModLoader.ic2.isWrench(player.getHeldItem()))
 			return true;
-		player.openGui(EnergyControl.instance, world.getBlockMetadata(x, y, z), world, x, y, z);
+		int meta = world.getBlockMetadata(x, y, z);
+		if ((world.isRemote && (meta == BlockDamages.DAMAGE_THERMAL_MONITOR || meta == BlockDamages.DAMAGE_HOWLER_ALARM
+				|| meta == BlockDamages.DAMAGE_INDUSTRIAL_ALARM)) || !world.isRemote)
+			player.openGui(EnergyControl.instance, meta, world, x, y, z);
 		return true;
 	}
 
@@ -333,50 +309,20 @@ public class BlockMain extends BlockContainer {
 	}
 
 	@Override
-	public void getSubBlocks(Item id, CreativeTabs tab, List itemList) {
+	public void getSubBlocks(Item id, CreativeTabs tab, List list) {
 		for (BlockBase block : blocks.values())
 			if (block.damage == BlockDamages.DAMAGE_AFSU) {
-				itemList.add(AFSU.getStackwithEnergy(0));
-				itemList.add(AFSU.getStackwithEnergy(TileEntityAFSU.CAPACITY));
+				list.add(AFSU.getStackwithEnergy(0));
+				list.add(AFSU.getStackwithEnergy(TileEntityAFSU.CAPACITY));
 			} else
-				itemList.add(new ItemStack(this, 1, block.damage));
+				list.add(new ItemStack(this, 1, block.damage));
 	}
 
 	@Override
-	public void breakBlock(World world, int x, int y, int z, Block par5, int par6) {
-		dropItems(world, x, y, z);
-		super.breakBlock(world, x, y, z, par5, par6);
-	}
-
-	public static void dropItems(World world, int x, int y, int z) {
-		Random rand = new Random();
-
+	public void breakBlock(World world, int x, int y, int z, Block block, int meta) {
 		TileEntity te = world.getTileEntity(x, y, z);
-		if (!(te instanceof TileEntityInventory))
-			return;
-
-		TileEntityInventory inventory = (TileEntityInventory) te;
-		for (int i = 0; i < inventory.getSizeInventory(); i++) {
-			ItemStack stack = inventory.getStackInSlot(i);
-
-			if (stack != null && stack.stackSize > 0) {
-				float rx = rand.nextFloat() * 0.8F + 0.1F;
-				float ry = rand.nextFloat() * 0.8F + 0.1F;
-				float rz = rand.nextFloat() * 0.8F + 0.1F;
-
-				EntityItem entityItem = new EntityItem(world, x + rx, y + ry, z + rz,
-						new ItemStack(stack.getItem(), stack.stackSize, stack.getItemDamage()));
-
-				if (stack.hasTagCompound())
-					entityItem.getEntityItem().setTagCompound((NBTTagCompound) stack.getTagCompound().copy());
-
-				float factor = 0.05F;
-				entityItem.motionX = rand.nextGaussian() * factor;
-				entityItem.motionY = rand.nextGaussian() * factor + 0.2F;
-				entityItem.motionZ = rand.nextGaussian() * factor;
-				world.spawnEntityInWorld(entityItem);
-				stack.stackSize = 0;
-			}
-		}
+		if (te instanceof TileEntityInventory)
+			((TileEntityInventory) te).dropItems(world, x, y, z);
+		super.breakBlock(world, x, y, z, block, meta);
 	}
 }

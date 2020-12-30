@@ -1,27 +1,34 @@
-package com.zuxelus.energycontrol.tileentities;
+package com.zuxelus.zlib.tileentities;
 
-import com.zuxelus.energycontrol.containers.ISlotItemFilter;
+import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergyAcceptor;
 import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergySink;
-import ic2.api.energy.tile.IEnergySource;
 import ic2.api.info.Info;
+import ic2.api.item.ElectricItem;
+import ic2.api.item.IElectricItem;
+import ic2.api.tile.IEnergyStorage;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public abstract class TileEntityEnergyStorage extends TileEntityInventory implements IEnergySink, IEnergySource, ISlotItemFilter, ITilePacketHandler {
+public abstract class TileEntityEnergyStorage extends TileEntityInventory implements IEnergySink, IEnergyStorage, ISlotItemFilter, ITilePacketHandler {
 	protected boolean addedToEnet;
 	protected boolean allowEmit;
 	protected int tier;
+	protected int baseTier;
 	protected int output;
+	protected int baseOutput;
 	protected double energy;
 	protected double capacity;
+	protected double baseCapacity;
+	protected double energyReceived;
 
 	public TileEntityEnergyStorage(String name, int tier, int output, int capacity) {
 		super(name);
@@ -29,16 +36,16 @@ public abstract class TileEntityEnergyStorage extends TileEntityInventory implem
 		allowEmit = true;
 		energy = 0;
 		this.tier = tier;
+		this.baseTier = tier;
 		this.output = output;
+		this.baseOutput = output;
 		this.capacity = capacity;
+		this.baseCapacity = capacity;
+		energyReceived = 0;
 	}
 
 	public double getEnergy() {
 		return energy;
-	}
-
-	public int getOutput() {
-		return output;
 	}
 
 	@Override
@@ -86,25 +93,29 @@ public abstract class TileEntityEnergyStorage extends TileEntityInventory implem
 		}
 	}
 
-	// IEnergySource
 	@Override
-	public boolean emitsEnergyTo(TileEntity receiver, ForgeDirection dir) {
-		return dir == getFacingForge();
+	public void updateEntity() {
+		energyReceived = 0;
 	}
 
-	@Override
-	public void drawEnergy(double amount) {
-		energy -= amount;
+	protected void handleDischarger(int slot) {
+		ItemStack stack = getStackInSlot(slot);
+		if (stack != null && energy < capacity && stack.getItem() instanceof IElectricItem) {
+			IElectricItem item = (IElectricItem) stack.getItem();
+			if (item.canProvideEnergy(stack))
+				energy += ElectricItem.manager.discharge(stack, capacity - energy, tier, false, false, false);
+		}
 	}
 
-	@Override
-	public double getOfferedEnergy() {
-		return allowEmit ? energy >= output ? output : 0.0D : 0.0D; 
-	}
-
-	@Override
-	public int getSourceTier() {
-		return tier;
+	protected void handleCharger(int slot) {
+		ItemStack stack = getStackInSlot(slot);
+		if (stack != null && energy > 0 && stack.getItem() instanceof IElectricItem) {
+			IElectricItem item = (IElectricItem) stack.getItem();
+			double amount = ElectricItem.manager.charge(stack, Double.POSITIVE_INFINITY, tier, true, true);
+			amount = Math.min(amount, energy);
+			if (amount > 0)
+				energy -= ElectricItem.manager.charge(stack, amount, tier, false, false);
+		}
 	}
 
 	// IEnergySink
@@ -128,6 +139,45 @@ public abstract class TileEntityEnergyStorage extends TileEntityInventory implem
 		if (energy >= capacity)
 			return amount;
 		energy += amount;
+		energyReceived += amount;
 		return 0.0D;
+	}
+
+	// IEnergyStorage
+	@Override
+	public int getStored() {
+		return (int) energy;
+	}
+
+	@Override
+	public void setStored(int energy) {
+		this.energy = energy;
+	}
+
+	@Override
+	public int addEnergy(int amount) {
+		amount = (int) Math.min(capacity - energy, amount);
+		energy += amount;
+		return amount;
+	}
+
+	@Override
+	public int getCapacity() {
+		return (int) capacity;
+	}
+
+	@Override
+	public int getOutput() {
+		return output;
+	}
+
+	@Override
+	public double getOutputEnergyUnitsPerTick() {
+		return output;
+	}
+
+	@Override
+	public boolean isTeleporterCompatible(ForgeDirection side) {
+		return false;
 	}
 }

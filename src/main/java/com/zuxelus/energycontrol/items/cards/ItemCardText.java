@@ -26,7 +26,7 @@ public class ItemCardText extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = new LinkedList<PanelString>();
 		boolean started = false;
 		for (int i = 9; i >= 0; i--) {
@@ -47,7 +47,7 @@ public class ItemCardText extends ItemCardBase {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public List<PanelSetting> getSettingsList(ItemStack stack) {
+	public List<PanelSetting> getSettingsList() {
 		return null;
 	}
 

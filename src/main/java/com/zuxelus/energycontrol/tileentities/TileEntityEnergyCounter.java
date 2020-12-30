@@ -1,9 +1,10 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.blocks.BlockDamages;
-import com.zuxelus.energycontrol.containers.ISlotItemFilter;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
+import com.zuxelus.zlib.tileentities.TileEntitySinkSource;
 
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.NodeStats;
@@ -23,7 +24,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityEnergyCounter extends TileEntityEnergyStorage implements IWrenchable {
+public class TileEntityEnergyCounter extends TileEntitySinkSource implements IWrenchable {
 	private static final int BASE_PACKET_SIZE = 32;
 	private boolean init;
 	protected int updateTicker;

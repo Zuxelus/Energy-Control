@@ -16,8 +16,10 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import ic2.api.recipe.Recipes;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
@@ -123,18 +125,18 @@ public class ItemKitMain extends Item {
 
 	@Override
 	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-		if (player == null || !(player instanceof EntityPlayerMP))
-			return false;
-		
-		if (stack == null || stack.stackSize != 1)
+		if (stack == null || player == null || !(player instanceof EntityPlayerMP))
 			return false;
 		ItemStack sensorLocationCard = getItemKitBase(stack.getItemDamage()).getSensorCard(stack, ItemHelper.itemCard, player, world, x, y, z);
 		if (sensorLocationCard == null)
 			return false;
-		
-		player.inventory.mainInventory[player.inventory.currentItem] = sensorLocationCard;
+
+		--stack.stackSize;
+		EntityItem dropItem = new EntityItem(world, player.posX, player.posY, player.posZ, sensorLocationCard);
+		dropItem.delayBeforeCanPickup = 0;
+		world.spawnEntityInWorld(dropItem);
 		return true;
-	}	
+	}
 
 	public IItemKit getItemKitBase(int metadata) {
 		if (kits.containsKey(metadata))

@@ -1,8 +1,8 @@
 package com.zuxelus.energycontrol.items;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.utils.ReactorHelper;
+import com.zuxelus.zlib.network.NetworkHelper;
 
 import ic2.api.reactor.IReactor;
 import net.minecraft.client.resources.I18n;
@@ -10,6 +10,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.World;
 
 public class ItemThermometer extends Item {
@@ -47,12 +48,13 @@ public class ItemThermometer extends Item {
 		return false;
 	}
 
-	protected void messagePlayer(EntityPlayer entityplayer, IReactor reactor) {
-		NetworkHelper.chatMessage(entityplayer, I18n.format("msg.ec.Thermo", reactor.getHeat()));
+	protected void messagePlayer(EntityPlayer player, IReactor reactor) {
+		player.addChatMessage(new ChatComponentTranslation("msg.ec.Thermo", reactor.getHeat()));
+		//NetworkHelper.chatMessage(entityplayer, I18n.format("msg.ec.Thermo", reactor.getHeat()));
 	}
 
-	protected void damage(ItemStack itemstack, int i, EntityPlayer entityplayer) {
-		itemstack.damageItem(10, entityplayer);
+	protected void damage(ItemStack stack, int i, EntityPlayer player) {
+		stack.damageItem(10, player);
 	}
 
 	@Override

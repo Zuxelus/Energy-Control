@@ -24,7 +24,7 @@ public class ItemAFSUUpgradeKit extends Item {
 	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
 		if (world.isRemote)
 			return false;
-		
+
 		Block block = world.getBlock(x, y, z);
 		if (!(block instanceof BlockElectric))
 			return false;
@@ -36,9 +36,9 @@ public class ItemAFSUUpgradeKit extends Item {
 		int eustored = mfsu.getStored();
 		int facing = mfsu.getFacing();
 		byte mode = mfsu.redstoneMode;
-		ItemStack[] items = new ItemStack[mfsu.getSizeInventory()];
+		ItemStack[] items = new ItemStack[((TileEntityElectricBlock) mfsu).getSizeInventory()];
 		for (int i = 0; i < items.length; i++)
-			items[i] = mfsu.getStackInSlot(i);
+			items[i] = ((TileEntityElectricBlock) mfsu).getStackInSlot(i);
 		world.removeTileEntity(x, y, z);
 		world.setBlock(x, y, z, ItemHelper.blockMain, BlockDamages.DAMAGE_AFSU, 2);
 		TileEntityAFSU afsu = new TileEntityAFSU();

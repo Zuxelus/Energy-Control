@@ -5,8 +5,9 @@ import org.lwjgl.opengl.GL11;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.gui.controls.CompactButton;
 import com.zuxelus.energycontrol.gui.controls.GuiThermoInvertRedstone;
-import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityThermo;
+import com.zuxelus.zlib.gui.GuiBase;
+import com.zuxelus.zlib.network.NetworkHelper;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -16,14 +17,11 @@ import net.minecraft.util.ResourceLocation;
 
 @SideOnly(Side.CLIENT)
 public class GuiThermalMonitor extends GuiBase {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/gui_thermal_monitor.png");
-
 	private TileEntityThermo thermo;
 	private GuiTextField textboxHeat = null;
 
 	public GuiThermalMonitor(TileEntityThermo thermo) {
-		super("tile.thermal_monitor.name", 191, 64);
+		super("tile.thermal_monitor.name", 191, 64, EnergyControl.MODID + ":textures/gui/gui_thermal_monitor.png");
 		this.thermo = thermo;
 	}
 
@@ -55,15 +53,6 @@ public class GuiThermalMonitor extends GuiBase {
 		
 		if (textboxHeat != null)
 			textboxHeat.drawTextBox();
-	}
-
-	@Override
-	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		mc.getTextureManager().bindTexture(TEXTURE);
-		int left = (width - xSize) / 2;
-		int top = (height - ySize) / 2;
-		drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
 	}
 
 	@Override

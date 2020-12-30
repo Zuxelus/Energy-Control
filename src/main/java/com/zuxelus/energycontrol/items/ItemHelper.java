@@ -94,7 +94,7 @@ public class ItemHelper {
 	private static void setNames(Object obj, String name) {
 		if (obj instanceof Block) {
 			Block block = (Block) obj;
-			//block.setUnlocalizedName(name); TODO
+			block.setBlockName(name);
 			//block.setRegistryName(name);
 		} else if (obj instanceof Item) {
 			Item item = (Item) obj;

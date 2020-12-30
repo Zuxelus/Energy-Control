@@ -276,13 +276,12 @@ msg.ec.InfoPanel55.BufferIn=Coolant Storage Tank
 msg.ec.InfoPanel55.BufferOut=Hot Coolant Buffer Tank
 
 #Nano Bow
-info.modeenabled=%s mode enabled.
-info.normal=Normal
-info.rapidfire=Rapid fire
-info.spread=Spread
-info.sniper=Sniper
-info.flame=Flame
-info.explosive=Explosive
+info.nanobow.normal=Normal mode enabled.
+info.nanobow.rapidfire=Rapid fire mode enabled.
+info.nanobow.spread=Spread mode enabled.
+info.nanobow.sniper=Sniper mode enabled.
+info.nanobow.flame=Flame mode enabled.
+info.nanobow.explosive=Explosive mode enabled.
 
 info.redstoneMode=Redstone Behavior:
 info.redstoneMode0=Nothing

@@ -4,10 +4,11 @@ import java.util.List;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.tileentities.IBlockHorizontal;
-import com.zuxelus.energycontrol.tileentities.TileEntityFacing;
 import com.zuxelus.energycontrol.tileentities.TileEntitySeedAnalyzer;
 import com.zuxelus.energycontrol.tileentities.TileEntitySeedLibrary;
+import com.zuxelus.zlib.tileentities.IBlockHorizontal;
+import com.zuxelus.zlib.tileentities.TileEntityFacing;
+import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -50,7 +51,7 @@ public class BlockSeedManager extends BlockContainer {
 		case 1:
 			return new TileEntitySeedLibrary();
 		default:
-			return super.createTileEntity(world, metadata);
+			return null;
 		}
 	}
 
@@ -163,24 +164,11 @@ public class BlockSeedManager extends BlockContainer {
 		return true;
 	}
 
+	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase player, ItemStack itemStack) {
 		TileEntity te = world.getTileEntity(x, y, z);
 		if (te instanceof IBlockHorizontal)
-			((TileEntityFacing) te).setFacing(getHorizontalFacing(player));
-	}
-
-	private static ForgeDirection getHorizontalFacing(EntityLivingBase placer) {
-		switch (MathHelper.floor_double(placer.rotationYaw * 4.0F / 360.0F + 0.5D) & 3) {
-		case 0:
-			return ForgeDirection.NORTH;
-		case 1:
-			return ForgeDirection.EAST;
-		case 2:
-			return ForgeDirection.SOUTH;
-		case 3:
-			return ForgeDirection.WEST;
-		}
-		return ForgeDirection.NORTH;
+			((TileEntityFacing) te).setFacing(TileEntityFacing.getHorizontalFacing(player));
 	}
 
 	@Override
@@ -189,9 +177,11 @@ public class BlockSeedManager extends BlockContainer {
 	}
 
 	@Override
-	public void breakBlock(World world, int x, int y, int z, Block par5, int par6) {
-		BlockMain.dropItems(world, x, y, z);
-		super.breakBlock(world, x, y, z, par5, par6);
+	public void breakBlock(World world, int x, int y, int z, Block block, int meta) {
+		TileEntity te = world.getTileEntity(x, y, z);
+		if (te instanceof TileEntityInventory)
+			((TileEntityInventory) te).dropItems(world, x, y, z);
+		super.breakBlock(world, x, y, z, block, meta);
 	}
 
 	@Override

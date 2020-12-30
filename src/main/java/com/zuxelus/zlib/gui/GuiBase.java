@@ -1,4 +1,4 @@
-package com.zuxelus.energycontrol.gui;
+package com.zuxelus.zlib.gui;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -9,9 +9,11 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.ResourceLocation;
 
 @SideOnly(Side.CLIENT)
 public abstract class GuiBase extends GuiScreen {
+	protected ResourceLocation texture;
 	protected int xSize = 131;
 	protected int ySize = 136;
 	protected int guiLeft;
@@ -19,10 +21,11 @@ public abstract class GuiBase extends GuiScreen {
 
 	protected String name;
 
-	public GuiBase(String name, int xSize, int ySize) {
-		this.xSize = xSize;
-		this.ySize = ySize;		
+	public GuiBase(String name, int xSize, int ySize, String texture) {
 		this.name = I18n.format(name);
+		this.xSize = xSize;
+		this.ySize = ySize;
+		this.texture = new ResourceLocation(texture);
 	}
 
 	@Override
@@ -60,9 +63,15 @@ public abstract class GuiBase extends GuiScreen {
 		RenderHelper.enableStandardItemLighting();
 	}
 
-	protected abstract void drawGuiContainerForegroundLayer(int mouseX, int mouseY);
+	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {};
 
-	protected abstract void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY);
+	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		mc.getTextureManager().bindTexture(texture);
+		int left = (width - xSize) / 2;
+		int top = (height - ySize) / 2;
+		drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
+	}
 
 	@Override
 	public boolean doesGuiPauseGame() {

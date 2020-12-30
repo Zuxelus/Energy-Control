@@ -59,7 +59,7 @@ public class ItemCardGeneratorHeat extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int settings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		if ((settings & 1) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelOutputHU", reader.getInt("output"), showLabels));
@@ -104,7 +104,7 @@ public class ItemCardGeneratorHeat extends ItemCardBase {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public List<PanelSetting> getSettingsList(ItemStack stack) {
+	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(7);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOutput"), 1, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelBuffer"), 2, damage));

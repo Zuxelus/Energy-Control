@@ -127,6 +127,7 @@ public class ClientProxy extends ServerProxy {
 	@Override
 	public void registerEventHandlers() {
 		FMLCommonHandler.instance().bus().register(EnergyControl.config);
+		FMLCommonHandler.instance().bus().register(ServerTickHandler.instance); // for single client
 	}
 	
 	@Override

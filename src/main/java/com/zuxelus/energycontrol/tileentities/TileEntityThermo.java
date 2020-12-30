@@ -3,6 +3,8 @@ package com.zuxelus.energycontrol.tileentities;
 import com.zuxelus.energycontrol.blocks.BlockDamages;
 import com.zuxelus.energycontrol.blocks.BlockMain;
 import com.zuxelus.energycontrol.utils.ReactorHelper;
+import com.zuxelus.zlib.tileentities.ITilePacketHandler;
+import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
