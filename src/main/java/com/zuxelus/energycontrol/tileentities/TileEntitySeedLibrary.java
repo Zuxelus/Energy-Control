@@ -232,7 +232,7 @@ public class TileEntitySeedLibrary extends TileEntityInventory implements ITileP
 		NBTTagList bufferList = tag.getTagList("Items_", Constants.NBT.TAG_COMPOUND);
 		for (int i = 0; i < bufferList.tagCount(); i++) {
 			NBTTagCompound slot = bufferList.getCompoundTagAt(i);
-			int j = slot.getByte("Slot");
+			//int j = slot.getByte("Slot");
 			ItemStack stack = ItemStack.loadItemStackFromNBT(slot);
 			loadSeed(stack);
 		}

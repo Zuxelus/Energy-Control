@@ -6,22 +6,15 @@ import java.util.List;
 import org.lwjgl.opengl.GL11;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.containers.ContainerKitAssembler;
 import com.zuxelus.energycontrol.containers.ContainerSeedLibrary;
-import com.zuxelus.energycontrol.tileentities.TileEntitySeedLibrary;
 import com.zuxelus.energycontrol.utils.SeedLibraryFilter;
 import com.zuxelus.zlib.gui.controls.GuiButtonImage;
 import com.zuxelus.zlib.network.NetworkHelper;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
 
 public class GuiSeedLibrary extends GuiContainer {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID + ":textures/gui/gui_seed_library.png");

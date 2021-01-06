@@ -149,7 +149,6 @@ public class TileEntityThermo extends TileEntityInventory implements ITilePacket
 		updateTicker = tickRate;
 		checkStatus();
 	}
-	
 
 	protected void checkStatus() {
 		int newStatus;

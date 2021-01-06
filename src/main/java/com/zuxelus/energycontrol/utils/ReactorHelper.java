@@ -84,10 +84,6 @@ public class ReactorHelper {
 		return (int) Math.floor((eu) * STEAM_PER_EU);
 	}
 
-	public static boolean isSteam(IReactor reactor) {
-		return CrossModLoader.ic2.isSteamReactor((TileEntity) reactor);
-	}
-
 	public static int getNuclearCellTimeLeft(ItemStack rStack) {
 		return CrossModLoader.ic2.getNuclearCellTimeLeft(rStack);
 	}

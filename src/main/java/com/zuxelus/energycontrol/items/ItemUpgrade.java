@@ -3,7 +3,10 @@ package com.zuxelus.energycontrol.items;
 import java.util.List;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.init.ModItems;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -26,6 +29,7 @@ public class ItemUpgrade extends Item {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister ir) {
 		iconRange = ir.registerIcon(EnergyControl.MODID + ":" + "upgrade_range");
 		iconColor = ir.registerIcon(EnergyControl.MODID + ":" + "upgrade_color");
@@ -47,6 +51,7 @@ public class ItemUpgrade extends Item {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public IIcon getIconFromDamage(int damage) {
 		switch (damage) {
 		case DAMAGE_RANGE:
@@ -59,10 +64,12 @@ public class ItemUpgrade extends Item {
 		}
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void getSubItems(Item item, CreativeTabs tab, List items) {
-		items.add(new ItemStack(ItemHelper.itemUpgrade, 1, DAMAGE_RANGE));
-		items.add(new ItemStack(ItemHelper.itemUpgrade, 1, DAMAGE_COLOR));
-		items.add(new ItemStack(ItemHelper.itemUpgrade, 1, DAMAGE_TOUCH));
+		items.add(new ItemStack(ModItems.itemUpgrade, 1, DAMAGE_RANGE));
+		items.add(new ItemStack(ModItems.itemUpgrade, 1, DAMAGE_COLOR));
+		items.add(new ItemStack(ModItems.itemUpgrade, 1, DAMAGE_TOUCH));
 	}
 }

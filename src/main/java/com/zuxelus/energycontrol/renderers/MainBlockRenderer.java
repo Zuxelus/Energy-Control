@@ -5,8 +5,6 @@ import org.lwjgl.opengl.GL11;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.blocks.BlockDamages;
 import com.zuxelus.energycontrol.blocks.BlockMain;
-import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
-import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanelExtender;
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -14,7 +12,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 
 @SideOnly(Side.CLIENT)
@@ -82,7 +79,8 @@ public class MainBlockRenderer implements ISimpleBlockRenderingHandler {
 		
 		if (meta == BlockDamages.DAMAGE_THERMAL_MONITOR || meta == BlockDamages.DAMAGE_REMOTE_THERMO
 				|| meta == BlockDamages.DAMAGE_INFO_PANEL || meta == BlockDamages.DAMAGE_INFO_PANEL_EXTENDER
-				|| meta == BlockDamages.DAMAGE_ADVANCED_PANEL || meta == BlockDamages.DAMAGE_ADVANCED_EXTENDER)
+				|| meta == BlockDamages.DAMAGE_ADVANCED_PANEL || meta == BlockDamages.DAMAGE_ADVANCED_EXTENDER
+				|| meta == BlockDamages.DAMAGE_TIMER)
 			return true;
 		renderer.renderStandardBlock(block, x, y, z);
 		return true;

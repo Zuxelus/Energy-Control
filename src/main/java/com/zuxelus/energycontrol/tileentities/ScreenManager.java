@@ -7,9 +7,7 @@ import java.util.Map;
 
 import com.zuxelus.energycontrol.blocks.BlockMain;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 

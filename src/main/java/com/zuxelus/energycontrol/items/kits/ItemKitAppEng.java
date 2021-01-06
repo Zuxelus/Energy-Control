@@ -1,7 +1,7 @@
 package com.zuxelus.energycontrol.items.kits;
 
 import com.zuxelus.energycontrol.api.ItemStackHelper;
-import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
 import appeng.me.helpers.IGridProxyable;
@@ -20,9 +20,9 @@ public class ItemKitAppEng extends ItemKitBase {
 	public ItemStack getSensorCard(ItemStack stack, Item card, EntityPlayer player, World world, int x, int y, int z) {
 		TileEntity te = world.getTileEntity(x, y, z);
 		if (te instanceof IGridProxyable) {
-			ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_APPENG);
-			ItemStackHelper.setCoordinates(sensorLocationCard, x, y, z);
-			return sensorLocationCard;
+			ItemStack newCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_APPENG);
+			ItemStackHelper.setCoordinates(newCard, x, y, z);
+			return newCard;
 		}
 		return null;
 	}

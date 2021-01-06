@@ -12,7 +12,6 @@ import com.zuxelus.energycontrol.api.PanelString;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
@@ -47,7 +46,7 @@ public class ItemCardReactorDraconic extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		if ((displaySettings & 1) > 0)
 			result.add(new PanelString("msg.ec.Status", reader.getInt("status"), showLabels));
@@ -71,7 +70,7 @@ public class ItemCardReactorDraconic extends ItemCardBase {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public List<PanelSetting> getSettingsList(ItemStack stack) {
+	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(6);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbStatus"), 1, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbDiameter"), 2, damage));

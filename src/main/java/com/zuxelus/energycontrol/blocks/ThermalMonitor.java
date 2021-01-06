@@ -5,7 +5,6 @@ import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IIcon;
 
 public class ThermalMonitor extends BlockBase {
@@ -15,8 +14,8 @@ public class ThermalMonitor extends BlockBase {
 	protected static final float[] AABB_SOUTH = { 0.0625F, 0.0625F, 0.0F, 0.9375F, 0.9375F, 0.4375F };
 	protected static final float[] AABB_WEST = { 0.5625F, 0.0625F, 0.0625F, 1.0F, 0.9375F, 0.9375F };
 	protected static final float[] AABB_EAST = { 0.0F, 0.0625F, 0.0625F, 0.4375F, 0.9375F, 0.9375F };
-	private boolean powered = false;
 	private IIcon[] icons = new IIcon[6];
+
 	public ThermalMonitor() {
 		super(BlockDamages.DAMAGE_THERMAL_MONITOR, "thermal_monitor");
 	}

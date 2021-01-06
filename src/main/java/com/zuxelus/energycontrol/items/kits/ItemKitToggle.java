@@ -1,7 +1,7 @@
 package com.zuxelus.energycontrol.items.kits;
 
 import com.zuxelus.energycontrol.api.ItemStackHelper;
-import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
 import net.minecraft.block.Block;
@@ -21,7 +21,7 @@ public class ItemKitToggle extends ItemKitBase {
 	public ItemStack getSensorCard(ItemStack stack, Item card, EntityPlayer player, World world, int x, int y, int z) {
 		Block block = world.getBlock(x, y, z);
 		if (block == Blocks.lever || block == Blocks.stone_button || block == Blocks.wooden_button) {
-			ItemStack newCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_TOGGLE);
+			ItemStack newCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_TOGGLE);
 			ItemStackHelper.setCoordinates(newCard, x, y, z);
 			return newCard;
 		}

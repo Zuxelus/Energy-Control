@@ -34,6 +34,7 @@ public class GuiRangeTrigger extends GuiContainer {
 		name = I18n.format("tile.range_trigger.name");
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initControls() {
 		ItemStack card = container.getSlot(TileEntityRangeTrigger.SLOT_CARD).getStack();
 		if (card != null && card.equals(prevCard))

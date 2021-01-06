@@ -63,7 +63,7 @@ public class DriverAdvancedInfoPanel extends DriverSidedTileEntity {
 
 		@Callback(doc = "function():list<string> -- Get card data.")
 		public Object[] getCardData(final Context context, final Arguments args) {
-			List<PanelString> joinedData = tileEntity.getPanelStringList(false);
+			List<PanelString> joinedData = tileEntity.getPanelStringList(true, false);
 			List<String> list = new ArrayList<String>();
 			if (joinedData == null || joinedData.size() == 0)
 				return new Object[] { list };

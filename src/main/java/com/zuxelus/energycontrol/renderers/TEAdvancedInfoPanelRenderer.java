@@ -98,32 +98,32 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer {
 		int rotateVert = te.rotateVert / 7;
 		RotationOffset offset = new RotationOffset(thickness * 2, rotateHor, rotateVert);
 		Screen screen = te.getScreen();
-		if (thickness == 16 && rotateHor == 0 && rotateVert == 0)
-			model[textureId].render(0.03125F);
-		else {
-			new CubeRenderer(textureId / 4 * 32 + 64, textureId % 4 * 32 + 64, offset.addOffset(screen, te.xCoord, te.yCoord, te.zCoord, te.getFacingForge(), te.getRotation())).render(0.03125F);
-		}
-		if (te.powered) {
-			boolean anyCardFound = false;
-			List<PanelString> joinedData = te.getPanelStringList(te.getShowLabels());
-			if (joinedData != null)
-				drawText(te, joinedData, thickness, offset);
+		if (screen != null) {
+			if (thickness == 16 && rotateHor == 0 && rotateVert == 0)
+				model[textureId].render(0.03125F);
+			else
+				new CubeRenderer(textureId / 4 * 32 + 64, textureId % 4 * 32 + 64, offset.addOffset(screen, te.xCoord, te.yCoord, te.zCoord, te.getFacingForge(), te.getRotation())).render(0.03125F);
+			if (te.powered) {
+				List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
+				if (joinedData != null)
+					drawText(te, joinedData, thickness, offset);
+			}
 		}
 		GL11.glPopMatrix();
 	}
 
 	private void drawText(TileEntityAdvancedInfoPanel panel, List<PanelString> joinedData, byte thickness, RotationOffset offset) {
 		Screen screen = panel.getScreen();
-		double displayWidth = 1;
-		double displayHeight = 1;
-		float dx = 0; float dy = 0; float dz = 0;
+		float displayWidth = 1.0F;
+		float displayHeight = 1.0F;
+		float dx = 0; float dz = 0;
 		if (screen != null) {
 			switch (panel.getFacingForge()) {
 			case UP:
 				switch (panel.getRotation()) {
 				case NORTH:
 					dz = (panel.zCoord - screen.maxZ - screen.minZ + panel.zCoord);
-					dy = panel.xCoord - screen.maxX - screen.minX + panel.xCoord;
+					//dy = panel.xCoord - screen.maxX - screen.minX + panel.xCoord;
 					displayWidth += screen.maxX - screen.minX;
 					displayHeight += screen.maxZ - screen.minZ;
 					break;
@@ -135,7 +135,7 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer {
 					break;
 				case EAST:
 					dz = (panel.zCoord - screen.maxZ - screen.minZ + panel.zCoord);
-					dy = panel.xCoord - screen.maxX - screen.minX + panel.xCoord;
+					//dy = panel.xCoord - screen.maxX - screen.minX + panel.xCoord;
 					displayWidth += screen.maxZ - screen.minZ;
 					displayHeight += screen.maxX - screen.minX;
 					break;
@@ -260,8 +260,8 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer {
 
 		int lineHeight = fontRenderer.FONT_HEIGHT + 2;
 		int requiredHeight = lineHeight * joinedData.size();
-		float scaleX = (float) displayWidth / maxWidth;
-		float scaleY = (float) displayHeight / requiredHeight;
+		float scaleX = displayWidth / maxWidth;
+		float scaleY = displayHeight / requiredHeight;
 		float scale = Math.min(scaleX, scaleY);
 		GL11.glScalef(scale, -scale, scale);
 		int realHeight = (int) Math.floor(displayHeight / scale);

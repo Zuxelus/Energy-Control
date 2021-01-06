@@ -4,10 +4,7 @@ import com.zuxelus.energycontrol.blocks.BlockDamages;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.containers.*;
 import com.zuxelus.energycontrol.gui.*;
-import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.cards.ItemCardHolder;
-import com.zuxelus.energycontrol.items.cards.ItemCardMain;
-import com.zuxelus.energycontrol.items.kits.ItemKitMain;
 import com.zuxelus.energycontrol.renderers.*;
 import com.zuxelus.energycontrol.tileentities.*;
 import com.zuxelus.energycontrol.utils.SoundHelper;
@@ -45,6 +42,7 @@ public class ClientProxy extends ServerProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityInfoPanelExtender.class, new TEInfoPanelExtenderRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAdvancedInfoPanel.class, new TEAdvancedInfoPanelRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAdvancedInfoPanelExtender.class, new TEAdvancedInfoPanelExtenderRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTimer.class, new TileEntityTimerRenderer());
 		int modelId = RenderingRegistry.getNextAvailableRenderId();
 		EnergyControl.instance.modelId = modelId;
 		RenderingRegistry.registerBlockHandler(new MainBlockRenderer(modelId));
@@ -119,6 +117,10 @@ public class ClientProxy extends ServerProxy {
 		case 21:
 			if (te instanceof TileEntitySeedLibrary)
 				return new GuiSeedLibrary(new ContainerSeedLibrary(player, (TileEntitySeedLibrary) te));
+			break;
+		case BlockDamages.DAMAGE_TIMER:
+			if (te instanceof TileEntityTimer)
+				return new GuiTimer((TileEntityTimer) te);
 			break;
 		}
 		return null;

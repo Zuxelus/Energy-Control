@@ -78,8 +78,6 @@ public class GalacticraftHelper {
 
 	public static String getStatus(TileEntityRefinery te) {
 		String displayText = "";
-		int yOffset = -18;
-
 		if (te.oilTank.getFluid() == null || te.oilTank.getFluidAmount() == 0)
 			displayText = EnumColor.RED + GCCoreUtil.translate("gui.status.nooil.name");
 		else if (te.oilTank.getFluidAmount() > 0 && te.disabled)

@@ -6,6 +6,8 @@ import java.util.Map;
 
 import com.zuxelus.energycontrol.EnergyControl;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -90,7 +92,9 @@ public class BlockLight extends Block {
 			world.setBlock(x, y, z, this, meta + 1, 2);
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(Item id, CreativeTabs tab, List items) {
 		for (int i = 0; i <= DAMAGE_MAX; i++)
 			if (i % 2 == 0)

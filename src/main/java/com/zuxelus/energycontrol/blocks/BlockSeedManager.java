@@ -23,10 +23,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
 public class BlockSeedManager extends BlockContainer {
 	private static final int[][] facingAndSideToSpriteOffset = 
@@ -117,7 +115,6 @@ public class BlockSeedManager extends BlockContainer {
 		TileEntity te = blockaccess.getTileEntity(x, y, z);
 		int meta = blockaccess.getBlockMetadata(x, y, z);
 		if (te instanceof TileEntitySeedAnalyzer) {
-			int face = ((TileEntityFacing)te).getFacingForge().ordinal();
 			int metaSide = getTextureSubIndex(((TileEntityFacing)te).getFacingForge().getOpposite().ordinal(), side);
 			if (metaSide == 2) {
 				if (((TileEntitySeedAnalyzer) te).getActive())
@@ -184,6 +181,7 @@ public class BlockSeedManager extends BlockContainer {
 		super.breakBlock(world, x, y, z, block, meta);
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(Item item, CreativeTabs tab, List list) {

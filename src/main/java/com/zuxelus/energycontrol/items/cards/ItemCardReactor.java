@@ -14,7 +14,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import ic2.api.reactor.IReactor;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 
@@ -38,26 +37,26 @@ public class ItemCardReactor extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
-		if ((displaySettings & 2) > 0)
+		if ((settings & 2) > 0)
 			addHeat(result, reader.getInt("heat"), reader.getInt("maxHeat"), showLabels);
-		if ((displaySettings & 4) > 0)
+		if ((settings & 4) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelMaxHeat", reader.getInt("maxHeat"), showLabels));
-		if ((displaySettings & 8) > 0)
+		if ((settings & 8) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelMelting", reader.getInt("maxHeat") * 85 / 100, showLabels));
-		if ((displaySettings & 16) > 0)
+		if ((settings & 16) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelOutputEU", reader.getInt("output"), showLabels));
 		int timeLeft = reader.getInt("timeLeft");
-		if ((displaySettings & 32) > 0) {
+		if ((settings & 32) > 0) {
 			int hours = timeLeft / 3600;
 			int minutes = (timeLeft % 3600) / 60;
 			int seconds = timeLeft % 60;
 			result.add(new PanelString("msg.ec.InfoPanelTimeRemaining", String.format("%d:%02d:%02d", hours, minutes, seconds), showLabels));
 		}
 
-		if ((displaySettings & 1) > 0)
-			addOnOff(result, reader.getBoolean("reactorPoweredB"));
+		if ((settings & 1) > 0)
+			addOnOff(result, isServer, reader.getBoolean("reactorPoweredB"));
 		return result;
 	}
 

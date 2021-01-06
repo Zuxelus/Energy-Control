@@ -1,7 +1,5 @@
 package com.zuxelus.energycontrol.containers;
 
-import com.zuxelus.energycontrol.tileentities.TileEntityAFSU;
-import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
 import com.zuxelus.energycontrol.tileentities.TileEntitySeedAnalyzer;
 import com.zuxelus.zlib.containers.ContainerBase;
 import com.zuxelus.zlib.containers.slots.SlotFilter;

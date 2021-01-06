@@ -6,7 +6,6 @@ import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.inventory.Container;
@@ -54,7 +53,7 @@ public class GuiContainerBase extends GuiContainer {
 	}
 
 	public void drawCenteredText(String text, int x, int y, int color) {
-		fontRendererObj.drawString(text, x - fontRendererObj.getStringWidth(text) / 2, y, color);
+		fontRendererObj.drawString(text, (x - fontRendererObj.getStringWidth(text)) / 2, y, color);
 	}
 
 	public void drawRightAlignedText(String text, int x, int y, int color) {

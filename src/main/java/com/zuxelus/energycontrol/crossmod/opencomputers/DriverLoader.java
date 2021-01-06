@@ -1,7 +1,5 @@
 package com.zuxelus.energycontrol.crossmod.opencomputers;
 
-import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-
 import li.cil.oc.api.Driver;
 
 public class DriverLoader {

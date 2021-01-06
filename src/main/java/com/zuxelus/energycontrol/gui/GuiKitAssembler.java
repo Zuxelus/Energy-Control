@@ -13,7 +13,6 @@ import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
 import com.zuxelus.zlib.network.NetworkHelper;
 
-import cpw.mods.fml.client.config.GuiUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.FontRenderer;
@@ -33,7 +32,6 @@ public class GuiKitAssembler extends GuiContainer {
 
 	private String name;
 	private ContainerKitAssembler container;
-	private ItemStack prevStack;
 	private GuiTextField textboxTitle;
 	private boolean modified;
 

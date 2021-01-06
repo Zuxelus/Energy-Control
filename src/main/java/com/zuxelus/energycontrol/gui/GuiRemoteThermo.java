@@ -33,6 +33,7 @@ public class GuiRemoteThermo extends GuiContainer {
 		ySize = 166;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void initGui() {
 		super.initGui();

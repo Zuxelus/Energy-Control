@@ -21,10 +21,8 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.world.World;
 
 public class TileEntityRangeTrigger extends TileEntityInventory implements ISlotItemFilter, ITilePacketHandler, IBlockHorizontal {
-
 	public static final int SLOT_CARD = 0;
 	public static final int SLOT_UPGRADE = 1;
-	private static final int LOCATION_RANGE = 8;
 
 	private static final int STATE_UNKNOWN = 0;
 	private static final int STATE_PASSIVE = 1;

@@ -1,6 +1,5 @@
-package com.zuxelus.energycontrol.items;
+package com.zuxelus.zlib.items;
 
-import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -72,15 +71,25 @@ public abstract class ItemInventory implements IInventory, ISlotItemFilter {
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int index) {
-		return index >= 0 && index < getSizeInventory() ? inventory[index] : null;
+	public ItemStack getStackInSlot(int slot) {
+		return slot >= 0 && slot < getSizeInventory() ? inventory[slot] : null;
 	}
 
 	@Override
-	public ItemStack decrStackSize(int index, int count) {
-		ItemStack itemstack = ItemStackHelper.getAndSplit(inventory, index, count);
-		if (itemstack != null) markDirty();
-		return itemstack;
+	public ItemStack decrStackSize(int slot, int count) {
+		ItemStack stack = getAndSplit(inventory, slot, count);
+		if (stack != null) markDirty();
+		return stack;
+	}
+
+	private static ItemStack getAndSplit(ItemStack[] stacks, int slot, int amount) {
+		if (slot >= 0 && slot < stacks.length && stacks[slot] != null && amount > 0) {
+			ItemStack stack = stacks[slot].splitStack(amount);
+			if (stacks[slot].stackSize == 0)
+				stacks[slot] = null;
+			return stack;
+		}
+		return null;
 	}
 
 	@Override

@@ -10,7 +10,7 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.blocks.BlockDamages;
-import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
@@ -33,7 +33,6 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -63,7 +62,6 @@ public class TileEntityInfoPanel extends TileEntityInventory
 	public int colorBackground;
 	public int colorText;
 
-	protected boolean colored;
 	public boolean powered;
 
 	public TileEntityInfoPanel() {
@@ -71,12 +69,11 @@ public class TileEntityInfoPanel extends TileEntityInventory
 		cardData = new HashMap<Integer, List<PanelString>>();
 		displaySettings = new HashMap<Integer, Map<Integer, Integer>>(1);
 		displaySettings.put(0, new HashMap<Integer, Integer>());
-		tickRate = EnergyControl.config.infoPanelRefreshPeriod - 1;
-		updateTicker = tickRate;
+		tickRate = EnergyControl.config.infoPanelRefreshPeriod;
+		updateTicker = tickRate - 1;
 		dataTicker = 4;
 		showLabels = true;
 		colorBackground = 2;
-		colored = false;
 	}
 
 	private void initData() {
@@ -116,14 +113,19 @@ public class TileEntityInfoPanel extends TileEntityInventory
 		showLabels = newShowLabels;
 	}
 
-	public boolean getColored() {
-		return colored;
+	public int getTickRate() {
+		return tickRate;
 	}
 
-	public void setColored(boolean newColored) {
-		if (!worldObj.isRemote && colored != newColored)
+	public void setTickRate(int newValue) {
+		if (!worldObj.isRemote && tickRate != newValue)
 			notifyBlockUpdate();
-		colored = newColored;
+		tickRate = newValue;
+	}
+
+	public boolean getColored() {
+		ItemStack stack = getStackInSlot(SLOT_UPGRADE_COLOR);
+		return stack != null && stack.getItem() instanceof ItemUpgrade && stack.getItemDamage() == ItemUpgrade.DAMAGE_COLOR;
 	}
 
 	public int getColorBackground() {
@@ -205,6 +207,10 @@ public class TileEntityInfoPanel extends TileEntityInventory
 					resetCardData();
 				}
 			}
+		case 5:
+			if (tag.hasKey("value"))
+				setTickRate(tag.getInteger("value"));
+			break;
 		}
 	}
 
@@ -214,8 +220,6 @@ public class TileEntityInfoPanel extends TileEntityInventory
 		tag = writeProperties(tag);
 		calcPowered();
 		tag.setBoolean("powered", powered);
-		colored = isColoredEval();
-		tag.setBoolean("colored", colored);
 		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, tag);
 	}
 
@@ -247,6 +251,8 @@ public class TileEntityInfoPanel extends TileEntityInventory
 	@Override
 	protected void readProperties(NBTTagCompound tag) {
 		super.readProperties(tag);
+		if (tag.hasKey("tickRate"))
+			tickRate = tag.getInteger("tickRate");
 		if (tag.hasKey("showLabels"))
 			showLabels = tag.getBoolean("showLabels");
 
@@ -254,9 +260,6 @@ public class TileEntityInfoPanel extends TileEntityInventory
 			colorText = tag.getInteger("colorText");
 			colorBackground = tag.getInteger("colorBackground");
 		}
-
-		if (tag.hasKey("colored"))
-			setColored(tag.getBoolean("colored"));
 
 		if (tag.hasKey("screenData")) {
 			if (worldObj != null)
@@ -299,6 +302,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 	@Override
 	protected NBTTagCompound writeProperties(NBTTagCompound tag) {
 		tag = super.writeProperties(tag);
+		tag.setInteger("tickRate",tickRate);
 		tag.setBoolean("showLabels", getShowLabels());
 		tag.setInteger("colorBackground", colorBackground);
 		tag.setInteger("colorText", colorText);
@@ -338,7 +342,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 		if (!worldObj.isRemote) {
 			if (updateTicker-- > 0)
 				return;
-			updateTicker = tickRate;
+			updateTicker = tickRate - 1;
 			markDirty();
 		}
 	}
@@ -352,11 +356,11 @@ public class TileEntityInfoPanel extends TileEntityInventory
 		cardData.clear();
 	}
 
-	public List<PanelString> getCardData(int settings, ItemStack cardStack, ItemCardReader reader, boolean showLabels) {
+	public List<PanelString> getCardData(int settings, ItemStack cardStack, ItemCardReader reader, boolean isServer, boolean showLabels) {
 		int slot = getCardSlot(cardStack);
 		List<PanelString> data = cardData.get(slot);
 		if (data == null) {
-			data = ItemCardMain.getStringData(settings, reader, showLabels);
+			data = ItemCardMain.getStringData(settings, reader, isServer, showLabels);
 			cardData.put(slot, data);
 		}
 		return data;
@@ -374,7 +378,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 		return data;
 	}
 
-	public List<PanelString> getPanelStringList(boolean showLabels) {
+	public List<PanelString> getPanelStringList(boolean isServer, boolean showLabels) {
 		List<ItemStack> cards = getCards();
 		boolean anyCardFound = false;
 		List<PanelString> joinedData = new LinkedList<PanelString>();
@@ -388,9 +392,9 @@ public class TileEntityInfoPanel extends TileEntityInventory
 			CardState state = reader.getState();
 			List<PanelString> data;
 			if (state != CardState.OK && state != CardState.CUSTOM_ERROR)
-				data = reader.getStateMessage(state);
+				data = ItemCardReader.getStateMessage(state);
 			else
-				data = getCardData(settings, card, reader, showLabels);
+				data = getCardData(settings, card, reader, isServer, showLabels);
 			if (data == null)
 				continue;
 			joinedData.addAll(data);
@@ -426,19 +430,13 @@ public class TileEntityInfoPanel extends TileEntityInventory
 
 		ItemCardReader reader = new ItemCardReader(card);
 		ItemCardMain.updateCardNBT(worldObj, xCoord, yCoord, zCoord, reader, stack);
-		reader.updateClient(this, slot);
-	}
-
-	protected boolean isColoredEval() {
-		ItemStack itemStack = getStackInSlot(SLOT_UPGRADE_COLOR);
-		return itemStack != null && itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_COLOR;
+		reader.updateClient(card, this, slot);
 	}
 
 	@Override
 	public void markDirty() {
 		super.markDirty();
 		if (!worldObj.isRemote && powered) {
-			setColored(isColoredEval());
 			ItemStack itemStack = getStackInSlot(getSlotUpgradeRange());
 			for (ItemStack card : getCards())
 				processCard(card, getCardSlot(card), itemStack);
@@ -658,6 +656,6 @@ public class TileEntityInfoPanel extends TileEntityInventory
 
 	@Override
 	public ItemStack getWrenchDrop(EntityPlayer entityPlayer) {
-		return new ItemStack(ItemHelper.blockMain, 1, BlockDamages.DAMAGE_INFO_PANEL);
+		return new ItemStack(ModItems.blockMain, 1, BlockDamages.DAMAGE_INFO_PANEL);
 	}
 }

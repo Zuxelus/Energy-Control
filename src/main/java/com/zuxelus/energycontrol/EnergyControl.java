@@ -6,7 +6,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.network.ChannelHandler;
 import com.zuxelus.energycontrol.recipes.RecipesNew;
 import com.zuxelus.energycontrol.tileentities.ScreenManager;
@@ -33,7 +33,6 @@ public class EnergyControl {
 	@Instance(MODID)
 	public static EnergyControl instance;
 
-
 	public static EnCtrlTab creativeTab = new EnCtrlTab();
 
 	public static Logger logger;
@@ -55,11 +54,11 @@ public class EnergyControl {
 		proxy.importSound();
 
 		ChannelHandler.init();
+		CrossModLoader.init();
 
-		CrossModLoader.preinit();
-		ItemHelper.onBlockRegistry();
-		ItemHelper.onItemRegistry();
-		ItemHelper.registerTileEntities();
+		ModItems.onBlockRegistry();
+		ModItems.onItemRegistry();
+		ModItems.registerTileEntities();
 	}
 
 	@EventHandler
@@ -70,12 +69,10 @@ public class EnergyControl {
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
 
 		proxy.registerSpecialRenderers();
-		CrossModLoader.init();
 	}
 
 	@EventHandler
 	public static void postInit(FMLPostInitializationEvent event) {
 		RecipesNew.addRecipes();
-		CrossModLoader.postinit();
 	}
 }

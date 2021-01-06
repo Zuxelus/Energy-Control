@@ -17,11 +17,11 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.7.10-0.1.1a"
-group= "com.zuxelus.energycontrol" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+version = "1.7.10-0.1.1b"
+group= "com.zuxelus.energycontrol"
 archivesBaseName = "EnergyControl"
 
-sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
+sourceCompatibility = targetCompatibility = "1.8"
 compileJava {
     sourceCompatibility = targetCompatibility = "1.8"
 }
@@ -35,7 +35,6 @@ minecraft {
 }
 
 dependencies {
-	compile files("libs/industrialcraft-2-2.6.259-ex110.jar")
 }
 
 processResources {

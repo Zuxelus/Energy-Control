@@ -12,7 +12,6 @@ import com.zuxelus.zlib.network.NetworkHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
@@ -23,8 +22,6 @@ public class GuiAFSU extends GuiContainer {
 
 	private String name;
 	private ContainerAFSU container;
-	private GuiTextField textboxTitle;
-	private boolean modified;
 
 	public GuiAFSU(ContainerAFSU container) {
 		super(container);
@@ -33,6 +30,7 @@ public class GuiAFSU extends GuiContainer {
 		name = I18n.format("tile.afsu.name");
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void initGui() {
 		super.initGui();

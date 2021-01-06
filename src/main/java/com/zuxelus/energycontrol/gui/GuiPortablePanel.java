@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.gui;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
@@ -14,7 +13,6 @@ import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -49,9 +47,9 @@ public class GuiPortablePanel extends GuiContainer {
 			CardState state = reader.getState();
 			List<PanelString> joinedData;
 			if (state != CardState.OK && state != CardState.CUSTOM_ERROR)
-				joinedData = reader.getStateMessage(state);
+				joinedData = ItemCardReader.getStateMessage(state);
 			else
-				joinedData = ItemCardMain.getStringData(Integer.MAX_VALUE, reader, true);
+				joinedData = ItemCardMain.getStringData(Integer.MAX_VALUE, reader, false, true);
 
 			int row = 0;
 			for (PanelString panelString : joinedData) {
@@ -67,23 +65,6 @@ public class GuiPortablePanel extends GuiContainer {
 				row++;
 			}
 		}
-	}
-
-	private List<PanelString> getRemoteCustomMSG() {
-		List<PanelString> result = new LinkedList<PanelString>();
-		PanelString line = new PanelString();
-		line.textCenter = I18n.format("nc.msg.notValid");
-		result.add(line);
-		line = new PanelString();
-		line.textCenter = I18n.format("nc.msg.notValid2");
-		result.add(line);
-		line = new PanelString();
-		line.textCenter = "";
-		result.add(line);
-		line = new PanelString();
-		line.textCenter = I18n.format("nc.msg.notValid3");
-		result.add(line);
-		return result;
 	}
 
 	@Override

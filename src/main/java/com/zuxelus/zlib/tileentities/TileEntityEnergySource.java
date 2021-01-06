@@ -4,9 +4,6 @@ import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
-import ic2.api.energy.tile.IEnergyAcceptor;
-import ic2.api.energy.tile.IEnergyEmitter;
-import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergySource;
 import ic2.api.info.Info;
 import ic2.api.item.ElectricItem;
@@ -14,7 +11,6 @@ import ic2.api.item.IElectricItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -111,7 +107,6 @@ public abstract class TileEntityEnergySource extends TileEntityInventory impleme
 	protected void handleCharger(int slot) {
 		ItemStack stack = getStackInSlot(slot);
 		if (stack != null && energy > 0 && stack.getItem() instanceof IElectricItem) {
-			IElectricItem item = (IElectricItem) stack.getItem();
 			double amount = ElectricItem.manager.charge(stack, Double.POSITIVE_INFINITY, tier, true, true);
 			amount = Math.min(amount, energy);
 			if (amount > 0)

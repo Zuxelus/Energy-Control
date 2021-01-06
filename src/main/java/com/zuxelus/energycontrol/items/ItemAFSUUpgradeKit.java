@@ -2,9 +2,11 @@ package com.zuxelus.energycontrol.items;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.blocks.BlockDamages;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.tileentities.TileEntityAFSU;
 
 import ic2.core.block.wiring.BlockElectric;
+import ic2.core.block.wiring.TileEntityElectricBlock;
 import ic2.core.block.wiring.TileEntityElectricMFSU;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -40,7 +42,7 @@ public class ItemAFSUUpgradeKit extends Item {
 		for (int i = 0; i < items.length; i++)
 			items[i] = ((TileEntityElectricBlock) mfsu).getStackInSlot(i);
 		world.removeTileEntity(x, y, z);
-		world.setBlock(x, y, z, ItemHelper.blockMain, BlockDamages.DAMAGE_AFSU, 2);
+		world.setBlock(x, y, z, ModItems.blockMain, BlockDamages.DAMAGE_AFSU, 2);
 		TileEntityAFSU afsu = new TileEntityAFSU();
 		afsu.addEnergy(eustored);
 		afsu.setFacing(facing);

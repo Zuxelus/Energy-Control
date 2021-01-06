@@ -1,7 +1,5 @@
 package com.zuxelus.energycontrol.gui;
 
-import org.lwjgl.opengl.GL11;
-
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.gui.controls.GuiHowlerAlarmSlider;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
@@ -9,7 +7,6 @@ import com.zuxelus.zlib.gui.GuiBase;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.util.ResourceLocation;
 
 @SideOnly(Side.CLIENT)
 public class GuiIndustrialAlarm extends GuiBase {

@@ -13,6 +13,7 @@ import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import cpw.mods.fml.relauncher.Side;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -23,6 +24,7 @@ public class PacketCard implements IMessage, IMessageHandler<PacketCard, IMessag
 	private int y;
 	private int z;
 	private int slot;
+	private String className;
 	private Map<String, Object> fields;
 
 	public static final int FIELD_DOUBLE = 1;
@@ -33,13 +35,14 @@ public class PacketCard implements IMessage, IMessageHandler<PacketCard, IMessag
 	public static final int FIELD_NULL = 6;
 	public static final int FIELD_LONG = 7;
 
-	public PacketCard() {	}
+	public PacketCard() { }
 
-	public PacketCard(TileEntity panel, int slot, Map<String, Object> fields) {
+	public PacketCard(TileEntity panel, int slot, String className, Map<String, Object> fields) {
 		this.x = panel.xCoord;
 		this.y = panel.yCoord;
 		this.z = panel.zCoord;
 		this.slot = slot;
+		this.className = className;
 		this.fields = fields;
 	}
 
@@ -49,6 +52,7 @@ public class PacketCard implements IMessage, IMessageHandler<PacketCard, IMessag
 		y = buf.readInt();
 		z = buf.readInt();
 		slot = buf.readInt();
+		className = ByteBufUtils.readUTF8String(buf);
 		int fieldCount = buf.readShort();
 		fields = new HashMap<String, Object>();
 		for (int i = 0; i < fieldCount; i++) {
@@ -89,6 +93,7 @@ public class PacketCard implements IMessage, IMessageHandler<PacketCard, IMessag
 		buf.writeInt(y);
 		buf.writeInt(z);
 		buf.writeInt(slot);
+		ByteBufUtils.writeUTF8String(buf, className);
 		buf.writeShort(fields.size());
 		for (Map.Entry<String, Object> entry : fields.entrySet()) {
 			ByteBufUtils.writeUTF8String(buf, entry.getKey());
@@ -119,14 +124,21 @@ public class PacketCard implements IMessage, IMessageHandler<PacketCard, IMessag
 
 	@Override
 	public IMessage onMessage(PacketCard message, MessageContext ctx) {
-		TileEntity tileEntity = FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.x, message.y, message.z);
-		if (tileEntity == null || !(tileEntity instanceof TileEntityInfoPanel))
+		TileEntity te = null;
+		if (ctx.side == Side.SERVER)
+			te = ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y, message.z);
+		if (ctx.side == Side.CLIENT)
+			te = FMLClientHandler.instance().getClient().theWorld.getTileEntity(message.x, message.y, message.z);
+		if (te == null || !(te instanceof TileEntityInfoPanel))
 			return null;
-		TileEntityInfoPanel panel = (TileEntityInfoPanel) tileEntity;
+		TileEntityInfoPanel panel = (TileEntityInfoPanel) te;
 		ItemStack stack = panel.getStackInSlot(message.slot);
 		if (stack == null || !(stack.getItem() instanceof ItemCardMain))
 			return null;
-
+		if (!stack.getItem().getClass().getName().equals(message.className)) {
+			EnergyControl.logger.warn("Class mismatch: '%s'!='%s'", message.className, stack.getItem().getClass().getName());
+			return null;
+		}
 		ItemCardReader reader = new ItemCardReader(stack);
 		for (Map.Entry<String, Object> entry : message.fields.entrySet()) {
 			String name = entry.getKey();
@@ -146,7 +158,10 @@ public class PacketCard implements IMessage, IMessageHandler<PacketCard, IMessag
 			} else if (value == null)
 				reader.removeField(name);
 		}
-		panel.resetCardData();
+		/*if (ctx.side == Side.SERVER)
+			reader.commit(panel, message.slot);*/
+		if (ctx.side == Side.CLIENT)
+			panel.resetCardData();
 		return null;
 	}
 }

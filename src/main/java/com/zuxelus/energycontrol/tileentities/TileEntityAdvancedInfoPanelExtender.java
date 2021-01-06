@@ -1,7 +1,7 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.blocks.BlockDamages;
-import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.init.ModItems;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -48,6 +48,6 @@ public class TileEntityAdvancedInfoPanelExtender extends TileEntityInfoPanelExte
 
 	@Override
 	public ItemStack getWrenchDrop(EntityPlayer entityPlayer) {
-		return new ItemStack(ItemHelper.blockMain, 1, BlockDamages.DAMAGE_ADVANCED_EXTENDER);
+		return new ItemStack(ModItems.blockMain, 1, BlockDamages.DAMAGE_ADVANCED_EXTENDER);
 	}
 }

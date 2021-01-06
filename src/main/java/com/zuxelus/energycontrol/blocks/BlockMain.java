@@ -6,12 +6,13 @@ import java.util.Map;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.crossmod.ic2.CrossIC2.IC2Type;
 import com.zuxelus.energycontrol.tileentities.*;
 import com.zuxelus.zlib.tileentities.IBlockHorizontal;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -57,8 +58,9 @@ public class BlockMain extends BlockContainer {
 		register(new AdvancedInfoPanel());
 		register(new AdvancedInfoPanelExtender());
 		register(new KitAssembler());
-		if (CrossModLoader.ic2.getType() == IC2Type.EXP)
+		if (CrossModLoader.ic2.getModType() == "IC2Exp")
 			register(new AFSU());
+		register(new Timer());
 	}
 
 	public void register(BlockBase block) {
@@ -158,6 +160,7 @@ public class BlockMain extends BlockContainer {
 		case DOWN:
 			te.setRotation(TileEntityFacing.getHorizontalFacing(placer));
 			break;
+		case UNKNOWN:
 		case NORTH:
 		case SOUTH:
 		case EAST:
@@ -201,7 +204,7 @@ public class BlockMain extends BlockContainer {
 			return true;
 		int meta = world.getBlockMetadata(x, y, z);
 		if ((world.isRemote && (meta == BlockDamages.DAMAGE_THERMAL_MONITOR || meta == BlockDamages.DAMAGE_HOWLER_ALARM
-				|| meta == BlockDamages.DAMAGE_INDUSTRIAL_ALARM)) || !world.isRemote)
+				|| meta == BlockDamages.DAMAGE_INDUSTRIAL_ALARM || meta == BlockDamages.DAMAGE_TIMER)) || !world.isRemote)
 			player.openGui(EnergyControl.instance, meta, world, x, y, z);
 		return true;
 	}
@@ -219,6 +222,8 @@ public class BlockMain extends BlockContainer {
 			return ((TileEntityRangeTrigger) te).getPowered() ? 15 : 0;
 		if (te instanceof TileEntityAFSU)
 			return ((TileEntityAFSU) te).getPowered() ? 15 : 0;
+		if (te instanceof TileEntityTimer)
+			return ((TileEntityTimer) te).getPowered() ? ((TileEntityTimer) te).getFacingForge().ordinal() != direction ? 15 : 0 : 0;
 		return 0;
 	}
 
@@ -308,7 +313,9 @@ public class BlockMain extends BlockContainer {
 		return getLightValue();
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(Item id, CreativeTabs tab, List list) {
 		for (BlockBase block : blocks.values())
 			if (block.damage == BlockDamages.DAMAGE_AFSU) {

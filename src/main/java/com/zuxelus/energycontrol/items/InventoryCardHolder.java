@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.items;
 
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
+import com.zuxelus.zlib.items.ItemInventory;
 
 import net.minecraft.item.ItemStack;
 

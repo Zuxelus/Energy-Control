@@ -1,7 +1,7 @@
 package com.zuxelus.energycontrol.recipes;
 
 import com.zuxelus.energycontrol.api.ItemStackHelper;
-import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.init.ModItems;
 
 import ic2.api.item.IC2Items;
 import net.minecraft.inventory.InventoryCrafting;
@@ -20,7 +20,7 @@ public class NanoBowRecipe extends ShapedRecipes {
 						null, IC2Items.getItem("glassFiberCableItem"), null,
 						IC2Items.getItem("carbonPlate"),
 						IC2Items.getItem("glassFiberCableItem")},
-				new ItemStack(ItemHelper.itemNanoBow));
+				new ItemStack(ModItems.itemNanoBow));
 	}
 
 	@Override
@@ -30,8 +30,8 @@ public class NanoBowRecipe extends ShapedRecipes {
 			return null;
 		NBTTagCompound tag = stack.getTagCompound();
 		if (tag == null || !tag.hasKey("charge"))
-			return new ItemStack(ItemHelper.itemNanoBow);
+			return new ItemStack(ModItems.itemNanoBow);
 		double energy = tag.getDouble("charge");
-		return ItemStackHelper.getStackWithEnergy(ItemHelper.itemNanoBow, "charge", Math.min(energy, 40000.0D));
+		return ItemStackHelper.getStackWithEnergy(ModItems.itemNanoBow, "charge", Math.min(energy, 40000.0D));
 	}
 }

@@ -2,10 +2,8 @@ package com.zuxelus.energycontrol.items;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.utils.ReactorHelper;
-import com.zuxelus.zlib.network.NetworkHelper;
 
 import ic2.api.reactor.IReactor;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;

@@ -12,7 +12,6 @@ import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
@@ -144,7 +143,7 @@ public class ItemCardGenerator extends ItemCardBase {
 			break;
 		}
 		if ((settings & 32) > 0)
-			addOnOff(result, reader.getBoolean("active"));
+			addOnOff(result, isServer, reader.getBoolean("active"));
 		return result;
 	}
 

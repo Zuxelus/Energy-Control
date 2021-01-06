@@ -1,9 +1,9 @@
-package com.zuxelus.energycontrol.crossmod.techreborn;
+package com.zuxelus.energycontrol.crossmod;
 
 import java.lang.reflect.Field;
 
 import com.zuxelus.energycontrol.api.ItemStackHelper;
-import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
 import ic2.api.item.IC2Items;
@@ -14,7 +14,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidTankInfo;
 import reborncore.api.fuel.FluidPowerManager;
-import techreborn.api.TechRebornAPI;
 import techreborn.api.TechRebornBlocks;
 import techreborn.api.TechRebornItems;
 import techreborn.api.power.IEnergyInterfaceTile;
@@ -28,17 +27,44 @@ import techreborn.tiles.TileSemifluidGenerator;
 import techreborn.tiles.TileThermalGenerator;
 import techreborn.tiles.fusionReactor.TileEntityFusionController;
 
-public class TechReborn extends CrossTechReborn {
+public class CrossTechReborn extends CrossModBase {
 
 	@Override
-	public ItemStack getEnergyCard(World world, int x, int y, int z) {
-		TileEntity te = world.getTileEntity(x, y, z);
-		if (te instanceof IEnergyInterfaceTile) {
-			ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_ENERGY);
-			ItemStackHelper.setCoordinates(sensorLocationCard, x, y, z);
-			return sensorLocationCard;
+	public ItemStack getItemStack(String name) {
+		switch (name) {
+		case "glassfiber":
+			//return ItemStandaloneCables.getCableByName("glassfiber");
+		case "copper_cable":
+			//return ItemStandaloneCables.getCableByName("insulatedcopper");
+		case "tin_cable":
+			//return ItemStandaloneCables.getCableByName("tin");
+		case "gold_cable":
+			//return ItemStandaloneCables.getCableByName("gold");
+			return new ItemStack(IC2Items.getItem("copperCableItem").getItem(), 1, 10);
+		case "carbon_plate":
+			return new ItemStack(TechRebornItems.getItem("PLATES"), 1, 2);
+		case "energy_crystal":
+			return new ItemStack(TechRebornItems.getItem("ENERGY_CRYSTAL"));
+		case "circuit":
+			return new ItemStack(TechRebornItems.getItem("PARTS"), 1, 1);
+		case "transmitter":
+			return new ItemStack(TechRebornItems.getItem("FREQUENCY_TRANSMITTER"));
+		case "frame":
+			return new ItemStack(TechRebornBlocks.getBlock("MACHINE_FRAMES"));
+		case "mv_transformer":
+			return new ItemStack(TechRebornBlocks.getBlock("MV_TRANSFORMER"));
+		case "coolant_simple":
+			return ItemParts.getPartByName("heliumCoolantSimple");
+		case "energy_storage":
+			return new ItemStack(TechRebornItems.getItem("UPGRADES"), 1, 2);
 		}
 		return null;
+	}
+
+	@Override
+	public ItemStack getChargedStack(ItemStack stack) {
+		PoweredItem.setEnergy(PoweredItem.getMaxPower(stack), stack);
+		return stack;
 	}
 
 	@Override
@@ -59,7 +85,7 @@ public class TechReborn extends CrossTechReborn {
 	public ItemStack getGeneratorCard(World world, int x, int y, int z) {
 		TileEntity te = world.getTileEntity(x, y, z);
 		if (te instanceof TileThermalGenerator || te instanceof TileDieselGenerator || te instanceof TileSemifluidGenerator || te instanceof TileHeatGenerator || te instanceof TileGasTurbine) {
-			ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_GENERATOR);
+			ItemStack sensorLocationCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_GENERATOR);
 			ItemStackHelper.setCoordinates(sensorLocationCard, x, y, z);
 			return sensorLocationCard;
 		}
@@ -168,44 +194,6 @@ public class TechReborn extends CrossTechReborn {
 	public FluidTankInfo[] getAllTanks(TileEntity te) {
 		/*if (te instanceof TileBaseFluidGenerator)
 			return ((TileBaseFluidGenerator) te).tank.getTankProperties();*/
-		return null;
-	}
-
-	@Override
-	public ItemStack getChargedStack(ItemStack stack) {
-		PoweredItem.setEnergy(PoweredItem.getMaxPower(stack), stack);
-		return stack;
-	}
-
-	@Override
-	public ItemStack getItemStack(String name) {
-		switch (name) {
-		case "glassfiber":
-			//return ItemStandaloneCables.getCableByName("glassfiber");
-		case "copper_cable":
-			//return ItemStandaloneCables.getCableByName("insulatedcopper");
-		case "tin_cable":
-			//return ItemStandaloneCables.getCableByName("tin");
-		case "gold_cable":
-			//return ItemStandaloneCables.getCableByName("gold");
-			return new ItemStack(IC2Items.getItem("copperCableItem").getItem(), 1, 10);
-		case "carbon_plate":
-			return new ItemStack(TechRebornItems.getItem("PLATES"), 1, 2);
-		case "energy_crystal":
-			return new ItemStack(TechRebornItems.getItem("ENERGY_CRYSTAL"));
-		case "circuit":
-			return new ItemStack(TechRebornItems.getItem("PARTS"), 1, 1);
-		case "transmitter":
-			return new ItemStack(TechRebornItems.getItem("FREQUENCY_TRANSMITTER"));
-		case "frame":
-			return new ItemStack(TechRebornBlocks.getBlock("MACHINE_FRAMES"));
-		case "mv_transformer":
-			return new ItemStack(TechRebornBlocks.getBlock("MV_TRANSFORMER"));
-		case "coolant_simple":
-			return ItemParts.getPartByName("heliumCoolantSimple");
-		case "energy_storage":
-			return new ItemStack(TechRebornItems.getItem("UPGRADES"), 1, 2);
-		}
 		return null;
 	}
 }

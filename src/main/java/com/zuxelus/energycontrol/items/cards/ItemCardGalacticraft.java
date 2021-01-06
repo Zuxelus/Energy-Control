@@ -177,7 +177,7 @@ public class ItemCardGalacticraft extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int settings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		if (!reader.hasField("type"))
 			return result;
@@ -253,7 +253,7 @@ public class ItemCardGalacticraft extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelSetting> getSettingsList(ItemStack stack) {
+	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(2);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbStatus"), 1, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 2, damage));

@@ -15,6 +15,7 @@ public class NetworkHelper {
 
 	// server
 	public static void sendPacketToAllAround(int x, int y, int z, int dist, World world, IMessage packet) {
+		@SuppressWarnings("unchecked")
 		List<EntityPlayer> players = world.playerEntities;
 		for (EntityPlayer player : players) {
 			if (player instanceof EntityPlayerMP) {

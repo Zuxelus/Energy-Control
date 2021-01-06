@@ -2,7 +2,7 @@ package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.blocks.BlockDamages;
-import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
 import cpw.mods.fml.relauncher.Side;
@@ -16,7 +16,6 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -268,6 +267,6 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ISc
 
 	@Override
 	public ItemStack getWrenchDrop(EntityPlayer entityPlayer) {
-		return new ItemStack(ItemHelper.blockMain, 1, BlockDamages.DAMAGE_INFO_PANEL_EXTENDER);
+		return new ItemStack(ModItems.blockMain, 1, BlockDamages.DAMAGE_INFO_PANEL_EXTENDER);
 	}
 }

@@ -175,7 +175,7 @@ public class ItemCardGregTech extends ItemCardBase {
 				result.add(new PanelString("msg.ec.InfoPanelInputHU", reader.getInt("input"), true));
 				result.add(new PanelString("msg.ec.InfoPanelInput", reader.getString("iteminput"), true));
 				result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getString("itemoutput"), true));
-				addOnOff(result, reader.getBoolean("active"));
+				addOnOff(result, isServer, reader.getBoolean("active"));
 				break;
 			case 2:
 				result.add(new PanelString("msg.ec.InfoPanelEnergyHU", reader.getInt("energy"), true));
@@ -196,7 +196,7 @@ public class ItemCardGregTech extends ItemCardBase {
 						new PanelString("msg.ec.InfoPanelClockwise", reader.getBoolean("clockwise").toString(), true));
 				result.add(new PanelString("msg.ec.InfoPanelIn", reader.getString("in"), true));
 				result.add(new PanelString("msg.ec.InfoPanelOut", reader.getString("out"), true));
-				addOnOff(result, reader.getBoolean("active"));
+				addOnOff(result, isServer, reader.getBoolean("active"));
 				break;
 			case 4:
 				result.add(new PanelString("msg.ec.InfoPanelEnergyRU", reader.getInt("energy"), true));
@@ -204,7 +204,7 @@ public class ItemCardGregTech extends ItemCardBase {
 				result.add(new PanelString("msg.ec.InfoPanelOutputEU", reader.getInt("output").toString(), true));
 				result.add(new PanelString("msg.ec.InfoPanelIn", reader.getString("in"), true));
 				result.add(new PanelString("msg.ec.InfoPanelOut", reader.getString("out"), true));
-				addOnOff(result, reader.getBoolean("active"));
+				addOnOff(result, isServer, reader.getBoolean("active"));
 				break;
 			}
 		} catch (Exception ignored) { }

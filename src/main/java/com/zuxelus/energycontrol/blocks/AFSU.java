@@ -1,6 +1,6 @@
 package com.zuxelus.energycontrol.blocks;
 
-import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.tileentities.TileEntityAFSU;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -42,7 +42,7 @@ public class AFSU extends BlockBase {
 	}
 
 	public static ItemStack getStackwithEnergy(double energy) {
-		ItemStack stack = new ItemStack(ItemHelper.blockMain, 1, BlockDamages.DAMAGE_AFSU);
+		ItemStack stack = new ItemStack(ModItems.blockMain, 1, BlockDamages.DAMAGE_AFSU);
 		NBTTagCompound tag = new NBTTagCompound();
 		stack.setTagCompound(tag);
 		tag.setDouble("energy", energy);

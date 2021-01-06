@@ -1,17 +1,15 @@
-package com.zuxelus.energycontrol.crossmod.ic2;
+package com.zuxelus.energycontrol.crossmod;
 
 import java.lang.reflect.Field;
-import java.util.Map.Entry;
 
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.ItemAFB;
 import com.zuxelus.energycontrol.items.ItemAFSUUpgradeKit;
-import com.zuxelus.energycontrol.items.ItemHelper;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.energycontrol.utils.ReactorHelper;
-import com.zuxelus.zlib.network.NetworkHelper;
 
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IC2Items;
@@ -24,15 +22,12 @@ import ic2.core.block.TileEntityBarrel;
 import ic2.core.block.TileEntityBlock;
 import ic2.core.block.TileEntityHeatSourceInventory;
 import ic2.core.block.comp.Energy;
-import ic2.core.block.comp.TileEntityComponent;
-import ic2.core.block.generator.block.BlockGenerator;
 import ic2.core.block.generator.tileentity.*;
 import ic2.core.block.heatgenerator.tileentity.*;
 import ic2.core.block.kineticgenerator.tileentity.*;
 import ic2.core.block.machine.tileentity.TileEntityLiquidHeatExchanger;
 import ic2.core.block.machine.tileentity.TileEntitySteamGenerator;
 import ic2.core.block.reactor.tileentity.*;
-import ic2.core.block.wiring.TileEntityCable;
 import ic2.core.item.reactor.ItemReactorLithiumCell;
 import ic2.core.item.reactor.ItemReactorMOX;
 import ic2.core.item.reactor.ItemReactorUranium;
@@ -46,37 +41,29 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class IC2Exp extends CrossIC2 {
+public class CrossIC2Exp extends CrossModBase {
 
 	@Override
-	public int getNuclearCellTimeLeft(ItemStack stack) {
-		if (stack == null)
-			return 0;
-		Item item = stack.getItem();
-		if (item instanceof ItemReactorUranium || item instanceof ItemReactorLithiumCell || item instanceof ItemReactorMOX)
-			return ((ICustomDamageItem)item).getMaxCustomDamage(stack) - ((ICustomDamageItem)item).getCustomDamage(stack);
-		// Coaxium Mod
-		if (item.getClass().getName() == "com.sm.FirstMod.items.ItemCoaxiumRod" || item.getClass().getName() == "com.sm.FirstMod.items.ItemCesiumRod")
-			return stack.getMaxDamage() - getCoaxiumDamage(stack);
-		return 0;
+	public String getModType() {
+		return "IC2Exp";
 	}
-
-	public int getCoaxiumDamage(ItemStack stack) {
-		if (!stack.hasTagCompound())
-			return 0;
-		return stack.getTagCompound().getInteger("fuelRodDamage");
-	}
-
+	
 	@Override
-	public IC2Type getType() {
-		return IC2Type.EXP;
+	public Item getItem(String name) {
+		switch (name) {
+		case "afb":
+			return new ItemAFB();
+		case "afsu_upgrade_kit":
+			return new ItemAFSUUpgradeKit();
+		default:
+			return null;
+		}
 	}
 
 	@Override
@@ -97,18 +84,6 @@ public class IC2Exp extends CrossIC2 {
 	}
 
 	@Override
-	public Item getItem(String name) {
-		switch (name) {
-		case "afb":
-			return new ItemAFB();
-		case "afsu_upgrade_kit":
-			return new ItemAFSUUpgradeKit();
-		default:
-			return null;
-		}
-	}
-
-	@Override
 	public ItemStack getChargedStack(ItemStack stack) {
 		ElectricItem.manager.charge(stack, Integer.MAX_VALUE, Integer.MAX_VALUE, true, false);
 		return stack;
@@ -120,19 +95,22 @@ public class IC2Exp extends CrossIC2 {
 	}
 
 	@Override
-	public boolean isSteamReactor(TileEntity par1) {
-		return false;
+	public int getNuclearCellTimeLeft(ItemStack stack) {
+		if (stack == null)
+			return 0;
+		Item item = stack.getItem();
+		if (item instanceof ItemReactorUranium || item instanceof ItemReactorLithiumCell || item instanceof ItemReactorMOX)
+			return ((ICustomDamageItem)item).getMaxCustomDamage(stack) - ((ICustomDamageItem)item).getCustomDamage(stack);
+		// Coaxium Mod
+		if (item.getClass().getName() == "com.sm.FirstMod.items.ItemCoaxiumRod" || item.getClass().getName() == "com.sm.FirstMod.items.ItemCesiumRod")
+			return stack.getMaxDamage() - getCoaxiumDamage(stack);
+		return 0;
 	}
 
-	@Override
-	public ItemStack getEnergyCard(World world, int x, int y, int z) {
-		TileEntity te = world.getTileEntity(x, y, z);
-		if (te instanceof IEnergyStorage) {
-			ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_ENERGY);
-			ItemStackHelper.setCoordinates(sensorLocationCard, x, y, z);
-			return sensorLocationCard;
-		}
-		return null;
+	private int getCoaxiumDamage(ItemStack stack) {
+		if (!stack.hasTagCompound())
+			return 0;
+		return stack.getTagCompound().getInteger("fuelRodDamage");
 	}
 
 	@Override
@@ -158,25 +136,25 @@ public class IC2Exp extends CrossIC2 {
 		if (te instanceof TileEntityBaseGenerator || te instanceof TileEntitySemifluidGenerator
 				|| te instanceof TileEntityStirlingGenerator || te instanceof TileEntityGeoGenerator
 				|| te instanceof TileEntityKineticGenerator || te instanceof TileEntitySteamGenerator) {
-			ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_GENERATOR);
-			ItemStackHelper.setCoordinates(sensorLocationCard, x, y, z);
-			return sensorLocationCard;
+			ItemStack card = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_GENERATOR);
+			ItemStackHelper.setCoordinates(card, x, y, z);
+			return card;
 		}
 		if (te instanceof TileEntityElectricKineticGenerator || te instanceof TileEntityManualKineticGenerator
 				|| te instanceof TileEntitySteamKineticGenerator || te instanceof TileEntityStirlingKineticGenerator
 				|| te instanceof TileEntityWaterKineticGenerator || te instanceof TileEntityWindKineticGenerator) {
-			ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_GENERATOR_KINETIC);
-			ItemStackHelper.setCoordinates(sensorLocationCard, x, y, z);
-			return sensorLocationCard;
+			ItemStack card = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_GENERATOR_KINETIC);
+			ItemStackHelper.setCoordinates(card, x, y, z);
+			return card;
 		}
 		if (te instanceof TileEntityHeatSourceInventory) {
-			ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_GENERATOR_HEAT);
-			ItemStackHelper.setCoordinates(sensorLocationCard, x, y, z);
-			return sensorLocationCard;
+			ItemStack card = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_GENERATOR_HEAT);
+			ItemStackHelper.setCoordinates(card, x, y, z);
+			return card;
 		}
 		return null;
 	}
-	
+
 	@Override
 	public NBTTagCompound getGeneratorData(TileEntity te) {
 		try {
@@ -381,7 +359,7 @@ public class IC2Exp extends CrossIC2 {
 				Field field = TileEntityWindKineticGenerator.class.getDeclaredField("windStrength");
 				field.setAccessible(true);
 				tag.setDouble("wind", (Double) field.get(te));
-				tag.setDouble("multiplier", entity.getefficiency() * entity.outputModifier);
+				tag.setDouble("multiplier", entity.getefficiency() * TileEntityWindKineticGenerator.outputModifier);
 				tag.setInteger("height", entity.yCoord);
 				 if (entity.rotorSlot.isEmpty())
 					 tag.setInteger("health", -1);
@@ -448,7 +426,7 @@ public class IC2Exp extends CrossIC2 {
 					if (((TileEntityRTHeatGenerator) te).fuelSlot.get(i) != null)
 						counter++;
 				tag.setInteger("items", counter);
-				tag.setDouble("multiplier", (double) ((TileEntityRTHeatGenerator) te).outputMultiplier);
+				tag.setDouble("multiplier", (double) TileEntityRTHeatGenerator.outputMultiplier);
 			}
 			if (te instanceof TileEntitySolidHeatGenerator) {
 				tag.setInteger("type", 5);
@@ -470,49 +448,22 @@ public class IC2Exp extends CrossIC2 {
 	}
 
 	@Override
-	public FluidTankInfo[] getAllTanks(TileEntity te) {
-		if (!(te instanceof IFluidHandler))
-			return null;
-
-		return ((IFluidHandler) te).getTankInfo(ForgeDirection.UP);
-	}
-
-	@Override
 	public ItemStack getReactorCard(World world, int x, int y, int z) {
 		TileEntity te = world.getTileEntity(x, y, z);
 		if (te instanceof TileEntityNuclearReactorElectric || te instanceof TileEntityReactorChamberElectric) {
 			ChunkCoordinates position = ReactorHelper.getTargetCoordinates(world, x, y, z);
 			if (position != null) {
-				ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_REACTOR);
-				ItemStackHelper.setCoordinates(sensorLocationCard, position.posX, position.posY, position.posZ);
-				return sensorLocationCard;
+				ItemStack card = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_REACTOR);
+				ItemStackHelper.setCoordinates(card, position.posX, position.posY, position.posZ);
+				return card;
 			}
 		} else if (te instanceof TileEntityReactorFluidPort || te instanceof TileEntityReactorRedstonePort
 				|| te instanceof TileEntityReactorAccessHatch) {
 			ChunkCoordinates position = ReactorHelper.get5x5TargetCoordinates(world, x, y, z);
 			if (position != null) {
-				ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_REACTOR5X5);
-				ItemStackHelper.setCoordinates(sensorLocationCard, position.posX, position.posY, position.posZ);
-				return sensorLocationCard;
-			}
-		}
-		return null;
-	}
-
-	@Override
-	public ItemStack getLiquidAdvancedCard(World world, int x, int y, int z) {
-		Block block = world.getBlock(x, y, z);
-		if (!(block instanceof BlockTileEntity))
-			return null;
-		
-		TileEntity te = world.getTileEntity(x, y, z);
-		if (te instanceof TileEntityReactorFluidPort || te instanceof TileEntityReactorRedstonePort
-				|| te instanceof TileEntityReactorAccessHatch) {
-			ChunkCoordinates position = ReactorHelper.get5x5TargetCoordinates(world, x, y, z);
-			if (position != null) {
-				ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_LIQUID_ADVANCED);
-				ItemStackHelper.setCoordinates(sensorLocationCard, position.posX, position.posY, position.posZ);
-				return sensorLocationCard;
+				ItemStack card = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_REACTOR5X5);
+				ItemStackHelper.setCoordinates(card, position.posX, position.posY, position.posZ);
+				return card;
 			}
 		}
 		return null;
@@ -524,8 +475,6 @@ public class IC2Exp extends CrossIC2 {
 		reader.setInt("maxHeat", reactor.getMaxHeat());
 		reader.setBoolean("reactorPoweredB", reactor.produceEnergy());
 		reader.setInt("output", (int) Math.round(reactor.getReactorEUEnergyOutput()));
-		boolean isSteam = ReactorHelper.isSteam(reactor);
-		reader.setBoolean("isSteam", isSteam);
 
 		IInventory inventory = (IInventory) reactor;
 		int slotCount = inventory.getSizeInventory();
@@ -536,13 +485,7 @@ public class IC2Exp extends CrossIC2 {
 				dmgLeft = Math.max(dmgLeft, ReactorHelper.getNuclearCellTimeLeft(stack));
 		}
 
-		int timeLeft = 0;
-		//Classic has a Higher Tick rate for Steam generation but damage tick rate is still the same...
-		if (isSteam) {
-			timeLeft = dmgLeft;
-		} else
-			timeLeft = dmgLeft * reactor.getTickRate() / 20;
-		reader.setInt("timeLeft", timeLeft);
+		reader.setInt("timeLeft", dmgLeft * reactor.getTickRate() / 20);
 		return CardState.OK;
 	}
 
@@ -571,7 +514,33 @@ public class IC2Exp extends CrossIC2 {
 		return CardState.OK;
 	}
 
+	//@Override
+	public ItemStack getLiquidAdvancedCard(World world, int x, int y, int z) {
+		Block block = world.getBlock(x, y, z);
+		if (!(block instanceof BlockTileEntity))
+			return null;
+		
+		TileEntity te = world.getTileEntity(x, y, z);
+		if (te instanceof TileEntityReactorFluidPort || te instanceof TileEntityReactorRedstonePort
+				|| te instanceof TileEntityReactorAccessHatch) {
+			ChunkCoordinates position = ReactorHelper.get5x5TargetCoordinates(world, x, y, z);
+			if (position != null) {
+				ItemStack sensorLocationCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_LIQUID_ADVANCED);
+				ItemStackHelper.setCoordinates(sensorLocationCard, position.posX, position.posY, position.posZ);
+				return sensorLocationCard;
+			}
+		}
+		return null;
+	}
+
 	@Override
+	public FluidTankInfo[] getAllTanks(TileEntity te) {
+		if (!(te instanceof IFluidHandler))
+			return null;
+
+		return ((IFluidHandler) te).getTankInfo(ForgeDirection.UP);
+	}
+
 	public void showBarrelInfo(EntityPlayer player, TileEntity te) {
 		if (te instanceof TileEntityBarrel) {
 			int age = -1;

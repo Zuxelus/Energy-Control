@@ -1,22 +1,28 @@
-package com.zuxelus.energycontrol.items;
+package com.zuxelus.energycontrol.init;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.blocks.BlockLight;
 import com.zuxelus.energycontrol.blocks.BlockMain;
 import com.zuxelus.energycontrol.blocks.BlockSeedManager;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.crossmod.ic2.CrossIC2.IC2Type;
+import com.zuxelus.energycontrol.items.ItemDigitalThermometer;
+import com.zuxelus.energycontrol.items.ItemLight;
+import com.zuxelus.energycontrol.items.ItemMain;
+import com.zuxelus.energycontrol.items.ItemNanoBowIC2;
+import com.zuxelus.energycontrol.items.ItemPortablePanel;
+import com.zuxelus.energycontrol.items.ItemSeedManager;
+import com.zuxelus.energycontrol.items.ItemThermometer;
+import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardHolder;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.kits.ItemKitMain;
 import com.zuxelus.energycontrol.tileentities.*;
 
-import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 
-public class ItemHelper {
+public class ModItems {
 	public static BlockLight blockLight;
 	public static BlockMain blockMain;
 	public static BlockSeedManager blockSeedManager;
@@ -62,7 +68,7 @@ public class ItemHelper {
 		setNames(itemNanoBow, "nano_bow");
 		GameRegistry.registerItem(itemNanoBow, "nano_bow");
 
-		if (CrossModLoader.ic2.getType() == IC2Type.EXP) {
+		if (CrossModLoader.ic2.getModType() == "IC2Exp") {
 			itemAFB = CrossModLoader.ic2.getItem("afb");
 			setNames(itemAFB, "afb");
 			GameRegistry.registerItem(itemAFB, "afb");
@@ -117,9 +123,10 @@ public class ItemHelper {
 		GameRegistry.registerTileEntity(TileEntityAverageCounter.class, EnergyControl.MODID + ":average_counter");
 		GameRegistry.registerTileEntity(TileEntityEnergyCounter.class, EnergyControl.MODID + ":energy_counter");
 		GameRegistry.registerTileEntity(TileEntityKitAssembler.class, EnergyControl.MODID + ":kit_assembler");
-		if (CrossModLoader.ic2.getType() == IC2Type.EXP)
+		if (CrossModLoader.ic2.getModType() == "IC2Exp")
 			GameRegistry.registerTileEntity(TileEntityAFSU.class, EnergyControl.MODID + ":afsu");
 		GameRegistry.registerTileEntity(TileEntitySeedAnalyzer.class, EnergyControl.MODID + ":seed_analyzer");
 		GameRegistry.registerTileEntity(TileEntitySeedLibrary.class, EnergyControl.MODID + ":seed_library");
+		GameRegistry.registerTileEntity(TileEntityTimer.class, EnergyControl.MODID + ":timer");
 	}
 }

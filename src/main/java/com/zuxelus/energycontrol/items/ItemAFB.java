@@ -3,7 +3,6 @@ package com.zuxelus.energycontrol.items;
 import com.zuxelus.energycontrol.EnergyControl;
 
 import ic2.api.item.IElectricItem;
-import ic2.core.item.ItemBattery;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

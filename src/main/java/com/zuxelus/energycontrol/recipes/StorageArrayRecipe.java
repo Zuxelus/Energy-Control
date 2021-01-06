@@ -4,7 +4,7 @@ import ic2.api.item.IC2Items;
 
 import java.util.Vector;
 
-import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
@@ -90,7 +90,7 @@ public class StorageArrayRecipe implements IRecipe {
 
 	private ItemStack getCraftingResult(int cardCount, int arrayCount, int type, Vector<ItemStack> cards, ItemStack array) {
 		if (cardCount >= 2 && cardCount <= 16 && arrayCount == 0) {
-			ItemStack itemStack = new ItemStack(ItemHelper.itemCard, 1, type);
+			ItemStack itemStack = new ItemStack(ModItems.itemCard, 1, type);
 			initArray(itemStack, cards);
 			return itemStack;
 		}
@@ -101,7 +101,7 @@ public class StorageArrayRecipe implements IRecipe {
 		} else if (arrayCount == 1 && cardCount > 0) {
 			int cnt = new ItemCardReader(array).getInt("cardCount");
 			if (cnt + cardCount <= 16) {
-				ItemStack itemStack = new ItemStack(ItemHelper.itemCard, 1, type);
+				ItemStack itemStack = new ItemStack(ModItems.itemCard, 1, type);
 				itemStack.setTagCompound((NBTTagCompound) array.getTagCompound().copy());
 				initArray(itemStack, cards);
 				return itemStack;

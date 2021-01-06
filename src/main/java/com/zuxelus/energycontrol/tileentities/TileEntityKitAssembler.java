@@ -1,6 +1,6 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
@@ -188,7 +188,7 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITile
 					getStackInSlotOnClosing(SLOT_CARD1);
 					getStackInSlotOnClosing(SLOT_CARD2);
 					if (kit_damage != -1)
-						setInventorySlotContents(SLOT_KIT, new ItemStack(ItemHelper.itemKit, 2, kit_damage));
+						setInventorySlotContents(SLOT_KIT, new ItemStack(ModItems.itemKit, 2, kit_damage));
 				}
 				production = 0;
 				updateState();

@@ -8,7 +8,7 @@ import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.Til
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorCore;
 import com.brandon3055.draconicevolution.common.tileentities.multiblocktiles.reactor.TileReactorStabilizer;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
-import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -32,14 +32,14 @@ public class ItemKitDraconic extends ItemKitBase {
 		if (te instanceof TileEnergyStorageCore)
 			core = (TileEnergyStorageCore)te;
 		if (core != null) {
-			ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_ENERGY_DRACONIC);
-			ItemStackHelper.setCoordinates(sensorLocationCard, core.xCoord, core.yCoord, core.zCoord);
-			return sensorLocationCard;
+			ItemStack newCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_ENERGY);
+			ItemStackHelper.setCoordinates(newCard, core.xCoord, core.yCoord, core.zCoord);
+			return newCard;
 		}
 		if (te instanceof TileEnergyInfuser || te instanceof TileEnergyTransceiver || te instanceof TileGenerator) {
-			ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_ENERGY_DRACONIC);
-			ItemStackHelper.setCoordinates(sensorLocationCard, te.xCoord, te.yCoord, te.zCoord);
-			return sensorLocationCard;
+			ItemStack newCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_ENERGY);
+			ItemStackHelper.setCoordinates(newCard, te.xCoord, te.yCoord, te.zCoord);
+			return newCard;
 		}
 		TileReactorCore reactor = null;
 		if (te instanceof TileReactorCore)
@@ -47,9 +47,9 @@ public class ItemKitDraconic extends ItemKitBase {
 		if (te instanceof TileReactorStabilizer)
 			reactor = (TileReactorCore) ((TileReactorStabilizer)te).masterLocation.getTileEntity(world);
 		if (reactor != null) {
-			ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_REACTOR_DRACONIC);
-			ItemStackHelper.setCoordinates(sensorLocationCard, reactor.xCoord, reactor.yCoord, reactor.zCoord);
-			return sensorLocationCard;
+			ItemStack newCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_REACTOR_DRACONIC);
+			ItemStackHelper.setCoordinates(newCard, reactor.xCoord, reactor.yCoord, reactor.zCoord);
+			return newCard;
 		}
 		return null;
 	}

@@ -5,22 +5,14 @@ import java.util.List;
 import java.util.Map;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.api.CardState;
-import com.zuxelus.energycontrol.api.ICardGui;
-import com.zuxelus.energycontrol.api.ICardReader;
-import com.zuxelus.energycontrol.api.IItemCard;
-import com.zuxelus.energycontrol.api.ITouchAction;
-import com.zuxelus.energycontrol.api.PanelSetting;
-import com.zuxelus.energycontrol.api.PanelString;
-import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.api.*;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import ic2.api.recipe.Recipes;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.I18n;
@@ -62,10 +54,11 @@ public final class ItemCardMain extends Item {
 		register(new ItemCardLiquidArray());
 		register(new ItemCardGeneratorArray());
 		register(new ItemCardToggle());
-		if (Loader.isModLoaded("DraconicEvolution")) {
-			register(new ItemCardEnergyDraconic());
+		register(new ItemCardVanilla());
+		register(new ItemCardInventory());
+		register(new ItemCardRedstone());
+		if (Loader.isModLoaded("DraconicEvolution"))
 			register(new ItemCardReactorDraconic());
-		}
 		if (Loader.isModLoaded("appliedenergistics2"))
 			register(new ItemCardAppEng());
 		if (Loader.isModLoaded("GalacticraftCore") && Loader.isModLoaded("GalacticraftMars"))
@@ -74,6 +67,8 @@ public final class ItemCardMain extends Item {
 			register(new ItemCardBigReactors());
 		if (Loader.isModLoaded("gregtech"))
 			register(new ItemCardGregTech());
+		if (Loader.isModLoaded("nuclearcraft"))
+			register(new ItemCardNuclearCraft());
 	}
 
 	private static void register(IItemCard item) {
@@ -128,7 +123,9 @@ public final class ItemCardMain extends Item {
 		return null;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void getSubItems(Item itemIn, CreativeTabs tab, List items) {
 		for (Map.Entry<Integer, IItemCard> entry : cards.entrySet()) {
 			Integer key = entry.getKey();
@@ -146,6 +143,7 @@ public final class ItemCardMain extends Item {
 		return false;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, EntityPlayer player, List tooltip, boolean advanced) {
@@ -171,9 +169,9 @@ public final class ItemCardMain extends Item {
 			tooltip.add(String.format("x: %d, y: %d, z: %d", target.posX, target.posY, target.posZ));
 	}
 
-	public static List<PanelString> getStringData(int settings, ItemCardReader reader, boolean showLabels) {
+	public static List<PanelString> getStringData(int settings, ItemCardReader reader, boolean isServer, boolean showLabels) {
 		if (cards.containsKey(reader.getCardType())) {
-			return cards.get(reader.getCardType()).getStringData(settings, reader, showLabels);
+			return cards.get(reader.getCardType()).getStringData(settings, reader, isServer, showLabels);
 		}
 		return null;
 	}
@@ -182,7 +180,7 @@ public final class ItemCardMain extends Item {
 	public static List<PanelSetting> getSettingsList(ItemStack stack) {
 		int damage = stack.getItemDamage();
 		if (cards.containsKey(damage))
-			return cards.get(damage).getSettingsList(stack);
+			return cards.get(damage).getSettingsList();
 		return null;
 	}
 
@@ -260,7 +258,7 @@ public final class ItemCardMain extends Item {
 			Integer key = entry.getKey();
 			Object[] recipe = entry.getValue().getRecipe();
 			if (recipe != null)
-				GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ItemHelper.itemCard, 1, key), recipe));
+				GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.itemCard, 1, key), recipe));
 		}
 	}
 }

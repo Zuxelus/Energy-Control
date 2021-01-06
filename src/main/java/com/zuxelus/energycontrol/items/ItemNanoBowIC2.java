@@ -17,6 +17,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
 
 public class ItemNanoBowIC2 extends ItemNanoBow implements IElectricItem {
 
@@ -26,10 +27,13 @@ public class ItemNanoBowIC2 extends ItemNanoBow implements IElectricItem {
 		setNoRepair();
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer playerIn, List tooltip, boolean advanced) {
+	public void addInformation(ItemStack stack, EntityPlayer player, List tooltip, boolean advanced) {
 		NBTTagCompound nbt = ItemStackHelper.getOrCreateNbtData(stack);
+		tooltip.add(EnumChatFormatting.RED + "Will be removed from this mod!");
+		tooltip.add(EnumChatFormatting.RED + "Use Combo Armors mod");
 		IElectricItem item = (IElectricItem) stack.getItem();
 		if (!nbt.hasKey("loaded")) {
 			if (nbt.getInteger("tier") == 0)
@@ -46,7 +50,9 @@ public class ItemNanoBowIC2 extends ItemNanoBow implements IElectricItem {
 			tooltip.add(String.format(I18n.format("info.chargingtier"), nbt.getInteger("tier")));
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void getSubItems(Item itemIn, CreativeTabs tab, List items) {
 		ItemStack charged = CrossModLoader.ic2.getChargedStack(new ItemStack(this, 1));
 		items.add(charged);

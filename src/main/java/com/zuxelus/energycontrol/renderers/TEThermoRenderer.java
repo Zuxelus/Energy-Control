@@ -128,7 +128,7 @@ public class TEThermoRenderer extends TileEntitySpecialRenderer {
 			}
 			break;
 		}
-		
+
 		switch (te.getStatus()) {
 		case 0:
 			bindTexture(TEXTURE1);
@@ -145,7 +145,7 @@ public class TEThermoRenderer extends TileEntitySpecialRenderer {
 		GL11.glRotatef(90.0F, 1.0F, 0.0F, 0.0F);
 		GL11.glTranslatef(0.5F, 0.45F, -0.4376F);
 		GL11.glScalef(0.015625F, 0.015625F, 0.015625F);
-		func_147498_b().drawString(String.valueOf(value), -func_147498_b().getStringWidth(String.valueOf(value)) / 2, -func_147498_b().FONT_HEIGHT, 0x000000);	
+		func_147498_b().drawString(String.valueOf(value), -func_147498_b().getStringWidth(String.valueOf(value)) / 2, -func_147498_b().FONT_HEIGHT, 0x000000);
 		GL11.glPopMatrix();
 	}
 

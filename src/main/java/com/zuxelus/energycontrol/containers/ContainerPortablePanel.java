@@ -1,9 +1,7 @@
 package com.zuxelus.energycontrol.containers;
 
-import com.zuxelus.energycontrol.api.CardState;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.InventoryPortablePanel;
-import com.zuxelus.energycontrol.items.ItemHelper;
-import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.zlib.containers.ContainerBase;
@@ -24,7 +22,7 @@ public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel
 		addSlotToContainer(new SlotFilter(te, 0, 174, 17));
 		addSlotToContainer(new SlotFilter(te, 1, 174, 35));
 
-		addPlayerInventoryTopSlots(player, 8, 188, ItemHelper.itemPortablePanel);
+		addPlayerInventoryTopSlots(player, 8, 188, ModItems.itemPortablePanel);
 	}
 
 	@Override

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.zuxelus.energycontrol.blocks.BlockDamages;
-import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 
@@ -37,8 +37,12 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 		super();
 		customName = "tile." + NAME + ".name";
 		colorBackground = 6;
-		colored = true;
 		thickness = 16;
+	}
+
+	@Override
+	public boolean getColored() {
+		return true;
 	}
 
 	public byte getPowerMode() {
@@ -177,11 +181,6 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	}
 
 	@Override
-	protected boolean isColoredEval() {
-		return true;
-	}
-
-	@Override
 	public byte getSlotUpgradeRange() {
 		return SLOT_UPGRADE_RANGE;
 	}
@@ -212,6 +211,6 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 
 	@Override
 	public ItemStack getWrenchDrop(EntityPlayer entityPlayer) {
-		return new ItemStack(ItemHelper.blockMain, 1, BlockDamages.DAMAGE_ADVANCED_PANEL);
+		return new ItemStack(ModItems.blockMain, 1, BlockDamages.DAMAGE_ADVANCED_PANEL);
 	}
 }

@@ -62,22 +62,22 @@ public abstract class TileEntityInventory extends TileEntityFacing implements IS
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int index) {
-		return index >= 0 && index < getSizeInventory() ? inventory[index] : null;
+	public ItemStack getStackInSlot(int slot) {
+		return slot >= 0 && slot < getSizeInventory() ? inventory[slot] : null;
 	}
 
 	@Override
-	public ItemStack decrStackSize(int index, int count) {
-		ItemStack stack = getAndSplit(inventory, index, count);
+	public ItemStack decrStackSize(int slot, int count) {
+		ItemStack stack = getAndSplit(inventory, slot, count);
 		//if (!stack.isEmpty()) markDirty();
 		return stack;
 	}
 
-	private static ItemStack getAndSplit(ItemStack[] stacks, int index, int amount) {
-		if (index >= 0 && index < stacks.length && stacks[index] != null && amount > 0) {
-			ItemStack stack = stacks[index].splitStack(amount);
-			if (stacks[index].stackSize == 0)
-				stacks[index] = null;
+	private static ItemStack getAndSplit(ItemStack[] stacks, int slot, int amount) {
+		if (slot >= 0 && slot < stacks.length && stacks[slot] != null && amount > 0) {
+			ItemStack stack = stacks[slot].splitStack(amount);
+			if (stacks[slot].stackSize == 0)
+				stacks[slot] = null;
 			return stack;
 		}
 		return null;

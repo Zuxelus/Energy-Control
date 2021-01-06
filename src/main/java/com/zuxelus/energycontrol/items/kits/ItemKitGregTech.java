@@ -1,7 +1,7 @@
 package com.zuxelus.energycontrol.items.kits;
 
 import com.zuxelus.energycontrol.api.ItemStackHelper;
-import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
 import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
@@ -29,7 +29,7 @@ public class ItemKitGregTech extends ItemKitBase {
 			Class.forName("gregtech.GT6_Main");
 			if (te instanceof MultiTileEntityGeneratorSolid || te instanceof MultiTileEntityBoilerTank
 					|| te instanceof MultiTileEntityTurbineSteam || te instanceof MultiTileEntityDynamoElectric) {
-				ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_GREGTECH);
+				ItemStack sensorLocationCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_GREGTECH);
 				ItemStackHelper.setCoordinates(sensorLocationCard, x, y, z);
 				return sensorLocationCard;
 			}
@@ -38,7 +38,7 @@ public class ItemKitGregTech extends ItemKitBase {
 		try {
 			Class.forName("gregtech.GT_Mod");
 			if (te instanceof IGregTechDeviceInformation && ((IGregTechDeviceInformation) te).isGivingInformation()) {
-				ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_GREGTECH);
+				ItemStack sensorLocationCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_GREGTECH);
 				ItemStackHelper.setCoordinates(sensorLocationCard, x, y, z);
 				return sensorLocationCard;
 			}

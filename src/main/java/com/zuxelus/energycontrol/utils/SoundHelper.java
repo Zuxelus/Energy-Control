@@ -25,7 +25,6 @@ public class SoundHelper {
 			SoundList.class, new SoundListSerializer()).create();
 	
 	private static final ParameterizedType type = new ParameterizedType() {
-		private static final String __OBFID = "CL_00001148";
 
 		@Override
 		public Type[] getActualTypeArguments() {

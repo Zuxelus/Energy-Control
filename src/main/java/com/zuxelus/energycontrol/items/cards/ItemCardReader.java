@@ -172,9 +172,9 @@ public class ItemCardReader implements ICardReader {
 	}
 
 	@Override
-	public void updateClient(TileEntity panel, int slot) {
+	public void updateClient(ItemStack stack, TileEntity panel, int slot) {
 		if (!updateSet.isEmpty())
-			ChannelHandler.setSensorCardField(panel, slot, updateSet);
+			ChannelHandler.updateClientCard(stack, panel, slot, updateSet);
 	}
 
 	@Override
