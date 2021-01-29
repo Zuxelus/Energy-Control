@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.crossmod.computercraft;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class ArgumentHelper {

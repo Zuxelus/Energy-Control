@@ -2,7 +2,6 @@ package com.zuxelus.energycontrol.blocks;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.tileentities.TileEntityFacing;
 import com.zuxelus.energycontrol.tileentities.TileEntityThermo;
 
 import net.minecraft.block.Block;

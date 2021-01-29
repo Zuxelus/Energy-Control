@@ -1,19 +1,14 @@
 package com.zuxelus.energycontrol.blocks;
 
-import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.tileentities.TileEntityThermo;
 import com.zuxelus.energycontrol.tileentities.TileEntityTimer;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -72,17 +67,17 @@ public class TimerBlock extends FacingBlock {
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
 		TileEntity te = world.getTileEntity(pos);
-		if (te instanceof TileEntityThermo)
-			switch (((TileEntityThermo) te).getFacing()) {
+		if (te instanceof TileEntityTimer)
+			switch (((TileEntityTimer) te).getFacing()) {
 			case UP:
 			case DOWN:
-				((TileEntityThermo) te).setRotation(placer.getHorizontalFacing().getOpposite());
+				((TileEntityTimer) te).setRotation(placer.getHorizontalFacing().getOpposite());
 				break;
 			case NORTH:
 			case SOUTH:
 			case EAST:
 			case WEST:
-				((TileEntityThermo) te).setRotation(EnumFacing.DOWN);
+				((TileEntityTimer) te).setRotation(EnumFacing.DOWN);
 				break;
 			}
 	}

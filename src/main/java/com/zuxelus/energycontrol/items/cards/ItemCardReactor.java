@@ -12,7 +12,6 @@ import com.zuxelus.energycontrol.utils.ReactorHelper;
 
 import ic2.api.reactor.IReactor;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;

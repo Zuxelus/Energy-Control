@@ -1,14 +1,11 @@
 package com.zuxelus.energycontrol.renderers;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanelExtender;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 
 public class TEInfoPanelExtenderRenderer extends TileEntitySpecialRenderer<TileEntityInfoPanelExtender> {
 	private static final ResourceLocation TEXTUREOFF[];

@@ -9,7 +9,6 @@ import com.zuxelus.energycontrol.api.PanelString;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public abstract class ItemCardBase implements IItemCard {
 	protected String name;

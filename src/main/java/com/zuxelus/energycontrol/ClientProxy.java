@@ -82,6 +82,13 @@ public class ClientProxy extends ServerProxy {
 			if (te instanceof TileEntityInfoPanel)
 				return new GuiInfoPanel(new ContainerInfoPanel(player, (TileEntityInfoPanel) te));
 			break;
+		case BlockDamages.DAMAGE_INFO_PANEL_EXTENDER:
+			if (te instanceof TileEntityInfoPanelExtender) {
+				TileEntityInfoPanel panel = ((TileEntityInfoPanelExtender) te).getCore();
+				if (panel != null)
+					return new GuiInfoPanel(new ContainerInfoPanel(player, (TileEntityInfoPanel) panel));
+			}
+			break;
 		case BlockDamages.DAMAGE_ADVANCED_PANEL:
 			if (te instanceof TileEntityAdvancedInfoPanel)
 				return new GuiAdvancedInfoPanel(new ContainerAdvancedInfoPanel(player, (TileEntityAdvancedInfoPanel) te));

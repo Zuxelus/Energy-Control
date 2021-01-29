@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.gui;
 
-import com.zuxelus.energycontrol.containers.ContainerBase;
 import com.zuxelus.energycontrol.containers.ContainerCardHolder;
 
 import net.minecraft.client.gui.inventory.GuiContainer;

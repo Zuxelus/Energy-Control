@@ -1,7 +1,6 @@
 package com.zuxelus.energycontrol.items.cards;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import com.zuxelus.energycontrol.api.CardState;
@@ -12,7 +11,6 @@ import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.utils.StringUtils;
 
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -34,7 +32,6 @@ public class ItemCardGeneratorArray extends ItemCardBase {
 		if (cardCount == 0)
 			return CardState.INVALID_CARD;
 
-		double totalEnergy = 0.0;
 		boolean foundAny = false;
 		boolean outOfRange = false;
 		for (int i = 0; i < cardCount; i++) {
@@ -77,7 +74,6 @@ public class ItemCardGeneratorArray extends ItemCardBase {
 	@Override
 	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
-		PanelString line;
 		double totalEnergy = 0;
 		double totalStorage = 0;
 		double totalOutput = 0;

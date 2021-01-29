@@ -1,12 +1,9 @@
 package com.zuxelus.energycontrol.items;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.utils.ReactorHelper;
 
 import ic2.api.reactor.IReactor;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -16,6 +13,7 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 
 public class ItemThermometer extends Item {
@@ -51,16 +49,16 @@ public class ItemThermometer extends Item {
 		}
 
 		TileEntity te = world.getTileEntity(pos);
-		CrossModLoader.ic2.showBarrelInfo(player, te);
+		//CrossModLoader.ic2.showBarrelInfo(player, te);
 		return EnumActionResult.PASS;
 	}
 
-	protected void messagePlayer(EntityPlayer entityplayer, IReactor reactor) {
-		NetworkHelper.chatMessage(entityplayer, I18n.format("msg.ec.Thermo", reactor.getHeat()));
+	protected void messagePlayer(EntityPlayer player, IReactor reactor) {
+		player.sendMessage(new TextComponentTranslation("msg.ec.Thermo", reactor.getHeat()));
 	}
 
-	protected void damage(ItemStack itemstack, int i, EntityPlayer entityplayer) {
-		itemstack.damageItem(10, entityplayer);
+	protected void damage(ItemStack stack, int i, EntityPlayer player) {
+		stack.damageItem(10, player);
 	}
 
 	@Override

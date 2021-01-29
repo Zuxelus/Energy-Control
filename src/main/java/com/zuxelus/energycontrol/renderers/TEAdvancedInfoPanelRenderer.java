@@ -101,11 +101,9 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		if (screen != null) {
 			if (thickness == 16 && rotateHor == 0 && rotateVert == 0)
 				model[textureId].render(0.03125F);
-			else {
+			else
 				new CubeRenderer(textureId / 4 * 32 + 64, textureId % 4 * 32 + 64, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation())).render(0.03125F);
-			}
 			if (te.powered) {
-				boolean anyCardFound = false;
 				List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
 				if (joinedData != null)
 					drawText(te, joinedData, thickness, offset);

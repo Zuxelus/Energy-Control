@@ -1,7 +1,6 @@
 package com.zuxelus.energycontrol.entities;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.entity.projectile.EntitySpectralArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;

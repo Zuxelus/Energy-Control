@@ -1,17 +1,17 @@
 package com.zuxelus.energycontrol.containers;
 
-import com.zuxelus.energycontrol.api.CardState;
+import com.zuxelus.energycontrol.containers.slots.SlotCard;
+import com.zuxelus.energycontrol.containers.slots.SlotRange;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.InventoryPortablePanel;
-import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
+import com.zuxelus.zlib.containers.ContainerBase;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
 
 public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel> {
 	private EntityPlayer player;
@@ -20,8 +20,8 @@ public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel
 		super(new InventoryPortablePanel(player.getHeldItemMainhand(), "item.portable_panel.name"));
 		this.player = player;
 
-		addSlotToContainer(new SlotFilter(te, 0, 174, 17));
-		addSlotToContainer(new SlotFilter(te, 1, 174, 35));
+		addSlotToContainer(new SlotCard(te, 0, 174, 17));
+		addSlotToContainer(new SlotRange(te, 1, 174, 35));
 
 		addPlayerInventoryTopSlots(player, 8, 188, ModItems.itemPortablePanel);
 	}

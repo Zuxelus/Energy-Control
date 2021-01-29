@@ -3,16 +3,7 @@ package com.zuxelus.energycontrol.init;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.blocks.*;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.crossmod.ic2.CrossIC2.IC2Type;
-import com.zuxelus.energycontrol.items.ItemAFSU;
-import com.zuxelus.energycontrol.items.ItemAFSUUpgradeKit;
-import com.zuxelus.energycontrol.items.ItemDigitalThermometer;
-import com.zuxelus.energycontrol.items.ItemLight;
-import com.zuxelus.energycontrol.items.ItemNanoBowIC2;
-import com.zuxelus.energycontrol.items.ItemNanoBowTR;
-import com.zuxelus.energycontrol.items.ItemPortablePanel;
-import com.zuxelus.energycontrol.items.ItemThermometer;
-import com.zuxelus.energycontrol.items.ItemUpgrade;
+import com.zuxelus.energycontrol.items.*;
 import com.zuxelus.energycontrol.items.cards.ItemCardHolder;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.kits.ItemKitMain;
@@ -22,7 +13,6 @@ import com.zuxelus.energycontrol.recipes.StorageArrayRecipe;
 import com.zuxelus.energycontrol.tileentities.*;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -111,10 +101,8 @@ public class ModItems {
 		event.getRegistry().register(new ItemBlock(blockAverageCounter).setRegistryName("average_counter"));
 		event.getRegistry().register(new ItemBlock(blockEnergyCounter).setRegistryName("energy_counter"));
 		event.getRegistry().register(new ItemBlock(blockKitAssembler).setRegistryName("kit_assembler"));
-		if (CrossModLoader.ic2.getProfile() == 0) {
+		if (CrossModLoader.ic2.getProfile() == 0)
 			event.getRegistry().register(new ItemAFSU(blockAfsu).setRegistryName("afsu"));
-			//event.getRegistry().register(new ItemBlock(blockIc2Cable).setRegistryName("ic2_cable"));
-		}
 		if (Loader.isModLoaded("ic2")) {
 			event.getRegistry().register(new ItemBlock(blockSeedAnalyzer).setRegistryName("seed_analyzer"));
 			event.getRegistry().register(new ItemBlock(blockSeedLibrary).setRegistryName("seed_library"));
@@ -136,7 +124,7 @@ public class ModItems {
 
 		if (CrossModLoader.ic2.getProfile() == 0) {
 			itemAFB = register(event, CrossModLoader.ic2.getItem("afb"), "afb");
-			itemAFSUUpgradeKit = register(event, new ItemAFSUUpgradeKit(), "afsu_upgrade_kit");
+			itemAFSUUpgradeKit = register(event, CrossModLoader.ic2.getItem("afsu_upgrade_kit"), "afsu_upgrade_kit");
 		}
 
 		itemPortablePanel = register(event, new ItemPortablePanel(), "portable_panel");
@@ -188,12 +176,8 @@ public class ModItems {
 		registerBlockModel(ModItems.blockAverageCounter, 0, "average_counter");
 		registerBlockModel(ModItems.blockEnergyCounter, 0, "energy_counter");
 		registerBlockModel(ModItems.blockKitAssembler, 0, "kit_assembler");
-		if (CrossModLoader.ic2.getProfile() == 0) {
+		if (CrossModLoader.ic2.getProfile() == 0)
 			registerBlockModel(ModItems.blockAfsu, 0, "afsu");
-
-			/*((IC2Cable) blockIc2Cable).initModel();
-			registerBlockModel(ModItems.blockIc2Cable, 0, "ic2_cable");*/
-		}
 		if (Loader.isModLoaded("ic2")) {
 			registerBlockModel(blockSeedAnalyzer, 0, "seed_analyzer");
 			registerBlockModel(blockSeedLibrary, 0, "seed_library");
@@ -234,6 +218,7 @@ public class ModItems {
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), meta, new ModelResourceLocation(EnergyControl.MODID + ":" + name, "inventory"));
 	}
 
+	@SuppressWarnings("deprecation")
 	public static void registerTileEntities() { // TODO Change to event
 		GameRegistry.registerTileEntity(TileEntityHowlerAlarm.class, EnergyControl.MODID + ":howler_alarm");
 		GameRegistry.registerTileEntity(TileEntityIndustrialAlarm.class, EnergyControl.MODID + ":industrial_alarm");

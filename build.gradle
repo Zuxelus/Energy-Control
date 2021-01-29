@@ -9,7 +9,15 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.12.2-0.1.8e"
+repositories {
+  maven {
+    // location of the maven that hosts JEI files
+    name = "Progwml6 maven"
+    url = "https://dvs1.progwml6.com/files/maven/"
+  }
+}
+
+version = "1.12.2-0.1.8g"
 group= "com.zuxelus.energycontrol"
 archivesBaseName = "EnergyControl"
 
@@ -29,7 +37,7 @@ minecraft {
 
 dependencies {
 	compile 'net.industrial-craft:industrialcraft-2:2.8.197-ex112:dev'
-	compile files("libs/Draconic-Evolution-1.12.2-2.3.25.351-universal.jar")
+	runtime "mezz.jei:jei_1.12.2:4.15.0.293"
 }
 
 processResources {

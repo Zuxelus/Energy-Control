@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.gui;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import com.zuxelus.energycontrol.EnergyControl;
@@ -13,7 +12,6 @@ import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;

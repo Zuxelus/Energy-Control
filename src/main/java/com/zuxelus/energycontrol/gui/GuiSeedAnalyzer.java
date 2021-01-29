@@ -3,7 +3,6 @@ package com.zuxelus.energycontrol.gui;
 import org.lwjgl.opengl.GL11;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.containers.ContainerKitAssembler;
 import com.zuxelus.energycontrol.containers.ContainerSeedAnalyzer;
 
 import net.minecraft.client.gui.inventory.GuiContainer;

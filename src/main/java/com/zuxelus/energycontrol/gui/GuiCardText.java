@@ -6,7 +6,6 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.ICardGui;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.gui.controls.GuiTextArea;
-import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardSettingsReader;
 
 import net.minecraft.client.gui.GuiButton;

@@ -6,15 +6,15 @@ import java.util.List;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.ICardGui;
 import com.zuxelus.energycontrol.api.PanelSetting;
-import com.zuxelus.energycontrol.containers.ContainerBase;
 import com.zuxelus.energycontrol.gui.controls.GuiButtonGeneral;
 import com.zuxelus.energycontrol.gui.controls.GuiInfoPanelCheckBox;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardSettingsReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
-import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
+import com.zuxelus.zlib.containers.ContainerBase;
+import com.zuxelus.zlib.network.NetworkHelper;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -22,14 +22,18 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IContainerListener;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiInfoPanel extends GuiContainer {
+public class GuiInfoPanel extends GuiContainer implements IContainerListener {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_info_panel.png");
 	protected static final int ID_LABELS = 1;
 	protected static final int ID_SLOPE = 2;
@@ -40,12 +44,9 @@ public class GuiInfoPanel extends GuiContainer {
 
 	protected String name;
 	private TileEntityInfoPanel panel;
-	public ItemStack prevCard;
 	protected GuiTextField textboxTitle;
 	protected byte activeTab;
 	protected boolean modified;
-	protected boolean isColored;
-	protected int currSize;
 
 	public GuiInfoPanel(ContainerBase container) {
 		super(container);
@@ -53,24 +54,14 @@ public class GuiInfoPanel extends GuiContainer {
 		panel = (TileEntityInfoPanel)container.te;
 		name = I18n.format("tile.info_panel.name");
 		modified = false;
-		// inverted value on start to force initControls
-		isColored = !this.panel.getColored();
-		currSize = height * width;
-		prevCard = ItemStack.EMPTY;
 		activeTab = 0;
 	}
 
 	protected void initControls() {
 		ItemStack stack = panel.getCards().get(activeTab);
-		if (stack.equals(prevCard) && panel.getColored() == isColored && currSize == height * width)
-			return;
-
 		buttonList.clear();
-		prevCard = stack;
-		isColored = panel.getColored();
-		currSize = height * width;
 		addButton(new GuiButtonGeneral(ID_LABELS, guiLeft + xSize - 24, guiTop + 42, 16, 16, TEXTURE, 176, panel.getShowLabels() ? 15 : 31).setGradient());
-		if (isColored)
+		if (panel.getColored())
 			addButton(new GuiButtonGeneral(ID_COLORS, guiLeft + xSize - 24, guiTop + 42 + 17, 16, 16, TEXTURE, 192, 0).setGradient().setScale(2));
 		addButton(new GuiButtonGeneral(ID_TICKRATE, guiLeft + xSize - 24, guiTop + 42 + 17 * 3, 16, 16, Integer.toString(panel.getTickRate())).setGradient());
 		if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain) {
@@ -102,6 +93,8 @@ public class GuiInfoPanel extends GuiContainer {
 	public void initGui() {
 		super.initGui();
 		initControls();
+		inventorySlots.removeListener(this);
+		inventorySlots.addListener(this);
 	}
 
 	@Override
@@ -143,7 +136,6 @@ public class GuiInfoPanel extends GuiContainer {
 		super.updateScreen();
 		if (textboxTitle != null)
 			textboxTitle.updateCursorCounter();
-		initControls();
 	}
 
 	protected void updateTitle() {
@@ -165,6 +157,7 @@ public class GuiInfoPanel extends GuiContainer {
 	public void onGuiClosed() {
 		updateTitle();
 		super.onGuiClosed();
+		inventorySlots.removeListener(this);
 	}
 
 	@Override
@@ -220,4 +213,20 @@ public class GuiInfoPanel extends GuiContainer {
 		else
 			super.keyTyped(typedChar, keyCode);
 	}
+
+	@Override
+	public void sendAllContents(Container container, NonNullList<ItemStack> itemsList) {
+		sendSlotContents(container, 0, container.getSlot(0).getStack());
+	}
+
+	@Override
+	public void sendSlotContents(Container container, int slotInd, ItemStack stack) {
+		initControls();
+	}
+
+	@Override
+	public void sendWindowProperty(Container container, int varToUpdate, int newValue) { }
+
+	@Override
+	public void sendAllWindowProperties(Container container, IInventory inventory) { }
 }

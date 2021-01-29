@@ -1,7 +1,10 @@
 package com.zuxelus.energycontrol.containers;
 
-import com.zuxelus.energycontrol.network.NetworkHelper;
+import com.zuxelus.energycontrol.containers.slots.SlotCard;
 import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
+import com.zuxelus.zlib.containers.ContainerBase;
+import com.zuxelus.zlib.containers.slots.SlotFilter;
+import com.zuxelus.zlib.network.NetworkHelper;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,7 +16,7 @@ public class ContainerKitAssembler extends ContainerBase<TileEntityKitAssembler>
 	public ContainerKitAssembler(EntityPlayer player, TileEntityKitAssembler te) {
 		super(te);
 		// info card
-		addSlotToContainer(new SlotFilter(te, 0, 8, 42));
+		addSlotToContainer(new SlotCard(te, 0, 8, 42));
 		
 		addSlotToContainer(new SlotFilter(te, 1, 62, 42));
 		addSlotToContainer(new SlotFilter(te, 2, 62, 42 + 18));

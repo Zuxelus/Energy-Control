@@ -69,7 +69,7 @@ public class ItemCardVanilla extends ItemCardBase {
 		if ((settings & DISPLAY_TIME) > 0)
 			result.add(new PanelString("msg.burnTime", burnTime, showLabels));
 		if ((settings & DISPLAY_SLOT_1) > 0) {
-			String slot1pre = I18n.format("msg.ec.None");
+			String slot1pre = isServer ? "N/A" : I18n.format("msg.ec.None");
 			if (tagCompound.hasKey("Cooking"))
 				slot1pre = tagCompound.getString("Cooking");
 			if (showLabels)

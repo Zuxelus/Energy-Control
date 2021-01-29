@@ -35,7 +35,6 @@ public class SoundHelper {
 	private static File alarms;
 	
 	private static final ParameterizedType type = new ParameterizedType() {
-		private static final String __OBFID = "CL_00001148";
 
 		@Override
 		public Type[] getActualTypeArguments() {
@@ -75,10 +74,10 @@ public class SoundHelper {
 		EnergyControl.instance.availableAlarms = new ArrayList<String>();
 
 		try {
-			List list = Minecraft.getMinecraft().getResourceManager().getAllResources(new ResourceLocation(EnergyControl.MODID, "sounds.json"));
+			List<IResource> list = Minecraft.getMinecraft().getResourceManager().getAllResources(new ResourceLocation(EnergyControl.MODID, "sounds.json"));
 
 			for (int i = list.size() - 1; i >= 0; --i) {
-				IResource iresource = (IResource) list.get(i);
+				IResource iresource = list.get(i);
 
 				try {
 					Map map = (Map) gson.fromJson(new InputStreamReader(iresource.getInputStream()), type);

@@ -16,7 +16,7 @@ public class ItemCardType {
 	public static final int KIT_BIG_REACTORS = 11;
 	public static final int KIT_DRACONIC = 12;
 	public static final int KIT_GALACTICRAFT = 13;
-	public static final int KIT_NUCLEARCRAFT = 14;
+	public static final int KIT_NUCLEARCRAFT = 15;
 
 	public static final int KIT_MAX = 49;
 
@@ -47,7 +47,11 @@ public class ItemCardType {
 	public static final int CARD_APPENG = 22;
 	public static final int CARD_GALACTICRAFT = 23;
 	public static final int CARD_BIG_REACTORS = 24;
-	public static final int CARD_NUCLEARCRAFT = 25;
+	public static final int CARD_NUCLEARCRAFT = 26;
 
 	public static final int CARD_MAX = 49;
+
+	public static final int EU_AE = 10;
+	public static final int EU_gJ = 11;
+	public static final int EU_RF = 13;
 }

@@ -10,7 +10,7 @@ import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.api.PanelString;
-import com.zuxelus.energycontrol.network.NetworkHelper;
+import com.zuxelus.energycontrol.network.ChannelHandler;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
@@ -172,9 +172,9 @@ public class ItemCardReader implements ICardReader {
 	}
 
 	@Override
-	public void updateClient(TileEntity panel, int slot) {
+	public void updateClient(ItemStack stack, TileEntity panel, int slot) {
 		if (!updateSet.isEmpty())
-			NetworkHelper.setSensorCardField(panel, slot, updateSet);
+			ChannelHandler.updateClientCard(stack, panel, slot, updateSet);
 	}
 
 	@Override

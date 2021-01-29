@@ -1,7 +1,5 @@
 package com.zuxelus.energycontrol.network;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,7 +7,6 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.OreHelper;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.init.Blocks;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;

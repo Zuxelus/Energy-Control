@@ -3,7 +3,6 @@ package com.zuxelus.energycontrol.items;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.entities.EntityTechArrow;
-import com.zuxelus.energycontrol.network.NetworkHelper;
 
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -21,6 +20,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.relauncher.Side;
@@ -34,6 +34,7 @@ public abstract class ItemNanoBow extends ItemBow /* , IItemUpgradeable */ {
 	static final int FLAME = 5;
 	static final int EXPLOSIVE = 6;
 	static final int[] CHARGE = { 300, 150, 400, 1000, 200, 800 };
+	static final String[] MODE = { "normal", "rapidfire", "spread", "sniper", "flame", "explosive" };
 
 	public ItemNanoBow() {
 		super();
@@ -41,6 +42,7 @@ public abstract class ItemNanoBow extends ItemBow /* , IItemUpgradeable */ {
 		setFull3D();
 	}
 
+	@Override
 	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityLivingBase entity, int timeLeft) {
 		if (!(entity instanceof EntityPlayer))
 			return;
@@ -190,15 +192,15 @@ public abstract class ItemNanoBow extends ItemBow /* , IItemUpgradeable */ {
 				mode -= EXPLOSIVE;
 			}
 			nbt.setInteger("bowMode", mode);
-			NetworkHelper.chatMessage(player, "info.modeenabled", 1, mode - 1);
-			return new ActionResult(EnumActionResult.FAIL, player.getHeldItem(hand));
+			player.sendMessage(new TextComponentTranslation("info.nanobow." + MODE[mode - 1]));
+			return new ActionResult<ItemStack>(EnumActionResult.FAIL, player.getHeldItem(hand));
 		}
 
 		if (canUse(stack, CHARGE[mode - 1])) {
 			player.setActiveHand(hand);
 			return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
 		}
-		return new ActionResult(EnumActionResult.FAIL, stack);
+		return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
 	}
 
 	@Override

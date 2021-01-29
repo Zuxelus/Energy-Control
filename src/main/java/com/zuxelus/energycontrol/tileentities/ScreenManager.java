@@ -7,12 +7,10 @@ import java.util.Map;
 
 import com.zuxelus.energycontrol.blocks.InfoPanelExtender;
 
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class ScreenManager {
 
@@ -112,7 +110,7 @@ public class ScreenManager {
 				for (int interY = 0; interY <= ry && allOk; interY++) {
 					for (int interZ = 0; interZ <= rz && allOk; interZ++) {
 						TileEntityInfoPanel core = screen.getCore(world);
-						allOk = core != null && isValidExtender(world, new BlockPos(x + dir * interX, y + dir * interY, z + dir * interZ), core.facing, advanced);
+						allOk = core != null && isValidExtender(world, new BlockPos(x + dir * interX, y + dir * interY, z + dir * interZ), core.getFacing(), advanced);
 					}
 				}
 			}
@@ -139,7 +137,7 @@ public class ScreenManager {
 			return false;
 		if (advanced ^ (tileEntity instanceof TileEntityAdvancedInfoPanelExtender))
 			return false;
-		if (((TileEntityInfoPanelExtender) tileEntity).facing != facing)
+		if (((TileEntityInfoPanelExtender) tileEntity).getFacing() != facing)
 			return false;
 		if (((IScreenPart) tileEntity).getScreen() != null)
 			return false;

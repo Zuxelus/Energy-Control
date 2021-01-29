@@ -2,26 +2,23 @@ package com.zuxelus.energycontrol.gui;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.gui.controls.CompactButton;
-import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityTimer;
+import com.zuxelus.zlib.gui.GuiBase;
+import com.zuxelus.zlib.network.NetworkHelper;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiTimer extends GuiBase {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_timer.png");
-
 	private TileEntityTimer timer;
 	private GuiTextField textboxTimer = null;
 	private boolean lastIsWorking;
 
 	public GuiTimer(TileEntityTimer timer) {
-		super("tile.timer.name", 100, 136);
+		super("tile.timer.name", 100, 136, EnergyControl.MODID + ":textures/gui/gui_timer.png");
 		this.timer = timer;
 		lastIsWorking = timer.getIsWorking();
 	}
@@ -64,15 +61,6 @@ public class GuiTimer extends GuiBase {
 		fontRenderer.drawString(name, (xSize - fontRenderer.getStringWidth(name)) / 2, 6, 0x404040);
 		if (textboxTimer != null)
 			textboxTimer.drawTextBox();
-	}
-
-	@Override
-	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		mc.getTextureManager().bindTexture(TEXTURE);
-		int left = (width - xSize) / 2;
-		int top = (height - ySize) / 2;
-		drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
 	}
 
 	@Override

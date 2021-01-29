@@ -5,11 +5,9 @@ import java.util.List;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.renderers.RotationOffset;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
-import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
-import com.zuxelus.energycontrol.tileentities.TileEntityInventory;
+import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;

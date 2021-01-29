@@ -2,33 +2,17 @@ package com.zuxelus.energycontrol.gui;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 
-import com.google.common.collect.Lists;
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.containers.ContainerAFSU;
-import com.zuxelus.energycontrol.containers.ContainerKitAssembler;
-import com.zuxelus.energycontrol.items.cards.ItemCardMain;
-import com.zuxelus.energycontrol.items.cards.ItemCardReader;
-import com.zuxelus.energycontrol.network.NetworkHelper;
-import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
+import com.zuxelus.zlib.network.NetworkHelper;
 
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiButtonImage;
-import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.gui.inventory.GuiCrafting;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.inventory.ContainerWorkbench;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -38,8 +22,6 @@ public class GuiAFSU extends GuiContainer {
 
 	private String name;
 	private ContainerAFSU container;
-	private GuiTextField textboxTitle;
-	private boolean modified;
 
 	public GuiAFSU(ContainerAFSU container) {
 		super(container);

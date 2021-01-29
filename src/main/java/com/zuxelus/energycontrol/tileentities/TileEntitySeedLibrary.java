@@ -3,10 +3,12 @@ package com.zuxelus.energycontrol.tileentities;
 import java.util.HashMap;
 
 import com.zuxelus.energycontrol.blocks.SeedLibrary;
-import com.zuxelus.energycontrol.containers.ISlotItemFilter;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.utils.SeedLibraryFilter;
+import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
+import com.zuxelus.zlib.network.NetworkHelper;
+import com.zuxelus.zlib.tileentities.ITilePacketHandler;
+import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import ic2.api.crops.CropCard;
 import ic2.api.crops.Crops;

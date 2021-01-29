@@ -1,9 +1,8 @@
 package com.zuxelus.energycontrol.blocks;
 
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.tileentities.TileEntityFacing;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
-import com.zuxelus.energycontrol.tileentities.TileEntityInventory;
+import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
 import ic2.api.util.Keys;
 import net.minecraft.block.Block;

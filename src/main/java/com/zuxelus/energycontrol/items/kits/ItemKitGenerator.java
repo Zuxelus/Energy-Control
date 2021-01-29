@@ -17,12 +17,6 @@ public class ItemKitGenerator extends ItemKitBase {
 
 	@Override
 	public ItemStack getSensorCard(ItemStack stack, Item card, EntityPlayer player, World world, BlockPos pos) {
-		ItemStack result = CrossModLoader.ic2.getGeneratorCard(world, pos);
-		if (!result.isEmpty())
-			return result;
-		result = CrossModLoader.techReborn.getGeneratorCard(world, pos);
-		if (!result.isEmpty())
-			return result;
-		return CrossModLoader.buildCraft.getGeneratorCard(world, pos);
+		return CrossModLoader.getGeneratorCard(world, pos);
 	}
 }

@@ -3,6 +3,8 @@ package com.zuxelus.energycontrol.tileentities;
 import com.zuxelus.energycontrol.blocks.RemoteThermo;
 import com.zuxelus.energycontrol.blocks.ThermalMonitor;
 import com.zuxelus.energycontrol.utils.ReactorHelper;
+import com.zuxelus.zlib.tileentities.ITilePacketHandler;
+import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import ic2.api.reactor.IReactor;
 import net.minecraft.block.Block;

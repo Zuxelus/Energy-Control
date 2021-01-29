@@ -3,8 +3,8 @@ package com.zuxelus.energycontrol.gui;
 import java.io.IOException;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
+import com.zuxelus.zlib.network.NetworkHelper;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;

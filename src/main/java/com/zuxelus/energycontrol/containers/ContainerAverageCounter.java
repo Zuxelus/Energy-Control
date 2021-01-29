@@ -1,13 +1,13 @@
 package com.zuxelus.energycontrol.containers;
 
-import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityAverageCounter;
+import com.zuxelus.zlib.containers.ContainerBase;
+import com.zuxelus.zlib.containers.slots.SlotFilter;
+import com.zuxelus.zlib.network.NetworkHelper;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 public class ContainerAverageCounter extends ContainerBase<TileEntityAverageCounter>

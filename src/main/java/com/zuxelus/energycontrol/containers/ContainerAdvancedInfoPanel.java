@@ -1,6 +1,9 @@
 package com.zuxelus.energycontrol.containers;
 
+import com.zuxelus.energycontrol.containers.slots.SlotCard;
+import com.zuxelus.energycontrol.containers.slots.SlotRange;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
+import com.zuxelus.zlib.containers.ContainerBase;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -13,11 +16,11 @@ public class ContainerAdvancedInfoPanel extends ContainerBase<TileEntityAdvanced
 		this.player = player;
 
 		// cards
-		addSlotToContainer(new SlotFilter(panel, 0, 8, 24 + 18));
-		addSlotToContainer(new SlotFilter(panel, 1, 8 + 18, 24 + 18));
-		addSlotToContainer(new SlotFilter(panel, 2, 8 + 36, 24 + 18));
+		addSlotToContainer(new SlotCard(panel, 0, 8, 24 + 18));
+		addSlotToContainer(new SlotCard(panel, 1, 8 + 18, 24 + 18));
+		addSlotToContainer(new SlotCard(panel, 2, 8 + 36, 24 + 18));
 		// range upgrade
-		addSlotToContainer(new SlotFilter(panel, 3, 8 + 54, 24 + 18));
+		addSlotToContainer(new SlotRange(panel, 3, 8 + 54, 24 + 18));
 		// inventory
 		addPlayerInventorySlots(player, 223);
 	}

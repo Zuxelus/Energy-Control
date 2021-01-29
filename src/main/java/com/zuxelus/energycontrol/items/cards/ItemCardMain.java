@@ -36,45 +36,51 @@ public final class ItemCardMain extends Item {
 	}
 	
 	public final void registerCards() {
-		register(new ItemCardEnergy());
-		register(new ItemCardCounter());
-		register(new ItemCardLiquid());
-		register(new ItemCardGenerator());
+		register("ItemCardEnergy");
+		register("ItemCardCounter");
+		register("ItemCardLiquid");
+		register("ItemCardGenerator");
 		if (Loader.isModLoaded("ic2")) {
-			register(new ItemCardGeneratorKinetic());
-			register(new ItemCardGeneratorHeat());
-			register(new ItemCardReactor());
-			register(new ItemCardReactor5x5());
+			register("ItemCardGeneratorKinetic");
+			register("ItemCardGeneratorHeat");
+			register("ItemCardReactor");
+			register("ItemCardReactor5x5");
 		}
-		register(new ItemCardLiquidAdvanced());
-		register(new ItemCardText());
-		register(new ItemCardTime());
-		register(new ItemCardEnergyArray());
-		register(new ItemCardLiquidArray());
-		register(new ItemCardGeneratorArray());
-		register(new ItemCardToggle());
-		register(new ItemCardVanilla());
-		register(new ItemCardInventory());
-		register(new ItemCardRedstone());
+		register("ItemCardLiquidAdvanced");
+		register("ItemCardText");
+		register("ItemCardTime");
+		register("ItemCardEnergyArray");
+		register("ItemCardLiquidArray");
+		register("ItemCardGeneratorArray");
+		register("ItemCardToggle");
+		register("ItemCardVanilla");
+		register("ItemCardInventory");
+		register("ItemCardRedstone");
 		if (Loader.isModLoaded("buildcraftcore"))
-			register(new ItemCardEngine());
-		if (Loader.isModLoaded("draconicevolution")) {
-			register(new ItemCardEnergyDraconic());
-			register(new ItemCardReactorDraconic());
-		}
+			register("ItemCardEngine");
+		if (Loader.isModLoaded("draconicevolution"))
+			register("ItemCardReactorDraconic");
 		if (Loader.isModLoaded("appliedenergistics2"))
-			register(new ItemCardAppEng());
+			register("ItemCardAppEng");
 		if (Loader.isModLoaded("galacticraftcore") && Loader.isModLoaded("galacticraftplanets"))
-			register(new ItemCardGalacticraft());
+			register("ItemCardGalacticraft");
 		if (Loader.isModLoaded("bigreactors"))
-			register(new ItemCardBigReactors());
+			register("ItemCardBigReactors");
 		if (Loader.isModLoaded("nuclearcraft"))
-			register(new ItemCardNuclearCraft());
+			register("ItemCardNuclearCraft");
 	}
 
-	private static void register(IItemCard item) {
-		if (checkCard(item))
-			cards.put(item.getDamage(), item);
+	private static void register(String className) {
+		try {
+			Class<?> clz = Class.forName("com.zuxelus.energycontrol.items.cards." + className);
+			if (clz == null)
+				return;
+			IItemCard item =  (IItemCard) clz.newInstance();
+			if (checkCard(item))
+				cards.put(item.getDamage(), item);
+		} catch (Exception e) {
+			EnergyControl.logger.warn(String.format("Class %s not found", className));
+		}
 	}
 
 	private static boolean checkCard(IItemCard item) {

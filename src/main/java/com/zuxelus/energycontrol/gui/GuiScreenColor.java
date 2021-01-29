@@ -3,8 +3,8 @@ package com.zuxelus.energycontrol.gui;
 import java.io.IOException;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
+import com.zuxelus.zlib.network.NetworkHelper;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
@@ -16,7 +16,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiScreenColor extends GuiScreen {
-	private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(EnergyControl.MODID + ":textures/gui/gui_colors.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_colors.png");
 
 	private GuiInfoPanel parentGui;
 
@@ -62,7 +62,7 @@ public class GuiScreenColor extends GuiScreen {
 
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-		mc.getTextureManager().bindTexture(TEXTURE_LOCATION);
+		mc.getTextureManager().bindTexture(TEXTURE);
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		int left = (width - xSize) / 2;
 		int top = (height - ySize) / 2;
@@ -77,10 +77,9 @@ public class GuiScreenColor extends GuiScreen {
 
 	@Override
 	protected void keyTyped(char typedChar, int keyCode) throws IOException {
-		if (keyCode == 1) {
-			parentGui.isColored = !panel.getColored();
+		if (keyCode == 1)
 			FMLClientHandler.instance().getClient().displayGuiScreen(parentGui);
-		} else
+		else
 			super.keyTyped(typedChar, keyCode);
 	}
 

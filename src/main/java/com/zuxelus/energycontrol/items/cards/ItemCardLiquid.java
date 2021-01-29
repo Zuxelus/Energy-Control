@@ -7,10 +7,9 @@ import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
-import com.zuxelus.energycontrol.crossmod.LiquidCardHelper;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -29,7 +28,7 @@ public class ItemCardLiquid extends ItemCardBase {
 		if (target == null)
 			return CardState.NO_TARGET;
 
-		IFluidTank storage = LiquidCardHelper.getStorageAt(world, target);
+		IFluidTank storage = CrossModLoader.getTankAt(world, target);
 		if (storage == null)
 			return CardState.NO_TARGET;
 
@@ -55,7 +54,7 @@ public class ItemCardLiquid extends ItemCardBase {
 		if ((displaySettings & 1) > 0) {
 			String name = reader.getString("name");
 			if (name == "")
-				name = I18n.format("msg.ec.None");
+				name = isServer ? "N/A" : I18n.format("msg.ec.None");
 			result.add(new PanelString("msg.ec.InfoPanelName", name, showLabels));
 		}
 		if ((displaySettings & 2) > 0)

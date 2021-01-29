@@ -1,13 +1,15 @@
 package com.zuxelus.energycontrol.containers;
 
-import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityAFSU;
-import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
+import com.zuxelus.zlib.containers.ContainerBase;
+import com.zuxelus.zlib.containers.slots.SlotArmor;
+import com.zuxelus.zlib.containers.slots.SlotChargeable;
+import com.zuxelus.zlib.containers.slots.SlotDischargeable;
+import com.zuxelus.zlib.network.NetworkHelper;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.Slot;
-import net.minecraft.nbt.NBTTagCompound;
 
 public class ContainerAFSU extends ContainerBase<TileEntityAFSU> {
 	private static final EntityEquipmentSlot[] armorSlots = getArmorSlots();
@@ -16,8 +18,8 @@ public class ContainerAFSU extends ContainerBase<TileEntityAFSU> {
 	public ContainerAFSU(EntityPlayer player, TileEntityAFSU te) {
 		super(te);
 
-		addSlotToContainer(new SlotFilter(te, TileEntityAFSU.SLOT_CHARGER, 26, 17)); // chargeSlot
-		addSlotToContainer(new SlotFilter(te, TileEntityAFSU.SLOT_DISCHARGER, 26, 53)); // dischargeSlot
+		addSlotToContainer(new SlotChargeable(te, TileEntityAFSU.SLOT_CHARGER, 26, 17)); // chargeSlot
+		addSlotToContainer(new SlotDischargeable(te, TileEntityAFSU.SLOT_DISCHARGER, 26, 53, TileEntityAFSU.TIER)); // dischargeSlot
 		for (int col = 0; col < armorSlots.length; col++)
 			addSlotToContainer((Slot) new SlotArmor(player.inventory, armorSlots[col], 8 + col * 18, 84));
 		// inventory

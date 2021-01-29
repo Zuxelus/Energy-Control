@@ -29,7 +29,6 @@ public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm {
 
 	@Override
 	protected void checkStatus() {
-		super.checkStatus();
 		int light = lightLevel;
 		if (!powered) {
 			lightLevel = 0;

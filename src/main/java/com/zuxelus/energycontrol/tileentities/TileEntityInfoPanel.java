@@ -8,11 +8,13 @@ import java.util.Map;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.PanelString;
-import com.zuxelus.energycontrol.containers.ISlotItemFilter;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
+import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
+import com.zuxelus.zlib.tileentities.ITilePacketHandler;
+import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -446,7 +448,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 
 		ItemCardReader reader = new ItemCardReader(card);
 		ItemCardMain.updateCardNBT(world, pos, reader, stack);
-		reader.updateClient(this, slot);
+		reader.updateClient(card, this, slot);
 	}
 
 	protected boolean isColoredEval() {

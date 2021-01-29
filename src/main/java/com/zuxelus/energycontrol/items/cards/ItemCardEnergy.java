@@ -10,7 +10,6 @@ import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -19,6 +18,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemCardEnergy extends ItemCardBase {
+
 	public ItemCardEnergy() {
 		super(ItemCardType.CARD_ENERGY, "card_energy");
 	}
@@ -33,13 +33,7 @@ public class ItemCardEnergy extends ItemCardBase {
 		if (te == null)
 			return CardState.NO_TARGET;
 
-		NBTTagCompound tag = CrossModLoader.ic2.getEnergyData(te);
-		if (tag == null)
-			tag = CrossModLoader.techReborn.getEnergyData(te);
-		if (tag == null)
-		tag = CrossModLoader.appEng.getEnergyData(te);
-		if (tag == null)
-		tag = CrossModLoader.galacticraft.getEnergyData(te);
+		NBTTagCompound tag = CrossModLoader.getEnergyData(te);
 		if (tag != null && tag.hasKey("type")) {
 			reader.setInt("type", tag.getInteger("type"));
 			reader.setDouble("storage", tag.getDouble("storage"));
@@ -68,6 +62,9 @@ public class ItemCardEnergy extends ItemCardBase {
 			break;
 		case 12:
 			euType = reader.getString("euType");
+			break;
+		case 13:
+			euType = "RF";
 			break;
 		default:
 			euType = "EU";

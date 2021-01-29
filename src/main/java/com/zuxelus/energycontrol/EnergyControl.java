@@ -6,12 +6,14 @@ import java.util.Map;
 import org.apache.logging.log4j.Logger;
 
 import com.zuxelus.energycontrol.config.ConfigHandler;
+import com.zuxelus.energycontrol.containers.slots.SlotHandler;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.network.ChannelHandler;
 import com.zuxelus.energycontrol.recipes.RecipesNew;
 import com.zuxelus.energycontrol.tileentities.ScreenManager;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -35,10 +37,8 @@ public class EnergyControl {
 	@Instance(MODID)
 	public static EnergyControl instance;
 
-	// Mod's creative tab
 	public static EnCtrlTab creativeTab = new EnCtrlTab();
 
-	// For logging purposes
 	public static Logger logger;
 	public static ConfigHandler config;
 	public static Map<String, OreHelper> oreHelper;
@@ -54,16 +54,14 @@ public class EnergyControl {
 	public void preInit(FMLPreInitializationEvent event) {
 		logger = event.getModLog();
 
-		// Loads configuration
 		proxy.loadConfig(event);
 		proxy.importSound(event.getModConfigurationDirectory());
 		//proxy.registerModelLoader();
 
-		// registers channel handler
 		ChannelHandler.init();
-
-		CrossModLoader.preinit();
+		CrossModLoader.init();
 		ModItems.registerTileEntities();
+		MinecraftForge.EVENT_BUS.register(new SlotHandler());
 	}
 
 	@EventHandler
@@ -74,13 +72,11 @@ public class EnergyControl {
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
 
 		proxy.registerSpecialRenderers();
-		CrossModLoader.init();
 	}
 
 	@EventHandler
 	public static void postInit(FMLPostInitializationEvent event) {
 		RecipesNew.addRecipes();
-		CrossModLoader.postinit();
 	}
 
 	@EventHandler

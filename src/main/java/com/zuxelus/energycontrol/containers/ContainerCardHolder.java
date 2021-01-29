@@ -2,6 +2,8 @@ package com.zuxelus.energycontrol.containers;
 
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.InventoryCardHolder;
+import com.zuxelus.zlib.containers.ContainerBase;
+import com.zuxelus.zlib.containers.slots.SlotFilter;
 
 import net.minecraft.entity.player.EntityPlayer;
 

@@ -5,9 +5,6 @@ import java.io.File;
 import com.zuxelus.energycontrol.blocks.BlockDamages;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.containers.*;
-import com.zuxelus.energycontrol.gui.GuiSeedAnalyzer;
-import com.zuxelus.energycontrol.gui.GuiSeedLibrary;
-import com.zuxelus.energycontrol.gui.GuiTimer;
 import com.zuxelus.energycontrol.items.cards.ItemCardHolder;
 import com.zuxelus.energycontrol.tileentities.*;
 
@@ -21,6 +18,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 
 public class ServerProxy implements IGuiHandler {
+
 	public void loadConfig(FMLPreInitializationEvent event) {
 		EnergyControl.config = new ConfigHandler();
 		EnergyControl.config.init(event.getSuggestedConfigurationFile());
@@ -41,6 +39,13 @@ public class ServerProxy implements IGuiHandler {
 		switch (ID) {
 		case BlockDamages.DAMAGE_INFO_PANEL:
 			return new ContainerInfoPanel(player, (TileEntityInfoPanel) te);
+		case BlockDamages.DAMAGE_INFO_PANEL_EXTENDER:
+			if (te instanceof TileEntityInfoPanelExtender) {
+				TileEntityInfoPanel panel = ((TileEntityInfoPanelExtender) te).getCore();
+				if (panel != null)
+					return new ContainerInfoPanel(player, (TileEntityInfoPanel) panel);
+			}
+			return null;
 		case BlockDamages.DAMAGE_ADVANCED_PANEL:
 			return new ContainerAdvancedInfoPanel(player, (TileEntityAdvancedInfoPanel) te);
 		case BlockDamages.DAMAGE_RANGE_TRIGGER:

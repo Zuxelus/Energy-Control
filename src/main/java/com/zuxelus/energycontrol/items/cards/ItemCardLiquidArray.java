@@ -7,11 +7,10 @@ import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
-import com.zuxelus.energycontrol.crossmod.LiquidCardHelper;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.utils.StringUtils;
 
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -38,14 +37,13 @@ public class ItemCardLiquidArray extends ItemCardBase {
 
 		boolean foundAny = false;
 		boolean outOfRange = false;
-		int liquidId = 0;
 		for (int i = 0; i < cardCount; i++) {
 			BlockPos target = getCoordinates(reader, i);
 			int dx = target.getX() - pos.getX();
 			int dy = target.getY() - pos.getY();
 			int dz = target.getZ() - pos.getZ();
 			if (Math.abs(dx) <= range && Math.abs(dy) <= range && Math.abs(dz) <= range) {
-				IFluidTank storage = LiquidCardHelper.getStorageAt(world, target);
+				IFluidTank storage = CrossModLoader.getTankAt(world, target);
 				if (storage != null) {
 					FluidStack stack = storage.getFluid(); 
 					if (stack != null) {

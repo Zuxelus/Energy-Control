@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.tileentities.TileEntityAFSU;
-import com.zuxelus.energycontrol.tileentities.TileEntityInventory;
+import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;

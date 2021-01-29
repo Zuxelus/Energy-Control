@@ -4,12 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.api.IItemCard;
 import com.zuxelus.energycontrol.api.IItemKit;
-import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -35,32 +36,40 @@ public class ItemKitMain extends Item {
 	}
 
 	public final void registerKits() {
-		register(new ItemKitEnergy());
-		register(new ItemKitCounter());
-		register(new ItemKitLiquid());
-		register(new ItemKitGenerator());
+		register("ItemKitEnergy");
+		register("ItemKitCounter");
+		register("ItemKitLiquid");
+		register("ItemKitGenerator");
 		if (Loader.isModLoaded("ic2"))
-			register(new ItemKitReactor());
-		register(new ItemKitLiquidAdvanced());
-		register(new ItemKitToggle());
-		register(new ItemKitVanilla());
-		register(new ItemKitInventory());
-		register(new ItemKitRedstone());
+			register("ItemKitReactor");
+		register("ItemKitLiquidAdvanced");
+		register("ItemKitToggle");
+		register("ItemKitVanilla");
+		register("ItemKitInventory");
+		register("ItemKitRedstone");
 		if (Loader.isModLoaded("draconicevolution"))
-			register(new ItemKitDraconic());
+			register("ItemKitDraconic");
 		if (Loader.isModLoaded("appliedenergistics2"))
-			register(new ItemKitAppEng());
+			register("ItemKitAppEng");
 		if (Loader.isModLoaded("galacticraftcore") && Loader.isModLoaded("galacticraftplanets"))
-			register(new ItemKitGalacticraft());
+			register("ItemKitGalacticraft");
 		if (Loader.isModLoaded("bigreactors"))
-			register(new ItemKitBigReactors());
+			register("ItemKitBigReactors");
 		if (Loader.isModLoaded("nuclearcraft"))
-			register(new ItemKitNuclearCraft());
+			register("ItemKitNuclearCraft");
 	}
 
-	private void register(ItemKitBase item) {
-		if (checkKit(item))
-			kits.put(item.getDamage(), item);
+	private static void register(String className) {
+		try {
+			Class<?> clz = Class.forName("com.zuxelus.energycontrol.items.kits." + className);
+			if (clz == null)
+				return;
+			ItemKitBase item =  (ItemKitBase) clz.newInstance();
+			if (checkKit(item))
+				kits.put(item.getDamage(), item);
+		} catch (Exception e) {
+			EnergyControl.logger.warn(String.format("Class %s not found", className));
+		}
 	}
 
 	private static boolean checkKit(IItemKit item) {
@@ -114,17 +123,20 @@ public class ItemKitMain extends Item {
 	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) { 	
 		if (player == null || !(player instanceof EntityPlayerMP))
 			return EnumActionResult.PASS;
-		
+
 		ItemStack stack = player.getHeldItem(hand);
-		if (stack.isEmpty() || stack.getCount() != 1)
+		if (stack.isEmpty())
 			return EnumActionResult.PASS;
 		ItemStack sensorLocationCard = getItemKitBase(stack.getItemDamage()).getSensorCard(stack, ModItems.itemCard, player, world, pos);
 		if (sensorLocationCard.isEmpty())
 			return EnumActionResult.PASS;
-		
-		player.replaceItemInInventory(player.inventory.currentItem, sensorLocationCard);
+
+		stack.shrink(1);
+		EntityItem dropItem = new EntityItem(world, player.posX, player.posY, player.posZ, sensorLocationCard);
+		dropItem.setPickupDelay(0);
+		world.spawnEntity(dropItem);
 		return EnumActionResult.SUCCESS;
-	}	
+	}
 
 	public IItemKit getItemKitBase(int metadata) {
 		if (kits.containsKey(metadata))

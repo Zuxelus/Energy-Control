@@ -7,10 +7,9 @@ import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
-import com.zuxelus.energycontrol.crossmod.LiquidCardHelper;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -30,7 +29,7 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 		if (target == null)
 			return CardState.NO_TARGET;
 
-		List<IFluidTank> tanks = LiquidCardHelper.getAllTanks(world, target);
+		List<IFluidTank> tanks = CrossModLoader.getAllTanks(world, target);
 		if (tanks == null)
 			return CardState.NO_TARGET;
 

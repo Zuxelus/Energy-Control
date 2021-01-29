@@ -11,7 +11,6 @@ import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.utils.StringUtils;
 
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -44,7 +43,7 @@ public class ItemCardEnergyArray extends ItemCardBase {
 			if (Math.abs(dx) <= range && Math.abs(dy) <= range && Math.abs(dz) <= range) {
 				TileEntity te = world.getTileEntity(target);
 				if (te != null) {
-					NBTTagCompound tag = CrossModLoader.ic2.getEnergyData(te);
+					NBTTagCompound tag = CrossModLoader.getEnergyData(te);
 					if (tag != null) {
 						double stored = tag.getDouble("storage");
 						double capacity = tag.getDouble("maxStorage");

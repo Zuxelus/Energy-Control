@@ -32,22 +32,22 @@ public class ItemKitDraconic extends ItemKitBase {
 		if (te instanceof TileEnergyStorageCore)
 			core = (TileEnergyStorageCore)te;
 		if (core != null) {
-			ItemStack sensorLocationCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_ENERGY_DRACONIC);
-			ItemStackHelper.setCoordinates(sensorLocationCard, core.getPos());
-			return sensorLocationCard;
+			ItemStack newCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_ENERGY);
+			ItemStackHelper.setCoordinates(newCard, core.getPos());
+			return newCard;
 		}
 		if (te instanceof TileEnergyInfuser || te instanceof TileCrystalDirectIO) {
-			ItemStack sensorLocationCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_ENERGY_DRACONIC);
-			ItemStackHelper.setCoordinates(sensorLocationCard, te.getPos());
-			return sensorLocationCard;
+			ItemStack newCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_ENERGY);
+			ItemStackHelper.setCoordinates(newCard, te.getPos());
+			return newCard;
 		}
 		TileReactorCore reactor = null;
 		if (te instanceof TileReactorStabilizer)
 			reactor = ((TileReactorStabilizer)te).tryGetCore();
 		if (reactor != null) {
-			ItemStack sensorLocationCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_REACTOR_DRACONIC);
-			ItemStackHelper.setCoordinates(sensorLocationCard, reactor.getPos());
-			return sensorLocationCard;
+			ItemStack newCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_REACTOR_DRACONIC);
+			ItemStackHelper.setCoordinates(newCard, reactor.getPos());
+			return newCard;
 		}
 		return ItemStack.EMPTY;
 	}

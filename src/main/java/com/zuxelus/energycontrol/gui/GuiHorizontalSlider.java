@@ -3,27 +3,24 @@ package com.zuxelus.energycontrol.gui;
 import java.io.IOException;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.gui.controls.GuiHowlerAlarmSlider;
-import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
+import com.zuxelus.zlib.gui.GuiBase;
+import com.zuxelus.zlib.network.NetworkHelper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.FMLClientHandler;
 
 public class GuiHorizontalSlider extends GuiBase {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_horizontal_slider.png");
 
 	private GuiInfoPanel parentGui;
 	private TileEntityInfoPanel panel;
 	private HorizontalSlider slider;
 
 	public GuiHorizontalSlider(GuiInfoPanel parentGui, TileEntityInfoPanel panel) {
-		super("msg.ec.PanelRefreshRate", 152, 64);
+		super("msg.ec.PanelRefreshRate", 152, 64, EnergyControl.MODID + ":textures/gui/gui_horizontal_slider.png");
 		this.parentGui = parentGui;
 		this.panel = panel;
 	}
@@ -41,20 +38,10 @@ public class GuiHorizontalSlider extends GuiBase {
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		mc.getTextureManager().bindTexture(TEXTURE);
-		int left = (width - xSize) / 2;
-		int top = (height - ySize) / 2;
-		drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
-	}
-
-	@Override
 	protected void keyTyped(char typedChar, int keyCode) throws IOException {
-		if (keyCode == 1) {
-			parentGui.isColored = !panel.getColored();
+		if (keyCode == 1)
 			FMLClientHandler.instance().getClient().displayGuiScreen(parentGui);
-		} else
+		else
 			super.keyTyped(typedChar, keyCode);
 	}
 
@@ -90,7 +77,7 @@ public class GuiHorizontalSlider extends GuiBase {
 		public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
 			if (!visible)
 				return;
-			mc.getTextureManager().bindTexture(TEXTURE);
+			mc.getTextureManager().bindTexture(texture);
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 			if (dragging)
 				setSliderPos(mouseX);

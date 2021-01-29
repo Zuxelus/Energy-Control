@@ -1,6 +1,6 @@
 package com.zuxelus.energycontrol.items.kits;
 
-import com.zuxelus.energycontrol.crossmod.LiquidCardHelper;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
@@ -16,7 +16,7 @@ public class ItemKitLiquid extends ItemKitSimple {
 
 	@Override
 	protected BlockPos getTargetCoordinates(World world, BlockPos pos, ItemStack stack) {
-		IFluidTank tank = LiquidCardHelper.getStorageAt(world, pos);
+		IFluidTank tank = CrossModLoader.getTankAt(world, pos);
 		if (tank != null)
 			return pos;
 		return null;

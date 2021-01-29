@@ -1,8 +1,8 @@
 package com.zuxelus.energycontrol;
 
-import com.zuxelus.energycontrol.network.ChannelHandler;
 import com.zuxelus.energycontrol.network.PacketAlarm;
 import com.zuxelus.energycontrol.network.PacketOreHelper;
+import com.zuxelus.zlib.network.NetworkHelper;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.event.world.WorldEvent;
@@ -19,8 +19,10 @@ public class ServerTickHandler {
 
 	@SubscribeEvent
 	public void onPlayerLogin(PlayerLoggedInEvent event) {
-		ChannelHandler.network.sendTo(new PacketAlarm(EnergyControl.config.maxAlarmRange, EnergyControl.config.allowedAlarms), (EntityPlayerMP) event.player);
+		if (!(event.player instanceof EntityPlayerMP))
+			return;
+		NetworkHelper.network.sendTo(new PacketAlarm(EnergyControl.config.maxAlarmRange, EnergyControl.config.allowedAlarms), (EntityPlayerMP) event.player);
 		if (EnergyControl.oreHelper != null)
-			ChannelHandler.network.sendTo(new PacketOreHelper(EnergyControl.oreHelper), (EntityPlayerMP) event.player);
+			NetworkHelper.network.sendTo(new PacketOreHelper(EnergyControl.oreHelper), (EntityPlayerMP) event.player);
 	}
 }

@@ -1,7 +1,5 @@
 package com.zuxelus.energycontrol.items;
 
-import java.util.List;
-
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.init.ModItems;
 

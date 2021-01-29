@@ -1,6 +1,8 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import com.zuxelus.energycontrol.containers.ISlotItemFilter;
+import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
+import com.zuxelus.zlib.tileentities.ITilePacketHandler;
+import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
