@@ -31,7 +31,7 @@ public class ItemAFSU extends ItemBlock {
 		tooltip.add(I18n.format("ic2.item.tooltip.PowerTier",TileEntityAFSU.TIER));
 		tooltip.add(String.format("%s %.0f %s %s %d M %s", I18n.format("ic2.item.tooltip.Output"), Double.valueOf(EnergyNet.instance.getPowerFromTier(TileEntityAFSU.TIER)),
 				I18n.format("ic2.generic.text.EUt"), I18n.format("ic2.item.tooltip.Capacity"), Integer.valueOf(TileEntityAFSU.CAPACITY) / 1000000, I18n.format("ic2.generic.text.EU")));
-		tooltip.add(I18n.format("ic2.item.tooltip.Store") + " " + (long) ItemStackHelper.getOrCreateNbtData(stack).getDouble("energy") + " " + I18n.format("ic2.generic.text.EU"));
+		tooltip.add(I18n.format("ic2.item.tooltip.Store") + " " + (long) ItemStackHelper.getTagCompound(stack).getDouble("energy") + " " + I18n.format("ic2.generic.text.EU"));
 	}
 
 	@Override

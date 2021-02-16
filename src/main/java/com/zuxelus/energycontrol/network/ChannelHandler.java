@@ -1,14 +1,11 @@
 package com.zuxelus.energycontrol.network;
 
-import java.util.Map;
-
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.network.NetworkHelper;
 import com.zuxelus.zlib.network.PacketTileEntity;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 
 public class ChannelHandler {
 
@@ -23,24 +20,24 @@ public class ChannelHandler {
 	}
 
 	// server
-	public static void updateClientCard(ItemStack card, TileEntity panel, int slot, Map<String, Object> fields) {
-		if (fields == null || fields.isEmpty() || panel == null || !(panel instanceof TileEntityInfoPanel) || slot == -1)
+	public static void updateClientCard(ItemStack card, TileEntityInfoPanel panel, int slot) {
+		if (card.isEmpty() || panel == null || slot < 0)
 			return;
 
 		if (panel.getWorld().isRemote)
 			return;
 
-		NetworkHelper.sendPacketToAllAround(panel.getPos(), 64, panel.getWorld(), new PacketCard(panel.getPos(), slot, card.getItem().getClass().getName(), fields));
+		NetworkHelper.sendPacketToAllAround(panel.getPos(), 64, panel.getWorld(), new PacketCard(card, panel.getPos(), slot));
 	}
 
 	// client
-	public static void updateServerCard(ItemStack card, TileEntityInfoPanel panel, Map<String, Object> fields, int slot) {
-		if (card.isEmpty() || fields == null || fields.isEmpty() || panel == null)
+	public static void updateServerCard(ItemStack card, TileEntityInfoPanel panel, int slot) {
+		if (card.isEmpty() || panel == null || slot < 0)
 			return;
 
 		if (!panel.getWorld().isRemote)
 			return;
 
-		NetworkHelper.network.sendToServer(new PacketCard(panel.getPos(), slot, card.getItem().getClass().getName(), fields));
+		NetworkHelper.network.sendToServer(new PacketCard(card, panel.getPos(), slot));
 	}
 }

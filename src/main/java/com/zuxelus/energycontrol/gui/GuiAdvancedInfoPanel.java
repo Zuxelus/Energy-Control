@@ -6,12 +6,12 @@ import java.util.List;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.containers.ContainerAdvancedInfoPanel;
-import com.zuxelus.energycontrol.gui.controls.GuiButtonGeneral;
 import com.zuxelus.energycontrol.gui.controls.GuiInfoPanelCheckBox;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
+import com.zuxelus.zlib.gui.controls.GuiButtonGeneral;
 import com.zuxelus.zlib.network.NetworkHelper;
 
 import net.minecraft.client.gui.GuiButton;
@@ -107,7 +107,10 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
 				updateTitle();
 				modified = false;
 			}
-			activeTab = newTab;
+			if (activeTab != newTab) {
+				activeTab = newTab;
+				initControls();
+			}
 		}
 	}
 

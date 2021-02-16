@@ -1,9 +1,12 @@
 package com.zuxelus.energycontrol.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 
@@ -87,9 +90,17 @@ public interface ICardReader {
 	 */
 	void updateClient(ItemStack stack, TileEntity panel, int slot);
 
-	void setTag(String name, NBTTagCompound value);
+	void updateServer(ItemStack stack, TileEntity panel, int slot);
+
+	void setTag(String name, NBTBase value);
 
 	NBTTagCompound getTag(String name);
+
+	NBTTagList getTagList(String name, int type);
+
+	ArrayList<ItemStack> getItemStackList(boolean reset);
+	
+	void setItemStackList(ArrayList<ItemStack> list);
 
 	List<PanelString> getTitleList();
 

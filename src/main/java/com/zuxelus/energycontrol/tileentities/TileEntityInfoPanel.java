@@ -34,8 +34,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityInfoPanel extends TileEntityInventory
-		implements ITickable, ITilePacketHandler, IScreenPart, ISlotItemFilter {
+public class TileEntityInfoPanel extends TileEntityInventory implements ITickable, ITilePacketHandler, IScreenPart, ISlotItemFilter {
 	public static final String NAME = "info_panel";
 	public static final int DISPLAY_DEFAULT = Integer.MAX_VALUE;
 	private static final int[] COLORS_HEX = { 0x000000, 0xe93535, 0x82e306, 0x702b14, 0x1f3ce7, 0x8f1fea, 0x1fd7e9,
@@ -360,8 +359,16 @@ public class TileEntityInfoPanel extends TileEntityInventory
 			if (updateTicker-- > 0)
 				return;
 			updateTicker = tickRate - 1;
-			markDirty();
+			if (hasCards())
+				markDirty();
 		}
+	}
+
+	private boolean hasCards() {
+		for (ItemStack card : getCards())
+			if (!card.isEmpty())
+				return true;
+		return false;
 	}
 
 	@Override
@@ -423,6 +430,23 @@ public class TileEntityInfoPanel extends TileEntityInventory
 		return null;
 	}
 
+	public List<String> getPanelStringList() {
+		List<PanelString> joinedData = getPanelStringList(true, false);
+		List<String> list = NonNullList.create();
+		if (joinedData == null || joinedData.size() == 0)
+			return list;
+
+		for (PanelString panelString : joinedData) {
+			if (panelString.textLeft != null)
+				list.add(panelString.textLeft);
+			if (panelString.textCenter != null)
+				list.add(panelString.textCenter);
+			if (panelString.textRight != null)
+				list.add(panelString.textRight);
+		}
+		return list;
+	}
+
 	public int getCardSlot(ItemStack card) {
 		if (card.isEmpty())
 			return 0;
@@ -452,8 +476,8 @@ public class TileEntityInfoPanel extends TileEntityInventory
 	}
 
 	protected boolean isColoredEval() {
-		ItemStack itemStack = getStackInSlot(SLOT_UPGRADE_COLOR);
-		return !itemStack.isEmpty() && itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_COLOR;
+		ItemStack stack = getStackInSlot(SLOT_UPGRADE_COLOR);
+		return !stack.isEmpty() && stack.getItem() instanceof ItemUpgrade && stack.getItemDamage() == ItemUpgrade.DAMAGE_COLOR;
 	}
 
 	@Override
@@ -617,11 +641,13 @@ public class TileEntityInfoPanel extends TileEntityInventory
 		return b ? 1 : 0;
 	}
 
-	public boolean runTouchAction(BlockPos pos, float hitX, float hitY, float hitZ) {
+	public boolean runTouchAction(ItemStack stack, BlockPos pos, float hitX, float hitY, float hitZ) {
 		if (world.isRemote)
 			return false;
-		ItemStack stack = getStackInSlot(SLOT_CARD);
-		if (getStackInSlot(SLOT_UPGRADE_TOUCH).isEmpty() || stack.isEmpty() || stack.getItemDamage() != ItemCardType.CARD_TOGGLE)
+		ItemStack card = getStackInSlot(SLOT_CARD);
+		if (card.isEmpty() || (!isTouchCard() && card.getItemDamage() != ItemCardType.CARD_APPENG_INV))
+			return false;
+		if (isTouchCard() && getStackInSlot(SLOT_UPGRADE_TOUCH).isEmpty())
 			return false;
 		switch (facing) { // TODO
 		case DOWN:
@@ -639,7 +665,7 @@ public class TileEntityInfoPanel extends TileEntityInventory
 		default:
 			break;
 		}
-		ItemCardMain.runTouchAction(world, stack);
+		ItemCardMain.runTouchAction(this, card, stack, SLOT_CARD);
 		return true;
 	}
 

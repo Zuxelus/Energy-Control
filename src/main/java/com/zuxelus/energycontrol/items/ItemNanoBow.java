@@ -47,7 +47,7 @@ public abstract class ItemNanoBow extends ItemBow /* , IItemUpgradeable */ {
 		if (!(entity instanceof EntityPlayer))
 			return;
 
-		NBTTagCompound nbt = ItemStackHelper.getOrCreateNbtData(stack);
+		NBTTagCompound nbt = ItemStackHelper.getTagCompound(stack);
 		int mode = nbt.getInteger("bowMode");
 
 		EntityPlayer player = (EntityPlayer) entity;
@@ -152,7 +152,7 @@ public abstract class ItemNanoBow extends ItemBow /* , IItemUpgradeable */ {
 
 	@Override
 	public int getMaxItemUseDuration(ItemStack stack) {
-		NBTTagCompound nbt = ItemStackHelper.getOrCreateNbtData(stack);
+		NBTTagCompound nbt = ItemStackHelper.getTagCompound(stack);
 		switch (nbt.getInteger("bowMode")) {
 		case SNIPER:
 		case EXPLOSIVE:
@@ -171,7 +171,7 @@ public abstract class ItemNanoBow extends ItemBow /* , IItemUpgradeable */ {
 		if (result != null)
 			return result;
 
-		NBTTagCompound nbt = ItemStackHelper.getOrCreateNbtData(stack);
+		NBTTagCompound nbt = ItemStackHelper.getTagCompound(stack);
 		int mode = nbt.getInteger("bowMode");
 		if (!world.isRemote && isModeSwitchKeyDown(player) && nbt.getByte("toggleTimer") == 0) {
 			byte toggle = 10;
@@ -205,7 +205,7 @@ public abstract class ItemNanoBow extends ItemBow /* , IItemUpgradeable */ {
 
 	@Override
 	public void onUpdate(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected) {
-		NBTTagCompound nbt = ItemStackHelper.getOrCreateNbtData(stack);
+		NBTTagCompound nbt = ItemStackHelper.getTagCompound(stack);
 		byte toggle = nbt.getByte("toggleTimer");
 		if (toggle > 0)
 			nbt.setByte("toggleTimer", --toggle);
@@ -216,7 +216,7 @@ public abstract class ItemNanoBow extends ItemBow /* , IItemUpgradeable */ {
 
 	@Override
 	public void onUsingTick(ItemStack stack, EntityLivingBase player, int count) {
-		NBTTagCompound nbt = ItemStackHelper.getOrCreateNbtData(stack);
+		NBTTagCompound nbt = ItemStackHelper.getTagCompound(stack);
 		int mode = nbt.getInteger("bowMode");
 		if (mode == RAPID) {
 			int j = getMaxItemUseDuration(stack) - count;

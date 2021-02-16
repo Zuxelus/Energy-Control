@@ -127,7 +127,7 @@ public class ItemKitMain extends Item {
 		ItemStack stack = player.getHeldItem(hand);
 		if (stack.isEmpty())
 			return EnumActionResult.PASS;
-		ItemStack sensorLocationCard = getItemKitBase(stack.getItemDamage()).getSensorCard(stack, ModItems.itemCard, player, world, pos);
+		ItemStack sensorLocationCard = getItemKitBase(stack.getItemDamage()).getSensorCard(stack, ModItems.itemCard, player, world, pos, side);
 		if (sensorLocationCard.isEmpty())
 			return EnumActionResult.PASS;
 

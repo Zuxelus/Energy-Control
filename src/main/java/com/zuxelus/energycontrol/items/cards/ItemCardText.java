@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.zuxelus.energycontrol.api.CardState;
-import com.zuxelus.energycontrol.api.ICardGui;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
@@ -49,11 +48,6 @@ public class ItemCardText extends ItemCardBase {
 	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		return null;
-	}
-
-	@Override
-	public ICardGui getSettingsScreen(ICardReader reader) {
-		return new GuiCardText(reader);
 	}
 
 	@Override

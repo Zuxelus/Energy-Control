@@ -33,7 +33,7 @@ import net.minecraftforge.client.resource.VanillaResourceType;
 public class SoundHelper {
 	private static final Gson gson = (new GsonBuilder()).registerTypeAdapter(SoundList.class, new SoundListSerializer()).create();
 	private static File alarms;
-	
+
 	private static final ParameterizedType type = new ParameterizedType() {
 
 		@Override

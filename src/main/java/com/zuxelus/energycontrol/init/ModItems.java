@@ -3,12 +3,15 @@ package com.zuxelus.energycontrol.init;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.blocks.*;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.items.*;
+import com.zuxelus.energycontrol.items.ItemAFSU;
+import com.zuxelus.energycontrol.items.ItemDigitalThermometer;
+import com.zuxelus.energycontrol.items.ItemLight;
+import com.zuxelus.energycontrol.items.ItemPortablePanel;
+import com.zuxelus.energycontrol.items.ItemThermometer;
+import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardHolder;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.kits.ItemKitMain;
-import com.zuxelus.energycontrol.recipes.NanoBowRecipe;
-import com.zuxelus.energycontrol.recipes.NanoBowRecipeTR;
 import com.zuxelus.energycontrol.recipes.StorageArrayRecipe;
 import com.zuxelus.energycontrol.tileentities.*;
 
@@ -101,8 +104,10 @@ public class ModItems {
 		event.getRegistry().register(new ItemBlock(blockAverageCounter).setRegistryName("average_counter"));
 		event.getRegistry().register(new ItemBlock(blockEnergyCounter).setRegistryName("energy_counter"));
 		event.getRegistry().register(new ItemBlock(blockKitAssembler).setRegistryName("kit_assembler"));
-		if (CrossModLoader.ic2.getProfile() == 0)
+		if (CrossModLoader.ic2.getProfile() == 0) {
 			event.getRegistry().register(new ItemAFSU(blockAfsu).setRegistryName("afsu"));
+			//event.getRegistry().register(new ItemBlock(blockIc2Cable).setRegistryName("ic2_cable"));
+		}
 		if (Loader.isModLoaded("ic2")) {
 			event.getRegistry().register(new ItemBlock(blockSeedAnalyzer).setRegistryName("seed_analyzer"));
 			event.getRegistry().register(new ItemBlock(blockSeedLibrary).setRegistryName("seed_library"));
@@ -116,9 +121,9 @@ public class ModItems {
 		}
 
 		if (Loader.isModLoaded("ic2"))
-			itemNanoBow = new ItemNanoBowIC2();
+			itemNanoBow = getItemClass("ItemNanoBowIC2");
 		else if (Loader.isModLoaded("techreborn"))
-			itemNanoBow = new ItemNanoBowTR();
+			itemNanoBow = getItemClass("ItemNanoBowTR");
 		if (itemNanoBow != null)
 			register(event, itemNanoBow, "nano_bow");
 
@@ -140,44 +145,60 @@ public class ModItems {
 		itemCardHolder = register(event, new ItemCardHolder(), "card_holder");
 	}
 
-	public static Block register(Register<Block> event, Block block, String name) {
+	private static Block register(Register<Block> event, Block block, String name) {
 		block.setUnlocalizedName(name);
 		block.setRegistryName(name);
 		event.getRegistry().register(block);
 		return block;
 	}
 
-	public static Item register(Register<Item> event, Item item, String name) {
+	private static Item register(Register<Item> event, Item item, String name) {
 		item.setUnlocalizedName(name);
 		item.setRegistryName(name);
 		event.getRegistry().register(item);
 		return item;
 	}
 
+	private static Item getItemClass(String className) {
+		try {
+			Class<?> clz = Class.forName("com.zuxelus.energycontrol.items." + className);
+			if (clz == null)
+				return null;
+			return  (Item) clz.newInstance();
+		} catch (Exception e) {
+			EnergyControl.logger.warn(String.format("Class %s not found", className));
+		}
+		return null;
+	}
+
 	@SubscribeEvent
 	public static void onModelRegister(ModelRegistryEvent event) {
-		registerBlockModel(ModItems.blockLight, BlockLight.DAMAGE_WHITE_OFF, "lamp0");
-		registerBlockModel(ModItems.blockLight, BlockLight.DAMAGE_WHITE_ON, "lamp1");
-		registerBlockModel(ModItems.blockLight, BlockLight.DAMAGE_ORANGE_OFF, "lamp2");
-		registerBlockModel(ModItems.blockLight, BlockLight.DAMAGE_ORANGE_ON, "lamp3");
+		registerBlockModel(blockLight, BlockLight.DAMAGE_WHITE_OFF, "lamp0");
+		registerBlockModel(blockLight, BlockLight.DAMAGE_WHITE_ON, "lamp1");
+		registerBlockModel(blockLight, BlockLight.DAMAGE_ORANGE_OFF, "lamp2");
+		registerBlockModel(blockLight, BlockLight.DAMAGE_ORANGE_ON, "lamp3");
 
-		registerBlockModel(ModItems.blockHowlerAlarm, 0, "howler_alarm");
-		registerBlockModel(ModItems.blockIndustrialAlarm, 0, "industrial_alarm");
+		registerBlockModel(blockHowlerAlarm, 0, "howler_alarm");
+		registerBlockModel(blockIndustrialAlarm, 0, "industrial_alarm");
 		if (Loader.isModLoaded("ic2")) {
-			registerBlockModel(ModItems.blockThermalMonitor, 0, "thermal_monitor");
-			registerBlockModel(ModItems.blockRemoteThermo, 0, "remote_thermo");
+			registerBlockModel(blockThermalMonitor, 0, "thermal_monitor");
+			registerBlockModel(blockRemoteThermo, 0, "remote_thermo");
 		}
-		registerBlockModel(ModItems.blockInfoPanel, 0, TileEntityInfoPanel.NAME);
-		registerBlockModel(ModItems.blockInfoPanelExtender, 0, "info_panel_extender");
-		registerBlockModel(ModItems.blockInfoPanelAdvanced, 0, TileEntityAdvancedInfoPanel.NAME);
-		registerBlockModel(ModItems.blockInfoPanelAdvancedExtender, 0, "info_panel_advanced_extender");
-		registerBlockModel(ModItems.blockRangeTrigger, 0, "range_trigger");
+		registerBlockModel(blockInfoPanel, 0, TileEntityInfoPanel.NAME);
+		registerBlockModel(blockInfoPanelExtender, 0, "info_panel_extender");
+		registerBlockModel(blockInfoPanelAdvanced, 0, TileEntityAdvancedInfoPanel.NAME);
+		registerBlockModel(blockInfoPanelAdvancedExtender, 0, "info_panel_advanced_extender");
+		registerBlockModel(blockRangeTrigger, 0, "range_trigger");
 
-		registerBlockModel(ModItems.blockAverageCounter, 0, "average_counter");
-		registerBlockModel(ModItems.blockEnergyCounter, 0, "energy_counter");
-		registerBlockModel(ModItems.blockKitAssembler, 0, "kit_assembler");
-		if (CrossModLoader.ic2.getProfile() == 0)
-			registerBlockModel(ModItems.blockAfsu, 0, "afsu");
+		registerBlockModel(blockAverageCounter, 0, "average_counter");
+		registerBlockModel(blockEnergyCounter, 0, "energy_counter");
+		registerBlockModel(blockKitAssembler, 0, "kit_assembler");
+		if (CrossModLoader.ic2.getProfile() == 0) {
+			registerBlockModel(blockAfsu, 0, "afsu");
+
+			/*((IC2Cable) blockIc2Cable).initModel();
+			registerBlockModel(ModItems.blockIc2Cable, 0, "ic2_cable");*/
+		}
 		if (Loader.isModLoaded("ic2")) {
 			registerBlockModel(blockSeedAnalyzer, 0, "seed_analyzer");
 			registerBlockModel(blockSeedLibrary, 0, "seed_library");
@@ -189,20 +210,20 @@ public class ModItems {
 		ItemCardMain.registerModels();
 		ItemCardMain.registerExtendedModels();
 
-		registerItemModel(ModItems.itemUpgrade, ItemUpgrade.DAMAGE_RANGE, "upgrade_range");
-		registerItemModel(ModItems.itemUpgrade, ItemUpgrade.DAMAGE_COLOR, "upgrade_color");
-		registerItemModel(ModItems.itemUpgrade, ItemUpgrade.DAMAGE_TOUCH, "upgrade_touch");
+		registerItemModel(itemUpgrade, ItemUpgrade.DAMAGE_RANGE, "upgrade_range");
+		registerItemModel(itemUpgrade, ItemUpgrade.DAMAGE_COLOR, "upgrade_color");
+		registerItemModel(itemUpgrade, ItemUpgrade.DAMAGE_TOUCH, "upgrade_touch");
 		if (Loader.isModLoaded("ic2")) {
-			registerItemModel(ModItems.itemThermometer, 0, "thermometer");
-			registerItemModel(ModItems.itemThermometerDigital, 0, "thermometer_digital");
+			registerItemModel(itemThermometer, 0, "thermometer");
+			registerItemModel(itemThermometerDigital, 0, "thermometer_digital");
 		}
-		registerItemModel(ModItems.itemPortablePanel, 0, "portable_panel");
-		registerItemModel(ModItems.itemCardHolder, 0, "card_holder");
+		registerItemModel(itemPortablePanel, 0, "portable_panel");
+		registerItemModel(itemCardHolder, 0, "card_holder");
 		if (ModItems.itemNanoBow != null)
-			registerItemModel(ModItems.itemNanoBow, 0, "nano_bow");
+			registerItemModel(itemNanoBow, 0, "nano_bow");
 		if (CrossModLoader.ic2.getProfile() == 0) {
-			registerItemModel(ModItems.itemAFB, 0, "afb");
-			registerItemModel(ModItems.itemAFSUUpgradeKit, 0, "afsu_upgrade_kit");
+			registerItemModel(itemAFB, 0, "afb");
+			registerItemModel(itemAFSUUpgradeKit, 0, "afsu_upgrade_kit");
 		}
 	}
 
@@ -246,9 +267,5 @@ public class ModItems {
 	@SubscribeEvent
 	public static void registerRecipes(Register<IRecipe> event) {
 		event.getRegistry().register(new StorageArrayRecipe().setRegistryName("array_card_recipe"));
-		if (Loader.isModLoaded("ic2"))
-			event.getRegistry().register(new NanoBowRecipe().setRegistryName("nano_bow_recipe"));
-		if (Loader.isModLoaded("techreborn"))
-			event.getRegistry().register(new NanoBowRecipeTR().setRegistryName("nano_bow_recipe_tr"));
 	}
 }

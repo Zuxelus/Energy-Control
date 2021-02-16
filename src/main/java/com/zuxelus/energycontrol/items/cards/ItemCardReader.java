@@ -1,9 +1,9 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import java.util.Map.Entry;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.CardState;
@@ -11,136 +11,107 @@ import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.network.ChannelHandler;
+import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemCardReader implements ICardReader {
 	private ItemStack card;
-	private Map<String, Object> updateSet;
 
 	public ItemCardReader(ItemStack card) {
 		if (!(card.getItem() instanceof ItemCardMain))
 			EnergyControl.logger.error("CardReader should be used for card items only.");
 		this.card = card;
-		updateSet = new HashMap<String, Object>();
 	}
 
 	@Override
 	public BlockPos getTarget() {
-		NBTTagCompound nbtTagCompound = card.getTagCompound();
-		if (nbtTagCompound == null)
+		NBTTagCompound tag = card.getTagCompound();
+		if (tag == null)
 			return null;
 
-		return new BlockPos(nbtTagCompound.getInteger("x"), nbtTagCompound.getInteger("y"), nbtTagCompound.getInteger("z"));
+		return new BlockPos(tag.getInteger("x"), tag.getInteger("y"), tag.getInteger("z"));
 	}
 
 	@Override
 	public void setInt(String name, Integer value) {
-		NBTTagCompound nbtTagCompound = ItemStackHelper.getTagCompound(card);
-		if (nbtTagCompound.hasKey(name)) {
-			Integer prevValue = nbtTagCompound.getInteger(name);
-			if (prevValue == null || !prevValue.equals(value))
-				updateSet.put(name, value);
-		} else
-			updateSet.put(name, value);
-		nbtTagCompound.setInteger(name, value);
+		NBTTagCompound tag = ItemStackHelper.getTagCompound(card);
+		tag.setInteger(name, value);
 	}
 
 	@Override
 	public Integer getInt(String name) {
-		NBTTagCompound nbtTagCompound = card.getTagCompound();
-		if (nbtTagCompound == null)
+		NBTTagCompound tag = card.getTagCompound();
+		if (tag == null)
 			return 0;
-		return nbtTagCompound.getInteger(name);
+		return tag.getInteger(name);
 	}
 
 	@Override
 	public void setLong(String name, Long value) {
-		NBTTagCompound nbtTagCompound = ItemStackHelper.getTagCompound(card);
-		if (nbtTagCompound.hasKey(name)) {
-			Long prevValue = nbtTagCompound.getLong(name);
-			if (prevValue == null || !prevValue.equals(value))
-				updateSet.put(name, value);
-		} else
-			updateSet.put(name, value);
-		nbtTagCompound.setLong(name, value);
+		NBTTagCompound tag = ItemStackHelper.getTagCompound(card);
+		tag.setLong(name, value);
 	}
 
 	@Override
 	public Long getLong(String name) {
-		NBTTagCompound nbtTagCompound = card.getTagCompound();
-		if (nbtTagCompound == null)
+		NBTTagCompound tag = card.getTagCompound();
+		if (tag == null)
 			return 0L;
-		return nbtTagCompound.getLong(name);
+		return tag.getLong(name);
 	}
 
 	@Override
 	public void setDouble(String name, Double value) {
-		NBTTagCompound nbtTagCompound = ItemStackHelper.getTagCompound(card);
-		if (nbtTagCompound.hasKey(name)) {
-			Double prevValue = nbtTagCompound.getDouble(name);
-			if (prevValue == null || prevValue != value)
-				updateSet.put(name, value);
-		} else
-			updateSet.put(name, value);
-		nbtTagCompound.setDouble(name, value);
+		NBTTagCompound tag = ItemStackHelper.getTagCompound(card);
+		tag.setDouble(name, value);
 	}
 
 	@Override
 	public Double getDouble(String name) {
-		NBTTagCompound nbtTagCompound = card.getTagCompound();
-		if (nbtTagCompound == null)
+		NBTTagCompound tag = card.getTagCompound();
+		if (tag == null)
 			return 0.0;
-		return nbtTagCompound.getDouble(name);
+		return tag.getDouble(name);
 	}
 
 	@Override
 	public void setString(String name, String value) {
 		if (name == null)
 			return;
-		NBTTagCompound nbtTagCompound = ItemStackHelper.getTagCompound(card);
-		if (nbtTagCompound.hasKey(name)) {
-			String prevValue = nbtTagCompound.getString(name);
-			if (prevValue == null || !prevValue.equals(value))
-				updateSet.put(name, value);
-		} else
-			updateSet.put(name, value);
-		nbtTagCompound.setString(name, value);
+		NBTTagCompound tag = ItemStackHelper.getTagCompound(card);
+		tag.setString(name, value);
 	}
 
 	@Override
 	public String getString(String name) {
-		NBTTagCompound nbtTagCompound = card.getTagCompound();
-		if (nbtTagCompound == null)
+		NBTTagCompound tag = card.getTagCompound();
+		if (tag == null)
 			return "";
-		return nbtTagCompound.getString(name);
+		return tag.getString(name);
 	}
 
 	@Override
 	public void setBoolean(String name, Boolean value) {
-		NBTTagCompound nbtTagCompound = ItemStackHelper.getTagCompound(card);
-		if (nbtTagCompound.hasKey(name)) {
-			Boolean prevValue = nbtTagCompound.getBoolean(name);
-			if (prevValue == null || !prevValue.equals(value))
-				updateSet.put(name, value);
-		} else
-			updateSet.put(name, value);
-		nbtTagCompound.setBoolean(name, value);
+		NBTTagCompound tag = ItemStackHelper.getTagCompound(card);
+		tag.setBoolean(name, value);
 	}
 
 	@Override
 	public Boolean getBoolean(String name) {
-		NBTTagCompound nbtTagCompound = card.getTagCompound();
-		if (nbtTagCompound == null)
+		NBTTagCompound tag = card.getTagCompound();
+		if (tag == null)
 			return false;
-		return nbtTagCompound.getBoolean(name);
+		return tag.getBoolean(name);
 	}
 
 	@Override
@@ -173,37 +144,66 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public void updateClient(ItemStack stack, TileEntity panel, int slot) {
-		if (!updateSet.isEmpty())
-			ChannelHandler.updateClientCard(stack, panel, slot, updateSet);
+		if (panel instanceof TileEntityInfoPanel)
+			ChannelHandler.updateClientCard(card, (TileEntityInfoPanel) panel, slot);
 	}
 
 	@Override
-	public void setTag(String name, NBTTagCompound value) {
-		NBTTagCompound nbtTagCompound = ItemStackHelper.getTagCompound(card);
-		if (nbtTagCompound.hasKey(name)) {
-			NBTBase prevValue = nbtTagCompound.getTag(name);
-			if (prevValue == null || !prevValue.equals(value))
-				updateSet.put(name, value);
-		} else
-			updateSet.put(name, value);
+	public void updateServer(ItemStack stack, TileEntity panel, int slot) {
+		if (panel instanceof TileEntityInfoPanel)
+			ChannelHandler.updateServerCard(card, (TileEntityInfoPanel) panel, slot);
+	}
+
+	@Override
+	public void setTag(String name, NBTBase value) {
+		NBTTagCompound tag = ItemStackHelper.getTagCompound(card);
 		if (value == null) {
-			nbtTagCompound.removeTag(name);
+			tag.removeTag(name);
 		} else
-			nbtTagCompound.setTag(name, value);
+			tag.setTag(name, value);
 	}
 
 	@Override
 	public NBTTagCompound getTag(String name) {
-		NBTTagCompound nbtTagCompound = card.getTagCompound();
-		if (nbtTagCompound == null)
-			return null;
-		return (NBTTagCompound) nbtTagCompound.getTag(name);
+		NBTTagCompound tag = ItemStackHelper.getTagCompound(card);
+		return (NBTTagCompound) tag.getTag(name);
+	}
+
+	@Override
+	public NBTTagList getTagList(String name, int type) {
+		NBTTagCompound tag = ItemStackHelper.getTagCompound(card);
+		return (NBTTagList) tag.getTagList(name, type);
+	}
+
+	@Override
+	public ArrayList<ItemStack> getItemStackList(boolean reset) {
+		NBTTagList list = getTagList("Items", Constants.NBT.TAG_COMPOUND);
+		ArrayList<ItemStack> result = new ArrayList<ItemStack> ();
+		for (int i = 0; i < list.tagCount(); i++) {
+			NBTTagCompound stackTag = list.getCompoundTagAt(i);
+			ItemStack stack = new ItemStack(stackTag);
+			if (reset)
+				stack.setCount(1);
+			result.add(stack);
+		}
+		return result;
+	}
+
+	@Override
+	public void setItemStackList(ArrayList<ItemStack> list) {
+		NBTTagList values = new NBTTagList();
+		for (ItemStack stack : list) {
+			NBTTagCompound stackTag = new NBTTagCompound();
+			stack.writeToNBT(stackTag);
+			values.appendTag(stackTag);
+		}
+		setTag("Items", values);
 	}
 
 	@Override
 	public void removeField(String name) {
-		NBTTagCompound nbtTagCompound = ItemStackHelper.getTagCompound(card);
-		nbtTagCompound.removeTag(name);
+		NBTTagCompound tag = ItemStackHelper.getTagCompound(card);
+		tag.removeTag(name);
 	}
 
 	@Override

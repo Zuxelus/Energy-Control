@@ -8,12 +8,12 @@ import net.minecraft.util.math.BlockPos;
 public final class ItemStackHelper {
 
 	public static NBTTagCompound getTagCompound(ItemStack stack) {
-		NBTTagCompound nbtTagCompound = stack.getTagCompound();
-		if (nbtTagCompound == null) {
-			nbtTagCompound = new NBTTagCompound();
-			stack.setTagCompound(nbtTagCompound);
+		NBTTagCompound tag = stack.getTagCompound();
+		if (tag == null) {
+			tag = new NBTTagCompound();
+			stack.setTagCompound(tag);
 		}
-		return nbtTagCompound;
+		return tag;
 	}
 
 	public static void setCoordinates(ItemStack stack, BlockPos pos) {
@@ -21,15 +21,6 @@ public final class ItemStackHelper {
 		nbtTagCompound.setInteger("x", pos.getX());
 		nbtTagCompound.setInteger("y", pos.getY());
 		nbtTagCompound.setInteger("z", pos.getZ());
-	}
-
-	public static NBTTagCompound getOrCreateNbtData(ItemStack stack) {
-		NBTTagCompound tag = stack.getTagCompound();
-		if (tag == null) {
-			tag = new NBTTagCompound();
-			stack.setTagCompound(tag);
-		}
-		return tag;
 	}
 
 	public static ItemStack getStackWithEnergy(Item item, String name, double energy) {

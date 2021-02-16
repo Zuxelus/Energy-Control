@@ -48,6 +48,7 @@ public class ItemCardType {
 	public static final int CARD_GALACTICRAFT = 23;
 	public static final int CARD_BIG_REACTORS = 24;
 	public static final int CARD_NUCLEARCRAFT = 26;
+	public static final int CARD_APPENG_INV = 27;
 
 	public static final int CARD_MAX = 49;
 

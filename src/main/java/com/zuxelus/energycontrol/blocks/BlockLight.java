@@ -126,6 +126,7 @@ public class BlockLight extends Block implements IWrenchable {
 		return true;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public List<ItemStack> getWrenchDrops(World world, BlockPos pos, IBlockState state, TileEntity te, EntityPlayer player, int fortune) {
 		return getDrops(world, pos, state, 1);

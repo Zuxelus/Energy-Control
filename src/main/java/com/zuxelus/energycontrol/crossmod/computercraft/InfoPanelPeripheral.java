@@ -1,8 +1,5 @@
 package com.zuxelus.energycontrol.crossmod.computercraft;
 
-import java.util.List;
-
-import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
@@ -13,7 +10,6 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 
 public class InfoPanelPeripheral implements IPeripheral {
 	private final TileEntityInfoPanel te;
@@ -24,7 +20,7 @@ public class InfoPanelPeripheral implements IPeripheral {
 
 	@Override
 	public String getType() {
-		return te.NAME;
+		return TileEntityInfoPanel.NAME;
 	}
 
 	@Override
@@ -49,40 +45,27 @@ public class InfoPanelPeripheral implements IPeripheral {
 				upgradeCountRange = itemStack.getCount();
 			return new Object[] { ItemCardMain.LOCATION_RANGE * (int) Math.pow(2, Math.min(upgradeCountRange, 7)) };
 		case 3:
-			List<PanelString> joinedData = te.getPanelStringList(true, false);
-			List<String> list = NonNullList.create();
-			if (joinedData == null || joinedData.size() == 0)
-				return new Object[] { list };
-
-			for (PanelString panelString : joinedData) {
-				if (panelString.textLeft != null)
-					list.add(panelString.textLeft);
-				if (panelString.textCenter != null)
-					list.add(panelString.textCenter);
-				if (panelString.textRight != null)
-					list.add(panelString.textRight);
-			}
-			return list.toArray();
-		case 4:
-			return new Object[] { te.getColorBackground() };
+			return new Object[] { te.getPanelStringList() };
 		case 5:
-			return new Object[] { te.getColorText() };
+			return new Object[] { te.getColorBackground() };
 		case 6:
+			return new Object[] { te.getColorText() };
+		case 7:
 			value =  ArgumentHelper.getInt(args, 0);
 			if (value >= 0 && value < 16)
 				te.setColorBackground(value);
 			return null;
-		case 7:
+		case 8:
 			value =  ArgumentHelper.getInt(args, 0);
 			if (value >= 0 && value < 16)
 				te.setColorText(value);
 			return null;
-		case 8:
+		case 9:
 			stack = te.getStackInSlot(0);
 			if (stack.isEmpty() || !(stack.getItem() instanceof ItemCardMain))
 				return new Object[] { "" }; 
 			return new Object[] { new ItemCardReader(stack).getTitle() };
-		case 9:
+		case 10:
 			String title = ArgumentHelper.getString(args, 0);
 			stack = te.getStackInSlot(0);
 			if (title != null && !stack.isEmpty() && stack.getItem() instanceof ItemCardMain)

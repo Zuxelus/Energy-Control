@@ -12,8 +12,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public abstract class GuiBase extends GuiScreen {
 	protected ResourceLocation texture;
-	protected int xSize = 131;
-	protected int ySize = 136;
+	protected int xSize;
+	protected int ySize;
 	protected int guiLeft;
 	protected int guiTop;
 
@@ -63,9 +63,7 @@ public abstract class GuiBase extends GuiScreen {
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.getTextureManager().bindTexture(texture);
-		int left = (width - xSize) / 2;
-		int top = (height - ySize) / 2;
-		drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
+		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 	}
 
 	@Override

@@ -8,6 +8,7 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.*;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
+import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.I18n;
@@ -60,8 +61,10 @@ public final class ItemCardMain extends Item {
 			register("ItemCardEngine");
 		if (Loader.isModLoaded("draconicevolution"))
 			register("ItemCardReactorDraconic");
-		if (Loader.isModLoaded("appliedenergistics2"))
+		if (Loader.isModLoaded("appliedenergistics2")) {
 			register("ItemCardAppEng");
+			register("ItemCardAppEngInv");
+		}
 		if (Loader.isModLoaded("galacticraftcore") && Loader.isModLoaded("galacticraftplanets"))
 			register("ItemCardGalacticraft");
 		if (Loader.isModLoaded("bigreactors"))
@@ -210,12 +213,6 @@ public final class ItemCardMain extends Item {
 		return null;
 	}
 
-	public static ICardGui getSettingsScreen(ItemCardReader reader) {
-		if (reader.getCardType() != ItemCardType.CARD_TEXT)
-			return null;
-		return cards.get(ItemCardType.CARD_TEXT).getSettingsScreen(reader);
-	}
-
 	public static boolean isRemoteCard(int damage) {
 		if (cards.containsKey(damage))
 			return cards.get(damage).isRemoteCard();
@@ -228,11 +225,14 @@ public final class ItemCardMain extends Item {
 		return -1;
 	}
 
-	public static void runTouchAction(World world, ItemStack stack) {
-		if (stack.getItem() instanceof ItemCardMain && cards.containsKey(stack.getItemDamage())) {
-			IItemCard card = cards.get(stack.getItemDamage());
-			if (card instanceof ITouchAction)
-				((ITouchAction) card).runTouchAction(world, new ItemCardReader(stack));
+	public static void runTouchAction(TileEntityInfoPanel panel, ItemStack cardStack, ItemStack stack, int slot) {
+		if (cardStack.getItem() instanceof ItemCardMain && cards.containsKey(cardStack.getItemDamage())) {
+			IItemCard card = cards.get(cardStack.getItemDamage());
+			if (card instanceof ITouchAction) {
+				ICardReader reader = new ItemCardReader(cardStack);
+				if (((ITouchAction) card).runTouchAction(panel.getWorld(), reader, stack))
+					reader.updateClient(cardStack, panel, slot);
+			}
 		}
 	}
 

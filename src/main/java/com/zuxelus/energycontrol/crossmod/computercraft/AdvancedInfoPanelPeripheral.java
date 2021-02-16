@@ -1,20 +1,15 @@
 package com.zuxelus.energycontrol.crossmod.computercraft;
 
-import java.util.List;
-
-import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
-import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 
 public class AdvancedInfoPanelPeripheral implements IPeripheral {
 	private final TileEntityAdvancedInfoPanel te;
@@ -25,7 +20,7 @@ public class AdvancedInfoPanelPeripheral implements IPeripheral {
 
 	@Override
 	public String getType() {
-		return te.NAME;
+		return TileEntityAdvancedInfoPanel.NAME;
 	}
 
 	@Override
@@ -49,20 +44,7 @@ public class AdvancedInfoPanelPeripheral implements IPeripheral {
 				upgradeCountRange = itemStack.getCount();
 			return new Object[] { ItemCardMain.LOCATION_RANGE * (int) Math.pow(2, Math.min(upgradeCountRange, 7)) };
 		case 2:
-			List<PanelString> joinedData = te.getPanelStringList(true, false);
-			List<String> list = NonNullList.create();
-			if (joinedData == null || joinedData.size() == 0)
-				return new Object[] { list };
-
-			for (PanelString panelString : joinedData) {
-				if (panelString.textLeft != null)
-					list.add(panelString.textLeft);
-				if (panelString.textCenter != null)
-					list.add(panelString.textCenter);
-				if (panelString.textRight != null)
-					list.add(panelString.textRight);
-			}
-			return list.toArray();
+			return new Object[] { te.getPanelStringList() };
 		case 3:
 			return new Object[] { te.getColorBackground() };
 		case 4:

@@ -32,7 +32,7 @@ public class ItemNanoBowIC2 extends ItemNanoBow implements IElectricItem {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
-		NBTTagCompound nbt = ItemStackHelper.getOrCreateNbtData(stack);
+		NBTTagCompound nbt = ItemStackHelper.getTagCompound(stack);
 		tooltip.add(TextFormatting.RED + "Will be removed from this mod!");
 		tooltip.add(TextFormatting.RED + "Use Combo Armors mod");
 		IElectricItem item = (IElectricItem) stack.getItem();
@@ -83,7 +83,7 @@ public class ItemNanoBowIC2 extends ItemNanoBow implements IElectricItem {
 
 	@Override
 	public double getMaxCharge(ItemStack stack) {
-		NBTTagCompound nbt = ItemStackHelper.getOrCreateNbtData(stack);
+		NBTTagCompound nbt = ItemStackHelper.getTagCompound(stack);
 		if (nbt.getInteger("maxCharge") == 0)
 			nbt.setInteger("maxCharge", getDefaultMaxCharge());
 		return nbt.getInteger("maxCharge");
@@ -91,7 +91,7 @@ public class ItemNanoBowIC2 extends ItemNanoBow implements IElectricItem {
 
 	@Override
 	public int getTier(ItemStack stack) {
-		NBTTagCompound nbt = ItemStackHelper.getOrCreateNbtData(stack);
+		NBTTagCompound nbt = ItemStackHelper.getTagCompound(stack);
 		if (nbt.getInteger("tier") == 0)
 			nbt.setInteger("tier", getDefaultTier());
 		return nbt.getInteger("tier");
@@ -99,7 +99,7 @@ public class ItemNanoBowIC2 extends ItemNanoBow implements IElectricItem {
 
 	@Override
 	public double getTransferLimit(ItemStack stack) {
-		NBTTagCompound nbt = ItemStackHelper.getOrCreateNbtData(stack);
+		NBTTagCompound nbt = ItemStackHelper.getTagCompound(stack);
 		if (nbt.getInteger("transferLimit") == 0)
 			nbt.setInteger("transferLimit", getDefaultTransferLimit());
 		return nbt.getInteger("transferLimit");

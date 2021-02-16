@@ -50,6 +50,7 @@ item.kit_big_reactors.name=Набор с датчиком для Extreme Reactor
 item.card_big_reactors.name=Карта-датчик для Extreme Reactors
 item.kit_app_eng.name=Набор с датчиком для Applied Energistics
 item.card_app_eng.name=Карта-датчик для Applied Energistics
+item.card_app_eng_inv.name=AE Inventory Sensor Card
 item.kit_galacticraft.name=Набор с датчиком для Galacticraft
 item.card_galacticraft.name=Карта-датчик для Galacticraft
 item.kit_nuclearcraft.name=NuclearCraft Sensor Kit

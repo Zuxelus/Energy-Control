@@ -1,4 +1,4 @@
-package com.zuxelus.energycontrol.gui.controls;
+package com.zuxelus.zlib.gui.controls;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;

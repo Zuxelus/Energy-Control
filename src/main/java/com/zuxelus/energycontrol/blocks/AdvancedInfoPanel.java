@@ -7,8 +7,10 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
+import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
+import ic2.api.util.Keys;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -68,6 +70,12 @@ public class AdvancedInfoPanel extends InfoPanel {
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		if (CrossModLoader.ic2.isWrench(player.getHeldItem(hand)))
 			return true;
+		TileEntity te = world.getTileEntity(pos);
+		if (!(te instanceof TileEntityInfoPanel))
+			return true;
+		if (!world.isRemote && Keys.instance.isAltKeyDown(player) && ((TileEntityInfoPanel) te).getFacing() == facing)
+			if (((TileEntityInfoPanel) te).runTouchAction(player.getHeldItem(hand), pos, hitX, hitY, hitZ))
+				return true;
 		if (!world.isRemote)
 			player.openGui(EnergyControl.instance, BlockDamages.DAMAGE_ADVANCED_PANEL, world, pos.getX(), pos.getY(), pos.getZ());
 		return true;

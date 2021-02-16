@@ -2,7 +2,6 @@ package com.zuxelus.energycontrol.items.cards;
 
 import java.util.List;
 
-import com.zuxelus.energycontrol.api.ICardGui;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.IItemCard;
 import com.zuxelus.energycontrol.api.PanelString;
@@ -33,11 +32,6 @@ public abstract class ItemCardBase implements IItemCard {
 	@Override
 	public final String getUnlocalizedName() {
 		return "item." + name;
-	}
-
-	@Override
-	public ICardGui getSettingsScreen(ICardReader reader) {
-		return null;
 	}
 
 	@Override

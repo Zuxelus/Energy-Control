@@ -21,8 +21,8 @@ public class ItemUpgrade extends Item {
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack itemStack) {
-		int damage = itemStack.getItemDamage();
+	public String getUnlocalizedName(ItemStack stack) {
+		int damage = stack.getItemDamage();
 		switch (damage) {
 		case DAMAGE_RANGE:
 			return "item.upgrade_range";

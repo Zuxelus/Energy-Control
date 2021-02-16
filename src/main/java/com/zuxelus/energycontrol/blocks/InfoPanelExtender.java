@@ -59,7 +59,7 @@ public class InfoPanelExtender extends FacingBlock {
 			return true;
 		TileEntityInfoPanel panel = ((TileEntityInfoPanelExtender) te).getCore();
 		if (Keys.instance.isAltKeyDown(player) && panel.getFacing() == facing)
-			if (panel.runTouchAction(pos, hitX, hitY, hitZ))
+			if (panel.runTouchAction(player.getHeldItem(hand), pos, hitX, hitY, hitZ))
 				return true;
 		if (panel != null)
 			player.openGui(EnergyControl.instance, BlockDamages.DAMAGE_INFO_PANEL, world, panel.getPos().getX(), panel.getPos().getY(), panel.getPos().getZ());

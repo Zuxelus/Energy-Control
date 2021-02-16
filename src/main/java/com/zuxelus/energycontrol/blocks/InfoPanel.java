@@ -63,7 +63,7 @@ public class InfoPanel extends FacingBlock {
 		if (!(te instanceof TileEntityInfoPanel))
 			return true;
 		if (!world.isRemote && Keys.instance.isAltKeyDown(player) && ((TileEntityInfoPanel) te).getFacing() == facing)
-			if (((TileEntityInfoPanel) te).runTouchAction(pos, hitX, hitY, hitZ))
+			if (((TileEntityInfoPanel) te).runTouchAction(player.getHeldItem(hand), pos, hitX, hitY, hitZ))
 				return true;
 		return super.onBlockActivated(world, pos, state, player, hand, facing, hitX, hitY, hitZ);
 	}

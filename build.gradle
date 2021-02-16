@@ -15,9 +15,12 @@ repositories {
     name = "Progwml6 maven"
     url = "https://dvs1.progwml6.com/files/maven/"
   }
+  flatDir {
+    dirs 'libs_'
+  }
 }
 
-version = "1.12.2-0.1.8g"
+version = "1.12.2-0.1.8i"
 group= "com.zuxelus.energycontrol"
 archivesBaseName = "EnergyControl"
 
@@ -38,6 +41,8 @@ minecraft {
 dependencies {
 	compile 'net.industrial-craft:industrialcraft-2:2.8.197-ex112:dev'
 	runtime "mezz.jei:jei_1.12.2:4.15.0.293"
+	deobfCompile  ("techreborn:techreborn:1.12.2-2.27.3.1084-universal")
+	deobfCompile  ("techreborn:reborncore:1.12.2-3.19.4.529-universal")
 }
 
 processResources {

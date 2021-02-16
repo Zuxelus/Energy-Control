@@ -4,16 +4,14 @@ import java.io.IOException;
 import java.util.List;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.api.ICardGui;
 import com.zuxelus.energycontrol.api.PanelSetting;
-import com.zuxelus.energycontrol.gui.controls.GuiButtonGeneral;
 import com.zuxelus.energycontrol.gui.controls.GuiInfoPanelCheckBox;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
-import com.zuxelus.energycontrol.items.cards.ItemCardSettingsReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.containers.ContainerBase;
+import com.zuxelus.zlib.gui.controls.GuiButtonGeneral;
 import com.zuxelus.zlib.network.NetworkHelper;
 
 import net.minecraft.client.gui.GuiButton;
@@ -48,6 +46,7 @@ public class GuiInfoPanel extends GuiContainer implements IContainerListener {
 	protected byte activeTab;
 	protected boolean modified;
 
+	@SuppressWarnings("rawtypes")
 	public GuiInfoPanel(ContainerBase container) {
 		super(container);
 		ySize = 201;
@@ -185,18 +184,8 @@ public class GuiInfoPanel extends GuiContainer implements IContainerListener {
 
 	protected void openTextGui() {
 		ItemStack card = panel.getCards().get(activeTab);
-		if (!card.isEmpty() && card.getItem() instanceof ItemCardMain && card.getItemDamage() == ItemCardType.CARD_TEXT) {
-			ItemCardReader reader = new ItemCardReader(card);
-			ICardGui guiObject = ItemCardMain.getSettingsScreen(reader);
-			if (!(guiObject instanceof GuiScreen)) {
-				EnergyControl.logger.warn("Invalid card, getSettingsScreen method should return GuiScreen object");
-				return;
-			}
-			GuiScreen gui = (GuiScreen) guiObject;
-			ItemCardSettingsReader wrapper = new ItemCardSettingsReader(card, panel, this, (byte) activeTab);
-			((ICardGui) gui).setCardSettingsHelper(wrapper);
-			mc.displayGuiScreen(gui);
-		}
+		if (!card.isEmpty() && card.getItem() instanceof ItemCardMain && card.getItemDamage() == ItemCardType.CARD_TEXT)
+			mc.displayGuiScreen(new GuiCardText(card, panel, this, activeTab));
 	}
 
 	@Override

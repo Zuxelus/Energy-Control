@@ -88,7 +88,7 @@ public class ItemNanoBowTR extends ItemNanoBow implements IEnergyItemInfo {
 
 	@Override
 	public double getMaxPower(ItemStack stack) {
-		NBTTagCompound nbt = ItemStackHelper.getOrCreateNbtData(stack);
+		NBTTagCompound nbt = ItemStackHelper.getTagCompound(stack);
 		if (nbt.getInteger("maxCharge") == 0)
 			nbt.setInteger("maxCharge", getDefaultMaxCharge());
 		return nbt.getInteger("maxCharge");
@@ -96,7 +96,7 @@ public class ItemNanoBowTR extends ItemNanoBow implements IEnergyItemInfo {
 
 	@Override
 	public double getMaxTransfer(ItemStack stack) {
-		NBTTagCompound nbt = ItemStackHelper.getOrCreateNbtData(stack);
+		NBTTagCompound nbt = ItemStackHelper.getTagCompound(stack);
 		if (nbt.getInteger("transferLimit") == 0)
 			nbt.setInteger("transferLimit", getDefaultTransferLimit());
 		return nbt.getInteger("transferLimit");

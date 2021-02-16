@@ -16,13 +16,21 @@ public class ContainerInfoPanel extends ContainerBase<TileEntityInfoPanel> {
 	public ContainerInfoPanel(EntityPlayer player, TileEntityInfoPanel panel) {
 		super(panel);
 		this.player = player;
-		// card
-		addSlotToContainer(new SlotCard(panel, 0, 8, 24 + 18));
-		// range upgrade
+		addSlotToContainer(new SlotCard(panel, 0, 8, 24 + 18) {
+			@Override
+			public void onSlotChanged() {
+				if (panel.getWorld().isRemote)
+					ContainerInfoPanel.this.detectAndSendChanges();
+			};
+		});
 		addSlotToContainer(new SlotRange(panel, 1, 8, 24 + 18 * 2));
-		// color upgrade
-		addSlotToContainer(new SlotColor(panel, 2, 8, 24 + 18 * 3));
-		// touch upgrade
+		addSlotToContainer(new SlotColor(panel, 2, 8, 24 + 18 * 3) {
+			@Override
+			public void onSlotChanged() {
+				if (panel.getWorld().isRemote)
+					ContainerInfoPanel.this.detectAndSendChanges();
+			};
+		});
 		addSlotToContainer(new SlotTouch(panel, 3, 8, 24 + 18 * 4));
 		// inventory
 		addPlayerInventorySlots(player, 201);

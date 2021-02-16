@@ -1,7 +1,6 @@
-package com.zuxelus.energycontrol.gui.controls;
+package com.zuxelus.zlib.gui.controls;
 
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -81,7 +80,7 @@ public class GuiTextArea extends Gui {
 		GlStateManager.color(0.0F, 0.0F, 255.0F, 255.0F);
 		GlStateManager.disableTexture2D();
 		GlStateManager.enableColorLogic();
-		GlStateManager.colorLogicOp(GL11.GL_OR_REVERSE);
+		GlStateManager.colorLogicOp(GlStateManager.LogicOp.OR_REVERSE);
 		bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
 		bufferbuilder.pos(left, bottom, 0.0D).endVertex();
 		bufferbuilder.pos(right, bottom, 0.0D).endVertex();

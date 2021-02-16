@@ -12,9 +12,11 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class GuiHorizontalSlider extends GuiBase {
-
 	private GuiInfoPanel parentGui;
 	private TileEntityInfoPanel panel;
 	private HorizontalSlider slider;
@@ -52,10 +54,9 @@ public class GuiHorizontalSlider extends GuiBase {
 		private int maxValue = 128;
 
 		public HorizontalSlider(int id, int x, int y) {
-			super(id, x, y, 132, 16, "");
+			super(id, x, y, 132, 16, I18n.format("msg.ec.Ticks", Integer.toString(panel.getTickRate())));
 			dragging = false;
 			sliderValue = panel.getTickRate();
-			displayString = I18n.format("msg.ec.Ticks", Integer.toString(sliderValue));
 		}
 
 		private void setSliderPos(int targetX) {

@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -78,14 +79,14 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 	}
 
 	@Override
-	public void runTouchAction(World world, ICardReader reader) {
+	public boolean runTouchAction(World world, ICardReader reader, ItemStack stack) {
 		BlockPos pos = reader.getTarget();
 		if (pos == null)
-			return;
+			return false;
 
 		IBlockState state = world.getBlockState(pos);
 		if (state == null)
-			return;
+			return false;
 		
 		Block block = state.getBlock();
 		if (block == Blocks.LEVER) {
@@ -102,6 +103,7 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 			world.notifyNeighborsOfStateChange(pos.offset(state.getValue(BlockButton.FACING).getOpposite()), block, false);
 			world.scheduleUpdate(pos, block, block.tickRate(world));
 		}
+		return false;
 	}
 
 	@Override

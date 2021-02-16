@@ -16,14 +16,14 @@ public class RecipesNew {
 
 	public static void addRecipes() {
 		ItemStack stack = CrossModLoader.ic2.getItemStack("circuit");
-		if (stack == null)
+		if (stack.isEmpty())
 			stack = CrossModLoader.techReborn.getItemStack("circuit");
-		if (stack == null)
+		if (stack.isEmpty())
 			return;
 		for (int i = 0; i <= ItemCardType.CARD_MAX; i++)
 			if (ItemCardMain.containsCard(i))
-				GameRegistry.addShapelessRecipe(new ResourceLocation(EnergyControl.MODID + ":card_circuit"), null,
-						stack,
+				GameRegistry.addShapelessRecipe(new ResourceLocation(EnergyControl.MODID + ":card_circuit" + i), null,
+						stack.copy(),
 						Ingredient.fromStacks(new ItemStack(ModItems.itemCard, 1, i)));
 	}
 }

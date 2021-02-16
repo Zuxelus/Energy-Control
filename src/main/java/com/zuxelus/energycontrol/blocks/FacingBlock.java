@@ -117,6 +117,7 @@ public abstract class FacingBlock extends Block implements ITileEntityProvider, 
 		return true;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public List<ItemStack> getWrenchDrops(World world, BlockPos pos, IBlockState state, TileEntity te, EntityPlayer player, int fortune) {
 		if (!(te instanceof TileEntityInventory))

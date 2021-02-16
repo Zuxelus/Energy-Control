@@ -24,6 +24,7 @@ public class CrossModLoader {
 	public static CrossModBase appEng;
 	public static CrossModBase bigReactors;
 	public static CrossModBase buildCraft;
+	public static CrossModBase computerCraft;
 	public static CrossModBase draconic;
 	public static CrossModBase galacticraft;
 	public static CrossModBase openComputers;
@@ -38,7 +39,8 @@ public class CrossModLoader {
 		draconic = findMod("draconicevolution", "CrossDraconicEvolution");
 		galacticraft = findMod("galacticraftplanets", "CrossGalacticraft");
 		nuclearCraft = findMod("nuclearcraft", "CrossNuclearCraft");
-		openComputers = findMod("opencomputers",".opencomputers.CrossOpenComputers");
+		openComputers = findMod("opencomputers","opencomputers.CrossOpenComputers");
+		computerCraft = findMod("computercraft","computercraft.CrossComputerCraft");
 	}
 
 	public static CrossModBase findMod(String modId, String mainClass) {

@@ -50,6 +50,7 @@ item.kit_big_reactors.name=Kit del Sensor de Extreme Reactors
 item.card_big_reactors.name=Tarjeta del Sensor de Extreme Reactors
 item.kit_app_eng.name=Kit del Sensor de Applied Energistics
 item.card_app_eng.name=Tarjeta del Sensor de Applied Energistics
+item.card_app_eng_inv.name=AE Inventory Sensor Card
 item.kit_galacticraft.name=Kit del Sensor de Galacticraft
 item.card_galacticraft.name=Tarjeta del Sensor de Galacticraft
 item.kit_nuclearcraft.name=Kit del Sensor de NuclearCraft

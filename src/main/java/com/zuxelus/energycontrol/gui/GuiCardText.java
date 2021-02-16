@@ -3,25 +3,29 @@ package com.zuxelus.energycontrol.gui;
 import java.io.IOException;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.api.ICardGui;
 import com.zuxelus.energycontrol.api.ICardReader;
-import com.zuxelus.energycontrol.gui.controls.GuiTextArea;
-import com.zuxelus.energycontrol.items.cards.ItemCardSettingsReader;
+import com.zuxelus.energycontrol.items.cards.ItemCardReader;
+import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
+import com.zuxelus.zlib.gui.controls.GuiTextArea;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiCardText extends GuiScreen implements ICardGui {
-	private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/gui_text_card.png");
+public class GuiCardText extends GuiScreen {
+	private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_text_card.png");
 
-	private ItemCardSettingsReader wrapper;
 	private ICardReader reader;
+	private ItemStack stack;
+	private TileEntityInfoPanel panel;
+	private GuiInfoPanel parentGui;
+	private int slot;
 	private GuiTextArea textArea;
 
 	protected int xSize = 226;
@@ -31,18 +35,18 @@ public class GuiCardText extends GuiScreen implements ICardGui {
 
 	private static final int lineCount = 10;
 
-	public GuiCardText(ICardReader helper) {
-		this.reader = helper;
+	public GuiCardText(ItemStack card, TileEntityInfoPanel panel, GuiInfoPanel gui, int slot) {
+		this.reader = new ItemCardReader(card);
+		this.stack = card;
+		this.panel = panel;
+		parentGui = gui;
+		this.slot = slot;
+		
 	}
 
 	@Override
 	public boolean doesGuiPauseGame(){
 		return false;
-	}
-
-	@Override
-	public void setCardSettingsHelper(ItemCardSettingsReader wrapper) {
-		this.wrapper = wrapper;
 	}
 
 	private void initControls() {
@@ -63,17 +67,15 @@ public class GuiCardText extends GuiScreen implements ICardGui {
 	}
 
 	@Override
-	protected void actionPerformed(GuiButton par1GuiButton) {
-		if (textArea != null && wrapper != null) {
+	protected void actionPerformed(GuiButton button) {
+		if (textArea != null) {
 			String[] lines = textArea.getText();
-			
 			if (lines != null)
 				for (int i = 0; i < lines.length; i++)
-					wrapper.setString("line_" + i, lines[i]);
-				
+					reader.setString("line_" + i, lines[i]);
 		}
-		wrapper.commit();
-		wrapper.closeGui();
+		reader.updateServer(stack, panel, slot);
+		FMLClientHandler.instance().getClient().displayGuiScreen(parentGui);
 	}
 
 	@Override

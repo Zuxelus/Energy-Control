@@ -43,10 +43,10 @@ public class GuiInfoPanelCheckBox extends GuiButton {
 		mc.fontRenderer.drawString(displayString, x + 8, y, 0x404040);
 	}
 
-	@Override
+	/*@Override
 	public int getHoverState(boolean flag) {
 		return 0;
-	}
+	}*/
 
 	@Override
 	public boolean mousePressed(Minecraft minecraft, int mouseX, int mouseY) {

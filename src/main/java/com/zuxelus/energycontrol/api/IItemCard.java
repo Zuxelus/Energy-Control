@@ -19,8 +19,6 @@ public interface IItemCard {
 
 	List<PanelSetting> getSettingsList();
 
-	ICardGui getSettingsScreen(ICardReader reader);
-
 	boolean isRemoteCard();
 
 	int getKitFromCard();
