@@ -27,6 +27,7 @@ public class CrossModLoader {
 	public static CrossModBase computerCraft;
 	public static CrossModBase draconic;
 	public static CrossModBase galacticraft;
+	public static CrossModBase mekanism;
 	public static CrossModBase openComputers;
 	public static CrossModBase nuclearCraft;
 
@@ -38,6 +39,7 @@ public class CrossModLoader {
 		buildCraft = findMod("buildcraftcore", "CrossBuildCraft");
 		draconic = findMod("draconicevolution", "CrossDraconicEvolution");
 		galacticraft = findMod("galacticraftplanets", "CrossGalacticraft");
+		mekanism = findMod("mekanism", "CrossMekanism");
 		nuclearCraft = findMod("nuclearcraft", "CrossNuclearCraft");
 		openComputers = findMod("opencomputers","opencomputers.CrossOpenComputers");
 		computerCraft = findMod("computercraft","computercraft.CrossComputerCraft");
@@ -66,14 +68,14 @@ public class CrossModLoader {
 	public static ItemStack getEnergyCard(World world, BlockPos pos) {
 		TileEntity te = world.getTileEntity(pos);
 		if (te == null)
-			return null;
+			return ItemStack.EMPTY;
 		NBTTagCompound data = getEnergyData(te);
 		if (data != null) {
 			ItemStack card = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_ENERGY);
 			ItemStackHelper.setCoordinates(card, pos);
 			return card;
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	public static NBTTagCompound getEnergyData(TileEntity te) {
@@ -86,6 +88,10 @@ public class CrossModLoader {
 			tag = draconic.getEnergyData(te);
 		if (tag == null)
 			tag = galacticraft.getEnergyData(te);
+		if (tag == null)
+			tag = mekanism.getEnergyData(te);
+		if (tag == null)
+			tag = nuclearCraft.getEnergyData(te);
 		return tag;
 	}
 
@@ -128,6 +134,9 @@ public class CrossModLoader {
 		if (list != null)
 			return list;
 		list = nuclearCraft.getAllTanks(te);
+		if (list != null)
+			return list;
+		list = mekanism.getAllTanks(te);
 		if (list != null)
 			return list;
 		return buildCraft.getAllTanks(te);

@@ -46,26 +46,26 @@ public class InfoPanelPeripheral implements IPeripheral {
 			return new Object[] { ItemCardMain.LOCATION_RANGE * (int) Math.pow(2, Math.min(upgradeCountRange, 7)) };
 		case 3:
 			return new Object[] { te.getPanelStringList() };
-		case 5:
+		case 4:
 			return new Object[] { te.getColorBackground() };
-		case 6:
+		case 5:
 			return new Object[] { te.getColorText() };
-		case 7:
+		case 6:
 			value =  ArgumentHelper.getInt(args, 0);
 			if (value >= 0 && value < 16)
 				te.setColorBackground(value);
 			return null;
-		case 8:
+		case 7:
 			value =  ArgumentHelper.getInt(args, 0);
 			if (value >= 0 && value < 16)
 				te.setColorText(value);
 			return null;
-		case 9:
+		case 8:
 			stack = te.getStackInSlot(0);
 			if (stack.isEmpty() || !(stack.getItem() instanceof ItemCardMain))
 				return new Object[] { "" }; 
 			return new Object[] { new ItemCardReader(stack).getTitle() };
-		case 10:
+		case 9:
 			String title = ArgumentHelper.getString(args, 0);
 			stack = te.getStackInSlot(0);
 			if (title != null && !stack.isEmpty() && stack.getItem() instanceof ItemCardMain)

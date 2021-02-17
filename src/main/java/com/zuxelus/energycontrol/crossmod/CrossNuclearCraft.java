@@ -5,18 +5,33 @@ import java.util.List;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.OreHelper;
+import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
 import nc.config.NCConfig;
 import nc.init.NCBlocks;
+import nc.tile.energy.battery.TileBattery;
 import nc.tile.energyFluid.TileEnergyFluid;
 import nc.tile.generator.TileFissionController;
 import nc.tile.internal.fluid.Tank;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.IFluidTank;
 
 public class CrossNuclearCraft extends CrossModBase {
+
+	@Override
+	public NBTTagCompound getEnergyData(TileEntity te) {
+		if (te instanceof TileBattery) {
+			NBTTagCompound tag = new NBTTagCompound();
+			tag.setInteger("type", ItemCardType.EU_RF);
+			tag.setDouble("storage", ((TileBattery) te).getEnergyStored());
+			tag.setDouble("maxStorage", ((TileBattery) te).getMaxEnergyStored());
+			return tag;
+		}
+		return null;
+	}
 
 	@Override
 	public int getReactorHeat(World world, BlockPos pos) {

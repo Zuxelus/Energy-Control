@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.api.IItemCard;
 import com.zuxelus.energycontrol.api.IItemKit;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
@@ -127,12 +126,12 @@ public class ItemKitMain extends Item {
 		ItemStack stack = player.getHeldItem(hand);
 		if (stack.isEmpty())
 			return EnumActionResult.PASS;
-		ItemStack sensorLocationCard = getItemKitBase(stack.getItemDamage()).getSensorCard(stack, ModItems.itemCard, player, world, pos, side);
-		if (sensorLocationCard.isEmpty())
+		ItemStack card = getItemKitBase(stack.getItemDamage()).getSensorCard(stack, ModItems.itemCard, player, world, pos, side);
+		if (card.isEmpty())
 			return EnumActionResult.PASS;
 
 		stack.shrink(1);
-		EntityItem dropItem = new EntityItem(world, player.posX, player.posY, player.posZ, sensorLocationCard);
+		EntityItem dropItem = new EntityItem(world, player.posX, player.posY, player.posZ, card);
 		dropItem.setPickupDelay(0);
 		world.spawnEntity(dropItem);
 		return EnumActionResult.SUCCESS;

@@ -29,9 +29,9 @@ public class ItemKitNuclearCraft extends ItemKitBase {
 	public ItemStack getSensorCard(ItemStack stack, Item card, EntityPlayer player, World world, BlockPos pos, EnumFacing side) {
 		TileEntity te = world.getTileEntity(pos);
 		if (te instanceof TileDecayGenerator || te instanceof TileSolarPanel || te instanceof TileItemProcessor || te instanceof TileItemFluidProcessor || te instanceof TileBattery || te instanceof TileFluidProcessor || te instanceof TileFissionController) {
-			ItemStack sensorLocationCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_NUCLEARCRAFT);
-			ItemStackHelper.setCoordinates(sensorLocationCard, pos);
-			return sensorLocationCard;
+			ItemStack newCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_NUCLEARCRAFT);
+			ItemStackHelper.setCoordinates(newCard, pos);
+			return newCard;
 		}
 		return ItemStack.EMPTY;
 	}

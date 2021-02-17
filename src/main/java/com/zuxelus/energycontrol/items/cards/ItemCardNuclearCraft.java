@@ -69,12 +69,6 @@ public class ItemCardNuclearCraft extends ItemCardBase {
 			reader.setInt("output", ((TileSolarPanel) te).getGenerated());
 			return CardState.OK;
 		}
-		if (te instanceof TileBattery) {
-			reader.setInt("type", 5);
-			reader.setInt("stored", ((TileBattery) te).getEnergyStored());
-			reader.setInt("capacity", ((TileBattery) te).getMaxEnergyStored());
-			return CardState.OK;
-		}
 		if (te instanceof TileFissionController) {
 			reader.setInt("type", 6);
 			TileFissionController reactor = (TileFissionController) te;

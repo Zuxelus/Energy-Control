@@ -50,11 +50,11 @@ public class ItemNanoBowTR extends ItemNanoBow implements IEnergyItemInfo {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
-		if (!isInCreativeTab(tab))
+		/*if (!isInCreativeTab(tab))
 			return;
 		ItemStack charged = CrossModLoader.techReborn.getChargedStack(new ItemStack(this, 1));
 		items.add(charged);
-		items.add(new ItemStack(this, 1, getMaxDamage()));
+		items.add(new ItemStack(this, 1, getMaxDamage()));*/
 	}
 
 	@Override

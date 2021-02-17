@@ -53,11 +53,11 @@ public class ItemNanoBowIC2 extends ItemNanoBow implements IElectricItem {
 
 	@Override
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
-		if (!isInCreativeTab(tab))
+		/*if (!isInCreativeTab(tab))
 			return;
 		ItemStack charged = CrossModLoader.ic2.getChargedStack(new ItemStack(this, 1));
 		items.add(charged);
-		items.add(new ItemStack(this, 1, getMaxDamage()));
+		items.add(new ItemStack(this, 1, getMaxDamage()));*/
 	}
 
 	@Override
