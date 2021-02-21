@@ -4,22 +4,16 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.zuxelus.energycontrol.api.CardState;
-import com.zuxelus.energycontrol.api.ICardGui;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
-import com.zuxelus.energycontrol.gui.GuiCardText;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemCardText extends ItemCardBase {
-	public ItemCardText() {
-		super(ItemCardType.CARD_TEXT, "card_text");
-	}
+public class ItemCardText extends ItemCardMain {
 
 	@Override
 	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
@@ -27,7 +21,7 @@ public class ItemCardText extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(World world, int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = new LinkedList<PanelString>();
 		boolean started = false;
 		for (int i = 9; i >= 0; i--) {
@@ -47,23 +41,8 @@ public class ItemCardText extends ItemCardBase {
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		return null;
-	}
-
-	@Override
-	public ICardGui getSettingsScreen(ICardReader reader) {
-		return new GuiCardText(reader);
-	}
-
-	@Override
-	public boolean isRemoteCard() {
-		return false;
-	}
-
-	@Override
-	public int getKitFromCard() {
-		return -1;
 	}
 }

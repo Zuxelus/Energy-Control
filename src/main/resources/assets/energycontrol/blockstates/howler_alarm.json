@@ -1,10 +1,10 @@
 {
     "variants": {
-        "facing=up":    { "model": "energycontrol:howler_alarm" },
-        "facing=down":  { "model": "energycontrol:howler_alarm", "x": 180 },
-        "facing=east":  { "model": "energycontrol:howler_alarm", "x": 90, "y": 90 },
-        "facing=west":  { "model": "energycontrol:howler_alarm", "x": 90, "y": 270 },
-        "facing=south": { "model": "energycontrol:howler_alarm", "x": 90, "y": 180 },
-        "facing=north": { "model": "energycontrol:howler_alarm", "x": 90 }
+        "facing=up":    { "model": "energycontrol:block/howler_alarm" },
+        "facing=down":  { "model": "energycontrol:block/howler_alarm", "x": 180 },
+        "facing=east":  { "model": "energycontrol:block/howler_alarm", "x": 90, "y": 90 },
+        "facing=west":  { "model": "energycontrol:block/howler_alarm", "x": 90, "y": 270 },
+        "facing=south": { "model": "energycontrol:block/howler_alarm", "x": 90, "y": 180 },
+        "facing=north": { "model": "energycontrol:block/howler_alarm", "x": 90 }
     }
 } 

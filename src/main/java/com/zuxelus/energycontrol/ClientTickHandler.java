@@ -1,23 +1,26 @@
 package com.zuxelus.energycontrol;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import com.zuxelus.energycontrol.network.ChannelHandler;
 
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+
+@EventBusSubscriber(modid = EnergyControl.MODID, value = Dist.CLIENT)
 public class ClientTickHandler {
 	public final static ClientTickHandler instance = new ClientTickHandler();
+	public static boolean altPressed;
 
 	@SubscribeEvent
-	public void onItemTooltip(ItemTooltipEvent event)
-	{
-		if (EnergyControl.oreHelper == null)
+	public static void onClientTick(TickEvent.ClientTickEvent event) {
+		if (event.phase == TickEvent.Phase.END)
 			return;
-		ItemStack stack = event.getItemStack();
-		if (stack.isEmpty())
-			return;
-		OreHelper ore = EnergyControl.oreHelper.get(OreHelper.getId(Block.getBlockFromItem(stack.getItem()), stack.getItemDamage()));
-		if (ore != null)
-			event.getToolTip().add(1, ore.getDescription());
+		boolean alt = Screen.hasAltDown();
+		if (altPressed != alt) {
+			altPressed = alt;
+			ChannelHandler.updateSeverKeys(alt);
+		}
 	}
 }

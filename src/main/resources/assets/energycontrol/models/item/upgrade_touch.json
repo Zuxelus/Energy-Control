@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "energycontrol:items/upgrade_touch"
+    "layer0": "energycontrol:item/upgrade_touch"
   }
 }

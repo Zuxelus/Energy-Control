@@ -1,52 +1,69 @@
 package com.zuxelus.energycontrol.config;
 
-import java.io.File;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 
-import com.zuxelus.energycontrol.EnergyControl;
-
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
+@Mod.EventBusSubscriber
 public class ConfigHandler {
-	public Configuration config;
+	public static final String CATEGORY_GENERAL = "General";
 
-	public int howlerAlarmRange;
-	public int maxAlarmRange;
-	public String allowedAlarms;	
-	public int remoteThermalMonitorEnergyConsumption;
-	public int infoPanelRefreshPeriod;
-	public int rangeTriggerRefreshPeriod;
-	public int SMPMaxAlarmRange;
-	public boolean useCustomSounds;
+	public static ForgeConfigSpec COMMON_CONFIG;
 
-	public void init(File configFile) {
-		if (config == null)
-			config = new Configuration(configFile);
-		loadConfig();
-	}
+	public static ForgeConfigSpec.IntValue HOWLER_ALARM_RANGE;
+	public static ForgeConfigSpec.IntValue MAX_ALARM_RANGE;
+	public static ForgeConfigSpec.ConfigValue<String> ALLOWED_ALARMS;
+	public static ForgeConfigSpec.IntValue REMOTE_MONITOR_ENERGY_CONSUMPTION;
+	public static ForgeConfigSpec.IntValue SCREEN_REFRESH_PERIOD;
+	public static ForgeConfigSpec.IntValue RANGE_TRIGGER_REFRESH_PERIOD;
+	public static ForgeConfigSpec.IntValue SMP_MAX_ALARM_RANGE;
+	public static ForgeConfigSpec.BooleanValue USE_CUSTOM_SOUNDS;
 
-	private void loadConfig() {
-		try {
-			howlerAlarmRange = config.getInt("howlerAlarmRange", Configuration.CATEGORY_GENERAL, 64, 0, 256, "", "ec.config.howlerAlarmRange");
-			maxAlarmRange = config.getInt("maxAlarmRange", Configuration.CATEGORY_GENERAL, 128, 0, 256, "", "ec.config.maxAlarmRange");
-			allowedAlarms = config.getString("allowedAlarms", Configuration.CATEGORY_GENERAL, "default,sci-fi,siren", "", "ec.config.allowedAlarms").replaceAll(" ", "");
-			remoteThermalMonitorEnergyConsumption = config.getInt("remoteThermalMonitorEnergyConsumption", Configuration.CATEGORY_GENERAL, 1, 0, 1000, "", "ec.config.remoteThermalMonitorEnergyConsumption");
-			infoPanelRefreshPeriod = config.getInt("infoPanelRefreshPeriod", Configuration.CATEGORY_GENERAL, 20, 0, 2000, "", "ec.config.screenRefreshPeriod");
-			rangeTriggerRefreshPeriod = config.getInt("rangeTriggerRefreshPeriod", Configuration.CATEGORY_GENERAL, 20, 0, 2000, "", "ec.config.rangeTriggerRefreshPeriod");
-			SMPMaxAlarmRange = config.getInt("SMPMaxAlarmRange", Configuration.CATEGORY_GENERAL, 256, 0, 512, "", "ec.config.SMPMaxAlarmRange");
-			useCustomSounds = config.getBoolean("useCustomSounds", Configuration.CATEGORY_GENERAL, false, "", "ec.config.useCustomSounds");
-		} catch (Exception e) {
-			EnergyControl.logger.error("Mod has a problem loading it's configuration", e);
-		} finally {
-			if (config.hasChanged())
-				config.save();
-		}
+	static {
+
+		ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+
+		builder.comment("General settings").push(CATEGORY_GENERAL);
+
+		HOWLER_ALARM_RANGE = builder.comment("Maximum power for the FirstBlock generator")
+				.translation("")
+				.defineInRange("howlerAlarmRange", 64, 0, Integer.MAX_VALUE);
+
+		MAX_ALARM_RANGE = builder.comment("Maximum power for the FirstBlock generator")
+				.translation("")
+				.defineInRange("maxAlarmRange", 128, 0, Integer.MAX_VALUE);
+
+		ALLOWED_ALARMS = builder.comment("Maximum power for the FirstBlock generator")
+				.translation("")
+				.define("allowedAlarms", "default,sci-fi,siren");
+
+		REMOTE_MONITOR_ENERGY_CONSUMPTION = builder.comment("Maximum power for the FirstBlock generator")
+				.translation("")
+				.defineInRange("remoteThermalMonitorEnergyConsumption", 1, 1, Integer.MAX_VALUE);
+
+		SCREEN_REFRESH_PERIOD = builder.comment("Maximum power for the FirstBlock generator")
+				.translation("")
+				.defineInRange("infoPanelRefreshPeriod", 20, 1, Integer.MAX_VALUE);
+
+		RANGE_TRIGGER_REFRESH_PERIOD = builder.comment("Maximum power for the FirstBlock generator")
+				.translation("")
+				.defineInRange("rangeTriggerRefreshPeriod", 20, 1, Integer.MAX_VALUE);
+
+		SMP_MAX_ALARM_RANGE = builder.comment("Maximum power for the FirstBlock generator")
+				.translation("")
+				.defineInRange("SMPMaxAlarmRange", 256, 0, Integer.MAX_VALUE);
+		
+		USE_CUSTOM_SOUNDS =  builder.comment("Maximum power for the FirstBlock generator")
+				.translation("")
+				.define("useCustomSounds", false);
+		builder.pop();
+
+		COMMON_CONFIG = builder.build();
 	}
 
 	@SubscribeEvent
-	public void onConfigurationChangedEvent(OnConfigChangedEvent event) {
-		if (event.getModID().equals(EnergyControl.MODID))
-			loadConfig();
+	public static void onModConfigEvent(ModConfig.ModConfigEvent event) {
+		
 	}
 }

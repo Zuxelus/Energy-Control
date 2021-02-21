@@ -2,16 +2,14 @@ package com.zuxelus.energycontrol.network;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.function.Supplier;
 
 import com.zuxelus.energycontrol.EnergyControl;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 
-public class PacketAlarm implements IMessage, IMessageHandler<PacketAlarm, IMessage> {
+public class PacketAlarm {
 	private int maxAlarmRange;
 	private String allowedAlarms;
 
@@ -22,22 +20,23 @@ public class PacketAlarm implements IMessage, IMessageHandler<PacketAlarm, IMess
 		allowedAlarms = alarms;
 	}
 
-	@Override
-	public void fromBytes(ByteBuf buf) {
-		maxAlarmRange = buf.readInt();
-		allowedAlarms = ByteBufUtils.readUTF8String(buf);
+	public static PacketAlarm decode(PacketBuffer buf) {
+		int maxAlarmRange = buf.readInt();
+		String allowedAlarms = buf.readString();
+		return new PacketAlarm(maxAlarmRange, allowedAlarms);
 	}
 
-	@Override
-	public void toBytes(ByteBuf buf) {
-		buf.writeInt(maxAlarmRange);
-		ByteBufUtils.writeUTF8String(buf, allowedAlarms);
+	public static void encode(PacketAlarm pkt, PacketBuffer buf) {
+		buf.writeInt(pkt.maxAlarmRange);
+		buf.writeString(pkt.allowedAlarms);
 	}
 
-	@Override
-	public IMessage onMessage(PacketAlarm message, MessageContext ctx) {
-		EnergyControl.config.maxAlarmRange = message.maxAlarmRange;
-		EnergyControl.instance.serverAllowedAlarms = new ArrayList<String>(Arrays.asList(message.allowedAlarms.split(",")));
-		return null;
+	public static void handle(PacketAlarm message, Supplier<Context> context) {
+		Context ctx = context.get();
+		ctx.enqueueWork(() -> {
+			//ConfigHandler.MAX_ALARM_RANGE.set(message.maxAlarmRange);
+			EnergyControl.INSTANCE.serverAllowedAlarms = new ArrayList<String>(Arrays.asList(message.allowedAlarms.split(",")));
+		});
+		ctx.setPacketHandled(true);
 	}
 }

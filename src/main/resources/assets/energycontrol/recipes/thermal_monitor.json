@@ -27,10 +27,6 @@
             "type": "forge:and",
             "values": [
                 {
-                    "type": "forge:mod_loaded",
-                    "modid": "ic2"
-                },
-                {
                     "type": "forge:not",
                     "value": {
                         "type": "forge:mod_loaded",

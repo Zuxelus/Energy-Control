@@ -1,35 +1,37 @@
 package com.zuxelus.energycontrol.gui;
 
-import java.io.IOException;
 import java.util.List;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.api.ICardGui;
 import com.zuxelus.energycontrol.api.PanelSetting;
-import com.zuxelus.energycontrol.containers.ContainerBase;
-import com.zuxelus.energycontrol.gui.controls.GuiButtonGeneral;
 import com.zuxelus.energycontrol.gui.controls.GuiInfoPanelCheckBox;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
-import com.zuxelus.energycontrol.items.cards.ItemCardSettingsReader;
-import com.zuxelus.energycontrol.items.cards.ItemCardType;
-import com.zuxelus.energycontrol.network.NetworkHelper;
+import com.zuxelus.energycontrol.items.cards.ItemCardText;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
+import com.zuxelus.zlib.containers.ContainerBase;
+import com.zuxelus.zlib.gui.controls.GuiButtonGeneral;
+import com.zuxelus.zlib.network.NetworkHelper;
 
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
-public class GuiInfoPanel extends GuiContainer {
+@OnlyIn(Dist.CLIENT)
+public class GuiInfoPanel extends ContainerScreen<ContainerBase> implements IContainerListener {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_info_panel.png");
 	protected static final int ID_LABELS = 1;
 	protected static final int ID_SLOPE = 2;
@@ -40,57 +42,48 @@ public class GuiInfoPanel extends GuiContainer {
 
 	protected String name;
 	private TileEntityInfoPanel panel;
-	public ItemStack prevCard;
-	protected GuiTextField textboxTitle;
+	protected TextFieldWidget textboxTitle;
 	protected byte activeTab;
 	protected boolean modified;
-	protected boolean isColored;
-	protected int currSize;
 
-	public GuiInfoPanel(ContainerBase container) {
-		super(container);
+	public GuiInfoPanel(ContainerBase container, PlayerInventory inventory, ITextComponent title) {
+		super(container, inventory, title);
 		ySize = 201;
 		panel = (TileEntityInfoPanel)container.te;
-		name = I18n.format("tile.info_panel.name");
+		name = I18n.format("block.energycontrol.info_panel");
 		modified = false;
-		// inverted value on start to force initControls
-		isColored = !this.panel.getColored();
-		currSize = height * width;
-		prevCard = ItemStack.EMPTY;
 		activeTab = 0;
 	}
 
 	protected void initControls() {
 		ItemStack stack = panel.getCards().get(activeTab);
-		if (stack.equals(prevCard) && panel.getColored() == isColored && currSize == height * width)
-			return;
 
-		buttonList.clear();
-		prevCard = stack;
-		isColored = panel.getColored();
-		currSize = height * width;
-		addButton(new GuiButtonGeneral(ID_LABELS, guiLeft + xSize - 24, guiTop + 42, 16, 16, TEXTURE, 176, panel.getShowLabels() ? 15 : 31).setGradient());
-		if (isColored)
-			addButton(new GuiButtonGeneral(ID_COLORS, guiLeft + xSize - 24, guiTop + 42 + 17, 16, 16, TEXTURE, 192, 0).setGradient().setScale(2));
-		addButton(new GuiButtonGeneral(ID_TICKRATE, guiLeft + xSize - 24, guiTop + 42 + 17 * 3, 16, 16, Integer.toString(panel.getTickRate())).setGradient());
+		buttons.clear();
+		children.clear();
+		addButton(new GuiButtonGeneral(guiLeft + xSize - 24, guiTop + 42, 16, 16, TEXTURE, 176, panel.getShowLabels() ? 15 : 31, (button) -> { actionPerformed(button, ID_LABELS); }).setGradient());
+		if (panel.isColoredEval())
+			addButton(new GuiButtonGeneral(guiLeft + xSize - 24, guiTop + 42 + 17, 16, 16, TEXTURE, 192, 0, (button) -> { actionPerformed(button, ID_COLORS); }).setGradient().setScale(2));
+		addButton(new GuiButtonGeneral(guiLeft + xSize - 24, guiTop + 42 + 17 * 3, 16, 16, Integer.toString(panel.getTickRate()), (button) -> { actionPerformed(button, ID_TICKRATE); }).setGradient());
 		if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain) {
 			int slot = panel.getCardSlot(stack);
-			if (stack.getItemDamage() == ItemCardType.CARD_TEXT)
-				addButton(new GuiButtonGeneral(ID_TEXT, guiLeft + xSize - 24, guiTop + 42 + 17 * 2, 16, 16, "txt").setGradient());
-			List<PanelSetting> settingsList = ItemCardMain.getSettingsList(stack);
+			if (stack.getItem() instanceof ItemCardText)
+				addButton(new GuiButtonGeneral(guiLeft + xSize - 24, guiTop + 42 + 17 * 2, 16, 16, "txt", (button) -> { actionPerformed(button, ID_TEXT); }).setGradient());
+			List<PanelSetting> settingsList = ((ItemCardMain) stack.getItem()).getSettingsList();
 
-			int hy = fontRenderer.FONT_HEIGHT + 1;
+			int hy = font.FONT_HEIGHT + 1;
 			int y = 1;
 			int x = guiLeft + 24;
 			if (settingsList != null)
 				for (PanelSetting panelSetting : settingsList) {
-					addButton(new GuiInfoPanelCheckBox(0, x + 4, guiTop + 28 + hy * y, panelSetting, panel, slot, fontRenderer));
+					addButton(new GuiInfoPanelCheckBox(x + 4, guiTop + 28 + hy * y, panelSetting, panel, slot, font));
 					y++;
 				}
 			if (!modified) {
-				textboxTitle = new GuiTextField(0, fontRenderer, 7, 16, 162, 18);
-				textboxTitle.setFocused(true);
+				textboxTitle = new TextFieldWidget(font, guiLeft + 7, guiTop + 16, 162, 18, null, "");
+				textboxTitle.changeFocus(true);
 				textboxTitle.setText(new ItemCardReader(stack).getTitle());
+				children.add(textboxTitle);
+				setFocusedDefault(textboxTitle);
 			}
 		} else {
 			modified = false;
@@ -99,61 +92,62 @@ public class GuiInfoPanel extends GuiContainer {
 	}
 
 	@Override
-	public void initGui() {
-		super.initGui();
+	public void init() {
+		super.init();
 		initControls();
+		container.removeListener(this);
+		container.addListener(this);
 	}
 
 	@Override
-	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-		drawDefaultBackground();
-		super.drawScreen(mouseX, mouseY, partialTicks);
+	public void render(int mouseX, int mouseY, float partialTicks) {
+		renderBackground();
+		super.render(mouseX, mouseY, partialTicks);
 		renderHoveredToolTip(mouseX, mouseY);
 	}
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		mc.getTextureManager().bindTexture(TEXTURE);
-		int left = (width - xSize) / 2;
-		int top = (height - ySize) / 2;
-		drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
+		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+		getMinecraft().getTextureManager().bindTexture(TEXTURE);
+		blit(guiLeft, guiTop, 0, 0, xSize, ySize);
+		if (textboxTitle != null)
+			textboxTitle.renderButton(mouseX, mouseY, 0);
 	}
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		fontRenderer.drawString(name, (xSize - fontRenderer.getStringWidth(name)) / 2, 6, 0x404040);
-		if (textboxTitle != null)
-			textboxTitle.drawTextBox();
+		font.drawString(name, (xSize - font.getStringWidth(name)) / 2, 6, 0x404040);
 	}
 
 	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-		super.mouseClicked(mouseX, mouseY, mouseButton);
+	public boolean mouseReleased(double mouseX, double mouseY, int mouseButton) {
 		if (textboxTitle != null) {
-			boolean focused = textboxTitle.isFocused();
-			textboxTitle.mouseClicked(mouseX - guiLeft, mouseY - guiTop, mouseButton);
-			if (textboxTitle.isFocused() != focused)
-				updateTitle();
+			textboxTitle.mouseReleased(mouseX - guiLeft, mouseY - guiTop, mouseButton);
+			if (textboxTitle.isFocused())
+				return true;
+			func_212932_b(null);
+			updateTitle();
 		}
+		return super.mouseReleased(mouseX, mouseY, mouseButton);
 	}
 
 	@Override
-	public void updateScreen() {
-		super.updateScreen();
+	public void tick() {
+		super.tick();
 		if (textboxTitle != null)
-			textboxTitle.updateCursorCounter();
-		initControls();
+			textboxTitle.tick();
 	}
 
+	@SuppressWarnings("resource")
 	protected void updateTitle() {
 		if (textboxTitle == null)
 			return;
 		if (panel.getWorld().isRemote) {
-			NBTTagCompound tag = new NBTTagCompound();
-			tag.setInteger("type", 4);
-			tag.setInteger("slot", activeTab);
-			tag.setString("title", textboxTitle.getText());
+			CompoundNBT tag = new CompoundNBT();
+			tag.putInt("type", 4);
+			tag.putInt("slot", activeTab);
+			tag.putString("title", textboxTitle.getText());
 			NetworkHelper.updateSeverTileEntity(panel.getPos(), tag);
 			ItemStack card = panel.getStackInSlot(activeTab);
 			if (!card.isEmpty() && card.getItem() instanceof ItemCardMain)
@@ -162,14 +156,14 @@ public class GuiInfoPanel extends GuiContainer {
 	}
 
 	@Override
-	public void onGuiClosed() {
+	public void removed() {
 		updateTitle();
-		super.onGuiClosed();
+		super.removed();
+		container.removeListener(this);
 	}
 
-	@Override
-	protected void actionPerformed(GuiButton button) {
-		switch (button.id) {
+	protected void actionPerformed(Button button, int id) {
+		switch (id) {
 		case ID_LABELS:
 			boolean checked = !panel.getShowLabels();
 			((GuiButtonGeneral) button).setTextureTop(checked ? 15 : 31);
@@ -177,47 +171,42 @@ public class GuiInfoPanel extends GuiContainer {
 			panel.setShowLabels(checked);
 			break;
 		case ID_COLORS:
-			GuiScreen colorGui = new GuiScreenColor(this, panel);
-			mc.displayGuiScreen(colorGui);
+			Screen colorGui = new GuiScreenColor(this, panel);
+			minecraft.displayGuiScreen(colorGui);
 			break;
 		case ID_TEXT:
 			openTextGui();
 			break;
 		case ID_TICKRATE:
 			GuiHorizontalSlider slider = new GuiHorizontalSlider(this, panel);
-			mc.displayGuiScreen(slider);
+			minecraft.displayGuiScreen(slider);
 			break;
 		}
 	}
 
 	protected void openTextGui() {
 		ItemStack card = panel.getCards().get(activeTab);
-		if (!card.isEmpty() && card.getItem() instanceof ItemCardMain && card.getItemDamage() == ItemCardType.CARD_TEXT) {
-			ItemCardReader reader = new ItemCardReader(card);
-			ICardGui guiObject = ItemCardMain.getSettingsScreen(reader);
-			if (!(guiObject instanceof GuiScreen)) {
-				EnergyControl.logger.warn("Invalid card, getSettingsScreen method should return GuiScreen object");
-				return;
-			}
-			GuiScreen gui = (GuiScreen) guiObject;
-			ItemCardSettingsReader wrapper = new ItemCardSettingsReader(card, panel, this, (byte) activeTab);
-			((ICardGui) gui).setCardSettingsHelper(wrapper);
-			mc.displayGuiScreen(gui);
-		}
+		if (!card.isEmpty() && card.getItem() instanceof ItemCardText)
+			minecraft.displayGuiScreen(new GuiCardText(card, panel, this, activeTab));
 	}
 
 	@Override
-	protected void keyTyped(char typedChar, int keyCode) throws IOException {
-		if (textboxTitle != null && textboxTitle.isFocused())
-			if (keyCode == 1)
-				mc.player.closeScreen();
-			else if (typedChar == 13)
-				updateTitle();
-			else {
-				modified = true;
-				textboxTitle.textboxKeyTyped(typedChar, keyCode);
-			}
-		else
-			super.keyTyped(typedChar, keyCode);
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		if (keyCode == 69)
+			return true;
+		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
+
+	@Override
+	public void sendAllContents(Container container, NonNullList<ItemStack> itemsList) {
+		sendSlotContents(container, 0, container.getSlot(0).getStack());
+	}
+
+	@Override
+	public void sendSlotContents(Container container, int slotInd, ItemStack stack) {
+		initControls();
+	}
+
+	@Override
+	public void sendWindowProperty(Container container, int varToUpdate, int newValue) { }
 }

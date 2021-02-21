@@ -8,8 +8,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class StringUtils {
 	private static DecimalFormat formatter = null;
@@ -39,11 +40,11 @@ public class StringUtils {
 		return I18n.format(resourceName, arguments);
 	}
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public static String getItemName(ItemStack stack) {
-		List<String> list = stack.getTooltip(Minecraft.getMinecraft().player, TooltipFlags.NORMAL);
+		List<ITextComponent> list = stack.getTooltip(Minecraft.getInstance().player, TooltipFlags.NORMAL);
 		if (list.size() == 0)
-			return stack.getItem().getUnlocalizedName();
-		return list.get(0);
+			return stack.getItem().getTranslationKey();
+		return list.get(0).getString();// .getFormattedText();
 	}
 }

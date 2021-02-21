@@ -2,18 +2,24 @@ package com.zuxelus.energycontrol.renderers;
 
 import java.util.List;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 
-public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileEntityInfoPanel> {
+public class TileEntityInfoPanelRenderer extends TileEntityRenderer<TileEntityInfoPanel> {
 	private static final ResourceLocation TEXTUREOFF[];
 	private static final ResourceLocation TEXTUREON[];
 	private static final CubeRenderer model[];
@@ -23,9 +29,9 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		TEXTUREON = new ResourceLocation[16];
 		for (int i = 0; i < 16; i++) {
 			TEXTUREOFF[i] = new ResourceLocation(
-					EnergyControl.MODID + String.format(":textures/blocks/info_panel/off/all%d.png", i));
+					EnergyControl.MODID + String.format(":textures/block/info_panel/off/all%d.png", i));
 			TEXTUREON[i] = new ResourceLocation(
-					EnergyControl.MODID + String.format(":textures/blocks/info_panel/on/all%d.png", i));
+					EnergyControl.MODID + String.format(":textures/block/info_panel/on/all%d.png", i));
 		}
 		model = new CubeRenderer[16];
 		for (int i = 0; i < 4; i++)
@@ -50,32 +56,41 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		return output;
 	}
 
+	public TileEntityInfoPanelRenderer(TileEntityRendererDispatcher te) {
+		super(te);
+	}
+
 	@Override
-	public void render(TileEntityInfoPanel te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
-		GlStateManager.pushMatrix();
-		GlStateManager.translate(x, y, z);
+	public void render(TileEntityInfoPanel te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
+		matrixStack.push();
+		int lightBE = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().up());
 		switch (te.getFacing()) {
 		case UP:
 			break;
 		case NORTH:
-			GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
-			GlStateManager.translate(0.0F, -1.0F, 0.0F);
+			matrixStack.rotate(Vector3f.XP.rotationDegrees(-90));
+			matrixStack.translate(0.0F, -1.0F, 0.0F);
+			lightBE = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().north());
 			break;
 		case SOUTH:
-			GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
-			GlStateManager.translate(0.0F, 0.0F, -1.0F);
+			matrixStack.rotate(Vector3f.XP.rotationDegrees(90));
+			matrixStack.translate(0.0F, 0.0F, -1.0F);
+			lightBE = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().south());
 			break;
 		case DOWN:
-			GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
-			GlStateManager.translate(0.0F, -1.0F, -1.0F);
+			matrixStack.rotate(Vector3f.XP.rotationDegrees(180));
+			matrixStack.translate(0.0F, -1.0F, -1.0F);
+			lightBE = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().down());
 			break;
 		case WEST:
-			GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
-			GlStateManager.translate(0.0F, -1.0F, 0.0F);
+			matrixStack.rotate(Vector3f.ZP.rotationDegrees(90));
+			matrixStack.translate(0.0F, -1.0F, 0.0F);
+			lightBE = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().west());
 			break;
 		case EAST:
-			GlStateManager.rotate(-90.0F, 0.0F, 0.0F, 1.0F);
-			GlStateManager.translate(-1.0F, 0.0F, 0.0F);
+			matrixStack.rotate(Vector3f.ZP.rotationDegrees(-90));
+			matrixStack.translate(-1.0F, 0.0F, 0.0F);
+			lightBE = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().east());
 			break;
 		}
 
@@ -85,21 +100,21 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			if (color > 15 || color < 0)
 				color = 2;
 		}
+		IVertexBuilder vertexBuilder;
 		if (te.getPowered())
-			bindTexture(TEXTUREON[color]);
+			vertexBuilder = buffer.getBuffer(RenderType.getEntitySolid(TEXTUREON[color]));
 		else
-			bindTexture(TEXTUREOFF[color]);
-
-		model[te.findTexture()].render(0.03125F);
+			vertexBuilder = buffer.getBuffer(RenderType.getEntitySolid(TEXTUREOFF[color]));
+		model[te.findTexture()].render(matrixStack, vertexBuilder, lightBE, combinedOverlay);
 		if (te.getPowered()) {
 			List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
 			if (joinedData != null)
-				drawText(te, joinedData);
+				drawText(te, joinedData, matrixStack, buffer, combinedLight);
 		}
-		GlStateManager.popMatrix();
+		matrixStack.pop();
 	}
 
-	private void drawText(TileEntityInfoPanel panel, List<PanelString> joinedData) {
+	private void drawText(TileEntityInfoPanel panel, List<PanelString> joinedData, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight) {
 		Screen screen = panel.getScreen();
 		BlockPos pos = panel.getPos();
 		float displayWidth = 1 - 2F / 16;
@@ -168,38 +183,36 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			}
 		}
 
-		GlStateManager.translate(0.5F - dy / 2, 1.01F - dx / 2 , 0.5F - dz / 2);
-		GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
+		matrixStack.translate(0.5F - dy / 2, 1.01F - dx / 2 , 0.5F - dz / 2);
+		matrixStack.rotate(Vector3f.XP.rotationDegrees(-90));
 		switch(panel.getRotation())
 		{
 		case UP:
 			break;
 		case NORTH:
-			GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+			matrixStack.rotate(Vector3f.ZP.rotationDegrees(180));
 			break;
 		case SOUTH:
 			break;
 		case DOWN:
 			break;
 		case WEST:
-			GlStateManager.rotate(-90.0F, 0.0F, 0.0F, 1.0F);
+			matrixStack.rotate(Vector3f.ZP.rotationDegrees(-90));
 			break;
 		case EAST:
-			GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
+			matrixStack.rotate(Vector3f.ZP.rotationDegrees(90));
 			break;
 		}
 
 		if (panel.isTouchCard()) {
-			GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
-			GlStateManager.disableLighting();
-			panel.renderImage(rendererDispatcher.renderEngine);
-			GlStateManager.enableLighting();
+			matrixStack.rotate(Vector3f.YP.rotationDegrees(180));
+			panel.renderImage(renderDispatcher.textureManager, matrixStack.getLast().getMatrix());
 		} else 
-			renderText(panel, joinedData, displayWidth, displayHeight);
+			renderText(panel, joinedData, displayWidth, displayHeight, matrixStack, buffer, combinedLight);
 	}
 
-	private void renderText(TileEntityInfoPanel panel, List<PanelString> joinedData, float displayWidth, float displayHeight) {
-		FontRenderer fontRenderer = getFontRenderer();
+	private void renderText(TileEntityInfoPanel panel, List<PanelString> joinedData, float displayWidth, float displayHeight, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight) {
+		FontRenderer fontRenderer = renderDispatcher.getFontRenderer();
 		int maxWidth = 1;
 		for (PanelString panelString : joinedData) {
 			String currentString = implodeArray(new String[] { panelString.textLeft, panelString.textCenter, panelString.textRight }, " ");
@@ -212,7 +225,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		float scaleX = displayWidth / maxWidth;
 		float scaleY = displayHeight / requiredHeight;
 		float scale = Math.min(scaleX, scaleY);
-		GlStateManager.scale(scale, -scale, scale);
+		matrixStack.scale(scale, -scale, scale);
 		int realHeight = (int) Math.floor(displayHeight / scale);
 		int realWidth = (int) Math.floor(displayWidth / scale);
 		int offsetX;
@@ -225,7 +238,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			offsetY = 0;
 		}
 
-		GlStateManager.disableLighting();
+		//GlStateManager.disableLighting();
 
 		int row = 0;
 		int colorHex = 0x000000;
@@ -233,26 +246,26 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			colorHex = panel.getColorTextHex();
 		for (PanelString panelString : joinedData) {
 			if (panelString.textLeft != null) {
-				fontRenderer.drawString(panelString.textLeft, offsetX - realWidth / 2,
+				fontRenderer.renderString(panelString.textLeft, offsetX - realWidth / 2,
 						offsetY - realHeight / 2 + row * lineHeight,
-						panelString.colorLeft != 0 ? panelString.colorLeft : colorHex);
+						panelString.colorLeft != 0 ? panelString.colorLeft : colorHex, false, matrixStack.getLast().getMatrix(), buffer, false, 0, combinedLight);
 			}
 			if (panelString.textCenter != null) {
-				fontRenderer.drawString(panelString.textCenter,
+				fontRenderer.renderString(panelString.textCenter,
 						-fontRenderer.getStringWidth(panelString.textCenter) / 2,
 						offsetY - realHeight / 2 + row * lineHeight,
-						panelString.colorCenter != 0 ? panelString.colorCenter : colorHex);
+						panelString.colorCenter != 0 ? panelString.colorCenter : colorHex, false, matrixStack.getLast().getMatrix(), buffer, false, 0, combinedLight);
 			}
 			if (panelString.textRight != null) {
-				fontRenderer.drawString(panelString.textRight,
+				fontRenderer.renderString(panelString.textRight,
 						realWidth / 2 - fontRenderer.getStringWidth(panelString.textRight),
 						offsetY - realHeight / 2 + row * lineHeight,
-						panelString.colorRight != 0 ? panelString.colorRight : colorHex);
+						panelString.colorRight != 0 ? panelString.colorRight : colorHex, false, matrixStack.getLast().getMatrix(), buffer, false, 0, combinedLight);
 			}
 			row++;
 		}
 
-		GlStateManager.enableLighting();
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		//GlStateManager.enableLighting();
+		//GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 }

@@ -1,0 +1,6 @@
+{
+    "variants": {
+        "lit=false": { "model": "energycontrol:block/white_lamp" },
+        "lit=true": { "model": "energycontrol:block/white_lamp_on" }
+    }
+} 

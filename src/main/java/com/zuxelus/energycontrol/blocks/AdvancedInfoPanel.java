@@ -1,86 +1,77 @@
 package com.zuxelus.energycontrol.blocks;
 
-import java.util.Collections;
-import java.util.List;
-
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.renderers.RotationOffset;
+import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
-import com.zuxelus.energycontrol.tileentities.TileEntityInventory;
+import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 public class AdvancedInfoPanel extends InfoPanel {
+
 	@Override
-	public TileEntity createNewTileEntity(World world, int meta) {
-		TileEntityAdvancedInfoPanel te = new TileEntityAdvancedInfoPanel();
-		te.setFacing(meta);
-		if (rotation != null)
-			te.setRotation(rotation.getIndex());
-		return te;
+	protected TileEntityFacing createTileEntity() {
+		return ModTileEntityTypes.info_panel_advanced.get().create();
 	}
 
 	@Override
-	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-		TileEntity tile = source.getTileEntity(pos);
+	public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+		TileEntity tile = world.getTileEntity(pos);
 		if (!(tile instanceof TileEntityAdvancedInfoPanel))
-			return new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+			return Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
 
 		TileEntityAdvancedInfoPanel te = (TileEntityAdvancedInfoPanel) tile;
 		Screen screen = te.getScreen();
 		if (screen == null)
-			return new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+			return Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
 
-		//RotationOffset offset = new RotationOffset(te.thickness * 2, te.rotateHor / 7, te.rotateVert / 7).addOffset(screen, te.getPos(), te.getFacing(), te.getRotation());
-
-		EnumFacing enumfacing = (EnumFacing) state.getValue(FACING);
+		Direction enumfacing = (Direction) state.get(FACING);
 		if (!(te instanceof TileEntityAdvancedInfoPanel) || enumfacing == null)
-			return new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+			return Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
 		switch (enumfacing) {
 		case EAST:
-			return new AxisAlignedBB(0.0D, 0.0D, 0.0D, 0.0625D * te.thickness, 1.0D, 1.0D);
+			return Block.makeCuboidShape(0.0D, 0.0D, 0.0D, te.thickness, 16.0D, 16.0D);
 		case WEST:
-			return new AxisAlignedBB(1.0D - 0.0625D * te.thickness, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+			return Block.makeCuboidShape(16.0D - te.thickness, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
 		case SOUTH:
-			return new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 0.0625D * te.thickness);
+			return Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, te.thickness);
 		case NORTH:
-			return new AxisAlignedBB(0.0D, 0.0D, 1.0D - 0.0625D * te.thickness, 1.0D, 1.0D, 1.0D);
+			return Block.makeCuboidShape(0.0D, 0.0D, 16.0D - te.thickness, 16.0D, 16.0D, 16.0D);
 		case UP:
-			return new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.0625D * te.thickness, 1.0D);
+			return Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, te.thickness, 16.0D);
 		case DOWN:
-			return new AxisAlignedBB(0.0D, 1.0D - 0.0625D * te.thickness, 0.0D, 1.0D, 1.0D, 1.0D);
+			return Block.makeCuboidShape(0.0D, 16.0D - te.thickness, 0.0D, 16.0D, 16.0D, 16.0D);
 		default:
-			return new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+			return Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
 		}
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		if (CrossModLoader.ic2.isWrench(player.getHeldItem(hand)))
-			return true;
+	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+		TileEntity te = world.getTileEntity(pos);
+		if (!(te instanceof TileEntityInfoPanel))
+			return ActionResultType.PASS;
+		if (!world.isRemote && EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) te).getFacing() == hit.getFace())
+			if (((TileEntityInfoPanel) te).runTouchAction(player.getHeldItem(hand), pos, hit.getHitVec()))
+				return ActionResultType.SUCCESS;
 		if (!world.isRemote)
-			player.openGui(EnergyControl.instance, BlockDamages.DAMAGE_ADVANCED_PANEL, world, pos.getX(), pos.getY(), pos.getZ());
-		return true;
-	}
-
-	@Override
-	public List<ItemStack> getWrenchDrops(World world, BlockPos pos, IBlockState state, TileEntity te, EntityPlayer player, int fortune) {
-		if (!(te instanceof TileEntityInventory))
-			return Collections.emptyList();
-		List<ItemStack> list = ((TileEntityInventory) te).getDrops(fortune);
-		list.add(new ItemStack(this));
-		return list;
+			NetworkHooks.openGui((ServerPlayerEntity) player, (TileEntityAdvancedInfoPanel) te, pos);
+		return ActionResultType.SUCCESS;
 	}
 }

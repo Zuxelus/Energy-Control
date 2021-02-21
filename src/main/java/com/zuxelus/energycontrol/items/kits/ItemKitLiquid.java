@@ -1,29 +1,28 @@
 package com.zuxelus.energycontrol.items.kits;
 
-import com.zuxelus.energycontrol.crossmod.LiquidCardHelper;
-import com.zuxelus.energycontrol.init.ModItems;
-import com.zuxelus.energycontrol.items.cards.ItemCardType;
+import java.util.List;
 
+import com.zuxelus.energycontrol.api.ItemStackHelper;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.init.ModItems;
+
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.IFluidTank;
 
-public class ItemKitLiquid extends ItemKitSimple {
-	public ItemKitLiquid() {
-		super(ItemCardType.KIT_LIQUID, "kit_liquid");
-	}
+public class ItemKitLiquid extends ItemKitMain {
 
 	@Override
-	protected BlockPos getTargetCoordinates(World world, BlockPos pos, ItemStack stack) {
-		IFluidTank tank = LiquidCardHelper.getStorageAt(world, pos);
-		if (tank != null)
-			return pos;
-		return null;
-	}
-
-	@Override
-	protected ItemStack getItemCard() {
-		return new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_LIQUID);
+	public ItemStack getSensorCard(ItemStack stack, PlayerEntity player, World world, BlockPos pos, Direction side) {
+		List<IFluidTank> list = CrossModLoader.getAllTanks(world, pos);
+		if (list != null && list.size() >= 1) {
+			ItemStack card = new ItemStack(ModItems.card_liquid.get());
+			ItemStackHelper.setCoordinates(card, pos);
+			return card;
+		}
+		return ItemStack.EMPTY;
 	}
 }

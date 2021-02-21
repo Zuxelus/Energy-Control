@@ -1,0 +1,22 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "PPP",
+        "WRW",
+        "WWW"
+    ],
+    "key": {
+        "P": {
+            "tag": "forge:glass_panes/lime"
+        },
+        "R": {
+            "tag": "forge:dusts/redstone"
+        },
+        "W": {
+            "tag": "minecraft:planks"
+        }
+    },
+    "result": {
+        "item": "energycontrol:info_panel_extender"
+    }
+}

@@ -1,8 +1,0 @@
-{
-    "variants": {
-        "type=0": { "model": "energycontrol:lamp0" },
-        "type=1": { "model": "energycontrol:lamp1" },
-        "type=2": { "model": "energycontrol:lamp2" },
-        "type=3": { "model": "energycontrol:lamp3" }
-    }
-}

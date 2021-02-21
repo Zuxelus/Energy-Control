@@ -7,20 +7,17 @@ import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
+import com.zuxelus.energycontrol.init.ModItems;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class ItemCardRedstone extends ItemCardBase {
-
-	public ItemCardRedstone() {
-		super(ItemCardType.CARD_REDSTONE, "card_redstone");
-	}
+public class ItemCardRedstone extends ItemCardMain {
 
 	@Override
 	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
@@ -28,32 +25,32 @@ public class ItemCardRedstone extends ItemCardBase {
 		if (target == null)
 			return CardState.NO_TARGET;
 
-		IBlockState state = world.getBlockState(target);
+		BlockState state = world.getBlockState(target);
 		Block block = state.getBlock();
 		if (block != Blocks.AIR) {
-			reader.setString("name", block.getLocalizedName());
+			reader.setString("name", block.getTranslationKey());
 			reader.setBoolean("isPowered", world.isBlockPowered(target));
-			reader.setInt("indirect", world.isBlockIndirectlyGettingPowered(target));
+			reader.setInt("indirect", world.getRedstonePowerFromNeighbors(target));
 			reader.setBoolean("canProvide", state.canProvidePower());
 			reader.setString("powered", String.format("D:%d U:%d N:%d S:%d W:%d E:%d",
-					world.getRedstonePower(target.down(), EnumFacing.DOWN), world.getRedstonePower(target.up(), EnumFacing.UP),
-					world.getRedstonePower(target.north(), EnumFacing.NORTH), world.getRedstonePower(target.south(), EnumFacing.SOUTH),
-					world.getRedstonePower(target.west(), EnumFacing.WEST), world.getRedstonePower(target.east(), EnumFacing.EAST)));
+					world.getRedstonePower(target.down(), Direction.DOWN), world.getRedstonePower(target.up(), Direction.UP),
+					world.getRedstonePower(target.north(), Direction.NORTH), world.getRedstonePower(target.south(), Direction.SOUTH),
+					world.getRedstonePower(target.west(), Direction.WEST), world.getRedstonePower(target.east(), Direction.EAST)));
 			reader.setString("week", String.format("D:%d U:%d N:%d S:%d W:%d E:%d",
-					state.getWeakPower(world, target, EnumFacing.UP), state.getWeakPower(world, target, EnumFacing.DOWN),
-					state.getWeakPower(world, target, EnumFacing.SOUTH), state.getWeakPower(world, target, EnumFacing.NORTH),
-					state.getWeakPower(world, target, EnumFacing.EAST), state.getWeakPower(world, target, EnumFacing.WEST)));
+					state.getWeakPower(world, target, Direction.UP), state.getWeakPower(world, target, Direction.DOWN),
+					state.getWeakPower(world, target, Direction.SOUTH), state.getWeakPower(world, target, Direction.NORTH),
+					state.getWeakPower(world, target, Direction.EAST), state.getWeakPower(world, target, Direction.WEST)));
 			reader.setString("strong", String.format("D:%d U:%d N:%d S:%d W:%d E:%d",
-					state.getStrongPower(world, target, EnumFacing.UP), state.getStrongPower(world, target, EnumFacing.DOWN),
-					state.getStrongPower(world, target, EnumFacing.SOUTH), state.getStrongPower(world, target, EnumFacing.NORTH),
-					state.getStrongPower(world, target, EnumFacing.EAST), state.getStrongPower(world, target, EnumFacing.WEST)));
+					state.getStrongPower(world, target, Direction.UP), state.getStrongPower(world, target, Direction.DOWN),
+					state.getStrongPower(world, target, Direction.SOUTH), state.getStrongPower(world, target, Direction.NORTH),
+					state.getStrongPower(world, target, Direction.EAST), state.getStrongPower(world, target, Direction.WEST)));
 			return CardState.OK;
 		}
 		return CardState.NO_TARGET;
 	}
 
 	@Override
-	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(World world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = new LinkedList<PanelString>();
 		result.add(new PanelString("msg.ec.InfoPanelName", reader.getString("name"), showLabels));
 		result.add(new PanelString("msg.ec.InfoPanelBlockPowered", reader.getBoolean("isPowered").toString(), showLabels));
@@ -71,7 +68,7 @@ public class ItemCardRedstone extends ItemCardBase {
 	}
 
 	@Override
-	public int getKitFromCard() {
-		return ItemCardType.KIT_REDSTONE;
+	public Item getKitFromCard() {
+		return ModItems.kit_redstone.get();
 	}
 }

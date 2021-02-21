@@ -1,7 +1,0 @@
-# This example shows how to adjust timing globally.
-# Unlike it 1.5, timing doesn't have to be adjusted in each frame individually.
-# In this example, the timing is adjusted to 1/5 of a second by changing the number after "frametime":
-
-{
-"animation": { "frametime": 4 }
-}

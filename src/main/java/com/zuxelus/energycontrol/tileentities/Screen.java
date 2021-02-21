@@ -1,9 +1,8 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class Screen {
@@ -26,20 +25,20 @@ public class Screen {
 		powered = panel.getPowered();
 	}
 
-	public Screen(TileEntityInfoPanel panel, NBTTagCompound tag) {
-		minX = tag.getInteger("minX");
-		minY = tag.getInteger("minY");
-		minZ = tag.getInteger("minZ");
+	public Screen(TileEntityInfoPanel panel, CompoundNBT tag) {
+		minX = tag.getInt("minX");
+		minY = tag.getInt("minY");
+		minZ = tag.getInt("minZ");
 
-		maxX = tag.getInteger("maxX");
-		maxY = tag.getInteger("maxY");
-		maxZ = tag.getInteger("maxZ");
+		maxX = tag.getInt("maxX");
+		maxY = tag.getInt("maxY");
+		maxZ = tag.getInt("maxZ");
 
 		corePos = panel.getPos();
 		powered = panel.getPowered();
 	}
 
-	public TileEntityInfoPanel getCore(IBlockAccess world) {
+	public TileEntityInfoPanel getCore(World world) {
 		TileEntity tileEntity = world.getTileEntity(corePos);
 		if (tileEntity == null || !(tileEntity instanceof TileEntityInfoPanel))
 			return null;
@@ -126,16 +125,16 @@ public class Screen {
 		}
 	}	
 
-	public NBTTagCompound toTag() {
-		NBTTagCompound tag = new NBTTagCompound();
+	public CompoundNBT toTag() {
+		CompoundNBT tag = new CompoundNBT();
 
-		tag.setInteger("minX", minX);
-		tag.setInteger("minY", minY);
-		tag.setInteger("minZ", minZ);
+		tag.putInt("minX", minX);
+		tag.putInt("minY", minY);
+		tag.putInt("minZ", minZ);
 
-		tag.setInteger("maxX", maxX);
-		tag.setInteger("maxY", maxY);
-		tag.setInteger("maxZ", maxZ);
+		tag.putInt("maxX", maxX);
+		tag.putInt("maxY", maxY);
+		tag.putInt("maxZ", maxZ);
 
 		return tag;
 	}

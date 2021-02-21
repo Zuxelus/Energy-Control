@@ -1,8 +1,19 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import net.minecraft.util.EnumFacing;
+import com.zuxelus.energycontrol.init.ModTileEntityTypes;
+
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 
 public class TileEntityAdvancedInfoPanelExtender extends TileEntityInfoPanelExtender {
+
+	public TileEntityAdvancedInfoPanelExtender(TileEntityType<?> type) {
+		super(type);
+	}
+
+	public TileEntityAdvancedInfoPanelExtender() {
+		this(ModTileEntityTypes.info_panel_advanced_extender.get());
+	}
 
 	public byte getThickness() {
 		if (screen == null)
@@ -32,12 +43,12 @@ public class TileEntityAdvancedInfoPanelExtender extends TileEntityInfoPanelExte
 	}
 
 	@Override
-	public EnumFacing getRotation() {
+	public Direction getRotation() {
 		if (screen == null)
-			return EnumFacing.NORTH;
+			return Direction.NORTH;
 		TileEntityInfoPanel core = screen.getCore(world);
 		if (core == null || !(core instanceof TileEntityAdvancedInfoPanel))
-			return EnumFacing.NORTH;
+			return Direction.NORTH;
 		return ((TileEntityAdvancedInfoPanel) core).getRotation();
 	}
 }

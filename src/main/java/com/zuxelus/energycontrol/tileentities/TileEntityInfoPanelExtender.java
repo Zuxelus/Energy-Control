@@ -1,21 +1,22 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.init.ModTileEntityTypes;
+import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.block.BlockState;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITickable, IScreenPart {
+public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITickableTileEntity, IScreenPart {
 	protected boolean init;
 
 	protected Screen screen;
@@ -25,8 +26,8 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	private int coreY;
 	private int coreZ;
 
-	public TileEntityInfoPanelExtender() {
-		super();
+	public TileEntityInfoPanelExtender(TileEntityType<?> type) {
+		super(type);
 		init = false;
 		screen = null;
 		partOfScreen = false;
@@ -35,15 +36,19 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 		coreZ = 0;
 	}
 
+	public TileEntityInfoPanelExtender() {
+		this(ModTileEntityTypes.info_panel_extender.get());
+	}
+
 	@Override
 	public void setFacing(int meta) {
-		EnumFacing newFacing = EnumFacing.getFront(meta);
+		Direction newFacing = Direction.byIndex(meta);
 		if (facing == newFacing)
 			return;
 		facing = newFacing;
 		if (init) {
-			EnergyControl.instance.screenManager.unregisterScreenPart(this);
-			EnergyControl.instance.screenManager.registerInfoPanelExtender(this);
+			EnergyControl.INSTANCE.screenManager.unregisterScreenPart(this);
+			EnergyControl.INSTANCE.screenManager.registerInfoPanelExtender(this);
 		}
 	}
 
@@ -61,76 +66,76 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	}
 
 	@Override
-	public SPacketUpdateTileEntity getUpdatePacket() {
-		NBTTagCompound tag = new NBTTagCompound();
+	public SUpdateTileEntityPacket getUpdatePacket() {
+		CompoundNBT tag = new CompoundNBT();
 		tag = writeProperties(tag);
-		return new SPacketUpdateTileEntity(getPos(), 0, tag);
+		return new SUpdateTileEntityPacket(getPos(), 0, tag);
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
 		readProperties(pkt.getNbtCompound());
 	}
 
 	@Override
-	public NBTTagCompound getUpdateTag() {
-		NBTTagCompound tag = super.getUpdateTag();
+	public CompoundNBT getUpdateTag() {
+		CompoundNBT tag = super.getUpdateTag();
 		tag = writeProperties(tag);
 		return tag;
 	}
 
 	@Override
-	protected void readProperties(NBTTagCompound tag) {
+	protected void readProperties(CompoundNBT tag) {
 		super.readProperties(tag);
-		if (tag.hasKey("partOfScreen"))
+		if (tag.contains("partOfScreen"))
 			partOfScreen = tag.getBoolean("partOfScreen");
-		if (tag.hasKey("coreX")) {
-			coreX = tag.getInteger("coreX");
-			coreY = tag.getInteger("coreY");
-			coreZ = tag.getInteger("coreZ");
+		if (tag.contains("coreX")) {
+			coreX = tag.getInt("coreX");
+			coreY = tag.getInt("coreY");
+			coreZ = tag.getInt("coreZ");
 		}
 		if (world != null) {
 			updateScreen();
 			if (world.isRemote)
-				world.checkLight(pos);
+				world.getChunkProvider().getLightManager().checkBlock(pos);
 		}
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound tag) {
-		super.readFromNBT(tag);
+	public void read(CompoundNBT tag) {
+		super.read(tag);
 		readProperties(tag);
 	}
 
 	@Override
-	protected NBTTagCompound writeProperties(NBTTagCompound tag) {
+	protected CompoundNBT writeProperties(CompoundNBT tag) {
 		tag = super.writeProperties(tag);
-		tag.setBoolean("partOfScreen", partOfScreen);
-		tag.setInteger("coreX", coreX);
-		tag.setInteger("coreY", coreY);
-		tag.setInteger("coreZ", coreZ);
+		tag.putBoolean("partOfScreen", partOfScreen);
+		tag.putInt("coreX", coreX);
+		tag.putInt("coreY", coreY);
+		tag.putInt("coreZ", coreZ);
 		return tag;
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
-		return writeProperties(super.writeToNBT(tag));
+	public CompoundNBT write(CompoundNBT tag) {
+		return writeProperties(super.write(tag));
 	}
 
 	@Override
-	public void invalidate() {
+	public void remove() {
 		if (!world.isRemote)
-			EnergyControl.instance.screenManager.unregisterScreenPart(this);
-		super.invalidate();
+			EnergyControl.INSTANCE.screenManager.unregisterScreenPart(this);
+		super.remove();
 	}
 
 	@Override
-	public void update() {
+	public void tick() {
 		if (init)
 			return;
 		
 		if (!world.isRemote && !partOfScreen)
-			EnergyControl.instance.screenManager.registerInfoPanelExtender(this);
+			EnergyControl.INSTANCE.screenManager.registerInfoPanelExtender(this);
 		
 		updateScreen();
 		init = true;
@@ -171,7 +176,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 
 	@Override
 	public void notifyBlockUpdate() {
-		IBlockState iblockstate = world.getBlockState(pos);
+		BlockState iblockstate = world.getBlockState(pos);
 		world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
 	}
 
@@ -203,17 +208,17 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public double getMaxRenderDistanceSquared() {
 		return 65536.0D;
 	}
 
-	@Override
+	/*@Override // TODO
 	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
 		return oldState.getBlock() != newSate.getBlock();
-	}
+	}*/
 
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public int findTexture() {
 		Screen scr = getScreen();
 		if (scr != null) {

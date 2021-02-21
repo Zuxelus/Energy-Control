@@ -1,42 +1,35 @@
 package com.zuxelus.energycontrol.blocks;
 
-import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanelExtender;
+import com.zuxelus.zlib.blocks.FacingBlock;
+import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
-import ic2.api.util.Keys;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 public class InfoPanelExtender extends FacingBlock {
 
-	@Override
-	public TileEntity createNewTileEntity(World world, int meta) {
-		TileEntityInfoPanelExtender te = new TileEntityInfoPanelExtender();
-		te.setFacing(meta);
-		return te;
+	public InfoPanelExtender() {
+		super();
 	}
 
 	@Override
-	public boolean isOpaqueCube(IBlockState state) {
-		return false;
+	protected TileEntityFacing createTileEntity() {
+		return ModTileEntityTypes.info_panel_extender.get().create();
 	}
 
 	@Override
-	public boolean isFullCube(IBlockState state) {
-		return false;
-	}
-
-	@Override
-	public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
+	public int getLightValue(BlockState state, IBlockReader world, BlockPos pos) {
 		TileEntity te = world.getTileEntity(pos);
 		if (!(te instanceof TileEntityInfoPanelExtender))
 			return 0;
@@ -44,30 +37,23 @@ public class InfoPanelExtender extends FacingBlock {
 	}
 
 	@Override
-	protected int getBlockGuiId() {
-		return BlockDamages.DAMAGE_INFO_PANEL;
-	}
-
-	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		if (CrossModLoader.ic2.isWrench(player.getHeldItem(hand)))
-			return true;
+	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
 		if (world.isRemote)
-			return true;
+			return ActionResultType.PASS;
 		TileEntity te = world.getTileEntity(pos);
 		if (!(te instanceof TileEntityInfoPanelExtender))
-			return true;
+			return ActionResultType.PASS;
 		TileEntityInfoPanel panel = ((TileEntityInfoPanelExtender) te).getCore();
-		if (Keys.instance.isAltKeyDown(player) && panel.getFacing() == facing)
-			if (panel.runTouchAction(pos, hitX, hitY, hitZ))
-				return true;
+/*		if (Keys.instance.isAltKeyDown(player) && panel.getFacing() == facing)
+			if (panel.runTouchAction(player.getHeldItem(hand), pos, hit.getHitVec()))
+				return ActionResultType.SUCCESS;
 		if (panel != null)
-			player.openGui(EnergyControl.instance, BlockDamages.DAMAGE_INFO_PANEL, world, panel.getPos().getX(), panel.getPos().getY(), panel.getPos().getZ());
-		return true;
+			player.openGui(EnergyControl.instance, BlockDamages.DAMAGE_INFO_PANEL, world, panel.getPos().getX(), panel.getPos().getY(), panel.getPos().getZ());*/
+		return ActionResultType.SUCCESS;
 	}
 
 	@Override
-	public EnumBlockRenderType getRenderType(IBlockState state) {
-		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
+	public BlockRenderType getRenderType(BlockState state) {
+		return BlockRenderType.ENTITYBLOCK_ANIMATED;
 	}
 }

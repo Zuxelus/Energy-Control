@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "energycontrol:items/kit_app_eng"
+    "layer0": "energycontrol:item/kit_app_eng"
   }
 }

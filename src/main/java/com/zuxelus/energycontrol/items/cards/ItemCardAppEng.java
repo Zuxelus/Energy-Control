@@ -2,34 +2,31 @@ package com.zuxelus.energycontrol.items.cards;
 
 import java.util.List;
 
-import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
+import com.zuxelus.energycontrol.init.ModItems;
 
-import appeng.api.AEApi;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
-import appeng.api.storage.ICellInventory;
-import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.cells.ICellInventory;
+import appeng.api.storage.cells.ICellInventoryHandler;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.util.IReadOnlyCollection;
+import appeng.core.Api;
 import appeng.me.helpers.IGridProxyable;
-import appeng.tile.crafting.TileCraftingMonitorTile;
-import appeng.tile.storage.TileChest;
-import appeng.tile.storage.TileDrive;
+import appeng.tile.storage.ChestTileEntity;
+import appeng.tile.storage.DriveTileEntity;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class ItemCardAppEng extends ItemCardBase {
-
-	public ItemCardAppEng() {
-		super(ItemCardType.CARD_APPENG, "card_app_eng");
-	}
+public class ItemCardAppEng extends ItemCardMain {
 
 	@Override
 	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
@@ -41,7 +38,7 @@ public class ItemCardAppEng extends ItemCardBase {
 		IReadOnlyCollection<IGridNode> list = null;
 
 		TileEntity te = world.getTileEntity(target);
-		if (te instanceof TileCraftingMonitorTile) {
+		/*if (te instanceof TileCraftingMonitorTile) {
 			TileCraftingMonitorTile tile = (TileCraftingMonitorTile) te;
 			reader.setInt("type", 0);
 			if (tile.getJobProgress() != null) {
@@ -50,7 +47,7 @@ public class ItemCardAppEng extends ItemCardBase {
 				reader.setInt("size", (int) tile.getJobProgress().getStackSize());
 			}
 			return CardState.OK;
-		}
+		}*/
 
 		if (te instanceof IGridProxyable)
 			list = ((IGridProxyable) te).getProxy().getNode().getGrid().getNodes();
@@ -61,12 +58,12 @@ public class ItemCardAppEng extends ItemCardBase {
 		int cells = 0;
 		for (IGridNode node : list) {
 			IGridHost host = node.getMachine();
-			if (host instanceof TileChest) {
-				ItemStack stack = ((TileChest) host).getCell();
+			if (host instanceof ChestTileEntity) {
+				ItemStack stack = ((ChestTileEntity) host).getCell();
 				cells += calcValues(stack, values);
-			} else if (host instanceof TileDrive) {
-				for (int i = 0; i < ((TileDrive) host).getInternalInventory().getSlots(); i++) {
-					ItemStack stack = ((TileDrive) host).getInternalInventory().getStackInSlot(i);
+			} else if (host instanceof DriveTileEntity) {
+				for (int i = 0; i < ((DriveTileEntity) host).getInternalInventory().getSlots(); i++) {
+					ItemStack stack = ((DriveTileEntity) host).getInternalInventory().getStackInSlot(i);
 					cells += calcValues(stack, values);
 				}
 			}
@@ -82,16 +79,16 @@ public class ItemCardAppEng extends ItemCardBase {
 		reader.setInt("items", values[4]);
 		return CardState.OK;
 	}
-	
+
 	private int calcValues(ItemStack stack, int[] values) {
 		if (stack == null)
 			return 0;
-		
+
 		int cells = 0;
-		for (IStorageChannel channel : AEApi.instance().storage().storageChannels()) {
-			ICellInventoryHandler handler = AEApi.instance().registries().cell().getCellInventory(stack, null, channel);
+		for (IStorageChannel<? extends IAEStack<?>> channel : Api.instance().storage().storageChannels()) {
+			ICellInventoryHandler<? extends IAEStack<?>> handler = Api.instance().registries().cell().getCellInventory(stack, null, channel);
 			if (handler != null) {
-				ICellInventory inv = handler.getCellInv();
+				ICellInventory<? extends IAEStack<?>> inv = handler.getCellInv();
 				if (inv != null) {
 					values[0] += inv.getTotalBytes();
 					values[1] += inv.getUsedBytes();
@@ -106,14 +103,19 @@ public class ItemCardAppEng extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(World world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		switch (reader.getInt("type")) {
 		case 1:
 			result.add(new PanelString("msg.ec.InfoPanelTotalNodes", reader.getInt("nodes"), showLabels));
 			result.add(new PanelString("msg.ec.InfoPanelStorageCells", reader.getInt("cells"), showLabels));
-			result.add(new PanelString(I18n.format("msg.ec.InfoPanelBytesUsed", reader.getInt("bytesUsed"), reader.getInt("bytesTotal"))));
-			result.add(new PanelString(I18n.format("msg.ec.InfoPanelTypes", reader.getInt("typesUsed"), reader.getInt("typesTotal"))));
+			if (isServer) {
+				result.add(new PanelString(String.format("%d of %d Bytes Used", reader.getInt("bytesUsed"), reader.getInt("bytesTotal"))));
+				result.add(new PanelString(String.format("%d of %d Types", reader.getInt("typesUsed"), reader.getInt("typesTotal"))));
+			} else {
+				result.add(new PanelString(I18n.format("msg.ec.InfoPanelBytesUsed", reader.getInt("bytesUsed"), reader.getInt("bytesTotal"))));
+				result.add(new PanelString(I18n.format("msg.ec.InfoPanelTypes", reader.getInt("typesUsed"), reader.getInt("typesTotal"))));
+			}
 			result.add(new PanelString("msg.ec.InfoPanelTotalItems", reader.getInt("items"), showLabels));
 			break;
 		case 2:
@@ -130,7 +132,7 @@ public class ItemCardAppEng extends ItemCardBase {
 	}
 
 	@Override
-	public int getKitFromCard() {
-		return ItemCardType.KIT_APPENG;
+	public Item getKitFromCard() {
+		return ModItems.kit_app_eng.get();
 	}
 }

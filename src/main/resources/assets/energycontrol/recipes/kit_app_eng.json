@@ -33,10 +33,6 @@
                     "modid": "appliedenergistics2"
                 },
                 {
-                    "type": "forge:mod_loaded",
-                    "modid": "ic2"
-                },
-                {
                     "type": "forge:not",
                     "value": {
                         "type": "forge:mod_loaded",

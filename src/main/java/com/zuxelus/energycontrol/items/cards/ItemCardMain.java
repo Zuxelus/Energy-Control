@@ -1,127 +1,31 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.api.*;
-import com.zuxelus.energycontrol.init.ModItems;
-import com.zuxelus.energycontrol.items.ItemUpgrade;
+import com.zuxelus.energycontrol.api.CardState;
+import com.zuxelus.energycontrol.api.ICardReader;
+import com.zuxelus.energycontrol.api.ITouchAction;
+import com.zuxelus.energycontrol.api.PanelSetting;
+import com.zuxelus.energycontrol.api.PanelString;
+import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-public final class ItemCardMain extends Item {
+public abstract class ItemCardMain extends Item {
 	public static final int LOCATION_RANGE = 8;
-	
-	private static Map<Integer, IItemCard> cards = new HashMap<Integer, IItemCard>();
+	protected int id;
 
 	public ItemCardMain() {
-		super();
-		setMaxStackSize(1);
-		setHasSubtypes(true);
-		canRepair = false;
-		setCreativeTab(EnergyControl.creativeTab);
-	}
-	
-	public final void registerCards() {
-		register(new ItemCardEnergy());
-		register(new ItemCardCounter());
-		register(new ItemCardLiquid());
-		register(new ItemCardGenerator());
-		if (Loader.isModLoaded("ic2")) {
-			register(new ItemCardGeneratorKinetic());
-			register(new ItemCardGeneratorHeat());
-			register(new ItemCardReactor());
-			register(new ItemCardReactor5x5());
-		}
-		register(new ItemCardLiquidAdvanced());
-		register(new ItemCardText());
-		register(new ItemCardTime());
-		register(new ItemCardEnergyArray());
-		register(new ItemCardLiquidArray());
-		register(new ItemCardGeneratorArray());
-		register(new ItemCardToggle());
-		register(new ItemCardVanilla());
-		register(new ItemCardInventory());
-		register(new ItemCardRedstone());
-		if (Loader.isModLoaded("buildcraftcore"))
-			register(new ItemCardEngine());
-		if (Loader.isModLoaded("draconicevolution")) {
-			register(new ItemCardEnergyDraconic());
-			register(new ItemCardReactorDraconic());
-		}
-		if (Loader.isModLoaded("appliedenergistics2"))
-			register(new ItemCardAppEng());
-		if (Loader.isModLoaded("galacticraftcore") && Loader.isModLoaded("galacticraftplanets"))
-			register(new ItemCardGalacticraft());
-		if (Loader.isModLoaded("bigreactors"))
-			register(new ItemCardBigReactors());
-		if (Loader.isModLoaded("nuclearcraft"))
-			register(new ItemCardNuclearCraft());
-	}
-
-	private static void register(IItemCard item) {
-		if (checkCard(item))
-			cards.put(item.getDamage(), item);
-	}
-
-	private static boolean checkCard(IItemCard item) {
-		if (!cards.containsKey(item.getDamage()))
-			return true;
-		if (item.getDamage() <= ItemCardType.CARD_MAX)
-			EnergyControl.logger.warn(String.format("Card %s was not registered. ID %d is already used for standard card.", item.getUnlocalizedName(), item.getDamage()));
-		else
-			EnergyControl.logger.warn(String.format("Card %s was not registered. ID %d is already used for extended card.", item.getUnlocalizedName(), item.getDamage()));
-		return false;
-	}
-
-	public static void registerCard(IItemCard item) {
-		if (checkCard(item)) {
-			if (item.getDamage() <= ItemCardType.CARD_MAX) {
-				EnergyControl.logger.warn(String.format("Card %s was not registered. Card ID should be bigger than %d", item.getUnlocalizedName(), ItemCardType.CARD_MAX));
-				return;
-			}
-			cards.put(item.getDamage(), item);
-		}
-	}
-
-	public static boolean containsCard(int i) {
-		return cards.containsKey(i) ? true : false;
-	}
-
-	@Override
-	public String getUnlocalizedName(ItemStack stack) {
-		int damage = stack.getItemDamage();
-		if (cards.containsKey(damage))
-			return cards.get(damage).getUnlocalizedName();
-		return "";
-	}
-
-	@Override
-	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
-		if (!isInCreativeTab(tab))
-			return;
-		for (Map.Entry<Integer, IItemCard> entry : cards.entrySet()) {
-			Integer key = entry.getKey();
-			items.add(new ItemStack(this, 1, key));
-		}
-	}
-
-	@Override
-	public boolean isDamageable() {
-		return true;
+		super(new Item.Properties().group(EnergyControl.ITEM_GROUP).maxStackSize(1).setNoRepair());
 	}
 
 	@Override
@@ -129,56 +33,38 @@ public final class ItemCardMain extends Item {
 		return false;
 	}
 
+	protected void addInformation(ItemCardReader reader, List<ITextComponent> tooltip) { }
+	
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
+	@OnlyIn(Dist.CLIENT)
+	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
 		ItemCardReader reader = new ItemCardReader(stack);
 		String title = reader.getTitle();
 		if (title != null && !title.isEmpty())
-			tooltip.add(title);
-		switch (stack.getItemDamage()) {
-		case ItemCardType.CARD_TEXT:
-		case ItemCardType.CARD_TIME:
-			return;
-		case ItemCardType.CARD_ENERGY_ARRAY:
-		case ItemCardType.CARD_LIQUID_ARRAY:
-		case ItemCardType.CARD_GENERATOR_ARRAY:
-			tooltip.add(I18n.format("msg.ec.cards", reader.getCardCount()));
-			return;
-		case ItemCardType.CARD_TOGGLE:
-			tooltip.add(I18n.format("msg.ec.touch_card"));
-		}
-
+			tooltip.add(new TranslationTextComponent(title));
+		
+		addInformation(reader, tooltip);
+		
 		BlockPos target = reader.getTarget();
 		if (target != null)
-			tooltip.add(String.format("x: %d, y: %d, z: %d", target.getX(), target.getY(), target.getZ()));
+			tooltip.add(new TranslationTextComponent(String.format("x: %d, y: %d, z: %d", target.getX(), target.getY(), target.getZ())));
 	}
 
-	public static List<PanelString> getStringData(int settings, ItemCardReader reader, boolean isServer, boolean showLabels) {
-		if (cards.containsKey(reader.getCardType())) {
-			return cards.get(reader.getCardType()).getStringData(settings, reader, isServer, showLabels);
-		}
-		return null;
-	}
+	public abstract List<PanelString> getStringData(World world, int settings, ICardReader reader, boolean isServer, boolean showLabels);
 
-	@SideOnly(Side.CLIENT)
-	public static List<PanelSetting> getSettingsList(ItemStack stack) {
-		int damage = stack.getItemDamage();
-		if (cards.containsKey(damage))
-			return cards.get(damage).getSettingsList();
-		return null;
-	}
+	@OnlyIn(Dist.CLIENT)
+	public abstract List<PanelSetting> getSettingsList();
 
-	public static CardState updateCardNBT(World world, BlockPos pos, ICardReader reader, ItemStack upgradeStack) {
+	public CardState updateCardNBT(World world, BlockPos pos, ICardReader reader, ItemStack upgradeStack) {
 		int upgradeCountRange = 0;
-		if (upgradeStack != ItemStack.EMPTY && upgradeStack.getItem() instanceof ItemUpgrade && upgradeStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE)
-			upgradeCountRange = upgradeStack.getCount();
+		/*if (upgradeStack != ItemStack.EMPTY && upgradeStack.getItem() instanceof ItemUpgrade && upgradeStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE)
+			upgradeCountRange = upgradeStack.getCount();*/
 
 		boolean needUpdate = true;
 		int range = LOCATION_RANGE * (int) Math.pow(2, Math.min(upgradeCountRange, 7));
 
 		CardState state = CardState.INVALID_CARD;
-		if (isRemoteCard(reader.getCardType())) {
+		if (isRemoteCard(reader)) {
 			BlockPos target = reader.getTarget();
 			if (target != null) {
 				int dx = target.getX() - pos.getX();
@@ -198,59 +84,27 @@ public final class ItemCardMain extends Item {
 		return state;
 	}
 
-	private static CardState update(World world, ICardReader reader, int range, BlockPos pos) {
-		if (cards.containsKey(reader.getCardType()))
-			return cards.get(reader.getCardType()).update(world, reader, range, pos);
-		return null;
+	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
+		return CardState.OK;
 	}
 
-	public static ICardGui getSettingsScreen(ItemCardReader reader) {
-		if (reader.getCardType() != ItemCardType.CARD_TEXT)
-			return null;
-		return cards.get(ItemCardType.CARD_TEXT).getSettingsScreen(reader);
-	}
-
-	public static boolean isRemoteCard(int damage) {
-		if (cards.containsKey(damage))
-			return cards.get(damage).isRemoteCard();
+	protected boolean isRemoteCard(ICardReader reader) {
 		return false;
 	}
 
-	public static int getKitFromCard(int damage) {
-		if (cards.containsKey(damage))
-			return cards.get(damage).getKitFromCard();
+	public Item getKitFromCard() {
+		return null;
+	}
+
+	public int getCardId(ItemStack stack) {
 		return -1;
 	}
 
-	public static void runTouchAction(World world, ItemStack stack) {
-		if (stack.getItem() instanceof ItemCardMain && cards.containsKey(stack.getItemDamage())) {
-			IItemCard card = cards.get(stack.getItemDamage());
-			if (card instanceof ITouchAction)
-				((ITouchAction) card).runTouchAction(world, new ItemCardReader(stack));
-		}
-	}
-
-	public static void renderImage(TextureManager manager, ItemStack stack) {
-		if (stack.getItem() instanceof ItemCardMain && cards.containsKey(stack.getItemDamage())) {
-			IItemCard card = cards.get(stack.getItemDamage());
-			if (card instanceof ITouchAction)
-				((ITouchAction) card).renderImage(manager, new ItemCardReader(stack));
-		}
-	}
-
-	public static void registerModels() {
-		for (Map.Entry<Integer, IItemCard> entry : cards.entrySet()) {
-			Integer key = entry.getKey();
-			if (key <= ItemCardType.CARD_MAX)
-				ModItems.registerItemModel(ModItems.itemCard, key, cards.get(key).getName());
-		}
-	}
-
-	public static void registerExtendedModels() {
-		for (Map.Entry<Integer, IItemCard> entry : cards.entrySet()) {
-			Integer key = entry.getKey();
-			if (key > ItemCardType.CARD_MAX)
-				ModItems.registerExternalItemModel(ModItems.itemCard, key, cards.get(key).getName());
+	public void runTouchAction(TileEntityInfoPanel panel, ItemStack cardStack, ItemStack stack, int slot) { 
+		if (cardStack.getItem() instanceof ITouchAction) {
+			ICardReader reader = new ItemCardReader(cardStack);
+			if (((ITouchAction) cardStack.getItem()).runTouchAction(panel.getWorld(), reader, stack))
+				reader.updateClient(cardStack, panel, slot);
 		}
 	}
 }

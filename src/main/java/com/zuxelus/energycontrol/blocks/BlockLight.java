@@ -1,133 +1,61 @@
 package com.zuxelus.energycontrol.blocks;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Random;
 
-import com.zuxelus.energycontrol.EnergyControl;
-
-import ic2.api.tile.IWrenchable;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyInteger;
-import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.StateContainer.Builder;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
-public class BlockLight extends Block implements IWrenchable {
-	public static final int DAMAGE_WHITE_OFF = 0;
-	public static final int DAMAGE_WHITE_ON = 1;
-	public static final int DAMAGE_ORANGE_OFF = 2;
-	public static final int DAMAGE_ORANGE_ON = 3;
-	public static final int DAMAGE_MAX = 3;
-
-	public static final PropertyInteger TYPE = PropertyInteger.create("type", 0, DAMAGE_MAX);
-
-	public static Map<Integer, Boolean> blocks;
+public class BlockLight extends Block {
+	public static final BooleanProperty LIT = BlockStateProperties.LIT;
 
 	public BlockLight() {
-		super(Material.REDSTONE_LIGHT);
-		blocks = new HashMap<Integer, Boolean>();
-		this.setHardness(0.3F);
-		this.setCreativeTab(EnergyControl.creativeTab);
-		setSoundType(SoundType.GLASS);
-		register(DAMAGE_WHITE_OFF, false);
-		register(DAMAGE_WHITE_ON, true);
-		register(DAMAGE_ORANGE_OFF, false);
-		register(DAMAGE_ORANGE_ON, true);
-	}
-
-	public void register(int damage, boolean isOn) {
-		blocks.put(damage, isOn);
+		super(Block.Properties.create(Material.REDSTONE_LIGHT).hardnessAndResistance(0.3F).sound(SoundType.GLASS));
+		setDefaultState(getDefaultState().with(LIT, Boolean.valueOf(false)));
 	}
 
 	@Override
-	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, new IProperty[] { TYPE });
+	protected void fillStateContainer(Builder<Block, BlockState> builder) {
+		builder.add(LIT);
 	}
 
 	@Override
-	public final IBlockState getStateFromMeta(final int meta) {
-		return this.getDefaultState().withProperty(TYPE, meta);
+	public int getLightValue(BlockState state, IBlockReader world, BlockPos pos) {
+		return state.get(LIT) ? 15 : 0;
 	}
 
 	@Override
-	public final int getMetaFromState(final IBlockState state) {
-		return state.getValue(TYPE);
+	public BlockState getStateForPlacement(BlockItemUseContext context) {
+		return getDefaultState().with(LIT, Boolean.valueOf(context.getWorld().isBlockPowered(context.getPos())));
 	}
 
 	@Override
-	public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
-		int meta = getMetaFromState(state);
-		if (meta == 1 || meta % 2 == 1)
-			return 15;
-		return 0;
-	}
-
-	@Override
-	public int damageDropped(IBlockState state) {
-		int i = getMetaFromState(state);
-		if (i % 2 == 0)
-			return i;
-		return i - 1;
-	}
-
-	@Override
-	public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
-		updateBlockState(world, pos, state);
-	}
-
-	@Override
-	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos) {
-		updateBlockState(world, pos, state);
-	}
-
-	private void updateBlockState(World world, BlockPos pos, IBlockState state) {
+	public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
 		if (world.isRemote)
 			return;
-		int meta = getMetaFromState(state);
-		if (meta % 2 == 1) {
-			if (world.isBlockIndirectlyGettingPowered(pos) == 0)
-				world.setBlockState(pos, getStateFromMeta(meta - 1));
-		} else if (world.isBlockIndirectlyGettingPowered(pos) > 0)
-			world.setBlockState(pos, getStateFromMeta(meta + 1));
+
+		boolean flag = state.get(LIT);
+		if (flag == world.isBlockPowered(pos))
+			return;
+
+		if (flag)
+			world.getPendingBlockTicks().scheduleTick(pos, this, 4);
+		else
+			world.setBlockState(pos, state.cycle(LIT), 2);
 	}
 
 	@Override
-	public void getSubBlocks(CreativeTabs itemIn, NonNullList<ItemStack> items) {
-		for (int i = 0; i <= DAMAGE_MAX; i++)
-			if (i % 2 == 0)
-				items.add(new ItemStack(this, 1, i));
-	}
-
-	// IWrenchable
-	@Override
-	public EnumFacing getFacing(World world, BlockPos pos) {
-		return EnumFacing.UP;
-	}
-
-	@Override
-	public boolean setFacing(World world, BlockPos pos, EnumFacing newDirection, EntityPlayer player) {
-		return false;
-	}
-
-	@Override
-	public boolean wrenchCanRemove(World world, BlockPos pos, EntityPlayer player) {
-		return true;
-	}
-
-	@Override
-	public List<ItemStack> getWrenchDrops(World world, BlockPos pos, IBlockState state, TileEntity te, EntityPlayer player, int fortune) {
-		return getDrops(world, pos, state, 1);
+	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random rand) {
+		if (state.get(LIT) && !world.isBlockPowered(pos))
+			world.setBlockState(pos, state.cycle(LIT), 2);
 	}
 }

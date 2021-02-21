@@ -7,21 +7,18 @@ import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
-import com.zuxelus.energycontrol.crossmod.LiquidCardHelper;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.init.ModItems;
 
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.Item;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemCardLiquid extends ItemCardBase {
-	public ItemCardLiquid() {
-		super(ItemCardType.CARD_LIQUID, "card_liquid");
-	}
+public class ItemCardLiquid extends ItemCardMain {
 
 	@Override
 	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
@@ -29,60 +26,62 @@ public class ItemCardLiquid extends ItemCardBase {
 		if (target == null)
 			return CardState.NO_TARGET;
 
-		IFluidTank storage = LiquidCardHelper.getStorageAt(world, target);
-		if (storage == null)
+		List<IFluidTank> list = CrossModLoader.getAllTanks(world, target);
+		if (list == null || list.size() < 1)
 			return CardState.NO_TARGET;
+
+		IFluidTank tank = list.get(0);
 
 		int amount = 0;
 		String name = "";
-		if (storage.getFluid() != null) {
-			amount = storage.getFluid().amount;
+		if (tank.getFluid() != null) {
+			amount = tank.getFluidAmount();
 			if (amount > 0)
-				name = FluidRegistry.getFluidName(storage.getFluid());
+				name = I18n.format(tank.getFluid().getTranslationKey());
 		}
-		reader.setInt("capacity", storage.getCapacity());
+		reader.setInt("capacity", tank.getCapacity());
 		reader.setInt("amount", amount);
 		reader.setString("name", name);
 		return CardState.OK;
 	}
 
 	@Override
-	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(World world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		int capacity = reader.getInt("capacity");
 		int amount = reader.getInt("amount");
 
-		if ((displaySettings & 1) > 0) {
+		if ((settings & 1) > 0) {
 			String name = reader.getString("name");
 			if (name == "")
-				name = I18n.format("msg.ec.None");
+				name = isServer ? "N/A" : I18n.format("msg.ec.None");
 			result.add(new PanelString("msg.ec.InfoPanelName", name, showLabels));
 		}
-		if ((displaySettings & 2) > 0)
+		if ((settings & 2) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelAmountmB", amount, showLabels));
-		if ((displaySettings & 4) > 0)
+		if ((settings & 4) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelFreemB", capacity - amount, showLabels));
-		if ((displaySettings & 8) > 0)
+		if ((settings & 8) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelCapacitymB", capacity, showLabels));
-		if ((displaySettings & 16) > 0)
+		if ((settings & 16) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelPercentage", capacity == 0 ? 100 : (amount * 100 / capacity), showLabels));
 		return result;
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(5);
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidName"), 1, damage));
+		/*result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidName"), 1, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidAmount"), 2, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidFree"), 4, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidCapacity"), 8, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidPercentage"), 16, damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidPercentage"), 16, damage));*/
 		return result;
 	}
 
 	@Override
-	public int getKitFromCard() {
-		return ItemCardType.KIT_LIQUID;
+	public Item getKitFromCard() {
+		return ModItems.kit_liquid.get();
 	}
 }

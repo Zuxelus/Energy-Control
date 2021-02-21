@@ -2,38 +2,35 @@ package com.zuxelus.energycontrol.items.cards;
 
 import java.util.List;
 
-import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.ITouchAction;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
+import com.zuxelus.energycontrol.init.ModItems;
 
+import net.minecraft.block.AbstractButtonBlock;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockButton;
-import net.minecraft.block.BlockLever;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.EnumProperty;
+import net.minecraft.state.properties.AttachFace;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemCardToggle extends ItemCardBase implements ITouchAction {
-	private static final PropertyBool POWERED = PropertyBool.create("powered");
-
-	public ItemCardToggle() {
-		super(ItemCardType.CARD_TOGGLE, "card_toggle");
-	}
+public class ItemCardToggle extends ItemCardMain implements ITouchAction {
+	private static final BooleanProperty POWERED = BlockStateProperties.POWERED;
+	private static final EnumProperty<AttachFace> FACE = BlockStateProperties.FACE;
+	private static final DirectionProperty HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
 
 	@Override
 	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
@@ -41,20 +38,19 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 		if (target == null)
 			return CardState.NO_TARGET;
 
-		IBlockState state = world.getBlockState(target);
+		BlockState state = world.getBlockState(target);
 		if (state == null)
 			return CardState.NO_TARGET;
 		
-		if (state.getBlock() == Blocks.LEVER || state.getBlock() instanceof BlockButton) {
-			boolean value = ((Boolean)state.getValue(POWERED)).booleanValue();
-			reader.setBoolean("value", value);
+		if (state.getBlock() == Blocks.LEVER || state.getBlock() instanceof AbstractButtonBlock) {
+			reader.setBoolean("value", state.get(POWERED));
 			return CardState.OK;
 		}
 		return CardState.NO_TARGET;
 	}
 
 	@Override
-	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(World world, int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		PanelString line = new PanelString();
 		if (reader.getBoolean("value")) {
@@ -69,46 +65,56 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		return null;
 	}
 
 	@Override
-	public int getKitFromCard() {
-		return ItemCardType.KIT_TOGGLE;
+	public Item getKitFromCard() {
+		return ModItems.kit_toggle.get();
 	}
 
 	@Override
-	public void runTouchAction(World world, ICardReader reader) {
+	public boolean runTouchAction(World world, ICardReader reader, ItemStack stack) {
 		BlockPos pos = reader.getTarget();
 		if (pos == null)
-			return;
+			return false;
 
-		IBlockState state = world.getBlockState(pos);
+		BlockState state = world.getBlockState(pos);
 		if (state == null)
-			return;
+			return false;
 		
 		Block block = state.getBlock();
 		if (block == Blocks.LEVER) {
-			state = state.cycleProperty(POWERED);
+			state = state.cycle(POWERED);
 			world.setBlockState(pos, state, 3);
-			world.notifyNeighborsOfStateChange(pos, state.getBlock(), false);
-			EnumFacing enumfacing = ((BlockLever.EnumOrientation) state.getValue(BlockLever.FACING)).getFacing();
-			world.notifyNeighborsOfStateChange(pos.offset(enumfacing.getOpposite()), state.getBlock(), false);
+			world.notifyNeighborsOfStateChange(pos, block);
+			world.notifyNeighborsOfStateChange(pos.offset(getFacing(state).getOpposite()), block);
 		}
-		if (state.getBlock() instanceof BlockButton) {
-			world.setBlockState(pos, state.withProperty(POWERED, Boolean.valueOf(true)), 3);
-			world.markBlockRangeForRenderUpdate(pos, pos);
-			world.notifyNeighborsOfStateChange(pos, block, false);
-			world.notifyNeighborsOfStateChange(pos.offset(state.getValue(BlockButton.FACING).getOpposite()), block, false);
-			world.scheduleUpdate(pos, block, block.tickRate(world));
+		if (state.getBlock() instanceof AbstractButtonBlock) {
+			world.setBlockState(pos, state.with(POWERED, Boolean.valueOf(true)), 3);
+			world.notifyNeighborsOfStateChange(pos, block);
+			world.notifyNeighborsOfStateChange(pos.offset(getFacing(state).getOpposite()), block);
+			world.getPendingBlockTicks().scheduleTick(pos, block, block.tickRate(world));
+		}
+		return false;
+	}
+
+	private static Direction getFacing(BlockState state) {
+		switch ((AttachFace) state.get(FACE)) {
+		case CEILING:
+			return Direction.DOWN;
+		case FLOOR:
+			return Direction.UP;
+		default:
+			return state.get(HORIZONTAL_FACING);
 		}
 	}
 
 	@Override
 	public void renderImage(TextureManager manager, ICardReader reader) {
-		double x = -0.5D;
+		/*double x = -0.5D;
 		double y = -0.5D;
 		double z = 0.009;
 		double height = 1;
@@ -126,6 +132,6 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 		bufferbuilder.pos(x + width, y + height, z).tex((double)((float)(textureX + width)), (double)((float)(textureY + height))).endVertex();
 		bufferbuilder.pos(x + width, y + 0, z).tex((double)((float)(textureX + width)), (double)((float)(textureY + 0))).endVertex();
 		bufferbuilder.pos(x + 0, y + 0, z).tex((double)((float)(textureX + 0)), (double)((float)(textureY + 0))).endVertex();
-		tessellator.draw();
+		tessellator.draw();*/
 	}
 }

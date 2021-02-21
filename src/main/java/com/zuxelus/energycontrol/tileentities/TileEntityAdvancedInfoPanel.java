@@ -1,11 +1,23 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import com.zuxelus.energycontrol.items.ItemUpgrade;
+import com.zuxelus.energycontrol.containers.ContainerAdvancedInfoPanel;
+import com.zuxelus.energycontrol.containers.ContainerInfoPanel;
+import com.zuxelus.energycontrol.init.ModItems;
+import com.zuxelus.energycontrol.init.ModTileEntityTypes;
+import com.zuxelus.energycontrol.items.cards.ItemCardAppEngInv;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	public static final String NAME = "info_panel_advanced";
@@ -28,12 +40,15 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	public byte rotateHor;
 	public byte rotateVert;
 
-	public TileEntityAdvancedInfoPanel() {
-		super();
-		customName = "tile." + NAME + ".name";
+	public TileEntityAdvancedInfoPanel(TileEntityType<?> type) {
+		super(type);
 		colorBackground = 6;
 		colored = true;
 		thickness = 16;
+	}
+
+	public TileEntityAdvancedInfoPanel() {
+		this(ModTileEntityTypes.info_panel_advanced.get());
 	}
 
 	public byte getPowerMode() {
@@ -107,58 +122,58 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	}
 
 	@Override
-	public void onServerMessageReceived(NBTTagCompound tag) {
-		if (!tag.hasKey("type"))
+	public void onServerMessageReceived(CompoundNBT tag) {
+		if (!tag.contains("type"))
 			return;
-		int type = tag.getInteger("type");
+		int type = tag.getInt("type");
 		if (type < 10) {
 			super.onServerMessageReceived(tag);
 			return;
 		}
 		switch (type) {
 		case 10:
-			setValues(tag.getInteger("value"));
+			setValues(tag.getInt("value"));
 			break;
 		case 11:
-			setPowerMode((byte) tag.getInteger("value"));
+			setPowerMode((byte) tag.getInt("value"));
 			break;
 		}
 	}
 
 	@Override
-	protected void deserializeDisplaySettings(NBTTagCompound tag) {
+	protected void deserializeDisplaySettings(CompoundNBT tag) {
 		deserializeSlotSettings(tag, "dSettings1", SLOT_CARD1);
 		deserializeSlotSettings(tag, "dSettings2", SLOT_CARD2);
 		deserializeSlotSettings(tag, "dSettings3", SLOT_CARD3);
 	}
 
 	@Override
-	protected void readProperties(NBTTagCompound tag) {
+	protected void readProperties(CompoundNBT tag) {
 		super.readProperties(tag);
-		if (tag.hasKey("powerMode"))
+		if (tag.contains("powerMode"))
 			setPowerMode(tag.getByte("powerMode"));
-		if (tag.hasKey("thickness"))
+		if (tag.contains("thickness"))
 			thickness = tag.getByte("thickness");
-		if (tag.hasKey("rotateHor"))
+		if (tag.contains("rotateHor"))
 			rotateHor = tag.getByte("rotateHor");
-		if (tag.hasKey("rotateVert"))
+		if (tag.contains("rotateVert"))
 			rotateVert = tag.getByte("rotateVert");
 	}
 
 	@Override
-	protected void serializeDisplaySettings(NBTTagCompound tag) {
-		tag.setTag("dSettings1", serializeSlotSettings(SLOT_CARD1));
-		tag.setTag("dSettings2", serializeSlotSettings(SLOT_CARD2));
-		tag.setTag("dSettings3", serializeSlotSettings(SLOT_CARD3));
+	protected void serializeDisplaySettings(CompoundNBT tag) {
+		tag.put("dSettings1", serializeSlotSettings(SLOT_CARD1));
+		tag.put("dSettings2", serializeSlotSettings(SLOT_CARD2));
+		tag.put("dSettings3", serializeSlotSettings(SLOT_CARD3));
 	}
 
 	@Override
-	protected NBTTagCompound writeProperties(NBTTagCompound tag) {
+	protected CompoundNBT writeProperties(CompoundNBT tag) {
 		tag = super.writeProperties(tag);
-		tag.setByte("powerMode", powerMode);
-		tag.setByte("thickness", thickness);
-		tag.setByte("rotateHor", rotateHor);
-		tag.setByte("rotateVert", rotateVert);
+		tag.putByte("powerMode", powerMode);
+		tag.putByte("thickness", thickness);
+		tag.putByte("rotateHor", rotateHor);
+		tag.putByte("rotateVert", rotateVert);
 		return tag;
 	}
 
@@ -172,7 +187,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	}
 
 	@Override
-	protected boolean isColoredEval() {
+	public boolean isColoredEval() {
 		return true;
 	}
 
@@ -199,9 +214,31 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 		case SLOT_CARD3:
 			return stack.getItem() instanceof ItemCardMain;
 		case SLOT_UPGRADE_RANGE:
-			return stack.getItem() instanceof ItemUpgrade && stack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE;
+			return stack.getItem().equals(ModItems.upgrade_range.get());
 		default:
 			return false;
 		}
+	}
+
+	@Override
+	public boolean runTouchAction(ItemStack stack, BlockPos pos, Vec3d hit) {
+		if (world.isRemote)
+			return false;
+		ItemStack card = getStackInSlot(SLOT_CARD1);
+		if (card.isEmpty() || !(card.getItem() instanceof ItemCardAppEngInv))
+			return false;
+		((ItemCardAppEngInv) card.getItem()).runTouchAction(this, card, stack, SLOT_CARD1);
+		return true;
+	}
+
+	// INamedContainerProvider
+	@Override
+	public Container createMenu(int windowId, PlayerInventory inventory, PlayerEntity player) {
+		return new ContainerAdvancedInfoPanel(windowId, inventory, this);
+	}
+
+	@Override
+	public ITextComponent getDisplayName() {
+		return new TranslationTextComponent(ModItems.info_panel_advanced.get().getTranslationKey());
 	}
 }

@@ -2,29 +2,24 @@ package com.zuxelus.energycontrol.items.kits;
 
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.init.ModItems;
-import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class ItemKitRedstone extends ItemKitBase {
-
-	public ItemKitRedstone() {
-		super(ItemCardType.KIT_REDSTONE, "kit_redstone");
-	}
+public class ItemKitRedstone extends ItemKitMain {
 
 	@Override
-	public ItemStack getSensorCard(ItemStack stack, Item card, EntityPlayer player, World world, BlockPos pos) {
-		IBlockState state = world.getBlockState(pos);
+	public ItemStack getSensorCard(ItemStack stack, PlayerEntity player, World world, BlockPos pos, Direction side) {
+		BlockState state = world.getBlockState(pos);
 		Block block = state.getBlock();
 		if (block != Blocks.AIR) {
-			ItemStack newCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_REDSTONE);
+			ItemStack newCard = new ItemStack(ModItems.card_redstone.get());
 			ItemStackHelper.setCoordinates(newCard, pos);
 			return newCard;
 		}
