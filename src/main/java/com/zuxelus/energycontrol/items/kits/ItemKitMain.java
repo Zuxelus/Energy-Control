@@ -56,6 +56,8 @@ public class ItemKitMain extends Item {
 			register("ItemKitBigReactors");
 		if (Loader.isModLoaded("nuclearcraft"))
 			register("ItemKitNuclearCraft");
+		if (Loader.isModLoaded("mekanismgenerators"))
+			register("ItemKitMekanism");
 	}
 
 	private static void register(String className) {
@@ -120,7 +122,7 @@ public class ItemKitMain extends Item {
 
 	@Override
 	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) { 	
-		if (player == null || !(player instanceof EntityPlayerMP))
+		if (player == null)
 			return EnumActionResult.PASS;
 
 		ItemStack stack = player.getHeldItem(hand);
@@ -129,6 +131,9 @@ public class ItemKitMain extends Item {
 		ItemStack card = getItemKitBase(stack.getItemDamage()).getSensorCard(stack, ModItems.itemCard, player, world, pos, side);
 		if (card.isEmpty())
 			return EnumActionResult.PASS;
+
+		if (!(player instanceof EntityPlayerMP))
+			return EnumActionResult.SUCCESS;
 
 		stack.shrink(1);
 		EntityItem dropItem = new EntityItem(world, player.posX, player.posY, player.posZ, card);

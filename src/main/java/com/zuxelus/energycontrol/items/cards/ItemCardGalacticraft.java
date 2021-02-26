@@ -182,6 +182,16 @@ public class ItemCardGalacticraft extends ItemCardBase {
 			//reader.setDouble("sunVisible", Math.round(((TileEntitySolarArrayController) te).solarStrength / 9.0F * 1000) / 10.0D);
 			return CardState.OK;
 		}
+		if (te instanceof TileEntityOxygenDistributor) {
+			reader.setInt("type", 13);
+			reader.setString("status", GalacticraftHelper.getStatus((TileEntityOxygenDistributor) te));
+			reader.setDouble("stored", (double) ((TileEntityOxygenDistributor) te).storage.getEnergyStoredGC());
+			reader.setDouble("capacity", (double) ((TileEntityOxygenDistributor) te).storage.getCapacityGC());
+			reader.setDouble("oxygenPerTick", (double) ((TileEntityOxygenDistributor) te).oxygenPerTick * 20);
+			reader.setInt("oxygenStored", ((TileEntityOxygenDistributor) te).getOxygenStored());
+			reader.setInt("oxygenCapacity", ((TileEntityOxygenDistributor) te).getMaxOxygenStored());
+			return CardState.OK;
+		}
 		return CardState.NO_TARGET;
 	}
 
@@ -260,6 +270,11 @@ public class ItemCardGalacticraft extends ItemCardBase {
 		case 12:
 			result.add(new PanelString("msg.ec.InfoPanelOutputgJ", reader.getInt("production"), showLabels));
 			result.add(new PanelString("msg.ec.InfoPanelEnvironmentalBoost", reader.getDouble("boost"), showLabels));
+			break;
+		case 13:
+			result.add(new PanelString("msg.ec.InfoPanelOxygenUse", reader.getDouble("oxygenPerTick"), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelOxygen",
+					String.format("%s / %s mB", reader.getInt("oxygenStored"), reader.getInt("oxygenCapacity")), showLabels));
 			break;
 		}
 		return result;

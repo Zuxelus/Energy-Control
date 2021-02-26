@@ -71,6 +71,8 @@ public final class ItemCardMain extends Item {
 			register("ItemCardBigReactors");
 		if (Loader.isModLoaded("nuclearcraft"))
 			register("ItemCardNuclearCraft");
+		if (Loader.isModLoaded("mekanismgenerators"))
+			register("ItemCardMekanism");
 	}
 
 	private static void register(String className) {

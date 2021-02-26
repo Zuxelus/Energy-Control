@@ -42,9 +42,7 @@ public class GuiCardHolder extends GuiContainer {
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.getTextureManager().bindTexture(TEXTURE);
-		int left = (width - xSize) / 2;
-		int top = (height - ySize) / 2;
-		drawTexturedModalRect(left, top, 0, 0, xSize, inventoryRows * 18 + 17);
-		drawTexturedModalRect(left, top + inventoryRows * 18 + 17, 0, 126, xSize, 96);
+		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, inventoryRows * 18 + 17);
+		drawTexturedModalRect(guiLeft, guiTop + inventoryRows * 18 + 17, 0, 126, xSize, 96);
 	}
 }

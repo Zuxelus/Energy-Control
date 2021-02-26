@@ -7,7 +7,6 @@ import com.zuxelus.zlib.tileentities.TileEntityFacing;
 import ic2.api.util.Keys;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -16,22 +15,16 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class InfoPanel extends FacingBlock {
-	EnumFacing rotation;
 
 	@Override
-	public TileEntity createNewTileEntity(World world, int meta) {
-		TileEntityInfoPanel te = new TileEntityInfoPanel();
-		te.setFacing(meta);
-		if (rotation != null)
-			te.setRotation(rotation.getIndex());
-		return te;
+	protected TileEntityFacing createTileEntity() {
+		return new TileEntityInfoPanel();
 	}
 
 	@Override
@@ -66,28 +59,6 @@ public class InfoPanel extends FacingBlock {
 			if (((TileEntityInfoPanel) te).runTouchAction(player.getHeldItem(hand), pos, hitX, hitY, hitZ))
 				return true;
 		return super.onBlockActivated(world, pos, state, player, hand, facing, hitX, hitY, hitZ);
-	}
-
-	@Override
-	public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-		rotation = placer.getHorizontalFacing().getOpposite();
-		if (placer.rotationPitch >= 65)
-			return getDefaultState().withProperty(FACING, EnumFacing.UP);
-		if (placer.rotationPitch <= -65) {
-			rotation = placer.getHorizontalFacing();
-			return getDefaultState().withProperty(FACING, EnumFacing.DOWN);
-		}
-		switch (MathHelper.floor(placer.rotationYaw * 4.0F / 360.0F + 0.5D) & 3) {
-		case 0:
-			return getDefaultState().withProperty(FACING, EnumFacing.NORTH);
-		case 1:
-			return getDefaultState().withProperty(FACING, EnumFacing.EAST);
-		case 2:
-			return getDefaultState().withProperty(FACING, EnumFacing.SOUTH);
-		case 3:
-			return getDefaultState().withProperty(FACING, EnumFacing.WEST);
-		}
-		return getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
 	}
 
 	@Override

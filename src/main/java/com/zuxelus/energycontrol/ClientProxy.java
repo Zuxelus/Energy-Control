@@ -136,6 +136,7 @@ public class ClientProxy extends ServerProxy {
 	@Override
 	public void registerEventHandlers() {
 		MinecraftForge.EVENT_BUS.register(ClientTickHandler.instance);
+		MinecraftForge.EVENT_BUS.register(ServerTickHandler.instance);
 	}
 
 	@Override

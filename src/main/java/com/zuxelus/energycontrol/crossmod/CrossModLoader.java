@@ -39,7 +39,7 @@ public class CrossModLoader {
 		buildCraft = findMod("buildcraftcore", "CrossBuildCraft");
 		draconic = findMod("draconicevolution", "CrossDraconicEvolution");
 		galacticraft = findMod("galacticraftplanets", "CrossGalacticraft");
-		mekanism = findMod("mekanism", "CrossMekanism");
+		mekanism = findMod("mekanismgenerators", "CrossMekanism");
 		nuclearCraft = findMod("nuclearcraft", "CrossNuclearCraft");
 		openComputers = findMod("opencomputers","opencomputers.CrossOpenComputers");
 		computerCraft = findMod("computercraft","computercraft.CrossComputerCraft");

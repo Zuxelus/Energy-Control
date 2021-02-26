@@ -64,8 +64,8 @@ public class ItemCardGeneratorKinetic extends ItemCardBase {
 			reader.setDouble("maxEnergy", tag.getDouble("maxEnergy"));
 			reader.setDouble("multiplier", tag.getDouble("multiplier"));
 			break;
-		case 5: // TileEntityWaterKineticGenerator
-		case 6: // TileEntityWindKineticGenerator
+		case 5: // TileEntityWindKineticGenerator
+		case 6: // TileEntityWaterKineticGenerator
 			reader.setDouble("output", tag.getDouble("output"));
 			reader.setDouble("wind", tag.getDouble("wind"));
 			reader.setDouble("multiplier", tag.getDouble("multiplier"));
@@ -125,11 +125,11 @@ public class ItemCardGeneratorKinetic extends ItemCardBase {
 				result.add(new PanelString("msg.ec.InfoPanelMultiplier", reader.getDouble("multiplier"), showLabels));
 				addOnOff(result, isServer, reader.getBoolean("active"));
 			break;
-		case 5: // TileEntityWaterKineticGenerator
+		case 5: // TileEntityWindKineticGenerator
 			if ((settings & 1) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelOutputKU", reader.getDouble("output"), showLabels));
 			if ((settings & 2) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelWaterFlow", reader.getDouble("wind"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelWindStrength", reader.getDouble("wind"), showLabels));
 			if ((settings & 32) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelMultiplier", reader.getDouble("multiplier"), showLabels));
 			if ((settings & 64) > 0)
@@ -137,11 +137,11 @@ public class ItemCardGeneratorKinetic extends ItemCardBase {
 			if ((settings & 16) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelRotorHealth", reader.getDouble("health"), showLabels));
 			break;
-		case 6: // TileEntityWindKineticGenerator
+		case 6: // TileEntityWaterKineticGenerator
 			if ((settings & 1) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelOutputKU", reader.getDouble("output"), showLabels));
 			if ((settings & 2) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelWindStrength", reader.getDouble("wind"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelWaterFlow", reader.getDouble("wind"), showLabels));
 			if ((settings & 32) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelMultiplier", reader.getDouble("multiplier"), showLabels));
 			if ((settings & 64) > 0)

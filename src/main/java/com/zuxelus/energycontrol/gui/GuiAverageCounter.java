@@ -3,28 +3,24 @@ package com.zuxelus.energycontrol.gui;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.containers.ContainerAverageCounter;
 import com.zuxelus.energycontrol.utils.StringUtils;
+import com.zuxelus.zlib.gui.GuiContainerBase;
 import com.zuxelus.zlib.network.NetworkHelper;
 
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiAverageCounter extends GuiContainer {
-	private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/gui_energy_counter.png");
+public class GuiAverageCounter extends GuiContainerBase {
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_energy_counter.png");
 
-	private String name;
 	private ContainerAverageCounter container;
 
 	public GuiAverageCounter(ContainerAverageCounter container) {
-		super(container);
+		super(container, "tile.average_counter.name", TEXTURE);
 		this.container = container;
-		name = I18n.format("tile.average_counter.name");
 	}
 
 	private void initControls() {
@@ -50,22 +46,13 @@ public class GuiAverageCounter extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		fontRenderer.drawString(name, (xSize - fontRenderer.getStringWidth(name)) / 2, 6, 0x404040);
+		drawCenteredText(name, xSize, 6);
 		fontRenderer.drawString(I18n.format("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 		String key = "msg.ec.InfoPanelOutput";
 		String value = StringUtils.getFormatted(key, container.te.getClientAverage(), true);
 		fontRenderer.drawString(value, (xSize - fontRenderer.getStringWidth(value)) / 2, 22, 0x404040);
 		value = StringUtils.getFormatted("msg.ec.AverageCounterPeriod", container.te.period, true);
 		fontRenderer.drawString(value, (xSize - fontRenderer.getStringWidth(value)) / 2, 32, 0x404040);
-	}
-
-	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		mc.getTextureManager().bindTexture(TEXTURE_LOCATION);
-		int left = (width - xSize) / 2;
-		int top = (height - ySize) / 2;
-		drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
 	}
 
 	@Override

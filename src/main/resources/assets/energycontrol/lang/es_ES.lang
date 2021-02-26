@@ -55,6 +55,8 @@ item.kit_galacticraft.name=Kit del Sensor de Galacticraft
 item.card_galacticraft.name=Tarjeta del Sensor de Galacticraft
 item.kit_nuclearcraft.name=Kit del Sensor de NuclearCraft
 item.card_nuclearcraft.name=Tarjeta del Sensor de Nuclearcraft
+item.kit_mekanism.name=Kit del Sensor de Mekanism
+item.card_mekanism.name=Tarjeta del Sensor de Mekanism
 
 #Internal Blocks
 tile.thermal_monitor.name=Monitor Térmico

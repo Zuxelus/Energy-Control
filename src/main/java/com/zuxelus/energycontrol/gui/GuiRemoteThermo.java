@@ -6,30 +6,26 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.containers.ContainerRemoteThermo;
 import com.zuxelus.energycontrol.gui.controls.CompactButton;
 import com.zuxelus.energycontrol.gui.controls.GuiThermoInvertRedstone;
+import com.zuxelus.zlib.gui.GuiContainerBase;
 import com.zuxelus.zlib.network.NetworkHelper;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiRemoteThermo extends GuiContainer {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/gui_remote_thermo.png");
+public class GuiRemoteThermo extends GuiContainerBase {
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_remote_thermo.png");
 
 	private ContainerRemoteThermo container;
 	private GuiTextField textboxHeat = null;
-	private String name;
 
 	public GuiRemoteThermo(ContainerRemoteThermo container) {
-		super(container);
+		super(container, "tile.remote_thermo.name", TEXTURE);
 		this.container = container;
-		name = I18n.format("tile.remote_thermo.name");
 		xSize = 214;
 		ySize = 166;
 	}
@@ -100,7 +96,7 @@ public class GuiRemoteThermo extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int par1, int par2) {
-		fontRenderer.drawString(name, (xSize - fontRenderer.getStringWidth(name)) / 2, 6, 0x404040);
+		drawCenteredText(name, xSize, 6);
 		fontRenderer.drawString(I18n.format("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 		if (textboxHeat != null)
 			textboxHeat.drawTextBox();
@@ -123,11 +119,7 @@ public class GuiRemoteThermo extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		mc.getTextureManager().bindTexture(TEXTURE);
-		int left = (width - xSize) / 2;
-		int top = (height - ySize) / 2;
-		drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
+		super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
 
 		// Charge level progress bar
 		int chargeWidth = (int) (76F * container.te.getEnergy() / container.te.getMaxStorage());
@@ -135,7 +127,7 @@ public class GuiRemoteThermo extends GuiContainer {
 			chargeWidth = 76;
 
 		if (chargeWidth > 0)
-			drawTexturedModalRect(left + 55 - 14, top + 54, 8, 166, chargeWidth, 14);
+			drawTexturedModalRect(guiLeft + 55 - 14, guiTop + 54, 8, 166, chargeWidth, 14);
 	}
 
 	@Override

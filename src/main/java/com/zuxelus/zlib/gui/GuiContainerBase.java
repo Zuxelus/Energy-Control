@@ -23,13 +23,13 @@ public class GuiContainerBase extends GuiContainer {
 	protected static final int REDGLOW = multiplyColorComponents(RED, 0.16F);
 	protected DecimalFormat fraction = new DecimalFormat("##0.00");
 
-	protected final ResourceLocation texture;
+	private final ResourceLocation texture;
 	protected String name;
 
-	public GuiContainerBase(Container container, String name, String texture) {
+	public GuiContainerBase(Container container, String name, ResourceLocation texture) {
 		super(container);
 		this.name = I18n.format(name);
-		this.texture = new ResourceLocation(texture);
+		this.texture = texture;
 	}
 
 	@Override

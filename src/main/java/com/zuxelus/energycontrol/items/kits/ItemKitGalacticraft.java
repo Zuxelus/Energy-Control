@@ -25,14 +25,15 @@ public class ItemKitGalacticraft extends ItemKitBase {
 	public ItemStack getSensorCard(ItemStack stack, Item card, EntityPlayer player, World world, BlockPos pos, EnumFacing side) {
 		TileEntity te = world.getTileEntity(pos);
 		if (te instanceof TileEntityOxygenCollector || te instanceof TileEntityOxygenSealer
+				|| te instanceof TileEntityOxygenDistributor
 				|| te instanceof TileEntityOxygenDetector || te instanceof TileEntityRefinery
 				|| te instanceof TileEntityElectrolyzer || te instanceof TileEntityMethaneSynthesizer
 				|| te instanceof TileEntityGasLiquefier || te instanceof TileEntityOxygenStorageModule
 				|| te instanceof TileEntityEnergyStorageModule || te instanceof TileEntitySolar
 				|| te instanceof TileEntityLaunchController || te instanceof TileEntitySolarArrayController) {
-			ItemStack sensorLocationCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_GALACTICRAFT);
-			ItemStackHelper.setCoordinates(sensorLocationCard, pos);
-			return sensorLocationCard;
+			ItemStack newCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_GALACTICRAFT);
+			ItemStackHelper.setCoordinates(newCard, pos);
+			return newCard;
 		}
 		return ItemStack.EMPTY;
 	}

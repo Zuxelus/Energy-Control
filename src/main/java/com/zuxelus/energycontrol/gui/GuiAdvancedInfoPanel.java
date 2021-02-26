@@ -15,10 +15,7 @@ import com.zuxelus.zlib.gui.controls.GuiButtonGeneral;
 import com.zuxelus.zlib.network.NetworkHelper;
 
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -27,13 +24,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiAdvancedInfoPanel extends GuiInfoPanel {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_advanced_info_panel.png");
-	private TileEntityAdvancedInfoPanel panel;
 
 	public GuiAdvancedInfoPanel(ContainerAdvancedInfoPanel container) {
-		super(container);
+		super(container, "tile.info_panel_advanced.name", TEXTURE);
 		ySize = 223;
-		panel = container.te;
-		name = I18n.format("tile.info_panel_advanced.name");
 	}
 
 	@Override
@@ -44,7 +38,7 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
 		addButton(new GuiButtonGeneral(ID_LABELS, guiLeft + 83, guiTop + 42, 16, 16, TEXTURE, 176, panel.getShowLabels() ? 15 : 31).setGradient());
 		addButton(new GuiButtonGeneral(ID_SLOPE, guiLeft + 83 + 17 * 1, guiTop + 42, 16, 16, TEXTURE, 192, 15).setGradient());
 		addButton(new GuiButtonGeneral(ID_COLORS, guiLeft + 83 + 17 * 2, guiTop + 42, 16, 16, TEXTURE, 192, 28).setGradient().setScale(2));
-		addButton(new GuiButtonGeneral(ID_POWER, guiLeft + 83 + 17 * 3, guiTop + 42, 16, 16, TEXTURE, 192 - 16, getIconPowerTopOffset(panel.getPowerMode())).setGradient());
+		addButton(new GuiButtonGeneral(ID_POWER, guiLeft + 83 + 17 * 3, guiTop + 42, 16, 16, TEXTURE, 192 - 16, getIconPowerTopOffset(((TileEntityAdvancedInfoPanel) panel).getPowerMode())).setGradient());
 		addButton(new GuiButtonGeneral(ID_TICKRATE, guiLeft + 83 + 17 * 4, guiTop + 42 + 17, 16, 16, Integer.toString(panel.getTickRate())).setGradient());
 
 		if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain) {
@@ -88,12 +82,8 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		mc.getTextureManager().bindTexture(TEXTURE);
-		int left = (width - xSize) / 2;
-		int top = (height - ySize) / 2;
-		drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
-		drawTexturedModalRect(left + 24, top + 62 + activeTab * 14, 182, 0, 1, 15);
+		super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
+		drawTexturedModalRect(guiLeft + 24, guiTop + 62 + activeTab * 14, 182, 0, 1, 15);
 	}
 
 	@Override
@@ -118,14 +108,13 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
 	protected void actionPerformed(GuiButton button) {
 		switch (button.id) {
 		case ID_POWER:
-			byte mode = panel.getNextPowerMode();
+			byte mode = ((TileEntityAdvancedInfoPanel) panel).getNextPowerMode();
 			((GuiButtonGeneral) button).setTextureTop(getIconPowerTopOffset(mode));
 			NetworkHelper.updateSeverTileEntity(panel.getPos(), 11, mode);
-			panel.powerMode = mode;
+			((TileEntityAdvancedInfoPanel) panel).powerMode = mode;
 			return;
 		case ID_SLOPE:
-			GuiPanelSlope slopeGui = new GuiPanelSlope(this, panel);
-			mc.displayGuiScreen(slopeGui);
+			mc.displayGuiScreen(new GuiPanelSlope(this, (TileEntityAdvancedInfoPanel) panel));
 			return;
 		}
 		super.actionPerformed(button);

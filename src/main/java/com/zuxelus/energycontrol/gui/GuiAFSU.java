@@ -5,29 +5,26 @@ import java.util.Arrays;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.containers.ContainerAFSU;
+import com.zuxelus.zlib.gui.GuiContainerBase;
 import com.zuxelus.zlib.network.NetworkHelper;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiButtonImage;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiAFSU extends GuiContainer {
+public class GuiAFSU extends GuiContainerBase {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID + ":textures/gui/gui_afsu.png");
 
-	private String name;
 	private ContainerAFSU container;
 
 	public GuiAFSU(ContainerAFSU container) {
-		super(container);
+		super(container, "tile.afsu.name", TEXTURE);
 		this.container = container;
 		ySize = 196;
-		name = I18n.format("tile.afsu.name");
 	}
 
 	@Override
@@ -49,7 +46,7 @@ public class GuiAFSU extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		fontRenderer.drawString(name, (xSize - fontRenderer.getStringWidth(name)) / 2, 6, 0x404040);
+		drawCenteredText(name, xSize, 6);
 		fontRenderer.drawString(I18n.format("ic2.EUStorage.gui.info.armor"), 8, ySize - 126 + 3, 4210752);
 		fontRenderer.drawString(I18n.format("ic2.EUStorage.gui.info.level"), 51, 20, 4210752);
 		int e = (int) Math.min(container.te.getEnergy(), container.te.getCapacity());
@@ -61,9 +58,7 @@ public class GuiAFSU extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		mc.getTextureManager().bindTexture(TEXTURE);
-		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+		super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
 
 		int energyWidth = (int) (25.0D * container.te.getEnergy() / container.te.getCapacity());
 		if (energyWidth > 0)

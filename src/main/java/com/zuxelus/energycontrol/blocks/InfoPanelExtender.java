@@ -4,6 +4,7 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanelExtender;
+import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
 import ic2.api.util.Keys;
 import net.minecraft.block.state.IBlockState;
@@ -19,10 +20,8 @@ import net.minecraft.world.World;
 public class InfoPanelExtender extends FacingBlock {
 
 	@Override
-	public TileEntity createNewTileEntity(World world, int meta) {
-		TileEntityInfoPanelExtender te = new TileEntityInfoPanelExtender();
-		te.setFacing(meta);
-		return te;
+	protected TileEntityFacing createTileEntity() {
+		return new TileEntityInfoPanelExtender();
 	}
 
 	@Override

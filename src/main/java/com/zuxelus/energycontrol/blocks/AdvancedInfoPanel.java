@@ -8,6 +8,7 @@ import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
+import com.zuxelus.zlib.tileentities.TileEntityFacing;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import ic2.api.util.Keys;
@@ -23,13 +24,10 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class AdvancedInfoPanel extends InfoPanel {
+
 	@Override
-	public TileEntity createNewTileEntity(World world, int meta) {
-		TileEntityAdvancedInfoPanel te = new TileEntityAdvancedInfoPanel();
-		te.setFacing(meta);
-		if (rotation != null)
-			te.setRotation(rotation.getIndex());
-		return te;
+	protected TileEntityFacing createTileEntity() {
+		return new TileEntityAdvancedInfoPanel();
 	}
 
 	@Override
@@ -43,11 +41,10 @@ public class AdvancedInfoPanel extends InfoPanel {
 		if (screen == null)
 			return new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
 
-		//RotationOffset offset = new RotationOffset(te.thickness * 2, te.rotateHor / 7, te.rotateVert / 7).addOffset(screen, te.getPos(), te.getFacing(), te.getRotation());
-
 		EnumFacing enumfacing = (EnumFacing) state.getValue(FACING);
 		if (!(te instanceof TileEntityAdvancedInfoPanel) || enumfacing == null)
 			return new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+
 		switch (enumfacing) {
 		case EAST:
 			return new AxisAlignedBB(0.0D, 0.0D, 0.0D, 0.0625D * te.thickness, 1.0D, 1.0D);

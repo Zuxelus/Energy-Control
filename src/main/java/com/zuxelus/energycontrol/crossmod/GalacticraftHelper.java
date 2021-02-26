@@ -3,6 +3,7 @@ package com.zuxelus.energycontrol.crossmod;
 import micdoodle8.mods.galacticraft.core.GCBlocks;
 import micdoodle8.mods.galacticraft.core.fluid.OxygenPressureProtocol;
 import micdoodle8.mods.galacticraft.core.tile.TileEntityOxygenCollector;
+import micdoodle8.mods.galacticraft.core.tile.TileEntityOxygenDistributor;
 import micdoodle8.mods.galacticraft.core.tile.TileEntityOxygenSealer;
 import micdoodle8.mods.galacticraft.core.tile.TileEntityRefinery;
 import micdoodle8.mods.galacticraft.core.tile.TileEntitySolar;
@@ -187,5 +188,11 @@ public class GalacticraftHelper {
 		if (te.generateWatts > 0)
 			return EnumColor.DARK_GREEN + GCCoreUtil.translate("gui.status.collectingenergy.name");
 		return EnumColor.ORANGE + GCCoreUtil.translate("gui.status.unknown.name");
+	}
+
+	public static String getStatus(TileEntityOxygenDistributor te) {
+		if (te.getOxygenStored() < te.oxygenPerTick)
+			return EnumColor.DARK_RED + GCCoreUtil.translate("gui.status.missingoxygen.name");
+		return te.getGUIstatus();
 	}
 }

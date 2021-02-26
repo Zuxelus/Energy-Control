@@ -10,13 +10,11 @@ import com.zuxelus.energycontrol.containers.ContainerKitAssembler;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
+import com.zuxelus.zlib.gui.GuiContainerBase;
 import com.zuxelus.zlib.network.NetworkHelper;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -27,22 +25,17 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiKitAssembler extends GuiContainer {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/gui_kit_assembler.png");
+public class GuiKitAssembler extends GuiContainerBase {
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_kit_assembler.png");
 
-	private String name;
 	private ContainerKitAssembler container;
-	private ItemStack prevStack;
 	private GuiTextField textboxTitle;
 	private boolean modified;
 
 	public GuiKitAssembler(ContainerKitAssembler container) {
-		super(container);
+		super(container, "tile.kit_assembler.name", TEXTURE);
 		this.container = container;
 		ySize = 206;
-		name = I18n.format("tile.kit_assembler.name");
-		prevStack = ItemStack.EMPTY;
 	}
 
 	protected void initControls() {
@@ -98,23 +91,19 @@ public class GuiKitAssembler extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		mc.getTextureManager().bindTexture(TEXTURE);
-		int left = (width - xSize) / 2;
-		int top = (height - ySize) / 2;
-		drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
+		super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
 
 		int energyHeight = container.te.getEnergyFactor();
 		if (energyHeight > 0)
-			drawTexturedModalRect(left + 9, top + 62 + (14 - energyHeight), 176, 14 - energyHeight, 14, energyHeight);
+			drawTexturedModalRect(guiLeft + 9, guiTop + 62 + (14 - energyHeight), 176, 14 - energyHeight, 14, energyHeight);
 		int productionWidth = container.te.getProductionFactor();
 		if (energyHeight > 0)
-			drawTexturedModalRect(left + 86, top + 60, 176, 15, productionWidth, 17);
+			drawTexturedModalRect(guiLeft + 86, guiTop + 60, 176, 15, productionWidth, 17);
 	}
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		fontRenderer.drawString(name, (xSize - fontRenderer.getStringWidth(name)) / 2, 6, 0x404040);
+		drawCenteredText(name, xSize, 6);
 		if (textboxTitle != null)
 			textboxTitle.drawTextBox();
 	}

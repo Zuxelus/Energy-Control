@@ -55,6 +55,8 @@ item.kit_galacticraft.name=Набор с датчиком для Galacticraft
 item.card_galacticraft.name=Карта-датчик для Galacticraft
 item.kit_nuclearcraft.name=NuclearCraft Sensor Kit
 item.card_nuclearcraft.name=NuclearCraft Sensor Card
+item.kit_mekanism.name=Набор с датчиком для Mekanism
+item.card_mekanism.name=Карта-датчик для Mekanism
 
 #Internal Blocks
 tile.thermal_monitor.name=Датчик температуры

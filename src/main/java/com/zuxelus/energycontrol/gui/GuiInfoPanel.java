@@ -11,15 +11,13 @@ import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.containers.ContainerBase;
+import com.zuxelus.zlib.gui.GuiContainerBase;
 import com.zuxelus.zlib.gui.controls.GuiButtonGeneral;
 import com.zuxelus.zlib.network.NetworkHelper;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
@@ -31,8 +29,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiInfoPanel extends GuiContainer implements IContainerListener {
+public class GuiInfoPanel extends GuiContainerBase implements IContainerListener {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_info_panel.png");
+
 	protected static final int ID_LABELS = 1;
 	protected static final int ID_SLOPE = 2;
 	protected static final int ID_COLORS = 3;
@@ -40,18 +39,24 @@ public class GuiInfoPanel extends GuiContainer implements IContainerListener {
 	protected static final int ID_TEXT = 5;
 	protected static final int ID_TICKRATE = 6;
 
-	protected String name;
-	private TileEntityInfoPanel panel;
+	protected TileEntityInfoPanel panel;
 	protected GuiTextField textboxTitle;
 	protected byte activeTab;
 	protected boolean modified;
 
 	@SuppressWarnings("rawtypes")
 	public GuiInfoPanel(ContainerBase container) {
-		super(container);
+		super(container, "tile.info_panel.name", TEXTURE);
 		ySize = 201;
 		panel = (TileEntityInfoPanel)container.te;
-		name = I18n.format("tile.info_panel.name");
+		modified = false;
+		activeTab = 0;
+	}
+
+	@SuppressWarnings("rawtypes")
+	public GuiInfoPanel(ContainerBase container, String name, ResourceLocation texture) {
+		super(container, name, texture);
+		panel = (TileEntityInfoPanel)container.te;
 		modified = false;
 		activeTab = 0;
 	}
@@ -104,17 +109,8 @@ public class GuiInfoPanel extends GuiContainer implements IContainerListener {
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		mc.getTextureManager().bindTexture(TEXTURE);
-		int left = (width - xSize) / 2;
-		int top = (height - ySize) / 2;
-		drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
-	}
-
-	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		fontRenderer.drawString(name, (xSize - fontRenderer.getStringWidth(name)) / 2, 6, 0x404040);
+		drawCenteredText(name, xSize, 6);
 		if (textboxTitle != null)
 			textboxTitle.drawTextBox();
 	}

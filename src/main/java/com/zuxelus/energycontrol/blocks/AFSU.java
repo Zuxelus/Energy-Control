@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.tileentities.TileEntityAFSU;
+import com.zuxelus.zlib.tileentities.TileEntityFacing;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import net.minecraft.block.Block;
@@ -24,10 +25,8 @@ import net.minecraft.world.World;
 public class AFSU extends FacingBlock {
 
 	@Override
-	public TileEntity createNewTileEntity(World world, int meta) {
-		TileEntityAFSU te = new TileEntityAFSU();
-		te.setFacing(meta);
-		return te;
+	protected TileEntityFacing createTileEntity() {
+		return new TileEntityAFSU();
 	}
 
 	@Override
