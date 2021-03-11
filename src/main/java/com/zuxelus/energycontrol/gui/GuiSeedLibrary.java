@@ -1,8 +1,6 @@
 package com.zuxelus.energycontrol.gui;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
@@ -14,6 +12,7 @@ import com.zuxelus.zlib.network.NetworkHelper;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -45,8 +44,6 @@ public class GuiSeedLibrary extends GuiContainer {
 	public int lastMouseY = -1;
 	String tooltip = null;
 
-	protected List realControls = null;
-	protected List noControls = new ArrayList();
 	private boolean rightClick = false;
 	private GuiButton rightSelect;
 
@@ -94,22 +91,6 @@ public class GuiSeedLibrary extends GuiContainer {
 		unk_ggr_button = new GuiButtonGeneral(3, guiLeft + left + (main_width * 3) / 8 - 9, guiTop + middle + 20, 18, 20, TEXTURE, 176, 84, 21);
 		// unk_ggr_button.tooltip = "Seeds with unknown GGR included";
 		addButton(unk_ggr_button);
-
-		int x = guiLeft + left + 3;
-		int y = guiTop + 86;
-		for (int dir = 0; dir < 6; dir++) {
-			String key = "BTNSWE";
-			String name = "" + key.charAt(dir);
-		}
-
-		String[] labels = new String[] { "Growth", "Gain", "Resistance", "Total" };
-		String[] tooltips = new String[] { "Faster growth speed", "More resources on harvest", "Better weed resistance", "Worse environmental tolerance" };
-		int label_left = guiLeft + center + 10;
-		int label_width = (main_width / 2) - 20;
-		int label_top = guiTop + top + 2;
-		int label_height = 9;
-
-		realControls = buttonList;
 	}
 
 	@Override
@@ -147,7 +128,7 @@ public class GuiSeedLibrary extends GuiContainer {
 		SeedLibraryFilter filter = container.te.getGUIFilter();
 
 		drawCenteredString("Seed Type", left + main_width / 4, top + 2, 0x404040);
-		drawCenteredString(filter.getCropName(), left + main_width / 4, top + 2 + 8 + 1 + 18 + 2, 0x404040);
+		drawCenteredString(I18n.format(filter.getCropName()), left + main_width / 4, top + 2 + 8 + 1 + 18 + 2, 0x404040);
 
 		String count;
 		if (container.te.seeds_available >= 65535)
@@ -193,10 +174,7 @@ public class GuiSeedLibrary extends GuiContainer {
 			mc.renderEngine.bindTexture(TEXTURE);
 			drawTexturedModalRect(left + 5, bottom + 2, 178, 44, 14, 16);
 			fontRenderer.drawString("Battery slot", left + 23, bottom + 5, 0x404040);
-
-			buttonList = noControls;
-		} else
-			buttonList = realControls;
+		}
 
 		fontRenderer.drawString("Inventory", 8, (ySize - 96) + 4, 0x404040);
 
@@ -264,11 +242,9 @@ public class GuiSeedLibrary extends GuiContainer {
 		drawTexturedModalRect(x + pre_size + in_size - 1, y - 1, 3, 232, 3, 9);
 
 		// With slight smoothing.
-		GL11.glEnable(3042 /* GL_BLEND */);
 		GL11.glColor4f(0.0F, 0.5F, 0.0F, 0.25F);
 		drawTexturedModalRect(x + pre_size - 2, y - 1, 6, 232, 3, 9);
 		drawTexturedModalRect(x + pre_size + in_size - 1, y - 1, 9, 232, 3, 9);
-		GL11.glDisable(3042 /* GL_BLEND */);
 
 		// Return to standard colors
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

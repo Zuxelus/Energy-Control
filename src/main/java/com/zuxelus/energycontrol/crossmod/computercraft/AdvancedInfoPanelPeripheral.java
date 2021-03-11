@@ -1,5 +1,8 @@
 package com.zuxelus.energycontrol.crossmod.computercraft;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
@@ -10,6 +13,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.Loader;
 
 public class AdvancedInfoPanelPeripheral implements IPeripheral {
 	private final TileEntityAdvancedInfoPanel te;
@@ -44,6 +48,15 @@ public class AdvancedInfoPanelPeripheral implements IPeripheral {
 				upgradeCountRange = itemStack.getCount();
 			return new Object[] { ItemCardMain.LOCATION_RANGE * (int) Math.pow(2, Math.min(upgradeCountRange, 7)) };
 		case 2:
+			if (Loader.instance().getIndexedModList().get("computercraft").getVersion().equals("1.80pr1")) {
+				Map<Integer, String> map = new HashMap<Integer, String>();
+				int i = 1;
+				for (String line : te.getPanelStringList()) {
+					map.put(i, line);
+					i++;
+				}
+				return new Object[] { map };
+			}
 			return new Object[] { te.getPanelStringList() };
 		case 3:
 			return new Object[] { te.getColorBackground() };

@@ -2,6 +2,7 @@ package com.zuxelus.energycontrol.containers;
 
 import com.zuxelus.energycontrol.tileentities.TileEntitySeedLibrary;
 import com.zuxelus.zlib.containers.ContainerBase;
+import com.zuxelus.zlib.containers.slots.SlotDischargeable;
 import com.zuxelus.zlib.containers.slots.SlotFilter;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,7 +15,7 @@ public class ContainerSeedLibrary extends ContainerBase<TileEntitySeedLibrary> {
 	public ContainerSeedLibrary(EntityPlayer player, TileEntitySeedLibrary te) {
 		super(te);
 
-		addSlotToContainer(new SlotFilter(te, TileEntitySeedLibrary.SLOT_DISCHARGER, 8, 110));
+		addSlotToContainer(new SlotDischargeable(te, TileEntitySeedLibrary.SLOT_DISCHARGER, 8, 110, TileEntitySeedLibrary.TIER));
 		for (int i = 1; i < 9; i++)
 			addSlotToContainer(new SlotFilter(te, i, 8 + i * 18, 110));
 		addSlotToContainer(new SlotFilter(te, 9, 38, 16));
@@ -28,7 +29,7 @@ public class ContainerSeedLibrary extends ContainerBase<TileEntitySeedLibrary> {
 			// Clicked the "take a seed's type" slot.
 			ItemStack seed = entityplayer.inventory.getItemStack();
 			te.getGUIFilter().setCropFromSeed(seed);
-			return null;
+			return ItemStack.EMPTY;
 		}
 		return super.slotClick(i, j, k, entityplayer);
 	}

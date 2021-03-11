@@ -30,10 +30,10 @@ public class GuiScreenColor extends GuiBase {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		drawTexturedModalRect(guiLeft + 5 + colorBack * 14, guiTop + 30, 234, 0, 14, 14);
-		drawTexturedModalRect(guiLeft + 5 + colorText * 14, guiTop + 61, 234, 0, 14, 14);
-		fontRenderer.drawString(I18n.format("msg.ec.ScreenColor"), guiLeft + 8, guiTop + 20, 0x404040);
-		fontRenderer.drawString(I18n.format("msg.ec.TextColor"), guiLeft + 8, guiTop + 52, 0x404040);
+		drawTexturedModalRect(5 + colorBack * 14, 30, 234, 0, 14, 14);
+		drawTexturedModalRect(5 + colorText * 14, 61, 234, 0, 14, 14);
+		fontRenderer.drawString(I18n.format("msg.ec.ScreenColor"), 8, 20, 0x404040);
+		fontRenderer.drawString(I18n.format("msg.ec.TextColor"), 8, 52, 0x404040);
 	}
 
 	@Override

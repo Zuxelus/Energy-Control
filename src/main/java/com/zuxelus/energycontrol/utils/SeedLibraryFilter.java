@@ -8,7 +8,6 @@ import com.zuxelus.energycontrol.tileentities.TileEntitySeedLibrary;
 import ic2.api.crops.CropCard;
 import ic2.api.crops.Crops;
 import ic2.api.crops.ICropSeed;
-import ic2.api.item.IC2Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -140,9 +139,9 @@ public class SeedLibraryFilter {
 	}
 
 	public void setCropFromSeed(ItemStack seed) {
-		if (seed == null) {
+		if (seed.isEmpty()) {
 			seed_type = null;
-		} else if (seed.getItem() != IC2Items.getItem("cropSeed").getItem()) {
+		} else if (!(seed.getItem() instanceof ICropSeed)) {
 			seed_type = null;
 		} else if (((ICropSeed)seed.getItem()).getScannedFromStack(seed) == 0) {
 			seed_type = null;
