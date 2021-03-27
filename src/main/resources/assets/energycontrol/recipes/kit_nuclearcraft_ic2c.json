@@ -1,0 +1,42 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "IT",
+        "PD"
+    ],
+    "key": {
+        "I": {
+            "item": "nuclearcraft:part",
+            "data": 4
+        },
+        "T": {
+            "item": "ic2:itemfreq"
+        },
+        "P": {
+            "item": "minecraft:paper"
+        },
+        "D": {
+            "type": "forge:ore_dict",
+            "ore": "dyeGreen"
+        }
+    },
+    "result": {
+        "item": "energycontrol:item_kit",
+        "data": 15
+    },
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "forge:mod_loaded",
+                    "modid": "nuclearcraft"
+                },
+                {
+                    "type": "forge:mod_loaded",
+                    "modid": "ic2-classic-spmod"
+                }
+            ]
+        }
+    ]
+}

@@ -41,8 +41,11 @@ public class CrossModLoader {
 		galacticraft = findMod("galacticraftplanets", "CrossGalacticraft");
 		mekanism = findMod("mekanismgenerators", "CrossMekanism");
 		nuclearCraft = findMod("nuclearcraft", "CrossNuclearCraft");
-		openComputers = findMod("opencomputers","opencomputers.CrossOpenComputers");
 		computerCraft = findMod("computercraft","computercraft.CrossComputerCraft");
+	}
+
+	public static void postInit() {
+		openComputers = findMod("opencomputers","opencomputers.CrossOpenComputers");
 	}
 
 	public static CrossModBase findMod(String modId, String mainClass) {
