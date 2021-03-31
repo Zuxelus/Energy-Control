@@ -20,7 +20,7 @@ repositories {
   }
 }
 
-version = "1.12.2-0.1.12"
+version = "1.12.2-0.1.13"
 group= "com.zuxelus.energycontrol"
 archivesBaseName = "EnergyControl"
 
