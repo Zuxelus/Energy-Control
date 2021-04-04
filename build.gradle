@@ -9,19 +9,8 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-repositories {
-  maven {
-    // location of the maven that hosts JEI files
-    name = "Progwml6 maven"
-    url = "https://dvs1.progwml6.com/files/maven/"
-  }
-  flatDir {
-    dirs 'libs_'
-  }
-}
-
-version = "1.12.2-0.1.13"
-group= "com.zuxelus.energycontrol"
+version = "$VERSION_MC-$VERSION_MAJOR.$VERSION_MINOR.$VERSION_PATCH"
+group = "com.zuxelus.energycontrol"
 archivesBaseName = "EnergyControl"
 
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
@@ -30,33 +19,52 @@ compileJava {
 }
 
 minecraft {
-    version = "1.12.2-14.23.5.2847"
-    runDir = "run"
+  version = "1.12.2-14.23.5.2847"
+  runDir = "run"
 
-    replaceIn "EnergyControl.java"
-    replace "@VERSION@", project.version
-    mappings = "snapshot_20171003"
+  replaceIn "EnergyControl.java"
+  replace "@VERSION@", project.version
+  mappings = "snapshot_20171003"
+}
+
+repositories {
+  maven { // IC2
+    name = "Player maven"
+    url = "http://maven.ic2.player.to/"
+  }
+  maven { // JEI
+    name = "Progwml6 maven"
+    url = "https://dvs1.progwml6.com/files/maven/"
+  }
+  maven { // TechReborn, RebornCore
+    name = "Modmuss maven"
+    url = "http://maven.modmuss50.me/"
+  }
 }
 
 dependencies {
-	compile 'net.industrial-craft:industrialcraft-2:2.8.197-ex112:dev'
-	runtime "mezz.jei:jei_1.12.2:4.15.0.293"
-	deobfCompile  ("techreborn:techreborn:1.12.2-2.27.3.1084-universal")
-	deobfCompile  ("techreborn:reborncore:1.12.2-3.19.4.529-universal")
+  compile group: 'net.industrial-craft', name: 'industrialcraft-2', version: "$VERSION_IC2-ex112", classifier: 'dev'
+	runtime group: 'mezz.jei', name: "jei_$VERSION_MC", version: VERSION_JEI
+  deobfCompile(group: 'RebornCore', name: "RebornCore-$VERSION_MC", version: VERSION_REBORN_CORE, classifier: 'universal') {
+    transitive = false
+  }
+  deobfCompile(group: 'TechReborn', name: "TechReborn-$VERSION_MC", version: VERSION_TR, classifier: 'universal') {
+    transitive = false
+  }
 }
 
 processResources {
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
+  inputs.property "version", project.version
+  inputs.property "mcversion", project.minecraft.version
 
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-        expand 'version':project.version, 'mcversion':project.minecraft.version
-    }
+  from(sourceSets.main.resources.srcDirs) {
+    include 'mcmod.info'
+    expand 'version':project.version, 'mcversion':project.minecraft.version
+  }
 
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
+  from(sourceSets.main.resources.srcDirs) {
+    exclude 'mcmod.info'
+  }
 }
 
 task apiJar(type: Jar) {
