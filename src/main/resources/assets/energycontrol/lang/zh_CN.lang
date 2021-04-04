@@ -128,7 +128,7 @@ msg.ec.InfoPanelCapacityT=容量：%s T
 msg.ec.InfoPanelCarbonDioxide=二氧化碳：%s
 msg.ec.InfoPanelCasingHeat=外壳热量：%s
 msg.ec.InfoPanelCells=单元数：%s
-msg.ec.InfoPanelCoils=Coils：%s
+msg.ec.InfoPanelCoils=线圈数：%s
 msg.ec.InfoPanelCollecting=收集速度：%s/s
 msg.ec.InfoPanelCoolingRate=收集率: %s H/t
 msg.ec.InfoPanelCoreHeat=核心热量：%s
@@ -262,7 +262,7 @@ msg.ec.InfoPanelLiquidPercentageN=#%d 填充：%s%%
 
 msg.ec.cb24h=24 小时模式
 msg.ec.cbInfoPanelAdditionalInfo=附加信息
-msg.ec.cbInfoPanelBuffer=B缓冲
+msg.ec.cbInfoPanelBuffer=缓冲
 msg.ec.cbInfoPanelCapacity=容量
 msg.ec.cbInfoPanelEachCard=每张卡信息
 msg.ec.cbInfoPanelEnergy=能量
@@ -278,7 +278,7 @@ msg.ec.cbInfoPanelOnOff=开/关 状态
 msg.ec.cbInfoPanelOutput=输出 (EU/t)
 msg.ec.cbInfoPanelOutputRF=输出 (RF/t)
 msg.ec.cbInfoPanelPercentage=填充率
-msg.ec.cbInfoPanelStorage= 存储
+msg.ec.cbInfoPanelStorage=存储
 msg.ec.cbInfoPanelTimeRemaining=周期结束时间
 msg.ec.cbInfoPanelTotal=摘要
 

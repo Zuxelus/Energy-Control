@@ -30,6 +30,7 @@ public class CrossModLoader {
 	public static CrossModBase mekanism;
 	public static CrossModBase openComputers;
 	public static CrossModBase nuclearCraft;
+	public static CrossModBase thermalExpansion;
 
 	public static void init() {
 		ic2 = findMod("ic2-classic-spmod", "CrossIC2Classic","ic2", "CrossIC2Exp");
@@ -42,6 +43,7 @@ public class CrossModLoader {
 		mekanism = findMod("mekanismgenerators", "CrossMekanism");
 		nuclearCraft = findMod("nuclearcraft", "CrossNuclearCraft");
 		computerCraft = findMod("computercraft","computercraft.CrossComputerCraft");
+		thermalExpansion = findMod("thermalexpansion","CrossThermalExpansion");
 	}
 
 	public static void postInit() {
@@ -95,6 +97,8 @@ public class CrossModLoader {
 			tag = mekanism.getEnergyData(te);
 		if (tag == null)
 			tag = nuclearCraft.getEnergyData(te);
+		if (tag == null)
+			tag = thermalExpansion.getEnergyData(te);
 		return tag;
 	}
 
@@ -140,6 +144,9 @@ public class CrossModLoader {
 		if (list != null)
 			return list;
 		list = mekanism.getAllTanks(te);
+		if (list != null)
+			return list;
+		list = thermalExpansion.getAllTanks(te);
 		if (list != null)
 			return list;
 		return buildCraft.getAllTanks(te);

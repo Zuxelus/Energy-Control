@@ -57,7 +57,7 @@ public class GuiTimer extends GuiBase {
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(int par1, int par2) {
+	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		fontRenderer.drawString(name, (xSize - fontRenderer.getStringWidth(name)) / 2, 6, 0x404040);
 		if (textboxTimer != null)
 			textboxTimer.drawTextBox();
