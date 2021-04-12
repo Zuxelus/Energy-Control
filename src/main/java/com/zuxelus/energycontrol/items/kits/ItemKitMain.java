@@ -8,6 +8,7 @@ import com.zuxelus.energycontrol.api.IItemKit;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -122,7 +123,7 @@ public class ItemKitMain extends Item {
 
 	@Override
 	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) { 	
-		if (player == null)
+		if (player == null || player instanceof EntityPlayerSP)
 			return EnumActionResult.PASS;
 
 		ItemStack stack = player.getHeldItem(hand);

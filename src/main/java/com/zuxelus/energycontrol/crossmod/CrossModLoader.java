@@ -105,7 +105,7 @@ public class CrossModLoader {
 	public static ItemStack getGeneratorCard(World world, BlockPos pos) {
 		TileEntity te = world.getTileEntity(pos);
 		if (te == null)
-			return null;
+			return ItemStack.EMPTY;
 		ItemStack card = ic2.getGeneratorCard(te);
 		if (!card.isEmpty())
 			return card;

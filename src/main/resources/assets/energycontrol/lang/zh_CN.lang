@@ -278,6 +278,7 @@ msg.ec.cbInfoPanelOnOff=开/关 状态
 msg.ec.cbInfoPanelOutput=输出 (EU/t)
 msg.ec.cbInfoPanelOutputRF=输出 (RF/t)
 msg.ec.cbInfoPanelPercentage=填充率
+msg.ec.cbInfoPanelShowBar=显示栏
 msg.ec.cbInfoPanelStorage=存储
 msg.ec.cbInfoPanelTimeRemaining=周期结束时间
 msg.ec.cbInfoPanelTotal=摘要

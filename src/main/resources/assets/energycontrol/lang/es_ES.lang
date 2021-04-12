@@ -278,6 +278,7 @@ msg.ec.cbInfoPanelOnOff=On/Off Estatus
 msg.ec.cbInfoPanelOutput=Salida (EU/t)
 msg.ec.cbInfoPanelOutputRF=Salida (RF/t)
 msg.ec.cbInfoPanelPercentage=Porcentaje Lleno
+msg.ec.cbInfoPanelShowBar=Mostrar la barra
 msg.ec.cbInfoPanelStorage=Almacenamiento
 msg.ec.cbInfoPanelTimeRemaining=Tiempo hasta que el ciclo termine
 msg.ec.cbInfoPanelTotal=Sumario

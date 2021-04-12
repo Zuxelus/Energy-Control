@@ -2,7 +2,6 @@ package com.zuxelus.energycontrol.network;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
-import com.zuxelus.zlib.network.NetworkHelper;
 import com.zuxelus.zlib.network.PacketTileEntity;
 
 import net.minecraft.item.ItemStack;

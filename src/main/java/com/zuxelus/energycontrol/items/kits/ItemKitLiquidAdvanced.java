@@ -26,6 +26,6 @@ public class ItemKitLiquidAdvanced extends ItemKitBase {
 			ItemStackHelper.setCoordinates(newCard, pos);
 			return newCard;
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 }

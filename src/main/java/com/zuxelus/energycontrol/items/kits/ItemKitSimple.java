@@ -21,12 +21,12 @@ public abstract class ItemKitSimple extends ItemKitBase {
 		if (position == null)
 			return ItemStack.EMPTY;
 			
-		ItemStack sensorLocationCard = getItemCard();
-		if (sensorLocationCard.isEmpty())
+		ItemStack newCard = getItemCard();
+		if (newCard.isEmpty())
 			return ItemStack.EMPTY;
 
-		ItemStackHelper.setCoordinates(sensorLocationCard, position);
-		return sensorLocationCard;
+		ItemStackHelper.setCoordinates(newCard, position);
+		return newCard;
 	}
 
 	protected abstract BlockPos getTargetCoordinates(World world, BlockPos pos, ItemStack stack);

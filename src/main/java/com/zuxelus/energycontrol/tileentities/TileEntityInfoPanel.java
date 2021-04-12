@@ -36,7 +36,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityInfoPanel extends TileEntityInventory implements ITickable, ITilePacketHandler, IScreenPart, ISlotItemFilter {
 	public static final String NAME = "info_panel";
-	public static final int DISPLAY_DEFAULT = Integer.MAX_VALUE;
+	public static final int DISPLAY_DEFAULT = Integer.MAX_VALUE - 1024;
 	private static final int[] COLORS_HEX = { 0x000000, 0xe93535, 0x82e306, 0x702b14, 0x1f3ce7, 0x8f1fea, 0x1fd7e9,
 			0xcbcbcb, 0x222222, 0xe60675, 0x1fe723, 0xe9cc1f, 0x06aee4, 0xb006e3, 0xe7761f, 0xffffff };
 
@@ -475,7 +475,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		reader.updateClient(card, this, slot);
 	}
 
-	protected boolean isColoredEval() {
+	public boolean isColoredEval() {
 		ItemStack stack = getStackInSlot(SLOT_UPGRADE_COLOR);
 		return !stack.isEmpty() && stack.getItem() instanceof ItemUpgrade && stack.getItemDamage() == ItemUpgrade.DAMAGE_COLOR;
 	}
@@ -674,9 +674,16 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		return !stack.isEmpty() && stack.getItemDamage() == ItemCardType.CARD_TOGGLE;
 	}
 
-	public void renderImage(TextureManager manager) {
+	public boolean hasBars() {
 		ItemStack stack = getStackInSlot(SLOT_CARD);
-		if (isTouchCard())
-			ItemCardMain.renderImage(manager, stack);
+		if (stack.isEmpty() || stack.getItemDamage() != ItemCardType.CARD_LIQUID)
+			return false;
+		return (getDisplaySettingsForCardInSlot(SLOT_CARD) & 1024) > 0;
+	}
+
+	public void renderImage(TextureManager manager, double displayWidth, double displayHeight) {
+		ItemStack stack = getStackInSlot(SLOT_CARD);
+		if (isTouchCard() || hasBars())
+			ItemCardMain.renderImage(manager, displayWidth, displayHeight, stack);
 	}
 }

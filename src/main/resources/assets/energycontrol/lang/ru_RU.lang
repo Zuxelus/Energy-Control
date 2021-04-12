@@ -278,6 +278,7 @@ msg.ec.cbInfoPanelOnOff=Вкл./Выкл. Состояние
 msg.ec.cbInfoPanelOutput=Выход (EU/т)
 msg.ec.cbInfoPanelOutputRF=Выход (RF/т)
 msg.ec.cbInfoPanelPercentage=Процент заполнения
+msg.ec.cbInfoPanelShowBar=Показать отображение
 msg.ec.cbInfoPanelStorage=Хранилище
 msg.ec.cbInfoPanelTimeRemaining=Время до окончания цикла
 msg.ec.cbInfoPanelTotal=Суммарно

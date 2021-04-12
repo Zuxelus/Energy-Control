@@ -1,12 +1,62 @@
 buildscript {
     repositories {
         jcenter()
-        maven { url = "https://files.minecraftforge.net/maven" }
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
+
+repositories {
+    maven {
+        name = "CurseForge"
+        url = "https://minecraft.curseforge.com/api/maven/"
+    }
+    maven {
+        name = "ic2"
+        url = "http://maven.ic2.player.to/"
+    }
+    maven {
+        // location of the maven that hosts JEI files
+        name = "Progwml6 maven"
+        url = "https://dvs1.progwml6.com/files/maven/"
+    }
+    maven {
+        name = "CoFH Maven"
+        url = "http://maven.covers1624.net"
+    }
+    maven { // TechReborn, RebornCore
+        name = "Modmuss maven"
+        url = "http://maven.modmuss50.me/"
+    }
+    flatDir {
+        dirs 'libs_'
+/*
+	buildcraft-all-7.99.24.6.jar
+	BrandonsCore-1.12.2-2.4.18.210-universal.jar
+	cc-tweaked-1.12.2-1.87.0.jar
+	CoFHCore-1.12.2-4.6.6.1-universal.jar
+	Draconic-Evolution-1.12.2-2.3.25.351-universal.jar
+	ExtremeReactors-1.12.2-0.4.5.67.jar
+	GalacticraftCore-Dev-1.12.2-4.0.2.261.jar
+	Galacticraft-Planets-Dev-1.12.2-4.0.2.261.jar
+	IC2Classic+1.12-1.5.4.5+Dev.jar
+	+Mekanism-1.12.2-9.8.3.390.jar
+	MekanismGenerators-1.12.2-9.8.3.390.jar
+	NuclearCraft-2.18x-1.12.2.jar
+	OpenComputers-MC1.12.2-1.7.5.192.jar
+	+RedstoneFlux-1.12-2.1.1.1-universal.jar
+	ThermalExpansion-1.12.2-5.5.7.1-universal.jar
+	ThermalFoundation-1.12.2-2.6.7.1-universal.jar
+	zerocore-1.12.2-0.1.2.8.jar
+*/
+    }
+}
+
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 version = "$VERSION_MC-$VERSION_MAJOR.$VERSION_MINOR.$VERSION_PATCH"
@@ -19,61 +69,49 @@ compileJava {
 }
 
 minecraft {
-  version = "1.12.2-14.23.5.2847"
-  runDir = "run"
+    version = "1.12.2-14.23.5.2847"
+    runDir = "run"
 
-  replaceIn "EnergyControl.java"
-  replace "@VERSION@", project.version
-  mappings = "snapshot_20171003"
-}
-
-repositories {
-  maven { // IC2
-    name = "Player maven"
-    url = "http://maven.ic2.player.to/"
-  }
-  maven { // JEI
-    name = "Progwml6 maven"
-    url = "https://dvs1.progwml6.com/files/maven/"
-  }
-  maven { // TechReborn, RebornCore
-    name = "Modmuss maven"
-    url = "http://maven.modmuss50.me/"
-  }
+    replaceIn "EnergyControl.java"
+    replace "@VERSION@", project.version
+    mappings = "snapshot_20171003"
 }
 
 dependencies {
-  compile group: 'net.industrial-craft', name: 'industrialcraft-2', version: "$VERSION_IC2-ex112", classifier: 'dev'
-	runtime group: 'mezz.jei', name: "jei_$VERSION_MC", version: VERSION_JEI
-  deobfCompile(group: 'RebornCore', name: "RebornCore-$VERSION_MC", version: VERSION_REBORN_CORE, classifier: 'universal') {
-    transitive = false
-  }
-  deobfCompile(group: 'TechReborn', name: "TechReborn-$VERSION_MC", version: VERSION_TR, classifier: 'universal') {
-    transitive = false
-  }
+    compile group: 'net.industrial-craft', name: 'industrialcraft-2', version: "$VERSION_IC2-ex112", classifier: 'dev'
+    runtime "mezz.jei:jei_${VERSION_MC}:${VERSION_JEI}"
+    deobfCompile(group: 'RebornCore', name: "RebornCore-$VERSION_MC", version: VERSION_REBORN_CORE, classifier: 'universal') {
+        transitive = false
+    }
+    deobfCompile(group: 'TechReborn', name: "TechReborn-$VERSION_MC", version: VERSION_TR, classifier: 'universal') {
+        transitive = false
+    }
+    deobfCompile "cofh:RedstoneFlux:${VERSION_REDSTONEFLUX}"
+    compileOnly "appeng:appliedenergistics2:${VERSION_AE2}"
+    compileOnly "mekanism:Mekanism:${VERSION_MEKANISM}"
 }
 
 processResources {
-  inputs.property "version", project.version
-  inputs.property "mcversion", project.minecraft.version
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
 
-  from(sourceSets.main.resources.srcDirs) {
-    include 'mcmod.info'
-    expand 'version':project.version, 'mcversion':project.minecraft.version
-  }
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
 
-  from(sourceSets.main.resources.srcDirs) {
-    exclude 'mcmod.info'
-  }
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
 }
 
 task apiJar(type: Jar) {
-	from sourceSets.main.allSource
-	from sourceSets.main.output
-	include 'com/zuxelus/energycontrol/api/**'
-	classifier = 'api'
+    from sourceSets.main.allSource
+    from sourceSets.main.output
+    include 'com/zuxelus/energycontrol/api/**'
+    classifier = 'api'
 }
 
 artifacts {
-	archives apiJar
+    archives apiJar
 }

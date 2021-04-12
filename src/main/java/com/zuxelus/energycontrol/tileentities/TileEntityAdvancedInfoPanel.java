@@ -174,7 +174,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	}
 
 	@Override
-	protected boolean isColoredEval() {
+	public boolean isColoredEval() {
 		return true;
 	}
 

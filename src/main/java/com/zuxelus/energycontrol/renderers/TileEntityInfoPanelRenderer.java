@@ -102,8 +102,8 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 	private void drawText(TileEntityInfoPanel panel, List<PanelString> joinedData) {
 		Screen screen = panel.getScreen();
 		BlockPos pos = panel.getPos();
-		float displayWidth = 1 - 2F / 16;
-		float displayHeight = 1 - 2F / 16;
+		double displayWidth = 1 - 2F / 16;
+		double displayHeight = 1 - 2F / 16;
 		float dx = 0; float dy = 0; float dz = 0;
 		if (screen != null) {
 			switch (panel.getFacing()) {
@@ -192,13 +192,22 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		if (panel.isTouchCard()) {
 			GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
 			GlStateManager.disableLighting();
-			panel.renderImage(rendererDispatcher.renderEngine);
+			panel.renderImage(rendererDispatcher.renderEngine, displayWidth, displayHeight);
 			GlStateManager.enableLighting();
-		} else 
+		} else {
+			if (panel.hasBars()) {
+				GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+				GlStateManager.disableLighting();
+				panel.renderImage(rendererDispatcher.renderEngine, displayWidth, displayHeight);
+				GlStateManager.enableLighting();
+				GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+			}
+			GlStateManager.translate(0, 0, 0.0002F);
 			renderText(panel, joinedData, displayWidth, displayHeight);
+		}
 	}
 
-	private void renderText(TileEntityInfoPanel panel, List<PanelString> joinedData, float displayWidth, float displayHeight) {
+	private void renderText(TileEntityInfoPanel panel, List<PanelString> joinedData, double displayWidth, double displayHeight) {
 		FontRenderer fontRenderer = getFontRenderer();
 		int maxWidth = 1;
 		for (PanelString panelString : joinedData) {
@@ -209,10 +218,10 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 
 		int lineHeight = fontRenderer.FONT_HEIGHT + 2;
 		int requiredHeight = lineHeight * joinedData.size();
-		float scaleX = displayWidth / maxWidth;
-		float scaleY = displayHeight / requiredHeight;
-		float scale = Math.min(scaleX, scaleY);
-		GlStateManager.scale(scale, -scale, scale);
+		double scaleX = displayWidth / maxWidth;
+		double scaleY = displayHeight / requiredHeight;
+		double scale = Math.min(scaleX, scaleY);
+		GlStateManager.scale(scale, -scale, 1);
 		int realHeight = (int) Math.floor(displayHeight / scale);
 		int realWidth = (int) Math.floor(displayWidth / scale);
 		int offsetX;
@@ -228,7 +237,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		GlStateManager.disableLighting();
 
 		int row = 0;
-		int colorHex = 0x000000;
+		int colorHex = 0xFFFFFF;
 		if (panel.getColored())
 			colorHex = panel.getColorTextHex();
 		for (PanelString panelString : joinedData) {

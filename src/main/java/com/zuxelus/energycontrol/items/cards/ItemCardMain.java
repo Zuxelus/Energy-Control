@@ -238,11 +238,13 @@ public final class ItemCardMain extends Item {
 		}
 	}
 
-	public static void renderImage(TextureManager manager, ItemStack stack) {
+	public static void renderImage(TextureManager manager, double displayWidth, double displayHeight, ItemStack stack) {
 		if (stack.getItem() instanceof ItemCardMain && cards.containsKey(stack.getItemDamage())) {
 			IItemCard card = cards.get(stack.getItemDamage());
 			if (card instanceof ITouchAction)
 				((ITouchAction) card).renderImage(manager, new ItemCardReader(stack));
+			if (card instanceof IHasBars)
+				((IHasBars) card).renderBars(manager, displayWidth, displayHeight, new ItemCardReader(stack));
 		}
 	}
 

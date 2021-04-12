@@ -5,10 +5,19 @@ import java.util.List;
 
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
+import com.zuxelus.energycontrol.api.IHasBars;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -17,7 +26,7 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemCardLiquid extends ItemCardBase {
+public class ItemCardLiquid extends ItemCardBase implements IHasBars {
 	public ItemCardLiquid() {
 		super(ItemCardType.CARD_LIQUID, "card_liquid");
 	}
@@ -34,14 +43,18 @@ public class ItemCardLiquid extends ItemCardBase {
 
 		int amount = 0;
 		String name = "";
+		String texture = "";
 		if (storage.getFluid() != null) {
 			amount = storage.getFluid().amount;
-			if (amount > 0)
+			if (amount > 0) {
 				name = FluidRegistry.getFluidName(storage.getFluid());
+				texture = storage.getFluid().getFluid().getStill().toString();
+			}
 		}
 		reader.setInt("capacity", storage.getCapacity());
 		reader.setInt("amount", amount);
 		reader.setString("name", name);
+		reader.setString("texture", texture);
 		return CardState.OK;
 	}
 
@@ -53,7 +66,7 @@ public class ItemCardLiquid extends ItemCardBase {
 
 		if ((displaySettings & 1) > 0) {
 			String name = reader.getString("name");
-			if (name == "")
+			if (name.equals(""))
 				name = isServer ? "N/A" : I18n.format("msg.ec.None");
 			result.add(new PanelString("msg.ec.InfoPanelName", name, showLabels));
 		}
@@ -77,11 +90,44 @@ public class ItemCardLiquid extends ItemCardBase {
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidFree"), 4, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidCapacity"), 8, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidPercentage"), 16, damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelShowBar"), 1024, damage));
 		return result;
 	}
 
 	@Override
 	public int getKitFromCard() {
 		return ItemCardType.KIT_LIQUID;
+	}
+
+	@Override
+	public void renderBars(TextureManager manager, double displayWidth, double displayHeight, ICardReader reader) {
+		double x = -0.5D + 1 / 16.0F;
+		double y = -0.5D + 1/ 16.0F;
+		double z = 0;
+
+		TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getTextureExtry(reader.getString("texture"));
+		if (sprite == null)
+			return;
+
+		double textureX = sprite.getMinU();
+		double textureY = sprite.getMinV();
+		double width = 14 / 16.0F * reader.getInt("amount") / reader.getInt("capacity");
+		double height = 0.4375;
+
+		GlStateManager.scale(displayWidth / 0.875, displayHeight / 0.875, 1);
+		manager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+
+		GlStateManager.disableBlend();
+		Tessellator tessellator = Tessellator.getInstance();
+		BufferBuilder bufferbuilder = tessellator.getBuffer();
+		bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+		bufferbuilder.pos(x, y + 0.4375 / 2 + height, z).tex(textureX + 0, textureY + sprite.getMaxV() - sprite.getMinV()).endVertex();
+		bufferbuilder.pos(x + 0.875, y + 0.4375 / 2 + height, z).tex(textureX + sprite.getMaxU() - sprite.getMinU(), textureY + sprite.getMaxV() - sprite.getMinV()).endVertex();
+		bufferbuilder.pos(x + 0.875, y + 0.4375 / 2, z).tex(textureX + sprite.getMaxU() - sprite.getMinU(), textureY + 0).endVertex();
+		bufferbuilder.pos(x, y + 0.4375 / 2, z).tex(textureX + 0, textureY + 0).endVertex();
+		tessellator.draw();
+
+		IHasBars.drawTransparentRect(x + 0.875 - width, y + height + 0.4375 / 2, x, y + 0.4375 / 2, -0.0001, 0xB0000000);
+		GlStateManager.scale(0.875D / displayWidth, 0.875D / displayHeight, 1);
 	}
 }
