@@ -73,6 +73,8 @@ public final class ItemCardMain extends Item {
 			register("ItemCardNuclearCraft");
 		if (Loader.isModLoaded("mekanismgenerators"))
 			register("ItemCardMekanism");
+		if (Loader.isModLoaded("thermalexpansion"))
+			register("ItemCardThermalExpansion");
 	}
 
 	private static void register(String className) {

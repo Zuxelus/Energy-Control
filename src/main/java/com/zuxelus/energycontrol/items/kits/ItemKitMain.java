@@ -59,6 +59,8 @@ public class ItemKitMain extends Item {
 			register("ItemKitNuclearCraft");
 		if (Loader.isModLoaded("mekanismgenerators"))
 			register("ItemKitMekanism");
+		if (Loader.isModLoaded("thermalexpansion"))
+			register("ItemKitThermalExpansion");
 	}
 
 	private static void register(String className) {
@@ -123,7 +125,7 @@ public class ItemKitMain extends Item {
 
 	@Override
 	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) { 	
-		if (player == null || player instanceof EntityPlayerSP)
+		if (player == null || world == null || !(player instanceof EntityPlayerMP))
 			return EnumActionResult.PASS;
 
 		ItemStack stack = player.getHeldItem(hand);

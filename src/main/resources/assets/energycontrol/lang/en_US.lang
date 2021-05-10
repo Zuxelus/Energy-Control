@@ -57,6 +57,8 @@ item.kit_nuclearcraft.name=NuclearCraft Sensor Kit
 item.card_nuclearcraft.name=NuclearCraft Sensor Card
 item.kit_mekanism.name=Mekanism Sensor Kit
 item.card_mekanism.name=Mekanism Sensor Card
+item.kit_thermal_expansion.name=Thermal Expansion Sensor Kit
+item.card_thermal_expansion.name=Thermal Expansion Sensor Card
 
 #Internal Blocks
 tile.thermal_monitor.name=Thermal Monitor
@@ -200,11 +202,13 @@ msg.ec.InfoPanelPellets=Pellets: %s
 msg.ec.InfoPanelPercentage=Fill: %s%%
 msg.ec.InfoPanelPeriod=Period: %s sec
 msg.ec.InfoPanelPowerMultiplierRF=Power Multiplier: x%s
+msg.ec.InfoPanelPowerUsage=Power Usage: %s RF/t
 msg.ec.InfoPanelProcessPowerRF=ProcessPower: %s RF/t
 msg.ec.InfoPanelProcessTime=Process Time: %s t
 msg.ec.InfoPanelProgress=Progress: %s%%
 msg.ec.InfoPanelRadiation=Radiation: %s
 msg.ec.InfoPanelRedstonePower=Redstone Power: %s
+msg.ec.InfoPanelRedstoneMode=Redstone Mode: %s
 msg.ec.InfoPanelRotorEfficiency=Rotor Efficiency: %s
 msg.ec.InfoPanelRotorMass=Rotor Mass: %s
 msg.ec.InfoPanelRotorSpeed=Rotor Speed: %s RPM

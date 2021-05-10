@@ -9,6 +9,7 @@ import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 
+import ic2.core.block.kineticgenerator.tileentity.TileEntitySteamKineticGenerator;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -71,6 +72,12 @@ public class ItemCardGeneratorKinetic extends ItemCardBase {
 			reader.setDouble("multiplier", tag.getDouble("multiplier"));
 			reader.setInt("height", tag.getInteger("height"));
 			reader.setDouble("health", tag.getDouble("health"));
+			break;
+		case 7: // TileEntitySteamKineticGenerator
+			reader.setString("status", tag.getString("status"));
+			reader.setDouble("output", tag.getDouble("output"));
+			reader.setDouble("multiplier", tag.getDouble("multiplier"));
+			reader.setInt("condProgress", tag.getInteger("condProgress"));
 			break;
 		}
 		return CardState.OK;
@@ -148,6 +155,16 @@ public class ItemCardGeneratorKinetic extends ItemCardBase {
 				result.add(new PanelString("msg.ec.InfoPanelHeight", reader.getInt("height"), showLabels));
 			if ((settings & 16) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelRotorHealth", reader.getDouble("health"), showLabels));
+			break;
+		case 7: // TileEntitySteamKineticGenerator
+			if ((settings & 2) > 0)
+				result.add(new PanelString(reader.getString("status"), "", true));
+			if ((settings & 1) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelOutputKU", reader.getDouble("output"), showLabels));
+			if ((settings & 32) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelMultiplier", reader.getDouble("multiplier"), showLabels));
+			if ((settings & 8) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelWater", String.format("%s mB", reader.getInt("condProgress") / 100.0F), showLabels));
 			break;
 		}
 		return result;

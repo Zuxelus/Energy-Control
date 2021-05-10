@@ -249,14 +249,12 @@ public class CrossIC2Exp extends CrossModBase {
 	public NBTTagCompound getGeneratorKineticData(TileEntity te) {
 		try {
 			NBTTagCompound tag = new NBTTagCompound();
-			
 			if (te instanceof TileEntityManualKineticGenerator) {
 				tag.setInteger("type", 1);
 				tag.setDouble("storage", ((TileEntityManualKineticGenerator)te).currentKU);
 				tag.setDouble("maxStorage", ((TileEntityManualKineticGenerator)te).maxKU);
 				return tag;
 			}
-			
 			Boolean active = ((TileEntityBlock) te).getActive();
 			if (te instanceof TileEntityWindKineticGenerator) {
 				TileEntityWindKineticGenerator entity = ((TileEntityWindKineticGenerator) te);
@@ -292,6 +290,26 @@ public class CrossIC2Exp extends CrossModBase {
 			}
 			if (te instanceof TileEntityStirlingKineticGenerator) {
 				//TODO
+			}
+			if (te instanceof TileEntitySteamKineticGenerator) {
+				TileEntitySteamKineticGenerator entity = ((TileEntitySteamKineticGenerator) te);
+				tag.setInteger("type", 7);
+				if (!entity.hasTurbine())
+					tag.setString("status", "ic2.SteamKineticGenerator.gui.error.noturbine");
+				else if (entity.isTurbineBlockedByWater())
+					tag.setString("status", "ic2.SteamKineticGenerator.gui.error.filledupwithwater");
+				else if (entity.getActive())
+					tag.setString("status", "ic2.SteamKineticGenerator.gui.aktive");
+				else
+					tag.setString("status", "ic2.SteamKineticGenerator.gui.waiting");
+				tag.setDouble("output", entity.getKUoutput());
+				Field field = TileEntitySteamKineticGenerator.class.getDeclaredField("outputModifier");
+				field.setAccessible(true);
+				tag.setDouble("multiplier", (double) (Float) field.get(te) * (1.0F - ((float) entity.getDistilledWaterTank().getFluidAmount()) / entity.getDistilledWaterTank().getCapacity()));
+				field = TileEntitySteamKineticGenerator.class.getDeclaredField("condensationProgress");
+				field.setAccessible(true);
+				tag.setInteger("condProgress", (int) field.get(te)); 
+				return tag;
 			}
 		} catch (Throwable t) {
 		}

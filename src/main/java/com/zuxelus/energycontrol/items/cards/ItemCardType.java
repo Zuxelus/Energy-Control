@@ -18,6 +18,7 @@ public class ItemCardType {
 	public static final int KIT_GALACTICRAFT = 13;
 	public static final int KIT_NUCLEARCRAFT = 15;
 	public static final int KIT_MEKANISM = 16;
+	public static final int KIT_THERMAL_EXPANSION = 17;
 
 	public static final int KIT_MAX = 49;
 
@@ -51,6 +52,7 @@ public class ItemCardType {
 	public static final int CARD_NUCLEARCRAFT = 26;
 	public static final int CARD_APPENG_INV = 27;
 	public static final int CARD_MEKANISM = 28;
+	public static final int CARD_THERMAL_EXPANSION = 29;
 
 	public static final int CARD_MAX = 49;
 

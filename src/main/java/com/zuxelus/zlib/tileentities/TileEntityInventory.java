@@ -97,8 +97,8 @@ public abstract class TileEntityInventory extends TileEntityFacing implements IS
 	@Override
 	public void setInventorySlotContents(int slot, ItemStack stack) {
 		inventory.set(slot, stack);
-		if (!stack.isEmpty() && stack.getCount() > this.getInventoryStackLimit())
-			stack.setCount(this.getInventoryStackLimit());
+		if (!stack.isEmpty() && stack.getCount() > getInventoryStackLimit())
+			stack.setCount(getInventoryStackLimit());
 		markDirty();
 	}
 

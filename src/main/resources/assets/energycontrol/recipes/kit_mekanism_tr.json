@@ -1,0 +1,42 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "IT",
+        "PD"
+    ],
+    "key": {
+        "I": {
+            "item": "mekanism:ingot",
+            "data": 1
+        },
+        "T": {
+            "item": "techreborn:frequencytransmitter"
+        },
+        "P": {
+            "item": "minecraft:paper"
+        },
+        "D": {
+            "type": "forge:ore_dict",
+            "ore": "dyeGreen"
+        }
+    },
+    "result": {
+        "item": "energycontrol:item_kit",
+        "data": 16
+    },
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "forge:mod_loaded",
+                    "modid": "mekanismgenerators"
+                },
+                {
+                    "type": "forge:mod_loaded",
+                    "modid": "techreborn"
+                }
+            ]
+        }
+    ]
+}

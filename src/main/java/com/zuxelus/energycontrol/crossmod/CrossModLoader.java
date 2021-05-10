@@ -112,6 +112,9 @@ public class CrossModLoader {
 		card = techReborn.getGeneratorCard(te);
 		if (!card.isEmpty())
 			return card;
+		card = thermalExpansion.getGeneratorCard(te);
+		if (!card.isEmpty())
+			return card;
 		return buildCraft.getGeneratorCard(te);
 	}
 

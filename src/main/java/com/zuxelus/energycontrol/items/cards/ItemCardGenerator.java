@@ -32,6 +32,8 @@ public class ItemCardGenerator extends ItemCardBase {
 		NBTTagCompound tag = CrossModLoader.ic2.getGeneratorData(te);
 		if (tag == null)
 			 tag = CrossModLoader.techReborn.getGeneratorData(te);
+		if (tag == null)
+			 tag = CrossModLoader.thermalExpansion.getGeneratorData(te);
 		if (tag == null || !tag.hasKey("type"))
 			return CardState.NO_TARGET;
 

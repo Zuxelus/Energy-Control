@@ -150,4 +150,10 @@ public class TileEntityEnergyCounter extends TileEntityEnergyStorage {
 	public boolean isItemValid(int slotIndex, ItemStack stack) { // ISlotItemFilter
 		return stack.isItemEqual(CrossModLoader.ic2.getItemStack("transformer"));
 	}
+
+	// IEnergySource
+	@Override
+	public double getOfferedEnergy() {
+		return allowEmit ? energy >= output ? output : energy : 0.0D; 
+	}
 }

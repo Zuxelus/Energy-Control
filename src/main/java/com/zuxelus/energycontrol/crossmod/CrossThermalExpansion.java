@@ -3,6 +3,8 @@ package com.zuxelus.energycontrol.crossmod;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.zuxelus.energycontrol.api.ItemStackHelper;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
 import cofh.core.block.TileNameable;
@@ -14,6 +16,7 @@ import cofh.thermalexpansion.block.dynamo.TileDynamoCompression;
 import cofh.thermalexpansion.block.dynamo.TileDynamoMagmatic;
 import cofh.thermalexpansion.block.machine.TileBrewer;
 import cofh.thermalexpansion.block.machine.TileRefinery;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.IFluidTank;
@@ -32,6 +35,35 @@ public class CrossThermalExpansion extends CrossModBase {
 				return tag;
 			}
 		}
+		return null;
+	}
+
+	@Override
+	public ItemStack getGeneratorCard(TileEntity te) {
+		if (te instanceof TileDynamoBase) {
+			ItemStack card = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_GENERATOR);
+			ItemStackHelper.setCoordinates(card, te.getPos());
+			return card;
+		}
+		return ItemStack.EMPTY;
+	}
+
+	@Override
+	public NBTTagCompound getGeneratorData(TileEntity te) {
+		try {
+			NBTTagCompound tag = new NBTTagCompound();
+			tag.setString("euType", "RF");
+			if (te instanceof TileDynamoBase) {
+				tag.setInteger("type", 1);
+				IEnergyStorage storage = ((TileDynamoBase)te).getEnergyStorage();
+				tag.setDouble("storage", storage.getEnergyStored());
+				tag.setDouble("maxStorage", storage.getMaxEnergyStored());
+				int production = ((TileDynamoBase) te).getInfoEnergyPerTick();
+				tag.setBoolean("active", ((TileDynamoBase) te).isActive);
+				tag.setDouble("production", production);
+				return tag;
+			}
+		} catch (Throwable t) { }
 		return null;
 	}
 

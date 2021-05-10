@@ -1,0 +1,49 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "IT",
+        "PD"
+    ],
+    "key": {
+        "I": {
+            "item": "thermalfoundation:material",
+            "data": 771
+        },
+        "T": {
+            "item": "ic2:frequency_transmitter"
+        },
+        "P": {
+            "item": "minecraft:paper"
+        },
+        "D": {
+            "type": "forge:ore_dict",
+            "ore": "dyeYellow"
+        }
+    },
+    "result": {
+        "item": "energycontrol:item_kit",
+        "data": 17
+    },
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "forge:mod_loaded",
+                    "modid": "thermalexpansion"
+                },
+                {
+                    "type": "forge:mod_loaded",
+                    "modid": "ic2"
+                },
+                {
+                    "type": "forge:not",
+                    "value": {
+                        "type": "forge:mod_loaded",
+                        "modid": "ic2-classic-spmod"
+                    }
+                }
+            ]
+        }
+    ]
+}

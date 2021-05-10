@@ -221,4 +221,10 @@ public class TileEntityAverageCounter extends TileEntityEnergyStorage implements
 		IBlockState iblockstate = world.getBlockState(pos);
 		world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
 	}
+
+	// IEnergySource
+	@Override
+	public double getOfferedEnergy() {
+		return allowEmit ? energy >= output ? output : energy : 0.0D; 
+	}
 }
