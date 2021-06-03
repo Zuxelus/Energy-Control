@@ -95,7 +95,6 @@ dependencies {
         transitive false
     }
     deobfProvided group: 'TechReborn', name: "TechReborn-ModCompatibility-1.12.2", version: VERSION_TR_COMPAT, classifier: 'universal'
-    deobfProvided group: 'cofh', name: 'RedstoneFlux', version: VERSION_REDSTONEFLUX, classifier: 'universal'
     deobfProvided group: 'org.squiddev', name: 'cc-tweaked-1.12.2', version: VERSION_COMPUTERCRAFT
     deobfProvided group: 'com.mod-buildcraft', name: 'buildcraft-api', version: VERSION_BUILDCRAFT
     deobfProvided group: 'com.mod-buildcraft', name: 'buildcraft-main', version: VERSION_BUILDCRAFT
