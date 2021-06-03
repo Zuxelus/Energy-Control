@@ -24,7 +24,9 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Optional;
 
+@Optional.Interface(modid = "ic2", iface = "ic2.api.energy.tile.IEnergySink")
 public class TileEntityKitAssembler extends TileEntityInventory implements ITickable, ITilePacketHandler, ISlotItemFilter, IEnergySink {
 	public static final byte SLOT_INFO = 0;
 	public static final byte SLOT_CARD1 = 1;

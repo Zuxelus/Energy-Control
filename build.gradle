@@ -3,61 +3,16 @@ buildscript {
         jcenter()
         maven {
             name = "forge"
-            url = "http://files.minecraftforge.net/maven"
+            url = "https://files.minecraftforge.net/maven"
         }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'de.undercouch:gradle-download-task:4.0.4'
     }
 }
-
-repositories {
-    maven {
-        name = "CurseForge"
-        url = "https://minecraft.curseforge.com/api/maven/"
-    }
-    maven {
-        name = "ic2"
-        url = "http://maven.ic2.player.to/"
-    }
-    maven {
-        // location of the maven that hosts JEI files
-        name = "Progwml6 maven"
-        url = "https://dvs1.progwml6.com/files/maven/"
-    }
-    maven {
-        name = "CoFH Maven"
-        url = "http://maven.covers1624.net"
-    }
-    maven { // TechReborn, RebornCore
-        name = "Modmuss maven"
-        url = "http://maven.modmuss50.me/"
-    }
-    flatDir {
-        dirs 'libs_'
-/*
-	buildcraft-all-7.99.24.6.jar
-	BrandonsCore-1.12.2-2.4.18.210-universal.jar
-	cc-tweaked-1.12.2-1.87.0.jar
-	CoFHCore-1.12.2-4.6.6.1-universal.jar
-	Draconic-Evolution-1.12.2-2.3.25.351-universal.jar
-	ExtremeReactors-1.12.2-0.4.5.67.jar
-	GalacticraftCore-Dev-1.12.2-4.0.2.261.jar
-	Galacticraft-Planets-Dev-1.12.2-4.0.2.261.jar
-	IC2Classic+1.12-1.5.4.5+Dev.jar
-	+Mekanism-1.12.2-9.8.3.390.jar
-	MekanismGenerators-1.12.2-9.8.3.390.jar
-	NuclearCraft-2.18x-1.12.2.jar
-	OpenComputers-MC1.12.2-1.7.5.192.jar
-	+RedstoneFlux-1.12-2.1.1.1-universal.jar
-	ThermalExpansion-1.12.2-5.5.7.1-universal.jar
-	ThermalFoundation-1.12.2-2.6.7.1-universal.jar
-	zerocore-1.12.2-0.1.2.8.jar
-*/
-    }
-}
-
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'de.undercouch.download'
 
 version = "$VERSION_MC-$VERSION_MAJOR.$VERSION_MINOR.$VERSION_PATCH"
 group = "com.zuxelus.energycontrol"
@@ -77,18 +32,103 @@ minecraft {
     mappings = "snapshot_20171003"
 }
 
+def downloadDir = "$buildDir/download"
+
+task downloadGalacticraft {
+    download {
+        src([
+                'https://micdoodle8.com/new-builds/GC-1.12-dev/261/GalacticraftCore-Dev-1.12.2-4.0.2.261.jar',
+                'https://micdoodle8.com/new-builds/GC-1.12-dev/261/Galacticraft-Planets-Dev-1.12.2-4.0.2.261.jar',
+                'https://micdoodle8.com/new-builds/GC-1.12-dev/261/MicdoodleCore-Dev-1.12.2-4.0.2.261.jar'
+        ])
+        mkdir downloadDir
+        dest downloadDir
+        overwrite false
+    }
+}
+
+repositories {
+    maven {
+        name 'CurseMaven'
+        url "https://www.cursemaven.com"
+    }
+    maven {
+        name 'ic2'
+        url 'https://maven.ic2.player.to/'
+    }
+    maven {
+        name 'Progwml6 maven'
+        url 'https://dvs1.progwml6.com/files/maven/'
+    }
+    maven {
+        name 'CoFH Maven'
+        url 'https://maven.covers1624.net'
+    }
+    maven {
+        name 'Modmuss maven'
+        url 'https://maven.modmuss50.me/'
+    }
+    maven {
+        name 'ComputerCraft'
+        url 'https://squiddev.cc/maven/'
+    }
+    maven {
+        name 'BuildCraft'
+        url 'https://mod-buildcraft.com/maven'
+    }
+    maven {
+        name 'OpenComputers'
+        url 'https://maven.cil.li/'
+    }
+    flatDir {
+        name 'Downloads'
+        dir downloadDir
+    }
+}
+
 dependencies {
-    compile group: 'net.industrial-craft', name: 'industrialcraft-2', version: "$VERSION_IC2-ex112", classifier: 'dev'
-    runtime "mezz.jei:jei_${VERSION_MC}:${VERSION_JEI}"
-    deobfCompile(group: 'RebornCore', name: "RebornCore-$VERSION_MC", version: VERSION_REBORN_CORE, classifier: 'universal') {
-        transitive = false
+    compileOnly group: 'net.industrial-craft', name: 'industrialcraft-2', version: "$VERSION_IC2-ex112", classifier: 'dev'
+    deobfProvided(group: 'RebornCore', name: "RebornCore-1.12.2", version: VERSION_REBORN_CORE, classifier: 'universal') {
+        transitive false
     }
-    deobfCompile(group: 'TechReborn', name: "TechReborn-$VERSION_MC", version: VERSION_TR, classifier: 'universal') {
-        transitive = false
+    deobfProvided(group: 'TechReborn', name: "TechReborn-1.12.2", version: VERSION_TR, classifier: 'universal') {
+        transitive false
     }
-    deobfCompile "cofh:RedstoneFlux:${VERSION_REDSTONEFLUX}"
-    compileOnly "appeng:appliedenergistics2:${VERSION_AE2}"
-    compileOnly "mekanism:Mekanism:${VERSION_MEKANISM}"
+    deobfProvided group: 'TechReborn', name: "TechReborn-ModCompatibility-1.12.2", version: VERSION_TR_COMPAT, classifier: 'universal'
+    deobfProvided group: 'cofh', name: 'RedstoneFlux', version: VERSION_REDSTONEFLUX, classifier: 'universal'
+    deobfProvided group: 'org.squiddev', name: 'cc-tweaked-1.12.2', version: VERSION_COMPUTERCRAFT
+    deobfProvided group: 'com.mod-buildcraft', name: 'buildcraft-api', version: VERSION_BUILDCRAFT
+    deobfProvided group: 'com.mod-buildcraft', name: 'buildcraft-main', version: VERSION_BUILDCRAFT
+    compileOnly(group: 'com.brandon3055.draconicevolution', name: 'Draconic-Evolution', version: VERSION_DRACONIC_EVOLUTION, classifier: 'deobf') {
+        transitive false
+    }
+    compileOnly(group: 'com.brandon3055.brandonscore', name: 'BrandonsCore', version: VERSION_BRANDONSCORE, classifier: 'deobf') {
+        transitive false
+    }
+    deobfProvided group: 'li.cil.oc', name: 'OpenComputers', version: VERSION_OPENCOMPUTERS
+    deobfProvided group: 'mezz.jei', name: "jei_1.12.2", version: VERSION_JEI
+    
+    deobfProvided(group: 'cofh', name: 'RedstoneFlux', version: "1.12-$VERSION_RF", classifier: 'universal')
+    deobfProvided(group: 'cofh', name: 'CoFHCore', version: "1.12.2-$VERSION_COFHCORE", classifier: 'universal') {
+        exclude group: 'mezz.jei'
+    }
+    deobfProvided(group: 'cofh', name: 'CoFHWorld', version: "1.12.2-$VERSION_COFHWORLD", classifier: 'universal')
+    deobfProvided(group: 'cofh', name: 'ThermalFoundation', version: "1.12.2-$VERSION_THERMALFOUNDATION", classifier: 'universal')
+    deobfProvided(group: 'codechicken', name: 'CodeChickenLib', version: "1.12.2-$VERSION_CODECHICKENLIB", classifier: 'universal')
+    deobfProvided(group: 'cofh', name: 'ThermalExpansion', version: "1.12.2-$VERSION_THERMALEXPANSION", classifier: 'universal') {
+        exclude group: 'mezz.jei'
+    }
+    
+    compileOnly group: 'micdoodle8.mods.galacticraft', name: 'GalacticraftCore-Dev', version: VERSION_GALACTICRAFT
+    compileOnly group: 'micdoodle8.mods.galacticraft', name: 'Galacticraft-Planets-Dev', version: VERSION_GALACTICRAFT
+    compileOnly group: 'micdoodle8.mods.galacticraft', name: 'MicdoodleCore-Dev', version: VERSION_GALACTICRAFT
+    deobfProvided group: 'curse.maven', name: 'applied-energistics-2-223794', version:  VERSION_AE2
+    deobfProvided group: 'curse.maven', name: 'mekanism-268560', version:  VERSION_MEKANISM
+    deobfProvided group: 'curse.maven', name: 'mekanism-generators-268566', version:  VERSION_MEKANISM_GENERATORS
+    deobfProvided group: 'curse.maven', name: 'extreme-reactors-250277', version:  VERSION_EXTREME_REACTORS
+    deobfProvided group: 'curse.maven', name: 'zerocore-247921', version:  VERSION_ZEROCORE
+    deobfProvided group: 'curse.maven', name: 'nuclearcraft-mod-226254', version:  VERSION_NUCLEARCRAFT
+    compileOnly group: 'curse.maven', name: 'ic2-classic-3093608', version:  VERSION_IC2_CLASSIC
 }
 
 processResources {

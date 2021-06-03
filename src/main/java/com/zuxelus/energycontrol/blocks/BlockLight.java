@@ -23,7 +23,9 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Optional;
 
+@Optional.Interface(modid = "ic2", iface = "ic2.api.tile.IWrenchable")
 public class BlockLight extends Block implements IWrenchable {
 	public static final int DAMAGE_WHITE_OFF = 0;
 	public static final int DAMAGE_WHITE_ON = 1;

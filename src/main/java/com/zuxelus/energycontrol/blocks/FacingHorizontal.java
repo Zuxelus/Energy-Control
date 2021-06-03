@@ -23,7 +23,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Optional;
 
+@Optional.Interface(modid = "ic2", iface = "ic2.api.tile.IWrenchable")
 public abstract class FacingHorizontal extends BlockHorizontal implements ITileEntityProvider, IWrenchable {
 
 	public FacingHorizontal() {
