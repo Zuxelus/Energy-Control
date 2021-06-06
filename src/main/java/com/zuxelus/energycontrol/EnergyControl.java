@@ -1,10 +1,5 @@
 package com.zuxelus.energycontrol;
 
-import java.util.List;
-import java.util.Map;
-
-import org.apache.logging.log4j.Logger;
-
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.containers.slots.SlotHandler;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
@@ -12,7 +7,6 @@ import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.network.ChannelHandler;
 import com.zuxelus.energycontrol.recipes.RecipesNew;
 import com.zuxelus.energycontrol.tileentities.ScreenManager;
-
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -25,6 +19,10 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.logging.log4j.Logger;
+
+import java.util.List;
+import java.util.Map;
 
 @Mod(name = EnergyControl.NAME, modid = EnergyControl.MODID, version = EnergyControl.VERSION, dependencies="after:ic2;after:techreborn", guiFactory = "com.zuxelus.energycontrol.config.GuiFactory", acceptedMinecraftVersions = "[1.12.2]")
 public class EnergyControl {

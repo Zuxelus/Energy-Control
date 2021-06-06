@@ -1,10 +1,7 @@
 package com.zuxelus.energycontrol.items;
 
-import java.util.List;
-
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityAFSU;
-
 import ic2.api.energy.EnergyNet;
 import net.minecraft.block.Block;
 import net.minecraft.client.resources.I18n;
@@ -17,6 +14,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.List;
 
 public class ItemAFSU extends ItemBlock {
 

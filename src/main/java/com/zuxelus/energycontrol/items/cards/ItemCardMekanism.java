@@ -1,16 +1,15 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import java.util.List;
-
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
-
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 public class ItemCardMekanism extends ItemCardBase {
 

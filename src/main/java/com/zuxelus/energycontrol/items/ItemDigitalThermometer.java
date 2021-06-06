@@ -1,7 +1,7 @@
 package com.zuxelus.energycontrol.items;
 
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
 import ic2.api.reactor.IReactor;
@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Optional.Interface(modid = "ic2", iface = "ic2.api.item.IElectricItem")
+@Optional.Interface(modid = ModIDs.IC2, iface = "ic2.api.item.IElectricItem")
 public class ItemDigitalThermometer extends ItemThermometer implements IElectricItem {
 	protected final static int CAPACITY = 12000;
 	protected final static int TRANSFER_LIMIT = 250;
@@ -69,7 +69,7 @@ public class ItemDigitalThermometer extends ItemThermometer implements IElectric
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
 		if (!isInCreativeTab(tab))
 			return;
-		items.add(CrossModLoader.ic2.getChargedStack(new ItemStack(this, 1)));
+		items.add(CrossModLoader.getCrossMod(ModIDs.IC2).getChargedStack(new ItemStack(this, 1)));
 		items.add(new ItemStack(this, 1, getMaxDamage()));
 	}
 }

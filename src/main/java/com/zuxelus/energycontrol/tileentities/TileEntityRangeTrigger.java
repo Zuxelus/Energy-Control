@@ -10,7 +10,6 @@ import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;

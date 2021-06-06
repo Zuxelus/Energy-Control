@@ -1,19 +1,19 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemCardReactor5x5 extends ItemCardBase {
 	public ItemCardReactor5x5() {
@@ -26,7 +26,7 @@ public class ItemCardReactor5x5 extends ItemCardBase {
 		if (target == null) 
 			return CardState.NO_TARGET;
 
-		return CrossModLoader.ic2.updateCardReactor5x5(world, reader, target);
+		return CrossModLoader.getCrossMod(ModIDs.IC2).updateCardReactor5x5(world, reader, target);
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public class ItemCardReactor5x5 extends ItemCardBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList() {
-		List<PanelSetting> result = new ArrayList<PanelSetting>(6);
+		List<PanelSetting> result = new ArrayList<>(6);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOnOff"), 1, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelHeat"), 2, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMaxHeat"), 4, damage));

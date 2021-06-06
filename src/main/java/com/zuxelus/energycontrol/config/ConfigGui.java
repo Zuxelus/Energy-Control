@@ -1,7 +1,6 @@
 package com.zuxelus.energycontrol.config;
 
 import com.zuxelus.energycontrol.EnergyControl;
-
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;

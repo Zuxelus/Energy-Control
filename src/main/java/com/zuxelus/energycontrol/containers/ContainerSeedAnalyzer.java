@@ -5,7 +5,6 @@ import com.zuxelus.energycontrol.tileentities.TileEntitySeedAnalyzer;
 import com.zuxelus.zlib.containers.ContainerBase;
 import com.zuxelus.zlib.containers.slots.SlotDischargeable;
 import com.zuxelus.zlib.containers.slots.SlotFilter;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 

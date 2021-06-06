@@ -1,14 +1,11 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -16,6 +13,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemCardGenerator extends ItemCardBase {
 	public ItemCardGenerator() {
@@ -29,11 +29,11 @@ public class ItemCardGenerator extends ItemCardBase {
 			return CardState.NO_TARGET;
 
 		TileEntity te = world.getTileEntity(target);
-		NBTTagCompound tag = CrossModLoader.ic2.getGeneratorData(te);
+		NBTTagCompound tag = CrossModLoader.getCrossMod(ModIDs.IC2).getGeneratorData(te);
 		if (tag == null)
-			 tag = CrossModLoader.techReborn.getGeneratorData(te);
+			 tag = CrossModLoader.getCrossMod(ModIDs.TECH_REBORN).getGeneratorData(te);
 		if (tag == null)
-			 tag = CrossModLoader.thermalExpansion.getGeneratorData(te);
+			 tag = CrossModLoader.getCrossMod(ModIDs.THERMAL_EXPANSION).getGeneratorData(te);
 		if (tag == null || !tag.hasKey("type"))
 			return CardState.NO_TARGET;
 
@@ -157,7 +157,7 @@ public class ItemCardGenerator extends ItemCardBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList() {
-		List<PanelSetting> result = new ArrayList<PanelSetting>(7);
+		List<PanelSetting> result = new ArrayList<>(7);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 1, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelCapacity"), 2, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMultiplier"), 4, damage));

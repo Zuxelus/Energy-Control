@@ -38,6 +38,6 @@ public class TileEntityAdvancedInfoPanelExtender extends TileEntityInfoPanelExte
 		TileEntityInfoPanel core = screen.getCore(world);
 		if (core == null || !(core instanceof TileEntityAdvancedInfoPanel))
 			return EnumFacing.NORTH;
-		return ((TileEntityAdvancedInfoPanel) core).getRotation();
+		return core.getRotation();
 	}
 }

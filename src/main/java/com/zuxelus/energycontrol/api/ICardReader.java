@@ -1,8 +1,5 @@
 package com.zuxelus.energycontrol.api;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -10,13 +7,13 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public interface ICardReader {
 
 	/**
-	 * Method to get target coordinates for card. Can be used if card implements
-	 * {@link IRemoteSensor}.
-	 * 
-	 * @return
+	 * Method to get target coordinates for card.
 	 */
 	BlockPos getTarget();
 

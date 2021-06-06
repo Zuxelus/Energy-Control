@@ -1,8 +1,5 @@
 package com.zuxelus.energycontrol.gui;
 
-import java.io.IOException;
-import java.util.List;
-
 import com.google.common.collect.Lists;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelString;
@@ -12,7 +9,6 @@ import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
 import com.zuxelus.zlib.gui.GuiContainerBase;
-
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.util.ITooltipFlag;
@@ -23,6 +19,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.io.IOException;
+import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public class GuiKitAssembler extends GuiContainerBase {
@@ -78,7 +77,7 @@ public class GuiKitAssembler extends GuiContainerBase {
 		List<String> stackList = stack.getTooltip(mc.player, mc.gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL);
 		List<String> list = Lists.<String>newArrayList();
 		if (stackList.size() > 0)
-			list.add((String) stackList.get(0));
+			list.add(stackList.get(0));
 		List<PanelString> data = new ItemCardReader(stack).getAllData();
 		if (data != null)
 			for (PanelString panelString : data) {

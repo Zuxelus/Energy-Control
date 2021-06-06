@@ -3,7 +3,6 @@ package com.zuxelus.energycontrol.items.kits;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
-
 import erogenousbeef.bigreactors.common.multiblock.tileentity.TileEntityReactorPartBase;
 import erogenousbeef.bigreactors.common.multiblock.tileentity.TileEntityTurbinePartBase;
 import net.minecraft.entity.player.EntityPlayer;

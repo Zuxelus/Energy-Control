@@ -1,15 +1,12 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.utils.StringUtils;
-
 import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -17,6 +14,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemCardGeneratorArray extends ItemCardBase {
 	private static final double STATUS_NOT_FOUND = Integer.MIN_VALUE;
@@ -41,7 +41,7 @@ public class ItemCardGeneratorArray extends ItemCardBase {
 			int dz = target.getZ() - pos.getZ();
 			if (Math.abs(dx) <= range && Math.abs(dy) <= range && Math.abs(dz) <= range) {
 				TileEntity entity = world.getTileEntity(target);
-				NBTTagCompound tag = CrossModLoader.ic2.getGeneratorData(entity);
+				NBTTagCompound tag = CrossModLoader.getCrossMod(ModIDs.IC2).getGeneratorData(entity);
 				if (tag != null && tag.hasKey("type")) {
 					int type = tag.getInteger("type");
 					reader.setInt(String.format("_%dtype", i), type);
@@ -144,7 +144,7 @@ public class ItemCardGeneratorArray extends ItemCardBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList() {
-		List<PanelSetting> result = new ArrayList<PanelSetting>(5);
+		List<PanelSetting> result = new ArrayList<>(5);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelStorage"), 1, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMaxStorage"), 2, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOutput"), 8, damage));

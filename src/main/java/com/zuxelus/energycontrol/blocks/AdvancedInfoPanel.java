@@ -1,16 +1,14 @@
 package com.zuxelus.energycontrol.blocks;
 
-import java.util.Collections;
-import java.util.List;
-
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
+import com.zuxelus.energycontrol.utils.KeyboardUtil;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
-
 import ic2.api.util.Keys;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,6 +20,9 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+
+import java.util.Collections;
+import java.util.List;
 
 public class AdvancedInfoPanel extends InfoPanel {
 
@@ -41,7 +42,7 @@ public class AdvancedInfoPanel extends InfoPanel {
 		if (screen == null)
 			return new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
 
-		EnumFacing enumfacing = (EnumFacing) state.getValue(FACING);
+		EnumFacing enumfacing = state.getValue(FACING);
 		if (!(te instanceof TileEntityAdvancedInfoPanel) || enumfacing == null)
 			return new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
 
@@ -65,12 +66,12 @@ public class AdvancedInfoPanel extends InfoPanel {
 
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		if (CrossModLoader.ic2.isWrench(player.getHeldItem(hand)))
+		if (CrossModLoader.getCrossMod(ModIDs.IC2).isWrench(player.getHeldItem(hand)))
 			return true;
 		TileEntity te = world.getTileEntity(pos);
 		if (!(te instanceof TileEntityInfoPanel))
 			return true;
-		if (!world.isRemote && Keys.instance.isAltKeyDown(player) && ((TileEntityInfoPanel) te).getFacing() == facing)
+		if (!world.isRemote && KeyboardUtil.isAltKeyDown(player) && ((TileEntityInfoPanel) te).getFacing() == facing)
 			if (((TileEntityInfoPanel) te).runTouchAction(player.getHeldItem(hand), pos, hitX, hitY, hitZ))
 				return true;
 		if (!world.isRemote)

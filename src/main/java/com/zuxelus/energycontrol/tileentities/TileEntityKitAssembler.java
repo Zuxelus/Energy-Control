@@ -1,13 +1,13 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.blocks.KitAssembler;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
-
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergyEmitter;
@@ -26,7 +26,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Optional;
 
-@Optional.Interface(modid = "ic2", iface = "ic2.api.energy.tile.IEnergySink")
+@Optional.Interface(modid = ModIDs.IC2, iface = "ic2.api.energy.tile.IEnergySink")
 public class TileEntityKitAssembler extends TileEntityInventory implements ITickable, ITilePacketHandler, ISlotItemFilter, IEnergySink {
 	public static final byte SLOT_INFO = 0;
 	public static final byte SLOT_CARD1 = 1;

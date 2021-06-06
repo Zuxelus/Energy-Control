@@ -6,7 +6,6 @@ import com.zuxelus.zlib.containers.ContainerBase;
 import com.zuxelus.zlib.containers.slots.SlotArmor;
 import com.zuxelus.zlib.containers.slots.SlotChargeable;
 import com.zuxelus.zlib.containers.slots.SlotDischargeable;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.Slot;
@@ -21,7 +20,7 @@ public class ContainerAFSU extends ContainerBase<TileEntityAFSU> {
 		addSlotToContainer(new SlotChargeable(te, TileEntityAFSU.SLOT_CHARGER, 26, 17)); // chargeSlot
 		addSlotToContainer(new SlotDischargeable(te, TileEntityAFSU.SLOT_DISCHARGER, 26, 53, TileEntityAFSU.TIER)); // dischargeSlot
 		for (int col = 0; col < armorSlots.length; col++)
-			addSlotToContainer((Slot) new SlotArmor(player.inventory, armorSlots[col], 8 + col * 18, 84));
+			addSlotToContainer(new SlotArmor(player.inventory, armorSlots[col], 8 + col * 18, 84));
 		// inventory
 		addPlayerInventorySlots(player, 196);
 	}

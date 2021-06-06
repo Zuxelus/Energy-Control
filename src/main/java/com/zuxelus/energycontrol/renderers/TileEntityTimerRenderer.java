@@ -2,7 +2,6 @@ package com.zuxelus.energycontrol.renderers;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.tileentities.TileEntityTimer;
-
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.ResourceLocation;

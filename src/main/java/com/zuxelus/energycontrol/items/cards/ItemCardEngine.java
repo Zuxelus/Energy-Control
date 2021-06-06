@@ -1,19 +1,18 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import buildcraft.lib.engine.TileEngineBase_BC8;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
-
-import buildcraft.lib.engine.TileEngineBase_BC8;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemCardEngine extends ItemCardBase {
 
@@ -93,7 +92,7 @@ public class ItemCardEngine extends ItemCardBase {
 
 	@Override
 	public List<PanelSetting> getSettingsList() {
-		List<PanelSetting> result = new ArrayList<PanelSetting>(5);
+		List<PanelSetting> result = new ArrayList<>(5);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelHeat"), 1, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelStorage"), 2, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMaxStorage"), 4, damage));

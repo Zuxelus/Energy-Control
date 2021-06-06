@@ -14,7 +14,7 @@ public class Screen {
 	public int maxY;
 	public int maxZ;
 	private BlockPos corePos;
-	private boolean powered = false;
+	private boolean powered;
 
 	public Screen(TileEntityInfoPanel panel) {
 		BlockPos pos = panel.getPos();

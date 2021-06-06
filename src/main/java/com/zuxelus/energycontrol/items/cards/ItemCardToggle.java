@@ -1,14 +1,7 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import java.util.List;
-
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.api.CardState;
-import com.zuxelus.energycontrol.api.ICardReader;
-import com.zuxelus.energycontrol.api.ITouchAction;
-import com.zuxelus.energycontrol.api.PanelSetting;
-import com.zuxelus.energycontrol.api.PanelString;
-
+import com.zuxelus.energycontrol.api.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockButton;
 import net.minecraft.block.BlockLever;
@@ -26,6 +19,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.List;
 
 public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 	private static final PropertyBool POWERED = PropertyBool.create("powered");
@@ -45,7 +40,7 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 			return CardState.NO_TARGET;
 		
 		if (state.getBlock() == Blocks.LEVER || state.getBlock() instanceof BlockButton) {
-			boolean value = ((Boolean)state.getValue(POWERED)).booleanValue();
+			boolean value = state.getValue(POWERED).booleanValue();
 			reader.setBoolean("value", value);
 			return CardState.OK;
 		}
@@ -93,7 +88,7 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 			state = state.cycleProperty(POWERED);
 			world.setBlockState(pos, state, 3);
 			world.notifyNeighborsOfStateChange(pos, state.getBlock(), false);
-			EnumFacing enumfacing = ((BlockLever.EnumOrientation) state.getValue(BlockLever.FACING)).getFacing();
+			EnumFacing enumfacing = state.getValue(BlockLever.FACING).getFacing();
 			world.notifyNeighborsOfStateChange(pos.offset(enumfacing.getOpposite()), state.getBlock(), false);
 		}
 		if (state.getBlock() instanceof BlockButton) {
@@ -122,10 +117,10 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferbuilder = tessellator.getBuffer();
 		bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-		bufferbuilder.pos(x + 0, y + height, z).tex((double)((float)(textureX + 0)), (double)((float)(textureY + height))).endVertex();
-		bufferbuilder.pos(x + width, y + height, z).tex((double)((float)(textureX + width)), (double)((float)(textureY + height))).endVertex();
-		bufferbuilder.pos(x + width, y + 0, z).tex((double)((float)(textureX + width)), (double)((float)(textureY + 0))).endVertex();
-		bufferbuilder.pos(x + 0, y + 0, z).tex((double)((float)(textureX + 0)), (double)((float)(textureY + 0))).endVertex();
+		bufferbuilder.pos(x + 0, y + height, z).tex((float)(textureX + 0), (float)(textureY + height)).endVertex();
+		bufferbuilder.pos(x + width, y + height, z).tex((float)(textureX + width), (float)(textureY + height)).endVertex();
+		bufferbuilder.pos(x + width, y + 0, z).tex((float)(textureX + width), (float)(textureY + 0)).endVertex();
+		bufferbuilder.pos(x + 0, y + 0, z).tex((float)(textureX + 0), (float)(textureY + 0)).endVertex();
 		tessellator.draw();
 	}
 }

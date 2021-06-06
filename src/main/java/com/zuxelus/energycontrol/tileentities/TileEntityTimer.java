@@ -3,7 +3,6 @@ package com.zuxelus.energycontrol.tileentities;
 import com.zuxelus.energycontrol.blocks.TimerBlock;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;

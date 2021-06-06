@@ -1,11 +1,7 @@
 package com.zuxelus.energycontrol.blocks;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.zuxelus.energycontrol.EnergyControl;
-
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import ic2.api.tile.IWrenchable;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -25,7 +21,11 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 
-@Optional.Interface(modid = "ic2", iface = "ic2.api.tile.IWrenchable")
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Optional.Interface(modid = ModIDs.IC2, iface = "ic2.api.tile.IWrenchable")
 public class BlockLight extends Block implements IWrenchable {
 	public static final int DAMAGE_WHITE_OFF = 0;
 	public static final int DAMAGE_WHITE_ON = 1;
@@ -39,7 +39,7 @@ public class BlockLight extends Block implements IWrenchable {
 
 	public BlockLight() {
 		super(Material.REDSTONE_LIGHT);
-		blocks = new HashMap<Integer, Boolean>();
+		blocks = new HashMap<>();
 		this.setHardness(0.3F);
 		this.setCreativeTab(EnergyControl.creativeTab);
 		setSoundType(SoundType.GLASS);

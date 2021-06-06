@@ -1,8 +1,5 @@
 package com.zuxelus.energycontrol.gui;
 
-import java.io.IOException;
-import java.util.List;
-
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.gui.controls.GuiInfoPanelCheckBox;
@@ -14,7 +11,6 @@ import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.containers.ContainerBase;
 import com.zuxelus.zlib.gui.GuiContainerBase;
 import com.zuxelus.zlib.gui.controls.GuiButtonGeneral;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
@@ -27,6 +23,9 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.io.IOException;
+import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public class GuiInfoPanel extends GuiContainerBase implements IContainerListener {

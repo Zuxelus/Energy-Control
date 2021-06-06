@@ -2,7 +2,6 @@ package com.zuxelus.energycontrol.recipes;
 
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.init.ModItems;
-
 import ic2.api.item.IC2Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;

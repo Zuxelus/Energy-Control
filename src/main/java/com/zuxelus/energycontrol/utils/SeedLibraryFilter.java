@@ -1,10 +1,6 @@
 package com.zuxelus.energycontrol.utils;
 
-import java.util.Collection;
-import java.util.Vector;
-
 import com.zuxelus.energycontrol.tileentities.TileEntitySeedLibrary;
-
 import ic2.api.crops.CropCard;
 import ic2.api.crops.Crops;
 import ic2.api.crops.ICropSeed;
@@ -12,25 +8,28 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
+import java.util.Collection;
+import java.util.Vector;
+
 public class SeedLibraryFilter {
-	public TileEntitySeedLibrary te = null;
-	public boolean bulk_mode = false;
+	public TileEntitySeedLibrary te;
+	public boolean bulk_mode;
 	public int unknown_type = 1;
 	public int unknown_ggr = 1;
 	public CropCard seed_type;
-	public int min_growth = 0;
-	public int min_gain = 0;
-	public int min_resistance = 0;
+	public int min_growth;
+	public int min_gain;
+	public int min_resistance;
 	public int max_growth = 31;
 	public int max_gain = 31;
 	public int max_resistance = 31;
-	public int min_total = 0;
+	public int min_total;
 	public int max_total = 93;
 	public SeedLibrarySort sort = SeedLibrarySort.TOTAL_DESC;
 
 	public static final int CACHE_SIZE = 10;
-	public Vector<ItemStack> cache = new Vector<ItemStack>(CACHE_SIZE + 1);
-	public boolean cached_nothing = false;
+	public Vector<ItemStack> cache = new Vector<>(CACHE_SIZE + 1);
+	public boolean cached_nothing;
 
 	public SeedLibraryFilter(TileEntitySeedLibrary owner) {
 		te = owner;

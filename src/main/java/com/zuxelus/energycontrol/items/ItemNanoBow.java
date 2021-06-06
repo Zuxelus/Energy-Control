@@ -3,7 +3,6 @@ package com.zuxelus.energycontrol.items;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.entities.EntityTechArrow;
-
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -139,7 +138,7 @@ public abstract class ItemNanoBow extends ItemBow /* , IItemUpgradeable */ {
 				break;
 			}
 		}
-		world.playSound((EntityPlayer) null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ARROW_SHOOT,
+		world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ARROW_SHOOT,
 				SoundCategory.PLAYERS, 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
 		player.addStat(StatList.getObjectUseStats(this));
 	}
@@ -193,14 +192,14 @@ public abstract class ItemNanoBow extends ItemBow /* , IItemUpgradeable */ {
 			}
 			nbt.setInteger("bowMode", mode);
 			player.sendMessage(new TextComponentTranslation("info.nanobow." + MODE[mode - 1]));
-			return new ActionResult<ItemStack>(EnumActionResult.FAIL, player.getHeldItem(hand));
+			return new ActionResult<>(EnumActionResult.FAIL, player.getHeldItem(hand));
 		}
 
 		if (canUse(stack, CHARGE[mode - 1])) {
 			player.setActiveHand(hand);
-			return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
+			return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 		}
-		return new ActionResult<ItemStack>(EnumActionResult.FAIL, stack);
+		return new ActionResult<>(EnumActionResult.FAIL, stack);
 	}
 
 	@Override

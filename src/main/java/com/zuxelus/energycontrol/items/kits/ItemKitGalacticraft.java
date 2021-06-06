@@ -3,9 +3,11 @@ package com.zuxelus.energycontrol.items.kits;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
-
 import micdoodle8.mods.galacticraft.core.tile.*;
-import micdoodle8.mods.galacticraft.planets.mars.tile.*;
+import micdoodle8.mods.galacticraft.planets.mars.tile.TileEntityElectrolyzer;
+import micdoodle8.mods.galacticraft.planets.mars.tile.TileEntityGasLiquefier;
+import micdoodle8.mods.galacticraft.planets.mars.tile.TileEntityLaunchController;
+import micdoodle8.mods.galacticraft.planets.mars.tile.TileEntityMethaneSynthesizer;
 import micdoodle8.mods.galacticraft.planets.venus.tile.TileEntitySolarArrayController;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;

@@ -2,11 +2,11 @@ package com.zuxelus.energycontrol.blocks;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanelExtender;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanelExtender;
-
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -28,7 +28,7 @@ public class AdvancedInfoPanelExtender extends InfoPanelExtender {
 
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		if (CrossModLoader.ic2.isWrench(player.getHeldItem(hand)))
+		if (CrossModLoader.getCrossMod(ModIDs.IC2).isWrench(player.getHeldItem(hand)))
 			return true;
 		if (world.isRemote)
 			return true;
@@ -44,7 +44,7 @@ public class AdvancedInfoPanelExtender extends InfoPanelExtender {
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
 		TileEntity te = source.getTileEntity(pos);
-		EnumFacing enumfacing = (EnumFacing) state.getValue(FACING);
+		EnumFacing enumfacing = state.getValue(FACING);
 		if (!(te instanceof TileEntityAdvancedInfoPanelExtender) || enumfacing == null)
 			return new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
 		switch (enumfacing) {

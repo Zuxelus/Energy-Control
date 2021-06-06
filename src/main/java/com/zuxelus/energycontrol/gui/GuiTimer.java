@@ -5,7 +5,6 @@ import com.zuxelus.energycontrol.gui.controls.CompactButton;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityTimer;
 import com.zuxelus.zlib.gui.GuiBase;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraftforge.fml.relauncher.Side;
@@ -14,7 +13,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiTimer extends GuiBase {
 	private TileEntityTimer timer;
-	private GuiTextField textboxTimer = null;
+	private GuiTextField textboxTimer;
 	private boolean lastIsWorking;
 
 	public GuiTimer(TileEntityTimer timer) {

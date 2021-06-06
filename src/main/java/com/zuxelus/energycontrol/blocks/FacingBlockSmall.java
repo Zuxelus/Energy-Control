@@ -1,7 +1,6 @@
 package com.zuxelus.energycontrol.blocks;
 
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -67,7 +66,7 @@ public abstract class FacingBlockSmall extends FacingBlock {
 
 	@Override
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos fromPos) {
-		if (checkForDrop(world, pos, state) && !canPlaceBlock(world, pos, ((EnumFacing) state.getValue(FACING)).getOpposite())) {
+		if (checkForDrop(world, pos, state) && !canPlaceBlock(world, pos, state.getValue(FACING).getOpposite())) {
 			dropBlockAsItem(world, pos, state, 0);
 			world.setBlockToAir(pos);
 		}

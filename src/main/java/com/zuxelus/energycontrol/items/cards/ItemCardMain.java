@@ -1,15 +1,11 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.*;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
-
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -23,10 +19,14 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public final class ItemCardMain extends Item {
 	public static final int LOCATION_RANGE = 8;
 	
-	private static Map<Integer, IItemCard> cards = new HashMap<Integer, IItemCard>();
+	private static final Map<Integer, IItemCard> cards = new HashMap<>();
 
 	public ItemCardMain() {
 		super();
@@ -41,7 +41,7 @@ public final class ItemCardMain extends Item {
 		register("ItemCardCounter");
 		register("ItemCardLiquid");
 		register("ItemCardGenerator");
-		if (Loader.isModLoaded("ic2")) {
+		if (Loader.isModLoaded(ModIDs.IC2)) {
 			register("ItemCardGeneratorKinetic");
 			register("ItemCardGeneratorHeat");
 			register("ItemCardReactor");
@@ -57,31 +57,29 @@ public final class ItemCardMain extends Item {
 		register("ItemCardVanilla");
 		register("ItemCardInventory");
 		register("ItemCardRedstone");
-		if (Loader.isModLoaded("buildcraftcore"))
+		if (Loader.isModLoaded(ModIDs.BUILDCRAFT))
 			register("ItemCardEngine");
-		if (Loader.isModLoaded("draconicevolution"))
+		if (Loader.isModLoaded(ModIDs.DRACONIC_EVOLUTION))
 			register("ItemCardReactorDraconic");
-		if (Loader.isModLoaded("appliedenergistics2")) {
+		if (Loader.isModLoaded(ModIDs.APPLIED_ENERGISTICS)) {
 			register("ItemCardAppEng");
 			register("ItemCardAppEngInv");
 		}
-		if (Loader.isModLoaded("galacticraftcore") && Loader.isModLoaded("galacticraftplanets"))
+		if (Loader.isModLoaded(ModIDs.GALACTICRAFT_CORE) && Loader.isModLoaded(ModIDs.GALACTICRAFT_PLANETS))
 			register("ItemCardGalacticraft");
-		if (Loader.isModLoaded("bigreactors"))
+		if (Loader.isModLoaded(ModIDs.BIG_REACTORS))
 			register("ItemCardBigReactors");
-		if (Loader.isModLoaded("nuclearcraft"))
+		if (Loader.isModLoaded(ModIDs.NUCLEAR_CRAFT))
 			register("ItemCardNuclearCraft");
-		if (Loader.isModLoaded("mekanismgenerators"))
+		if (Loader.isModLoaded(ModIDs.MEKANISM_GENERATORS))
 			register("ItemCardMekanism");
-		if (Loader.isModLoaded("thermalexpansion"))
+		if (Loader.isModLoaded(ModIDs.THERMAL_EXPANSION))
 			register("ItemCardThermalExpansion");
 	}
 
 	private static void register(String className) {
 		try {
 			Class<?> clz = Class.forName("com.zuxelus.energycontrol.items.cards." + className);
-			if (clz == null)
-				return;
 			IItemCard item =  (IItemCard) clz.newInstance();
 			if (checkCard(item))
 				cards.put(item.getDamage(), item);
@@ -111,7 +109,7 @@ public final class ItemCardMain extends Item {
 	}
 
 	public static boolean containsCard(int i) {
-		return cards.containsKey(i) ? true : false;
+		return cards.containsKey(i);
 	}
 
 	@Override

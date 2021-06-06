@@ -1,15 +1,11 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.utils.StringUtils;
-
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -18,6 +14,9 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemCardLiquidArray extends ItemCardBase {
 	private static final int STATUS_NOT_FOUND = Integer.MIN_VALUE;
@@ -157,7 +156,7 @@ public class ItemCardLiquidArray extends ItemCardBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList() {
-		List<PanelSetting> result = new ArrayList<PanelSetting>(6);
+		List<PanelSetting> result = new ArrayList<>(6);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidName"), 1,damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidFree"), 2,damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidCapacity"), 4, damage));

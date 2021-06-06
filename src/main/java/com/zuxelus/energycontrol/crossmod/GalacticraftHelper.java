@@ -2,11 +2,7 @@ package com.zuxelus.energycontrol.crossmod;
 
 import micdoodle8.mods.galacticraft.core.GCBlocks;
 import micdoodle8.mods.galacticraft.core.fluid.OxygenPressureProtocol;
-import micdoodle8.mods.galacticraft.core.tile.TileEntityOxygenCollector;
-import micdoodle8.mods.galacticraft.core.tile.TileEntityOxygenDistributor;
-import micdoodle8.mods.galacticraft.core.tile.TileEntityOxygenSealer;
-import micdoodle8.mods.galacticraft.core.tile.TileEntityRefinery;
-import micdoodle8.mods.galacticraft.core.tile.TileEntitySolar;
+import micdoodle8.mods.galacticraft.core.tile.*;
 import micdoodle8.mods.galacticraft.core.util.EnumColor;
 import micdoodle8.mods.galacticraft.core.util.GCCoreUtil;
 import micdoodle8.mods.galacticraft.core.util.RedstoneUtil;

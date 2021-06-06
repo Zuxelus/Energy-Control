@@ -2,7 +2,6 @@ package com.zuxelus.energycontrol.crossmod.computercraft;
 
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
-
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import net.minecraft.tileentity.TileEntity;

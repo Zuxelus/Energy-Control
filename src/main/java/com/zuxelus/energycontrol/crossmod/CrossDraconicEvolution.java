@@ -4,7 +4,6 @@ import com.brandon3055.draconicevolution.api.IExtendedRFStorage;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalDirectIO;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyInfuser;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
@@ -23,13 +22,13 @@ public class CrossDraconicEvolution extends CrossModBase {
 			return tag;
 		}
 		if (te instanceof TileEnergyInfuser) {
-			tag.setDouble("maxStorage", (double) ((TileEnergyInfuser) te).energyStorage.getMaxEnergyStored());
-			tag.setDouble("storage", (double) ((TileEnergyInfuser) te).energyStorage.getEnergyStored());
+			tag.setDouble("maxStorage", ((TileEnergyInfuser) te).energyStorage.getMaxEnergyStored());
+			tag.setDouble("storage", ((TileEnergyInfuser) te).energyStorage.getEnergyStored());
 			return tag;
 		}
 		if (te instanceof TileCrystalDirectIO) {
-			tag.setDouble("maxStorage", (double) ((TileCrystalDirectIO) te).getMaxEnergyStored());
-			tag.setDouble("storage", (double) ((TileCrystalDirectIO) te).getEnergyStored());
+			tag.setDouble("maxStorage", ((TileCrystalDirectIO) te).getMaxEnergyStored());
+			tag.setDouble("storage", ((TileCrystalDirectIO) te).getEnergyStored());
 			return tag;
 		}
 		return null;

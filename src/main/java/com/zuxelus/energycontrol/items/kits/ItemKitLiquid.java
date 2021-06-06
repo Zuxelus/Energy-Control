@@ -3,7 +3,6 @@ package com.zuxelus.energycontrol.items.kits;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;

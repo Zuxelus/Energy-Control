@@ -3,7 +3,6 @@ package com.zuxelus.energycontrol.items;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.tileentities.TileEntityAFSU;
-
 import ic2.core.block.BlockTileEntity;
 import ic2.core.block.wiring.TileEntityElectricMFSU;
 import ic2.core.util.StackUtil;

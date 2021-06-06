@@ -1,13 +1,10 @@
 package com.zuxelus.energycontrol;
 
-import java.io.File;
-
 import com.zuxelus.energycontrol.blocks.BlockDamages;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.containers.*;
 import com.zuxelus.energycontrol.items.cards.ItemCardHolder;
 import com.zuxelus.energycontrol.tileentities.*;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -16,6 +13,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.IGuiHandler;
+
+import java.io.File;
 
 public class ServerProxy implements IGuiHandler {
 
@@ -43,7 +42,7 @@ public class ServerProxy implements IGuiHandler {
 			if (te instanceof TileEntityInfoPanelExtender) {
 				TileEntityInfoPanel panel = ((TileEntityInfoPanelExtender) te).getCore();
 				if (panel != null)
-					return new ContainerInfoPanel(player, (TileEntityInfoPanel) panel);
+					return new ContainerInfoPanel(player, panel);
 			}
 			return null;
 		case BlockDamages.DAMAGE_ADVANCED_PANEL:

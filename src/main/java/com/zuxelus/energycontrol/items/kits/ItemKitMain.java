@@ -1,14 +1,10 @@
 package com.zuxelus.energycontrol.items.kits;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.IItemKit;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
-
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,8 +19,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Loader;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ItemKitMain extends Item {
-	private static Map<Integer, IItemKit> kits = new HashMap<Integer, IItemKit>();
+	private static Map<Integer, IItemKit> kits = new HashMap<>();
 
 	public ItemKitMain() {
 		super();
@@ -40,34 +39,32 @@ public class ItemKitMain extends Item {
 		register("ItemKitCounter");
 		register("ItemKitLiquid");
 		register("ItemKitGenerator");
-		if (Loader.isModLoaded("ic2"))
+		if (Loader.isModLoaded(ModIDs.IC2))
 			register("ItemKitReactor");
 		register("ItemKitLiquidAdvanced");
 		register("ItemKitToggle");
 		register("ItemKitVanilla");
 		register("ItemKitInventory");
 		register("ItemKitRedstone");
-		if (Loader.isModLoaded("draconicevolution"))
+		if (Loader.isModLoaded(ModIDs.DRACONIC_EVOLUTION))
 			register("ItemKitDraconic");
-		if (Loader.isModLoaded("appliedenergistics2"))
+		if (Loader.isModLoaded(ModIDs.APPLIED_ENERGISTICS))
 			register("ItemKitAppEng");
-		if (Loader.isModLoaded("galacticraftcore") && Loader.isModLoaded("galacticraftplanets"))
+		if (Loader.isModLoaded(ModIDs.GALACTICRAFT_CORE) && Loader.isModLoaded(ModIDs.GALACTICRAFT_PLANETS))
 			register("ItemKitGalacticraft");
-		if (Loader.isModLoaded("bigreactors"))
+		if (Loader.isModLoaded(ModIDs.BIG_REACTORS))
 			register("ItemKitBigReactors");
-		if (Loader.isModLoaded("nuclearcraft"))
+		if (Loader.isModLoaded(ModIDs.NUCLEAR_CRAFT))
 			register("ItemKitNuclearCraft");
-		if (Loader.isModLoaded("mekanismgenerators"))
+		if (Loader.isModLoaded(ModIDs.MEKANISM_GENERATORS))
 			register("ItemKitMekanism");
-		if (Loader.isModLoaded("thermalexpansion"))
+		if (Loader.isModLoaded(ModIDs.THERMAL_EXPANSION))
 			register("ItemKitThermalExpansion");
 	}
 
 	private static void register(String className) {
 		try {
 			Class<?> clz = Class.forName("com.zuxelus.energycontrol.items.kits." + className);
-			if (clz == null)
-				return;
 			ItemKitBase item =  (ItemKitBase) clz.newInstance();
 			if (checkKit(item))
 				kits.put(item.getDamage(), item);
@@ -86,7 +83,7 @@ public class ItemKitMain extends Item {
 		return false;
 	}
 
-	public static final void registerKit(IItemKit item) {
+	public static void registerKit(IItemKit item) {
 		if (checkKit(item)) {
 			if (item.getDamage() <= ItemCardType.KIT_MAX) {
 				EnergyControl.logger.warn(String.format("Kit %s was not registered. Kit ID should be bigger than %d", item.getUnlocalizedName(), ItemCardType.CARD_MAX));
@@ -96,7 +93,7 @@ public class ItemKitMain extends Item {
 		}
 	}
 
-	public static final boolean containsKit(int i) {
+	public static boolean containsKit(int i) {
 		return kits.containsKey(i) ? true : false;
 	}
 

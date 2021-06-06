@@ -2,7 +2,6 @@ package com.zuxelus.energycontrol.items.kits;
 
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

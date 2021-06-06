@@ -4,7 +4,6 @@ import com.zuxelus.energycontrol.containers.slots.SlotCard;
 import com.zuxelus.energycontrol.tileentities.TileEntityRemoteThermo;
 import com.zuxelus.zlib.containers.ContainerBase;
 import com.zuxelus.zlib.containers.slots.SlotFilter;
-
 import net.minecraft.entity.player.EntityPlayer;
 
 public class ContainerRemoteThermo extends ContainerBase<TileEntityRemoteThermo>

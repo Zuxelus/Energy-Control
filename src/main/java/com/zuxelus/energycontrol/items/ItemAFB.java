@@ -1,7 +1,6 @@
 package com.zuxelus.energycontrol.items;
 
 import com.zuxelus.energycontrol.EnergyControl;
-
 import ic2.core.item.ItemBattery;
 import net.minecraft.item.EnumRarity;
 

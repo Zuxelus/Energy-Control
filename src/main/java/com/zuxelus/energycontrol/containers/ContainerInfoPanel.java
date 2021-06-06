@@ -6,7 +6,6 @@ import com.zuxelus.energycontrol.containers.slots.SlotRange;
 import com.zuxelus.energycontrol.containers.slots.SlotTouch;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.containers.ContainerBase;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 

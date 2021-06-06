@@ -1,13 +1,13 @@
 package com.zuxelus.energycontrol.crossmod;
 
-import java.lang.reflect.Method;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 
+import java.lang.reflect.Method;
+
 public class CrossRailcraft {
-	public boolean modLoaded = false;
+	public boolean modLoaded;
 	private Class _tankTile;
 
 	public CrossRailcraft() {

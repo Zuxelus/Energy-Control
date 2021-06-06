@@ -1,13 +1,11 @@
 package com.zuxelus.energycontrol.blocks;
 
-import java.util.List;
-
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
-
 import ic2.api.tile.IWrenchable;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.ITileEntityProvider;
@@ -27,7 +25,9 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 
-@Optional.Interface(modid = "ic2", iface = "ic2.api.tile.IWrenchable")
+import java.util.List;
+
+@Optional.Interface(modid = ModIDs.IC2, iface = "ic2.api.tile.IWrenchable")
 public abstract class FacingBlock extends BlockDirectional implements ITileEntityProvider, IWrenchable {
 	private EnumFacing rotation;
 
@@ -55,7 +55,7 @@ public abstract class FacingBlock extends BlockDirectional implements ITileEntit
 
 	@Override
 	public int getMetaFromState(IBlockState state) {
-		return ((EnumFacing) state.getValue(FACING)).getIndex();
+		return state.getValue(FACING).getIndex();
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public abstract class FacingBlock extends BlockDirectional implements ITileEntit
 
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		if (CrossModLoader.ic2.isWrench(player.getHeldItem(hand)))
+		if (CrossModLoader.getCrossMod(ModIDs.IC2).isWrench(player.getHeldItem(hand)))
 			return true;
 		if (!world.isRemote)
 			player.openGui(EnergyControl.instance, getBlockGuiId(), world, pos.getX(), pos.getY(), pos.getZ());

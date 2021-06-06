@@ -1,12 +1,10 @@
 package com.zuxelus.energycontrol.crossmod;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.zuxelus.energycontrol.api.ItemStackHelper;
+import com.zuxelus.energycontrol.crossmod.computercraft.CrossComputerCraft;
+import com.zuxelus.energycontrol.crossmod.opencomputers.CrossOpenComputers;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -18,56 +16,43 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.Loader;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
+
 public class CrossModLoader {
-	public static CrossModBase ic2;
-	public static CrossModBase techReborn;
-	public static CrossModBase appEng;
-	public static CrossModBase bigReactors;
-	public static CrossModBase buildCraft;
-	public static CrossModBase computerCraft;
-	public static CrossModBase draconic;
-	public static CrossModBase galacticraft;
-	public static CrossModBase mekanism;
-	public static CrossModBase openComputers;
-	public static CrossModBase nuclearCraft;
-	public static CrossModBase thermalExpansion;
+	private static final Map<String, CrossModBase> CROSS_MODS = new HashMap<>();
 
 	public static void init() {
-		ic2 = findMod("ic2-classic-spmod", "CrossIC2Classic","ic2", "CrossIC2Exp");
-		techReborn = findMod("techreborn", "CrossTechReborn");
-		appEng = findMod("appliedenergistics2", "CrossAppEng");
-		bigReactors = findMod("bigreactors", "CrossBigReactors");
-		buildCraft = findMod("buildcraftcore", "CrossBuildCraft");
-		draconic = findMod("draconicevolution", "CrossDraconicEvolution");
-		galacticraft = findMod("galacticraftplanets", "CrossGalacticraft");
-		mekanism = findMod("mekanismgenerators", "CrossMekanism");
-		nuclearCraft = findMod("nuclearcraft", "CrossNuclearCraft");
-		computerCraft = findMod("computercraft","computercraft.CrossComputerCraft");
-		thermalExpansion = findMod("thermalexpansion","CrossThermalExpansion");
+		CROSS_MODS.put(ModIDs.IC2, Loader.isModLoaded("ic2-classic-spmod") ? new CrossIC2Classic() : Loader.isModLoaded(ModIDs.IC2) ? new CrossIC2Exp() : new CrossModBase());
+		loadCrossMod(ModIDs.TECH_REBORN, CrossTechReborn::new);
+		loadCrossMod(ModIDs.APPLIED_ENERGISTICS, CrossAppEng::new);
+		loadCrossMod(ModIDs.BIG_REACTORS, CrossBigReactors::new);
+		loadCrossMod(ModIDs.BUILDCRAFT, CrossBuildCraft::new);
+		loadCrossMod(ModIDs.DRACONIC_EVOLUTION, CrossDraconicEvolution::new);
+		loadCrossMod(ModIDs.GALACTICRAFT_PLANETS, CrossGalacticraft::new);
+		loadCrossMod(ModIDs.MEKANISM_GENERATORS, CrossMekanism::new);
+		loadCrossMod(ModIDs.NUCLEAR_CRAFT, CrossNuclearCraft::new);
+		loadCrossModSafely(ModIDs.COMPUTER_CRAFT, () -> CrossComputerCraft::new);
+		loadCrossMod(ModIDs.THERMAL_EXPANSION, CrossThermalExpansion::new);
+	}
+	
+	private static void loadCrossMod(String modid, Supplier<? extends CrossModBase> factory) {
+		CROSS_MODS.put(modid, Loader.isModLoaded(modid) ? factory.get() : new CrossModBase());
+	}
+	
+	private static void loadCrossModSafely(String modid, Supplier<Supplier<? extends CrossModBase>> factory) {
+		CROSS_MODS.put(modid, Loader.isModLoaded(modid) ? factory.get().get() : new CrossModBase());
 	}
 
 	public static void postInit() {
-		openComputers = findMod("opencomputers","opencomputers.CrossOpenComputers");
+		loadCrossMod(ModIDs.OPEN_COMPUTERS, CrossOpenComputers::new);
 	}
-
-	public static CrossModBase findMod(String modId, String mainClass) {
-		return findMod(modId, mainClass, "", "");
-	}
-
-	public static CrossModBase findMod(String modId, String mainClass, String modId2, String mainClass2) {
-		try {
-			if (Loader.isModLoaded(modId)) {
-				Class<?> clz = Class.forName("com.zuxelus.energycontrol.crossmod." + mainClass);
-				if (clz != null)
-					return (CrossModBase) clz.newInstance();
-			}
-			if (Loader.isModLoaded(modId2)) {
-				Class<?> clz = Class.forName("com.zuxelus.energycontrol.crossmod." + mainClass2);
-				if (clz != null)
-					return (CrossModBase) clz.newInstance();
-			}
-		} catch (Exception e) { }
-		return new CrossModBase();
+	
+	public static CrossModBase getCrossMod(String modid) {
+		return CROSS_MODS.get(modid);
 	}
 
 	public static ItemStack getEnergyCard(World world, BlockPos pos) {
@@ -84,81 +69,49 @@ public class CrossModLoader {
 	}
 
 	public static NBTTagCompound getEnergyData(TileEntity te) {
-		NBTTagCompound tag = ic2.getEnergyData(te);
-		if (tag == null)
-			tag = techReborn.getEnergyData(te);
-		if (tag == null)
-			tag = appEng.getEnergyData(te);
-		if (tag == null)
-			tag = draconic.getEnergyData(te);
-		if (tag == null)
-			tag = galacticraft.getEnergyData(te);
-		if (tag == null)
-			tag = mekanism.getEnergyData(te);
-		if (tag == null)
-			tag = nuclearCraft.getEnergyData(te);
-		if (tag == null)
-			tag = thermalExpansion.getEnergyData(te);
-		return tag;
+		for (CrossModBase crossMod : CROSS_MODS.values()) {
+			NBTTagCompound tag = crossMod.getEnergyData(te);
+			if (tag != null) 
+				return tag;
+		}
+		return null;
 	}
 
 	public static ItemStack getGeneratorCard(World world, BlockPos pos) {
 		TileEntity te = world.getTileEntity(pos);
-		if (te == null)
-			return ItemStack.EMPTY;
-		ItemStack card = ic2.getGeneratorCard(te);
-		if (!card.isEmpty())
-			return card;
-		card = techReborn.getGeneratorCard(te);
-		if (!card.isEmpty())
-			return card;
-		card = thermalExpansion.getGeneratorCard(te);
-		if (!card.isEmpty())
-			return card;
-		return buildCraft.getGeneratorCard(te);
+		if (te != null) {
+			for (CrossModBase crossMod : CROSS_MODS.values()) {
+				ItemStack card = crossMod.getGeneratorCard(te);
+				if (!card.isEmpty())
+					return card;
+			}
+		}
+		return ItemStack.EMPTY;
 	}
 
 	public static List<IFluidTank> getAllTanks(World world, BlockPos pos) {
 		TileEntity te = world.getTileEntity(pos);
-		if (te == null)
-			return null;
-
-		if (te instanceof IFluidHandler) {
-			IFluidTankProperties[] tanks = ((IFluidHandler) te).getTankProperties();
-			List<IFluidTank> result = new ArrayList<IFluidTank>();
-			for (IFluidTankProperties tank : tanks)
-				result.add(new FluidTank(tank.getContents(), tank.getCapacity()));
-			return result;
+		if (te != null) {
+			if (te instanceof IFluidHandler) {
+				IFluidTankProperties[] tanks = ((IFluidHandler) te).getTankProperties();
+				List<IFluidTank> result = new ArrayList<>();
+				for (IFluidTankProperties tank : tanks)
+					result.add(new FluidTank(tank.getContents(), tank.getCapacity()));
+				return result;
+			}
+					
+			for (CrossModBase crossMod : CROSS_MODS.values()) {
+				List<IFluidTank> list = crossMod.getAllTanks(te);
+				if (list != null)
+					return list;
+			}
 		}
 
-		List<IFluidTank> list = ic2.getAllTanks(te);
-		if (list != null)
-			return list;
-		list = techReborn.getAllTanks(te);
-		if (list != null)
-			return list;
-		list = galacticraft.getAllTanks(te);
-		if (list != null)
-			return list;
-		list = bigReactors.getAllTanks(te);
-		if (list != null)
-			return list;
-		list = nuclearCraft.getAllTanks(te);
-		if (list != null)
-			return list;
-		list = mekanism.getAllTanks(te);
-		if (list != null)
-			return list;
-		list = thermalExpansion.getAllTanks(te);
-		if (list != null)
-			return list;
-		return buildCraft.getAllTanks(te);
+		return null;
 	}
 
 	public static IFluidTank getTankAt(World world, BlockPos pos) {
 		List<IFluidTank> tanks = getAllTanks(world, pos);
-		if (tanks == null || tanks.size() == 0)
-			return null;
-		return tanks.iterator().next();
+		return tanks != null && tanks.size() > 0 ? tanks.get(0) : null;
 	}
 }

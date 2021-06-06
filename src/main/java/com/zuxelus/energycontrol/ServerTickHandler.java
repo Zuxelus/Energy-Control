@@ -3,7 +3,6 @@ package com.zuxelus.energycontrol;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.network.PacketAlarm;
 import com.zuxelus.energycontrol.network.PacketOreHelper;
-
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;

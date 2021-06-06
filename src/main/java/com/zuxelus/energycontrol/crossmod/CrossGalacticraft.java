@@ -1,8 +1,5 @@
 package com.zuxelus.energycontrol.crossmod;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import micdoodle8.mods.galacticraft.api.power.IEnergyHandlerGC;
 import micdoodle8.mods.galacticraft.core.wrappers.IFluidHandlerWrapper;
 import net.minecraft.nbt.NBTTagCompound;
@@ -11,6 +8,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidTank;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CrossGalacticraft extends CrossModBase {
 

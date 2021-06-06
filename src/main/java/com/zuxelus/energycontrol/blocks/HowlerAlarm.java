@@ -2,9 +2,9 @@ package com.zuxelus.energycontrol.blocks;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,7 +30,7 @@ public class HowlerAlarm extends FacingBlockSmall {
 
 	@Override
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos fromPos) {
-		if (checkForDrop(world, pos, state) && !canPlaceBlock(world, pos, ((EnumFacing) state.getValue(FACING)).getOpposite())) {
+		if (checkForDrop(world, pos, state) && !canPlaceBlock(world, pos, state.getValue(FACING).getOpposite())) {
 			dropBlockAsItem(world, pos, state, 0);
 			world.setBlockToAir(pos);
 		} else 
@@ -40,7 +40,7 @@ public class HowlerAlarm extends FacingBlockSmall {
 
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-		EnumFacing enumfacing = (EnumFacing) state.getValue(FACING);
+		EnumFacing enumfacing = state.getValue(FACING);
 
 		switch (enumfacing) {
 		case EAST:
@@ -61,7 +61,7 @@ public class HowlerAlarm extends FacingBlockSmall {
 
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		if (CrossModLoader.ic2.isWrench(player.getHeldItem(hand)))
+		if (CrossModLoader.getCrossMod(ModIDs.IC2).isWrench(player.getHeldItem(hand)))
 			return true;
 		if (world.isRemote)
 			player.openGui(EnergyControl.instance, getBlockGuiId(), world, pos.getX(), pos.getY(), pos.getZ());

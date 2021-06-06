@@ -3,7 +3,6 @@ package com.zuxelus.energycontrol.gui.controls;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityRangeTrigger;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
@@ -50,7 +49,7 @@ public class GuiRangeTriggerInvertRedstone extends GuiButton {
 		checked = !checked;
 
 		if (trigger.getWorld().isRemote && trigger.getInvertRedstone() != checked) {
-			NetworkHelper.updateSeverTileEntity(trigger.getPos(), 2, checked ? (int) 1 : (int) 0);
+			NetworkHelper.updateSeverTileEntity(trigger.getPos(), 2, checked ? 1 : 0);
 			trigger.setInvertRedstone(checked);
 		}
 		return true;

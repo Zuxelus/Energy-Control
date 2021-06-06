@@ -1,13 +1,5 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import java.util.List;
-
-import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.api.CardState;
-import com.zuxelus.energycontrol.api.ICardReader;
-import com.zuxelus.energycontrol.api.PanelSetting;
-import com.zuxelus.energycontrol.api.PanelString;
-
 import appeng.api.AEApi;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -19,11 +11,18 @@ import appeng.me.helpers.IGridProxyable;
 import appeng.tile.crafting.TileCraftingMonitorTile;
 import appeng.tile.storage.TileChest;
 import appeng.tile.storage.TileDrive;
+import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.api.CardState;
+import com.zuxelus.energycontrol.api.ICardReader;
+import com.zuxelus.energycontrol.api.PanelSetting;
+import com.zuxelus.energycontrol.api.PanelString;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 public class ItemCardAppEng extends ItemCardBase {
 

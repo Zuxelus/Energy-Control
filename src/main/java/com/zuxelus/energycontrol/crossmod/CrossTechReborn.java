@@ -1,13 +1,8 @@
 package com.zuxelus.energycontrol.crossmod;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -25,12 +20,12 @@ import reborncore.common.powerSystem.forge.ForgePowerItemManager;
 import techreborn.api.TechRebornAPI;
 import techreborn.api.reactor.FusionReactorRecipe;
 import techreborn.tiles.fusionReactor.TileFusionControlComputer;
-import techreborn.tiles.generator.TileCreativeSolarPanel;
-import techreborn.tiles.generator.TileSolarPanel;
-import techreborn.tiles.generator.TileSolidFuelGenerator;
-import techreborn.tiles.generator.TileWaterMill;
-import techreborn.tiles.generator.TileWindMill;
+import techreborn.tiles.generator.*;
 import techreborn.tiles.generator.fluid.TileFluidGenerator;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CrossTechReborn extends CrossModBase {
 
@@ -58,9 +53,9 @@ public class CrossTechReborn extends CrossModBase {
 
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack) {
-		if (Loader.isModLoaded("ic2"))
+		if (Loader.isModLoaded(ModIDs.IC2))
 			return null;
-		return (ICapabilityProvider)new PoweredItemContainerProvider(stack);
+		return new PoweredItemContainerProvider(stack);
 	}
 
 	@Override

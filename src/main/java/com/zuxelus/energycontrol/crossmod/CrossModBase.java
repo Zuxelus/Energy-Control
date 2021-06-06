@@ -1,10 +1,7 @@
 package com.zuxelus.energycontrol.crossmod;
 
-import java.util.List;
-
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
-
 import ic2.api.reactor.IReactor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -14,6 +11,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.IFluidTank;
+
+import java.util.List;
 
 public class CrossModBase {
 

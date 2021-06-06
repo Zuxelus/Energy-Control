@@ -1,12 +1,11 @@
 package com.zuxelus.energycontrol.config;
 
-import java.io.File;
-
 import com.zuxelus.energycontrol.EnergyControl;
-
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+
+import java.io.File;
 
 public class ConfigHandler {
 	public Configuration config;

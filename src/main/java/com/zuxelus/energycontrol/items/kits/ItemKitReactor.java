@@ -1,8 +1,8 @@
 package com.zuxelus.energycontrol.items.kits;
 
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -17,6 +17,6 @@ public class ItemKitReactor extends ItemKitBase {
 
 	@Override
 	public ItemStack getSensorCard(ItemStack stack, Item card, EntityPlayer player, World world, BlockPos pos, EnumFacing side) {
-		return CrossModLoader.ic2.getReactorCard(world, pos);
+		return CrossModLoader.getCrossMod(ModIDs.IC2).getReactorCard(world, pos);
 	}
 }

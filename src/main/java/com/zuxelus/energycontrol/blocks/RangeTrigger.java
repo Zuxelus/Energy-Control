@@ -1,9 +1,9 @@
 package com.zuxelus.energycontrol.blocks;
 
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.tileentities.TileEntityRangeTrigger;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
-
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
@@ -48,7 +48,7 @@ public class RangeTrigger extends FacingHorizontal {
 
 	@Override
 	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-		drops.add(CrossModLoader.ic2.getItemStack("machine"));
+		drops.add(CrossModLoader.getCrossMod(ModIDs.IC2).getItemStack("machine"));
 	}
 
 	@Override

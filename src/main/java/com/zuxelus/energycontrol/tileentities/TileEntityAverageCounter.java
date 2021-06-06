@@ -1,7 +1,7 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.info.Info;
@@ -27,7 +27,7 @@ public class TileEntityAverageCounter extends TileEntityEnergyStorage implements
 	public short period;
 	protected int clientAverage = -1;
 	
-	private double lastReceivedPower = 0;
+	private double lastReceivedPower;
 
 	public TileEntityAverageCounter() {
 		super("tile.average_counter.name", 1, BASE_PACKET_SIZE, BASE_PACKET_SIZE * 2);
@@ -180,7 +180,7 @@ public class TileEntityAverageCounter extends TileEntityEnergyStorage implements
 	private void refreshData() {
 		int upgradeCountTransormer = 0;
 		ItemStack itemStack = getStackInSlot(0);
-		if (!itemStack.isEmpty() && itemStack.isItemEqual(CrossModLoader.ic2.getItemStack("transformer")))
+		if (!itemStack.isEmpty() && itemStack.isItemEqual(CrossModLoader.getCrossMod(ModIDs.IC2).getItemStack("transformer")))
 			upgradeCountTransormer = itemStack.getCount();
 		upgradeCountTransormer = Math.min(upgradeCountTransormer, 4);
 		if (world != null && !world.isRemote) {
@@ -214,7 +214,7 @@ public class TileEntityAverageCounter extends TileEntityEnergyStorage implements
 
 	@Override
 	public boolean isItemValid(int slotIndex, ItemStack stack) { // ISlotItemFilter
-		return stack.isItemEqual(CrossModLoader.ic2.getItemStack("transformer"));
+		return stack.isItemEqual(CrossModLoader.getCrossMod(ModIDs.IC2).getItemStack("transformer"));
 	}
 
 	private void notifyBlockUpdate() {

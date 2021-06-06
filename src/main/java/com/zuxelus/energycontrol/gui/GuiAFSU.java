@@ -1,19 +1,18 @@
 package com.zuxelus.energycontrol.gui;
 
-import java.io.IOException;
-import java.util.Arrays;
-
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.containers.ContainerAFSU;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.zlib.gui.GuiContainerBase;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiButtonImage;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.io.IOException;
+import java.util.Arrays;
 
 @SideOnly(Side.CLIENT)
 public class GuiAFSU extends GuiContainerBase {
@@ -41,7 +40,7 @@ public class GuiAFSU extends GuiContainerBase {
 		if (buttonList.get(0).isMouseOver())
 			drawHoveringText(Arrays.asList(I18n.format("info.redstoneMode"),I18n.format("info.redstoneMode" + container.te.getRedstoneMode())),mouseX, mouseY);
 		if (mouseX >= guiLeft + 51 && mouseY >= guiTop + 34 && mouseX < guiLeft + 84 && mouseY < guiTop + 51)
-			drawHoveringText(String.format("%.2f M/%d M EU", container.te.getEnergy() / 1000000, (int) container.te.getCapacity() / 1000000), mouseX, mouseY);
+			drawHoveringText(String.format("%.2f M/%d M EU", container.te.getEnergy() / 1000000, container.te.getCapacity() / 1000000), mouseX, mouseY);
 	}
 
 	@Override
@@ -51,7 +50,7 @@ public class GuiAFSU extends GuiContainerBase {
 		fontRenderer.drawString(I18n.format("ic2.EUStorage.gui.info.level"), 51, 20, 4210752);
 		int e = (int) Math.min(container.te.getEnergy(), container.te.getCapacity());
 		fontRenderer.drawString(" " + e, 92, 35, 4210752);
-		fontRenderer.drawString("/" + (int) container.te.getCapacity(), 90, 45, 4210752);
+		fontRenderer.drawString("/" + container.te.getCapacity(), 90, 45, 4210752);
 		String output = I18n.format("ic2.EUStorage.gui.info.output", container.te.getOutput());
 		fontRenderer.drawString(output, 51, 60, 4210752);
 	}

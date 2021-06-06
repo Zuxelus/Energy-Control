@@ -1,9 +1,5 @@
 package com.zuxelus.zlib.tileentities;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
@@ -16,6 +12,10 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public abstract class TileEntityInventory extends TileEntityFacing implements ISidedInventory {
 	protected NonNullList<ItemStack> inventory;
@@ -158,7 +158,7 @@ public abstract class TileEntityInventory extends TileEntityFacing implements IS
 					new ItemStack(stack.getItem(), stack.getCount(), stack.getItemDamage()));
 
 			if (stack.hasTagCompound())
-				entityItem.getItem().setTagCompound((NBTTagCompound) stack.getTagCompound().copy());
+				entityItem.getItem().setTagCompound(stack.getTagCompound().copy());
 
 			float factor = 0.05F;
 			entityItem.motionX = rand.nextGaussian() * factor;

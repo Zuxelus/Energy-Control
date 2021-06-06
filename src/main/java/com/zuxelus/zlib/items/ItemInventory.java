@@ -1,7 +1,6 @@
 package com.zuxelus.zlib.items;
 
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;

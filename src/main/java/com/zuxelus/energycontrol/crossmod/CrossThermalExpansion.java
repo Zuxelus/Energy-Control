@@ -1,12 +1,5 @@
 package com.zuxelus.energycontrol.crossmod;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.zuxelus.energycontrol.api.ItemStackHelper;
-import com.zuxelus.energycontrol.init.ModItems;
-import com.zuxelus.energycontrol.items.cards.ItemCardType;
-
 import cofh.core.block.TileNameable;
 import cofh.core.block.TilePowered;
 import cofh.redstoneflux.api.IEnergyStorage;
@@ -16,10 +9,16 @@ import cofh.thermalexpansion.block.dynamo.TileDynamoCompression;
 import cofh.thermalexpansion.block.dynamo.TileDynamoMagmatic;
 import cofh.thermalexpansion.block.machine.TileBrewer;
 import cofh.thermalexpansion.block.machine.TileRefinery;
+import com.zuxelus.energycontrol.api.ItemStackHelper;
+import com.zuxelus.energycontrol.init.ModItems;
+import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.IFluidTank;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CrossThermalExpansion extends CrossModBase {
 

@@ -2,7 +2,6 @@ package com.zuxelus.energycontrol.items.cards;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.blocks.BlockDamages;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

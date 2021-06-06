@@ -1,8 +1,5 @@
 package com.zuxelus.energycontrol.gui;
 
-import java.io.IOException;
-import java.util.List;
-
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.containers.ContainerAdvancedInfoPanel;
@@ -13,13 +10,15 @@ import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 import com.zuxelus.zlib.gui.controls.GuiButtonGeneral;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.io.IOException;
+import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public class GuiAdvancedInfoPanel extends GuiInfoPanel {

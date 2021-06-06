@@ -4,7 +4,6 @@ import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.energycontrol.tileentities.TileEntityAverageCounter;
 import com.zuxelus.energycontrol.tileentities.TileEntityEnergyCounter;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;

@@ -3,7 +3,6 @@ package com.zuxelus.energycontrol.items.kits;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
-
 import nc.tile.energy.battery.TileBattery;
 import nc.tile.generator.TileDecayGenerator;
 import nc.tile.generator.TileFissionController;

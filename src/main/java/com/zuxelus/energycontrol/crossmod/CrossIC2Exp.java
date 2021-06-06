@@ -1,9 +1,5 @@
 package com.zuxelus.energycontrol.crossmod;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.OreHelper;
 import com.zuxelus.energycontrol.api.CardState;
@@ -14,12 +10,12 @@ import com.zuxelus.energycontrol.items.ItemAFB;
 import com.zuxelus.energycontrol.items.ItemAFSUUpgradeKit;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.energycontrol.utils.ReactorHelper;
-
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IC2Items;
 import ic2.api.item.ICustomDamageItem;
 import ic2.api.reactor.IReactor;
 import ic2.api.tile.IEnergyStorage;
+import ic2.api.util.Keys;
 import ic2.core.block.BlockTileEntity;
 import ic2.core.block.TileEntityBlock;
 import ic2.core.block.TileEntityHeatSourceInventory;
@@ -43,6 +39,7 @@ import ic2.core.ref.BlockName;
 import ic2.core.util.Config;
 import ic2.core.util.ConfigUtil;
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -52,6 +49,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fml.common.Loader;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CrossIC2Exp extends CrossModBase {
 
@@ -178,7 +180,7 @@ public class CrossIC2Exp extends CrossModBase {
 					active = light > 0 && energy.getEnergy() < energy.getCapacity();
 					tag.setBoolean("active", active);
 					if (active)
-						tag.setDouble("production", (double) light);
+						tag.setDouble("production", light);
 					else
 						tag.setDouble("production", 0);
 					return tag;
@@ -198,8 +200,8 @@ public class CrossIC2Exp extends CrossModBase {
 					tag.setBoolean("active", true);
 					Field field = TileEntityRTGenerator.class.getDeclaredField("efficiency");
 					field.setAccessible(true);
-					tag.setDouble("multiplier", (double) (float) field.get(te));
-					tag.setDouble("production", (double) Math.pow(2.0D, (counter - 1)) * (float) field.get(te));
+					tag.setDouble("multiplier", (float) field.get(te));
+					tag.setDouble("production", Math.pow(2.0D, (counter - 1)) * (float) field.get(te));
 					return tag;
 				}
 				if (te instanceof TileEntityWaterGenerator) {
@@ -268,7 +270,7 @@ public class CrossIC2Exp extends CrossModBase {
 				 if (entity.rotorSlot.isEmpty())
 					 tag.setInteger("health", -1);
 				 else
-					 tag.setDouble("health", (double)(100.0F - entity.rotorSlot.get().getItemDamage() * 100.0F / entity.rotorSlot.get().getMaxDamage()));
+					 tag.setDouble("health", 100.0F - entity.rotorSlot.get().getItemDamage() * 100.0F / entity.rotorSlot.get().getMaxDamage());
 				return tag;
 			}
 			if (te instanceof TileEntityWaterKineticGenerator) {
@@ -285,7 +287,7 @@ public class CrossIC2Exp extends CrossModBase {
 				 if (entity.rotorSlot.isEmpty())
 					 tag.setInteger("health", -1);
 				 else
-					 tag.setDouble("health", (double)(100.0F - entity.rotorSlot.get().getItemDamage() * 100.0F / entity.rotorSlot.get().getMaxDamage()));
+					 tag.setDouble("health", 100.0F - entity.rotorSlot.get().getItemDamage() * 100.0F / entity.rotorSlot.get().getMaxDamage());
 				return tag;
 			}
 			if (te instanceof TileEntityStirlingKineticGenerator) {

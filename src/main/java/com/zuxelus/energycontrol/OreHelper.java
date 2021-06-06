@@ -1,10 +1,7 @@
 package com.zuxelus.energycontrol;
 
-import java.lang.reflect.Field;
-import java.util.HashMap;
-
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockStone;
@@ -13,6 +10,9 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.gen.ChunkGeneratorOverworld;
 import net.minecraft.world.gen.ChunkGeneratorSettings;
 import net.minecraft.world.gen.IChunkGenerator;
+
+import java.lang.reflect.Field;
+import java.util.HashMap;
 
 public class OreHelper {
 	int minHeight, maxHeight, size, count;
@@ -40,7 +40,7 @@ public class OreHelper {
 	}
 
 	public static void initList(WorldServer[] worlds) {
-		EnergyControl.oreHelper = new HashMap<String, OreHelper>();
+		EnergyControl.oreHelper = new HashMap<>();
 		for (int i = 0; i < worlds.length; i++) {
 			IChunkGenerator generator = worlds[i].provider.createChunkGenerator();
 			if (generator instanceof ChunkGeneratorOverworld) {
@@ -62,8 +62,8 @@ public class OreHelper {
 					//EnergyControl.oreHelper.put(Item.getItemFromBlock(Blocks.EMERALD_ORE), new OreHelper(Blocks.EMERALD_ORE, over .goldMinHeight, over.goldMaxHeight, over.goldSize, over.goldCount));
 					//EnergyControl.oreHelper.put(Item.getItemFromBlock(Blocks.QUARTZ_ORE), new OreHelper(Blocks.QUARTZ_ORE, over  .goldMinHeight, over.goldMaxHeight, over.goldSize, over.goldCount));
 				} catch (Throwable t) { }
-				CrossModLoader.nuclearCraft.loadOreInfo();
-				CrossModLoader.ic2.loadOreInfo();
+				CrossModLoader.getCrossMod(ModIDs.NUCLEAR_CRAFT).loadOreInfo();
+				CrossModLoader.getCrossMod(ModIDs.IC2).loadOreInfo();
 			}
 		}
 	}

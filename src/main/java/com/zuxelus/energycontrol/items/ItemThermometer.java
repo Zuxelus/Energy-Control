@@ -2,7 +2,6 @@ package com.zuxelus.energycontrol.items;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.utils.ReactorHelper;
-
 import ic2.api.reactor.IReactor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -49,7 +48,7 @@ public class ItemThermometer extends Item {
 		}
 
 		TileEntity te = world.getTileEntity(pos);
-		//CrossModLoader.ic2.showBarrelInfo(player, te);
+		//CrossModLoader.getCrossMod(ModIDs.IC2).showBarrelInfo(player, te);
 		return EnumActionResult.PASS;
 	}
 

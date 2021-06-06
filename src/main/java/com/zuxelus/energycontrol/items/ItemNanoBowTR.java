@@ -3,7 +3,7 @@ package com.zuxelus.energycontrol.items;
 import com.zuxelus.energycontrol.ClientProxy;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
@@ -44,7 +44,7 @@ public class ItemNanoBowTR extends ItemNanoBow implements IEnergyItemInfo {
 
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
-		return CrossModLoader.techReborn.initCapabilities(stack);
+		return CrossModLoader.getCrossMod(ModIDs.IC2).initCapabilities(stack);
 	}
 
 	@Override

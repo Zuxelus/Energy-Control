@@ -1,15 +1,14 @@
 package com.zuxelus.energycontrol.crossmod;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
-
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.TileEntityInductionCell;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.IFluidTank;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CrossMekanism extends CrossModBase {
 
@@ -28,7 +27,7 @@ public class CrossMekanism extends CrossModBase {
 	@Override
 	public List<IFluidTank> getAllTanks(TileEntity te) {
 		if (te instanceof TileEntityFluidTank) {
-			List<IFluidTank> result = new ArrayList<IFluidTank>();
+			List<IFluidTank> result = new ArrayList<>();
 			IFluidTank tank = ((TileEntityFluidTank) te).fluidTank;
 			result.add(tank);
 			return result;

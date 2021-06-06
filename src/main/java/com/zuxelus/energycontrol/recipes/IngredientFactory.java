@@ -1,12 +1,9 @@
 package com.zuxelus.energycontrol.recipes;
 
-import javax.annotation.Nullable;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -20,6 +17,8 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.IIngredientFactory;
 import net.minecraftforge.common.crafting.JsonContext;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+
+import javax.annotation.Nullable;
 
 public class IngredientFactory implements IIngredientFactory {
 
