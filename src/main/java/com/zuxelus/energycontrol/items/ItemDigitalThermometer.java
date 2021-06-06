@@ -10,9 +10,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+@Optional.Interface(modid = "ic2", iface = "ic2.api.item.IElectricItem")
 public class ItemDigitalThermometer extends ItemThermometer implements IElectricItem {
 	protected final static int CAPACITY = 12000;
 	protected final static int TRANSFER_LIMIT = 250;

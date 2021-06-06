@@ -24,9 +24,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+@Optional.Interface(modid = "ic2", iface = "ic2.api.energy.tile.IEnergySink")
 public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergySink, ISlotItemFilter {
 	public static final int SLOT_CHARGER = 0;
 	public static final int SLOT_CARD = 1;

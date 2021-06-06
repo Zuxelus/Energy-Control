@@ -1,18 +1,13 @@
 package com.zuxelus.energycontrol;
 
-import java.io.File;
-import java.util.List;
-
 import com.zuxelus.energycontrol.blocks.BlockDamages;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.containers.*;
 import com.zuxelus.energycontrol.gui.*;
 import com.zuxelus.energycontrol.items.cards.ItemCardHolder;
-import com.zuxelus.energycontrol.models.CustomModelLoader;
 import com.zuxelus.energycontrol.renderers.*;
 import com.zuxelus.energycontrol.tileentities.*;
 import com.zuxelus.energycontrol.utils.SoundHelper;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
@@ -22,13 +17,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.io.File;
+import java.util.List;
 
 public class ClientProxy extends ServerProxy {
 	public static KeyBinding modeSwitchKey;
@@ -86,7 +83,7 @@ public class ClientProxy extends ServerProxy {
 			if (te instanceof TileEntityInfoPanelExtender) {
 				TileEntityInfoPanel panel = ((TileEntityInfoPanelExtender) te).getCore();
 				if (panel != null)
-					return new GuiInfoPanel(new ContainerInfoPanel(player, (TileEntityInfoPanel) panel));
+					return new GuiInfoPanel(new ContainerInfoPanel(player, panel));
 			}
 			break;
 		case BlockDamages.DAMAGE_ADVANCED_PANEL:
@@ -146,14 +143,10 @@ public class ClientProxy extends ServerProxy {
 		SoundHelper.importSound();
 	}
 
-	public void registerModelLoader() {
-		ModelLoaderRegistry.registerLoader(new CustomModelLoader());
-	}
-
 	@Override
 	@SideOnly(Side.CLIENT)
 	public String getItemName(ItemStack stack) {
-		List<String> list = stack.getTooltip((EntityPlayer)(Minecraft.getMinecraft()).player, ITooltipFlag.TooltipFlags.NORMAL);
+		List<String> list = stack.getTooltip(Minecraft.getMinecraft().player, ITooltipFlag.TooltipFlags.NORMAL);
 		if (list.size() == 0)
 			return stack.getItem().getUnlocalizedName();
 		return list.get(0);

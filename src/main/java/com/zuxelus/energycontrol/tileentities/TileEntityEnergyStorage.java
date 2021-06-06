@@ -17,7 +17,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Optional;
 
+@Optional.InterfaceList({
+		@Optional.Interface(modid = "ic2", iface = "ic2.api.energy.tile.IEnergySink"),
+		@Optional.Interface(modid = "ic2", iface = "ic2.api.energy.tile.IEnergySource")
+})
 public abstract class TileEntityEnergyStorage extends TileEntityInventory implements IEnergySink, IEnergySource, ISlotItemFilter, ITilePacketHandler {
 	protected boolean addedToEnet;
 	protected boolean allowEmit;
