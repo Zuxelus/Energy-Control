@@ -45,11 +45,6 @@ public abstract class ItemCardBase implements IItemCard {
 				reader.getInt(String.format("_%dy", cardNumber)), reader.getInt(String.format("_%dz", cardNumber)));
 	}
 
-	@Override
-	public Object[] getRecipe() {
-		return recipe;
-	}
-
 	protected final void addRecipe(Object[] recipe) {
 		this.recipe = recipe;
 	}

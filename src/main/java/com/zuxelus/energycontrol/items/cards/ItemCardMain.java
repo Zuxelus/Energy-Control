@@ -22,11 +22,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public final class ItemCardMain extends Item {
 	public static final int LOCATION_RANGE = 8;
 	
-	private static final Map<Integer, IItemCard> cards = new HashMap<>();
+	private static final Map<Integer, IItemCard> CARDS = new HashMap<>();
 
 	public ItemCardMain() {
 		super();
@@ -37,59 +38,54 @@ public final class ItemCardMain extends Item {
 	}
 	
 	public final void registerCards() {
-		register("ItemCardEnergy");
-		register("ItemCardCounter");
-		register("ItemCardLiquid");
-		register("ItemCardGenerator");
+		register(ItemCardEnergy::new);
+		register(ItemCardCounter::new);
+		register(ItemCardLiquid::new);
+		register(ItemCardGenerator::new);
 		if (Loader.isModLoaded(ModIDs.IC2)) {
-			register("ItemCardGeneratorKinetic");
-			register("ItemCardGeneratorHeat");
-			register("ItemCardReactor");
-			register("ItemCardReactor5x5");
+			register(ItemCardGeneratorKinetic::new);
+			register(ItemCardGeneratorHeat::new);
+			register(ItemCardReactor::new);
+			register(ItemCardReactor5x5::new);
 		}
-		register("ItemCardLiquidAdvanced");
-		register("ItemCardText");
-		register("ItemCardTime");
-		register("ItemCardEnergyArray");
-		register("ItemCardLiquidArray");
-		register("ItemCardGeneratorArray");
-		register("ItemCardToggle");
-		register("ItemCardVanilla");
-		register("ItemCardInventory");
-		register("ItemCardRedstone");
+		register(ItemCardLiquidAdvanced::new);
+		register(ItemCardText::new);
+		register(ItemCardTime::new);
+		register(ItemCardEnergyArray::new);
+		register(ItemCardLiquidArray::new);
+		register(ItemCardGeneratorArray::new);
+		register(ItemCardToggle::new);
+		register(ItemCardVanilla::new);
+		register(ItemCardInventory::new);
+		register(ItemCardRedstone::new);
 		if (Loader.isModLoaded(ModIDs.BUILDCRAFT))
-			register("ItemCardEngine");
+			register(ItemCardEngine::new);
 		if (Loader.isModLoaded(ModIDs.DRACONIC_EVOLUTION))
-			register("ItemCardReactorDraconic");
+			register(ItemCardReactorDraconic::new);
 		if (Loader.isModLoaded(ModIDs.APPLIED_ENERGISTICS)) {
-			register("ItemCardAppEng");
-			register("ItemCardAppEngInv");
+			register(ItemCardAppEng::new);
+			register(ItemCardAppEngInv::new);
 		}
 		if (Loader.isModLoaded(ModIDs.GALACTICRAFT_CORE) && Loader.isModLoaded(ModIDs.GALACTICRAFT_PLANETS))
-			register("ItemCardGalacticraft");
+			register(ItemCardGalacticraft::new);
 		if (Loader.isModLoaded(ModIDs.BIG_REACTORS))
-			register("ItemCardBigReactors");
+			register(ItemCardBigReactors::new);
 		if (Loader.isModLoaded(ModIDs.NUCLEAR_CRAFT))
-			register("ItemCardNuclearCraft");
+			register(ItemCardNuclearCraft::new);
 		if (Loader.isModLoaded(ModIDs.MEKANISM_GENERATORS))
-			register("ItemCardMekanism");
+			register(ItemCardMekanism::new);
 		if (Loader.isModLoaded(ModIDs.THERMAL_EXPANSION))
-			register("ItemCardThermalExpansion");
+			register(ItemCardThermalExpansion::new);
 	}
 
-	private static void register(String className) {
-		try {
-			Class<?> clz = Class.forName("com.zuxelus.energycontrol.items.cards." + className);
-			IItemCard item =  (IItemCard) clz.newInstance();
-			if (checkCard(item))
-				cards.put(item.getDamage(), item);
-		} catch (Exception e) {
-			EnergyControl.logger.warn(String.format("Class %s not found", className));
-		}
+	private static void register(Supplier<IItemCard> factory) {
+		IItemCard item = factory.get();
+		if (checkCard(item))
+			CARDS.put(item.getDamage(), item);
 	}
 
 	private static boolean checkCard(IItemCard item) {
-		if (!cards.containsKey(item.getDamage()))
+		if (!CARDS.containsKey(item.getDamage()))
 			return true;
 		if (item.getDamage() <= ItemCardType.CARD_MAX)
 			EnergyControl.logger.warn(String.format("Card %s was not registered. ID %d is already used for standard card.", item.getUnlocalizedName(), item.getDamage()));
@@ -104,19 +100,19 @@ public final class ItemCardMain extends Item {
 				EnergyControl.logger.warn(String.format("Card %s was not registered. Card ID should be bigger than %d", item.getUnlocalizedName(), ItemCardType.CARD_MAX));
 				return;
 			}
-			cards.put(item.getDamage(), item);
+			CARDS.put(item.getDamage(), item);
 		}
 	}
 
 	public static boolean containsCard(int i) {
-		return cards.containsKey(i);
+		return CARDS.containsKey(i);
 	}
 
 	@Override
 	public String getUnlocalizedName(ItemStack stack) {
 		int damage = stack.getItemDamage();
-		if (cards.containsKey(damage))
-			return cards.get(damage).getUnlocalizedName();
+		if (CARDS.containsKey(damage))
+			return CARDS.get(damage).getUnlocalizedName();
 		return "";
 	}
 
@@ -124,7 +120,7 @@ public final class ItemCardMain extends Item {
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
 		if (!isInCreativeTab(tab))
 			return;
-		for (Map.Entry<Integer, IItemCard> entry : cards.entrySet()) {
+		for (Map.Entry<Integer, IItemCard> entry : CARDS.entrySet()) {
 			Integer key = entry.getKey();
 			items.add(new ItemStack(this, 1, key));
 		}
@@ -166,8 +162,8 @@ public final class ItemCardMain extends Item {
 	}
 
 	public static List<PanelString> getStringData(int settings, ItemCardReader reader, boolean isServer, boolean showLabels) {
-		if (cards.containsKey(reader.getCardType())) {
-			return cards.get(reader.getCardType()).getStringData(settings, reader, isServer, showLabels);
+		if (CARDS.containsKey(reader.getCardType())) {
+			return CARDS.get(reader.getCardType()).getStringData(settings, reader, isServer, showLabels);
 		}
 		return null;
 	}
@@ -175,8 +171,8 @@ public final class ItemCardMain extends Item {
 	@SideOnly(Side.CLIENT)
 	public static List<PanelSetting> getSettingsList(ItemStack stack) {
 		int damage = stack.getItemDamage();
-		if (cards.containsKey(damage))
-			return cards.get(damage).getSettingsList();
+		if (CARDS.containsKey(damage))
+			return CARDS.get(damage).getSettingsList();
 		return null;
 	}
 
@@ -210,26 +206,26 @@ public final class ItemCardMain extends Item {
 	}
 
 	private static CardState update(World world, ICardReader reader, int range, BlockPos pos) {
-		if (cards.containsKey(reader.getCardType()))
-			return cards.get(reader.getCardType()).update(world, reader, range, pos);
+		if (CARDS.containsKey(reader.getCardType()))
+			return CARDS.get(reader.getCardType()).update(world, reader, range, pos);
 		return null;
 	}
 
 	public static boolean isRemoteCard(int damage) {
-		if (cards.containsKey(damage))
-			return cards.get(damage).isRemoteCard();
+		if (CARDS.containsKey(damage))
+			return CARDS.get(damage).isRemoteCard();
 		return false;
 	}
 
 	public static int getKitFromCard(int damage) {
-		if (cards.containsKey(damage))
-			return cards.get(damage).getKitFromCard();
+		if (CARDS.containsKey(damage))
+			return CARDS.get(damage).getKitFromCard();
 		return -1;
 	}
 
 	public static void runTouchAction(TileEntityInfoPanel panel, ItemStack cardStack, ItemStack stack, int slot) {
-		if (cardStack.getItem() instanceof ItemCardMain && cards.containsKey(cardStack.getItemDamage())) {
-			IItemCard card = cards.get(cardStack.getItemDamage());
+		if (cardStack.getItem() instanceof ItemCardMain && CARDS.containsKey(cardStack.getItemDamage())) {
+			IItemCard card = CARDS.get(cardStack.getItemDamage());
 			if (card instanceof ITouchAction) {
 				ICardReader reader = new ItemCardReader(cardStack);
 				if (((ITouchAction) card).runTouchAction(panel.getWorld(), reader, stack))
@@ -239,8 +235,8 @@ public final class ItemCardMain extends Item {
 	}
 
 	public static void renderImage(TextureManager manager, double displayWidth, double displayHeight, ItemStack stack) {
-		if (stack.getItem() instanceof ItemCardMain && cards.containsKey(stack.getItemDamage())) {
-			IItemCard card = cards.get(stack.getItemDamage());
+		if (stack.getItem() instanceof ItemCardMain && CARDS.containsKey(stack.getItemDamage())) {
+			IItemCard card = CARDS.get(stack.getItemDamage());
 			if (card instanceof ITouchAction)
 				((ITouchAction) card).renderImage(manager, new ItemCardReader(stack));
 			if (card instanceof IHasBars)
@@ -249,18 +245,18 @@ public final class ItemCardMain extends Item {
 	}
 
 	public static void registerModels() {
-		for (Map.Entry<Integer, IItemCard> entry : cards.entrySet()) {
+		for (Map.Entry<Integer, IItemCard> entry : CARDS.entrySet()) {
 			Integer key = entry.getKey();
 			if (key <= ItemCardType.CARD_MAX)
-				ModItems.registerItemModel(ModItems.itemCard, key, cards.get(key).getName());
+				ModItems.registerItemModel(ModItems.itemCard, key, CARDS.get(key).getName());
 		}
 	}
 
 	public static void registerExtendedModels() {
-		for (Map.Entry<Integer, IItemCard> entry : cards.entrySet()) {
+		for (Map.Entry<Integer, IItemCard> entry : CARDS.entrySet()) {
 			Integer key = entry.getKey();
 			if (key > ItemCardType.CARD_MAX)
-				ModItems.registerExternalItemModel(ModItems.itemCard, key, cards.get(key).getName());
+				ModItems.registerExternalItemModel(ModItems.itemCard, key, CARDS.get(key).getName());
 		}
 	}
 }

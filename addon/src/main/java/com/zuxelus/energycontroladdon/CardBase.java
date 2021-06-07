@@ -29,11 +29,6 @@ public abstract class CardBase implements IItemCard {
 	}
 
 	@Override
-	public Object[] getRecipe() {
-		return null;
-	}
-
-	@Override
 	public ICardGui getSettingsScreen(ICardReader arg0) {
 		return null;
 	}

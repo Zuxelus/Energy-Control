@@ -157,9 +157,7 @@ public class ModItems {
 	private static Item getItemClass(String className) {
 		try {
 			Class<?> clz = Class.forName("com.zuxelus.energycontrol.items." + className);
-			if (clz == null)
-				return null;
-			return  (Item) clz.newInstance();
+			return (Item) clz.newInstance();
 		} catch (Exception e) {
 			EnergyControl.logger.warn(String.format("Class %s not found", className));
 		}
