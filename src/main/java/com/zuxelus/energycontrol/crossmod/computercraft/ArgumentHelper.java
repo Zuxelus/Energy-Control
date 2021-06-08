@@ -3,18 +3,18 @@ package com.zuxelus.energycontrol.crossmod.computercraft;
 import java.lang.reflect.Method;
 
 public class ArgumentHelper {
-	private static String CCARG = "dan200.computercraft.core.apis.ArgumentHelper";
-	private static String CCTVARG = "dan200.computercraft.api.lua.ArgumentHelper";
+	private static final String CCARG = "dan200.computercraft.core.apis.ArgumentHelper";
+	private static final String CCTVARG = "dan200.computercraft.api.lua.ArgumentHelper";
 
 	public static int getInt(Object[] args, int index) {
-		Class c = null;
+		Class<?> c = null;
 		try {
 			c = Class.forName(CCARG);
-		} catch (ClassNotFoundException e) { }
+		} catch (ClassNotFoundException ignored) { }
 		if (c == null)
 			try {
 				c = Class.forName(CCTVARG);
-			} catch (ClassNotFoundException e) { }
+			} catch (ClassNotFoundException ignored) { }
 		if (c == null)
 			return -1;
 		try {
@@ -26,14 +26,14 @@ public class ArgumentHelper {
 	}
 
 	public static String getString(Object[] args, int index) {
-		Class c = null;
+		Class<?> c = null;
 		try {
 			c = Class.forName(CCARG);
-		} catch (ClassNotFoundException e) { }
+		} catch (ClassNotFoundException ignored) { }
 		if (c == null)
 			try {
 				c = Class.forName(CCTVARG);
-			} catch (ClassNotFoundException e) { }
+			} catch (ClassNotFoundException ignored) { }
 		if (c == null)
 			return null;
 		try {

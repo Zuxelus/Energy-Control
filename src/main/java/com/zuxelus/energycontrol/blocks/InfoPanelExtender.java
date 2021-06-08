@@ -1,14 +1,12 @@
 package com.zuxelus.energycontrol.blocks;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.crossmod.CrossIC2Exp;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanelExtender;
 import com.zuxelus.energycontrol.utils.KeyboardUtil;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
-import ic2.api.util.Keys;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;

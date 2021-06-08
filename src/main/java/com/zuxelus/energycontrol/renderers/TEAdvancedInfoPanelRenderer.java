@@ -13,9 +13,9 @@ import net.minecraft.util.math.BlockPos;
 import java.util.List;
 
 public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileEntityAdvancedInfoPanel> {
-	private static final ResourceLocation TEXTUREOFF[];
-	private static final ResourceLocation TEXTUREON[];
-	private static final CubeRenderer model[];
+	private static final ResourceLocation[] TEXTUREOFF;
+	private static final ResourceLocation[] TEXTUREON;
+	private static final CubeRenderer[] model;
 
 	static {
 		TEXTUREOFF = new ResourceLocation[16];
@@ -36,11 +36,11 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		String output = "";
 		if (inputArray.length > 0) {
 			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < inputArray.length; i++) {
-				if (inputArray[i] == null || inputArray[i].isEmpty())
+			for (String s : inputArray) {
+				if (s == null || s.isEmpty())
 					continue;
 				sb.append(glueString);
-				sb.append(inputArray[i]);
+				sb.append(s);
 			}
 			output = sb.toString();
 			if (output.length() > 1)
@@ -238,8 +238,8 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		double v = (offset.leftTop - offset.leftBottom) / 32;
 		double b = Math.atan(h / displayWidth);
 		double a = Math.atan(Math.cos(b) * v / displayHeight);
-		int i = offset.rotateVert == 0 ? 0 : offset.rotateVert > 0 ? -1 : 1;
-		int j = offset.rotateHor == 0 ? 0 : offset.rotateHor > 0 ? -1 : 1;
+		int i = Integer.compare(0, offset.rotateVert);
+		int j = Integer.compare(0, offset.rotateHor);
 		GlStateManager.translate(displayWidth / 2, displayHeight / 2, 1 + (32 * h - offset.leftTop - offset.leftBottom) / 64);
 		GlStateManager.rotate((float) Math.toDegrees(b), 0.0F, -1.0F, 0.0F);
 		GlStateManager.rotate((float) Math.toDegrees(a), -1.0F, 0.0F, 0.0F);

@@ -43,15 +43,13 @@ public class ItemCardMekanism extends ItemCardBase {
 	@Override
 	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
-		switch (reader.getInt("type")) {
-		case 1:
+		if (reader.getInt("type") == 1) {
 			result.add(new PanelString("msg.ec.InfoPanelCaseTemp", reader.getDouble("case"), showLabels));
 			result.add(new PanelString("msg.ec.InfoPanelPlasmaTemp", reader.getDouble("plasma"), showLabels));
 			result.add(new PanelString("msg.ec.InfoPanelCaseTemp", reader.getDouble("energy"), showLabels));
 			result.add(new PanelString("msg.ec.InfoPanelPlasmaTemp", reader.getDouble("capacity"), showLabels));
 			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("output"), showLabels));
 			addOnOff(result, isServer, reader.getBoolean("active"));
-			break;
 		}
 		return result;
 	}

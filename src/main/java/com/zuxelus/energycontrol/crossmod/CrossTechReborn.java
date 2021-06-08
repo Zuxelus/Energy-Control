@@ -93,7 +93,7 @@ public class CrossTechReborn extends CrossModBase {
 	public NBTTagCompound getGeneratorData(TileEntity te) {
 		try {
 			NBTTagCompound tag = new NBTTagCompound();
-			boolean active = false;
+			boolean active;
 			if (te instanceof TileFluidGenerator) {
 				active = ((TileFluidGenerator) te).isActive();
 				tag.setInteger("type", 1);
@@ -127,7 +127,7 @@ public class CrossTechReborn extends CrossModBase {
 				tag.setDouble("storage", ((TileSolidFuelGenerator) te).getEnergy());
 				tag.setDouble("maxStorage", ((TileSolidFuelGenerator) te).getMaxPower());
 				if (active)
-					tag.setDouble("production", ((TileSolidFuelGenerator) te).outputAmount);
+					tag.setDouble("production", TileSolidFuelGenerator.outputAmount);
 				else
 					tag.setInteger("production", 0);
 				tag.setDouble("burnTime", ((TileSolidFuelGenerator) te).getBurnTime());
@@ -181,7 +181,7 @@ public class CrossTechReborn extends CrossModBase {
 				tag.setBoolean("active", water != 0);
 				tag.setDouble("storage", ((TileWaterMill) te).getEnergy());
 				tag.setDouble("maxStorage", ((TileWaterMill) te).getMaxPower());
-				tag.setDouble("production", water * ((TileWaterMill) te).energyMultiplier);
+				tag.setDouble("production", water * TileWaterMill.energyMultiplier);
 				if (PowerSystem.getDisplayPower() != EnergySystem.EU) {
 					tag.setDouble("storage", tag.getDouble("storage") * RebornCoreConfig.euPerFU);
 					tag.setDouble("maxStorage", tag.getDouble("maxStorage") * RebornCoreConfig.euPerFU);
@@ -199,9 +199,9 @@ public class CrossTechReborn extends CrossModBase {
 				if (!active)
 					tag.setDouble("production", 0);
 				else if (te.getWorld().isThundering())
-					tag.setDouble("production", ((TileWindMill) te).baseEnergy * ((TileWindMill) te).thunderMultiplier);
+					tag.setDouble("production", TileWindMill.baseEnergy * TileWindMill.thunderMultiplier);
 				else
-					tag.setDouble("production", ((TileWindMill) te).baseEnergy);
+					tag.setDouble("production", TileWindMill.baseEnergy);
 				if (PowerSystem.getDisplayPower() != EnergySystem.EU) {
 					tag.setDouble("storage", tag.getDouble("storage") * RebornCoreConfig.euPerFU);
 					tag.setDouble("maxStorage", tag.getDouble("maxStorage") * RebornCoreConfig.euPerFU);

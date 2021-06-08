@@ -138,9 +138,7 @@ public class ScreenManager {
 			return false;
 		if (((TileEntityInfoPanelExtender) tileEntity).getFacing() != facing)
 			return false;
-		if (((IScreenPart) tileEntity).getScreen() != null)
-			return false;
-		return true;
+		return ((IScreenPart) tileEntity).getScreen() == null;
 	}
 
 	public Screen loadScreen(TileEntityInfoPanel panel) {
@@ -199,8 +197,7 @@ public class ScreenManager {
 		for (TileEntityInfoPanel panel : rebuildPanels) {
 			Screen screen = buildFromPanel(panel);
 			screens.get(getWorldKey(extender.getWorld())).add(screen);
-			if (unusedPanels.get(getWorldKey(extender.getWorld())).contains(panel))
-				unusedPanels.get(getWorldKey(extender.getWorld())).remove(panel);
+			unusedPanels.get(getWorldKey(extender.getWorld())).remove(panel);
 		}
 	}
 
@@ -216,7 +213,7 @@ public class ScreenManager {
 		IScreenPart screenPart = (IScreenPart) part;
 		Screen screen = screenPart.getScreen();
 		if (screen == null) {
-			if (part instanceof TileEntityInfoPanel && unusedPanels.get(getWorldKey(part.getWorld())).contains(part))
+			if (part instanceof TileEntityInfoPanel)
 				unusedPanels.get(getWorldKey(part.getWorld())).remove(part);
 			return;
 		}

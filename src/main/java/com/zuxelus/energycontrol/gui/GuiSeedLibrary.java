@@ -260,8 +260,7 @@ public class GuiSeedLibrary extends GuiContainer {
 		if (mouseButton == 1) {
 			// Pass the right click to the directional buttons.
 			rightClick = true;
-			for (int l = 0; l < buttonList.size(); l++) {
-				GuiButton guibutton = buttonList.get(l);
+			for (GuiButton guibutton : buttonList) {
 				if (guibutton.id < 4 || guibutton.id > 9) {
 					continue;
 				}

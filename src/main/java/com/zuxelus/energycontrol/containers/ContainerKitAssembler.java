@@ -6,6 +6,7 @@ import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
 import com.zuxelus.zlib.containers.ContainerBase;
 import com.zuxelus.zlib.containers.slots.SlotFilter;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class ContainerKitAssembler extends ContainerBase<TileEntityKitAssembler> {
@@ -30,13 +31,13 @@ public class ContainerKitAssembler extends ContainerBase<TileEntityKitAssembler>
 		super.detectAndSendChanges();
 		double energy = te.getEnergy();
 		double production = te.getProduction();
-		for (int i = 0; i < listeners.size(); i++)
+		for (IContainerListener listener : listeners)
 			if (lastEnergy != energy || lastProduction != production) {
 				NBTTagCompound tag = new NBTTagCompound();
 				tag.setInteger("type", 1);
 				tag.setDouble("energy", energy);
 				tag.setDouble("production", production);
-				NetworkHelper.updateClientTileEntity(listeners.get(i), te.getPos(), tag);
+				NetworkHelper.updateClientTileEntity(listener, te.getPos(), tag);
 			}
 		lastEnergy = energy;
 		lastProduction = production;

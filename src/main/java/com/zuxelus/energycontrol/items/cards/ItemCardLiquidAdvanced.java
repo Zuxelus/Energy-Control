@@ -73,7 +73,7 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 
 		if ((displaySettings & 1) > 0) {
 			String name = reader.getString(String.format("_%dname", i));
-			if (name == "")
+			if (name.isEmpty())
 				name = I18n.format("msg.ec.None");
 			result.add(new PanelString("msg.ec.InfoPanelName", name, showLabels));
 		}

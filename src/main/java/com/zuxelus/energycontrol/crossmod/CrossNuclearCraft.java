@@ -50,8 +50,7 @@ public class CrossNuclearCraft extends CrossModBase {
 		if (te instanceof TileEnergyFluid) {
 			List<Tank> tanks = ((TileEnergyFluid) te).getTanks();
 			List<IFluidTank> result = new ArrayList<>();
-			for (Tank tank : tanks)
-				result.add(tank);
+			result.addAll(tanks);
 			return result;
 		}
 		return null;

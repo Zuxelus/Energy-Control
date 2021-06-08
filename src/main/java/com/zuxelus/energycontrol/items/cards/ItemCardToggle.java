@@ -40,7 +40,7 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 			return CardState.NO_TARGET;
 		
 		if (state.getBlock() == Blocks.LEVER || state.getBlock() instanceof BlockButton) {
-			boolean value = state.getValue(POWERED).booleanValue();
+			boolean value = state.getValue(POWERED);
 			reader.setBoolean("value", value);
 			return CardState.OK;
 		}
@@ -92,7 +92,7 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 			world.notifyNeighborsOfStateChange(pos.offset(enumfacing.getOpposite()), state.getBlock(), false);
 		}
 		if (state.getBlock() instanceof BlockButton) {
-			world.setBlockState(pos, state.withProperty(POWERED, Boolean.valueOf(true)), 3);
+			world.setBlockState(pos, state.withProperty(POWERED, Boolean.TRUE), 3);
 			world.markBlockRangeForRenderUpdate(pos, pos);
 			world.notifyNeighborsOfStateChange(pos, block, false);
 			world.notifyNeighborsOfStateChange(pos.offset(state.getValue(BlockButton.FACING).getOpposite()), block, false);

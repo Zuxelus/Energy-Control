@@ -67,7 +67,7 @@ public class RotationOffset {
 		offset.leftTop += length * (pos + ((state >> 3) & 1));
 		offset.rightTop += length * (pos + ((state >> 2) & 1));
 		offset.leftBottom += length * (pos + ((state >> 1) & 1));
-		offset.rightBottom += length * (pos + ((state >> 0) & 1));
+		offset.rightBottom += length * (pos + ((state) & 1));
 	}
 
 	public RotationOffset addOffset(Screen screen, BlockPos pos, EnumFacing facing, EnumFacing rotation) {

@@ -9,9 +9,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 
 public class TEAdvancedInfoPanelExtenderRenderer extends TileEntitySpecialRenderer<TileEntityAdvancedInfoPanelExtender> {
-	private static final ResourceLocation TEXTUREOFF[];
-	private static final ResourceLocation TEXTUREON[];
-	private static final CubeRenderer model[];
+	private static final ResourceLocation[] TEXTUREOFF;
+	private static final ResourceLocation[] TEXTUREON;
+	private static final CubeRenderer[] model;
 
 	static {
 		TEXTUREOFF = new ResourceLocation[16];

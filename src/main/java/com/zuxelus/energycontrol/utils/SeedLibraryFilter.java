@@ -123,11 +123,8 @@ public class SeedLibraryFilter {
 		if (growth < min_growth || growth > max_growth || gain < min_gain || gain > max_gain || resistance < min_resistance || resistance > max_resistance)
 			return false;
 		int total = growth + gain + resistance;
-		if (total < min_total || total > max_total)
-			return false;
-
-		return true;
-	}
+        return total >= min_total && total <= max_total;
+    }
 
 	public String getCropName() {
 		if (seed_type == null)
@@ -185,8 +182,6 @@ public class SeedLibraryFilter {
 
 		while (cache.size() > CACHE_SIZE)
 			cache.remove(cache.size() - 1);
-
-		return;
 	}
 
 	protected void removeFromCache(ItemStack seed) {

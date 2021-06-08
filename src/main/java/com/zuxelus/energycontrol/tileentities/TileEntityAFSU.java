@@ -74,11 +74,9 @@ public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable
 	public void onServerMessageReceived(NBTTagCompound tag) { 
 		if (!tag.hasKey("type"))
 			return;
-		switch (tag.getInteger("type")) {
-		case 1:
+		if (tag.getInteger("type") == 1) {
 			if (tag.hasKey("value"))
 				setRedstoneMode((byte) tag.getDouble("value"));
-			break;
 		}
 	}
 
@@ -86,11 +84,9 @@ public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable
 	public void onClientMessageReceived(NBTTagCompound tag) {
 		if (!tag.hasKey("type"))
 			return;
-		switch (tag.getInteger("type")) {
-		case 1:
+		if (tag.getInteger("type") == 1) {
 			if (tag.hasKey("value"))
 				energy = tag.getDouble("value");
-			break;
 		}
 	}
 
@@ -184,9 +180,7 @@ public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable
 		if (!(stack.getItem() instanceof IElectricItem))
 				return false;
 		IElectricItem item = (IElectricItem) stack.getItem();
-		if ((item.canProvideEnergy(stack) || slot == SLOT_CHARGER) && item.getTier(stack) <= TIER)
-			return true;
-		return false;
+		return (item.canProvideEnergy(stack) || slot == SLOT_CHARGER) && item.getTier(stack) <= TIER;
 	}
 
 	// IEnergyStorage

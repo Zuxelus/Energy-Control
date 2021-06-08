@@ -43,7 +43,6 @@ public class GuiInfoPanel extends GuiContainerBase implements IContainerListener
 	protected byte activeTab;
 	protected boolean modified;
 
-	@SuppressWarnings("rawtypes")
 	public GuiInfoPanel(ContainerBase container) {
 		super(container, "tile.info_panel.name", TEXTURE);
 		ySize = 201;
@@ -52,7 +51,6 @@ public class GuiInfoPanel extends GuiContainerBase implements IContainerListener
 		activeTab = 0;
 	}
 
-	@SuppressWarnings("rawtypes")
 	public GuiInfoPanel(ContainerBase container, String name, ResourceLocation texture) {
 		super(container, name, texture);
 		panel = (TileEntityInfoPanel)container.te;

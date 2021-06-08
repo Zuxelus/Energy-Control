@@ -87,10 +87,10 @@ public class ItemCardAppEng extends ItemCardBase {
 			return 0;
 		
 		int cells = 0;
-		for (IStorageChannel channel : AEApi.instance().storage().storageChannels()) {
-			ICellInventoryHandler handler = AEApi.instance().registries().cell().getCellInventory(stack, null, channel);
+		for (IStorageChannel<?> channel : AEApi.instance().storage().storageChannels()) {
+			ICellInventoryHandler<?> handler = AEApi.instance().registries().cell().getCellInventory(stack, null, channel);
 			if (handler != null) {
-				ICellInventory inv = handler.getCellInv();
+				ICellInventory<?> inv = handler.getCellInv();
 				if (inv != null) {
 					values[0] += inv.getTotalBytes();
 					values[1] += inv.getUsedBytes();

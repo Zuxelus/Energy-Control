@@ -19,7 +19,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class RangeTrigger extends FacingHorizontal {
-	public static final PropertyEnum<EnumState> STATE = PropertyEnum.<EnumState>create("state", EnumState.class);
+	public static final PropertyEnum<EnumState> STATE = PropertyEnum.create("state", EnumState.class);
 
 	@Override
 	public TileEntityFacing createTileEntity(int meta) {
@@ -38,7 +38,7 @@ public class RangeTrigger extends FacingHorizontal {
 
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, new IProperty[] { FACING, STATE });
+		return new BlockStateContainer(this, FACING, STATE);
 	}
 
 	@Override
@@ -69,13 +69,13 @@ public class RangeTrigger extends FacingHorizontal {
 		return true;
 	}
 
-	public static enum EnumState implements IStringSerializable {
+	public enum EnumState implements IStringSerializable {
 		OFF(0, "off"), ON(1, "on"), ERROR(2, "error");
 
 		private final int id;
 		private final String name;
 
-		private EnumState(int id, String name) {
+		EnumState(int id, String name) {
 			this.id = id;
 			this.name = name;
 		}

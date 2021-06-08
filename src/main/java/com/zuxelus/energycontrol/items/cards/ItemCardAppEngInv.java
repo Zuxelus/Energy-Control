@@ -46,7 +46,7 @@ public class ItemCardAppEngInv extends ItemCardBase implements ITouchAction {
 		if (stacks.size() < 1)
 			return CardState.OK;
 
-		IReadOnlyCollection<IGridNode> gridList = null;
+		IReadOnlyCollection<IGridNode> gridList;
 
 		TileEntity te = world.getTileEntity(target);
 		if (te instanceof TileCableBus) {
@@ -86,13 +86,12 @@ public class ItemCardAppEngInv extends ItemCardBase implements ITouchAction {
 		for (IStorageChannel<? extends IAEStack<?>> channel : AEApi.instance().storage().storageChannels()) {
 			ICellInventoryHandler<? extends IAEStack<?>> handler = AEApi.instance().registries().cell().getCellInventory(cell, null, channel);
 			if (handler != null) {
-				MEMonitorHandler<? extends IAEStack<?>> monitor = new MEMonitorHandler(handler);
-				for (Object st : monitor.getStorageList()) {
-					if (st instanceof IAEStack && ((IAEStack) st).isItem()) {
-						IAEStack ae = (IAEStack) st;
+				MEMonitorHandler<?> monitor = new MEMonitorHandler<>(handler);
+				for (IAEStack<?> st : monitor.getStorageList()) {
+					if (st != null && st.isItem()) {
 						for (ItemStack stack : stacks)
-							if (ae.asItemStackRepresentation().isItemEqual(stack))
-								stack.setCount(stack.getCount() + (int) ((IAEStack) st).getStackSize());
+							if (st.asItemStackRepresentation().isItemEqual(stack))
+								stack.setCount(stack.getCount() + (int) st.getStackSize());
 					}
 				}
 			}

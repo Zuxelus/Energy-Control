@@ -8,13 +8,13 @@ import java.lang.reflect.Method;
 
 public class CrossRailcraft {
 	public boolean modLoaded;
-	private Class _tankTile;
+	private Class<?> _tankTile;
 
 	public CrossRailcraft() {
 		try {
 			_tankTile = Class.forName("mods.railcraft.common.blocks.machine.ITankTile", false, this.getClass().getClassLoader());
 			modLoaded = true;
-		} catch (ClassNotFoundException e) { }
+		} catch (ClassNotFoundException ignored) { }
 	}
 
 	public FluidTankInfo getIronTank(TileEntity entity) {
@@ -28,7 +28,7 @@ public class CrossRailcraft {
 				if (tank != null)
 					return tank.getInfo();
 			}
-		} catch (Exception e) {	}
+		} catch (Exception ignored) {	}
 		return null;
 	}
 }

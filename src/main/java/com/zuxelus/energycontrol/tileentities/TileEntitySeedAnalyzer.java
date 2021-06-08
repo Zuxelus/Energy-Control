@@ -82,14 +82,12 @@ public class TileEntitySeedAnalyzer extends TileEntityInventory implements ITick
 	public void onClientMessageReceived(NBTTagCompound tag) {
 		if (!tag.hasKey("type"))
 			return;
-		switch (tag.getInteger("type")) {
-		case 1:
+		if (tag.getInteger("type") == 1) {
 			if (tag.hasKey("energy") && tag.hasKey("production") && tag.hasKey("productionMax")) {
 				energy = tag.getDouble("energy");
 				production = tag.getDouble("production");
 				productionMax = tag.getInteger("productionMax");
 			}
-			break;
 		}
 	}
 
@@ -305,9 +303,7 @@ public class TileEntitySeedAnalyzer extends TileEntityInventory implements ITick
 		ICropSeed seed = (ICropSeed) crop.getItem();
 		if (side == EnumFacing.DOWN)
 			return seed.getScannedFromStack(crop) == 4;
-		if (side != EnumFacing.DOWN)
-			return seed.getScannedFromStack(crop) < 4;
-		return true;
+		return seed.getScannedFromStack(crop) < 4;
 	}
 
 	// IEnergySink

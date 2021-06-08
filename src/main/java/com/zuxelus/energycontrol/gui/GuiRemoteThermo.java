@@ -76,7 +76,7 @@ public class GuiRemoteThermo extends GuiContainerBase {
 				NetworkHelper.updateSeverTileEntity(container.te.getPos(), 1, heat);
 				container.te.setHeatLevel(heat);
 			}
-			textboxHeat.setText(new Integer(heat).toString());
+			textboxHeat.setText(Integer.toString(heat));
 		}
 	}
 
@@ -130,7 +130,7 @@ public class GuiRemoteThermo extends GuiContainerBase {
 	}
 
 	@Override
-	protected void keyTyped(char typedChar, int keyCode) throws IOException {
+	protected void keyTyped(char typedChar, int keyCode) {
 		if (keyCode == 1) // Esc
 			mc.player.closeScreen();
 		else if (typedChar == 13) // Enter

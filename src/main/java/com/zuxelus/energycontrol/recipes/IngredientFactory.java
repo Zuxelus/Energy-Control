@@ -53,7 +53,7 @@ public class IngredientFactory implements IIngredientFactory {
 					NBTBase tag = nbt2.getTag(name);
 					if (tag.getId() == 8) {// String
 						String text = nbt.getString(name);
-						if (text.length() > 1 && text.substring(text.length() - 1).equals("b")) {
+						if (text.length() > 1 && text.endsWith("b")) {
 							text = text.substring(0, text.length() - 1);
 							boolean isByte = true;
 							for (char ch : text.toCharArray()) {
@@ -80,14 +80,14 @@ public class IngredientFactory implements IIngredientFactory {
 
 				return new ItemStack(tmp);
 			} catch (NBTException e) {
-				throw new JsonSyntaxException("Invalid NBT Entry: " + e.toString());
+				throw new JsonSyntaxException("Invalid NBT Entry: " + e);
 			}
 		}
 
 		return new ItemStack(item, JsonUtils.getInt(json, "count", 1), JsonUtils.getInt(json, "data", 0));
 	}
 
-	private class IngredientNBT extends Ingredient {
+	private static class IngredientNBT extends Ingredient {
 		private final ItemStack stack;
 
 		public IngredientNBT(ItemStack stack) {

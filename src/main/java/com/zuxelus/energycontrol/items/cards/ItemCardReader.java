@@ -287,7 +287,7 @@ public class ItemCardReader implements ICardReader {
 		}
 		for (String name : nbt.getKeySet()) {
 			NBTBase tag = nbt.getTag(name);
-			result.add(new PanelString(String.format("%s : %s", name, tag.toString())));
+			result.add(new PanelString(String.format("%s : %s", name, tag)));
 		}
 		return result;
 	}

@@ -70,30 +70,26 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 	public void onServerMessageReceived(NBTTagCompound tag) {
 		if (!tag.hasKey("type"))
 			return;
-		switch (tag.getInteger("type")) {
-		case 4:
-			if (tag.hasKey("slot") && tag.hasKey("title")) {
-				ItemStack itemStack = getStackInSlot(tag.getInteger("slot"));
-				if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemCardMain) {
-					new ItemCardReader(itemStack).setTitle(tag.getString("title"));
-				}
-			}
-			break;
-		}
+        if (tag.getInteger("type") == 4) {
+            if (tag.hasKey("slot") && tag.hasKey("title")) {
+                ItemStack itemStack = getStackInSlot(tag.getInteger("slot"));
+                if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemCardMain) {
+                    new ItemCardReader(itemStack).setTitle(tag.getString("title"));
+                }
+            }
+        }
 	}
 
 	@Override
 	public void onClientMessageReceived(NBTTagCompound tag) {
 		if (!tag.hasKey("type"))
 			return;
-		switch (tag.getInteger("type")) {
-		case 1:
-			if (tag.hasKey("energy") && tag.hasKey("production")) {
-				energy = tag.getDouble("energy");
-				production = tag.getDouble("production");
-			}
-			break;
-		}
+        if (tag.getInteger("type") == 1) {
+            if (tag.hasKey("energy") && tag.hasKey("production")) {
+                energy = tag.getDouble("energy");
+                production = tag.getDouble("production");
+            }
+        }
 	}
 
 	@Override

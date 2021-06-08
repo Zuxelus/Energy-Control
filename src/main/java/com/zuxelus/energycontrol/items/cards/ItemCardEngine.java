@@ -32,8 +32,7 @@ public class ItemCardEngine extends ItemCardBase {
 			return CardState.NO_TARGET;
 
 		reader.setInt("type", tag.getInteger("type"));
-		switch (tag.getInteger("type")) {
-		case 1:
+		if (tag.getInteger("type") == 1) {
 			reader.setDouble("output", tag.getDouble("output"));
 			reader.setDouble("power", tag.getDouble("power"));
 			reader.setDouble("powerLevel", tag.getDouble("powerLevel"));
@@ -41,7 +40,6 @@ public class ItemCardEngine extends ItemCardBase {
 			reader.setDouble("heat", tag.getDouble("heat"));
 			reader.setDouble("heatLevel", tag.getDouble("heatLevel"));
 			reader.setDouble("speed", tag.getDouble("speed"));
-			break;
 		}
 		reader.setBoolean("active", tag.getBoolean("active"));
 		return CardState.OK;
@@ -68,8 +66,7 @@ public class ItemCardEngine extends ItemCardBase {
 	@Override
 	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
-		switch (reader.getInt("type")) {
-		case 1:
+		if (reader.getInt("type") == 1) {
 			result.add(new PanelString("msg.ec.InfoPanelOutputMJ", reader.getDouble("output"), showLabels));
 			if ((settings & 1) > 0) {
 				result.add(new PanelString("msg.ec.InfoPanelHeat", reader.getDouble("heat"), showLabels));
@@ -83,7 +80,6 @@ public class ItemCardEngine extends ItemCardBase {
 			}
 			if ((settings & 8) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelSpeed", reader.getDouble("speed"), showLabels));
-			break;
 		}
 		if ((settings & 16) > 0)
 			addOnOff(result, isServer, reader.getBoolean("active"));

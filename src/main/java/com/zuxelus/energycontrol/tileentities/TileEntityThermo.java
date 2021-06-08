@@ -196,7 +196,7 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 		IBlockState iblockstate = world.getBlockState(pos);
 		Block block = iblockstate.getBlock();
 		if (block instanceof ThermalMonitor || block instanceof RemoteThermo) {
-			boolean newValue = status < 0 ? false : status == 1 ? !invertRedstone : invertRedstone;
+			boolean newValue = status >= 0 && (status == 1 != invertRedstone);
 			if (poweredBlock != newValue) {
 				poweredBlock = newValue;
 				world.notifyNeighborsOfStateChange(pos, block, false);

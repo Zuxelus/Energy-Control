@@ -99,7 +99,7 @@ public class CrossIC2Classic extends CrossModBase {
 	public NBTTagCompound getGeneratorData(TileEntity te) {
 		try {
 			NBTTagCompound tag = new NBTTagCompound();
-			Boolean active = false;
+			boolean active;
 			tag.setString("euType", "EU");
 			if (te instanceof TileEntitySolarPanel) {
 				tag.setInteger("type", 1);
@@ -190,7 +190,7 @@ public class CrossIC2Classic extends CrossModBase {
 			}
 		}
 
-		int timeLeft = 0;
+		int timeLeft;
 		//Classic has a Higher Tick rate for Steam generation but damage tick rate is still the same...
 		if (isSteam) {
 			timeLeft = dmgLeft;

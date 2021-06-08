@@ -75,7 +75,7 @@ public class GuiKitAssembler extends GuiContainerBase {
 		FontRenderer font = stack.getItem().getFontRenderer(stack);
 		net.minecraftforge.fml.client.config.GuiUtils.preItemToolTip(stack);
 		List<String> stackList = stack.getTooltip(mc.player, mc.gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL);
-		List<String> list = Lists.<String>newArrayList();
+		List<String> list = Lists.newArrayList();
 		if (stackList.size() > 0)
 			list.add(stackList.get(0));
 		List<PanelString> data = new ItemCardReader(stack).getAllData();

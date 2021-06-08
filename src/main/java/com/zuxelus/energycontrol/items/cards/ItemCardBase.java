@@ -58,7 +58,7 @@ public abstract class ItemCardBase implements IItemCard {
 
 	protected void addOnOff(List<PanelString> result, boolean isServer, boolean value) {
 		String text;
-		int txtColor = 0;
+		int txtColor;
 		if (value) {
 			txtColor = 0x00ff00;
 			text = isServer ? "On" : I18n.format("msg.ec.InfoPanelOn");

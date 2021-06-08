@@ -78,17 +78,11 @@ public class SoundHelper {
 			for (int i = list.size() - 1; i >= 0; --i) {
 				IResource iresource = list.get(i);
 
-				try {
-					Map map = gson.fromJson(new InputStreamReader(iresource.getInputStream()), type);
-					Iterator iterator1 = map.entrySet().iterator();
-
-					while (iterator1.hasNext()) {
-						Entry entry = (Entry) iterator1.next();
-						EnergyControl.instance.availableAlarms.add(((String) entry.getKey()).replace("alarm-", ""));
-					}
-				} catch (RuntimeException runtimeexception) { }
+				Map<String, SoundList> map = gson.fromJson(new InputStreamReader(iresource.getInputStream()), type);
+				
+				map.forEach((str, soundList) -> EnergyControl.instance.availableAlarms.add(str.replace("alarm-", "")));
 			}
-		} catch (IOException ioexception) {}
+		} catch (IOException ignored) {}
 	}
 
 	private static void buildJSON() throws IOException {

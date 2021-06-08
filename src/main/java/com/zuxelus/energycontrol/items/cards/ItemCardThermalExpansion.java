@@ -38,13 +38,11 @@ public class ItemCardThermalExpansion extends ItemCardBase {
 	@Override
 	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
-		switch (reader.getInt("type")) {
-		case 1:
-			result.add(new PanelString("msg.ec.InfoPanelPowerUsage", reader.getInt("usage"), showLabels));
-			result.add(new PanelString("msg.ec.InfoPanelRedstoneMode", reader.getString("rsmode"), showLabels));
-			addOnOff(result, isServer, reader.getBoolean("active"));
-			break;
-		}
+        if (reader.getInt("type") == 1) {
+            result.add(new PanelString("msg.ec.InfoPanelPowerUsage", reader.getInt("usage"), showLabels));
+            result.add(new PanelString("msg.ec.InfoPanelRedstoneMode", reader.getString("rsmode"), showLabels));
+            addOnOff(result, isServer, reader.getBoolean("active"));
+        }
 		return result;
 	}
 

@@ -23,14 +23,14 @@ public abstract class TileEntityInventory extends TileEntityFacing implements IS
 
 	public TileEntityInventory(String name) {
 		customName = name;
-		inventory = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
+		inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
 	}
 
 	@Override
 	protected void readProperties(NBTTagCompound tag) {
 		super.readProperties(tag);
 		NBTTagList list = tag.getTagList("Items", Constants.NBT.TAG_COMPOUND);
-		inventory = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
+		inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
 		for (int i = 0; i < list.tagCount(); i++) {
 			NBTTagCompound stackTag = list.getCompoundTagAt(i);
 			inventory.set(stackTag.getByte("Slot"), new ItemStack(stackTag));
@@ -109,7 +109,7 @@ public abstract class TileEntityInventory extends TileEntityFacing implements IS
 
 	@Override
 	public boolean isUsableByPlayer(EntityPlayer player) {
-		return world.getTileEntity(this.pos) != this ? false : player.getDistanceSq(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) <= 64.0D;
+		return world.getTileEntity(this.pos) == this && player.getDistanceSq(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) <= 64.0D;
 	}
 
 	@Override

@@ -27,24 +27,20 @@ public class TileEntityEnergyCounter extends TileEntityEnergyStorage {
 	public void onServerMessageReceived(NBTTagCompound tag) {
 		if (!tag.hasKey("type"))
 			return;
-		switch (tag.getInteger("type")) {
-		case 1:
-			if (tag.hasKey("value"))
-				counter = tag.getInteger("value");
-			break;
-		}
+        if (tag.getInteger("type") == 1) {
+            if (tag.hasKey("value"))
+                counter = tag.getInteger("value");
+        }
 	}
 
 	@Override
 	public void onClientMessageReceived(NBTTagCompound tag) {
 		if (!tag.hasKey("type"))
 			return;
-		switch (tag.getInteger("type")) {
-		case 1:
-			if (tag.hasKey("value"))
-				counter = tag.getDouble("value");
-			break;
-		}
+        if (tag.getInteger("type") == 1) {
+            if (tag.hasKey("value"))
+                counter = tag.getDouble("value");
+        }
 	}
 
 	@Override

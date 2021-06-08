@@ -86,7 +86,7 @@ public class GalacticraftHelper {
 	}
 
 	public static String getStatus(TileEntityElectrolyzer te) {
-		String displayText = "";
+		String displayText;
 		if (RedstoneUtil.isBlockReceivingRedstone(te.getWorld(), te.getPos()))
 			displayText = EnumColor.RED + GCCoreUtil.translate("gui.status.off.name");
 		else if (!te.hasEnoughEnergyToRun)
@@ -105,7 +105,7 @@ public class GalacticraftHelper {
 	}
 
 	public static String getStatus(TileEntityMethaneSynthesizer te) {
-		String displayText = "";
+		String displayText;
 		if (RedstoneUtil.isBlockReceivingRedstone(te.getWorld(), te.getPos()))
 			displayText = EnumColor.RED + GCCoreUtil.translate("gui.status.off.name");
 		else if (!te.hasEnoughEnergyToRun)
@@ -124,7 +124,7 @@ public class GalacticraftHelper {
 	}
 
 	public static String getStatus(TileEntityGasLiquefier te) {
-		String displayText = "";
+		String displayText;
 		if (RedstoneUtil.isBlockReceivingRedstone(te.getWorld(), te.getPos()))
 			displayText = EnumColor.RED + GCCoreUtil.translate("gui.status.off.name");
 		else if (!te.hasEnoughEnergyToRun)

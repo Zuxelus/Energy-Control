@@ -22,8 +22,6 @@ public class SlotArmor extends Slot {
 		if (stack.isEmpty())
 			return false;
 		Item item = stack.getItem();
-		if (item == null)
-			return false;
 		return item.isValidArmor(stack, armorType, ((InventoryPlayer) inventory).player);
 	}
 

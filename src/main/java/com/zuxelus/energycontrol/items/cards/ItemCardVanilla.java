@@ -40,15 +40,15 @@ public class ItemCardVanilla extends ItemCardBase {
 			reader.setBoolean("burning", furnace.isBurning());
 			reader.setInt("burnTime", furnace.getField(0));
 			NBTTagCompound tag = new NBTTagCompound();
-			if (furnace.getStackInSlot(0) != null) {
+			if (!furnace.getStackInSlot(0).isEmpty()) {
 				tag.setString("Cooking", furnace.getStackInSlot(0).getDisplayName());
 				tag.setInteger("Csize", furnace.getStackInSlot(0).getCount());
 			}
-			if (furnace.getStackInSlot(1) != null) {
+			if (!furnace.getStackInSlot(1).isEmpty()) {
 				tag.setString("Fuel", furnace.getStackInSlot(1).getDisplayName());
 				tag.setInteger("Fsize", furnace.getStackInSlot(1).getCount());
 			}
-			if (furnace.getStackInSlot(2) != null) {
+			if (!furnace.getStackInSlot(2).isEmpty()) {
 				tag.setString("Output", furnace.getStackInSlot(2).getDisplayName());
 				tag.setInteger("Osize", furnace.getStackInSlot(2).getCount());
 			}

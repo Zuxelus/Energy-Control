@@ -47,7 +47,7 @@ public class CubeRenderer {
 		compiled = true;
 	}
 
-	private class CubeBox {
+	private static class CubeBox {
 		private final PositionTextureVertex[] vertexPositions;
 		private final TexturedQuad[] quadList;
 

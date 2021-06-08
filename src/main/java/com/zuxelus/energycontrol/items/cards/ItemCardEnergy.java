@@ -50,7 +50,7 @@ public class ItemCardEnergy extends ItemCardBase {
 
 		double energy = reader.getDouble("storage");
 		double storage = reader.getDouble("maxStorage");
-		String euType = "";
+		String euType;
 
 		switch (reader.getInt("type")) {
 		case 10:

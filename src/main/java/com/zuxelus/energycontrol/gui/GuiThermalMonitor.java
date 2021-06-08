@@ -82,7 +82,7 @@ public class GuiThermalMonitor extends GuiBase {
 			NetworkHelper.updateSeverTileEntity(thermo.getPos(), 1, heat);
 			thermo.setHeatLevel(heat);
 		}
-		textboxHeat.setText(new Integer(heat).toString());
+		textboxHeat.setText(Integer.toString(heat));
 	}
 
 	@Override

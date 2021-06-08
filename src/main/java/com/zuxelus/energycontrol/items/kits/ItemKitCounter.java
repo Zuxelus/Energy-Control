@@ -18,7 +18,7 @@ public class ItemKitCounter extends ItemKitSimple {
 	@Override
 	protected BlockPos getTargetCoordinates(World world, BlockPos pos, ItemStack stack) {
 		TileEntity entity = world.getTileEntity(pos);
-		if (entity != null && (entity instanceof TileEntityEnergyCounter || entity instanceof TileEntityAverageCounter))
+		if ((entity instanceof TileEntityEnergyCounter || entity instanceof TileEntityAverageCounter))
 			return pos;
 		return null;
 	}

@@ -298,8 +298,7 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 		case SLOT_CHARGER:
 			if (stack.getItem() instanceof IElectricItem) {
 				IElectricItem item = (IElectricItem) stack.getItem();
-				if (item.canProvideEnergy(stack) && item.getTier(stack) <= tier)
-					return true;
+				return item.canProvideEnergy(stack) && item.getTier(stack) <= tier;
 			}
 			return false;
 		case SLOT_CARD:

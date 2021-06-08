@@ -85,8 +85,6 @@ public class ServerProxy implements IGuiHandler {
 
 	public void importSound(File configFolder) { }
 
-	public void registerModelLoader() { }
-
 	public String getItemName(ItemStack stack) {
 		return stack.getItem().getUnlocalizedName();
 	}

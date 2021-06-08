@@ -29,9 +29,9 @@ public class ContainerRemoteThermo extends ContainerBase<TileEntityRemoteThermo>
 	{
 		super.detectAndSendChanges();
 		int energy = (int)te.getEnergy();
-		for (int i = 0; i < listeners.size(); i++)
+		for (net.minecraft.inventory.IContainerListener listener : listeners)
 			if (lastEnergy != energy)
-				listeners.get(i).sendWindowProperty(this, 0, energy);
+				listener.sendWindowProperty(this, 0, energy);
 		lastEnergy = energy;
 		te.setStatus(-1);
 	}

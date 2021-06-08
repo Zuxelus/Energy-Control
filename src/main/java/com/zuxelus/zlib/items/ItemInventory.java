@@ -21,7 +21,7 @@ public abstract class ItemInventory implements IInventory, ISlotItemFilter {
 	public ItemInventory(ItemStack parent, String name) {
 		this.parent = parent;
 		customName = name;
-		inventory = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
+		inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
 		readFromParentNBT();
 	}
 

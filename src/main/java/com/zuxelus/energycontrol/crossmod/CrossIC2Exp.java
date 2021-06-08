@@ -15,7 +15,6 @@ import ic2.api.item.IC2Items;
 import ic2.api.item.ICustomDamageItem;
 import ic2.api.reactor.IReactor;
 import ic2.api.tile.IEnergyStorage;
-import ic2.api.util.Keys;
 import ic2.core.block.BlockTileEntity;
 import ic2.core.block.TileEntityBlock;
 import ic2.core.block.TileEntityHeatSourceInventory;
@@ -39,7 +38,6 @@ import ic2.core.ref.BlockName;
 import ic2.core.util.Config;
 import ic2.core.util.ConfigUtil;
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -49,7 +47,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fml.common.Loader;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -114,10 +111,10 @@ public class CrossIC2Exp extends CrossModBase {
 		if (stack.isEmpty())
 			return 0;
 		Item item = stack.getItem();
-		if (item instanceof ItemReactorUranium || item instanceof ItemReactorLithiumCell || item instanceof ItemReactorMOX)
+		if (item instanceof ItemReactorUranium || item instanceof ItemReactorLithiumCell)
 			return ((ICustomDamageItem)item).getMaxCustomDamage(stack) - ((ICustomDamageItem)item).getCustomDamage(stack);
 		// Coaxium Mod
-		if (item.getClass().getName() == "com.sm.FirstMod.items.ItemCoaxiumRod" || item.getClass().getName() == "com.sm.FirstMod.items.ItemCesiumRod")
+		if (item.getClass().getName().equals("com.sm.FirstMod.items.ItemCoaxiumRod") || item.getClass().getName().equals("com.sm.FirstMod.items.ItemCesiumRod"))
 			return stack.getMaxDamage() - getCoaxiumDamage(stack);
 		return 0;
 	}
@@ -167,7 +164,7 @@ public class CrossIC2Exp extends CrossModBase {
 	public NBTTagCompound getGeneratorData(TileEntity te) {
 		try {
 			NBTTagCompound tag = new NBTTagCompound();
-			Boolean active = isActive(te);
+			boolean active = isActive(te);
 			tag.setBoolean("active", active);
 			tag.setString("euType", "EU");
 			if (te instanceof TileEntityBaseGenerator) {
@@ -265,7 +262,7 @@ public class CrossIC2Exp extends CrossModBase {
 				Field field = TileEntityWindKineticGenerator.class.getDeclaredField("windStrength");
 				field.setAccessible(true);
 				tag.setDouble("wind", (Double) field.get(te));
-				tag.setDouble("multiplier", entity.getEfficiency() * entity.outputModifier);
+				tag.setDouble("multiplier", entity.getEfficiency() * TileEntityWindKineticGenerator.outputModifier);
 				tag.setInteger("height", entity.getPos().getY());
 				 if (entity.rotorSlot.isEmpty())
 					 tag.setInteger("health", -1);
@@ -313,7 +310,7 @@ public class CrossIC2Exp extends CrossModBase {
 				tag.setInteger("condProgress", (int) field.get(te)); 
 				return tag;
 			}
-		} catch (Throwable t) {
+		} catch (Throwable ignored) {
 		}
 		return null;
 	}
@@ -322,7 +319,7 @@ public class CrossIC2Exp extends CrossModBase {
 	public NBTTagCompound getGeneratorHeatData(TileEntity te) {
 		try {
 			NBTTagCompound tag = new NBTTagCompound();
-			Boolean active = ((TileEntityBlock)te).getActive();
+			boolean active = ((TileEntityBlock)te).getActive();
 			tag.setBoolean("active", active);
 			if (te instanceof TileEntityHeatSourceInventory) {
 				tag.setInteger("type", 1);
@@ -410,7 +407,7 @@ public class CrossIC2Exp extends CrossModBase {
 				dmgLeft = Math.max(dmgLeft, ReactorHelper.getNuclearCellTimeLeft(stack));
 		}
 
-		int timeLeft = 0;
+		int timeLeft;
 		//Classic has a Higher Tick rate for Steam generation but damage tick rate is still the same...
 		if (isSteam) {
 			timeLeft = dmgLeft;
@@ -423,7 +420,7 @@ public class CrossIC2Exp extends CrossModBase {
 	@Override
 	public CardState updateCardReactor5x5(World world, ICardReader reader, BlockPos target) {
 		IReactor reactor = ReactorHelper.getReactorAt(world, target);
-		if (reactor == null || !(reactor instanceof TileEntityNuclearReactorElectric))
+		if (!(reactor instanceof TileEntityNuclearReactorElectric))
 			return CardState.NO_TARGET;
 		
 		reader.setInt("heat", reactor.getHeat());

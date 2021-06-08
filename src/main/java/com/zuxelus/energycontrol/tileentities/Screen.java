@@ -41,7 +41,7 @@ public class Screen {
 
 	public TileEntityInfoPanel getCore(IBlockAccess world) {
 		TileEntity tileEntity = world.getTileEntity(corePos);
-		if (tileEntity == null || !(tileEntity instanceof TileEntityInfoPanel))
+		if (!(tileEntity instanceof TileEntityInfoPanel))
 			return null;
 		return (TileEntityInfoPanel) tileEntity;
 	}
@@ -72,7 +72,7 @@ public class Screen {
 			for (int y = minY; y <= maxY; y++) {
 				for (int z = minZ; z <= maxZ; z++) {
 					TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
-					if (tileEntity == null || !(tileEntity instanceof IScreenPart))
+					if (!(tileEntity instanceof IScreenPart))
 						continue;
 					((IScreenPart) tileEntity).setScreen(this);
 					if (powered || force) {
@@ -89,7 +89,7 @@ public class Screen {
 			for (int y = minY; y <= maxY; y++) {
 				for (int z = minZ; z <= maxZ; z++) {
 					TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
-					if (tileEntity == null || !(tileEntity instanceof IScreenPart))
+					if (!(tileEntity instanceof IScreenPart))
 						continue;
 					IScreenPart part = (IScreenPart) tileEntity;
 					Screen targetScreen = part.getScreen();
@@ -201,8 +201,6 @@ public class Screen {
 			return false;
 		if (minY != other.minY)
 			return false;
-		if (minZ != other.minZ)
-			return false;
-		return true;
+		return minZ == other.minZ;
 	}
 }

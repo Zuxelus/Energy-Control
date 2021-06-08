@@ -34,7 +34,7 @@ public class AdvancedInfoPanelPeripheral implements IPeripheral {
 	}
 
 	@Override
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] args) throws LuaException, InterruptedException {
+	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] args) {
 		int value;
 		ItemStack stack;
 		switch (method) {

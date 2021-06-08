@@ -119,7 +119,7 @@ public class GuiTimer extends GuiBase {
 		boolean isTicks = timer.getIsTicks();
 		switch(button.id) {
 		case 0:
-			updateTime(isTicks ? 1 : 1 * 20);
+			updateTime(isTicks ? 1 : 20);
 			break;
 		case 1:
 			updateTime(isTicks ? 10 : 30 * 20);

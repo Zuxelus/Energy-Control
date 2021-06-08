@@ -64,33 +64,29 @@ public class TileEntityAverageCounter extends TileEntityEnergyStorage implements
 	public void onServerMessageReceived(NBTTagCompound tag) {
 		if (!tag.hasKey("type"))
 			return;
-		switch (tag.getInteger("type")) {
-		case 1:
-			if (tag.hasKey("value")) {
-				int event = tag.getInteger("value");
-				if (event == 0) {
-					for (int i = 0; i < DATA_POINTS; i++)
-						data[i] = 0;
+        if (tag.getInteger("type") == 1) {
+            if (tag.hasKey("value")) {
+                int event = tag.getInteger("value");
+                if (event == 0) {
+                    for (int i = 0; i < DATA_POINTS; i++)
+                        data[i] = 0;
 
-					updateTicker = tickRate;
-					index = 0;
-				} else
-					setPeriod((short) event);
-			}
-			break;
-		}
+                    updateTicker = tickRate;
+                    index = 0;
+                } else
+                    setPeriod((short) event);
+            }
+        }
 	}
 
 	@Override
 	public void onClientMessageReceived(NBTTagCompound tag) {
 		if (!tag.hasKey("type"))
 			return;
-		switch (tag.getInteger("type")) {
-		case 1:
-			if (tag.hasKey("value"))
-				clientAverage = tag.getInteger("value");
-			break;
-		}
+        if (tag.getInteger("type") == 1) {
+            if (tag.hasKey("value"))
+                clientAverage = tag.getInteger("value");
+        }
 	}
 
 	@Override

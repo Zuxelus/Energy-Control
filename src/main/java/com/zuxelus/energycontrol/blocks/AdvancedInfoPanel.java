@@ -9,7 +9,6 @@ import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.energycontrol.utils.KeyboardUtil;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
-import ic2.api.util.Keys;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -43,9 +42,6 @@ public class AdvancedInfoPanel extends InfoPanel {
 			return new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
 
 		EnumFacing enumfacing = state.getValue(FACING);
-		if (!(te instanceof TileEntityAdvancedInfoPanel) || enumfacing == null)
-			return new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-
 		switch (enumfacing) {
 		case EAST:
 			return new AxisAlignedBB(0.0D, 0.0D, 0.0D, 0.0625D * te.thickness, 1.0D, 1.0D);
