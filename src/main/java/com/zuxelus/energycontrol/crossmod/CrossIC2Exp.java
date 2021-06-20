@@ -29,7 +29,6 @@ import ic2.core.block.reactor.tileentity.*;
 import ic2.core.block.type.ResourceBlock;
 import ic2.core.init.MainConfig;
 import ic2.core.item.reactor.ItemReactorLithiumCell;
-import ic2.core.item.reactor.ItemReactorMOX;
 import ic2.core.item.reactor.ItemReactorUranium;
 import ic2.core.item.tool.ItemToolWrench;
 import ic2.core.profile.ProfileManager;
@@ -53,11 +52,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CrossIC2Exp extends CrossModBase {
-
-	@Override
-	public String getModType() {
-		return "IC2Exp";
-	}
 
 	@Override
 	public int getProfile() {

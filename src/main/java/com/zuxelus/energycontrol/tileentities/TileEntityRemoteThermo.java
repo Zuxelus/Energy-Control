@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.EnergyControlConfig;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
@@ -158,7 +159,7 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 
 		int newStatus;
 		int newHeat = 0;
-		if (energy >= EnergyControl.config.remoteThermalMonitorEnergyConsumption) {
+		if (energy >= EnergyControlConfig.remoteThermalMonitorEnergyConsumption) {
 			IReactor reactor = ReactorHelper.getReactorAt(world, new BlockPos(pos.getX() + deltaX, pos.getY() + deltaY, pos.getZ() + deltaZ));
 			if (reactor == null) {
 				if (!getStackInSlot(SLOT_CARD).isEmpty()) {
@@ -211,7 +212,7 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 		if (world.isRemote)
 			return;
 		// If is server
-		int consumption = EnergyControl.config.remoteThermalMonitorEnergyConsumption;
+		int consumption = EnergyControlConfig.remoteThermalMonitorEnergyConsumption;
 		ItemStack stack = getStackInSlot(SLOT_CHARGER);
 		if (!stack.isEmpty() && energy < maxStorage && stack.getItem() instanceof IElectricItem) {
 			IElectricItem ielectricitem = (IElectricItem) stack.getItem();

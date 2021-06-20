@@ -1,6 +1,6 @@
 package com.zuxelus.energycontrol.items;
 
-import com.zuxelus.energycontrol.ClientProxy;
+import com.zuxelus.energycontrol.proxy.ClientProxy;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;

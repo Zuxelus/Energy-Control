@@ -1,11 +1,13 @@
-package com.zuxelus.energycontrol;
+package com.zuxelus.energycontrol.proxy;
 
+import com.zuxelus.energycontrol.ClientTickHandler;
+import com.zuxelus.energycontrol.ServerTickHandler;
 import com.zuxelus.energycontrol.blocks.BlockDamages;
-import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.containers.*;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.gui.*;
 import com.zuxelus.energycontrol.items.cards.ItemCardHolder;
+import com.zuxelus.energycontrol.proxy.IProxy;
 import com.zuxelus.energycontrol.renderers.*;
 import com.zuxelus.energycontrol.tileentities.*;
 import com.zuxelus.energycontrol.utils.SoundHelper;
@@ -25,17 +27,15 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.util.List;
 
-public class ClientProxy extends ServerProxy {
+public class ClientProxy implements IProxy {
 	public static KeyBinding modeSwitchKey;
 
 	@Override
 	public void loadConfig(FMLPreInitializationEvent event) {
-		EnergyControl.config = new ConfigHandler();
-		MinecraftForge.EVENT_BUS.register(EnergyControl.config);
-		EnergyControl.config.init(event.getSuggestedConfigurationFile());
 		if (!Loader.isModLoaded(ModIDs.IC2) && Loader.isModLoaded(ModIDs.TECH_REBORN)) {
 			modeSwitchKey = new KeyBinding("Mode Switch Key", 50, "Energy Control");
 			ClientRegistry.registerKeyBinding(modeSwitchKey);
@@ -51,6 +51,12 @@ public class ClientProxy extends ServerProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAdvancedInfoPanel.class, new TEAdvancedInfoPanelRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAdvancedInfoPanelExtender.class, new TEAdvancedInfoPanelExtenderRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTimer.class, new TileEntityTimerRenderer());
+	}
+
+	@Nullable
+	@Override
+	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return null;
 	}
 
 	@Override

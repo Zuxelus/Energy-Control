@@ -31,12 +31,7 @@ import java.util.List;
 
 public class CrossIC2Classic extends CrossModBase {
 
-	@Override
-	public String getModType() {
-		return "IC2Classic";
-	}
-
-	@Override
+    @Override
 	public ItemStack getItemStack(String name) {
 		switch (name) {
 		case "transformer":

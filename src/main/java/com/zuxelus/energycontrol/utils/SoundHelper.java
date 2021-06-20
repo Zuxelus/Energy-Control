@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.EnergyControlConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundList;
 import net.minecraft.client.audio.SoundListSerializer;
@@ -52,7 +53,7 @@ public class SoundHelper {
 	};
 
 	public static void initSound(File configFolder) {
-		if (configFolder == null || !EnergyControl.config.useCustomSounds)
+		if (configFolder == null || !EnergyControlConfig.useCustomSounds)
 			return;
 		
 			alarms = new File(configFolder, "alarms");

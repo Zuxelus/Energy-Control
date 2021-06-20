@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.gui.controls;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.EnergyControlConfig;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 import net.minecraft.client.Minecraft;
@@ -27,7 +28,7 @@ public class GuiHowlerAlarmSlider extends GuiButton {
 		this.alarm = alarm;
 		dragging = false;
 		if (alarm.getWorld().isRemote)
-			maxValue = EnergyControl.config.maxAlarmRange;
+			maxValue = EnergyControlConfig.maxAlarmRange;
 		int currentRange = alarm.getRange();
 		if (alarm.getWorld().isRemote && currentRange > maxValue)
 			currentRange = maxValue;

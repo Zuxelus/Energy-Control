@@ -16,10 +16,6 @@ import java.util.List;
 
 public class CrossModBase {
 
-	public String getModType() {
-		return "";
-	}
-
 	public int getProfile() {
 		return -1;
 	}

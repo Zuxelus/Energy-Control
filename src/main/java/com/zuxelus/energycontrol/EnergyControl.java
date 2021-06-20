@@ -1,10 +1,10 @@
 package com.zuxelus.energycontrol;
 
-import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.containers.slots.SlotHandler;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.network.ChannelHandler;
+import com.zuxelus.energycontrol.proxy.IProxy;
 import com.zuxelus.energycontrol.recipes.RecipesNew;
 import com.zuxelus.energycontrol.tileentities.ScreenManager;
 import net.minecraftforge.common.MinecraftForge;
@@ -24,21 +24,21 @@ import org.apache.logging.log4j.Logger;
 import java.util.List;
 import java.util.Map;
 
-@Mod(name = EnergyControl.NAME, modid = EnergyControl.MODID, version = EnergyControl.VERSION, dependencies="after:ic2;after:techreborn", guiFactory = "com.zuxelus.energycontrol.config.GuiFactory", acceptedMinecraftVersions = "[1.12.2]")
+@Mod(name = EnergyControl.NAME, modid = EnergyControl.MODID, version = EnergyControl.VERSION, dependencies="after:ic2;after:techreborn", acceptedMinecraftVersions = "[1.12.2]")
 public class EnergyControl {
 	public static final String NAME = "Energy Control";
 	public static final String MODID = "energycontrol";
 	public static final String VERSION = "@VERSION@";
 
-	@SidedProxy(clientSide = "com.zuxelus.energycontrol.ClientProxy", serverSide = "com.zuxelus.energycontrol.ServerProxy")
-	public static ServerProxy proxy;
+	@SidedProxy(clientSide = "com.zuxelus.energycontrol.proxy.ClientProxy", serverSide = "com.zuxelus.energycontrol.proxy.ServerProxy")
+	public static IProxy proxy;
+	
 	@Instance(MODID)
 	public static EnergyControl instance;
 
 	public static EnCtrlTab creativeTab = new EnCtrlTab();
 
 	public static Logger logger;
-	public static ConfigHandler config;
 	public static Map<String, OreHelper> oreHelper;
 	
 	public ScreenManager screenManager = new ScreenManager();

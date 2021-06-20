@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.EnergyControlConfig;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
@@ -65,7 +66,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		cardData = new HashMap<>();
 		displaySettings = new HashMap<>(1);
 		displaySettings.put(0, new HashMap<>());
-		tickRate = EnergyControl.config.infoPanelRefreshPeriod;
+		tickRate = EnergyControlConfig.infoPanelRefreshPeriod;
 		updateTicker = tickRate - 1;
 		dataTicker = 4;
 		showLabels = true;
