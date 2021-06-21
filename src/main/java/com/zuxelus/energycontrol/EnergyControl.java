@@ -24,11 +24,9 @@ import org.apache.logging.log4j.Logger;
 import java.util.List;
 import java.util.Map;
 
-@Mod(name = EnergyControl.NAME, modid = EnergyControl.MODID, version = EnergyControl.VERSION, dependencies="after:ic2;after:techreborn", acceptedMinecraftVersions = "[1.12.2]")
+@Mod(modid = EnergyControl.MODID, dependencies="after:ic2;after:techreborn", acceptedMinecraftVersions = "[1.12.2]")
 public class EnergyControl {
-	public static final String NAME = "Energy Control";
 	public static final String MODID = "energycontrol";
-	public static final String VERSION = "@VERSION@";
 
 	@SidedProxy(clientSide = "com.zuxelus.energycontrol.proxy.ClientProxy", serverSide = "com.zuxelus.energycontrol.proxy.ServerProxy")
 	public static IProxy proxy;
