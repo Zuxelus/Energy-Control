@@ -1,7 +1,6 @@
 package com.zuxelus.energycontrol;
 
 import com.zuxelus.energycontrol.init.ModItems;
-
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;

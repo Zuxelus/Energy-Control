@@ -1,7 +1,7 @@
 package com.zuxelus.energycontrol.utils;
 
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import ic2.api.reactor.IReactor;
 import ic2.api.reactor.IReactorChamber;
 import net.minecraft.item.ItemStack;
@@ -83,17 +83,17 @@ public class ReactorHelper {
 	}
 
 	public static boolean isSteam(IReactor reactor) {
-		return CrossModLoader.ic2.isSteamReactor((TileEntity) reactor);
+		return CrossModLoader.getCrossMod(ModIDs.IC2).isSteamReactor((TileEntity) reactor);
 	}
 
 	public static int getNuclearCellTimeLeft(ItemStack rStack) {
-		return CrossModLoader.ic2.getNuclearCellTimeLeft(rStack);
+		return CrossModLoader.getCrossMod(ModIDs.IC2).getNuclearCellTimeLeft(rStack);
 	}
 
 	public static int getReactorHeat(World world, BlockPos pos) {
-		int heat = CrossModLoader.bigReactors.getReactorHeat(world, pos);
+		int heat = CrossModLoader.getCrossMod(ModIDs.BIG_REACTORS).getReactorHeat(world, pos);
 		if (heat > -1)
 			return heat;
-		return CrossModLoader.nuclearCraft.getReactorHeat(world, pos);
+		return CrossModLoader.getCrossMod(ModIDs.NUCLEAR_CRAFT).getReactorHeat(world, pos);
 	}
 }

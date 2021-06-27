@@ -3,18 +3,13 @@ package com.zuxelus.energycontrol.init;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.blocks.*;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.items.ItemAFSU;
-import com.zuxelus.energycontrol.items.ItemDigitalThermometer;
-import com.zuxelus.energycontrol.items.ItemLight;
-import com.zuxelus.energycontrol.items.ItemPortablePanel;
-import com.zuxelus.energycontrol.items.ItemThermometer;
-import com.zuxelus.energycontrol.items.ItemUpgrade;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
+import com.zuxelus.energycontrol.items.*;
 import com.zuxelus.energycontrol.items.cards.ItemCardHolder;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.kits.ItemKitMain;
 import com.zuxelus.energycontrol.recipes.StorageArrayRecipe;
 import com.zuxelus.energycontrol.tileentities.*;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
@@ -64,23 +59,23 @@ public class ModItems {
 		blockLight = register(event, new BlockLight(), "block_light");
 		blockHowlerAlarm = register(event, new HowlerAlarm(), "howler_alarm");
 		blockIndustrialAlarm = register(event, new IndustrialAlarm(), "industrial_alarm");
-		if (Loader.isModLoaded("ic2"))
+		if (Loader.isModLoaded(ModIDs.IC2))
 			blockThermalMonitor = register(event, new ThermalMonitor(), "thermal_monitor");
 		blockInfoPanel = register(event, new InfoPanel(), TileEntityInfoPanel.NAME);
 		blockInfoPanelExtender = register(event, new InfoPanelExtender(), "info_panel_extender");
 		blockInfoPanelAdvanced = register(event, new AdvancedInfoPanel(), TileEntityAdvancedInfoPanel.NAME);
 		blockInfoPanelAdvancedExtender = register(event, new AdvancedInfoPanelExtender(), "info_panel_advanced_extender");
 		blockRangeTrigger = register(event, new RangeTrigger(), "range_trigger");
-		if (Loader.isModLoaded("ic2"))
+		if (Loader.isModLoaded(ModIDs.IC2))
 			blockRemoteThermo = register(event, new RemoteThermo(), "remote_thermo");
 		blockAverageCounter = register(event, new AverageCounter(), "average_counter");
 		blockEnergyCounter = register(event, new EnergyCounter(), "energy_counter");
 		blockKitAssembler = register(event, new KitAssembler(), "kit_assembler");
-		if (CrossModLoader.ic2.getProfile() == 0) {
+		if (CrossModLoader.getCrossMod(ModIDs.IC2).getProfile() == 0) {
 			blockAfsu = register(event, new AFSU(), "afsu");
 			//blockIc2Cable = register(event, new IC2Cable(), "ic2_cable");
 		}
-		if (Loader.isModLoaded("ic2")) {
+		if (Loader.isModLoaded(ModIDs.IC2)) {
 			blockSeedAnalyzer = register(event, new SeedAnalyzer(), "seed_analyzer");
 			blockSeedLibrary = register(event, new SeedLibrary(), "seed_library");
 		}
@@ -92,44 +87,44 @@ public class ModItems {
 		event.getRegistry().register(new ItemLight(blockLight).setRegistryName("block_light"));
 		event.getRegistry().register(new ItemBlock(blockHowlerAlarm).setRegistryName("howler_alarm"));
 		event.getRegistry().register(new ItemBlock(blockIndustrialAlarm).setRegistryName("industrial_alarm"));
-		if (Loader.isModLoaded("ic2"))
+		if (Loader.isModLoaded(ModIDs.IC2))
 			event.getRegistry().register(new ItemBlock(blockThermalMonitor).setRegistryName("thermal_monitor"));
 		event.getRegistry().register(new ItemBlock(blockInfoPanel).setRegistryName(TileEntityInfoPanel.NAME));
 		event.getRegistry().register(new ItemBlock(blockInfoPanelExtender).setRegistryName("info_panel_extender"));
 		event.getRegistry().register(new ItemBlock(blockInfoPanelAdvanced).setRegistryName(TileEntityAdvancedInfoPanel.NAME));
 		event.getRegistry().register(new ItemBlock(blockInfoPanelAdvancedExtender).setRegistryName("info_panel_advanced_extender"));
 		event.getRegistry().register(new ItemBlock(blockRangeTrigger).setRegistryName("range_trigger"));
-		if (Loader.isModLoaded("ic2"))
+		if (Loader.isModLoaded(ModIDs.IC2))
 			event.getRegistry().register(new ItemBlock(blockRemoteThermo).setRegistryName("remote_thermo"));
 		event.getRegistry().register(new ItemBlock(blockAverageCounter).setRegistryName("average_counter"));
 		event.getRegistry().register(new ItemBlock(blockEnergyCounter).setRegistryName("energy_counter"));
 		event.getRegistry().register(new ItemBlock(blockKitAssembler).setRegistryName("kit_assembler"));
-		if (CrossModLoader.ic2.getProfile() == 0) {
+		if (CrossModLoader.getCrossMod(ModIDs.IC2).getProfile() == 0) {
 			event.getRegistry().register(new ItemAFSU(blockAfsu).setRegistryName("afsu"));
 			//event.getRegistry().register(new ItemBlock(blockIc2Cable).setRegistryName("ic2_cable"));
 		}
-		if (Loader.isModLoaded("ic2")) {
+		if (Loader.isModLoaded(ModIDs.IC2)) {
 			event.getRegistry().register(new ItemBlock(blockSeedAnalyzer).setRegistryName("seed_analyzer"));
 			event.getRegistry().register(new ItemBlock(blockSeedLibrary).setRegistryName("seed_library"));
 		}
 		event.getRegistry().register(new ItemBlock(blockTimer).setRegistryName("timer"));
 
 		itemUpgrade = register(event, new ItemUpgrade(), "item_upgrade");
-		if (Loader.isModLoaded("ic2")) {
+		if (Loader.isModLoaded(ModIDs.IC2)) {
 			itemThermometer = register(event, new ItemThermometer(), "thermometer");
 			itemThermometerDigital = register(event, new ItemDigitalThermometer(), "thermometer_digital");
 		}
 
-		if (Loader.isModLoaded("ic2"))
+		if (Loader.isModLoaded(ModIDs.IC2))
 			itemNanoBow = getItemClass("ItemNanoBowIC2");
-		else if (Loader.isModLoaded("techreborn"))
+		else if (Loader.isModLoaded(ModIDs.TECH_REBORN))
 			itemNanoBow = getItemClass("ItemNanoBowTR");
 		if (itemNanoBow != null)
 			register(event, itemNanoBow, "nano_bow");
 
-		if (CrossModLoader.ic2.getProfile() == 0) {
-			itemAFB = register(event, CrossModLoader.ic2.getItem("afb"), "afb");
-			itemAFSUUpgradeKit = register(event, CrossModLoader.ic2.getItem("afsu_upgrade_kit"), "afsu_upgrade_kit");
+		if (CrossModLoader.getCrossMod(ModIDs.IC2).getProfile() == 0) {
+			itemAFB = register(event, CrossModLoader.getCrossMod(ModIDs.IC2).getItem("afb"), "afb");
+			itemAFSUUpgradeKit = register(event, CrossModLoader.getCrossMod(ModIDs.IC2).getItem("afsu_upgrade_kit"), "afsu_upgrade_kit");
 		}
 
 		itemPortablePanel = register(event, new ItemPortablePanel(), "portable_panel");
@@ -162,9 +157,7 @@ public class ModItems {
 	private static Item getItemClass(String className) {
 		try {
 			Class<?> clz = Class.forName("com.zuxelus.energycontrol.items." + className);
-			if (clz == null)
-				return null;
-			return  (Item) clz.newInstance();
+			return (Item) clz.newInstance();
 		} catch (Exception e) {
 			EnergyControl.logger.warn(String.format("Class %s not found", className));
 		}
@@ -180,7 +173,7 @@ public class ModItems {
 
 		registerBlockModel(blockHowlerAlarm, 0, "howler_alarm");
 		registerBlockModel(blockIndustrialAlarm, 0, "industrial_alarm");
-		if (Loader.isModLoaded("ic2")) {
+		if (Loader.isModLoaded(ModIDs.IC2)) {
 			registerBlockModel(blockThermalMonitor, 0, "thermal_monitor");
 			registerBlockModel(blockRemoteThermo, 0, "remote_thermo");
 		}
@@ -193,13 +186,13 @@ public class ModItems {
 		registerBlockModel(blockAverageCounter, 0, "average_counter");
 		registerBlockModel(blockEnergyCounter, 0, "energy_counter");
 		registerBlockModel(blockKitAssembler, 0, "kit_assembler");
-		if (CrossModLoader.ic2.getProfile() == 0) {
+		if (CrossModLoader.getCrossMod(ModIDs.IC2).getProfile() == 0) {
 			registerBlockModel(blockAfsu, 0, "afsu");
 
 			/*((IC2Cable) blockIc2Cable).initModel();
 			registerBlockModel(ModItems.blockIc2Cable, 0, "ic2_cable");*/
 		}
-		if (Loader.isModLoaded("ic2")) {
+		if (Loader.isModLoaded(ModIDs.IC2)) {
 			registerBlockModel(blockSeedAnalyzer, 0, "seed_analyzer");
 			registerBlockModel(blockSeedLibrary, 0, "seed_library");
 		}
@@ -213,7 +206,7 @@ public class ModItems {
 		registerItemModel(itemUpgrade, ItemUpgrade.DAMAGE_RANGE, "upgrade_range");
 		registerItemModel(itemUpgrade, ItemUpgrade.DAMAGE_COLOR, "upgrade_color");
 		registerItemModel(itemUpgrade, ItemUpgrade.DAMAGE_TOUCH, "upgrade_touch");
-		if (Loader.isModLoaded("ic2")) {
+		if (Loader.isModLoaded(ModIDs.IC2)) {
 			registerItemModel(itemThermometer, 0, "thermometer");
 			registerItemModel(itemThermometerDigital, 0, "thermometer_digital");
 		}
@@ -221,7 +214,7 @@ public class ModItems {
 		registerItemModel(itemCardHolder, 0, "card_holder");
 		if (ModItems.itemNanoBow != null)
 			registerItemModel(itemNanoBow, 0, "nano_bow");
-		if (CrossModLoader.ic2.getProfile() == 0) {
+		if (CrossModLoader.getCrossMod(ModIDs.IC2).getProfile() == 0) {
 			registerItemModel(itemAFB, 0, "afb");
 			registerItemModel(itemAFSUUpgradeKit, 0, "afsu_upgrade_kit");
 		}
@@ -243,7 +236,7 @@ public class ModItems {
 	public static void registerTileEntities() { // TODO Change to event
 		GameRegistry.registerTileEntity(TileEntityHowlerAlarm.class, EnergyControl.MODID + ":howler_alarm");
 		GameRegistry.registerTileEntity(TileEntityIndustrialAlarm.class, EnergyControl.MODID + ":industrial_alarm");
-		if (Loader.isModLoaded("ic2")) {
+		if (Loader.isModLoaded(ModIDs.IC2)) {
 			GameRegistry.registerTileEntity(TileEntityThermo.class, EnergyControl.MODID + ":thermo");
 			GameRegistry.registerTileEntity(TileEntityRemoteThermo.class, EnergyControl.MODID + ":remote_thermo");
 		}
@@ -255,9 +248,9 @@ public class ModItems {
 		GameRegistry.registerTileEntity(TileEntityAverageCounter.class, EnergyControl.MODID + ":average_counter");
 		GameRegistry.registerTileEntity(TileEntityEnergyCounter.class, EnergyControl.MODID + ":energy_counter");
 		GameRegistry.registerTileEntity(TileEntityKitAssembler.class, EnergyControl.MODID + ":kit_assembler");
-		if (CrossModLoader.ic2.getProfile() == 0)
+		if (CrossModLoader.getCrossMod(ModIDs.IC2).getProfile() == 0)
 			GameRegistry.registerTileEntity(TileEntityAFSU.class, EnergyControl.MODID + ":afsu");
-		if (Loader.isModLoaded("ic2")) {
+		if (Loader.isModLoaded(ModIDs.IC2)) {
 			GameRegistry.registerTileEntity(TileEntitySeedAnalyzer.class, EnergyControl.MODID + ":seed_analyzer");
 			GameRegistry.registerTileEntity(TileEntitySeedLibrary.class, EnergyControl.MODID + ":seed_library");
 		}

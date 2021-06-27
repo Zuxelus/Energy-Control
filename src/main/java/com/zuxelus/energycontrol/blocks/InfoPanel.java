@@ -1,10 +1,10 @@
 package com.zuxelus.energycontrol.blocks;
 
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
+import com.zuxelus.energycontrol.utils.KeyboardUtil;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
-
-import ic2.api.util.Keys;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -55,15 +55,15 @@ public class InfoPanel extends FacingBlock {
 		TileEntity te = world.getTileEntity(pos);
 		if (!(te instanceof TileEntityInfoPanel))
 			return true;
-		if (!world.isRemote && Keys.instance.isAltKeyDown(player) && ((TileEntityInfoPanel) te).getFacing() == facing)
+		if (!world.isRemote && KeyboardUtil.isAltKeyDown(player) && ((TileEntityInfoPanel) te).getFacing() == facing)
 			if (((TileEntityInfoPanel) te).runTouchAction(player.getHeldItem(hand), pos, hitX, hitY, hitZ))
 				return true;
 		return super.onBlockActivated(world, pos, state, player, hand, facing, hitX, hitY, hitZ);
 	}
-
+	
 	@Override
 	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-		drops.add(CrossModLoader.ic2.getItemStack("machine"));
+		drops.add(CrossModLoader.getCrossMod(ModIDs.IC2).getItemStack("machine"));
 	}
 
 	@Override

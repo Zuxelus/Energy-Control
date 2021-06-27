@@ -1,16 +1,15 @@
 package com.zuxelus.energycontrol.network;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.OreHelper;
-
 import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class PacketOreHelper implements IMessage, IMessageHandler<PacketOreHelper, IMessage> {
 	private Map<String, OreHelper> helper;
@@ -23,7 +22,7 @@ public class PacketOreHelper implements IMessage, IMessageHandler<PacketOreHelpe
 
 	@Override
 	public void fromBytes(ByteBuf buf) {
-		helper = new HashMap<String, OreHelper>();
+		helper = new HashMap<>();
 		int size = buf.readInt();
 		for (int i = 0; i < size; i++) {
 			String name = ByteBufUtils.readUTF8String(buf);

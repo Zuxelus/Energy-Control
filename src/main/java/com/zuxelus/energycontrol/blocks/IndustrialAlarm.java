@@ -2,7 +2,6 @@ package com.zuxelus.energycontrol.blocks;
 
 import com.zuxelus.energycontrol.tileentities.TileEntityIndustrialAlarm;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
-
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;

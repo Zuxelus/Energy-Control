@@ -1,17 +1,16 @@
 package com.zuxelus.energycontrol.gui;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.gui.controls.GuiHowlerAlarmListBox;
 import com.zuxelus.energycontrol.gui.controls.GuiHowlerAlarmSlider;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 import com.zuxelus.zlib.gui.GuiBase;
-
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public class GuiHowlerAlarm extends GuiBase {
@@ -29,7 +28,7 @@ public class GuiHowlerAlarm extends GuiBase {
 		super.initGui();
 		slider = new GuiHowlerAlarmSlider(3, guiLeft + 12, guiTop + 33, alarm);
 
-		List<String> items = new ArrayList<String>(EnergyControl.instance.availableAlarms);
+		List<String> items = new ArrayList<>(EnergyControl.instance.availableAlarms);
 		items.retainAll(EnergyControl.instance.serverAllowedAlarms);
 
 		listBox = new GuiHowlerAlarmListBox(4, guiLeft + 13, guiTop + 63, 105, 65, items, alarm);

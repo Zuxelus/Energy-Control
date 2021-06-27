@@ -1,13 +1,11 @@
-package com.zuxelus.energycontrol;
+package com.zuxelus.energycontrol.proxy;
 
-import java.io.File;
-
+import com.zuxelus.energycontrol.ServerTickHandler;
 import com.zuxelus.energycontrol.blocks.BlockDamages;
-import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.containers.*;
 import com.zuxelus.energycontrol.items.cards.ItemCardHolder;
+import com.zuxelus.energycontrol.proxy.IProxy;
 import com.zuxelus.energycontrol.tileentities.*;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -15,17 +13,35 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.network.IGuiHandler;
 
-public class ServerProxy implements IGuiHandler {
+import java.io.File;
 
-	public void loadConfig(FMLPreInitializationEvent event) {
-		EnergyControl.config = new ConfigHandler();
-		EnergyControl.config.init(event.getSuggestedConfigurationFile());
+public class ServerProxy implements IProxy {
+
+	@Override
+	public void loadConfig(FMLPreInitializationEvent event) {}
+
+	@Override
+	public void registerSpecialRenderers() {}
+
+	@Override
+	public void registerEventHandlers() {
+		MinecraftForge.EVENT_BUS.register(ServerTickHandler.instance);
 	}
 
-	public void registerSpecialRenderers() { }
+	@Override
+	public void importSound(File configFolder) {}
 
+	@Override
+	public String getItemName(ItemStack stack) {
+		return stack.getItem().getUnlocalizedName();
+	}
+	
+	@Override
+	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return null;
+	}
+		
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		switch (ID) {
@@ -43,7 +59,7 @@ public class ServerProxy implements IGuiHandler {
 			if (te instanceof TileEntityInfoPanelExtender) {
 				TileEntityInfoPanel panel = ((TileEntityInfoPanelExtender) te).getCore();
 				if (panel != null)
-					return new ContainerInfoPanel(player, (TileEntityInfoPanel) panel);
+					return new ContainerInfoPanel(player, panel);
 			}
 			return null;
 		case BlockDamages.DAMAGE_ADVANCED_PANEL:
@@ -73,22 +89,5 @@ public class ServerProxy implements IGuiHandler {
 			break;
 		}
 		return null;
-	}
-
-	@Override
-	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-		return null;
-	}
-
-	public void registerEventHandlers() {
-		MinecraftForge.EVENT_BUS.register(ServerTickHandler.instance);
-	}
-
-	public void importSound(File configFolder) { }
-
-	public void registerModelLoader() { }
-
-	public String getItemName(ItemStack stack) {
-		return stack.getItem().getUnlocalizedName();
 	}
 }

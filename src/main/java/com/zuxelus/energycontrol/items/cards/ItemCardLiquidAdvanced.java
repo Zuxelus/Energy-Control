@@ -1,14 +1,10 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -18,7 +14,11 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ItemCardLiquidAdvanced extends ItemCardBase {
+	
 	public ItemCardLiquidAdvanced() {
 		super(ItemCardType.CARD_LIQUID_ADVANCED, "card_liquid_advanced");
 	}
@@ -73,7 +73,7 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 
 		if ((displaySettings & 1) > 0) {
 			String name = reader.getString(String.format("_%dname", i));
-			if (name == "")
+			if (name.isEmpty())
 				name = I18n.format("msg.ec.None");
 			result.add(new PanelString("msg.ec.InfoPanelName", name, showLabels));
 		}
@@ -90,7 +90,7 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList() {
-		List<PanelSetting> result = new ArrayList<PanelSetting>(5);
+		List<PanelSetting> result = new ArrayList<>(5);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidName"), 1, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidAmount"), 2, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidFree"), 4, damage));

@@ -1,14 +1,15 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.EnergyControlConfig;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.energycontrol.utils.ReactorHelper;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
-
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergyEmitter;
@@ -28,7 +29,7 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Optional.Interface(modid = "ic2", iface = "ic2.api.energy.tile.IEnergySink")
+@Optional.Interface(modid = ModIDs.IC2, iface = "ic2.api.energy.tile.IEnergySink")
 public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergySink, ISlotItemFilter {
 	public static final int SLOT_CHARGER = 0;
 	public static final int SLOT_CARD = 1;
@@ -158,7 +159,7 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 
 		int newStatus;
 		int newHeat = 0;
-		if (energy >= EnergyControl.config.remoteThermalMonitorEnergyConsumption) {
+		if (energy >= EnergyControlConfig.remoteThermalMonitorEnergyConsumption) {
 			IReactor reactor = ReactorHelper.getReactorAt(world, new BlockPos(pos.getX() + deltaX, pos.getY() + deltaY, pos.getZ() + deltaZ));
 			if (reactor == null) {
 				if (!getStackInSlot(SLOT_CARD).isEmpty()) {
@@ -211,7 +212,7 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 		if (world.isRemote)
 			return;
 		// If is server
-		int consumption = EnergyControl.config.remoteThermalMonitorEnergyConsumption;
+		int consumption = EnergyControlConfig.remoteThermalMonitorEnergyConsumption;
 		ItemStack stack = getStackInSlot(SLOT_CHARGER);
 		if (!stack.isEmpty() && energy < maxStorage && stack.getItem() instanceof IElectricItem) {
 			IElectricItem ielectricitem = (IElectricItem) stack.getItem();
@@ -237,9 +238,9 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 			if (itemStack.isEmpty())
 				continue;
 
-			if (itemStack.isItemEqual(CrossModLoader.ic2.getItemStack("transformer"))) {
+			if (itemStack.isItemEqual(CrossModLoader.getCrossMod(ModIDs.IC2).getItemStack("transformer"))) {
 				upgradeCountTransormer += itemStack.getCount();
-			} else if (itemStack.isItemEqual(CrossModLoader.ic2.getItemStack("energy_storage"))) {
+			} else if (itemStack.isItemEqual(CrossModLoader.getCrossMod(ModIDs.IC2).getItemStack("energy_storage"))) {
 				upgradeCountStorage += itemStack.getCount();
 			} else if (itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE)
 				upgradeCountRange += itemStack.getCount();
@@ -298,8 +299,7 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 		case SLOT_CHARGER:
 			if (stack.getItem() instanceof IElectricItem) {
 				IElectricItem item = (IElectricItem) stack.getItem();
-				if (item.canProvideEnergy(stack) && item.getTier(stack) <= tier)
-					return true;
+				return item.canProvideEnergy(stack) && item.getTier(stack) <= tier;
 			}
 			return false;
 		case SLOT_CARD:
@@ -307,8 +307,8 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements IEnergyS
 					|| stack.getItemDamage() == ItemCardType.CARD_REACTOR5X5
 					|| stack.getItemDamage() == ItemCardType.CARD_BIG_REACTORS);
 		default:
-			return stack.isItemEqual(CrossModLoader.ic2.getItemStack("transformer"))
-					|| stack.isItemEqual(CrossModLoader.ic2.getItemStack("energy_storage"))
+			return stack.isItemEqual(CrossModLoader.getCrossMod(ModIDs.IC2).getItemStack("transformer"))
+					|| stack.isItemEqual(CrossModLoader.getCrossMod(ModIDs.IC2).getItemStack("energy_storage"))
 					|| (stack.getItem() instanceof ItemUpgrade && stack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE);
 		}
 	}

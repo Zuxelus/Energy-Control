@@ -1,19 +1,17 @@
 package com.zuxelus.energycontrol.recipes;
 
-import java.util.Vector;
-
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
-
 import ic2.api.item.IC2Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import java.util.Vector;
 
 public class StorageArrayRecipe extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
 
@@ -32,7 +30,7 @@ public class StorageArrayRecipe extends net.minecraftforge.registries.IForgeRegi
 		int cardCountGenerator = 0;
 		int arrayCountGenerator = 0;
 		ItemStack array = null;
-		Vector<ItemStack> cards = new Vector<ItemStack>();
+		Vector<ItemStack> cards = new Vector<>();
 		for (int i = 0; i < inventoryLength; i++) {
 			ItemStack itemStack = inventory.getStackInSlot(i);
 			if (itemStack.isEmpty())
@@ -96,7 +94,7 @@ public class StorageArrayRecipe extends net.minecraftforge.registries.IForgeRegi
 			int cnt = new ItemCardReader(array).getInt("cardCount");
 			if (cnt + cardCount <= 16) {
 				ItemStack itemStack = new ItemStack(ModItems.itemCard, 1, type);
-				itemStack.setTagCompound((NBTTagCompound) array.getTagCompound().copy());
+				itemStack.setTagCompound(array.getTagCompound().copy());
 				initArray(itemStack, cards);
 				return itemStack;
 			}

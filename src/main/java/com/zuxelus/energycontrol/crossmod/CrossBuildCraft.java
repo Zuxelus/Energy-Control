@@ -1,21 +1,15 @@
 package com.zuxelus.energycontrol.crossmod;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.zuxelus.energycontrol.api.ItemStackHelper;
-import com.zuxelus.energycontrol.init.ModItems;
-import com.zuxelus.energycontrol.items.cards.ItemCardType;
-
 import buildcraft.api.transport.pipe.PipeFlow;
-import buildcraft.api.core.EnumPipePart;
 import buildcraft.lib.engine.TileEngineBase_BC8;
 import buildcraft.lib.fluid.TankManager;
 import buildcraft.lib.tile.TileBC_Neptune;
 import buildcraft.transport.pipe.Pipe;
 import buildcraft.transport.pipe.flow.PipeFlowFluids;
 import buildcraft.transport.tile.TilePipeHolder;
+import com.zuxelus.energycontrol.api.ItemStackHelper;
+import com.zuxelus.energycontrol.init.ModItems;
+import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -23,6 +17,10 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CrossBuildCraft extends CrossModBase {
 

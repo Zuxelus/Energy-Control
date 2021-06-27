@@ -1,15 +1,11 @@
 package com.zuxelus.energycontrol.crossmod;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.energycontrol.utils.ReactorHelper;
-
 import ic2.api.classic.reactor.IChamberReactor;
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IC2Items;
@@ -17,11 +13,7 @@ import ic2.api.item.ICustomDamageItem;
 import ic2.api.reactor.IReactor;
 import ic2.api.tile.IEnergyStorage;
 import ic2.core.block.base.tile.TileEntityGeneratorBase;
-import ic2.core.block.generator.tile.TileEntityLiquidFuelGenerator;
-import ic2.core.block.generator.tile.TileEntityNuclearReactorElectric;
-import ic2.core.block.generator.tile.TileEntityNuclearSteamReactor;
-import ic2.core.block.generator.tile.TileEntityReactorChamberElectric;
-import ic2.core.block.generator.tile.TileEntitySolarPanel;
+import ic2.core.block.generator.tile.*;
 import ic2.core.block.machine.low.TileEntityMachineTank;
 import ic2.core.block.personal.tile.TileEntityPersonalTank;
 import ic2.core.item.reactor.ItemReactorUraniumRod;
@@ -34,14 +26,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.IFluidTank;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CrossIC2Classic extends CrossModBase {
 
-	@Override
-	public String getModType() {
-		return "IC2Classic";
-	}
-
-	@Override
+    @Override
 	public ItemStack getItemStack(String name) {
 		switch (name) {
 		case "transformer":
@@ -104,7 +94,7 @@ public class CrossIC2Classic extends CrossModBase {
 	public NBTTagCompound getGeneratorData(TileEntity te) {
 		try {
 			NBTTagCompound tag = new NBTTagCompound();
-			Boolean active = false;
+			boolean active;
 			tag.setString("euType", "EU");
 			if (te instanceof TileEntitySolarPanel) {
 				tag.setInteger("type", 1);
@@ -195,7 +185,7 @@ public class CrossIC2Classic extends CrossModBase {
 			}
 		}
 
-		int timeLeft = 0;
+		int timeLeft;
 		//Classic has a Higher Tick rate for Steam generation but damage tick rate is still the same...
 		if (isSteam) {
 			timeLeft = dmgLeft;

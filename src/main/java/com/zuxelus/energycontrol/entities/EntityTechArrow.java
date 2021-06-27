@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public class EntityTechArrow extends EntitySpectralArrow {
-	private boolean explosive = false;
+	private boolean explosive;
 	private float explosionPower = 3.0f;
 
 	public EntityTechArrow(World world) {

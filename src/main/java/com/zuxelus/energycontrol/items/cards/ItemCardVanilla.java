@@ -1,20 +1,19 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
-
 import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class ItemCardVanilla extends ItemCardBase {
 	public static final int DISPLAY_BURNING = 1;
@@ -41,15 +40,15 @@ public class ItemCardVanilla extends ItemCardBase {
 			reader.setBoolean("burning", furnace.isBurning());
 			reader.setInt("burnTime", furnace.getField(0));
 			NBTTagCompound tag = new NBTTagCompound();
-			if (furnace.getStackInSlot(0) != null) {
+			if (!furnace.getStackInSlot(0).isEmpty()) {
 				tag.setString("Cooking", furnace.getStackInSlot(0).getDisplayName());
 				tag.setInteger("Csize", furnace.getStackInSlot(0).getCount());
 			}
-			if (furnace.getStackInSlot(1) != null) {
+			if (!furnace.getStackInSlot(1).isEmpty()) {
 				tag.setString("Fuel", furnace.getStackInSlot(1).getDisplayName());
 				tag.setInteger("Fsize", furnace.getStackInSlot(1).getCount());
 			}
-			if (furnace.getStackInSlot(2) != null) {
+			if (!furnace.getStackInSlot(2).isEmpty()) {
 				tag.setString("Output", furnace.getStackInSlot(2).getDisplayName());
 				tag.setInteger("Osize", furnace.getStackInSlot(2).getCount());
 			}
@@ -61,7 +60,7 @@ public class ItemCardVanilla extends ItemCardBase {
 
 	@Override
 	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
-		List<PanelString> result = new LinkedList<PanelString>();
+		List<PanelString> result = new LinkedList<>();
 		boolean isBurning = reader.getBoolean("burning");
 		int burnTime = reader.getInt("burnTime");
 		NBTTagCompound tagCompound = reader.getTag("Info");
@@ -102,7 +101,7 @@ public class ItemCardVanilla extends ItemCardBase {
 
 	@Override
 	public List<PanelSetting> getSettingsList() {
-		List<PanelSetting> result = new ArrayList<PanelSetting>();
+		List<PanelSetting> result = new ArrayList<>();
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOnOff"), DISPLAY_BURNING, damage));
 		result.add(new PanelSetting(I18n.format("msg.burnTimeText"), DISPLAY_TIME, damage));
 		result.add(new PanelSetting(I18n.format("msg.cookingText"), DISPLAY_SLOT_1, damage));

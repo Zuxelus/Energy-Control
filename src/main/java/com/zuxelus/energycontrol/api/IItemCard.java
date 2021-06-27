@@ -1,9 +1,9 @@
 package com.zuxelus.energycontrol.api;
 
-import java.util.List;
-
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 public interface IItemCard {
 
@@ -22,6 +22,4 @@ public interface IItemCard {
 	boolean isRemoteCard();
 
 	int getKitFromCard();
-
-	Object[] getRecipe();
 }

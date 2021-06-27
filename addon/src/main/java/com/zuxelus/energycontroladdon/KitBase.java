@@ -22,11 +22,6 @@ public abstract class KitBase implements IItemKit {
 	}
 
 	@Override
-	public Object[] getRecipe() {
-		return null;
-	}
-
-	@Override
 	public String getUnlocalizedName() {
 		return "item." + name;
 	}

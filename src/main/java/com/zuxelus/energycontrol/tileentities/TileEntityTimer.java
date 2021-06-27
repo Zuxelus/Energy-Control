@@ -3,7 +3,6 @@ package com.zuxelus.energycontrol.tileentities;
 import com.zuxelus.energycontrol.blocks.TimerBlock;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
@@ -206,7 +205,7 @@ public class TileEntityTimer extends TileEntityFacing implements ITickable, ITil
 		IBlockState iblockstate = world.getBlockState(pos);
 		Block block = iblockstate.getBlock();
 		if (block instanceof TimerBlock) {
-			boolean newValue = time > 0 && isWorking ? !invertRedstone : invertRedstone;
+			boolean newValue = (time > 0 && isWorking) != invertRedstone;
 			if (poweredBlock != newValue) {
 				poweredBlock = newValue;
 				world.notifyNeighborsOfStateChange(pos, block, false);

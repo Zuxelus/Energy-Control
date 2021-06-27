@@ -4,7 +4,6 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
-
 import io.netty.buffer.ByteBuf;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -63,14 +62,14 @@ public class PacketCard implements IMessage, IMessageHandler<PacketCard, IMessag
 			te = ctx.getServerHandler().player.world.getTileEntity(new BlockPos(message.x, message.y, message.z));
 		if (ctx.side == Side.CLIENT)
 			te = FMLClientHandler.instance().getClient().world.getTileEntity(new BlockPos(message.x, message.y, message.z));
-		if (te == null || !(te instanceof TileEntityInfoPanel))
+		if (!(te instanceof TileEntityInfoPanel))
 			return null;
 		TileEntityInfoPanel panel = (TileEntityInfoPanel) te;
 		ItemStack stack = panel.getStackInSlot(message.slot);
 		if (stack.isEmpty() || !(stack.getItem() instanceof ItemCardMain))
 			return null;
 		if (!stack.getItem().getClass().getName().equals(message.className)) {
-			EnergyControl.logger.warn("Class mismatch: '%s'!='%s'", message.className, stack.getItem().getClass().getName());
+			EnergyControl.logger.warn("Class mismatch: '{}' != '{}'", message.className, stack.getItem().getClass().getName());
 			return null;
 		}
 		stack.setTagCompound(message.tag);

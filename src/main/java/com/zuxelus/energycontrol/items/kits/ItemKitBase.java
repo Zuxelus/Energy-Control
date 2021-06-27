@@ -27,11 +27,6 @@ public abstract class ItemKitBase implements IItemKit {
 		return "item." + name;
 	}
 
-	@Override
-	public Object[] getRecipe() {
-		return recipe;
-	}
-
 	protected final void addRecipe(Object[] recipe) {
 		this.recipe = recipe;
 	}

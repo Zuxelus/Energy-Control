@@ -1,16 +1,15 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.zuxelus.energycontrol.blocks.InfoPanelExtender;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ScreenManager {
 
@@ -18,8 +17,8 @@ public class ScreenManager {
 	private final Map<Integer, List<TileEntityInfoPanel>> unusedPanels;
 
 	public ScreenManager() {
-		screens = new HashMap<Integer, List<Screen>>();
-		unusedPanels = new HashMap<Integer, List<TileEntityInfoPanel>>();
+		screens = new HashMap<>();
+		unusedPanels = new HashMap<>();
 	}
 
 	private int getWorldKey(World world) {
@@ -32,9 +31,9 @@ public class ScreenManager {
 
 	private void checkWorldLists(Integer key) {
 		if (!screens.containsKey(key))
-			screens.put(key, new ArrayList<Screen>());
+			screens.put(key, new ArrayList<>());
 		if (!unusedPanels.containsKey(key))
-			unusedPanels.put(key, new ArrayList<TileEntityInfoPanel>());
+			unusedPanels.put(key, new ArrayList<>());
 	}
 
 	public void clearWorld(World world) {
@@ -139,9 +138,7 @@ public class ScreenManager {
 			return false;
 		if (((TileEntityInfoPanelExtender) tileEntity).getFacing() != facing)
 			return false;
-		if (((IScreenPart) tileEntity).getScreen() != null)
-			return false;
-		return true;
+		return ((IScreenPart) tileEntity).getScreen() == null;
 	}
 
 	public Screen loadScreen(TileEntityInfoPanel panel) {
@@ -162,12 +159,12 @@ public class ScreenManager {
 		if (extender.getWorld().isRemote)
 			return;
 		if (!screens.containsKey(getWorldKey(extender.getWorld())))
-			screens.put(getWorldKey(extender.getWorld()), new ArrayList<Screen>());
+			screens.put(getWorldKey(extender.getWorld()), new ArrayList<>());
 		if (!unusedPanels.containsKey(getWorldKey(extender.getWorld())))
-			unusedPanels.put(getWorldKey(extender.getWorld()), new ArrayList<TileEntityInfoPanel>());
+			unusedPanels.put(getWorldKey(extender.getWorld()), new ArrayList<>());
 
-		List<TileEntityInfoPanel> rebuildPanels = new ArrayList<TileEntityInfoPanel>();
-		List<Screen> screensToDestroy = new ArrayList<Screen>();
+		List<TileEntityInfoPanel> rebuildPanels = new ArrayList<>();
+		List<Screen> screensToDestroy = new ArrayList<>();
 
 		for (Screen screen : screens.get(getWorldKey(extender.getWorld()))) {
 			TileEntityInfoPanel core = screen.getCore(extender.getWorld());
@@ -200,8 +197,7 @@ public class ScreenManager {
 		for (TileEntityInfoPanel panel : rebuildPanels) {
 			Screen screen = buildFromPanel(panel);
 			screens.get(getWorldKey(extender.getWorld())).add(screen);
-			if (unusedPanels.get(getWorldKey(extender.getWorld())).contains(panel))
-				unusedPanels.get(getWorldKey(extender.getWorld())).remove(panel);
+			unusedPanels.get(getWorldKey(extender.getWorld())).remove(panel);
 		}
 	}
 
@@ -217,7 +213,7 @@ public class ScreenManager {
 		IScreenPart screenPart = (IScreenPart) part;
 		Screen screen = screenPart.getScreen();
 		if (screen == null) {
-			if (part instanceof TileEntityInfoPanel && unusedPanels.get(getWorldKey(part.getWorld())).contains(part))
+			if (part instanceof TileEntityInfoPanel)
 				unusedPanels.get(getWorldKey(part.getWorld())).remove(part);
 			return;
 		}

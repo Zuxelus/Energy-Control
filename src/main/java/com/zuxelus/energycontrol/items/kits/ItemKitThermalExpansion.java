@@ -1,10 +1,9 @@
 package com.zuxelus.energycontrol.items.kits;
 
+import cofh.thermalexpansion.block.machine.TileMachineBase;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
-
-import cofh.thermalexpansion.block.machine.TileMachineBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

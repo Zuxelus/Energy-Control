@@ -1,7 +1,7 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.info.Info;
@@ -27,7 +27,7 @@ public class TileEntityAverageCounter extends TileEntityEnergyStorage implements
 	public short period;
 	protected int clientAverage = -1;
 	
-	private double lastReceivedPower = 0;
+	private double lastReceivedPower;
 
 	public TileEntityAverageCounter() {
 		super("tile.average_counter.name", 1, BASE_PACKET_SIZE, BASE_PACKET_SIZE * 2);
@@ -64,33 +64,29 @@ public class TileEntityAverageCounter extends TileEntityEnergyStorage implements
 	public void onServerMessageReceived(NBTTagCompound tag) {
 		if (!tag.hasKey("type"))
 			return;
-		switch (tag.getInteger("type")) {
-		case 1:
-			if (tag.hasKey("value")) {
-				int event = tag.getInteger("value");
-				if (event == 0) {
-					for (int i = 0; i < DATA_POINTS; i++)
-						data[i] = 0;
+        if (tag.getInteger("type") == 1) {
+            if (tag.hasKey("value")) {
+                int event = tag.getInteger("value");
+                if (event == 0) {
+                    for (int i = 0; i < DATA_POINTS; i++)
+                        data[i] = 0;
 
-					updateTicker = tickRate;
-					index = 0;
-				} else
-					setPeriod((short) event);
-			}
-			break;
-		}
+                    updateTicker = tickRate;
+                    index = 0;
+                } else
+                    setPeriod((short) event);
+            }
+        }
 	}
 
 	@Override
 	public void onClientMessageReceived(NBTTagCompound tag) {
 		if (!tag.hasKey("type"))
 			return;
-		switch (tag.getInteger("type")) {
-		case 1:
-			if (tag.hasKey("value"))
-				clientAverage = tag.getInteger("value");
-			break;
-		}
+        if (tag.getInteger("type") == 1) {
+            if (tag.hasKey("value"))
+                clientAverage = tag.getInteger("value");
+        }
 	}
 
 	@Override
@@ -180,7 +176,7 @@ public class TileEntityAverageCounter extends TileEntityEnergyStorage implements
 	private void refreshData() {
 		int upgradeCountTransormer = 0;
 		ItemStack itemStack = getStackInSlot(0);
-		if (!itemStack.isEmpty() && itemStack.isItemEqual(CrossModLoader.ic2.getItemStack("transformer")))
+		if (!itemStack.isEmpty() && itemStack.isItemEqual(CrossModLoader.getCrossMod(ModIDs.IC2).getItemStack("transformer")))
 			upgradeCountTransormer = itemStack.getCount();
 		upgradeCountTransormer = Math.min(upgradeCountTransormer, 4);
 		if (world != null && !world.isRemote) {
@@ -214,7 +210,7 @@ public class TileEntityAverageCounter extends TileEntityEnergyStorage implements
 
 	@Override
 	public boolean isItemValid(int slotIndex, ItemStack stack) { // ISlotItemFilter
-		return stack.isItemEqual(CrossModLoader.ic2.getItemStack("transformer"));
+		return stack.isItemEqual(CrossModLoader.getCrossMod(ModIDs.IC2).getItemStack("transformer"));
 	}
 
 	private void notifyBlockUpdate() {

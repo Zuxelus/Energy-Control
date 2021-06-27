@@ -1,11 +1,7 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.EnergyControlConfig;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
@@ -15,7 +11,6 @@ import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
-
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.Item;
@@ -33,6 +28,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class TileEntityInfoPanel extends TileEntityInventory implements ITickable, ITilePacketHandler, IScreenPart, ISlotItemFilter {
 	public static final String NAME = "info_panel";
@@ -63,10 +63,10 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 
 	public TileEntityInfoPanel() {
 		super("tile." + NAME + ".name");
-		cardData = new HashMap<Integer, List<PanelString>>();
-		displaySettings = new HashMap<Integer, Map<Integer, Integer>>(1);
-		displaySettings.put(0, new HashMap<Integer, Integer>());
-		tickRate = EnergyControl.config.infoPanelRefreshPeriod;
+		cardData = new HashMap<>();
+		displaySettings = new HashMap<>(1);
+		displaySettings.put(0, new HashMap<>());
+		tickRate = EnergyControlConfig.infoPanelRefreshPeriod;
 		updateTicker = tickRate - 1;
 		dataTicker = 4;
 		showLabels = true;
@@ -406,7 +406,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	public List<PanelString> getPanelStringList(boolean isServer, boolean showLabels) {
 		List<ItemStack> cards = getCards();
 		boolean anyCardFound = false;
-		List<PanelString> joinedData = new LinkedList<PanelString>();
+		List<PanelString> joinedData = new LinkedList<>();
 		for (ItemStack card : cards) {
 			if (card.isEmpty())
 				continue;
@@ -503,7 +503,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 
 	public Map<Integer, Integer> getDisplaySettingsForSlot(int slot) {
 		if (!displaySettings.containsKey(slot))
-			displaySettings.put(slot, new HashMap<Integer, Integer>());
+			displaySettings.put(slot, new HashMap<>());
 		return displaySettings.get(slot);
 	}
 
@@ -540,7 +540,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 
 		int cardType = stack.getItemDamage();
 		if (!displaySettings.containsKey(slot))
-			displaySettings.put(slot, new HashMap<Integer, Integer>());
+			displaySettings.put(slot, new HashMap<>());
 		displaySettings.get(slot).put(cardType, settings);
 		if (!world.isRemote)
 			notifyBlockUpdate();
@@ -621,17 +621,17 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 			BlockPos pos = getPos();
 			switch (getFacing()) {
 			case SOUTH:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 4 * boolToInt(pos.getY() == scr.minY) + 8 * boolToInt(pos.getY() == scr.maxY);
+				return boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 4 * boolToInt(pos.getY() == scr.minY) + 8 * boolToInt(pos.getY() == scr.maxY);
 			case WEST:
-				return 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ) + 1 * boolToInt(pos.getY() == scr.minY) + 2 * boolToInt(pos.getY() == scr.maxY);
+				return 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ) + boolToInt(pos.getY() == scr.minY) + 2 * boolToInt(pos.getY() == scr.maxY);
 			case EAST:
-				return 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ) + 2 * boolToInt(pos.getY() == scr.minY) + 1 * boolToInt(pos.getY() == scr.maxY);
+				return 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ) + 2 * boolToInt(pos.getY() == scr.minY) + boolToInt(pos.getY() == scr.maxY);
 			case NORTH:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 8 * boolToInt(pos.getY() == scr.minY) + 4 * boolToInt(pos.getY() == scr.maxY);
+				return boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 8 * boolToInt(pos.getY() == scr.minY) + 4 * boolToInt(pos.getY() == scr.maxY);
 			case UP:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ);
+				return boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ);
 			case DOWN:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 4 * boolToInt(pos.getZ() == scr.minZ) + 8 * boolToInt(pos.getZ() == scr.maxZ);
+				return boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 4 * boolToInt(pos.getZ() == scr.minZ) + 8 * boolToInt(pos.getZ() == scr.maxZ);
 			}
 		}
 		return 15;

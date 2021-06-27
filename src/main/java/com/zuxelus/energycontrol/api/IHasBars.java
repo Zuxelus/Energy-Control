@@ -10,7 +10,7 @@ public interface IHasBars {
 
 	void renderBars(TextureManager manager, double displayWidth, double displayHeight, ICardReader reader);
 
-	public static void drawTransparentRect(double left, double top, double right, double bottom, double zLevel, int color) {
+	static void drawTransparentRect(double left, double top, double right, double bottom, double zLevel, int color) {
 		float f = (color >> 24 & 255) / 255.0F;
 		float f1 = (color >> 16 & 255) / 255.0F;
 		float f2 = (color >> 8 & 255) / 255.0F;

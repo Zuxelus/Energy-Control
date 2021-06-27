@@ -1,12 +1,9 @@
 package com.zuxelus.energycontrol.crossmod;
 
-import javax.annotation.Nonnull;
-
 import com.zuxelus.energycontrol.blocks.BlockLight;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
-
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
 import mezz.jei.api.JEIPlugin;
@@ -15,6 +12,8 @@ import net.minecraft.block.Block;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
+import javax.annotation.Nonnull;
 
 @JEIPlugin
 public class CrossJEI implements IModPlugin {

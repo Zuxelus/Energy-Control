@@ -1,15 +1,10 @@
 package com.zuxelus.energycontrol.gui;
 
-import java.io.IOException;
-
-import org.lwjgl.opengl.GL11;
-
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.containers.ContainerSeedLibrary;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.utils.SeedLibraryFilter;
 import com.zuxelus.zlib.gui.controls.GuiButtonGeneral;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
@@ -17,6 +12,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
+
+import java.io.IOException;
 
 @SideOnly(Side.CLIENT)
 public class GuiSeedLibrary extends GuiContainer {
@@ -42,14 +40,14 @@ public class GuiSeedLibrary extends GuiContainer {
 	private ContainerSeedLibrary container;
 	public int lastMouseX = -1;
 	public int lastMouseY = -1;
-	String tooltip = null;
+	String tooltip;
 
-	private boolean rightClick = false;
+	private boolean rightClick;
 	private GuiButton rightSelect;
 
 	public static final int BORDER = 4;
 	public int main_width, main_height, left, top, center, middle, right, bottom, sliders_x, sliders_y, sliders_spacing;
-	public int current_slider = -1, drag_start_x = 0, drag_start_value = 0;
+	public int current_slider = -1, drag_start_x, drag_start_value;
 	public GuiButtonGeneral unk_type_button, unk_ggr_button;
 
 	public GuiSeedLibrary(ContainerSeedLibrary container) {
@@ -262,8 +260,7 @@ public class GuiSeedLibrary extends GuiContainer {
 		if (mouseButton == 1) {
 			// Pass the right click to the directional buttons.
 			rightClick = true;
-			for (int l = 0; l < buttonList.size(); l++) {
-				GuiButton guibutton = (GuiButton) buttonList.get(l);
+			for (GuiButton guibutton : buttonList) {
 				if (guibutton.id < 4 || guibutton.id > 9) {
 					continue;
 				}

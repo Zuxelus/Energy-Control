@@ -1,10 +1,6 @@
 package com.zuxelus.energycontrol.items;
 
-import java.util.List;
-
 import com.zuxelus.energycontrol.api.ItemStackHelper;
-import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
 import ic2.api.util.Keys;
@@ -20,6 +16,8 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.List;
 
 public class ItemNanoBowIC2 extends ItemNanoBow implements IElectricItem {
 
@@ -55,7 +53,7 @@ public class ItemNanoBowIC2 extends ItemNanoBow implements IElectricItem {
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
 		/*if (!isInCreativeTab(tab))
 			return;
-		ItemStack charged = CrossModLoader.ic2.getChargedStack(new ItemStack(this, 1));
+		ItemStack charged = CrossModLoader.getCrossMod(ModIDs.IC2).getChargedStack(new ItemStack(this, 1));
 		items.add(charged);
 		items.add(new ItemStack(this, 1, getMaxDamage()));*/
 	}

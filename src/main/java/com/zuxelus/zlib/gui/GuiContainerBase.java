@@ -1,7 +1,5 @@
 package com.zuxelus.zlib.gui;
 
-import java.text.DecimalFormat;
-
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
@@ -10,10 +8,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.text.DecimalFormat;
+
 @SideOnly(Side.CLIENT)
 public class GuiContainerBase extends GuiContainer {
-	private static final int oX[] = {0, -1, 0, 1};
-	private static final int oY[] = {-1, 0, 1, 0};
+	private static final int[] oX = {0, -1, 0, 1};
+	private static final int[] oY = {-1, 0, 1, 0};
 	private static final int MASKR = 0xFF0000;
 	private static final int MASKG = 0x00FF00;
 	private static final int MASKB = 0x0000FF;

@@ -1,14 +1,13 @@
 package com.zuxelus.energycontrol.items.kits;
 
-import com.zuxelus.energycontrol.api.ItemStackHelper;
-import com.zuxelus.energycontrol.init.ModItems;
-import com.zuxelus.energycontrol.items.cards.ItemCardType;
-
 import appeng.api.util.AEPartLocation;
 import appeng.me.helpers.IGridProxyable;
 import appeng.parts.CableBusContainer;
 import appeng.parts.reporting.PartStorageMonitor;
 import appeng.tile.networking.TileCableBus;
+import com.zuxelus.energycontrol.api.ItemStackHelper;
+import com.zuxelus.energycontrol.init.ModItems;
+import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

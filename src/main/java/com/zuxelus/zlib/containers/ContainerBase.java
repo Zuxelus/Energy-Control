@@ -62,7 +62,7 @@ public abstract class ContainerBase<T extends IInventory> extends Container {
 
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotId) {
-		Slot slot = (Slot) this.inventorySlots.get(slotId);
+		Slot slot = this.inventorySlots.get(slotId);
 		if (slot == null || !slot.getHasStack())
 			return ItemStack.EMPTY;
 

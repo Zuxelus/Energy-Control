@@ -1,13 +1,13 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.blocks.KitAssembler;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
-
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergyEmitter;
@@ -26,7 +26,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Optional;
 
-@Optional.Interface(modid = "ic2", iface = "ic2.api.energy.tile.IEnergySink")
+@Optional.Interface(modid = ModIDs.IC2, iface = "ic2.api.energy.tile.IEnergySink")
 public class TileEntityKitAssembler extends TileEntityInventory implements ITickable, ITilePacketHandler, ISlotItemFilter, IEnergySink {
 	public static final byte SLOT_INFO = 0;
 	public static final byte SLOT_CARD1 = 1;
@@ -70,30 +70,26 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 	public void onServerMessageReceived(NBTTagCompound tag) {
 		if (!tag.hasKey("type"))
 			return;
-		switch (tag.getInteger("type")) {
-		case 4:
-			if (tag.hasKey("slot") && tag.hasKey("title")) {
-				ItemStack itemStack = getStackInSlot(tag.getInteger("slot"));
-				if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemCardMain) {
-					new ItemCardReader(itemStack).setTitle(tag.getString("title"));
-				}
-			}
-			break;
-		}
+        if (tag.getInteger("type") == 4) {
+            if (tag.hasKey("slot") && tag.hasKey("title")) {
+                ItemStack itemStack = getStackInSlot(tag.getInteger("slot"));
+                if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemCardMain) {
+                    new ItemCardReader(itemStack).setTitle(tag.getString("title"));
+                }
+            }
+        }
 	}
 
 	@Override
 	public void onClientMessageReceived(NBTTagCompound tag) {
 		if (!tag.hasKey("type"))
 			return;
-		switch (tag.getInteger("type")) {
-		case 1:
-			if (tag.hasKey("energy") && tag.hasKey("production")) {
-				energy = tag.getDouble("energy");
-				production = tag.getDouble("production");
-			}
-			break;
-		}
+        if (tag.getInteger("type") == 1) {
+            if (tag.hasKey("energy") && tag.hasKey("production")) {
+                energy = tag.getDouble("energy");
+                production = tag.getDouble("production");
+            }
+        }
 	}
 
 	@Override

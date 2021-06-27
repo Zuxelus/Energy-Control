@@ -1,10 +1,5 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map.Entry;
-
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
@@ -12,7 +7,6 @@ import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.network.ChannelHandler;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
-
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
@@ -23,6 +17,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class ItemCardReader implements ICardReader {
 	private ItemStack card;
@@ -172,13 +170,13 @@ public class ItemCardReader implements ICardReader {
 	@Override
 	public NBTTagList getTagList(String name, int type) {
 		NBTTagCompound tag = ItemStackHelper.getTagCompound(card);
-		return (NBTTagList) tag.getTagList(name, type);
+		return tag.getTagList(name, type);
 	}
 
 	@Override
 	public ArrayList<ItemStack> getItemStackList(boolean reset) {
 		NBTTagList list = getTagList("Items", Constants.NBT.TAG_COMPOUND);
-		ArrayList<ItemStack> result = new ArrayList<ItemStack> ();
+		ArrayList<ItemStack> result = new ArrayList<>();
 		for (int i = 0; i < list.tagCount(); i++) {
 			NBTTagCompound stackTag = list.getCompoundTagAt(i);
 			ItemStack stack = new ItemStack(stackTag);
@@ -218,7 +216,7 @@ public class ItemCardReader implements ICardReader {
 
 	@SideOnly(Side.CLIENT)
 	public static List<PanelString> getStateMessage(CardState state) {
-		List<PanelString> result = new LinkedList<PanelString>();
+		List<PanelString> result = new LinkedList<>();
 		PanelString line = new PanelString();
 		switch (state) {
 		case OUT_OF_RANGE: line.textCenter = I18n.format("msg.ec.InfoPanelOutOfRange");
@@ -240,7 +238,7 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public List<PanelString> getTitleList() {
-		List<PanelString> result = new LinkedList<PanelString>();
+		List<PanelString> result = new LinkedList<>();
 		String title = getTitle();
 		if (title != null && !title.isEmpty()) {
 			PanelString titleString = new PanelString();
@@ -256,7 +254,7 @@ public class ItemCardReader implements ICardReader {
 			return null;
 
 		nbt = card.getTagCompound().copy();
-		List<PanelString> result = new LinkedList<PanelString>();
+		List<PanelString> result = new LinkedList<>();
 
 		if (nbt.hasKey("title") && nbt.getTag("title").getId() == 8) {
 			String title = nbt.getString("title");
@@ -289,7 +287,7 @@ public class ItemCardReader implements ICardReader {
 		}
 		for (String name : nbt.getKeySet()) {
 			NBTBase tag = nbt.getTag(name);
-			result.add(new PanelString(String.format("%s : %s", name, tag.toString())));
+			result.add(new PanelString(String.format("%s : %s", name, tag)));
 		}
 		return result;
 	}

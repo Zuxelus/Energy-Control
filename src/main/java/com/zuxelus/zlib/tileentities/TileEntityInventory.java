@@ -1,9 +1,5 @@
 package com.zuxelus.zlib.tileentities;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
@@ -17,20 +13,24 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 public abstract class TileEntityInventory extends TileEntityFacing implements ISidedInventory {
 	protected NonNullList<ItemStack> inventory;
 	protected String customName;
 
 	public TileEntityInventory(String name) {
 		customName = name;
-		inventory = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
+		inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
 	}
 
 	@Override
 	protected void readProperties(NBTTagCompound tag) {
 		super.readProperties(tag);
 		NBTTagList list = tag.getTagList("Items", Constants.NBT.TAG_COMPOUND);
-		inventory = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
+		inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
 		for (int i = 0; i < list.tagCount(); i++) {
 			NBTTagCompound stackTag = list.getCompoundTagAt(i);
 			inventory.set(stackTag.getByte("Slot"), new ItemStack(stackTag));
@@ -109,7 +109,7 @@ public abstract class TileEntityInventory extends TileEntityFacing implements IS
 
 	@Override
 	public boolean isUsableByPlayer(EntityPlayer player) {
-		return world.getTileEntity(this.pos) != this ? false : player.getDistanceSq(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) <= 64.0D;
+		return world.getTileEntity(this.pos) == this && player.getDistanceSq(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) <= 64.0D;
 	}
 
 	@Override
@@ -158,7 +158,7 @@ public abstract class TileEntityInventory extends TileEntityFacing implements IS
 					new ItemStack(stack.getItem(), stack.getCount(), stack.getItemDamage()));
 
 			if (stack.hasTagCompound())
-				entityItem.getItem().setTagCompound((NBTTagCompound) stack.getTagCompound().copy());
+				entityItem.getItem().setTagCompound(stack.getTagCompound().copy());
 
 			float factor = 0.05F;
 			entityItem.motionX = rand.nextGaussian() * factor;

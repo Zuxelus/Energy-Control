@@ -24,7 +24,7 @@ public abstract class FacingHorizontalActive extends FacingHorizontal {
 
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, new IProperty[] { FACING, ACTIVE });
+		return new BlockStateContainer(this, FACING, ACTIVE);
 	}
 
 	@Override

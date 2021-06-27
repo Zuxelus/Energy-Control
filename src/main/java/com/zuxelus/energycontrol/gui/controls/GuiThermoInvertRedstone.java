@@ -3,7 +3,6 @@ package com.zuxelus.energycontrol.gui.controls;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityThermo;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
@@ -49,7 +48,7 @@ public class GuiThermoInvertRedstone extends GuiButton {
 			return false;
 		checked = !checked;
 		if (thermo.getWorld().isRemote && thermo.getInvertRedstone() != checked) {
-			NetworkHelper.updateSeverTileEntity(thermo.getPos(), 2, checked ? (int) 1 : (int) 0);
+			NetworkHelper.updateSeverTileEntity(thermo.getPos(), 2, checked ? 1 : 0);
 			thermo.setInvertRedstone(checked);
 		}
 		return true;

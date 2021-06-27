@@ -1,12 +1,8 @@
 package com.zuxelus.energycontrol.crossmod;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.OreHelper;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
-
 import nc.config.NCConfig;
 import nc.init.NCBlocks;
 import nc.tile.energy.battery.TileBattery;
@@ -18,6 +14,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.IFluidTank;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CrossNuclearCraft extends CrossModBase {
 
@@ -51,8 +50,7 @@ public class CrossNuclearCraft extends CrossModBase {
 		if (te instanceof TileEnergyFluid) {
 			List<Tank> tanks = ((TileEnergyFluid) te).getTanks();
 			List<IFluidTank> result = new ArrayList<>();
-			for (Tank tank : tanks)
-				result.add((IFluidTank) tank);
+			result.addAll(tanks);
 			return result;
 		}
 		return null;

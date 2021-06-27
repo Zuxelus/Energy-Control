@@ -1,15 +1,13 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import java.util.HashMap;
-
 import com.zuxelus.energycontrol.blocks.SeedLibrary;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.utils.SeedLibraryFilter;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
-
 import ic2.api.crops.CropCard;
 import ic2.api.crops.Crops;
 import ic2.api.crops.ICropSeed;
@@ -35,6 +33,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
+import java.util.HashMap;
+
 public class TileEntitySeedLibrary extends TileEntityInventory implements ITickable, ITilePacketHandler, ISlotItemFilter, IEnergySink {
 	public static final byte SLOT_DISCHARGER = 0;
 	public static final byte FAKE_SLOT = 9;
@@ -47,9 +47,9 @@ public class TileEntitySeedLibrary extends TileEntityInventory implements ITicka
 	private boolean active;
 
 	protected SeedLibraryFilter[] filters = new SeedLibraryFilter[7];
-	protected HashMap<String, ItemStack> deepContents = new HashMap<String, ItemStack>();
+	protected HashMap<String, ItemStack> deepContents = new HashMap<>();
 	// The number of seeds that match the GUI filter.
-	public int seeds_available = 0;
+	public int seeds_available;
 
 	public TileEntitySeedLibrary() {
 		super("tile.seed_library.name");
@@ -358,7 +358,7 @@ public class TileEntitySeedLibrary extends TileEntityInventory implements ITicka
 		case FAKE_SLOT:
 			return false;
 		default:
-			return stack.getItem() == CrossModLoader.ic2.getItem("seed");
+			return stack.getItem() == CrossModLoader.getCrossMod(ModIDs.IC2).getItem("seed");
 		}
 	}
 
@@ -372,7 +372,7 @@ public class TileEntitySeedLibrary extends TileEntityInventory implements ITicka
 	public boolean canInsertItem(int slot, ItemStack stack, EnumFacing side) {
 		if (slot < 1 || slot > 8)
 			return false;
-		return stack.getItem() == CrossModLoader.ic2.getItem("seed");
+		return stack.getItem() == CrossModLoader.getCrossMod(ModIDs.IC2).getItem("seed");
 	}
 
 	public String getKey(ItemStack seed) {
@@ -457,7 +457,7 @@ public class TileEntitySeedLibrary extends TileEntityInventory implements ITicka
 		getGUIFilter().bulk_mode = true;
 		for (int i = 1; i < 9; i++) {
 			ItemStack stack = getStackInSlot(i);
-			if (!stack.isEmpty() && stack.getItem() == CrossModLoader.ic2.getItem("seed")) {
+			if (!stack.isEmpty() && stack.getItem() == CrossModLoader.getCrossMod(ModIDs.IC2).getItem("seed")) {
 				loadSeed(stack);
 				inventory.set(i, ItemStack.EMPTY);
 			}

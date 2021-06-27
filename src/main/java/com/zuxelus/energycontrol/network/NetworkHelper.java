@@ -1,9 +1,6 @@
 package com.zuxelus.energycontrol.network;
 
-import java.util.List;
-
 import com.zuxelus.zlib.network.PacketTileEntity;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IContainerListener;
@@ -15,6 +12,8 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
+
+import java.util.List;
 
 public class NetworkHelper {
 	public static SimpleNetworkWrapper network;

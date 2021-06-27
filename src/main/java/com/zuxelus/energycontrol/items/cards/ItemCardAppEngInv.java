@@ -1,15 +1,5 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.zuxelus.energycontrol.api.CardState;
-import com.zuxelus.energycontrol.api.ICardReader;
-import com.zuxelus.energycontrol.api.ITouchAction;
-import com.zuxelus.energycontrol.api.PanelSetting;
-import com.zuxelus.energycontrol.api.PanelString;
-import com.zuxelus.energycontrol.utils.StringUtils;
-
 import appeng.api.AEApi;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -26,6 +16,8 @@ import appeng.parts.reporting.PartStorageMonitor;
 import appeng.tile.networking.TileCableBus;
 import appeng.tile.storage.TileChest;
 import appeng.tile.storage.TileDrive;
+import com.zuxelus.energycontrol.api.*;
+import com.zuxelus.energycontrol.utils.StringUtils;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -34,6 +26,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemCardAppEngInv extends ItemCardBase implements ITouchAction {
 
@@ -51,7 +46,7 @@ public class ItemCardAppEngInv extends ItemCardBase implements ITouchAction {
 		if (stacks.size() < 1)
 			return CardState.OK;
 
-		IReadOnlyCollection<IGridNode> gridList = null;
+		IReadOnlyCollection<IGridNode> gridList;
 
 		TileEntity te = world.getTileEntity(target);
 		if (te instanceof TileCableBus) {
@@ -91,13 +86,12 @@ public class ItemCardAppEngInv extends ItemCardBase implements ITouchAction {
 		for (IStorageChannel<? extends IAEStack<?>> channel : AEApi.instance().storage().storageChannels()) {
 			ICellInventoryHandler<? extends IAEStack<?>> handler = AEApi.instance().registries().cell().getCellInventory(cell, null, channel);
 			if (handler != null) {
-				MEMonitorHandler<? extends IAEStack<?>> monitor = new MEMonitorHandler(handler);
-				for (Object st : monitor.getStorageList()) {
-					if (st instanceof IAEStack && ((IAEStack) st).isItem()) {
-						IAEStack ae = (IAEStack) st;
+				MEMonitorHandler<?> monitor = new MEMonitorHandler<>(handler);
+				for (IAEStack<?> st : monitor.getStorageList()) {
+					if (st != null && st.isItem()) {
 						for (ItemStack stack : stacks)
-							if (ae.asItemStackRepresentation().isItemEqual(stack))
-								stack.setCount(stack.getCount() + (int) ((IAEStack) st).getStackSize());
+							if (st.asItemStackRepresentation().isItemEqual(stack))
+								stack.setCount(stack.getCount() + (int) st.getStackSize());
 					}
 				}
 			}

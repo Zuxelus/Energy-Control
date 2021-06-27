@@ -6,10 +6,9 @@ import com.zuxelus.zlib.containers.ContainerBase;
 import com.zuxelus.zlib.containers.slots.SlotArmor;
 import com.zuxelus.zlib.containers.slots.SlotChargeable;
 import com.zuxelus.zlib.containers.slots.SlotDischargeable;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.IContainerListener;
 
 public class ContainerAFSU extends ContainerBase<TileEntityAFSU> {
 	private static final EntityEquipmentSlot[] armorSlots = getArmorSlots();
@@ -21,7 +20,7 @@ public class ContainerAFSU extends ContainerBase<TileEntityAFSU> {
 		addSlotToContainer(new SlotChargeable(te, TileEntityAFSU.SLOT_CHARGER, 26, 17)); // chargeSlot
 		addSlotToContainer(new SlotDischargeable(te, TileEntityAFSU.SLOT_DISCHARGER, 26, 53, TileEntityAFSU.TIER)); // dischargeSlot
 		for (int col = 0; col < armorSlots.length; col++)
-			addSlotToContainer((Slot) new SlotArmor(player.inventory, armorSlots[col], 8 + col * 18, 84));
+			addSlotToContainer(new SlotArmor(player.inventory, armorSlots[col], 8 + col * 18, 84));
 		// inventory
 		addPlayerInventorySlots(player, 196);
 	}
@@ -30,9 +29,9 @@ public class ContainerAFSU extends ContainerBase<TileEntityAFSU> {
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
 		double energy = te.getEnergy();
-		for (int i = 0; i < listeners.size(); i++)
+		for (IContainerListener listener : listeners)
 			if (lastEnergy != energy)
-				NetworkHelper.updateClientTileEntity(listeners.get(i), te.getPos(), 1, energy);
+				NetworkHelper.updateClientTileEntity(listener, te.getPos(), 1, energy);
 		lastEnergy = energy;
 	}
 

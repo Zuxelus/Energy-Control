@@ -87,7 +87,6 @@ ec.config.allowedAlarms=Alarmas Permitidas
 ec.config.remoteThermalMonitorEnergyConsumption=Consumo de EU del Monitor Térmico
 ec.config.infoPanelRefreshPeriod=Periodo de Actualización del Panel de Información
 ec.config.rangeTriggerRefreshPeriod=Periodo de Actualización de Activador a Rango
-ec.config.SMPMaxAlarmRange=Rango Máximo de Alarma SMP
 ec.config.useCustomSounds=Usar Sonidos Personalizados
 
 #Original Screen Messages

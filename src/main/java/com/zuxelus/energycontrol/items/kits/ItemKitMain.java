@@ -1,14 +1,10 @@
 package com.zuxelus.energycontrol.items.kits;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.IItemKit;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
-
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,8 +19,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Loader;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
+
 public class ItemKitMain extends Item {
-	private static Map<Integer, IItemKit> kits = new HashMap<Integer, IItemKit>();
+	private static final Map<Integer, IItemKit> KITS = new HashMap<>();
 
 	public ItemKitMain() {
 		super();
@@ -36,48 +36,41 @@ public class ItemKitMain extends Item {
 	}
 
 	public final void registerKits() {
-		register("ItemKitEnergy");
-		register("ItemKitCounter");
-		register("ItemKitLiquid");
-		register("ItemKitGenerator");
-		if (Loader.isModLoaded("ic2"))
-			register("ItemKitReactor");
-		register("ItemKitLiquidAdvanced");
-		register("ItemKitToggle");
-		register("ItemKitVanilla");
-		register("ItemKitInventory");
-		register("ItemKitRedstone");
-		if (Loader.isModLoaded("draconicevolution"))
-			register("ItemKitDraconic");
-		if (Loader.isModLoaded("appliedenergistics2"))
-			register("ItemKitAppEng");
-		if (Loader.isModLoaded("galacticraftcore") && Loader.isModLoaded("galacticraftplanets"))
-			register("ItemKitGalacticraft");
-		if (Loader.isModLoaded("bigreactors"))
-			register("ItemKitBigReactors");
-		if (Loader.isModLoaded("nuclearcraft"))
-			register("ItemKitNuclearCraft");
-		if (Loader.isModLoaded("mekanismgenerators"))
-			register("ItemKitMekanism");
-		if (Loader.isModLoaded("thermalexpansion"))
-			register("ItemKitThermalExpansion");
+		register(ItemKitEnergy::new);
+		register(ItemKitCounter::new);
+		register(ItemKitLiquid::new);
+		register(ItemKitGenerator::new);
+		if (Loader.isModLoaded(ModIDs.IC2))
+			register(ItemKitReactor::new);
+		register(ItemKitLiquidAdvanced::new);
+		register(ItemKitToggle::new);
+		register(ItemKitVanilla::new);
+		register(ItemKitInventory::new);
+		register(ItemKitRedstone::new);
+		if (Loader.isModLoaded(ModIDs.DRACONIC_EVOLUTION))
+			register(ItemKitDraconic::new);
+		if (Loader.isModLoaded(ModIDs.APPLIED_ENERGISTICS))
+			register(ItemKitAppEng::new);
+		if (Loader.isModLoaded(ModIDs.GALACTICRAFT_CORE) && Loader.isModLoaded(ModIDs.GALACTICRAFT_PLANETS))
+			register(ItemKitGalacticraft::new);
+		if (Loader.isModLoaded(ModIDs.BIG_REACTORS))
+			register(ItemKitBigReactors::new);
+		if (Loader.isModLoaded(ModIDs.NUCLEAR_CRAFT))
+			register(ItemKitNuclearCraft::new);
+		if (Loader.isModLoaded(ModIDs.MEKANISM_GENERATORS))
+			register(ItemKitMekanism::new);
+		if (Loader.isModLoaded(ModIDs.THERMAL_EXPANSION))
+			register(ItemKitThermalExpansion::new);
 	}
 
-	private static void register(String className) {
-		try {
-			Class<?> clz = Class.forName("com.zuxelus.energycontrol.items.kits." + className);
-			if (clz == null)
-				return;
-			ItemKitBase item =  (ItemKitBase) clz.newInstance();
-			if (checkKit(item))
-				kits.put(item.getDamage(), item);
-		} catch (Exception e) {
-			EnergyControl.logger.warn(String.format("Class %s not found", className));
-		}
+	private static void register(Supplier<ItemKitBase> factory) {
+		ItemKitBase item = factory.get();
+		if (checkKit(item))
+			KITS.put(item.getDamage(), item);
 	}
 
 	private static boolean checkKit(IItemKit item) {
-		if (!kits.containsKey(item.getDamage()))
+		if (!KITS.containsKey(item.getDamage()))
 			return true;
 		if (item.getDamage() <= ItemCardType.KIT_MAX)
 			EnergyControl.logger.warn(String.format("Kit %s was not registered. ID %d is already used for standard kit.", item.getUnlocalizedName(), item.getDamage()));
@@ -86,25 +79,25 @@ public class ItemKitMain extends Item {
 		return false;
 	}
 
-	public static final void registerKit(IItemKit item) {
+	public static void registerKit(IItemKit item) {
 		if (checkKit(item)) {
 			if (item.getDamage() <= ItemCardType.KIT_MAX) {
 				EnergyControl.logger.warn(String.format("Kit %s was not registered. Kit ID should be bigger than %d", item.getUnlocalizedName(), ItemCardType.CARD_MAX));
 				return;
 			}
-			kits.put(item.getDamage(), item);
+			KITS.put(item.getDamage(), item);
 		}
 	}
 
-	public static final boolean containsKit(int i) {
-		return kits.containsKey(i) ? true : false;
+	public static boolean containsKit(int i) {
+		return KITS.containsKey(i);
 	}
 
 	@Override
 	public String getUnlocalizedName(ItemStack stack) {
 		int damage = stack.getItemDamage();
-		if (kits.containsKey(damage))
-			return kits.get(damage).getUnlocalizedName();
+		if (KITS.containsKey(damage))
+			return KITS.get(damage).getUnlocalizedName();
 		return "";
 	}
 
@@ -112,7 +105,7 @@ public class ItemKitMain extends Item {
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
 		if (!isInCreativeTab(tab))
 			return;
-		for (Map.Entry<Integer, IItemKit> entry : kits.entrySet()) {
+		for (Map.Entry<Integer, IItemKit> entry : KITS.entrySet()) {
 			Integer key = entry.getKey();
 			items.add(new ItemStack(this, 1, key));
 		}
@@ -125,7 +118,7 @@ public class ItemKitMain extends Item {
 
 	@Override
 	public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) { 	
-		if (player == null || world == null || !(player instanceof EntityPlayerMP))
+		if (!(player instanceof EntityPlayerMP))
 			return EnumActionResult.PASS;
 
 		ItemStack stack = player.getHeldItem(hand);
@@ -138,9 +131,6 @@ public class ItemKitMain extends Item {
 		if (card.isEmpty())
 			return EnumActionResult.PASS;
 
-		if (!(player instanceof EntityPlayerMP))
-			return EnumActionResult.SUCCESS;
-
 		stack.shrink(1);
 		EntityItem dropItem = new EntityItem(world, player.posX, player.posY, player.posZ, card);
 		dropItem.setPickupDelay(0);
@@ -149,24 +139,24 @@ public class ItemKitMain extends Item {
 	}
 
 	public IItemKit getItemKitBase(int metadata) {
-		if (kits.containsKey(metadata))
-			return kits.get(metadata);
+		if (KITS.containsKey(metadata))
+			return KITS.get(metadata);
 		return null;
 	}
 
-	public static final void registerModels() {
-		for (Map.Entry<Integer, IItemKit> entry : kits.entrySet()) {
+	public static void registerModels() {
+		for (Map.Entry<Integer, IItemKit> entry : KITS.entrySet()) {
 			Integer key = entry.getKey();
 			if (key <= ItemCardType.KIT_MAX)
-				ModItems.registerItemModel(ModItems.itemKit, key, kits.get(key).getName());
+				ModItems.registerItemModel(ModItems.itemKit, key, KITS.get(key).getName());
 		}
 	}
 
-	public static final void registerExtendedModels() {
-		for (Map.Entry<Integer, IItemKit> entry : kits.entrySet()) {
+	public static void registerExtendedModels() {
+		for (Map.Entry<Integer, IItemKit> entry : KITS.entrySet()) {
 			Integer key = entry.getKey();
 			if (key > ItemCardType.KIT_MAX)
-				ModItems.registerExternalItemModel(ModItems.itemKit, key, kits.get(key).getName());
+				ModItems.registerExternalItemModel(ModItems.itemKit, key, KITS.get(key).getName());
 		}
 	}
 }

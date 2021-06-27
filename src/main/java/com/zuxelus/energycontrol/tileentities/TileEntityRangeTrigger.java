@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.EnergyControlConfig;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.blocks.RangeTrigger;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
@@ -10,8 +11,8 @@ import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
-
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -45,7 +46,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 	public TileEntityRangeTrigger() {
 		super("tile.range_trigger.name");
 		init = false;
-		tickRate = EnergyControl.config.rangeTriggerRefreshPeriod;
+		tickRate = EnergyControlConfig.rangeTriggerRefreshPeriod;
 		updateTicker = tickRate;
 		status = -1;
 		invertRedstone = false;
@@ -72,8 +73,8 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 			Block block = iblockstate.getBlock();
 			if (block instanceof RangeTrigger) {
 				IBlockState newState = block.getDefaultState()
-						.withProperty(((RangeTrigger) block).FACING, iblockstate.getValue(((RangeTrigger) block).FACING))
-						.withProperty(((RangeTrigger) block).STATE, RangeTrigger.EnumState.getState(status));
+						.withProperty(BlockHorizontal.FACING, iblockstate.getValue(BlockHorizontal.FACING))
+						.withProperty(RangeTrigger.STATE, RangeTrigger.EnumState.getState(status));
 				world.setBlockState(pos, newState, 3);
 			}
 			notifyBlockUpdate();
@@ -227,7 +228,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 		Block block = iblockstate.getBlock();
 		if (!(block instanceof RangeTrigger))
 			return;
-		boolean newValue = status < 1 ? false : status == 1 ? !invertRedstone : invertRedstone;
+		boolean newValue = status >= 1 && (status == 1 != invertRedstone);
 		if (poweredBlock != newValue) {
 			poweredBlock = newValue;
 			world.notifyNeighborsOfStateChange(pos, block, false);
@@ -248,12 +249,10 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 
 	@Override
 	public boolean isItemValid(int slotIndex, ItemStack itemstack) { // ISlotItemFilter
-		switch (slotIndex) {
-		case SLOT_CARD:
+		if (slotIndex == SLOT_CARD) {
 			return itemstack.getItem() instanceof ItemCardMain && (itemstack.getItemDamage() == ItemCardType.CARD_ENERGY
 					|| itemstack.getItemDamage() == ItemCardType.CARD_ENERGY_ARRAY);
-		default:
-			return itemstack.getItem() instanceof ItemUpgrade && itemstack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE;
 		}
+		return itemstack.getItem() instanceof ItemUpgrade && itemstack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE;
 	}
 }

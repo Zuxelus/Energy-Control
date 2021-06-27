@@ -1,13 +1,10 @@
 package com.zuxelus.energycontrol.blocks;
 
-import java.util.Collections;
-import java.util.List;
-
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.tileentities.TileEntityAFSU;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -21,6 +18,9 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+
+import java.util.Collections;
+import java.util.List;
 
 public class AFSU extends FacingBlock {
 
@@ -59,7 +59,7 @@ public class AFSU extends FacingBlock {
 
 	@Override
 	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-		drops.add(CrossModLoader.ic2.getItemStack("mfsu"));
+		drops.add(CrossModLoader.getCrossMod(ModIDs.IC2).getItemStack("mfsu"));
 	}
 
 	@Override

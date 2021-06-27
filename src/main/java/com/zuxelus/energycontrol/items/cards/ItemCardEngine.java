@@ -1,19 +1,18 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import buildcraft.lib.engine.TileEngineBase_BC8;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
-
-import buildcraft.lib.engine.TileEngineBase_BC8;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemCardEngine extends ItemCardBase {
 
@@ -33,8 +32,7 @@ public class ItemCardEngine extends ItemCardBase {
 			return CardState.NO_TARGET;
 
 		reader.setInt("type", tag.getInteger("type"));
-		switch (tag.getInteger("type")) {
-		case 1:
+		if (tag.getInteger("type") == 1) {
 			reader.setDouble("output", tag.getDouble("output"));
 			reader.setDouble("power", tag.getDouble("power"));
 			reader.setDouble("powerLevel", tag.getDouble("powerLevel"));
@@ -42,7 +40,6 @@ public class ItemCardEngine extends ItemCardBase {
 			reader.setDouble("heat", tag.getDouble("heat"));
 			reader.setDouble("heatLevel", tag.getDouble("heatLevel"));
 			reader.setDouble("speed", tag.getDouble("speed"));
-			break;
 		}
 		reader.setBoolean("active", tag.getBoolean("active"));
 		return CardState.OK;
@@ -69,8 +66,7 @@ public class ItemCardEngine extends ItemCardBase {
 	@Override
 	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
-		switch (reader.getInt("type")) {
-		case 1:
+		if (reader.getInt("type") == 1) {
 			result.add(new PanelString("msg.ec.InfoPanelOutputMJ", reader.getDouble("output"), showLabels));
 			if ((settings & 1) > 0) {
 				result.add(new PanelString("msg.ec.InfoPanelHeat", reader.getDouble("heat"), showLabels));
@@ -84,7 +80,6 @@ public class ItemCardEngine extends ItemCardBase {
 			}
 			if ((settings & 8) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelSpeed", reader.getDouble("speed"), showLabels));
-			break;
 		}
 		if ((settings & 16) > 0)
 			addOnOff(result, isServer, reader.getBoolean("active"));
@@ -93,7 +88,7 @@ public class ItemCardEngine extends ItemCardBase {
 
 	@Override
 	public List<PanelSetting> getSettingsList() {
-		List<PanelSetting> result = new ArrayList<PanelSetting>(5);
+		List<PanelSetting> result = new ArrayList<>(5);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelHeat"), 1, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelStorage"), 2, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMaxStorage"), 4, damage));

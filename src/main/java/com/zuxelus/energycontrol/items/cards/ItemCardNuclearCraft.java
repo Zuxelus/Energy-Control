@@ -1,15 +1,9 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
-
-import nc.tile.energy.battery.TileBattery;
 import nc.tile.generator.TileDecayGenerator;
 import nc.tile.generator.TileFissionController;
 import nc.tile.generator.TileSolarPanel;
@@ -19,6 +13,10 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemCardNuclearCraft extends ItemCardBase {
 	private static DecimalFormat df = new DecimalFormat("0.0");
@@ -165,7 +163,7 @@ public class ItemCardNuclearCraft extends ItemCardBase {
 
 	@Override
 	public List<PanelSetting> getSettingsList() {
-		List<PanelSetting> result = new ArrayList<PanelSetting>(2);
+		List<PanelSetting> result = new ArrayList<>(2);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbStatus"), 1, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 2, damage));
 		return result;

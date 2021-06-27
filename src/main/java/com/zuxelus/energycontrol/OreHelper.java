@@ -1,10 +1,7 @@
 package com.zuxelus.energycontrol;
 
-import java.lang.reflect.Field;
-import java.util.HashMap;
-
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockStone;
@@ -13,6 +10,9 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.gen.ChunkGeneratorOverworld;
 import net.minecraft.world.gen.ChunkGeneratorSettings;
 import net.minecraft.world.gen.IChunkGenerator;
+
+import java.lang.reflect.Field;
+import java.util.HashMap;
 
 public class OreHelper {
 	int minHeight, maxHeight, size, count;
@@ -40,9 +40,9 @@ public class OreHelper {
 	}
 
 	public static void initList(WorldServer[] worlds) {
-		EnergyControl.oreHelper = new HashMap<String, OreHelper>();
-		for (int i = 0; i < worlds.length; i++) {
-			IChunkGenerator generator = worlds[i].provider.createChunkGenerator();
+		EnergyControl.oreHelper = new HashMap<>();
+		for (WorldServer world : worlds) {
+			IChunkGenerator generator = world.provider.createChunkGenerator();
 			if (generator instanceof ChunkGeneratorOverworld) {
 				try {
 					Field field = ChunkGeneratorOverworld.class.getDeclaredField("settings");
@@ -61,9 +61,10 @@ public class OreHelper {
 					EnergyControl.oreHelper.put(getId(Blocks.DIAMOND_ORE, 0), new OreHelper(over.diamondMinHeight, over.diamondMaxHeight, over.diamondSize, over.diamondCount));
 					//EnergyControl.oreHelper.put(Item.getItemFromBlock(Blocks.EMERALD_ORE), new OreHelper(Blocks.EMERALD_ORE, over .goldMinHeight, over.goldMaxHeight, over.goldSize, over.goldCount));
 					//EnergyControl.oreHelper.put(Item.getItemFromBlock(Blocks.QUARTZ_ORE), new OreHelper(Blocks.QUARTZ_ORE, over  .goldMinHeight, over.goldMaxHeight, over.goldSize, over.goldCount));
-				} catch (Throwable t) { }
-				CrossModLoader.nuclearCraft.loadOreInfo();
-				CrossModLoader.ic2.loadOreInfo();
+				} catch (Throwable t) {
+				}
+				CrossModLoader.getCrossMod(ModIDs.NUCLEAR_CRAFT).loadOreInfo();
+				CrossModLoader.getCrossMod(ModIDs.IC2).loadOreInfo();
 			}
 		}
 	}

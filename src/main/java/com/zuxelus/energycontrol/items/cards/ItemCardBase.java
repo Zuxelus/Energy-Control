@@ -1,13 +1,12 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import java.util.List;
-
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.IItemCard;
 import com.zuxelus.energycontrol.api.PanelString;
-
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.math.BlockPos;
+
+import java.util.List;
 
 public abstract class ItemCardBase implements IItemCard {
 	protected String name;
@@ -46,11 +45,6 @@ public abstract class ItemCardBase implements IItemCard {
 				reader.getInt(String.format("_%dy", cardNumber)), reader.getInt(String.format("_%dz", cardNumber)));
 	}
 
-	@Override
-	public Object[] getRecipe() {
-		return recipe;
-	}
-
 	protected final void addRecipe(Object[] recipe) {
 		this.recipe = recipe;
 	}
@@ -64,7 +58,7 @@ public abstract class ItemCardBase implements IItemCard {
 
 	protected void addOnOff(List<PanelString> result, boolean isServer, boolean value) {
 		String text;
-		int txtColor = 0;
+		int txtColor;
 		if (value) {
 			txtColor = 0x00ff00;
 			text = isServer ? "On" : I18n.format("msg.ec.InfoPanelOn");

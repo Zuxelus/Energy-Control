@@ -3,7 +3,6 @@ package com.zuxelus.energycontrol;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.network.PacketAlarm;
 import com.zuxelus.energycontrol.network.PacketOreHelper;
-
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -21,7 +20,7 @@ public class ServerTickHandler {
 	public void onPlayerLogin(PlayerLoggedInEvent event) {
 		if (!(event.player instanceof EntityPlayerMP))
 			return;
-		NetworkHelper.network.sendTo(new PacketAlarm(EnergyControl.config.maxAlarmRange, EnergyControl.config.allowedAlarms), (EntityPlayerMP) event.player);
+		NetworkHelper.network.sendTo(new PacketAlarm(EnergyControlConfig.howlerAlarmRange, EnergyControlConfig.allowedAlarms), (EntityPlayerMP) event.player);
 		if (EnergyControl.oreHelper != null)
 			NetworkHelper.network.sendTo(new PacketOreHelper(EnergyControl.oreHelper), (EntityPlayerMP) event.player);
 	}

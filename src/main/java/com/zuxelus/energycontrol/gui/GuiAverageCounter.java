@@ -5,7 +5,6 @@ import com.zuxelus.energycontrol.containers.ContainerAverageCounter;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.utils.StringUtils;
 import com.zuxelus.zlib.gui.GuiContainerBase;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;

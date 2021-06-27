@@ -2,10 +2,10 @@ package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.blocks.SeedAnalyzer;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
-
 import ic2.api.crops.ICropSeed;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
@@ -82,14 +82,12 @@ public class TileEntitySeedAnalyzer extends TileEntityInventory implements ITick
 	public void onClientMessageReceived(NBTTagCompound tag) {
 		if (!tag.hasKey("type"))
 			return;
-		switch (tag.getInteger("type")) {
-		case 1:
+		if (tag.getInteger("type") == 1) {
 			if (tag.hasKey("energy") && tag.hasKey("production") && tag.hasKey("productionMax")) {
 				energy = tag.getDouble("energy");
 				production = tag.getDouble("production");
 				productionMax = tag.getInteger("productionMax");
 			}
-			break;
 		}
 	}
 
@@ -225,7 +223,7 @@ public class TileEntitySeedAnalyzer extends TileEntityInventory implements ITick
 		if (!out.isEmpty())
 			return;
 		ItemStack stack = getStackInSlot(SLOT_IN);
-		if (stack.isEmpty() || stack.getItem() != CrossModLoader.ic2.getItem("seed"))
+		if (stack.isEmpty() || stack.getItem() != CrossModLoader.getCrossMod(ModIDs.IC2).getItem("seed"))
 			return;
 		int level = ((ICropSeed) stack.getItem()).getScannedFromStack(stack);
 		if (level == 4) {
@@ -273,7 +271,7 @@ public class TileEntitySeedAnalyzer extends TileEntityInventory implements ITick
 	public boolean isItemValid(int index, ItemStack stack) { // ISlotItemFilter
 		switch (index) {
 		case SLOT_IN:
-			return stack.getItem() == CrossModLoader.ic2.getItem("seed");
+			return stack.getItem() == CrossModLoader.getCrossMod(ModIDs.IC2).getItem("seed");
 		case SLOT_DISCHARGER:
 			return stack.getItem() instanceof IElectricItem && ((IElectricItem) stack.getItem()).getTier(stack) <= TIER;
 		case SLOT_OUT:
@@ -292,7 +290,7 @@ public class TileEntitySeedAnalyzer extends TileEntityInventory implements ITick
 	public boolean canInsertItem(int slot, ItemStack stack, EnumFacing side) {
 		if (slot != SLOT_IN || side != EnumFacing.UP)
 			return false;
-		return stack.getItem() == CrossModLoader.ic2.getItem("seed");
+		return stack.getItem() == CrossModLoader.getCrossMod(ModIDs.IC2).getItem("seed");
 	}
 
 	@Override
@@ -300,14 +298,12 @@ public class TileEntitySeedAnalyzer extends TileEntityInventory implements ITick
 		if (slot != SLOT_OUT || side == EnumFacing.UP)
 			return false;
 		ItemStack crop = getStackInSlot(slot);
-		if (crop.isEmpty() || crop.getItem() != CrossModLoader.ic2.getItem("seed"))
+		if (crop.isEmpty() || crop.getItem() != CrossModLoader.getCrossMod(ModIDs.IC2).getItem("seed"))
 			return false;
 		ICropSeed seed = (ICropSeed) crop.getItem();
 		if (side == EnumFacing.DOWN)
 			return seed.getScannedFromStack(crop) == 4;
-		if (side != EnumFacing.DOWN)
-			return seed.getScannedFromStack(crop) < 4;
-		return true;
+		return seed.getScannedFromStack(crop) < 4;
 	}
 
 	// IEnergySink

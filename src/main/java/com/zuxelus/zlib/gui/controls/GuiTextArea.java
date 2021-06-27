@@ -1,7 +1,5 @@
 package com.zuxelus.zlib.gui.controls;
 
-import org.lwjgl.input.Keyboard;
-
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -11,15 +9,16 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.input.Keyboard;
 
 @SideOnly(Side.CLIENT)
 public class GuiTextArea extends Gui {
 	private final int lineCount;
 	private int maxStringLength = 32;
 	private int cursorCounter;
-	private int cursorPosition = 0;
-	private int cursorLine = 0;
-	private boolean isFocused = false;
+	private int cursorPosition;
+	private int cursorLine;
+	private boolean isFocused;
 	private String[] text;
 
 	private final FontRenderer fontRenderer;

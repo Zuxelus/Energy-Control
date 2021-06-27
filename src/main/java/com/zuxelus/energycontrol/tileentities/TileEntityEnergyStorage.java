@@ -1,9 +1,9 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
-
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergyAcceptor;
@@ -20,8 +20,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Optional;
 
 @Optional.InterfaceList({
-		@Optional.Interface(modid = "ic2", iface = "ic2.api.energy.tile.IEnergySink"),
-		@Optional.Interface(modid = "ic2", iface = "ic2.api.energy.tile.IEnergySource")
+		@Optional.Interface(modid = ModIDs.IC2, iface = "ic2.api.energy.tile.IEnergySink"),
+		@Optional.Interface(modid = ModIDs.IC2, iface = "ic2.api.energy.tile.IEnergySource")
 })
 public abstract class TileEntityEnergyStorage extends TileEntityInventory implements IEnergySink, IEnergySource, ISlotItemFilter, ITilePacketHandler {
 	protected boolean addedToEnet;

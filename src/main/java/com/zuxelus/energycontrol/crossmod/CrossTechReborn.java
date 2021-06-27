@@ -1,13 +1,8 @@
 package com.zuxelus.energycontrol.crossmod;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -25,12 +20,12 @@ import reborncore.common.powerSystem.forge.ForgePowerItemManager;
 import techreborn.api.TechRebornAPI;
 import techreborn.api.reactor.FusionReactorRecipe;
 import techreborn.tiles.fusionReactor.TileFusionControlComputer;
-import techreborn.tiles.generator.TileCreativeSolarPanel;
-import techreborn.tiles.generator.TileSolarPanel;
-import techreborn.tiles.generator.TileSolidFuelGenerator;
-import techreborn.tiles.generator.TileWaterMill;
-import techreborn.tiles.generator.TileWindMill;
+import techreborn.tiles.generator.*;
 import techreborn.tiles.generator.fluid.TileFluidGenerator;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CrossTechReborn extends CrossModBase {
 
@@ -58,9 +53,9 @@ public class CrossTechReborn extends CrossModBase {
 
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack) {
-		if (Loader.isModLoaded("ic2"))
+		if (Loader.isModLoaded(ModIDs.IC2))
 			return null;
-		return (ICapabilityProvider)new PoweredItemContainerProvider(stack);
+		return new PoweredItemContainerProvider(stack);
 	}
 
 	@Override
@@ -98,7 +93,7 @@ public class CrossTechReborn extends CrossModBase {
 	public NBTTagCompound getGeneratorData(TileEntity te) {
 		try {
 			NBTTagCompound tag = new NBTTagCompound();
-			boolean active = false;
+			boolean active;
 			if (te instanceof TileFluidGenerator) {
 				active = ((TileFluidGenerator) te).isActive();
 				tag.setInteger("type", 1);
@@ -132,7 +127,7 @@ public class CrossTechReborn extends CrossModBase {
 				tag.setDouble("storage", ((TileSolidFuelGenerator) te).getEnergy());
 				tag.setDouble("maxStorage", ((TileSolidFuelGenerator) te).getMaxPower());
 				if (active)
-					tag.setDouble("production", ((TileSolidFuelGenerator) te).outputAmount);
+					tag.setDouble("production", TileSolidFuelGenerator.outputAmount);
 				else
 					tag.setInteger("production", 0);
 				tag.setDouble("burnTime", ((TileSolidFuelGenerator) te).getBurnTime());
@@ -186,7 +181,7 @@ public class CrossTechReborn extends CrossModBase {
 				tag.setBoolean("active", water != 0);
 				tag.setDouble("storage", ((TileWaterMill) te).getEnergy());
 				tag.setDouble("maxStorage", ((TileWaterMill) te).getMaxPower());
-				tag.setDouble("production", water * ((TileWaterMill) te).energyMultiplier);
+				tag.setDouble("production", water * TileWaterMill.energyMultiplier);
 				if (PowerSystem.getDisplayPower() != EnergySystem.EU) {
 					tag.setDouble("storage", tag.getDouble("storage") * RebornCoreConfig.euPerFU);
 					tag.setDouble("maxStorage", tag.getDouble("maxStorage") * RebornCoreConfig.euPerFU);
@@ -204,9 +199,9 @@ public class CrossTechReborn extends CrossModBase {
 				if (!active)
 					tag.setDouble("production", 0);
 				else if (te.getWorld().isThundering())
-					tag.setDouble("production", ((TileWindMill) te).baseEnergy * ((TileWindMill) te).thunderMultiplier);
+					tag.setDouble("production", TileWindMill.baseEnergy * TileWindMill.thunderMultiplier);
 				else
-					tag.setDouble("production", ((TileWindMill) te).baseEnergy);
+					tag.setDouble("production", TileWindMill.baseEnergy);
 				if (PowerSystem.getDisplayPower() != EnergySystem.EU) {
 					tag.setDouble("storage", tag.getDouble("storage") * RebornCoreConfig.euPerFU);
 					tag.setDouble("maxStorage", tag.getDouble("maxStorage") * RebornCoreConfig.euPerFU);

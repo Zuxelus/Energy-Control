@@ -1,16 +1,16 @@
 package com.zuxelus.energycontrol.items;
 
-public abstract interface IItemUpgradeable {
+public interface IItemUpgradeable {
 
-	public int getDefaultMaxCharge();
+	int getDefaultMaxCharge();
 
-	public int getDefaultTier();
+	int getDefaultTier();
 
-	public int getDefaultTransferLimit();
+	int getDefaultTransferLimit();
 
-	public int getItemTier();
+	int getItemTier();
 
-	public int getMaxUpgradeableCharge();
+	int getMaxUpgradeableCharge();
 
-	public int getMaxUpgradeableTransfer();
+	int getMaxUpgradeableTransfer();
 }

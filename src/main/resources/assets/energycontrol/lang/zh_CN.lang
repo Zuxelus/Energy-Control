@@ -87,7 +87,6 @@ ec.config.allowedAlarms=允许的警报
 ec.config.remoteThermalMonitorEnergyConsumption=远程温度监控器 EU 损耗。
 ec.config.infoPanelRefreshPeriod=信息面板刷新率
 ec.config.rangeTriggerRefreshPeriod=范围触发器刷新率
-ec.config.SMPMaxAlarmRange=SMP 最大警报范围
 ec.config.useCustomSounds=使用自定义声音
 
 #Original Screen Messages

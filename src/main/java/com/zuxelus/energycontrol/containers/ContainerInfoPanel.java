@@ -6,7 +6,6 @@ import com.zuxelus.energycontrol.containers.slots.SlotRange;
 import com.zuxelus.energycontrol.containers.slots.SlotTouch;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.containers.ContainerBase;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
@@ -21,16 +20,16 @@ public class ContainerInfoPanel extends ContainerBase<TileEntityInfoPanel> {
 			public void onSlotChanged() {
 				if (panel.getWorld().isRemote)
 					ContainerInfoPanel.this.detectAndSendChanges();
-			};
-		});
+			}
+        });
 		addSlotToContainer(new SlotRange(panel, 1, 8, 24 + 18 * 2));
 		addSlotToContainer(new SlotColor(panel, 2, 8, 24 + 18 * 3) {
 			@Override
 			public void onSlotChanged() {
 				if (panel.getWorld().isRemote)
 					ContainerInfoPanel.this.detectAndSendChanges();
-			};
-		});
+			}
+        });
 		addSlotToContainer(new SlotTouch(panel, 3, 8, 24 + 18 * 4));
 		// inventory
 		addPlayerInventorySlots(player, 201);
