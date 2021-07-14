@@ -48,7 +48,7 @@ public class InfoPanelPeripheral implements IPeripheral {
 				upgradeCountRange = itemStack.getCount();
 			return new Object[] { ItemCardMain.LOCATION_RANGE * (int) Math.pow(2, Math.min(upgradeCountRange, 7)) };
 		case 3:
-			if (Loader.instance().getIndexedModList().get("computercraft").getVersion().equals("1.80pr1")) {
+			if (!Loader.isModLoaded("cctweaked")) {
 				Map<Integer, String> map = new HashMap<>();
 				int i = 1;
 				for (String line : te.getPanelStringList()) {

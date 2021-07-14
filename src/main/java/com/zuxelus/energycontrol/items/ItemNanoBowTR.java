@@ -44,7 +44,7 @@ public class ItemNanoBowTR extends ItemNanoBow implements IEnergyItemInfo {
 
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
-		return CrossModLoader.getCrossMod(ModIDs.IC2).initCapabilities(stack);
+		return CrossModLoader.getCrossMod(ModIDs.TECH_REBORN).initCapabilities(stack);
 	}
 
 	@Override

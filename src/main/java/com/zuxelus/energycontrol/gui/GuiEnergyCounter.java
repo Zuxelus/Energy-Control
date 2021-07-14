@@ -14,8 +14,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiEnergyCounter extends GuiContainerBase {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_energy_counter.png");
-
-	private String name;
 	private ContainerEnergyCounter container;
 
 	public GuiEnergyCounter(ContainerEnergyCounter container) {
@@ -44,9 +42,8 @@ public class GuiEnergyCounter extends GuiContainerBase {
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		drawCenteredText(name, xSize, 6);
-		fontRenderer.drawString(I18n.format("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-		String value = StringUtils.getFormatted("", container.te.counter, false);
-		fontRenderer.drawString(value, (xSize - fontRenderer.getStringWidth(value)) / 2, 22, 0x404040);
+		drawLeftAlignedText(I18n.format("container.inventory"), 8, (ySize - 96) + 2);
+		drawCenteredText(I18n.format("%s", container.te.counter), xSize, 22);
 	}
 
 	@Override

@@ -12,8 +12,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiRangeTriggerInvertRedstone extends GuiButton {
-	private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/gui_range_trigger.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_range_trigger.png");
 
 	TileEntityRangeTrigger trigger;
 	private boolean checked;
@@ -31,7 +30,7 @@ public class GuiRangeTriggerInvertRedstone extends GuiButton {
 		if (!visible)
 			return;
 
-		mc.getTextureManager().bindTexture(TEXTURE_LOCATION);
+		mc.getTextureManager().bindTexture(TEXTURE);
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		drawTexturedModalRect(x, y + 1, 176, checked ? 15 : 0, 18, 15);
 	}

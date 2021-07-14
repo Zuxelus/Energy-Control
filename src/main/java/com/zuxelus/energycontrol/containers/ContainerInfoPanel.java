@@ -1,9 +1,6 @@
 package com.zuxelus.energycontrol.containers;
 
-import com.zuxelus.energycontrol.containers.slots.SlotCard;
-import com.zuxelus.energycontrol.containers.slots.SlotColor;
-import com.zuxelus.energycontrol.containers.slots.SlotRange;
-import com.zuxelus.energycontrol.containers.slots.SlotTouch;
+import com.zuxelus.energycontrol.containers.slots.*;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.containers.ContainerBase;
 import net.minecraft.entity.player.EntityPlayer;

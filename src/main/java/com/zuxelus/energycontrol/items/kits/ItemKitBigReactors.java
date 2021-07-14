@@ -23,9 +23,9 @@ public class ItemKitBigReactors extends ItemKitBase {
 	public ItemStack getSensorCard(ItemStack stack, Item card, EntityPlayer player, World world, BlockPos pos, EnumFacing side) {
 		TileEntity te = world.getTileEntity(pos);
 		if (te instanceof TileEntityReactorPartBase || te instanceof TileEntityTurbinePartBase) {
-			ItemStack sensorLocationCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_BIG_REACTORS);
-			ItemStackHelper.setCoordinates(sensorLocationCard, pos);
-			return sensorLocationCard;
+			ItemStack newCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_BIG_REACTORS);
+			ItemStackHelper.setCoordinates(newCard, pos);
+			return newCard;
 		}
 		return ItemStack.EMPTY;
 	}

@@ -15,8 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiInfoPanelCheckBox extends GuiButton {
-	private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/gui_info_panel.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_info_panel.png");
 
 	private TileEntityInfoPanel panel;
 	private boolean checked;
@@ -35,7 +34,7 @@ public class GuiInfoPanelCheckBox extends GuiButton {
 		if (!visible)
 			return;
 		checked = (panel.getDisplaySettingsForCardInSlot(slot) & setting.displayBit) > 0;
-		mc.getTextureManager().bindTexture(TEXTURE_LOCATION);
+		mc.getTextureManager().bindTexture(TEXTURE);
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		int delta = checked ? 6 : 0;
 		drawTexturedModalRect(x, y + 1, 176, delta, 6, 6);

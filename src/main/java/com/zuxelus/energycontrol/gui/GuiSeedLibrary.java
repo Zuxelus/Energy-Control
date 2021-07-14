@@ -18,7 +18,7 @@ import java.io.IOException;
 
 @SideOnly(Side.CLIENT)
 public class GuiSeedLibrary extends GuiContainer {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID + ":textures/gui/gui_seed_library.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_seed_library.png");
 
 	public static final String BLACK = "\u00A70";
 	public static final String DARK_BLUE = "\u00A71";

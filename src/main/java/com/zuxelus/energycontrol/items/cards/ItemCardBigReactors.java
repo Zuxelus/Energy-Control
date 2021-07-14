@@ -83,60 +83,60 @@ public class ItemCardBigReactors extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		String euType = reader.getString("system");
 		switch (reader.getInt("type")) {
 		case 1:
-			if ((displaySettings & 2) > 0) {
+			if ((settings & 2) > 0) {
 				result.add(new PanelString("msg.ec.InfoPanelCoreHeat", reader.getInt("heat"), showLabels));
 				result.add(new PanelString("msg.ec.InfoPanelCasingHeat", reader.getDouble("coreHeat"), showLabels));
 				result.add(new PanelString("msg.ec.InfoPanelPassiveCooling", reader.getBoolean("cooling").toString(), showLabels));
 			}
-			if ((displaySettings & 4) > 0)
+			if ((settings & 4) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelEnergy" + euType, reader.getDouble("storage"), showLabels));
-			if ((displaySettings & 8) > 0)
+			if ((settings & 8) > 0)
 				result.add(
 						new PanelString("msg.ec.InfoPanelCapacity" + euType, reader.getDouble("capacity"), showLabels));
-			if ((displaySettings & 16) > 0)
+			if ((settings & 16) > 0)
 				if (reader.getBoolean("cooling"))
 					result.add(new PanelString("msg.ec.InfoPanelOutput" + euType, reader.getDouble("output"), showLabels));
 				else
 					result.add(new PanelString("msg.ec.InfoPanelOutputmB", reader.getDouble("output"), showLabels));
-			if ((displaySettings & 32) > 0) {
+			if ((settings & 32) > 0) {
 				result.add(new PanelString("msg.ec.InfoPanelFuelmb", reader.getInt("fuel"), showLabels));
 				result.add(new PanelString("msg.ec.InfoPanelWastemb", reader.getInt("waste"), showLabels));
 				result.add(new PanelString("msg.ec.InfoPanelCapacitymB", reader.getInt("fuelCapacity"), showLabels));
 				result.add(new PanelString("msg.ec.InfoPanelBurnupRatemb", reader.getDouble("consumption"), showLabels));
 			}
-			if ((displaySettings & 64) > 0) {
+			if ((settings & 64) > 0) {
 				result.add(new PanelString("msg.ec.InfoPanelFuelRods", reader.getDouble("rods"), showLabels));
 				result.add(new PanelString("msg.ec.InfoPanelSize", reader.getString("size"), showLabels));
 			}
 			break;
 		case 2:
-			if ((displaySettings & 2) > 0) {
+			if ((settings & 2) > 0) {
 				result.add(new PanelString("msg.ec.InfoPanelRotorSpeed", df.format(reader.getDouble("speed")), showLabels));
 				result.add(new PanelString("msg.ec.InfoPanelMaxSpeed", reader.getDouble("speedMax"), showLabels));
 				result.add(new PanelString("msg.ec.InfoPanelRotorEfficiency", reader.getDouble("efficiency"), showLabels));
 			}
-			if ((displaySettings & 4) > 0)
+			if ((settings & 4) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelEnergy" + euType, reader.getDouble("storage"), showLabels));
-			if ((displaySettings & 8) > 0)
+			if ((settings & 8) > 0)
 				result.add(
 						new PanelString("msg.ec.InfoPanelCapacity" + euType, reader.getDouble("capacity"), showLabels));
-			if ((displaySettings & 16) > 0)
+			if ((settings & 16) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelOutput" + euType, reader.getDouble("output"), showLabels));
-			if ((displaySettings & 32) > 0)
+			if ((settings & 32) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelBurnupRatemb", reader.getDouble("consumption"), showLabels));
-			if ((displaySettings & 64) > 0) {
+			if ((settings & 64) > 0) {
 				result.add(new PanelString("msg.ec.InfoPanelBlades", reader.getInt("blades"), showLabels));
 				result.add(new PanelString("msg.ec.InfoPanelRotorMass", reader.getInt("mass"), showLabels));
 				result.add(new PanelString("msg.ec.InfoPanelSize", reader.getString("size"), showLabels));
 			}
 			break;
 		}
-		if ((displaySettings & 1) > 0)
+		if ((settings & 1) > 0)
 			addOnOff(result, isServer, reader.getBoolean("reactorPoweredB"));
 		return result;
 	}

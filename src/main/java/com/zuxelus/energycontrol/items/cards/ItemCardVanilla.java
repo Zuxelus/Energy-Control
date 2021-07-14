@@ -61,7 +61,6 @@ public class ItemCardVanilla extends ItemCardBase {
 	@Override
 	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = new LinkedList<>();
-		boolean isBurning = reader.getBoolean("burning");
 		int burnTime = reader.getInt("burnTime");
 		NBTTagCompound tagCompound = reader.getTag("Info");
 

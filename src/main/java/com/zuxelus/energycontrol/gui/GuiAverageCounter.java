@@ -24,10 +24,10 @@ public class GuiAverageCounter extends GuiContainerBase {
 
 	private void initControls() {
 		buttonList.clear();
-		addButton(new GuiButton(1, guiLeft + 35, guiTop + 42, 30, 20, I18n.format("1")));
-		addButton(new GuiButton(2, guiLeft + 35 + 30, guiTop + 42, 30, 20, I18n.format("3")));
-		addButton(new GuiButton(3, guiLeft + 35 + 60, guiTop + 42, 30, 20, I18n.format("5")));
-		addButton(new GuiButton(4, guiLeft + 35 + 90, guiTop + 42, 30, 20, I18n.format("10")));
+		addButton(new GuiButton(1, guiLeft + 35, guiTop + 42, 30, 20, "1"));
+		addButton(new GuiButton(2, guiLeft + 35 + 30, guiTop + 42, 30, 20, "3"));
+		addButton(new GuiButton(3, guiLeft + 35 + 60, guiTop + 42, 30, 20, "5"));
+		addButton(new GuiButton(4, guiLeft + 35 + 90, guiTop + 42, 30, 20, "10"));
 	}
 
 	@Override
@@ -46,12 +46,9 @@ public class GuiAverageCounter extends GuiContainerBase {
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		drawCenteredText(name, xSize, 6);
-		fontRenderer.drawString(I18n.format("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-		String key = "msg.ec.InfoPanelOutput";
-		String value = StringUtils.getFormatted(key, container.te.getClientAverage(), true);
-		fontRenderer.drawString(value, (xSize - fontRenderer.getStringWidth(value)) / 2, 22, 0x404040);
-		value = StringUtils.getFormatted("msg.ec.AverageCounterPeriod", container.te.period, true);
-		fontRenderer.drawString(value, (xSize - fontRenderer.getStringWidth(value)) / 2, 32, 0x404040);
+		drawLeftAlignedText(I18n.format("container.inventory"), 8, (ySize - 96) + 2);
+		drawCenteredText(I18n.format("msg.ec.InfoPanelOutput", container.te.getClientAverage()), xSize, 22);
+		drawCenteredText(I18n.format("msg.ec.AverageCounterPeriod", container.te.period), xSize, 32);
 	}
 
 	@Override
@@ -65,13 +62,17 @@ public class GuiAverageCounter extends GuiContainerBase {
 		int event = 0;
 		switch (guiButton.id) {
 		case 1:
-			event = 1; break;
+			event = 1;
+			break;
 		case 2:
-			event = 3; break;
+			event = 3;
+			break;
 		case 3:
-			event = 5; break;
+			event = 5;
+			break;
 		case 4:
-			event = 10; break;
+			event = 10;
+			break;
 		}
 		NetworkHelper.updateSeverTileEntity(container.te.getPos(), 1, event);
 	}

@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.gui.controls;
 
+import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 import net.minecraft.client.Minecraft;
@@ -19,7 +20,7 @@ import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public class GuiHowlerAlarmListBox extends GuiButton {
-	private static final ResourceLocation TEXTURE = new ResourceLocation("energycontrol:textures/gui/gui_howler_alarm.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_howler_alarm.png");
 
 	private static final int BASIC_X_OFFSET = 2;
 	private static final int BASIC_Y_OFFSET = 2;

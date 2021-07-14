@@ -57,6 +57,8 @@ item.kit_nuclearcraft.name=NuclearCraft Sensor Kit
 item.card_nuclearcraft.name=NuclearCraft Sensor Card
 item.kit_mekanism.name=Набор с датчиком для Mekanism
 item.card_mekanism.name=Карта-датчик для Mekanism
+item.kit_thermal_expansion.name=Набор с датчиком для Thermal Expansion
+item.card_thermal_expansion.name=Карта-датчик для Thermal Expansion
 
 #Internal Blocks
 tile.thermal_monitor.name=Датчик температуры
@@ -81,6 +83,7 @@ tile.seed_library.name=Seed Library
 tile.timer.name=Таймер
 
 #Config
+ec.config.title=Energy Control Configuration
 ec.config.howlerAlarmRange=Howler Alarm Range
 ec.config.maxAlarmRange=Max Alarm Range
 ec.config.allowedAlarms=Allowed Alarms
@@ -106,6 +109,7 @@ msg.ec.InfoPanelNoTarget=Цель не найдена
 
 msg.ec.InfoPanelAmountmB=Количество: %s mB
 msg.ec.InfoPanelAtmosphericValve=Атмосферный клапан: %s
+msg.ec.InfoPanelAugmentation=Augmentation: %s
 msg.ec.InfoPanelBlades=Лопасти: %s
 msg.ec.InfoPanelBlockPowered=Block Powered: %s
 msg.ec.InfoPanelBuffer=Буфер: %s
@@ -199,6 +203,7 @@ msg.ec.InfoPanelPellets=Гранулы: %s
 msg.ec.InfoPanelPercentage=Заполнено: %s%%
 msg.ec.InfoPanelPeriod=Период: %s сек
 msg.ec.InfoPanelPowerMultiplierRF=Power Multiplier: x%s
+msg.ec.InfoPanelPower=Power: %s
 msg.ec.InfoPanelPowerUsage=Power Usage: %s RF/t
 msg.ec.InfoPanelProcessPowerRF=ProcessPower: %s RF/t
 msg.ec.InfoPanelProcessTime=Process Time: %s t

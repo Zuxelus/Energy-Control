@@ -57,6 +57,8 @@ item.kit_nuclearcraft.name=Kit del Sensor de NuclearCraft
 item.card_nuclearcraft.name=Tarjeta del Sensor de Nuclearcraft
 item.kit_mekanism.name=Kit del Sensor de Mekanism
 item.card_mekanism.name=Tarjeta del Sensor de Mekanism
+item.kit_thermal_expansion.name=Kit del Sensor de Thermal Expansion
+item.card_thermal_expansion.name=Tarjeta del Sensor de Thermal Expansion
 
 #Internal Blocks
 tile.thermal_monitor.name=Monitor Térmico
@@ -81,6 +83,7 @@ tile.seed_library.name=Catálogo de Semillas
 tile.timer.name=Temporizador
 
 #Config
+ec.config.title=Energy Control Configuration
 ec.config.howlerAlarmRange=Rango de Alarma Aulladora
 ec.config.maxAlarmRange=Rango Máximo de Alarma
 ec.config.allowedAlarms=Alarmas Permitidas
@@ -106,6 +109,7 @@ msg.ec.InfoPanelNoTarget=Objetivo No Encontrado
 
 msg.ec.InfoPanelAmountmB=Amount: %s mB
 msg.ec.InfoPanelAtmosphericValve=Válvula Atmosférica: %s
+msg.ec.InfoPanelAugmentation=Augmentation: %s
 msg.ec.InfoPanelBlades=Aspas: %s
 msg.ec.InfoPanelBlockPowered=Bloque Energizado: %s
 msg.ec.InfoPanelBuffer=Buffer: %s
@@ -199,6 +203,7 @@ msg.ec.InfoPanelPellets=Pellets: %s
 msg.ec.InfoPanelPercentage=Lleno: %s%%
 msg.ec.InfoPanelPeriod=Período: %s sec
 msg.ec.InfoPanelPowerMultiplierRF=Multiplicador de Energía: x%s
+msg.ec.InfoPanelPower=Power: %s
 msg.ec.InfoPanelPowerUsage=Consumo de energía: %s RF/t
 msg.ec.InfoPanelProcessPowerRF=Potencia de Proceso: %s RF/t
 msg.ec.InfoPanelProcessTime=Tiempo de Proceso: %s t

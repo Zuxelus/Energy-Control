@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'eclipse'
     id 'net.minecraftforge.gradle' version '4.1.12'
     id 'de.undercouch.download' version '4.0.4'
     id 'wtf.gofancy.fancygradle' version '1.0.0'

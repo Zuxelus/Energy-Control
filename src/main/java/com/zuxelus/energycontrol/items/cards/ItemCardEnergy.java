@@ -53,16 +53,16 @@ public class ItemCardEnergy extends ItemCardBase {
 		String euType;
 
 		switch (reader.getInt("type")) {
-		case 10:
+		case ItemCardType.EU_AE:
 			euType = "AE";
 			break;
-		case 11:
+		case ItemCardType.EU_gJ:
 			euType = "gJ";
 			break;
 		case 12:
 			euType = reader.getString("euType");
 			break;
-		case 13:
+		case ItemCardType.EU_RF:
 			euType = "RF";
 			break;
 		default:

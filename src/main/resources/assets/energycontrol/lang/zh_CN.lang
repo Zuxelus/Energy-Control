@@ -57,6 +57,8 @@ item.kit_nuclearcraft.name=核电工艺感应套件
 item.card_nuclearcraft.name=核电工艺感应卡
 item.kit_mekanism.name=通用机械感应套件
 item.card_mekanism.name=通用机械感应卡
+item.kit_thermal_expansion.name=Thermal Expansion Sensor Kit
+item.card_thermal_expansion.name=Thermal Expansion Sensor Card
 
 #Internal Blocks
 tile.thermal_monitor.name=温度监控器
@@ -81,6 +83,7 @@ tile.seed_library.name=种子库
 tile.timer.name=计时器
 
 #Config
+ec.config.title=Energy Control Configuration
 ec.config.howlerAlarmRange=蜂鸣警报范围
 ec.config.maxAlarmRange=最大警报范围
 ec.config.allowedAlarms=允许的警报
@@ -106,6 +109,7 @@ msg.ec.InfoPanelNoTarget=找不到目标
 
 msg.ec.InfoPanelAmountmB=总量：%s mB
 msg.ec.InfoPanelAtmosphericValve=大气阀：%s
+msg.ec.InfoPanelAugmentation=Augmentation: %s
 msg.ec.InfoPanelBlades=涡轮叶片数： %s
 msg.ec.InfoPanelBlockPowered=方块充能： %s
 msg.ec.InfoPanelBuffer=缓存：%s
@@ -199,6 +203,7 @@ msg.ec.InfoPanelPellets=靶丸：%s
 msg.ec.InfoPanelPercentage=填充：%s%%
 msg.ec.InfoPanelPeriod=周期：%s sec
 msg.ec.InfoPanelPowerMultiplierRF=功率倍增器：x%s
+msg.ec.InfoPanelPower=Power: %s
 msg.ec.InfoPanelPowerUsage=Power Usage: %s RF/t
 msg.ec.InfoPanelProcessPowerRF=功率：%s RF/t
 msg.ec.InfoPanelProcessTime=处理时间：%s t

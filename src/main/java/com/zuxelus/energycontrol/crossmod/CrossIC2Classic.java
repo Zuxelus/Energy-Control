@@ -31,7 +31,7 @@ import java.util.List;
 
 public class CrossIC2Classic extends CrossModBase {
 
-    @Override
+	@Override
 	public ItemStack getItemStack(String name) {
 		switch (name) {
 		case "transformer":

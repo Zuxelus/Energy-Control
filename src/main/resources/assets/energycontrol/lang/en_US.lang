@@ -109,6 +109,7 @@ msg.ec.InfoPanelNoTarget=Target Not Found
 
 msg.ec.InfoPanelAmountmB=Amount: %s mB
 msg.ec.InfoPanelAtmosphericValve=Atmospheric Valve: %s
+msg.ec.InfoPanelAugmentation=Augmentation: %s
 msg.ec.InfoPanelBlades=Blades: %s
 msg.ec.InfoPanelBlockPowered=Block Powered: %s
 msg.ec.InfoPanelBuffer=Buffer: %s
@@ -202,6 +203,7 @@ msg.ec.InfoPanelPellets=Pellets: %s
 msg.ec.InfoPanelPercentage=Fill: %s%%
 msg.ec.InfoPanelPeriod=Period: %s sec
 msg.ec.InfoPanelPowerMultiplierRF=Power Multiplier: x%s
+msg.ec.InfoPanelPower=Power: %s
 msg.ec.InfoPanelPowerUsage=Power Usage: %s RF/t
 msg.ec.InfoPanelProcessPowerRF=ProcessPower: %s RF/t
 msg.ec.InfoPanelProcessTime=Process Time: %s t

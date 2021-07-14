@@ -96,7 +96,7 @@ public class GuiKitAssembler extends GuiContainerBase {
 		if (energyHeight > 0)
 			drawTexturedModalRect(guiLeft + 9, guiTop + 62 + (14 - energyHeight), 176, 14 - energyHeight, 14, energyHeight);
 		int productionWidth = container.te.getProductionFactor();
-		if (energyHeight > 0)
+		if (productionWidth > 0)
 			drawTexturedModalRect(guiLeft + 86, guiTop + 60, 176, 15, productionWidth, 17);
 	}
 
