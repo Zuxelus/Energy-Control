@@ -12,6 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.Loader;
@@ -92,8 +93,9 @@ public class CrossModLoader {
 	public static List<IFluidTank> getAllTanks(World world, BlockPos pos) {
 		TileEntity te = world.getTileEntity(pos);
 		if (te != null) {
-			if (te instanceof IFluidHandler) {
-				IFluidTankProperties[] tanks = ((IFluidHandler) te).getTankProperties();
+			IFluidHandler fluid = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+			if (fluid != null) {
+				IFluidTankProperties[] tanks = fluid.getTankProperties();
 				List<IFluidTank> result = new ArrayList<>();
 				for (IFluidTankProperties tank : tanks)
 					result.add(new FluidTank(tank.getContents(), tank.getCapacity()));
