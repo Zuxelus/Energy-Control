@@ -123,7 +123,7 @@ public class ClientProxy implements IProxy {
 			break;
 		case BlockDamages.DAMAGE_TIMER:
 			if (te instanceof TileEntityTimer)
-				return new GuiTimer((TileEntityTimer) te);
+				return new GuiTimer(new ContainerTimer(player, (TileEntityTimer) te));
 			break;
 		}
 		return null;

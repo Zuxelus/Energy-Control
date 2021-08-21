@@ -26,8 +26,6 @@ public class TileEntityAverageCounter extends TileEntityEnergyStorage implements
 	protected short prevPeriod;
 	public short period;
 	protected int clientAverage = -1;
-	
-	private double lastReceivedPower;
 
 	public TileEntityAverageCounter() {
 		super("tile.average_counter.name", 1, BASE_PACKET_SIZE, BASE_PACKET_SIZE * 2);

@@ -64,13 +64,14 @@ public interface IProxy extends IGuiHandler {
 		case BlockDamages.DAMAGE_SEED_ANALYZER:
 			if (te instanceof TileEntitySeedAnalyzer)
 				return new ContainerSeedAnalyzer(player, (TileEntitySeedAnalyzer) te);
+			break;
 		case BlockDamages.DAMAGE_SEED_LIBRARY:
 			if (te instanceof TileEntitySeedLibrary)
 				return new ContainerSeedLibrary(player, (TileEntitySeedLibrary) te);
 			break;
 		case BlockDamages.DAMAGE_TIMER:
 			if (te instanceof TileEntityTimer)
-				return new ContainerTimer((TileEntityTimer) te);
+				return new ContainerTimer(player, (TileEntityTimer) te);
 			break;
 		}
 		return null;

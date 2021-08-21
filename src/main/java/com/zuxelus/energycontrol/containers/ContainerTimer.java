@@ -6,11 +6,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 
 public class ContainerTimer extends Container {
-	private TileEntityTimer te;
+	public TileEntityTimer te;
 	private int lastTime;
 	private boolean lastIsWorking;
 
-	public ContainerTimer(TileEntityTimer te) {
+	public ContainerTimer(EntityPlayer player, TileEntityTimer te) {
 		this.te = te;
 		lastTime = 0;
 	}

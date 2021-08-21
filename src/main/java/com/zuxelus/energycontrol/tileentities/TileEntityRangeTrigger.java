@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.EnergyControlConfig;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.blocks.RangeTrigger;

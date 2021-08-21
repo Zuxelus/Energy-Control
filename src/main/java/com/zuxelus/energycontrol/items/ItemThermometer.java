@@ -47,7 +47,7 @@ public class ItemThermometer extends Item {
 			return EnumActionResult.SUCCESS;
 		}
 
-		TileEntity te = world.getTileEntity(pos);
+		//TileEntity te = world.getTileEntity(pos);
 		//CrossModLoader.getCrossMod(ModIDs.IC2).showBarrelInfo(player, te);
 		return EnumActionResult.PASS;
 	}
