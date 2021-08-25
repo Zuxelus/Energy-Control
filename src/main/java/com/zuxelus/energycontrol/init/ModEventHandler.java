@@ -18,11 +18,13 @@ public class ModEventHandler {
 		event.getRegistry().register(new ItemLight(ModItems.white_lamp.get()).setRegistryName("white_lamp"));
 		event.getRegistry().register(new ItemLight(ModItems.orange_lamp.get()).setRegistryName("orange_lamp"));
 		event.getRegistry().register(new BlockItem(ModItems.howler_alarm.get(), new Item.Properties().group(EnergyControl.ITEM_GROUP)).setRegistryName("howler_alarm"));
-		/*event.getRegistry().register(new ItemBlock(industrialAlarm).setRegistryName("industrial_alarm"));
-		event.getRegistry().register(new ItemBlock(thermalMonitor).setRegistryName("thermal_monitor"));*/
+		event.getRegistry().register(new BlockItem(ModItems.industrial_alarm.get(), new Item.Properties().group(EnergyControl.ITEM_GROUP)).setRegistryName("industrial_alarm"));
+		event.getRegistry().register(new BlockItem(ModItems.thermal_monitor.get(), new Item.Properties().group(EnergyControl.ITEM_GROUP)).setRegistryName("thermal_monitor"));
 		event.getRegistry().register(new BlockItem(ModItems.info_panel.get(), new Item.Properties().group(EnergyControl.ITEM_GROUP)).setRegistryName(TileEntityInfoPanel.NAME));
 		event.getRegistry().register(new BlockItem(ModItems.info_panel_extender.get(), new Item.Properties().group(EnergyControl.ITEM_GROUP)).setRegistryName("info_panel_extender"));
 		event.getRegistry().register(new BlockItem(ModItems.info_panel_advanced.get(), new Item.Properties().group(EnergyControl.ITEM_GROUP)).setRegistryName(TileEntityAdvancedInfoPanel.NAME));
 		event.getRegistry().register(new BlockItem(ModItems.info_panel_advanced_extender.get(), new Item.Properties().group(EnergyControl.ITEM_GROUP)).setRegistryName("info_panel_advanced_extender"));
+		event.getRegistry().register(new BlockItem(ModItems.kit_assembler.get(), new Item.Properties().group(EnergyControl.ITEM_GROUP)).setRegistryName("kit_assembler"));
+		event.getRegistry().register(new BlockItem(ModItems.timer.get(), new Item.Properties().group(EnergyControl.ITEM_GROUP)).setRegistryName("timer"));
 	}
 }

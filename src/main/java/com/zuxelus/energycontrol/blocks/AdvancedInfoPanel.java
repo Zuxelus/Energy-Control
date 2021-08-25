@@ -9,6 +9,7 @@ import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -19,11 +20,16 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 public class AdvancedInfoPanel extends InfoPanel {
+
+	public AdvancedInfoPanel() {
+		super(Block.Properties.create(Material.IRON).hardnessAndResistance(12.0F).notSolid());
+	}
 
 	@Override
 	protected TileEntityFacing createTileEntity() {
@@ -34,16 +40,16 @@ public class AdvancedInfoPanel extends InfoPanel {
 	public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
 		TileEntity tile = world.getTileEntity(pos);
 		if (!(tile instanceof TileEntityAdvancedInfoPanel))
-			return Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+			return VoxelShapes.fullCube();
 
 		TileEntityAdvancedInfoPanel te = (TileEntityAdvancedInfoPanel) tile;
 		Screen screen = te.getScreen();
 		if (screen == null)
-			return Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+			return VoxelShapes.fullCube();
 
 		Direction enumfacing = (Direction) state.get(FACING);
 		if (!(te instanceof TileEntityAdvancedInfoPanel) || enumfacing == null)
-			return Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+			return VoxelShapes.fullCube();
 		switch (enumfacing) {
 		case EAST:
 			return Block.makeCuboidShape(0.0D, 0.0D, 0.0D, te.thickness, 16.0D, 16.0D);
@@ -58,8 +64,13 @@ public class AdvancedInfoPanel extends InfoPanel {
 		case DOWN:
 			return Block.makeCuboidShape(0.0D, 16.0D - te.thickness, 0.0D, 16.0D, 16.0D, 16.0D);
 		default:
-			return Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+			return VoxelShapes.fullCube();
 		}
+	}
+
+	@Override
+	public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+		return getShape(state, world, pos, context);
 	}
 
 	@Override

@@ -23,6 +23,14 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 public class InfoPanel extends FacingBlock {
 
+	public InfoPanel() {
+		super();
+	}
+
+	public InfoPanel(Block.Properties builder) {
+		super(builder);
+	}
+
 	@Override
 	protected TileEntityFacing createTileEntity() {
 		return ModTileEntityTypes.info_panel.get().create();
@@ -65,6 +73,6 @@ public class InfoPanel extends FacingBlock {
 
 	@Override
 	public BlockRenderType getRenderType(BlockState state) {
-		return BlockRenderType.ENTITYBLOCK_ANIMATED;
+		return BlockRenderType.INVISIBLE;
 	}
 }

@@ -2,18 +2,19 @@ package com.zuxelus.energycontrol.gui;
 
 import java.util.List;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelSetting;
-import com.zuxelus.energycontrol.containers.ContainerAdvancedInfoPanel;
 import com.zuxelus.energycontrol.gui.controls.GuiInfoPanelCheckBox;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardText;
+import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
+import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.containers.ContainerBase;
 import com.zuxelus.zlib.gui.controls.GuiButtonGeneral;
-import com.zuxelus.zlib.network.NetworkHelper;
 
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
@@ -22,6 +23,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -33,7 +35,7 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
 	public GuiAdvancedInfoPanel(ContainerBase container, PlayerInventory inventory, ITextComponent title) {
 		super(container, inventory, title);
 		ySize = 223;
-		panel = ((ContainerAdvancedInfoPanel) container).te;
+		panel = (TileEntityAdvancedInfoPanel) container.te;
 		name = I18n.format("block.energycontrol.info_panel_advanced");
 	}
 
@@ -47,12 +49,12 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
 		addButton(new GuiButtonGeneral(guiLeft + 83 + 17 * 1, guiTop + 42, 16, 16, TEXTURE, 192, 15, (button) -> { actionPerformed(button, ID_SLOPE); }).setGradient());
 		addButton(new GuiButtonGeneral(guiLeft + 83 + 17 * 2, guiTop + 42, 16, 16, TEXTURE, 192, 28, (button) -> { actionPerformed(button, ID_COLORS); }).setGradient().setScale(2));
 		addButton(new GuiButtonGeneral(guiLeft + 83 + 17 * 3, guiTop + 42, 16, 16, TEXTURE, 192 - 16, getIconPowerTopOffset(panel.getPowerMode()), (button) -> { actionPerformed(button, ID_POWER); }).setGradient());
-		addButton(new GuiButtonGeneral(guiLeft + 83 + 17 * 4, guiTop + 42 + 17, 16, 16, Integer.toString(panel.getTickRate()), (button) -> { actionPerformed(button, ID_TICKRATE); }).setGradient());
+		addButton(new GuiButtonGeneral(guiLeft + 83 + 17 * 4, guiTop + 42 + 17, 16, 16, new StringTextComponent(Integer.toString(panel.getTickRate())), (button) -> { actionPerformed(button, ID_TICKRATE); }).setGradient());
 
 		if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain) {
 			int slot = panel.getCardSlot(stack);
 			if (stack.getItem() instanceof ItemCardText)
-				addButton(new GuiButtonGeneral(guiLeft + 83 + 17 * 4, guiTop + 42, 16, 16, "txt", (button) -> { actionPerformed(button, ID_TEXT); }).setGradient());
+				addButton(new GuiButtonGeneral(guiLeft + 83 + 17 * 4, guiTop + 42, 16, 16, new StringTextComponent("txt"), (button) -> { actionPerformed(button, ID_TEXT); }).setGradient());
 			List<PanelSetting> settingsList = ((ItemCardMain) stack.getItem()).getSettingsList();
 
 			int hy = font.FONT_HEIGHT + 1;
@@ -64,7 +66,7 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
 					y++;
 				}
 			if (!modified) {
-				textboxTitle = new TextFieldWidget(font, guiLeft + 7, guiTop + 16, 162, 18, null, "");
+				textboxTitle = new TextFieldWidget(font, guiLeft + 7, guiTop + 16, 162, 18, null, StringTextComponent.EMPTY);
 				textboxTitle.changeFocus(true);
 				textboxTitle.setText(new ItemCardReader(stack).getTitle());
 				children.add(textboxTitle);
@@ -91,11 +93,11 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+	protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		getMinecraft().getTextureManager().bindTexture(TEXTURE);
-		blit(guiLeft, guiTop, 0, 0, xSize, ySize);
-		blit(guiLeft + 24, guiTop + 62 + activeTab * 14, 182, 0, 1, 15);
+		blit(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize);
+		blit(matrixStack, guiLeft + 24, guiTop + 62 + activeTab * 14, 182, 0, 1, 15);
 	}
 
 	@Override

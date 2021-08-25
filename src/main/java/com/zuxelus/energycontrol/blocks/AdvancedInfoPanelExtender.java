@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.blocks;
 
+import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanelExtender;
@@ -38,8 +39,10 @@ public class AdvancedInfoPanelExtender extends InfoPanelExtender {
 		if (!(te instanceof TileEntityInfoPanelExtender))
 			return ActionResultType.PASS;
 		TileEntityInfoPanel panel = ((TileEntityInfoPanelExtender) te).getCore();
-		if (panel instanceof TileEntityAdvancedInfoPanel)
-			NetworkHooks.openGui((ServerPlayerEntity) player, (TileEntityInfoPanel) panel, pos);
+		if (EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) panel).getFacing() == hit.getFace())
+			if (((TileEntityInfoPanel) panel).runTouchAction(player.getHeldItem(hand), pos, hit.getHitVec()))
+				return ActionResultType.SUCCESS;
+		NetworkHooks.openGui((ServerPlayerEntity) player, (TileEntityAdvancedInfoPanel) panel, pos);
 		return ActionResultType.SUCCESS;
 	}
 

@@ -20,7 +20,8 @@ import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -38,7 +39,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -312,8 +312,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	}
 
 	@Override
-	public void read(CompoundNBT tag) {
-		super.read(tag);
+	public void read(BlockState state, CompoundNBT tag) {
+		super.read(state, tag);
 		readProperties(tag);
 	}
 
@@ -657,7 +657,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		return b ? 1 : 0;
 	}
 
-	public boolean runTouchAction(ItemStack stack, BlockPos pos, Vec3d hit) {
+	public boolean runTouchAction(ItemStack stack, BlockPos pos, Vector3d hit) {
 		if (world.isRemote)
 			return false;
 		ItemStack card = getStackInSlot(SLOT_CARD);

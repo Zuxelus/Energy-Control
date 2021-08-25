@@ -127,8 +127,8 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 	}
 
 	@Override
-	public void read(CompoundNBT tag) {
-		super.read(tag);
+	public void read(BlockState state, CompoundNBT tag) {
+		super.read(state, tag);
 		readProperties(tag);
 	}
 

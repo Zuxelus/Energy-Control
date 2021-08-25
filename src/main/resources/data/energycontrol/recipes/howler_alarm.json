@@ -1,0 +1,25 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+        "NNN",
+        "IMI",
+        "ICI"
+    ],
+    "key": {
+        "I": {
+			"item": "mekanism:enriched_tin"
+        },
+        "M": {
+			"item": "mekanism:module_base"
+        },
+        "N": {
+            "item": "minecraft:note_block"
+        },
+        "C": {
+			"tag": "forge:circuits/basic"
+        }
+	},
+	"result": {
+		"item": "energycontrol:howler_alarm"
+	}
+}

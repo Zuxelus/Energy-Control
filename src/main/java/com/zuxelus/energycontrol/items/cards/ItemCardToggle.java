@@ -13,6 +13,7 @@ import net.minecraft.block.AbstractButtonBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.WoodButtonBlock;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -87,7 +88,7 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 		
 		Block block = state.getBlock();
 		if (block == Blocks.LEVER) {
-			state = state.cycle(POWERED);
+			state = state.func_235896_a_(POWERED);
 			world.setBlockState(pos, state, 3);
 			world.notifyNeighborsOfStateChange(pos, block);
 			world.notifyNeighborsOfStateChange(pos.offset(getFacing(state).getOpposite()), block);
@@ -96,7 +97,7 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 			world.setBlockState(pos, state.with(POWERED, Boolean.valueOf(true)), 3);
 			world.notifyNeighborsOfStateChange(pos, block);
 			world.notifyNeighborsOfStateChange(pos.offset(getFacing(state).getOpposite()), block);
-			world.getPendingBlockTicks().scheduleTick(pos, block, block.tickRate(world));
+			world.getPendingBlockTicks().scheduleTick(pos, block, block instanceof WoodButtonBlock ? 30 : 20);
 		}
 		return false;
 	}

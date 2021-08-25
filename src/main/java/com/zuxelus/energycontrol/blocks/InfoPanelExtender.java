@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.blocks;
 
+import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanelExtender;
@@ -9,6 +10,7 @@ import com.zuxelus.zlib.tileentities.TileEntityFacing;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -16,6 +18,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 public class InfoPanelExtender extends FacingBlock {
 
@@ -44,11 +47,10 @@ public class InfoPanelExtender extends FacingBlock {
 		if (!(te instanceof TileEntityInfoPanelExtender))
 			return ActionResultType.PASS;
 		TileEntityInfoPanel panel = ((TileEntityInfoPanelExtender) te).getCore();
-/*		if (Keys.instance.isAltKeyDown(player) && panel.getFacing() == facing)
-			if (panel.runTouchAction(player.getHeldItem(hand), pos, hit.getHitVec()))
+		if (EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) panel).getFacing() == hit.getFace())
+			if (((TileEntityInfoPanel) panel).runTouchAction(player.getHeldItem(hand), pos, hit.getHitVec()))
 				return ActionResultType.SUCCESS;
-		if (panel != null)
-			player.openGui(EnergyControl.instance, BlockDamages.DAMAGE_INFO_PANEL, world, panel.getPos().getX(), panel.getPos().getY(), panel.getPos().getZ());*/
+		NetworkHooks.openGui((ServerPlayerEntity) player, (TileEntityInfoPanel) panel, pos);
 		return ActionResultType.SUCCESS;
 	}
 

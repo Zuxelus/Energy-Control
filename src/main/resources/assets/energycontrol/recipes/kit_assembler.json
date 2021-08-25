@@ -14,17 +14,13 @@
             "data": 12
         },
         "F": {
-            "item": "ic2:frequency_transmitter"
+            "item": "mekanism:alloy_infused"
         },
         "C": {
-            "type": "forge:ore_dict",
-            "ore": "circuitBasic"
+            "tag":"forge:circuits/basic"
         },
         "A": {
-            "type": "minecraft:item_nbt",
-            "item": "ic2:cable",
-            "data": 4,
-            "nbt": "{\"type\": 4b, \"insulation\": 1b}"
+            "item": "mekanism:basic_universal_cable"
         }
     },
     "result": {

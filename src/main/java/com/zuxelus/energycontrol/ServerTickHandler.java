@@ -1,8 +1,8 @@
 package com.zuxelus.energycontrol;
 
 import com.zuxelus.energycontrol.config.ConfigHandler;
+import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.network.PacketAlarm;
-import com.zuxelus.zlib.network.NetworkHelper;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;

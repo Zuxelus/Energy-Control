@@ -1,12 +1,12 @@
 {
     "parent": "block/cube",
     "textures": {
-        "particle": "energycontrol:blocks/range_trigger/side",
-        "down": "energycontrol:blocks/range_trigger/side",
-        "up": "energycontrol:blocks/range_trigger/side",
-        "north": "energycontrol:blocks/range_trigger/face_red",
-        "east": "energycontrol:blocks/range_trigger/side",
-        "south": "energycontrol:blocks/range_trigger/back",
-        "west": "energycontrol:blocks/range_trigger/side"
+        "particle": "energycontrol:block/range_trigger/side",
+        "down": "energycontrol:block/range_trigger/side",
+        "up": "energycontrol:block/range_trigger/side",
+        "north": "energycontrol:block/range_trigger/face_red",
+        "east": "energycontrol:block/range_trigger/side",
+        "south": "energycontrol:block/range_trigger/back",
+        "west": "energycontrol:block/range_trigger/side"
     }
 }

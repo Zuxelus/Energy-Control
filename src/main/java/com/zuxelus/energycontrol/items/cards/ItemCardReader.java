@@ -15,8 +15,14 @@ import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.DoubleNBT;
 import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.INBTType;
+import net.minecraft.nbt.IntNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.LongNBT;
+import net.minecraft.nbt.NumberNBT;
+import net.minecraft.nbt.StringNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -209,6 +215,24 @@ public class ItemCardReader implements ICardReader {
 	@Override
 	public int getCardCount() {
 		return getInt("cardCount");
+	}
+
+	@Override
+	public void copyFrom(CompoundNBT nbt) {
+		for (String name : nbt.keySet()) {
+			INBT tag = nbt.get(name);
+			INBTType<?> type = tag.getType();
+			if (type == StringNBT.TYPE)
+				setString(name, tag.getString());
+			else if (type == IntNBT.TYPE)
+				setInt(name, ((NumberNBT) tag).getInt());
+			else if (type == DoubleNBT.TYPE)
+				setDouble(name, ((NumberNBT) tag).getDouble());
+			else if (type == LongNBT.TYPE)
+				setLong(name, ((NumberNBT) tag).getLong());
+			else if (type == LongNBT.TYPE)
+				setLong(name, ((NumberNBT) tag).getLong());
+		}
 	}
 
 	@OnlyIn(Dist.CLIENT)

@@ -13,6 +13,10 @@ public class ModTileEntityTypes {
 
 	public static final RegistryObject<TileEntityType<TileEntityHowlerAlarm>> howler_alarm = TILE_ENTITY_TYPES.register("howler_alarm", () ->
 		TileEntityType.Builder.create(TileEntityHowlerAlarm::new, ModItems.howler_alarm.get()).build(null));
+	public static final RegistryObject<TileEntityType<TileEntityIndustrialAlarm>> industrial_alarm = TILE_ENTITY_TYPES.register("industrial_alarm", () ->
+		TileEntityType.Builder.create(TileEntityIndustrialAlarm::new, ModItems.industrial_alarm.get()).build(null));
+	public static final RegistryObject<TileEntityType<TileEntityThermalMonitor>> thermal_monitor = TILE_ENTITY_TYPES.register("thermal_monitor", () ->
+		TileEntityType.Builder.create(TileEntityThermalMonitor::new, ModItems.thermal_monitor.get()).build(null));
 	public static final RegistryObject<TileEntityType<TileEntityInfoPanel>> info_panel = TILE_ENTITY_TYPES.register("info_panel", () ->
 		TileEntityType.Builder.create(TileEntityInfoPanel::new, ModItems.info_panel.get()).build(null));
 	public static final RegistryObject<TileEntityType<TileEntityInfoPanelExtender>> info_panel_extender = TILE_ENTITY_TYPES.register("info_panel_extender", () ->
@@ -21,5 +25,9 @@ public class ModTileEntityTypes {
 		TileEntityType.Builder.create(TileEntityAdvancedInfoPanel::new, ModItems.info_panel_advanced.get()).build(null));
 	public static final RegistryObject<TileEntityType<TileEntityAdvancedInfoPanelExtender>> info_panel_advanced_extender = TILE_ENTITY_TYPES.register("info_panel_advanced_extender", () ->
 		TileEntityType.Builder.create(TileEntityAdvancedInfoPanelExtender::new, ModItems.info_panel_advanced_extender.get()).build(null));
+	public static final RegistryObject<TileEntityType<TileEntityKitAssembler>> kit_assembler = TILE_ENTITY_TYPES.register("kit_assembler", () ->
+		TileEntityType.Builder.create(TileEntityKitAssembler::new, ModItems.kit_assembler.get()).build(null));
+	public static final RegistryObject<TileEntityType<TileEntityTimer>> timer = TILE_ENTITY_TYPES.register("timer", () ->
+		TileEntityType.Builder.create(TileEntityTimer::new, ModItems.timer.get()).build(null));
 
 }

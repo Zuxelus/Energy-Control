@@ -1,12 +1,12 @@
 {
     "parent": "block/cube",
     "textures": {
-        "particle": "energycontrol:blocks/energy_counter/input",
-        "down": "energycontrol:blocks/energy_counter/input",
-        "up": "energycontrol:blocks/energy_counter/output",
-        "north": "energycontrol:blocks/energy_counter/input",
-        "east": "energycontrol:blocks/energy_counter/input",
-        "south": "energycontrol:blocks/energy_counter/input",
-        "west": "energycontrol:blocks/energy_counter/input"
+        "particle": "energycontrol:block/energy_counter/input",
+        "down": "energycontrol:block/energy_counter/input",
+        "up": "energycontrol:block/energy_counter/output",
+        "north": "energycontrol:block/energy_counter/input",
+        "east": "energycontrol:block/energy_counter/input",
+        "south": "energycontrol:block/energy_counter/input",
+        "west": "energycontrol:block/energy_counter/input"
     }
 }

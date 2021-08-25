@@ -8,13 +8,13 @@ import net.minecraft.world.World;
 
 public interface IItemKit {
 
-	public int getDamage();
+	int getDamage();
 	
-	public String getName();
+	String getName();
 	
-	public String getUnlocalizedName();
+	String getUnlocalizedName();
 
-	public ItemStack getSensorCard(ItemStack stack, Item card, PlayerEntity player, World world, BlockPos pos);
+	ItemStack getSensorCard(ItemStack stack, Item card, PlayerEntity player, World world, BlockPos pos);
 
-	public Object[] getRecipe();
+	Object[] getRecipe();
 }

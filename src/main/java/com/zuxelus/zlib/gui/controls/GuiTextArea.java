@@ -1,5 +1,6 @@
 package com.zuxelus.zlib.gui.controls;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -11,6 +12,7 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.SharedConstants;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -26,7 +28,7 @@ public class GuiTextArea extends Widget implements IRenderable, IGuiEventListene
 	private final FontRenderer fontRenderer;
 
 	public GuiTextArea(FontRenderer fontRenderer, int xPos, int yPos, int width, int height, int lineCount) {
-		super(xPos, yPos, width, height, "");
+		super(xPos, yPos, width, height, StringTextComponent.EMPTY);
 		this.fontRenderer = fontRenderer;
 		this.lineCount = lineCount;
 		text = new String[lineCount];
@@ -39,16 +41,16 @@ public class GuiTextArea extends Widget implements IRenderable, IGuiEventListene
 	}
 
 	@Override
-	public void renderButton(int mouseX, int mouseY, float partialTicks) {
-		fill(x - 1, y - 1, x + width + 1, y + height + 1, 0xFFA0A0A0);
-		fill(x, y, x + width, y + height, 0xFF000000);
+	public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+		fill(matrixStack, x - 1, y - 1, x + width + 1, y + height + 1, 0xFFA0A0A0);
+		fill(matrixStack, x, y, x + width, y + height, 0xFF000000);
 		int textColor = 0xE0E0E0;
 
 		int textLeft = x + 4;
 		int textTop = y + (height - lineCount * (fontRenderer.FONT_HEIGHT + 1)) / 2;
 
 		for (int i = 0; i < lineCount; i++)
-			fontRenderer.drawStringWithShadow(text[i], textLeft, textTop + (fontRenderer.FONT_HEIGHT + 1) * i, textColor);
+			fontRenderer.drawStringWithShadow(matrixStack, text[i], textLeft, textTop + (fontRenderer.FONT_HEIGHT + 1) * i, textColor);
 		textTop += (fontRenderer.FONT_HEIGHT + 1) * cursorLine;
 		int cursorPositionX = textLeft + fontRenderer.getStringWidth(text[cursorLine].substring(0, Math.min(text[cursorLine].length(), cursorPosition))) - 1;
 		boolean drawCursor = isFocused() && cursorCounter / 6 % 2 == 0;

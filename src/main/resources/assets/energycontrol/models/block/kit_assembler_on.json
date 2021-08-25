@@ -1,12 +1,12 @@
 {
     "parent": "block/cube",
     "textures": {
-        "particle": "energycontrol:blocks/kit_assembler/side",
-        "down": "energycontrol:blocks/kit_assembler/bottom",
-        "up": "energycontrol:blocks/kit_assembler/top",
-        "north": "energycontrol:blocks/kit_assembler/face_active",
-        "east": "energycontrol:blocks/kit_assembler/side",
-        "south": "energycontrol:blocks/kit_assembler/side",
-        "west": "energycontrol:blocks/kit_assembler/side"
+        "particle": "energycontrol:block/kit_assembler/side",
+        "down": "energycontrol:block/kit_assembler/bottom",
+        "up": "energycontrol:block/kit_assembler/top",
+        "north": "energycontrol:block/kit_assembler/face_active",
+        "east": "energycontrol:block/kit_assembler/side",
+        "south": "energycontrol:block/kit_assembler/side",
+        "west": "energycontrol:block/kit_assembler/side"
     }
 }

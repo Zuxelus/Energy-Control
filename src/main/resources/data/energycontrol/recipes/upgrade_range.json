@@ -1,0 +1,21 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+        "CCC",
+        "IFI"
+	],
+	"key": {
+        "I": {
+            "item": "mekanism:basic_universal_cable"
+        },
+        "F": {
+            "item": "mekanism:alloy_infused"
+        },
+        "C": {
+            "item": "mekanism:enriched_tin"
+        }
+	},
+	"result": {
+		"item": "energycontrol:upgrade_range"
+	}
+}

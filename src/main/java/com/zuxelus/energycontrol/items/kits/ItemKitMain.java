@@ -36,6 +36,8 @@ public abstract class ItemKitMain extends Item {
 		ItemStack sensorLocationCard = ((ItemKitMain) stack.getItem()).getSensorCard(stack, player, context.getWorld(), context.getPos(), context.getFace());
 		if (sensorLocationCard.isEmpty())
 			return ActionResultType.PASS;
+
+		stack.shrink(1);
 		ItemEntity dropItem = new ItemEntity(context.getWorld(), player.getPosX(), player.getPosY(), player.getPosZ(), sensorLocationCard);
 		dropItem.setPickupDelay(0);
 		context.getWorld().addEntity(dropItem);

@@ -9,30 +9,31 @@ import com.zuxelus.energycontrol.blocks.InfoPanelExtender;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 public class ScreenManager {
 
-	private final Map<Integer, List<Screen>> screens;
-	private final Map<Integer, List<TileEntityInfoPanel>> unusedPanels;
+	private final Map<String, List<Screen>> screens;
+	private final Map<String, List<TileEntityInfoPanel>> unusedPanels;
 
 	public ScreenManager() {
-		screens = new HashMap<Integer, List<Screen>>();
-		unusedPanels = new HashMap<Integer, List<TileEntityInfoPanel>>();
+		screens = new HashMap<String, List<Screen>>();
+		unusedPanels = new HashMap<String, List<TileEntityInfoPanel>>();
 	}
 
-	private int getWorldKey(IWorld world) {
-		if (world == null)
-			return -10;
-		/*if (world.provider == null)
-			return -10;
-		return world.provider.getDimension();*/
-		return 1; // TODO
+	private String getWorldKey(IWorld world) {
+		if (world == null || !(world instanceof World))
+			return "null";
+		RegistryKey<World> dimension = ((World)world).getDimensionKey(); 
+		if (dimension == null)
+			return "null";
+		return dimension.toString();
 	}
 
-	private void checkWorldLists(Integer key) {
+	private void checkWorldLists(String key) {
 		if (!screens.containsKey(key))
 			screens.put(key, new ArrayList<Screen>());
 		if (!unusedPanels.containsKey(key))
@@ -40,13 +41,14 @@ public class ScreenManager {
 	}
 
 	public void clearWorld(IWorld world) {
-		Integer key = getWorldKey(world);
+		String key = getWorldKey(world);
 		if (screens.containsKey(key))
 			screens.get(key).clear();
 		if (unusedPanels.containsKey(key))
 			unusedPanels.get(key).clear();
 	}
 
+	@SuppressWarnings("resource")
 	public void registerInfoPanel(TileEntityInfoPanel panel) {
 		if (panel.getWorld().isRemote)
 			return;
@@ -73,7 +75,7 @@ public class ScreenManager {
 		int dx = (facing == Direction.WEST) || (facing == Direction.EAST) ? 0 : -1;
 		int dy = (facing == Direction.DOWN) || (facing == Direction.UP) ? 0 : -1;
 		int dz = (facing == Direction.NORTH) || (facing == Direction.SOUTH) ? 0 : -1;
-		boolean advanced = false; //panel instanceof TileEntityAdvancedInfoPanel; // TODO
+		boolean advanced = panel instanceof TileEntityAdvancedInfoPanel;
 		updateScreenBound(screen, dx, 0, 0, panel.getWorld(), advanced);
 		updateScreenBound(screen, -dx, 0, 0, panel.getWorld(), advanced);
 		updateScreenBound(screen, 0, dy, 0, panel.getWorld(), advanced);
@@ -137,7 +139,7 @@ public class ScreenManager {
 		TileEntity tileEntity = world.getTileEntity(pos);
 		if (!(tileEntity instanceof TileEntityInfoPanelExtender))
 			return false;
-		if (advanced ^ false /*(tileEntity instanceof TileEntityAdvancedInfoPanelExtender)*/) //TODO
+		if (advanced ^ (tileEntity instanceof TileEntityAdvancedInfoPanelExtender))
 			return false;
 		if (((TileEntityInfoPanelExtender) tileEntity).getFacing() != facing)
 			return false;
@@ -146,13 +148,14 @@ public class ScreenManager {
 		return true;
 	}
 
+	@SuppressWarnings("resource")
 	public Screen loadScreen(TileEntityInfoPanel panel) {
 		if (panel.screenData == null)
 			return null;
 		
 		Screen screen = new Screen(panel, panel.screenData);
 		if (!panel.getWorld().isRemote) {
-			Integer key = getWorldKey(panel.getWorld());
+			String key = getWorldKey(panel.getWorld());
 			checkWorldLists(key);
 			if (!screens.get(key).contains(screen))
 				screens.get(key).add(screen);
@@ -160,6 +163,7 @@ public class ScreenManager {
 		return screen;
 	}
 
+	@SuppressWarnings("resource")
 	public void registerInfoPanelExtender(TileEntityInfoPanelExtender extender) {
 		if (extender.getWorld().isRemote)
 			return;
@@ -207,6 +211,7 @@ public class ScreenManager {
 		}
 	}
 
+	@SuppressWarnings("resource")
 	public void unregisterScreenPart(TileEntity part) {
 		if (part.getWorld().isRemote)
 			return;

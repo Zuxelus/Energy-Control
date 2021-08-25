@@ -17,7 +17,7 @@ public class SlotDischargeable extends SlotFilter {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public Pair<ResourceLocation, ResourceLocation> func_225517_c_() {
+	public Pair<ResourceLocation, ResourceLocation> getBackground() {
 		return tier > 3 ? "zlib:slots/slot_dischargeable_2" : String.format("zlib:slots/slot_dischargeable_%s", tier - 1);
 	}
 }

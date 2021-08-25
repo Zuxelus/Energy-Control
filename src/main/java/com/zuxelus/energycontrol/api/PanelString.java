@@ -29,7 +29,7 @@ public class PanelString {
 		textLeft = getFormatted(resourceName, value, showLabels);
 	}
 	
-	private static DecimalFormat formatter = null;
+	private static DecimalFormat formatter;
 	private static DecimalFormat getFormatter() {
 		if (formatter == null) {
 			DecimalFormat lFormatter = new DecimalFormat("#,###.###");
@@ -59,17 +59,17 @@ public class PanelString {
 	/**
 	 * Color of the left aligned part of the line.
 	 */
-	public int colorLeft = 0;
+	public int colorLeft;
 
 	/**
 	 * Color of the centered part of the line.
 	 */
-	public int colorCenter = 0;
+	public int colorCenter;
 
 	/**
 	 * Color of the right aligned part of the line.
 	 */
-	public int colorRight = 0;
+	public int colorRight;
 
 	private static String getFormatted(String resourceName, String value, boolean showLabels) {
 		if (showLabels)

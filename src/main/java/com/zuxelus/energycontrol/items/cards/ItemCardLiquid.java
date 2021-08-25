@@ -84,4 +84,9 @@ public class ItemCardLiquid extends ItemCardMain {
 	public Item getKitFromCard() {
 		return ModItems.kit_liquid.get();
 	}
+
+	@Override
+	protected boolean isRemoteCard() {
+		return true;
+	}
 }

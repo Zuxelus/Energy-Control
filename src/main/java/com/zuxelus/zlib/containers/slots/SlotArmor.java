@@ -14,6 +14,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class SlotArmor extends Slot {
 	private final EquipmentSlotType armorType;
+	private static final ResourceLocation[] ARMOR_SLOT_TEXTURES = new ResourceLocation[] {
+			PlayerContainer.EMPTY_ARMOR_SLOT_BOOTS, PlayerContainer.EMPTY_ARMOR_SLOT_LEGGINGS,
+			PlayerContainer.EMPTY_ARMOR_SLOT_CHESTPLATE, PlayerContainer.EMPTY_ARMOR_SLOT_HELMET };
 
 	public SlotArmor(PlayerInventory inventory, EquipmentSlotType armorType, int x, int y) {
 		super(inventory, 36 + armorType.getIndex(), x, y);
@@ -32,7 +35,7 @@ public class SlotArmor extends Slot {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public Pair<ResourceLocation, ResourceLocation> func_225517_c_() {
-		return Pair.of(PlayerContainer.LOCATION_BLOCKS_TEXTURE, PlayerContainer.ARMOR_SLOT_TEXTURES[armorType.getIndex()]);
+	public Pair<ResourceLocation, ResourceLocation> getBackground() {
+		return Pair.of(PlayerContainer.LOCATION_BLOCKS_TEXTURE, ARMOR_SLOT_TEXTURES[armorType.getIndex()]);
 	}
 }

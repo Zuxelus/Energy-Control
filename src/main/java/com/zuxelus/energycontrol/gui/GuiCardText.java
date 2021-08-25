@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
@@ -7,8 +8,10 @@ import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.gui.GuiBase;
 import com.zuxelus.zlib.gui.controls.GuiTextArea;
 
+import net.minecraft.client.gui.DialogTexts;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -35,7 +38,7 @@ public class GuiCardText extends GuiBase {
 	@Override
 	public void init() {
 		super.init();
-		addButton(new Button(guiLeft + xSize - 60 - 8, guiTop + 120, 60, 20, "Ok", (button) -> { actionPerformed(); }));
+		addButton(new Button(guiLeft + xSize - 60 - 8, guiTop + 120, 60, 20, DialogTexts.GUI_DONE, (button) -> { actionPerformed(); }));
 		textArea = new GuiTextArea(font, guiLeft + 8, guiTop + 5, xSize - 16, ySize - 35, lineCount);
 		textArea.changeFocus(true);
 		children.add(textArea);
@@ -46,9 +49,9 @@ public class GuiCardText extends GuiBase {
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
-		textArea.render(mouseY, mouseY, partialTicks);
+	protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+		super.drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
+		textArea.render(matrixStack, mouseY, mouseY, partialTicks);
 	}
 
 	private void actionPerformed() {

@@ -1,8 +1,8 @@
 {
     "variants": {
-        "facing=east":  { "model": "energycontrol:remote_thermo", "y": 90 },
-        "facing=west":  { "model": "energycontrol:remote_thermo", "y": 270 },
-        "facing=south": { "model": "energycontrol:remote_thermo", "y": 180 },
-        "facing=north": { "model": "energycontrol:remote_thermo" }
+        "facing=east":  { "model": "energycontrol:block/remote_thermo", "y": 90 },
+        "facing=west":  { "model": "energycontrol:block/remote_thermo", "y": 270 },
+        "facing=south": { "model": "energycontrol:block/remote_thermo", "y": 180 },
+        "facing=north": { "model": "energycontrol:block/remote_thermo" }
     }
 } 

@@ -7,12 +7,10 @@
     ],
     "key": {
         "G": {
-            "type": "forge:ore_dict",
-            "ore": "paneGlass"
+            "tag": "forge:glass_panes"
         },
         "W": {
-            "type": "forge:ore_dict",
-            "ore": "dyeWhite"
+			"tag": "forge:dyes/white"
         },
         "L": {
             "item": "minecraft:redstone_lamp"

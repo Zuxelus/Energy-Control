@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.gui.controls;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
@@ -7,6 +8,7 @@ import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.AbstractButton;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -19,7 +21,7 @@ public class GuiInfoPanelShowLabels extends AbstractButton {
 	private boolean checked;
 
 	public GuiInfoPanelShowLabels(int x, int y, TileEntityInfoPanel panel) {
-		super(x, y, 0, 0, "");
+		super(x, y, 0, 0, StringTextComponent.EMPTY);
 		height = 9;
 		width = 18;
 		this.panel = panel;
@@ -27,14 +29,14 @@ public class GuiInfoPanelShowLabels extends AbstractButton {
 	}
 
 	@Override
-	public void renderButton(int mouseX, int mouseY, float partialTicks) {
+	public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (!visible)
 			return;
 
 		Minecraft.getInstance().getTextureManager().bindTexture(TEXTURE_LOCATION);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int delta = checked ? 12 : 21;
-		blit(x, y + 1, 176, delta, 18, 9);
+		blit(matrixStack, x, y + 1, 176, delta, 18, 9);
 	}
 
 	@Override

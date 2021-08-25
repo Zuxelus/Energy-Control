@@ -1,11 +1,14 @@
 package com.zuxelus.zlib.gui.controls;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -20,18 +23,18 @@ public class GuiButtonGeneral extends Button {
 	private boolean hasGradient;
 
 	public GuiButtonGeneral(int left, int top, int width, int height, ResourceLocation texture, int textureLeft, int textureTop, Button.IPressable onPress) {
-		this(left, top, width, height, "", texture, textureLeft, textureTop, 0, "", onPress);
+		this(left, top, width, height, StringTextComponent.EMPTY, texture, textureLeft, textureTop, 0, "", onPress);
 	}
 
 	public GuiButtonGeneral(int left, int top, int width, int height, ResourceLocation texture, int textureLeft, int textureTop, int textureTopOff, Button.IPressable onPress) {
-		this(left, top, width, height, "", texture, textureLeft, textureTop, textureTopOff, "", onPress);
+		this(left, top, width, height, StringTextComponent.EMPTY, texture, textureLeft, textureTop, textureTopOff, "", onPress);
 	}
 
-	public GuiButtonGeneral(int left, int top, int width, int height, String text, Button.IPressable onPress) {
+	public GuiButtonGeneral(int left, int top, int width, int height, ITextComponent text, Button.IPressable onPress) {
 		this(left, top, width, height, text, null, 0, 0, 0, "", onPress);
 	}
 
-	public GuiButtonGeneral(int left, int top, int width, int height, String text, ResourceLocation texture, int textureLeft, int textureTop, int textureTopOff, String tooltip, Button.IPressable onPress) {
+	public GuiButtonGeneral(int left, int top, int width, int height, ITextComponent text, ResourceLocation texture, int textureLeft, int textureTop, int textureTopOff, String tooltip, Button.IPressable onPress) {
 		super(left, top, width, height, text, onPress);
 		this.texture = texture;
 		this.textureLeft = textureLeft;
@@ -42,7 +45,7 @@ public class GuiButtonGeneral extends Button {
 	}
 
 	@Override
-	public void renderButton(int mouseX, int mouseY, float partialTicks) {
+	public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (!visible)
 			return;
 
@@ -56,13 +59,13 @@ public class GuiButtonGeneral extends Button {
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);*/
 		if (isHovered && hasGradient)
-			fillGradient(x, y, x + width, y + height, 0x80FFFFFF, 0x80FFFFFF);
+			fillGradient(matrixStack, x, y, x + width, y + height, 0x80FFFFFF, 0x80FFFFFF);
 		if (texture != null)
-			blit(x, y, textureLeft / scale, isHovered ? (textureTop + textureTopOff) / scale : textureTop / scale, width, height, 256 / scale, 256 / scale);
+			blit(matrixStack, x, y, textureLeft / scale, isHovered ? (textureTop + textureTopOff) / scale : textureTop / scale, width, height, 256 / scale, 256 / scale);
 		//mouseDragged(mc, mouseX, mouseY);
-		String displayString = getMessage();
+		String displayString = getMessage().getString();
 		if (!displayString.equals(""))
-			fontRenderer.drawString(displayString, x + (width - fontRenderer.getStringWidth(displayString)) / 2, y - 3 + height / 2, 0x404040);
+			fontRenderer.drawString(matrixStack, displayString, x + (width - fontRenderer.getStringWidth(displayString)) / 2, y - 3 + height / 2, 0x404040);
 	}
 
 	public GuiButtonGeneral setGradient() {

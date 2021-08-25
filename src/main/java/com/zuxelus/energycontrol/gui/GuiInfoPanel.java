@@ -2,20 +2,20 @@ package com.zuxelus.energycontrol.gui;
 
 import java.util.List;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.gui.controls.GuiInfoPanelCheckBox;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardText;
+import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.containers.ContainerBase;
+import com.zuxelus.zlib.gui.GuiContainerBase;
 import com.zuxelus.zlib.gui.controls.GuiButtonGeneral;
-import com.zuxelus.zlib.network.NetworkHelper;
 
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
@@ -27,12 +27,14 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiInfoPanel extends ContainerScreen<ContainerBase> implements IContainerListener {
+public class GuiInfoPanel extends GuiContainerBase<ContainerBase<TileEntityInfoPanel>> implements IContainerListener {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_info_panel.png");
+
 	protected static final int ID_LABELS = 1;
 	protected static final int ID_SLOPE = 2;
 	protected static final int ID_COLORS = 3;
@@ -46,8 +48,8 @@ public class GuiInfoPanel extends ContainerScreen<ContainerBase> implements ICon
 	protected byte activeTab;
 	protected boolean modified;
 
-	public GuiInfoPanel(ContainerBase container, PlayerInventory inventory, ITextComponent title) {
-		super(container, inventory, title);
+	public GuiInfoPanel(ContainerBase<TileEntityInfoPanel> container, PlayerInventory inventory, ITextComponent title) {
+		super(container, inventory, title, TEXTURE);
 		ySize = 201;
 		panel = (TileEntityInfoPanel)container.te;
 		name = I18n.format("block.energycontrol.info_panel");
@@ -63,11 +65,11 @@ public class GuiInfoPanel extends ContainerScreen<ContainerBase> implements ICon
 		addButton(new GuiButtonGeneral(guiLeft + xSize - 24, guiTop + 42, 16, 16, TEXTURE, 176, panel.getShowLabels() ? 15 : 31, (button) -> { actionPerformed(button, ID_LABELS); }).setGradient());
 		if (panel.isColoredEval())
 			addButton(new GuiButtonGeneral(guiLeft + xSize - 24, guiTop + 42 + 17, 16, 16, TEXTURE, 192, 0, (button) -> { actionPerformed(button, ID_COLORS); }).setGradient().setScale(2));
-		addButton(new GuiButtonGeneral(guiLeft + xSize - 24, guiTop + 42 + 17 * 3, 16, 16, Integer.toString(panel.getTickRate()), (button) -> { actionPerformed(button, ID_TICKRATE); }).setGradient());
+		addButton(new GuiButtonGeneral(guiLeft + xSize - 24, guiTop + 42 + 17 * 3, 16, 16, new StringTextComponent(Integer.toString(panel.getTickRate())), (button) -> { actionPerformed(button, ID_TICKRATE); }).setGradient());
 		if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain) {
 			int slot = panel.getCardSlot(stack);
 			if (stack.getItem() instanceof ItemCardText)
-				addButton(new GuiButtonGeneral(guiLeft + xSize - 24, guiTop + 42 + 17 * 2, 16, 16, "txt", (button) -> { actionPerformed(button, ID_TEXT); }).setGradient());
+				addButton(new GuiButtonGeneral(guiLeft + xSize - 24, guiTop + 42 + 17 * 2, 16, 16, new StringTextComponent("txt"), (button) -> { actionPerformed(button, ID_TEXT); }).setGradient());
 			List<PanelSetting> settingsList = ((ItemCardMain) stack.getItem()).getSettingsList();
 
 			int hy = font.FONT_HEIGHT + 1;
@@ -79,7 +81,7 @@ public class GuiInfoPanel extends ContainerScreen<ContainerBase> implements ICon
 					y++;
 				}
 			if (!modified) {
-				textboxTitle = new TextFieldWidget(font, guiLeft + 7, guiTop + 16, 162, 18, null, "");
+				textboxTitle = new TextFieldWidget(font, guiLeft + 7, guiTop + 16, 162, 18, null, StringTextComponent.EMPTY);
 				textboxTitle.changeFocus(true);
 				textboxTitle.setText(new ItemCardReader(stack).getTitle());
 				children.add(textboxTitle);
@@ -100,24 +102,22 @@ public class GuiInfoPanel extends ContainerScreen<ContainerBase> implements ICon
 	}
 
 	@Override
-	public void render(int mouseX, int mouseY, float partialTicks) {
-		renderBackground();
-		super.render(mouseX, mouseY, partialTicks);
-		renderHoveredToolTip(mouseX, mouseY);
+	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+		renderBackground(matrixStack);
+		super.render(matrixStack, mouseX, mouseY, partialTicks);
+		renderHoveredTooltip(matrixStack, mouseX, mouseY);
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		getMinecraft().getTextureManager().bindTexture(TEXTURE);
-		blit(guiLeft, guiTop, 0, 0, xSize, ySize);
+	protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+		super.drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
 		if (textboxTitle != null)
-			textboxTitle.renderButton(mouseX, mouseY, 0);
+			textboxTitle.renderButton(matrixStack, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		font.drawString(name, (xSize - font.getStringWidth(name)) / 2, 6, 0x404040);
+	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
+		drawCenteredText(matrixStack, title, xSize, 6);
 	}
 
 	@Override
@@ -126,7 +126,7 @@ public class GuiInfoPanel extends ContainerScreen<ContainerBase> implements ICon
 			textboxTitle.mouseReleased(mouseX - guiLeft, mouseY - guiTop, mouseButton);
 			if (textboxTitle.isFocused())
 				return true;
-			func_212932_b(null);
+			setListenerDefault(null);
 			updateTitle();
 		}
 		return super.mouseReleased(mouseX, mouseY, mouseButton);
@@ -156,9 +156,9 @@ public class GuiInfoPanel extends ContainerScreen<ContainerBase> implements ICon
 	}
 
 	@Override
-	public void removed() {
+	public void onClose() {
 		updateTitle();
-		super.removed();
+		super.onClose();
 		container.removeListener(this);
 	}
 
