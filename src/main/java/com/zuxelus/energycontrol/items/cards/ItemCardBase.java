@@ -1,41 +1,49 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import com.zuxelus.energycontrol.api.ICardReader;
-import com.zuxelus.energycontrol.api.IItemCard;
-import com.zuxelus.energycontrol.api.PanelString;
+import com.zuxelus.energycontrol.api.*;
+import com.zuxelus.energycontrol.items.kits.ItemKitMain;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import java.util.List;
 
-public abstract class ItemCardBase implements IItemCard {
+public abstract class ItemCardBase {
 	protected String name;
 	protected int damage;
-	private Object[] recipe;
 
 	public ItemCardBase(int damage, String name) {
 		this.damage = damage;
 		this.name = name;
 	}
-
-	@Override
+	
 	public final int getDamage() {
 		return damage;
 	}
 
-	@Override
 	public final String getName() {
 		return name;
 	}
 
-	@Override
 	public final String getUnlocalizedName() {
 		return "item." + name;
 	}
 
-	@Override
 	public boolean isRemoteCard() {
 		return true;
+	}
+	
+	public abstract int getKitId();
+	
+	public abstract CardState update(World world, ICardReader reader, int range, BlockPos pos);
+	
+	public abstract List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels);
+	
+	public abstract List<PanelSetting> getSettingsList();
+
+	public ItemStack getKitFromCard() {
+		return ItemKitMain.getKitById(getKitId());
 	}
 
 	protected BlockPos getCoordinates(ICardReader reader, int cardNumber) {
@@ -43,10 +51,6 @@ public abstract class ItemCardBase implements IItemCard {
 			return null;
 		return new BlockPos(reader.getInt(String.format("_%dx", cardNumber)),
 				reader.getInt(String.format("_%dy", cardNumber)), reader.getInt(String.format("_%dz", cardNumber)));
-	}
-
-	protected final void addRecipe(Object[] recipe) {
-		this.recipe = recipe;
 	}
 
 	protected void addHeat(List<PanelString> result, int heat, int maxHeat, boolean showLabels) {

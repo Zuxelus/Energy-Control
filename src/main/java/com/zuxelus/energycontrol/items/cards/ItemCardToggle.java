@@ -69,7 +69,7 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 	}
 
 	@Override
-	public int getKitFromCard() {
+	public int getKitId() {
 		return ItemCardType.KIT_TOGGLE;
 	}
 

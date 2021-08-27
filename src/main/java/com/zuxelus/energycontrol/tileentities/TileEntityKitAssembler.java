@@ -1,8 +1,8 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import com.zuxelus.energycontrol.api.IItemCard;
 import com.zuxelus.energycontrol.blocks.KitAssembler;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
-import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
@@ -35,7 +35,7 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 	public static final byte SLOT_KIT = 4;
 	private static final double CONSUMPTION = 1;
 	private static final double PRODUCTION_TIME = 6000;
-	private double maxStorage;
+	private final double maxStorage;
 	private double energy;
 	private double production;
 	private boolean addedToEnet;
@@ -72,9 +72,9 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 			return;
         if (tag.getInteger("type") == 4) {
             if (tag.hasKey("slot") && tag.hasKey("title")) {
-                ItemStack itemStack = getStackInSlot(tag.getInteger("slot"));
-                if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemCardMain) {
-                    new ItemCardReader(itemStack).setTitle(tag.getString("title"));
+                ItemStack stack = getStackInSlot(tag.getInteger("slot"));
+                if (ItemCardMain.isCard(stack)) {
+                    new ItemCardReader(stack).setTitle(tag.getString("title"));
                 }
             }
         }
@@ -145,6 +145,7 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 	}
 
 	@Override
+	@Optional.Method(modid = ModIDs.IC2)
 	public void onLoad() {
 		if (!addedToEnet && !world.isRemote && Info.isIc2Available()) {
 			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
@@ -160,6 +161,7 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 	}
 
 	@Override
+	@Optional.Method(modid = ModIDs.IC2)
 	public void onChunkUnload() {
 		if (addedToEnet && !world.isRemote && Info.isIc2Available()) {
 			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
@@ -179,15 +181,12 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 			if (production >= PRODUCTION_TIME) {
 				ItemStack stack1 = getStackInSlot(SLOT_CARD1);
 				ItemStack stack2 = getStackInSlot(SLOT_CARD2);
-				ItemStack kit = getStackInSlot(SLOT_KIT);
-				if (!stack1.isEmpty() && stack1.getItem() instanceof ItemCardMain && !stack2.isEmpty()
-						&& stack2.getItem() instanceof ItemCardMain && stack1.getItemDamage() == stack2.getItemDamage()
-						&& kit.isEmpty()) {
-					int kit_damage = ItemCardMain.getKitFromCard(stack1.getItemDamage());
+				if (ItemCardMain.isCard(stack1) && ItemCardMain.isCard(stack2) && stack1.isItemEqual(stack2) && getStackInSlot(SLOT_KIT).isEmpty()) {
+					ItemStack kit = ((IItemCard) stack1.getItem()).getKitFromCard(stack1).copy();
+					kit.setCount(2);
 					removeStackFromSlot(SLOT_CARD1);
 					removeStackFromSlot(SLOT_CARD2);
-					if (kit_damage != -1)
-						setInventorySlotContents(SLOT_KIT, new ItemStack(ModItems.itemKit, 2, kit_damage));
+					setInventorySlotContents(SLOT_KIT, kit);
 				}
 				production = 0;
 				updateState();
@@ -214,20 +213,11 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 
 	private void updateActive() {
 		active = false;
-		if (energy < CONSUMPTION)
-			return;
+		
 		ItemStack stack1 = getStackInSlot(SLOT_CARD1);
-		if (stack1.isEmpty() || !(stack1.getItem() instanceof ItemCardMain))
-			return;
 		ItemStack stack2 = getStackInSlot(SLOT_CARD2);
-		if (stack2.isEmpty() || !(stack2.getItem() instanceof ItemCardMain)
-				|| stack1.getItemDamage() != stack2.getItemDamage()
-				|| ItemCardMain.getKitFromCard(stack1.getItemDamage()) == -1)
-			return;
-		ItemStack kit = getStackInSlot(SLOT_KIT);
-		if (!kit.isEmpty())
-			return;
-		active = true;
+		if (energy >= CONSUMPTION && ItemCardMain.isCardWithKit(stack1) && ItemCardMain.isCard(stack2) && stack1.isItemEqual(stack2) && getStackInSlot(SLOT_KIT).isEmpty()) 
+			active = true;
 	}
 
 	private void updateState() {
@@ -264,9 +254,9 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 		switch (index) {
 		case SLOT_CARD1:
 		case SLOT_CARD2:
-			return stack.getItem() instanceof ItemCardMain && ItemCardMain.getKitFromCard(stack.getItemDamage()) != -1;
+			return ItemCardMain.isCardWithKit(stack);
 		case SLOT_INFO:
-			return stack.getItem() instanceof ItemCardMain;
+			return ItemCardMain.isCard(stack);
 		case SLOT_ITEM:
 		case SLOT_KIT:
 		default:

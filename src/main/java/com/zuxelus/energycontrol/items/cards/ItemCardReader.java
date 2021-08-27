@@ -23,10 +23,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ItemCardReader implements ICardReader {
-	private ItemStack card;
+	private final ItemStack card;
 
 	public ItemCardReader(ItemStack card) {
-		if (!(card.getItem() instanceof ItemCardMain))
+		if (!ItemCardMain.isCard(card))
 			EnergyControl.logger.error("CardReader should be used for card items only.");
 		this.card = card;
 	}

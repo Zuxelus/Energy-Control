@@ -169,7 +169,7 @@ public class ItemCardGenerator extends ItemCardBase {
 	}
 
 	@Override
-	public int getKitFromCard() {
+	public int getKitId() {
 		return ItemCardType.KIT_GENERATOR;
 	}
 }

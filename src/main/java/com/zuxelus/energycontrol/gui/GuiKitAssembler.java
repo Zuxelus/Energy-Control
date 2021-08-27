@@ -39,7 +39,7 @@ public class GuiKitAssembler extends GuiContainerBase {
 
 	protected void initControls() {
 		ItemStack stack = container.te.getStackInSlot(TileEntityKitAssembler.SLOT_INFO);
-		if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain) {
+		if (ItemCardMain.isCard(stack)) {
 			if (!modified) {
 				textboxTitle = new GuiTextField(0, fontRenderer, 7, 16, 162, 18);
 				textboxTitle.setFocused(true);
@@ -70,7 +70,7 @@ public class GuiKitAssembler extends GuiContainerBase {
 
 	private void renderInfoToolTip(Slot slot, int x, int y) {
 		ItemStack stack = slot.getStack();
-		if (stack.isEmpty() || !(stack.getItem() instanceof ItemCardMain))
+		if (!ItemCardMain.isCard(stack))
 			return;
 		FontRenderer font = stack.getItem().getFontRenderer(stack);
 		net.minecraftforge.fml.client.config.GuiUtils.preItemToolTip(stack);
@@ -136,7 +136,7 @@ public class GuiKitAssembler extends GuiContainerBase {
 			tag.setString("title", textboxTitle.getText());
 			NetworkHelper.updateSeverTileEntity(container.te.getPos(), tag);
 			ItemStack card = container.te.getStackInSlot(0);
-			if (!card.isEmpty() && card.getItem() instanceof ItemCardMain)
+			if (ItemCardMain.isCard(card))
 				new ItemCardReader(card).setTitle(textboxTitle.getText());
 		}
 	}

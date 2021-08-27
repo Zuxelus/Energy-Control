@@ -66,7 +66,7 @@ public class PacketCard implements IMessage, IMessageHandler<PacketCard, IMessag
 			return null;
 		TileEntityInfoPanel panel = (TileEntityInfoPanel) te;
 		ItemStack stack = panel.getStackInSlot(message.slot);
-		if (stack.isEmpty() || !(stack.getItem() instanceof ItemCardMain))
+		if (!ItemCardMain.isCard(stack))
 			return null;
 		if (!stack.getItem().getClass().getName().equals(message.className)) {
 			EnergyControl.logger.warn("Class mismatch: '{}' != '{}'", message.className, stack.getItem().getClass().getName());

@@ -13,7 +13,6 @@ import com.zuxelus.zlib.tileentities.TileEntityInventory;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -26,7 +25,6 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 
 	public static final int SLOT_CARD = 0;
 	public static final int SLOT_UPGRADE = 1;
-	private static final int LOCATION_RANGE = 8;
 
 	private static final int STATE_UNKNOWN = 0;
 	private static final int STATE_PASSIVE = 1;
@@ -194,30 +192,27 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 		super.markDirty();
 		if (world == null || world.isRemote)
 			return;
-		
+
 		int status = STATE_UNKNOWN;
 		ItemStack card = getStackInSlot(SLOT_CARD);
-		if (!card.isEmpty()) {
-			Item item = card.getItem();
-			if (item instanceof ItemCardMain) {
-				ItemCardReader reader = new ItemCardReader(card);
-				CardState state = ItemCardMain.updateCardNBT(world, pos, reader, getStackInSlot(SLOT_UPGRADE));
-				if (state == CardState.OK) {
-					double min = Math.min(levelStart, levelEnd);
-					double max = Math.max(levelStart, levelEnd);
-					double cur = reader.getDouble("storage");
+		if (ItemCardMain.isCard(card)) {
+			ItemCardReader reader = new ItemCardReader(card);
+			CardState state = ItemCardMain.updateCardNBT(card, world, pos, reader, getStackInSlot(SLOT_UPGRADE));
+			if (state == CardState.OK) {
+				double min = Math.min(levelStart, levelEnd);
+				double max = Math.max(levelStart, levelEnd);
+				double cur = reader.getDouble("storage");
 
-					if (cur > max) {
-						status = STATE_ACTIVE;
-					} else if (cur < min) {
-						status = STATE_PASSIVE;
-					} else if (status == STATE_UNKNOWN) {
-						status = STATE_PASSIVE;
-					} else
-						status = STATE_PASSIVE;
+				if (cur > max) {
+					status = STATE_ACTIVE;
+				} else if (cur < min) {
+					status = STATE_PASSIVE;
+				} else if (status == STATE_UNKNOWN) {
+					status = STATE_PASSIVE;
 				} else
-					status = STATE_UNKNOWN;
-			}
+					status = STATE_PASSIVE;
+			} else
+				status = STATE_UNKNOWN;
 		}
 		setStatus(status);
 	}
@@ -247,11 +242,11 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 	}
 
 	@Override
-	public boolean isItemValid(int slotIndex, ItemStack itemstack) { // ISlotItemFilter
+	public boolean isItemValid(int slotIndex, ItemStack stack) { // ISlotItemFilter
 		if (slotIndex == SLOT_CARD) {
-			return itemstack.getItem() instanceof ItemCardMain && (itemstack.getItemDamage() == ItemCardType.CARD_ENERGY
-					|| itemstack.getItemDamage() == ItemCardType.CARD_ENERGY_ARRAY);
+			return stack.getItem() instanceof ItemCardMain && (stack.getItemDamage() == ItemCardType.CARD_ENERGY
+					|| stack.getItemDamage() == ItemCardType.CARD_ENERGY_ARRAY);
 		}
-		return itemstack.getItem() instanceof ItemUpgrade && itemstack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE;
+		return stack.getItem() instanceof ItemUpgrade && stack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE;
 	}
 }

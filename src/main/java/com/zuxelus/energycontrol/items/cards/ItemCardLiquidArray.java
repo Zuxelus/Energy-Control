@@ -7,6 +7,7 @@ import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.utils.StringUtils;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -172,7 +173,7 @@ public class ItemCardLiquidArray extends ItemCardBase {
 	}
 
 	@Override
-	public int getKitFromCard() {
+	public int getKitId() {
 		return ItemCardType.KIT_LIQUID;
 	}
 }

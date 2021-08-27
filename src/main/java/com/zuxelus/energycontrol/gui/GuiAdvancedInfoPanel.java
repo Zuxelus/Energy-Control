@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.gui;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.api.IItemCard;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.containers.ContainerAdvancedInfoPanel;
 import com.zuxelus.energycontrol.gui.controls.GuiInfoPanelCheckBox;
@@ -40,11 +41,11 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
 		addButton(new GuiButtonGeneral(ID_POWER, guiLeft + 83 + 17 * 3, guiTop + 42, 16, 16, TEXTURE, 192 - 16, getIconPowerTopOffset(((TileEntityAdvancedInfoPanel) panel).getPowerMode())).setGradient());
 		addButton(new GuiButtonGeneral(ID_TICKRATE, guiLeft + 83 + 17 * 4, guiTop + 42 + 17, 16, 16, Integer.toString(panel.getTickRate())).setGradient());
 
-		if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain) {
+		if (ItemCardMain.isCard(stack)) {
 			int slot = panel.getCardSlot(stack);
 			if (stack.getItemDamage() == ItemCardType.CARD_TEXT)
 				addButton(new GuiButtonGeneral(ID_TEXT, guiLeft + 83 + 17 * 4, guiTop + 42, 16, 16, "txt").setGradient());
-			List<PanelSetting> settingsList = ItemCardMain.getSettingsList(stack);
+			List<PanelSetting> settingsList = ((IItemCard) stack.getItem()).getSettingsList(stack);
 
 			int hy = fontRenderer.FONT_HEIGHT + 1;
 			int y = 1;

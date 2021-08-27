@@ -67,7 +67,7 @@ public class ItemCardReactor5x5 extends ItemCardBase {
 	}
 
 	@Override
-	public int getKitFromCard() {
+	public int getKitId() {
 		return ItemCardType.KIT_REACTOR;
 	}
 }

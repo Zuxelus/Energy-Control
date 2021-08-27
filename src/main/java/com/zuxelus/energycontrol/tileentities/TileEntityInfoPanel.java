@@ -13,7 +13,6 @@ import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -46,7 +45,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	private static final byte SLOT_UPGRADE_TOUCH = 3;
 
 	private final Map<Integer, List<PanelString>> cardData;
-	protected final Map<Integer, Map<Integer, Integer>> displaySettings;
+	protected final Map<Integer, Map<ItemStack, Integer>> displaySettings;
 	protected Screen screen;
 	public NBTTagCompound screenData;
 	public boolean init;
@@ -204,9 +203,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 			break;
 		case 4:
 			if (tag.hasKey("slot") && tag.hasKey("title")) {
-				ItemStack itemStack = getStackInSlot(tag.getInteger("slot"));
-				if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemCardMain) {
-					new ItemCardReader(itemStack).setTitle(tag.getString("title"));
+				ItemStack stack = getStackInSlot(tag.getInteger("slot"));
+				if (ItemCardMain.isCard(stack)) {
+					new ItemCardReader(stack).setTitle(tag.getString("title"));
 					resetCardData();
 				}
 			}
@@ -255,7 +254,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		for (int i = 0; i < settingsList.tagCount(); i++) {
 			NBTTagCompound compound = settingsList.getCompoundTagAt(i);
 			try {
-				getDisplaySettingsForSlot(slot).put(compound.getInteger("key"), compound.getInteger("value"));
+				getDisplaySettingsForSlot(slot).put(new ItemStack(compound.getCompoundTag("key")), compound.getInteger("value"));
 			} catch (IllegalArgumentException e) {
 				EnergyControl.logger.warn("Ivalid display settings for Information Panel");
 			}
@@ -307,9 +306,12 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 
 	protected NBTTagList serializeSlotSettings(int slot) {
 		NBTTagList settingsList = new NBTTagList();
-		for (Map.Entry<Integer, Integer> item : getDisplaySettingsForSlot(slot).entrySet()) {
+		for (Map.Entry<ItemStack, Integer> item : getDisplaySettingsForSlot(slot).entrySet()) {
 			NBTTagCompound compound = new NBTTagCompound();
-			compound.setInteger("key", item.getKey());
+			
+			NBTTagCompound stackNbt = new NBTTagCompound();
+			item.getKey().writeToNBT(stackNbt);
+			compound.setTag("key", stackNbt);
 			compound.setInteger("value", item.getValue());
 			settingsList.appendTag(compound);
 		}
@@ -463,16 +465,11 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	}
 
 	private void processCard(ItemStack card, int slot, ItemStack stack) {
-		if (card.isEmpty())
-			return;
-
-		Item item = card.getItem();
-		if (!(item instanceof ItemCardMain))
-			return;
-
-		ItemCardReader reader = new ItemCardReader(card);
-		ItemCardMain.updateCardNBT(world, pos, reader, stack);
-		reader.updateClient(card, this, slot);
+		if (ItemCardMain.isCard(card)) {
+			ItemCardReader reader = new ItemCardReader(card);
+			ItemCardMain.updateCardNBT(card, world, pos, reader, stack);
+			reader.updateClient(card, this, slot);
+		}
 	}
 
 	public boolean isColoredEval() {
@@ -501,7 +498,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		return slot == SLOT_CARD;
 	}
 
-	public Map<Integer, Integer> getDisplaySettingsForSlot(int slot) {
+	public Map<ItemStack, Integer> getDisplaySettingsForSlot(int slot) {
 		if (!displaySettings.containsKey(slot))
 			displaySettings.put(slot, new HashMap<>());
 		return displaySettings.get(slot);
@@ -520,11 +517,12 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		if (card.isEmpty())
 			return 0;
 
-		if (!displaySettings.containsKey(slot))
-			return DISPLAY_DEFAULT;
-
-		if (displaySettings.get(slot).containsKey(card.getItemDamage()))
-			return displaySettings.get(slot).get(card.getItemDamage());
+		if (displaySettings.containsKey(slot)) {
+			for (Map.Entry<ItemStack, Integer> entry : displaySettings.get(slot).entrySet()) {
+				ItemStack stack = entry.getKey();
+				if (card.isItemEqual(stack)) return entry.getValue();
+			}
+		}
 
 		return DISPLAY_DEFAULT;
 	}
@@ -535,13 +533,12 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		ItemStack stack = getStackInSlot(slot);
 		if (stack.isEmpty())
 			return;
-		if (!(stack.getItem() instanceof ItemCardMain))
+		if (!ItemCardMain.isCard(stack))
 			return;
 
-		int cardType = stack.getItemDamage();
 		if (!displaySettings.containsKey(slot))
 			displaySettings.put(slot, new HashMap<>());
-		displaySettings.get(slot).put(cardType, settings);
+		displaySettings.get(slot).put(stack, settings);
 		if (!world.isRemote)
 			notifyBlockUpdate();
 	}
@@ -561,7 +558,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	public boolean isItemValid(int index, ItemStack stack) { // ISlotItemFilter
 		switch (index) {
 		case SLOT_CARD:
-			return stack.getItem() instanceof ItemCardMain;
+			return ItemCardMain.isCard(stack);
 		case SLOT_UPGRADE_RANGE:
 			return stack.getItem() instanceof ItemUpgrade && stack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE;
 		case SLOT_UPGRADE_COLOR:
@@ -645,7 +642,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		if (world.isRemote)
 			return false;
 		ItemStack card = getStackInSlot(SLOT_CARD);
-		if (card.isEmpty() || (!isTouchCard() && card.getItemDamage() != ItemCardType.CARD_APPENG_INV))
+		if (card.isEmpty() || (!isTouchCard() && card.getItem() instanceof ItemCardMain && card.getItemDamage() != ItemCardType.CARD_APPENG_INV))
 			return false;
 		if (isTouchCard() && getStackInSlot(SLOT_UPGRADE_TOUCH).isEmpty())
 			return false;

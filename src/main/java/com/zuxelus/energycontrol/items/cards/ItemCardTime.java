@@ -5,6 +5,7 @@ import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -56,7 +57,7 @@ public class ItemCardTime extends ItemCardBase {
 	}
 
 	@Override
-	public int getKitFromCard() {
+	public int getKitId() {
 		return -1;
 	}
 }

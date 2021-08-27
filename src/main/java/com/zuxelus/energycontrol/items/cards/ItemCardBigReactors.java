@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ItemCardBigReactors extends ItemCardBase {
-	private static DecimalFormat df = new DecimalFormat("0.0");
+	private static final DecimalFormat df = new DecimalFormat("0.0");
 
 	public ItemCardBigReactors() {
 		super(ItemCardType.CARD_BIG_REACTORS, "card_big_reactors");
@@ -156,7 +156,7 @@ public class ItemCardBigReactors extends ItemCardBase {
 	}
 
 	@Override
-	public int getKitFromCard() {
+	public int getKitId() {
 		return ItemCardType.KIT_BIG_REACTORS;
 	}
 }

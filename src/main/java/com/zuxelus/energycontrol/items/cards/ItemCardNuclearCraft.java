@@ -170,7 +170,7 @@ public class ItemCardNuclearCraft extends ItemCardBase {
 	}
 
 	@Override
-	public int getKitFromCard() {
+	public int getKitId() {
 		return ItemCardType.KIT_NUCLEARCRAFT;
 	}
 }

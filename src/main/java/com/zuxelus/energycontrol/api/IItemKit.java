@@ -8,12 +8,5 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public interface IItemKit {
-
-	int getDamage();
-	
-	String getName();
-	
-	String getUnlocalizedName();
-
 	ItemStack getSensorCard(ItemStack stack, Item card, EntityPlayer player, World world, BlockPos pos, EnumFacing side);
 }

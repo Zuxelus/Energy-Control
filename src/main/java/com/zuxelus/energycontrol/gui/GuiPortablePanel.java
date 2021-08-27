@@ -49,7 +49,7 @@ public class GuiPortablePanel extends GuiContainer {
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		ItemStack stack = te.getStackInSlot(InventoryPortablePanel.SLOT_CARD);
-		if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain) {
+		if (ItemCardMain.isCard(stack)) {
 			ItemCardReader reader = new ItemCardReader(stack);
 
 			CardState state = reader.getState();

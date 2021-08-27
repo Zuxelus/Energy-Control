@@ -90,7 +90,7 @@ public class ItemCardLiquid extends ItemCardBase implements IHasBars {
 	}
 
 	@Override
-	public int getKitFromCard() {
+	public int getKitId() {
 		return ItemCardType.KIT_LIQUID;
 	}
 

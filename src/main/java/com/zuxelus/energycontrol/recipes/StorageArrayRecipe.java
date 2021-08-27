@@ -32,36 +32,36 @@ public class StorageArrayRecipe extends net.minecraftforge.registries.IForgeRegi
 		ItemStack array = null;
 		Vector<ItemStack> cards = new Vector<>();
 		for (int i = 0; i < inventoryLength; i++) {
-			ItemStack itemStack = inventory.getStackInSlot(i);
-			if (itemStack.isEmpty())
+			ItemStack stack = inventory.getStackInSlot(i);
+			if (stack.isEmpty())
 				continue;
-			if (!(itemStack.getItem() instanceof ItemCardMain))
+			if (!ItemCardMain.isCard(stack))
 				return ItemStack.EMPTY;
 
-			switch (itemStack.getItemDamage())
+			switch (stack.getItemDamage())
 			{
 			case ItemCardType.CARD_ENERGY:
-				cards.add(itemStack);
+				cards.add(stack);
 				cardCount++;
 				break;
 			case ItemCardType.CARD_LIQUID:
-				cards.add(itemStack);
+				cards.add(stack);
 				cardCountLiquid++;
 				break;
 			case ItemCardType.CARD_GENERATOR:
-				cards.add(itemStack);
+				cards.add(stack);
 				cardCountGenerator++;
 				break;
 			case ItemCardType.CARD_ENERGY_ARRAY:
-				array = itemStack;				
+				array = stack;				
 				arrayCount++;
 				break;
 			case ItemCardType.CARD_LIQUID_ARRAY:
-				array = itemStack;
+				array = stack;
 				arrayCountLiquid++;
 				break;
 			case ItemCardType.CARD_GENERATOR_ARRAY:
-				array = itemStack;
+				array = stack;
 				arrayCountGenerator++;
 				break;
 			}

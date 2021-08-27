@@ -21,7 +21,7 @@ public class InventoryPortablePanel extends ItemInventory {
 	public boolean isItemValid(int index, ItemStack stack) { // ISlotItemFilter
 		switch (index) {
 		case SLOT_CARD:
-			return stack.getItem() instanceof ItemCardMain;
+			return ItemCardMain.isCard(stack);
 		case SLOT_UPGRADE_RANGE:
 			return stack.getItem() instanceof ItemUpgrade && stack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE;
 		default:

@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.gui;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.api.IItemCard;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.gui.controls.GuiInfoPanelCheckBox;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
@@ -65,11 +66,11 @@ public class GuiInfoPanel extends GuiContainerBase implements IContainerListener
 		if (panel.isColoredEval())
 			addButton(new GuiButtonGeneral(ID_COLORS, guiLeft + xSize - 24, guiTop + 42 + 17, 16, 16, TEXTURE, 192, 0).setGradient().setScale(2));
 		addButton(new GuiButtonGeneral(ID_TICKRATE, guiLeft + xSize - 24, guiTop + 42 + 17 * 3, 16, 16, Integer.toString(panel.getTickRate())).setGradient());
-		if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain) {
+		if (ItemCardMain.isCard(stack)) {
 			int slot = panel.getCardSlot(stack);
 			if (stack.getItemDamage() == ItemCardType.CARD_TEXT)
 				addButton(new GuiButtonGeneral(ID_TEXT, guiLeft + xSize - 24, guiTop + 42 + 17 * 2, 16, 16, "txt").setGradient());
-			List<PanelSetting> settingsList = ItemCardMain.getSettingsList(stack);
+			List<PanelSetting> settingsList = ((IItemCard) stack.getItem()).getSettingsList(stack);
 
 			int hy = fontRenderer.FONT_HEIGHT + 1;
 			int y = 1;
@@ -140,7 +141,7 @@ public class GuiInfoPanel extends GuiContainerBase implements IContainerListener
 			tag.setString("title", textboxTitle.getText());
 			NetworkHelper.updateSeverTileEntity(panel.getPos(), tag);
 			ItemStack card = panel.getStackInSlot(activeTab);
-			if (!card.isEmpty() && card.getItem() instanceof ItemCardMain)
+			if (ItemCardMain.isCard(card))
 				new ItemCardReader(card).setTitle(textboxTitle.getText());
 		}
 	}

@@ -111,7 +111,7 @@ public class DriverAdvancedInfoPanel extends DriverSidedTileEntity {
 			if (value < 0 || value > 2)
 				return new Object[] { "" };
 			ItemStack stack = tileEntity.getStackInSlot(value);
-			if (stack.isEmpty() || !(stack.getItem() instanceof ItemCardMain))
+			if (!ItemCardMain.isCard(stack))
 				return new Object[] { "" }; 
 			return new Object[] { new ItemCardReader(stack).getTitle() };
 		}
@@ -123,7 +123,7 @@ public class DriverAdvancedInfoPanel extends DriverSidedTileEntity {
 			if (value < 0 || value > 2)
 				return null;
 			ItemStack stack = tileEntity.getStackInSlot(value);
-			if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain)
+			if (ItemCardMain.isCard(stack))
 				new ItemCardReader(stack).setTitle(title);
 			return null;
 		}

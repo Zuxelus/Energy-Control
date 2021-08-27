@@ -288,7 +288,7 @@ public class ItemCardGalacticraft extends ItemCardBase {
 	}
 
 	@Override
-	public int getKitFromCard() {
+	public int getKitId() {
 		return ItemCardType.KIT_GALACTICRAFT;
 	}
 }

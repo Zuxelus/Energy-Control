@@ -198,7 +198,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 		case SLOT_CARD1:
 		case SLOT_CARD2:
 		case SLOT_CARD3:
-			return stack.getItem() instanceof ItemCardMain;
+			return ItemCardMain.isCard(stack);
 		case SLOT_UPGRADE_RANGE:
 			return stack.getItem() instanceof ItemUpgrade && stack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE;
 		default:
