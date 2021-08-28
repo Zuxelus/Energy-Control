@@ -26,4 +26,4 @@ with the desired version's file ID (as explained on the linked website)
 You can find the API classes in the `com.zuxelus.energycontrol.api` package. They come with Javadoc documentation
 that explains their usage.
 
-<!--- TODO add Example -->
+There's also an example addon available in the `addon` folder.

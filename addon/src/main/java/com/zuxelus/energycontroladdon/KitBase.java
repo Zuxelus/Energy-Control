@@ -1,24 +1,13 @@
 package com.zuxelus.energycontroladdon;
 
 import com.zuxelus.energycontrol.api.IItemKit;
+import net.minecraft.item.Item;
 
-public abstract class KitBase implements IItemKit {
+public abstract class KitBase extends Item implements IItemKit {
 	protected String name;
-	protected int id;
 
-	public KitBase(String name, int id) {
+	public KitBase(String name) {
 		this.name = name;
-		this.id = id;
-	}
-
-	@Override
-	public int getDamage() {
-		return id;
-	}
-
-	@Override
-	public String getName() {
-		return EnergyControlAddon.MODID + ':' + name;
 	}
 
 	@Override
