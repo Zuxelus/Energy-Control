@@ -2,7 +2,6 @@ package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
-import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
@@ -211,9 +210,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 		if (world.isRemote)
 			return false;
 		ItemStack card = getStackInSlot(SLOT_CARD1);
-		if (card.isEmpty() || card.getItemDamage() != ItemCardType.CARD_APPENG_INV)
-			return false;
-		ItemCardMain.runTouchAction(this, card, stack, SLOT_CARD1);
+		runTouchAction(this, card, stack, SLOT_CARD1, false);
 		return true;
 	}
 }

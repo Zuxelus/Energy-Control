@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -92,6 +93,11 @@ public class ItemCardLiquid extends ItemCardBase implements IHasBars {
 	@Override
 	public int getKitId() {
 		return ItemCardType.KIT_LIQUID;
+	}
+
+	@Override
+	public boolean enableBars(ItemStack stack) {
+		return true;
 	}
 
 	@Override

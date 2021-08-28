@@ -121,6 +121,11 @@ public class ItemCardAppEngInv extends ItemCardBase implements ITouchAction {
 	}
 
 	@Override
+	public boolean enableTouch(ItemStack stack) {
+		return true;
+	}
+
+	@Override
 	public boolean runTouchAction(World world, ICardReader reader, ItemStack current) {
 		NBTTagList list = reader.getTagList("Items", Constants.NBT.TAG_COMPOUND);
 		if (current.isEmpty()) {

@@ -5,7 +5,6 @@ import com.zuxelus.energycontrol.api.*;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
-import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -22,7 +21,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.*;
 import java.util.function.Supplier;
 
-public final class ItemCardMain extends Item implements IItemCard {
+public final class ItemCardMain extends Item implements IItemCard, ITouchAction, IHasBars {
 	public static final int LOCATION_RANGE = 8;
 	
 	private static final Map<Integer, ItemCardBase> CARDS = new HashMap<>();
@@ -234,25 +233,40 @@ public final class ItemCardMain extends Item implements IItemCard {
 				.orElse(ItemStack.EMPTY);
 	}
 
-	public static void runTouchAction(TileEntityInfoPanel panel, ItemStack cardStack, ItemStack stack, int slot) {
-		if (isCard(cardStack)) {
-			Item card = cardStack.getItem();
-			if (card instanceof ITouchAction) {
-				ICardReader reader = new ItemCardReader(cardStack);
-				if (((ITouchAction) card).runTouchAction(panel.getWorld(), reader, stack))
-					reader.updateClient(cardStack, panel, slot);
-			}
-		}
+	@Override
+	public boolean enableTouch(ItemStack stack) {
+		return getCardById(stack.getItemDamage())
+				.map(card -> card instanceof ITouchAction)
+				.orElse(false);
 	}
 
-	public static void renderImage(TextureManager manager, double displayWidth, double displayHeight, ItemStack stack) {
-		if (isCard(stack)) {
-			Item card = stack.getItem();
-			if (card instanceof ITouchAction)
-				((ITouchAction) card).renderImage(manager, new ItemCardReader(stack));
-			if (card instanceof IHasBars)
-				((IHasBars) card).renderBars(manager, displayWidth, displayHeight, new ItemCardReader(stack));
-		}
+	@Override
+	public boolean runTouchAction(World world, ICardReader reader, ItemStack stack) {
+		return getCardById(reader.getCardType())
+				.filter(card -> card instanceof ITouchAction)
+				.map(card -> ((ITouchAction) card).runTouchAction(world, reader, stack))
+				.orElse(false);
+	}
+
+	@Override
+	public void renderImage(TextureManager manager, ICardReader reader) {
+		getCardById(reader.getCardType())
+				.filter(card -> card instanceof ITouchAction)
+				.ifPresent(card -> ((ITouchAction) card).renderImage(manager, reader));
+	}
+
+	@Override
+	public boolean enableBars(ItemStack stack) {
+		return getCardById(stack.getItemDamage())
+				.map(card -> card instanceof IHasBars)
+				.orElse(false);
+	}
+
+	@Override
+	public void renderBars(TextureManager manager, double displayWidth, double displayHeight, ICardReader reader) {
+		getCardById(reader.getCardType())
+				.filter(card -> card instanceof IHasBars)
+				.ifPresent(card -> ((IHasBars) card).renderBars(manager, displayWidth, displayHeight, reader));
 	}
 
 	public static void registerModels() {

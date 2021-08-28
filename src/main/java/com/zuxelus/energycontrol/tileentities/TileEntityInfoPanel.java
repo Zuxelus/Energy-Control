@@ -2,17 +2,16 @@ package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.EnergyControlConfig;
-import com.zuxelus.energycontrol.api.CardState;
-import com.zuxelus.energycontrol.api.PanelString;
+import com.zuxelus.energycontrol.api.*;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
-import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -642,45 +641,42 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		if (world.isRemote)
 			return false;
 		ItemStack card = getStackInSlot(SLOT_CARD);
-		if (card.isEmpty() || (!isTouchCard() && card.getItem() instanceof ItemCardMain && card.getItemDamage() != ItemCardType.CARD_APPENG_INV))
-			return false;
-		if (isTouchCard() && getStackInSlot(SLOT_UPGRADE_TOUCH).isEmpty())
-			return false;
-		switch (facing) { // TODO
-		case DOWN:
-			break;
-		case EAST:
-			break;
-		case NORTH:
-			break;
-		case SOUTH:
-			break;
-		case UP:
-			break;
-		case WEST:
-			break;
-		default:
-			break;
-		}
-		ItemCardMain.runTouchAction(this, card, stack, SLOT_CARD);
+		runTouchAction(this, card, stack, SLOT_CARD, true);
 		return true;
 	}
-
+	
 	public boolean isTouchCard() {
-		ItemStack stack = getStackInSlot(SLOT_CARD);
-		return !stack.isEmpty() && stack.getItemDamage() == ItemCardType.CARD_TOGGLE;
+		return isTouchCard(getStackInSlot(SLOT_CARD));
 	}
 
+	public boolean isTouchCard(ItemStack stack) {
+		Item item = stack.getItem();
+		return !stack.isEmpty() && item instanceof ITouchAction && ((ITouchAction) item).enableTouch(stack);
+	}
+	
 	public boolean hasBars() {
-		ItemStack stack = getStackInSlot(SLOT_CARD);
-		if (stack.isEmpty() || stack.getItemDamage() != ItemCardType.CARD_LIQUID)
-			return false;
-		return (getDisplaySettingsForCardInSlot(SLOT_CARD) & 1024) > 0;
+		return hasBars(getStackInSlot(SLOT_CARD));
+	}
+
+	public boolean hasBars(ItemStack stack) {
+		Item item = stack.getItem();
+		return !stack.isEmpty() && item instanceof IHasBars && ((IHasBars) item).enableBars(stack) && (getDisplaySettingsForCardInSlot(SLOT_CARD) & 1024) > 0;
 	}
 
 	public void renderImage(TextureManager manager, double displayWidth, double displayHeight) {
 		ItemStack stack = getStackInSlot(SLOT_CARD);
-		if (isTouchCard() || hasBars())
-			ItemCardMain.renderImage(manager, displayWidth, displayHeight, stack);
+		Item card = stack.getItem();
+		if (isTouchCard(stack))
+			((ITouchAction) card).renderImage(manager, new ItemCardReader(stack));
+		if (hasBars())
+			((IHasBars) card).renderBars(manager, displayWidth, displayHeight, new ItemCardReader(stack));
+	}
+	
+	protected void runTouchAction(TileEntityInfoPanel panel, ItemStack cardStack, ItemStack stack, int slot, boolean needsTouchUpgrade) {
+		if (isTouchCard(cardStack) && (!needsTouchUpgrade || !getStackInSlot(SLOT_UPGRADE_TOUCH).isEmpty())) {
+			ICardReader reader = new ItemCardReader(cardStack);
+			if (((ITouchAction) cardStack.getItem()).runTouchAction(panel.getWorld(), reader, stack))
+				reader.updateClient(cardStack, panel, slot);
+		}
 	}
 }

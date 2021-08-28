@@ -36,10 +36,11 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 			return CardState.NO_TARGET;
 
 		IBlockState state = world.getBlockState(target);
-		if (state == null)
+		Block block = state.getBlock();
+		if (block.isAir(state, world, pos))
 			return CardState.NO_TARGET;
 		
-		if (state.getBlock() == Blocks.LEVER || state.getBlock() instanceof BlockButton) {
+		if (block == Blocks.LEVER || block instanceof BlockButton) {
 			boolean value = state.getValue(POWERED);
 			reader.setBoolean("value", value);
 			return CardState.OK;
@@ -74,16 +75,21 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 	}
 
 	@Override
+	public boolean enableTouch(ItemStack stack) {
+		return true;
+	}
+
+	@Override
 	public boolean runTouchAction(World world, ICardReader reader, ItemStack stack) {
 		BlockPos pos = reader.getTarget();
 		if (pos == null)
 			return false;
 
 		IBlockState state = world.getBlockState(pos);
-		if (state == null)
+		Block block = state.getBlock();
+		if (block.isAir(state, world, pos))
 			return false;
 		
-		Block block = state.getBlock();
 		if (block == Blocks.LEVER) {
 			state = state.cycleProperty(POWERED);
 			world.setBlockState(pos, state, 3);
