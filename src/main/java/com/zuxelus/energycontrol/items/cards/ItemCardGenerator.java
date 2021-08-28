@@ -158,13 +158,13 @@ public class ItemCardGenerator extends ItemCardBase {
 	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(7);
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 1, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelCapacity"), 2, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMultiplier"), 4, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOutput"), 8, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelItems"), 16, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOnOff"), 32, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelAdditionalInfo"), 64, damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 1));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelCapacity"), 2));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMultiplier"), 4));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOutput"), 8));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelItems"), 16));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOnOff"), 32));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelAdditionalInfo"), 64));
 		return result;
 	}
 

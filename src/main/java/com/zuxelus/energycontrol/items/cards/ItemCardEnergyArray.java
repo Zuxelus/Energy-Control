@@ -7,7 +7,6 @@ import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.utils.StringUtils;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -140,12 +139,12 @@ public class ItemCardEnergyArray extends ItemCardBase {
 	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(6);
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEachCard"), 1,damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 4,damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelFree"), 8, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelStorage"), 16, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelPercentage"), 32, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelTotal"), 2,damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEachCard"), 1));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 4));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelFree"), 8));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelStorage"), 16));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelPercentage"), 32));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelTotal"), 2));
 		return result;
 	}
 

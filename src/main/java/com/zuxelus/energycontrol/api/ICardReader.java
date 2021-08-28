@@ -6,6 +6,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +63,7 @@ public interface ICardReader {
 	/**
 	 * Set the state of card. In most cases shouldn't be called by card, use
 	 * return value of
-	 * {@link IPanelDataSource#update(TileEntity, ICardWrapper, int)} instead.
+	 * {@link IItemCard#update(World, ICardReader, int, BlockPos)} instead.
 	 * 
 	 * @param state
 	 */
@@ -70,10 +71,6 @@ public interface ICardReader {
 
 	/**
 	 * Check is field exists
-	 * 
-	 * @param field
-	 *            field name
-	 * @return
 	 */
 	boolean hasField(String name);
 

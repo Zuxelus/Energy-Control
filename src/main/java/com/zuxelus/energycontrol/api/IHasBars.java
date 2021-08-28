@@ -5,8 +5,14 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.item.ItemStack;
 
+/**
+ * Used to draw (progress) bars on Info Panels
+ */
 public interface IHasBars {
+	
+	boolean enableBars(ItemStack stack);
 
 	void renderBars(TextureManager manager, double displayWidth, double displayHeight, ICardReader reader);
 

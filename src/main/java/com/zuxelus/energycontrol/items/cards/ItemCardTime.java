@@ -5,7 +5,6 @@ import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -47,7 +46,7 @@ public class ItemCardTime extends ItemCardBase {
 	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(1);
-		result.add(new PanelSetting(I18n.format("msg.ec.cb24h"), 1, damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cb24h"), 1));
 		return result;
 	}
 

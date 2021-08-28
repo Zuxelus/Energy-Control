@@ -7,7 +7,6 @@ import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.utils.StringUtils;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -158,12 +157,12 @@ public class ItemCardLiquidArray extends ItemCardBase {
 	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(6);
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidName"), 1,damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidFree"), 2,damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidCapacity"), 4, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidPercentage"), 8, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEachCard"), 16,damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelTotal"), 32,damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidName"), 1));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidFree"), 2));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidCapacity"), 4));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidPercentage"), 8));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEachCard"), 16));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelTotal"), 32));
 		return result;
 	}
 
