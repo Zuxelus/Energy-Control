@@ -104,9 +104,9 @@ public class ItemKitMain extends Item implements IItemKit {
 	}
 	
 	@Override
-	public ItemStack getSensorCard(ItemStack stack, Item card, EntityPlayer player, World world, BlockPos pos, EnumFacing side) {
+	public ItemStack getSensorCard(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side) {
 		int damage = stack.getItemDamage();
-		if (KITS.containsKey(damage)) return KITS.get(damage).getSensorCard(stack, card, player, world, pos, side);
+		if (KITS.containsKey(damage)) return KITS.get(damage).getSensorCard(stack, player, world, pos, side);
 		else return ItemStack.EMPTY;
 	}
 
@@ -122,7 +122,7 @@ public class ItemKitMain extends Item implements IItemKit {
 		if (!player.world.isRemote && !stack.isEmpty()) {
 			Item item = stack.getItem();
 			if (item instanceof IItemKit) {
-				ItemStack card = ((IItemKit) item).getSensorCard(stack, ModItems.itemCard, player, player.world, event.getPos(), event.getFace());
+				ItemStack card = ((IItemKit) item).getSensorCard(stack, player, player.world, event.getPos(), event.getFace());
 				if (!card.isEmpty()) {
 					stack.shrink(1);
 
