@@ -64,17 +64,17 @@ public class ItemCardReactor extends ItemCardBase {
 	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(6);
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOnOff"), 1, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelHeat"), 2, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMaxHeat"), 4, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMelting"), 8, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOutput"), 16, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelTimeRemaining"), 32, damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOnOff"), 1));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelHeat"), 2));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMaxHeat"), 4));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMelting"), 8));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOutput"), 16));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelTimeRemaining"), 32));
 		return result;
 	}
 
 	@Override
-	public int getKitFromCard() {
+	public int getKitId() {
 		return ItemCardType.KIT_REACTOR;
 	}
 }

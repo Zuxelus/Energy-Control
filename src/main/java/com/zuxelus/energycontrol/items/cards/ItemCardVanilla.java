@@ -101,16 +101,16 @@ public class ItemCardVanilla extends ItemCardBase {
 	@Override
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>();
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOnOff"), DISPLAY_BURNING, damage));
-		result.add(new PanelSetting(I18n.format("msg.burnTimeText"), DISPLAY_TIME, damage));
-		result.add(new PanelSetting(I18n.format("msg.cookingText"), DISPLAY_SLOT_1, damage));
-		result.add(new PanelSetting(I18n.format("msg.fuelText"), DISPLAY_SLOT_2, damage));
-		result.add(new PanelSetting(I18n.format("msg.outputText"), DISPLAY_SLOT_3, damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOnOff"), DISPLAY_BURNING));
+		result.add(new PanelSetting(I18n.format("msg.burnTimeText"), DISPLAY_TIME));
+		result.add(new PanelSetting(I18n.format("msg.cookingText"), DISPLAY_SLOT_1));
+		result.add(new PanelSetting(I18n.format("msg.fuelText"), DISPLAY_SLOT_2));
+		result.add(new PanelSetting(I18n.format("msg.outputText"), DISPLAY_SLOT_3));
 		return result;
 	}
 
 	@Override
-	public int getKitFromCard() {
+	public int getKitId() {
 		return ItemCardType.KIT_VANILLA;
 	}
 }

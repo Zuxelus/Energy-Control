@@ -74,13 +74,13 @@ public class InfoPanelPeripheral implements IPeripheral {
 			return null;
 		case 8:
 			stack = te.getStackInSlot(0);
-			if (stack.isEmpty() || !(stack.getItem() instanceof ItemCardMain))
+			if (!ItemCardMain.isCard(stack))
 				return new Object[] { "" }; 
 			return new Object[] { new ItemCardReader(stack).getTitle() };
 		case 9:
 			String title = ArgumentHelper.getString(args, 0);
 			stack = te.getStackInSlot(0);
-			if (title != null && !stack.isEmpty() && stack.getItem() instanceof ItemCardMain)
+			if (title != null && ItemCardMain.isCard(stack))
 				new ItemCardReader(stack).setTitle(title);
 			return null;
 		}

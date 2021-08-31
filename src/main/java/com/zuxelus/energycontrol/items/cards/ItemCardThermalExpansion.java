@@ -8,7 +8,6 @@ import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 
-import cofh.core.block.TilePowered;
 import cofh.core.fluid.FluidTankCore;
 import cofh.core.util.core.EnergyConfig;
 import cofh.core.util.helpers.StringHelper;
@@ -17,7 +16,6 @@ import cofh.thermalexpansion.block.machine.TileInsolator;
 import cofh.thermalexpansion.block.machine.TileMachineBase;
 import cofh.thermalexpansion.block.machine.TileSmelter;
 import cofh.thermalexpansion.item.ItemAugment;
-import ic2.core.block.generator.tileentity.TileEntityRTGenerator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -120,7 +118,7 @@ public class ItemCardThermalExpansion extends ItemCardBase {
 	}
 
 	@Override
-	public int getKitFromCard() {
+	public int getKitId() {
 		return ItemCardType.KIT_THERMAL_EXPANSION;
 	}
 }

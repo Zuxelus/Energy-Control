@@ -118,7 +118,7 @@ public class DriverInfoPanel extends DriverSidedTileEntity {
 		@Callback(doc = "function():string -- Get card title.")
 		public Object[] getCardTitle(final Context context, final Arguments args) {
 			ItemStack stack = tileEntity.getStackInSlot(0);
-			if (stack.isEmpty() || !(stack.getItem() instanceof ItemCardMain))
+			if (!ItemCardMain.isCard(stack))
 				return new Object[] { "" }; 
 			return new Object[] { new ItemCardReader(stack).getTitle() };
 		}
@@ -127,7 +127,7 @@ public class DriverInfoPanel extends DriverSidedTileEntity {
 		public Object[] setCardTitle(final Context context, final Arguments args) {
 			String title = args.checkString(0);
 			ItemStack stack = tileEntity.getStackInSlot(0);
-			if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain)
+			if (ItemCardMain.isCard(stack))
 				new ItemCardReader(stack).setTitle(title);
 			return null;
 		}

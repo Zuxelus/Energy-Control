@@ -38,14 +38,9 @@ public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel
 
 	private void processCard() {
 		ItemStack card = te.getStackInSlot(InventoryPortablePanel.SLOT_CARD);
-		if (card.isEmpty())
-			return;
-
-		Item item = card.getItem();
-		if (!(item instanceof ItemCardMain))
-			return;
-
-		ItemCardReader reader = new ItemCardReader(card);
-		ItemCardMain.updateCardNBT(player.world, player.getPosition(), reader, te.getStackInSlot(InventoryPortablePanel.SLOT_UPGRADE_RANGE));
+		if (ItemCardMain.isCard(card)) {
+			ItemCardReader reader = new ItemCardReader(card);
+			ItemCardMain.updateCardNBT(card, player.world, player.getPosition(), reader, te.getStackInSlot(InventoryPortablePanel.SLOT_UPGRADE_RANGE));
+		}
 	}
 }

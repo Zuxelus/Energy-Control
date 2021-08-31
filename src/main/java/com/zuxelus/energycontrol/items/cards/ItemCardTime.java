@@ -46,7 +46,7 @@ public class ItemCardTime extends ItemCardBase {
 	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(1);
-		result.add(new PanelSetting(I18n.format("msg.ec.cb24h"), 1, damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cb24h"), 1));
 		return result;
 	}
 
@@ -56,7 +56,7 @@ public class ItemCardTime extends ItemCardBase {
 	}
 
 	@Override
-	public int getKitFromCard() {
+	public int getKitId() {
 		return -1;
 	}
 }

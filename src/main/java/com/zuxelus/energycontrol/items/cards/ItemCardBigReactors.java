@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ItemCardBigReactors extends ItemCardBase {
-	private static DecimalFormat df = new DecimalFormat("0.0");
+	private static final DecimalFormat df = new DecimalFormat("0.0");
 
 	public ItemCardBigReactors() {
 		super(ItemCardType.CARD_BIG_REACTORS, "card_big_reactors");
@@ -145,18 +145,18 @@ public class ItemCardBigReactors extends ItemCardBase {
 	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(6);
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOnOff"), 1, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelHeat"), 2, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 4, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelCapacity"), 8, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOutputRF"), 16, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbFuel"), 32, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelAdditionalInfo"), 64, damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOnOff"), 1));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelHeat"), 2));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 4));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelCapacity"), 8));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOutputRF"), 16));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbFuel"), 32));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelAdditionalInfo"), 64));
 		return result;
 	}
 
 	@Override
-	public int getKitFromCard() {
+	public int getKitId() {
 		return ItemCardType.KIT_BIG_REACTORS;
 	}
 }

@@ -116,8 +116,13 @@ public class ItemCardAppEngInv extends ItemCardBase implements ITouchAction {
 	}
 
 	@Override
-	public int getKitFromCard() {
+	public int getKitId() {
 		return ItemCardType.KIT_APPENG;
+	}
+
+	@Override
+	public boolean enableTouch(ItemStack stack) {
+		return true;
 	}
 
 	@Override

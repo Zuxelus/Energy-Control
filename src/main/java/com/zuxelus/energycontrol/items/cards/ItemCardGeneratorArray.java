@@ -145,11 +145,11 @@ public class ItemCardGeneratorArray extends ItemCardBase {
 	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(5);
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelStorage"), 1, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMaxStorage"), 2, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOutput"), 8, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEachCard"), 32, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelTotal"), 64, damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelStorage"), 1));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMaxStorage"), 2));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOutput"), 8));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEachCard"), 32));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelTotal"), 64));
 		return result;
 	}
 
@@ -159,7 +159,7 @@ public class ItemCardGeneratorArray extends ItemCardBase {
 	}
 
 	@Override
-	public int getKitFromCard() {
+	public int getKitId() {
 		return ItemCardType.KIT_GENERATOR;
 	}
 }

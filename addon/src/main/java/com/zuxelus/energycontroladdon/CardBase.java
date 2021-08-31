@@ -1,66 +1,48 @@
 package com.zuxelus.energycontroladdon;
 
-import java.util.List;
-
-import com.zuxelus.energycontrol.api.ICardGui;
-import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.IItemCard;
 import com.zuxelus.energycontrol.api.PanelString;
-
 import net.minecraft.client.resources.I18n;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
-public abstract class CardBase implements IItemCard {
+import java.util.List;
+
+public abstract class CardBase extends Item implements IItemCard {
 	protected String name;
-	protected int id;
 
-	public CardBase(String name, int id) {
+	public CardBase(String name) {
 		this.name = name;
-		this.id = id;
 	}
 
 	@Override
-	public int getDamage() {
-		return id;
-	}
-
-	@Override
-	public String getName() {
-		return EnergyControlAddon.MODID + ':' + name;
-	}
-
-	@Override
-	public ICardGui getSettingsScreen(ICardReader arg0) {
-		return null;
-	}
-
-	@Override
-	public String getUnlocalizedName() {
+	public String getUnlocalizedName(ItemStack stack) {
 		return "item." + name;
 	}
 
 	@Override
-	public boolean isRemoteCard() {
+	public boolean isRemoteCard(ItemStack stack) {
 		return false;
 	}
 
-	protected void addOnOff(List<PanelString> result, Boolean value) {
+	protected static void addOnOff(List<PanelString> result, Boolean value) {
 		String text;
-		int txtColor = 0;
+		int color;
 		if (value) {
-			txtColor = 0x00ff00;
+			color = 0x00ff00;
 			text = I18n.format("msg.ec.InfoPanelOn");
 		} else {
-			txtColor = 0xff0000;
+			color = 0xff0000;
 			text = I18n.format("msg.ec.InfoPanelOff");
 		}
 		if (result.size() > 0) {
 			PanelString firstLine = result.get(0);
 			firstLine.textRight = text;
-			firstLine.colorRight = txtColor;
+			firstLine.colorRight = color;
 		} else {
 			PanelString line = new PanelString();
 			line.textLeft = text;
-			line.colorLeft = txtColor;
+			line.colorLeft = color;
 			result.add(line);
 		}
 	}

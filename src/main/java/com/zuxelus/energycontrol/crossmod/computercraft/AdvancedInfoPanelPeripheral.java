@@ -76,7 +76,7 @@ public class AdvancedInfoPanelPeripheral implements IPeripheral {
 			if (value < 0 || value > 2)
 				return new Object[] { "" };
 			stack = te.getStackInSlot(value);
-			if (stack.isEmpty() || !(stack.getItem() instanceof ItemCardMain))
+			if (!ItemCardMain.isCard(stack))
 				return new Object[] { "" };
 			return new Object[] { new ItemCardReader(stack).getTitle() };
 		case 8:
@@ -85,7 +85,7 @@ public class AdvancedInfoPanelPeripheral implements IPeripheral {
 			if (value < 0 || value > 2)
 				return null;
 			stack = te.getStackInSlot(value);
-			if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain)
+			if (ItemCardMain.isCard(stack))
 				new ItemCardReader(stack).setTitle(title);
 			return null;
 		case 9:

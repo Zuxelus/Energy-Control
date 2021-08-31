@@ -18,7 +18,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class CardFurnace extends CardBase {
-	public static int CARD_ID = 50;
 	public static final int DISPLAY_BURNING = 1;
 	public static final int DISPLAY_TIME = 2;
 	public static final int DISPLAY_SLOT_1 = 4;
@@ -26,7 +25,7 @@ public class CardFurnace extends CardBase {
 	public static final int DISPLAY_SLOT_3 = 16;
 
 	public CardFurnace() {
-		super("card_furnace", CARD_ID);
+		super("card_furnace");
 	}
 
 	@Override
@@ -44,15 +43,18 @@ public class CardFurnace extends CardBase {
 		reader.setBoolean("burning", furnace.isBurning());
 		reader.setInt("burnTime", furnace.getField(0));
 		NBTTagCompound tag = new NBTTagCompound();
-		if (furnace.getStackInSlot(0) != null) {
-			tag.setString("Cooking", furnace.getStackInSlot(0).getDisplayName());
-			tag.setInteger("Csize", furnace.getStackInSlot(0).getCount());
+		ItemStack cooking = furnace.getStackInSlot(0);
+		if (!cooking.isEmpty()) {
+			tag.setString("Cooking", cooking.getDisplayName());
+			tag.setInteger("Csize", cooking.getCount());
 		}
-		if (furnace.getStackInSlot(1) != null) {
-			tag.setString("Fuel", furnace.getStackInSlot(1).getDisplayName());
-			tag.setInteger("Fsize", furnace.getStackInSlot(1).getCount());
+		ItemStack fuel = furnace.getStackInSlot(1);
+		if (!fuel.isEmpty()) {
+			tag.setString("Fuel", fuel.getDisplayName());
+			tag.setInteger("Fsize", fuel.getCount());
 		}
-		if (furnace.getStackInSlot(2) != null) {
+		ItemStack output = furnace.getStackInSlot(2);
+		if (!output.isEmpty()) {
 			tag.setString("Output", furnace.getStackInSlot(2).getDisplayName());
 			tag.setInteger("Osize", furnace.getStackInSlot(2).getCount());
 		}
@@ -61,15 +63,14 @@ public class CardFurnace extends CardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
-		List<PanelString> result = new LinkedList<PanelString>();
-		boolean isBurning = reader.getBoolean("burning");
+	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
+		List<PanelString> result = new LinkedList<>();
 		int burnTime = reader.getInt("burnTime");
 		NBTTagCompound tagCompound = reader.getTag("Info");
 
-		if ((displaySettings & DISPLAY_TIME) > 0)
+		if ((settings & DISPLAY_TIME) > 0)
 			result.add(new PanelString("msg.burnTime", burnTime, showLabels));
-		if ((displaySettings & DISPLAY_SLOT_1) > 0) {
+		if ((settings & DISPLAY_SLOT_1) > 0) {
 			String slot1pre = I18n.format("msg.ec.None");
 			if (tagCompound.hasKey("Cooking"))
 				slot1pre = tagCompound.getString("Cooking");
@@ -78,7 +79,7 @@ public class CardFurnace extends CardBase {
 			else
 				result.add(new PanelString(String.format("%sx - %s", tagCompound.getInteger("Csize"), slot1pre)));
 		}
-		if ((displaySettings & DISPLAY_SLOT_2) > 0) {
+		if ((settings & DISPLAY_SLOT_2) > 0) {
 			String slot2pre = I18n.format("msg.ec.None");
 			if (tagCompound.hasKey("Fuel"))
 				slot2pre = tagCompound.getString("Fuel");
@@ -87,7 +88,7 @@ public class CardFurnace extends CardBase {
 			else
 				result.add(new PanelString(String.format("%sx - %s", tagCompound.getInteger("Fsize"), slot2pre)));
 		}
-		if ((displaySettings & DISPLAY_SLOT_3) > 0) {
+		if ((settings & DISPLAY_SLOT_3) > 0) {
 			String slot3pre = I18n.format("msg.ec.None");
 			if (tagCompound.hasKey("Output"))
 				slot3pre = tagCompound.getString("Output");
@@ -96,7 +97,7 @@ public class CardFurnace extends CardBase {
 			else
 				result.add(new PanelString(String.format("%sx - %s", tagCompound.getInteger("Osize"), slot3pre)));
 		}
-		if ((displaySettings & DISPLAY_BURNING) > 0)
+		if ((settings & DISPLAY_BURNING) > 0)
 			addOnOff(result, reader.getBoolean("burning"));
 		return result;
 	}
@@ -104,16 +105,16 @@ public class CardFurnace extends CardBase {
 	@Override
 	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		List<PanelSetting> result = new ArrayList<PanelSetting>();
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOnOff"), DISPLAY_BURNING, CARD_ID));
-		result.add(new PanelSetting(I18n.format("msg.burnTimeText"), DISPLAY_TIME, CARD_ID));
-		result.add(new PanelSetting(I18n.format("msg.cookingText"), DISPLAY_SLOT_1, CARD_ID));
-		result.add(new PanelSetting(I18n.format("msg.fuelText"), DISPLAY_SLOT_2, CARD_ID));
-		result.add(new PanelSetting(I18n.format("msg.outputText"), DISPLAY_SLOT_3, CARD_ID));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOnOff"), DISPLAY_BURNING));
+		result.add(new PanelSetting(I18n.format("msg.burnTimeText"), DISPLAY_TIME));
+		result.add(new PanelSetting(I18n.format("msg.cookingText"), DISPLAY_SLOT_1));
+		result.add(new PanelSetting(I18n.format("msg.fuelText"), DISPLAY_SLOT_2));
+		result.add(new PanelSetting(I18n.format("msg.outputText"), DISPLAY_SLOT_3));
 		return result;
 	}
 
 	@Override
-	public int getKitFromCard() {
-		return KitFurnace.KIT_ID;
+	public ItemStack getKitFromCard(ItemStack stack) {
+		return new ItemStack(EnergyControlAddon.KIT_FURNACE);
 	}
 }

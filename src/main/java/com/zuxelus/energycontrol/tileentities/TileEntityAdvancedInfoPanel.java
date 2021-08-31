@@ -2,7 +2,6 @@ package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
-import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
@@ -198,7 +197,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 		case SLOT_CARD1:
 		case SLOT_CARD2:
 		case SLOT_CARD3:
-			return stack.getItem() instanceof ItemCardMain;
+			return ItemCardMain.isCard(stack);
 		case SLOT_UPGRADE_RANGE:
 			return stack.getItem() instanceof ItemUpgrade && stack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE;
 		default:
@@ -211,9 +210,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 		if (world.isRemote)
 			return false;
 		ItemStack card = getStackInSlot(SLOT_CARD1);
-		if (card.isEmpty() || card.getItemDamage() != ItemCardType.CARD_APPENG_INV)
-			return false;
-		ItemCardMain.runTouchAction(this, card, stack, SLOT_CARD1);
+		runTouchAction(this, card, stack, SLOT_CARD1, false);
 		return true;
 	}
 }

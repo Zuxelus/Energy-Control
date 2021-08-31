@@ -89,16 +89,16 @@ public class ItemCardEngine extends ItemCardBase {
 	@Override
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(5);
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelHeat"), 1, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelStorage"), 2, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMaxStorage"), 4, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelSpeed"), 8, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOnOff"), 16, damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelHeat"), 1));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelStorage"), 2));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMaxStorage"), 4));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelSpeed"), 8));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOnOff"), 16));
 		return result;
 	}
 
 	@Override
-	public int getKitFromCard() {
+	public int getKitId() {
 		return ItemCardType.KIT_GENERATOR;
 	}
 }

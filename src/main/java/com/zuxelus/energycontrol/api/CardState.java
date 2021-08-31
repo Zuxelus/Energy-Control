@@ -1,11 +1,12 @@
 package com.zuxelus.energycontrol.api;
 
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+
 /**
- * Enum of card states. Used as return value of
- * {@link IPanelDataSource#update(net.minecraft.tileentity.TileEntity, ICardWrapper, int)}
- * . If card state is OK or CUSTOM_ERROR, then
- * {@link IPanelDataSource#getStringData(int, ICardWrapper, boolean)} will be
- * called. Otherwise standard message will be displayed.
+ * Enum of card states, used as return value of {@link IItemCard#update(World, ICardReader, int, BlockPos)}. <br></br>
+ * If the card state is OK or CUSTOM_ERROR, then {@link IItemCard#getStringData(int, ICardReader, boolean, boolean)} will be called. <br></br>
+ * Otherwise standard message will be displayed.
  * 
  * @author Shedar
  */

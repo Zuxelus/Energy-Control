@@ -69,7 +69,7 @@ public class ItemCardCounter extends ItemCardBase {
 	}
 
 	@Override
-	public int getKitFromCard() {
+	public int getKitId() {
 		return ItemCardType.KIT_COUNTER;
 	}
 }

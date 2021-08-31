@@ -71,17 +71,17 @@ public class ItemCardReactorDraconic extends ItemCardBase {
 	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(6);
-		result.add(new PanelSetting(I18n.format("msg.ec.cbStatus"), 1, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbDiameter"), 2, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInputRate"), 4, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbFieldStrength"), 8, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbSaturation"), 16, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbFuel"), 32, damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbStatus"), 1));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbDiameter"), 2));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInputRate"), 4));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbFieldStrength"), 8));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbSaturation"), 16));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbFuel"), 32));
 		return result;
 	}
 
 	@Override
-	public int getKitFromCard() {
+	public int getKitId() {
 		return ItemCardType.KIT_DRACONIC;
 	}
 }

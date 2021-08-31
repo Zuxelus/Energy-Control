@@ -1,10 +1,12 @@
 package com.zuxelus.energycontrol.api;
 
+import net.minecraft.item.ItemStack;
+
 /**
  * Object of PanelSetting class defines one checkbox in the card's settings.
  * 
  * @author Shedar
- * @see IPanelDataSource#getSettingsList()
+ * @see IItemCard#getSettingsList(ItemStack) 
  */
 public class PanelSetting {
 	/**
@@ -18,23 +20,11 @@ public class PanelSetting {
 	public int displayBit;
 
 	/**
-	 * Identifier of the card. Should be same as
-	 * {@link IPanelDataSource#getCardType()}.
+	 * @param title Name of the option
+	 * @param displayBit Bit number in display settings. Should be in the range 0-31.
 	 */
-	public int cardType;
-
-	/**
-	 * @param title
-	 *            Name of the option
-	 * @param displayBit
-	 *            Bit number in display settings. Should be in the range 0-31.
-	 * @param cardType
-	 *            Identifier of the card. Should be same as
-	 *            {@link IPanelDataSource#getCardType()}.
-	 */
-	public PanelSetting(String title, int displayBit, int cardType) {
+	public PanelSetting(String title, int displayBit) {
 		this.title = title;
 		this.displayBit = displayBit;
-		this.cardType = cardType;
 	}
 }
