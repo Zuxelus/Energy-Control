@@ -39,11 +39,11 @@ public class CrossModLoader {
 		loadCrossModSafely(ModIDs.COMPUTER_CRAFT, () -> CrossComputerCraft::new);
 		loadCrossMod(ModIDs.THERMAL_EXPANSION, CrossThermalExpansion::new);
 	}
-	
+
 	private static void loadCrossMod(String modid, Supplier<? extends CrossModBase> factory) {
 		CROSS_MODS.put(modid, Loader.isModLoaded(modid) ? factory.get() : new CrossModBase());
 	}
-	
+
 	private static void loadCrossModSafely(String modid, Supplier<Supplier<? extends CrossModBase>> factory) {
 		CROSS_MODS.put(modid, Loader.isModLoaded(modid) ? factory.get().get() : new CrossModBase());
 	}
@@ -51,7 +51,7 @@ public class CrossModLoader {
 	public static void postInit() {
 		loadCrossMod(ModIDs.OPEN_COMPUTERS, CrossOpenComputers::new);
 	}
-	
+
 	public static CrossModBase getCrossMod(String modid) {
 		return CROSS_MODS.get(modid);
 	}

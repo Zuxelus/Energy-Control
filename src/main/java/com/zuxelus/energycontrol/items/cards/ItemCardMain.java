@@ -22,9 +22,8 @@ import java.util.*;
 import java.util.function.Supplier;
 
 public final class ItemCardMain extends Item implements IItemCard, ITouchAction, IHasBars {
-	public static final int LOCATION_RANGE = 8;
-	
 	private static final Map<Integer, ItemCardBase> CARDS = new HashMap<>();
+	public static final int LOCATION_RANGE = 8;
 
 	public ItemCardMain() {
 		super();
@@ -33,16 +32,16 @@ public final class ItemCardMain extends Item implements IItemCard, ITouchAction,
 		canRepair = false;
 		setCreativeTab(EnergyControl.creativeTab);
 	}
-	
+
 	public static boolean isCard(ItemStack stack) {
 		return !stack.isEmpty() && stack.getItem() instanceof IItemCard;
 	}
-	
+
 	public static boolean isCardWithKit(ItemStack stack) {
 		Item item = stack.getItem();
 		return !stack.isEmpty() && item instanceof IItemCard && !((IItemCard) item).getKitFromCard(stack).isEmpty();
 	}
-	
+
 	public void registerCards() {
 		register(ItemCardEnergy::new);
 		register(ItemCardCounter::new);

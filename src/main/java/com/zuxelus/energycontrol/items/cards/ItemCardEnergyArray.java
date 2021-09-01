@@ -19,8 +19,8 @@ import java.util.List;
 
 public class ItemCardEnergyArray extends ItemCardBase {
 	private static final int STATUS_NOT_FOUND = Integer.MIN_VALUE;
-	private static final int STATUS_OUT_OF_RANGE = Integer.MIN_VALUE + 1;	
-	
+	private static final int STATUS_OUT_OF_RANGE = Integer.MIN_VALUE + 1;
+
 	public ItemCardEnergyArray() {
 		super(ItemCardType.CARD_ENERGY_ARRAY, "card_energy_array");
 	}
@@ -69,16 +69,16 @@ public class ItemCardEnergyArray extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		double totalEnergy = 0;
 		double totalStorage = 0;
-		boolean showEach = (displaySettings & 1) > 0;
-		boolean showSummary = (displaySettings & 2) > 0;
-		boolean showEnergy = (displaySettings & 4) > 0;
-		boolean showFree = (displaySettings & 8) > 0;
-		boolean showStorage = (displaySettings & 16) > 0;
-		boolean showPercentage = (displaySettings & 32) > 0;
+		boolean showEach = (settings & 1) > 0;
+		boolean showSummary = (settings & 2) > 0;
+		boolean showEnergy = (settings & 4) > 0;
+		boolean showFree = (settings & 8) > 0;
+		boolean showStorage = (settings & 16) > 0;
+		boolean showPercentage = (settings & 32) > 0;
 		for (int i = 0; i < reader.getCardCount(); i++) {
 			int energy = reader.getInt(String.format("_%denergy", i));
 			int storage = reader.getInt(String.format("_%dmaxStorage", i));

@@ -37,12 +37,8 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 
 		IBlockState state = world.getBlockState(target);
 		Block block = state.getBlock();
-		if (block.isAir(state, world, pos))
-			return CardState.NO_TARGET;
-		
 		if (block == Blocks.LEVER || block instanceof BlockButton) {
-			boolean value = state.getValue(POWERED);
-			reader.setBoolean("value", value);
+			reader.setBoolean("value", state.getValue(POWERED));
 			return CardState.OK;
 		}
 		return CardState.NO_TARGET;
@@ -87,9 +83,6 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 
 		IBlockState state = world.getBlockState(pos);
 		Block block = state.getBlock();
-		if (block.isAir(state, world, pos))
-			return false;
-		
 		if (block == Blocks.LEVER) {
 			state = state.cycleProperty(POWERED);
 			world.setBlockState(pos, state, 3);
@@ -97,7 +90,7 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 			EnumFacing enumfacing = state.getValue(BlockLever.FACING).getFacing();
 			world.notifyNeighborsOfStateChange(pos.offset(enumfacing.getOpposite()), state.getBlock(), false);
 		}
-		if (state.getBlock() instanceof BlockButton) {
+		if (block instanceof BlockButton) {
 			world.setBlockState(pos, state.withProperty(POWERED, Boolean.TRUE), 3);
 			world.markBlockRangeForRenderUpdate(pos, pos);
 			world.notifyNeighborsOfStateChange(pos, block, false);

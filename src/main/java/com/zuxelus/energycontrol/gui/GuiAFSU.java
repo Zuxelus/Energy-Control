@@ -45,13 +45,13 @@ public class GuiAFSU extends GuiContainerBase {
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		drawCenteredText(name, xSize, 6);
-		fontRenderer.drawString(I18n.format("ic2.EUStorage.gui.info.armor"), 8, ySize - 126 + 3, 4210752);
-		fontRenderer.drawString(I18n.format("ic2.EUStorage.gui.info.level"), 51, 20, 4210752);
+		drawLeftAlignedText(I18n.format("ic2.EUStorage.gui.info.armor"), 8, ySize - 126 + 3);
+		drawLeftAlignedText(I18n.format("ic2.EUStorage.gui.info.level"), 51, 20);
 		int e = (int) Math.min(container.te.getEnergy(), container.te.getCapacity());
-		fontRenderer.drawString(" " + e, 92, 35, 4210752);
-		fontRenderer.drawString("/" + container.te.getCapacity(), 90, 45, 4210752);
+		drawLeftAlignedText(" " + e, 92, 35);
+		drawLeftAlignedText("/" + container.te.getCapacity(), 90, 45);
 		String output = I18n.format("ic2.EUStorage.gui.info.output", container.te.getOutput());
-		fontRenderer.drawString(output, 51, 60, 4210752);
+		drawLeftAlignedText(output, 51, 60);
 	}
 
 	@Override

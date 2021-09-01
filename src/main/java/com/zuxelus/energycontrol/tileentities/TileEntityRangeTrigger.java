@@ -199,18 +199,8 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 			ItemCardReader reader = new ItemCardReader(card);
 			CardState state = ItemCardMain.updateCardNBT(card, world, pos, reader, getStackInSlot(SLOT_UPGRADE));
 			if (state == CardState.OK) {
-				double min = Math.min(levelStart, levelEnd);
-				double max = Math.max(levelStart, levelEnd);
 				double cur = reader.getDouble("storage");
-
-				if (cur > max) {
-					status = STATE_ACTIVE;
-				} else if (cur < min) {
-					status = STATE_PASSIVE;
-				} else if (status == STATE_UNKNOWN) {
-					status = STATE_PASSIVE;
-				} else
-					status = STATE_PASSIVE;
+				status = cur > Math.max(levelStart, levelEnd) || cur < Math.min(levelStart, levelEnd) ? STATE_ACTIVE : STATE_PASSIVE;
 			} else
 				status = STATE_UNKNOWN;
 		}

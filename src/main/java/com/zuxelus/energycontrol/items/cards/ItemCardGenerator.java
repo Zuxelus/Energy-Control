@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ItemCardGenerator extends ItemCardBase {
+
 	public ItemCardGenerator() {
 		super(ItemCardType.CARD_GENERATOR, "card_generator");
 	}

@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ItemCardReactor5x5 extends ItemCardBase {
+
 	public ItemCardReactor5x5() {
 		super(ItemCardType.CARD_REACTOR5X5, "card_reactor_5x5");
 	}

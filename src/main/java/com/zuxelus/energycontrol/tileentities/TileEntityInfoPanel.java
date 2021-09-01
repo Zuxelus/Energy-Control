@@ -1,14 +1,21 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.EnergyControlConfig;
 import com.zuxelus.energycontrol.api.*;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
+import com.zuxelus.energycontrol.utils.StringUtils;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
+
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.Item;
@@ -27,11 +34,6 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 public class TileEntityInfoPanel extends TileEntityInventory implements ITickable, ITilePacketHandler, IScreenPart, ISlotItemFilter {
 	public static final String NAME = "info_panel";
 	public static final int DISPLAY_DEFAULT = Integer.MAX_VALUE - 1024;
@@ -44,7 +46,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	private static final byte SLOT_UPGRADE_TOUCH = 3;
 
 	private final Map<Integer, List<PanelString>> cardData;
-	protected final Map<Integer, Map<ItemStack, Integer>> displaySettings;
+	protected final Map<Integer, Map<String, Integer>> displaySettings;
 	protected Screen screen;
 	public NBTTagCompound screenData;
 	public boolean init;
@@ -253,9 +255,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		for (int i = 0; i < settingsList.tagCount(); i++) {
 			NBTTagCompound compound = settingsList.getCompoundTagAt(i);
 			try {
-				getDisplaySettingsForSlot(slot).put(new ItemStack(compound.getCompoundTag("key")), compound.getInteger("value"));
+				getDisplaySettingsForSlot(slot).put(compound.getString("key"), compound.getInteger("value"));
 			} catch (IllegalArgumentException e) {
-				EnergyControl.logger.warn("Ivalid display settings for Information Panel");
+				EnergyControl.logger.warn("Invalid display settings for Information Panel");
 			}
 		}
 	}
@@ -305,14 +307,11 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 
 	protected NBTTagList serializeSlotSettings(int slot) {
 		NBTTagList settingsList = new NBTTagList();
-		for (Map.Entry<ItemStack, Integer> item : getDisplaySettingsForSlot(slot).entrySet()) {
-			NBTTagCompound compound = new NBTTagCompound();
-			
-			NBTTagCompound stackNbt = new NBTTagCompound();
-			item.getKey().writeToNBT(stackNbt);
-			compound.setTag("key", stackNbt);
-			compound.setInteger("value", item.getValue());
-			settingsList.appendTag(compound);
+		for (Map.Entry<String, Integer> item : getDisplaySettingsForSlot(slot).entrySet()) {
+			NBTTagCompound tag = new NBTTagCompound();
+			tag.setString("key", item.getKey());
+			tag.setInteger("value", item.getValue());
+			settingsList.appendTag(tag);
 		}
 		return settingsList;
 	}
@@ -497,7 +496,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		return slot == SLOT_CARD;
 	}
 
-	public Map<ItemStack, Integer> getDisplaySettingsForSlot(int slot) {
+	public Map<String, Integer> getDisplaySettingsForSlot(int slot) {
 		if (!displaySettings.containsKey(slot))
 			displaySettings.put(slot, new HashMap<>());
 		return displaySettings.get(slot);
@@ -517,9 +516,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 			return 0;
 
 		if (displaySettings.containsKey(slot)) {
-			for (Map.Entry<ItemStack, Integer> entry : displaySettings.get(slot).entrySet()) {
-				ItemStack stack = entry.getKey();
-				if (card.isItemEqual(stack)) return entry.getValue();
+			for (Map.Entry<String, Integer> entry : displaySettings.get(slot).entrySet()) {
+				if (StringUtils.getItemId(card).equals(entry.getKey()))
+					return entry.getValue();
 			}
 		}
 
@@ -530,14 +529,12 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		if (!isCardSlot(slot))
 			return;
 		ItemStack stack = getStackInSlot(slot);
-		if (stack.isEmpty())
-			return;
 		if (!ItemCardMain.isCard(stack))
 			return;
 
 		if (!displaySettings.containsKey(slot))
 			displaySettings.put(slot, new HashMap<>());
-		displaySettings.get(slot).put(stack, settings);
+		displaySettings.get(slot).put(StringUtils.getItemId(stack), settings);
 		if (!world.isRemote)
 			notifyBlockUpdate();
 	}
@@ -644,7 +641,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		runTouchAction(this, card, stack, SLOT_CARD, true);
 		return true;
 	}
-	
+
 	public boolean isTouchCard() {
 		return isTouchCard(getStackInSlot(SLOT_CARD));
 	}
@@ -653,7 +650,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		Item item = stack.getItem();
 		return !stack.isEmpty() && item instanceof ITouchAction && ((ITouchAction) item).enableTouch(stack);
 	}
-	
+
 	public boolean hasBars() {
 		return hasBars(getStackInSlot(SLOT_CARD));
 	}
@@ -666,12 +663,12 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	public void renderImage(TextureManager manager, double displayWidth, double displayHeight) {
 		ItemStack stack = getStackInSlot(SLOT_CARD);
 		Item card = stack.getItem();
-		if (isTouchCard(stack))
+		if (isTouchCard())
 			((ITouchAction) card).renderImage(manager, new ItemCardReader(stack));
 		if (hasBars())
 			((IHasBars) card).renderBars(manager, displayWidth, displayHeight, new ItemCardReader(stack));
 	}
-	
+
 	protected void runTouchAction(TileEntityInfoPanel panel, ItemStack cardStack, ItemStack stack, int slot, boolean needsTouchUpgrade) {
 		if (isTouchCard(cardStack) && (!needsTouchUpgrade || !getStackInSlot(SLOT_UPGRADE_TOUCH).isEmpty())) {
 			ICardReader reader = new ItemCardReader(cardStack);

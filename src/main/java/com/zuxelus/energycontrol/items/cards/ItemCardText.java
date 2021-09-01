@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ItemCardText extends ItemCardBase {
+
 	public ItemCardText() {
 		super(ItemCardType.CARD_TEXT, "card_text");
 	}

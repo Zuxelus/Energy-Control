@@ -54,13 +54,11 @@ public class GuiInfoPanel extends GuiContainerBase implements IContainerListener
 
 	public GuiInfoPanel(ContainerBase container, String name, ResourceLocation texture) {
 		super(container, name, texture);
-		panel = (TileEntityInfoPanel)container.te;
-		modified = false;
-		activeTab = 0;
 	}
 
 	protected void initControls() {
 		ItemStack stack = panel.getCards().get(activeTab);
+
 		buttonList.clear();
 		addButton(new GuiButtonGeneral(ID_LABELS, guiLeft + xSize - 24, guiTop + 42, 16, 16, TEXTURE, 176, panel.getShowLabels() ? 15 : 31).setGradient());
 		if (panel.isColoredEval())

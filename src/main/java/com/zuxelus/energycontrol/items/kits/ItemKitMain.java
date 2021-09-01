@@ -36,7 +36,7 @@ public class ItemKitMain extends Item implements IItemKit {
 		canRepair = false;
 		setCreativeTab(EnergyControl.creativeTab);
 	}
-	
+
 	public static ItemStack getKitById(int id) {
 		return KITS.containsKey(id) ? new ItemStack(ModItems.itemKit, 1, id) : ItemStack.EMPTY;
 	}
@@ -102,7 +102,7 @@ public class ItemKitMain extends Item implements IItemKit {
 			items.add(new ItemStack(this, 1, key));
 		}
 	}
-	
+
 	@Override
 	public ItemStack getSensorCard(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side) {
 		int damage = stack.getItemDamage();

@@ -1,5 +1,8 @@
 package com.zuxelus.energycontrol.gui;
 
+import java.io.IOException;
+import java.util.List;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.IItemCard;
 import com.zuxelus.energycontrol.api.PanelSetting;
@@ -10,16 +13,15 @@ import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
+import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.gui.controls.GuiButtonGeneral;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.io.IOException;
-import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public class GuiAdvancedInfoPanel extends GuiInfoPanel {
@@ -28,6 +30,9 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
 	public GuiAdvancedInfoPanel(ContainerAdvancedInfoPanel container) {
 		super(container, "tile.info_panel_advanced.name", TEXTURE);
 		ySize = 223;
+		panel = (TileEntityInfoPanel) container.te;
+		modified = false;
+		activeTab = 0;
 	}
 
 	@Override

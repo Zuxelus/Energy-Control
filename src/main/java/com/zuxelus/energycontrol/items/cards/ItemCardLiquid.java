@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ItemCardLiquid extends ItemCardBase implements IHasBars {
+
 	public ItemCardLiquid() {
 		super(ItemCardType.CARD_LIQUID, "card_liquid");
 	}
@@ -55,24 +56,24 @@ public class ItemCardLiquid extends ItemCardBase implements IHasBars {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		int capacity = reader.getInt("capacity");
 		int amount = reader.getInt("amount");
 
-		if ((displaySettings & 1) > 0) {
+		if ((settings & 1) > 0) {
 			String name = reader.getString("name");
-			if (name.equals(""))
+			if (name.isEmpty())
 				name = isServer ? "N/A" : I18n.format("msg.ec.None");
 			result.add(new PanelString("msg.ec.InfoPanelName", name, showLabels));
 		}
-		if ((displaySettings & 2) > 0)
+		if ((settings & 2) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelAmountmB", amount, showLabels));
-		if ((displaySettings & 4) > 0)
+		if ((settings & 4) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelFreemB", capacity - amount, showLabels));
-		if ((displaySettings & 8) > 0)
+		if ((settings & 8) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelCapacitymB", capacity, showLabels));
-		if ((displaySettings & 16) > 0)
+		if ((settings & 16) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelPercentage", capacity == 0 ? 100 : (amount * 100 / capacity), showLabels));
 		return result;
 	}
@@ -95,6 +96,7 @@ public class ItemCardLiquid extends ItemCardBase implements IHasBars {
 		return ItemCardType.KIT_LIQUID;
 	}
 
+	// IHasBars
 	@Override
 	public boolean enableBars(ItemStack stack) {
 		return true;

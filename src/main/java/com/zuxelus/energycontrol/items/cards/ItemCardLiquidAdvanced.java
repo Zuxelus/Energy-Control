@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ItemCardLiquidAdvanced extends ItemCardBase {
-	
+
 	public ItemCardLiquidAdvanced() {
 		super(ItemCardType.CARD_LIQUID_ADVANCED, "card_liquid_advanced");
 	}
@@ -57,33 +57,33 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		int count = reader.getInt("count");
 		for (int i = 0; i < count; i++)
-			addTankData(result, displaySettings, reader, showLabels, i);
+			addTankData(result, settings, reader, isServer, showLabels, i);
 		return result;
 	}
 
-	private void addTankData(List<PanelString> result, int displaySettings, ICardReader reader, boolean showLabels, int i) {
+	private void addTankData(List<PanelString> result, int settings, ICardReader reader, boolean isServer, boolean showLabels, int i) {
 		if (!reader.hasField(String.format("_%dcapacity", i)))
 			return;
 		int capacity = reader.getInt(String.format("_%dcapacity", i));
 		int amount = reader.getInt(String.format("_%damount", i));
 
-		if ((displaySettings & 1) > 0) {
+		if ((settings & 1) > 0) {
 			String name = reader.getString(String.format("_%dname", i));
 			if (name.isEmpty())
-				name = I18n.format("msg.ec.None");
+				name = isServer ? "N/A" : I18n.format("msg.ec.None");
 			result.add(new PanelString("msg.ec.InfoPanelName", name, showLabels));
 		}
-		if ((displaySettings & 2) > 0)
+		if ((settings & 2) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelAmountmB", amount, showLabels));
-		if ((displaySettings & 4) > 0)
+		if ((settings & 4) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelFreemB", capacity - amount, showLabels));
-		if ((displaySettings & 8) > 0)
+		if ((settings & 8) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelCapacitymB", capacity, showLabels));
-		if ((displaySettings & 16) > 0)
+		if ((settings & 16) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelPercentage", capacity == 0 ? 100 : (amount * 100 / capacity), showLabels));
 	}
 

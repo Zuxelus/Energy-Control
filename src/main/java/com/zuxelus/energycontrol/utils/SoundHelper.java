@@ -78,7 +78,6 @@ public class SoundHelper {
 				IResource iresource = list.get(i);
 
 				Map<String, SoundList> map = gson.fromJson(new InputStreamReader(iresource.getInputStream()), type);
-				
 				map.forEach((str, soundList) -> EnergyControl.instance.availableAlarms.add(str.replace("alarm-", "")));
 			}
 		} catch (IOException ignored) {}
@@ -93,6 +92,7 @@ public class SoundHelper {
 	}
 
 	public static class SoundLoader implements ISelectiveResourceReloadListener {
+
 		@Override
 		public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate) {
 			if (resourcePredicate.test(VanillaResourceType.SOUNDS) && resourceManager instanceof SimpleReloadableResourceManager && alarms != null) {

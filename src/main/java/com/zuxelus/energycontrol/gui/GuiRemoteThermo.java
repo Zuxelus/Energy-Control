@@ -94,7 +94,7 @@ public class GuiRemoteThermo extends GuiContainerBase {
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		drawCenteredText(name, xSize, 6);
-		fontRenderer.drawString(I18n.format("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+		drawLeftAlignedText(I18n.format("container.inventory"), 8, (ySize - 96) + 2);
 		if (textboxHeat != null)
 			textboxHeat.drawTextBox();
 	}

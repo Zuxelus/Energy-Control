@@ -6,9 +6,9 @@ import com.zuxelus.energycontrol.gui.controls.CompactButton;
 import com.zuxelus.energycontrol.gui.controls.GuiRangeTriggerInvertRedstone;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityRangeTrigger;
+import com.zuxelus.zlib.gui.GuiContainerBase;
+
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,19 +17,16 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiRangeTrigger extends GuiContainer {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/gui_range_trigger.png");
+public class GuiRangeTrigger extends GuiContainerBase {
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID + ":textures/gui/gui_range_trigger.png");
 
-	private String name;
 	private ContainerRangeTrigger container;
 	private ItemStack prevCard;
 
 	public GuiRangeTrigger(ContainerRangeTrigger container) {
-		super(container);
-		ySize = 190;
+		super(container, "tile.range_trigger.name", TEXTURE);
 		this.container = container;
-		name = I18n.format("tile.range_trigger.name");
+		ySize = 190;
 	}
 
 	private void initControls() {
@@ -110,19 +107,10 @@ public class GuiRangeTrigger extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		fontRenderer.drawString(name, (xSize - fontRenderer.getStringWidth(name)) / 2, 6, 0x404040);
-		fontRenderer.drawString(I18n.format("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+		drawCenteredText(name, xSize, 6);
+		drawLeftAlignedText(I18n.format("container.inventory"), 8, (ySize - 96) + 2);
 
 		renderValue(container.te.levelStart, 30, 33);
 		renderValue(container.te.levelEnd, 30, 70);
-	}
-
-	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		mc.getTextureManager().bindTexture(TEXTURE);
-		int left = (width - xSize) / 2;
-		int top = (height - ySize) / 2;
-		drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
 	}
 }

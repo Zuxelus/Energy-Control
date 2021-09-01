@@ -1,5 +1,7 @@
 package com.zuxelus.energycontrol.api;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -16,6 +18,7 @@ public interface IHasBars {
 
 	void renderBars(TextureManager manager, double displayWidth, double displayHeight, ICardReader reader);
 
+	// copy from Gui.drawGradientRect()
 	static void drawTransparentRect(double left, double top, double right, double bottom, double zLevel, int color) {
 		float f = (color >> 24 & 255) / 255.0F;
 		float f1 = (color >> 16 & 255) / 255.0F;
@@ -26,7 +29,7 @@ public interface IHasBars {
 		GlStateManager.disableAlpha();
 		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
 			GlStateManager.SourceFactor.ONE,GlStateManager.DestFactor.ZERO);
-		GlStateManager.shadeModel(7425);
+		GlStateManager.shadeModel(GL11.GL_SMOOTH);
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferbuilder = tessellator.getBuffer();
 		bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
@@ -35,7 +38,7 @@ public interface IHasBars {
 		bufferbuilder.pos(left, bottom, zLevel).color(f1, f2, f3, f).endVertex();
 		bufferbuilder.pos(right, bottom, zLevel).color(f1, f2, f3, f).endVertex();
 		tessellator.draw();
-		GlStateManager.shadeModel(7424);
+		GlStateManager.shadeModel(GL11.GL_FLAT);
 		GlStateManager.disableBlend();
 		GlStateManager.enableAlpha();
 		GlStateManager.enableTexture2D();

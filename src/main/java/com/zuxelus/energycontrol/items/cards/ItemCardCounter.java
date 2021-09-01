@@ -15,6 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.List;
 
 public class ItemCardCounter extends ItemCardBase {
+
 	public ItemCardCounter() {
 		super(ItemCardType.CARD_COUNTER, "card_counter");
 	}
