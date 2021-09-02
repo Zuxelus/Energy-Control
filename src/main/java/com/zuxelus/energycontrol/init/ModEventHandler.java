@@ -24,6 +24,7 @@ public class ModEventHandler {
 		event.getRegistry().register(new BlockItem(ModItems.info_panel_extender.get(), new Item.Properties().group(EnergyControl.ITEM_GROUP)).setRegistryName("info_panel_extender"));
 		event.getRegistry().register(new BlockItem(ModItems.info_panel_advanced.get(), new Item.Properties().group(EnergyControl.ITEM_GROUP)).setRegistryName(TileEntityAdvancedInfoPanel.NAME));
 		event.getRegistry().register(new BlockItem(ModItems.info_panel_advanced_extender.get(), new Item.Properties().group(EnergyControl.ITEM_GROUP)).setRegistryName("info_panel_advanced_extender"));
+		event.getRegistry().register(new BlockItem(ModItems.range_trigger.get(), new Item.Properties().group(EnergyControl.ITEM_GROUP)).setRegistryName("range_trigger"));
 		event.getRegistry().register(new BlockItem(ModItems.kit_assembler.get(), new Item.Properties().group(EnergyControl.ITEM_GROUP)).setRegistryName("kit_assembler"));
 		event.getRegistry().register(new BlockItem(ModItems.timer.get(), new Item.Properties().group(EnergyControl.ITEM_GROUP)).setRegistryName("timer"));
 	}

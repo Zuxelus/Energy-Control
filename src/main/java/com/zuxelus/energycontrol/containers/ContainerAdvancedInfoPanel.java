@@ -4,7 +4,6 @@ import com.zuxelus.energycontrol.containers.slots.SlotCard;
 import com.zuxelus.energycontrol.containers.slots.SlotRange;
 import com.zuxelus.energycontrol.init.ModContainerTypes;
 import com.zuxelus.energycontrol.init.ModItems;
-import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.containers.ContainerBase;
 
@@ -15,10 +14,10 @@ import net.minecraft.util.IWorldPosCallable;
 public class ContainerAdvancedInfoPanel extends ContainerBase<TileEntityInfoPanel> {
 
 	public ContainerAdvancedInfoPanel(int windowId, PlayerInventory inventory, PacketBuffer data) {
-		this(windowId, inventory, (TileEntityAdvancedInfoPanel) getTileEntity(inventory, data));
+		this(windowId, inventory, (TileEntityInfoPanel) getTileEntity(inventory, data));
 	}
 
-	public ContainerAdvancedInfoPanel(int windowId, PlayerInventory inventory, TileEntityAdvancedInfoPanel panel) {
+	public ContainerAdvancedInfoPanel(int windowId, PlayerInventory inventory, TileEntityInfoPanel panel) {
 		super(panel, ModContainerTypes.info_panel_advanced.get(), windowId, ModItems.info_panel_advanced.get(), IWorldPosCallable.of(panel.getWorld(), panel.getPos()));
 		addSlot(new SlotCard(panel, 0, 8, 24 + 18) {
 			@SuppressWarnings("resource")

@@ -6,7 +6,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.zuxelus.energycontrol.EnergyControl;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.IReorderingProcessor;
@@ -17,11 +16,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class CompactButton extends Button {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/gui_thermal_monitor.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_thermal_monitor.png");
+	private int id;
 
-	public CompactButton(int x, int y, int widthIn, int heightIn, ITextComponent buttonText, Button.IPressable onPress) {
+	public CompactButton(int id, int x, int y, int widthIn, int heightIn, ITextComponent buttonText, Button.IPressable onPress) {
 		super(x, y, widthIn, heightIn, buttonText, onPress);
+		this.id = id;
 	}
 
 	@Override
@@ -41,6 +41,10 @@ public class CompactButton extends Button {
 		blit(matrixStack, x + width / 2 + width % 2, y, 200 - width / 2, 64 + i * 12, width / 2, height);
 		renderBg(matrixStack, minecraft, mouseX, mouseY);
 		IReorderingProcessor ireorderingprocessor = getMessage().func_241878_f();
-		fontRenderer.func_238422_b_(matrixStack, ireorderingprocessor, x + (width - fontRenderer.func_243245_a(ireorderingprocessor) / 2), y + (height - 8) / 2, 0x404040);
+		fontRenderer.func_238422_b_(matrixStack, ireorderingprocessor, x + (width - fontRenderer.func_243245_a(ireorderingprocessor)) / 2, y + (height - 8) / 2, 0x404040);
+	}
+
+	public int getId() {
+		return id;
 	}
 }

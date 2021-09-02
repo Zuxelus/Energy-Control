@@ -2,6 +2,9 @@ package com.zuxelus.zlib.containers;
 
 import java.util.Objects;
 
+import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanelExtender;
+import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanelExtender;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -83,6 +86,11 @@ public abstract class ContainerBase<T extends IInventory> extends Container {
 	public static TileEntity getTileEntity(PlayerInventory player, PacketBuffer data) {
 		Objects.requireNonNull(player, "Player cannot be null!");
 		Objects.requireNonNull(data, "Data cannot be null!");
-		return player.player.world.getTileEntity(data.readBlockPos());
+		TileEntity te = player.player.world.getTileEntity(data.readBlockPos());
+		if (te instanceof TileEntityInfoPanelExtender)
+			te = ((TileEntityInfoPanelExtender) te).getCore();
+		if (te instanceof TileEntityAdvancedInfoPanelExtender)
+			te = ((TileEntityAdvancedInfoPanelExtender) te).getCore();
+		return te;
 	}
 }

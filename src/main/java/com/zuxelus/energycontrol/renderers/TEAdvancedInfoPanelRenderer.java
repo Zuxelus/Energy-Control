@@ -42,11 +42,11 @@ public class TEAdvancedInfoPanelRenderer extends TileEntityRenderer<TileEntityAd
 		String output = "";
 		if (inputArray.length > 0) {
 			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < inputArray.length; i++) {
-				if (inputArray[i] == null || inputArray[i].isEmpty())
+			for (String s : inputArray) {
+				if (s == null || s.isEmpty())
 					continue;
 				sb.append(glueString);
-				sb.append(inputArray[i]);
+				sb.append(s);
 			}
 			output = sb.toString();
 			if (output.length() > 1)

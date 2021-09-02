@@ -9,14 +9,12 @@ import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public interface ICardReader {
 
 	/**
-	 * Method to get target coordinates for card. Can be used if card implements
-	 * {@link IRemoteSensor}.
-	 * 
-	 * @return
+	 * Method to get target coordinates for card.
 	 */
 	BlockPos getTarget();
 
@@ -35,6 +33,10 @@ public interface ICardReader {
 	void setString(String name, String value);
 
 	String getString(String name);
+
+	void setByte(String name, Byte value);
+
+	Byte getByte(String name);
 
 	void setBoolean(String name, Boolean value);
 
@@ -65,7 +67,7 @@ public interface ICardReader {
 	/**
 	 * Set the state of card. In most cases shouldn't be called by card, use
 	 * return value of
-	 * {@link IPanelDataSource#update(TileEntity, ICardWrapper, int)} instead.
+	 * {@link IItemCard#update(World, ICardReader, int, BlockPos)} instead.
 	 * 
 	 * @param state
 	 */
@@ -73,10 +75,6 @@ public interface ICardReader {
 
 	/**
 	 * Check is field exists
-	 * 
-	 * @param field
-	 *            field name
-	 * @return
 	 */
 	boolean hasField(String name);
 
@@ -105,6 +103,8 @@ public interface ICardReader {
 	List<PanelString> getTitleList();
 
 	int getCardCount();
+
+	void reset();
 
 	void copyFrom(CompoundNBT tag);
 

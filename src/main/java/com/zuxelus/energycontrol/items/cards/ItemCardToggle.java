@@ -2,6 +2,9 @@ package com.zuxelus.energycontrol.items.cards;
 
 import java.util.List;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.ITouchAction;
@@ -14,7 +17,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.WoodButtonBlock;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldVertexBufferUploader;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
@@ -23,7 +30,9 @@ import net.minecraft.state.EnumProperty;
 import net.minecraft.state.properties.AttachFace;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -40,10 +49,8 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 			return CardState.NO_TARGET;
 
 		BlockState state = world.getBlockState(target);
-		if (state == null)
-			return CardState.NO_TARGET;
-		
-		if (state.getBlock() == Blocks.LEVER || state.getBlock() instanceof AbstractButtonBlock) {
+		Block block = state.getBlock();
+		if (block == Blocks.LEVER || block instanceof AbstractButtonBlock) {
 			reader.setBoolean("value", state.get(POWERED));
 			return CardState.OK;
 		}
@@ -77,15 +84,17 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 	}
 
 	@Override
+	public boolean enableTouch() {
+		return true;
+	}
+
+	@Override
 	public boolean runTouchAction(World world, ICardReader reader, ItemStack stack) {
 		BlockPos pos = reader.getTarget();
 		if (pos == null)
 			return false;
 
 		BlockState state = world.getBlockState(pos);
-		if (state == null)
-			return false;
-		
 		Block block = state.getBlock();
 		if (block == Blocks.LEVER) {
 			state = state.func_235896_a_(POWERED);
@@ -93,7 +102,7 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 			world.notifyNeighborsOfStateChange(pos, block);
 			world.notifyNeighborsOfStateChange(pos.offset(getFacing(state).getOpposite()), block);
 		}
-		if (state.getBlock() instanceof AbstractButtonBlock) {
+		if (block instanceof AbstractButtonBlock) {
 			world.setBlockState(pos, state.with(POWERED, Boolean.valueOf(true)), 3);
 			world.notifyNeighborsOfStateChange(pos, block);
 			world.notifyNeighborsOfStateChange(pos.offset(getFacing(state).getOpposite()), block);
@@ -114,25 +123,31 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 	}
 
 	@Override
-	public void renderImage(TextureManager manager, ICardReader reader) {
-		/*double x = -0.5D;
-		double y = -0.5D;
-		double z = 0.009;
-		double height = 1;
-		double width = 1;
-		double textureX = 0;
-		double textureY = 0;
+	public void renderImage(TextureManager manager, ICardReader reader, MatrixStack matrixStack) {
+		float x = -0.5F;
+		float y = -0.5F;
+		float z = 0.009F;
+		float height = 1;
+		float width = 1;
+		float textureX = 0;
+		float textureY = 0;
 		if (reader.getBoolean("value"))
 			manager.bindTexture(new ResourceLocation(EnergyControl.MODID + ":textures/gui/green.png"));
 		else
 			manager.bindTexture(new ResourceLocation(EnergyControl.MODID + ":textures/gui/grey.png"));
+
+		RenderSystem.enableDepthTest();
+		RenderSystem.enableAlphaTest();
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferbuilder = tessellator.getBuffer();
 		bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-		bufferbuilder.pos(x + 0, y + height, z).tex((double)((float)(textureX + 0)), (double)((float)(textureY + height))).endVertex();
-		bufferbuilder.pos(x + width, y + height, z).tex((double)((float)(textureX + width)), (double)((float)(textureY + height))).endVertex();
-		bufferbuilder.pos(x + width, y + 0, z).tex((double)((float)(textureX + width)), (double)((float)(textureY + 0))).endVertex();
-		bufferbuilder.pos(x + 0, y + 0, z).tex((double)((float)(textureX + 0)), (double)((float)(textureY + 0))).endVertex();
-		tessellator.draw();*/
+		Matrix4f matrix = matrixStack.getLast().getMatrix();
+		bufferbuilder.pos(matrix, x + 0, y + height, z).tex(textureX + 0, textureY + height).endVertex();
+		bufferbuilder.pos(matrix, x + width, y + height, z).tex(textureX + width, textureY + height).endVertex();
+		bufferbuilder.pos(matrix, x + width, y + 0, z).tex(textureX + width, textureY + 0).endVertex();
+		bufferbuilder.pos(matrix, x + 0, y + 0, z).tex(textureX + 0, textureY + 0).endVertex();
+		tessellator.draw();
+		RenderSystem.disableAlphaTest();
+		RenderSystem.disableDepthTest();
 	}
 }

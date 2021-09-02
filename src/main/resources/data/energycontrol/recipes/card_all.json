@@ -1,0 +1,11 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"ingredients": [
+		{
+			"tag": "energycontrol:cards"
+		}
+	],
+	"result": {
+		"item": "mekanism:alloy_infused"
+	}
+}

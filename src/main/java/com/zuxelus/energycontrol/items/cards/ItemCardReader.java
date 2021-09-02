@@ -14,6 +14,7 @@ import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.ByteNBT;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.DoubleNBT;
 import net.minecraft.nbt.INBT;
@@ -44,7 +45,8 @@ public class ItemCardReader implements ICardReader {
 		CompoundNBT tag = card.getTag();
 		if (tag == null)
 			return null;
-
+		if (!tag.contains("x") || !tag.contains("y") || !tag.contains("z"))
+			return null;
 		return new BlockPos(tag.getInt("x"), tag.getInt("y"), tag.getInt("z"));
 	}
 
@@ -104,6 +106,20 @@ public class ItemCardReader implements ICardReader {
 		if (tag == null)
 			return "";
 		return tag.getString(name);
+	}
+
+	@Override
+	public void setByte(String name, Byte value) {
+		CompoundNBT tag = ItemStackHelper.getTagCompound(card);
+		tag.putByte(name, value);
+	}
+
+	@Override
+	public Byte getByte(String name) {
+		CompoundNBT tag = card.getTag();
+		if (tag == null)
+			return 0;
+		return tag.getByte(name);
 	}
 
 	@Override
@@ -218,6 +234,17 @@ public class ItemCardReader implements ICardReader {
 	}
 
 	@Override
+	public void reset() {
+		BlockPos pos = getTarget();
+		String title = getTitle();
+		card.setTag(new CompoundNBT());
+		if (pos != null)
+			ItemStackHelper.setCoordinates(card, pos);
+		if (!title.isEmpty())
+			setTitle(title);
+	}
+
+	@Override
 	public void copyFrom(CompoundNBT nbt) {
 		for (String name : nbt.keySet()) {
 			INBT tag = nbt.get(name);
@@ -230,8 +257,8 @@ public class ItemCardReader implements ICardReader {
 				setDouble(name, ((NumberNBT) tag).getDouble());
 			else if (type == LongNBT.TYPE)
 				setLong(name, ((NumberNBT) tag).getLong());
-			else if (type == LongNBT.TYPE)
-				setLong(name, ((NumberNBT) tag).getLong());
+			else if (type == ByteNBT.TYPE)
+				setByte(name, ((NumberNBT) tag).getByte());
 		}
 	}
 

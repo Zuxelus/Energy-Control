@@ -11,7 +11,6 @@ import com.zuxelus.zlib.gui.controls.GuiTextArea;
 import net.minecraft.client.gui.DialogTexts;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

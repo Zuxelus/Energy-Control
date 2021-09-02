@@ -47,11 +47,11 @@ public class TileEntityInfoPanelRenderer extends TileEntityRenderer<TileEntityIn
 		String output = "";
 		if (inputArray.length > 0) {
 			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < inputArray.length; i++) {
-				if (inputArray[i] == null || inputArray[i].isEmpty())
+			for (String s : inputArray) {
+				if (s == null || s.isEmpty())
 					continue;
 				sb.append(glueString);
-				sb.append(inputArray[i]);
+				sb.append(s);
 			}
 			output = sb.toString();
 			if (output.length() > 1)
@@ -216,9 +216,16 @@ public class TileEntityInfoPanelRenderer extends TileEntityRenderer<TileEntityIn
 
 		if (panel.isTouchCard()) {
 			matrixStack.rotate(Vector3f.YP.rotationDegrees(180));
-			panel.renderImage(renderDispatcher.textureManager, matrixStack.getLast().getMatrix());
-		} else 
+			panel.renderImage(renderDispatcher.textureManager, displayWidth, displayHeight, matrixStack);
+		} else {
+			if (panel.hasBars()) {
+				matrixStack.rotate(Vector3f.YP.rotationDegrees(180));
+				panel.renderImage(renderDispatcher.textureManager, displayWidth, displayHeight, matrixStack);
+				matrixStack.rotate(Vector3f.YP.rotationDegrees(180));
+			}
+			matrixStack.translate(0, 0, 0.0002F);
 			renderText(panel, joinedData, displayWidth, displayHeight, matrixStack, buffer, combinedLight);
+		}
 	}
 
 	private void renderText(TileEntityInfoPanel panel, List<PanelString> joinedData, float displayWidth, float displayHeight, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight) {

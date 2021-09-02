@@ -27,17 +27,17 @@ public class GuiThermalMonitor extends GuiBase {
 	@Override
 	public void init() {
 		super.init();
-		addButton(new CompactButton(guiLeft + 47, guiTop + 20, 22, 12, new StringTextComponent("-1"), (button) -> { actionPerformed(button, 0); }));
-		addButton(new CompactButton(guiLeft + 47, guiTop + 31, 22, 12, new StringTextComponent("-10"), (button) -> { actionPerformed(button, 1); }));
-		addButton(new CompactButton(guiLeft + 12, guiTop + 20, 36, 12, new StringTextComponent("-100"), (button) -> { actionPerformed(button, 2); }));
-		addButton(new CompactButton(guiLeft + 12, guiTop + 31, 36, 12, new StringTextComponent("-1000"), (button) -> { actionPerformed(button, 3); }));
-		addButton(new CompactButton(guiLeft + 12, guiTop + 42, 57, 12, new StringTextComponent("-10000"), (button) -> { actionPerformed(button, 4); }));
+		addButton(new CompactButton(0, guiLeft + 47, guiTop + 20, 22, 12, new StringTextComponent("-1"), (button) -> { actionPerformed(button); }));
+		addButton(new CompactButton(1, guiLeft + 47, guiTop + 31, 22, 12, new StringTextComponent("-10"), (button) -> { actionPerformed(button); }));
+		addButton(new CompactButton(2, guiLeft + 12, guiTop + 20, 36, 12, new StringTextComponent("-100"), (button) -> { actionPerformed(button); }));
+		addButton(new CompactButton(3, guiLeft + 12, guiTop + 31, 36, 12, new StringTextComponent("-1000"), (button) -> { actionPerformed(button); }));
+		addButton(new CompactButton(4, guiLeft + 12, guiTop + 42, 57, 12, new StringTextComponent("-10000"), (button) -> { actionPerformed(button); }));
 
-		addButton(new CompactButton(guiLeft + 122, guiTop + 20, 22, 12, new StringTextComponent("+1"), (button) -> { actionPerformed(button, 5); }));
-		addButton(new CompactButton(guiLeft + 122, guiTop + 31, 22, 12, new StringTextComponent("+10"), (button) -> { actionPerformed(button, 6); }));
-		addButton(new CompactButton(guiLeft + 143, guiTop + 20, 36, 12, new StringTextComponent("+100"), (button) -> { actionPerformed(button, 7); }));
-		addButton(new CompactButton(guiLeft + 143, guiTop + 31, 36, 12, new StringTextComponent("+1000"), (button) -> { actionPerformed(button, 8); }));
-		addButton(new CompactButton(guiLeft + 122, guiTop + 42, 57, 12, new StringTextComponent("+10000"), (button) -> { actionPerformed(button, 9); }));
+		addButton(new CompactButton(5, guiLeft + 122, guiTop + 20, 22, 12, new StringTextComponent("+1"), (button) -> { actionPerformed(button); }));
+		addButton(new CompactButton(6, guiLeft + 122, guiTop + 31, 22, 12, new StringTextComponent("+10"), (button) -> { actionPerformed(button); }));
+		addButton(new CompactButton(7, guiLeft + 143, guiTop + 20, 36, 12, new StringTextComponent("+100"), (button) -> { actionPerformed(button); }));
+		addButton(new CompactButton(8, guiLeft + 143, guiTop + 31, 36, 12, new StringTextComponent("+1000"), (button) -> { actionPerformed(button); }));
+		addButton(new CompactButton(9, guiLeft + 122, guiTop + 42, 57, 12, new StringTextComponent("+10000"), (button) -> { actionPerformed(button); }));
 
 		addButton(new GuiThermoInvertRedstone(guiLeft + 70, guiTop + 38, thermo));
 
@@ -85,11 +85,11 @@ public class GuiThermalMonitor extends GuiBase {
 			NetworkHelper.updateSeverTileEntity(thermo.getPos(), 1, heat);
 			thermo.setHeatLevel(heat);
 		}
-		textboxHeat.setText(new Integer(heat).toString());
+		textboxHeat.setText(Integer.toString(heat));
 	}
 
-	protected void actionPerformed(Button button, int id) {
-		if (id >= 10)
+	protected void actionPerformed(Button button) {
+		if (((CompactButton) button).getId() >= 10)
 			return;
 
 		int delta = Integer.parseInt(button.getMessage().getString().replace("+", ""));

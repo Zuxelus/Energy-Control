@@ -37,18 +37,18 @@ public class GuiTimer extends GuiContainerBase<ContainerTimer> {
 		super.init();
 		lastIsWorking = timer.getIsWorking();
 
-		addButton(new CompactButton(guiLeft + 14, guiTop + 50, 34, 12, new StringTextComponent("+1"), (button) -> { actionPerformed(button, 0); }));
-		addButton(new CompactButton(guiLeft + 14, guiTop + 64, 34, 12, new StringTextComponent("+10"), (button) -> { actionPerformed(button, 1); }));
-		addButton(new CompactButton(guiLeft + 50, guiTop + 50, 34, 12, new StringTextComponent("+100"), (button) -> { actionPerformed(button, 2); }));
-		addButton(new CompactButton(guiLeft + 50, guiTop + 64, 34, 12, new StringTextComponent("+1000"), (button) -> { actionPerformed(button, 3); }));
-		addButton(new CompactButton(guiLeft + 14, guiTop + 78, 70, 12, new StringTextComponent("+10000"), (button) -> { actionPerformed(button, 4); }));
+		addButton(new CompactButton(0, guiLeft + 14, guiTop + 50, 34, 12, new StringTextComponent("+1"), (button) -> { actionPerformed(button); }));
+		addButton(new CompactButton(1, guiLeft + 14, guiTop + 64, 34, 12, new StringTextComponent("+10"), (button) -> { actionPerformed(button); }));
+		addButton(new CompactButton(2, guiLeft + 50, guiTop + 50, 34, 12, new StringTextComponent("+100"), (button) -> { actionPerformed(button); }));
+		addButton(new CompactButton(3, guiLeft + 50, guiTop + 64, 34, 12, new StringTextComponent("+1000"), (button) -> { actionPerformed(button); }));
+		addButton(new CompactButton(4, guiLeft + 14, guiTop + 78, 70, 12, new StringTextComponent("+10000"), (button) -> { actionPerformed(button); }));
 
-		addButton(new CompactButton(guiLeft + 14, guiTop + 36, 34, 12, new StringTextComponent("Reset"), (button) -> { actionPerformed(button, 5); }));
-		addButton(new CompactButton(guiLeft + 50, guiTop + 36, 34, 12, new StringTextComponent("Ticks"), (button) -> { actionPerformed(button, 6); }));
-		addButton(new CompactButton(guiLeft + 14, guiTop + 92, 70, 12,
-				new StringTextComponent(timer.getInvertRedstone() ? "No Redstone" : "Redstone"), (button) -> { actionPerformed(button, 7); }));
-		addButton(new CompactButton(guiLeft + 14, guiTop + 106, 70, 12,
-				new StringTextComponent(lastIsWorking ? "Stop" : "Start"), (button) -> { actionPerformed(button, 8); }));
+		addButton(new CompactButton(5, guiLeft + 14, guiTop + 36, 34, 12, new StringTextComponent("Reset"), (button) -> { actionPerformed(button); }));
+		addButton(new CompactButton(6, guiLeft + 50, guiTop + 36, 34, 12, new StringTextComponent("Ticks"), (button) -> { actionPerformed(button); }));
+		addButton(new CompactButton(7, guiLeft + 14, guiTop + 92, 70, 12,
+				new StringTextComponent(timer.getInvertRedstone() ? "No Redstone" : "Redstone"), (button) -> { actionPerformed(button); }));
+		addButton(new CompactButton(8, guiLeft + 14, guiTop + 106, 70, 12,
+				new StringTextComponent(lastIsWorking ? "Stop" : "Start"), (button) -> { actionPerformed(button); }));
 
 		updateCaptions(timer.getIsTicks());
 
@@ -125,7 +125,8 @@ public class GuiTimer extends GuiContainerBase<ContainerTimer> {
 		textboxTimer.setText(timer.getTimeString());
 	}
 
-	protected void actionPerformed(Button button, int id) {
+	protected void actionPerformed(Button button) {
+		int id = ((CompactButton) button).getId();
 		boolean isTicks = timer.getIsTicks();
 		switch(id) {
 		case 0:

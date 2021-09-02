@@ -3,11 +3,7 @@ package com.zuxelus.energycontrol.items.cards;
 import java.util.List;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.api.CardState;
-import com.zuxelus.energycontrol.api.ICardReader;
-import com.zuxelus.energycontrol.api.ITouchAction;
-import com.zuxelus.energycontrol.api.PanelSetting;
-import com.zuxelus.energycontrol.api.PanelString;
+import com.zuxelus.energycontrol.api.*;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
@@ -22,12 +18,15 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public abstract class ItemCardMain extends Item {
+public abstract class ItemCardMain extends Item implements IItemCard {
 	public static final int LOCATION_RANGE = 8;
-	protected int id;
 
 	public ItemCardMain() {
 		super(new Item.Properties().group(EnergyControl.ITEM_GROUP).maxStackSize(1).setNoRepair());
+	}
+
+	public static boolean isCard(ItemStack stack) {
+		return !stack.isEmpty() && stack.getItem() instanceof IItemCard;
 	}
 
 	@Override
@@ -36,26 +35,24 @@ public abstract class ItemCardMain extends Item {
 	}
 
 	protected void addInformation(ItemCardReader reader, List<ITextComponent> tooltip) { }
-	
+
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+	public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
 		ItemCardReader reader = new ItemCardReader(stack);
 		String title = reader.getTitle();
 		if (title != null && !title.isEmpty())
 			tooltip.add(new TranslationTextComponent(title));
-		
+
 		addInformation(reader, tooltip);
-		
+
 		BlockPos target = reader.getTarget();
 		if (target != null)
 			tooltip.add(new TranslationTextComponent(String.format("x: %d, y: %d, z: %d", target.getX(), target.getY(), target.getZ())));
+		int count = reader.getCardCount();
+		if (count > 0)
+			tooltip.add(new TranslationTextComponent(I18n.format("msg.ec.cards", reader.getCardCount())));
 	}
-
-	public abstract List<PanelString> getStringData(World world, int settings, ICardReader reader, boolean isServer, boolean showLabels);
-
-	@OnlyIn(Dist.CLIENT)
-	public abstract List<PanelSetting> getSettingsList();
 
 	public CardState updateCardNBT(World world, BlockPos pos, ICardReader reader, ItemStack upgradeStack) {
 		int upgradeCountRange = 0;
@@ -86,20 +83,26 @@ public abstract class ItemCardMain extends Item {
 		return state;
 	}
 
+	@Override
 	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
 		return CardState.OK;
 	}
 
-	protected boolean isRemoteCard() {
+	@Override
+	public boolean isRemoteCard() {
 		return false;
 	}
 
+	@Override
 	public Item getKitFromCard() {
 		return null;
 	}
 
-	public int getCardId(ItemStack stack) {
-		return -1;
+	protected BlockPos getCoordinates(ICardReader reader, int cardNumber) {
+		if (cardNumber >= reader.getCardCount())
+			return null;
+		return new BlockPos(reader.getInt(String.format("_%dx", cardNumber)),
+				reader.getInt(String.format("_%dy", cardNumber)), reader.getInt(String.format("_%dz", cardNumber)));
 	}
 
 	public void runTouchAction(TileEntityInfoPanel panel, ItemStack cardStack, ItemStack stack, int slot) { 

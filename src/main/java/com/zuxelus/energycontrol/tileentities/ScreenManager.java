@@ -50,18 +50,19 @@ public class ScreenManager {
 
 	@SuppressWarnings("resource")
 	public void registerInfoPanel(TileEntityInfoPanel panel) {
-		if (panel.getWorld().isRemote)
+		World world = panel.getWorld();
+		if (world.isRemote)
 			return;
-		checkWorldLists(getWorldKey(panel.getWorld()));
+		checkWorldLists(getWorldKey(world));
 
-		for (Screen screen : screens.get(getWorldKey(panel.getWorld())))
+		for (Screen screen : screens.get(getWorldKey(world)))
 			if (screen.isBlockPartOf(panel)) {
-				destroyScreen(screen, panel.getWorld()); // occurs on chunk unloading/loading
+				destroyScreen(screen, world); // occurs on chunk unloading/loading
 				break;
 			}
 
 		Screen screen = buildFromPanel(panel);
-		screens.get(getWorldKey(panel.getWorld())).add(screen);
+		screens.get(getWorldKey(world)).add(screen);
 	}
 
 	private void destroyScreen(Screen screen, World world) {

@@ -1,7 +1,6 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.blocks.KitAssembler;
-import com.zuxelus.energycontrol.containers.ContainerInfoPanel;
 import com.zuxelus.energycontrol.containers.ContainerKitAssembler;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
@@ -23,11 +22,8 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 
 public class TileEntityKitAssembler extends TileEntityInventory implements ITickableTileEntity, INamedContainerProvider, ITilePacketHandler, ISlotItemFilter {
 	public static final byte SLOT_INFO = 0;

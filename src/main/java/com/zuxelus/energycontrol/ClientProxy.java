@@ -37,6 +37,7 @@ public class ClientProxy {
 		DeferredWorkQueue.runLater(() -> {
 			ScreenManager.registerFactory(ModContainerTypes.info_panel.get(), GuiInfoPanel::new);
 			ScreenManager.registerFactory(ModContainerTypes.info_panel_advanced.get(), GuiAdvancedInfoPanel::new);
+			ScreenManager.registerFactory(ModContainerTypes.range_trigger.get(), GuiRangeTrigger::new);
 			ScreenManager.registerFactory(ModContainerTypes.kit_assembler.get(), GuiKitAssembler::new);
 			ScreenManager.registerFactory(ModContainerTypes.timer.get(), GuiTimer::new);
 			ScreenManager.registerFactory(ModContainerTypes.card_holder.get(), GuiCardHolder::new);

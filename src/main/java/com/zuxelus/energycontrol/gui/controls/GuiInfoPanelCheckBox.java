@@ -30,13 +30,13 @@ public class GuiInfoPanelCheckBox extends AbstractButton {
 		this.setting = setting;
 		this.slot = slot;
 		this.panel = panel;
+		checked = (panel.getDisplaySettingsForCardInSlot(slot) & setting.displayBit) > 0;
 	}
 
 	@Override
 	public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (!visible)
 			return;
-		checked = (panel.getDisplaySettingsForCardInSlot(slot) & setting.displayBit) > 0;
 		Minecraft minecraft = Minecraft.getInstance();
 		FontRenderer fontRenderer = minecraft.fontRenderer;
 		minecraft.getTextureManager().bindTexture(TEXTURE);

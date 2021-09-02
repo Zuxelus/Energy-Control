@@ -2,11 +2,12 @@ package com.zuxelus.energycontrol.crossmod;
 
 import java.util.List;
 
+import com.zuxelus.energycontrol.utils.FluidInfo;
+
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.IFluidTank;
 
 public class CrossModBase {
 
@@ -14,7 +15,7 @@ public class CrossModBase {
 		return null;
 	}
 
-	public List<IFluidTank> getAllTanks(TileEntity te) {
+	public List<FluidInfo> getAllTanks(TileEntity te) {
 		return null;
 	}
 

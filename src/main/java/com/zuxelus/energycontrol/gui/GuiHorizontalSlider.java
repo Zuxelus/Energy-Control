@@ -10,7 +10,6 @@ import com.zuxelus.zlib.gui.GuiBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.AbstractButton;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.util.IReorderingProcessor;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;

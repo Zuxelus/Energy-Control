@@ -9,13 +9,13 @@ import java.util.function.Supplier;
 
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.init.ModItems;
+import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -67,23 +67,23 @@ public class CrossModLoader {
 	 * ItemStack.EMPTY; }
 	 */
 
-	public static List<IFluidTank> getAllTanks(World world, BlockPos pos) {
+	public static List<FluidInfo> getAllTanks(World world, BlockPos pos) {
 		TileEntity te = world.getTileEntity(pos);
 		if (te != null) {
 			Optional<IFluidHandler> fluid = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null).resolve();
 			if (fluid.isPresent()) {
 				IFluidHandler handler = fluid.get();
-				List<IFluidTank> result = new ArrayList<>();
+				List<FluidInfo> result = new ArrayList<>();
 				for (int i = 0; i < handler.getTanks(); i++) {
 					FluidTank tank = new FluidTank(handler.getTankCapacity(i));
 					tank.setFluid(handler.getFluidInTank(i));
-					result.add(tank);
+					result.add(new FluidInfo(tank));
 				}
 				return result;
 			}
 
 			for (CrossModBase crossMod : CROSS_MODS.values()) {
-				List<IFluidTank> list = crossMod.getAllTanks(te);
+				List<FluidInfo> list = crossMod.getAllTanks(te);
 				if (list != null)
 					return list;
 			}
@@ -92,8 +92,8 @@ public class CrossModLoader {
 		return null;
 	}
 
-	public static IFluidTank getTankAt(World world, BlockPos pos) {
-		List<IFluidTank> tanks = getAllTanks(world, pos);
+	public static FluidInfo getTankAt(World world, BlockPos pos) {
+		List<FluidInfo> tanks = getAllTanks(world, pos);
 		return tanks != null && tanks.size() > 0 ? tanks.get(0) : null;
 	}
 

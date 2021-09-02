@@ -1,0 +1,24 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "IT",
+        "PD"
+    ],
+    "key": {
+        "I": {
+            "item": "mekanism:ingot_osmium"
+        },
+        "T": {
+            "item": "mekanism:alloy_infused"
+        },
+        "P": {
+            "item": "minecraft:paper"
+        },
+        "D": {
+            "tag": "forge:dyes/green"
+        }
+    },
+    "result": {
+        "item": "energycontrol:kit_mekanism"
+    }
+}

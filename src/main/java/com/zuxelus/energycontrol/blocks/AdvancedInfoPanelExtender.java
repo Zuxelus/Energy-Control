@@ -39,6 +39,8 @@ public class AdvancedInfoPanelExtender extends InfoPanelExtender {
 		if (!(te instanceof TileEntityInfoPanelExtender))
 			return ActionResultType.PASS;
 		TileEntityInfoPanel panel = ((TileEntityInfoPanelExtender) te).getCore();
+		if (panel == null)
+			return ActionResultType.PASS;
 		if (EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) panel).getFacing() == hit.getFace())
 			if (((TileEntityInfoPanel) panel).runTouchAction(player.getHeldItem(hand), pos, hit.getHitVec()))
 				return ActionResultType.SUCCESS;
