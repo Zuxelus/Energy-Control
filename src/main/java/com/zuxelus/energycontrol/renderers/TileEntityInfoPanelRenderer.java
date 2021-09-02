@@ -8,6 +8,7 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
+import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -16,10 +17,13 @@ import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 
 public class TileEntityInfoPanelRenderer extends TileEntityRenderer<TileEntityInfoPanel> {
+	private static int[][] sides = new int[][] { { 3, 2, 1, 0, 5, 4 }, { 2, 3, 1, 0, 4, 5 }, { 4, 5, 1, 0, 3, 2 },
+		{ 5 ,4, 1, 0, 2, 3 }, { 1, 0, 3, 2, 4, 5 }, { 0, 1, 2, 3, 4, 5 } };
 	private static final ResourceLocation TEXTUREOFF[];
 	private static final ResourceLocation TEXTUREON[];
 	private static final CubeRenderer model[];
@@ -43,17 +47,28 @@ public class TileEntityInfoPanelRenderer extends TileEntityRenderer<TileEntityIn
 		String output = "";
 		if (inputArray.length > 0) {
 			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < inputArray.length; i++) {
-				if (inputArray[i] == null || inputArray[i].isEmpty())
+			for (String s : inputArray) {
+				if (s == null || s.isEmpty())
 					continue;
 				sb.append(glueString);
-				sb.append(inputArray[i]);
+				sb.append(s);
 			}
 			output = sb.toString();
 			if (output.length() > 1)
 				output = output.substring(1);
 		}
 		return output;
+	}
+
+	public static int[] getBlockLight(TileEntityFacing te) {
+		int[] light = new int[6];
+		light[sides[te.getFacing().getIndex()][0]] = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().offset(Direction.DOWN));
+		light[sides[te.getFacing().getIndex()][1]] = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().offset(Direction.UP));
+		light[sides[te.getFacing().getIndex()][2]] = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().offset(Direction.WEST));
+		light[sides[te.getFacing().getIndex()][3]] = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().offset(Direction.EAST));
+		light[sides[te.getFacing().getIndex()][4]] = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().offset(Direction.NORTH));
+		light[sides[te.getFacing().getIndex()][5]] = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().offset(Direction.SOUTH));
+		return light;
 	}
 
 	public TileEntityInfoPanelRenderer(TileEntityRendererDispatcher te) {
@@ -63,34 +78,29 @@ public class TileEntityInfoPanelRenderer extends TileEntityRenderer<TileEntityIn
 	@Override
 	public void render(TileEntityInfoPanel te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
 		matrixStack.push();
-		int lightBE = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().up());
+		int[] light = getBlockLight(te);
 		switch (te.getFacing()) {
 		case UP:
 			break;
 		case NORTH:
 			matrixStack.rotate(Vector3f.XP.rotationDegrees(-90));
 			matrixStack.translate(0.0F, -1.0F, 0.0F);
-			lightBE = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().north());
 			break;
 		case SOUTH:
 			matrixStack.rotate(Vector3f.XP.rotationDegrees(90));
 			matrixStack.translate(0.0F, 0.0F, -1.0F);
-			lightBE = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().south());
 			break;
 		case DOWN:
 			matrixStack.rotate(Vector3f.XP.rotationDegrees(180));
 			matrixStack.translate(0.0F, -1.0F, -1.0F);
-			lightBE = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().down());
 			break;
 		case WEST:
 			matrixStack.rotate(Vector3f.ZP.rotationDegrees(90));
 			matrixStack.translate(0.0F, -1.0F, 0.0F);
-			lightBE = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().west());
 			break;
 		case EAST:
 			matrixStack.rotate(Vector3f.ZP.rotationDegrees(-90));
 			matrixStack.translate(-1.0F, 0.0F, 0.0F);
-			lightBE = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().east());
 			break;
 		}
 
@@ -105,7 +115,7 @@ public class TileEntityInfoPanelRenderer extends TileEntityRenderer<TileEntityIn
 			vertexBuilder = buffer.getBuffer(RenderType.getEntitySolid(TEXTUREON[color]));
 		else
 			vertexBuilder = buffer.getBuffer(RenderType.getEntitySolid(TEXTUREOFF[color]));
-		model[te.findTexture()].render(matrixStack, vertexBuilder, lightBE, combinedOverlay);
+		model[te.findTexture()].render(matrixStack, vertexBuilder, light, combinedOverlay);
 		if (te.getPowered()) {
 			List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
 			if (joinedData != null)
@@ -206,9 +216,16 @@ public class TileEntityInfoPanelRenderer extends TileEntityRenderer<TileEntityIn
 
 		if (panel.isTouchCard()) {
 			matrixStack.rotate(Vector3f.YP.rotationDegrees(180));
-			panel.renderImage(renderDispatcher.textureManager, matrixStack.getLast().getMatrix());
-		} else 
+			panel.renderImage(renderDispatcher.textureManager, displayWidth, displayHeight, matrixStack);
+		} else {
+			if (panel.hasBars()) {
+				matrixStack.rotate(Vector3f.YP.rotationDegrees(180));
+				panel.renderImage(renderDispatcher.textureManager, displayWidth, displayHeight, matrixStack);
+				matrixStack.rotate(Vector3f.YP.rotationDegrees(180));
+			}
+			matrixStack.translate(0, 0, 0.0002F);
 			renderText(panel, joinedData, displayWidth, displayHeight, matrixStack, buffer, combinedLight);
+		}
 	}
 
 	private void renderText(TileEntityInfoPanel panel, List<PanelString> joinedData, float displayWidth, float displayHeight, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight) {

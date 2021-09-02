@@ -1,7 +1,7 @@
 package com.zuxelus.energycontrol;
 
-import com.zuxelus.energycontrol.gui.GuiAdvancedInfoPanel;
-import com.zuxelus.energycontrol.gui.GuiInfoPanel;
+import com.zuxelus.energycontrol.containers.*;
+import com.zuxelus.energycontrol.gui.*;
 import com.zuxelus.energycontrol.init.ModContainerTypes;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.renderers.*;
@@ -28,14 +28,21 @@ public class ClientProxy {
 		((IReloadableResourceManager) Minecraft.getInstance().getResourceManager()).addReloadListener(new SoundHelper.SoundLoader());
 		SoundHelper.importSound();
 
+		ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.thermal_monitor.get(), TEThermalMonitorRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.info_panel.get(), TileEntityInfoPanelRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.info_panel_extender.get(), TEInfoPanelExtenderRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.info_panel_advanced.get(), TEAdvancedInfoPanelRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.info_panel_advanced_extender.get(), TEAdvancedInfoPanelExtenderRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.timer.get(), TileEntityTimerRenderer::new);
 
 		DeferredWorkQueue.runLater(() -> {
-			ScreenManager.registerFactory(ModContainerTypes.info_panel.get(), GuiInfoPanel::new);
-			ScreenManager.registerFactory(ModContainerTypes.info_panel_advanced.get(), GuiAdvancedInfoPanel::new);
+			ScreenManager.<ContainerInfoPanel, GuiInfoPanel>registerFactory(ModContainerTypes.info_panel.get(), GuiInfoPanel::new);
+			ScreenManager.<ContainerAdvancedInfoPanel, GuiAdvancedInfoPanel>registerFactory(ModContainerTypes.info_panel_advanced.get(), GuiAdvancedInfoPanel::new);
+			ScreenManager.registerFactory(ModContainerTypes.range_trigger.get(), GuiRangeTrigger::new);
+			ScreenManager.registerFactory(ModContainerTypes.kit_assembler.get(), GuiKitAssembler::new);
+			ScreenManager.registerFactory(ModContainerTypes.timer.get(), GuiTimer::new);
+			ScreenManager.registerFactory(ModContainerTypes.card_holder.get(), GuiCardHolder::new);
+			ScreenManager.registerFactory(ModContainerTypes.portable_panel.get(), GuiPortablePanel::new);
 		});
 	}
 }

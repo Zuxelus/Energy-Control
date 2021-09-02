@@ -3,8 +3,8 @@ package com.zuxelus.energycontrol.gui.controls;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelSetting;
+import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
-import com.zuxelus.zlib.network.NetworkHelper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -28,13 +28,13 @@ public class GuiInfoPanelCheckBox extends AbstractButton {
 		this.setting = setting;
 		this.slot = slot;
 		this.panel = panel;
+		checked = (panel.getDisplaySettingsForCardInSlot(slot) & setting.displayBit) > 0;
 	}
 
 	@Override
 	public void renderButton(int mouseX, int mouseY, float partialTicks) {
 		if (!visible)
 			return;
-		checked = (panel.getDisplaySettingsForCardInSlot(slot) & setting.displayBit) > 0;
 		Minecraft minecraft = Minecraft.getInstance();
 		FontRenderer fontRenderer = minecraft.fontRenderer;
 		minecraft.getTextureManager().bindTexture(TEXTURE);

@@ -16,7 +16,6 @@ import com.zuxelus.energycontrol.tileentities.ScreenManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -44,7 +43,7 @@ public class EnergyControl {
 		@Override
 		@OnlyIn(Dist.CLIENT)
 		public ItemStack createIcon() {
-			return new ItemStack(Items.BAMBOO);
+			return new ItemStack(ModItems.kit_energy.get());
 		}
 	};
 
@@ -56,6 +55,7 @@ public class EnergyControl {
 		ModItems.ITEMS.register(modEventBus);
 		ModContainerTypes.CONTAINER_TYPES.register(modEventBus);
 		ModTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
+		ModItems.RECIPE_SERIALIZERS.register(modEventBus);
 		MinecraftForge.EVENT_BUS.register(ServerTickHandler.instance);
 		CrossModLoader.init();
 	}

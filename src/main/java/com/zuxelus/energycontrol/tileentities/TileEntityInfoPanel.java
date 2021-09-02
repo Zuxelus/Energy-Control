@@ -5,22 +5,20 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.api.CardState;
-import com.zuxelus.energycontrol.api.ITouchAction;
-import com.zuxelus.energycontrol.api.PanelString;
+import com.zuxelus.energycontrol.api.*;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.containers.ContainerInfoPanel;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
-import com.zuxelus.energycontrol.items.cards.ItemCardToggle;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.Vector3d;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -48,7 +46,7 @@ import net.minecraftforge.common.util.Constants;
 
 public class TileEntityInfoPanel extends TileEntityInventory implements ITickableTileEntity, INamedContainerProvider, ITilePacketHandler, IScreenPart, ISlotItemFilter {
 	public static final String NAME = "info_panel";
-	public static final int DISPLAY_DEFAULT = Integer.MAX_VALUE;
+	public static final int DISPLAY_DEFAULT = Integer.MAX_VALUE - 1024;
 	private static final int[] COLORS_HEX = { 0x000000, 0xe93535, 0x82e306, 0x702b14, 0x1f3ce7, 0x8f1fea, 0x1fd7e9,
 			0xcbcbcb, 0x222222, 0xe60675, 0x1fe723, 0xe9cc1f, 0x06aee4, 0xb006e3, 0xe7761f, 0xffffff };
 
@@ -58,7 +56,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	private static final byte SLOT_UPGRADE_TOUCH = 3;
 
 	private final Map<Integer, List<PanelString>> cardData;
-	protected final Map<Integer, Map<Integer, Integer>> displaySettings;
+	protected final Map<Integer, Map<String, Integer>> displaySettings;
 	protected Screen screen;
 	public CompoundNBT screenData;
 	public boolean init;
@@ -75,11 +73,11 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 
 	public TileEntityInfoPanel(TileEntityType<?> type) {
 		super(type);
-		cardData = new HashMap<Integer, List<PanelString>>();
-		displaySettings = new HashMap<Integer, Map<Integer, Integer>>(1);
-		displaySettings.put(0, new HashMap<Integer, Integer>());
+		cardData = new HashMap<>();
+		displaySettings = new HashMap<>(1);
+		displaySettings.put(0, new HashMap<>());
 		tickRate = ConfigHandler.SCREEN_REFRESH_PERIOD.get();
-		updateTicker = tickRate;
+		updateTicker = tickRate - 1;
 		dataTicker = 4;
 		showLabels = true;
 		colorBackground = 2;
@@ -271,9 +269,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		for (int i = 0; i < settingsList.size(); i++) {
 			CompoundNBT compound = settingsList.getCompound(i);
 			try {
-				getDisplaySettingsForSlot(slot).put(compound.getInt("key"), compound.getInt("value"));
+				getDisplaySettingsForSlot(slot).put(compound.getString("key"), compound.getInt("value"));
 			} catch (IllegalArgumentException e) {
-				EnergyControl.LOGGER.warn("Ivalid display settings for Information Panel");
+				EnergyControl.LOGGER.warn("Invalid display settings for Information Panel");
 			}
 		}
 	}
@@ -323,9 +321,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 
 	protected ListNBT serializeSlotSettings(int slot) {
 		ListNBT settingsList = new ListNBT();
-		for (Map.Entry<Integer, Integer> item : getDisplaySettingsForSlot(slot).entrySet()) {
+		for (Map.Entry<String, Integer> item : getDisplaySettingsForSlot(slot).entrySet()) {
 			CompoundNBT tag = new CompoundNBT();
-			tag.putInt("key", item.getKey());
+			tag.putString("key", item.getKey());
 			tag.putInt("value", item.getValue());
 			settingsList.add(tag);
 		}
@@ -422,7 +420,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	public List<PanelString> getPanelStringList(boolean isServer, boolean showLabels) {
 		List<ItemStack> cards = getCards();
 		boolean anyCardFound = false;
-		List<PanelString> joinedData = new LinkedList<PanelString>();
+		List<PanelString> joinedData = new LinkedList<>();
 		for (ItemStack card : cards) {
 			if (card.isEmpty())
 				continue;
@@ -479,16 +477,11 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	}
 
 	private void processCard(ItemStack card, int slot, ItemStack stack) {
-		if (card.isEmpty())
-			return;
-
-		Item item = card.getItem();
-		if (!(item instanceof ItemCardMain))
-			return;
-
-		ItemCardReader reader = new ItemCardReader(card);
-		((ItemCardMain) item).updateCardNBT(world, pos, reader, stack);
-		reader.updateClient(card, this, slot);
+		if (ItemCardMain.isCard(card)) {
+			ItemCardReader reader = new ItemCardReader(card);
+			((ItemCardMain) card.getItem()).updateCardNBT(world, pos, reader, stack);
+			reader.updateClient(card, this, slot);
+		}
 	}
 
 	public boolean isColoredEval() {
@@ -517,9 +510,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		return slot == SLOT_CARD;
 	}
 
-	public Map<Integer, Integer> getDisplaySettingsForSlot(int slot) {
+	public Map<String, Integer> getDisplaySettingsForSlot(int slot) {
 		if (!displaySettings.containsKey(slot))
-			displaySettings.put(slot, new HashMap<Integer, Integer>());
+			displaySettings.put(slot, new HashMap<>());
 		return displaySettings.get(slot);
 	}
 
@@ -536,12 +529,12 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		if (card.isEmpty())
 			return 0;
 
-		if (!displaySettings.containsKey(slot))
-			return DISPLAY_DEFAULT;
-
-		ItemCardMain item = (ItemCardMain) card.getItem();
-		if (displaySettings.get(slot).containsKey(item.getCardId(card)))
-			return displaySettings.get(slot).get(item.getCardId(card));
+		if (displaySettings.containsKey(slot)) {
+			for (Map.Entry<String, Integer> entry : displaySettings.get(slot).entrySet()) {
+				if (card.getTranslationKey().equals(entry.getKey()))
+					return entry.getValue();
+			}
+		}
 
 		return DISPLAY_DEFAULT;
 	}
@@ -550,14 +543,12 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		if (!isCardSlot(slot))
 			return;
 		ItemStack stack = getStackInSlot(slot);
-		if (stack.isEmpty())
-			return;
-		if (!(stack.getItem() instanceof ItemCardMain))
+		if (!ItemCardMain.isCard(stack))
 			return;
 
 		if (!displaySettings.containsKey(slot))
-			displaySettings.put(slot, new HashMap<Integer, Integer>());
-		displaySettings.get(slot).put(((ItemCardMain) stack.getItem()).getCardId(stack), settings);
+			displaySettings.put(slot, new HashMap<>());
+		displaySettings.get(slot).put(stack.getTranslationKey(), settings);
 		if (!world.isRemote)
 			notifyBlockUpdate();
 	}
@@ -577,7 +568,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	public boolean isItemValid(int index, ItemStack stack) { // ISlotItemFilter
 		switch (index) {
 		case SLOT_CARD:
-			return stack.getItem() instanceof ItemCardMain;
+			return ItemCardMain.isCard(stack);
 		case SLOT_UPGRADE_RANGE:
 			return stack.getItem().equals(ModItems.upgrade_range.get());
 		case SLOT_UPGRADE_COLOR:
@@ -661,39 +652,43 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		if (world.isRemote)
 			return false;
 		ItemStack card = getStackInSlot(SLOT_CARD);
-		if (card.isEmpty() || !(card.getItem() instanceof ITouchAction))
-			return false;
-		if (isTouchCard() && getStackInSlot(SLOT_UPGRADE_TOUCH).isEmpty())
-			return false;
-		switch (facing) { // TODO
-		case DOWN:
-			break;
-		case EAST:
-			break;
-		case NORTH:
-			break;
-		case SOUTH:
-			break;
-		case UP:
-			break;
-		case WEST:
-			break;
-		default:
-			break;
-		}
-		((ItemCardMain) card.getItem()).runTouchAction(this, card, stack, SLOT_CARD);
+		runTouchAction(this, card, stack, SLOT_CARD, true);
 		return true;
 	}
 
 	public boolean isTouchCard() {
-		ItemStack stack = getStackInSlot(SLOT_CARD);
-		return !stack.isEmpty() && stack.getItem() instanceof ItemCardToggle;
+		return isTouchCard(getStackInSlot(SLOT_CARD));
 	}
 
-	public void renderImage(TextureManager manager, Matrix4f matrix4f) {
+	public boolean isTouchCard(ItemStack stack) {
+		Item item = stack.getItem();
+		return !stack.isEmpty() && item instanceof ITouchAction && ((ITouchAction) item).enableTouch();
+	}
+
+	public boolean hasBars() {
+		return hasBars(getStackInSlot(SLOT_CARD));
+	}
+
+	public boolean hasBars(ItemStack stack) {
+		Item item = stack.getItem();
+		return !stack.isEmpty() && item instanceof IHasBars && ((IHasBars) item).enableBars(stack) && (getDisplaySettingsForCardInSlot(SLOT_CARD) & 1024) > 0;
+	}
+
+	public void renderImage(TextureManager manager, float displayWidth, float displayHeight, MatrixStack matrixStack) {
 		ItemStack stack = getStackInSlot(SLOT_CARD);
-//		if (!stack.isEmpty() && ItemCardMain.getCardId(stack) == ItemCardType.CARD_TOGGLE)
-//			ItemCardMain.renderImage(manager, stack); // TODO
+		Item card = stack.getItem();
+		if (isTouchCard())
+			((ITouchAction) card).renderImage(manager, new ItemCardReader(stack), matrixStack);
+		if (hasBars())
+			((IHasBars) card).renderBars(manager, displayWidth, displayHeight, new ItemCardReader(stack), matrixStack);
+	}
+
+	protected void runTouchAction(TileEntityInfoPanel panel, ItemStack cardStack, ItemStack stack, int slot, boolean needsTouchUpgrade) {
+		if (isTouchCard(cardStack) && (!needsTouchUpgrade || !getStackInSlot(SLOT_UPGRADE_TOUCH).isEmpty())) {
+			ICardReader reader = new ItemCardReader(cardStack);
+			if (((ITouchAction) cardStack.getItem()).runTouchAction(panel.getWorld(), reader, stack))
+				reader.updateClient(cardStack, panel, slot);
+		}
 	}
 
 	// INamedContainerProvider

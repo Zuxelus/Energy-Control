@@ -9,7 +9,6 @@ import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanelExtende
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.ResourceLocation;
@@ -41,34 +40,29 @@ public class TEAdvancedInfoPanelExtenderRenderer extends TileEntityRenderer<Tile
 	@Override
 	public void render(TileEntityAdvancedInfoPanelExtender te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
 		matrixStack.push();
-		int lightBE = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().up());
+		int[] light = TileEntityInfoPanelRenderer.getBlockLight(te);
 		switch (te.getFacing()) {
 		case UP:
 			break;
 		case NORTH:
 			matrixStack.rotate(Vector3f.XP.rotationDegrees(-90));
 			matrixStack.translate(0.0F, -1.0F, 0.0F);
-			lightBE = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().north());
 			break;
 		case SOUTH:
 			matrixStack.rotate(Vector3f.XP.rotationDegrees(90));
 			matrixStack.translate(0.0F, 0.0F, -1.0F);
-			lightBE = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().south());
 			break;
 		case DOWN:
 			matrixStack.rotate(Vector3f.XP.rotationDegrees(180));
 			matrixStack.translate(0.0F, -1.0F, -1.0F);
-			lightBE = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().down());
 			break;
 		case WEST:
 			matrixStack.rotate(Vector3f.ZP.rotationDegrees(90));
 			matrixStack.translate(0.0F, -1.0F, 0.0F);
-			lightBE = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().west());
 			break;
 		case EAST:
 			matrixStack.rotate(Vector3f.ZP.rotationDegrees(-90));
 			matrixStack.translate(-1.0F, 0.0F, 0.0F);
-			lightBE = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().east());
 			break;
 		}
 
@@ -93,13 +87,13 @@ public class TEAdvancedInfoPanelExtenderRenderer extends TileEntityRenderer<Tile
 		Screen screen = te.getScreen();
 		if (screen == null) {
 			if (thickness == 16 && rotateHor == 0 && rotateVert == 0)
-				model[textureId].render(matrixStack, vertexBuilder, lightBE, combinedOverlay);
+				model[textureId].render(matrixStack, vertexBuilder, light, combinedOverlay);
 		} else {
 			if (thickness == 16 && rotateHor == 0 && rotateVert == 0)
-				model[textureId].render(matrixStack, vertexBuilder, lightBE, combinedOverlay);
+				model[textureId].render(matrixStack, vertexBuilder, light, combinedOverlay);
 			else {
 				RotationOffset offset = new RotationOffset(thickness * 2, rotateHor, rotateVert);
-				new CubeRenderer(textureId / 4 * 32 + 64, textureId % 4 * 32 + 64, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation())).render(matrixStack, vertexBuilder, lightBE, combinedOverlay);;
+				new CubeRenderer(textureId / 4 * 32 + 64, textureId % 4 * 32 + 64, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation())).render(matrixStack, vertexBuilder, light, combinedOverlay);;
 			}
 		}
 		matrixStack.pop();

@@ -5,8 +5,8 @@ import java.util.List;
 import org.lwjgl.opengl.GL11;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
-import com.zuxelus.zlib.network.NetworkHelper;
 
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
@@ -127,8 +127,7 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 
 		// Slider
 		int sliderX = x + width - SCROLL_WIDTH + 1;
-		sliderY = y + SCROLL_BUTTON_HEIGHT + ((height - 2 * SCROLL_BUTTON_HEIGHT - sliderHeight) * scrollTop)
-				/ (lineHeight * items.size() + BASIC_Y_OFFSET - height);
+		sliderY = y + SCROLL_BUTTON_HEIGHT + ((height - 2 * SCROLL_BUTTON_HEIGHT - sliderHeight) * scrollTop) / (lineHeight * items.size() + BASIC_Y_OFFSET - height);
 		minecraft.getTextureManager().bindTexture(TEXTURE);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		blit(sliderX, sliderY, 131, 16, SCROLL_WIDTH - 1, 1);

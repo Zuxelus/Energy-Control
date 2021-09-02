@@ -13,7 +13,6 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.ResourceLocation;
@@ -43,11 +42,11 @@ public class TEAdvancedInfoPanelRenderer extends TileEntityRenderer<TileEntityAd
 		String output = "";
 		if (inputArray.length > 0) {
 			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < inputArray.length; i++) {
-				if (inputArray[i] == null || inputArray[i].isEmpty())
+			for (String s : inputArray) {
+				if (s == null || s.isEmpty())
 					continue;
 				sb.append(glueString);
-				sb.append(inputArray[i]);
+				sb.append(s);
 			}
 			output = sb.toString();
 			if (output.length() > 1)
@@ -63,34 +62,29 @@ public class TEAdvancedInfoPanelRenderer extends TileEntityRenderer<TileEntityAd
 	@Override
 	public void render(TileEntityAdvancedInfoPanel te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
 		matrixStack.push();
-		int lightBE = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().up());
+		int[] light = TileEntityInfoPanelRenderer.getBlockLight(te);
 		switch (te.getFacing()) {
 		case UP:
 			break;
 		case NORTH:
 			matrixStack.rotate(Vector3f.XP.rotationDegrees(-90));
 			matrixStack.translate(0.0F, -1.0F, 0.0F);
-			lightBE = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().north());
 			break;
 		case SOUTH:
 			matrixStack.rotate(Vector3f.XP.rotationDegrees(90));
 			matrixStack.translate(0.0F, 0.0F, -1.0F);
-			lightBE = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().south());
 			break;
 		case DOWN:
 			matrixStack.rotate(Vector3f.XP.rotationDegrees(180));
 			matrixStack.translate(0.0F, -1.0F, -1.0F);
-			lightBE = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().down());
 			break;
 		case WEST:
 			matrixStack.rotate(Vector3f.ZP.rotationDegrees(90));
 			matrixStack.translate(0.0F, -1.0F, 0.0F);
-			lightBE = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().west());
 			break;
 		case EAST:
 			matrixStack.rotate(Vector3f.ZP.rotationDegrees(-90));
 			matrixStack.translate(-1.0F, 0.0F, 0.0F);
-			lightBE = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().east());
 			break;
 		}
 
@@ -116,9 +110,9 @@ public class TEAdvancedInfoPanelRenderer extends TileEntityRenderer<TileEntityAd
 		Screen screen = te.getScreen();
 		if (screen != null) {
 			if (thickness == 16 && rotateHor == 0 && rotateVert == 0)
-				model[textureId].render(matrixStack, vertexBuilder, lightBE, combinedOverlay);
+				model[textureId].render(matrixStack, vertexBuilder, light, combinedOverlay);
 			else
-				new CubeRenderer(textureId / 4 * 32 + 64, textureId % 4 * 32 + 64, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation())).render(matrixStack, vertexBuilder, lightBE, combinedOverlay);
+				new CubeRenderer(textureId / 4 * 32 + 64, textureId % 4 * 32 + 64, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation())).render(matrixStack, vertexBuilder, light, combinedOverlay);
 			if (te.powered) {
 				List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
 				if (joinedData != null)

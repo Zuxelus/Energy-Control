@@ -1,10 +1,9 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.containers.ContainerAdvancedInfoPanel;
-import com.zuxelus.energycontrol.containers.ContainerInfoPanel;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
-import com.zuxelus.energycontrol.items.cards.ItemCardAppEngInv;
+//import com.zuxelus.energycontrol.items.cards.ItemCardAppEngInv;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -16,6 +15,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.renderer.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
@@ -212,7 +212,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 		case SLOT_CARD1:
 		case SLOT_CARD2:
 		case SLOT_CARD3:
-			return stack.getItem() instanceof ItemCardMain;
+			return ItemCardMain.isCard(stack);
 		case SLOT_UPGRADE_RANGE:
 			return stack.getItem().equals(ModItems.upgrade_range.get());
 		default:
@@ -225,9 +225,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 		if (world.isRemote)
 			return false;
 		ItemStack card = getStackInSlot(SLOT_CARD1);
-		if (card.isEmpty() || !(card.getItem() instanceof ItemCardAppEngInv))
-			return false;
-		((ItemCardAppEngInv) card.getItem()).runTouchAction(this, card, stack, SLOT_CARD1);
+		runTouchAction(this, card, stack, SLOT_CARD1, false);
 		return true;
 	}
 

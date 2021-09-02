@@ -1,9 +1,9 @@
 package com.zuxelus.energycontrol.gui;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.gui.GuiBase;
-import com.zuxelus.zlib.network.NetworkHelper;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.api.distmarker.Dist;
@@ -12,12 +12,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiScreenColor extends GuiBase {
 
-	private GuiInfoPanel parentGui;
+	private GuiPanelBase<?> parentGui;
 	private int colorText;
 	private int colorBack;
 	private TileEntityInfoPanel panel;
 
-	public GuiScreenColor(GuiInfoPanel parentGui, TileEntityInfoPanel panel) {
+	public GuiScreenColor(GuiPanelBase<?> parentGui, TileEntityInfoPanel panel) {
 		super("", 234, 94, EnergyControl.MODID + ":textures/gui/gui_colors.png");
 		this.parentGui = parentGui;
 		this.panel = panel;
@@ -55,7 +55,11 @@ public class GuiScreenColor extends GuiBase {
 	}
 
 	@Override
-	public void onClose() {
-		minecraft.displayGuiScreen(parentGui);
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		if (keyCode == 256) {
+			minecraft.displayGuiScreen(parentGui);
+			return true;
+		}
+		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 }

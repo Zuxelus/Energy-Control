@@ -8,7 +8,6 @@ import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanelExtender;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.ResourceLocation;
@@ -40,34 +39,29 @@ public class TEInfoPanelExtenderRenderer extends TileEntityRenderer<TileEntityIn
 	@Override
 	public void render(TileEntityInfoPanelExtender te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
 		matrixStack.push();
-		int lightBE = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().up());
+		int[] light = TileEntityInfoPanelRenderer.getBlockLight(te);
 		switch (te.getFacing()) {
 		case UP:
 			break;
 		case NORTH:
 			matrixStack.rotate(Vector3f.XP.rotationDegrees(-90));
 			matrixStack.translate(0.0F, -1.0F, 0.0F);
-			lightBE = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().north());
 			break;
 		case SOUTH:
 			matrixStack.rotate(Vector3f.XP.rotationDegrees(90));
 			matrixStack.translate(0.0F, 0.0F, -1.0F);
-			lightBE = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().south());
 			break;
 		case DOWN:
 			matrixStack.rotate(Vector3f.XP.rotationDegrees(180));
 			matrixStack.translate(0.0F, -1.0F, -1.0F);
-			lightBE = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().down());
 			break;
 		case WEST:
 			matrixStack.rotate(Vector3f.ZP.rotationDegrees(90));
 			matrixStack.translate(0.0F, -1.0F, 0.0F);
-			lightBE = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().west());
 			break;
 		case EAST:
 			matrixStack.rotate(Vector3f.ZP.rotationDegrees(-90));
 			matrixStack.translate(-1.0F, 0.0F, 0.0F);
-			lightBE = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().east());
 			break;
 		}
 
@@ -82,7 +76,7 @@ public class TEInfoPanelExtenderRenderer extends TileEntityRenderer<TileEntityIn
 			vertexBuilder = buffer.getBuffer(RenderType.getEntitySolid(TEXTUREON[color]));
 		else
 			vertexBuilder = buffer.getBuffer(RenderType.getEntitySolid(TEXTUREOFF[color]));
-		model[te.findTexture()].render(matrixStack, vertexBuilder, lightBE, combinedOverlay);
+		model[te.findTexture()].render(matrixStack, vertexBuilder, light, combinedOverlay);
 		matrixStack.pop();
 	}
 }

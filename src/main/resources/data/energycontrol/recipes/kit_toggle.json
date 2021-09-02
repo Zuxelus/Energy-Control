@@ -1,0 +1,24 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "DF",
+        "PW"
+    ],
+    "key": {
+        "D": {
+            "item": "minecraft:lever"
+        },
+        "P": {
+            "item": "minecraft:paper"
+        },
+        "F": {
+            "item": "mekanism:alloy_infused"
+        },
+        "W": {
+			"tag": "forge:dyes/gray"
+        }
+    },
+    "result": {
+        "item": "energycontrol:kit_toggle"
+    }
+}

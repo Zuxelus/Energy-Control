@@ -7,10 +7,8 @@ import java.io.InputStreamReader;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.function.Predicate;
 
 import com.google.gson.Gson;
@@ -72,25 +70,18 @@ public class SoundHelper {
 		}
 
 		public static void importSound() {
-		EnergyControl.INSTANCE.availableAlarms = new ArrayList<String>();
+		EnergyControl.INSTANCE.availableAlarms = new ArrayList<>();
 
 		try {
-			List<IResource> list = Minecraft.getInstance().getResourceManager().getAllResources(new ResourceLocation("energycontrol", "sounds.json"));
+			List<IResource> list = Minecraft.getInstance().getResourceManager().getAllResources(new ResourceLocation(EnergyControl.MODID, "sounds.json"));
 
 			for (int i = list.size() - 1; i >= 0; --i) {
 				IResource iresource = list.get(i);
 
-				try {
-					Map map = (Map) gson.fromJson(new InputStreamReader(iresource.getInputStream()), type);
-					Iterator iterator1 = map.entrySet().iterator();
-
-					while (iterator1.hasNext()) {
-						Entry entry = (Entry) iterator1.next();
-						EnergyControl.INSTANCE.availableAlarms.add(((String) entry.getKey()).replace("alarm-", ""));
-					}
-				} catch (RuntimeException runtimeexception) { }
+				Map<String, SoundList> map = gson.fromJson(new InputStreamReader(iresource.getInputStream()), type);
+				map.forEach((str, soundList) -> EnergyControl.INSTANCE.availableAlarms.add(str.replace("alarm-", "")));
 			}
-		} catch (IOException ioexception) {}
+		} catch (IOException ignored) {}
 	}
 
 	private static void buildJSON() throws IOException {

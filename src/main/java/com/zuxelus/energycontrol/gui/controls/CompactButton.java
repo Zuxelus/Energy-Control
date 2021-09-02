@@ -1,23 +1,26 @@
 package com.zuxelus.energycontrol.gui.controls;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.zuxelus.energycontrol.EnergyControl;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.widget.button.AbstractButton;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class CompactButton extends AbstractButton {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/gui_thermal_monitor.png");
+public class CompactButton extends Button {
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_thermal_monitor.png");
+	private int id;
 
-	public CompactButton(int x, int y, int widthIn, int heightIn, String buttonText) {
-		super(x, y, widthIn, heightIn, buttonText);
+	public CompactButton(int id, int x, int y, int widthIn, int heightIn, String buttonText, Button.IPressable onPress) {
+		super(x, y, widthIn, heightIn, buttonText, onPress);
+		this.id = id;
 	}
 
 	@Override
@@ -36,13 +39,10 @@ public class CompactButton extends AbstractButton {
 		blit(x, y, 0, 64 + i * 12, width / 2 + width % 2, height);
 		blit(x + width / 2 + width % 2, y, 200 - width / 2, 64 + i * 12, width / 2, height);
 		renderBg(minecraft, mouseX, mouseY);
-		drawCenteredString(fontRenderer, getMessage(), x + width / 2, y + (height - 8) / 2, 0x404040);
-		//fontRenderer.drawString(displayString, x + (width - fontRenderer.getStringWidth(displayString)) / 2, y + 2, 0x404040);
+		fontRenderer.drawString(getMessage(), x + (width - fontRenderer.getStringWidth(getMessage())) / 2, y + (height - 8) / 2, 0x404040);
 	}
 
-	@Override
-	public void onPress() {
-		// TODO Auto-generated method stub
-		
+	public int getId() {
+		return id;
 	}
 }

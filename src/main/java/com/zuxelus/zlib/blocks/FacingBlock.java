@@ -20,10 +20,15 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 public abstract class FacingBlock extends DirectionalBlock {
-	private Direction rotation;
+	protected Direction rotation;
 
 	public FacingBlock() {
 		super(Block.Properties.create(Material.IRON).hardnessAndResistance(12.0F));
+		setDefaultState(getDefaultState().with(FACING, Direction.NORTH));
+	}
+
+	public FacingBlock(Block.Properties builder) {
+		super(builder);
 		setDefaultState(getDefaultState().with(FACING, Direction.NORTH));
 	}
 

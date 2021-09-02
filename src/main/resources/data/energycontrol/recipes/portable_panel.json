@@ -1,0 +1,28 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "A  ",
+        "CMC",
+        "RPP"
+    ],
+    "key": {
+        "A": {
+            "item": "mekanism:basic_universal_cable"
+        },
+        "C": {
+            "item": "mekanism:alloy_infused"
+        },
+        "M": {
+            "item": "energycontrol:info_panel_extender"
+        },
+        "R": {
+            "item": "energycontrol:upgrade_range"
+        },
+        "P": {
+            "item": "mekanism:enriched_carbon"
+        }
+    },
+    "result": {
+        "item": "energycontrol:portable_panel"
+    }
+}

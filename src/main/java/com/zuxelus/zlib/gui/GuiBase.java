@@ -3,6 +3,7 @@ package com.zuxelus.zlib.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -16,11 +17,8 @@ public abstract class GuiBase extends Screen {
 	protected int guiLeft;
 	protected int guiTop;
 
-	//protected String name;
-
 	public GuiBase(String name, int xSize, int ySize, String texture) {
 		super(new TranslationTextComponent(name));
-		//this.name = I18n.format(name);
 		this.xSize = xSize;
 		this.ySize = ySize;
 		this.texture = new ResourceLocation(texture);
@@ -62,5 +60,19 @@ public abstract class GuiBase extends Screen {
 	@Override
 	public boolean isPauseScreen() {
 		return false;
+	}
+
+	protected TextFieldWidget addTextFieldWidget(int left, int top, int width, int height, boolean isEnabled, String text) {
+		TextFieldWidget textBox = new TextFieldWidget(font, guiLeft + left, guiTop + top, width, height, null, "");
+		textBox.setEnabled(isEnabled);
+		textBox.changeFocus(isEnabled);
+		textBox.setText(text);
+		children.add(textBox);
+		setFocusedDefault(textBox);
+		return textBox;
+	}
+
+	protected void drawTitle() {
+		font.drawString(title.getFormattedText(), (xSize - font.getStringWidth(title.getFormattedText())) / 2, 6, 0x404040);
 	}
 }

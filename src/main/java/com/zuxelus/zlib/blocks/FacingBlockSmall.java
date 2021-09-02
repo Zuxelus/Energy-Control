@@ -2,6 +2,7 @@ package com.zuxelus.zlib.blocks;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -26,12 +27,18 @@ public abstract class FacingBlockSmall extends FacingBlock {
 
 		for (Direction direction : directions) {
 			BlockState state = getDefaultState().with(FACING, direction.getOpposite());
-			if (state.isValidPosition(ctx.getWorld(), ctx.getPos()))
+			if (state.isValidPosition(ctx.getWorld(), ctx.getPos())) {
+				PlayerEntity placer = ctx.getPlayer();
+				rotation = placer.getHorizontalFacing().getOpposite();
+				if (placer.rotationPitch <= -65)
+					rotation = placer.getHorizontalFacing();
 				return state;
+			}
 		}
 		return null;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos currentPos, BlockPos facingPos) {
 		return state.get(FACING).getOpposite() == facing && !state.isValidPosition(world, currentPos)

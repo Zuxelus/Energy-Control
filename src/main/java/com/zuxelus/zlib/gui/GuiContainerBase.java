@@ -5,11 +5,11 @@ import java.text.DecimalFormat;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -26,13 +26,11 @@ public class GuiContainerBase<T extends Container> extends ContainerScreen<T> {
 	protected static final int REDGLOW = multiplyColorComponents(RED, 0.16F);
 	protected DecimalFormat fraction = new DecimalFormat("##0.00");
 
-	protected final ResourceLocation texture;
-	protected String name;
+	private final ResourceLocation texture;
 
-	public GuiContainerBase(T container, PlayerInventory inv, String name, String texture) {
-		super(container, inv, new TranslationTextComponent(name));
-		this.name = I18n.format(name);
-		this.texture = new ResourceLocation(texture);
+	public GuiContainerBase(T container, PlayerInventory inv, ITextComponent name, ResourceLocation texture) {
+		super(container, inv, name);
+		this.texture = texture;
 	}
 
 	@Override
@@ -82,5 +80,15 @@ public class GuiContainerBase<T extends Container> extends ContainerScreen<T> {
 
 	public static int multiplyColorComponents(int color, float brightnessFactor) {
 		return ((int) (brightnessFactor * (color & MASKR)) & MASKR) | ((int) (brightnessFactor * (color & MASKG)) & MASKG) | ((int) (brightnessFactor * (color & MASKB)) & MASKB);
+	}
+
+	protected TextFieldWidget addTextFieldWidget(int left, int top, int width, int height, boolean isEnabled, String text) {
+		TextFieldWidget textBox = new TextFieldWidget(font, guiLeft + left, guiTop + top, width, height, null, "");
+		textBox.setEnabled(isEnabled);
+		textBox.changeFocus(isEnabled);
+		textBox.setText(text);
+		children.add(textBox);
+		setFocusedDefault(textBox);
+		return textBox;
 	}
 }

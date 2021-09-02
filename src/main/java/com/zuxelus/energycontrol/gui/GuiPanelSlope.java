@@ -1,19 +1,20 @@
 package com.zuxelus.energycontrol.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 import com.zuxelus.zlib.gui.GuiBase;
-import com.zuxelus.zlib.network.NetworkHelper;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiPanelSlope extends GuiBase {
-	private GuiInfoPanel parentGui;
+	private GuiPanelBase<?> parentGui;
 	private TileEntityAdvancedInfoPanel panel;
 
-	public GuiPanelSlope(GuiInfoPanel parentGui, TileEntityAdvancedInfoPanel panel) {
+	public GuiPanelSlope(GuiPanelBase<?> parentGui, TileEntityAdvancedInfoPanel panel) {
 		super("", 171, 94, EnergyControl.MODID + ":textures/gui/gui_slope.png");
 		this.parentGui = parentGui;
 		this.panel = panel;

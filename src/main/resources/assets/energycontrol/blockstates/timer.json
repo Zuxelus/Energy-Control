@@ -1,0 +1,10 @@
+{
+    "variants": {
+        "facing=up":    { "model": "energycontrol:block/timer" },
+        "facing=down":  { "model": "energycontrol:block/timer", "x": 180 },
+        "facing=east":  { "model": "energycontrol:block/timer", "x": 90, "y": 90 },
+        "facing=west":  { "model": "energycontrol:block/timer", "x": 90, "y": 270 },
+        "facing=south": { "model": "energycontrol:block/timer", "x": 90, "y": 180 },
+        "facing=north": { "model": "energycontrol:block/timer", "x": 90 }
+    }
+} 

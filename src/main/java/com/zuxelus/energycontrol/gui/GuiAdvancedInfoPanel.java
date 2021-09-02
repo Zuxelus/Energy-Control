@@ -2,6 +2,7 @@ package com.zuxelus.energycontrol.gui;
 
 import java.util.List;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelSetting;
@@ -10,10 +11,9 @@ import com.zuxelus.energycontrol.gui.controls.GuiInfoPanelCheckBox;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardText;
+import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
-import com.zuxelus.zlib.containers.ContainerBase;
 import com.zuxelus.zlib.gui.controls.GuiButtonGeneral;
-import com.zuxelus.zlib.network.NetworkHelper;
 
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
@@ -22,57 +22,65 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiAdvancedInfoPanel extends GuiInfoPanel {
+public class GuiAdvancedInfoPanel extends GuiPanelBase<ContainerAdvancedInfoPanel> {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_advanced_info_panel.png");
-	private TileEntityAdvancedInfoPanel panel;
 
-	public GuiAdvancedInfoPanel(ContainerBase container, PlayerInventory inventory, ITextComponent title) {
-		super(container, inventory, title);
+	public GuiAdvancedInfoPanel(ContainerAdvancedInfoPanel container, PlayerInventory inventory, ITextComponent title) {
+		super(container, inventory, title, TEXTURE);
 		ySize = 223;
-		panel = ((ContainerAdvancedInfoPanel) container).te;
+		panel = (TileEntityAdvancedInfoPanel) container.te;
 		name = I18n.format("block.energycontrol.info_panel_advanced");
+	}
+
+	@Override
+	protected void initButtons() {
+		addButton(new GuiButtonGeneral(guiLeft + 83, guiTop + 42, 16, 16, TEXTURE, 176, panel.getShowLabels() ? 15 : 31, (button) -> { actionPerformed(button, ID_LABELS); }).setGradient());
+		addButton(new GuiButtonGeneral(guiLeft + 83 + 17 * 1, guiTop + 42, 16, 16, TEXTURE, 192, 15, (button) -> { actionPerformed(button, ID_SLOPE); }).setGradient());
+		addButton(new GuiButtonGeneral(guiLeft + 83 + 17 * 2, guiTop + 42, 16, 16, TEXTURE, 192, 28, (button) -> { actionPerformed(button, ID_COLORS); }).setGradient().setScale(2));
+		addButton(new GuiButtonGeneral(guiLeft + 83 + 17 * 3, guiTop + 42, 16, 16, TEXTURE, 192 - 16, getIconPowerTopOffset(((TileEntityAdvancedInfoPanel) panel).getPowerMode()), (button) -> { actionPerformed(button, ID_POWER); }).setGradient());
+		addButton(new GuiButtonGeneral(guiLeft + 83 + 17 * 4, guiTop + 42 + 17, 16, 16, Integer.toString(panel.getTickRate()), (button) -> { actionPerformed(button, ID_TICKRATE); }).setGradient());
 	}
 
 	@Override
 	protected void initControls() {
 		ItemStack stack = panel.getCards().get(activeTab);
-
-		buttons.clear();
-		children.clear();
-		addButton(new GuiButtonGeneral(guiLeft + 83, guiTop + 42, 16, 16, TEXTURE, 176, panel.getShowLabels() ? 15 : 31, (button) -> { actionPerformed(button, ID_LABELS); }).setGradient());
-		addButton(new GuiButtonGeneral(guiLeft + 83 + 17 * 1, guiTop + 42, 16, 16, TEXTURE, 192, 15, (button) -> { actionPerformed(button, ID_SLOPE); }).setGradient());
-		addButton(new GuiButtonGeneral(guiLeft + 83 + 17 * 2, guiTop + 42, 16, 16, TEXTURE, 192, 28, (button) -> { actionPerformed(button, ID_COLORS); }).setGradient().setScale(2));
-		addButton(new GuiButtonGeneral(guiLeft + 83 + 17 * 3, guiTop + 42, 16, 16, TEXTURE, 192 - 16, getIconPowerTopOffset(panel.getPowerMode()), (button) -> { actionPerformed(button, ID_POWER); }).setGradient());
-		addButton(new GuiButtonGeneral(guiLeft + 83 + 17 * 4, guiTop + 42 + 17, 16, 16, Integer.toString(panel.getTickRate()), (button) -> { actionPerformed(button, ID_TICKRATE); }).setGradient());
-
-		if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain) {
-			int slot = panel.getCardSlot(stack);
-			if (stack.getItem() instanceof ItemCardText)
-				addButton(new GuiButtonGeneral(guiLeft + 83 + 17 * 4, guiTop + 42, 16, 16, "txt", (button) -> { actionPerformed(button, ID_TEXT); }).setGradient());
-			List<PanelSetting> settingsList = ((ItemCardMain) stack.getItem()).getSettingsList();
-
-			int hy = font.FONT_HEIGHT + 1;
-			int y = 1;
-			int x = guiLeft + 24;
-			if (settingsList != null)
-				for (PanelSetting panelSetting : settingsList) {
-					addButton(new GuiInfoPanelCheckBox(x + 4, guiTop + 51 + hy * y, panelSetting, panel, slot, font));
-					y++;
+		if (!ItemStack.areItemsEqual(stack, oldStack)) {
+			if (!oldStack.isEmpty() && stack.isEmpty())
+				updateTitle();
+			oldStack = stack.copy();
+			buttons.clear();
+			children.clear();
+			initButtons();
+			if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain) {
+				int slot = panel.getCardSlot(stack);
+				if (stack.getItem() instanceof ItemCardText)
+					addButton(new GuiButtonGeneral(guiLeft + 83 + 17 * 4, guiTop + 42, 16, 16, "txt", (button) -> { actionPerformed(button, ID_TEXT); }).setGradient());
+				List<PanelSetting> settingsList = ((ItemCardMain) stack.getItem()).getSettingsList();
+	
+				int hy = font.FONT_HEIGHT + 1;
+				int y = 1;
+				int x = guiLeft + 24;
+				if (settingsList != null)
+					for (PanelSetting panelSetting : settingsList) {
+						addButton(new GuiInfoPanelCheckBox(x + 4, guiTop + 51 + hy * y, panelSetting, panel, slot, font));
+						y++;
+					}
+				if (!modified) {
+					textboxTitle = new TextFieldWidget(font, guiLeft + 7, guiTop + 16, 162, 18, null, "");
+					textboxTitle.changeFocus(true);
+					textboxTitle.setText(new ItemCardReader(stack).getTitle());
+					children.add(textboxTitle);
+					setFocusedDefault(textboxTitle);
 				}
-			if (!modified) {
-				textboxTitle = new TextFieldWidget(font, guiLeft + 7, guiTop + 16, 162, 18, null, "");
-				textboxTitle.changeFocus(true);
-				textboxTitle.setText(new ItemCardReader(stack).getTitle());
-				children.add(textboxTitle);
-				setFocusedDefault(textboxTitle);
+			} else {
+				modified = false;
+				textboxTitle = null;
 			}
-		} else {
-			modified = false;
-			textboxTitle = null;
 		}
 	}
 
@@ -96,6 +104,8 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
 		getMinecraft().getTextureManager().bindTexture(TEXTURE);
 		blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 		blit(guiLeft + 24, guiTop + 62 + activeTab * 14, 182, 0, 1, 15);
+		if (textboxTitle != null)
+			textboxTitle.renderButton(mouseX, mouseY, partialTicks);
 	}
 
 	@Override
@@ -120,13 +130,13 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
 	protected void actionPerformed(Button button, int id) {
 		switch (id) {
 		case ID_POWER:
-			byte mode = panel.getNextPowerMode();
+			byte mode = ((TileEntityAdvancedInfoPanel) panel).getNextPowerMode();
 			((GuiButtonGeneral) button).setTextureTop(getIconPowerTopOffset(mode));
 			NetworkHelper.updateSeverTileEntity(panel.getPos(), 11, mode);
-			panel.powerMode = mode;
+			((TileEntityAdvancedInfoPanel) panel).powerMode = mode;
 			return;
 		case ID_SLOPE:
-			minecraft.displayGuiScreen(new GuiPanelSlope(this, panel));
+			minecraft.displayGuiScreen(new GuiPanelSlope(this, ((TileEntityAdvancedInfoPanel) panel)));
 			return;
 		}
 		super.actionPerformed(button, id);

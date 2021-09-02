@@ -1,0 +1,25 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "PPP",
+        "CEC",
+        "CMC"
+    ],
+    "key": {
+        "P": {
+            "tag": "forge:glass_panes/cyan"
+        },
+        "M": {
+            "item": "mekanism:thermal_evaporation_block"
+        },
+        "E": {
+            "item": "energycontrol:info_panel_extender"
+        },
+        "C": {
+            "item": "mekanism:enriched_carbon"
+        }
+    },
+    "result": {
+        "item": "energycontrol:info_panel_advanced_extender"
+    }
+}

@@ -1,0 +1,24 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+        "CF",
+        "PB"
+    ],
+    "key": {
+        "P": {
+            "item": "minecraft:paper"
+        },
+        "C": {
+            "item": "minecraft:bucket"
+        },
+        "F": {
+            "item": "mekanism:alloy_infused"
+        },
+        "B": {
+			"tag": "forge:dyes/blue"
+        }
+	},
+	"result": {
+		"item": "energycontrol:kit_liquid"
+	}
+}

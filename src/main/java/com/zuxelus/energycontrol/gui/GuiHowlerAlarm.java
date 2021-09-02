@@ -20,7 +20,7 @@ public class GuiHowlerAlarm extends GuiBase {
 	private GuiHowlerAlarmListBox listBox;
 
 	public GuiHowlerAlarm(TileEntityHowlerAlarm alarm) {
-		super("tile.howler_alarm.name", 131, 136, EnergyControl.MODID + ":textures/gui/gui_howler_alarm.png");
+		super("block.energycontrol.howler_alarm", 131, 136, EnergyControl.MODID + ":textures/gui/gui_howler_alarm.png");
 		this.alarm = alarm;
 	}
 
@@ -39,7 +39,7 @@ public class GuiHowlerAlarm extends GuiBase {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		font.drawString(title.getFormattedText(), (xSize - font.getStringWidth(title.getFormattedText())) / 2, 6, 0x404040);
+		drawTitle();
 		font.drawString(I18n.format("msg.ec.HowlerAlarmSound"), 12, 53, 0x404040);
 	}
 }

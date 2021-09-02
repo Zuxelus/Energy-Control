@@ -51,7 +51,7 @@ public class ItemCardRedstone extends ItemCardMain {
 
 	@Override
 	public List<PanelString> getStringData(World world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
-		List<PanelString> result = new LinkedList<PanelString>();
+		List<PanelString> result = new LinkedList<>();
 		result.add(new PanelString("msg.ec.InfoPanelName", reader.getString("name"), showLabels));
 		result.add(new PanelString("msg.ec.InfoPanelBlockPowered", reader.getBoolean("isPowered").toString(), showLabels));
 		result.add(new PanelString("msg.ec.InfoPanelIndirectPower", reader.getInt("indirect"), showLabels));

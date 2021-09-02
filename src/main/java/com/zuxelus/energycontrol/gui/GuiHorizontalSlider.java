@@ -2,9 +2,9 @@ package com.zuxelus.energycontrol.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.gui.GuiBase;
-import com.zuxelus.zlib.network.NetworkHelper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -16,11 +16,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiHorizontalSlider extends GuiBase {
 
-	private GuiInfoPanel parentGui;
+	private GuiPanelBase<?> parentGui;
 	private TileEntityInfoPanel panel;
 	private HorizontalSlider slider;
 
-	public GuiHorizontalSlider(GuiInfoPanel parentGui, TileEntityInfoPanel panel) {
+	public GuiHorizontalSlider(GuiPanelBase<?> parentGui, TileEntityInfoPanel panel) {
 		super("msg.ec.PanelRefreshRate", 152, 64, EnergyControl.MODID + ":textures/gui/gui_horizontal_slider.png");
 		this.parentGui = parentGui;
 		this.panel = panel;
@@ -35,12 +35,16 @@ public class GuiHorizontalSlider extends GuiBase {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		font.drawString(title.getFormattedText(), (xSize - font.getStringWidth(title.getFormattedText())) / 2, 6, 0x404040);
+		drawTitle();
 	}
 
 	@Override
-	public void onClose() {
-		minecraft.displayGuiScreen(parentGui);
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		if (keyCode == 256) {
+			minecraft.displayGuiScreen(parentGui);
+			return true;
+		}
+		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 
 	public class HorizontalSlider extends AbstractButton {

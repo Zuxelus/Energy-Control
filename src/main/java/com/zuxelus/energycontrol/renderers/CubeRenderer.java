@@ -31,8 +31,8 @@ public class CubeRenderer { // net.minecraft.client.renderer.model.ModelRenderer
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay) {
-		cube.render(matrixStack, buffer, packedLight, packedOverlay);
+	public void render(MatrixStack matrixStack, IVertexBuilder buffer, int[] light, int combinedOverlay) {
+		cube.render(matrixStack, buffer, light, combinedOverlay);
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -98,13 +98,13 @@ public class CubeRenderer { // net.minecraft.client.renderer.model.ModelRenderer
 			quads[5] = new TexturedQuad(new PositionTextureVertex[] { vertex5, vertex6, vertex7, vertex8 }, dz + dx + dz, dz, dz + dx + dz + dx, dz + dy, texWidth, texHeight, Direction.SOUTH);
 		}
 
-		public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay) {
+		public void render(MatrixStack matrixStack, IVertexBuilder buffer, int[] light, int combinedOverlay) {
 			matrixStack.scale(0.5F, 0.5F, 0.5F);
-			render(matrixStack.getLast(), buffer, packedLight, packedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
+			render(matrixStack.getLast(), buffer, light, combinedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
 			matrixStack.scale(2.0F, 2.0F, 2.0F);
 		}
 
-		public void render(MatrixStack.Entry matrixEntry, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		public void render(MatrixStack.Entry matrixEntry, IVertexBuilder buffer, int[] light, int combinedOverlay, float red, float green, float blue, float alpha) {
 			Matrix4f matrix4f = matrixEntry.getMatrix();
 			Matrix3f matrix3f = matrixEntry.getNormal();
 
@@ -120,7 +120,7 @@ public class CubeRenderer { // net.minecraft.client.renderer.model.ModelRenderer
 					PositionTextureVertex vertex = quad.vertexPositions[i];
 					Vector4f vector4f = new Vector4f(vertex.position.getX() / 16.0F, vertex.position.getY() / 16.0F, vertex.position.getZ() / 16.0F, 1.0F);
 					vector4f.transform(matrix4f);
-					buffer.addVertex(vector4f.getX(), vector4f.getY(), vector4f.getZ(), red, green, blue, alpha, vertex.textureU, vertex.textureV, packedOverlay, packedLight, f, g, h);
+					buffer.addVertex(vector4f.getX(), vector4f.getY(), vector4f.getZ(), red, green, blue, alpha, vertex.textureU, vertex.textureV, combinedOverlay, light[n], f, g, h);
 				}
 			}
 		}

@@ -1,0 +1,10 @@
+{
+	"values": [
+		"energycontrol:card_energy",
+		"energycontrol:card_liquid_advanced",
+		"energycontrol:card_liquid",
+		"energycontrol:card_mekanism",
+		"energycontrol:card_redstone",
+		"energycontrol:card_toggle"
+	]
+}

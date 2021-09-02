@@ -15,7 +15,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ItemCardTime extends ItemCardMain {
 
 	@Override
-	public List<PanelString> getStringData(World world, int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(World world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		int time = 0;
 		if (world != null)
@@ -23,21 +23,21 @@ public class ItemCardTime extends ItemCardMain {
 		int hours = time / 1000;
 		int minutes = (time % 1000) * 6 / 100;
 		String suffix = "";
-		if ((displaySettings & 1) == 0) {
+		if ((settings & 1) == 0) {
 			suffix = hours < 12 ? "AM" : "PM";
 			hours %= 12;
 			if (hours == 0)
 				hours += 12;
 		}
-		result.add(new PanelString("msg.ec.InfoPanelTime",String.format("%02d:%02d%s", hours, minutes, suffix),showLabels));
+		result.add(new PanelString("msg.ec.InfoPanelTime",String.format("%02d:%02d%s", hours, minutes, suffix), showLabels));
 		return result;
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public List<PanelSetting> getSettingsList() {
-		List<PanelSetting> result = new ArrayList<PanelSetting>(1);
-		result.add(new PanelSetting(I18n.format("msg.ec.cb24h"), 1, id));
+		List<PanelSetting> result = new ArrayList<>(1);
+		result.add(new PanelSetting(I18n.format("msg.ec.cb24h"), 1));
 		return result;
 	}
 }

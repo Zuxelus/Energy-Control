@@ -22,7 +22,7 @@ public class ItemCardText extends ItemCardMain {
 
 	@Override
 	public List<PanelString> getStringData(World world, int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
-		List<PanelString> result = new LinkedList<PanelString>();
+		List<PanelString> result = new LinkedList<>();
 		boolean started = false;
 		for (int i = 9; i >= 0; i--) {
 			String text = reader.getString("line_" + i);
