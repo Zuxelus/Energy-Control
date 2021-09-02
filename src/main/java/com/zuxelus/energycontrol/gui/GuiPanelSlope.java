@@ -11,10 +11,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiPanelSlope extends GuiBase {
-	private GuiInfoPanel parentGui;
+	private GuiPanelBase<?> parentGui;
 	private TileEntityAdvancedInfoPanel panel;
 
-	public GuiPanelSlope(GuiInfoPanel parentGui, TileEntityAdvancedInfoPanel panel) {
+	public GuiPanelSlope(GuiPanelBase<?> parentGui, TileEntityAdvancedInfoPanel panel) {
 		super("", 171, 94, EnergyControl.MODID + ":textures/gui/gui_slope.png");
 		this.parentGui = parentGui;
 		this.panel = panel;

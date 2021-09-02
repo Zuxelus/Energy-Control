@@ -18,11 +18,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiHorizontalSlider extends GuiBase {
 
-	private GuiInfoPanel parentGui;
+	private GuiPanelBase<?> parentGui;
 	private TileEntityInfoPanel panel;
 	private HorizontalSlider slider;
 
-	public GuiHorizontalSlider(GuiInfoPanel parentGui, TileEntityInfoPanel panel) {
+	public GuiHorizontalSlider(GuiPanelBase<?> parentGui, TileEntityInfoPanel panel) {
 		super("msg.ec.PanelRefreshRate", 152, 64, EnergyControl.MODID + ":textures/gui/gui_horizontal_slider.png");
 		this.parentGui = parentGui;
 		this.panel = panel;

@@ -13,12 +13,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiScreenColor extends GuiBase {
 
-	private GuiInfoPanel parentGui;
+	private GuiPanelBase<?> parentGui;
 	private int colorText;
 	private int colorBack;
 	private TileEntityInfoPanel panel;
 
-	public GuiScreenColor(GuiInfoPanel parentGui, TileEntityInfoPanel panel) {
+	public GuiScreenColor(GuiPanelBase<?> parentGui, TileEntityInfoPanel panel) {
 		super("", 234, 94, EnergyControl.MODID + ":textures/gui/gui_colors.png");
 		this.parentGui = parentGui;
 		this.panel = panel;

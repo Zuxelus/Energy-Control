@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol;
 
+import com.zuxelus.energycontrol.containers.*;
 import com.zuxelus.energycontrol.gui.*;
 import com.zuxelus.energycontrol.init.ModContainerTypes;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
@@ -35,8 +36,8 @@ public class ClientProxy {
 		ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.timer.get(), TileEntityTimerRenderer::new);
 
 		DeferredWorkQueue.runLater(() -> {
-			ScreenManager.registerFactory(ModContainerTypes.info_panel.get(), GuiInfoPanel::new);
-			ScreenManager.registerFactory(ModContainerTypes.info_panel_advanced.get(), GuiAdvancedInfoPanel::new);
+			ScreenManager.<ContainerInfoPanel, GuiInfoPanel>registerFactory(ModContainerTypes.info_panel.get(), GuiInfoPanel::new);
+			ScreenManager.<ContainerAdvancedInfoPanel, GuiAdvancedInfoPanel>registerFactory(ModContainerTypes.info_panel_advanced.get(), GuiAdvancedInfoPanel::new);
 			ScreenManager.registerFactory(ModContainerTypes.range_trigger.get(), GuiRangeTrigger::new);
 			ScreenManager.registerFactory(ModContainerTypes.kit_assembler.get(), GuiKitAssembler::new);
 			ScreenManager.registerFactory(ModContainerTypes.timer.get(), GuiTimer::new);

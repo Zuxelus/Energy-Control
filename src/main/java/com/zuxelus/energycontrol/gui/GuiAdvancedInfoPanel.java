@@ -6,14 +6,13 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelSetting;
+import com.zuxelus.energycontrol.containers.ContainerAdvancedInfoPanel;
 import com.zuxelus.energycontrol.gui.controls.GuiInfoPanelCheckBox;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardText;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
-import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
-import com.zuxelus.zlib.containers.ContainerBase;
 import com.zuxelus.zlib.gui.controls.GuiButtonGeneral;
 
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -28,20 +27,18 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiAdvancedInfoPanel extends GuiInfoPanel {
+public class GuiAdvancedInfoPanel extends GuiPanelBase<ContainerAdvancedInfoPanel> {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_advanced_info_panel.png");
 
-	public GuiAdvancedInfoPanel(ContainerBase<TileEntityInfoPanel> container, PlayerInventory inventory, ITextComponent title) {
+	public GuiAdvancedInfoPanel(ContainerAdvancedInfoPanel container, PlayerInventory inventory, ITextComponent title) {
 		super(container, inventory, title, TEXTURE);
 		ySize = 223;
 		panel = (TileEntityAdvancedInfoPanel) container.te;
 		name = I18n.format("block.energycontrol.info_panel_advanced");
-		modified = false;
-		activeTab = 0;
 	}
 
 	@Override
-	public void initButtons() {
+	protected void initButtons() {
 		addButton(new GuiButtonGeneral(guiLeft + 83, guiTop + 42, 16, 16, TEXTURE, 176, panel.getShowLabels() ? 15 : 31, (button) -> { actionPerformed(button, ID_LABELS); }).setGradient());
 		addButton(new GuiButtonGeneral(guiLeft + 83 + 17 * 1, guiTop + 42, 16, 16, TEXTURE, 192, 15, (button) -> { actionPerformed(button, ID_SLOPE); }).setGradient());
 		addButton(new GuiButtonGeneral(guiLeft + 83 + 17 * 2, guiTop + 42, 16, 16, TEXTURE, 192, 28, (button) -> { actionPerformed(button, ID_COLORS); }).setGradient().setScale(2));
