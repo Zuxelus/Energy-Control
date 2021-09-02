@@ -29,21 +29,21 @@ public class GuiInfoPanel extends GuiPanelBase<ContainerInfoPanel> {
 
 	public GuiInfoPanel(ContainerInfoPanel container, PlayerInventory inventory, ITextComponent title) {
 		super(container, inventory, title, TEXTURE);
-		ySize = 201;
+		imageHeight = 201;
 		panel = (TileEntityInfoPanel) container.te;
-		name = I18n.format("block.energycontrol.info_panel");
+		name = I18n.get("block.energycontrol.info_panel");
 	}
 
 	protected void initButtons() {
-		addButton(new GuiButtonGeneral(guiLeft + xSize - 24, guiTop + 42, 16, 16, TEXTURE, 176, panel.getShowLabels() ? 15 : 31, (button) -> { actionPerformed(button, ID_LABELS); }).setGradient());
+		addButton(new GuiButtonGeneral(leftPos + imageWidth - 24, topPos + 42, 16, 16, TEXTURE, 176, panel.getShowLabels() ? 15 : 31, (button) -> { actionPerformed(button, ID_LABELS); }).setGradient());
 		if (panel.isColoredEval())
-			addButton(new GuiButtonGeneral(guiLeft + xSize - 24, guiTop + 42 + 17, 16, 16, TEXTURE, 192, 0, (button) -> { actionPerformed(button, ID_COLORS); }).setGradient().setScale(2));
-		addButton(new GuiButtonGeneral(guiLeft + xSize - 24, guiTop + 42 + 17 * 3, 16, 16, new StringTextComponent(Integer.toString(panel.getTickRate())), (button) -> { actionPerformed(button, ID_TICKRATE); }).setGradient());
+			addButton(new GuiButtonGeneral(leftPos + imageWidth - 24, topPos + 42 + 17, 16, 16, TEXTURE, 192, 0, (button) -> { actionPerformed(button, ID_COLORS); }).setGradient().setScale(2));
+		addButton(new GuiButtonGeneral(leftPos + imageWidth - 24, topPos + 42 + 17 * 3, 16, 16, new StringTextComponent(Integer.toString(panel.getTickRate())), (button) -> { actionPerformed(button, ID_TICKRATE); }).setGradient());
 	}
 
 	protected void initControls() {
 		ItemStack stack = panel.getCards().get(activeTab);
-		if (!ItemStack.areItemsEqual(stack, oldStack)) {
+		if (!ItemStack.isSame(stack, oldStack)) {
 			if (!oldStack.isEmpty() && stack.isEmpty())
 				updateTitle();
 			oldStack = stack.copy();
@@ -53,23 +53,23 @@ public class GuiInfoPanel extends GuiPanelBase<ContainerInfoPanel> {
 			if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain) {
 				int slot = panel.getCardSlot(stack);
 				if (stack.getItem() instanceof ItemCardText)
-					addButton(new GuiButtonGeneral(guiLeft + xSize - 24, guiTop + 42 + 17 * 2, 16, 16, new StringTextComponent("txt"), (button) -> { actionPerformed(button, ID_TEXT); }).setGradient());
+					addButton(new GuiButtonGeneral(leftPos + imageWidth - 24, topPos + 42 + 17 * 2, 16, 16, new StringTextComponent("txt"), (button) -> { actionPerformed(button, ID_TEXT); }).setGradient());
 				List<PanelSetting> settingsList = ((ItemCardMain) stack.getItem()).getSettingsList();
 	
-				int hy = font.FONT_HEIGHT + 1;
+				int hy = font.lineHeight + 1;
 				int y = 1;
-				int x = guiLeft + 24;
+				int x = leftPos + 24;
 				if (settingsList != null)
 					for (PanelSetting panelSetting : settingsList) {
-						addButton(new GuiInfoPanelCheckBox(x + 4, guiTop + 28 + hy * y, panelSetting, panel, slot, font));
+						addButton(new GuiInfoPanelCheckBox(x + 4, topPos + 28 + hy * y, panelSetting, panel, slot, font));
 						y++;
 					}
 				if (!modified) {
-					textboxTitle = new TextFieldWidget(font, guiLeft + 7, guiTop + 16, 162, 18, null, StringTextComponent.EMPTY);
+					textboxTitle = new TextFieldWidget(font, leftPos + 7, topPos + 16, 162, 18, null, StringTextComponent.EMPTY);
 					textboxTitle.changeFocus(true);
-					textboxTitle.setText(new ItemCardReader(stack).getTitle());
+					textboxTitle.setValue(new ItemCardReader(stack).getTitle());
 					children.add(textboxTitle);
-					setFocusedDefault(textboxTitle);
+					setInitialFocus(textboxTitle);
 				}
 			} else {
 				modified = false;
@@ -79,8 +79,8 @@ public class GuiInfoPanel extends GuiPanelBase<ContainerInfoPanel> {
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-		super.drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
+	protected void renderBg(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+		super.renderBg(matrixStack, partialTicks, mouseX, mouseY);
 		if (textboxTitle != null)
 			textboxTitle.renderButton(matrixStack, mouseX, mouseY, partialTicks);
 	}

@@ -22,11 +22,11 @@ public class ChannelHandler {
 		if (card.isEmpty() || panel == null || slot < 0)
 			return;
 
-		World world = panel.getWorld();
-		if (world == null || world.isRemote)
+		World world = panel.getLevel();
+		if (world == null || world.isClientSide)
 			return;
 
-		NetworkHelper.sendPacketToAllAround(panel.getWorld(), panel.getPos(), new PacketCard(card, panel.getPos(), slot));
+		NetworkHelper.sendPacketToAllAround(panel.getLevel(), panel.getBlockPos(), new PacketCard(card, panel.getBlockPos(), slot));
 	}
 
 	// client
@@ -34,11 +34,11 @@ public class ChannelHandler {
 		if (card.isEmpty() || panel == null || slot < 0)
 			return;
 
-		World world = panel.getWorld();
-		if (world == null || !world.isRemote)
+		World world = panel.getLevel();
+		if (world == null || !world.isClientSide)
 			return;
 
-		NetworkHelper.network.sendToServer(new PacketCard(card, panel.getPos(), slot));
+		NetworkHelper.network.sendToServer(new PacketCard(card, panel.getBlockPos(), slot));
 	}
 
 	public static void updateSeverKeys(boolean altPressed) {

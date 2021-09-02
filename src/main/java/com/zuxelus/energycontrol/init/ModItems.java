@@ -56,9 +56,9 @@ public class ModItems {
 	public static final RegistryObject<Item> card_toggle = ITEMS.register("card_toggle", () -> new ItemCardToggle());
 	/*public static final RegistryObject<Item> card_app_eng = ITEMS.register("card_app_eng", () -> new ItemCardAppEng());
 	public static final RegistryObject<Item> card_app_eng_inv = ITEMS.register("card_app_eng_inv", () -> new ItemCardAppEngInv());*/
-	public static final RegistryObject<Item> upgrade_range = ITEMS.register("upgrade_range", () -> new Item(new Item.Properties().group(EnergyControl.ITEM_GROUP)));
-	public static final RegistryObject<Item> upgrade_color = ITEMS.register("upgrade_color", () -> new Item(new Item.Properties().group(EnergyControl.ITEM_GROUP)));
-	public static final RegistryObject<Item> upgrade_touch = ITEMS.register("upgrade_touch", () -> new Item(new Item.Properties().group(EnergyControl.ITEM_GROUP)));
+	public static final RegistryObject<Item> upgrade_range = ITEMS.register("upgrade_range", () -> new Item(new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
+	public static final RegistryObject<Item> upgrade_color = ITEMS.register("upgrade_color", () -> new Item(new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
+	public static final RegistryObject<Item> upgrade_touch = ITEMS.register("upgrade_touch", () -> new Item(new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
 	public static final RegistryObject<Item> portable_panel = ITEMS.register("portable_panel", () -> new ItemPortablePanel());
 
 	public static final IRecipeSerializerDeferredRegister RECIPE_SERIALIZERS = new IRecipeSerializerDeferredRegister(EnergyControl.MODID);

@@ -25,9 +25,9 @@ public class PacketTileEntityClient {
 		Context ctx = context.get();
 		ctx.enqueueWork(() -> {
 			@SuppressWarnings("resource")
-			ClientWorld world = Minecraft.getInstance().world;
+			ClientWorld world = Minecraft.getInstance().level;
 			if (world != null) {
-				TileEntity te = world.getTileEntity(message.pos);
+				TileEntity te = world.getBlockEntity(message.pos);
 				if (!(te instanceof ITilePacketHandler))
 					return;
 				((ITilePacketHandler) te).onClientMessageReceived(message.tag);
@@ -38,10 +38,10 @@ public class PacketTileEntityClient {
 
 	public static void encode(PacketTileEntityClient pkt, PacketBuffer buf) {
 		buf.writeBlockPos(pkt.pos);
-		buf.writeCompoundTag(pkt.tag);
+		buf.writeNbt(pkt.tag);
 	}
 
 	public static PacketTileEntityClient decode(PacketBuffer buf) {
-		return new PacketTileEntityClient(buf.readBlockPos(), buf.readCompoundTag());
+		return new PacketTileEntityClient(buf.readBlockPos(), buf.readNbt());
 	}
 }

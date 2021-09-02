@@ -22,7 +22,7 @@ public class InventoryPortablePanel extends ItemInventory implements INamedConta
 	}
 
 	@Override
-	public int getSizeInventory() {
+	public int getContainerSize() {
 		return 2;
 	}
 
@@ -46,6 +46,6 @@ public class InventoryPortablePanel extends ItemInventory implements INamedConta
 
 	@Override
 	public ITextComponent getDisplayName() {
-		return new TranslationTextComponent(ModItems.portable_panel.get().getTranslationKey());
+		return new TranslationTextComponent(ModItems.portable_panel.get().getDescriptionId());
 	}
 }

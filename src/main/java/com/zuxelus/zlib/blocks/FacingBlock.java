@@ -23,13 +23,13 @@ public abstract class FacingBlock extends DirectionalBlock {
 	protected Direction rotation;
 
 	public FacingBlock() {
-		super(Block.Properties.create(Material.IRON).hardnessAndResistance(12.0F));
-		setDefaultState(getDefaultState().with(FACING, Direction.NORTH));
+		super(Block.Properties.of(Material.METAL).strength(12.0F));
+		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
 	}
 
 	public FacingBlock(Block.Properties builder) {
 		super(builder);
-		setDefaultState(getDefaultState().with(FACING, Direction.NORTH));
+		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
 	}
 
 	protected abstract TileEntityFacing createTileEntity();
@@ -42,49 +42,49 @@ public abstract class FacingBlock extends DirectionalBlock {
 	@Override
 	public TileEntity createTileEntity(BlockState state, IBlockReader world) {
 		TileEntityFacing te = createTileEntity();
-		te.setFacing(state.get(FACING).getIndex());
+		te.setFacing(state.getValue(FACING).get3DDataValue());
 		te.setRotation(rotation);
 		return te;
 	}
 
 	@Override
-	protected void fillStateContainer(Builder<Block, BlockState> builder) {
+	protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
 		builder.add(FACING);
 	}
 
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
 		PlayerEntity placer = context.getPlayer();
-		rotation = placer.getHorizontalFacing().getOpposite();
-		if (placer.rotationPitch >= 65)
-			return getDefaultState().with(FACING, Direction.UP);
-		if (placer.rotationPitch <= -65) {
-			rotation = placer.getHorizontalFacing();
-			return getDefaultState().with(FACING, Direction.DOWN);
+		rotation = placer.getDirection().getOpposite();
+		if (placer.xRot >= 65)
+			return defaultBlockState().setValue(FACING, Direction.UP);
+		if (placer.xRot <= -65) {
+			rotation = placer.getDirection();
+			return defaultBlockState().setValue(FACING, Direction.DOWN);
 		}
-		switch (MathHelper.floor(placer.rotationYaw * 4.0F / 360.0F + 0.5D) & 3) {
+		switch (MathHelper.floor(placer.yRot * 4.0F / 360.0F + 0.5D) & 3) {
 		case 0:
-			return getDefaultState().with(FACING, Direction.NORTH);
+			return defaultBlockState().setValue(FACING, Direction.NORTH);
 		case 1:
-			return getDefaultState().with(FACING, Direction.EAST);
+			return defaultBlockState().setValue(FACING, Direction.EAST);
 		case 2:
-			return getDefaultState().with(FACING, Direction.SOUTH);
+			return defaultBlockState().setValue(FACING, Direction.SOUTH);
 		case 3:
-			return getDefaultState().with(FACING, Direction.WEST);
+			return defaultBlockState().setValue(FACING, Direction.WEST);
 		}
-		return getDefaultState().with(FACING, placer.getHorizontalFacing().getOpposite());
+		return defaultBlockState().setValue(FACING, placer.getDirection().getOpposite());
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+	public void onRemove(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
-			TileEntity te = world.getTileEntity(pos);
+			TileEntity te = world.getBlockEntity(pos);
 			if (te instanceof TileEntityInfoPanel) {
-				InventoryHelper.dropInventoryItems(world, pos, (IInventory) te);
-				world.updateComparatorOutputLevel(pos, this);
+				InventoryHelper.dropContents(world, pos, (IInventory) te);
+				world.updateNeighbourForOutputSignal(pos, this);
 			}
-			super.onReplaced(state, world, pos, newState, isMoving);
+			super.onRemove(state, world, pos, newState, isMoving);
 		}
 	}
 }

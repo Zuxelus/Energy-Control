@@ -32,24 +32,26 @@ public class GuiAdvancedInfoPanel extends GuiPanelBase<ContainerAdvancedInfoPane
 
 	public GuiAdvancedInfoPanel(ContainerAdvancedInfoPanel container, PlayerInventory inventory, ITextComponent title) {
 		super(container, inventory, title, TEXTURE);
-		ySize = 223;
+		imageHeight = 223;
 		panel = (TileEntityAdvancedInfoPanel) container.te;
-		name = I18n.format("block.energycontrol.info_panel_advanced");
+		name = I18n.get("block.energycontrol.info_panel_advanced");
+		modified = false;
+		activeTab = 0;
 	}
 
 	@Override
 	protected void initButtons() {
-		addButton(new GuiButtonGeneral(guiLeft + 83, guiTop + 42, 16, 16, TEXTURE, 176, panel.getShowLabels() ? 15 : 31, (button) -> { actionPerformed(button, ID_LABELS); }).setGradient());
-		addButton(new GuiButtonGeneral(guiLeft + 83 + 17 * 1, guiTop + 42, 16, 16, TEXTURE, 192, 15, (button) -> { actionPerformed(button, ID_SLOPE); }).setGradient());
-		addButton(new GuiButtonGeneral(guiLeft + 83 + 17 * 2, guiTop + 42, 16, 16, TEXTURE, 192, 28, (button) -> { actionPerformed(button, ID_COLORS); }).setGradient().setScale(2));
-		addButton(new GuiButtonGeneral(guiLeft + 83 + 17 * 3, guiTop + 42, 16, 16, TEXTURE, 192 - 16, getIconPowerTopOffset(((TileEntityAdvancedInfoPanel) panel).getPowerMode()), (button) -> { actionPerformed(button, ID_POWER); }).setGradient());
-		addButton(new GuiButtonGeneral(guiLeft + 83 + 17 * 4, guiTop + 42 + 17, 16, 16, new StringTextComponent(Integer.toString(panel.getTickRate())), (button) -> { actionPerformed(button, ID_TICKRATE); }).setGradient());
+		addButton(new GuiButtonGeneral(leftPos + 83, topPos + 42, 16, 16, TEXTURE, 176, panel.getShowLabels() ? 15 : 31, (button) -> { actionPerformed(button, ID_LABELS); }).setGradient());
+		addButton(new GuiButtonGeneral(leftPos + 83 + 17 * 1, topPos + 42, 16, 16, TEXTURE, 192, 15, (button) -> { actionPerformed(button, ID_SLOPE); }).setGradient());
+		addButton(new GuiButtonGeneral(leftPos + 83 + 17 * 2, topPos + 42, 16, 16, TEXTURE, 192, 28, (button) -> { actionPerformed(button, ID_COLORS); }).setGradient().setScale(2));
+		addButton(new GuiButtonGeneral(leftPos + 83 + 17 * 3, topPos + 42, 16, 16, TEXTURE, 192 - 16, getIconPowerTopOffset(((TileEntityAdvancedInfoPanel) panel).getPowerMode()), (button) -> { actionPerformed(button, ID_POWER); }).setGradient());
+		addButton(new GuiButtonGeneral(leftPos + 83 + 17 * 4, topPos + 42 + 17, 16, 16, new StringTextComponent(Integer.toString(panel.getTickRate())), (button) -> { actionPerformed(button, ID_TICKRATE); }).setGradient());
 	}
 
 	@Override
 	protected void initControls() {
 		ItemStack stack = panel.getCards().get(activeTab);
-		if (!ItemStack.areItemsEqual(stack, oldStack)) {
+		if (!ItemStack.isSame(stack, oldStack)) {
 			if (!oldStack.isEmpty() && stack.isEmpty())
 				updateTitle();
 			oldStack = stack.copy();
@@ -59,23 +61,23 @@ public class GuiAdvancedInfoPanel extends GuiPanelBase<ContainerAdvancedInfoPane
 			if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain) {
 				int slot = panel.getCardSlot(stack);
 				if (stack.getItem() instanceof ItemCardText)
-					addButton(new GuiButtonGeneral(guiLeft + 83 + 17 * 4, guiTop + 42, 16, 16, new StringTextComponent("txt"), (button) -> { actionPerformed(button, ID_TEXT); }).setGradient());
+					addButton(new GuiButtonGeneral(leftPos + 83 + 17 * 4, topPos + 42, 16, 16, new StringTextComponent("txt"), (button) -> { actionPerformed(button, ID_TEXT); }).setGradient());
 				List<PanelSetting> settingsList = ((ItemCardMain) stack.getItem()).getSettingsList();
 	
-				int hy = font.FONT_HEIGHT + 1;
+				int hy = font.lineHeight + 1;
 				int y = 1;
-				int x = guiLeft + 24;
+				int x = leftPos + 24;
 				if (settingsList != null)
 					for (PanelSetting panelSetting : settingsList) {
-						addButton(new GuiInfoPanelCheckBox(x + 4, guiTop + 51 + hy * y, panelSetting, panel, slot, font));
+						addButton(new GuiInfoPanelCheckBox(x + 4, topPos + 51 + hy * y, panelSetting, panel, slot, font));
 						y++;
 					}
 				if (!modified) {
-					textboxTitle = new TextFieldWidget(font, guiLeft + 7, guiTop + 16, 162, 18, null, StringTextComponent.EMPTY);
+					textboxTitle = new TextFieldWidget(font, leftPos + 7, topPos + 16, 162, 18, null, StringTextComponent.EMPTY);
 					textboxTitle.changeFocus(true);
-					textboxTitle.setText(new ItemCardReader(stack).getTitle());
+					textboxTitle.setValue(new ItemCardReader(stack).getTitle());
 					children.add(textboxTitle);
-					setFocusedDefault(textboxTitle);
+					setInitialFocus(textboxTitle);
 				}
 			} else {
 				modified = false;
@@ -99,19 +101,19 @@ public class GuiAdvancedInfoPanel extends GuiPanelBase<ContainerAdvancedInfoPane
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+	protected void renderBg(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		getMinecraft().getTextureManager().bindTexture(TEXTURE);
-		blit(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize);
-		blit(matrixStack, guiLeft + 24, guiTop + 62 + activeTab * 14, 182, 0, 1, 15);
+		getMinecraft().getTextureManager().bind(TEXTURE);
+		blit(matrixStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+		blit(matrixStack, leftPos + 24, topPos + 62 + activeTab * 14, 182, 0, 1, 15);
 		if (textboxTitle != null)
 			textboxTitle.renderButton(matrixStack, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int mouseButton) {
-		if (mouseX >= guiLeft + 7 && mouseX <= guiLeft + 24 && mouseY >= guiTop + 62 && mouseY <= guiTop + 104) {
-			byte newTab = (byte) ((mouseY - guiTop - 62) / 14);
+		if (mouseX >= leftPos + 7 && mouseX <= leftPos + 24 && mouseY >= topPos + 62 && mouseY <= topPos + 104) {
+			byte newTab = (byte) ((mouseY - topPos - 62) / 14);
 			if (newTab > 2)
 				newTab = 2;
 			if (newTab != activeTab && modified) {
@@ -132,11 +134,11 @@ public class GuiAdvancedInfoPanel extends GuiPanelBase<ContainerAdvancedInfoPane
 		case ID_POWER:
 			byte mode = ((TileEntityAdvancedInfoPanel) panel).getNextPowerMode();
 			((GuiButtonGeneral) button).setTextureTop(getIconPowerTopOffset(mode));
-			NetworkHelper.updateSeverTileEntity(panel.getPos(), 11, mode);
+			NetworkHelper.updateSeverTileEntity(panel.getBlockPos(), 11, mode);
 			((TileEntityAdvancedInfoPanel) panel).powerMode = mode;
 			return;
 		case ID_SLOPE:
-			minecraft.displayGuiScreen(new GuiPanelSlope(this, ((TileEntityAdvancedInfoPanel) panel)));
+			minecraft.setScreen(new GuiPanelSlope(this, ((TileEntityAdvancedInfoPanel) panel)));
 			return;
 		}
 		super.actionPerformed(button, id);

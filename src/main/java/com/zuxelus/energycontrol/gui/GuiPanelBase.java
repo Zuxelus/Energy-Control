@@ -54,29 +54,29 @@ public abstract class GuiPanelBase<T extends Container> extends GuiContainerBase
 		super.init();
 		initButtons();
 		initControls();
-		container.removeListener(this);
-		container.addListener(this);
+		menu.removeSlotListener(this);
+		menu.addSlotListener(this);
 	}
 
 	@Override
 	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		renderBackground(matrixStack);
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
-		renderHoveredTooltip(matrixStack, mouseX, mouseY);
+		renderTooltip(matrixStack, mouseX, mouseY);
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
-		drawCenteredText(matrixStack, title, xSize, 6);
+	protected void renderLabels(MatrixStack matrixStack, int mouseX, int mouseY) {
+		drawCenteredText(matrixStack, title, imageWidth, 6);
 	}
 
 	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int mouseButton) {
 		if (textboxTitle != null) {
-			textboxTitle.mouseReleased(mouseX - guiLeft, mouseY - guiTop, mouseButton);
+			textboxTitle.mouseReleased(mouseX - leftPos, mouseY - topPos, mouseButton);
 			if (textboxTitle.isFocused())
 				return true;
-			setListenerDefault(null);
+			magicalSpecialHackyFocus(null);
 			updateTitle();
 		}
 		return super.mouseReleased(mouseX, mouseY, mouseButton);
@@ -93,15 +93,15 @@ public abstract class GuiPanelBase<T extends Container> extends GuiContainerBase
 	protected void updateTitle() {
 		if (textboxTitle == null)
 			return;
-		if (panel.getWorld().isRemote) {
+		if (panel.getLevel().isClientSide) {
 			CompoundNBT tag = new CompoundNBT();
 			tag.putInt("type", 4);
 			tag.putInt("slot", activeTab);
-			tag.putString("title", textboxTitle.getText());
-			NetworkHelper.updateSeverTileEntity(panel.getPos(), tag);
-			ItemStack card = panel.getStackInSlot(activeTab);
+			tag.putString("title", textboxTitle.getValue());
+			NetworkHelper.updateSeverTileEntity(panel.getBlockPos(), tag);
+			ItemStack card = panel.getItem(activeTab);
 			if (!card.isEmpty() && card.getItem() instanceof ItemCardMain)
-				new ItemCardReader(card).setTitle(textboxTitle.getText());
+				new ItemCardReader(card).setTitle(textboxTitle.getValue());
 		}
 	}
 
@@ -109,7 +109,7 @@ public abstract class GuiPanelBase<T extends Container> extends GuiContainerBase
 	public void onClose() {
 		updateTitle();
 		super.onClose();
-		container.removeListener(this);
+		menu.removeSlotListener(this);
 	}
 
 	protected void actionPerformed(Button button, int id) {
@@ -117,19 +117,19 @@ public abstract class GuiPanelBase<T extends Container> extends GuiContainerBase
 		case ID_LABELS:
 			boolean checked = !panel.getShowLabels();
 			((GuiButtonGeneral) button).setTextureTop(checked ? 15 : 31);
-			NetworkHelper.updateSeverTileEntity(panel.getPos(), 3, checked ? 1 : 0);
+			NetworkHelper.updateSeverTileEntity(panel.getBlockPos(), 3, checked ? 1 : 0);
 			panel.setShowLabels(checked);
 			break;
 		case ID_COLORS:
 			Screen colorGui = new GuiScreenColor(this, panel);
-			minecraft.displayGuiScreen(colorGui);
+			minecraft.setScreen(colorGui);
 			break;
 		case ID_TEXT:
 			openTextGui();
 			break;
 		case ID_TICKRATE:
 			GuiHorizontalSlider slider = new GuiHorizontalSlider(this, panel);
-			minecraft.displayGuiScreen(slider);
+			minecraft.setScreen(slider);
 			break;
 		}
 	}
@@ -137,7 +137,7 @@ public abstract class GuiPanelBase<T extends Container> extends GuiContainerBase
 	protected void openTextGui() {
 		ItemStack card = panel.getCards().get(activeTab);
 		if (!card.isEmpty() && card.getItem() instanceof ItemCardText)
-			minecraft.displayGuiScreen(new GuiCardText(card, panel, this, activeTab));
+			minecraft.setScreen(new GuiCardText(card, panel, this, activeTab));
 	}
 
 	@Override
@@ -148,15 +148,15 @@ public abstract class GuiPanelBase<T extends Container> extends GuiContainerBase
 	}
 
 	@Override
-	public void sendAllContents(Container container, NonNullList<ItemStack> itemsList) {
-		sendSlotContents(container, 0, container.getSlot(0).getStack());
+	public void refreshContainer(Container container, NonNullList<ItemStack> itemsList) {
+		slotChanged(container, 0, container.getSlot(0).getItem());
 	}
 
 	@Override
-	public void sendSlotContents(Container container, int slotInd, ItemStack stack) {
+	public void slotChanged(Container container, int slotInd, ItemStack stack) {
 		initControls();
 	}
 
 	@Override
-	public void sendWindowProperty(Container container, int varToUpdate, int newValue) { }
+	public void setContainerData(Container container, int varToUpdate, int newValue) { }
 }

@@ -30,8 +30,8 @@ public class GuiScreenColor extends GuiBase {
 	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
 		blit(matrixStack, 5 + colorBack * 14, 30, 234, 0, 14, 14);
 		blit(matrixStack, 5 + colorText * 14, 61, 234, 0, 14, 14);
-		font.func_243248_b(matrixStack, new TranslationTextComponent("msg.ec.ScreenColor"), 8, 20, 0x404040);
-		font.func_243248_b(matrixStack, new TranslationTextComponent("msg.ec.TextColor"), 8, 52, 0x404040);
+		font.draw(matrixStack, new TranslationTextComponent("msg.ec.ScreenColor"), 8, 20, 0x404040);
+		font.draw(matrixStack, new TranslationTextComponent("msg.ec.TextColor"), 8, 52, 0x404040);
 	}
 
 	@Override
@@ -43,11 +43,11 @@ public class GuiScreenColor extends GuiBase {
 			int shift = ((int) mouseX - 7) % 14;
 			if (mouseY >= 32 && mouseY <= 41 && shift <= 9) {// back
 				colorBack = index;
-				NetworkHelper.updateSeverTileEntity(panel.getPos(), 2, (colorBack << 4) | colorText);
+				NetworkHelper.updateSeverTileEntity(panel.getBlockPos(), 2, (colorBack << 4) | colorText);
 				panel.setColorBackground(colorBack);
 			} else if (mouseY >= 63 && mouseY <= 72 && shift <= 9) {// /text
 				colorText = index;
-				NetworkHelper.updateSeverTileEntity(panel.getPos(), 2, (colorBack << 4) | colorText);
+				NetworkHelper.updateSeverTileEntity(panel.getBlockPos(), 2, (colorBack << 4) | colorText);
 				panel.setColorText(colorText);
 			}
 			return true;
@@ -58,7 +58,7 @@ public class GuiScreenColor extends GuiBase {
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (keyCode == 256) {
-			minecraft.displayGuiScreen(parentGui);
+			minecraft.setScreen(parentGui);
 			return true;
 		}
 		return super.keyPressed(keyCode, scanCode, modifiers);

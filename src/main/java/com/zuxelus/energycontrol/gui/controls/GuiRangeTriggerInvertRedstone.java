@@ -32,7 +32,7 @@ public class GuiRangeTriggerInvertRedstone extends AbstractButton {
 		if (!visible)
 			return;
 
-		Minecraft.getInstance().getTextureManager().bindTexture(TEXTURE);
+		Minecraft.getInstance().getTextureManager().bind(TEXTURE);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		blit(matrixStack, x, y + 1, 176, checked ? 15 : 0, 18, 15);
 	}
@@ -41,8 +41,8 @@ public class GuiRangeTriggerInvertRedstone extends AbstractButton {
 	public void onPress() {
 		checked = !checked;
 
-		if (trigger.getWorld().isRemote && trigger.getInvertRedstone() != checked) {
-			NetworkHelper.updateSeverTileEntity(trigger.getPos(), 2, checked ? 1 : 0);
+		if (trigger.getLevel().isClientSide && trigger.getInvertRedstone() != checked) {
+			NetworkHelper.updateSeverTileEntity(trigger.getBlockPos(), 2, checked ? 1 : 0);
 			trigger.setInvertRedstone(checked);
 		}
 	}

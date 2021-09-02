@@ -32,30 +32,30 @@ public class GuiPortablePanel extends ContainerScreen<ContainerPortablePanel> {
 		super(container, inventory, title);
 		this.te = container.te;
 		this.player = inventory.player;
-		this.xSize = 226;
-		this.ySize = 226;
+		this.imageWidth = 226;
+		this.imageHeight = 226;
 	}
 
 	@Override
 	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		renderBackground(matrixStack);
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
-		renderHoveredTooltip(matrixStack, mouseX, mouseY);
+		renderTooltip(matrixStack, mouseX, mouseY);
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int x, int y) {
+	protected void renderBg(MatrixStack matrixStack, float partialTicks, int x, int y) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		minecraft.getTextureManager().bindTexture(TEXTURE);
-		int left = (width - xSize) / 2;
-		int top = (height - ySize) / 2;
-		blit(matrixStack, left, top, 0, 0, xSize, ySize);
+		minecraft.getTextureManager().bind(TEXTURE);
+		int left = (width - imageWidth) / 2;
+		int top = (height - imageHeight) / 2;
+		blit(matrixStack, left, top, 0, 0, imageWidth, imageHeight);
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int x, int y) {
-		ItemStack stack = te.getStackInSlot(InventoryPortablePanel.SLOT_CARD);
+	protected void renderLabels(MatrixStack matrixStack, int x, int y) {
+		ItemStack stack = te.getItem(InventoryPortablePanel.SLOT_CARD);
 		if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain) {
 			ItemCardReader reader = new ItemCardReader(stack);
 
@@ -64,19 +64,19 @@ public class GuiPortablePanel extends ContainerScreen<ContainerPortablePanel> {
 			if (state != CardState.OK && state != CardState.CUSTOM_ERROR)
 				joinedData = ItemCardReader.getStateMessage(state);
 			else
-				joinedData = ((ItemCardMain) stack.getItem()).getStringData(player.world, Integer.MAX_VALUE, reader, false, true);
+				joinedData = ((ItemCardMain) stack.getItem()).getStringData(player.level, Integer.MAX_VALUE, reader, false, true);
 
 			int row = 0;
 			for (PanelString panelString : joinedData) {
 				if (row < 14) {
 					if (panelString.textLeft != null)
-						font.drawString(matrixStack, panelString.textLeft, 9, row * 10 + 10, 0x06aee4);
+						font.draw(matrixStack, panelString.textLeft, 9, row * 10 + 10, 0x06aee4);
 					if (panelString.textCenter != null)
-						font.drawString(matrixStack, panelString.textCenter, (168 - font.getStringWidth(panelString.textCenter)) / 2, row * 10 + 10, 0x06aee4);
+						font.draw(matrixStack, panelString.textCenter, (168 - font.width(panelString.textCenter)) / 2, row * 10 + 10, 0x06aee4);
 					if (panelString.textRight != null)
-						font.drawString(matrixStack, panelString.textRight, 168 - font.getStringWidth(panelString.textRight), row * 10 + 10, 0x06aee4);
+						font.draw(matrixStack, panelString.textRight, 168 - font.width(panelString.textRight), row * 10 + 10, 0x06aee4);
 				} else if (row == 14)
-					font.drawString(matrixStack, "...", 9, row * 10 + 10, 0x06aee4);
+					font.draw(matrixStack, "...", 9, row * 10 + 10, 0x06aee4);
 				row++;
 			}
 		}

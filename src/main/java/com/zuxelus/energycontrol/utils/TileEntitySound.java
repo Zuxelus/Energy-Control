@@ -15,7 +15,7 @@ public class TileEntitySound {
 
 	public void stopAlarm() {
 		if (sound != null) {
-			Minecraft.getInstance().getSoundHandler().stop(sound);
+			Minecraft.getInstance().getSoundManager().stop(sound);
 			sound = null;
 		}
 	}
@@ -28,7 +28,7 @@ public class TileEntitySound {
 	public boolean isPlaying() {
 		if (sound == null)
 			return false;
-		return Minecraft.getInstance().getSoundHandler().isPlaying(sound);
+		return Minecraft.getInstance().getSoundManager().isActive(sound);
 	}
 
 	public SimpleSound playAlarm(double x, double y, double z, String name, float volume) {
@@ -37,11 +37,11 @@ public class TileEntitySound {
 		if (volume > 1.0F)
 			range *= volume;
 
-		Entity person = Minecraft.getInstance().getRenderViewEntity();
+		Entity person = Minecraft.getInstance().getCameraEntity();
 
-		if (person != null && volume > 0 && person.getDistanceSq(x, y, z) < range * range) {
+		if (person != null && volume > 0 && person.distanceToSqr(x, y, z) < range * range) {
 			SimpleSound sound = new SimpleSound(new SoundEvent(new ResourceLocation(name)), SoundCategory.MASTER, volume, 1.0F, (float) x, (float) y, (float) z);
-			Minecraft.getInstance().getSoundHandler().play(sound);
+			Minecraft.getInstance().getSoundManager().play(sound);
 			return sound;
 		}
 		return null;

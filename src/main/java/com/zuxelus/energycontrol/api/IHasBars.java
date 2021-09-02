@@ -28,10 +28,10 @@ public interface IHasBars {
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.shadeModel(7425);
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferbuilder = tessellator.getBuffer();
+		BufferBuilder bufferbuilder = tessellator.getBuilder();
 		bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
-		drawPositionColor(matrixStack.getLast().getMatrix(), bufferbuilder, left, top, right, bottom, zLevel, color);
-		tessellator.draw();
+		drawPositionColor(matrixStack.last().pose(), bufferbuilder, left, top, right, bottom, zLevel, color);
+		tessellator.end();
 		RenderSystem.shadeModel(7424);
 		RenderSystem.disableBlend();
 		RenderSystem.enableAlphaTest();
@@ -44,9 +44,9 @@ public interface IHasBars {
 		float f1 = (color >> 16 & 255) / 255.0F;
 		float f2 = (color >> 8 & 255) / 255.0F;
 		float f3 = (color & 255) / 255.0F;
-		builder.pos(matrix, right, top, zLevel).color(f1, f2, f3, f).endVertex();
-		builder.pos(matrix, left, top, zLevel).color(f1, f2, f3, f).endVertex();
-		builder.pos(matrix, left, bottom, zLevel).color(f1, f2, f3, f).endVertex();
-		builder.pos(matrix, right, bottom, zLevel).color(f1, f2, f3, f).endVertex();
+		builder.vertex(matrix, right, top, zLevel).color(f1, f2, f3, f).endVertex();
+		builder.vertex(matrix, left, top, zLevel).color(f1, f2, f3, f).endVertex();
+		builder.vertex(matrix, left, bottom, zLevel).color(f1, f2, f3, f).endVertex();
+		builder.vertex(matrix, right, bottom, zLevel).color(f1, f2, f3, f).endVertex();
 	}
 }

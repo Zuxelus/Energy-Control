@@ -30,25 +30,25 @@ public class GuiRangeTrigger extends GuiContainerBase<ContainerRangeTrigger> {
 	public GuiRangeTrigger(ContainerRangeTrigger container, PlayerInventory inventory, ITextComponent title) {
 		super(container, inventory, title, TEXTURE);
 		this.container = container;
-		ySize = 190;
+		imageHeight = 190;
 	}
 
 	private void initControls() {
-		ItemStack card = container.getSlot(TileEntityRangeTrigger.SLOT_CARD).getStack();
+		ItemStack card = container.getSlot(TileEntityRangeTrigger.SLOT_CARD).getItem();
 		if (!card.isEmpty() && card.equals(prevCard))
 			return;
 		buttons.clear();
 		prevCard = card;
 		// ten digits, up to 10 billions
 		for (int i = 0; i < 10; i++) {
-			addButton(new CompactButton(i * 10, guiLeft + 30 + i * 12 + (i + 2) / 3 * 6, guiTop + 20, 12, 12, new StringTextComponent("-"), (button) -> { actionPerformed(button); }));
-			addButton(new CompactButton(i * 10 + 1, guiLeft + 30 + i * 12 + (i + 2) / 3 * 6, guiTop + 42, 12, 12, new StringTextComponent("+"), (button) -> { actionPerformed(button); }));
+			addButton(new CompactButton(i * 10, leftPos + 30 + i * 12 + (i + 2) / 3 * 6, topPos + 20, 12, 12, new StringTextComponent("-"), (button) -> { actionPerformed(button); }));
+			addButton(new CompactButton(i * 10 + 1, leftPos + 30 + i * 12 + (i + 2) / 3 * 6, topPos + 42, 12, 12, new StringTextComponent("+"), (button) -> { actionPerformed(button); }));
 		}
 		for (int i = 0; i < 10; i++) {
-			addButton(new CompactButton(100 + i * 10, guiLeft + 30 + i * 12 + (i + 2) / 3 * 6, guiTop + 57, 12, 12, new StringTextComponent("-"), (button) -> { actionPerformed(button); }));
-			addButton(new CompactButton(100 + i * 10 + 1, guiLeft + 30 + i * 12 + (i + 2) / 3 * 6, guiTop + 79, 12, 12, new StringTextComponent("+"), (button) -> { actionPerformed(button); }));
+			addButton(new CompactButton(100 + i * 10, leftPos + 30 + i * 12 + (i + 2) / 3 * 6, topPos + 57, 12, 12, new StringTextComponent("-"), (button) -> { actionPerformed(button); }));
+			addButton(new CompactButton(100 + i * 10 + 1, leftPos + 30 + i * 12 + (i + 2) / 3 * 6, topPos + 79, 12, 12, new StringTextComponent("+"), (button) -> { actionPerformed(button); }));
 		}
-		addButton(new GuiRangeTriggerInvertRedstone(guiLeft + 8, guiTop + 62, container.te));
+		addButton(new GuiRangeTriggerInvertRedstone(leftPos + 8, topPos + 62, container.te));
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class GuiRangeTrigger extends GuiContainerBase<ContainerRangeTrigger> {
 	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		renderBackground(matrixStack);
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
-		renderHoveredTooltip(matrixStack, mouseX, mouseY);
+		renderTooltip(matrixStack, mouseX, mouseY);
 	}
 
 	private void renderValue(MatrixStack matrixStack, double value, int x, int y) {
@@ -69,7 +69,7 @@ public class GuiRangeTrigger extends GuiContainerBase<ContainerRangeTrigger> {
 		for (int i = 0; i < 10; i++) {
 			byte digit = (byte) (value % 10);
 			String str = Byte.toString(digit);
-			font.drawString(matrixStack, str, x - 12 * i - font.getStringWidth("0") / 2 + (9 - i + 2) / 3 * 6, y, 0x404040);
+			font.draw(matrixStack, str, x - 12 * i - font.width("0") / 2 + (9 - i + 2) / 3 * 6, y, 0x404040);
 			value /= 10;
 		}
 	}
@@ -98,20 +98,20 @@ public class GuiRangeTrigger extends GuiContainerBase<ContainerRangeTrigger> {
 			tag.putDouble("value", newValue);
 			if (isEnd) {
 				tag.putInt("type", 3);
-				NetworkHelper.updateSeverTileEntity(trigger.getPos(), tag);
+				NetworkHelper.updateSeverTileEntity(trigger.getBlockPos(), tag);
 				trigger.setLevelEnd(newValue);
 			} else {
 				tag.putInt("type", 1);
-				NetworkHelper.updateSeverTileEntity(trigger.getPos(), tag);
+				NetworkHelper.updateSeverTileEntity(trigger.getBlockPos(), tag);
 				trigger.setLevelStart(newValue);
 			}
 		}
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
-		drawCenteredText(matrixStack, title, xSize, 6);
-		drawLeftAlignedText(matrixStack, I18n.format("container.inventory"), 8, (ySize - 96) + 2);
+	protected void renderLabels(MatrixStack matrixStack, int mouseX, int mouseY) {
+		drawCenteredText(matrixStack, title, imageWidth, 6);
+		drawLeftAlignedText(matrixStack, I18n.get("container.inventory"), 8, (imageHeight - 96) + 2);
 
 		renderValue(matrixStack, container.te.levelStart, 30, 33);
 		renderValue(matrixStack, container.te.levelEnd, 30, 70);

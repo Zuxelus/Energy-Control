@@ -22,7 +22,7 @@ public abstract class ItemCardMain extends Item implements IItemCard {
 	public static final int LOCATION_RANGE = 8;
 
 	public ItemCardMain() {
-		super(new Item.Properties().group(EnergyControl.ITEM_GROUP).maxStackSize(1).setNoRepair());
+		super(new Item.Properties().tab(EnergyControl.ITEM_GROUP).stacksTo(1).setNoRepair());
 	}
 
 	public static boolean isCard(ItemStack stack) {
@@ -35,23 +35,23 @@ public abstract class ItemCardMain extends Item implements IItemCard {
 	}
 
 	protected void addInformation(ItemCardReader reader, List<ITextComponent> tooltip) { }
-
+	
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+	public void appendHoverText(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
 		ItemCardReader reader = new ItemCardReader(stack);
 		String title = reader.getTitle();
 		if (title != null && !title.isEmpty())
 			tooltip.add(new TranslationTextComponent(title));
-
+		
 		addInformation(reader, tooltip);
-
+		
 		BlockPos target = reader.getTarget();
 		if (target != null)
 			tooltip.add(new TranslationTextComponent(String.format("x: %d, y: %d, z: %d", target.getX(), target.getY(), target.getZ())));
 		int count = reader.getCardCount();
 		if (count > 0)
-			tooltip.add(new TranslationTextComponent(I18n.format("msg.ec.cards", reader.getCardCount())));
+			tooltip.add(new TranslationTextComponent(I18n.get("msg.ec.cards", reader.getCardCount())));
 	}
 
 	public CardState updateCardNBT(World world, BlockPos pos, ICardReader reader, ItemStack upgradeStack) {
@@ -108,7 +108,7 @@ public abstract class ItemCardMain extends Item implements IItemCard {
 	public void runTouchAction(TileEntityInfoPanel panel, ItemStack cardStack, ItemStack stack, int slot) { 
 		if (cardStack.getItem() instanceof ITouchAction) {
 			ICardReader reader = new ItemCardReader(cardStack);
-			if (((ITouchAction) cardStack.getItem()).runTouchAction(panel.getWorld(), reader, stack))
+			if (((ITouchAction) cardStack.getItem()).runTouchAction(panel.getLevel(), reader, stack))
 				reader.updateClient(cardStack, panel, slot);
 		}
 	}
@@ -118,10 +118,10 @@ public abstract class ItemCardMain extends Item implements IItemCard {
 		int txtColor = 0;
 		if (value) {
 			txtColor = 0x00ff00;
-			text = isServer ? "On" : I18n.format("msg.ec.InfoPanelOn");
+			text = isServer ? "On" : I18n.get("msg.ec.InfoPanelOn");
 		} else {
 			txtColor = 0xff0000;
-			text = isServer ? "Off" : I18n.format("msg.ec.InfoPanelOff");
+			text = isServer ? "Off" : I18n.get("msg.ec.InfoPanelOff");
 		}
 		if (result.size() > 0) {
 			PanelString firstLine = result.get(0);

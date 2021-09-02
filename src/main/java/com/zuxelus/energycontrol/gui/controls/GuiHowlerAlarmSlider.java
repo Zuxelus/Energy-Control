@@ -32,10 +32,10 @@ public class GuiHowlerAlarmSlider extends AbstractButton {
 		super(x, y, 107, 16, StringTextComponent.EMPTY);
 		this.alarm = alarm;
 		dragging = false;
-		if (alarm.getWorld().isRemote)
+		if (alarm.getLevel().isClientSide)
 			maxValue = ConfigHandler.MAX_ALARM_RANGE.get();
 		int currentRange = alarm.getRange();
-		if (alarm.getWorld().isRemote && currentRange > maxValue)
+		if (alarm.getLevel().isClientSide && currentRange > maxValue)
 			currentRange = maxValue;
 		sliderValue = ((float) currentRange - minValue) / (maxValue - minValue);
 		setMessage(new TranslationTextComponent("msg.ec.HowlerAlarmSoundRange", getNormalizedValue()));
@@ -56,8 +56,8 @@ public class GuiHowlerAlarmSlider extends AbstractButton {
 			sliderValue = 1.0F;
 		
 		int newValue = getNormalizedValue();
-		if (alarm.getWorld().isRemote && alarm.getRange() != newValue) {
-			NetworkHelper.updateSeverTileEntity(alarm.getPos(), 2, newValue);
+		if (alarm.getLevel().isClientSide && alarm.getRange() != newValue) {
+			NetworkHelper.updateSeverTileEntity(alarm.getBlockPos(), 2, newValue);
 			alarm.setRange(newValue);
 		}
 		setMessage(new TranslationTextComponent("msg.ec.HowlerAlarmSoundRange", newValue));
@@ -68,14 +68,14 @@ public class GuiHowlerAlarmSlider extends AbstractButton {
 		if (!visible)
 			return;
 		Minecraft minecraft = Minecraft.getInstance();
-		FontRenderer fontRenderer = minecraft.fontRenderer;
-		minecraft.getTextureManager().bindTexture(TEXTURE);
+		FontRenderer fontRenderer = minecraft.font;
+		minecraft.getTextureManager().bind(TEXTURE);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		if (dragging)
 			setSliderPos(mouseX);
 		
 		blit(matrixStack, x + (int) (sliderValue * (width - 8)), y, 131, 0, 8, 16);
-		fontRenderer.func_243248_b(matrixStack, getMessage(), x, y - 12, 0x404040);
+		fontRenderer.draw(matrixStack, getMessage(), x, y - 12, 0x404040);
 	}
 
 	@Override

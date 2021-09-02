@@ -30,8 +30,8 @@ public class CompactButton extends Button {
 			return;
 
 		Minecraft minecraft = Minecraft.getInstance();
-		FontRenderer fontRenderer = minecraft.fontRenderer;
-		minecraft.getTextureManager().bindTexture(TEXTURE);
+		FontRenderer fontRenderer = minecraft.font;
+		minecraft.getTextureManager().bind(TEXTURE);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int i = this.getYImage(this.isHovered());
 		RenderSystem.enableBlend();
@@ -40,8 +40,8 @@ public class CompactButton extends Button {
 		blit(matrixStack, x, y, 0, 64 + i * 12, width / 2 + width % 2, height);
 		blit(matrixStack, x + width / 2 + width % 2, y, 200 - width / 2, 64 + i * 12, width / 2, height);
 		renderBg(matrixStack, minecraft, mouseX, mouseY);
-		IReorderingProcessor ireorderingprocessor = getMessage().func_241878_f();
-		fontRenderer.func_238422_b_(matrixStack, ireorderingprocessor, x + (width - fontRenderer.func_243245_a(ireorderingprocessor)) / 2, y + (height - 8) / 2, 0x404040);
+		IReorderingProcessor ireorderingprocessor = getMessage().getVisualOrderText();
+		fontRenderer.draw(matrixStack, ireorderingprocessor, x + (width - fontRenderer.width(ireorderingprocessor)) / 2, y + (height - 8) / 2, 0x404040);
 	}
 
 	public int getId() {

@@ -51,7 +51,7 @@ public class PanelString {
 
 	private static String getFormatted(String resourceName, String value, boolean showLabels) {
 		if (showLabels)
-			return I18n.format(resourceName, value);
+			return I18n.get(resourceName, value);
 		return value;
 	}
 }

@@ -23,28 +23,28 @@ public class GuiCardHolder extends ContainerScreen<ContainerCardHolder> {
 		super(container, inventory, title);
 		this.player = inventory.player;
 		inventoryRows = 6;
-		ySize = 114 + inventoryRows * 18;
+		imageHeight = 114 + inventoryRows * 18;
 	}
 
 	@Override
 	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		renderBackground(matrixStack);
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
-		renderHoveredTooltip(matrixStack, mouseX, mouseY);
+		renderTooltip(matrixStack, mouseX, mouseY);
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int x, int y) {
-		font.drawString(matrixStack, name, 8, 6, 4210752);
-		font.drawString(matrixStack, player.inventory.getDisplayName().getUnformattedComponentText(), 8, ySize - 96 + 2, 4210752);
+	protected void renderLabels(MatrixStack matrixStack, int x, int y) {
+		font.draw(matrixStack, name, 8, 6, 4210752);
+		font.draw(matrixStack, player.inventory.getDisplayName().getContents(), 8, imageHeight - 96 + 2, 4210752);
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int x, int y) {
+	protected void renderBg(MatrixStack matrixStack, float partialTicks, int x, int y) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		minecraft.getTextureManager().bindTexture(TEXTURE);
-		blit(matrixStack, guiLeft, guiTop, 0, 0, xSize, inventoryRows * 18 + 17);
-		blit(matrixStack, guiLeft, guiTop + inventoryRows * 18 + 17, 0, 126, xSize, 96);
+		minecraft.getTextureManager().bind(TEXTURE);
+		blit(matrixStack, leftPos, topPos, 0, 0, imageWidth, inventoryRows * 18 + 17);
+		blit(matrixStack, leftPos, topPos + inventoryRows * 18 + 17, 0, 126, imageWidth, 96);
 	}
 }

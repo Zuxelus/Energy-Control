@@ -28,7 +28,7 @@ public class StringUtils {
 
 	public static String getFormatted(String resourceName, String value, boolean showLabels) {
 		if (showLabels)
-			return I18n.format(resourceName, value);
+			return I18n.get(resourceName, value);
 		return value;
 	}
 
@@ -37,14 +37,14 @@ public class StringUtils {
 	}
 
 	public static String getFormattedKey(String resourceName, Object... arguments) {
-		return I18n.format(resourceName, arguments);
+		return I18n.get(resourceName, arguments);
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public static String getItemName(ItemStack stack) {
-		List<ITextComponent> list = stack.getTooltip(Minecraft.getInstance().player, TooltipFlags.NORMAL);
+		List<ITextComponent> list = stack.getTooltipLines(Minecraft.getInstance().player, TooltipFlags.NORMAL);
 		if (list.size() == 0)
-			return stack.getItem().getTranslationKey();
+			return stack.getItem().getDescriptionId();
 		return list.get(0).getString();// .getFormattedText();
 	}
 }

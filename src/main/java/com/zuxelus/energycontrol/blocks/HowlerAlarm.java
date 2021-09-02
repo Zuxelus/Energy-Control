@@ -20,12 +20,12 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 public class HowlerAlarm extends FacingBlockSmall {
-	protected static final VoxelShape AABB_DOWN = Block.makeCuboidShape(2.0D, 9.0D, 2.0D, 14.0D, 16.0D, 14.0D);
-	protected static final VoxelShape AABB_UP = Block.makeCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 7.0D, 14.0D);
-	protected static final VoxelShape AABB_NORTH = Block.makeCuboidShape(2.0D, 2.0D, 9.0D, 14.0D, 14.0D, 16.0D);
-	protected static final VoxelShape AABB_SOUTH = Block.makeCuboidShape(2.0D, 2.0D, 0.0D, 14.0D, 14.0D, 7.0D);
-	protected static final VoxelShape AABB_WEST = Block.makeCuboidShape(9.0D, 2.0D, 2.0D, 16.0D, 14.0D, 14.0D);
-	protected static final VoxelShape AABB_EAST = Block.makeCuboidShape(0.0D, 2.0D, 2.0D, 7.0D, 14.0D, 14.0D);
+	protected static final VoxelShape AABB_DOWN = Block.box(2.0D, 9.0D, 2.0D, 14.0D, 16.0D, 14.0D);
+	protected static final VoxelShape AABB_UP = Block.box(2.0D, 0.0D, 2.0D, 14.0D, 7.0D, 14.0D);
+	protected static final VoxelShape AABB_NORTH = Block.box(2.0D, 2.0D, 9.0D, 14.0D, 14.0D, 16.0D);
+	protected static final VoxelShape AABB_SOUTH = Block.box(2.0D, 2.0D, 0.0D, 14.0D, 14.0D, 7.0D);
+	protected static final VoxelShape AABB_WEST = Block.box(9.0D, 2.0D, 2.0D, 16.0D, 14.0D, 14.0D);
+	protected static final VoxelShape AABB_EAST = Block.box(0.0D, 2.0D, 2.0D, 7.0D, 14.0D, 14.0D);
 
 	@Override
 	protected TileEntityFacing createTileEntity() {
@@ -34,13 +34,13 @@ public class HowlerAlarm extends FacingBlockSmall {
 
 	@Override
 	public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
-		if (!world.isRemote)
-			world.notifyBlockUpdate(pos, state, state, 2);
+		if (!world.isClientSide)
+			world.sendBlockUpdated(pos, state, state, 2);
 	}
 
 	@Override
 	public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-		switch (state.get(FACING)) {
+		switch (state.getValue(FACING)) {
 		case EAST:
 			return AABB_EAST;
 		case WEST:
@@ -58,9 +58,9 @@ public class HowlerAlarm extends FacingBlockSmall {
 	}
 
 	@Override
-	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-		if (world.isRemote) {
-			TileEntity te = world.getTileEntity(pos);
+	public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+		if (world.isClientSide) {
+			TileEntity te = world.getBlockEntity(pos);
 			if (te instanceof TileEntityHowlerAlarm)
 				ScreenHandler.openHowlerAlarmScreen((TileEntityHowlerAlarm) te);
 		}

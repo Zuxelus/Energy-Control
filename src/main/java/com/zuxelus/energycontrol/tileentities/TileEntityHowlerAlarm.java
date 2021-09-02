@@ -44,7 +44,7 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 	}
 
 	public void setRange(int r) {
-		if (!world.isRemote && range != r)
+		if (!level.isClientSide && range != r)
 			notifyBlockUpdate();
 		range = r;
 	}
@@ -55,11 +55,11 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 
 	public void setSoundName(String name) {
 		soundName = name;
-		if (!world.isRemote && !prevSoundName.equals(soundName))
+		if (!level.isClientSide && !prevSoundName.equals(soundName))
 			notifyBlockUpdate();
-		if (world.isRemote) {
+		if (level.isClientSide) {
 			if (EnergyControl.INSTANCE.availableAlarms != null && !EnergyControl.INSTANCE.availableAlarms.contains(soundName)) {
-				EnergyControl.LOGGER.info(String.format("Can't set sound '%s' at %d,%d,%d, using default", soundName, pos.getX(), pos.getY(), pos.getZ()));
+				EnergyControl.LOGGER.info(String.format("Can't set sound '%s' at %d,%d,%d, using default", soundName, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ()));
 				soundName = DEFAULT_SOUND_NAME;
 			}
 		}
@@ -71,7 +71,7 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 	}
 
 	public void updatePowered(boolean isPowered) {
-		if (world.isRemote && isPowered != powered) {
+		if (level.isClientSide && isPowered != powered) {
 			powered = isPowered;
 			checkStatus();
 		}
@@ -98,19 +98,19 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 
 	@Override
 	public SUpdateTileEntityPacket getUpdatePacket() {
-		return new SUpdateTileEntityPacket(pos, 0, getUpdateTag());
+		return new SUpdateTileEntityPacket(worldPosition, 0, getUpdateTag());
 	}
 
 	@Override
 	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-		readProperties(pkt.getNbtCompound());
+		readProperties(pkt.getTag());
 	}
 
 	@Override
 	public CompoundNBT getUpdateTag() {
 		CompoundNBT tag = super.getUpdateTag();
 		tag = writeProperties(tag);
-		powered = world.isBlockPowered(pos);
+		powered = level.hasNeighborSignal(worldPosition);
 		tag.putBoolean("powered", powered);
 		return tag;
 	}
@@ -127,8 +127,8 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 	}
 
 	@Override
-	public void read(BlockState state, CompoundNBT tag) {
-		super.read(state, tag);
+	public void load(BlockState state, CompoundNBT tag) {
+		super.load(state, tag);
 		readProperties(tag);
 	}
 
@@ -141,20 +141,20 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 	}
 
 	@Override
-	public CompoundNBT write(CompoundNBT tag) {
-		return writeProperties(super.write(tag));
+	public CompoundNBT save(CompoundNBT tag) {
+		return writeProperties(super.save(tag));
 	}
 
 	@Override
-	public void remove() {
-		if (world.isRemote && sound != null)
+	public void setRemoved() {
+		if (level.isClientSide && sound != null)
 			sound.stopAlarm();
-		super.remove();
+		super.setRemoved();
 	}
 
 	@Override
 	public void tick() {
-		if (world.isRemote) {
+		if (level.isClientSide) {
 			if (updateTicker-- > 0)
 				return;
 			updateTicker = tickRate;
@@ -166,13 +166,13 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 		if (sound == null)
 			sound = new TileEntitySound();
 		if (powered && !sound.isPlaying())
-			sound.playAlarm(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, SOUND_PREFIX + soundName, range);
+			sound.playAlarm(worldPosition.getX() + 0.5D, worldPosition.getY() + 0.5D, worldPosition.getZ() + 0.5D, SOUND_PREFIX + soundName, range);
 		if (!powered && sound.isPlaying())
 			sound.stopAlarm();
 	}
 
 	private void notifyBlockUpdate() {
-		BlockState iblockstate = world.getBlockState(pos);
-		world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
+		BlockState iblockstate = level.getBlockState(worldPosition);
+		level.sendBlockUpdated(worldPosition, iblockstate, iblockstate, 2);
 	}
 }

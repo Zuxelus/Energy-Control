@@ -37,7 +37,7 @@ public class ItemCardTime extends ItemCardMain {
 	@OnlyIn(Dist.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(1);
-		result.add(new PanelSetting(I18n.format("msg.ec.cb24h"), 1));
+		result.add(new PanelSetting(I18n.get("msg.ec.cb24h"), 1));
 		return result;
 	}
 }

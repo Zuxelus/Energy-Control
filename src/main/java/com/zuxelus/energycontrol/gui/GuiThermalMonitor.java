@@ -72,7 +72,7 @@ public class GuiThermalMonitor extends GuiBase {
 			return;
 		int heat = 0;
 		try {
-			String value = textboxHeat.getText();
+			String value = textboxHeat.getValue();
 			if (!"".equals(value))
 				heat = Integer.parseInt(value);
 		} catch (NumberFormatException e) {	}
@@ -81,11 +81,11 @@ public class GuiThermalMonitor extends GuiBase {
 			heat = 0;
 		if (heat >= 1000000)
 			heat = 1000000;
-		if (thermo.getWorld().isRemote && thermo.getHeatLevel() != heat) {
-			NetworkHelper.updateSeverTileEntity(thermo.getPos(), 1, heat);
+		if (thermo.getLevel().isClientSide && thermo.getHeatLevel() != heat) {
+			NetworkHelper.updateSeverTileEntity(thermo.getBlockPos(), 1, heat);
 			thermo.setHeatLevel(heat);
 		}
-		textboxHeat.setText(Integer.toString(heat));
+		textboxHeat.setValue(Integer.toString(heat));
 	}
 
 	protected void actionPerformed(Button button) {

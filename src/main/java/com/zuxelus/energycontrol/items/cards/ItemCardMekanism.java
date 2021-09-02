@@ -26,7 +26,7 @@ public class ItemCardMekanism extends ItemCardMain {
 		if (target == null)
 			return CardState.NO_TARGET;
 
-		TileEntity te = world.getTileEntity(target);
+		TileEntity te = world.getBlockEntity(target);
 		CompoundNBT tag = CrossModLoader.getCrossMod(ModIDs.MEKANISM).getCardData(te);
 		if (tag == null)
 			tag = CrossModLoader.getCrossMod(ModIDs.MEKANISM_GENERATORS).getCardData(te);
@@ -85,13 +85,13 @@ public class ItemCardMekanism extends ItemCardMain {
 	@Override
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(4);
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOutput"), 1));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelUsing"), 2));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 4));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelCapacity"), 8));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelTank"), 16));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelRate"), 32));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOther"), 64));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelOutput"), 1));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelUsing"), 2));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelEnergy"), 4));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelCapacity"), 8));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelTank"), 16));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelRate"), 32));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelOther"), 64));
 		return result;
 	}
 

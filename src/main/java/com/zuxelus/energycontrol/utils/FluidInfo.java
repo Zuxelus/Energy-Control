@@ -33,7 +33,7 @@ public class FluidInfo {
 
 	public void write(ICardReader reader) {
 		if (translationKey != null)
-			reader.setString("name", I18n.format(translationKey));
+			reader.setString("name", I18n.get(translationKey));
 		else
 			reader.setString("name", "");
 		if (texture != null)
@@ -47,7 +47,7 @@ public class FluidInfo {
 
 	public void write(ICardReader reader, int i) {
 		if (translationKey != null)
-			reader.setString(String.format("_%dname", i), I18n.format(translationKey));
+			reader.setString(String.format("_%dname", i), I18n.get(translationKey));
 		else
 			reader.setString(String.format("_%dname", i), "");
 		reader.setLong(String.format("_%damount", i), amount);

@@ -35,7 +35,7 @@ public class GuiThermoInvertRedstone extends AbstractButton {
 			return;
 
 		Minecraft minecraft = Minecraft.getInstance();
-		minecraft.getTextureManager().bindTexture(TEXTURE);
+		minecraft.getTextureManager().bind(TEXTURE);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int delta = checked ? 15 : 0;
 		blit(matrixStack, x, y + 1, 199, delta, 51, 15);
@@ -45,8 +45,8 @@ public class GuiThermoInvertRedstone extends AbstractButton {
 	@Override
 	public void onPress() {
 		checked = !checked;
-		if (thermo.getWorld().isRemote && thermo.getInvertRedstone() != checked) {
-			NetworkHelper.updateSeverTileEntity(thermo.getPos(), 2, checked ? (int) 1 : (int) 0);
+		if (thermo.getLevel().isClientSide && thermo.getInvertRedstone() != checked) {
+			NetworkHelper.updateSeverTileEntity(thermo.getBlockPos(), 2, checked ? (int) 1 : (int) 0);
 			thermo.setInvertRedstone(checked);
 		}
 	}

@@ -75,7 +75,7 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 		switch (tag.getInt("type")) {
 		case 4:
 			if (tag.contains("slot") && tag.contains("title")) {
-				ItemStack itemStack = getStackInSlot(tag.getInt("slot"));
+				ItemStack itemStack = getItem(tag.getInt("slot"));
 				if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemCardMain) {
 					new ItemCardReader(itemStack).setTitle(tag.getString("title"));
 				}
@@ -103,12 +103,12 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 		CompoundNBT tag = new CompoundNBT();
 		tag = writeProperties(tag);
 		tag.putBoolean("active", active);
-		return new SUpdateTileEntityPacket(getPos(), 0, tag);
+		return new SUpdateTileEntityPacket(getBlockPos(), 0, tag);
 	}
 
 	@Override
 	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-		readProperties(pkt.getNbtCompound());
+		readProperties(pkt.getTag());
 	}
 
 	@Override
@@ -132,8 +132,8 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 	}
 
 	@Override
-	public void read(BlockState state, CompoundNBT tag) {
-		super.read(state, tag);
+	public void load(BlockState state, CompoundNBT tag) {
+		super.load(state, tag);
 		readProperties(tag);
 	}
 
@@ -146,8 +146,8 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 	}
 
 	@Override
-	public CompoundNBT write(CompoundNBT tag) {
-		return writeProperties(super.write(tag));
+	public CompoundNBT save(CompoundNBT tag) {
+		return writeProperties(super.save(tag));
 	}
 
 	@Override
@@ -160,9 +160,9 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 	}
 
 	@Override
-	public void remove() {
+	public void setRemoved() {
 		onChunkUnloaded();
-		super.remove();
+		super.setRemoved();
 	}
 
 	@Override
@@ -177,24 +177,24 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 	public void tick() {
 		if (!addedToEnet)
 			onLoad();
-		if (world.isRemote || !active)
+		if (level.isClientSide || !active)
 			return;
 		if (energy >= CONSUMPTION) {
 			energy -= CONSUMPTION;
 			production += 1;
 			if (production >= PRODUCTION_TIME) {
-				ItemStack stack1 = getStackInSlot(SLOT_CARD1);
-				ItemStack stack2 = getStackInSlot(SLOT_CARD2);
-				ItemStack kit = getStackInSlot(SLOT_KIT);
+				ItemStack stack1 = getItem(SLOT_CARD1);
+				ItemStack stack2 = getItem(SLOT_CARD2);
+				ItemStack kit = getItem(SLOT_KIT);
 				if (!stack1.isEmpty() && stack1.getItem() instanceof ItemCardMain && !stack2.isEmpty()
 						&& stack2.getItem() instanceof ItemCardMain
 						&& ((ItemCardMain) stack1.getItem()).getKitFromCard() == ((ItemCardMain) stack2.getItem()).getKitFromCard()
 						&& kit.isEmpty()) {
 					Item kit_item = ((ItemCardMain)stack1.getItem()).getKitFromCard();
-					removeStackFromSlot(SLOT_CARD1);
-					removeStackFromSlot(SLOT_CARD2);
+					removeItemNoUpdate(SLOT_CARD1);
+					removeItemNoUpdate(SLOT_CARD2);
 					if (kit != null)
-						setInventorySlotContents(SLOT_KIT, new ItemStack(kit_item));
+						setItem(SLOT_KIT, new ItemStack(kit_item));
 				}
 				production = 0;
 				updateState();
@@ -207,14 +207,14 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 	}
 
 	public void notifyBlockUpdate() {
-		BlockState iblockstate = world.getBlockState(pos);
-		world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
+		BlockState iblockstate = level.getBlockState(worldPosition);
+		level.sendBlockUpdated(worldPosition, iblockstate, iblockstate, 2);
 	}
 
 	@Override
-	public void markDirty() {
-		super.markDirty();
-		if (world == null || world.isRemote)
+	public void setChanged() {
+		super.setChanged();
+		if (level == null || level.isClientSide)
 			return;
 		updateState();
 	}
@@ -223,15 +223,15 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 		active = false;
 		if (energy < CONSUMPTION)
 			return;
-		ItemStack stack1 = getStackInSlot(SLOT_CARD1);
+		ItemStack stack1 = getItem(SLOT_CARD1);
 		if (stack1.isEmpty() || !(stack1.getItem() instanceof ItemCardMain))
 			return;
-		ItemStack stack2 = getStackInSlot(SLOT_CARD2);
+		ItemStack stack2 = getItem(SLOT_CARD2);
 		if (stack2.isEmpty() || !(stack2.getItem() instanceof ItemCardMain)
 				|| ((ItemCardMain)stack1.getItem()).getKitFromCard() != ((ItemCardMain)stack2.getItem()).getKitFromCard()
 				|| ((ItemCardMain)stack1.getItem()).getKitFromCard() == null)
 			return;
-		ItemStack kit = getStackInSlot(SLOT_KIT);
+		ItemStack kit = getItem(SLOT_KIT);
 		if (!kit.isEmpty())
 			return;
 		active = true;
@@ -245,24 +245,24 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 
 		production = 0;
 
-		BlockState blockstate = world.getBlockState(pos);
+		BlockState blockstate = level.getBlockState(worldPosition);
 		Block block = blockstate.getBlock();
-		if (!(block instanceof KitAssembler) || blockstate.get(KitAssembler.ACTIVE) == active)
+		if (!(block instanceof KitAssembler) || blockstate.getValue(KitAssembler.ACTIVE) == active)
 			return;
-		BlockState newState = block.getDefaultState()
-				.with(KitAssembler.HORIZONTAL_FACING, blockstate.get(KitAssembler.HORIZONTAL_FACING))
-				.with(KitAssembler.ACTIVE, active);
-		world.setBlockState(pos, newState, 3);
+		BlockState newState = block.defaultBlockState()
+				.setValue(KitAssembler.FACING, blockstate.getValue(KitAssembler.FACING))
+				.setValue(KitAssembler.ACTIVE, active);
+		level.setBlock(worldPosition, newState, 3);
 	}
 
 	// ------- Inventory -------
 	@Override
-	public int getSizeInventory() {
+	public int getContainerSize() {
 		return 5;
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int index, ItemStack stack) {
+	public boolean canPlaceItem(int index, ItemStack stack) {
 		return isItemValid(index, stack);
 	}
 
@@ -289,7 +289,7 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 
 	@Override
 	public ITextComponent getDisplayName() {
-		return new TranslationTextComponent(ModItems.kit_assembler.get().getTranslationKey());
+		return new TranslationTextComponent(ModItems.kit_assembler.get().getDescriptionId());
 	}
 
 	// IEnergySink

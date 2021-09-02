@@ -28,7 +28,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 public class AdvancedInfoPanel extends InfoPanel {
 
 	public AdvancedInfoPanel() {
-		super(Block.Properties.create(Material.IRON).hardnessAndResistance(12.0F).notSolid());
+		super(Block.Properties.of(Material.METAL).strength(12.0F).noOcclusion());
 	}
 
 	@Override
@@ -38,33 +38,33 @@ public class AdvancedInfoPanel extends InfoPanel {
 
 	@Override
 	public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-		TileEntity tile = world.getTileEntity(pos);
+		TileEntity tile = world.getBlockEntity(pos);
 		if (!(tile instanceof TileEntityAdvancedInfoPanel))
-			return VoxelShapes.fullCube();
+			return VoxelShapes.block();
 
 		TileEntityAdvancedInfoPanel te = (TileEntityAdvancedInfoPanel) tile;
 		Screen screen = te.getScreen();
 		if (screen == null)
-			return VoxelShapes.fullCube();
+			return VoxelShapes.block();
 
-		Direction enumfacing = (Direction) state.get(FACING);
+		Direction enumfacing = (Direction) state.getValue(FACING);
 		if (!(te instanceof TileEntityAdvancedInfoPanel) || enumfacing == null)
-			return VoxelShapes.fullCube();
+			return VoxelShapes.block();
 		switch (enumfacing) {
 		case EAST:
-			return Block.makeCuboidShape(0.0D, 0.0D, 0.0D, te.thickness, 16.0D, 16.0D);
+			return Block.box(0.0D, 0.0D, 0.0D, te.thickness, 16.0D, 16.0D);
 		case WEST:
-			return Block.makeCuboidShape(16.0D - te.thickness, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+			return Block.box(16.0D - te.thickness, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
 		case SOUTH:
-			return Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, te.thickness);
+			return Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, te.thickness);
 		case NORTH:
-			return Block.makeCuboidShape(0.0D, 0.0D, 16.0D - te.thickness, 16.0D, 16.0D, 16.0D);
+			return Block.box(0.0D, 0.0D, 16.0D - te.thickness, 16.0D, 16.0D, 16.0D);
 		case UP:
-			return Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, te.thickness, 16.0D);
+			return Block.box(0.0D, 0.0D, 0.0D, 16.0D, te.thickness, 16.0D);
 		case DOWN:
-			return Block.makeCuboidShape(0.0D, 16.0D - te.thickness, 0.0D, 16.0D, 16.0D, 16.0D);
+			return Block.box(0.0D, 16.0D - te.thickness, 0.0D, 16.0D, 16.0D, 16.0D);
 		default:
-			return VoxelShapes.fullCube();
+			return VoxelShapes.block();
 		}
 	}
 
@@ -74,14 +74,14 @@ public class AdvancedInfoPanel extends InfoPanel {
 	}
 
 	@Override
-	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-		TileEntity te = world.getTileEntity(pos);
+	public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+		TileEntity te = world.getBlockEntity(pos);
 		if (!(te instanceof TileEntityInfoPanel))
 			return ActionResultType.PASS;
-		if (!world.isRemote && EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) te).getFacing() == hit.getFace())
-			if (((TileEntityInfoPanel) te).runTouchAction(player.getHeldItem(hand), pos, hit.getHitVec()))
+		if (!world.isClientSide && EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) te).getFacing() == hit.getDirection())
+			if (((TileEntityInfoPanel) te).runTouchAction(player.getItemInHand(hand), pos, hit.getLocation()))
 				return ActionResultType.SUCCESS;
-		if (!world.isRemote)
+		if (!world.isClientSide)
 			NetworkHooks.openGui((ServerPlayerEntity) player, (TileEntityAdvancedInfoPanel) te, pos);
 		return ActionResultType.SUCCESS;
 	}

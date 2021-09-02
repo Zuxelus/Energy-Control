@@ -16,7 +16,7 @@ public class Screen {
 	private boolean powered = false;
 
 	public Screen(TileEntityInfoPanel panel) {
-		BlockPos pos = panel.getPos();
+		BlockPos pos = panel.getBlockPos();
 		maxX = minX = pos.getX();
 		maxY = minY = pos.getY();
 		maxZ = minZ = pos.getZ();
@@ -34,19 +34,19 @@ public class Screen {
 		maxY = tag.getInt("maxY");
 		maxZ = tag.getInt("maxZ");
 
-		corePos = panel.getPos();
+		corePos = panel.getBlockPos();
 		powered = panel.getPowered();
 	}
 
 	public TileEntityInfoPanel getCore(World world) {
-		TileEntity tileEntity = world.getTileEntity(corePos);
+		TileEntity tileEntity = world.getBlockEntity(corePos);
 		if (tileEntity == null || !(tileEntity instanceof TileEntityInfoPanel))
 			return null;
 		return (TileEntityInfoPanel) tileEntity;
 	}
 
 	public boolean isBlockNearby(TileEntity tileEntity) {
-		BlockPos pos = tileEntity.getPos();
+		BlockPos pos = tileEntity.getBlockPos();
 		int x = pos.getX();
 		int y = pos.getY();
 		int z = pos.getZ();
@@ -59,7 +59,7 @@ public class Screen {
 	}
 
 	public boolean isBlockPartOf(TileEntity tileEntity) {
-		BlockPos pos = tileEntity.getPos();
+		BlockPos pos = tileEntity.getBlockPos();
 		int x = pos.getX();
 		int y = pos.getY();
 		int z = pos.getZ();
@@ -70,7 +70,7 @@ public class Screen {
 		for (int x = minX; x <= maxX; x++) {
 			for (int y = minY; y <= maxY; y++) {
 				for (int z = minZ; z <= maxZ; z++) {
-					TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
+					TileEntity tileEntity = world.getBlockEntity(new BlockPos(x, y, z));
 					if (tileEntity == null || !(tileEntity instanceof IScreenPart))
 						continue;
 					((IScreenPart) tileEntity).setScreen(this);
@@ -87,7 +87,7 @@ public class Screen {
 		for (int x = minX; x <= maxX; x++) {
 			for (int y = minY; y <= maxY; y++) {
 				for (int z = minZ; z <= maxZ; z++) {
-					TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
+					TileEntity tileEntity = world.getBlockEntity(new BlockPos(x, y, z));
 					if (tileEntity == null || !(tileEntity instanceof IScreenPart))
 						continue;
 					IScreenPart part = (IScreenPart) tileEntity;
@@ -116,7 +116,7 @@ public class Screen {
 		for (int x = minX; x <= maxX; x++) {
 			for (int y = minY; y <= maxY; y++) {
 				for (int z = minZ; z <= maxZ; z++) {
-					TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
+					TileEntity te = world.getBlockEntity(new BlockPos(x, y, z));
 					if (te instanceof IScreenPart)
 						((IScreenPart)te).notifyBlockUpdate();
 						//world.checkLight(new BlockPos(x, y, z));

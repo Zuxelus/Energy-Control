@@ -23,7 +23,7 @@ public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm {
 
 	@Override
 	public void tick() {
-		if (world.isRemote) {
+		if (level.isClientSide) {
 			if (updateTicker-- <= 0) {
 				updateTicker = tickRate;
 				super.checkStatus();
@@ -48,6 +48,6 @@ public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm {
 				internalFire = 0;
 		}
 		if (lightLevel != light)
-			world.getChunkProvider().getLightManager().checkBlock(pos);
+			level.getChunkSource().getLightEngine().checkBlock(worldPosition);
 	}
 }

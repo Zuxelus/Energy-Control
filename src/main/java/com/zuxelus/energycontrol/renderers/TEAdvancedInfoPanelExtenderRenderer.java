@@ -39,29 +39,29 @@ public class TEAdvancedInfoPanelExtenderRenderer extends TileEntityRenderer<Tile
 
 	@Override
 	public void render(TileEntityAdvancedInfoPanelExtender te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
-		matrixStack.push();
+		matrixStack.pushPose();
 		int[] light = TileEntityInfoPanelRenderer.getBlockLight(te);
 		switch (te.getFacing()) {
 		case UP:
 			break;
 		case NORTH:
-			matrixStack.rotate(Vector3f.XP.rotationDegrees(-90));
+			matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
 			matrixStack.translate(0.0F, -1.0F, 0.0F);
 			break;
 		case SOUTH:
-			matrixStack.rotate(Vector3f.XP.rotationDegrees(90));
+			matrixStack.mulPose(Vector3f.XP.rotationDegrees(90));
 			matrixStack.translate(0.0F, 0.0F, -1.0F);
 			break;
 		case DOWN:
-			matrixStack.rotate(Vector3f.XP.rotationDegrees(180));
+			matrixStack.mulPose(Vector3f.XP.rotationDegrees(180));
 			matrixStack.translate(0.0F, -1.0F, -1.0F);
 			break;
 		case WEST:
-			matrixStack.rotate(Vector3f.ZP.rotationDegrees(90));
+			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(90));
 			matrixStack.translate(0.0F, -1.0F, 0.0F);
 			break;
 		case EAST:
-			matrixStack.rotate(Vector3f.ZP.rotationDegrees(-90));
+			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-90));
 			matrixStack.translate(-1.0F, 0.0F, 0.0F);
 			break;
 		}
@@ -74,9 +74,9 @@ public class TEAdvancedInfoPanelExtenderRenderer extends TileEntityRenderer<Tile
 		}
 		IVertexBuilder vertexBuilder;
 		if (te.getPowered())
-			vertexBuilder = buffer.getBuffer(RenderType.getEntitySolid(TEXTUREON[color]));
+			vertexBuilder = buffer.getBuffer(RenderType.entitySolid(TEXTUREON[color]));
 		else
-			vertexBuilder = buffer.getBuffer(RenderType.getEntitySolid(TEXTUREOFF[color]));
+			vertexBuilder = buffer.getBuffer(RenderType.entitySolid(TEXTUREOFF[color]));
 
 		int textureId = te.findTexture();
 		byte thickness = te.getThickness();
@@ -93,9 +93,9 @@ public class TEAdvancedInfoPanelExtenderRenderer extends TileEntityRenderer<Tile
 				model[textureId].render(matrixStack, vertexBuilder, light, combinedOverlay);
 			else {
 				RotationOffset offset = new RotationOffset(thickness * 2, rotateHor, rotateVert);
-				new CubeRenderer(textureId / 4 * 32 + 64, textureId % 4 * 32 + 64, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation())).render(matrixStack, vertexBuilder, light, combinedOverlay);;
+				new CubeRenderer(textureId / 4 * 32 + 64, textureId % 4 * 32 + 64, offset.addOffset(screen, te.getBlockPos(), te.getFacing(), te.getRotation())).render(matrixStack, vertexBuilder, light, combinedOverlay);;
 			}
 		}
-		matrixStack.pop();
+		matrixStack.popPose();
 	}
 }

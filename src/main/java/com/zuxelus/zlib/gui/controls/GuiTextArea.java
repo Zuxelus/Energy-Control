@@ -47,15 +47,15 @@ public class GuiTextArea extends Widget implements IRenderable, IGuiEventListene
 		int textColor = 0xE0E0E0;
 
 		int textLeft = x + 4;
-		int textTop = y + (height - lineCount * (fontRenderer.FONT_HEIGHT + 1)) / 2;
+		int textTop = y + (height - lineCount * (fontRenderer.lineHeight + 1)) / 2;
 
 		for (int i = 0; i < lineCount; i++)
-			fontRenderer.drawStringWithShadow(matrixStack, text[i], textLeft, textTop + (fontRenderer.FONT_HEIGHT + 1) * i, textColor);
-		textTop += (fontRenderer.FONT_HEIGHT + 1) * cursorLine;
-		int cursorPositionX = textLeft + fontRenderer.getStringWidth(text[cursorLine].substring(0, Math.min(text[cursorLine].length(), cursorPosition))) - 1;
+			fontRenderer.drawShadow(matrixStack, text[i], textLeft, textTop + (fontRenderer.lineHeight + 1) * i, textColor);
+		textTop += (fontRenderer.lineHeight + 1) * cursorLine;
+		int cursorPositionX = textLeft + fontRenderer.width(text[cursorLine].substring(0, Math.min(text[cursorLine].length(), cursorPosition))) - 1;
 		boolean drawCursor = isFocused() && cursorCounter / 6 % 2 == 0;
 		if (drawCursor)
-			drawCursorVertical(cursorPositionX, textTop - 1, cursorPositionX + 1, textTop + 1 + fontRenderer.FONT_HEIGHT);
+			drawCursorVertical(cursorPositionX, textTop - 1, cursorPositionX + 1, textTop + 1 + fontRenderer.lineHeight);
 	}
 
 	private void drawCursorVertical(int left, int top, int right, int bottom) {
@@ -72,17 +72,17 @@ public class GuiTextArea extends Widget implements IRenderable, IGuiEventListene
 		}
 
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferbuilder = tessellator.getBuffer();
+		BufferBuilder bufferbuilder = tessellator.getBuilder();
 		RenderSystem.color4f(0.0F, 0.0F, 255.0F, 255.0F);
 		RenderSystem.disableTexture();
 		RenderSystem.enableColorLogicOp();
 		RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
 		bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
-		bufferbuilder.pos(left, bottom, 0.0D).endVertex();
-		bufferbuilder.pos(right, bottom, 0.0D).endVertex();
-		bufferbuilder.pos(right, top, 0.0D).endVertex();
-		bufferbuilder.pos(left, top, 0.0D).endVertex();
-		tessellator.draw();
+		bufferbuilder.vertex(left, bottom, 0.0D).endVertex();
+		bufferbuilder.vertex(right, bottom, 0.0D).endVertex();
+		bufferbuilder.vertex(right, top, 0.0D).endVertex();
+		bufferbuilder.vertex(left, top, 0.0D).endVertex();
+		tessellator.end();
 		RenderSystem.disableColorLogicOp();
 		RenderSystem.enableTexture();
 	}
@@ -124,7 +124,7 @@ public class GuiTextArea extends Widget implements IRenderable, IGuiEventListene
 
 	public void writeText(String additionalText) {
 		String newLine = "";
-		String filteredText = SharedConstants.filterAllowedCharacters(additionalText);
+		String filteredText = SharedConstants.filterText(additionalText);
 		int freeCharCount = this.maxStringLength - text[cursorLine].length();
 
 		if (text[cursorLine].length() > 0)
@@ -194,7 +194,7 @@ public class GuiTextArea extends Widget implements IRenderable, IGuiEventListene
 
 	@Override
 	public boolean charTyped(char typedChar, int keyCode) {
-		if (isFocused() && SharedConstants.isAllowedCharacter(typedChar)) {
+		if (isFocused() && SharedConstants.isAllowedChatCharacter(typedChar)) {
 			writeText(Character.toString(typedChar));
 			return true;
 		}

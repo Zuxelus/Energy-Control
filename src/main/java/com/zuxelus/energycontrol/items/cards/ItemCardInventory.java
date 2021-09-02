@@ -28,11 +28,11 @@ public class ItemCardInventory extends ItemCardMain {
 		if (target == null)
 			return CardState.NO_TARGET;
 
-		TileEntity te = world.getTileEntity(target);
+		TileEntity te = world.getBlockEntity(target);
 		if (te instanceof IInventory) {
 			IInventory inv = (IInventory) te;
 			reader.setString("name", "TODO"/*inv.getName()*/);
-			reader.setInt("size", inv.getSizeInventory());
+			reader.setInt("size", inv.getContainerSize());
 			reader.setBoolean("sided", inv instanceof ISidedInventory);
 			reader.removeField("slot0");
 			reader.removeField("slot1");
@@ -40,19 +40,19 @@ public class ItemCardInventory extends ItemCardMain {
 			reader.removeField("slot3");
 			int inUse = 0;
 			int items = 0;
-			for (int i = 0; i < inv.getSizeInventory(); i++) {
-				if (inv.getStackInSlot(i) != ItemStack.EMPTY) {
+			for (int i = 0; i < inv.getContainerSize(); i++) {
+				if (inv.getItem(i) != ItemStack.EMPTY) {
 					inUse++;
-					items += inv.getStackInSlot(i).getCount();
+					items += inv.getItem(i).getCount();
 				}
 				if (i == 0)
-					reader.setTag("slot0", inv.getStackInSlot(0).write(new CompoundNBT()));
+					reader.setTag("slot0", inv.getItem(0).save(new CompoundNBT()));
 				if (i == 1)
-					reader.setTag("slot1", inv.getStackInSlot(1).write(new CompoundNBT()));
+					reader.setTag("slot1", inv.getItem(1).save(new CompoundNBT()));
 				if (i == 2)
-					reader.setTag("slot2", inv.getStackInSlot(2).write(new CompoundNBT()));
+					reader.setTag("slot2", inv.getItem(2).save(new CompoundNBT()));
 				if (i == 3)
-					reader.setTag("slot3", inv.getStackInSlot(3).write(new CompoundNBT()));
+					reader.setTag("slot3", inv.getItem(3).save(new CompoundNBT()));
 			}
 			reader.setInt("used", inUse);
 			reader.setInt("items", items);
@@ -68,18 +68,18 @@ public class ItemCardInventory extends ItemCardMain {
 			result.add(new PanelString("msg.ec.InfoPanelTotalItems", reader.getInt("items"), showLabels));
 			result.add(new PanelString("msg.ec.InfoPanelSlotsUsed", String.format("%s/%s", reader.getInt("used"), reader.getInt("size")), showLabels));
 		} else {
-			result.add(new PanelString("msg.ec.InfoPanelName", I18n.format(reader.getString("name")), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelName", I18n.get(reader.getString("name")), showLabels));
 			result.add(new PanelString("msg.ec.InfoPanelTotalItems", reader.getInt("items"), showLabels));
 			result.add(new PanelString("msg.ec.InfoPanelSlotsUsed", String.format("%s/%s", reader.getInt("used"), reader.getInt("size")), showLabels));
 			result.add(new PanelString("msg.ec.InfoPanelSidedInventory", reader.getBoolean("sided").toString(), showLabels));
 			if (reader.hasField("slot0"))
-				result.add(new PanelString(String.format("msg.ec.InfoPanelSlot%d", 1), StringUtils.getItemName(ItemStack.read(reader.getTag("slot0"))), showLabels));
+				result.add(new PanelString(String.format("msg.ec.InfoPanelSlot%d", 1), StringUtils.getItemName(ItemStack.of(reader.getTag("slot0"))), showLabels));
 			if (reader.hasField("slot1"))
-				result.add(new PanelString(String.format("msg.ec.InfoPanelSlot%d", 2), StringUtils.getItemName(ItemStack.read(reader.getTag("slot1"))), showLabels));
+				result.add(new PanelString(String.format("msg.ec.InfoPanelSlot%d", 2), StringUtils.getItemName(ItemStack.of(reader.getTag("slot1"))), showLabels));
 			if (reader.hasField("slot2"))
-				result.add(new PanelString(String.format("msg.ec.InfoPanelSlot%d", 3), StringUtils.getItemName(ItemStack.read(reader.getTag("slot2"))), showLabels));
+				result.add(new PanelString(String.format("msg.ec.InfoPanelSlot%d", 3), StringUtils.getItemName(ItemStack.of(reader.getTag("slot2"))), showLabels));
 			if (reader.hasField("slot3"))
-				result.add(new PanelString(String.format("msg.ec.InfoPanelSlot%d", 4), StringUtils.getItemName(ItemStack.read(reader.getTag("slot3"))), showLabels));
+				result.add(new PanelString(String.format("msg.ec.InfoPanelSlot%d", 4), StringUtils.getItemName(ItemStack.of(reader.getTag("slot3"))), showLabels));
 		}
 		return result;
 	}

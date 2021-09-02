@@ -16,14 +16,14 @@ import net.minecraftforge.fml.network.NetworkHooks;
 public class ItemCardHolder extends Item {
 
 	public ItemCardHolder() {
-		super(new Item.Properties().group(EnergyControl.ITEM_GROUP).maxStackSize(1));
+		super(new Item.Properties().tab(EnergyControl.ITEM_GROUP).stacksTo(1));
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-		ItemStack stack = player.getHeldItem(hand);
-		if (!player.isSneaking() && !world.isRemote && stack.getCount() == 1)
+	public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+		ItemStack stack = player.getItemInHand(hand);
+		if (!player.isShiftKeyDown() && !world.isClientSide && stack.getCount() == 1)
 			NetworkHooks.openGui((ServerPlayerEntity) player, new InventoryCardHolder(stack), BlockPos.ZERO);
-		return ActionResult.resultSuccess(stack);
+		return ActionResult.success(stack);
 	}
 }

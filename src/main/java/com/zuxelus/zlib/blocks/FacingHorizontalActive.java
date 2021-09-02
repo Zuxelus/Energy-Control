@@ -10,13 +10,13 @@ public abstract class FacingHorizontalActive extends FacingHorizontal {
 	public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
 	@Override
-	protected void fillStateContainer(Builder<Block, BlockState> builder) {
-		super.fillStateContainer(builder);
+	protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
+		super.createBlockStateDefinition(builder);
 		builder.add(ACTIVE);
 	}
 
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		return super.getStateForPlacement(context).with(ACTIVE, false);
+		return super.getStateForPlacement(context).setValue(ACTIVE, false);
 	}
 }

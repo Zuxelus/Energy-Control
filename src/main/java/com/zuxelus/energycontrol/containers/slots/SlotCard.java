@@ -18,7 +18,7 @@ public class SlotCard extends SlotFilter {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public Pair<ResourceLocation, ResourceLocation> getBackground() {
-		return Pair.of(PlayerContainer.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(EnergyControl.MODID + ":slots/slot_card"));
+	public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
+		return Pair.of(PlayerContainer.BLOCK_ATLAS, new ResourceLocation(EnergyControl.MODID + ":slots/slot_card"));
 	}
 }

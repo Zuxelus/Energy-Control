@@ -16,12 +16,12 @@ public class SlotChargeable extends SlotFilter {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public Pair<ResourceLocation, ResourceLocation> getBackground() {
-		return Pair.of(PlayerContainer.LOCATION_BLOCKS_TEXTURE, new ResourceLocation("zlib:slots/slot_chargeable"));
+	public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
+		return Pair.of(PlayerContainer.BLOCK_ATLAS, new ResourceLocation("zlib:slots/slot_chargeable"));
 	}
 
 	@Override
-	public int getSlotStackLimit() {
+	public int getMaxStackSize() {
 		return 1;
 	}
 }

@@ -52,31 +52,31 @@ public abstract class ContainerBase<T extends IInventory> extends Container {
 	}
 
 	@Override
-	public boolean canInteractWith(PlayerEntity player) {
+	public boolean stillValid(PlayerEntity player) {
 		if (posCallable == null || block == null)
 			return true;
-		return isWithinUsableDistance(posCallable, player, block);
+		return stillValid(posCallable, player, block);
 	}
 
 	@Override
-	public ItemStack transferStackInSlot(PlayerEntity player, int index) {
-		Slot slot = inventorySlots.get(index);
-		if (slot == null || !slot.getHasStack())
+	public ItemStack quickMoveStack(PlayerEntity player, int index) {
+		Slot slot = slots.get(index);
+		if (slot == null || !slot.hasItem())
 			return ItemStack.EMPTY;
 
-		ItemStack stack = slot.getStack();
+		ItemStack stack = slot.getItem();
 		ItemStack result = stack.copy();
 		
-		int containerSlots = inventorySlots.size() - player.inventory.mainInventory.size();
+		int containerSlots = slots.size() - player.inventory.items.size();
 		if (index < containerSlots) {
-			if (!mergeItemStack(stack, containerSlots, inventorySlots.size(), true))
+			if (!moveItemStackTo(stack, containerSlots, slots.size(), true))
 				return ItemStack.EMPTY;
-		} else if (!mergeItemStack(stack, 0, containerSlots, false))
+		} else if (!moveItemStackTo(stack, 0, containerSlots, false))
 			return ItemStack.EMPTY;
 		if (stack.getCount() == 0)
-			slot.putStack(ItemStack.EMPTY);
+			slot.set(ItemStack.EMPTY);
 		else
-			slot.onSlotChanged();
+			slot.setChanged();
 		if (stack.getCount() == result.getCount())
 			return ItemStack.EMPTY;
 		slot.onTake(player, stack);
@@ -86,7 +86,7 @@ public abstract class ContainerBase<T extends IInventory> extends Container {
 	public static TileEntity getTileEntity(PlayerInventory player, PacketBuffer data) {
 		Objects.requireNonNull(player, "Player cannot be null!");
 		Objects.requireNonNull(data, "Data cannot be null!");
-		TileEntity te = player.player.world.getTileEntity(data.readBlockPos());
+		TileEntity te = player.player.level.getBlockEntity(data.readBlockPos());
 		if (te instanceof TileEntityInfoPanelExtender)
 			te = ((TileEntityInfoPanelExtender) te).getCore();
 		if (te instanceof TileEntityAdvancedInfoPanelExtender)

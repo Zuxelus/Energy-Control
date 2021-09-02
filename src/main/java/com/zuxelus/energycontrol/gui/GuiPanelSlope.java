@@ -40,7 +40,7 @@ public class GuiPanelSlope extends GuiBase {
 				if (amount < 0)
 					amount = 0;
 			}
-			NetworkHelper.updateSeverTileEntity(panel.getPos(), 10, offset + amount);
+			NetworkHelper.updateSeverTileEntity(panel.getBlockPos(), 10, offset + amount);
 			panel.setValues(offset + amount);
 			return true;
 		}
@@ -59,6 +59,6 @@ public class GuiPanelSlope extends GuiBase {
 
 	@Override
 	public void onClose() {
-		minecraft.displayGuiScreen(parentGui);
+		minecraft.setScreen(parentGui);
 	}
 }

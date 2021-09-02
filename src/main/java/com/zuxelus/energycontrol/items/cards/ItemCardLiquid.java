@@ -61,7 +61,7 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		if ((settings & 1) > 0) {
 			String name = reader.getString("name");
 			if (name.isEmpty())
-				name = isServer ? "N/A" : I18n.format("msg.ec.None");
+				name = isServer ? "N/A" : I18n.get("msg.ec.None");
 			result.add(new PanelString("msg.ec.InfoPanelName", name, showLabels));
 		}
 		if ((settings & 2) > 0)
@@ -79,12 +79,12 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 	@OnlyIn(Dist.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(5);
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidName"), 1));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidAmount"), 2));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidFree"), 4));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidCapacity"), 8));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidPercentage"), 16));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelShowBar"), 1024));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidName"), 1));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidAmount"), 2));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidFree"), 4));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidCapacity"), 8));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidPercentage"), 16));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelShowBar"), 1024));
 		return result;
 	}
 
@@ -114,12 +114,12 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		if (texture.isEmpty())
 			return;
 
-		TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(new ResourceLocation(texture));
+		TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(AtlasTexture.LOCATION_BLOCKS).apply(new ResourceLocation(texture));
 		if (sprite == null)
 			return;
 
-		float textureX = sprite.getMinU();
-		float textureY = sprite.getMinV();
+		float textureX = sprite.getU0();
+		float textureY = sprite.getV0();
 		float width = 14 / 16.0F * reader.getInt("amount") / reader.getInt("capacity");
 		float height = 0.4375F;
 
@@ -130,19 +130,19 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		float f3 = (color & 255) / 255.0F;
 
 		matrixStack.scale(displayWidth / 0.875f, displayHeight / 0.875f, 1);
-		manager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+		manager.bind(AtlasTexture.LOCATION_BLOCKS);
 
 		RenderSystem.enableDepthTest();
 		RenderSystem.disableBlend();
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferbuilder = tessellator.getBuffer();
+		BufferBuilder bufferbuilder = tessellator.getBuilder();
 		bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
-		Matrix4f matrix = matrixStack.getLast().getMatrix();
-		bufferbuilder.pos(matrix, x, y + 0.4375F / 2 + height, z).tex(textureX + 0, textureY + sprite.getMaxV() - sprite.getMinV()).color(f1, f2, f3, f).endVertex();
-		bufferbuilder.pos(matrix, x + 0.875F, y + 0.4375F / 2 + height, z).tex(textureX + sprite.getMaxU() - sprite.getMinU(), textureY + sprite.getMaxV() - sprite.getMinV()).color(f1, f2, f3, f).endVertex();
-		bufferbuilder.pos(matrix, x + 0.875F, y + 0.4375F / 2, z).tex(textureX + sprite.getMaxU() - sprite.getMinU(), textureY + 0).color(f1, f2, f3, f).endVertex();
-		bufferbuilder.pos(matrix, x, y + 0.4375F / 2, z).tex(textureX + 0, textureY + 0).color(f1, f2, f3, f).endVertex();
-		tessellator.draw();
+		Matrix4f matrix = matrixStack.last().pose();
+		bufferbuilder.vertex(matrix, x, y + 0.4375F / 2 + height, z).uv(textureX + 0, textureY + sprite.getV1() - sprite.getV0()).color(f1, f2, f3, f).endVertex();
+		bufferbuilder.vertex(matrix, x + 0.875F, y + 0.4375F / 2 + height, z).uv(textureX + sprite.getU1() - sprite.getU0(), textureY + sprite.getV1() - sprite.getV0()).color(f1, f2, f3, f).endVertex();
+		bufferbuilder.vertex(matrix, x + 0.875F, y + 0.4375F / 2, z).uv(textureX + sprite.getU1() - sprite.getU0(), textureY + 0).color(f1, f2, f3, f).endVertex();
+		bufferbuilder.vertex(matrix, x, y + 0.4375F / 2, z).uv(textureX + 0, textureY + 0).color(f1, f2, f3, f).endVertex();
+		tessellator.end();
 		RenderSystem.disableDepthTest();
 
 		IHasBars.drawTransparentRect(matrixStack, x + 0.875F - width, y + height + 0.4375F / 2, x, y + 0.4375F / 2, -0.0001F, 0xB0000000);

@@ -39,7 +39,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 	private static final BooleanProperty POWERED = BlockStateProperties.POWERED;
-	private static final EnumProperty<AttachFace> FACE = BlockStateProperties.FACE;
+	private static final EnumProperty<AttachFace> FACE = BlockStateProperties.ATTACH_FACE;
 	private static final DirectionProperty HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
 
 	@Override
@@ -51,7 +51,7 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 		BlockState state = world.getBlockState(target);
 		Block block = state.getBlock();
 		if (block == Blocks.LEVER || block instanceof AbstractButtonBlock) {
-			reader.setBoolean("value", state.get(POWERED));
+			reader.setBoolean("value", state.getValue(POWERED));
 			return CardState.OK;
 		}
 		return CardState.NO_TARGET;
@@ -97,28 +97,28 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 		BlockState state = world.getBlockState(pos);
 		Block block = state.getBlock();
 		if (block == Blocks.LEVER) {
-			state = state.func_235896_a_(POWERED);
-			world.setBlockState(pos, state, 3);
-			world.notifyNeighborsOfStateChange(pos, block);
-			world.notifyNeighborsOfStateChange(pos.offset(getFacing(state).getOpposite()), block);
+			state = state.cycle(POWERED);
+			world.setBlock(pos, state, 3);
+			world.updateNeighborsAt(pos, block);
+			world.updateNeighborsAt(pos.relative(getFacing(state).getOpposite()), block);
 		}
 		if (block instanceof AbstractButtonBlock) {
-			world.setBlockState(pos, state.with(POWERED, Boolean.valueOf(true)), 3);
-			world.notifyNeighborsOfStateChange(pos, block);
-			world.notifyNeighborsOfStateChange(pos.offset(getFacing(state).getOpposite()), block);
-			world.getPendingBlockTicks().scheduleTick(pos, block, block instanceof WoodButtonBlock ? 30 : 20);
+			world.setBlock(pos, state.setValue(POWERED, Boolean.valueOf(true)), 3);
+			world.updateNeighborsAt(pos, block);
+			world.updateNeighborsAt(pos.relative(getFacing(state).getOpposite()), block);
+			world.getBlockTicks().scheduleTick(pos, block, block instanceof WoodButtonBlock ? 30 : 20);
 		}
 		return false;
 	}
 
 	private static Direction getFacing(BlockState state) {
-		switch ((AttachFace) state.get(FACE)) {
+		switch ((AttachFace) state.getValue(FACE)) {
 		case CEILING:
 			return Direction.DOWN;
 		case FLOOR:
 			return Direction.UP;
 		default:
-			return state.get(HORIZONTAL_FACING);
+			return state.getValue(HORIZONTAL_FACING);
 		}
 	}
 
@@ -132,21 +132,21 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 		float textureX = 0;
 		float textureY = 0;
 		if (reader.getBoolean("value"))
-			manager.bindTexture(new ResourceLocation(EnergyControl.MODID + ":textures/gui/green.png"));
+			manager.bind(new ResourceLocation(EnergyControl.MODID + ":textures/gui/green.png"));
 		else
-			manager.bindTexture(new ResourceLocation(EnergyControl.MODID + ":textures/gui/grey.png"));
+			manager.bind(new ResourceLocation(EnergyControl.MODID + ":textures/gui/grey.png"));
 
 		RenderSystem.enableDepthTest();
 		RenderSystem.enableAlphaTest();
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferbuilder = tessellator.getBuffer();
+		BufferBuilder bufferbuilder = tessellator.getBuilder();
 		bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-		Matrix4f matrix = matrixStack.getLast().getMatrix();
-		bufferbuilder.pos(matrix, x + 0, y + height, z).tex(textureX + 0, textureY + height).endVertex();
-		bufferbuilder.pos(matrix, x + width, y + height, z).tex(textureX + width, textureY + height).endVertex();
-		bufferbuilder.pos(matrix, x + width, y + 0, z).tex(textureX + width, textureY + 0).endVertex();
-		bufferbuilder.pos(matrix, x + 0, y + 0, z).tex(textureX + 0, textureY + 0).endVertex();
-		tessellator.draw();
+		Matrix4f matrix = matrixStack.last().pose();
+		bufferbuilder.vertex(matrix, x + 0, y + height, z).uv(textureX + 0, textureY + height).endVertex();
+		bufferbuilder.vertex(matrix, x + width, y + height, z).uv(textureX + width, textureY + height).endVertex();
+		bufferbuilder.vertex(matrix, x + width, y + 0, z).uv(textureX + width, textureY + 0).endVertex();
+		bufferbuilder.vertex(matrix, x + 0, y + 0, z).uv(textureX + 0, textureY + 0).endVertex();
+		tessellator.end();
 		RenderSystem.disableAlphaTest();
 		RenderSystem.disableDepthTest();
 	}

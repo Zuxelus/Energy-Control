@@ -14,13 +14,13 @@ import net.minecraft.util.ActionResultType;
 public abstract class ItemKitMain extends Item implements IItemKit {
 
 	public ItemKitMain() {
-		super(new Item.Properties().group(EnergyControl.ITEM_GROUP).maxStackSize(16).setNoRepair());
+		super(new Item.Properties().tab(EnergyControl.ITEM_GROUP).stacksTo(16).setNoRepair());
 	}
 
 	@Override
-	public ActionResultType onItemUse(ItemUseContext context) {
+	public ActionResultType useOn(ItemUseContext context) {
 		// TODO Auto-generated method stub
-		return super.onItemUse(context);
+		return super.useOn(context);
 	}
 
 	@Override
@@ -31,14 +31,14 @@ public abstract class ItemKitMain extends Item implements IItemKit {
 
 		if (stack.isEmpty())
 			return ActionResultType.PASS;
-		ItemStack sensorLocationCard = ((ItemKitMain) stack.getItem()).getSensorCard(stack, player, context.getWorld(), context.getPos(), context.getFace());
+		ItemStack sensorLocationCard = ((ItemKitMain) stack.getItem()).getSensorCard(stack, player, context.getLevel(), context.getClickedPos(), context.getClickedFace());
 		if (sensorLocationCard.isEmpty())
 			return ActionResultType.PASS;
 
 		stack.shrink(1);
-		ItemEntity dropItem = new ItemEntity(context.getWorld(), player.getPosX(), player.getPosY(), player.getPosZ(), sensorLocationCard);
-		dropItem.setPickupDelay(0);
-		context.getWorld().addEntity(dropItem);
+		ItemEntity dropItem = new ItemEntity(context.getLevel(), player.getX(), player.getY(), player.getZ(), sensorLocationCard);
+		dropItem.setPickUpDelay(0);
+		context.getLevel().addFreshEntity(dropItem);
 		return ActionResultType.SUCCESS;
 	}
 }

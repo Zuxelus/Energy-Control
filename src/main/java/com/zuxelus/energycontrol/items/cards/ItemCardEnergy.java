@@ -27,7 +27,7 @@ public class ItemCardEnergy extends ItemCardMain {
 		if (target == null)
 			return CardState.NO_TARGET;
 
-		TileEntity te = world.getTileEntity(target);
+		TileEntity te = world.getBlockEntity(target);
 		if (te == null)
 			return CardState.NO_TARGET;
 
@@ -83,10 +83,10 @@ public class ItemCardEnergy extends ItemCardMain {
 	@OnlyIn(Dist.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(4);
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 1));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelFree"), 2));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelCapacity"), 4));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelPercentage"), 8));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelEnergy"), 1));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelFree"), 2));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelCapacity"), 4));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelPercentage"), 8));
 		return result;
 	}
 

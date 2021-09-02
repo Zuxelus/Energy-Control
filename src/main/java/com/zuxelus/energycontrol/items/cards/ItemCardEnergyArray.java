@@ -38,7 +38,7 @@ public class ItemCardEnergyArray extends ItemCardMain {
 			int dy = target.getY() - pos.getY();
 			int dz = target.getZ() - pos.getZ();
 			if (Math.abs(dx) <= range && Math.abs(dy) <= range && Math.abs(dz) <= range) {
-				TileEntity te = world.getTileEntity(target);
+				TileEntity te = world.getBlockEntity(target);
 				if (te != null) {
 					CompoundNBT tag = CrossModLoader.getEnergyData(te);
 					if (tag != null) {
@@ -137,12 +137,12 @@ public class ItemCardEnergyArray extends ItemCardMain {
 	@OnlyIn(Dist.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(6);
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEachCard"), 1));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 4));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelFree"), 8));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelStorage"), 16));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelPercentage"), 32));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelTotal"), 2));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelEachCard"), 1));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelEnergy"), 4));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelFree"), 8));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelStorage"), 16));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelPercentage"), 32));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelTotal"), 2));
 		return result;
 	}
 

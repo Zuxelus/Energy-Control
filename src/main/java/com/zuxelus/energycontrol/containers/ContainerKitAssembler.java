@@ -27,7 +27,7 @@ public class ContainerKitAssembler extends ContainerBase<TileEntityKitAssembler>
 	}
 
 	public ContainerKitAssembler(int windowId, PlayerInventory inventory, TileEntityKitAssembler te) {
-		super(te, ModContainerTypes.kit_assembler.get(), windowId, ModItems.kit_assembler.get(), IWorldPosCallable.of(te.getWorld(), te.getPos()));
+		super(te, ModContainerTypes.kit_assembler.get(), windowId, ModItems.kit_assembler.get(), IWorldPosCallable.create(te.getLevel(), te.getBlockPos()));
 		// info card
 		addSlot(new SlotCard(te, 0, 8, 42));
 		
@@ -40,20 +40,20 @@ public class ContainerKitAssembler extends ContainerBase<TileEntityKitAssembler>
 	}
 
 	@Override
-	public void addListener(IContainerListener listener) {
-		super.addListener(listener);
+	public void addSlotListener(IContainerListener listener) {
+		super.addSlotListener(listener);
 		listeners.add(listener);
 	}
 
 	@Override
-	public void removeListener(IContainerListener listener) {
-		super.removeListener(listener);
+	public void removeSlotListener(IContainerListener listener) {
+		super.removeSlotListener(listener);
 		listeners.remove(listener);
 	}
 
 	@Override
-	public void detectAndSendChanges() {
-		super.detectAndSendChanges();
+	public void broadcastChanges() {
+		super.broadcastChanges();
 		double energy = te.getEnergy();
 		double production = te.getProduction();
 		for (int i = 0; i < listeners.size(); i++)
@@ -62,7 +62,7 @@ public class ContainerKitAssembler extends ContainerBase<TileEntityKitAssembler>
 				tag.putInt("type", 1);
 				tag.putDouble("energy", energy);
 				tag.putDouble("production", production);
-				NetworkHelper.updateClientTileEntity(listeners.get(i), te.getPos(), tag);
+				NetworkHelper.updateClientTileEntity(listeners.get(i), te.getBlockPos(), tag);
 			}
 		lastEnergy = energy;
 		lastProduction = production;

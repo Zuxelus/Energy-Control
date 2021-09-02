@@ -62,12 +62,12 @@ public class TileEntityInfoPanelRenderer extends TileEntityRenderer<TileEntityIn
 
 	public static int[] getBlockLight(TileEntityFacing te) {
 		int[] light = new int[6];
-		light[sides[te.getFacing().getIndex()][0]] = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().offset(Direction.DOWN));
-		light[sides[te.getFacing().getIndex()][1]] = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().offset(Direction.UP));
-		light[sides[te.getFacing().getIndex()][2]] = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().offset(Direction.WEST));
-		light[sides[te.getFacing().getIndex()][3]] = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().offset(Direction.EAST));
-		light[sides[te.getFacing().getIndex()][4]] = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().offset(Direction.NORTH));
-		light[sides[te.getFacing().getIndex()][5]] = WorldRenderer.getCombinedLight(te.getWorld(), te.getPos().offset(Direction.SOUTH));
+		light[sides[te.getFacing().get3DDataValue()][0]] = WorldRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.DOWN));
+		light[sides[te.getFacing().get3DDataValue()][1]] = WorldRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.UP));
+		light[sides[te.getFacing().get3DDataValue()][2]] = WorldRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.WEST));
+		light[sides[te.getFacing().get3DDataValue()][3]] = WorldRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.EAST));
+		light[sides[te.getFacing().get3DDataValue()][4]] = WorldRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.NORTH));
+		light[sides[te.getFacing().get3DDataValue()][5]] = WorldRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.SOUTH));
 		return light;
 	}
 
@@ -77,29 +77,29 @@ public class TileEntityInfoPanelRenderer extends TileEntityRenderer<TileEntityIn
 
 	@Override
 	public void render(TileEntityInfoPanel te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
-		matrixStack.push();
+		matrixStack.pushPose();
 		int[] light = getBlockLight(te);
 		switch (te.getFacing()) {
 		case UP:
 			break;
 		case NORTH:
-			matrixStack.rotate(Vector3f.XP.rotationDegrees(-90));
+			matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
 			matrixStack.translate(0.0F, -1.0F, 0.0F);
 			break;
 		case SOUTH:
-			matrixStack.rotate(Vector3f.XP.rotationDegrees(90));
+			matrixStack.mulPose(Vector3f.XP.rotationDegrees(90));
 			matrixStack.translate(0.0F, 0.0F, -1.0F);
 			break;
 		case DOWN:
-			matrixStack.rotate(Vector3f.XP.rotationDegrees(180));
+			matrixStack.mulPose(Vector3f.XP.rotationDegrees(180));
 			matrixStack.translate(0.0F, -1.0F, -1.0F);
 			break;
 		case WEST:
-			matrixStack.rotate(Vector3f.ZP.rotationDegrees(90));
+			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(90));
 			matrixStack.translate(0.0F, -1.0F, 0.0F);
 			break;
 		case EAST:
-			matrixStack.rotate(Vector3f.ZP.rotationDegrees(-90));
+			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-90));
 			matrixStack.translate(-1.0F, 0.0F, 0.0F);
 			break;
 		}
@@ -112,21 +112,21 @@ public class TileEntityInfoPanelRenderer extends TileEntityRenderer<TileEntityIn
 		}
 		IVertexBuilder vertexBuilder;
 		if (te.getPowered())
-			vertexBuilder = buffer.getBuffer(RenderType.getEntitySolid(TEXTUREON[color]));
+			vertexBuilder = buffer.getBuffer(RenderType.entitySolid(TEXTUREON[color]));
 		else
-			vertexBuilder = buffer.getBuffer(RenderType.getEntitySolid(TEXTUREOFF[color]));
+			vertexBuilder = buffer.getBuffer(RenderType.entitySolid(TEXTUREOFF[color]));
 		model[te.findTexture()].render(matrixStack, vertexBuilder, light, combinedOverlay);
 		if (te.getPowered()) {
 			List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
 			if (joinedData != null)
 				drawText(te, joinedData, matrixStack, buffer, combinedLight);
 		}
-		matrixStack.pop();
+		matrixStack.popPose();
 	}
 
 	private void drawText(TileEntityInfoPanel panel, List<PanelString> joinedData, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight) {
 		Screen screen = panel.getScreen();
-		BlockPos pos = panel.getPos();
+		BlockPos pos = panel.getBlockPos();
 		float displayWidth = 1 - 2F / 16;
 		float displayHeight = 1 - 2F / 16;
 		float dx = 0; float dy = 0; float dz = 0;
@@ -194,34 +194,34 @@ public class TileEntityInfoPanelRenderer extends TileEntityRenderer<TileEntityIn
 		}
 
 		matrixStack.translate(0.5F - dy / 2, 1.01F - dx / 2 , 0.5F - dz / 2);
-		matrixStack.rotate(Vector3f.XP.rotationDegrees(-90));
+		matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
 		switch(panel.getRotation())
 		{
 		case UP:
 			break;
 		case NORTH:
-			matrixStack.rotate(Vector3f.ZP.rotationDegrees(180));
+			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(180));
 			break;
 		case SOUTH:
 			break;
 		case DOWN:
 			break;
 		case WEST:
-			matrixStack.rotate(Vector3f.ZP.rotationDegrees(-90));
+			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-90));
 			break;
 		case EAST:
-			matrixStack.rotate(Vector3f.ZP.rotationDegrees(90));
+			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(90));
 			break;
 		}
 
 		if (panel.isTouchCard()) {
-			matrixStack.rotate(Vector3f.YP.rotationDegrees(180));
-			panel.renderImage(renderDispatcher.textureManager, displayWidth, displayHeight, matrixStack);
+			matrixStack.mulPose(Vector3f.YP.rotationDegrees(180));
+			panel.renderImage(renderer.textureManager, displayWidth, displayHeight, matrixStack);
 		} else {
 			if (panel.hasBars()) {
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(180));
-				panel.renderImage(renderDispatcher.textureManager, displayWidth, displayHeight, matrixStack);
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(180));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(180));
+				panel.renderImage(renderer.textureManager, displayWidth, displayHeight, matrixStack);
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(180));
 			}
 			matrixStack.translate(0, 0, 0.0002F);
 			renderText(panel, joinedData, displayWidth, displayHeight, matrixStack, buffer, combinedLight);
@@ -229,15 +229,15 @@ public class TileEntityInfoPanelRenderer extends TileEntityRenderer<TileEntityIn
 	}
 
 	private void renderText(TileEntityInfoPanel panel, List<PanelString> joinedData, float displayWidth, float displayHeight, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight) {
-		FontRenderer fontRenderer = renderDispatcher.getFontRenderer();
+		FontRenderer fontRenderer = renderer.getFont();
 		int maxWidth = 1;
 		for (PanelString panelString : joinedData) {
 			String currentString = implodeArray(new String[] { panelString.textLeft, panelString.textCenter, panelString.textRight }, " ");
-			maxWidth = Math.max(fontRenderer.getStringWidth(currentString), maxWidth);
+			maxWidth = Math.max(fontRenderer.width(currentString), maxWidth);
 		}
 		maxWidth += 4;
 
-		int lineHeight = fontRenderer.FONT_HEIGHT + 2;
+		int lineHeight = fontRenderer.lineHeight + 2;
 		int requiredHeight = lineHeight * joinedData.size();
 		float scaleX = displayWidth / maxWidth;
 		float scaleY = displayHeight / requiredHeight;
@@ -263,21 +263,21 @@ public class TileEntityInfoPanelRenderer extends TileEntityRenderer<TileEntityIn
 			colorHex = panel.getColorTextHex();
 		for (PanelString panelString : joinedData) {
 			if (panelString.textLeft != null) {
-				fontRenderer.renderString(panelString.textLeft, offsetX - realWidth / 2,
+				fontRenderer.drawInBatch(panelString.textLeft, offsetX - realWidth / 2,
 						offsetY - realHeight / 2 + row * lineHeight,
-						panelString.colorLeft != 0 ? panelString.colorLeft : colorHex, false, matrixStack.getLast().getMatrix(), buffer, false, 0, combinedLight);
+						panelString.colorLeft != 0 ? panelString.colorLeft : colorHex, false, matrixStack.last().pose(), buffer, false, 0, combinedLight);
 			}
 			if (panelString.textCenter != null) {
-				fontRenderer.renderString(panelString.textCenter,
-						-fontRenderer.getStringWidth(panelString.textCenter) / 2,
+				fontRenderer.drawInBatch(panelString.textCenter,
+						-fontRenderer.width(panelString.textCenter) / 2,
 						offsetY - realHeight / 2 + row * lineHeight,
-						panelString.colorCenter != 0 ? panelString.colorCenter : colorHex, false, matrixStack.getLast().getMatrix(), buffer, false, 0, combinedLight);
+						panelString.colorCenter != 0 ? panelString.colorCenter : colorHex, false, matrixStack.last().pose(), buffer, false, 0, combinedLight);
 			}
 			if (panelString.textRight != null) {
-				fontRenderer.renderString(panelString.textRight,
-						realWidth / 2 - fontRenderer.getStringWidth(panelString.textRight),
+				fontRenderer.drawInBatch(panelString.textRight,
+						realWidth / 2 - fontRenderer.width(panelString.textRight),
 						offsetY - realHeight / 2 + row * lineHeight,
-						panelString.colorRight != 0 ? panelString.colorRight : colorHex, false, matrixStack.getLast().getMatrix(), buffer, false, 0, combinedLight);
+						panelString.colorRight != 0 ? panelString.colorRight : colorHex, false, matrixStack.last().pose(), buffer, false, 0, combinedLight);
 			}
 			row++;
 		}

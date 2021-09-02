@@ -20,22 +20,22 @@ public class ContainerInfoPanel extends ContainerBase<TileEntityInfoPanel> {
 	}
 
 	public ContainerInfoPanel(int windowId, PlayerInventory inventory, TileEntityInfoPanel panel) {
-		super(panel, ModContainerTypes.info_panel.get(), windowId, ModItems.info_panel.get(), IWorldPosCallable.of(panel.getWorld(), panel.getPos()));
+		super(panel, ModContainerTypes.info_panel.get(), windowId, ModItems.info_panel.get(), IWorldPosCallable.create(panel.getLevel(), panel.getBlockPos()));
 		addSlot(new SlotCard(panel, 0, 8, 24 + 18) {
 			@SuppressWarnings("resource")
 			@Override
-			public void onSlotChanged() {
-				if (panel.getWorld().isRemote)
-					ContainerInfoPanel.this.detectAndSendChanges();
+			public void setChanged() {
+				if (panel.getLevel().isClientSide)
+					ContainerInfoPanel.this.broadcastChanges();
 			};
 		});
 		addSlot(new SlotRange(panel, 1, 8, 24 + 18 * 2));
 		addSlot(new SlotColor(panel, 2, 8, 24 + 18 * 3) {
 			@SuppressWarnings("resource")
 			@Override
-			public void onSlotChanged() {
-				if (panel.getWorld().isRemote)
-					ContainerInfoPanel.this.detectAndSendChanges();
+			public void setChanged() {
+				if (panel.getLevel().isClientSide)
+					ContainerInfoPanel.this.broadcastChanges();
 			};
 		});
 		addSlot(new SlotTouch(panel, 3, 8, 24 + 18 * 4));

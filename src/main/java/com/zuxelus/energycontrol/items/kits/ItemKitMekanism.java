@@ -17,7 +17,7 @@ public class ItemKitMekanism extends ItemKitMain {
 
 	@Override
 	public ItemStack getSensorCard(ItemStack stack, PlayerEntity player, World world, BlockPos pos, Direction side) {
-		TileEntity te = world.getTileEntity(pos);
+		TileEntity te = world.getBlockEntity(pos);
 		CompoundNBT tag = CrossModLoader.getCrossMod(ModIDs.MEKANISM).getCardData(te);
 		if (tag == null)
 			tag = CrossModLoader.getCrossMod(ModIDs.MEKANISM_GENERATORS).getCardData(te);

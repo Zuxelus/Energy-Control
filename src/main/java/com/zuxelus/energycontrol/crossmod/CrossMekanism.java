@@ -45,7 +45,7 @@ public class CrossMekanism extends CrossModBase {
 		if (te instanceof TileEntityCombiner)
 			return setStorage(((TileEntityCombiner) te).getEnergyContainer());
 		if (te instanceof TileEntityAdvancedBoundingBlock) {
-			TileEntity tile = te.getWorld().getTileEntity(((TileEntityAdvancedBoundingBlock)te).getMainPos());
+			TileEntity tile = te.getLevel().getBlockEntity(((TileEntityAdvancedBoundingBlock)te).getMainPos());
 			if (tile instanceof TileEntityDigitalMiner) {
 				CompoundNBT tag = setStorage(((TileEntityDigitalMiner) tile).getEnergyContainer());
 				tag.putInt("type", 12);
@@ -225,7 +225,7 @@ public class CrossMekanism extends CrossModBase {
 			return tag;
 		}
 		if (te instanceof TileEntityAdvancedBoundingBlock) {
-			TileEntity tile = te.getWorld().getTileEntity(((TileEntityAdvancedBoundingBlock)te).getMainPos());
+			TileEntity tile = te.getLevel().getBlockEntity(((TileEntityAdvancedBoundingBlock)te).getMainPos());
 			if (tile instanceof TileEntityDigitalMiner) {
 				CompoundNBT tag = setStorage(((TileEntityDigitalMiner) tile).getEnergyContainer());
 				tag.putBoolean("active", ((TileEntityDigitalMiner) tile).getActive());
@@ -377,14 +377,14 @@ public class CrossMekanism extends CrossModBase {
 		if (tank.isEmpty())
 			tag.putString(name, "N/A");
 		else
-			tag.putString(name, String.format("%s: %s mB", I18n.format(tank.getType().getTranslationKey()), tank.getStored()));
+			tag.putString(name, String.format("%s: %s mB", I18n.get(tank.getType().getTranslationKey()), tank.getStored()));
 	}
 
 	public static void addTank(String name, CompoundNBT tag, IExtendedFluidTank tank) {
 		if (tank.isEmpty())
 			tag.putString(name, "N/A");
 		else
-			tag.putString(name, String.format("%s: %s mB", I18n.format(tank.getFluid().getTranslationKey()), tank.getFluidAmount()));
+			tag.putString(name, String.format("%s: %s mB", I18n.get(tank.getFluid().getTranslationKey()), tank.getFluidAmount()));
 	}
 
 	public static void addTank(String name, CompoundNBT tag, MergedChemicalTank tank) {

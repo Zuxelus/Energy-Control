@@ -12,13 +12,13 @@ import net.minecraft.world.IWorldReader;
 public abstract class FacingBlockSmall extends FacingBlock {
 
 	@Override
-	public boolean isValidPosition(BlockState state, IWorldReader world, BlockPos pos) {
-		return canPlaceAt(world, pos, state.get(FACING).getOpposite());
+	public boolean canSurvive(BlockState state, IWorldReader world, BlockPos pos) {
+		return canPlaceAt(world, pos, state.getValue(FACING).getOpposite());
 	}
 
 	public static boolean canPlaceAt(IWorldReader world, BlockPos pos, Direction direction) {
-		BlockPos blockPos = pos.offset(direction);
-		return world.getBlockState(blockPos).isSolidSide(world, blockPos, direction.getOpposite());
+		BlockPos blockPos = pos.relative(direction);
+		return world.getBlockState(blockPos).isFaceSturdy(world, blockPos, direction.getOpposite());
 	}
 
 	@Override
@@ -26,12 +26,12 @@ public abstract class FacingBlockSmall extends FacingBlock {
 		Direction[] directions = ctx.getNearestLookingDirections();
 
 		for (Direction direction : directions) {
-			BlockState state = getDefaultState().with(FACING, direction.getOpposite());
-			if (state.isValidPosition(ctx.getWorld(), ctx.getPos())) {
+			BlockState state = defaultBlockState().setValue(FACING, direction.getOpposite());
+			if (state.canSurvive(ctx.getLevel(), ctx.getClickedPos())) {
 				PlayerEntity placer = ctx.getPlayer();
-				rotation = placer.getHorizontalFacing().getOpposite();
-				if (placer.rotationPitch <= -65)
-					rotation = placer.getHorizontalFacing();
+				rotation = placer.getDirection().getOpposite();
+				if (placer.xRot <= -65)
+					rotation = placer.getDirection();
 				return state;
 			}
 		}
@@ -40,14 +40,14 @@ public abstract class FacingBlockSmall extends FacingBlock {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos currentPos, BlockPos facingPos) {
-		return state.get(FACING).getOpposite() == facing && !state.isValidPosition(world, currentPos)
-				? Blocks.AIR.getDefaultState()
-				: super.updatePostPlacement(state, facing, facingState, world, currentPos, facingPos);
+	public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos currentPos, BlockPos facingPos) {
+		return state.getValue(FACING).getOpposite() == facing && !state.canSurvive(world, currentPos)
+				? Blocks.AIR.defaultBlockState()
+				: super.updateShape(state, facing, facingState, world, currentPos, facingPos);
 	}
 
 	@Override
-	public boolean canProvidePower(BlockState state) {
+	public boolean isSignalSource(BlockState state) {
 		return true;
 	}
 }

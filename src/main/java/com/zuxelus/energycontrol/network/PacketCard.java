@@ -38,15 +38,15 @@ public class PacketCard {
 	public static void encode(PacketCard pkt, PacketBuffer buf) {
 		buf.writeBlockPos(pkt.pos);
 		buf.writeInt(pkt.slot);
-		buf.writeString(pkt.className);
-		buf.writeCompoundTag(pkt.tag);
+		buf.writeUtf(pkt.className);
+		buf.writeNbt(pkt.tag);
 	}
 
 	public static PacketCard decode(PacketBuffer buf) {
 		BlockPos pos = buf.readBlockPos();
 		int slot = buf.readInt();
-		String className = buf.readString();
-		CompoundNBT tag = buf.readCompoundTag();
+		String className = buf.readUtf();
+		CompoundNBT tag = buf.readNbt();
 
 		return new PacketCard(tag, pos, slot, className);
 	}
@@ -57,20 +57,20 @@ public class PacketCard {
 			TileEntity te = null;
 			if (ctx.getDirection().getReceptionSide() == LogicalSide.SERVER) {
 				ServerPlayerEntity player = ctx.getSender();
-				if (player == null || player.world == null)
+				if (player == null || player.level == null)
 					return;
-				te = player.world.getTileEntity(message.pos);
+				te = player.level.getBlockEntity(message.pos);
 			} else {
 				@SuppressWarnings("resource")
-				ClientWorld world = Minecraft.getInstance().world;
+				ClientWorld world = Minecraft.getInstance().level;
 				if (world == null)
 					return;
-				te = world.getTileEntity(message.pos);
+				te = world.getBlockEntity(message.pos);
 			}
 			if (te == null || !(te instanceof TileEntityInfoPanel))
 				return;
 			TileEntityInfoPanel panel = (TileEntityInfoPanel) te;
-			ItemStack stack = panel.getStackInSlot(message.slot);
+			ItemStack stack = panel.getItem(message.slot);
 			if (stack.isEmpty() || !(stack.getItem() instanceof ItemCardMain))
 				return;
 			if (!stack.getItem().getClass().getName().equals(message.className)) {

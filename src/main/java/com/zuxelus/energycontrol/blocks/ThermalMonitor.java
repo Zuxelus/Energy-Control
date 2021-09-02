@@ -21,12 +21,12 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 public class ThermalMonitor extends FacingBlockSmall {
-	protected static final VoxelShape AABB_DOWN = Block.makeCuboidShape(1.0F, 9.0F, 1.0F, 15.0F, 1.0F, 15.0F);
-	protected static final VoxelShape AABB_UP = Block.makeCuboidShape(1.0F, 0.0F, 1.0F, 15.0F, 7.0F, 15.0F);
-	protected static final VoxelShape AABB_NORTH = Block.makeCuboidShape(1.0F, 1.0F, 9.0F, 15.0F, 15.0F, 1.0F);
-	protected static final VoxelShape AABB_SOUTH = Block.makeCuboidShape(1.0F, 1.0F, 0.0F, 15.0F, 15.0F, 7.0F);
-	protected static final VoxelShape AABB_WEST = Block.makeCuboidShape(9.0F, 1.0F, 1.0F, 1.0F, 15.0F, 15.0F);
-	protected static final VoxelShape AABB_EAST = Block.makeCuboidShape(0.0F, 1.0F, 1.0F, 7.0F, 15.0F, 15.0F);
+	protected static final VoxelShape AABB_DOWN = Block.box(1.0F, 9.0F, 1.0F, 15.0F, 1.0F, 15.0F);
+	protected static final VoxelShape AABB_UP = Block.box(1.0F, 0.0F, 1.0F, 15.0F, 7.0F, 15.0F);
+	protected static final VoxelShape AABB_NORTH = Block.box(1.0F, 1.0F, 9.0F, 15.0F, 15.0F, 1.0F);
+	protected static final VoxelShape AABB_SOUTH = Block.box(1.0F, 1.0F, 0.0F, 15.0F, 15.0F, 7.0F);
+	protected static final VoxelShape AABB_WEST = Block.box(9.0F, 1.0F, 1.0F, 1.0F, 15.0F, 15.0F);
+	protected static final VoxelShape AABB_EAST = Block.box(0.0F, 1.0F, 1.0F, 7.0F, 15.0F, 15.0F);
 
 	@Override
 	protected TileEntityFacing createTileEntity() {
@@ -34,16 +34,16 @@ public class ThermalMonitor extends FacingBlockSmall {
 	}
 
 	@Override
-	public int getWeakPower(BlockState state, IBlockReader blockAccess, BlockPos pos, Direction side) {
-		TileEntity te = blockAccess.getTileEntity(pos);
+	public int getSignal(BlockState state, IBlockReader blockAccess, BlockPos pos, Direction side) {
+		TileEntity te = blockAccess.getBlockEntity(pos);
 		if (!(te instanceof TileEntityThermalMonitor))
 			return 0;
-		return ((TileEntityThermalMonitor) te).getPowered() ? side != state.get(FACING) ? 15 : 0 : 0;
+		return ((TileEntityThermalMonitor) te).getPowered() ? side != state.getValue(FACING) ? 15 : 0 : 0;
 	}
 
 	@Override
 	public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-		switch (state.get(FACING)) {
+		switch (state.getValue(FACING)) {
 		case EAST:
 			return AABB_EAST;
 		case WEST:
@@ -61,9 +61,9 @@ public class ThermalMonitor extends FacingBlockSmall {
 	}
 
 	@Override
-	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-		if (world.isRemote) {
-			TileEntity te = world.getTileEntity(pos);
+	public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+		if (world.isClientSide) {
+			TileEntity te = world.getBlockEntity(pos);
 			if (te instanceof TileEntityThermalMonitor)
 				ScreenHandler.openThermalMonitorScreen((TileEntityThermalMonitor) te);
 		}
@@ -71,7 +71,7 @@ public class ThermalMonitor extends FacingBlockSmall {
 	}
 
 	@Override
-	public BlockRenderType getRenderType(BlockState state) {
+	public BlockRenderType getRenderShape(BlockState state) {
 		return BlockRenderType.INVISIBLE;
 	}
 }

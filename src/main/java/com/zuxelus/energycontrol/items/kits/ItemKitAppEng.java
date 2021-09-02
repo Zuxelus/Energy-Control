@@ -19,7 +19,7 @@ public class ItemKitAppEng extends ItemKitMain {
 
 	@Override
 	public ItemStack getSensorCard(ItemStack stack, PlayerEntity player, World world, BlockPos pos, Direction side) {
-		TileEntity te = world.getTileEntity(pos);
+		TileEntity te = world.getBlockEntity(pos);
 		/*if (te instanceof CableBusTileEntity) {
 			CableBusContainer cb = ((CableBusTileEntity) te).getCableBus();
 			if (cb != null && cb.getPart(AEPartLocation.fromFacing(side)) instanceof StorageMonitorPart) {

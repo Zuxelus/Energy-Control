@@ -109,7 +109,7 @@ public class ItemCardAppEngInv extends ItemCardMain implements ITouchAction {
 		ListNBT list = reader.getTagList("Items", Constants.NBT.TAG_COMPOUND);
 		for (int i = 0; i < list.size(); i++) {
 			CompoundNBT stackTag = list.getCompound(i);
-			ItemStack stack = ItemStack.read(stackTag);
+			ItemStack stack = ItemStack.of(stackTag);
 			result.add(new PanelString(String.format("%s %d", StringUtils.getItemName(stack), stack.getCount() - 1)));
 		}
 		return result;
@@ -138,11 +138,11 @@ public class ItemCardAppEngInv extends ItemCardMain implements ITouchAction {
 		}
 		ArrayList<ItemStack> stacks = reader.getItemStackList(true);
 		for (ItemStack stack : stacks)
-			if (stack.isItemEqual(current))
+			if (stack.sameItem(current))
 				return false;
 		ItemStack item = current.copy();
 		item.setCount(1);
-		list.add(item.write(new CompoundNBT()));
+		list.add(item.save(new CompoundNBT()));
 		reader.setTag("Items", list);
 		return true;
 	}

@@ -18,7 +18,7 @@ public class ContainerRangeTrigger extends ContainerBase<TileEntityRangeTrigger>
 	}
 
 	public ContainerRangeTrigger(int windowId, PlayerInventory inventory, TileEntityRangeTrigger te) {
-		super(te, ModContainerTypes.range_trigger.get(), windowId, ModItems.range_trigger.get(), IWorldPosCallable.of(te.getWorld(), te.getPos()));
+		super(te, ModContainerTypes.range_trigger.get(), windowId, ModItems.range_trigger.get(), IWorldPosCallable.create(te.getLevel(), te.getBlockPos()));
 
 		addSlot(new SlotCard(te, 0, 8, 21));
 		addSlot(new SlotRange(te, 1, 8, 39));

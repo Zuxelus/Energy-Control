@@ -41,6 +41,6 @@ public class GuiHowlerAlarm extends GuiBase {
 	@Override
 	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
 		drawTitle(matrixStack);
-		font.func_243248_b(matrixStack, new TranslationTextComponent("msg.ec.HowlerAlarmSound"), 12, 53, 0x404040);
+		font.draw(matrixStack, new TranslationTextComponent("msg.ec.HowlerAlarmSound"), 12, 53, 0x404040);
 	}
 }

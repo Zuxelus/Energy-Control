@@ -22,12 +22,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 public class TimerBlock extends FacingBlockSmall {
-	protected static final VoxelShape AABB_DOWN = Block.makeCuboidShape(1.0F, 9.0F, 1.0F, 15.0F, 1.0F, 15.0F);
-	protected static final VoxelShape AABB_UP = Block.makeCuboidShape(1.0F, 0.0F, 1.0F, 15.0F, 7.0F, 15.0F);
-	protected static final VoxelShape AABB_NORTH = Block.makeCuboidShape(1.0F, 1.0F, 9.0F, 15.0F, 15.0F, 1.0F);
-	protected static final VoxelShape AABB_SOUTH = Block.makeCuboidShape(1.0F, 1.0F, 0.0F, 15.0F, 15.0F, 7.0F);
-	protected static final VoxelShape AABB_WEST = Block.makeCuboidShape(9.0F, 1.0F, 1.0F, 1.0F, 15.0F, 15.0F);
-	protected static final VoxelShape AABB_EAST = Block.makeCuboidShape(0.0F, 1.0F, 1.0F, 7.0F, 15.0F, 15.0F);
+	protected static final VoxelShape AABB_DOWN = Block.box(1.0F, 9.0F, 1.0F, 15.0F, 1.0F, 15.0F);
+	protected static final VoxelShape AABB_UP = Block.box(1.0F, 0.0F, 1.0F, 15.0F, 7.0F, 15.0F);
+	protected static final VoxelShape AABB_NORTH = Block.box(1.0F, 1.0F, 9.0F, 15.0F, 15.0F, 1.0F);
+	protected static final VoxelShape AABB_SOUTH = Block.box(1.0F, 1.0F, 0.0F, 15.0F, 15.0F, 7.0F);
+	protected static final VoxelShape AABB_WEST = Block.box(9.0F, 1.0F, 1.0F, 1.0F, 15.0F, 15.0F);
+	protected static final VoxelShape AABB_EAST = Block.box(0.0F, 1.0F, 1.0F, 7.0F, 15.0F, 15.0F);
 
 	@Override
 	protected TileEntityFacing createTileEntity() {
@@ -35,16 +35,16 @@ public class TimerBlock extends FacingBlockSmall {
 	}
 
 	@Override
-	public int getWeakPower(BlockState state, IBlockReader blockAccess, BlockPos pos, Direction side) {
-		TileEntity te = blockAccess.getTileEntity(pos);
+	public int getSignal(BlockState state, IBlockReader blockAccess, BlockPos pos, Direction side) {
+		TileEntity te = blockAccess.getBlockEntity(pos);
 		if (!(te instanceof TileEntityTimer))
 			return 0;
-		return ((TileEntityTimer) te).getPowered() ? side != state.get(FACING) ? 15 : 0 : 0;
+		return ((TileEntityTimer) te).getPowered() ? side != state.getValue(FACING) ? 15 : 0 : 0;
 	}
 
 	@Override
 	public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-		switch (state.get(FACING)) {
+		switch (state.getValue(FACING)) {
 		case EAST:
 			return AABB_EAST;
 		case WEST:
@@ -62,15 +62,15 @@ public class TimerBlock extends FacingBlockSmall {
 	}
 
 	@Override
-	public BlockRenderType getRenderType(BlockState state) {
+	public BlockRenderType getRenderShape(BlockState state) {
 		return BlockRenderType.INVISIBLE;
 	}
 
 	@Override
-	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-		if (world.isRemote)
+	public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+		if (world.isClientSide)
 			return ActionResultType.PASS;
-		TileEntity te = world.getTileEntity(pos);
+		TileEntity te = world.getBlockEntity(pos);
 		if (!(te instanceof TileEntityTimer))
 			return ActionResultType.PASS;
 		NetworkHooks.openGui((ServerPlayerEntity) player, (TileEntityTimer) te, pos);

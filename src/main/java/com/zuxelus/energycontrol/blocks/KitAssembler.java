@@ -23,11 +23,11 @@ public class KitAssembler extends FacingHorizontalActive {
 	}
 
 	@Override
-	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-		TileEntity te = world.getTileEntity(pos);
+	public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+		TileEntity te = world.getBlockEntity(pos);
 		if (!(te instanceof TileEntityKitAssembler))
 			return ActionResultType.PASS;
-		if (!world.isRemote)
+		if (!world.isClientSide)
 				NetworkHooks.openGui((ServerPlayerEntity) player, (TileEntityKitAssembler) te, pos);
 		return ActionResultType.SUCCESS;
 	}

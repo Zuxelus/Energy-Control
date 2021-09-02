@@ -20,13 +20,13 @@ import net.minecraft.world.World;
 public abstract class FacingHorizontal extends HorizontalBlock {
 
 	public FacingHorizontal() {
-		super(Block.Properties.create(Material.IRON).hardnessAndResistance(12.0F));
-		setDefaultState(getDefaultState().with(HORIZONTAL_FACING, Direction.NORTH));
+		super(Block.Properties.of(Material.METAL).strength(12.0F));
+		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
 	}
 
 	public FacingHorizontal(Block.Properties builder) {
 		super(builder);
-		setDefaultState(getDefaultState().with(HORIZONTAL_FACING, Direction.NORTH));
+		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
 	}
 
 	protected abstract TileEntityFacing createTileEntity();
@@ -39,30 +39,30 @@ public abstract class FacingHorizontal extends HorizontalBlock {
 	@Override
 	public TileEntity createTileEntity(BlockState state, IBlockReader world) {
 		TileEntityFacing te = createTileEntity();
-		te.setFacing(state.get(HORIZONTAL_FACING).getIndex());
+		te.setFacing(state.getValue(FACING).get3DDataValue());
 		return te;
 	}
 
 	@Override
-	protected void fillStateContainer(Builder<Block, BlockState> builder) {
-		builder.add(HORIZONTAL_FACING);
+	protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
+		builder.add(FACING);
 	}
 
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		return getDefaultState().with(HORIZONTAL_FACING, context.getPlayer().getHorizontalFacing().getOpposite());
+		return defaultBlockState().setValue(FACING, context.getPlayer().getDirection().getOpposite());
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+	public void onRemove(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
-			TileEntity te = world.getTileEntity(pos);
+			TileEntity te = world.getBlockEntity(pos);
 			if (te instanceof TileEntityInfoPanel) {
-				InventoryHelper.dropInventoryItems(world, pos, (IInventory) te);
-				world.updateComparatorOutputLevel(pos, this);
+				InventoryHelper.dropContents(world, pos, (IInventory) te);
+				world.updateNeighbourForOutputSignal(pos, this);
 			}
-			super.onReplaced(state, world, pos, newState, isMoving);
+			super.onRemove(state, world, pos, newState, isMoving);
 		}
 	}
 }

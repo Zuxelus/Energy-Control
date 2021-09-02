@@ -28,22 +28,22 @@ public class ItemCardRedstone extends ItemCardMain {
 		BlockState state = world.getBlockState(target);
 		Block block = state.getBlock();
 		if (block != Blocks.AIR) {
-			reader.setString("name", block.getTranslationKey());
-			reader.setBoolean("isPowered", world.isBlockPowered(target));
-			reader.setInt("indirect", world.getRedstonePowerFromNeighbors(target));
-			reader.setBoolean("canProvide", state.canProvidePower());
+			reader.setString("name", block.getDescriptionId());
+			reader.setBoolean("isPowered", world.hasNeighborSignal(target));
+			reader.setInt("indirect", world.getBestNeighborSignal(target));
+			reader.setBoolean("canProvide", state.isSignalSource());
 			reader.setString("powered", String.format("D:%d U:%d N:%d S:%d W:%d E:%d",
-					world.getRedstonePower(target.down(), Direction.DOWN), world.getRedstonePower(target.up(), Direction.UP),
-					world.getRedstonePower(target.north(), Direction.NORTH), world.getRedstonePower(target.south(), Direction.SOUTH),
-					world.getRedstonePower(target.west(), Direction.WEST), world.getRedstonePower(target.east(), Direction.EAST)));
+					world.getSignal(target.below(), Direction.DOWN), world.getSignal(target.above(), Direction.UP),
+					world.getSignal(target.north(), Direction.NORTH), world.getSignal(target.south(), Direction.SOUTH),
+					world.getSignal(target.west(), Direction.WEST), world.getSignal(target.east(), Direction.EAST)));
 			reader.setString("week", String.format("D:%d U:%d N:%d S:%d W:%d E:%d",
-					state.getWeakPower(world, target, Direction.UP), state.getWeakPower(world, target, Direction.DOWN),
-					state.getWeakPower(world, target, Direction.SOUTH), state.getWeakPower(world, target, Direction.NORTH),
-					state.getWeakPower(world, target, Direction.EAST), state.getWeakPower(world, target, Direction.WEST)));
+					state.getSignal(world, target, Direction.UP), state.getSignal(world, target, Direction.DOWN),
+					state.getSignal(world, target, Direction.SOUTH), state.getSignal(world, target, Direction.NORTH),
+					state.getSignal(world, target, Direction.EAST), state.getSignal(world, target, Direction.WEST)));
 			reader.setString("strong", String.format("D:%d U:%d N:%d S:%d W:%d E:%d",
-					state.getStrongPower(world, target, Direction.UP), state.getStrongPower(world, target, Direction.DOWN),
-					state.getStrongPower(world, target, Direction.SOUTH), state.getStrongPower(world, target, Direction.NORTH),
-					state.getStrongPower(world, target, Direction.EAST), state.getStrongPower(world, target, Direction.WEST)));
+					state.getDirectSignal(world, target, Direction.UP), state.getDirectSignal(world, target, Direction.DOWN),
+					state.getDirectSignal(world, target, Direction.SOUTH), state.getDirectSignal(world, target, Direction.NORTH),
+					state.getDirectSignal(world, target, Direction.EAST), state.getDirectSignal(world, target, Direction.WEST)));
 			return CardState.OK;
 		}
 		return CardState.NO_TARGET;

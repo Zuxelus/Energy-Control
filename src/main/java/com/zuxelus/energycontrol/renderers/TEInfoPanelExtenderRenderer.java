@@ -38,29 +38,29 @@ public class TEInfoPanelExtenderRenderer extends TileEntityRenderer<TileEntityIn
 
 	@Override
 	public void render(TileEntityInfoPanelExtender te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
-		matrixStack.push();
+		matrixStack.pushPose();
 		int[] light = TileEntityInfoPanelRenderer.getBlockLight(te);
 		switch (te.getFacing()) {
 		case UP:
 			break;
 		case NORTH:
-			matrixStack.rotate(Vector3f.XP.rotationDegrees(-90));
+			matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
 			matrixStack.translate(0.0F, -1.0F, 0.0F);
 			break;
 		case SOUTH:
-			matrixStack.rotate(Vector3f.XP.rotationDegrees(90));
+			matrixStack.mulPose(Vector3f.XP.rotationDegrees(90));
 			matrixStack.translate(0.0F, 0.0F, -1.0F);
 			break;
 		case DOWN:
-			matrixStack.rotate(Vector3f.XP.rotationDegrees(180));
+			matrixStack.mulPose(Vector3f.XP.rotationDegrees(180));
 			matrixStack.translate(0.0F, -1.0F, -1.0F);
 			break;
 		case WEST:
-			matrixStack.rotate(Vector3f.ZP.rotationDegrees(90));
+			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(90));
 			matrixStack.translate(0.0F, -1.0F, 0.0F);
 			break;
 		case EAST:
-			matrixStack.rotate(Vector3f.ZP.rotationDegrees(-90));
+			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-90));
 			matrixStack.translate(-1.0F, 0.0F, 0.0F);
 			break;
 		}
@@ -73,10 +73,10 @@ public class TEInfoPanelExtenderRenderer extends TileEntityRenderer<TileEntityIn
 		}
 		IVertexBuilder vertexBuilder;
 		if (te.getPowered())
-			vertexBuilder = buffer.getBuffer(RenderType.getEntitySolid(TEXTUREON[color]));
+			vertexBuilder = buffer.getBuffer(RenderType.entitySolid(TEXTUREON[color]));
 		else
-			vertexBuilder = buffer.getBuffer(RenderType.getEntitySolid(TEXTUREOFF[color]));
+			vertexBuilder = buffer.getBuffer(RenderType.entitySolid(TEXTUREOFF[color]));
 		model[te.findTexture()].render(matrixStack, vertexBuilder, light, combinedOverlay);
-		matrixStack.pop();
+		matrixStack.popPose();
 	}
 }

@@ -24,8 +24,8 @@ public class ClientProxy {
 	@SuppressWarnings("resource")
 	@SubscribeEvent
 	public static void onFMLClientSetupEvent(final FMLClientSetupEvent event) {
-		SoundHelper.initSound(Minecraft.getInstance().gameDir);
-		((IReloadableResourceManager) Minecraft.getInstance().getResourceManager()).addReloadListener(new SoundHelper.SoundLoader());
+		SoundHelper.initSound(Minecraft.getInstance().gameDirectory);
+		((IReloadableResourceManager) Minecraft.getInstance().getResourceManager()).registerReloadListener(new SoundHelper.SoundLoader());
 		SoundHelper.importSound();
 
 		ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.thermal_monitor.get(), TEThermalMonitorRenderer::new);
@@ -36,13 +36,13 @@ public class ClientProxy {
 		ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.timer.get(), TileEntityTimerRenderer::new);
 
 		DeferredWorkQueue.runLater(() -> {
-			ScreenManager.<ContainerInfoPanel, GuiInfoPanel>registerFactory(ModContainerTypes.info_panel.get(), GuiInfoPanel::new);
-			ScreenManager.<ContainerAdvancedInfoPanel, GuiAdvancedInfoPanel>registerFactory(ModContainerTypes.info_panel_advanced.get(), GuiAdvancedInfoPanel::new);
-			ScreenManager.registerFactory(ModContainerTypes.range_trigger.get(), GuiRangeTrigger::new);
-			ScreenManager.registerFactory(ModContainerTypes.kit_assembler.get(), GuiKitAssembler::new);
-			ScreenManager.registerFactory(ModContainerTypes.timer.get(), GuiTimer::new);
-			ScreenManager.registerFactory(ModContainerTypes.card_holder.get(), GuiCardHolder::new);
-			ScreenManager.registerFactory(ModContainerTypes.portable_panel.get(), GuiPortablePanel::new);
+			ScreenManager.<ContainerInfoPanel, GuiInfoPanel>register(ModContainerTypes.info_panel.get(), GuiInfoPanel::new);
+			ScreenManager.<ContainerAdvancedInfoPanel, GuiAdvancedInfoPanel>register(ModContainerTypes.info_panel_advanced.get(), GuiAdvancedInfoPanel::new);
+			ScreenManager.register(ModContainerTypes.range_trigger.get(), GuiRangeTrigger::new);
+			ScreenManager.register(ModContainerTypes.kit_assembler.get(), GuiKitAssembler::new);
+			ScreenManager.register(ModContainerTypes.timer.get(), GuiTimer::new);
+			ScreenManager.register(ModContainerTypes.card_holder.get(), GuiCardHolder::new);
+			ScreenManager.register(ModContainerTypes.portable_panel.get(), GuiPortablePanel::new);
 		});
 	}
 }

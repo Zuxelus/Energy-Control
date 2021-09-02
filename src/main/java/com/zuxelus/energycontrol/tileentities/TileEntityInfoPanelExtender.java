@@ -43,7 +43,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 
 	@Override
 	public void setFacing(int meta) {
-		Direction newFacing = Direction.byIndex(meta);
+		Direction newFacing = Direction.from3DDataValue(meta);
 		if (facing == newFacing)
 			return;
 		facing = newFacing;
@@ -55,14 +55,14 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 
 	private void updateScreen() {
 		if (partOfScreen && screen == null) {
-			TileEntity core = world.getTileEntity(new BlockPos(coreX, coreY, coreZ));
+			TileEntity core = level.getBlockEntity(new BlockPos(coreX, coreY, coreZ));
 			if (core != null && core instanceof TileEntityInfoPanel) {
 				screen = ((TileEntityInfoPanel) core).getScreen();
 				if (screen != null)
-					screen.init(true, world);
+					screen.init(true, level);
 			}
 		}
-		if (world.isRemote && !partOfScreen && screen != null)
+		if (level.isClientSide && !partOfScreen && screen != null)
 			setScreen(null);
 	}
 
@@ -70,12 +70,12 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	public SUpdateTileEntityPacket getUpdatePacket() {
 		CompoundNBT tag = new CompoundNBT();
 		tag = writeProperties(tag);
-		return new SUpdateTileEntityPacket(getPos(), 0, tag);
+		return new SUpdateTileEntityPacket(getBlockPos(), 0, tag);
 	}
 
 	@Override
 	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-		readProperties(pkt.getNbtCompound());
+		readProperties(pkt.getTag());
 	}
 
 	@Override
@@ -95,16 +95,16 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 			coreY = tag.getInt("coreY");
 			coreZ = tag.getInt("coreZ");
 		}
-		if (world != null) {
+		if (level != null) {
 			updateScreen();
-			if (world.isRemote)
-				world.getChunkProvider().getLightManager().checkBlock(pos);
+			if (level.isClientSide)
+				level.getChunkSource().getLightEngine().checkBlock(worldPosition);
 		}
 	}
 
 	@Override
-	public void read(BlockState state, CompoundNBT tag) {
-		super.read(state, tag);
+	public void load(BlockState state, CompoundNBT tag) {
+		super.load(state, tag);
 		readProperties(tag);
 	}
 
@@ -119,15 +119,15 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	}
 
 	@Override
-	public CompoundNBT write(CompoundNBT tag) {
-		return writeProperties(super.write(tag));
+	public CompoundNBT save(CompoundNBT tag) {
+		return writeProperties(super.save(tag));
 	}
 
 	@Override
-	public void remove() {
-		if (!world.isRemote)
+	public void setRemoved() {
+		if (!level.isClientSide)
 			EnergyControl.INSTANCE.screenManager.unregisterScreenPart(this);
-		super.remove();
+		super.setRemoved();
 	}
 
 	@Override
@@ -135,7 +135,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 		if (init)
 			return;
 		
-		if (!world.isRemote && !partOfScreen)
+		if (!level.isClientSide && !partOfScreen)
 			EnergyControl.INSTANCE.screenManager.registerInfoPanelExtender(this);
 		
 		updateScreen();
@@ -147,11 +147,11 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 		this.screen = screen;
 		if (screen != null) {
 			partOfScreen = true;
-			TileEntityInfoPanel core = screen.getCore(world);
+			TileEntityInfoPanel core = screen.getCore(level);
 			if (core != null) {
-				coreX = core.getPos().getX();
-				coreY = core.getPos().getY();
-				coreZ = core.getPos().getZ();
+				coreX = core.getBlockPos().getX();
+				coreY = core.getBlockPos().getY();
+				coreZ = core.getBlockPos().getZ();
 				return;
 			}
 		}
@@ -169,7 +169,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	public TileEntityInfoPanel getCore() {
 		if (screen == null)
 			return null;
-		return screen.getCore(world);
+		return screen.getCore(level);
 	}
 
 	@Override
@@ -177,14 +177,14 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 
 	@Override
 	public void notifyBlockUpdate() {
-		BlockState iblockstate = world.getBlockState(pos);
-		world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
+		BlockState iblockstate = level.getBlockState(worldPosition);
+		level.sendBlockUpdated(worldPosition, iblockstate, iblockstate, 2);
 	}
 
 	public boolean getColored() {
 		if (screen == null)
 			return false;
-		TileEntityInfoPanel core = screen.getCore(world);
+		TileEntityInfoPanel core = screen.getCore(level);
 		if (core == null)
 			return false;
 		return core.getColored();
@@ -193,7 +193,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	public boolean getPowered() {
 		if (screen == null)
 			return false;
-		TileEntityInfoPanel core = screen.getCore(world);
+		TileEntityInfoPanel core = screen.getCore(level);
 		if (core == null)
 			return false;
 		return core.powered;
@@ -202,7 +202,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	public int getColorBackground() {
 		if (screen == null)
 			return 2;
-		TileEntityInfoPanel core = screen.getCore(world);
+		TileEntityInfoPanel core = screen.getCore(level);
 		if (core == null)
 			return 2;
 		return core.getColorBackground();
@@ -210,14 +210,14 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public double getMaxRenderDistanceSquared() {
+	public double getViewDistance() {
 		return 65536.0D;
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox() {
-		return new AxisAlignedBB(pos.add(0, 0, 0), pos.add(1, 1, 1));
+		return new AxisAlignedBB(worldPosition.offset(0, 0, 0), worldPosition.offset(1, 1, 1));
 	}
 
 	/*@Override // TODO
@@ -229,7 +229,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	public int findTexture() {
 		Screen scr = getScreen();
 		if (scr != null) {
-			BlockPos pos = getPos();
+			BlockPos pos = getBlockPos();
 			switch (getFacing()) {
 			case SOUTH:
 				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 4 * boolToInt(pos.getY() == scr.minY) + 8 * boolToInt(pos.getY() == scr.maxY);

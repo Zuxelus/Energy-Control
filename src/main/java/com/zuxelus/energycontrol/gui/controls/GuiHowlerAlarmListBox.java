@@ -92,10 +92,10 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 		}
 
 		Minecraft minecraft = Minecraft.getInstance();
-		FontRenderer fontRenderer = minecraft.fontRenderer;
+		FontRenderer fontRenderer = minecraft.font;
 		String currentItem = alarm.getSoundName();
 		if (lineHeight == 0) {
-			lineHeight = fontRenderer.FONT_HEIGHT + 2;
+			lineHeight = fontRenderer.lineHeight + 2;
 			if (scrollTop == 0) {
 				int rowsPerHeight = height / lineHeight;
 				int currentIndex = items.indexOf(currentItem);
@@ -112,15 +112,15 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 
 		int rowTop = BASIC_Y_OFFSET;
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
-		MainWindow scaler = minecraft.getMainWindow();
-		GL11.glScissor((int) (x * scaler.getGuiScaleFactor()), (int) (scaler.getFramebufferHeight() - (y + height) * scaler.getGuiScaleFactor()), (int) ((width - SCROLL_WIDTH) * scaler.getGuiScaleFactor()), (int) (height * scaler.getGuiScaleFactor()));
+		MainWindow scaler = minecraft.getWindow();
+		GL11.glScissor((int) (x * scaler.getGuiScale()), (int) (scaler.getHeight() - (y + height) * scaler.getGuiScale()), (int) ((width - SCROLL_WIDTH) * scaler.getGuiScale()), (int) (height * scaler.getGuiScale()));
 
 		for (String row : items) {
 			if(row.equals(currentItem)) {
 				fill(matrixStack, x, y + rowTop - scrollTop - 1, x + width - SCROLL_WIDTH, y + rowTop - scrollTop + lineHeight - 1, selectedColor);
-				fontRenderer.drawString(matrixStack, row, x + BASIC_X_OFFSET, y + rowTop - scrollTop, selectedFontColor);
+				fontRenderer.draw(matrixStack, row, x + BASIC_X_OFFSET, y + rowTop - scrollTop, selectedFontColor);
 			} else
-				fontRenderer.drawString(matrixStack, row, x + BASIC_X_OFFSET, y + rowTop - scrollTop, fontColor);
+				fontRenderer.draw(matrixStack, row, x + BASIC_X_OFFSET, y + rowTop - scrollTop, fontColor);
 			
 			rowTop += lineHeight;
 		}
@@ -130,18 +130,18 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 		// Slider
 		int sliderX = x + width - SCROLL_WIDTH + 1;
 		sliderY = y + SCROLL_BUTTON_HEIGHT + ((height - 2 * SCROLL_BUTTON_HEIGHT - sliderHeight) * scrollTop) / (lineHeight * items.size() + BASIC_Y_OFFSET - height);
-		minecraft.getTextureManager().bindTexture(TEXTURE);
+		minecraft.getTextureManager().bind(TEXTURE);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		blit(matrixStack, sliderX, sliderY, 131, 16, SCROLL_WIDTH - 1, 1);
 
 		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferbuilder = tessellator.getBuffer();
+		BufferBuilder bufferbuilder = tessellator.getBuilder();
 		bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-		bufferbuilder.pos((sliderX), sliderY + sliderHeight - 1, getBlitOffset()).tex(131 / 256F, (18) / 256F).endVertex();
-		bufferbuilder.pos(sliderX + SCROLL_WIDTH - 1, sliderY + sliderHeight - 1, getBlitOffset()).tex((131 + SCROLL_WIDTH - 1) / 256F, (18) / 256F).endVertex();
-		bufferbuilder.pos(sliderX + SCROLL_WIDTH - 1, sliderY + 1, getBlitOffset()).tex((131 + SCROLL_WIDTH - 1) / 256F, (17) / 256F).endVertex();
-		bufferbuilder.pos((sliderX), sliderY + 1, getBlitOffset()).tex(131 / 256F, (17) / 256F).endVertex();
-		tessellator.draw();
+		bufferbuilder.vertex((sliderX), sliderY + sliderHeight - 1, getBlitOffset()).uv(131 / 256F, (18) / 256F).endVertex();
+		bufferbuilder.vertex(sliderX + SCROLL_WIDTH - 1, sliderY + sliderHeight - 1, getBlitOffset()).uv((131 + SCROLL_WIDTH - 1) / 256F, (18) / 256F).endVertex();
+		bufferbuilder.vertex(sliderX + SCROLL_WIDTH - 1, sliderY + 1, getBlitOffset()).uv((131 + SCROLL_WIDTH - 1) / 256F, (17) / 256F).endVertex();
+		bufferbuilder.vertex((sliderX), sliderY + 1, getBlitOffset()).uv(131 / 256F, (17) / 256F).endVertex();
+		tessellator.end();
 
 		blit(matrixStack, sliderX, sliderY + sliderHeight - 1, 131, 19, SCROLL_WIDTH - 1, 1);
 	}
@@ -155,8 +155,8 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 			itemIndex = items.size() - 1;
 		
 		String newSound = items.get(itemIndex);
-		if (alarm.getWorld().isRemote && !newSound.equals(alarm.getSoundName())) {
-			NetworkHelper.updateSeverTileEntity(alarm.getPos(), 1, newSound);
+		if (alarm.getLevel().isClientSide && !newSound.equals(alarm.getSoundName())) {
+			NetworkHelper.updateSeverTileEntity(alarm.getBlockPos(), 1, newSound);
 			alarm.setSoundName(newSound);
 		}
 	}

@@ -21,7 +21,7 @@ public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel
 		this(windowId, inventory);
 	}
 	public ContainerPortablePanel(int windowId, PlayerInventory inventory) {
-		super(new InventoryPortablePanel(inventory.player.getHeldItemMainhand()), ModContainerTypes.portable_panel.get(), windowId);
+		super(new InventoryPortablePanel(inventory.player.getMainHandItem()), ModContainerTypes.portable_panel.get(), windowId);
 		this.player = inventory.player;
 
 		addSlot(new SlotCard(te, 0, 174, 17));
@@ -31,13 +31,13 @@ public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel
 	}
 
 	@Override
-	public void detectAndSendChanges() {
+	public void broadcastChanges() {
 		processCard();
-		super.detectAndSendChanges();
+		super.broadcastChanges();
 	}
 
 	private void processCard() {
-		ItemStack card = te.getStackInSlot(InventoryPortablePanel.SLOT_CARD);
+		ItemStack card = te.getItem(InventoryPortablePanel.SLOT_CARD);
 		if (card.isEmpty())
 			return;
 
@@ -46,6 +46,6 @@ public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel
 			return;
 
 		ItemCardReader reader = new ItemCardReader(card);
-		((ItemCardMain) item).updateCardNBT(player.world, player.getPosition(), reader, te.getStackInSlot(InventoryPortablePanel.SLOT_UPGRADE_RANGE));
+		((ItemCardMain) item).updateCardNBT(player.level, player.blockPosition(), reader, te.getItem(InventoryPortablePanel.SLOT_UPGRADE_RANGE));
 	}
 }

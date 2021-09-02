@@ -24,9 +24,9 @@ public class PacketTileEntityServer {
 		Context ctx = context.get();
 		ctx.enqueueWork(() -> {
 			ServerPlayerEntity player = ctx.getSender();
-			if (player == null || player.world == null)
+			if (player == null || player.level == null)
 				return;
-			TileEntity te = player.world.getTileEntity(message.pos);
+			TileEntity te = player.level.getBlockEntity(message.pos);
 			if (!(te instanceof ITilePacketHandler))
 				return;
 			((ITilePacketHandler) te).onServerMessageReceived(message.tag);
@@ -36,10 +36,10 @@ public class PacketTileEntityServer {
 
 	public static void encode(PacketTileEntityServer pkt, PacketBuffer buf) {
 		buf.writeBlockPos(pkt.pos);
-		buf.writeCompoundTag(pkt.tag);
+		buf.writeNbt(pkt.tag);
 	}
 
 	public static PacketTileEntityServer decode(PacketBuffer buf) {
-		return new PacketTileEntityServer(buf.readBlockPos(), buf.readCompoundTag());
+		return new PacketTileEntityServer(buf.readBlockPos(), buf.readNbt());
 	}
 }

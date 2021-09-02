@@ -9,7 +9,7 @@ import net.minecraft.item.Item;
 public class ItemLight extends BlockItem {
 
 	public ItemLight(Block block) {
-		super(block, new Item.Properties().group(EnergyControl.ITEM_GROUP));
+		super(block, new Item.Properties().tab(EnergyControl.ITEM_GROUP));
 	}
 /*
 	public ItemLight(Block block) {

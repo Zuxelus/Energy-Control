@@ -55,7 +55,7 @@ public class TileEntityTimer extends TileEntityFacing implements ITickableTileEn
 	public void setTime(int value) {
 		int old = time;
 		time = value;
-		if (!world.isRemote && time != old)
+		if (!level.isClientSide && time != old)
 			notifyBlockUpdate();
 	}
 
@@ -66,7 +66,7 @@ public class TileEntityTimer extends TileEntityFacing implements ITickableTileEn
 	public void setInvertRedstone(boolean value) {
 		boolean old = invertRedstone;
 		invertRedstone = value;
-		if (!world.isRemote && invertRedstone != old)
+		if (!level.isClientSide && invertRedstone != old)
 			notifyBlockUpdate();
 	}
 
@@ -77,7 +77,7 @@ public class TileEntityTimer extends TileEntityFacing implements ITickableTileEn
 	public void setIsWorking(boolean value) {
 		boolean old = isWorking;
 		isWorking = value;
-		if (!world.isRemote && isWorking != old)
+		if (!level.isClientSide && isWorking != old)
 			notifyBlockUpdate();
 	}
 
@@ -88,7 +88,7 @@ public class TileEntityTimer extends TileEntityFacing implements ITickableTileEn
 	public void setIsTicks(boolean value) {
 		boolean old = isTicks;
 		isTicks = value;
-		if (!world.isRemote && isTicks != old)
+		if (!level.isClientSide && isTicks != old)
 			notifyBlockUpdate();
 	}
 
@@ -142,12 +142,12 @@ public class TileEntityTimer extends TileEntityFacing implements ITickableTileEn
 		tag = writeProperties(tag);
 		tag.putBoolean("isTicks", isTicks);
 		tag.putBoolean("poweredBlock", poweredBlock);
-		return new SUpdateTileEntityPacket(getPos(), 0, tag);
+		return new SUpdateTileEntityPacket(getBlockPos(), 0, tag);
 	}
 
 	@Override
 	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-		readProperties(pkt.getNbtCompound());
+		readProperties(pkt.getTag());
 	}
 
 	@Override
@@ -175,8 +175,8 @@ public class TileEntityTimer extends TileEntityFacing implements ITickableTileEn
 	}
 
 	@Override
-	public void read(BlockState state, CompoundNBT tag) {
-		super.read(state, tag);
+	public void load(BlockState state, CompoundNBT tag) {
+		super.load(state, tag);
 		readProperties(tag);
 	}
 
@@ -191,19 +191,19 @@ public class TileEntityTimer extends TileEntityFacing implements ITickableTileEn
 	}
 
 	@Override
-	public CompoundNBT write(CompoundNBT tag) {
-		return writeProperties(super.write(tag));
+	public CompoundNBT save(CompoundNBT tag) {
+		return writeProperties(super.save(tag));
 	}
 
 	@Override
-	public void remove() {
-		world.notifyNeighborsOfStateChange(pos, world.getBlockState(pos).getBlock());
-		super.remove();
+	public void setRemoved() {
+		level.updateNeighborsAt(worldPosition, level.getBlockState(worldPosition).getBlock());
+		super.setRemoved();
 	}
 
 	@Override
 	public void tick() {
-		if (world.isRemote)
+		if (level.isClientSide)
 			return;
 		if (!isWorking)
 			return;
@@ -217,15 +217,15 @@ public class TileEntityTimer extends TileEntityFacing implements ITickableTileEn
 	}
 
 	public void notifyBlockUpdate() {
-		BlockState iblockstate = world.getBlockState(pos);
+		BlockState iblockstate = level.getBlockState(worldPosition);
 		Block block = iblockstate.getBlock();
 		if (block instanceof TimerBlock) {
 			boolean newValue = time > 0 && isWorking ? !invertRedstone : invertRedstone;
 			if (poweredBlock != newValue) {
 				poweredBlock = newValue;
-				world.notifyNeighborsOfStateChange(pos, block);
+				level.updateNeighborsAt(worldPosition, block);
 			}
-			world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
+			level.sendBlockUpdated(worldPosition, iblockstate, iblockstate, 2);
 		}
 	}
 
@@ -236,7 +236,7 @@ public class TileEntityTimer extends TileEntityFacing implements ITickableTileEn
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public double getMaxRenderDistanceSquared() {
+	public double getViewDistance() {
 		return 65536.0D;
 	}
 
@@ -248,6 +248,6 @@ public class TileEntityTimer extends TileEntityFacing implements ITickableTileEn
 
 	@Override
 	public ITextComponent getDisplayName() {
-		return new TranslationTextComponent(ModItems.timer.get().getTranslationKey());
+		return new TranslationTextComponent(ModItems.timer.get().getDescriptionId());
 	}
 }

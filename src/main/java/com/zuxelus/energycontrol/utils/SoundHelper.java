@@ -73,7 +73,7 @@ public class SoundHelper {
 		EnergyControl.INSTANCE.availableAlarms = new ArrayList<>();
 
 		try {
-			List<IResource> list = Minecraft.getInstance().getResourceManager().getAllResources(new ResourceLocation(EnergyControl.MODID, "sounds.json"));
+			List<IResource> list = Minecraft.getInstance().getResourceManager().getResources(new ResourceLocation(EnergyControl.MODID, "sounds.json"));
 
 			for (int i = list.size() - 1; i >= 0; --i) {
 				IResource iresource = list.get(i);
@@ -98,7 +98,7 @@ public class SoundHelper {
 		public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate) {
 			if (resourcePredicate.test(VanillaResourceType.SOUNDS) && resourceManager instanceof SimpleReloadableResourceManager && alarms != null) {
 				FolderPack pack = new FolderPack(alarms);
-				((SimpleReloadableResourceManager) resourceManager).addResourcePack(pack);
+				((SimpleReloadableResourceManager) resourceManager).add(pack);
 			}
 		}
 	}

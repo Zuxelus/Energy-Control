@@ -57,7 +57,7 @@ public class ItemCardLiquidAdvanced extends ItemCardMain {
 		if ((settings & 1) > 0) {
 			String name = reader.getString(String.format("_%dname", i));
 			if (name.isEmpty())
-				name = isServer ? "N/A" : I18n.format("msg.ec.None");
+				name = isServer ? "N/A" : I18n.get("msg.ec.None");
 			result.add(new PanelString("msg.ec.InfoPanelName", name, showLabels));
 		}
 		if ((settings & 2) > 0)
@@ -74,11 +74,11 @@ public class ItemCardLiquidAdvanced extends ItemCardMain {
 	@OnlyIn(Dist.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(5);
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidName"), 1));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidAmount"), 2));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidFree"), 4));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidCapacity"), 8));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidPercentage"), 16));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidName"), 1));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidAmount"), 2));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidFree"), 4));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidCapacity"), 8));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidPercentage"), 16));
 		return result;
 	}
 

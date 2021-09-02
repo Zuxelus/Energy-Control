@@ -20,12 +20,12 @@ public class InventoryCardHolder extends ItemInventory implements INamedContaine
 	}
 
 	@Override
-	public int getSizeInventory() {
+	public int getContainerSize() {
 		return 54;
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int index, ItemStack stack) {
+	public boolean canPlaceItem(int index, ItemStack stack) {
 		return isItemValid(index, stack);
 	}
 
@@ -42,6 +42,6 @@ public class InventoryCardHolder extends ItemInventory implements INamedContaine
 
 	@Override
 	public ITextComponent getDisplayName() {
-		return new TranslationTextComponent(ModItems.card_holder.get().getTranslationKey());
+		return new TranslationTextComponent(ModItems.card_holder.get().getDescriptionId());
 	}
 }

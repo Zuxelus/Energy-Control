@@ -26,109 +26,109 @@ public class TEThermalMonitorRenderer extends TileEntityRenderer<TileEntityTherm
 	@SuppressWarnings("incomplete-switch")
 	@Override
 	public void render(TileEntityThermalMonitor te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
-		matrixStack.push();
+		matrixStack.pushPose();
 		switch (te.getFacing()) {
 		case UP:
 			switch (te.getRotation()) {
 			case NORTH:
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(180.0F));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
 				matrixStack.translate(-1.0F, 0.0F, -1.0F);
 				break;
 			case SOUTH:
 				break;
 			case WEST:
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(-90.0F));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
 				matrixStack.translate(0.0F, 0.0F, -1.0F);
 				break;
 			case EAST:
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(90.0F));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
 				matrixStack.translate(-1.0F, 0.0F, 0.0F);
 				break;
 			}
 			break;
 		case NORTH:
-			matrixStack.rotate(Vector3f.XP.rotationDegrees(-90.0F));
-			matrixStack.rotate(Vector3f.YP.rotationDegrees(180.0F));
+			matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90.0F));
+			matrixStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
 			matrixStack.translate(-1.0F, -1.0F, -1.0F);
 			switch (te.getRotation()) {
 			case UP:
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(180.0F));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
 				matrixStack.translate(-1.0F, 0.0F, -1.0F);
 				break;
 			case DOWN:
 				break;
 			case EAST:
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(-90.0F));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
 				matrixStack.translate(0.0F, 0.0F, -1.0F);
 				break;
 			case WEST:
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(90.0F));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
 				matrixStack.translate(-1.0F, 0.0F, 0.0F);
 				break;
 			}
 			break;
 		case SOUTH:
-			matrixStack.rotate(Vector3f.XP.rotationDegrees(90.0F));
+			matrixStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
 			matrixStack.translate(0.0F, 0.0F, -1.0F);
 			switch (te.getRotation()) {
 			case UP:
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(180.0F));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
 				matrixStack.translate(-1.0F, 0.0F, -1.0F);
 				break;
 			case DOWN:
 				break;
 			case WEST:
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(-90.0F));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
 				matrixStack.translate(0.0F, 0.0F, -1.0F);
 				break;
 			case EAST:
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(90.0F));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
 				matrixStack.translate(-1.0F, 0.0F, 0.0F);
 				break;
 			}
 			break;
 		case DOWN:
-			matrixStack.rotate(Vector3f.XP.rotationDegrees(180.0F));
+			matrixStack.mulPose(Vector3f.XP.rotationDegrees(180.0F));
 			matrixStack.translate(0.0F, -1.0F, -1.0F);
 			break;
 		case WEST:
-			matrixStack.rotate(Vector3f.ZP.rotationDegrees(90.0F));
-			matrixStack.rotate(Vector3f.YP.rotationDegrees(-90.0F));
+			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(90.0F));
+			matrixStack.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
 			matrixStack.translate(0.0F, -1.0F, -1.0F);
 			switch (te.getRotation()) {
 			case UP:
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(180.0F));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
 				matrixStack.translate(-1.0F, 0.0F, -1.0F);
 				break;
 			case DOWN:
 				break;
 			case NORTH:
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(-90.0F));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
 				matrixStack.translate(0.0F, 0.0F, -1.0F);
 				break;
 			case SOUTH:
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(90.0F));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
 				matrixStack.translate(-1.0F, 0.0F, 0.0F);
 				break;
 			}
 			break;
 		case EAST:
-			matrixStack.rotate(Vector3f.ZP.rotationDegrees(-90.0F));
-			matrixStack.rotate(Vector3f.YP.rotationDegrees(90.0F));
+			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-90.0F));
+			matrixStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
 			matrixStack.translate(-1.0F, 0.0F, -1.0F);
 			switch (te.getRotation()) {
 			case UP:
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(180.0F));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
 				matrixStack.translate(-1.0F, 0.0F, -1.0F);
 				break;
 			case DOWN:
 				break;
 			case SOUTH:
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(-90.0F));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
 				matrixStack.translate(0.0F, 0.0F, -1.0F);
 				break;
 			case NORTH:
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(90.0F));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
 				matrixStack.translate(-1.0F, 0.0F, 0.0F);
 				break;
 			}
@@ -138,22 +138,22 @@ public class TEThermalMonitorRenderer extends TileEntityRenderer<TileEntityTherm
 		IVertexBuilder vertexBuilder;
 		switch (te.getStatus()) {
 		case 0:
-			vertexBuilder = buffer.getBuffer(RenderType.getEntitySolid(TEXTURE1));
+			vertexBuilder = buffer.getBuffer(RenderType.entitySolid(TEXTURE1));
 			break;
 		case 1:
-			vertexBuilder = buffer.getBuffer(RenderType.getEntitySolid(TEXTURE2));
+			vertexBuilder = buffer.getBuffer(RenderType.entitySolid(TEXTURE2));
 			break;
 		default:
-			vertexBuilder = buffer.getBuffer(RenderType.getEntitySolid(TEXTURE0));
+			vertexBuilder = buffer.getBuffer(RenderType.entitySolid(TEXTURE0));
 			break;
 		}
 		model.render(matrixStack, vertexBuilder, TileEntityInfoPanelRenderer.getBlockLight(te), combinedOverlay);
 		int value = te.getHeatLevel();
-		matrixStack.rotate(Vector3f.XP.rotationDegrees(90.0F));
+		matrixStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
 		matrixStack.translate(0.5F, 0.45F, -0.4376F);
 		matrixStack.scale(0.015625F, 0.015625F, 0.015625F);
-		FontRenderer fontRenderer = renderDispatcher.getFontRenderer();
-		fontRenderer.renderString(String.valueOf(value), -fontRenderer.getStringWidth(String.valueOf(value)) / 2, -fontRenderer.FONT_HEIGHT, 0x000000, false, matrixStack.getLast().getMatrix(), buffer, false, 0, combinedLight);
-		matrixStack.pop();
+		FontRenderer fontRenderer = renderer.getFont();
+		fontRenderer.drawInBatch(String.valueOf(value), -fontRenderer.width(String.valueOf(value)) / 2, -fontRenderer.lineHeight, 0x000000, false, matrixStack.last().pose(), buffer, false, 0, combinedLight);
+		matrixStack.popPose();
 	}
 }

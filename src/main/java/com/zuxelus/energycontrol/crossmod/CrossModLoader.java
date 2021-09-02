@@ -38,7 +38,7 @@ public class CrossModLoader {
 	}
 
 	public static ItemStack getEnergyCard(World world, BlockPos pos) {
-		TileEntity te = world.getTileEntity(pos);
+		TileEntity te = world.getBlockEntity(pos);
 		if (te == null)
 			return ItemStack.EMPTY;
 		CompoundNBT data = getEnergyData(te);
@@ -68,7 +68,7 @@ public class CrossModLoader {
 	 */
 
 	public static List<FluidInfo> getAllTanks(World world, BlockPos pos) {
-		TileEntity te = world.getTileEntity(pos);
+		TileEntity te = world.getBlockEntity(pos);
 		if (te != null) {
 			Optional<IFluidHandler> fluid = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null).resolve();
 			if (fluid.isPresent()) {

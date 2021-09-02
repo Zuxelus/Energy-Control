@@ -144,12 +144,12 @@ public class ItemCardLiquidArray extends ItemCardMain {
 	@OnlyIn(Dist.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(6);
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidName"), 1));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidFree"), 2));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidCapacity"), 4));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidPercentage"), 8));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEachCard"), 16));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelTotal"), 32));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidName"), 1));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidFree"), 2));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidCapacity"), 4));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidPercentage"), 8));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelEachCard"), 16));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelTotal"), 32));
 		return result;
 	}
 

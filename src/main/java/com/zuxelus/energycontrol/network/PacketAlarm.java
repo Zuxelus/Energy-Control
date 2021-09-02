@@ -22,13 +22,13 @@ public class PacketAlarm {
 
 	public static PacketAlarm decode(PacketBuffer buf) {
 		int maxAlarmRange = buf.readInt();
-		String allowedAlarms = buf.readString();
+		String allowedAlarms = buf.readUtf();
 		return new PacketAlarm(maxAlarmRange, allowedAlarms);
 	}
 
 	public static void encode(PacketAlarm pkt, PacketBuffer buf) {
 		buf.writeInt(pkt.maxAlarmRange);
-		buf.writeString(pkt.allowedAlarms);
+		buf.writeUtf(pkt.allowedAlarms);
 	}
 
 	public static void handle(PacketAlarm message, Supplier<Context> context) {

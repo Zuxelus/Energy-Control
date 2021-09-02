@@ -41,7 +41,7 @@ public class GuiCardText extends GuiBase {
 		textArea = new GuiTextArea(font, guiLeft + 8, guiTop + 5, xSize - 16, ySize - 35, lineCount);
 		textArea.changeFocus(true);
 		children.add(textArea);
-		setFocusedDefault(textArea);
+		setInitialFocus(textArea);
 		String[] data = textArea.getText();
 		for (int i = 0; i < lineCount; i++)
 			data[i] = reader.getString("line_" + i);
@@ -61,7 +61,7 @@ public class GuiCardText extends GuiBase {
 					reader.setString("line_" + i, lines[i]);
 		}
 		reader.updateServer(stack, panel, slot);
-		minecraft.displayGuiScreen(parentGui);
+		minecraft.setScreen(parentGui);
 	}
 
 	@Override

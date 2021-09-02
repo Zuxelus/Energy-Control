@@ -203,7 +203,7 @@ public class ItemCardReader implements ICardReader {
 		ArrayList<ItemStack> result = new ArrayList<ItemStack> ();
 		for (int i = 0; i < list.size(); i++) {
 			CompoundNBT stackTag = list.getCompound(i);
-			ItemStack stack = ItemStack.read(stackTag);
+			ItemStack stack = ItemStack.of(stackTag);
 			if (reset)
 				stack.setCount(1);
 			result.add(stack);
@@ -216,7 +216,7 @@ public class ItemCardReader implements ICardReader {
 		ListNBT values = new ListNBT();
 		for (ItemStack stack : list) {
 			CompoundNBT stackTag = new CompoundNBT();
-			stack.write(stackTag);
+			stack.save(stackTag);
 			values.add(stackTag);
 		}
 		setTag("Items", values);
@@ -246,19 +246,19 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public void copyFrom(CompoundNBT nbt) {
-		for (String name : nbt.keySet()) {
+		for (String name : nbt.getAllKeys()) {
 			INBT tag = nbt.get(name);
 			INBTType<?> type = tag.getType();
 			if (type == StringNBT.TYPE)
-				setString(name, tag.getString());
+				setString(name, tag.getAsString());
 			else if (type == IntNBT.TYPE)
-				setInt(name, ((NumberNBT) tag).getInt());
+				setInt(name, ((NumberNBT) tag).getAsInt());
 			else if (type == DoubleNBT.TYPE)
-				setDouble(name, ((NumberNBT) tag).getDouble());
+				setDouble(name, ((NumberNBT) tag).getAsDouble());
 			else if (type == LongNBT.TYPE)
-				setLong(name, ((NumberNBT) tag).getLong());
+				setLong(name, ((NumberNBT) tag).getAsLong());
 			else if (type == ByteNBT.TYPE)
-				setByte(name, ((NumberNBT) tag).getByte());
+				setByte(name, ((NumberNBT) tag).getAsByte());
 		}
 	}
 
@@ -267,11 +267,11 @@ public class ItemCardReader implements ICardReader {
 		List<PanelString> result = new LinkedList<PanelString>();
 		PanelString line = new PanelString();
 		switch (state) {
-		case OUT_OF_RANGE: line.textCenter = I18n.format("msg.ec.InfoPanelOutOfRange");
+		case OUT_OF_RANGE: line.textCenter = I18n.get("msg.ec.InfoPanelOutOfRange");
 			break;
-		case INVALID_CARD: line.textCenter = I18n.format("msg.ec.InfoPanelInvalidCard");
+		case INVALID_CARD: line.textCenter = I18n.get("msg.ec.InfoPanelInvalidCard");
 			break;
-		case NO_TARGET: line.textCenter = I18n.format("msg.ec.InfoPanelNoTarget");
+		case NO_TARGET: line.textCenter = I18n.get("msg.ec.InfoPanelNoTarget");
 			break;
 		case CUSTOM_ERROR:
 			break;
@@ -337,7 +337,7 @@ public class ItemCardReader implements ICardReader {
 				}
 			}
 		}
-		for (String name : nbt.keySet()) {
+		for (String name : nbt.getAllKeys()) {
 			INBT tag = nbt.get(name);
 			result.add(new PanelString(String.format("%s : %s", name, tag.toString())));
 		}

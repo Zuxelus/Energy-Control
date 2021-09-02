@@ -18,7 +18,7 @@ public abstract class ItemInventory implements IInventory, ISlotItemFilter {
 
 	public ItemInventory(ItemStack parent) {
 		this.parent = parent;
-		inventory = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
+		inventory = NonNullList.<ItemStack>withSize(getContainerSize(), ItemStack.EMPTY);
 		readFromParentNBT();
 	}
 
@@ -32,7 +32,7 @@ public abstract class ItemInventory implements IInventory, ISlotItemFilter {
 		ListNBT list = tag.getList("Items", Constants.NBT.TAG_COMPOUND);
 		for (int i = 0; i < list.size(); i++) {
 			CompoundNBT stackTag = list.getCompound(i);
-			setInventorySlotContents(stackTag.getByte("Slot"), ItemStack.read(stackTag));
+			setItem(stackTag.getByte("Slot"), ItemStack.of(stackTag));
 		}
 	}
 
@@ -44,12 +44,12 @@ public abstract class ItemInventory implements IInventory, ISlotItemFilter {
 		}
 
 		ListNBT list = new ListNBT();
-		for (byte i = 0; i < getSizeInventory(); i++) {
-			ItemStack stack = getStackInSlot(i);
+		for (byte i = 0; i < getContainerSize(); i++) {
+			ItemStack stack = getItem(i);
 			if (!stack.isEmpty()) {
 				CompoundNBT stackTag = new CompoundNBT();
 				stackTag.putByte("Slot", i);
-				stack.write(stackTag);
+				stack.save(stackTag);
 				list.add(stackTag);
 			}
 		}
@@ -65,20 +65,20 @@ public abstract class ItemInventory implements IInventory, ISlotItemFilter {
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int slot) {
-		return slot >= 0 && slot < getSizeInventory() ? inventory.get(slot) : ItemStack.EMPTY;
+	public ItemStack getItem(int slot) {
+		return slot >= 0 && slot < getContainerSize() ? inventory.get(slot) : ItemStack.EMPTY;
 	}
 
 	@Override
-	public ItemStack decrStackSize(int index, int count) {
-		ItemStack itemstack = ItemStackHelper.getAndSplit(inventory, index, count);
+	public ItemStack removeItem(int index, int count) {
+		ItemStack itemstack = ItemStackHelper.removeItem(inventory, index, count);
 		//if (!itemstack.isEmpty()) markDirty();
 		return itemstack;
 	}
 
 	@Override
-	public ItemStack removeStackFromSlot(int slot) {
-		ItemStack stack = getStackInSlot(slot);
+	public ItemStack removeItemNoUpdate(int slot) {
+		ItemStack stack = getItem(slot);
 		if (stack.isEmpty())
 			return ItemStack.EMPTY;
 		inventory.set(slot, ItemStack.EMPTY);
@@ -86,35 +86,35 @@ public abstract class ItemInventory implements IInventory, ISlotItemFilter {
 	}
 
 	@Override
-	public void setInventorySlotContents(int slot, ItemStack stack) {
+	public void setItem(int slot, ItemStack stack) {
 		inventory.set(slot, stack);
-		if (!stack.isEmpty() && stack.getCount() > getInventoryStackLimit())
-			stack.setCount(getInventoryStackLimit());
-		markDirty();
+		if (!stack.isEmpty() && stack.getCount() > getMaxStackSize())
+			stack.setCount(getMaxStackSize());
+		setChanged();
 	}
 
 	@Override
-	public int getInventoryStackLimit() {
+	public int getMaxStackSize() {
 		return 64;
 	}
 
 	@Override
-	public void markDirty() {
+	public void setChanged() {
 		writeToParentNBT();
 	}
 
 	@Override
-	public boolean isUsableByPlayer(PlayerEntity player) {
+	public boolean stillValid(PlayerEntity player) {
 		return true;
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int index, ItemStack stack) {
+	public boolean canPlaceItem(int index, ItemStack stack) {
 		return isItemValid(index, stack);
 	}
 
 	@Override
-	public void clear() {
+	public void clearContent() {
 		inventory.clear();
 	}
 }

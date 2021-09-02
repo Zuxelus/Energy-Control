@@ -38,11 +38,11 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 	public GuiKitAssembler(ContainerKitAssembler container, PlayerInventory inventory, ITextComponent title) {
 		super(container, inventory, title, TEXTURE);
 		this.container = container;
-		ySize = 206;
+		imageHeight = 206;
 	}
 
 	protected void initControls() {
-		ItemStack stack = container.te.getStackInSlot(TileEntityKitAssembler.SLOT_INFO);
+		ItemStack stack = container.te.getItem(TileEntityKitAssembler.SLOT_INFO);
 		if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain) {
 			if (!modified)
 				textboxTitle = addTextFieldWidget(7, 16, 162, 18, true, new ItemCardReader(stack).getTitle());
@@ -63,18 +63,18 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 		renderBackground(matrixStack);
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
 		Slot slot = container.getSlot(TileEntityKitAssembler.SLOT_INFO);
-		if (isPointInRegion(slot.xPos, slot.yPos, 16, 16, mouseX, mouseY) && slot.isEnabled())
+		if (isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY) && slot.isActive())
 			renderInfoToolTip(matrixStack, slot, mouseX, mouseY);
 		else
-			renderHoveredTooltip(matrixStack, mouseX, mouseY);
+			renderTooltip(matrixStack, mouseX, mouseY);
 	}
 
 	private void renderInfoToolTip(MatrixStack matrixStack, Slot slot, int x, int y) {
-		ItemStack stack = slot.getStack();
+		ItemStack stack = slot.getItem();
 		if (stack.isEmpty() || !(stack.getItem() instanceof ItemCardMain))
 			return;
 		net.minecraftforge.fml.client.gui.GuiUtils.preItemToolTip(stack);
-		List<ITextComponent> stackList = stack.getTooltip(minecraft.player, minecraft.gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL);
+		List<ITextComponent> stackList = stack.getTooltipLines(minecraft.player, minecraft.options.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL);
 		List<ITextComponent> list = Lists.<ITextComponent>newArrayList();
 		if (stackList.size() > 0)
 			list.add(stackList.get(0));
@@ -90,31 +90,31 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-		super.drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
+	protected void renderBg(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+		super.renderBg(matrixStack, partialTicks, mouseX, mouseY);
 
 		int energyHeight = container.te.getEnergyFactor();
 		if (energyHeight > 0)
-			blit(matrixStack, guiLeft + 9, guiTop + 62 + (14 - energyHeight), 176, 14 - energyHeight, 14, energyHeight);
+			blit(matrixStack, leftPos + 9, topPos + 62 + (14 - energyHeight), 176, 14 - energyHeight, 14, energyHeight);
 		int productionWidth = container.te.getProductionFactor();
 		if (energyHeight > 0)
-			blit(matrixStack, guiLeft + 86, guiTop + 60, 176, 15, productionWidth, 17);
+			blit(matrixStack, leftPos + 86, topPos + 60, 176, 15, productionWidth, 17);
 		if (textboxTitle != null)
 			textboxTitle.renderButton(matrixStack, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
-		drawCenteredText(matrixStack, title, xSize, 6);
+	protected void renderLabels(MatrixStack matrixStack, int mouseX, int mouseY) {
+		drawCenteredText(matrixStack, title, imageWidth, 6);
 	}
 
 	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int mouseButton) {
 		if (textboxTitle != null) {
-			textboxTitle.mouseReleased(mouseX - guiLeft, mouseY - guiTop, mouseButton);
+			textboxTitle.mouseReleased(mouseX - leftPos, mouseY - topPos, mouseButton);
 			if (textboxTitle.isFocused())
 				return true;
-			setListenerDefault(null);
+			magicalSpecialHackyFocus(null);
 			updateTitle();
 		}
 		return super.mouseReleased(mouseX, mouseY, mouseButton);
@@ -132,15 +132,15 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 	protected void updateTitle() {
 		if (textboxTitle == null)
 			return;
-		if (container.te.getWorld().isRemote) {
+		if (container.te.getLevel().isClientSide) {
 			CompoundNBT tag = new CompoundNBT();
 			tag.putInt("type", 4);
 			tag.putInt("slot", 0);
-			tag.putString("title", textboxTitle.getText());
-			NetworkHelper.updateSeverTileEntity(container.te.getPos(), tag);
-			ItemStack card = container.te.getStackInSlot(0);
+			tag.putString("title", textboxTitle.getValue());
+			NetworkHelper.updateSeverTileEntity(container.te.getBlockPos(), tag);
+			ItemStack card = container.te.getItem(0);
 			if (!card.isEmpty() && card.getItem() instanceof ItemCardMain)
-				new ItemCardReader(card).setTitle(textboxTitle.getText());
+				new ItemCardReader(card).setTitle(textboxTitle.getValue());
 		}
 	}
 

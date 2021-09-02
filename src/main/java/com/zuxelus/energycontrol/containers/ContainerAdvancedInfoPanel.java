@@ -18,29 +18,29 @@ public class ContainerAdvancedInfoPanel extends ContainerBase<TileEntityInfoPane
 	}
 
 	public ContainerAdvancedInfoPanel(int windowId, PlayerInventory inventory, TileEntityInfoPanel panel) {
-		super(panel, ModContainerTypes.info_panel_advanced.get(), windowId, ModItems.info_panel_advanced.get(), IWorldPosCallable.of(panel.getWorld(), panel.getPos()));
+		super(panel, ModContainerTypes.info_panel_advanced.get(), windowId, ModItems.info_panel_advanced.get(), IWorldPosCallable.create(panel.getLevel(), panel.getBlockPos()));
 		addSlot(new SlotCard(panel, 0, 8, 24 + 18) {
 			@SuppressWarnings("resource")
 			@Override
-			public void onSlotChanged() {
-				if (panel.getWorld().isRemote)
-					ContainerAdvancedInfoPanel.this.detectAndSendChanges();
+			public void setChanged() {
+				if (panel.getLevel().isClientSide)
+					ContainerAdvancedInfoPanel.this.broadcastChanges();
 			};
 		});
 		addSlot(new SlotCard(panel, 1, 8 + 18, 24 + 18) {
 			@SuppressWarnings("resource")
 			@Override
-			public void onSlotChanged() {
-				if (panel.getWorld().isRemote)
-					ContainerAdvancedInfoPanel.this.detectAndSendChanges();
+			public void setChanged() {
+				if (panel.getLevel().isClientSide)
+					ContainerAdvancedInfoPanel.this.broadcastChanges();
 			};
 		});
 		addSlot(new SlotCard(panel, 2, 8 + 36, 24 + 18) {
 			@SuppressWarnings("resource")
 			@Override
-			public void onSlotChanged() {
-				if (panel.getWorld().isRemote)
-					ContainerAdvancedInfoPanel.this.detectAndSendChanges();
+			public void setChanged() {
+				if (panel.getLevel().isClientSide)
+					ContainerAdvancedInfoPanel.this.broadcastChanges();
 			};
 		});
 		addSlot(new SlotRange(panel, 3, 8 + 54, 24 + 18));

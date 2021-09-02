@@ -42,7 +42,7 @@ public class EnergyControl {
 	public static final ItemGroup ITEM_GROUP = new ItemGroup(MODID) {
 		@Override
 		@OnlyIn(Dist.CLIENT)
-		public ItemStack createIcon() {
+		public ItemStack makeIcon() {
 			return new ItemStack(ModItems.kit_energy.get());
 		}
 	};

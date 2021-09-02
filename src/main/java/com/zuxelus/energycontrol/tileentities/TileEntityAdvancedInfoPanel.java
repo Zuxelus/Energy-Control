@@ -56,7 +56,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 
 	public void setPowerMode(byte mode) {
 		powerMode = mode;
-		if (world != null && !world.isRemote)
+		if (level != null && !level.isClientSide)
 			calcPowered();
 	}
 
@@ -76,7 +76,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 
 	@Override
 	protected void calcPowered() { //server
-		boolean newPowered = world.isBlockPowered(pos);
+		boolean newPowered = level.hasNeighborSignal(worldPosition);
 		switch (powerMode) {
 		case POWER_ON:
 			newPowered = true;
@@ -93,7 +93,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 		if (newPowered != powered) {
 			powered = newPowered;
 			if (screen != null)
-				screen.turnPower(powered, world);
+				screen.turnPower(powered, level);
 		}
 	}
 
@@ -179,9 +179,9 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	@Override
 	public NonNullList<ItemStack> getCards() {
 		NonNullList<ItemStack> data = NonNullList.create();
-		data.add(getStackInSlot(SLOT_CARD1));
-		data.add(getStackInSlot(SLOT_CARD2));
-		data.add(getStackInSlot(SLOT_CARD3));
+		data.add(getItem(SLOT_CARD1));
+		data.add(getItem(SLOT_CARD2));
+		data.add(getItem(SLOT_CARD3));
 		return data;
 	}
 
@@ -201,7 +201,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	}
 
 	@Override
-	public int getSizeInventory() {
+	public int getContainerSize() {
 		return 4;
 	}
 
@@ -221,9 +221,9 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 
 	@Override
 	public boolean runTouchAction(ItemStack stack, BlockPos pos, Vector3d hit) {
-		if (world.isRemote)
+		if (level.isClientSide)
 			return false;
-		ItemStack card = getStackInSlot(SLOT_CARD1);
+		ItemStack card = getItem(SLOT_CARD1);
 		runTouchAction(this, card, stack, SLOT_CARD1, false);
 		return true;
 	}
@@ -236,6 +236,6 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 
 	@Override
 	public ITextComponent getDisplayName() {
-		return new TranslationTextComponent(ModItems.info_panel_advanced.get().getTranslationKey());
+		return new TranslationTextComponent(ModItems.info_panel_advanced.get().getDescriptionId());
 	}
 }

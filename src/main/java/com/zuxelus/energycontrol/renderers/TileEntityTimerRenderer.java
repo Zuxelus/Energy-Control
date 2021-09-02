@@ -25,123 +25,123 @@ public class TileEntityTimerRenderer extends TileEntityRenderer<TileEntityTimer>
 	@SuppressWarnings("incomplete-switch")
 	@Override
 	public void render(TileEntityTimer te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
-		matrixStack.push();
+		matrixStack.pushPose();
 		switch (te.getFacing()) {
 		case UP:
 			switch (te.getRotation()) {
 			case NORTH:
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(180.0F));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
 				matrixStack.translate(-1.0F, 0.0F, -1.0F);
 				break;
 			case SOUTH:
 				break;
 			case WEST:
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(-90.0F));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
 				matrixStack.translate(0.0F, 0.0F, -1.0F);
 				break;
 			case EAST:
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(90.0F));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
 				matrixStack.translate(-1.0F, 0.0F, 0.0F);
 				break;
 			}
 			break;
 		case NORTH:
-			matrixStack.rotate(Vector3f.XP.rotationDegrees(-90.0F));
-			matrixStack.rotate(Vector3f.YP.rotationDegrees(180.0F));
+			matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90.0F));
+			matrixStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
 			matrixStack.translate(-1.0F, -1.0F, -1.0F);
 			switch (te.getRotation()) {
 			case UP:
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(180.0F));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
 				matrixStack.translate(-1.0F, 0.0F, -1.0F);
 				break;
 			case DOWN:
 				break;
 			case EAST:
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(-90.0F));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
 				matrixStack.translate(0.0F, 0.0F, -1.0F);
 				break;
 			case WEST:
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(90.0F));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
 				matrixStack.translate(-1.0F, 0.0F, 0.0F);
 				break;
 			}
 			break;
 		case SOUTH:
-			matrixStack.rotate(Vector3f.XP.rotationDegrees(90.0F));
+			matrixStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
 			matrixStack.translate(0.0F, 0.0F, -1.0F);
 			switch (te.getRotation()) {
 			case UP:
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(180.0F));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
 				matrixStack.translate(-1.0F, 0.0F, -1.0F);
 				break;
 			case DOWN:
 				break;
 			case WEST:
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(-90.0F));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
 				matrixStack.translate(0.0F, 0.0F, -1.0F);
 				break;
 			case EAST:
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(90.0F));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
 				matrixStack.translate(-1.0F, 0.0F, 0.0F);
 				break;
 			}
 			break;
 		case DOWN:
-			matrixStack.rotate(Vector3f.XP.rotationDegrees(180.0F));
+			matrixStack.mulPose(Vector3f.XP.rotationDegrees(180.0F));
 			matrixStack.translate(0.0F, -1.0F, -1.0F);
 			break;
 		case WEST:
-			matrixStack.rotate(Vector3f.ZP.rotationDegrees(90.0F));
-			matrixStack.rotate(Vector3f.YP.rotationDegrees(-90.0F));
+			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(90.0F));
+			matrixStack.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
 			matrixStack.translate(0.0F, -1.0F, -1.0F);
 			switch (te.getRotation()) {
 			case UP:
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(180.0F));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
 				matrixStack.translate(-1.0F, 0.0F, -1.0F);
 				break;
 			case DOWN:
 				break;
 			case NORTH:
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(-90.0F));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
 				matrixStack.translate(0.0F, 0.0F, -1.0F);
 				break;
 			case SOUTH:
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(90.0F));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
 				matrixStack.translate(-1.0F, 0.0F, 0.0F);
 				break;
 			}
 			break;
 		case EAST:
-			matrixStack.rotate(Vector3f.ZP.rotationDegrees(-90.0F));
-			matrixStack.rotate(Vector3f.YP.rotationDegrees(90.0F));
+			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-90.0F));
+			matrixStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
 			matrixStack.translate(-1.0F, 0.0F, -1.0F);
 			switch (te.getRotation()) {
 			case UP:
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(180.0F));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
 				matrixStack.translate(-1.0F, 0.0F, -1.0F);
 				break;
 			case DOWN:
 				break;
 			case SOUTH:
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(-90.0F));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
 				matrixStack.translate(0.0F, 0.0F, -1.0F);
 				break;
 			case NORTH:
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(90.0F));
+				matrixStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
 				matrixStack.translate(-1.0F, 0.0F, 0.0F);
 				break;
 			}
 			break;
 		}
 
-		IVertexBuilder vertexBuilder = buffer.getBuffer(RenderType.getEntitySolid(TEXTURE));
+		IVertexBuilder vertexBuilder = buffer.getBuffer(RenderType.entitySolid(TEXTURE));
 		model.render(matrixStack, vertexBuilder, TileEntityInfoPanelRenderer.getBlockLight(te), combinedOverlay);
 		String time = te.getTimeString();
-		matrixStack.rotate(Vector3f.XP.rotationDegrees(90.0F));
+		matrixStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
 		matrixStack.translate(0.5F, 0.575F, -0.4376F);
 		matrixStack.scale(0.015625F, 0.015625F, 0.015625F);
-		FontRenderer fontRenderer = renderDispatcher.getFontRenderer();
-		fontRenderer.renderString(time, -fontRenderer.getStringWidth(time) / 2, -fontRenderer.FONT_HEIGHT, 0x000000, false, matrixStack.getLast().getMatrix(), buffer, false, 0, combinedLight);
-		matrixStack.pop();
+		FontRenderer fontRenderer = renderer.getFont();
+		fontRenderer.drawInBatch(time, -fontRenderer.width(time) / 2, -fontRenderer.lineHeight, 0x000000, false, matrixStack.last().pose(), buffer, false, 0, combinedLight);
+		matrixStack.popPose();
 	}
 }

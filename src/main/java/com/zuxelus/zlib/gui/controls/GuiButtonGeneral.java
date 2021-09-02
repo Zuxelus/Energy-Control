@@ -50,9 +50,9 @@ public class GuiButtonGeneral extends Button {
 			return;
 
 		Minecraft minecraft = Minecraft.getInstance();
-		FontRenderer fontRenderer = minecraft.fontRenderer;
+		FontRenderer fontRenderer = minecraft.font;
 		if (texture != null)
-			minecraft.getTextureManager().bindTexture(texture);
+			minecraft.getTextureManager().bind(texture);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		//isHovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
 		/*RenderSystem.enableBlend();
@@ -65,7 +65,7 @@ public class GuiButtonGeneral extends Button {
 		//mouseDragged(mc, mouseX, mouseY);
 		String displayString = getMessage().getString();
 		if (!displayString.equals(""))
-			fontRenderer.drawString(matrixStack, displayString, x + (width - fontRenderer.getStringWidth(displayString)) / 2, y - 3 + height / 2, 0x404040);
+			fontRenderer.draw(matrixStack, displayString, x + (width - fontRenderer.width(displayString)) / 2, y - 3 + height / 2, 0x404040);
 	}
 
 	public GuiButtonGeneral setGradient() {

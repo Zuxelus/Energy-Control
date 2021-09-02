@@ -28,17 +28,17 @@ public class PacketTileEntity {
 		ctx.enqueueWork(() -> {
 			if (ctx.getDirection().getReceptionSide() == LogicalSide.SERVER) {
 				ServerPlayerEntity player = ctx.getSender();
-				if (player == null || player.world == null)
+				if (player == null || player.level == null)
 					return;
-				TileEntity te = player.world.getTileEntity(message.pos);
+				TileEntity te = player.level.getBlockEntity(message.pos);
 				if (!(te instanceof ITilePacketHandler))
 					return;
 				((ITilePacketHandler) te).onServerMessageReceived(message.tag);
 			} else {
 				@SuppressWarnings("resource")
-				ClientWorld world = Minecraft.getInstance().world;
+				ClientWorld world = Minecraft.getInstance().level;
 				if (world != null) {
-					TileEntity te = world.getTileEntity(message.pos);
+					TileEntity te = world.getBlockEntity(message.pos);
 					if (!(te instanceof ITilePacketHandler))
 						return;
 					((ITilePacketHandler) te).onClientMessageReceived(message.tag);
@@ -50,10 +50,10 @@ public class PacketTileEntity {
 
 	public static void encode(PacketTileEntity pkt, PacketBuffer buf) {
 		buf.writeBlockPos(pkt.pos);
-		buf.writeCompoundTag(pkt.tag);
+		buf.writeNbt(pkt.tag);
 	}
 
 	public static PacketTileEntity decode(PacketBuffer buf) {
-		return new PacketTileEntity(buf.readBlockPos(), buf.readCompoundTag());
+		return new PacketTileEntity(buf.readBlockPos(), buf.readNbt());
 	}
 }

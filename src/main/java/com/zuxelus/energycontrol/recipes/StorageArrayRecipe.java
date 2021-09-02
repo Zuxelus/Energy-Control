@@ -29,12 +29,12 @@ public class StorageArrayRecipe implements ICraftingRecipe {
 
 	@Override
 	public boolean matches(CraftingInventory inv, World worldIn) {
-		return !getCraftingResult(inv).isEmpty();
+		return !assemble(inv).isEmpty();
 	}
 
 	@Override
-	public ItemStack getCraftingResult(CraftingInventory inv) {
-		int inventoryLength = inv.getSizeInventory();
+	public ItemStack assemble(CraftingInventory inv) {
+		int inventoryLength = inv.getContainerSize();
 		int cardCount = 0;
 		int arrayCount = 0;
 		int cardCountLiquid = 0;
@@ -42,7 +42,7 @@ public class StorageArrayRecipe implements ICraftingRecipe {
 		ItemStack array = null;
 		Vector<ItemStack> cards = new Vector<>();
 		for (int i = 0; i < inventoryLength; i++) {
-			ItemStack itemStack = inv.getStackInSlot(i);
+			ItemStack itemStack = inv.getItem(i);
 			if (itemStack.isEmpty())
 				continue;
 			Item item = itemStack.getItem();
@@ -119,12 +119,12 @@ public class StorageArrayRecipe implements ICraftingRecipe {
 	}
 
 	@Override
-	public boolean canFit(int width, int height) {
+	public boolean canCraftInDimensions(int width, int height) {
 		return width * height >= 2;
 	}
 
 	@Override
-	public ItemStack getRecipeOutput() {
+	public ItemStack getResultItem() {
 		return ItemStack.EMPTY;
 	}
 

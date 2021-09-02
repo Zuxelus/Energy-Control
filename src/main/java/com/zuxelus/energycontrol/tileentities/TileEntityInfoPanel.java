@@ -89,7 +89,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 
 	private void initData() {
 		init = true;
-		if (world.isRemote)
+		if (level.isClientSide)
 			return;
 
 		if (screenData == null) {
@@ -97,14 +97,14 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		} else {
 			screen = EnergyControl.INSTANCE.screenManager.loadScreen(this);
 			if (screen != null)
-				screen.init(true, world);
+				screen.init(true, level);
 		}
 		notifyBlockUpdate();
 	}
 
 	@Override
 	public void setFacing(int meta) {
-		Direction newFacing = Direction.byIndex(meta);
+		Direction newFacing = Direction.from3DDataValue(meta);
 		if (facing == newFacing)
 			return;
 		facing = newFacing;
@@ -119,7 +119,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	}
 
 	public void setShowLabels(boolean newShowLabels) {
-		if (!world.isRemote && showLabels != newShowLabels)
+		if (!level.isClientSide && showLabels != newShowLabels)
 			notifyBlockUpdate();
 		showLabels = newShowLabels;
 	}
@@ -129,7 +129,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	}
 
 	public void setTickRate(int newValue) {
-		if (!world.isRemote && tickRate != newValue)
+		if (!level.isClientSide && tickRate != newValue)
 			notifyBlockUpdate();
 		tickRate = newValue;
 	}
@@ -139,7 +139,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	}
 
 	public void setColored(boolean newColored) {
-		if (!world.isRemote && colored != newColored)
+		if (!level.isClientSide && colored != newColored)
 			notifyBlockUpdate();
 		colored = newColored;
 	}
@@ -149,7 +149,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	}
 
 	public void setColorBackground(int c) {
-		if (!world.isRemote && colorBackground != c)
+		if (!level.isClientSide && colorBackground != c)
 			notifyBlockUpdate();
 		colorBackground = c;
 	}
@@ -163,7 +163,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	}
 
 	public void setColorText(int c) {
-		if (!world.isRemote && colorText != c)
+		if (!level.isClientSide && colorText != c)
 			notifyBlockUpdate();
 		colorText = c;
 	}
@@ -173,22 +173,22 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	}
 
 	protected void calcPowered() { // server
-		boolean newPowered = world.isBlockPowered(pos);
+		boolean newPowered = level.hasNeighborSignal(worldPosition);
 		if (newPowered != powered) {
 			powered = newPowered;
 			if (screen != null)
-				screen.turnPower(powered, world);
+				screen.turnPower(powered, level);
 		}
 	}
 
 	public void setScreenData(CompoundNBT nbtTagCompound) {
 		screenData = nbtTagCompound;
-		if (screen != null && world.isRemote)
-			screen.destroy(true, world);
+		if (screen != null && level.isClientSide)
+			screen.destroy(true, level);
 		if (screenData != null) {
 			screen = EnergyControl.INSTANCE.screenManager.loadScreen(this);
 			if (screen != null)
-				screen.init(true, world);
+				screen.init(true, level);
 		}
 	}
 
@@ -217,7 +217,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 			break;
 		case 4:
 			if (tag.contains("slot") && tag.contains("title")) {
-				ItemStack itemStack = getStackInSlot(tag.getInt("slot"));
+				ItemStack itemStack = getItem(tag.getInt("slot"));
 				if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemCardMain) {
 					new ItemCardReader(itemStack).setTitle(tag.getString("title"));
 					resetCardData();
@@ -238,12 +238,12 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		tag.putBoolean("powered", powered);
 		colored = isColoredEval();
 		tag.putBoolean("colored", colored);
-		return new SUpdateTileEntityPacket(getPos(), 0, tag);
+		return new SUpdateTileEntityPacket(getBlockPos(), 0, tag);
 	}
 
 	@Override
 	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-		readProperties(pkt.getNbtCompound());
+		readProperties(pkt.getTag());
 	}
 
 	@Override
@@ -292,25 +292,25 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 			setColored(tag.getBoolean("colored"));
 
 		if (tag.contains("screenData")) {
-			if (world != null)
+			if (level != null)
 				setScreenData((CompoundNBT) tag.get("screenData"));
 			else
 				screenData = (CompoundNBT) tag.get("screenData");
 		} else
 			screenData = null;
 		deserializeDisplaySettings(tag);
-		if (tag.contains("powered") && world.isRemote) {
+		if (tag.contains("powered") && level.isClientSide) {
 			boolean newPowered = tag.getBoolean("powered");
 			if (powered != newPowered) {
 				powered = newPowered; 
-				world.getChunkProvider().getLightManager().checkBlock(pos);
+				level.getChunkSource().getLightEngine().checkBlock(worldPosition);
 			}
 		}
 	}
 
 	@Override
-	public void read(BlockState state, CompoundNBT tag) {
-		super.read(state, tag);
+	public void load(BlockState state, CompoundNBT tag) {
+		super.load(state, tag);
 		readProperties(tag);
 	}
 
@@ -346,15 +346,15 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	}
 
 	@Override
-	public CompoundNBT write(CompoundNBT tag) {
-		return writeProperties(super.write(tag));
+	public CompoundNBT save(CompoundNBT tag) {
+		return writeProperties(super.save(tag));
 	}
 
 	@Override
-	public void remove() {
-		if (!world.isRemote)
+	public void setRemoved() {
+		if (!level.isClientSide)
 			EnergyControl.INSTANCE.screenManager.unregisterScreenPart(this);
-		super.remove();
+		super.setRemoved();
 	}
 
 	@Override
@@ -368,12 +368,12 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 			resetCardData();
 			dataTicker = 4;
 		}
-		if (!world.isRemote) {
+		if (!level.isClientSide) {
 			if (updateTicker-- > 0)
 				return;
 			updateTicker = tickRate - 1;
 			if (hasCards())
-				markDirty();
+				setChanged();
 		}
 	}
 
@@ -386,8 +386,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 
 	@Override
 	public void notifyBlockUpdate() {
-		BlockState iblockstate = world.getBlockState(pos);
-		world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
+		BlockState iblockstate = level.getBlockState(worldPosition);
+		level.sendBlockUpdated(worldPosition, iblockstate, iblockstate, 2);
 	}
 
 	public void resetCardData() {
@@ -412,7 +412,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	// ------- Settings --------
 	public NonNullList<ItemStack> getCards() {
 		NonNullList<ItemStack> data = NonNullList.create();
-		data.add(getStackInSlot(SLOT_CARD));
+		data.add(getItem(SLOT_CARD));
 		return data;
 	}
 
@@ -432,7 +432,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 			if (state != CardState.OK && state != CardState.CUSTOM_ERROR)
 				data = ItemCardReader.getStateMessage(state);
 			else
-				data = getCardData(world, settings, card, reader, isServer, showLabels);
+				data = getCardData(level, settings, card, reader, isServer, showLabels);
 			if (data == null)
 				continue;
 			joinedData.addAll(data);
@@ -465,8 +465,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 			return 0;
 
 		int slot = 0;
-		for (int i = 0; i < getSizeInventory(); i++) {
-			ItemStack stack = getStackInSlot(i);
+		for (int i = 0; i < getContainerSize(); i++) {
+			ItemStack stack = getItem(i);
 			if (!stack.isEmpty() && stack.equals(card)) {
 				slot = i;
 				break;
@@ -478,23 +478,23 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	private void processCard(ItemStack card, int slot, ItemStack stack) {
 		if (ItemCardMain.isCard(card)) {
 			ItemCardReader reader = new ItemCardReader(card);
-			((ItemCardMain) card.getItem()).updateCardNBT(world, pos, reader, stack);
+			((ItemCardMain) card.getItem()).updateCardNBT(level, worldPosition, reader, stack);
 			reader.updateClient(card, this, slot);
 		}
 	}
 
 	public boolean isColoredEval() {
-		ItemStack stack = getStackInSlot(SLOT_UPGRADE_COLOR);
+		ItemStack stack = getItem(SLOT_UPGRADE_COLOR);
 		return !stack.isEmpty() && stack.getItem().equals(ModItems.upgrade_color.get());
 	}
 
 	@Override
-	public void markDirty() {
-		super.markDirty();
-		if (!world.isRemote) {
+	public void setChanged() {
+		super.setChanged();
+		if (!level.isClientSide) {
 			setColored(isColoredEval());
 			if (powered) {
-				ItemStack itemStack = getStackInSlot(getSlotUpgradeRange());
+				ItemStack itemStack = getItem(getSlotUpgradeRange());
 				for (ItemStack card : getCards())
 					processCard(card, getCardSlot(card), itemStack);
 			}
@@ -516,7 +516,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	}
 
 	public int getDisplaySettingsForCardInSlot(int slot) {
-		ItemStack card = getStackInSlot(slot);
+		ItemStack card = getItem(slot);
 		if (card.isEmpty()) {
 			return 0;
 		}
@@ -530,7 +530,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 
 		if (displaySettings.containsKey(slot)) {
 			for (Map.Entry<String, Integer> entry : displaySettings.get(slot).entrySet()) {
-				if (card.getTranslationKey().equals(entry.getKey()))
+				if (card.getDescriptionId().equals(entry.getKey()))
 					return entry.getValue();
 			}
 		}
@@ -541,25 +541,25 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	public void setDisplaySettings(int slot, int settings) {
 		if (!isCardSlot(slot))
 			return;
-		ItemStack stack = getStackInSlot(slot);
+		ItemStack stack = getItem(slot);
 		if (!ItemCardMain.isCard(stack))
 			return;
 
 		if (!displaySettings.containsKey(slot))
 			displaySettings.put(slot, new HashMap<>());
-		displaySettings.get(slot).put(stack.getTranslationKey(), settings);
-		if (!world.isRemote)
+		displaySettings.get(slot).put(stack.getDescriptionId(), settings);
+		if (!level.isClientSide)
 			notifyBlockUpdate();
 	}
 
 	// ------- Inventory ------- 
 	@Override
-	public int getSizeInventory() {
+	public int getContainerSize() {
 		return 4;
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int index, ItemStack stack) {
+	public boolean canPlaceItem(int index, ItemStack stack) {
 		return isItemValid(index, stack);
 	}
 
@@ -591,7 +591,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 
 	@Override
 	public void updateData() {
-		if (world.isRemote)
+		if (level.isClientSide)
 			return;
 
 		if (screen == null) {
@@ -603,7 +603,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public double getMaxRenderDistanceSquared() {
+	public double getViewDistance() {
 		return 65536.0D;
 	}
 
@@ -611,7 +611,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	@OnlyIn(Dist.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox() {
 		if (screen == null)
-			return new AxisAlignedBB(pos.add(0, 0, 0), pos.add(1, 1, 1));
+			return new AxisAlignedBB(worldPosition.offset(0, 0, 0), worldPosition.offset(1, 1, 1));
 		return new AxisAlignedBB(new BlockPos(screen.minX, screen.minY, screen.minZ), new BlockPos(screen.maxX + 1, screen.maxY + 1, screen.maxZ + 1));
 	}
 
@@ -624,7 +624,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	public int findTexture() {
 		Screen scr = getScreen();
 		if (scr != null) {
-			BlockPos pos = getPos();
+			BlockPos pos = getBlockPos();
 			switch (getFacing()) {
 			case SOUTH:
 				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 4 * boolToInt(pos.getY() == scr.minY) + 8 * boolToInt(pos.getY() == scr.maxY);
@@ -648,15 +648,15 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	}
 
 	public boolean runTouchAction(ItemStack stack, BlockPos pos, Vector3d hit) {
-		if (world.isRemote)
+		if (level.isClientSide)
 			return false;
-		ItemStack card = getStackInSlot(SLOT_CARD);
+		ItemStack card = getItem(SLOT_CARD);
 		runTouchAction(this, card, stack, SLOT_CARD, true);
 		return true;
 	}
 
 	public boolean isTouchCard() {
-		return isTouchCard(getStackInSlot(SLOT_CARD));
+		return isTouchCard(getItem(SLOT_CARD));
 	}
 
 	public boolean isTouchCard(ItemStack stack) {
@@ -665,7 +665,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	}
 
 	public boolean hasBars() {
-		return hasBars(getStackInSlot(SLOT_CARD));
+		return hasBars(getItem(SLOT_CARD));
 	}
 
 	public boolean hasBars(ItemStack stack) {
@@ -674,7 +674,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	}
 
 	public void renderImage(TextureManager manager, float displayWidth, float displayHeight, MatrixStack matrixStack) {
-		ItemStack stack = getStackInSlot(SLOT_CARD);
+		ItemStack stack = getItem(SLOT_CARD);
 		Item card = stack.getItem();
 		if (isTouchCard())
 			((ITouchAction) card).renderImage(manager, new ItemCardReader(stack), matrixStack);
@@ -683,9 +683,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	}
 
 	protected void runTouchAction(TileEntityInfoPanel panel, ItemStack cardStack, ItemStack stack, int slot, boolean needsTouchUpgrade) {
-		if (isTouchCard(cardStack) && (!needsTouchUpgrade || !getStackInSlot(SLOT_UPGRADE_TOUCH).isEmpty())) {
+		if (isTouchCard(cardStack) && (!needsTouchUpgrade || !getItem(SLOT_UPGRADE_TOUCH).isEmpty())) {
 			ICardReader reader = new ItemCardReader(cardStack);
-			if (((ITouchAction) cardStack.getItem()).runTouchAction(panel.getWorld(), reader, stack))
+			if (((ITouchAction) cardStack.getItem()).runTouchAction(panel.getLevel(), reader, stack))
 				reader.updateClient(cardStack, panel, slot);
 		}
 	}
@@ -698,6 +698,6 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 
 	@Override
 	public ITextComponent getDisplayName() {
-		return new TranslationTextComponent(ModItems.info_panel.get().getTranslationKey());
+		return new TranslationTextComponent(ModItems.info_panel.get().getDescriptionId());
 	}
 }

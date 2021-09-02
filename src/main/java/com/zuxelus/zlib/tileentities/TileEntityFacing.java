@@ -19,7 +19,7 @@ public abstract class TileEntityFacing extends TileEntity {
 	}
 
 	public void setFacing(int meta) {
-		facing = Direction.byIndex(meta);
+		facing = Direction.from3DDataValue(meta);
 	}
 
 	protected boolean hasRotation() {
@@ -31,7 +31,7 @@ public abstract class TileEntityFacing extends TileEntity {
 	}
 
 	public void setRotation(int meta) {
-		rotation = Direction.byIndex(meta);
+		rotation = Direction.from3DDataValue(meta);
 	}
 
 	public void setRotation(Direction meta) {
@@ -40,21 +40,21 @@ public abstract class TileEntityFacing extends TileEntity {
 
 	protected void readProperties(CompoundNBT tag) {
 		if (tag.contains("facing"))
-			facing = Direction.byIndex(tag.getInt("facing"));
+			facing = Direction.from3DDataValue(tag.getInt("facing"));
 		else
 			facing = Direction.NORTH;
 		if (hasRotation()) {
 			if (tag.contains("rotation"))
-				rotation = Direction.byIndex(tag.getInt("rotation"));
+				rotation = Direction.from3DDataValue(tag.getInt("rotation"));
 			else
 				rotation = Direction.NORTH;
 		}
 	}
 
 	protected CompoundNBT writeProperties(CompoundNBT tag) {
-		tag.putInt("facing", facing.getIndex());
+		tag.putInt("facing", facing.get3DDataValue());
 		if (hasRotation() && rotation != null)
-			tag.putInt("rotation", rotation.getIndex());
+			tag.putInt("rotation", rotation.get3DDataValue());
 		return tag;
 	}
 }

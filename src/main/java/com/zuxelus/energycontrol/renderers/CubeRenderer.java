@@ -69,7 +69,7 @@ public class CubeRenderer { // net.minecraft.client.renderer.model.ModelRenderer
 			positionsIn[1] = positionsIn[1].setTextureUV(u1 / texWidth + f, v1 / texHeight + f1);
 			positionsIn[2] = positionsIn[2].setTextureUV(u1 / texWidth + f, v2 / texHeight - f1);
 			positionsIn[3] = positionsIn[3].setTextureUV(u2 / texWidth - f, v2 / texHeight - f1);
-			this.normal = direction.toVector3f();
+			this.normal = direction.step();
 		}
 	}
 
@@ -100,27 +100,27 @@ public class CubeRenderer { // net.minecraft.client.renderer.model.ModelRenderer
 
 		public void render(MatrixStack matrixStack, IVertexBuilder buffer, int[] light, int combinedOverlay) {
 			matrixStack.scale(0.5F, 0.5F, 0.5F);
-			render(matrixStack.getLast(), buffer, light, combinedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
+			render(matrixStack.last(), buffer, light, combinedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
 			matrixStack.scale(2.0F, 2.0F, 2.0F);
 		}
 
 		public void render(MatrixStack.Entry matrixEntry, IVertexBuilder buffer, int[] light, int combinedOverlay, float red, float green, float blue, float alpha) {
-			Matrix4f matrix4f = matrixEntry.getMatrix();
-			Matrix3f matrix3f = matrixEntry.getNormal();
+			Matrix4f matrix4f = matrixEntry.pose();
+			Matrix3f matrix3f = matrixEntry.normal();
 
 			for (int n = 0; n < quads.length; ++n) {
 				TexturedQuad quad = quads[n];
 				Vector3f vector3f = quad.normal.copy();
 				vector3f.transform(matrix3f);
-				float f = vector3f.getX();
-				float g = vector3f.getY();
-				float h = vector3f.getZ();
+				float f = vector3f.x();
+				float g = vector3f.y();
+				float h = vector3f.z();
 
 				for (int i = 0; i < 4; ++i) {
 					PositionTextureVertex vertex = quad.vertexPositions[i];
-					Vector4f vector4f = new Vector4f(vertex.position.getX() / 16.0F, vertex.position.getY() / 16.0F, vertex.position.getZ() / 16.0F, 1.0F);
+					Vector4f vector4f = new Vector4f(vertex.position.x() / 16.0F, vertex.position.y() / 16.0F, vertex.position.z() / 16.0F, 1.0F);
 					vector4f.transform(matrix4f);
-					buffer.addVertex(vector4f.getX(), vector4f.getY(), vector4f.getZ(), red, green, blue, alpha, vertex.textureU, vertex.textureV, combinedOverlay, light[n], f, g, h);
+					buffer.vertex(vector4f.x(), vector4f.y(), vector4f.z(), red, green, blue, alpha, vertex.textureU, vertex.textureV, combinedOverlay, light[n], f, g, h);
 				}
 			}
 		}

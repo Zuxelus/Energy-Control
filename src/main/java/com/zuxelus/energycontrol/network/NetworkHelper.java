@@ -44,7 +44,7 @@ public class NetworkHelper {
 	}
 
 	public static <MSG> void sendToPlayer(ServerPlayerEntity player, MSG message) {
-		network.sendTo(message, player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+		network.sendTo(message, player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
 	}
 
 	// server

@@ -69,34 +69,34 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 	public void setInvertRedstone(boolean value) {
 		boolean old = invertRedstone;
 		invertRedstone = value;
-		if (!world.isRemote && invertRedstone != old)
+		if (!level.isClientSide && invertRedstone != old)
 			notifyBlockUpdate();
 	}
 
 	public void setStatus(int value) {
 		int old = status;
 		status = value;
-		if (!world.isRemote && status != old) {
-			BlockState iblockstate = world.getBlockState(pos);
+		if (!level.isClientSide && status != old) {
+			BlockState iblockstate = level.getBlockState(worldPosition);
 			Block block = iblockstate.getBlock();
 			if (block instanceof RangeTrigger) {
-				BlockState newState = block.getDefaultState()
-						.with(HorizontalBlock.HORIZONTAL_FACING, iblockstate.get(HorizontalBlock.HORIZONTAL_FACING))
-						.with(RangeTrigger.STATE, RangeTrigger.EnumState.getState(status));
-				world.setBlockState(pos, newState, 3);
+				BlockState newState = block.defaultBlockState()
+						.setValue(HorizontalBlock.FACING, iblockstate.getValue(HorizontalBlock.FACING))
+						.setValue(RangeTrigger.STATE, RangeTrigger.EnumState.getState(status));
+				level.setBlock(worldPosition, newState, 3);
 			}
 			notifyBlockUpdate();
 		}
 	}
 
 	public void setLevelStart(double start) {
-		if (!world.isRemote && levelStart != start)
+		if (!level.isClientSide && levelStart != start)
 			notifyBlockUpdate();
 		levelStart = start;
 	}
 
 	public void setLevelEnd(double end) {
-		if (!world.isRemote && levelEnd != end)
+		if (!level.isClientSide && levelEnd != end)
 			notifyBlockUpdate();
 		levelEnd = end;
 	}
@@ -111,11 +111,11 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 
 	@Override
 	public void tick() {
-		if (!world.isRemote) {
+		if (!level.isClientSide) {
 			if (updateTicker-- > 0)
 				return;
 			updateTicker = tickRate;
-			markDirty();
+			setChanged();
 		}
 	}
 
@@ -147,12 +147,12 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 		CompoundNBT tag = new CompoundNBT();
 		tag = writeProperties(tag);
 		tag.putBoolean("poweredBlock", poweredBlock);
-		return new SUpdateTileEntityPacket(getPos(), 0, tag);
+		return new SUpdateTileEntityPacket(getBlockPos(), 0, tag);
 	}
 
 	@Override
 	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-		readProperties(pkt.getNbtCompound());
+		readProperties(pkt.getTag());
 	}
 
 	@Override
@@ -174,8 +174,8 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 	}
 
 	@Override
-	public void read(BlockState state, CompoundNBT tag) {
-		super.read(state, tag);
+	public void load(BlockState state, CompoundNBT tag) {
+		super.load(state, tag);
 		readProperties(tag);
 	}
 
@@ -189,23 +189,23 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 	}
 
 	@Override
-	public CompoundNBT write(CompoundNBT tag) {
-		return writeProperties(super.write(tag));
+	public CompoundNBT save(CompoundNBT tag) {
+		return writeProperties(super.save(tag));
 	}
 
 	@Override
-	public void markDirty() {
-		super.markDirty();
-		if (world == null || world.isRemote)
+	public void setChanged() {
+		super.setChanged();
+		if (level == null || level.isClientSide)
 			return;
 		
 		int status = STATE_UNKNOWN;
-		ItemStack card = getStackInSlot(SLOT_CARD);
+		ItemStack card = getItem(SLOT_CARD);
 		if (!card.isEmpty()) {
 			Item item = card.getItem();
 			if (item instanceof ItemCardMain) {
 				ItemCardReader reader = new ItemCardReader(card);
-				CardState state = ((ItemCardMain) item).updateCardNBT(world, pos, reader, getStackInSlot(SLOT_UPGRADE));
+				CardState state = ((ItemCardMain) item).updateCardNBT(level, worldPosition, reader, getItem(SLOT_UPGRADE));
 				if (state == CardState.OK) {
 					double cur = item instanceof ItemCardEnergy ? reader.getDouble("storage") :  reader.getLong("amount");
 					status = cur > Math.max(levelStart, levelEnd) || cur < Math.min(levelStart, levelEnd) ? STATE_ACTIVE : STATE_PASSIVE;
@@ -217,26 +217,26 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 	}
 
 	public void notifyBlockUpdate() {
-		BlockState iblockstate = world.getBlockState(pos);
+		BlockState iblockstate = level.getBlockState(worldPosition);
 		Block block = iblockstate.getBlock();
 		if (!(block instanceof RangeTrigger))
 			return;
 		boolean newValue = status >= 1 && (status == 1 != invertRedstone);
 		if (poweredBlock != newValue) {
 			poweredBlock = newValue;
-			world.notifyNeighborsOfStateChange(pos, block);
+			level.updateNeighborsAt(worldPosition, block);
 		}
-		world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
+		level.sendBlockUpdated(worldPosition, iblockstate, iblockstate, 2);
 	}
 
 	// Inventory
 	@Override
-	public int getSizeInventory() {
+	public int getContainerSize() {
 		return 2;
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int index, ItemStack stack) {
+	public boolean canPlaceItem(int index, ItemStack stack) {
 		return isItemValid(index, stack);
 	}
 
@@ -255,6 +255,6 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 
 	@Override
 	public ITextComponent getDisplayName() {
-		return new TranslationTextComponent(ModItems.range_trigger.get().getTranslationKey());
+		return new TranslationTextComponent(ModItems.range_trigger.get().getDescriptionId());
 	}
 }

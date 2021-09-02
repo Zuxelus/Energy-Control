@@ -11,9 +11,9 @@ public class SlotFilter extends Slot {
 	}
 
 	@Override
-	public boolean isItemValid(ItemStack itemStack) {
-		if (inventory instanceof ISlotItemFilter)
-			return ((ISlotItemFilter) inventory).isItemValid(getSlotIndex(), itemStack);
-		return super.isItemValid(itemStack);
+	public boolean mayPlace(ItemStack itemStack) {
+		if (container instanceof ISlotItemFilter)
+			return ((ISlotItemFilter) container).isItemValid(getSlotIndex(), itemStack);
+		return super.mayPlace(itemStack);
 	}
 }

@@ -56,7 +56,7 @@ public abstract class GuiBase extends Screen {
 
 	protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		minecraft.getTextureManager().bindTexture(texture);
+		minecraft.getTextureManager().bind(texture);
 		blit(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize);
 	}
 
@@ -67,16 +67,16 @@ public abstract class GuiBase extends Screen {
 
 	protected TextFieldWidget addTextFieldWidget(int left, int top, int width, int height, boolean isEnabled, String text) {
 		TextFieldWidget textBox = new TextFieldWidget(font, guiLeft + left, guiTop + top, width, height, null, StringTextComponent.EMPTY);
-		textBox.setEnabled(isEnabled);
+		textBox.setEditable(isEnabled);
 		textBox.changeFocus(isEnabled);
-		textBox.setText(text);
+		textBox.setValue(text);
 		children.add(textBox);
-		setFocusedDefault(textBox);
+		setInitialFocus(textBox);
 		return textBox;
 	}
 
 	protected void drawTitle(MatrixStack matrixStack) {
-		IReorderingProcessor ireorderingprocessor = title.func_241878_f();
-		font.func_238422_b_(matrixStack, ireorderingprocessor, (xSize - font.func_243245_a(ireorderingprocessor)) / 2, 6, 0x404040);
+		IReorderingProcessor ireorderingprocessor = title.getVisualOrderText();
+		font.draw(matrixStack, ireorderingprocessor, (xSize - font.width(ireorderingprocessor)) / 2, 6, 0x404040);
 	}
 }

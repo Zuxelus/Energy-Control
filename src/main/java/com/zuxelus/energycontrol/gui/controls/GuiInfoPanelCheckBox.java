@@ -26,7 +26,7 @@ public class GuiInfoPanelCheckBox extends AbstractButton {
 	private int slot;
 
 	public GuiInfoPanelCheckBox(int x, int y, PanelSetting setting, TileEntityInfoPanel panel, int slot, FontRenderer renderer) {
-		super(x, y, renderer.getStringWidth(setting.title) + 8, renderer.FONT_HEIGHT + 1, new StringTextComponent(setting.title));
+		super(x, y, renderer.width(setting.title) + 8, renderer.lineHeight + 1, new StringTextComponent(setting.title));
 		this.setting = setting;
 		this.slot = slot;
 		this.panel = panel;
@@ -38,12 +38,12 @@ public class GuiInfoPanelCheckBox extends AbstractButton {
 		if (!visible)
 			return;
 		Minecraft minecraft = Minecraft.getInstance();
-		FontRenderer fontRenderer = minecraft.fontRenderer;
-		minecraft.getTextureManager().bindTexture(TEXTURE);
+		FontRenderer fontRenderer = minecraft.font;
+		minecraft.getTextureManager().bind(TEXTURE);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int delta = checked ? 6 : 0;
 		blit(matrixStack, x, y + 1, 176, delta, 6, 6);
-		fontRenderer.func_243248_b(matrixStack, getMessage(), x + 8, y, 0x404040);
+		fontRenderer.draw(matrixStack, getMessage(), x + 8, y, 0x404040);
 	}
 
 	@Override
@@ -63,6 +63,6 @@ public class GuiInfoPanelCheckBox extends AbstractButton {
 		tag.putInt("type", 1);
 		tag.putInt("slot", slot);
 		tag.putInt("value", value);
-		NetworkHelper.updateSeverTileEntity(panel.getPos(), tag);
+		NetworkHelper.updateSeverTileEntity(panel.getBlockPos(), tag);
 	}
 }

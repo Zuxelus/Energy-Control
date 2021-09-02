@@ -43,7 +43,7 @@ public class GuiHorizontalSlider extends GuiBase {
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (keyCode == 256) {
-			minecraft.displayGuiScreen(parentGui);
+			minecraft.setScreen(parentGui);
 			return true;
 		}
 		return super.keyPressed(keyCode, scanCode, modifiers);
@@ -70,8 +70,8 @@ public class GuiHorizontalSlider extends GuiBase {
 			if (sliderValue > maxValue)
 				sliderValue = maxValue;
 
-			if (panel.getWorld().isRemote && panel.getTickRate() != sliderValue) {
-				NetworkHelper.updateSeverTileEntity(panel.getPos(), 5, sliderValue);
+			if (panel.getLevel().isClientSide && panel.getTickRate() != sliderValue) {
+				NetworkHelper.updateSeverTileEntity(panel.getBlockPos(), 5, sliderValue);
 				panel.setTickRate(sliderValue);
 			}
 			setMessage(new TranslationTextComponent("msg.ec.Ticks", Integer.toString(sliderValue)));
@@ -82,15 +82,15 @@ public class GuiHorizontalSlider extends GuiBase {
 			if (!visible)
 				return;
 			Minecraft minecraft = Minecraft.getInstance();
-			FontRenderer fontRenderer = minecraft.fontRenderer;
-			minecraft.getTextureManager().bindTexture(texture);
+			FontRenderer fontRenderer = minecraft.font;
+			minecraft.getTextureManager().bind(texture);
 			RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 			if (dragging)
 				setSliderPos(mouseX);
 
 			blit(matrixStack, x - 2 + sliderValue, y, 152, 0, 8, 16);
-			IReorderingProcessor ireorderingprocessor = getMessage().func_241878_f();
-			fontRenderer.func_238422_b_(matrixStack, ireorderingprocessor, x - 10 + (width - fontRenderer.func_243245_a(ireorderingprocessor)) / 2, y - 12, 0x404040);
+			IReorderingProcessor ireorderingprocessor = getMessage().getVisualOrderText();
+			fontRenderer.draw(matrixStack, ireorderingprocessor, x - 10 + (width - fontRenderer.width(ireorderingprocessor)) / 2, y - 12, 0x404040);
 		}
 
 		@Override
