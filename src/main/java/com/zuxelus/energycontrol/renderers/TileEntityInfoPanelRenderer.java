@@ -118,8 +118,7 @@ public class TileEntityInfoPanelRenderer extends TileEntityRenderer<TileEntityIn
 		model[te.findTexture()].render(matrixStack, vertexBuilder, light, combinedOverlay);
 		if (te.getPowered()) {
 			List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
-			if (joinedData != null)
-				drawText(te, joinedData, matrixStack, buffer, combinedLight);
+			drawText(te, joinedData, matrixStack, buffer, combinedLight);
 		}
 		matrixStack.popPose();
 	}
@@ -214,15 +213,12 @@ public class TileEntityInfoPanelRenderer extends TileEntityRenderer<TileEntityIn
 			break;
 		}
 
-		if (panel.isTouchCard()) {
+		if (panel.isTouchCard() || panel.hasBars()) {
 			matrixStack.mulPose(Vector3f.YP.rotationDegrees(180));
 			panel.renderImage(renderer.textureManager, displayWidth, displayHeight, matrixStack);
-		} else {
-			if (panel.hasBars()) {
-				matrixStack.mulPose(Vector3f.YP.rotationDegrees(180));
-				panel.renderImage(renderer.textureManager, displayWidth, displayHeight, matrixStack);
-				matrixStack.mulPose(Vector3f.YP.rotationDegrees(180));
-			}
+			matrixStack.mulPose(Vector3f.YP.rotationDegrees(180));
+		}
+		if (joinedData != null) {
 			matrixStack.translate(0, 0, 0.0002F);
 			renderText(panel, joinedData, displayWidth, displayHeight, matrixStack, buffer, combinedLight);
 		}

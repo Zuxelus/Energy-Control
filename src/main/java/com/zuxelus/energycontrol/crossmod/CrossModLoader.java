@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.zuxelus.energycontrol.api.ItemStackHelper;
+import com.zuxelus.energycontrol.crossmod.computercraft.CrossComputerCraft;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
@@ -25,12 +26,17 @@ public class CrossModLoader {
 	private static final Map<String, CrossModBase> CROSS_MODS = new HashMap<>();
 
 	public static void init() {
+		loadCrossModSafely(ModIDs.COMPUTER_CRAFT, () -> CrossComputerCraft::new);
 		loadCrossMod(ModIDs.MEKANISM, CrossMekanism::new);
 		loadCrossMod(ModIDs.MEKANISM_GENERATORS, CrossMekanismGenerators::new);
 	}
 
 	private static void loadCrossMod(String modid, Supplier<? extends CrossModBase> factory) {
 		CROSS_MODS.put(modid, ModList.get().isLoaded(modid) ? factory.get() : new CrossModBase());
+	}
+
+	private static void loadCrossModSafely(String modid, Supplier<Supplier<? extends CrossModBase>> factory) {
+		CROSS_MODS.put(modid, ModList.get().isLoaded(modid) ? factory.get().get() : new CrossModBase());
 	}
 
 	public static CrossModBase getCrossMod(String modid) {

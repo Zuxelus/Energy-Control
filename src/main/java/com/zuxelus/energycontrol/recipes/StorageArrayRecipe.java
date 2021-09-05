@@ -130,8 +130,7 @@ public class StorageArrayRecipe implements ICraftingRecipe {
 
 	@Override
 	public ResourceLocation getId() {
-		// TODO Auto-generated method stub
-		return null;
+		return recipe.getId();
 	}
 
 	@Override

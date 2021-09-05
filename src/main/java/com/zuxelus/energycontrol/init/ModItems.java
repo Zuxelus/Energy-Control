@@ -41,7 +41,7 @@ public class ModItems {
 	public static final RegistryObject<Item> kit_mekanism = ITEMS.register("kit_mekanism", () -> new ItemKitMekanism());
 	public static final RegistryObject<Item> kit_redstone = ITEMS.register("kit_redstone", () -> new ItemKitRedstone());
 	public static final RegistryObject<Item> kit_toggle = ITEMS.register("kit_toggle", () -> new ItemKitToggle());
-	//public static final RegistryObject<Item> kit_app_eng = ITEMS.register("kit_app_eng", () -> new ItemKitAppEng());
+	public static Item kit_app_eng;
 	public static final RegistryObject<Item> card_holder = ITEMS.register("card_holder", () -> new ItemCardHolder());
 	public static final RegistryObject<Item> card_energy = ITEMS.register("card_energy", () -> new ItemCardEnergy());
 	public static final RegistryObject<Item> card_energy_array = ITEMS.register("card_energy_array", () -> new ItemCardEnergyArray());
@@ -54,8 +54,8 @@ public class ModItems {
 	public static final RegistryObject<Item> card_text = ITEMS.register("card_text", () -> new ItemCardText());
 	public static final RegistryObject<Item> card_time = ITEMS.register("card_time", () -> new ItemCardTime());
 	public static final RegistryObject<Item> card_toggle = ITEMS.register("card_toggle", () -> new ItemCardToggle());
-	/*public static final RegistryObject<Item> card_app_eng = ITEMS.register("card_app_eng", () -> new ItemCardAppEng());
-	public static final RegistryObject<Item> card_app_eng_inv = ITEMS.register("card_app_eng_inv", () -> new ItemCardAppEngInv());*/
+	public static Item card_app_eng;
+	public static Item card_app_eng_inv;
 	public static final RegistryObject<Item> upgrade_range = ITEMS.register("upgrade_range", () -> new Item(new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
 	public static final RegistryObject<Item> upgrade_color = ITEMS.register("upgrade_color", () -> new Item(new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
 	public static final RegistryObject<Item> upgrade_touch = ITEMS.register("upgrade_touch", () -> new Item(new Item.Properties().tab(EnergyControl.ITEM_GROUP)));

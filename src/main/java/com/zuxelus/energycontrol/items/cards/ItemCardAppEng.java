@@ -7,8 +7,9 @@ import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.init.ModItems;
+import com.zuxelus.energycontrol.utils.StringUtils;
 
-/*import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.cells.ICellInventory;
@@ -17,8 +18,9 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.util.IReadOnlyCollection;
 import appeng.core.Api;
 import appeng.me.helpers.IGridProxyable;
+import appeng.tile.crafting.CraftingMonitorTileEntity;
 import appeng.tile.storage.ChestTileEntity;
-import appeng.tile.storage.DriveTileEntity;*/
+import appeng.tile.storage.DriveTileEntity;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -34,16 +36,16 @@ public class ItemCardAppEng extends ItemCardMain {
 		if (target == null)
 			return CardState.NO_TARGET;
 
-		/*int[] values = { 0, 0, 0, 0, 0 };
+		int[] values = { 0, 0, 0, 0, 0 };
 		IReadOnlyCollection<IGridNode> list = null;
 
-		TileEntity te = world.getTileEntity(target);
-		if (te instanceof TileCraftingMonitorTile) {
-			TileCraftingMonitorTile tile = (TileCraftingMonitorTile) te;
+		TileEntity te = world.getBlockEntity(target);
+		if (te instanceof CraftingMonitorTileEntity) {
+			CraftingMonitorTileEntity tile = (CraftingMonitorTileEntity) te;
 			reader.setInt("type", 0);
 			if (tile.getJobProgress() != null) {
 				reader.setInt("type", 2);
-				reader.setString("name", EnergyControl.proxy.getItemName(tile.getJobProgress().createItemStack()));
+				reader.setString("name",  StringUtils.getItemName(tile.getJobProgress().createItemStack())); // TODO
 				reader.setInt("size", (int) tile.getJobProgress().getStackSize());
 			}
 			return CardState.OK;
@@ -76,11 +78,11 @@ public class ItemCardAppEng extends ItemCardMain {
 		reader.setInt("bytesUsed", values[1]);
 		reader.setInt("typesTotal", values[2]);
 		reader.setInt("typesUsed", values[3]);
-		reader.setInt("items", values[4]);*/
+		reader.setInt("items", values[4]);
 		return CardState.OK;
 	}
 
-	/*private int calcValues(ItemStack stack, int[] values) {
+	private int calcValues(ItemStack stack, int[] values) {
 		if (stack == null)
 			return 0;
 
@@ -100,7 +102,7 @@ public class ItemCardAppEng extends ItemCardMain {
 			}
 		}
 		return cells;
-	}*/
+	}
 
 	@Override
 	public List<PanelString> getStringData(World world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
@@ -133,6 +135,6 @@ public class ItemCardAppEng extends ItemCardMain {
 
 	@Override
 	public Item getKitFromCard() {
-		return null; //ModItems.kit_app_eng.get();
+		return ModItems.kit_app_eng;
 	}
 }

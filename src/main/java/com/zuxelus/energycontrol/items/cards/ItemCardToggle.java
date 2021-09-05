@@ -59,17 +59,7 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 
 	@Override
 	public List<PanelString> getStringData(World world, int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
-		List<PanelString> result = reader.getTitleList();
-		PanelString line = new PanelString();
-		if (reader.getBoolean("value")) {
-			line.textCenter = "o";
-			line.colorCenter = 0x00ff00;
-		} else {
-			line.textCenter = "o";
-			line.colorCenter = 0xff0000;
-		}
-		result.add(line);
-		return result;
+		return null;
 	}
 
 	@Override

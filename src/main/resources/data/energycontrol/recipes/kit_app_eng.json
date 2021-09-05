@@ -1,0 +1,24 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"IT",
+		"PD"
+	],
+	"key": {
+		"I": {
+			"item": "appliedenergistics2:fluix_crystal"
+		},
+		"T": {
+			"item": "mekanism:alloy_infused"
+		},
+		"P": {
+			"item": "minecraft:paper"
+		},
+		"D": {
+			"tag": "forge:dyes/purple"
+		}
+	},
+	"result": {
+		"item": "energycontrol:kit_app_eng"
+	}
+}

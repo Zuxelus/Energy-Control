@@ -12,7 +12,7 @@ import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.utils.StringUtils;
 
-/*import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IPart;
 import appeng.api.storage.IStorageChannel;
@@ -27,7 +27,7 @@ import appeng.parts.CableBusContainer;
 import appeng.parts.reporting.StorageMonitorPart;
 import appeng.tile.networking.CableBusTileEntity;
 import appeng.tile.storage.ChestTileEntity;
-import appeng.tile.storage.DriveTileEntity;*/
+import appeng.tile.storage.DriveTileEntity;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -50,9 +50,9 @@ public class ItemCardAppEngInv extends ItemCardMain implements ITouchAction {
 		if (stacks.size() < 1)
 			return CardState.OK;
 
-		/*IReadOnlyCollection<IGridNode> gridList = null;
+		IReadOnlyCollection<IGridNode> gridList = null;
 
-		TileEntity te = world.getTileEntity(target);
+		TileEntity te = world.getBlockEntity(target);
 		if (te instanceof CableBusTileEntity) {
 			CableBusContainer cb = ((CableBusTileEntity) te).getCableBus();
 			if (cb != null)
@@ -82,11 +82,11 @@ public class ItemCardAppEngInv extends ItemCardMain implements ITouchAction {
 					}
 				}
 		}
-		reader.setItemStackList(stacks);*/
+		reader.setItemStackList(stacks);
 		return CardState.NO_TARGET;
 	}
 
-	/*private void updateValues(ItemStack cell, ArrayList<ItemStack> stacks) {
+	private void updateValues(ItemStack cell, ArrayList<ItemStack> stacks) {
 		for (IStorageChannel<? extends IAEStack<?>> channel : Api.instance().storage().storageChannels()) {
 			ICellInventoryHandler<? extends IAEStack<?>> handler = Api.instance().registries().cell().getCellInventory(cell, null, channel);
 			if (handler != null) {
@@ -95,13 +95,13 @@ public class ItemCardAppEngInv extends ItemCardMain implements ITouchAction {
 					if (st instanceof IAEStack) {
 						IAEStack ae = (IAEStack) st;
 						for (ItemStack stack : stacks)
-							if (ae.asItemStackRepresentation().isItemEqual(stack))
+							if (ae.asItemStackRepresentation().sameItem(stack))
 								stack.setCount(stack.getCount() + (int) ((IAEStack) st).getStackSize());
 					}
 				}
 			}
 		}
-	}*/
+	}
 
 	@Override
 	public List<PanelString> getStringData(World world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
@@ -122,7 +122,12 @@ public class ItemCardAppEngInv extends ItemCardMain implements ITouchAction {
 
 	@Override
 	public Item getKitFromCard() {
-		return null; // ModItems.kit_app_eng.get();
+		return ModItems.kit_app_eng;
+	}
+
+	@Override
+	public boolean enableTouch() {
+		return true;
 	}
 
 	@Override
@@ -148,14 +153,5 @@ public class ItemCardAppEngInv extends ItemCardMain implements ITouchAction {
 	}
 
 	@Override
-	public boolean enableTouch() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void renderImage(TextureManager manager, ICardReader reader, MatrixStack matrixStack) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void renderImage(TextureManager manager, ICardReader reader, MatrixStack matrixStack) { }
 }
