@@ -36,8 +36,7 @@ public class ItemCardEnergy extends ItemCardMain {
 			reader.setInt("type", tag.getInt("type"));
 			reader.setDouble("storage", tag.getDouble("storage"));
 			reader.setDouble("maxStorage", tag.getDouble("maxStorage"));
-			if (tag.getInt("type") == 12)
-				reader.setString("euType", tag.getString("euType"));
+			reader.setString("euType", tag.getString("euType"));
 			return CardState.OK;
 		}
 		return CardState.NO_TARGET;
@@ -49,25 +48,8 @@ public class ItemCardEnergy extends ItemCardMain {
 
 		double energy = reader.getDouble("storage");
 		double storage = reader.getDouble("maxStorage");
-		String euType;
+		String euType = reader.getString("euType");
 
-		switch (reader.getInt("type")) {
-		case ItemCardType.EU_AE:
-			euType = "AE";
-			break;
-		case ItemCardType.EU_gJ:
-			euType = "gJ";
-			break;
-		case 12:
-			euType = reader.getString("euType");
-			break;
-		case ItemCardType.EU_RF:
-			euType = "RF";
-			break;
-		default:
-			euType = "EU";
-			break;
-		}
 		if ((settings & 1) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelEnergy" + euType, energy, showLabels));
 		if ((settings & 4) > 0)

@@ -1,0 +1,24 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "RF",
+        "PB"
+    ],
+    "key": {
+        "P": {
+            "item": "minecraft:paper"
+        },
+        "R": {
+            "tag": "forge:dusts/redstone"
+        },
+        "F": {
+            "item": "mekanism:alloy_infused"
+        },
+        "B": {
+            "tag": "forge:dyes/green"
+        }
+    },
+    "result": {
+        "item": "energycontrol:kit_big_reactors"
+    }
+}

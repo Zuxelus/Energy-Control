@@ -1,0 +1,17 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"RPR"
+	],
+	"key": {
+		"P": {
+			"item": "energycontrol:info_panel"
+		},
+		"R": {
+			"item": "mekanism:enriched_redstone"
+		}
+	},
+	"result": {
+		"item": "energycontrol:holo_panel"
+	}
+}

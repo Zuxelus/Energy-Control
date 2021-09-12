@@ -615,11 +615,6 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		return new AxisAlignedBB(new BlockPos(screen.minX, screen.minY, screen.minZ), new BlockPos(screen.maxX + 1, screen.maxY + 1, screen.maxZ + 1));
 	}
 
-	/*@Override
-	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
-		return oldState.getBlock() != newSate.getBlock();
-	}*/
-
 	@OnlyIn(Dist.CLIENT)
 	public int findTexture() {
 		Screen scr = getScreen();

@@ -5,8 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.zuxelus.energycontrol.blocks.HoloPanelExtender;
 import com.zuxelus.energycontrol.blocks.InfoPanelExtender;
 
+import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.RegistryKey;
@@ -77,18 +79,19 @@ public class ScreenManager {
 		int dy = (facing == Direction.DOWN) || (facing == Direction.UP) ? 0 : -1;
 		int dz = (facing == Direction.NORTH) || (facing == Direction.SOUTH) ? 0 : -1;
 		boolean advanced = panel instanceof TileEntityAdvancedInfoPanel;
-		updateScreenBound(screen, dx, 0, 0, panel.getLevel(), advanced);
-		updateScreenBound(screen, -dx, 0, 0, panel.getLevel(), advanced);
-		updateScreenBound(screen, 0, dy, 0, panel.getLevel(), advanced);
-		updateScreenBound(screen, 0, -dy, 0, panel.getLevel(), advanced);
-		updateScreenBound(screen, 0, 0, dz, panel.getLevel(), advanced);
-		updateScreenBound(screen, 0, 0, -dz, panel.getLevel(), advanced);
+		boolean holo = panel instanceof TileEntityHoloPanel;
+		updateScreenBound(screen, dx, 0, 0, panel.getLevel(), advanced, holo);
+		updateScreenBound(screen, -dx, 0, 0, panel.getLevel(), advanced, holo);
+		updateScreenBound(screen, 0, dy, 0, panel.getLevel(), advanced, holo);
+		updateScreenBound(screen, 0, -dy, 0, panel.getLevel(), advanced, holo);
+		updateScreenBound(screen, 0, 0, dz, panel.getLevel(), advanced, holo);
+		updateScreenBound(screen, 0, 0, -dz, panel.getLevel(), advanced, holo);
 		screen.init(false, panel.getLevel());
 		panel.updateData();
 		return screen;
 	}
 
-	private void updateScreenBound(Screen screen, int dx, int dy, int dz, World world, boolean advanced) {
+	private void updateScreenBound(Screen screen, int dx, int dy, int dz, World world, boolean advanced, boolean holo) {
 		if (dx == 0 && dy == 0 && dz == 0)
 			return;
 		boolean isMin = dx + dy + dz < 0;
@@ -115,7 +118,7 @@ public class ScreenManager {
 				for (int interY = 0; interY <= ry && allOk; interY++) {
 					for (int interZ = 0; interZ <= rz && allOk; interZ++) {
 						TileEntityInfoPanel core = screen.getCore(world);
-						allOk = core != null && isValidExtender(world, new BlockPos(x + dir * interX, y + dir * interY, z + dir * interZ), core.getFacing(), advanced);
+						allOk = core != null && isValidExtender(world, new BlockPos(x + dir * interX, y + dir * interY, z + dir * interZ), core.getFacing(), advanced, holo);
 					}
 				}
 			}
@@ -134,17 +137,20 @@ public class ScreenManager {
 		}
 	}
 
-	private boolean isValidExtender(World world, BlockPos pos, Direction facing, boolean advanced) {
-		if (!(world.getBlockState(pos).getBlock() instanceof InfoPanelExtender))
+	private boolean isValidExtender(World world, BlockPos pos, Direction facing, boolean advanced, boolean holo) {
+		Block block = world.getBlockState(pos).getBlock();
+		if (!(block instanceof InfoPanelExtender || block instanceof HoloPanelExtender))
 			return false;
-		TileEntity tileEntity = world.getBlockEntity(pos);
-		if (!(tileEntity instanceof TileEntityInfoPanelExtender))
+		TileEntity te = world.getBlockEntity(pos);
+		if (!(te instanceof TileEntityInfoPanelExtender))
 			return false;
-		if (advanced ^ (tileEntity instanceof TileEntityAdvancedInfoPanelExtender))
+		if (advanced ^ (te instanceof TileEntityAdvancedInfoPanelExtender))
 			return false;
-		if (((TileEntityInfoPanelExtender) tileEntity).getFacing() != facing)
+		if (holo ^ (te instanceof TileEntityHoloPanelExtender))
 			return false;
-		if (((IScreenPart) tileEntity).getScreen() != null)
+		if (((TileEntityInfoPanelExtender) te).getFacing() != facing)
+			return false;
+		if (((IScreenPart) te).getScreen() != null)
 			return false;
 		return true;
 	}

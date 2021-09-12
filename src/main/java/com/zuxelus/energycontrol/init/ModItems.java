@@ -28,6 +28,8 @@ public class ModItems {
 	public static final RegistryObject<Block> info_panel_extender = BLOCKS.register("info_panel_extender", () -> new InfoPanelExtender());
 	public static final RegistryObject<Block> info_panel_advanced = BLOCKS.register("info_panel_advanced", () -> new AdvancedInfoPanel());
 	public static final RegistryObject<Block> info_panel_advanced_extender = BLOCKS.register("info_panel_advanced_extender", () -> new AdvancedInfoPanelExtender());
+	public static final RegistryObject<Block> holo_panel = BLOCKS.register("holo_panel", () -> new HoloPanel());
+	public static final RegistryObject<Block> holo_panel_extender = BLOCKS.register("holo_panel_extender", () -> new HoloPanelExtender());
 	//public static final RegistryObject<Block> average_counter = BLOCKS.register("average_counter", () -> new AverageCounter());
 	//public static final RegistryObject<Block> energy_counter = BLOCKS.register("energy_counter", () -> new EnergyCounter());
 	public static final RegistryObject<Block> kit_assembler = BLOCKS.register("kit_assembler", () -> new KitAssembler());
@@ -39,6 +41,7 @@ public class ModItems {
 	public static final RegistryObject<Item> kit_liquid = ITEMS.register("kit_liquid", () -> new ItemKitLiquid());
 	public static final RegistryObject<Item> kit_liquid_advanced = ITEMS.register("kit_liquid_advanced", () -> new ItemKitLiquidAdvanced());
 	public static final RegistryObject<Item> kit_mekanism = ITEMS.register("kit_mekanism", () -> new ItemKitMekanism());
+	public static final RegistryObject<Item> kit_big_reactors = ITEMS.register("kit_big_reactors", () -> new ItemKitBigReactors());
 	public static final RegistryObject<Item> kit_redstone = ITEMS.register("kit_redstone", () -> new ItemKitRedstone());
 	public static final RegistryObject<Item> kit_toggle = ITEMS.register("kit_toggle", () -> new ItemKitToggle());
 	public static Item kit_app_eng;
@@ -50,6 +53,7 @@ public class ModItems {
 	public static final RegistryObject<Item> card_liquid_advanced = ITEMS.register("card_liquid_advanced", () -> new ItemCardLiquidAdvanced());
 	public static final RegistryObject<Item> card_liquid_array = ITEMS.register("card_liquid_array", () -> new ItemCardLiquidArray());
 	public static final RegistryObject<Item> card_mekanism = ITEMS.register("card_mekanism", () -> new ItemCardMekanism());
+	public static final RegistryObject<Item> card_big_reactors = ITEMS.register("card_big_reactors", () -> new ItemCardBigReactors());
 	public static final RegistryObject<Item> card_redstone = ITEMS.register("card_redstone", () -> new ItemCardRedstone());
 	public static final RegistryObject<Item> card_text = ITEMS.register("card_text", () -> new ItemCardText());
 	public static final RegistryObject<Item> card_time = ITEMS.register("card_time", () -> new ItemCardTime());

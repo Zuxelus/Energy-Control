@@ -14,6 +14,7 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.boiler.BoilerMultiblockData;
+import mekanism.common.content.matrix.MatrixMultiblockData;
 import mekanism.common.tile.*;
 import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.factory.TileEntityItemStackGasToItemStackFactory;
@@ -21,6 +22,7 @@ import mekanism.common.tile.factory.TileEntityMetallurgicInfuserFactory;
 import mekanism.common.tile.laser.TileEntityBasicLaser;
 import mekanism.common.tile.machine.*;
 import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
+import mekanism.common.tile.multiblock.TileEntityInductionCasing;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
 import mekanism.common.util.MekanismUtils;
@@ -46,11 +48,8 @@ public class CrossMekanism extends CrossModBase {
 			return setStorage(((TileEntityCombiner) te).getEnergyContainer());
 		if (te instanceof TileEntityAdvancedBoundingBlock) {
 			TileEntity tile = te.getLevel().getBlockEntity(((TileEntityAdvancedBoundingBlock)te).getMainPos());
-			if (tile instanceof TileEntityDigitalMiner) {
-				CompoundNBT tag = setStorage(((TileEntityDigitalMiner) tile).getEnergyContainer());
-				tag.putInt("type", 12);
-				return tag;
-			}
+			if (tile instanceof TileEntityDigitalMiner)
+				return setStorage(((TileEntityDigitalMiner) tile).getEnergyContainer());
 		}
 		if (te instanceof TileEntityMetallurgicInfuser)
 			return setStorage(((TileEntityMetallurgicInfuser) te).getEnergyContainer());
@@ -63,9 +62,7 @@ public class CrossMekanism extends CrossModBase {
 				Field field = TileEntityChargepad.class.getDeclaredField("energyContainer");
 				field.setAccessible(true);
 				MachineEnergyContainer<TileEntityChargepad> energyContainer = (MachineEnergyContainer<TileEntityChargepad>) field.get(te);
-				CompoundNBT tag = setStorage(energyContainer);
-				tag.putInt("type", 12);
-				return tag;
+				return setStorage(energyContainer);
 			} catch (Throwable ignored) { }
 		}
 		if (te instanceof TileEntityRotaryCondensentrator)
@@ -98,6 +95,10 @@ public class CrossMekanism extends CrossModBase {
 			return setStorage(((TileEntityResistiveHeater) te).getEnergyContainer());
 		if (te instanceof TileEntityBasicLaser)
 			return setStorage(((TileEntityBasicLaser) te).getEnergyContainer());
+		if (te instanceof TileEntityInductionCasing) {
+			MatrixMultiblockData matrix = ((TileEntityInductionCasing) te).getMultiblock();
+			return setStorage(matrix.getEnergyContainer());
+		}
 		return null;
 	}
 
@@ -360,6 +361,13 @@ public class CrossMekanism extends CrossModBase {
 			CompoundNBT tag = setStorage(((TileEntityBasicLaser) te).getEnergyContainer());
 			return tag;
 		}
+		if (te instanceof TileEntityInductionCasing) {
+			MatrixMultiblockData matrix = ((TileEntityInductionCasing) te).getMultiblock();
+			CompoundNBT tag = setStorage(matrix.getEnergyContainer());
+			tag.putDouble("input", MekanismUtils.convertToDisplay(matrix.getLastInput()).doubleValue());
+			tag.putDouble("output", MekanismUtils.convertToDisplay(matrix.getLastOutput()).doubleValue());
+			return tag;
+		}
 		return null;
 	}
 
@@ -411,7 +419,6 @@ public class CrossMekanism extends CrossModBase {
 	public static CompoundNBT setStorage(IEnergyContainer container) {
 		CompoundNBT tag = new CompoundNBT();
 		EnergyType euType = MekanismConfig.general.energyUnit.get();
-		tag.putInt("type", 12);
 		tag.putString("euType", euType.name());
 		tag.putDouble("storage", MekanismUtils.convertToDisplay(container.getEnergy()).doubleValue());
 		tag.putDouble("maxStorage",  MekanismUtils.convertToDisplay(container.getMaxEnergy()).doubleValue());

@@ -3,6 +3,7 @@ package com.zuxelus.energycontrol.utils;
 import com.zuxelus.energycontrol.api.ICardReader;
 
 import net.minecraft.client.resources.I18n;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 
 public class FluidInfo {
@@ -29,6 +30,18 @@ public class FluidInfo {
 			}
 		}
 		capacity = tank.getCapacity();
+	}
+
+	public FluidInfo(FluidStack stack, long capacity) {
+		if (stack != null) {
+			amount = stack.getAmount();
+			if (amount > 0) {
+				translationKey = stack.getTranslationKey();
+				texture = stack.getFluid().getAttributes().getStillTexture().toString();
+				color = stack.getFluid().getAttributes().getColor();
+			}
+		}
+		this.capacity = capacity;
 	}
 
 	public void write(ICardReader reader) {

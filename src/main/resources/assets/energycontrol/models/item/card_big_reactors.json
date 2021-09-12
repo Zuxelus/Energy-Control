@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "energycontrol:items/kit_big_reactor"
+    "layer0": "energycontrol:item/card_big_reactors"
   }
 }

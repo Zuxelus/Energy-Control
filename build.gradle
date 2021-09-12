@@ -12,7 +12,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.16.5-0.0.2'
+version = '1.16.5-0.0.3'
 repositories {
     maven { url 'https://modmaven.dev/' }
     maven {
@@ -87,6 +87,10 @@ dependencies {
     compileOnly fg.deobf ("mekanism:Mekanism:${mekanism_version}:generators")
     compileOnly fg.deobf ("curse.maven:ae2-223794:3354897")
     compileOnly fg.deobf ("org.squiddev:cc-tweaked-${mc_version}:${cct_version}")
+    compileOnly fg.deobf ("curse.maven:extremereactors-250277:3426518")
+    compileOnly fg.deobf ("curse.maven:zerocore-247921:3426514")
+    compileOnly fg.deobf ("curse.maven:biggerreactors-407780:3407098")
+    compileOnly fg.deobf ("curse.maven:phosphophyllite-412551:3397407")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

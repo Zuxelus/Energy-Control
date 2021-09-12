@@ -27,6 +27,10 @@ public class ModTileEntityTypes {
 		TileEntityType.Builder.of(TileEntityAdvancedInfoPanel::new, ModItems.info_panel_advanced.get()).build(null));
 	public static final RegistryObject<TileEntityType<TileEntityAdvancedInfoPanelExtender>> info_panel_advanced_extender = TILE_ENTITY_TYPES.register("info_panel_advanced_extender", () ->
 		TileEntityType.Builder.of(TileEntityAdvancedInfoPanelExtender::new, ModItems.info_panel_advanced_extender.get()).build(null));
+	public static final RegistryObject<TileEntityType<TileEntityHoloPanel>> holo_panel = TILE_ENTITY_TYPES.register("holo_panel", () ->
+		TileEntityType.Builder.of(TileEntityHoloPanel::new, ModItems.holo_panel.get()).build(null));
+	public static final RegistryObject<TileEntityType<TileEntityHoloPanelExtender>> holo_panel_extender = TILE_ENTITY_TYPES.register("holo_panel_extender", () ->
+		TileEntityType.Builder.of(TileEntityHoloPanelExtender::new, ModItems.holo_panel_extender.get()).build(null));
 	//public static final RegistryObject<TileEntityType<TileEntityAverageCounter>> average_counter = TILE_ENTITY_TYPES.register("average_counter", () ->
 	//	TileEntityType.Builder.of(TileEntityAverageCounter::new, ModItems.average_counter.get()).build(null));
 	//public static final RegistryObject<TileEntityType<TileEntityEnergyCounter>> energy_counter = TILE_ENTITY_TYPES.register("energy_counter", () ->

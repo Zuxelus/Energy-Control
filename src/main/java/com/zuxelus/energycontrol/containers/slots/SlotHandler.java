@@ -21,6 +21,7 @@ public class SlotHandler {
 		registerTexture(event, EnergyControl.MODID + ":slots/slot_color");
 		registerTexture(event, EnergyControl.MODID + ":slots/slot_range");
 		registerTexture(event, EnergyControl.MODID + ":slots/slot_touch");
+		registerTexture(event, EnergyControl.MODID + ":slots/slot_power");
 		registerTexture(event, "zlib:slots/slot_chargeable");
 		registerTexture(event, "zlib:slots/slot_dischargeable_0");
 		registerTexture(event, "zlib:slots/slot_dischargeable_1");

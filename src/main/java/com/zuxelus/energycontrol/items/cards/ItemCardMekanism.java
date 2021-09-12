@@ -77,6 +77,10 @@ public class ItemCardMekanism extends ItemCardMain {
 			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString("tank4"), showLabels));
 		if (reader.hasField("tank5") && (settings & 16) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString("tank5"), showLabels));
+		if (reader.hasField("input") && (settings & 32) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelInput", reader.getDouble("input"), euType + "/t", showLabels));
+		if (reader.hasField("output") && (settings & 32) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("output"), euType + "/t", showLabels));
 		if (reader.hasField("active"))
 			addOnOff(result, isServer, reader.getBoolean("active"));
 		return result;

@@ -33,11 +33,13 @@ public class ClientProxy {
 		ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.info_panel_extender.get(), TEInfoPanelExtenderRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.info_panel_advanced.get(), TEAdvancedInfoPanelRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.info_panel_advanced_extender.get(), TEAdvancedInfoPanelExtenderRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.holo_panel.get(), TileEntityHoloPanelRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.timer.get(), TileEntityTimerRenderer::new);
 
 		DeferredWorkQueue.runLater(() -> {
 			ScreenManager.<ContainerInfoPanel, GuiInfoPanel>register(ModContainerTypes.info_panel.get(), GuiInfoPanel::new);
 			ScreenManager.<ContainerAdvancedInfoPanel, GuiAdvancedInfoPanel>register(ModContainerTypes.info_panel_advanced.get(), GuiAdvancedInfoPanel::new);
+			ScreenManager.<ContainerHoloPanel, GuiHoloPanel>register(ModContainerTypes.holo_panel.get(), GuiHoloPanel::new);
 			ScreenManager.register(ModContainerTypes.range_trigger.get(), GuiRangeTrigger::new);
 			ScreenManager.register(ModContainerTypes.kit_assembler.get(), GuiKitAssembler::new);
 			ScreenManager.register(ModContainerTypes.timer.get(), GuiTimer::new);
