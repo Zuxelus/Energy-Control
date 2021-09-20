@@ -10,7 +10,6 @@ import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.ITouchAction;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
-import com.zuxelus.energycontrol.init.ModItems;
 
 import net.minecraft.block.AbstractButtonBlock;
 import net.minecraft.block.Block;
@@ -19,10 +18,8 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.WoodButtonBlock;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldVertexBufferUploader;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
@@ -66,11 +63,6 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 	@OnlyIn(Dist.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		return null;
-	}
-
-	@Override
-	public Item getKitFromCard() {
-		return ModItems.kit_toggle.get();
 	}
 
 	@Override

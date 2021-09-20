@@ -12,7 +12,7 @@
             "item": "minecraft:bucket"
         },
         "F": {
-            "item": "mekanism:alloy_infused"
+            "item": "energycontrol:radio_transmitter"
         },
         "B": {
 			"tag": "forge:dyes/blue"

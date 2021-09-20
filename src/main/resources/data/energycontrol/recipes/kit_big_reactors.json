@@ -1,24 +1,39 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-        "RF",
-        "PB"
-    ],
-    "key": {
-        "P": {
-            "item": "minecraft:paper"
-        },
-        "R": {
-            "tag": "forge:dusts/redstone"
-        },
-        "F": {
-            "item": "mekanism:alloy_infused"
-        },
-        "B": {
-            "tag": "forge:dyes/green"
-        }
-    },
-    "result": {
-        "item": "energycontrol:kit_big_reactors"
-    }
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"RF",
+		"PB"
+	],
+	"key": {
+		"P": {
+			"item": "minecraft:paper"
+		},
+		"R": {
+			"tag": "forge:dusts/redstone"
+		},
+		"F": {
+			"item": "energycontrol:radio_transmitter"
+		},
+		"B": {
+			"tag": "forge:dyes/green"
+		}
+	},
+	"result": {
+		"item": "energycontrol:kit_big_reactors"
+	},
+	"conditions": [
+		{
+			"type": "forge:or",
+			"values": [
+				{
+					"type": "forge:mod_loaded",
+					"modid": "bigreactors"
+				},
+				{
+					"type": "forge:mod_loaded",
+					"modid": "biggerreactors"
+				}
+			]
+		}
+	]
 }

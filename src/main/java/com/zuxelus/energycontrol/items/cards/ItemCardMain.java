@@ -93,11 +93,6 @@ public abstract class ItemCardMain extends Item implements IItemCard {
 		return false;
 	}
 
-	@Override
-	public Item getKitFromCard() {
-		return null;
-	}
-
 	protected BlockPos getCoordinates(ICardReader reader, int cardNumber) {
 		if (cardNumber >= reader.getCardCount())
 			return null;

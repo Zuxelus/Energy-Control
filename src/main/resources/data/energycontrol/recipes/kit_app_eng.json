@@ -9,7 +9,7 @@
 			"item": "appliedenergistics2:fluix_crystal"
 		},
 		"T": {
-			"item": "mekanism:alloy_infused"
+			"item": "energycontrol:radio_transmitter"
 		},
 		"P": {
 			"item": "minecraft:paper"
@@ -20,5 +20,16 @@
 	},
 	"result": {
 		"item": "energycontrol:kit_app_eng"
-	}
+	},
+	"conditions": [
+		{
+			"type": "forge:and",
+			"values": [
+				{
+					"type": "forge:mod_loaded",
+					"modid": "appliedenergistics2"
+				}
+			]
+		}
+	]
 }

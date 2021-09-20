@@ -22,7 +22,7 @@ public class ItemKitBigReactors extends ItemKitMain {
 		if (tag == null)
 			tag = CrossModLoader.getCrossMod(ModIDs.BIGGER_REACTORS).getCardData(te);
 		if (tag != null) {
-			ItemStack newCard = new ItemStack(ModItems.card_big_reactors.get());
+			ItemStack newCard = new ItemStack(ModItems.card_big_reactors);
 			ItemStackHelper.setCoordinates(newCard, pos);
 			return newCard;
 		}

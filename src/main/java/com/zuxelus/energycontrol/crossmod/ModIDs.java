@@ -10,10 +10,11 @@ public class ModIDs {
     public static final String DRACONIC_EVOLUTION = "draconicevolution";
     public static final String GALACTICRAFT_CORE = "galacticraftcore";
     public static final String GALACTICRAFT_PLANETS = "galacticraftplanets";
+    public static final String IMMERSIVE_ENGINEERING = "immersiveengineering";
     public static final String MEKANISM = "mekanism";
     public static final String MEKANISM_GENERATORS = "mekanismgenerators";
     public static final String NUCLEAR_CRAFT = "nuclearcraft";
     public static final String COMPUTER_CRAFT = "computercraft";
-    public static final String THERMAL_EXPANSION = "thermalexpansion";
+    public static final String THERMAL_EXPANSION = "thermal_expansion";
     public static final String OPEN_COMPUTERS = "opencomputers";
 }

@@ -1,28 +1,28 @@
 {
 	"type": "minecraft:crafting_shaped",
 	"pattern": [
-        " T ",
-        "CMC",
-        "FAA"
-    ],
-    "key": {
-        "T": {
-            "item": "minecraft:crafting_table"
-        },
-        "M": {
-            "item": "mekanism:boiler_casing"
-        },
-        "F": {
-            "item": "mekanism:alloy_infused"
-        },
-        "C": {
-            "tag":"forge:circuits/basic"
-        },
-        "A": {
-            "item": "mekanism:basic_universal_cable"
-        }
-    },
-    "result": {
-        "item": "energycontrol:kit_assembler"
+		"iCi",
+		"RHR",
+		"iFi"
+	],
+	"key": {
+		"i": {
+			"tag": "forge:ingots/iron"
+		},
+		"C": {
+			"item": "minecraft:crafting_table"
+		},
+		"R": {
+			"tag": "forge:dusts/redstone"
+		},
+		"H": {
+			"item": "minecraft:chest"
+		},
+		"F": {
+			"item": "minecraft:furnace"
+		}
+	},
+	"result": {
+		"item": "energycontrol:kit_assembler"
 	}
 }

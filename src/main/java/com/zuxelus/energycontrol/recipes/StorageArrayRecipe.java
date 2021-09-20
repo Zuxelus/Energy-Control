@@ -5,7 +5,6 @@ import java.util.Vector;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.*;
 
-import mekanism.common.registries.MekanismItems;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -80,7 +79,7 @@ public class StorageArrayRecipe implements ICraftingRecipe {
 		if (cardCount == 0 && arrayCount == 1) {
 			int cnt = new ItemCardReader(array).getInt("cardCount");
 			if (cnt > 0)
-				return new ItemStack(MekanismItems.INFUSED_ALLOY.getItem(), cnt);
+				return new ItemStack(ModItems.radio_transmitter.get(), cnt);
 		} else if (arrayCount == 1 && cardCount > 0) {
 			int cnt = new ItemCardReader(array).getInt("cardCount");
 			if (cnt + cardCount <= 16) {
@@ -135,6 +134,6 @@ public class StorageArrayRecipe implements ICraftingRecipe {
 
 	@Override
 	public IRecipeSerializer<?> getSerializer() {
-		return ModItems.ARRAY.getRecipeSerializer();
+		return ModItems.ARRAY_SERIALIZER.get();
 	}
 }

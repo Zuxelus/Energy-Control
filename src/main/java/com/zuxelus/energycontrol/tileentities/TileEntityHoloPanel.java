@@ -5,7 +5,6 @@ import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 
-import mekanism.common.registries.MekanismItems;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -41,7 +40,7 @@ public class TileEntityHoloPanel extends TileEntityInfoPanel {
 		case SLOT_UPGRADE_RANGE:
 			return stack.getItem().equals(ModItems.upgrade_range.get());
 		case SLOT_UPGRADE_POWER:
-			return stack.getItem().equals(MekanismItems.ADVANCED_CONTROL_CIRCUIT.get());
+			return stack.getItem().equals(ModItems.advanced_circuit.get());
 		default:
 			return false;
 		}

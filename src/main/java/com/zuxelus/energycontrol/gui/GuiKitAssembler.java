@@ -9,17 +9,14 @@ import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.containers.ContainerKitAssembler;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
-import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
 import com.zuxelus.zlib.gui.GuiContainerBase;
 
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -32,30 +29,11 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_kit_assembler.png");
 
 	private ContainerKitAssembler container;
-	private TextFieldWidget textboxTitle;
-	private boolean modified;
 
 	public GuiKitAssembler(ContainerKitAssembler container, PlayerInventory inventory, ITextComponent title) {
 		super(container, inventory, title, TEXTURE);
 		this.container = container;
-		imageHeight = 206;
-	}
-
-	protected void initControls() {
-		ItemStack stack = container.te.getItem(TileEntityKitAssembler.SLOT_INFO);
-		if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain) {
-			if (!modified)
-				textboxTitle = addTextFieldWidget(7, 16, 162, 18, true, new ItemCardReader(stack).getTitle());
-		} else {
-			modified = false;
-			textboxTitle = null;
-		}
-	}
-
-	@Override
-	public void init() {
-		super.init();
-		initControls();
+		imageHeight = 182;
 	}
 
 	@Override
@@ -67,6 +45,8 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 			renderInfoToolTip(matrixStack, slot, mouseX, mouseY);
 		else
 			renderTooltip(matrixStack, mouseX, mouseY);
+		if (isHovering(165, 16, 4, 52, mouseX, mouseY))
+			renderTooltip(matrixStack, new StringTextComponent(String.format("%d FE/%d FE", (int) container.te.getEnergy(), TileEntityKitAssembler.CAPACITY)), mouseX, mouseY);
 	}
 
 	private void renderInfoToolTip(MatrixStack matrixStack, Slot slot, int x, int y) {
@@ -95,73 +75,14 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 
 		int energyHeight = container.te.getEnergyFactor();
 		if (energyHeight > 0)
-			blit(matrixStack, leftPos + 9, topPos + 62 + (14 - energyHeight), 176, 14 - energyHeight, 14, energyHeight);
+			blit(matrixStack, leftPos + 165, topPos + 16 + (52 - energyHeight), 176, 17 + 52 - energyHeight, 4, energyHeight);
 		int productionWidth = container.te.getProductionFactor();
-		if (energyHeight > 0)
-			blit(matrixStack, leftPos + 86, topPos + 60, 176, 15, productionWidth, 17);
-		if (textboxTitle != null)
-			textboxTitle.renderButton(matrixStack, mouseX, mouseY, partialTicks);
+		if (productionWidth > 0)
+			blit(matrixStack, leftPos + 86, topPos + 35, 176, 0, productionWidth, 17);
 	}
 
 	@Override
 	protected void renderLabels(MatrixStack matrixStack, int mouseX, int mouseY) {
 		drawCenteredText(matrixStack, title, imageWidth, 6);
 	}
-
-	@Override
-	public boolean mouseReleased(double mouseX, double mouseY, int mouseButton) {
-		if (textboxTitle != null) {
-			textboxTitle.mouseReleased(mouseX - leftPos, mouseY - topPos, mouseButton);
-			if (textboxTitle.isFocused())
-				return true;
-			magicalSpecialHackyFocus(null);
-			updateTitle();
-		}
-		return super.mouseReleased(mouseX, mouseY, mouseButton);
-	}
-
-	@Override
-	public void tick() {
-		super.tick();
-		if (textboxTitle != null)
-			textboxTitle.tick();
-		initControls();
-	}
-
-	@SuppressWarnings("resource")
-	protected void updateTitle() {
-		if (textboxTitle == null)
-			return;
-		if (container.te.getLevel().isClientSide) {
-			CompoundNBT tag = new CompoundNBT();
-			tag.putInt("type", 4);
-			tag.putInt("slot", 0);
-			tag.putString("title", textboxTitle.getValue());
-			NetworkHelper.updateSeverTileEntity(container.te.getBlockPos(), tag);
-			ItemStack card = container.te.getItem(0);
-			if (!card.isEmpty() && card.getItem() instanceof ItemCardMain)
-				new ItemCardReader(card).setTitle(textboxTitle.getValue());
-		}
-	}
-
-	@Override
-	public void onClose() {
-		updateTitle();
-		super.onClose();
-	}
-
-	/*@Override
-	protected void keyTyped(char typedChar, int keyCode) throws IOException {
-		if (textboxTitle != null && textboxTitle.isFocused())
-			if (keyCode == 1)
-				mc.player.closeScreen();
-			else if (typedChar == 13)
-				updateTitle();
-			else {
-				modified = true;
-				textboxTitle.textboxKeyTyped(typedChar, keyCode);
-			}
-		else
-			super.keyTyped(typedChar, keyCode);
-	}*/
 }

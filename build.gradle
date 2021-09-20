@@ -12,7 +12,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.16.5-0.0.3'
+version = '1.16.5-0.2.0'
 repositories {
     maven { url 'https://modmaven.dev/' }
     maven {
@@ -37,10 +37,9 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-
+            //property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
+            property 'mixin.env.disableRefMap', 'true'
 
             mods {
                 EnergyControl {
@@ -51,10 +50,9 @@ minecraft {
 
         server {
             workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-
+            //property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
+            property 'mixin.env.disableRefMap', 'true'
 
             mods {
                 EnergyControl {
@@ -85,12 +83,17 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.2.4'
     compileOnly fg.deobf ("mekanism:Mekanism:${mekanism_version}")
     compileOnly fg.deobf ("mekanism:Mekanism:${mekanism_version}:generators")
-    compileOnly fg.deobf ("curse.maven:ae2-223794:3354897")
-    compileOnly fg.deobf ("org.squiddev:cc-tweaked-${mc_version}:${cct_version}")
+    compileOnly fg.deobf ("curse.maven:ae2-223794:3455386")
+    compileOnly fg.deobf ("org.squiddev:cc-tweaked-${minecraft_version}:${cct_version}")
+    compileOnly fg.deobf ("curse.maven:jei-238222:3438494")
     compileOnly fg.deobf ("curse.maven:extremereactors-250277:3426518")
     compileOnly fg.deobf ("curse.maven:zerocore-247921:3426514")
     compileOnly fg.deobf ("curse.maven:biggerreactors-407780:3407098")
     compileOnly fg.deobf ("curse.maven:phosphophyllite-412551:3397407")
+    compileOnly fg.deobf ("curse.maven:thermal_expansion-69163:3404884");
+    compileOnly fg.deobf ("curse.maven:thermal_foundation-222880:3412300");
+    compileOnly fg.deobf ("curse.maven:cofh_core-69162:3407019");
+    compileOnly fg.deobf ("curse.maven:ImmersiveEngineering-231951:3431122");
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

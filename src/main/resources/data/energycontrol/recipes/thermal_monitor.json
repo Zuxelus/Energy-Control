@@ -1,22 +1,22 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-        "LLL",
-        "LCL",
-        "LRL"
-    ],
-    "key": {
-        "L": {
-            "tag": "forge:ingots/gold"
-        },
-        "R": {
-            "tag": "forge:dusts/redstone"
-        },
-        "C": {
-            "tag": "forge:circuits/advanced"
-        }
-    },
-    "result": {
-        "item": "energycontrol:thermal_monitor"
-    }
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"LLL",
+		"LCL",
+		"LRL"
+	],
+	"key": {
+		"L": {
+			"tag": "forge:ingots/gold"
+		},
+		"R": {
+			"tag": "forge:dusts/redstone"
+		},
+		"C": {
+			"tag": "forge:circuits/advanced"
+		}
+	},
+	"result": {
+		"item": "energycontrol:thermal_monitor"
+	}
 }

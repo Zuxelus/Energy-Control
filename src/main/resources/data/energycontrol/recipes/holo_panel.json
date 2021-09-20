@@ -1,14 +1,19 @@
 {
 	"type": "minecraft:crafting_shaped",
 	"pattern": [
-		"RPR"
+		" # ",
+		"RPR",
+		" # "
 	],
 	"key": {
 		"P": {
 			"item": "energycontrol:info_panel"
 		},
 		"R": {
-			"item": "mekanism:enriched_redstone"
+			"tag": "forge:dusts/redstone"
+		},
+		"#": {
+			"item": "energycontrol:strong_string"
 		}
 	},
 	"result": {

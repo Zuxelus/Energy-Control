@@ -121,11 +121,6 @@ public class ItemCardAppEngInv extends ItemCardMain implements ITouchAction {
 	}
 
 	@Override
-	public Item getKitFromCard() {
-		return ModItems.kit_app_eng;
-	}
-
-	@Override
 	public boolean enableTouch() {
 		return true;
 	}

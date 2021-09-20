@@ -1,0 +1,21 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"#C#",
+		" S "
+	],
+	"key": {
+		"#": {
+			"item": "energycontrol:strong_string"
+		},
+		"C": {
+			"tag": "forge:circuits/basic"
+		},
+		"S": {
+			"tag": "minecraft:wooden_slabs"
+		}
+	},
+	"result": {
+		"item": "energycontrol:radio_transmitter"
+	}
+}

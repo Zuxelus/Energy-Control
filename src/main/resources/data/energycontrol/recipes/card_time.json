@@ -1,9 +1,9 @@
 {
 	"type": "minecraft:crafting_shaped",
 	"pattern": [
-		" C ",
-		"PWP",
-		" C "
+		" S ",
+		"PCP",
+		" S "
 	],
 	"key": {
 		"C": {
@@ -12,8 +12,8 @@
 		"P": {
 			"item": "minecraft:paper"
 		},
-		"W": {
-			"item": "mekanism:basic_universal_cable"
+		"S": {
+			"item": "energycontrol:strong_string"
 		}
 	},
 	"result": {

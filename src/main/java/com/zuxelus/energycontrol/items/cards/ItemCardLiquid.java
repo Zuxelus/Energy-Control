@@ -11,7 +11,6 @@ import com.zuxelus.energycontrol.api.IHasBars;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import net.minecraft.client.Minecraft;
@@ -22,7 +21,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -65,11 +63,11 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 			result.add(new PanelString("msg.ec.InfoPanelName", name, showLabels));
 		}
 		if ((settings & 2) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelAmountmB", amount, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelAmount", amount, "mB", showLabels));
 		if ((settings & 4) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelFreemB", capacity - amount, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelFree", (double) capacity - amount, "mB", showLabels));
 		if ((settings & 8) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelCapacitymB", capacity, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelCapacity", capacity, "mB", showLabels));
 		if ((settings & 16) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelPercentage", capacity == 0 ? 100 : (amount * 100 / capacity), showLabels));
 		return result;
@@ -86,11 +84,6 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidPercentage"), 16));
 		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelShowBar"), 1024));
 		return result;
-	}
-
-	@Override
-	public Item getKitFromCard() {
-		return ModItems.kit_liquid.get();
 	}
 
 	@Override

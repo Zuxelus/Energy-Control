@@ -1,19 +1,19 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-        " L ",
-        "LCL",
-        " L "
-    ],
-    "key": {
-        "C": {
-            "item": "minecraft:chest"
-        },
-        "L": {
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		" L ",
+		"LCL",
+		" L "
+	],
+	"key": {
+		"C": {
+			"item": "minecraft:chest"
+		},
+		"L": {
 			"tag": "forge:leather"
-        }
-    },
-    "result": {
-        "item": "energycontrol:card_holder"
-    }
+		}
+	},
+	"result": {
+		"item": "energycontrol:card_holder"
+	}
 }

@@ -132,9 +132,4 @@ public class ItemCardAppEng extends ItemCardMain {
 	public List<PanelSetting> getSettingsList() {
 		return null;
 	}
-
-	@Override
-	public Item getKitFromCard() {
-		return ModItems.kit_app_eng;
-	}
 }

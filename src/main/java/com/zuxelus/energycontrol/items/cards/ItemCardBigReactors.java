@@ -10,10 +10,8 @@ import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
-import com.zuxelus.energycontrol.init.ModItems;
 
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -44,7 +42,6 @@ public class ItemCardBigReactors extends ItemCardMain {
 	@Override
 	public List<PanelString> getStringData(World world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
-		String euType = reader.getString("system");
 		switch (reader.getInt("type")) {
 		case 1:
 			if ((settings & 2) > 0) {
@@ -53,7 +50,7 @@ public class ItemCardBigReactors extends ItemCardMain {
 				result.add(new PanelString("msg.ec.InfoPanelPassiveCooling", reader.getBoolean("cooling").toString(), showLabels));
 			}
 			if ((settings & 4) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelEnergyFE" + euType, reader.getString("storage"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelEnergyFE", reader.getString("storage"), showLabels));
 			if ((settings & 16) > 0)
 				if (reader.getBoolean("cooling"))
 					result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("output"), "FE/t", showLabels));
@@ -75,9 +72,9 @@ public class ItemCardBigReactors extends ItemCardMain {
 				result.add(new PanelString("msg.ec.InfoPanelRotorEfficiency", reader.getDouble("efficiency"), "%", showLabels));
 			}
 			if ((settings & 4) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelEnergyFE" + euType, reader.getString("storage"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelEnergyFE", reader.getString("storage"), showLabels));
 			if ((settings & 16) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelOutput" + euType, reader.getDouble("output"), "FE/t", showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("output"), "FE/t", showLabels));
 			if ((settings & 32) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelFlowRate", reader.getDouble("consumption"), showLabels));
 			if ((settings & 64) > 0) {
@@ -104,11 +101,6 @@ public class ItemCardBigReactors extends ItemCardMain {
 		result.add(new PanelSetting(I18n.get("msg.ec.cbFuel"), 32));
 		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelOther"), 64));
 		return result;
-	}
-
-	@Override
-	public Item getKitFromCard() {
-		return ModItems.kit_big_reactors.get();
 	}
 
 	@Override

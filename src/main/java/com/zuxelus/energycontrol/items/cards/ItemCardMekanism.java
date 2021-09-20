@@ -9,10 +9,8 @@ import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
-import com.zuxelus.energycontrol.init.ModItems;
 
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -97,10 +95,5 @@ public class ItemCardMekanism extends ItemCardMain {
 		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelRate"), 32));
 		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelOther"), 64));
 		return result;
-	}
-
-	@Override
-	public Item getKitFromCard() {
-		return ModItems.kit_mekanism.get();
 	}
 }

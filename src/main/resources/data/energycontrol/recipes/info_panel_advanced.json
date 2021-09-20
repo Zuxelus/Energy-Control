@@ -1,31 +1,31 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-        "PPP",
-        "1I2",
-        "CAC"
-    ],
-    "key": {
-        "P": {
-            "tag": "forge:glass_panes/cyan"
-        },
-        "I": {
-            "item": "energycontrol:info_panel"
-        },
-        "1": {
-            "item": "energycontrol:upgrade_range"
-        },
-        "2": {
-            "item": "energycontrol:upgrade_color"
-        },
-        "A": {
-            "tag": "forge:circuits/advanced"
-        },
-        "C": {
-            "item": "mekanism:enriched_carbon"
-        }
-    },
-    "result": {
-        "item": "energycontrol:info_panel_advanced"
-    }
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"PPP",
+		"1I2",
+		"CAC"
+	],
+	"key": {
+		"P": {
+			"tag": "forge:glass_panes/cyan"
+		},
+		"I": {
+			"item": "energycontrol:info_panel"
+		},
+		"1": {
+			"item": "energycontrol:upgrade_range"
+		},
+		"2": {
+			"item": "energycontrol:upgrade_color"
+		},
+		"A": {
+			"tag": "forge:circuits/advanced"
+		},
+		"C": {
+			"item": "minecraft:charcoal"
+		}
+	},
+	"result": {
+		"item": "energycontrol:info_panel_advanced"
+	}
 }

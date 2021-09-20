@@ -421,7 +421,7 @@ public class CrossMekanism extends CrossModBase {
 		EnergyType euType = MekanismConfig.general.energyUnit.get();
 		tag.putString("euType", euType.name());
 		tag.putDouble("storage", MekanismUtils.convertToDisplay(container.getEnergy()).doubleValue());
-		tag.putDouble("maxStorage",  MekanismUtils.convertToDisplay(container.getMaxEnergy()).doubleValue());
+		tag.putDouble("maxStorage", MekanismUtils.convertToDisplay(container.getMaxEnergy()).doubleValue());
 		return tag;
 	}
 

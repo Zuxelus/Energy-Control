@@ -12,7 +12,7 @@
             "tag": "forge:dusts/redstone"
         },
         "F": {
-            "item": "mekanism:alloy_infused"
+            "item": "energycontrol:radio_transmitter"
         },
         "O": {
 			"tag": "forge:dyes/red"

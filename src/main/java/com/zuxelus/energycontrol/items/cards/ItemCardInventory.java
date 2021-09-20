@@ -7,13 +7,11 @@ import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
-import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.utils.StringUtils;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -87,10 +85,5 @@ public class ItemCardInventory extends ItemCardMain {
 	@Override
 	public List<PanelSetting> getSettingsList() {
 		return null;
-	}
-
-	@Override
-	public Item getKitFromCard() {
-		return ModItems.kit_inventory.get();
 	}
 }

@@ -17,6 +17,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -31,6 +33,8 @@ public class CrossModLoader {
 		loadCrossModSafely(ModIDs.COMPUTER_CRAFT, () -> CrossComputerCraft::new);
 		loadCrossMod(ModIDs.MEKANISM, CrossMekanism::new);
 		loadCrossMod(ModIDs.MEKANISM_GENERATORS, CrossMekanismGenerators::new);
+		loadCrossMod(ModIDs.IMMERSIVE_ENGINEERING, CrossImmersiveEngineering::new);
+		loadCrossMod(ModIDs.THERMAL_EXPANSION, CrossThermalExpansion::new);
 	}
 
 	private static void loadCrossMod(String modid, Supplier<? extends CrossModBase> factory) {
@@ -64,16 +68,17 @@ public class CrossModLoader {
 			if (tag != null)
 				return tag;
 		}
+		Optional<IEnergyStorage> cap = te.getCapability(CapabilityEnergy.ENERGY).resolve();
+		if (cap.isPresent()) {
+			IEnergyStorage handler = cap.get();
+			CompoundNBT tag = new CompoundNBT();
+			tag.putString("euType", "FE");
+			tag.putDouble("storage", handler.getEnergyStored());
+			tag.putDouble("maxStorage", handler.getMaxEnergyStored());
+			return tag;
+		}
 		return null;
 	}
-
-	/*
-	 * public static ItemStack getGeneratorCard(World world, BlockPos pos) {
-	 * TileEntity te = world.getTileEntity(pos); if (te != null) { for (CrossModBase
-	 * crossMod : CROSS_MODS.values()) { ItemStack card =
-	 * crossMod.getGeneratorCard(te); if (!card.isEmpty()) return card; } } return
-	 * ItemStack.EMPTY; }
-	 */
 
 	public static List<FluidInfo> getAllTanks(World world, BlockPos pos) {
 		TileEntity te = world.getBlockEntity(pos);
