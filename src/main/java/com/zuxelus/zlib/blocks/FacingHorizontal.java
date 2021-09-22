@@ -1,25 +1,34 @@
 package com.zuxelus.zlib.blocks;
 
-import com.zuxelus.zlib.tileentities.TileEntityFacing;
+import com.zuxelus.energycontrol.init.ModTileEntityTypes;
+import com.zuxelus.energycontrol.tileentities.*;
+import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalBlock;
-import net.minecraft.block.material.Material;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.StateContainer.Builder;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.Container;
+import net.minecraft.world.Containers;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.material.Material;
 
-public abstract class FacingHorizontal extends HorizontalBlock {
+public abstract class FacingHorizontal extends BaseEntityBlock {
+	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
 	public FacingHorizontal() {
-		super(Block.Properties.of(Material.METAL).strength(12.0F));
+		super(Block.Properties.of(Material.METAL).strength(3.0F));
 		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
 	}
 
@@ -28,18 +37,24 @@ public abstract class FacingHorizontal extends HorizontalBlock {
 		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
 	}
 
-	protected abstract TileEntityFacing createTileEntity();
+	protected abstract BlockEntityFacing createBlockEntity(BlockPos pos, BlockState state);
 
 	@Override
-	public boolean hasTileEntity(BlockState state) {
-		return true;
+	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+		BlockEntityFacing be = createBlockEntity(pos, state);
+		be.setFacing(state.getValue(FACING).get3DDataValue());
+		return be;
 	}
 
 	@Override
-	public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-		TileEntityFacing te = createTileEntity();
-		te.setFacing(state.getValue(FACING).get3DDataValue());
-		return te;
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+		if (type == ModTileEntityTypes.holo_panel.get())
+			return createTickerHelper(type, type, TileEntityHoloPanel::tickStatic);
+		if (type == ModTileEntityTypes.holo_panel_extender.get())
+			return createTickerHelper(type, type, TileEntityHoloPanelExtender::tickStatic);
+		if (type == ModTileEntityTypes.kit_assembler.get())
+			return createTickerHelper(type, type, TileEntityKitAssembler::tickStatic);
+		return null;
 	}
 
 	@Override
@@ -48,20 +63,33 @@ public abstract class FacingHorizontal extends HorizontalBlock {
 	}
 
 	@Override
-	public BlockState getStateForPlacement(BlockItemUseContext context) {
+	public BlockState getStateForPlacement(BlockPlaceContext context) {
 		return defaultBlockState().setValue(FACING, context.getPlayer().getDirection().getOpposite());
+	}
+
+	public BlockState rotate(BlockState state, Rotation rotation) { // TODO
+		return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
+	}
+
+	public BlockState mirror(BlockState state, Mirror mirror) { // TODO
+		return state.rotate(mirror.getRotation(state.getValue(FACING)));
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void onRemove(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
-			TileEntity te = world.getBlockEntity(pos);
-			if (te instanceof IInventory) {
-				InventoryHelper.dropContents(world, pos, (IInventory) te);
+			BlockEntity te = world.getBlockEntity(pos);
+			if (te instanceof Container) {
+				Containers.dropContents(world, pos, (Container) te);
 				world.updateNeighbourForOutputSignal(pos, this);
 			}
 			super.onRemove(state, world, pos, newState, isMoving);
 		}
+	}
+
+	@Override
+	public RenderShape getRenderShape(BlockState state) {
+		return RenderShape.MODEL;
 	}
 }

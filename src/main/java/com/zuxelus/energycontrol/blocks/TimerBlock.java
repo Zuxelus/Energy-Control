@@ -1,49 +1,50 @@
 package com.zuxelus.energycontrol.blocks;
 
+import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityTimer;
 import com.zuxelus.zlib.blocks.FacingBlockSmall;
-import com.zuxelus.zlib.tileentities.TileEntityFacing;
+import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 public class TimerBlock extends FacingBlockSmall {
-	protected static final VoxelShape AABB_DOWN = Block.box(1.0F, 9.0F, 1.0F, 15.0F, 1.0F, 15.0F);
+	protected static final VoxelShape AABB_DOWN = Block.box(1.0F, 9.0F, 1.0F, 15.0F, 15.0F, 15.0F);
 	protected static final VoxelShape AABB_UP = Block.box(1.0F, 0.0F, 1.0F, 15.0F, 7.0F, 15.0F);
-	protected static final VoxelShape AABB_NORTH = Block.box(1.0F, 1.0F, 9.0F, 15.0F, 15.0F, 1.0F);
+	protected static final VoxelShape AABB_NORTH = Block.box(1.0F, 1.0F, 9.0F, 15.0F, 15.0F, 15.0F);
 	protected static final VoxelShape AABB_SOUTH = Block.box(1.0F, 1.0F, 0.0F, 15.0F, 15.0F, 7.0F);
-	protected static final VoxelShape AABB_WEST = Block.box(9.0F, 1.0F, 1.0F, 1.0F, 15.0F, 15.0F);
+	protected static final VoxelShape AABB_WEST = Block.box(9.0F, 1.0F, 1.0F, 15.0F, 15.0F, 15.0F);
 	protected static final VoxelShape AABB_EAST = Block.box(0.0F, 1.0F, 1.0F, 7.0F, 15.0F, 15.0F);
 
 	@Override
-	protected TileEntityFacing createTileEntity() {
-		return new TileEntityTimer();
+	protected BlockEntityFacing createBlockEntity(BlockPos pos, BlockState state) {
+		return ModTileEntityTypes.timer.get().create(pos, state);
 	}
 
 	@Override
-	public int getSignal(BlockState state, IBlockReader blockAccess, BlockPos pos, Direction side) {
-		TileEntity te = blockAccess.getBlockEntity(pos);
+	public int getSignal(BlockState state, BlockGetter blockAccess, BlockPos pos, Direction side) {
+		BlockEntity te = blockAccess.getBlockEntity(pos);
 		if (!(te instanceof TileEntityTimer))
 			return 0;
 		return ((TileEntityTimer) te).getPowered() ? side != state.getValue(FACING) ? 15 : 0 : 0;
 	}
 
 	@Override
-	public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
 		switch (state.getValue(FACING)) {
 		case EAST:
 			return AABB_EAST;
@@ -62,18 +63,18 @@ public class TimerBlock extends FacingBlockSmall {
 	}
 
 	@Override
-	public BlockRenderType getRenderShape(BlockState state) {
-		return BlockRenderType.INVISIBLE;
+	public RenderShape getRenderShape(BlockState state) {
+		return RenderShape.INVISIBLE;
 	}
 
 	@Override
-	public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		if (world.isClientSide)
-			return ActionResultType.PASS;
-		TileEntity te = world.getBlockEntity(pos);
+			return InteractionResult.PASS;
+		BlockEntity te = world.getBlockEntity(pos);
 		if (!(te instanceof TileEntityTimer))
-			return ActionResultType.PASS;
-		NetworkHooks.openGui((ServerPlayerEntity) player, (TileEntityTimer) te, pos);
-		return ActionResultType.SUCCESS;
+			return InteractionResult.PASS;
+		NetworkHooks.openGui((ServerPlayer) player, (TileEntityTimer) te, pos);
+		return InteractionResult.SUCCESS;
 	}
 }

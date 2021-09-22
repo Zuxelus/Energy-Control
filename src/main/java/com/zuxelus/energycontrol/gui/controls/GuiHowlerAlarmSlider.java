@@ -1,18 +1,20 @@
 package com.zuxelus.energycontrol.gui.controls;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.widget.button.AbstractButton;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -29,7 +31,7 @@ public class GuiHowlerAlarmSlider extends AbstractButton {
 
 	@SuppressWarnings("resource")
 	public GuiHowlerAlarmSlider(int x, int y, TileEntityHowlerAlarm alarm) {
-		super(x, y, 107, 16, StringTextComponent.EMPTY);
+		super(x, y, 107, 16, TextComponent.EMPTY);
 		this.alarm = alarm;
 		dragging = false;
 		if (alarm.getLevel().isClientSide)
@@ -38,7 +40,7 @@ public class GuiHowlerAlarmSlider extends AbstractButton {
 		if (alarm.getLevel().isClientSide && currentRange > maxValue)
 			currentRange = maxValue;
 		sliderValue = ((float) currentRange - minValue) / (maxValue - minValue);
-		setMessage(new TranslationTextComponent("msg.ec.HowlerAlarmSoundRange", getNormalizedValue()));
+		setMessage(new TranslatableComponent("msg.ec.HowlerAlarmSoundRange", getNormalizedValue()));
 	}
 
 	private int getNormalizedValue() {
@@ -60,17 +62,18 @@ public class GuiHowlerAlarmSlider extends AbstractButton {
 			NetworkHelper.updateSeverTileEntity(alarm.getBlockPos(), 2, newValue);
 			alarm.setRange(newValue);
 		}
-		setMessage(new TranslationTextComponent("msg.ec.HowlerAlarmSoundRange", newValue));
+		setMessage(new TranslatableComponent("msg.ec.HowlerAlarmSoundRange", newValue));
 	}
 
 	@Override
-	public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (!visible)
 			return;
 		Minecraft minecraft = Minecraft.getInstance();
-		FontRenderer fontRenderer = minecraft.font;
-		minecraft.getTextureManager().bind(TEXTURE);
-		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+		Font fontRenderer = minecraft.font;
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShaderTexture(0, TEXTURE);
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		if (dragging)
 			setSliderPos(mouseX);
 		
@@ -90,5 +93,10 @@ public class GuiHowlerAlarmSlider extends AbstractButton {
 	@Override
 	public void onRelease(double mouseX, double mouseY) {
 		dragging = false;
+	}
+
+	@Override
+	public void updateNarration(NarrationElementOutput output) {
+		// TODO Auto-generated method stub
 	}
 }

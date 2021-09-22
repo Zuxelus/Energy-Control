@@ -9,7 +9,7 @@ import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.peripheral.IPeripheral;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public class InfoPanelPeripheral implements IPeripheral {
 	private final TileEntityInfoPanel te;

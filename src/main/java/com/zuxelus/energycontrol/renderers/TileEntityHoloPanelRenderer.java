@@ -2,45 +2,29 @@ package com.zuxelus.energycontrol.renderers;
 
 import java.util.List;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import com.zuxelus.energycontrol.ClientTickHandler;
 import com.zuxelus.energycontrol.api.IHasBars;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityHoloPanel;
 
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
+import net.minecraft.core.BlockPos;
 
-public class TileEntityHoloPanelRenderer extends TileEntityRenderer<TileEntityHoloPanel> {
-	/*private static final ResourceLocation TEXTUREOFF[];
-	private static final ResourceLocation TEXTUREON[];
-	private static final CubeRenderer model[];
+public class TileEntityHoloPanelRenderer implements BlockEntityRenderer<TileEntityHoloPanel> {
+	private final Font font;
 
-	static {
-		TEXTUREOFF = new ResourceLocation[16];
-		TEXTUREON = new ResourceLocation[16];
-		for (int i = 0; i < 16; i++) {
-			TEXTUREOFF[i] = new ResourceLocation(
-					EnergyControl.MODID + String.format(":textures/block/info_panel/off/all%d.png", i));
-			TEXTUREON[i] = new ResourceLocation(
-					EnergyControl.MODID + String.format(":textures/block/info_panel/on/all%d.png", i));
-		}
-		model = new CubeRenderer[16];
-		for (int i = 0; i < 4; i++)
-			for (int j = 0; j < 4; j++)
-				model[i * 4 + j] = new CubeRenderer(i * 32 + 64, j * 32 + 64);
-	}*/
-
-	public TileEntityHoloPanelRenderer(TileEntityRendererDispatcher te) {
-		super(te);
+	public TileEntityHoloPanelRenderer(Context ctx) {
+		font = ctx.getFont();
 	}
 
 	@Override
-	public void render(TileEntityHoloPanel te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
+	public void render(TileEntityHoloPanel te, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
 		if (partialTicks != -1) {
 			ClientTickHandler.holo_panels.add(te);
 			//return;
@@ -84,7 +68,8 @@ public class TileEntityHoloPanelRenderer extends TileEntityRenderer<TileEntityHo
 		matrixStack.popPose();
 	}
 
-	private void drawText(TileEntityHoloPanel panel, float partialTicks, List<PanelString> joinedData, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight) {
+	@SuppressWarnings("incomplete-switch")
+	private void drawText(TileEntityHoloPanel panel, float partialTicks, List<PanelString> joinedData, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight) {
 		Screen screen = panel.getScreen();
 		BlockPos pos = panel.getBlockPos();
 		int power = panel.getPower();
@@ -148,7 +133,12 @@ public class TileEntityHoloPanelRenderer extends TileEntityRenderer<TileEntityHo
 			int colorHex = 0x000000;
 			if (panel.getColored())
 				colorHex = panel.getColorTextHex();
-			TileEntityInfoPanelRenderer.renderText(joinedData, displayWidth, displayHeight, colorHex, matrixStack, renderer.getFont());
+			TileEntityInfoPanelRenderer.renderText(joinedData, displayWidth, displayHeight, colorHex, matrixStack, font);
 		}
+	}
+
+	@Override
+	public int getViewDistance() {
+		return 65536;
 	}
 }

@@ -2,31 +2,32 @@ package com.zuxelus.energycontrol.renderers;
 
 import java.util.List;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
-import com.zuxelus.zlib.tileentities.TileEntityFacing;
+import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 
-public class TileEntityInfoPanelRenderer extends TileEntityRenderer<TileEntityInfoPanel> {
+public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEntityInfoPanel> {
 	private static int[][] sides = new int[][] { { 3, 2, 1, 0, 5, 4 }, { 2, 3, 1, 0, 4, 5 }, { 4, 5, 1, 0, 3, 2 },
 		{ 5 ,4, 1, 0, 2, 3 }, { 1, 0, 3, 2, 4, 5 }, { 0, 1, 2, 3, 4, 5 } };
 	private static final ResourceLocation TEXTUREOFF[];
 	private static final ResourceLocation TEXTUREON[];
 	private static final CubeRenderer model[];
+	private final Font font;
 
 	static {
 		TEXTUREOFF = new ResourceLocation[16];
@@ -60,23 +61,23 @@ public class TileEntityInfoPanelRenderer extends TileEntityRenderer<TileEntityIn
 		return output;
 	}
 
-	public static int[] getBlockLight(TileEntityFacing te) {
+	public static int[] getBlockLight(BlockEntityFacing te) {
 		int[] light = new int[6];
-		light[sides[te.getFacing().get3DDataValue()][0]] = WorldRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.DOWN));
-		light[sides[te.getFacing().get3DDataValue()][1]] = WorldRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.UP));
-		light[sides[te.getFacing().get3DDataValue()][2]] = WorldRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.WEST));
-		light[sides[te.getFacing().get3DDataValue()][3]] = WorldRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.EAST));
-		light[sides[te.getFacing().get3DDataValue()][4]] = WorldRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.NORTH));
-		light[sides[te.getFacing().get3DDataValue()][5]] = WorldRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.SOUTH));
+		light[sides[te.getFacing().get3DDataValue()][0]] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.DOWN));
+		light[sides[te.getFacing().get3DDataValue()][1]] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.UP));
+		light[sides[te.getFacing().get3DDataValue()][2]] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.WEST));
+		light[sides[te.getFacing().get3DDataValue()][3]] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.EAST));
+		light[sides[te.getFacing().get3DDataValue()][4]] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.NORTH));
+		light[sides[te.getFacing().get3DDataValue()][5]] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.SOUTH));
 		return light;
 	}
 
-	public TileEntityInfoPanelRenderer(TileEntityRendererDispatcher te) {
-		super(te);
+	public TileEntityInfoPanelRenderer(Context ctx) {
+		font = ctx.getFont();
 	}
 
 	@Override
-	public void render(TileEntityInfoPanel te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
+	public void render(TileEntityInfoPanel te, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
 		matrixStack.pushPose();
 		int[] light = getBlockLight(te);
 		switch (te.getFacing()) {
@@ -110,7 +111,7 @@ public class TileEntityInfoPanelRenderer extends TileEntityRenderer<TileEntityIn
 			if (color > 15 || color < 0)
 				color = 2;
 		}
-		IVertexBuilder vertexBuilder;
+		VertexConsumer vertexBuilder;
 		if (te.getPowered())
 			vertexBuilder = buffer.getBuffer(RenderType.entitySolid(TEXTUREON[color]));
 		else
@@ -123,7 +124,7 @@ public class TileEntityInfoPanelRenderer extends TileEntityRenderer<TileEntityIn
 		matrixStack.popPose();
 	}
 
-	private void drawText(TileEntityInfoPanel panel, List<PanelString> joinedData, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight) {
+	private void drawText(TileEntityInfoPanel panel, List<PanelString> joinedData, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight) {
 		Screen screen = panel.getScreen();
 		BlockPos pos = panel.getBlockPos();
 		float displayWidth = 1 - 2F / 16;
@@ -215,7 +216,7 @@ public class TileEntityInfoPanelRenderer extends TileEntityRenderer<TileEntityIn
 
 		if (panel.isTouchCard() || panel.hasBars()) {
 			matrixStack.mulPose(Vector3f.YP.rotationDegrees(180));
-			panel.renderImage(renderer.textureManager, displayWidth, displayHeight, matrixStack);
+			panel.renderImage(displayWidth, displayHeight, matrixStack);
 			matrixStack.mulPose(Vector3f.YP.rotationDegrees(180));
 		}
 		if (joinedData != null) {
@@ -223,11 +224,11 @@ public class TileEntityInfoPanelRenderer extends TileEntityRenderer<TileEntityIn
 			int colorHex = 0x000000;
 			if (panel.getColored())
 				colorHex = panel.getColorTextHex();
-			renderText(joinedData, displayWidth, displayHeight, colorHex, matrixStack, renderer.getFont());
+			renderText(joinedData, displayWidth, displayHeight, colorHex, matrixStack, font);
 		}
 	}
 
-	public static void renderText(List<PanelString> joinedData, float displayWidth, float displayHeight, int colorHex, MatrixStack matrixStack, FontRenderer fontRenderer) {
+	public static void renderText(List<PanelString> joinedData, float displayWidth, float displayHeight, int colorHex, PoseStack matrixStack, Font fontRenderer) {
 		int maxWidth = 1;
 		for (PanelString panelString : joinedData) {
 			String currentString = implodeArray(new String[] { panelString.textLeft, panelString.textCenter, panelString.textRight }, " ");
@@ -266,5 +267,10 @@ public class TileEntityInfoPanelRenderer extends TileEntityRenderer<TileEntityIn
 					offsetY - realHeight / 2 + row * lineHeight, panelString.colorRight != 0 ? panelString.colorRight : colorHex);
 			row++;
 		}
+	}
+
+	@Override
+	public int getViewDistance() {
+		return 65536;
 	}
 }

@@ -1,14 +1,15 @@
 package com.zuxelus.zlib.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -21,7 +22,7 @@ public abstract class GuiBase extends Screen {
 	protected int guiTop;
 
 	public GuiBase(String name, int xSize, int ySize, String texture) {
-		super(new TranslationTextComponent(name));
+		super(new TranslatableComponent(name));
 		this.xSize = xSize;
 		this.ySize = ySize;
 		this.texture = new ResourceLocation(texture);
@@ -35,28 +36,28 @@ public abstract class GuiBase extends Screen {
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		renderBackground(matrixStack);
 		drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
-		RenderSystem.disableRescaleNormal();
 		RenderSystem.disableDepthTest();
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
-		RenderSystem.pushMatrix();
-		RenderSystem.translatef((float) guiLeft, (float) guiTop, 0.0F);
-		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		RenderSystem.enableRescaleNormal();
-		RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F);
-		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+		PoseStack posestack = RenderSystem.getModelViewStack();
+		posestack.pushPose();
+		posestack.translate((float) guiLeft, (float) guiTop, 0.0F);
+		RenderSystem.applyModelViewMatrix();
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		drawGuiContainerForegroundLayer(matrixStack, mouseX, mouseY);
-		RenderSystem.popMatrix();
+		posestack.popPose();
+		RenderSystem.applyModelViewMatrix();
 		RenderSystem.enableDepthTest();
 	}
 
-	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {}
+	protected void drawGuiContainerForegroundLayer(PoseStack matrixStack, int mouseX, int mouseY) {}
 
-	protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		minecraft.getTextureManager().bind(texture);
+	protected void drawGuiContainerBackgroundLayer(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShaderTexture(0, texture);
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		blit(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize);
 	}
 
@@ -65,18 +66,18 @@ public abstract class GuiBase extends Screen {
 		return false;
 	}
 
-	protected TextFieldWidget addTextFieldWidget(int left, int top, int width, int height, boolean isEnabled, String text) {
-		TextFieldWidget textBox = new TextFieldWidget(font, guiLeft + left, guiTop + top, width, height, null, StringTextComponent.EMPTY);
+	protected EditBox addTextFieldWidget(int left, int top, int width, int height, boolean isEnabled, String text) {
+		EditBox textBox = new EditBox(font, guiLeft + left, guiTop + top, width, height, null, TextComponent.EMPTY);
 		textBox.setEditable(isEnabled);
 		textBox.changeFocus(isEnabled);
 		textBox.setValue(text);
-		children.add(textBox);
+		addWidget(textBox);
 		setInitialFocus(textBox);
 		return textBox;
 	}
 
-	protected void drawTitle(MatrixStack matrixStack) {
-		IReorderingProcessor ireorderingprocessor = title.getVisualOrderText();
+	protected void drawTitle(PoseStack matrixStack) {
+		FormattedCharSequence ireorderingprocessor = title.getVisualOrderText();
 		font.draw(matrixStack, ireorderingprocessor, (xSize - font.width(ireorderingprocessor)) / 2, 6, 0x404040);
 	}
 }

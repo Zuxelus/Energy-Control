@@ -5,17 +5,17 @@ import java.util.Vector;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.*;
 
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.ShapelessRecipe;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
+import net.minecraft.world.level.Level;
 
-public class StorageArrayRecipe implements ICraftingRecipe {
+public class StorageArrayRecipe implements CraftingRecipe {
 	private final ShapelessRecipe recipe;
 
 	public StorageArrayRecipe(ShapelessRecipe internal) {
@@ -27,12 +27,12 @@ public class StorageArrayRecipe implements ICraftingRecipe {
 	}
 
 	@Override
-	public boolean matches(CraftingInventory inv, World worldIn) {
+	public boolean matches(CraftingContainer inv, Level level) {
 		return !assemble(inv).isEmpty();
 	}
 
 	@Override
-	public ItemStack assemble(CraftingInventory inv) {
+	public ItemStack assemble(CraftingContainer inv) {
 		int inventoryLength = inv.getContainerSize();
 		int cardCount = 0;
 		int arrayCount = 0;
@@ -133,7 +133,7 @@ public class StorageArrayRecipe implements ICraftingRecipe {
 	}
 
 	@Override
-	public IRecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<?> getSerializer() {
 		return ModItems.ARRAY_SERIALIZER.get();
 	}
 }

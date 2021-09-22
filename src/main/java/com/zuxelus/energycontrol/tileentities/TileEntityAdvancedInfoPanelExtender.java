@@ -2,17 +2,19 @@ package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityAdvancedInfoPanelExtender extends TileEntityInfoPanelExtender {
 
-	public TileEntityAdvancedInfoPanelExtender(TileEntityType<?> type) {
-		super(type);
+	public TileEntityAdvancedInfoPanelExtender(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
 	}
 
-	public TileEntityAdvancedInfoPanelExtender() {
-		this(ModTileEntityTypes.info_panel_advanced_extender.get());
+	public TileEntityAdvancedInfoPanelExtender(BlockPos pos, BlockState state) {
+		this(ModTileEntityTypes.info_panel_advanced_extender.get(), pos, state);
 	}
 
 	public byte getThickness() {

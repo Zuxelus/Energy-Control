@@ -3,7 +3,7 @@ package com.zuxelus.energycontrol.crossmod.jei;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.recipes.KitAssemblerRecipe;
@@ -17,15 +17,17 @@ import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 
 public class KitAssemblerRecipeCategory implements IRecipeCategory<KitAssemblerRecipe> {
 	public static final ResourceLocation id = new ResourceLocation(EnergyControl.MODID, "kit_assembler");
 	public static final ResourceLocation texture = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_kit_assembler.png");
-	private static final String title = I18n.get(ModItems.kit_assembler.get().getDescriptionId());
+	private static final TextComponent title = new TextComponent(I18n.get(ModItems.kit_assembler.get().getDescriptionId()));
 	private final IDrawable background;
 	private final IDrawable icon;
 	private final IDrawableStatic arrow;
@@ -54,7 +56,7 @@ public class KitAssemblerRecipeCategory implements IRecipeCategory<KitAssemblerR
 	}
 
 	@Override
-	public String getTitle() {
+	public Component getTitle() {
 		return title;
 	}
 
@@ -97,7 +99,7 @@ public class KitAssemblerRecipeCategory implements IRecipeCategory<KitAssemblerR
 	}
 
 	@Override
-	public void draw(KitAssemblerRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+	public void draw(KitAssemblerRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
 		animatedarrow.draw(matrixStack, 57, 19);
 	}
 }

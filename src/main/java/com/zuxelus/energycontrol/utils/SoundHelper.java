@@ -9,7 +9,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -18,26 +17,22 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SoundList;
-import net.minecraft.client.audio.SoundListSerializer;
-import net.minecraft.resources.FolderPack;
-import net.minecraft.resources.IResource;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.resources.SimpleReloadableResourceManager;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.resource.IResourceType;
-import net.minecraftforge.resource.ISelectiveResourceReloadListener;
-import net.minecraftforge.resource.VanillaResourceType;
+import net.minecraft.client.resources.sounds.SoundEventRegistration;
+import net.minecraft.client.resources.sounds.SoundEventRegistrationSerializer;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 
 public class SoundHelper {
-	private static final Gson gson = (new GsonBuilder()).registerTypeAdapter(SoundList.class, new SoundListSerializer()).create();
+	private static final Gson gson = (new GsonBuilder()).registerTypeAdapter(SoundEventRegistration.class, new SoundEventRegistrationSerializer()).create();
 	private static File alarms;
 
 	private static final ParameterizedType type = new ParameterizedType() {
 
 		@Override
 		public Type[] getActualTypeArguments() {
-			return new Type[] { String.class, SoundList.class };
+			return new Type[] { String.class, SoundEventRegistration.class };
 		}
 
 		@Override
@@ -73,12 +68,12 @@ public class SoundHelper {
 		EnergyControl.INSTANCE.availableAlarms = new ArrayList<>();
 
 		try {
-			List<IResource> list = Minecraft.getInstance().getResourceManager().getResources(new ResourceLocation(EnergyControl.MODID, "sounds.json"));
+			List<Resource> list = Minecraft.getInstance().getResourceManager().getResources(new ResourceLocation(EnergyControl.MODID, "sounds.json"));
 
 			for (int i = list.size() - 1; i >= 0; --i) {
-				IResource iresource = list.get(i);
+				Resource iresource = list.get(i);
 
-				Map<String, SoundList> map = gson.fromJson(new InputStreamReader(iresource.getInputStream()), type);
+				Map<String, SoundEventRegistration> map = gson.fromJson(new InputStreamReader(iresource.getInputStream()), type);
 				map.forEach((str, soundList) -> EnergyControl.INSTANCE.availableAlarms.add(str.replace("alarm-", "")));
 			}
 		} catch (IOException ignored) {}
@@ -92,14 +87,16 @@ public class SoundHelper {
 		parse.close();
 	}
 
-	public static class SoundLoader implements ISelectiveResourceReloadListener {
+	public static class SoundLoader implements ResourceManagerReloadListener {
 
 		@Override
-		public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate) {
+		public void onResourceManagerReload(ResourceManager resourceManager) {
+			// TODO Auto-generated method stub
+		/*public void onResourceManagerReload(ResourceManager resourceManager, Predicate<IResourceType> resourcePredicate) {
 			if (resourcePredicate.test(VanillaResourceType.SOUNDS) && resourceManager instanceof SimpleReloadableResourceManager && alarms != null) {
 				FolderPack pack = new FolderPack(alarms);
 				((SimpleReloadableResourceManager) resourceManager).add(pack);
-			}
+			}*/
 		}
 	}
 }

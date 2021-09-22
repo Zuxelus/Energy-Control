@@ -10,11 +10,11 @@ import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.utils.StringUtils;
 
-import net.minecraft.client.resources.I18n;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -23,7 +23,7 @@ public class ItemCardEnergyArray extends ItemCardMain {
 	private static final int STATUS_OUT_OF_RANGE = Integer.MIN_VALUE + 1;
 
 	@Override
-	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
+	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
 		int cardCount = reader.getCardCount();
 		if (cardCount == 0)
 			return CardState.INVALID_CARD;
@@ -37,9 +37,9 @@ public class ItemCardEnergyArray extends ItemCardMain {
 			int dy = target.getY() - pos.getY();
 			int dz = target.getZ() - pos.getZ();
 			if (Math.abs(dx) <= range && Math.abs(dy) <= range && Math.abs(dz) <= range) {
-				TileEntity te = world.getBlockEntity(target);
+				BlockEntity te = world.getBlockEntity(target);
 				if (te != null) {
-					CompoundNBT tag = CrossModLoader.getEnergyData(te);
+					CompoundTag tag = CrossModLoader.getEnergyData(te);
 					if (tag != null) {
 						double stored = tag.getDouble("storage");
 						double capacity = tag.getDouble("maxStorage");
@@ -66,7 +66,7 @@ public class ItemCardEnergyArray extends ItemCardMain {
 	}
 
 	@Override
-	public List<PanelString> getStringData(World world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(Level world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		double totalEnergy = 0;
 		double totalStorage = 0;

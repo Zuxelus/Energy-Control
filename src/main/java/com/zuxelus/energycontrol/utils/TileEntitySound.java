@@ -1,15 +1,15 @@
 package com.zuxelus.energycontrol.utils;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
 
 public class TileEntitySound {
 	private static final float DEFAULT_RANGE = 16F;
-	private SimpleSound sound;
+	private SimpleSoundInstance sound;
 
 	public TileEntitySound() { }
 
@@ -31,7 +31,7 @@ public class TileEntitySound {
 		return Minecraft.getInstance().getSoundManager().isActive(sound);
 	}
 
-	public SimpleSound playAlarm(double x, double y, double z, String name, float volume) {
+	public SimpleSoundInstance playAlarm(double x, double y, double z, String name, float volume) {
 		float range = DEFAULT_RANGE;
 
 		if (volume > 1.0F)
@@ -40,7 +40,7 @@ public class TileEntitySound {
 		Entity person = Minecraft.getInstance().getCameraEntity();
 
 		if (person != null && volume > 0 && person.distanceToSqr(x, y, z) < range * range) {
-			SimpleSound sound = new SimpleSound(new SoundEvent(new ResourceLocation(name)), SoundCategory.MASTER, volume, 1.0F, (float) x, (float) y, (float) z);
+			SimpleSoundInstance sound = new SimpleSoundInstance(new SoundEvent(new ResourceLocation(name)), SoundSource.MASTER, volume, 1.0F, (float) x, (float) y, (float) z);
 			Minecraft.getInstance().getSoundManager().play(sound);
 			return sound;
 		}

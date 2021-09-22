@@ -4,20 +4,23 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 
-import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.widget.button.AbstractButton;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -43,7 +46,7 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 	private int dragDelta;
 
 	public GuiHowlerAlarmListBox(int left, int top, int width, int height, List<String> items, TileEntityHowlerAlarm alarm) {
-		super(left, top, width, height, StringTextComponent.EMPTY);
+		super(left, top, width, height, TextComponent.EMPTY);
 		this.items = items;
 		this.alarm = alarm;
 		fontColor = 0x404040;
@@ -83,7 +86,7 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 	}
 
 	@Override
-	public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (dragging) {
 			int pos = (mouseY - y - SCROLL_BUTTON_HEIGHT - dragDelta)
 					* (lineHeight * items.size() + BASIC_Y_OFFSET - height)
@@ -92,7 +95,7 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 		}
 
 		Minecraft minecraft = Minecraft.getInstance();
-		FontRenderer fontRenderer = minecraft.font;
+		Font fontRenderer = minecraft.font;
 		String currentItem = alarm.getSoundName();
 		if (lineHeight == 0) {
 			lineHeight = fontRenderer.lineHeight + 2;
@@ -112,7 +115,7 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 
 		int rowTop = BASIC_Y_OFFSET;
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
-		MainWindow scaler = minecraft.getWindow();
+		Window scaler = minecraft.getWindow();
 		GL11.glScissor((int) (x * scaler.getGuiScale()), (int) (scaler.getHeight() - (y + height) * scaler.getGuiScale()), (int) ((width - SCROLL_WIDTH) * scaler.getGuiScale()), (int) (height * scaler.getGuiScale()));
 
 		for (String row : items) {
@@ -130,18 +133,19 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 		// Slider
 		int sliderX = x + width - SCROLL_WIDTH + 1;
 		sliderY = y + SCROLL_BUTTON_HEIGHT + ((height - 2 * SCROLL_BUTTON_HEIGHT - sliderHeight) * scrollTop) / (lineHeight * items.size() + BASIC_Y_OFFSET - height);
-		minecraft.getTextureManager().bind(TEXTURE);
-		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShaderTexture(0, TEXTURE);
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		blit(matrixStack, sliderX, sliderY, 131, 16, SCROLL_WIDTH - 1, 1);
 
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferbuilder = tessellator.getBuilder();
-		bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+		Tesselator tesselator = Tesselator.getInstance();
+		BufferBuilder bufferbuilder = tesselator.getBuilder();
+		bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 		bufferbuilder.vertex((sliderX), sliderY + sliderHeight - 1, getBlitOffset()).uv(131 / 256F, (18) / 256F).endVertex();
 		bufferbuilder.vertex(sliderX + SCROLL_WIDTH - 1, sliderY + sliderHeight - 1, getBlitOffset()).uv((131 + SCROLL_WIDTH - 1) / 256F, (18) / 256F).endVertex();
 		bufferbuilder.vertex(sliderX + SCROLL_WIDTH - 1, sliderY + 1, getBlitOffset()).uv((131 + SCROLL_WIDTH - 1) / 256F, (17) / 256F).endVertex();
 		bufferbuilder.vertex((sliderX), sliderY + 1, getBlitOffset()).uv(131 / 256F, (17) / 256F).endVertex();
-		tessellator.end();
+		tesselator.end();
 
 		blit(matrixStack, sliderX, sliderY + sliderHeight - 1, 131, 19, SCROLL_WIDTH - 1, 1);
 	}
@@ -182,5 +186,10 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 	@Override
 	public void onRelease(double mouseX, double mouseY) {
 		dragging = false;
+	}
+
+	@Override
+	public void updateNarration(NarrationElementOutput output) {
+		// TODO Auto-generated method stub
 	}
 }

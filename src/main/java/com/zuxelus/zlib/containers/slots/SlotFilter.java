@@ -1,12 +1,12 @@
 package com.zuxelus.zlib.containers.slots;
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.Container;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 public class SlotFilter extends Slot {
 
-	public SlotFilter(IInventory inventory, int slotIndex, int x, int y) {
+	public SlotFilter(Container inventory, int slotIndex, int x, int y) {
 		super(inventory, slotIndex, x, y);
 	}
 

@@ -5,20 +5,20 @@ import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.init.ModItems;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class ItemKitImmersiveEngineering extends ItemKitMain {
 
 	@Override
-	public ItemStack getSensorCard(ItemStack stack, PlayerEntity player, World world, BlockPos pos, Direction side) {
-		TileEntity te = world.getBlockEntity(pos);
-		CompoundNBT tag = CrossModLoader.getCrossMod(ModIDs.IMMERSIVE_ENGINEERING).getCardData(te);
+	public ItemStack getSensorCard(ItemStack stack, Player player, Level world, BlockPos pos, Direction side) {
+		BlockEntity te = world.getBlockEntity(pos);
+		CompoundTag tag = CrossModLoader.getCrossMod(ModIDs.IMMERSIVE_ENGINEERING).getCardData(te);
 		if (tag != null) {
 			ItemStack newCard = new ItemStack(ModItems.card_immersive_engineering);
 			ItemStackHelper.setCoordinates(newCard, pos);

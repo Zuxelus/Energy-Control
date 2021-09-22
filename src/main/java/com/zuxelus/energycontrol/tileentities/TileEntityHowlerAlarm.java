@@ -3,16 +3,18 @@ package com.zuxelus.energycontrol.tileentities;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
-import com.zuxelus.zlib.tileentities.TileEntityFacing;
+import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
-public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickableTileEntity, ITilePacketHandler {
+public class TileEntityHowlerAlarm extends BlockEntityFacing implements ITilePacketHandler {
 	private static final String DEFAULT_SOUND_NAME = "default";
 	private static final String SOUND_PREFIX = "energycontrol:alarm-";
 
@@ -26,17 +28,17 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 	protected int tickRate;
 	private TileEntitySound sound;
 
-	public TileEntityHowlerAlarm(TileEntityType<?> type) {
-		super(type);
-		tickRate = 60;
+	public TileEntityHowlerAlarm(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
+		tickRate = 20;
 		updateTicker = 0;
 		powered = false;
 		soundName = prevSoundName = DEFAULT_SOUND_NAME;
 		range = ConfigHandler.HOWLER_ALARM_RANGE.get();
 	}
 
-	public TileEntityHowlerAlarm() {
-		this(ModTileEntityTypes.howler_alarm.get());
+	public TileEntityHowlerAlarm(BlockPos pos, BlockState state) {
+		this(ModTileEntityTypes.howler_alarm.get(), pos, state);
 	}
 
 	public int getRange() {
@@ -78,7 +80,7 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 	}
 
 	@Override
-	public void onServerMessageReceived(CompoundNBT tag) {
+	public void onServerMessageReceived(CompoundTag tag) {
 		if (!tag.contains("type"))
 			return;
 		switch (tag.getInt("type")) {
@@ -94,21 +96,21 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 	}
 
 	@Override
-	public void onClientMessageReceived(CompoundNBT tag) { }
+	public void onClientMessageReceived(CompoundTag tag) { }
 
 	@Override
-	public SUpdateTileEntityPacket getUpdatePacket() {
-		return new SUpdateTileEntityPacket(worldPosition, 0, getUpdateTag());
+	public ClientboundBlockEntityDataPacket getUpdatePacket() {
+		return new ClientboundBlockEntityDataPacket(worldPosition, 0, getUpdateTag());
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
 		readProperties(pkt.getTag());
 	}
 
 	@Override
-	public CompoundNBT getUpdateTag() {
-		CompoundNBT tag = super.getUpdateTag();
+	public CompoundTag getUpdateTag() {
+		CompoundTag tag = super.getUpdateTag();
 		tag = writeProperties(tag);
 		powered = level.hasNeighborSignal(worldPosition);
 		tag.putBoolean("powered", powered);
@@ -116,7 +118,7 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 	}
 
 	@Override
-	protected void readProperties(CompoundNBT tag) {
+	protected void readProperties(CompoundTag tag) {
 		super.readProperties(tag);
 		if (tag.contains("soundName"))
 			soundName = prevSoundName = tag.getString("soundName");
@@ -127,13 +129,13 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 	}
 
 	@Override
-	public void load(BlockState state, CompoundNBT tag) {
-		super.load(state, tag);
+	public void load(CompoundTag tag) {
+		super.load(tag);
 		readProperties(tag);
 	}
 
 	@Override
-	protected CompoundNBT writeProperties(CompoundNBT tag) {
+	protected CompoundTag writeProperties(CompoundTag tag) {
 		tag = super.writeProperties(tag);
 		tag.putString("soundName", soundName);
 		tag.putInt("range", range);
@@ -141,7 +143,7 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 	}
 
 	@Override
-	public CompoundNBT save(CompoundNBT tag) {
+	public CompoundTag save(CompoundTag tag) {
 		return writeProperties(super.save(tag));
 	}
 
@@ -152,23 +154,31 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 		super.setRemoved();
 	}
 
-	@Override
-	public void tick() {
-		if (level.isClientSide) {
-			if (updateTicker-- > 0)
-				return;
-			updateTicker = tickRate;
+	public static void tickStatic(Level level, BlockPos pos, BlockState state, BlockEntity be) {
+		if (!(be instanceof TileEntityHowlerAlarm))
+			return;
+		TileEntityHowlerAlarm te = (TileEntityHowlerAlarm) be;
+		te.tick();
+	}
+
+	protected void tick() {
+		if (level.isClientSide)
 			checkStatus();
-		}
 	}
 
 	protected void checkStatus() {
 		if (sound == null)
 			sound = new TileEntitySound();
-		if (powered && !sound.isPlaying())
-			sound.playAlarm(worldPosition.getX() + 0.5D, worldPosition.getY() + 0.5D, worldPosition.getZ() + 0.5D, SOUND_PREFIX + soundName, range);
-		if (!powered && sound.isPlaying())
+		if (!sound.isPlaying())
+			updateTicker--;
+		if (!powered && sound.isPlaying()) {
 			sound.stopAlarm();
+			updateTicker = tickRate;
+		}
+		if (powered && !sound.isPlaying() && updateTicker < 0) {
+			sound.playAlarm(worldPosition.getX() + 0.5D, worldPosition.getY() + 0.5D, worldPosition.getZ() + 0.5D, SOUND_PREFIX + soundName, range);
+			updateTicker = tickRate;
+		}
 	}
 
 	private void notifyBlockUpdate() {

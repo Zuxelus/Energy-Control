@@ -1,14 +1,16 @@
 package com.zuxelus.zlib.tileentities;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
-public abstract class TileEntityFacing extends TileEntity {
+public abstract class BlockEntityFacing extends BlockEntity {
 
-	public TileEntityFacing(TileEntityType<?> type) {
-		super(type);
+	public BlockEntityFacing(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
 	}
 
 	protected Direction facing;
@@ -38,7 +40,7 @@ public abstract class TileEntityFacing extends TileEntity {
 		rotation = meta;
 	}
 
-	protected void readProperties(CompoundNBT tag) {
+	protected void readProperties(CompoundTag tag) {
 		if (tag.contains("facing"))
 			facing = Direction.from3DDataValue(tag.getInt("facing"));
 		else
@@ -51,7 +53,7 @@ public abstract class TileEntityFacing extends TileEntity {
 		}
 	}
 
-	protected CompoundNBT writeProperties(CompoundNBT tag) {
+	protected CompoundTag writeProperties(CompoundTag tag) {
 		tag.putInt("facing", facing.get3DDataValue());
 		if (hasRotation() && rotation != null)
 			tag.putInt("rotation", rotation.get3DDataValue());

@@ -14,27 +14,29 @@ import com.zuxelus.zlib.containers.EnergyStorage;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.TileEntityItemHandler;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
-public class TileEntityKitAssembler extends TileEntityItemHandler implements ITickableTileEntity, INamedContainerProvider, ITilePacketHandler, ISlotItemFilter {
+public class TileEntityKitAssembler extends TileEntityItemHandler implements MenuProvider, ITilePacketHandler, ISlotItemFilter {
 	public static final byte SLOT_INFO = 0;
 	public static final byte SLOT_CARD1 = 1;
 	public static final byte SLOT_ITEM = 2;
@@ -50,15 +52,15 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements ITi
 	private double production;
 	private boolean active;
 
-	public TileEntityKitAssembler(TileEntityType<?> type) {
-		super(type);
+	public TileEntityKitAssembler(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
 		storage = new EnergyStorage(CAPACITY, 32, 32, 0);
 		active = false;
 		production = 0;
 	}
 
-	public TileEntityKitAssembler() {
-		this(ModTileEntityTypes.kit_assembler.get());
+	public TileEntityKitAssembler(BlockPos pos, BlockState state) {
+		this(ModTileEntityTypes.kit_assembler.get(), pos, state);
 	}
 
 	public double getEnergy() {
@@ -86,7 +88,7 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements ITi
 	}
 
 	@Override
-	public void onServerMessageReceived(CompoundNBT tag) {
+	public void onServerMessageReceived(CompoundTag tag) {
 		if (!tag.contains("type"))
 			return;
 		switch (tag.getInt("type")) {
@@ -102,7 +104,7 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements ITi
 	}
 
 	@Override
-	public void onClientMessageReceived(CompoundNBT tag) {
+	public void onClientMessageReceived(CompoundTag tag) {
 		if (!tag.contains("type"))
 			return;
 		switch (tag.getInt("type")) {
@@ -120,21 +122,21 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements ITi
 	}
 
 	@Override
-	public SUpdateTileEntityPacket getUpdatePacket() {
-		CompoundNBT tag = new CompoundNBT();
+	public ClientboundBlockEntityDataPacket getUpdatePacket() {
+		CompoundTag tag = new CompoundTag();
 		tag = writeProperties(tag);
 		tag.putBoolean("active", active);
-		return new SUpdateTileEntityPacket(getBlockPos(), 0, tag);
+		return new ClientboundBlockEntityDataPacket(getBlockPos(), 0, tag);
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
 		readProperties(pkt.getTag());
 	}
 
 	@Override
-	public CompoundNBT getUpdateTag() {
-		CompoundNBT tag = super.getUpdateTag();
+	public CompoundTag getUpdateTag() {
+		CompoundTag tag = super.getUpdateTag();
 		tag = writeProperties(tag);
 		updateActive();
 		tag.putBoolean("active", active);
@@ -142,7 +144,7 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements ITi
 	}
 
 	@Override
-	protected void readProperties(CompoundNBT tag) {
+	protected void readProperties(CompoundTag tag) {
 		super.readProperties(tag);
 		if (tag.contains("energy"))
 			storage.setEnergy(tag.getInt("energy"));
@@ -155,13 +157,13 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements ITi
 	}
 
 	@Override
-	public void load(BlockState state, CompoundNBT tag) {
-		super.load(state, tag);
+	public void load(CompoundTag tag) {
+		super.load(tag);
 		readProperties(tag);
 	}
 
 	@Override
-	protected CompoundNBT writeProperties(CompoundNBT tag) {
+	protected CompoundTag writeProperties(CompoundTag tag) {
 		tag = super.writeProperties(tag);
 		tag.putInt("energy", storage.getEnergyStored());
 		tag.putInt("buffer", buffer);
@@ -170,12 +172,18 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements ITi
 	}
 
 	@Override
-	public CompoundNBT save(CompoundNBT tag) {
+	public CompoundTag save(CompoundTag tag) {
 		return writeProperties(super.save(tag));
 	}
 
-	@Override
-	public void tick() {
+	public static void tickStatic(Level level, BlockPos pos, BlockState state, BlockEntity be) {
+		if (!(be instanceof TileEntityKitAssembler))
+			return;
+		TileEntityKitAssembler te = (TileEntityKitAssembler) be;
+		te.tick();
+	}
+
+	protected void tick() {
 		if (level.isClientSide)
 			return;
 		handleDischarger(SLOT_DISCHARGER);
@@ -219,12 +227,14 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements ITi
 		if (!stack.isEmpty() && needed > 0) {
 			if (stack.getItem().equals(Items.LAVA_BUCKET)) {
 				buffer += 2000;
+				buffer -= storage.receiveEnergy(buffer, false);
 				setItem(slot, new ItemStack(Items.BUCKET));
 				return;
 			}
 			IEnergyStorage stackStorage = getStackEnergyStorage(stack);
 			if (stackStorage != null)
-				storage.receiveEnergy(stackStorage.extractEnergy(needed, false), false);
+				if (storage.receiveEnergy(stackStorage.extractEnergy(needed, false), false) > 0)
+					active = true;
 		}
 	}
 
@@ -315,15 +325,15 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements ITi
 		}
 	}
 
-	// INamedContainerProvider
+	// MenuProvider
 	@Override
-	public Container createMenu(int windowId, PlayerInventory inventory, PlayerEntity player) {
+	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerKitAssembler(windowId, inventory, this);
 	}
 
 	@Override
-	public ITextComponent getDisplayName() {
-		return new TranslationTextComponent(ModItems.kit_assembler.get().getDescriptionId());
+	public Component getDisplayName() {
+		return new TranslatableComponent(ModItems.kit_assembler.get().getDescriptionId());
 	}
 
 	@Override

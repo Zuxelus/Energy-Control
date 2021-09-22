@@ -9,29 +9,28 @@ import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.utils.StringUtils;
 
-import net.minecraft.client.resources.I18n;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class ItemCardInventory extends ItemCardMain {
 
 	@Override
-	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
+	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
 		BlockPos target = reader.getTarget();
 		if (target == null)
 			return CardState.NO_TARGET;
 
-		TileEntity te = world.getBlockEntity(target);
-		if (te instanceof IInventory) {
-			IInventory inv = (IInventory) te;
+		BlockEntity te = world.getBlockEntity(target);
+		if (te instanceof Container) {
+			Container inv = (Container) te;
 			reader.setString("name", "TODO"/*inv.getName()*/);
 			reader.setInt("size", inv.getContainerSize());
-			reader.setBoolean("sided", inv instanceof ISidedInventory);
+			reader.setBoolean("sided", false /*inv instanceof ISidedInventory*/); // TODO
 			reader.removeField("slot0");
 			reader.removeField("slot1");
 			reader.removeField("slot2");
@@ -44,13 +43,13 @@ public class ItemCardInventory extends ItemCardMain {
 					items += inv.getItem(i).getCount();
 				}
 				if (i == 0)
-					reader.setTag("slot0", inv.getItem(0).save(new CompoundNBT()));
+					reader.setTag("slot0", inv.getItem(0).save(new CompoundTag()));
 				if (i == 1)
-					reader.setTag("slot1", inv.getItem(1).save(new CompoundNBT()));
+					reader.setTag("slot1", inv.getItem(1).save(new CompoundTag()));
 				if (i == 2)
-					reader.setTag("slot2", inv.getItem(2).save(new CompoundNBT()));
+					reader.setTag("slot2", inv.getItem(2).save(new CompoundTag()));
 				if (i == 3)
-					reader.setTag("slot3", inv.getItem(3).save(new CompoundNBT()));
+					reader.setTag("slot3", inv.getItem(3).save(new CompoundTag()));
 			}
 			reader.setInt("used", inUse);
 			reader.setInt("items", items);
@@ -60,7 +59,7 @@ public class ItemCardInventory extends ItemCardMain {
 	}
 
 	@Override
-	public List<PanelString> getStringData(World world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(Level world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = new LinkedList<PanelString>();
 		if (isServer) {
 			result.add(new PanelString("msg.ec.InfoPanelTotalItems", reader.getInt("items"), showLabels));

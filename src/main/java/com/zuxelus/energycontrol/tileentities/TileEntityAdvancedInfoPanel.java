@@ -3,20 +3,20 @@ package com.zuxelus.energycontrol.tileentities;
 import com.zuxelus.energycontrol.containers.ContainerAdvancedInfoPanel;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
-//import com.zuxelus.energycontrol.items.cards.ItemCardAppEngInv;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	public static final String NAME = "info_panel_advanced";
@@ -39,15 +39,15 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	public byte rotateHor;
 	public byte rotateVert;
 
-	public TileEntityAdvancedInfoPanel(TileEntityType<?> type) {
-		super(type);
+	public TileEntityAdvancedInfoPanel(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
 		colorBackground = 6;
 		colored = true;
 		thickness = 16;
 	}
 
-	public TileEntityAdvancedInfoPanel() {
-		this(ModTileEntityTypes.info_panel_advanced.get());
+	public TileEntityAdvancedInfoPanel(BlockPos pos, BlockState state) {
+		this(ModTileEntityTypes.info_panel_advanced.get(), pos, state);
 	}
 
 	public byte getPowerMode() {
@@ -121,7 +121,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	}
 
 	@Override
-	public void onServerMessageReceived(CompoundNBT tag) {
+	public void onServerMessageReceived(CompoundTag tag) {
 		if (!tag.contains("type"))
 			return;
 		int type = tag.getInt("type");
@@ -140,14 +140,14 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	}
 
 	@Override
-	protected void deserializeDisplaySettings(CompoundNBT tag) {
+	protected void deserializeDisplaySettings(CompoundTag tag) {
 		deserializeSlotSettings(tag, "dSettings1", SLOT_CARD1);
 		deserializeSlotSettings(tag, "dSettings2", SLOT_CARD2);
 		deserializeSlotSettings(tag, "dSettings3", SLOT_CARD3);
 	}
 
 	@Override
-	protected void readProperties(CompoundNBT tag) {
+	protected void readProperties(CompoundTag tag) {
 		super.readProperties(tag);
 		if (tag.contains("powerMode"))
 			setPowerMode(tag.getByte("powerMode"));
@@ -160,14 +160,14 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	}
 
 	@Override
-	protected void serializeDisplaySettings(CompoundNBT tag) {
+	protected void serializeDisplaySettings(CompoundTag tag) {
 		tag.put("dSettings1", serializeSlotSettings(SLOT_CARD1));
 		tag.put("dSettings2", serializeSlotSettings(SLOT_CARD2));
 		tag.put("dSettings3", serializeSlotSettings(SLOT_CARD3));
 	}
 
 	@Override
-	protected CompoundNBT writeProperties(CompoundNBT tag) {
+	protected CompoundTag writeProperties(CompoundTag tag) {
 		tag = super.writeProperties(tag);
 		tag.putByte("powerMode", powerMode);
 		tag.putByte("thickness", thickness);
@@ -220,7 +220,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	}
 
 	@Override
-	public boolean runTouchAction(ItemStack stack, BlockPos pos, Vector3d hit) {
+	public boolean runTouchAction(ItemStack stack, BlockPos pos, Vec3 hit) {
 		if (level.isClientSide)
 			return false;
 		ItemStack card = getItem(SLOT_CARD1);
@@ -228,14 +228,14 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 		return true;
 	}
 
-	// INamedContainerProvider
+	// MenuProvider
 	@Override
-	public Container createMenu(int windowId, PlayerInventory inventory, PlayerEntity player) {
+	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerAdvancedInfoPanel(windowId, inventory, this);
 	}
 
 	@Override
-	public ITextComponent getDisplayName() {
-		return new TranslationTextComponent(ModItems.info_panel_advanced.get().getDescriptionId());
+	public Component getDisplayName() {
+		return new TranslatableComponent(ModItems.info_panel_advanced.get().getDescriptionId());
 	}
 }

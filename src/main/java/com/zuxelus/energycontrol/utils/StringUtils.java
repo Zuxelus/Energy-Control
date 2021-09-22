@@ -5,10 +5,10 @@ import java.text.DecimalFormatSymbols;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -42,7 +42,7 @@ public class StringUtils {
 
 	@OnlyIn(Dist.CLIENT)
 	public static String getItemName(ItemStack stack) {
-		List<ITextComponent> list = stack.getTooltipLines(Minecraft.getInstance().player, TooltipFlags.NORMAL);
+		List<Component> list = stack.getTooltipLines(Minecraft.getInstance().player, TooltipFlag.Default.NORMAL);
 		if (list.size() == 0)
 			return stack.getItem().getDescriptionId();
 		return list.get(0).getString();// .getFormattedText();

@@ -2,8 +2,8 @@ package com.zuxelus.energycontrol.gui;
 
 import java.util.List;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.PanelString;
@@ -12,23 +12,24 @@ import com.zuxelus.energycontrol.items.InventoryPortablePanel;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiPortablePanel extends ContainerScreen<ContainerPortablePanel> {
+public class GuiPortablePanel extends AbstractContainerScreen<ContainerPortablePanel> {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID + ":textures/gui/gui_portable_panel.png");
-	private PlayerEntity player;
+	private Player player;
 
 	private InventoryPortablePanel te;
 
-	public GuiPortablePanel(ContainerPortablePanel container, PlayerInventory inventory, ITextComponent title) {
+	public GuiPortablePanel(ContainerPortablePanel container, Inventory inventory, Component title) {
 		super(container, inventory, title);
 		this.te = container.te;
 		this.player = inventory.player;
@@ -37,24 +38,24 @@ public class GuiPortablePanel extends ContainerScreen<ContainerPortablePanel> {
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		renderBackground(matrixStack);
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
 		renderTooltip(matrixStack, mouseX, mouseY);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
-	protected void renderBg(MatrixStack matrixStack, float partialTicks, int x, int y) {
-		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		minecraft.getTextureManager().bind(TEXTURE);
+	protected void renderBg(PoseStack matrixStack, float partialTicks, int x, int y) {
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShaderTexture(0, TEXTURE);
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		int left = (width - imageWidth) / 2;
 		int top = (height - imageHeight) / 2;
 		blit(matrixStack, left, top, 0, 0, imageWidth, imageHeight);
 	}
 
 	@Override
-	protected void renderLabels(MatrixStack matrixStack, int x, int y) {
+	protected void renderLabels(PoseStack matrixStack, int x, int y) {
 		ItemStack stack = te.getItem(InventoryPortablePanel.SLOT_CARD);
 		if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain) {
 			ItemCardReader reader = new ItemCardReader(stack);

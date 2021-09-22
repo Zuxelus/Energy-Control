@@ -8,43 +8,31 @@ import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityTimer;
 import com.zuxelus.zlib.containers.ContainerBase;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 
-public class ContainerTimer extends Container {
+public class ContainerTimer extends AbstractContainerMenu {
 	public TileEntityTimer te;
 	private int lastTime;
 	private boolean lastIsWorking;
-	private final List<IContainerListener> listeners = Lists.newArrayList();
+	public List<ServerPlayer> listeners = Lists.newArrayList();
 
-	public ContainerTimer(int windowId, PlayerInventory inventory, PacketBuffer data) {
-		this(windowId, inventory, (TileEntityTimer) ContainerBase.getTileEntity(inventory, data));
+	public ContainerTimer(int windowId, Inventory inventory, FriendlyByteBuf data) {
+		this(windowId, inventory, (TileEntityTimer) ContainerBase.getBlockEntity(inventory, data));
 	}
 
-	public ContainerTimer(int windowId, PlayerInventory inventory, TileEntityTimer te) {
+	public ContainerTimer(int windowId, Inventory inventory, TileEntityTimer te) {
 		super(ModContainerTypes.timer.get(), windowId);
 		this.te = te;
 		lastTime = 0;
 	}
 
 	@Override
-	public boolean stillValid(PlayerEntity player) {
+	public boolean stillValid(Player player) {
 		return player.distanceToSqr(te.getBlockPos().getX() + 0.5D, te.getBlockPos().getY() + 0.5D, te.getBlockPos().getZ() + 0.5D) <= 64.0D;
-	}
-
-	@Override
-	public void addSlotListener(IContainerListener listener) {
-		super.addSlotListener(listener);
-		listeners.add(listener);
-	}
-
-	@Override
-	public void removeSlotListener(IContainerListener listener) {
-		super.removeSlotListener(listener);
-		listeners.remove(listener);
 	}
 
 	@Override

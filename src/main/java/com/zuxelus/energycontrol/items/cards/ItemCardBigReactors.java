@@ -11,11 +11,11 @@ import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
 
-import net.minecraft.client.resources.I18n;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -23,13 +23,13 @@ public class ItemCardBigReactors extends ItemCardMain {
 	private static final DecimalFormat df = new DecimalFormat("0.0");
 
 	@Override
-	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
+	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
 		BlockPos target = reader.getTarget();
 		if (target == null)
 			return CardState.NO_TARGET;
 
-		TileEntity te = world.getBlockEntity(target);
-		CompoundNBT tag = CrossModLoader.getCrossMod(ModIDs.BIG_REACTORS).getCardData(te);
+		BlockEntity te = world.getBlockEntity(target);
+		CompoundTag tag = CrossModLoader.getCrossMod(ModIDs.BIG_REACTORS).getCardData(te);
 		if (tag == null)
 			tag = CrossModLoader.getCrossMod(ModIDs.BIGGER_REACTORS).getCardData(te);
 		if (tag == null)
@@ -40,7 +40,7 @@ public class ItemCardBigReactors extends ItemCardMain {
 	}
 
 	@Override
-	public List<PanelString> getStringData(World world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(Level world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		switch (reader.getInt("type")) {
 		case 1:

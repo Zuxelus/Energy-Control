@@ -2,22 +2,22 @@ package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
-import com.zuxelus.zlib.tileentities.TileEntityFacing;
+import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITickableTileEntity, IScreenPart {
+public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IScreenPart {
 	protected boolean init;
 
 	protected Screen screen;
@@ -27,8 +27,8 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	private int coreY;
 	private int coreZ;
 
-	public TileEntityInfoPanelExtender(TileEntityType<?> type) {
-		super(type);
+	public TileEntityInfoPanelExtender(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
 		init = false;
 		screen = null;
 		partOfScreen = false;
@@ -37,8 +37,8 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 		coreZ = 0;
 	}
 
-	public TileEntityInfoPanelExtender() {
-		this(ModTileEntityTypes.info_panel_extender.get());
+	public TileEntityInfoPanelExtender(BlockPos pos, BlockState state) {
+		this(ModTileEntityTypes.info_panel_extender.get(), pos, state);
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 
 	private void updateScreen() {
 		if (partOfScreen && screen == null) {
-			TileEntity core = level.getBlockEntity(new BlockPos(coreX, coreY, coreZ));
+			BlockEntity core = level.getBlockEntity(new BlockPos(coreX, coreY, coreZ));
 			if (core != null && core instanceof TileEntityInfoPanel) {
 				screen = ((TileEntityInfoPanel) core).getScreen();
 				if (screen != null)
@@ -67,26 +67,26 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	}
 
 	@Override
-	public SUpdateTileEntityPacket getUpdatePacket() {
-		CompoundNBT tag = new CompoundNBT();
+	public ClientboundBlockEntityDataPacket getUpdatePacket() {
+		CompoundTag tag = new CompoundTag();
 		tag = writeProperties(tag);
-		return new SUpdateTileEntityPacket(getBlockPos(), 0, tag);
+		return new ClientboundBlockEntityDataPacket(getBlockPos(), 0, tag);
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
 		readProperties(pkt.getTag());
 	}
 
 	@Override
-	public CompoundNBT getUpdateTag() {
-		CompoundNBT tag = super.getUpdateTag();
+	public CompoundTag getUpdateTag() {
+		CompoundTag tag = super.getUpdateTag();
 		tag = writeProperties(tag);
 		return tag;
 	}
 
 	@Override
-	protected void readProperties(CompoundNBT tag) {
+	protected void readProperties(CompoundTag tag) {
 		super.readProperties(tag);
 		if (tag.contains("partOfScreen"))
 			partOfScreen = tag.getBoolean("partOfScreen");
@@ -103,13 +103,13 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	}
 
 	@Override
-	public void load(BlockState state, CompoundNBT tag) {
-		super.load(state, tag);
+	public void load(CompoundTag tag) {
+		super.load(tag);
 		readProperties(tag);
 	}
 
 	@Override
-	protected CompoundNBT writeProperties(CompoundNBT tag) {
+	protected CompoundTag writeProperties(CompoundTag tag) {
 		tag = super.writeProperties(tag);
 		tag.putBoolean("partOfScreen", partOfScreen);
 		tag.putInt("coreX", coreX);
@@ -119,7 +119,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	}
 
 	@Override
-	public CompoundNBT save(CompoundNBT tag) {
+	public CompoundTag save(CompoundTag tag) {
 		return writeProperties(super.save(tag));
 	}
 
@@ -130,14 +130,20 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 		super.setRemoved();
 	}
 
-	@Override
-	public void tick() {
+	public static void tickStatic(Level level, BlockPos pos, BlockState state, BlockEntity be) {
+		if (!(be instanceof TileEntityInfoPanelExtender))
+			return;
+		TileEntityInfoPanelExtender te = (TileEntityInfoPanelExtender) be;
+		te.tick();
+	}
+
+	protected void tick() {
 		if (init)
 			return;
-		
+
 		if (!level.isClientSide && !partOfScreen)
 			EnergyControl.INSTANCE.screenManager.registerInfoPanelExtender(this);
-		
+
 		updateScreen();
 		init = true;
 	}
@@ -210,14 +216,8 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public double getViewDistance() {
-		return 65536.0D;
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public AxisAlignedBB getRenderBoundingBox() {
-		return new AxisAlignedBB(worldPosition.offset(0, 0, 0), worldPosition.offset(1, 1, 1));
+	public AABB getRenderBoundingBox() {
+		return new AABB(worldPosition.offset(0, 0, 0), worldPosition.offset(1, 1, 1));
 	}
 
 	/*@Override // TODO

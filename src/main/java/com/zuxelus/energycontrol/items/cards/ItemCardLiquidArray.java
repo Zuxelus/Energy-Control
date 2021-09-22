@@ -11,9 +11,9 @@ import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 import com.zuxelus.energycontrol.utils.StringUtils;
 
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -22,7 +22,7 @@ public class ItemCardLiquidArray extends ItemCardMain {
 	private static final long STATUS_OUT_OF_RANGE = Integer.MIN_VALUE + 1;
 
 	@Override
-	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
+	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
 		int cardCount = reader.getCardCount();
 		if (cardCount == 0)
 			return CardState.INVALID_CARD;
@@ -58,7 +58,7 @@ public class ItemCardLiquidArray extends ItemCardMain {
 	}
 
 	@Override
-	public List<PanelString> getStringData(World world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(Level world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		double totalAmount = 0;
 		double totalCapacity = 0;

@@ -4,41 +4,41 @@ import com.zuxelus.energycontrol.blocks.TimerBlock;
 import com.zuxelus.energycontrol.containers.ContainerTimer;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
-import com.zuxelus.zlib.tileentities.TileEntityFacing;
+import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
-public class TileEntityTimer extends TileEntityFacing implements ITickableTileEntity, INamedContainerProvider, ITilePacketHandler {
+public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, ITilePacketHandler {
 	private int time;
 	private boolean invertRedstone;
 	private boolean isTicks;
 	private boolean isWorking;
 	private boolean poweredBlock;
 
-	public TileEntityTimer(TileEntityType<?> type) {
-		super(type);
+	public TileEntityTimer(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
 		time = 0;
 		invertRedstone = false;
 		isTicks = false;
 		isWorking = false;
 	}
 
-	public TileEntityTimer() {
-		this(ModTileEntityTypes.timer.get());
+	public TileEntityTimer(BlockPos pos, BlockState state) {
+		this(ModTileEntityTypes.timer.get(), pos, state);
 	}
 
 	public int getTime() {
@@ -97,7 +97,7 @@ public class TileEntityTimer extends TileEntityFacing implements ITickableTileEn
 	}
 
 	@Override
-	public void onServerMessageReceived(CompoundNBT tag) {
+	public void onServerMessageReceived(CompoundTag tag) {
 		if (!tag.contains("type"))
 			return;
 		switch (tag.getInt("type")) {
@@ -121,7 +121,7 @@ public class TileEntityTimer extends TileEntityFacing implements ITickableTileEn
 	}
 
 	@Override
-	public void onClientMessageReceived(CompoundNBT tag) {
+	public void onClientMessageReceived(CompoundTag tag) {
 		if (!tag.contains("type"))
 			return;
 		switch (tag.getInt("type")) {
@@ -137,22 +137,22 @@ public class TileEntityTimer extends TileEntityFacing implements ITickableTileEn
 	}
 
 	@Override
-	public SUpdateTileEntityPacket getUpdatePacket() {
-		CompoundNBT tag = new CompoundNBT();
+	public ClientboundBlockEntityDataPacket getUpdatePacket() {
+		CompoundTag tag = new CompoundTag();
 		tag = writeProperties(tag);
 		tag.putBoolean("isTicks", isTicks);
 		tag.putBoolean("poweredBlock", poweredBlock);
-		return new SUpdateTileEntityPacket(getBlockPos(), 0, tag);
+		return new ClientboundBlockEntityDataPacket(getBlockPos(), 0, tag);
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
 		readProperties(pkt.getTag());
 	}
 
 	@Override
-	public CompoundNBT getUpdateTag() {
-		CompoundNBT tag = super.getUpdateTag();
+	public CompoundTag getUpdateTag() {
+		CompoundTag tag = super.getUpdateTag();
 		tag = writeProperties(tag);
 		tag.putBoolean("isTicks", isTicks);
 		tag.putBoolean("poweredBlock", poweredBlock);
@@ -160,7 +160,7 @@ public class TileEntityTimer extends TileEntityFacing implements ITickableTileEn
 	}
 
 	@Override
-	protected void readProperties(CompoundNBT tag) {
+	protected void readProperties(CompoundTag tag) {
 		super.readProperties(tag);
 		if (tag.contains("timer"))
 			time = tag.getInt("timer");
@@ -175,13 +175,13 @@ public class TileEntityTimer extends TileEntityFacing implements ITickableTileEn
 	}
 
 	@Override
-	public void load(BlockState state, CompoundNBT tag) {
-		super.load(state, tag);
+	public void load(CompoundTag tag) {
+		super.load(tag);
 		readProperties(tag);
 	}
 
 	@Override
-	protected CompoundNBT writeProperties(CompoundNBT tag) {
+	protected CompoundTag writeProperties(CompoundTag tag) {
 		tag = super.writeProperties(tag);
 		tag.putInt("timer", time);
 		tag.putBoolean("invert", invertRedstone);
@@ -191,7 +191,7 @@ public class TileEntityTimer extends TileEntityFacing implements ITickableTileEn
 	}
 
 	@Override
-	public CompoundNBT save(CompoundNBT tag) {
+	public CompoundTag save(CompoundTag tag) {
 		return writeProperties(super.save(tag));
 	}
 
@@ -201,8 +201,14 @@ public class TileEntityTimer extends TileEntityFacing implements ITickableTileEn
 		super.setRemoved();
 	}
 
-	@Override
-	public void tick() {
+	public static void tickStatic(Level level, BlockPos pos, BlockState state, BlockEntity be) {
+		if (!(be instanceof TileEntityTimer))
+			return;
+		TileEntityTimer te = (TileEntityTimer) be;
+		te.tick();
+	}
+
+	protected void tick() {
 		if (level.isClientSide)
 			return;
 		if (!isWorking)
@@ -234,20 +240,14 @@ public class TileEntityTimer extends TileEntityFacing implements ITickableTileEn
 		return true;
 	}
 
+	// MenuProvider
 	@Override
-	@OnlyIn(Dist.CLIENT)
-	public double getViewDistance() {
-		return 65536.0D;
-	}
-
-	// INamedContainerProvider
-	@Override
-	public Container createMenu(int windowId, PlayerInventory inventory, PlayerEntity player) {
+	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerTimer(windowId, inventory, this);
 	}
 
 	@Override
-	public ITextComponent getDisplayName() {
-		return new TranslationTextComponent(ModItems.timer.get().getDescriptionId());
+	public Component getDisplayName() {
+		return new TranslatableComponent(ModItems.timer.get().getDescriptionId());
 	}
 }

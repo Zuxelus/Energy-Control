@@ -7,20 +7,20 @@ import java.util.function.Supplier;
 
 import com.zuxelus.zlib.network.PacketTileEntity;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.PacketDistributor;
-import net.minecraftforge.fml.network.PacketDistributor.PacketTarget;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.inventory.ContainerListener;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraftforge.fmllegacy.network.NetworkDirection;
+import net.minecraftforge.fmllegacy.network.NetworkEvent.Context;
+import net.minecraftforge.fmllegacy.network.NetworkRegistry;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.PacketDistributor.PacketTarget;
+import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 
 public class NetworkHelper {
 	public static SimpleChannel network;
@@ -31,74 +31,68 @@ public class NetworkHelper {
 				.networkProtocolVersion(() -> version).simpleChannel();
 	}
 
-	public static <MSG> void registerClientToServer(int index, Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder, BiConsumer<MSG, Supplier<Context>> consumer) {
+	public static <MSG> void registerClientToServer(int index, Class<MSG> type, BiConsumer<MSG, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, MSG> decoder, BiConsumer<MSG, Supplier<Context>> consumer) {
 		network.registerMessage(index, type, encoder, decoder, consumer, Optional.of(NetworkDirection.PLAY_TO_SERVER));
 	}
 
-	public static <MSG> void registerServerToClient(int index, Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder, BiConsumer<MSG, Supplier<Context>> consumer) {
+	public static <MSG> void registerServerToClient(int index, Class<MSG> type, BiConsumer<MSG, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, MSG> decoder, BiConsumer<MSG, Supplier<Context>> consumer) {
 		network.registerMessage(index, type, encoder, decoder, consumer, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
 	}
 
-	public static <MSG> void registerBoth(int index, Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder, BiConsumer<MSG, Supplier<Context>> consumer) {
+	public static <MSG> void registerBoth(int index, Class<MSG> type, BiConsumer<MSG, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, MSG> decoder, BiConsumer<MSG, Supplier<Context>> consumer) {
 		network.registerMessage(index, type, encoder, decoder, consumer, Optional.empty());
 	}
 
-	public static <MSG> void sendToPlayer(ServerPlayerEntity player, MSG message) {
+	public static <MSG> void sendToPlayer(ServerPlayer player, MSG message) {
 		network.sendTo(message, player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
 	}
 
 	// server
-	public static <MSG> void sendPacketToAllAround(World world, BlockPos pos, MSG message) {
-		Chunk chunk = world.getChunk(pos.getX() >> 4, pos.getZ() >> 4);
+	public static <MSG> void sendPacketToAllAround(Level world, BlockPos pos, MSG message) {
+		LevelChunk chunk = world.getChunk(pos.getX() >> 4, pos.getZ() >> 4);
 		PacketTarget target = PacketDistributor.TRACKING_CHUNK.with(() -> chunk);
 		network.send(target, message);
 	}
 
 	// server
-	public static void updateClientTileEntity(IContainerListener crafter, BlockPos pos, int type, int value) {
-		if (!(crafter instanceof ServerPlayerEntity))
-			return;
-		CompoundNBT tag = new CompoundNBT();
+	public static void updateClientTileEntity(ServerPlayer crafter, BlockPos pos, int type, int value) {
+		CompoundTag tag = new CompoundTag();
 		tag.putInt("type", type);
 		tag.putInt("value", value);
-		sendToPlayer((ServerPlayerEntity) crafter, new PacketTileEntity(pos, tag));
+		sendToPlayer(crafter, new PacketTileEntity(pos, tag));
 	}
 
-	public static void updateClientTileEntity(IContainerListener crafter, BlockPos pos, int type, double value) {
-		if (!(crafter instanceof ServerPlayerEntity))
-			return;
-		CompoundNBT tag = new CompoundNBT();
+	public static void updateClientTileEntity(ServerPlayer crafter, BlockPos pos, int type, double value) {
+		CompoundTag tag = new CompoundTag();
 		tag.putInt("type", type);
 		tag.putDouble("value", value);
-		sendToPlayer((ServerPlayerEntity) crafter, new PacketTileEntity(pos, tag));
+		sendToPlayer(crafter, new PacketTileEntity(pos, tag));
 	}
 
-	public static void updateClientTileEntity(IContainerListener crafter, BlockPos pos, CompoundNBT tag) {
-		if (!(crafter instanceof ServerPlayerEntity))
-			return;
-		sendToPlayer((ServerPlayerEntity) crafter, new PacketTileEntity(pos, tag));
+	public static void updateClientTileEntity(ServerPlayer crafter, BlockPos pos, CompoundTag tag) {
+		sendToPlayer(crafter, new PacketTileEntity(pos, tag));
 	}
 
-	public static void updateClientTileEntity(World world, BlockPos pos, CompoundNBT tag) {
+	public static void updateClientTileEntity(Level world, BlockPos pos, CompoundTag tag) {
 		sendPacketToAllAround(world, pos, new PacketTileEntity(pos, tag));
 	}
 
 	// client
 	public static void updateSeverTileEntity(BlockPos pos, int type, String string) {
-		CompoundNBT tag = new CompoundNBT();
+		CompoundTag tag = new CompoundTag();
 		tag.putInt("type", type);
 		tag.putString("string", string);
 		network.sendToServer(new PacketTileEntity(pos, tag));
 	}
 
 	public static void updateSeverTileEntity(BlockPos pos, int type, int value) {
-		CompoundNBT tag = new CompoundNBT();
+		CompoundTag tag = new CompoundTag();
 		tag.putInt("type", type);
 		tag.putInt("value", value);
 		network.sendToServer(new PacketTileEntity(pos, tag));
 	}
 
-	public static void updateSeverTileEntity(BlockPos pos, CompoundNBT tag) {
+	public static void updateSeverTileEntity(BlockPos pos, CompoundTag tag) {
 		network.sendToServer(new PacketTileEntity(pos, tag));
 	}
 }

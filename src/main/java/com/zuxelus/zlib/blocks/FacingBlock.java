@@ -1,29 +1,34 @@
 package com.zuxelus.zlib.blocks;
 
-import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
-import com.zuxelus.zlib.tileentities.TileEntityFacing;
+import com.zuxelus.energycontrol.init.ModTileEntityTypes;
+import com.zuxelus.energycontrol.tileentities.*;
+import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.DirectionalBlock;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.StateContainer.Builder;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
+import net.minecraft.world.Container;
+import net.minecraft.world.Containers;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.material.Material;
 
-public abstract class FacingBlock extends DirectionalBlock {
+public abstract class FacingBlock extends BaseEntityBlock {
+	public static final DirectionProperty FACING = BlockStateProperties.FACING;
 	protected Direction rotation;
 
 	public FacingBlock() {
-		super(Block.Properties.of(Material.METAL).strength(12.0F));
+		super(Block.Properties.of(Material.METAL).strength(3.0F));
 		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
 	}
 
@@ -32,19 +37,33 @@ public abstract class FacingBlock extends DirectionalBlock {
 		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
 	}
 
-	protected abstract TileEntityFacing createTileEntity();
+	protected abstract BlockEntityFacing createBlockEntity(BlockPos pos, BlockState state);
 
 	@Override
-	public boolean hasTileEntity(BlockState state) {
-		return true;
+	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+		BlockEntityFacing be = createBlockEntity(pos, state);
+		be.setFacing(state.getValue(FACING).get3DDataValue());
+		be.setRotation(rotation);
+		return be;
 	}
 
 	@Override
-	public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-		TileEntityFacing te = createTileEntity();
-		te.setFacing(state.getValue(FACING).get3DDataValue());
-		te.setRotation(rotation);
-		return te;
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+		if (type == ModTileEntityTypes.info_panel.get())
+			return createTickerHelper(type, type, TileEntityInfoPanel::tickStatic);
+		if (type == ModTileEntityTypes.info_panel_extender .get())
+			return createTickerHelper(type, type, TileEntityInfoPanelExtender::tickStatic);
+		if (type == ModTileEntityTypes.info_panel_advanced.get())
+			return createTickerHelper(type, type, TileEntityAdvancedInfoPanel::tickStatic);
+		if (type == ModTileEntityTypes.info_panel_advanced_extender.get())
+			return createTickerHelper(type, type, TileEntityAdvancedInfoPanelExtender::tickStatic);
+		if (type == ModTileEntityTypes.howler_alarm.get())
+			return createTickerHelper(type, type, TileEntityHowlerAlarm::tickStatic);
+		if (type == ModTileEntityTypes.industrial_alarm.get())
+			return createTickerHelper(type, type, TileEntityIndustrialAlarm::tickStatic);
+		if (type == ModTileEntityTypes.timer.get())
+			return createTickerHelper(type, type, TileEntityTimer::tickStatic);
+		return null;
 	}
 
 	@Override
@@ -53,16 +72,16 @@ public abstract class FacingBlock extends DirectionalBlock {
 	}
 
 	@Override
-	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		PlayerEntity placer = context.getPlayer();
+	public BlockState getStateForPlacement(BlockPlaceContext context) {
+		Player placer = context.getPlayer();
 		rotation = placer.getDirection().getOpposite();
-		if (placer.xRot >= 65)
+		if (placer.getXRot() >= 65)
 			return defaultBlockState().setValue(FACING, Direction.UP);
-		if (placer.xRot <= -65) {
+		if (placer.getXRot() <= -65) {
 			rotation = placer.getDirection();
 			return defaultBlockState().setValue(FACING, Direction.DOWN);
 		}
-		switch (MathHelper.floor(placer.yRot * 4.0F / 360.0F + 0.5D) & 3) {
+		switch (Mth.floor(placer.getYRot() * 4.0F / 360.0F + 0.5D) & 3) {
 		case 0:
 			return defaultBlockState().setValue(FACING, Direction.NORTH);
 		case 1:
@@ -77,11 +96,11 @@ public abstract class FacingBlock extends DirectionalBlock {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void onRemove(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
-			TileEntity te = world.getBlockEntity(pos);
-			if (te instanceof TileEntityInfoPanel) {
-				InventoryHelper.dropContents(world, pos, (IInventory) te);
+			BlockEntity te = world.getBlockEntity(pos);
+			if (te instanceof Container) {
+				Containers.dropContents(world, pos, (Container) te);
 				world.updateNeighbourForOutputSignal(pos, this);
 			}
 			super.onRemove(state, world, pos, newState, isMoving);

@@ -3,13 +3,12 @@ package com.zuxelus.energycontrol.api;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public interface ICardReader {
 
@@ -86,15 +85,15 @@ public interface ICardReader {
 	 * 
 	 * @param panel
 	 */
-	void updateClient(ItemStack stack, TileEntity panel, int slot);
+	void updateClient(ItemStack stack, BlockEntity panel, int slot);
 
-	void updateServer(ItemStack stack, TileEntity panel, int slot);
+	void updateServer(ItemStack stack, BlockEntity panel, int slot);
 
-	void setTag(String name, INBT value);
+	void setTag(String name, Tag value);
 
-	CompoundNBT getTag(String name);
+	CompoundTag getTag(String name);
 
-	ListNBT getTagList(String name, int type);
+	ListTag getTagList(String name, int type);
 
 	ArrayList<ItemStack> getItemStackList(boolean reset);
 	
@@ -106,7 +105,7 @@ public interface ICardReader {
 
 	void reset();
 
-	void copyFrom(CompoundNBT tag);
+	void copyFrom(CompoundTag tag);
 
 	//int getCardType();
 

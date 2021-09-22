@@ -1,6 +1,6 @@
 package com.zuxelus.energycontrol.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardText;
@@ -9,22 +9,21 @@ import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.gui.GuiContainerBase;
 import com.zuxelus.zlib.gui.controls.GuiButtonGeneral;
 
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerListener;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class GuiPanelBase<T extends Container> extends GuiContainerBase<T> implements IContainerListener {
+public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiContainerBase<T> implements ContainerListener {
 	protected static final int ID_LABELS = 1;
 	protected static final int ID_SLOPE = 2;
 	protected static final int ID_COLORS = 3;
@@ -34,12 +33,12 @@ public abstract class GuiPanelBase<T extends Container> extends GuiContainerBase
 
 	protected String name;
 	protected TileEntityInfoPanel panel;
-	protected TextFieldWidget textboxTitle;
+	protected EditBox textboxTitle;
 	protected byte activeTab;
 	protected boolean modified;
 	protected ItemStack oldStack = ItemStack.EMPTY;
 
-	public GuiPanelBase(T container, PlayerInventory inv, ITextComponent name, ResourceLocation texture) {
+	public GuiPanelBase(T container, Inventory inv, Component name, ResourceLocation texture) {
 		super(container, inv, name, texture);
 		activeTab = 0;
 		modified = false;
@@ -59,14 +58,14 @@ public abstract class GuiPanelBase<T extends Container> extends GuiContainerBase
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		renderBackground(matrixStack);
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
 		renderTooltip(matrixStack, mouseX, mouseY);
 	}
 
 	@Override
-	protected void renderLabels(MatrixStack matrixStack, int mouseX, int mouseY) {
+	protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
 		drawCenteredText(matrixStack, title, imageWidth, 6);
 	}
 
@@ -83,8 +82,8 @@ public abstract class GuiPanelBase<T extends Container> extends GuiContainerBase
 	}
 
 	@Override
-	public void tick() {
-		super.tick();
+	public void containerTick() {
+		super.containerTick();
 		if (textboxTitle != null)
 			textboxTitle.tick();
 	}
@@ -94,7 +93,7 @@ public abstract class GuiPanelBase<T extends Container> extends GuiContainerBase
 		if (textboxTitle == null)
 			return;
 		if (panel.getLevel().isClientSide) {
-			CompoundNBT tag = new CompoundNBT();
+			CompoundTag tag = new CompoundTag();
 			tag.putInt("type", 4);
 			tag.putInt("slot", activeTab);
 			tag.putString("title", textboxTitle.getValue());
@@ -148,15 +147,10 @@ public abstract class GuiPanelBase<T extends Container> extends GuiContainerBase
 	}
 
 	@Override
-	public void refreshContainer(Container container, NonNullList<ItemStack> itemsList) {
-		slotChanged(container, 0, container.getSlot(0).getItem());
-	}
-
-	@Override
-	public void slotChanged(Container container, int slotInd, ItemStack stack) {
+	public void slotChanged(AbstractContainerMenu container, int slot, ItemStack stack) {
 		initControls();
 	}
 
 	@Override
-	public void setContainerData(Container container, int varToUpdate, int newValue) { }
+	public void dataChanged(AbstractContainerMenu container, int varToUpdate, int newValue) {}
 }

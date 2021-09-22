@@ -1,10 +1,10 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 public interface ITilePacketHandler {
 
-	void onServerMessageReceived(CompoundNBT tag);
+	void onServerMessageReceived(CompoundTag tag);
 
-	void onClientMessageReceived(CompoundNBT tag);
+	void onClientMessageReceived(CompoundTag tag);
 }

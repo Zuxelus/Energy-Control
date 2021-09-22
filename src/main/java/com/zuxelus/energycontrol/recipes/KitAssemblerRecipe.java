@@ -4,16 +4,16 @@ import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
 import com.zuxelus.zlib.recipes.EmptyInventory;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 
-public class KitAssemblerRecipe implements IRecipe<EmptyInventory>{
+public class KitAssemblerRecipe implements Recipe<EmptyInventory>{
 	private final ResourceLocation id;
 	public final Ingredient input1;
 	public final Ingredient input2;
@@ -57,7 +57,7 @@ public class KitAssemblerRecipe implements IRecipe<EmptyInventory>{
 	}
 
 	@Override
-	public boolean matches(EmptyInventory inv, World world) {
+	public boolean matches(EmptyInventory inv, Level world) {
 		return true;
 	}
 
@@ -92,12 +92,12 @@ public class KitAssemblerRecipe implements IRecipe<EmptyInventory>{
 	}
 
 	@Override
-	public IRecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<?> getSerializer() {
 		return ModItems.KIT_ASSEMBLER_SERIALIZER.get();
 	}
 
 	@Override
-	public IRecipeType<?> getType() {
+	public RecipeType<?> getType() {
 		return KitAssemblerRecipeType.TYPE;
 	}
 }

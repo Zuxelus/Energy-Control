@@ -5,18 +5,18 @@ import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
-public class TileEntityThermalMonitor extends TileEntityInventory implements ITickableTileEntity, ITilePacketHandler {
+public class TileEntityThermalMonitor extends TileEntityInventory implements ITilePacketHandler {
 	private int heatLevel;
 	private boolean invertRedstone;
 	protected int status;
@@ -25,8 +25,8 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 	protected int updateTicker;
 	protected int tickRate;
 
-	public TileEntityThermalMonitor(TileEntityType<?> type) {
-		super(type);
+	public TileEntityThermalMonitor(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
 		invertRedstone = false;
 		heatLevel = 500;
 		updateTicker = 0;
@@ -34,8 +34,8 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 		status = -1;
 	}
 
-	public TileEntityThermalMonitor() {
-		this(ModTileEntityTypes.thermal_monitor.get());
+	public TileEntityThermalMonitor(BlockPos pos, BlockState state) {
+		this(ModTileEntityTypes.thermal_monitor.get(), pos, state);
 	}
 
 	public int getHeatLevel() {
@@ -73,7 +73,7 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 	}
 
 	@Override
-	public void onServerMessageReceived(CompoundNBT tag) {
+	public void onServerMessageReceived(CompoundTag tag) {
 		if (!tag.contains("type"))
 			return;
 		switch (tag.getInt("type")) {
@@ -89,25 +89,25 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 	}
 
 	@Override
-	public void onClientMessageReceived(CompoundNBT tag) { }
+	public void onClientMessageReceived(CompoundTag tag) { }
 
 	@Override
-	public SUpdateTileEntityPacket getUpdatePacket() {
-		CompoundNBT tag = new CompoundNBT();
+	public ClientboundBlockEntityDataPacket getUpdatePacket() {
+		CompoundTag tag = new CompoundTag();
 		tag = writeProperties(tag);
 		tag.putInt("status", status);
 		tag.putBoolean("poweredBlock", poweredBlock);
-		return new SUpdateTileEntityPacket(getBlockPos(), 0, tag);
+		return new ClientboundBlockEntityDataPacket(getBlockPos(), 0, tag);
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
 		readProperties(pkt.getTag());
 	}
 
 	@Override
-	public CompoundNBT getUpdateTag() {
-		CompoundNBT tag = super.getUpdateTag();
+	public CompoundTag getUpdateTag() {
+		CompoundTag tag = super.getUpdateTag();
 		tag = writeProperties(tag);
 		tag.putInt("status", status);
 		tag.putBoolean("poweredBlock", poweredBlock);
@@ -115,7 +115,7 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 	}
 
 	@Override
-	protected void readProperties(CompoundNBT tag) {
+	protected void readProperties(CompoundTag tag) {
 		super.readProperties(tag);
 		if (tag.contains("heatLevel"))
 			heatLevel = tag.getInt("heatLevel");
@@ -128,13 +128,13 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 	}
 
 	@Override
-	public void load(BlockState state, CompoundNBT tag) {
-		super.load(state, tag);
+	public void load(CompoundTag tag) {
+		super.load(tag);
 		readProperties(tag);
 	}
 
 	@Override
-	protected CompoundNBT writeProperties(CompoundNBT tag) {
+	protected CompoundTag writeProperties(CompoundTag tag) {
 		tag = super.writeProperties(tag);
 		tag.putInt("heatLevel", heatLevel);
 		tag.putBoolean("invert", invertRedstone);
@@ -142,7 +142,7 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 	}
 
 	@Override
-	public CompoundNBT save(CompoundNBT tag) {
+	public CompoundTag save(CompoundTag tag) {
 		return writeProperties(super.save(tag));
 	}
 
@@ -152,8 +152,14 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 		super.setRemoved();
 	}
 
-	@Override
-	public void tick() {
+	public static void tickStatic(Level level, BlockPos pos, BlockState state, BlockEntity be) {
+		if (!(be instanceof TileEntityThermalMonitor))
+			return;
+		TileEntityThermalMonitor te = (TileEntityThermalMonitor) be;
+		te.tick();
+	}
+
+	protected void tick() {
 		if (level.isClientSide)
 			return;
 	
@@ -201,11 +207,5 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 	@Override
 	public boolean canPlaceItem(int index, ItemStack stack) {
 		return false;
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public double getViewDistance() {
-		return 65536.0D;
 	}
 }

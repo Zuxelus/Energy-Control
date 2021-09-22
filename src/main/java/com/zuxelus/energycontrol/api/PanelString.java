@@ -3,7 +3,7 @@ package com.zuxelus.energycontrol.api;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.resources.language.I18n;
 
 public class PanelString {
 

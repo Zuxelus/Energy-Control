@@ -2,8 +2,8 @@ package com.zuxelus.energycontrol.api;
 
 import java.util.List;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -14,12 +14,12 @@ public interface IItemCard {
 	 * @return The new state of the card
 	 * @see CardState
 	 */
-	CardState update(World world, ICardReader reader, int range, BlockPos pos);
+	CardState update(Level world, ICardReader reader, int range, BlockPos pos);
 
 	/**
 	 * Used to display data on Info Panels.
 	 */
-	List<PanelString> getStringData(World world, int settings, ICardReader reader, boolean isServer, boolean showLabels);
+	List<PanelString> getStringData(Level world, int settings, ICardReader reader, boolean isServer, boolean showLabels);
 
 	/**
 	 * @return A list of card settings

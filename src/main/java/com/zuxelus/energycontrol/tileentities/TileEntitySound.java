@@ -1,26 +1,26 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.ISound;
-import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.phys.Vec3;
 
 public class TileEntitySound {
-	private ISound sound;
+	private SoundInstance sound;
 
 	public TileEntitySound() { }
 
 	public void playAlarm(double x, double y, double z, String name, float range) {
-		Vector3d person = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+		Vec3 person = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
 		if (person != null) {
 			double volume = 1.0F - Math.sqrt(person.distanceToSqr(x, y, z) / range / range);
 			if (volume > 0) {
 				if (volume < 0.3)
 					volume = 0.3;
-				ISound sound = new SimpleSound(new SoundEvent(new ResourceLocation(name)), SoundCategory.MASTER, (float) volume, 1.0F, (float) person.x, (float) person.y, (float) person.z);
+				sound = new SimpleSoundInstance(new SoundEvent(new ResourceLocation(name)), SoundSource.MASTER, (float) volume, 1.0F, (float) person.x, (float) person.y, (float) person.z);
 				Minecraft.getInstance().getSoundManager().play(sound);
 				return;
 			}

@@ -6,8 +6,8 @@ import java.util.function.Supplier;
 
 import com.zuxelus.energycontrol.EnergyControl;
 
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fmllegacy.network.NetworkEvent.Context;
 
 public class PacketAlarm {
 	private int maxAlarmRange;
@@ -20,13 +20,13 @@ public class PacketAlarm {
 		allowedAlarms = alarms;
 	}
 
-	public static PacketAlarm decode(PacketBuffer buf) {
+	public static PacketAlarm decode(FriendlyByteBuf buf) {
 		int maxAlarmRange = buf.readInt();
 		String allowedAlarms = buf.readUtf();
 		return new PacketAlarm(maxAlarmRange, allowedAlarms);
 	}
 
-	public static void encode(PacketAlarm pkt, PacketBuffer buf) {
+	public static void encode(PacketAlarm pkt, FriendlyByteBuf buf) {
 		buf.writeInt(pkt.maxAlarmRange);
 		buf.writeUtf(pkt.allowedAlarms);
 	}

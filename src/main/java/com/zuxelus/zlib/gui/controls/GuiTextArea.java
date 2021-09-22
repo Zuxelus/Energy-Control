@@ -1,23 +1,25 @@
 package com.zuxelus.zlib.gui.controls;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.IRenderable;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.SharedConstants;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.SharedConstants;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiTextArea extends Widget implements IRenderable, IGuiEventListener {
+public class GuiTextArea extends AbstractWidget implements Widget, GuiEventListener {
 	private final int lineCount;
 	private int maxStringLength = 32;
 	private int cursorCounter;
@@ -25,10 +27,10 @@ public class GuiTextArea extends Widget implements IRenderable, IGuiEventListene
 	private int cursorLine = 0;
 	private String[] text;
 
-	private final FontRenderer fontRenderer;
+	private final Font fontRenderer;
 
-	public GuiTextArea(FontRenderer fontRenderer, int xPos, int yPos, int width, int height, int lineCount) {
-		super(xPos, yPos, width, height, StringTextComponent.EMPTY);
+	public GuiTextArea(Font fontRenderer, int xPos, int yPos, int width, int height, int lineCount) {
+		super(xPos, yPos, width, height, TextComponent.EMPTY);
 		this.fontRenderer = fontRenderer;
 		this.lineCount = lineCount;
 		text = new String[lineCount];
@@ -41,7 +43,7 @@ public class GuiTextArea extends Widget implements IRenderable, IGuiEventListene
 	}
 
 	@Override
-	public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		fill(matrixStack, x - 1, y - 1, x + width + 1, y + height + 1, 0xFFA0A0A0);
 		fill(matrixStack, x, y, x + width, y + height, 0xFF000000);
 		int textColor = 0xE0E0E0;
@@ -71,18 +73,18 @@ public class GuiTextArea extends Widget implements IRenderable, IGuiEventListene
 			bottom = j;
 		}
 
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferbuilder = tessellator.getBuilder();
-		RenderSystem.color4f(0.0F, 0.0F, 255.0F, 255.0F);
+		Tesselator tesselator = Tesselator.getInstance();
+		BufferBuilder bufferbuilder = tesselator.getBuilder();
+		RenderSystem.setShaderColor(0.0F, 0.0F, 255.0F, 255.0F);
 		RenderSystem.disableTexture();
 		RenderSystem.enableColorLogicOp();
 		RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-		bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
+		bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
 		bufferbuilder.vertex(left, bottom, 0.0D).endVertex();
 		bufferbuilder.vertex(right, bottom, 0.0D).endVertex();
 		bufferbuilder.vertex(right, top, 0.0D).endVertex();
 		bufferbuilder.vertex(left, top, 0.0D).endVertex();
-		tessellator.end();
+		tesselator.end();
 		RenderSystem.disableColorLogicOp();
 		RenderSystem.enableTexture();
 	}
@@ -199,5 +201,10 @@ public class GuiTextArea extends Widget implements IRenderable, IGuiEventListene
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public void updateNarration(NarrationElementOutput output) {
+		// TODO Auto-generated method stub
 	}
 }

@@ -7,14 +7,14 @@ import com.zuxelus.energycontrol.api.*;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
-import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -34,27 +34,27 @@ public abstract class ItemCardMain extends Item implements IItemCard {
 		return false;
 	}
 
-	protected void addInformation(ItemCardReader reader, List<ITextComponent> tooltip) { }
+	protected void addInformation(ItemCardReader reader, List<Component> tooltip) { }
 	
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void appendHoverText(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+	public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag flag) {
 		ItemCardReader reader = new ItemCardReader(stack);
 		String title = reader.getTitle();
 		if (title != null && !title.isEmpty())
-			tooltip.add(new TranslationTextComponent(title));
+			tooltip.add(new TranslatableComponent(title));
 		
 		addInformation(reader, tooltip);
 		
 		BlockPos target = reader.getTarget();
 		if (target != null)
-			tooltip.add(new TranslationTextComponent(String.format("x: %d, y: %d, z: %d", target.getX(), target.getY(), target.getZ())));
+			tooltip.add(new TranslatableComponent(String.format("x: %d, y: %d, z: %d", target.getX(), target.getY(), target.getZ())));
 		int count = reader.getCardCount();
 		if (count > 0)
-			tooltip.add(new TranslationTextComponent(I18n.get("msg.ec.cards", reader.getCardCount())));
+			tooltip.add(new TranslatableComponent(I18n.get("msg.ec.cards", reader.getCardCount())));
 	}
 
-	public CardState updateCardNBT(World world, BlockPos pos, ICardReader reader, ItemStack upgradeStack) {
+	public CardState updateCardNBT(Level world, BlockPos pos, ICardReader reader, ItemStack upgradeStack) {
 		int upgradeCountRange = 0;
 		if (upgradeStack != ItemStack.EMPTY && upgradeStack.getItem().equals(ModItems.upgrade_range.get()))
 			upgradeCountRange = upgradeStack.getCount();
@@ -84,7 +84,7 @@ public abstract class ItemCardMain extends Item implements IItemCard {
 	}
 
 	@Override
-	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
+	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
 		return CardState.OK;
 	}
 

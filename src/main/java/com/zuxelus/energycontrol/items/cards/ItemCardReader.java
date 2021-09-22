@@ -12,21 +12,21 @@ import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.network.ChannelHandler;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
-import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.ByteNBT;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.DoubleNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.INBTType;
-import net.minecraft.nbt.IntNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.LongNBT;
-import net.minecraft.nbt.NumberNBT;
-import net.minecraft.nbt.StringNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.DoubleTag;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.LongTag;
+import net.minecraft.nbt.NumericTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.TagType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
@@ -42,7 +42,7 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public BlockPos getTarget() {
-		CompoundNBT tag = card.getTag();
+		CompoundTag tag = card.getTag();
 		if (tag == null)
 			return null;
 		if (!tag.contains("x") || !tag.contains("y") || !tag.contains("z"))
@@ -52,13 +52,13 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public void setInt(String name, Integer value) {
-		CompoundNBT tag = ItemStackHelper.getTagCompound(card);
+		CompoundTag tag = ItemStackHelper.getTagCompound(card);
 		tag.putInt(name, value);
 	}
 
 	@Override
 	public Integer getInt(String name) {
-		CompoundNBT tag = card.getTag();
+		CompoundTag tag = card.getTag();
 		if (tag == null)
 			return 0;
 		return tag.getInt(name);
@@ -66,13 +66,13 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public void setLong(String name, Long value) {
-		CompoundNBT tag = ItemStackHelper.getTagCompound(card);
+		CompoundTag tag = ItemStackHelper.getTagCompound(card);
 		tag.putLong(name, value);
 	}
 
 	@Override
 	public Long getLong(String name) {
-		CompoundNBT tag = card.getTag();
+		CompoundTag tag = card.getTag();
 		if (tag == null)
 			return 0L;
 		return tag.getLong(name);
@@ -80,13 +80,13 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public void setDouble(String name, Double value) {
-		CompoundNBT tag = ItemStackHelper.getTagCompound(card);
+		CompoundTag tag = ItemStackHelper.getTagCompound(card);
 		tag.putDouble(name, value);
 	}
 
 	@Override
 	public Double getDouble(String name) {
-		CompoundNBT tag = card.getTag();
+		CompoundTag tag = card.getTag();
 		if (tag == null)
 			return 0.0;
 		return tag.getDouble(name);
@@ -96,13 +96,13 @@ public class ItemCardReader implements ICardReader {
 	public void setString(String name, String value) {
 		if (name == null)
 			return;
-		CompoundNBT tag = ItemStackHelper.getTagCompound(card);
+		CompoundTag tag = ItemStackHelper.getTagCompound(card);
 		tag.putString(name, value);
 	}
 
 	@Override
 	public String getString(String name) {
-		CompoundNBT tag = card.getTag();
+		CompoundTag tag = card.getTag();
 		if (tag == null)
 			return "";
 		return tag.getString(name);
@@ -110,13 +110,13 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public void setByte(String name, Byte value) {
-		CompoundNBT tag = ItemStackHelper.getTagCompound(card);
+		CompoundTag tag = ItemStackHelper.getTagCompound(card);
 		tag.putByte(name, value);
 	}
 
 	@Override
 	public Byte getByte(String name) {
-		CompoundNBT tag = card.getTag();
+		CompoundTag tag = card.getTag();
 		if (tag == null)
 			return 0;
 		return tag.getByte(name);
@@ -124,13 +124,13 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public void setBoolean(String name, Boolean value) {
-		CompoundNBT tag = ItemStackHelper.getTagCompound(card);
+		CompoundTag tag = ItemStackHelper.getTagCompound(card);
 		tag.putBoolean(name, value);
 	}
 
 	@Override
 	public Boolean getBoolean(String name) {
-		CompoundNBT tag = card.getTag();
+		CompoundTag tag = card.getTag();
 		if (tag == null)
 			return false;
 		return tag.getBoolean(name);
@@ -165,20 +165,20 @@ public class ItemCardReader implements ICardReader {
 	}
 
 	@Override
-	public void updateClient(ItemStack stack, TileEntity panel, int slot) {
+	public void updateClient(ItemStack stack, BlockEntity panel, int slot) {
 		if (panel instanceof TileEntityInfoPanel)
 			ChannelHandler.updateClientCard(stack, (TileEntityInfoPanel) panel, slot);
 	}
 
 	@Override
-	public void updateServer(ItemStack stack, TileEntity panel, int slot) {
+	public void updateServer(ItemStack stack, BlockEntity panel, int slot) {
 		if (panel instanceof TileEntityInfoPanel)
 			ChannelHandler.updateServerCard(card, (TileEntityInfoPanel) panel, slot);
 	}
 
 	@Override
-	public void setTag(String name, INBT value) {
-		CompoundNBT tag = ItemStackHelper.getTagCompound(card);
+	public void setTag(String name, Tag value) {
+		CompoundTag tag = ItemStackHelper.getTagCompound(card);
 		if (value == null) {
 			tag.remove(name);
 		} else
@@ -186,23 +186,23 @@ public class ItemCardReader implements ICardReader {
 	}
 
 	@Override
-	public CompoundNBT getTag(String name) {
-		CompoundNBT tag = card.getTag();
-		return (CompoundNBT) tag.get(name);
+	public CompoundTag getTag(String name) {
+		CompoundTag tag = card.getTag();
+		return (CompoundTag) tag.get(name);
 	}
 
 	@Override
-	public ListNBT getTagList(String name, int type) {
-		CompoundNBT tag = ItemStackHelper.getTagCompound(card);
-		return (ListNBT) tag.getList(name, type);
+	public ListTag getTagList(String name, int type) {
+		CompoundTag tag = ItemStackHelper.getTagCompound(card);
+		return (ListTag) tag.getList(name, type);
 	}
 
 	@Override
 	public ArrayList<ItemStack> getItemStackList(boolean reset) {
-		ListNBT list = getTagList("Items", Constants.NBT.TAG_COMPOUND);
+		ListTag list = getTagList("Items", Constants.NBT.TAG_COMPOUND);
 		ArrayList<ItemStack> result = new ArrayList<ItemStack> ();
 		for (int i = 0; i < list.size(); i++) {
-			CompoundNBT stackTag = list.getCompound(i);
+			CompoundTag stackTag = list.getCompound(i);
 			ItemStack stack = ItemStack.of(stackTag);
 			if (reset)
 				stack.setCount(1);
@@ -213,9 +213,9 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public void setItemStackList(ArrayList<ItemStack> list) {
-		ListNBT values = new ListNBT();
+		ListTag values = new ListTag();
 		for (ItemStack stack : list) {
-			CompoundNBT stackTag = new CompoundNBT();
+			CompoundTag stackTag = new CompoundTag();
 			stack.save(stackTag);
 			values.add(stackTag);
 		}
@@ -224,7 +224,7 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public void removeField(String name) {
-		CompoundNBT tag = ItemStackHelper.getTagCompound(card);
+		CompoundTag tag = ItemStackHelper.getTagCompound(card);
 		tag.remove(name);
 	}
 
@@ -237,7 +237,7 @@ public class ItemCardReader implements ICardReader {
 	public void reset() {
 		BlockPos pos = getTarget();
 		String title = getTitle();
-		card.setTag(new CompoundNBT());
+		card.setTag(new CompoundTag());
 		if (pos != null)
 			ItemStackHelper.setCoordinates(card, pos);
 		if (!title.isEmpty())
@@ -245,20 +245,20 @@ public class ItemCardReader implements ICardReader {
 	}
 
 	@Override
-	public void copyFrom(CompoundNBT nbt) {
+	public void copyFrom(CompoundTag nbt) {
 		for (String name : nbt.getAllKeys()) {
-			INBT tag = nbt.get(name);
-			INBTType<?> type = tag.getType();
-			if (type == StringNBT.TYPE)
+			Tag tag = nbt.get(name);
+			TagType<?> type = tag.getType();
+			if (type == StringTag.TYPE)
 				setString(name, tag.getAsString());
-			else if (type == IntNBT.TYPE)
-				setInt(name, ((NumberNBT) tag).getAsInt());
-			else if (type == DoubleNBT.TYPE)
-				setDouble(name, ((NumberNBT) tag).getAsDouble());
-			else if (type == LongNBT.TYPE)
-				setLong(name, ((NumberNBT) tag).getAsLong());
-			else if (type == ByteNBT.TYPE)
-				setByte(name, ((NumberNBT) tag).getAsByte());
+			else if (type == IntTag.TYPE)
+				setInt(name, ((NumericTag) tag).getAsInt());
+			else if (type == DoubleTag.TYPE)
+				setDouble(name, ((NumericTag) tag).getAsDouble());
+			else if (type == LongTag.TYPE)
+				setLong(name, ((NumericTag) tag).getAsLong());
+			else if (type == ByteTag.TYPE)
+				setByte(name, ((NumericTag) tag).getAsByte());
 		}
 	}
 
@@ -296,12 +296,12 @@ public class ItemCardReader implements ICardReader {
 		return result;
 	}
 
-	public List<PanelString> getStringData(World world, int settings, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(Level world, int settings, boolean isServer, boolean showLabels) {
 		return ((ItemCardMain) card.getItem()).getStringData(world, settings, this, isServer, showLabels);
 	}
 
 	public List<PanelString> getAllData() {
-		CompoundNBT nbt = card.getTag();
+		CompoundTag nbt = card.getTag();
 		if (nbt == null)
 			return null;
 
@@ -338,7 +338,7 @@ public class ItemCardReader implements ICardReader {
 			}
 		}
 		for (String name : nbt.getAllKeys()) {
-			INBT tag = nbt.get(name);
+			Tag tag = nbt.get(name);
 			result.add(new PanelString(String.format("%s : %s", name, tag.toString())));
 		}
 		return result;

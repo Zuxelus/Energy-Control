@@ -4,8 +4,8 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.network.PacketTileEntity;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 public class ChannelHandler {
 
@@ -22,7 +22,7 @@ public class ChannelHandler {
 		if (card.isEmpty() || panel == null || slot < 0)
 			return;
 
-		World world = panel.getLevel();
+		Level world = panel.getLevel();
 		if (world == null || world.isClientSide)
 			return;
 
@@ -34,7 +34,7 @@ public class ChannelHandler {
 		if (card.isEmpty() || panel == null || slot < 0)
 			return;
 
-		World world = panel.getLevel();
+		Level world = panel.getLevel();
 		if (world == null || !world.isClientSide)
 			return;
 

@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.*;
 import com.zuxelus.energycontrol.config.ConfigHandler;
@@ -17,33 +17,32 @@ import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
 
-public class TileEntityInfoPanel extends TileEntityInventory implements ITickableTileEntity, INamedContainerProvider, ITilePacketHandler, IScreenPart, ISlotItemFilter {
+public class TileEntityInfoPanel extends TileEntityInventory implements MenuProvider, ITilePacketHandler, IScreenPart, ISlotItemFilter {
 	public static final String NAME = "info_panel";
 	public static final int DISPLAY_DEFAULT = Integer.MAX_VALUE - 1024;
 	private static final int[] COLORS_HEX = { 0x000000, 0xe93535, 0x82e306, 0x702b14, 0x1f3ce7, 0x8f1fea, 0x1fd7e9,
@@ -57,7 +56,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	private final Map<Integer, List<PanelString>> cardData;
 	protected final Map<Integer, Map<String, Integer>> displaySettings;
 	protected Screen screen;
-	public CompoundNBT screenData;
+	public CompoundTag screenData;
 	public boolean init;
 	protected int updateTicker;
 	protected int dataTicker;
@@ -70,8 +69,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	protected boolean colored;
 	public boolean powered;
 
-	public TileEntityInfoPanel(TileEntityType<?> type) {
-		super(type);
+	public TileEntityInfoPanel(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
 		cardData = new HashMap<>();
 		displaySettings = new HashMap<>(1);
 		displaySettings.put(0, new HashMap<>());
@@ -83,8 +82,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		colored = false;
 	}
 
-	public TileEntityInfoPanel() {
-		this(ModTileEntityTypes.info_panel.get());
+	public TileEntityInfoPanel(BlockPos pos, BlockState state) {
+		this(ModTileEntityTypes.info_panel.get(), pos, state);
 	}
 
 	private void initData() {
@@ -181,7 +180,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		}
 	}
 
-	public void setScreenData(CompoundNBT nbtTagCompound) {
+	public void setScreenData(CompoundTag nbtTagCompound) {
 		screenData = nbtTagCompound;
 		if (screen != null && level.isClientSide)
 			screen.destroy(true, level);
@@ -193,10 +192,10 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	}
 
 	@Override
-	public void onClientMessageReceived(CompoundNBT tag) { }
+	public void onClientMessageReceived(CompoundTag tag) { }
 
 	@Override
-	public void onServerMessageReceived(CompoundNBT tag) {
+	public void onServerMessageReceived(CompoundTag tag) {
 		if (!tag.contains("type"))
 			return;
 		switch (tag.getInt("type")) {
@@ -231,24 +230,24 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	}
 
 	@Override
-	public SUpdateTileEntityPacket getUpdatePacket() {
-		CompoundNBT tag = new CompoundNBT();
+	public ClientboundBlockEntityDataPacket getUpdatePacket() {
+		CompoundTag tag = new CompoundTag();
 		tag = writeProperties(tag);
 		calcPowered();
 		tag.putBoolean("powered", powered);
 		colored = isColoredEval();
 		tag.putBoolean("colored", colored);
-		return new SUpdateTileEntityPacket(getBlockPos(), 0, tag);
+		return new ClientboundBlockEntityDataPacket(getBlockPos(), 0, tag);
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
 		readProperties(pkt.getTag());
 	}
 
 	@Override
-	public CompoundNBT getUpdateTag() {
-		CompoundNBT tag = super.getUpdateTag();
+	public CompoundTag getUpdateTag() {
+		CompoundTag tag = super.getUpdateTag();
 		tag = writeProperties(tag);
 		calcPowered();
 		tag.putBoolean("powered", powered);
@@ -257,16 +256,16 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		return tag;
 	}
 
-	protected void deserializeDisplaySettings(CompoundNBT tag) {
+	protected void deserializeDisplaySettings(CompoundTag tag) {
 		deserializeSlotSettings(tag, "dSettings", SLOT_CARD);
 	}
 
-	protected void deserializeSlotSettings(CompoundNBT tag, String tagName, int slot) {
+	protected void deserializeSlotSettings(CompoundTag tag, String tagName, int slot) {
 		if (!(tag.contains(tagName)))
 			return;
-		ListNBT settingsList = tag.getList(tagName, Constants.NBT.TAG_COMPOUND);
+		ListTag settingsList = tag.getList(tagName, Constants.NBT.TAG_COMPOUND);
 		for (int i = 0; i < settingsList.size(); i++) {
-			CompoundNBT compound = settingsList.getCompound(i);
+			CompoundTag compound = settingsList.getCompound(i);
 			try {
 				getDisplaySettingsForSlot(slot).put(compound.getString("key"), compound.getInt("value"));
 			} catch (IllegalArgumentException e) {
@@ -276,7 +275,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	}
 
 	@Override
-	protected void readProperties(CompoundNBT tag) {
+	protected void readProperties(CompoundTag tag) {
 		super.readProperties(tag);
 		if (tag.contains("tickRate"))
 			tickRate = tag.getInt("tickRate");
@@ -293,9 +292,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 
 		if (tag.contains("screenData")) {
 			if (level != null)
-				setScreenData((CompoundNBT) tag.get("screenData"));
+				setScreenData((CompoundTag) tag.get("screenData"));
 			else
-				screenData = (CompoundNBT) tag.get("screenData");
+				screenData = (CompoundTag) tag.get("screenData");
 		} else
 			screenData = null;
 		deserializeDisplaySettings(tag);
@@ -309,19 +308,19 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	}
 
 	@Override
-	public void load(BlockState state, CompoundNBT tag) {
-		super.load(state, tag);
+	public void load(CompoundTag tag) {
+		super.load(tag);
 		readProperties(tag);
 	}
 
-	protected void serializeDisplaySettings(CompoundNBT tag) {
+	protected void serializeDisplaySettings(CompoundTag tag) {
 		tag.put("dSettings", serializeSlotSettings(SLOT_CARD));
 	}
 
-	protected ListNBT serializeSlotSettings(int slot) {
-		ListNBT settingsList = new ListNBT();
+	protected ListTag serializeSlotSettings(int slot) {
+		ListTag settingsList = new ListTag();
 		for (Map.Entry<String, Integer> item : getDisplaySettingsForSlot(slot).entrySet()) {
-			CompoundNBT tag = new CompoundNBT();
+			CompoundTag tag = new CompoundTag();
 			tag.putString("key", item.getKey());
 			tag.putInt("value", item.getValue());
 			settingsList.add(tag);
@@ -330,7 +329,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	}
 
 	@Override
-	protected CompoundNBT writeProperties(CompoundNBT tag) {
+	protected CompoundTag writeProperties(CompoundTag tag) {
 		tag = super.writeProperties(tag);
 		tag.putInt("tickRate",tickRate);
 		tag.putBoolean("showLabels", getShowLabels());
@@ -346,7 +345,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	}
 
 	@Override
-	public CompoundNBT save(CompoundNBT tag) {
+	public CompoundTag save(CompoundTag tag) {
 		return writeProperties(super.save(tag));
 	}
 
@@ -357,8 +356,14 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		super.setRemoved();
 	}
 
-	@Override
-	public void tick() {
+	public static void tickStatic(Level level, BlockPos pos, BlockState state, BlockEntity be) {
+		if (!(be instanceof TileEntityInfoPanel))
+			return;
+		TileEntityInfoPanel te = (TileEntityInfoPanel) be;
+		te.tick();
+	}
+
+	protected void tick() {
 		if (!init)
 			initData();
 		if (!powered)
@@ -394,7 +399,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		cardData.clear();
 	}
 
-	public List<PanelString> getCardData(World world, int settings, ItemStack cardStack, ItemCardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getCardData(Level world, int settings, ItemStack cardStack, ItemCardReader reader, boolean isServer, boolean showLabels) {
 		int slot = getCardSlot(cardStack);
 		List<PanelString> data = cardData.get(slot);
 		if (data == null) {
@@ -603,16 +608,10 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public double getViewDistance() {
-		return 65536.0D;
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public AxisAlignedBB getRenderBoundingBox() {
+	public AABB getRenderBoundingBox() {
 		if (screen == null)
-			return new AxisAlignedBB(worldPosition.offset(0, 0, 0), worldPosition.offset(1, 1, 1));
-		return new AxisAlignedBB(new BlockPos(screen.minX, screen.minY, screen.minZ), new BlockPos(screen.maxX + 1, screen.maxY + 1, screen.maxZ + 1));
+			return new AABB(worldPosition.offset(0, 0, 0), worldPosition.offset(1, 1, 1));
+		return new AABB(new BlockPos(screen.minX, screen.minY, screen.minZ), new BlockPos(screen.maxX + 1, screen.maxY + 1, screen.maxZ + 1));
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -642,7 +641,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		return b ? 1 : 0;
 	}
 
-	public boolean runTouchAction(ItemStack stack, BlockPos pos, Vector3d hit) {
+	public boolean runTouchAction(ItemStack stack, BlockPos pos, Vec3 hit) {
 		if (level.isClientSide)
 			return false;
 		ItemStack card = getItem(SLOT_CARD);
@@ -668,13 +667,13 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		return !stack.isEmpty() && item instanceof IHasBars && ((IHasBars) item).enableBars(stack) && (getDisplaySettingsForCardInSlot(SLOT_CARD) & 1024) > 0;
 	}
 
-	public void renderImage(TextureManager manager, float displayWidth, float displayHeight, MatrixStack matrixStack) {
+	public void renderImage(float displayWidth, float displayHeight, PoseStack matrixStack) {
 		ItemStack stack = getItem(SLOT_CARD);
 		Item card = stack.getItem();
 		if (isTouchCard())
-			((ITouchAction) card).renderImage(manager, new ItemCardReader(stack), matrixStack);
+			((ITouchAction) card).renderImage(new ItemCardReader(stack), matrixStack);
 		if (hasBars())
-			((IHasBars) card).renderBars(manager, displayWidth, displayHeight, new ItemCardReader(stack), matrixStack);
+			((IHasBars) card).renderBars(displayWidth, displayHeight, new ItemCardReader(stack), matrixStack);
 	}
 
 	protected void runTouchAction(TileEntityInfoPanel panel, ItemStack cardStack, ItemStack stack, int slot, boolean needsTouchUpgrade) {
@@ -685,14 +684,14 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		}
 	}
 
-	// INamedContainerProvider
+	// MenuProvider
 	@Override
-	public Container createMenu(int windowId, PlayerInventory inventory, PlayerEntity player) {
+	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerInfoPanel(windowId, inventory, this);
 	}
 
 	@Override
-	public ITextComponent getDisplayName() {
-		return new TranslationTextComponent(ModItems.info_panel.get().getDescriptionId());
+	public Component getDisplayName() {
+		return new TranslatableComponent(ModItems.info_panel.get().getDescriptionId());
 	}
 }

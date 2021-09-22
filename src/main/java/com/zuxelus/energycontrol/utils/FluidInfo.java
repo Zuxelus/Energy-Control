@@ -2,7 +2,7 @@ package com.zuxelus.energycontrol.utils;
 
 import com.zuxelus.energycontrol.api.ICardReader;
 
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 

@@ -1,43 +1,47 @@
 package com.zuxelus.zlib.containers;
 
+import java.util.List;
 import java.util.Objects;
 
+import com.google.common.collect.Lists;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanelExtender;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanelExtender;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IWorldPosCallable;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
-public abstract class ContainerBase<T extends IInventory> extends Container {
+public abstract class ContainerBase<T extends Container> extends AbstractContainerMenu {
 	public final T te;
 	private final Block block;
-	private final IWorldPosCallable posCallable;
+	private final ContainerLevelAccess posCallable;
+	public List<ServerPlayer> listeners = Lists.newArrayList();
 
-	protected ContainerBase(T te, ContainerType<?> type, int id) {
+	protected ContainerBase(T te, MenuType<?> type, int id) {
 		this(te, type, id, null, null);
 	}
 
-	protected ContainerBase(T te, ContainerType<?> type, int id, Block block, IWorldPosCallable posCallable) {
+	protected ContainerBase(T te, MenuType<?> type, int id, Block block, ContainerLevelAccess posCallable) {
 		super(type, id);
 		this.te = te;
 		this.block = block;
 		this.posCallable = posCallable;
 	}
 
-	protected void addPlayerInventorySlots(PlayerInventory inventory, int height) {
+	protected void addPlayerInventorySlots(Inventory inventory, int height) {
 		addPlayerInventorySlots(inventory, 178, height);
 	}
 	
-	protected void addPlayerInventorySlots(PlayerInventory inventory, int width, int height) {
+	protected void addPlayerInventorySlots(Inventory inventory, int width, int height) {
 		int xStart = (width - 162) / 2;
 		for (int row = 0; row < 3; row++)
 			for (int i = 0; i < 9; i++)
@@ -46,28 +50,28 @@ public abstract class ContainerBase<T extends IInventory> extends Container {
 		addPlayerInventoryTopSlots(inventory, xStart, height);
 	}
 
-	protected void addPlayerInventoryTopSlots(PlayerInventory inventory, int width, int height) {
+	protected void addPlayerInventoryTopSlots(Inventory inventory, int width, int height) {
 		for (int col = 0; col < 9; col++)
 			addSlot(new Slot(inventory, col, width + col * 18, height - 24));
 	}
 
 	@Override
-	public boolean stillValid(PlayerEntity player) {
+	public boolean stillValid(Player player) {
 		if (posCallable == null || block == null)
 			return true;
 		return stillValid(posCallable, player, block);
 	}
 
 	@Override
-	public ItemStack quickMoveStack(PlayerEntity player, int index) {
+	public ItemStack quickMoveStack(Player player, int index) {
 		Slot slot = slots.get(index);
 		if (slot == null || !slot.hasItem())
 			return ItemStack.EMPTY;
 
 		ItemStack stack = slot.getItem();
 		ItemStack result = stack.copy();
-		
-		int containerSlots = slots.size() - player.inventory.items.size();
+
+		int containerSlots = slots.size() - player.getInventory().items.size();
 		if (index < containerSlots) {
 			if (!moveItemStackTo(stack, containerSlots, slots.size(), true))
 				return ItemStack.EMPTY;
@@ -83,10 +87,10 @@ public abstract class ContainerBase<T extends IInventory> extends Container {
 		return result;
 	}
 
-	public static TileEntity getTileEntity(PlayerInventory player, PacketBuffer data) {
+	public static BlockEntity getBlockEntity(Inventory player, FriendlyByteBuf data) {
 		Objects.requireNonNull(player, "Player cannot be null!");
 		Objects.requireNonNull(data, "Data cannot be null!");
-		TileEntity te = player.player.level.getBlockEntity(data.readBlockPos());
+		BlockEntity te = player.player.level.getBlockEntity(data.readBlockPos());
 		if (te instanceof TileEntityInfoPanelExtender)
 			te = ((TileEntityInfoPanelExtender) te).getCore();
 		if (te instanceof TileEntityAdvancedInfoPanelExtender)

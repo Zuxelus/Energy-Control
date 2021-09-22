@@ -16,17 +16,17 @@ import it.zerono.mods.zerocore.lib.data.IoDirection;
 import it.zerono.mods.zerocore.lib.data.geometry.CuboidBoundingBox;
 import it.zerono.mods.zerocore.lib.energy.EnergySystem;
 import it.zerono.mods.zerocore.lib.multiblock.AbstractMultiblockController;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidStack;
 
 public class CrossBigReactors extends CrossModBase {
 
 	@Override
-	public CompoundNBT getEnergyData(TileEntity te) {
+	public CompoundTag getEnergyData(BlockEntity te) {
 		if (te instanceof AbstractReactorEntity) {
 			Optional<MultiblockReactor> option = ((AbstractReactorEntity)te).getMultiblockController().filter(AbstractMultiblockController::isAssembled);
 			if (!option.isPresent())
@@ -35,7 +35,7 @@ public class CrossBigReactors extends CrossModBase {
 			if (reactor == null)
 				return null;
 
-			CompoundNBT tag = new CompoundNBT();
+			CompoundTag tag = new CompoundTag();
 			tag.putString("euType", "FE");
 			tag.putDouble("storage", reactor.getEnergyStored(EnergySystem.REFERENCE, null));
 			tag.putDouble("maxStorage", reactor.getCapacity(EnergySystem.REFERENCE, null));
@@ -49,7 +49,7 @@ public class CrossBigReactors extends CrossModBase {
 			if (turbine == null)
 				return null;
 
-			CompoundNBT tag = new CompoundNBT();
+			CompoundTag tag = new CompoundTag();
 			tag.putString("euType", "FE");
 			tag.putDouble("storage", turbine.getEnergyStored(EnergySystem.REFERENCE, null));
 			tag.putDouble("maxStorage", turbine.getCapacity(EnergySystem.REFERENCE, null));
@@ -59,8 +59,8 @@ public class CrossBigReactors extends CrossModBase {
 	}
 
 	@Override
-	public int getReactorHeat(World world, BlockPos pos) {
-		TileEntity te;
+	public int getReactorHeat(Level world, BlockPos pos) {
+		BlockEntity te;
 		for (Direction dir : Direction.values()) {
 			te = world.getBlockEntity(pos.relative(dir));
 			if (te instanceof AbstractReactorEntity) {
@@ -76,7 +76,7 @@ public class CrossBigReactors extends CrossModBase {
 	}
 
 	@Override
-	public List<FluidInfo> getAllTanks(TileEntity te) {
+	public List<FluidInfo> getAllTanks(BlockEntity te) {
 		List<FluidInfo> result = new ArrayList<>();
 		if (te instanceof AbstractReactorEntity) {
 			Optional<MultiblockReactor> option = ((AbstractReactorEntity)te).getMultiblockController().filter(AbstractMultiblockController::isAssembled);
@@ -113,7 +113,7 @@ public class CrossBigReactors extends CrossModBase {
 	}
 
 	@Override
-	public CompoundNBT getCardData(TileEntity te) {
+	public CompoundTag getCardData(BlockEntity te) {
 		if (te instanceof AbstractReactorEntity) {
 			Optional<MultiblockReactor> option = ((AbstractReactorEntity)te).getMultiblockController().filter(AbstractMultiblockController::isAssembled);
 			if (!option.isPresent())
@@ -122,7 +122,7 @@ public class CrossBigReactors extends CrossModBase {
 			if (reactor == null)
 				return null;
 
-			CompoundNBT tag = new CompoundNBT();
+			CompoundTag tag = new CompoundTag();
 			tag.putInt("type", 1);
 			tag.putBoolean("reactorPoweredB", reactor.isMachineActive());
 			tag.putBoolean("cooling", reactor.getOperationalMode().isPassive());
@@ -146,7 +146,7 @@ public class CrossBigReactors extends CrossModBase {
 			if (turbine == null)
 				return null;
 
-			CompoundNBT tag = new CompoundNBT();
+			CompoundTag tag = new CompoundTag();
 			tag.putInt("type", 2);
 			tag.putBoolean("reactorPoweredB", turbine.isMachineActive());
 			tag.putString("storage", String.format("%s / %s", PanelString.getFormatter().format(turbine.getEnergyStored(EnergySystem.REFERENCE, null)), PanelString.getFormatter().format(turbine.getCapacity(EnergySystem.REFERENCE, null))));

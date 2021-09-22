@@ -1,17 +1,17 @@
 package com.zuxelus.energycontrol.renderers;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
+import com.mojang.math.Vector4f;
 
-import net.minecraft.util.math.vector.Matrix3f;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.math.vector.Vector4f;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class CubeRenderer { // net.minecraft.client.renderer.model.ModelRenderer
+public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 	private ModelBox cube;
 
 	public CubeRenderer(int faceOffsetX, int faceOffsetY) {
@@ -31,7 +31,7 @@ public class CubeRenderer { // net.minecraft.client.renderer.model.ModelRenderer
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void render(MatrixStack matrixStack, IVertexBuilder buffer, int[] light, int combinedOverlay) {
+	public void render(PoseStack matrixStack, VertexConsumer buffer, int[] light, int combinedOverlay) {
 		cube.render(matrixStack, buffer, light, combinedOverlay);
 	}
 
@@ -74,7 +74,7 @@ public class CubeRenderer { // net.minecraft.client.renderer.model.ModelRenderer
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public /* static */ class ModelBox {
+	public class ModelBox {
 		private final TexturedQuad[] quads;
 
 		public ModelBox(int texOffX, int texOffY, float x, float y, float z, float dx, float dy, float dz, float texWidth, float texHeight, float leftTop, float leftBottom, float rightTop, float rightBottom) {
@@ -98,13 +98,13 @@ public class CubeRenderer { // net.minecraft.client.renderer.model.ModelRenderer
 			quads[5] = new TexturedQuad(new PositionTextureVertex[] { vertex5, vertex6, vertex7, vertex8 }, dz + dx + dz, dz, dz + dx + dz + dx, dz + dy, texWidth, texHeight, Direction.SOUTH);
 		}
 
-		public void render(MatrixStack matrixStack, IVertexBuilder buffer, int[] light, int combinedOverlay) {
+		public void render(PoseStack matrixStack, VertexConsumer buffer, int[] light, int combinedOverlay) {
 			matrixStack.scale(0.5F, 0.5F, 0.5F);
 			render(matrixStack.last(), buffer, light, combinedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
 			matrixStack.scale(2.0F, 2.0F, 2.0F);
 		}
 
-		public void render(MatrixStack.Entry matrixEntry, IVertexBuilder buffer, int[] light, int combinedOverlay, float red, float green, float blue, float alpha) {
+		public void render(PoseStack.Pose matrixEntry, VertexConsumer buffer, int[] light, int combinedOverlay, float red, float green, float blue, float alpha) {
 			Matrix4f matrix4f = matrixEntry.pose();
 			Matrix3f matrix3f = matrixEntry.normal();
 

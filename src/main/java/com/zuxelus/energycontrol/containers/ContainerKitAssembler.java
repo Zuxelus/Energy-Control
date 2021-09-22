@@ -1,8 +1,5 @@
 package com.zuxelus.energycontrol.containers;
 
-import java.util.List;
-
-import com.google.common.collect.Lists;
 import com.zuxelus.energycontrol.containers.slots.SlotCard;
 import com.zuxelus.energycontrol.init.ModContainerTypes;
 import com.zuxelus.energycontrol.init.ModItems;
@@ -12,23 +9,22 @@ import com.zuxelus.zlib.containers.ContainerBase;
 import com.zuxelus.zlib.containers.slots.SlotDischargeable;
 import com.zuxelus.zlib.containers.slots.SlotFilter;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.IWorldPosCallable;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.ContainerListener;
 
 public class ContainerKitAssembler extends ContainerBase<TileEntityKitAssembler> {
 	private double lastEnergy = -1;
 	private double lastProduction = -1;
-	private final List<IContainerListener> listeners = Lists.newArrayList();
 
-	public ContainerKitAssembler(int windowId, PlayerInventory inventory, PacketBuffer data) {
-		this(windowId, inventory, (TileEntityKitAssembler) getTileEntity(inventory, data));
+	public ContainerKitAssembler(int windowId, Inventory inventory, FriendlyByteBuf data) {
+		this(windowId, inventory, (TileEntityKitAssembler) getBlockEntity(inventory, data));
 	}
 
-	public ContainerKitAssembler(int windowId, PlayerInventory inventory, TileEntityKitAssembler te) {
-		super(te, ModContainerTypes.kit_assembler.get(), windowId, ModItems.kit_assembler.get(), IWorldPosCallable.create(te.getLevel(), te.getBlockPos()));
+	public ContainerKitAssembler(int windowId, Inventory inventory, TileEntityKitAssembler te) {
+		super(te, ModContainerTypes.kit_assembler.get(), windowId, ModItems.kit_assembler.get(), ContainerLevelAccess.create(te.getLevel(), te.getBlockPos()));
 		// info card
 		addSlot(new SlotCard(te, 0, 8, 17));
 
@@ -43,25 +39,13 @@ public class ContainerKitAssembler extends ContainerBase<TileEntityKitAssembler>
 	}
 
 	@Override
-	public void addSlotListener(IContainerListener listener) {
-		super.addSlotListener(listener);
-		listeners.add(listener);
-	}
-
-	@Override
-	public void removeSlotListener(IContainerListener listener) {
-		super.removeSlotListener(listener);
-		listeners.remove(listener);
-	}
-
-	@Override
 	public void broadcastChanges() {
 		super.broadcastChanges();
 		double energy = te.getEnergy();
 		double production = te.getProduction();
 		for (int i = 0; i < listeners.size(); i++)
 			if (lastEnergy != energy || lastProduction != production) {
-				CompoundNBT tag = new CompoundNBT();
+				CompoundTag tag = new CompoundTag();
 				tag.putInt("type", 1);
 				tag.putDouble("energy", energy);
 				tag.putDouble("production", production);

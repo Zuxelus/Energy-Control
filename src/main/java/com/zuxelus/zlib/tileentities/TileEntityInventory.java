@@ -4,47 +4,48 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.Container;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.Constants;
 
-public abstract class TileEntityInventory extends TileEntityFacing implements IInventory {
+public abstract class TileEntityInventory extends BlockEntityFacing implements Container {
 	protected NonNullList<ItemStack> inventory;
 
-	public TileEntityInventory(TileEntityType<?> type) {
-		super(type);
+	public TileEntityInventory(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
 		inventory = NonNullList.<ItemStack>withSize(getContainerSize(), ItemStack.EMPTY);
 	}
 
 	@Override
-	protected void readProperties(CompoundNBT tag) {
+	protected void readProperties(CompoundTag tag) {
 		super.readProperties(tag);
-		ListNBT list = tag.getList("Items", Constants.NBT.TAG_COMPOUND);
+		ListTag list = tag.getList("Items", Constants.NBT.TAG_COMPOUND);
 		inventory = NonNullList.<ItemStack>withSize(getContainerSize(), ItemStack.EMPTY);
 		for (int i = 0; i < list.size(); i++) {
-			CompoundNBT stackTag = list.getCompound(i);
+			CompoundTag stackTag = list.getCompound(i);
 			inventory.set(stackTag.getByte("Slot"), ItemStack.of(stackTag));
 		}
 	}
 
 	@Override
-	protected CompoundNBT writeProperties(CompoundNBT tag) {
+	protected CompoundTag writeProperties(CompoundTag tag) {
 		tag = super.writeProperties(tag);
 
-		ListNBT list = new ListNBT();
+		ListTag list = new ListTag();
 		for (byte i = 0; i < getContainerSize(); i++) {
 			ItemStack stack = getItem(i);
 			if (!stack.isEmpty()) {
-				CompoundNBT stackTag = new CompoundNBT();
+				CompoundTag stackTag = new CompoundTag();
 				stackTag.putByte("Slot", i);
 				stack.save(stackTag);
 				list.add(stackTag);
@@ -69,9 +70,8 @@ public abstract class TileEntityInventory extends TileEntityFacing implements II
 
 	@Override
 	public ItemStack removeItem(int index, int count) {
-		ItemStack itemstack = ItemStackHelper.removeItem(inventory, index, count);
-		//if (!itemstack.isEmpty()) markDirty();
-		return itemstack;
+		ItemStack stack = ContainerHelper.removeItem(inventory, index, count);
+		return stack;
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public abstract class TileEntityInventory extends TileEntityFacing implements II
 	}
 
 	@Override
-	public boolean stillValid(PlayerEntity player) {
+	public boolean stillValid(Player player) {
 		return level.getBlockEntity(worldPosition) != this ? false : player.distanceToSqr(worldPosition.getX() + 0.5D, worldPosition.getY() + 0.5D, worldPosition.getZ() + 0.5D) <= 64.0D;
 	}
 
@@ -116,7 +116,7 @@ public abstract class TileEntityInventory extends TileEntityFacing implements II
 		return list;
 	}
 
-	public void dropItems(World world, BlockPos pos) {
+	public void dropItems(Level world, BlockPos pos) {
 		Random rand = new Random();
 		List<ItemStack> list = getDrops(1);
 		for (ItemStack stack : list) {
@@ -124,9 +124,7 @@ public abstract class TileEntityInventory extends TileEntityFacing implements II
 			float ry = rand.nextFloat() * 0.8F + 0.1F;
 			float rz = rand.nextFloat() * 0.8F + 0.1F;
 
-			ItemEntity entityItem = new ItemEntity(world, pos.getX() + rx, pos.getY() + ry, pos.getZ() + rz,
-					new ItemStack(stack.getItem(), stack.getCount()));
-
+			ItemEntity entityItem = new ItemEntity(world, pos.getX() + rx, pos.getY() + ry, pos.getZ() + rz, new ItemStack(stack.getItem(), stack.getCount()));
 			if (stack.hasTag())
 				entityItem.getItem().setTag(stack.getTag().copy());
 

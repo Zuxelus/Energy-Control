@@ -1,33 +1,34 @@
 package com.zuxelus.energycontrol.blocks;
 
+import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityRangeTrigger;
 import com.zuxelus.zlib.blocks.FacingHorizontal;
-import com.zuxelus.zlib.tileentities.TileEntityFacing;
+import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.EnumProperty;
-import net.minecraft.state.StateContainer.Builder;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 public class RangeTrigger extends FacingHorizontal {
 	public static final EnumProperty<EnumState> STATE = EnumProperty.create("state", EnumState.class);
 
 	@Override
-	public TileEntityFacing createTileEntity() {
-		return new TileEntityRangeTrigger();
+	protected BlockEntityFacing createBlockEntity(BlockPos pos, BlockState state) {
+		return ModTileEntityTypes.range_trigger.get().create(pos, state);
 	}
 
 	@Override
@@ -37,23 +38,23 @@ public class RangeTrigger extends FacingHorizontal {
 	}
 
 	@Override
-	public BlockState getStateForPlacement(BlockItemUseContext context) {
+	public BlockState getStateForPlacement(BlockPlaceContext context) {
 		return super.getStateForPlacement(context).setValue(STATE, EnumState.OFF);
 	}
 
 	@Override
-	public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-		TileEntity te = world.getBlockEntity(pos);
+	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		BlockEntity te = world.getBlockEntity(pos);
 		if (!(te instanceof TileEntityRangeTrigger))
-			return ActionResultType.PASS;
+			return InteractionResult.PASS;
 		if (!world.isClientSide)
-				NetworkHooks.openGui((ServerPlayerEntity) player, (TileEntityRangeTrigger) te, pos);
-		return ActionResultType.SUCCESS;
+				NetworkHooks.openGui((ServerPlayer) player, (TileEntityRangeTrigger) te, pos);
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
-	public int getSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
-		TileEntity te = blockAccess.getBlockEntity(pos);
+	public int getSignal(BlockState blockState, BlockGetter blockAccess, BlockPos pos, Direction side) {
+		BlockEntity te = blockAccess.getBlockEntity(pos);
 		if (!(te instanceof TileEntityRangeTrigger))
 			return 0;
 		return ((TileEntityRangeTrigger) te).getPowered() ? 15 : 0;
@@ -64,7 +65,7 @@ public class RangeTrigger extends FacingHorizontal {
 		return true;
 	}
 
-	public enum EnumState implements IStringSerializable {
+	public enum EnumState implements StringRepresentable {
 		OFF(0, "off"), ON(1, "on"), ERROR(2, "error");
 
 		private final int id;

@@ -2,7 +2,11 @@ package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm {
 	private static final int[] lightSteps = { 0, 7, 14, 7, 0 };
@@ -11,23 +15,26 @@ public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm {
 	public int lightLevel;
 	private int updateLightTicker;
 
-	public TileEntityIndustrialAlarm(TileEntityType<?> type) {
-		super(type);
+	public TileEntityIndustrialAlarm(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
 		internalFire = 0;
 		lightLevel = 0;
 	}
 
-	public TileEntityIndustrialAlarm() {
-		this(ModTileEntityTypes.industrial_alarm.get());
+	public TileEntityIndustrialAlarm(BlockPos pos, BlockState state) {
+		this(ModTileEntityTypes.industrial_alarm.get(), pos, state);
 	}
 
-	@Override
-	public void tick() {
+	public static void tickStatic(Level level, BlockPos pos, BlockState state, BlockEntity be) {
+		if (!(be instanceof TileEntityIndustrialAlarm))
+			return;
+		TileEntityIndustrialAlarm te = (TileEntityIndustrialAlarm) be;
+		te.tick();
+	}
+
+	protected void tick() {
 		if (level.isClientSide) {
-			if (updateTicker-- <= 0) {
-				updateTicker = tickRate;
-				super.checkStatus();
-			}
+			super.checkStatus();
 			if (updateLightTicker-- <= 0) {
 				updateLightTicker = tickRate / 20;
 				checkStatus();

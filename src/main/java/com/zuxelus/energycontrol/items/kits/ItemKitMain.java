@@ -3,13 +3,13 @@ package com.zuxelus.energycontrol.items.kits;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.IItemKit;
 
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.ActionResultType;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
 
 public abstract class ItemKitMain extends Item implements IItemKit {
 
@@ -18,27 +18,21 @@ public abstract class ItemKitMain extends Item implements IItemKit {
 	}
 
 	@Override
-	public ActionResultType useOn(ItemUseContext context) {
-		// TODO Auto-generated method stub
-		return super.useOn(context);
-	}
-
-	@Override
-	public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-		PlayerEntity player = context.getPlayer();
-		if (player == null || !(player instanceof ServerPlayerEntity))
-			return ActionResultType.PASS;
+	public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
+		Player player = context.getPlayer();
+		if (player == null || !(player instanceof ServerPlayer))
+			return InteractionResult.PASS;
 
 		if (stack.isEmpty())
-			return ActionResultType.PASS;
+			return InteractionResult.PASS;
 		ItemStack sensorLocationCard = ((ItemKitMain) stack.getItem()).getSensorCard(stack, player, context.getLevel(), context.getClickedPos(), context.getClickedFace());
 		if (sensorLocationCard.isEmpty())
-			return ActionResultType.PASS;
+			return InteractionResult.PASS;
 
 		stack.shrink(1);
 		ItemEntity dropItem = new ItemEntity(context.getLevel(), player.getX(), player.getY(), player.getZ(), sensorLocationCard);
 		dropItem.setPickUpDelay(0);
 		context.getLevel().addFreshEntity(dropItem);
-		return ActionResultType.SUCCESS;
+		return InteractionResult.SUCCESS;
 	}
 }

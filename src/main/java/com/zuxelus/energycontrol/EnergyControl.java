@@ -7,20 +7,23 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.init.ModContainerTypes;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.ScreenManager;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(EnergyControl.MODID)
@@ -37,9 +40,9 @@ public class EnergyControl {
 	public List<String> availableAlarms; //on client
 	@OnlyIn(Dist.CLIENT)
 	public List<String> serverAllowedAlarms; // will be loaded from server
-	public static Map<PlayerEntity, Boolean> altPressed = new HashMap<PlayerEntity, Boolean>();
+	public static Map<Player, Boolean> altPressed = new HashMap<Player, Boolean>();
 
-	public static final ItemGroup ITEM_GROUP = new ItemGroup(MODID) {
+	public static final CreativeModeTab ITEM_GROUP = new CreativeModeTab(MODID) {
 		@Override
 		@OnlyIn(Dist.CLIENT)
 		public ItemStack makeIcon() {
@@ -57,6 +60,7 @@ public class EnergyControl {
 		ModTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
 		ModItems.RECIPE_SERIALIZERS.register(modEventBus);
 		MinecraftForge.EVENT_BUS.register(ServerTickHandler.instance);
+		ModLoadingContext.get().registerConfig(Type.COMMON, ConfigHandler.COMMON_CONFIG, "energycontrol-common.toml");
 		CrossModLoader.init();
 	}
 }

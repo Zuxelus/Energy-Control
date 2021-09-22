@@ -5,20 +5,20 @@ import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanelExtender;
 import com.zuxelus.zlib.blocks.FacingBlock;
-import com.zuxelus.zlib.tileentities.TileEntityFacing;
+import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 public class InfoPanelExtender extends FacingBlock {
 
@@ -27,37 +27,37 @@ public class InfoPanelExtender extends FacingBlock {
 	}
 
 	@Override
-	protected TileEntityFacing createTileEntity() {
-		return ModTileEntityTypes.info_panel_extender.get().create();
+	protected BlockEntityFacing createBlockEntity(BlockPos pos, BlockState state) {
+		return ModTileEntityTypes.info_panel_extender.get().create(pos, state);
 	}
 
 	@Override
-	public int getLightValue(BlockState state, IBlockReader world, BlockPos pos) {
-		TileEntity te = world.getBlockEntity(pos);
+	public int getLightEmission(BlockState state, BlockGetter world, BlockPos pos) {
+		BlockEntity te = world.getBlockEntity(pos);
 		if (!(te instanceof TileEntityInfoPanelExtender))
 			return 0;
 		return ((TileEntityInfoPanelExtender)te).getPowered() ? 10 : 0;
 	}
 
 	@Override
-	public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		if (world.isClientSide)
-			return ActionResultType.PASS;
-		TileEntity te = world.getBlockEntity(pos);
+			return InteractionResult.PASS;
+		BlockEntity te = world.getBlockEntity(pos);
 		if (!(te instanceof TileEntityInfoPanelExtender))
-			return ActionResultType.PASS;
+			return InteractionResult.PASS;
 		TileEntityInfoPanel panel = ((TileEntityInfoPanelExtender) te).getCore();
 		if (panel == null)
-			return ActionResultType.PASS;
+			return InteractionResult.PASS;
 		if (EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) panel).getFacing() == hit.getDirection())
 			if (((TileEntityInfoPanel) panel).runTouchAction(player.getItemInHand(hand), pos, hit.getLocation()))
-				return ActionResultType.SUCCESS;
-		NetworkHooks.openGui((ServerPlayerEntity) player, (TileEntityInfoPanel) panel, pos);
-		return ActionResultType.SUCCESS;
+				return InteractionResult.SUCCESS;
+		NetworkHooks.openGui((ServerPlayer) player, (TileEntityInfoPanel) panel, pos);
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
-	public BlockRenderType getRenderShape(BlockState state) {
-		return BlockRenderType.ENTITYBLOCK_ANIMATED;
+	public RenderShape getRenderShape(BlockState state) {
+		return RenderShape.ENTITYBLOCK_ANIMATED;
 	}
 }

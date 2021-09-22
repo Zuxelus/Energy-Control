@@ -4,20 +4,20 @@ import com.zuxelus.energycontrol.gui.ScreenHandler;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 import com.zuxelus.zlib.blocks.FacingBlockSmall;
-import com.zuxelus.zlib.tileentities.TileEntityFacing;
+import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class HowlerAlarm extends FacingBlockSmall {
 	protected static final VoxelShape AABB_DOWN = Block.box(2.0D, 9.0D, 2.0D, 14.0D, 16.0D, 14.0D);
@@ -28,18 +28,18 @@ public class HowlerAlarm extends FacingBlockSmall {
 	protected static final VoxelShape AABB_EAST = Block.box(0.0D, 2.0D, 2.0D, 7.0D, 14.0D, 14.0D);
 
 	@Override
-	protected TileEntityFacing createTileEntity() {
-		return ModTileEntityTypes.howler_alarm.get().create();
+	protected BlockEntityFacing createBlockEntity(BlockPos pos, BlockState state) {
+		return ModTileEntityTypes.howler_alarm.get().create(pos, state);
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
 		if (!world.isClientSide)
 			world.sendBlockUpdated(pos, state, state, 2);
 	}
 
 	@Override
-	public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
 		switch (state.getValue(FACING)) {
 		case EAST:
 			return AABB_EAST;
@@ -58,12 +58,12 @@ public class HowlerAlarm extends FacingBlockSmall {
 	}
 
 	@Override
-	public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		if (world.isClientSide) {
-			TileEntity te = world.getBlockEntity(pos);
+			BlockEntity te = world.getBlockEntity(pos);
 			if (te instanceof TileEntityHowlerAlarm)
 				ScreenHandler.openHowlerAlarmScreen((TileEntityHowlerAlarm) te);
 		}
-		return ActionResultType.SUCCESS;
+		return InteractionResult.SUCCESS;
 	}
 }

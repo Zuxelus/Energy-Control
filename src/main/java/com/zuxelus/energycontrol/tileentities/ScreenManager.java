@@ -8,13 +8,13 @@ import java.util.Map;
 import com.zuxelus.energycontrol.blocks.HoloPanelExtender;
 import com.zuxelus.energycontrol.blocks.InfoPanelExtender;
 
-import net.minecraft.block.Block;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class ScreenManager {
 
@@ -26,10 +26,10 @@ public class ScreenManager {
 		unusedPanels = new HashMap<String, List<TileEntityInfoPanel>>();
 	}
 
-	private String getWorldKey(IWorld world) {
-		if (world == null || !(world instanceof World))
+	private String getWorldKey(LevelAccessor world) {
+		if (world == null || !(world instanceof Level))
 			return "null";
-		RegistryKey<World> dimension = ((World)world).dimension(); 
+		ResourceKey<Level> dimension = ((Level)world).dimension(); 
 		if (dimension == null)
 			return "null";
 		return dimension.toString();
@@ -42,7 +42,7 @@ public class ScreenManager {
 			unusedPanels.put(key, new ArrayList<TileEntityInfoPanel>());
 	}
 
-	public void clearWorld(IWorld world) {
+	public void clearWorld(LevelAccessor world) {
 		String key = getWorldKey(world);
 		if (screens.containsKey(key))
 			screens.get(key).clear();
@@ -52,7 +52,7 @@ public class ScreenManager {
 
 	@SuppressWarnings("resource")
 	public void registerInfoPanel(TileEntityInfoPanel panel) {
-		World world = panel.getLevel();
+		Level world = panel.getLevel();
 		if (world.isClientSide)
 			return;
 		checkWorldLists(getWorldKey(world));
@@ -67,7 +67,7 @@ public class ScreenManager {
 		screens.get(getWorldKey(world)).add(screen);
 	}
 
-	private void destroyScreen(Screen screen, World world) {
+	private void destroyScreen(Screen screen, Level world) {
 		screens.get(getWorldKey(world)).remove(screen);
 		screen.destroy(true, world);
 	}
@@ -91,7 +91,7 @@ public class ScreenManager {
 		return screen;
 	}
 
-	private void updateScreenBound(Screen screen, int dx, int dy, int dz, World world, boolean advanced, boolean holo) {
+	private void updateScreenBound(Screen screen, int dx, int dy, int dz, Level world, boolean advanced, boolean holo) {
 		if (dx == 0 && dy == 0 && dz == 0)
 			return;
 		boolean isMin = dx + dy + dz < 0;
@@ -137,11 +137,11 @@ public class ScreenManager {
 		}
 	}
 
-	private boolean isValidExtender(World world, BlockPos pos, Direction facing, boolean advanced, boolean holo) {
+	private boolean isValidExtender(Level world, BlockPos pos, Direction facing, boolean advanced, boolean holo) {
 		Block block = world.getBlockState(pos).getBlock();
 		if (!(block instanceof InfoPanelExtender || block instanceof HoloPanelExtender))
 			return false;
-		TileEntity te = world.getBlockEntity(pos);
+		BlockEntity te = world.getBlockEntity(pos);
 		if (!(te instanceof TileEntityInfoPanelExtender))
 			return false;
 		if (advanced ^ (te instanceof TileEntityAdvancedInfoPanelExtender))
@@ -219,7 +219,7 @@ public class ScreenManager {
 	}
 
 	@SuppressWarnings("resource")
-	public void unregisterScreenPart(TileEntity part) {
+	public void unregisterScreenPart(BlockEntity part) {
 		if (part.getLevel().isClientSide)
 			return;
 		if (!screens.containsKey(getWorldKey(part.getLevel())))

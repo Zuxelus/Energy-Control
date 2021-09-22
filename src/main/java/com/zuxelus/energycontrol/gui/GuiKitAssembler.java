@@ -3,7 +3,7 @@ package com.zuxelus.energycontrol.gui;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.containers.ContainerKitAssembler;
@@ -12,15 +12,14 @@ import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
 import com.zuxelus.zlib.gui.GuiContainerBase;
 
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -30,14 +29,14 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 
 	private ContainerKitAssembler container;
 
-	public GuiKitAssembler(ContainerKitAssembler container, PlayerInventory inventory, ITextComponent title) {
+	public GuiKitAssembler(ContainerKitAssembler container, Inventory inventory, Component title) {
 		super(container, inventory, title, TEXTURE);
 		this.container = container;
 		imageHeight = 182;
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		renderBackground(matrixStack);
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
 		Slot slot = container.getSlot(TileEntityKitAssembler.SLOT_INFO);
@@ -46,31 +45,30 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 		else
 			renderTooltip(matrixStack, mouseX, mouseY);
 		if (isHovering(165, 16, 4, 52, mouseX, mouseY))
-			renderTooltip(matrixStack, new StringTextComponent(String.format("%d FE/%d FE", (int) container.te.getEnergy(), TileEntityKitAssembler.CAPACITY)), mouseX, mouseY);
+			renderTooltip(matrixStack, new TextComponent(String.format("%d FE/%d FE", (int) container.te.getEnergy(), TileEntityKitAssembler.CAPACITY)), mouseX, mouseY);
 	}
 
-	private void renderInfoToolTip(MatrixStack matrixStack, Slot slot, int x, int y) {
+	private void renderInfoToolTip(PoseStack matrixStack, Slot slot, int x, int y) {
 		ItemStack stack = slot.getItem();
 		if (stack.isEmpty() || !(stack.getItem() instanceof ItemCardMain))
 			return;
-		net.minecraftforge.fml.client.gui.GuiUtils.preItemToolTip(stack);
-		List<ITextComponent> stackList = stack.getTooltipLines(minecraft.player, minecraft.options.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL);
-		List<ITextComponent> list = Lists.<ITextComponent>newArrayList();
+		net.minecraftforge.fmlclient.gui.GuiUtils.preItemToolTip(stack);
+		List<Component> stackList = stack.getTooltipLines(minecraft.player, minecraft.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
+		List<Component> list = Lists.<Component>newArrayList();
 		if (stackList.size() > 0)
 			list.add(stackList.get(0));
 		List<PanelString> data = new ItemCardReader(stack).getAllData();
 		if (data != null)
 			for (PanelString panelString : data) {
 				if (panelString.textLeft != null)
-					list.add(new StringTextComponent(TextFormatting.GRAY + panelString.textLeft));
+					list.add(new TextComponent(ChatFormatting.GRAY + panelString.textLeft));
 			}
-		FontRenderer fontStack = stack.getItem().getFontRenderer(stack);
-		renderWrappedToolTip(matrixStack, list, x, y, (fontStack == null ? font : fontStack));
-		net.minecraftforge.fml.client.gui.GuiUtils.postItemToolTip();
+		renderComponentToolTip(matrixStack, list, x, y, font);
+		net.minecraftforge.fmlclient.gui.GuiUtils.postItemToolTip();
 	}
 
 	@Override
-	protected void renderBg(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+	protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
 		super.renderBg(matrixStack, partialTicks, mouseX, mouseY);
 
 		int energyHeight = container.te.getEnergyFactor();
@@ -82,7 +80,7 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 	}
 
 	@Override
-	protected void renderLabels(MatrixStack matrixStack, int mouseX, int mouseY) {
+	protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
 		drawCenteredText(matrixStack, title, imageWidth, 6);
 	}
 }

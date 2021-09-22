@@ -12,11 +12,11 @@ import com.zuxelus.energycontrol.crossmod.computercraft.CrossComputerCraft;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -29,12 +29,12 @@ public class CrossModLoader {
 
 	public static void init() {
 		loadCrossMod(ModIDs.BIG_REACTORS, CrossBigReactors::new);
-		loadCrossMod(ModIDs.BIGGER_REACTORS, CrossBiggerReactors::new);
+		//loadCrossMod(ModIDs.BIGGER_REACTORS, CrossBiggerReactors::new);
 		loadCrossModSafely(ModIDs.COMPUTER_CRAFT, () -> CrossComputerCraft::new);
-		loadCrossMod(ModIDs.MEKANISM, CrossMekanism::new);
+		/*loadCrossMod(ModIDs.MEKANISM, CrossMekanism::new);
 		loadCrossMod(ModIDs.MEKANISM_GENERATORS, CrossMekanismGenerators::new);
 		loadCrossMod(ModIDs.IMMERSIVE_ENGINEERING, CrossImmersiveEngineering::new);
-		loadCrossMod(ModIDs.THERMAL_EXPANSION, CrossThermalExpansion::new);
+		loadCrossMod(ModIDs.THERMAL_EXPANSION, CrossThermalExpansion::new);*/
 	}
 
 	private static void loadCrossMod(String modid, Supplier<? extends CrossModBase> factory) {
@@ -49,11 +49,11 @@ public class CrossModLoader {
 		return CROSS_MODS.get(modid);
 	}
 
-	public static ItemStack getEnergyCard(World world, BlockPos pos) {
-		TileEntity te = world.getBlockEntity(pos);
+	public static ItemStack getEnergyCard(Level world, BlockPos pos) {
+		BlockEntity te = world.getBlockEntity(pos);
 		if (te == null)
 			return ItemStack.EMPTY;
-		CompoundNBT data = getEnergyData(te);
+		CompoundTag data = getEnergyData(te);
 		if (data != null) {
 			ItemStack card = new ItemStack(ModItems.card_energy.get());
 			ItemStackHelper.setCoordinates(card, pos);
@@ -62,16 +62,16 @@ public class CrossModLoader {
 		return ItemStack.EMPTY;
 	}
 
-	public static CompoundNBT getEnergyData(TileEntity te) {
+	public static CompoundTag getEnergyData(BlockEntity te) {
 		for (CrossModBase crossMod : CROSS_MODS.values()) {
-			CompoundNBT tag = crossMod.getEnergyData(te);
+			CompoundTag tag = crossMod.getEnergyData(te);
 			if (tag != null)
 				return tag;
 		}
 		Optional<IEnergyStorage> cap = te.getCapability(CapabilityEnergy.ENERGY).resolve();
 		if (cap.isPresent()) {
 			IEnergyStorage handler = cap.get();
-			CompoundNBT tag = new CompoundNBT();
+			CompoundTag tag = new CompoundTag();
 			tag.putString("euType", "FE");
 			tag.putDouble("storage", handler.getEnergyStored());
 			tag.putDouble("maxStorage", handler.getMaxEnergyStored());
@@ -80,8 +80,8 @@ public class CrossModLoader {
 		return null;
 	}
 
-	public static List<FluidInfo> getAllTanks(World world, BlockPos pos) {
-		TileEntity te = world.getBlockEntity(pos);
+	public static List<FluidInfo> getAllTanks(Level world, BlockPos pos) {
+		BlockEntity te = world.getBlockEntity(pos);
 		if (te != null) {
 			Optional<IFluidHandler> fluid = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null).resolve();
 			if (fluid.isPresent()) {
@@ -105,12 +105,12 @@ public class CrossModLoader {
 		return null;
 	}
 
-	public static FluidInfo getTankAt(World world, BlockPos pos) {
+	public static FluidInfo getTankAt(Level world, BlockPos pos) {
 		List<FluidInfo> tanks = getAllTanks(world, pos);
 		return tanks != null && tanks.size() > 0 ? tanks.get(0) : null;
 	}
 
-	public static int getReactorHeat(World world, BlockPos pos) {
+	public static int getReactorHeat(Level world, BlockPos pos) {
 		for (CrossModBase crossMod : CROSS_MODS.values()) {
 			int heat = crossMod.getReactorHeat(world, pos);
 			if (heat != -1)

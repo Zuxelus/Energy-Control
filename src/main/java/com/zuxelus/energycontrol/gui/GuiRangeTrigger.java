@@ -1,6 +1,6 @@
 package com.zuxelus.energycontrol.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.containers.ContainerRangeTrigger;
 import com.zuxelus.energycontrol.gui.controls.CompactButton;
@@ -9,14 +9,14 @@ import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityRangeTrigger;
 import com.zuxelus.zlib.gui.GuiContainerBase;
 
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -27,7 +27,7 @@ public class GuiRangeTrigger extends GuiContainerBase<ContainerRangeTrigger> {
 	private ContainerRangeTrigger container;
 	private ItemStack prevCard;
 
-	public GuiRangeTrigger(ContainerRangeTrigger container, PlayerInventory inventory, ITextComponent title) {
+	public GuiRangeTrigger(ContainerRangeTrigger container, Inventory inventory, Component title) {
 		super(container, inventory, title, TEXTURE);
 		this.container = container;
 		imageHeight = 190;
@@ -37,18 +37,18 @@ public class GuiRangeTrigger extends GuiContainerBase<ContainerRangeTrigger> {
 		ItemStack card = container.getSlot(TileEntityRangeTrigger.SLOT_CARD).getItem();
 		if (!card.isEmpty() && card.equals(prevCard))
 			return;
-		buttons.clear();
+		renderables.clear();
 		prevCard = card;
 		// ten digits, up to 10 billions
 		for (int i = 0; i < 10; i++) {
-			addButton(new CompactButton(i * 10, leftPos + 30 + i * 12 + (i + 2) / 3 * 6, topPos + 20, 12, 12, new StringTextComponent("-"), (button) -> { actionPerformed(button); }));
-			addButton(new CompactButton(i * 10 + 1, leftPos + 30 + i * 12 + (i + 2) / 3 * 6, topPos + 42, 12, 12, new StringTextComponent("+"), (button) -> { actionPerformed(button); }));
+			addRenderableWidget(new CompactButton(i * 10, leftPos + 30 + i * 12 + (i + 2) / 3 * 6, topPos + 20, 12, 12, new TextComponent("-"), (button) -> { actionPerformed(button); }));
+			addRenderableWidget(new CompactButton(i * 10 + 1, leftPos + 30 + i * 12 + (i + 2) / 3 * 6, topPos + 42, 12, 12, new TextComponent("+"), (button) -> { actionPerformed(button); }));
 		}
 		for (int i = 0; i < 10; i++) {
-			addButton(new CompactButton(100 + i * 10, leftPos + 30 + i * 12 + (i + 2) / 3 * 6, topPos + 57, 12, 12, new StringTextComponent("-"), (button) -> { actionPerformed(button); }));
-			addButton(new CompactButton(100 + i * 10 + 1, leftPos + 30 + i * 12 + (i + 2) / 3 * 6, topPos + 79, 12, 12, new StringTextComponent("+"), (button) -> { actionPerformed(button); }));
+			addRenderableWidget(new CompactButton(100 + i * 10, leftPos + 30 + i * 12 + (i + 2) / 3 * 6, topPos + 57, 12, 12, new TextComponent("-"), (button) -> { actionPerformed(button); }));
+			addRenderableWidget(new CompactButton(100 + i * 10 + 1, leftPos + 30 + i * 12 + (i + 2) / 3 * 6, topPos + 79, 12, 12, new TextComponent("+"), (button) -> { actionPerformed(button); }));
 		}
-		addButton(new GuiRangeTriggerInvertRedstone(leftPos + 8, topPos + 62, container.te));
+		addRenderableWidget(new GuiRangeTriggerInvertRedstone(leftPos + 8, topPos + 62, container.te));
 	}
 
 	@Override
@@ -58,13 +58,13 @@ public class GuiRangeTrigger extends GuiContainerBase<ContainerRangeTrigger> {
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		renderBackground(matrixStack);
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
 		renderTooltip(matrixStack, mouseX, mouseY);
 	}
 
-	private void renderValue(MatrixStack matrixStack, double value, int x, int y) {
+	private void renderValue(PoseStack matrixStack, double value, int x, int y) {
 		x += 114;
 		for (int i = 0; i < 10; i++) {
 			byte digit = (byte) (value % 10);
@@ -93,8 +93,8 @@ public class GuiRangeTrigger extends GuiContainerBase<ContainerRangeTrigger> {
 
 		if (newValue != initValue) {
 			TileEntityRangeTrigger trigger = container.te;
-			
-			CompoundNBT tag = new CompoundNBT();
+
+			CompoundTag tag = new CompoundTag();
 			tag.putDouble("value", newValue);
 			if (isEnd) {
 				tag.putInt("type", 3);
@@ -109,7 +109,7 @@ public class GuiRangeTrigger extends GuiContainerBase<ContainerRangeTrigger> {
 	}
 
 	@Override
-	protected void renderLabels(MatrixStack matrixStack, int mouseX, int mouseY) {
+	protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
 		drawCenteredText(matrixStack, title, imageWidth, 6);
 		drawLeftAlignedText(matrixStack, I18n.get("container.inventory"), 8, (imageHeight - 96) + 2);
 

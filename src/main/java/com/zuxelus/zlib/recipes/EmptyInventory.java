@@ -1,10 +1,10 @@
 package com.zuxelus.zlib.recipes;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
-public final class EmptyInventory implements IInventory {
+public final class EmptyInventory implements Container {
 	public static final EmptyInventory INSTANCE = new EmptyInventory();
 
 	@Override
@@ -39,7 +39,7 @@ public final class EmptyInventory implements IInventory {
 	public void setChanged() {}
 
 	@Override
-	public boolean stillValid(PlayerEntity player) {
+	public boolean stillValid(Player player) {
 		return false;
 	}
 

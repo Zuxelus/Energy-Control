@@ -1,14 +1,15 @@
 package com.zuxelus.zlib.gui.controls;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -22,19 +23,19 @@ public class GuiButtonGeneral extends Button {
 	public String tooltip;
 	private boolean hasGradient;
 
-	public GuiButtonGeneral(int left, int top, int width, int height, ResourceLocation texture, int textureLeft, int textureTop, Button.IPressable onPress) {
-		this(left, top, width, height, StringTextComponent.EMPTY, texture, textureLeft, textureTop, 0, "", onPress);
+	public GuiButtonGeneral(int left, int top, int width, int height, ResourceLocation texture, int textureLeft, int textureTop, Button.OnPress onPress) {
+		this(left, top, width, height, TextComponent.EMPTY, texture, textureLeft, textureTop, 0, "", onPress);
 	}
 
-	public GuiButtonGeneral(int left, int top, int width, int height, ResourceLocation texture, int textureLeft, int textureTop, int textureTopOff, Button.IPressable onPress) {
-		this(left, top, width, height, StringTextComponent.EMPTY, texture, textureLeft, textureTop, textureTopOff, "", onPress);
+	public GuiButtonGeneral(int left, int top, int width, int height, ResourceLocation texture, int textureLeft, int textureTop, int textureTopOff, Button.OnPress onPress) {
+		this(left, top, width, height, TextComponent.EMPTY, texture, textureLeft, textureTop, textureTopOff, "", onPress);
 	}
 
-	public GuiButtonGeneral(int left, int top, int width, int height, ITextComponent text, Button.IPressable onPress) {
+	public GuiButtonGeneral(int left, int top, int width, int height, Component text, Button.OnPress onPress) {
 		this(left, top, width, height, text, null, 0, 0, 0, "", onPress);
 	}
 
-	public GuiButtonGeneral(int left, int top, int width, int height, ITextComponent text, ResourceLocation texture, int textureLeft, int textureTop, int textureTopOff, String tooltip, Button.IPressable onPress) {
+	public GuiButtonGeneral(int left, int top, int width, int height, Component text, ResourceLocation texture, int textureLeft, int textureTop, int textureTopOff, String tooltip, Button.OnPress onPress) {
 		super(left, top, width, height, text, onPress);
 		this.texture = texture;
 		this.textureLeft = textureLeft;
@@ -45,15 +46,17 @@ public class GuiButtonGeneral extends Button {
 	}
 
 	@Override
-	public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (!visible)
 			return;
 
 		Minecraft minecraft = Minecraft.getInstance();
-		FontRenderer fontRenderer = minecraft.font;
-		if (texture != null)
-			minecraft.getTextureManager().bind(texture);
-		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+		Font fontRenderer = minecraft.font;
+		if (texture != null) {
+			RenderSystem.setShader(GameRenderer::getPositionTexShader);
+			RenderSystem.setShaderTexture(0, texture);
+		}
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		//isHovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
 		/*RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();

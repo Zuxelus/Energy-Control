@@ -6,15 +6,15 @@ import java.util.List;
 import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
 import com.zuxelus.zlib.recipes.EmptyInventory;
 
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.RecipeManager;
-import net.minecraft.world.World;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 
-public class KitAssemblerRecipeType implements IRecipeType<KitAssemblerRecipe> {
+public class KitAssemblerRecipeType implements RecipeType<KitAssemblerRecipe> {
 	public static final KitAssemblerRecipeType TYPE = new KitAssemblerRecipeType();
 	private List<KitAssemblerRecipe> cachedRecipes = Collections.emptyList();
 
-	public List<KitAssemblerRecipe> getRecipes(World world) {
+	public List<KitAssemblerRecipe> getRecipes(Level world) {
 		if (world == null)
 			return Collections.emptyList();
 

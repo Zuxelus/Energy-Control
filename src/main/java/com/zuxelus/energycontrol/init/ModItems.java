@@ -7,10 +7,10 @@ import com.zuxelus.energycontrol.items.cards.*;
 import com.zuxelus.energycontrol.items.kits.*;
 import com.zuxelus.energycontrol.recipes.*;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.block.Block;
+import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -72,7 +72,7 @@ public class ModItems {
 	public static final RegistryObject<Item> radio_transmitter = ITEMS.register("radio_transmitter", () -> new Item(new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
 	public static final RegistryObject<Item> strong_string = ITEMS.register("strong_string", () -> new Item(new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
 
-	public static final DeferredRegister<IRecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, EnergyControl.MODID);
+	public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, EnergyControl.MODID);
 	public static final RegistryObject<ArrayRecipeSerializer> ARRAY_SERIALIZER = RECIPE_SERIALIZERS.register("array", () -> new ArrayRecipeSerializer());
 	public static final RegistryObject<KitAssemblerSerializer> KIT_ASSEMBLER_SERIALIZER = RECIPE_SERIALIZERS.register("kit_assembler", () -> new KitAssemblerSerializer());
 	//public static final IRecipeSerializerDeferredRegister RECIPE_SERIALIZERS = new IRecipeSerializerDeferredRegister(EnergyControl.MODID);

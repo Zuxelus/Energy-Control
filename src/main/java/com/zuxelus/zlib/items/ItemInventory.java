@@ -2,16 +2,16 @@ package com.zuxelus.zlib.items;
 
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.NonNullList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.Container;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.Constants;
 
-public abstract class ItemInventory implements IInventory, ISlotItemFilter {
+public abstract class ItemInventory implements Container, ISlotItemFilter {
 
 	private final ItemStack parent;
 	protected NonNullList<ItemStack> inventory;
@@ -23,31 +23,31 @@ public abstract class ItemInventory implements IInventory, ISlotItemFilter {
 	}
 
 	private void readFromParentNBT() {
-		CompoundNBT tag = parent.getTag();
+		CompoundTag tag = parent.getTag();
 		if (tag == null) {
-			tag = new CompoundNBT();
+			tag = new CompoundTag();
 			parent.setTag(tag);
 		}
 
-		ListNBT list = tag.getList("Items", Constants.NBT.TAG_COMPOUND);
+		ListTag list = tag.getList("Items", Constants.NBT.TAG_COMPOUND);
 		for (int i = 0; i < list.size(); i++) {
-			CompoundNBT stackTag = list.getCompound(i);
+			CompoundTag stackTag = list.getCompound(i);
 			setItem(stackTag.getByte("Slot"), ItemStack.of(stackTag));
 		}
 	}
 
 	private void writeToParentNBT() {
-		CompoundNBT tag = parent.getTag();
+		CompoundTag tag = parent.getTag();
 		if (tag == null) {
-			tag = new CompoundNBT();
+			tag = new CompoundTag();
 			parent.setTag(tag);
 		}
 
-		ListNBT list = new ListNBT();
+		ListTag list = new ListTag();
 		for (byte i = 0; i < getContainerSize(); i++) {
 			ItemStack stack = getItem(i);
 			if (!stack.isEmpty()) {
-				CompoundNBT stackTag = new CompoundNBT();
+				CompoundTag stackTag = new CompoundTag();
 				stackTag.putByte("Slot", i);
 				stack.save(stackTag);
 				list.add(stackTag);
@@ -71,9 +71,8 @@ public abstract class ItemInventory implements IInventory, ISlotItemFilter {
 
 	@Override
 	public ItemStack removeItem(int index, int count) {
-		ItemStack itemstack = ItemStackHelper.removeItem(inventory, index, count);
-		//if (!itemstack.isEmpty()) markDirty();
-		return itemstack;
+		ItemStack stack = ContainerHelper.removeItem(inventory, index, count);
+		return stack;
 	}
 
 	@Override
@@ -104,7 +103,7 @@ public abstract class ItemInventory implements IInventory, ISlotItemFilter {
 	}
 
 	@Override
-	public boolean stillValid(PlayerEntity player) {
+	public boolean stillValid(Player player) {
 		return true;
 	}
 

@@ -1,14 +1,15 @@
 package com.zuxelus.energycontrol.api;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.math.Matrix4f;
 
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Used to draw (progress) bars on Info Panels
@@ -17,24 +18,21 @@ public interface IHasBars {
 	
 	boolean enableBars(ItemStack stack);
 
-	void renderBars(TextureManager manager, float displayWidth, float displayHeight, ICardReader reader, MatrixStack matrixStack);
+	void renderBars(float displayWidth, float displayHeight, ICardReader reader, PoseStack matrixStack);
 
-	// copy from AbstractGui.fillGradient()
-	static void drawTransparentRect(MatrixStack matrixStack, float left, float top, float right, float bottom, float zLevel, int color) {
+	// copy from GuiComponent.fillGradient()
+	static void drawTransparentRect(PoseStack matrixStack, float left, float top, float right, float bottom, float zLevel, int color) {
 		RenderSystem.disableTexture();
 		RenderSystem.enableBlend();
 		RenderSystem.enableDepthTest();
-		RenderSystem.disableAlphaTest();
 		RenderSystem.defaultBlendFunc();
-		RenderSystem.shadeModel(7425);
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferbuilder = tessellator.getBuilder();
-		bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
+		RenderSystem.setShader(GameRenderer::getPositionColorShader);
+		Tesselator tesselator = Tesselator.getInstance();
+		BufferBuilder bufferbuilder = tesselator.getBuilder();
+		bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 		drawPositionColor(matrixStack.last().pose(), bufferbuilder, left, top, right, bottom, zLevel, color);
-		tessellator.end();
-		RenderSystem.shadeModel(7424);
+		tesselator.end();
 		RenderSystem.disableBlend();
-		RenderSystem.enableAlphaTest();
 		RenderSystem.disableDepthTest();
 		RenderSystem.enableTexture();
 	}

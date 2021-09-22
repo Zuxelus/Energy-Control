@@ -1,18 +1,20 @@
 package com.zuxelus.energycontrol.gui.controls;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.widget.button.AbstractButton;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -25,8 +27,8 @@ public class GuiInfoPanelCheckBox extends AbstractButton {
 	private PanelSetting setting;
 	private int slot;
 
-	public GuiInfoPanelCheckBox(int x, int y, PanelSetting setting, TileEntityInfoPanel panel, int slot, FontRenderer renderer) {
-		super(x, y, renderer.width(setting.title) + 8, renderer.lineHeight + 1, new StringTextComponent(setting.title));
+	public GuiInfoPanelCheckBox(int x, int y, PanelSetting setting, TileEntityInfoPanel panel, int slot, Font renderer) {
+		super(x, y, renderer.width(setting.title) + 8, renderer.lineHeight + 1, new TextComponent(setting.title));
 		this.setting = setting;
 		this.slot = slot;
 		this.panel = panel;
@@ -34,13 +36,14 @@ public class GuiInfoPanelCheckBox extends AbstractButton {
 	}
 
 	@Override
-	public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (!visible)
 			return;
 		Minecraft minecraft = Minecraft.getInstance();
-		FontRenderer fontRenderer = minecraft.font;
-		minecraft.getTextureManager().bind(TEXTURE);
-		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+		Font fontRenderer = minecraft.font;
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShaderTexture(0, TEXTURE);
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		int delta = checked ? 6 : 0;
 		blit(matrixStack, x, y + 1, 176, delta, 6, 6);
 		fontRenderer.draw(matrixStack, getMessage(), x + 8, y, 0x404040);
@@ -59,10 +62,15 @@ public class GuiInfoPanelCheckBox extends AbstractButton {
 	}
 
 	private void UpdateServerSettings(int value) {
-		CompoundNBT tag = new CompoundNBT();
+		CompoundTag tag = new CompoundTag();
 		tag.putInt("type", 1);
 		tag.putInt("slot", slot);
 		tag.putInt("value", value);
 		NetworkHelper.updateSeverTileEntity(panel.getBlockPos(), tag);
+	}
+
+	@Override
+	public void updateNarration(NarrationElementOutput output) {
+		// TODO Auto-generated method stub
 	}
 }

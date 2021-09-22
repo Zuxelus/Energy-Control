@@ -1,18 +1,18 @@
 package com.zuxelus.energycontrol.renderers;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanelExtender;
 
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
+import net.minecraft.resources.ResourceLocation;
 
-public class TEInfoPanelExtenderRenderer extends TileEntityRenderer<TileEntityInfoPanelExtender> {
+public class TEInfoPanelExtenderRenderer implements BlockEntityRenderer<TileEntityInfoPanelExtender> {
 	private static final ResourceLocation TEXTUREOFF[];
 	private static final ResourceLocation TEXTUREON[];
 	private static final CubeRenderer model[];
@@ -32,12 +32,10 @@ public class TEInfoPanelExtenderRenderer extends TileEntityRenderer<TileEntityIn
 				model[i * 4 + j] = new CubeRenderer(i * 32 + 64, j * 32 + 64);
 	}
 
-	public TEInfoPanelExtenderRenderer(TileEntityRendererDispatcher te) {
-		super(te);
-	}
+	public TEInfoPanelExtenderRenderer(Context ctx) {}
 
 	@Override
-	public void render(TileEntityInfoPanelExtender te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
+	public void render(TileEntityInfoPanelExtender te, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
 		matrixStack.pushPose();
 		int[] light = TileEntityInfoPanelRenderer.getBlockLight(te);
 		switch (te.getFacing()) {
@@ -71,12 +69,17 @@ public class TEInfoPanelExtenderRenderer extends TileEntityRenderer<TileEntityIn
 			if (color > 15 || color < 0)
 				color = 2;
 		}
-		IVertexBuilder vertexBuilder;
+		VertexConsumer vertexBuilder;
 		if (te.getPowered())
 			vertexBuilder = buffer.getBuffer(RenderType.entitySolid(TEXTUREON[color]));
 		else
 			vertexBuilder = buffer.getBuffer(RenderType.entitySolid(TEXTUREOFF[color]));
 		model[te.findTexture()].render(matrixStack, vertexBuilder, light, combinedOverlay);
 		matrixStack.popPose();
+	}
+
+	@Override
+	public int getViewDistance() {
+		return 65536;
 	}
 }

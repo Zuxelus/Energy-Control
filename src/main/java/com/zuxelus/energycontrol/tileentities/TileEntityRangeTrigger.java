@@ -12,24 +12,27 @@ import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalBlock;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 
-public class TileEntityRangeTrigger extends TileEntityInventory implements ITickableTileEntity, INamedContainerProvider, ISlotItemFilter, ITilePacketHandler {
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+
+public class TileEntityRangeTrigger extends TileEntityInventory implements MenuProvider, ISlotItemFilter, ITilePacketHandler {
 	public static final int SLOT_CARD = 0;
 	public static final int SLOT_UPGRADE = 1;
 
@@ -47,8 +50,8 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 	public double levelStart;
 	public double levelEnd;
 
-	public TileEntityRangeTrigger(TileEntityType<?> type) {
-		super(type);
+	public TileEntityRangeTrigger(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
 		init = false;
 		tickRate = ConfigHandler.RANGE_TRIGGER_REFRESH_PERIOD.get();
 		updateTicker = tickRate;
@@ -58,8 +61,8 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 		levelEnd = 40000;
 	}
 
-	public TileEntityRangeTrigger() {
-		this(ModTileEntityTypes.range_trigger.get());
+	public TileEntityRangeTrigger(BlockPos pos, BlockState state) {
+		this(ModTileEntityTypes.range_trigger.get(), pos, state);
 	}
 
 	public boolean getInvertRedstone() {
@@ -81,7 +84,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 			Block block = iblockstate.getBlock();
 			if (block instanceof RangeTrigger) {
 				BlockState newState = block.defaultBlockState()
-						.setValue(HorizontalBlock.FACING, iblockstate.getValue(HorizontalBlock.FACING))
+						.setValue(HorizontalDirectionalBlock.FACING, iblockstate.getValue(HorizontalDirectionalBlock.FACING))
 						.setValue(RangeTrigger.STATE, RangeTrigger.EnumState.getState(status));
 				level.setBlock(worldPosition, newState, 3);
 			}
@@ -109,8 +112,14 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 		return poweredBlock;
 	}
 
-	@Override
-	public void tick() {
+	public static void tickStatic(Level level, BlockPos pos, BlockState state, BlockEntity be) {
+		if (!(be instanceof TileEntityRangeTrigger))
+			return;
+		TileEntityRangeTrigger te = (TileEntityRangeTrigger) be;
+		te.tick();
+	}
+
+	protected void tick() {
 		if (!level.isClientSide) {
 			if (updateTicker-- > 0)
 				return;
@@ -120,7 +129,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 	}
 
 	@Override
-	public void onServerMessageReceived(CompoundNBT tag) {
+	public void onServerMessageReceived(CompoundTag tag) {
 		if (!tag.contains("type"))
 			return;
 		switch (tag.getInt("type")) {
@@ -140,31 +149,31 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 	}
 
 	@Override
-	public void onClientMessageReceived(CompoundNBT tag) { }
+	public void onClientMessageReceived(CompoundTag tag) { }
 
 	@Override
-	public SUpdateTileEntityPacket getUpdatePacket() {
-		CompoundNBT tag = new CompoundNBT();
+	public ClientboundBlockEntityDataPacket getUpdatePacket() {
+		CompoundTag tag = new CompoundTag();
 		tag = writeProperties(tag);
 		tag.putBoolean("poweredBlock", poweredBlock);
-		return new SUpdateTileEntityPacket(getBlockPos(), 0, tag);
+		return new ClientboundBlockEntityDataPacket(getBlockPos(), 0, tag);
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
 		readProperties(pkt.getTag());
 	}
 
 	@Override
-	public CompoundNBT getUpdateTag() {
-		CompoundNBT tag = super.getUpdateTag();
+	public CompoundTag getUpdateTag() {
+		CompoundTag tag = super.getUpdateTag();
 		tag = writeProperties(tag);
 		tag.putBoolean("poweredBlock", poweredBlock);
 		return tag;
 	}
 
 	@Override
-	protected void readProperties(CompoundNBT tag) {
+	protected void readProperties(CompoundTag tag) {
 		super.readProperties(tag);
 		invertRedstone = tag.getBoolean("invert");
 		levelStart = tag.getDouble("levelStart");
@@ -174,13 +183,13 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 	}
 
 	@Override
-	public void load(BlockState state, CompoundNBT tag) {
-		super.load(state, tag);
+	public void load(CompoundTag tag) {
+		super.load(tag);
 		readProperties(tag);
 	}
 
 	@Override
-	protected CompoundNBT writeProperties(CompoundNBT tag) {
+	protected CompoundTag writeProperties(CompoundTag tag) {
 		tag = super.writeProperties(tag);
 		tag.putBoolean("invert", invertRedstone);
 		tag.putDouble("levelStart", levelStart);
@@ -189,7 +198,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 	}
 
 	@Override
-	public CompoundNBT save(CompoundNBT tag) {
+	public CompoundTag save(CompoundTag tag) {
 		return writeProperties(super.save(tag));
 	}
 
@@ -247,14 +256,14 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 		return stack.getItem().equals(ModItems.upgrade_range.get());
 	}
 
-	// INamedContainerProvider
+	// MenuProvider
 	@Override
-	public Container createMenu(int windowId, PlayerInventory inventory, PlayerEntity player) {
+	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerRangeTrigger(windowId, inventory, this);
 	}
 
 	@Override
-	public ITextComponent getDisplayName() {
-		return new TranslationTextComponent(ModItems.range_trigger.get().getDescriptionId());
+	public Component getDisplayName() {
+		return new TranslatableComponent(ModItems.range_trigger.get().getDescriptionId());
 	}
 }

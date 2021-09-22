@@ -8,19 +8,19 @@ import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.zlib.containers.ContainerBase;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel> {
-	private PlayerEntity player;
+	private Player player;
 
-	public ContainerPortablePanel(int windowId, PlayerInventory inventory, PacketBuffer data) {
+	public ContainerPortablePanel(int windowId, Inventory inventory, FriendlyByteBuf data) {
 		this(windowId, inventory);
 	}
-	public ContainerPortablePanel(int windowId, PlayerInventory inventory) {
+	public ContainerPortablePanel(int windowId, Inventory inventory) {
 		super(new InventoryPortablePanel(inventory.player.getMainHandItem()), ModContainerTypes.portable_panel.get(), windowId);
 		this.player = inventory.player;
 

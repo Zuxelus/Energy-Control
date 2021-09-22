@@ -5,20 +5,20 @@ import java.util.function.Supplier;
 import com.zuxelus.energycontrol.tileentities.ITilePacketHandler;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
+import net.minecraftforge.fmllegacy.network.NetworkEvent.Context;
 
 public class PacketTileEntity {
 	private BlockPos pos;
-	private CompoundNBT tag;
+	private CompoundTag tag;
 
-	public PacketTileEntity(BlockPos pos, CompoundNBT tag) {
+	public PacketTileEntity(BlockPos pos, CompoundTag tag) {
 		this.pos = pos;
 		this.tag = tag;
 	}
@@ -27,18 +27,18 @@ public class PacketTileEntity {
 		Context ctx = context.get();
 		ctx.enqueueWork(() -> {
 			if (ctx.getDirection().getReceptionSide() == LogicalSide.SERVER) {
-				ServerPlayerEntity player = ctx.getSender();
+				ServerPlayer player = ctx.getSender();
 				if (player == null || player.level == null)
 					return;
-				TileEntity te = player.level.getBlockEntity(message.pos);
+				BlockEntity te = player.level.getBlockEntity(message.pos);
 				if (!(te instanceof ITilePacketHandler))
 					return;
 				((ITilePacketHandler) te).onServerMessageReceived(message.tag);
 			} else {
 				@SuppressWarnings("resource")
-				ClientWorld world = Minecraft.getInstance().level;
+				ClientLevel world = Minecraft.getInstance().level;
 				if (world != null) {
-					TileEntity te = world.getBlockEntity(message.pos);
+					BlockEntity te = world.getBlockEntity(message.pos);
 					if (!(te instanceof ITilePacketHandler))
 						return;
 					((ITilePacketHandler) te).onClientMessageReceived(message.tag);
@@ -48,12 +48,12 @@ public class PacketTileEntity {
 		ctx.setPacketHandled(true);
 	}
 
-	public static void encode(PacketTileEntity pkt, PacketBuffer buf) {
+	public static void encode(PacketTileEntity pkt, FriendlyByteBuf buf) {
 		buf.writeBlockPos(pkt.pos);
 		buf.writeNbt(pkt.tag);
 	}
 
-	public static PacketTileEntity decode(PacketBuffer buf) {
+	public static PacketTileEntity decode(FriendlyByteBuf buf) {
 		return new PacketTileEntity(buf.readBlockPos(), buf.readNbt());
 	}
 }

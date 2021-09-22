@@ -1,6 +1,6 @@
 package com.zuxelus.energycontrol.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.containers.ContainerTimer;
 import com.zuxelus.energycontrol.gui.controls.CompactButton;
@@ -8,12 +8,13 @@ import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityTimer;
 import com.zuxelus.zlib.gui.GuiContainerBase;
 
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -21,10 +22,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class GuiTimer extends GuiContainerBase<ContainerTimer> {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_timer.png");
 	private TileEntityTimer timer;
-	private TextFieldWidget textboxTimer = null;
+	private EditBox textboxTimer = null;
 	private boolean lastIsWorking;
 
-	public GuiTimer(ContainerTimer container, PlayerInventory inventory, ITextComponent title) {
+	public GuiTimer(ContainerTimer container, Inventory inventory, Component title) {
 		super(container, inventory, title, TEXTURE);
 		imageWidth = 100;
 		imageHeight = 136;
@@ -37,18 +38,18 @@ public class GuiTimer extends GuiContainerBase<ContainerTimer> {
 		super.init();
 		lastIsWorking = timer.getIsWorking();
 
-		addButton(new CompactButton(0, leftPos + 14, topPos + 50, 34, 12, new StringTextComponent("+1"), (button) -> { actionPerformed(button); }));
-		addButton(new CompactButton(1, leftPos + 14, topPos + 64, 34, 12, new StringTextComponent("+10"), (button) -> { actionPerformed(button); }));
-		addButton(new CompactButton(2, leftPos + 50, topPos + 50, 34, 12, new StringTextComponent("+100"), (button) -> { actionPerformed(button); }));
-		addButton(new CompactButton(3, leftPos + 50, topPos + 64, 34, 12, new StringTextComponent("+1000"), (button) -> { actionPerformed(button); }));
-		addButton(new CompactButton(4, leftPos + 14, topPos + 78, 70, 12, new StringTextComponent("+10000"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(0, leftPos + 14, topPos + 50, 34, 12, new TextComponent("+1"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(1, leftPos + 14, topPos + 64, 34, 12, new TextComponent("+10"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(2, leftPos + 50, topPos + 50, 34, 12, new TextComponent("+100"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(3, leftPos + 50, topPos + 64, 34, 12, new TextComponent("+1000"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(4, leftPos + 14, topPos + 78, 70, 12, new TextComponent("+10000"), (button) -> { actionPerformed(button); }));
 
-		addButton(new CompactButton(5, leftPos + 14, topPos + 36, 34, 12, new StringTextComponent("Reset"), (button) -> { actionPerformed(button); }));
-		addButton(new CompactButton(6, leftPos + 50, topPos + 36, 34, 12, new StringTextComponent("Ticks"), (button) -> { actionPerformed(button); }));
-		addButton(new CompactButton(7, leftPos + 14, topPos + 92, 70, 12,
-				new StringTextComponent(timer.getInvertRedstone() ? "No Redstone" : "Redstone"), (button) -> { actionPerformed(button); }));
-		addButton(new CompactButton(8, leftPos + 14, topPos + 106, 70, 12,
-				new StringTextComponent(lastIsWorking ? "Stop" : "Start"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(5, leftPos + 14, topPos + 36, 34, 12, new TextComponent("Reset"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(6, leftPos + 50, topPos + 36, 34, 12, new TextComponent("Ticks"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(7, leftPos + 14, topPos + 92, 70, 12,
+				new TextComponent(timer.getInvertRedstone() ? "No Redstone" : "Redstone"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(8, leftPos + 14, topPos + 106, 70, 12,
+				new TextComponent(lastIsWorking ? "Stop" : "Start"), (button) -> { actionPerformed(button); }));
 
 		updateCaptions(timer.getIsTicks());
 
@@ -56,34 +57,34 @@ public class GuiTimer extends GuiContainerBase<ContainerTimer> {
 	}
 
 	private void updateCaptions(boolean isTicks) {
-		buttons.get(0).setMessage(new StringTextComponent(isTicks ? "+1" : "+1s"));
-		buttons.get(1).setMessage(new StringTextComponent(isTicks ? "+10" : "+30s"));
-		buttons.get(2).setMessage(new StringTextComponent(isTicks ? "+100" : "+1m"));
-		buttons.get(3).setMessage(new StringTextComponent(isTicks ? "+1000" : "+30m"));
-		buttons.get(4).setMessage(new StringTextComponent(isTicks ? "+10000" : "+1h"));
-		buttons.get(6).setMessage(new StringTextComponent(isTicks ? "Ticks" : "Time"));
+		((AbstractWidget) renderables.get(0)).setMessage(new TextComponent(isTicks ? "+1" : "+1s"));
+		((AbstractWidget) renderables.get(1)).setMessage(new TextComponent(isTicks ? "+10" : "+30s"));
+		((AbstractWidget) renderables.get(2)).setMessage(new TextComponent(isTicks ? "+100" : "+1m"));
+		((AbstractWidget) renderables.get(3)).setMessage(new TextComponent(isTicks ? "+1000" : "+30m"));
+		((AbstractWidget) renderables.get(4)).setMessage(new TextComponent(isTicks ? "+10000" : "+1h"));
+		((AbstractWidget) renderables.get(6)).setMessage(new TextComponent(isTicks ? "Ticks" : "Time"));
 	}
 
 	@Override
-	protected void renderBg(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+	protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
 		super.renderBg(matrixStack, partialTicks, mouseX, mouseY);
 		textboxTimer.renderButton(matrixStack, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
-	protected void renderLabels(MatrixStack matrixStack, int mouseX, int mouseY) {
+	protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
 		drawCenteredText(matrixStack, title, imageWidth, 6);
 	}
 
 	@Override
-	public void tick() {
-		super.tick();
+	public void containerTick() {
+		super.containerTick();
 		textboxTimer.tick();
 		boolean isWorking = timer.getIsWorking();
 		if (isWorking != lastIsWorking) {
 			textboxTimer.setEditable(!isWorking);
 			textboxTimer.changeFocus(!isWorking);
-			buttons.get(8).setMessage(new StringTextComponent(isWorking ? "Stop" : "Start"));
+			((AbstractWidget) renderables.get(8)).setMessage(new TextComponent(isWorking ? "Stop" : "Start"));
 			lastIsWorking = isWorking;
 		}
 		if (isWorking)
@@ -159,14 +160,14 @@ public class GuiTimer extends GuiContainerBase<ContainerTimer> {
 			boolean invertRedstone = timer.getInvertRedstone();
 			NetworkHelper.updateSeverTileEntity(timer.getBlockPos(), 2, invertRedstone ? 0 : 1);
 			timer.setInvertRedstone(!invertRedstone);
-			buttons.get(7).setMessage(new StringTextComponent(!invertRedstone ? "No Redstone" : "Redstone"));
+			((AbstractWidget) renderables.get(7)).setMessage(new TextComponent(!invertRedstone ? "No Redstone" : "Redstone"));
 			break;
 		case 8:
 			updateTime(0);
 			boolean isWorking = timer.getIsWorking();
 			NetworkHelper.updateSeverTileEntity(timer.getBlockPos(), 3, isWorking ? 0 : 1);
 			timer.setIsWorking(!isWorking);
-			buttons.get(8).setMessage(new StringTextComponent(!isWorking ? "Stop" : "Start"));
+			((AbstractWidget) renderables.get(8)).setMessage(new TextComponent(!isWorking ? "Stop" : "Start"));
 			textboxTimer.setEditable(isWorking);
 			textboxTimer.changeFocus(isWorking);
 			break;

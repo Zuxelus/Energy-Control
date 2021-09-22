@@ -1,12 +1,12 @@
 package com.zuxelus.energycontrol.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.gui.GuiBase;
 
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -27,11 +27,11 @@ public class GuiScreenColor extends GuiBase {
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
+	protected void drawGuiContainerForegroundLayer(PoseStack matrixStack, int mouseX, int mouseY) {
 		blit(matrixStack, 5 + colorBack * 14, 30, 234, 0, 14, 14);
 		blit(matrixStack, 5 + colorText * 14, 61, 234, 0, 14, 14);
-		font.draw(matrixStack, new TranslationTextComponent("msg.ec.ScreenColor"), 8, 20, 0x404040);
-		font.draw(matrixStack, new TranslationTextComponent("msg.ec.TextColor"), 8, 52, 0x404040);
+		font.draw(matrixStack, new TranslatableComponent("msg.ec.ScreenColor"), 8, 20, 0x404040);
+		font.draw(matrixStack, new TranslatableComponent("msg.ec.TextColor"), 8, 52, 0x404040);
 	}
 
 	@Override

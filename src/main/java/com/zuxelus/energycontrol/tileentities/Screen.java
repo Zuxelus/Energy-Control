@@ -1,9 +1,9 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class Screen {
 	public int minX;
@@ -25,7 +25,7 @@ public class Screen {
 		powered = panel.getPowered();
 	}
 
-	public Screen(TileEntityInfoPanel panel, CompoundNBT tag) {
+	public Screen(TileEntityInfoPanel panel, CompoundTag tag) {
 		minX = tag.getInt("minX");
 		minY = tag.getInt("minY");
 		minZ = tag.getInt("minZ");
@@ -38,14 +38,14 @@ public class Screen {
 		powered = panel.getPowered();
 	}
 
-	public TileEntityInfoPanel getCore(World world) {
-		TileEntity tileEntity = world.getBlockEntity(corePos);
-		if (tileEntity == null || !(tileEntity instanceof TileEntityInfoPanel))
+	public TileEntityInfoPanel getCore(Level world) {
+		BlockEntity be = world.getBlockEntity(corePos);
+		if (be == null || !(be instanceof TileEntityInfoPanel))
 			return null;
-		return (TileEntityInfoPanel) tileEntity;
+		return (TileEntityInfoPanel) be;
 	}
 
-	public boolean isBlockNearby(TileEntity tileEntity) {
+	public boolean isBlockNearby(BlockEntity tileEntity) {
 		BlockPos pos = tileEntity.getBlockPos();
 		int x = pos.getX();
 		int y = pos.getY();
@@ -58,7 +58,7 @@ public class Screen {
 				|| (x >= minX && x <= maxX && y >= minY && y <= maxY && z == maxZ + 1);
 	}
 
-	public boolean isBlockPartOf(TileEntity tileEntity) {
+	public boolean isBlockPartOf(BlockEntity tileEntity) {
 		BlockPos pos = tileEntity.getBlockPos();
 		int x = pos.getX();
 		int y = pos.getY();
@@ -66,11 +66,11 @@ public class Screen {
 		return x >= minX && x <= maxX && y >= minY && y <= maxY && z >= minZ && z <= maxZ;
 	}
 
-	public void init(boolean force, World world) {
+	public void init(boolean force, Level world) {
 		for (int x = minX; x <= maxX; x++) {
 			for (int y = minY; y <= maxY; y++) {
 				for (int z = minZ; z <= maxZ; z++) {
-					TileEntity tileEntity = world.getBlockEntity(new BlockPos(x, y, z));
+					BlockEntity tileEntity = world.getBlockEntity(new BlockPos(x, y, z));
 					if (tileEntity == null || !(tileEntity instanceof IScreenPart))
 						continue;
 					((IScreenPart) tileEntity).setScreen(this);
@@ -83,11 +83,11 @@ public class Screen {
 		}
 	}
 
-	public void destroy(boolean force, World world) {
+	public void destroy(boolean force, Level world) {
 		for (int x = minX; x <= maxX; x++) {
 			for (int y = minY; y <= maxY; y++) {
 				for (int z = minZ; z <= maxZ; z++) {
-					TileEntity tileEntity = world.getBlockEntity(new BlockPos(x, y, z));
+					BlockEntity tileEntity = world.getBlockEntity(new BlockPos(x, y, z));
 					if (tileEntity == null || !(tileEntity instanceof IScreenPart))
 						continue;
 					IScreenPart part = (IScreenPart) tileEntity;
@@ -105,18 +105,18 @@ public class Screen {
 		}
 	}
 
-	public void turnPower(boolean on, World world) {
+	public void turnPower(boolean on, Level world) {
 		if (powered == on)
 			return;
 		powered = on;
 		markUpdate(world);
 	}
 
-	private void markUpdate(World world) {
+	private void markUpdate(Level world) {
 		for (int x = minX; x <= maxX; x++) {
 			for (int y = minY; y <= maxY; y++) {
 				for (int z = minZ; z <= maxZ; z++) {
-					TileEntity te = world.getBlockEntity(new BlockPos(x, y, z));
+					BlockEntity te = world.getBlockEntity(new BlockPos(x, y, z));
 					if (te instanceof IScreenPart)
 						((IScreenPart)te).notifyBlockUpdate();
 						//world.checkLight(new BlockPos(x, y, z));
@@ -125,8 +125,8 @@ public class Screen {
 		}
 	}	
 
-	public CompoundNBT toTag() {
-		CompoundNBT tag = new CompoundNBT();
+	public CompoundTag toTag() {
+		CompoundTag tag = new CompoundTag();
 
 		tag.putInt("minX", minX);
 		tag.putInt("minY", minY);
