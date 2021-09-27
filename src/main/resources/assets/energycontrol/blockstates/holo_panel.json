@@ -1,0 +1,12 @@
+{
+    "variants": {
+        "active=false,facing=east":  { "model": "energycontrol:holo_panel_off", "y": 90 },
+        "active=false,facing=west":  { "model": "energycontrol:holo_panel_off", "y": 270 },
+        "active=false,facing=south": { "model": "energycontrol:holo_panel_off", "y": 180 },
+        "active=false,facing=north": { "model": "energycontrol:holo_panel_off" },
+        "active=true,facing=east":  { "model": "energycontrol:holo_panel_on", "y": 90 },
+        "active=true,facing=west":  { "model": "energycontrol:holo_panel_on", "y": 270 },
+        "active=true,facing=south": { "model": "energycontrol:holo_panel_on", "y": 180 },
+        "active=true,facing=north": { "model": "energycontrol:holo_panel_on" }
+    }
+} 

@@ -168,9 +168,4 @@ public class ItemCardGenerator extends ItemCardBase {
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelAdditionalInfo"), 64));
 		return result;
 	}
-
-	@Override
-	public int getKitId() {
-		return ItemCardType.KIT_GENERATOR;
-	}
 }

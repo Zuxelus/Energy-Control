@@ -10,6 +10,8 @@ import buildcraft.transport.tile.TilePipeHolder;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
+import com.zuxelus.energycontrol.utils.FluidInfo;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -35,7 +37,7 @@ public class CrossBuildCraft extends CrossModBase {
 	}
 
 	@Override
-	public List<IFluidTank> getAllTanks(TileEntity te) {
+	public List<FluidInfo> getAllTanks(TileEntity te) {
 		if (te instanceof TilePipeHolder) {
 			Pipe pipe = ((TilePipeHolder) te).getPipe();
 			if (pipe != null) {
@@ -46,8 +48,8 @@ public class CrossBuildCraft extends CrossModBase {
 						field.setAccessible(true);
 						FluidStack stack = (FluidStack) field.get(flow);
 						if (stack == null) {
-							List<IFluidTank> result = new ArrayList<>();
-							result.add(new FluidTank(stack, ((PipeFlowFluids) flow).capacity));
+							List<FluidInfo> result = new ArrayList<>();
+							result.add(new FluidInfo(stack, ((PipeFlowFluids) flow).capacity));
 							return result;
 						}
 						int amount = 0;
@@ -55,8 +57,8 @@ public class CrossBuildCraft extends CrossModBase {
 							FluidStack currStack = ((PipeFlowFluids) flow).extractFluidsForce(0, 100000, side, true);
 							amount += currStack.amount;
 						}
-						List<IFluidTank> result = new ArrayList<>();
-						result.add(new FluidTank(stack.getFluid(), amount, ((PipeFlowFluids) flow).capacity));
+						List<FluidInfo> result = new ArrayList<>();
+						result.add(new FluidInfo(stack.getFluid(), amount, ((PipeFlowFluids) flow).capacity));
 						return result;
 					} catch (Throwable t) {
 						return null;
@@ -71,9 +73,9 @@ public class CrossBuildCraft extends CrossModBase {
 				TankManager tankManager = (TankManager) field.get(te);
 				IFluidTankProperties[] tanks = tankManager.getTankProperties();
 				if (tanks.length > 0) {
-					List<IFluidTank> result = new ArrayList<>();
+					List<FluidInfo> result = new ArrayList<>();
 					for (IFluidTankProperties tank : tanks)
-						result.add(new FluidTank(tank.getContents(), tank.getCapacity()));
+						result.add(new FluidInfo(tank.getContents(), tank.getCapacity()));
 					return result;
 				}
 			} catch (Throwable t) {

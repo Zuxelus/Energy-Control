@@ -43,7 +43,7 @@ public class AdvancedInfoPanelPeripheral implements IPeripheral {
 		case 1:
 			ItemStack itemStack = te.getStackInSlot(te.getSlotUpgradeRange());
 			int upgradeCountRange = 0;
-			if (itemStack != ItemStack.EMPTY && itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE)
+			if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemUpgrade && itemStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE)
 				upgradeCountRange = itemStack.getCount();
 			return new Object[] { ItemCardMain.LOCATION_RANGE * (int) Math.pow(2, Math.min(upgradeCountRange, 7)) };
 		case 2:

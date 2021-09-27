@@ -12,43 +12,13 @@
         },
         "I": {
             "type": "forge:ore_dict",
-            "ore": "plateIron"
+            "ore": "ingotIron"
         },
         "W": {
-            "type": "minecraft:item_nbt",
-            "item": "ic2:fluid_cell",
-            "data": 0,
-            "nbt": {
-                "Fluid": {
-                    "FluidName": "water",
-                    "Amount": 1000
-                }
-            }
+            "item": "minecraft:water_bucket"
         }
     },
     "result": {
         "item": "energycontrol:thermometer"
-    },
-    "conditions": [
-        {
-            "type": "forge:and",
-            "values": [
-                {
-                    "type": "forge:mod_loaded",
-                    "modid": "ic2"
-                },
-                {
-                    "type": "forge:not",
-                    "value": {
-                        "type": "forge:mod_loaded",
-                        "modid": "ic2-classic-spmod"
-                    }
-                },
-                {
-                    "type": "energycontrol:ic2_config",
-                    "config": "experimental"
-                }
-            ]
-        }
-    ]
+    }
 }

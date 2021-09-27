@@ -48,6 +48,7 @@ public class ClientProxy implements IProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityInfoPanelExtender.class, new TEInfoPanelExtenderRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAdvancedInfoPanel.class, new TEAdvancedInfoPanelRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAdvancedInfoPanelExtender.class, new TEAdvancedInfoPanelExtenderRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityHoloPanel.class, new TileEntityHoloPanelRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTimer.class, new TileEntityTimerRenderer());
 	}
 
@@ -78,16 +79,13 @@ public class ClientProxy implements IProxy {
 			if (te instanceof TileEntityInfoPanel)
 				return new GuiInfoPanel(new ContainerInfoPanel(player, (TileEntityInfoPanel) te));
 			break;
-		case BlockDamages.DAMAGE_INFO_PANEL_EXTENDER:
-			if (te instanceof TileEntityInfoPanelExtender) {
-				TileEntityInfoPanel panel = ((TileEntityInfoPanelExtender) te).getCore();
-				if (panel != null)
-					return new GuiInfoPanel(new ContainerInfoPanel(player, panel));
-			}
-			break;
 		case BlockDamages.DAMAGE_ADVANCED_PANEL:
 			if (te instanceof TileEntityAdvancedInfoPanel)
 				return new GuiAdvancedInfoPanel(new ContainerAdvancedInfoPanel(player, (TileEntityAdvancedInfoPanel) te));
+			break;
+		case BlockDamages.DAMAGE_HOLO_PANEL:
+			if (te instanceof TileEntityHoloPanel)
+				return new GuiHoloPanel(new ContainerHoloPanel(player, (TileEntityHoloPanel) te));
 			break;
 		case BlockDamages.DAMAGE_RANGE_TRIGGER:
 			if (te instanceof TileEntityRangeTrigger)

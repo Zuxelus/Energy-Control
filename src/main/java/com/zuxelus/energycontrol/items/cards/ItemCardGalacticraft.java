@@ -286,9 +286,4 @@ public class ItemCardGalacticraft extends ItemCardBase {
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 2));
 		return result;
 	}
-
-	@Override
-	public int getKitId() {
-		return ItemCardType.KIT_GALACTICRAFT;
-	}
 }

@@ -3,6 +3,8 @@ package com.zuxelus.energycontrol.items.kits;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
+import com.zuxelus.energycontrol.utils.FluidInfo;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -15,7 +17,7 @@ public class ItemKitLiquid extends ItemKitSimple {
 
 	@Override
 	protected BlockPos getTargetCoordinates(World world, BlockPos pos, ItemStack stack) {
-		IFluidTank tank = CrossModLoader.getTankAt(world, pos);
+		FluidInfo tank = CrossModLoader.getTankAt(world, pos);
 		if (tank != null)
 			return pos;
 		return null;

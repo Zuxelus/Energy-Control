@@ -5,6 +5,7 @@ import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
+import com.zuxelus.energycontrol.utils.FluidInfo;
 import com.zuxelus.energycontrol.utils.ReactorHelper;
 import ic2.api.classic.reactor.IChamberReactor;
 import ic2.api.item.ElectricItem;
@@ -196,18 +197,18 @@ public class CrossIC2Classic extends CrossModBase {
 	}
 
 	@Override
-	public List<IFluidTank> getAllTanks(TileEntity te) {
-		List<IFluidTank> result = new ArrayList<>();
+	public List<FluidInfo> getAllTanks(TileEntity te) {
+		List<FluidInfo> result = new ArrayList<>();
 		if (te instanceof TileEntityNuclearSteamReactor) {
-			result.add(((TileEntityNuclearSteamReactor) te).getWaterTank());
-			result.add(((TileEntityNuclearSteamReactor) te).getSteamTank());
+			result.add(new FluidInfo(((TileEntityNuclearSteamReactor) te).getWaterTank()));
+			result.add(new FluidInfo(((TileEntityNuclearSteamReactor) te).getSteamTank()));
 		}
 		if (te instanceof TileEntityMachineTank)
-			result.add(((TileEntityMachineTank) te).tank);
+			result.add(new FluidInfo(((TileEntityMachineTank) te).tank));
 		if (te instanceof TileEntityPersonalTank)
-			result.add(((TileEntityPersonalTank) te).tank);
+			result.add(new FluidInfo(((TileEntityPersonalTank) te).tank));
 		if (te instanceof TileEntityLiquidFuelGenerator)
-			result.add(((TileEntityLiquidFuelGenerator) te).tank);
+			result.add(new FluidInfo(((TileEntityLiquidFuelGenerator) te).tank));
 		if (result.size() == 0)
 			return null;
 		return result;

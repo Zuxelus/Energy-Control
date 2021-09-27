@@ -1,5 +1,9 @@
 package com.zuxelus.energycontrol.items.cards;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
@@ -7,20 +11,22 @@ import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.network.ChannelHandler;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
+
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagDouble;
+import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagLong;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 public class ItemCardReader implements ICardReader {
 	private final ItemStack card;
@@ -96,6 +102,20 @@ public class ItemCardReader implements ICardReader {
 		if (tag == null)
 			return "";
 		return tag.getString(name);
+	}
+
+	@Override
+	public void setByte(String name, Byte value) {
+		NBTTagCompound tag = ItemStackHelper.getTagCompound(card);
+		tag.setByte(name, value);
+	}
+
+	@Override
+	public Byte getByte(String name) {
+		NBTTagCompound tag = card.getTagCompound();
+		if (tag == null)
+			return 0;
+		return tag.getByte(name);
 	}
 
 	@Override
@@ -208,10 +228,39 @@ public class ItemCardReader implements ICardReader {
 	public int getCardCount() {
 		return getInt("cardCount");
 	}
-	
+
 	@Override
 	public int getCardType() {
 		return card.getItemDamage();
+	}
+
+	@Override
+	public void reset() {
+		BlockPos pos = getTarget();
+		String title = getTitle();
+		card.setTagCompound(new NBTTagCompound());
+		if (pos != null)
+			ItemStackHelper.setCoordinates(card, pos);
+		if (!title.isEmpty())
+			setTitle(title);
+	}
+
+	@Override
+	public void copyFrom(NBTTagCompound nbt) {
+		for (String name : nbt.getKeySet()) {
+			NBTBase tag = nbt.getTag(name);
+			byte type = tag.getId();
+			if (type == 8)
+				setString(name, ((NBTTagString) tag).getString());
+			else if (type == 3)
+				setInt(name, ((NBTTagInt) tag).getInt());
+			else if (type == 6)
+				setDouble(name, ((NBTTagDouble) tag).getDouble());
+			else if (type == 4)
+				setLong(name, ((NBTTagLong) tag).getLong());
+			else if (type == 1)
+				setByte(name, ((NBTTagByte) tag).getByte());
+		}
 	}
 
 	@SideOnly(Side.CLIENT)

@@ -1,0 +1,28 @@
+{
+	"type": "energycontrol:kit_assembler",
+    "input1": {
+        "item": "energycontrol:item_card",
+        "data": 0
+    },
+    "input2": {
+        "item": "energycontrol:item_component",
+        "data": 4,
+        "count": 2
+    },
+    "input3": {
+        "item": "energycontrol:item_card",
+        "data": 0
+    },
+	"time": 1000,
+	"conditions": [
+		{
+			"type": "forge:and",
+			"values": [
+				{
+					"type": "forge:mod_loaded",
+					"modid": "appliedenergistics2"
+				}
+			]
+		}
+	]
+}

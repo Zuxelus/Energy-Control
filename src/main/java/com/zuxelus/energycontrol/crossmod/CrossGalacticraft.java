@@ -12,10 +12,15 @@ import net.minecraftforge.fluids.IFluidTank;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.zuxelus.energycontrol.tileentities.TileEntityAFSU;
+import com.zuxelus.energycontrol.utils.FluidInfo;
+
 public class CrossGalacticraft extends CrossModBase {
 
 	@Override
 	public NBTTagCompound getEnergyData(TileEntity te) {
+		if (te instanceof TileEntityAFSU)
+			return null;
 		if (te instanceof IEnergyHandlerGC) {
 			NBTTagCompound tag = new NBTTagCompound();
 			IEnergyHandlerGC storage = (IEnergyHandlerGC) te;
@@ -28,18 +33,18 @@ public class CrossGalacticraft extends CrossModBase {
 	}
 
 	@Override
-	public List<IFluidTank> getAllTanks(TileEntity te) {
+	public List<FluidInfo> getAllTanks(TileEntity te) {
 		if (te instanceof IFluidHandlerWrapper) {
 			FluidTankInfo[] info = ((IFluidHandlerWrapper) te).getTankInfo(null);
-			List<IFluidTank> result = new ArrayList<>();
+			List<FluidInfo> result = new ArrayList<>();
 			for (FluidTankInfo tank : info)
-				result.add(new FluidTank(tank.fluid, tank.capacity));
+				result.add(new FluidInfo(tank.fluid, tank.capacity));
 			if (result.size() > 0)
 				return result;
 			for (EnumFacing facing : EnumFacing.VALUES) {
 				info = ((IFluidHandlerWrapper) te).getTankInfo(facing);
 				for (FluidTankInfo tank : info)
-					result.add(new FluidTank(tank.fluid, tank.capacity));
+					result.add(new FluidInfo(tank.fluid, tank.capacity));
 			}
 			return result;
 		}

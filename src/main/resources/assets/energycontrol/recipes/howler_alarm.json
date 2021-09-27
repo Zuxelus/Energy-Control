@@ -2,17 +2,13 @@
     "type": "minecraft:crafting_shaped",
     "pattern": [
         "NNN",
-        "IMI",
-        "ICI"
+        "ICI",
+        "III"
     ],
     "key": {
         "I": {
             "type": "forge:ore_dict",
-            "ore": "plateIron"
-        },
-        "M": {
-            "item": "ic2:crafting",
-            "data": 6
+            "ore": "ingotIron"
         },
         "N": {
             "item": "minecraft:noteblock"
@@ -24,27 +20,5 @@
     },
     "result": {
         "item": "energycontrol:howler_alarm"
-    },
-    "conditions": [
-        {
-            "type": "forge:and",
-            "values": [
-                {
-                    "type": "forge:mod_loaded",
-                    "modid": "ic2"
-                },
-                {
-                    "type": "forge:not",
-                    "value": {
-                        "type": "forge:mod_loaded",
-                        "modid": "ic2-classic-spmod"
-                    }
-                },
-                {
-                    "type": "energycontrol:ic2_config",
-                    "config": "experimental"
-                }
-            ]
-        }
-    ]
+    }
 }

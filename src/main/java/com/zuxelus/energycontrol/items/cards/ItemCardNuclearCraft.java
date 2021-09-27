@@ -1,22 +1,21 @@
 package com.zuxelus.energycontrol.items.cards;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
-import nc.tile.generator.TileDecayGenerator;
-import nc.tile.generator.TileFissionController;
-import nc.tile.generator.TileSolarPanel;
-import nc.tile.processor.TileFluidProcessor;
-import nc.tile.processor.TileItemProcessor;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
+
 import net.minecraft.client.resources.I18n;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ItemCardNuclearCraft extends ItemCardBase {
 	private static DecimalFormat df = new DecimalFormat("0.0");
@@ -32,60 +31,12 @@ public class ItemCardNuclearCraft extends ItemCardBase {
 			return CardState.NO_TARGET;
 
 		TileEntity te = world.getTileEntity(target);
-		if (te instanceof TileDecayGenerator) {
-			reader.setInt("type", 1);
-			reader.setInt("stored", ((TileDecayGenerator) te).getEnergyStored());
-			reader.setInt("capacity", ((TileDecayGenerator) te).getMaxEnergyStored());
-			reader.setInt("output", ((TileDecayGenerator) te).getGenerated());
-			reader.setDouble("radiation", ((TileDecayGenerator) te).getRadiation());
-			return CardState.OK;
-		}
-		if (te instanceof TileItemProcessor) {
-			reader.setInt("type", 2);
-			reader.setInt("stored", ((TileItemProcessor) te).getEnergyStored());
-			reader.setInt("capacity", ((TileItemProcessor) te).getMaxEnergyStored());
-			reader.setInt("power", ((TileItemProcessor) te).getProcessPower());
-			reader.setDouble("speedM", ((TileItemProcessor) te).getSpeedMultiplier());
-			reader.setDouble("powerM", ((TileItemProcessor) te).getPowerMultiplier());
-			reader.setInt("time", ((TileItemProcessor) te).getProcessTime());
-			return CardState.OK;
-		}
-		if (te instanceof TileFluidProcessor) {
-			reader.setInt("type", 2);
-			reader.setInt("stored", ((TileFluidProcessor) te).getEnergyStored());
-			reader.setInt("capacity", ((TileFluidProcessor) te).getMaxEnergyStored());
-			reader.setInt("power", ((TileFluidProcessor) te).getProcessPower());
-			reader.setDouble("speedM", ((TileFluidProcessor) te).getSpeedMultiplier());
-			reader.setDouble("powerM", ((TileFluidProcessor) te).getPowerMultiplier());
-			reader.setInt("time", ((TileFluidProcessor) te).getProcessTime());
-			return CardState.OK;
-		}
-		if (te instanceof TileSolarPanel) {
-			reader.setInt("type", 4);
-			reader.setInt("stored", ((TileSolarPanel) te).getEnergyStored());
-			reader.setInt("capacity", ((TileSolarPanel) te).getMaxEnergyStored());
-			reader.setInt("output", ((TileSolarPanel) te).getGenerated());
-			return CardState.OK;
-		}
-		if (te instanceof TileFissionController) {
-			reader.setInt("type", 6);
-			TileFissionController reactor = (TileFissionController) te;
-			reader.setBoolean("active", reactor.isProcessing);
-			reader.setString("size", reactor.getLengthX() + "*" + reactor.getLengthY() + "*" + reactor.getLengthZ());
-			reader.setString("fuel", reactor.getFuelName());
-			reader.setInt("stored", reactor.getEnergyStored());
-			reader.setInt("capacity", reactor.getMaxEnergyStored());
-			reader.setDouble("efficiency", reactor.efficiency);
-			reader.setDouble("heat", reactor.heat);
-			reader.setInt("maxHeat", reactor.getMaxHeat());
-			reader.setDouble("heatChange", reactor.heatChange);
-			reader.setDouble("cooling", reactor.cooling);
-			reader.setDouble("heatMult", reactor.heatMult);
-			reader.setDouble("power", reactor.processPower);
-			reader.setInt("cells", reactor.cells);
-			return CardState.OK;
-		}
-		return CardState.NO_TARGET;
+		NBTTagCompound tag = CrossModLoader.getCrossMod(ModIDs.NUCLEAR_CRAFT).getCardData(te);
+		if (tag == null)
+			return CardState.NO_TARGET;
+		reader.reset();
+		reader.copyFrom(tag);
+		return CardState.OK;
 	}
 
 	@Override
@@ -167,10 +118,5 @@ public class ItemCardNuclearCraft extends ItemCardBase {
 		result.add(new PanelSetting(I18n.format("msg.ec.cbStatus"), 1));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 2));
 		return result;
-	}
-
-	@Override
-	public int getKitId() {
-		return ItemCardType.KIT_NUCLEARCRAFT;
 	}
 }

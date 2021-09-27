@@ -20,7 +20,7 @@ public class TileEntitySound {
 			if (volume > 0) {
 				if (volume < 0.3)
 					volume = 0.3;
-				PositionedSoundRecord sound = new PositionedSoundRecord(new SoundEvent(new ResourceLocation(name)), SoundCategory.MASTER, (float) volume, 1.0F, (float) person.posX, (float) person.posY, (float) person.posZ);
+				sound = new PositionedSoundRecord(new SoundEvent(new ResourceLocation(name)), SoundCategory.MASTER, (float) volume, 1.0F, (float) person.posX, (float) person.posY, (float) person.posZ);
 				Minecraft.getMinecraft().getSoundHandler().playSound(sound);
 				return;
 			}

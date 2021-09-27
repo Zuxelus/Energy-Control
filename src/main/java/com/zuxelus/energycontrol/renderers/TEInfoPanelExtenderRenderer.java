@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.renderers;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.tileentities.TileEntityHoloPanelExtender;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanelExtender;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -28,6 +29,8 @@ public class TEInfoPanelExtenderRenderer extends TileEntitySpecialRenderer<TileE
 
 	@Override
 	public void render(TileEntityInfoPanelExtender te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+		if (te instanceof TileEntityHoloPanelExtender)
+			return;
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x, y, z);
 		switch (te.getFacing()) {

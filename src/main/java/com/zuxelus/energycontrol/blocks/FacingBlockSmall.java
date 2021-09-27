@@ -36,7 +36,7 @@ public abstract class FacingBlockSmall extends FacingBlock {
 		return false;
 	}
 
-	protected static boolean canPlaceBlock(World world, BlockPos pos, EnumFacing direction) {
+	protected static boolean canPlaceBlock(World world, BlockPos pos, EnumFacing direction) { // TODO
 		BlockPos blockpos = pos.offset(direction);
 		return world.getBlockState(blockpos).isSideSolid(world, blockpos, direction.getOpposite());
 	}
@@ -72,7 +72,7 @@ public abstract class FacingBlockSmall extends FacingBlock {
 		}
 	}
 
-	protected boolean checkForDrop(World world, BlockPos pos, IBlockState state) {
+	protected boolean checkForDrop(World world, BlockPos pos, IBlockState state) { // TODO
 		if (canPlaceBlockAt(world, pos))
 			return true;
 		dropBlockAsItem(world, pos, state, 0);

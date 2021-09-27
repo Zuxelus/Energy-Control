@@ -8,7 +8,7 @@
     "key": {
         "L": {
             "type": "forge:ore_dict",
-            "ore": "plateLead"
+            "ore": "ingotGold"
         },
         "R": {
             "type": "forge:ore_dict",
@@ -21,27 +21,5 @@
     },
     "result": {
         "item": "energycontrol:thermal_monitor"
-    },
-    "conditions": [
-        {
-            "type": "forge:and",
-            "values": [
-                {
-                    "type": "forge:mod_loaded",
-                    "modid": "ic2"
-                },
-                {
-                    "type": "forge:not",
-                    "value": {
-                        "type": "forge:mod_loaded",
-                        "modid": "ic2-classic-spmod"
-                    }
-                },
-                {
-                    "type": "energycontrol:ic2_config",
-                    "config": "experimental"
-                }
-            ]
-        }
-    ]
+    }
 }

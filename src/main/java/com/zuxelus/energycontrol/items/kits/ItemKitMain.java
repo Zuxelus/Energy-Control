@@ -4,6 +4,8 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.IItemKit;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.init.ModItems;
+import com.zuxelus.energycontrol.items.cards.ItemCardEnderIO;
+import com.zuxelus.energycontrol.items.cards.ItemCardPneumaticCraft;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
@@ -61,10 +63,14 @@ public class ItemKitMain extends Item implements IItemKit {
 			register(ItemKitGalacticraft::new);
 		if (Loader.isModLoaded(ModIDs.BIG_REACTORS))
 			register(ItemKitBigReactors::new);
+		if (Loader.isModLoaded(ModIDs.ENDER_IO))
+			register(ItemKitEnderIO::new);
+		if (Loader.isModLoaded(ModIDs.MEKANISM))
+			register(ItemKitMekanism::new);
 		if (Loader.isModLoaded(ModIDs.NUCLEAR_CRAFT))
 			register(ItemKitNuclearCraft::new);
-		if (Loader.isModLoaded(ModIDs.MEKANISM_GENERATORS))
-			register(ItemKitMekanism::new);
+		if (Loader.isModLoaded(ModIDs.PNEUMATICCRAFT))
+			register(ItemKitPneumaticCraft::new);
 		if (Loader.isModLoaded(ModIDs.THERMAL_EXPANSION))
 			register(ItemKitThermalExpansion::new);
 	}

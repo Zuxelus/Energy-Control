@@ -37,11 +37,6 @@ public final class ItemCardMain extends Item implements IItemCard, ITouchAction,
 		return !stack.isEmpty() && stack.getItem() instanceof IItemCard;
 	}
 
-	public static boolean isCardWithKit(ItemStack stack) {
-		Item item = stack.getItem();
-		return !stack.isEmpty() && item instanceof IItemCard && !((IItemCard) item).getKitFromCard(stack).isEmpty();
-	}
-
 	public void registerCards() {
 		register(ItemCardEnergy::new);
 		register(ItemCardCounter::new);
@@ -75,10 +70,14 @@ public final class ItemCardMain extends Item implements IItemCard, ITouchAction,
 			register(ItemCardGalacticraft::new);
 		if (Loader.isModLoaded(ModIDs.BIG_REACTORS))
 			register(ItemCardBigReactors::new);
+		if (Loader.isModLoaded(ModIDs.ENDER_IO))
+			register(ItemCardEnderIO::new);
+		if (Loader.isModLoaded(ModIDs.MEKANISM))
+			register(ItemCardMekanism::new);
 		if (Loader.isModLoaded(ModIDs.NUCLEAR_CRAFT))
 			register(ItemCardNuclearCraft::new);
-		if (Loader.isModLoaded(ModIDs.MEKANISM_GENERATORS))
-			register(ItemCardMekanism::new);
+		if (Loader.isModLoaded(ModIDs.PNEUMATICCRAFT))
+			register(ItemCardPneumaticCraft::new);
 		if (Loader.isModLoaded(ModIDs.THERMAL_EXPANSION))
 			register(ItemCardThermalExpansion::new);
 	}
@@ -226,13 +225,6 @@ public final class ItemCardMain extends Item implements IItemCard, ITouchAction,
 	}
 
 	@Override
-	public ItemStack getKitFromCard(ItemStack stack) {
-		return getCardById(stack.getItemDamage())
-				.map(ItemCardBase::getKitFromCard)
-				.orElse(ItemStack.EMPTY);
-	}
-
-	@Override
 	public boolean enableTouch(ItemStack stack) {
 		return getCardById(stack.getItemDamage())
 				.map(card -> card instanceof ITouchAction)
@@ -282,5 +274,9 @@ public final class ItemCardMain extends Item implements IItemCard, ITouchAction,
 			if (key > ItemCardType.CARD_MAX)
 				ModItems.registerExternalItemModel(ModItems.itemCard, key, CARDS.get(key).getName());
 		}
+	}
+
+	public static Set<Integer> getCardIds() {
+		return CARDS.keySet();
 	}
 }

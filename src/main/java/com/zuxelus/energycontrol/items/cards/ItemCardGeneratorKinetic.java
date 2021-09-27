@@ -182,9 +182,4 @@ public class ItemCardGeneratorKinetic extends ItemCardBase {
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelHeight"), 64));
 		return result;
 	}
-
-	@Override
-	public int getKitId() {
-		return ItemCardType.KIT_GENERATOR;
-	}
 }

@@ -1,14 +1,19 @@
 package com.zuxelus.energycontrol.crossmod;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
+import com.zuxelus.energycontrol.utils.FluidInfo;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fml.common.Loader;
 import reborncore.api.power.IEnergyInterfaceTile;
 import reborncore.api.praescriptum.fuels.Fuel;
@@ -22,10 +27,6 @@ import techreborn.api.reactor.FusionReactorRecipe;
 import techreborn.tiles.fusionReactor.TileFusionControlComputer;
 import techreborn.tiles.generator.*;
 import techreborn.tiles.generator.fluid.TileFluidGenerator;
-
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
 
 public class CrossTechReborn extends CrossModBase {
 
@@ -254,10 +255,10 @@ public class CrossTechReborn extends CrossModBase {
 	}
 
 	@Override
-	public List<IFluidTank> getAllTanks(TileEntity te) {
+	public List<FluidInfo> getAllTanks(TileEntity te) {
 		if (te instanceof TileFluidGenerator) {
-			List<IFluidTank> result = new ArrayList<>();
-			result.add(((TileFluidGenerator) te).tank);
+			List<FluidInfo> result = new ArrayList<>();
+			result.add(new FluidInfo(((TileFluidGenerator) te).tank));
 			return result;
 		}
 		return null;

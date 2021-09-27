@@ -3,6 +3,7 @@ package com.zuxelus.energycontrol.utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -37,6 +38,10 @@ public class StringUtils {
 
 	public static String getFormattedKey(String resourceName, Object... arguments) {
 		return I18n.format(resourceName, arguments);
+	}
+
+	public static String getItemId(ItemStack stack) {
+		return Item.REGISTRY.getNameForObject(stack.getItem()).toString();
 	}
 
 	@SideOnly(Side.CLIENT)

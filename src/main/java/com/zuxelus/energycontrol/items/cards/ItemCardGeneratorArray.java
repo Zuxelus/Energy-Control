@@ -157,9 +157,4 @@ public class ItemCardGeneratorArray extends ItemCardBase {
 	public boolean isRemoteCard() {
 		return false;
 	}
-
-	@Override
-	public int getKitId() {
-		return ItemCardType.KIT_GENERATOR;
-	}
 }

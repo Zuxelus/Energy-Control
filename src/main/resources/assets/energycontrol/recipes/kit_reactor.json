@@ -8,15 +8,12 @@
         "P": {
             "item": "minecraft:paper"
         },
-        "D": [{
-            "item": "energycontrol:thermometer_digital",
-            "data": 0
-        },{
-            "item": "energycontrol:thermometer_digital",
-            "data": 13
-        }],
+        "D": {
+            "item": "energycontrol:thermometer"
+        },
         "F": {
-            "item": "ic2:frequency_transmitter"
+            "item": "energycontrol:item_component",
+            "data": 3
         },
         "W": {
             "type": "forge:ore_dict",
@@ -26,23 +23,5 @@
     "result": {
         "item": "energycontrol:item_kit",
         "data": 5
-    },
-    "conditions": [
-        {
-            "type": "forge:and",
-            "values": [
-                {
-                    "type": "forge:mod_loaded",
-                    "modid": "ic2"
-                },
-                {
-                    "type": "forge:not",
-                    "value": {
-                        "type": "forge:mod_loaded",
-                        "modid": "ic2-classic-spmod"
-                    }
-                }
-            ]
-        }
-    ]
+    }
 }

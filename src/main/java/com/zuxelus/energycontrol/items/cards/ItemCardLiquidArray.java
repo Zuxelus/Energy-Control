@@ -1,26 +1,25 @@
 package com.zuxelus.energycontrol.items.cards;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.utils.FluidInfo;
 import com.zuxelus.energycontrol.utils.StringUtils;
+
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ItemCardLiquidArray extends ItemCardBase {
-	private static final int STATUS_NOT_FOUND = Integer.MIN_VALUE;
-	private static final int STATUS_OUT_OF_RANGE = Integer.MIN_VALUE + 1;
+	private static final long STATUS_NOT_FOUND = Integer.MIN_VALUE;
+	private static final long STATUS_OUT_OF_RANGE = Integer.MIN_VALUE + 1;
 
 	public ItemCardLiquidArray() {
 		super(ItemCardType.CARD_LIQUID_ARRAY, "card_liquid_array");
@@ -42,23 +41,14 @@ public class ItemCardLiquidArray extends ItemCardBase {
 			int dy = target.getY() - pos.getY();
 			int dz = target.getZ() - pos.getZ();
 			if (Math.abs(dx) <= range && Math.abs(dy) <= range && Math.abs(dz) <= range) {
-				IFluidTank storage = CrossModLoader.getTankAt(world, target);
+				FluidInfo storage = CrossModLoader.getTankAt(world, target);
 				if (storage != null) {
-					FluidStack stack = storage.getFluid(); 
-					if (stack != null) {
-						totalAmount += stack.amount;
-						reader.setInt(String.format("_%damount", i),stack.amount);
-						String name = "";
-						if (stack.amount > 0)
-							name = FluidRegistry.getFluidName(stack);
-						reader.setString(String.format("_%dname", i), name);
-					}
-					reader.setInt(String.format("_%dcapacity", i), storage.getCapacity());
+					storage.write(reader, i);
 					foundAny = true;
 				} else
-					reader.setInt(String.format("_%damount", i), STATUS_NOT_FOUND);
+					reader.setLong(String.format("_%damount", i), STATUS_NOT_FOUND);
 			} else {
-				reader.setInt(String.format("_%damount", i), STATUS_OUT_OF_RANGE);
+				reader.setLong(String.format("_%damount", i), STATUS_OUT_OF_RANGE);
 				outOfRange = true;
 			}
 		}
@@ -72,20 +62,20 @@ public class ItemCardLiquidArray extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		double totalAmount = 0;
 		double totalCapacity = 0;
-		boolean showName = (displaySettings & 1) > 0;
+		boolean showName = (settings & 1) > 0;
 		boolean showAmount = true;
-		boolean showFree = (displaySettings & 2) > 0;
-		boolean showCapacity = (displaySettings & 4) > 0;
-		boolean showPercentage = (displaySettings & 8) > 0;
-		boolean showEach = (displaySettings & 16) > 0;
-		boolean showSummary = (displaySettings & 32) > 0;
+		boolean showFree = (settings & 2) > 0;
+		boolean showCapacity = (settings & 4) > 0;
+		boolean showPercentage = (settings & 8) > 0;
+		boolean showEach = (settings & 16) > 0;
+		boolean showSummary = (settings & 32) > 0;
 		for (int i = 0; i < reader.getInt("cardCount"); i++) {
-			int amount = reader.getInt(String.format("_%damount", i));
-			int capacity = reader.getInt(String.format("_%dcapacity", i));
+			long amount = reader.getLong(String.format("_%damount", i));
+			long capacity = reader.getLong(String.format("_%dcapacity", i));
 			boolean isOutOfRange = amount == STATUS_OUT_OF_RANGE;
 			boolean isNotFound = amount == STATUS_NOT_FOUND;
 			if (showSummary && !isOutOfRange && !isNotFound) {
@@ -169,10 +159,5 @@ public class ItemCardLiquidArray extends ItemCardBase {
 	@Override
 	public boolean isRemoteCard() {
 		return false;
-	}
-
-	@Override
-	public int getKitId() {
-		return ItemCardType.KIT_LIQUID;
 	}
 }

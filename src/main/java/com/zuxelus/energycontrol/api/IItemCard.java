@@ -30,9 +30,4 @@ public interface IItemCard {
 	 * @return Whether the card has a limited range
 	 */
 	boolean isRemoteCard(ItemStack stack);
-
-	/**
-	 * @return The corresponding kit of the card, or en empty {@link ItemStack} if it doesn't have one
-	 */
-	ItemStack getKitFromCard(ItemStack stack);
 }

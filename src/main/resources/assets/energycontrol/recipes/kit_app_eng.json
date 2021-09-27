@@ -10,7 +10,8 @@
             "data": 7
         },
         "T": {
-            "item": "ic2:frequency_transmitter"
+            "item": "energycontrol:item_component",
+            "data": 3
         },
         "P": {
             "item": "minecraft:paper"
@@ -31,17 +32,6 @@
                 {
                     "type": "forge:mod_loaded",
                     "modid": "appliedenergistics2"
-                },
-                {
-                    "type": "forge:mod_loaded",
-                    "modid": "ic2"
-                },
-                {
-                    "type": "forge:not",
-                    "value": {
-                        "type": "forge:mod_loaded",
-                        "modid": "ic2-classic-spmod"
-                    }
                 }
             ]
         }

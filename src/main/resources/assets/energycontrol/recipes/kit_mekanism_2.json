@@ -1,0 +1,32 @@
+{
+	"type": "energycontrol:kit_assembler",
+    "input1": {
+        "item": "energycontrol:item_card",
+        "data": 28
+    },
+    "input2": {
+        "item": "energycontrol:item_component",
+        "data": 4,
+        "count": 2
+    },
+    "input3": {
+        "item": "energycontrol:item_card",
+        "data": 28
+    },
+	"result": {
+        "item": "energycontrol:item_kit",
+        "data": 16
+	},
+	"time": 1000,
+	"conditions": [
+		{
+			"type": "forge:and",
+			"values": [
+				{
+					"type": "forge:mod_loaded",
+					"modid": "mekanism"
+				}
+			]
+		}
+	]
+}

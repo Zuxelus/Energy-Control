@@ -1,9 +1,9 @@
 {
     "type": "minecraft:crafting_shaped",
     "pattern": [
-        " C ",
-        "PWP",
-        " C "
+        " S ",
+        "PCP",
+        " S "
     ],
     "key": {
         "C": {
@@ -12,37 +12,13 @@
         "P": {
             "item": "minecraft:paper"
         },
-        "W": {
-            "type": "energycontrol:item_nbt",
-            "item": "ic2:cable",
-            "data": 4,
-            "nbt": "{\"type\": 4b, \"insulation\": 1b}"
+        "S": {
+            "item": "energycontrol:item_component",
+            "data": 4
         }
     },
     "result": {
         "item": "energycontrol:item_card",
         "data": 19
-    },
-    "conditions": [
-        {
-            "type": "forge:and",
-            "values": [
-                {
-                    "type": "forge:mod_loaded",
-                    "modid": "ic2"
-                },
-                {
-                    "type": "forge:not",
-                    "value": {
-                        "type": "forge:mod_loaded",
-                        "modid": "ic2-classic-spmod"
-                    }
-                },
-                {
-                    "type": "energycontrol:ic2_config",
-                    "config": "experimental"
-                }
-            ]
-        }
-    ]
+    }
 }

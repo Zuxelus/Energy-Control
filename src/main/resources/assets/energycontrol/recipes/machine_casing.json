@@ -1,0 +1,23 @@
+{
+    "type": "energycontrol:kit_assembler",
+    "input1": {
+        "type": "forge:ore_dict",
+        "ore": "ingotIron",
+        "count": 3
+    },
+    "input2": {
+        "type": "forge:ore_dict",
+        "ore": "ingotIron",
+        "count": 3
+    },
+    "input3": {
+        "item": "energycontrol:item_component",
+        "data": 4,
+        "count": 3
+    },
+    "result": {
+        "item": "energycontrol:item_component",
+        "data": 2
+    },
+    "time": 400
+}

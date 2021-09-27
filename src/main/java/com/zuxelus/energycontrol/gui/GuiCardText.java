@@ -18,13 +18,13 @@ public class GuiCardText extends GuiBase {
 	private ICardReader reader;
 	private ItemStack stack;
 	private TileEntityInfoPanel panel;
-	private GuiInfoPanel parentGui;
+	private GuiPanelBase parentGui;
 	private int slot;
 	private GuiTextArea textArea;
 
 	private static final int lineCount = 10;
 
-	public GuiCardText(ItemStack card, TileEntityInfoPanel panel, GuiInfoPanel gui, int slot) {
+	public GuiCardText(ItemStack card, TileEntityInfoPanel panel, GuiPanelBase gui, int slot) {
 		super("", 226, 146, EnergyControl.MODID + ":textures/gui/gui_text_card.png");
 		this.reader = new ItemCardReader(card);
 		this.stack = card;

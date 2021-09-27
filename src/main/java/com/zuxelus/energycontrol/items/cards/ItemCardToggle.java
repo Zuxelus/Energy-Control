@@ -66,11 +66,6 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 	}
 
 	@Override
-	public int getKitId() {
-		return ItemCardType.KIT_TOGGLE;
-	}
-
-	@Override
 	public boolean enableTouch(ItemStack stack) {
 		return true;
 	}

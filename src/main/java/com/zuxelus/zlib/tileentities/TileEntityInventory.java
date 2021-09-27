@@ -11,14 +11,20 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.SidedInvWrapper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
 public abstract class TileEntityInventory extends TileEntityFacing implements ISidedInventory {
 	protected NonNullList<ItemStack> inventory;
+	private HashMap<EnumFacing, IItemHandler> itemHandlers = new HashMap<>();
 	protected String customName;
 
 	public TileEntityInventory(String name) {
@@ -136,6 +142,25 @@ public abstract class TileEntityInventory extends TileEntityFacing implements IS
 		inventory.clear();
 	}
 
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing side) {
+		return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, side);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing side) {
+		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+			IItemHandler handler = itemHandlers.get(side);
+			if (handler == null) {
+				handler = new SidedInvWrapper(this, side);
+				itemHandlers.put(side, handler);
+			}
+			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(handler);
+		}
+
+		return super.getCapability(capability, side);
+	}
+
 	public List<ItemStack> getDrops(int fortune) {
 		List<ItemStack> list = new ArrayList<>();
 		for (int i = 0; i < getSizeInventory(); i++) {
@@ -172,7 +197,7 @@ public abstract class TileEntityInventory extends TileEntityFacing implements IS
 	// ISidedInventory
 	@Override
 	public int[] getSlotsForFace(EnumFacing side) {
-		return null;
+		return new int[0];
 	}
 
 	@Override

@@ -12,7 +12,7 @@ public class CrossAppEng extends CrossModBase {
 		if (te instanceof IAEPowerStorage) {
 			NBTTagCompound tag = new NBTTagCompound();
 			IAEPowerStorage storage = (IAEPowerStorage) te;
-			tag.setInteger("type", ItemCardType.EU_AE);
+			tag.setString("euType", "AE");
 			tag.setDouble("storage", storage.getAECurrentPower());
 			tag.setDouble("maxStorage", storage.getAEMaxPower());
 			return tag;

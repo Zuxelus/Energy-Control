@@ -7,13 +7,12 @@
     ],
     "key": {
         "A": {
-            "type": "minecraft:item_nbt",
-            "item": "ic2:cable",
-            "data": 4,
-            "nbt": "{\"type\": 4b, \"insulation\": 1b}"
+            "item": "energycontrol:item_component",
+            "data": 4
         },
         "C": {
-            "item": "ic2:frequency_transmitter"
+            "item": "energycontrol:item_component",
+            "data": 3
         },
         "M": {
             "item": "energycontrol:info_panel_extender"
@@ -23,33 +22,11 @@
             "data": 0
         },
         "P": {
-            "item": "ic2:crafting",
-            "data": 15
+            "item": "minecraft:coal",
+            "data": 1
         }
     },
     "result": {
         "item": "energycontrol:portable_panel"
-    },
-    "conditions": [
-        {
-            "type": "forge:and",
-            "values": [
-                {
-                    "type": "forge:mod_loaded",
-                    "modid": "ic2"
-                },
-                {
-                    "type": "forge:not",
-                    "value": {
-                        "type": "forge:mod_loaded",
-                        "modid": "ic2-classic-spmod"
-                    }
-                },
-                {
-                    "type": "energycontrol:ic2_config",
-                    "config": "experimental"
-                }
-            ]
-        }
-    ]
+    }
 }

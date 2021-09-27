@@ -1,14 +1,13 @@
 {
     "type": "minecraft:crafting_shaped",
     "pattern": [
-        "BBB",
         "BLB",
         "BHB"
     ],
     "key": {
         "B": {
-            "type": "forge:ore_dict",
-            "ore": "plateBronze"
+            "item": "energycontrol:item_component",
+            "data": 4
         },
         "L": {
             "item": "energycontrol:block_light",
@@ -20,27 +19,5 @@
     },
     "result": {
         "item": "energycontrol:industrial_alarm"
-    },
-    "conditions": [
-        {
-            "type": "forge:and",
-            "values": [
-                {
-                    "type": "forge:mod_loaded",
-                    "modid": "ic2"
-                },
-                {
-                    "type": "forge:not",
-                    "value": {
-                        "type": "forge:mod_loaded",
-                        "modid": "ic2-classic-spmod"
-                    }
-                },
-                {
-                    "type": "energycontrol:ic2_config",
-                    "config": "experimental"
-                }
-            ]
-        }
-    ]
+    }
 }

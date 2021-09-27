@@ -1,0 +1,32 @@
+{
+	"type": "energycontrol:kit_assembler",
+    "input1": {
+        "item": "energycontrol:item_card",
+        "data": 29
+    },
+    "input2": {
+        "item": "energycontrol:item_component",
+        "data": 4,
+        "count": 2
+    },
+    "input3": {
+        "item": "energycontrol:item_card",
+        "data": 29
+    },
+	"result": {
+		"item": "energycontrol:kit_thermal_expansion",
+		"count": 17
+	},
+	"time": 1000,
+	"conditions": [
+		{
+			"type": "forge:and",
+			"values": [
+				{
+					"type": "forge:mod_loaded",
+					"modid": "thermal_expansion"
+				}
+			]
+		}
+	]
+}

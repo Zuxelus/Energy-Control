@@ -147,21 +147,23 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 
 	@Override
 	public void update() {
-		if (world.isRemote) {
-			if (updateTicker-- > 0)
-				return;
-			updateTicker = tickRate;
+		if (world.isRemote)
 			checkStatus();
-		}
 	}
 
 	protected void checkStatus() {
 		if (sound == null)
 			sound = new TileEntitySound();
-		if (powered && !sound.isPlaying())
-			sound.playAlarm(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, SOUND_PREFIX + soundName, range);
-		if (!powered && sound.isPlaying())
+		if (!sound.isPlaying())
+			updateTicker--;
+		if (!powered && sound.isPlaying()) {
 			sound.stopAlarm();
+			updateTicker = tickRate;
+		}
+		if (powered && !sound.isPlaying() && updateTicker < 0) {
+			sound.playAlarm(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, SOUND_PREFIX + soundName, range);
+			updateTicker = tickRate;
+		}
 	}
 
 	private void notifyBlockUpdate() {

@@ -96,9 +96,4 @@ public class ItemCardEngine extends ItemCardBase {
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOnOff"), 16));
 		return result;
 	}
-
-	@Override
-	public int getKitId() {
-		return ItemCardType.KIT_GENERATOR;
-	}
 }

@@ -108,9 +108,4 @@ public class ItemCardVanilla extends ItemCardBase {
 		result.add(new PanelSetting(I18n.format("msg.outputText"), DISPLAY_SLOT_3));
 		return result;
 	}
-
-	@Override
-	public int getKitId() {
-		return ItemCardType.KIT_VANILLA;
-	}
 }

@@ -26,29 +26,11 @@
             "ore": "circuitAdvanced"
         },
         "C": {
-            "item": "ic2:crafting",
-            "data": 15
+            "item": "minecraft:coal",
+            "data": 1
         }
     },
     "result": {
         "item": "energycontrol:info_panel_advanced"
-    },
-    "conditions": [
-        {
-            "type": "forge:and",
-            "values": [
-                {
-                    "type": "forge:mod_loaded",
-                    "modid": "ic2"
-                },
-                {
-                    "type": "forge:not",
-                    "value": {
-                        "type": "forge:mod_loaded",
-                        "modid": "ic2-classic-spmod"
-                    }
-                }
-            ]
-        }
-    ]
+    }
 }

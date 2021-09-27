@@ -1,0 +1,22 @@
+{
+    "type": "energycontrol:kit_assembler",
+    "input1": {
+        "item": "energycontrol:item_card",
+        "data": 7
+    },
+    "input2": {
+        "item": "energycontrol:item_component",
+        "data": 4,
+        "count": 2
+    },
+    "input3": {
+        "item": "energycontrol:item_card",
+        "data": 7
+    },
+    "result": {
+        "item": "energycontrol:item_kit",
+        "data": 5,
+        "count": 2
+    },
+    "time": 1000
+}

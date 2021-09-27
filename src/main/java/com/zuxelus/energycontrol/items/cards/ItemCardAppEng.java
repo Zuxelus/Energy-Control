@@ -81,11 +81,11 @@ public class ItemCardAppEng extends ItemCardBase {
 		reader.setInt("items", values[4]);
 		return CardState.OK;
 	}
-	
+
 	private int calcValues(ItemStack stack, int[] values) {
 		if (stack == null)
 			return 0;
-		
+
 		int cells = 0;
 		for (IStorageChannel<?> channel : AEApi.instance().storage().storageChannels()) {
 			ICellInventoryHandler<?> handler = AEApi.instance().registries().cell().getCellInventory(stack, null, channel);
@@ -131,10 +131,5 @@ public class ItemCardAppEng extends ItemCardBase {
 	@Override
 	public List<PanelSetting> getSettingsList() {
 		return null;
-	}
-
-	@Override
-	public int getKitId() {
-		return ItemCardType.KIT_APPENG;
 	}
 }

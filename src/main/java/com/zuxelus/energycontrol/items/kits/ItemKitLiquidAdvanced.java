@@ -4,6 +4,8 @@ import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
+import com.zuxelus.energycontrol.utils.FluidInfo;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -18,7 +20,7 @@ public class ItemKitLiquidAdvanced extends ItemKitBase {
 
 	@Override
 	public ItemStack getSensorCard(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side) {
-		IFluidTank tank = CrossModLoader.getTankAt(world, pos);
+		FluidInfo tank = CrossModLoader.getTankAt(world, pos);
 		if (tank != null) {
 			ItemStack newCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_LIQUID_ADVANCED);
 			ItemStackHelper.setCoordinates(newCard, pos);

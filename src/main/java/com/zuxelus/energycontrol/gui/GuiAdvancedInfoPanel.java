@@ -18,34 +18,41 @@ import com.zuxelus.zlib.gui.controls.GuiButtonGeneral;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiAdvancedInfoPanel extends GuiInfoPanel {
+public class GuiAdvancedInfoPanel extends GuiPanelBase {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_advanced_info_panel.png");
 
 	public GuiAdvancedInfoPanel(ContainerAdvancedInfoPanel container) {
 		super(container, "tile.info_panel_advanced.name", TEXTURE);
 		ySize = 223;
 		panel = (TileEntityInfoPanel) container.te;
-		modified = false;
-		activeTab = 0;
 	}
 
 	@Override
-	protected void initControls() {
-		ItemStack stack = panel.getCards().get(activeTab);
-		buttonList.clear();
-
+	protected void initButtons() {
 		addButton(new GuiButtonGeneral(ID_LABELS, guiLeft + 83, guiTop + 42, 16, 16, TEXTURE, 176, panel.getShowLabels() ? 15 : 31).setGradient());
 		addButton(new GuiButtonGeneral(ID_SLOPE, guiLeft + 83 + 17, guiTop + 42, 16, 16, TEXTURE, 192, 15).setGradient());
 		addButton(new GuiButtonGeneral(ID_COLORS, guiLeft + 83 + 17 * 2, guiTop + 42, 16, 16, TEXTURE, 192, 28).setGradient().setScale(2));
 		addButton(new GuiButtonGeneral(ID_POWER, guiLeft + 83 + 17 * 3, guiTop + 42, 16, 16, TEXTURE, 192 - 16, getIconPowerTopOffset(((TileEntityAdvancedInfoPanel) panel).getPowerMode())).setGradient());
 		addButton(new GuiButtonGeneral(ID_TICKRATE, guiLeft + 83 + 17 * 4, guiTop + 42 + 17, 16, 16, Integer.toString(panel.getTickRate())).setGradient());
+	}
 
+	@Override
+	protected void initControls() {
+		ItemStack stack = panel.getCards().get(activeTab);
+		if (ItemStack.areItemsEqual(stack, oldStack))
+			return;
+		if (!oldStack.isEmpty() && stack.isEmpty())
+			updateTitle();
+		oldStack = stack.copy();
+		buttonList.clear();
+		initButtons();
 		if (ItemCardMain.isCard(stack)) {
 			int slot = panel.getCardSlot(stack);
 			if (stack.getItemDamage() == ItemCardType.CARD_TEXT)
@@ -89,6 +96,13 @@ public class GuiAdvancedInfoPanel extends GuiInfoPanel {
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
 		super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
 		drawTexturedModalRect(guiLeft + 24, guiTop + 62 + activeTab * 14, 182, 0, 1, 15);
+	}
+
+	@Override
+	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+		if (textboxTitle != null)
+			textboxTitle.drawTextBox();
 	}
 
 	@Override

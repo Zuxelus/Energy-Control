@@ -14,6 +14,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
@@ -22,6 +23,7 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.OreDictionary;
 
 @EventBusSubscriber
 public class ModItems {
@@ -33,6 +35,8 @@ public class ModItems {
 	public static Block blockInfoPanelExtender;
 	public static Block blockInfoPanelAdvanced;
 	public static Block blockInfoPanelAdvancedExtender;
+	public static Block blockHoloPanel;
+	public static Block blockHoloPanelExtender;
 	public static Block blockRangeTrigger;
 	public static Block blockRemoteThermo;
 	public static Block blockAverageCounter;
@@ -50,6 +54,7 @@ public class ModItems {
 	public static Item itemThermometerDigital;
 	public static Item itemPortablePanel;
 	public static Item itemCardHolder;
+	public static Item itemComponent;
 	public static Item itemNanoBow;
 	public static Item itemAFB;
 	public static Item itemAFSUUpgradeKit;
@@ -65,6 +70,8 @@ public class ModItems {
 		blockInfoPanelExtender = register(event, new InfoPanelExtender(), "info_panel_extender");
 		blockInfoPanelAdvanced = register(event, new AdvancedInfoPanel(), TileEntityAdvancedInfoPanel.NAME);
 		blockInfoPanelAdvancedExtender = register(event, new AdvancedInfoPanelExtender(), "info_panel_advanced_extender");
+		blockHoloPanel = register(event, new HoloPanel(), "holo_panel");
+		blockHoloPanelExtender = register(event, new HoloPanelExtender(), "holo_panel_extender");
 		blockRangeTrigger = register(event, new RangeTrigger(), "range_trigger");
 		if (Loader.isModLoaded(ModIDs.IC2))
 			blockRemoteThermo = register(event, new RemoteThermo(), "remote_thermo");
@@ -91,6 +98,8 @@ public class ModItems {
 			event.getRegistry().register(new ItemBlock(blockThermalMonitor).setRegistryName("thermal_monitor"));
 		event.getRegistry().register(new ItemBlock(blockInfoPanel).setRegistryName(TileEntityInfoPanel.NAME));
 		event.getRegistry().register(new ItemBlock(blockInfoPanelExtender).setRegistryName("info_panel_extender"));
+		event.getRegistry().register(new ItemBlock(blockHoloPanel).setRegistryName("holo_panel"));
+		event.getRegistry().register(new ItemBlock(blockHoloPanelExtender).setRegistryName("holo_panel_extender"));
 		event.getRegistry().register(new ItemBlock(blockInfoPanelAdvanced).setRegistryName(TileEntityAdvancedInfoPanel.NAME));
 		event.getRegistry().register(new ItemBlock(blockInfoPanelAdvancedExtender).setRegistryName("info_panel_advanced_extender"));
 		event.getRegistry().register(new ItemBlock(blockRangeTrigger).setRegistryName("range_trigger"));
@@ -99,10 +108,8 @@ public class ModItems {
 		event.getRegistry().register(new ItemBlock(blockAverageCounter).setRegistryName("average_counter"));
 		event.getRegistry().register(new ItemBlock(blockEnergyCounter).setRegistryName("energy_counter"));
 		event.getRegistry().register(new ItemBlock(blockKitAssembler).setRegistryName("kit_assembler"));
-		if (CrossModLoader.getCrossMod(ModIDs.IC2).getProfile() == 0) {
+		if (CrossModLoader.getCrossMod(ModIDs.IC2).getProfile() == 0)
 			event.getRegistry().register(new ItemAFSU(blockAfsu).setRegistryName("afsu"));
-			//event.getRegistry().register(new ItemBlock(blockIc2Cable).setRegistryName("ic2_cable"));
-		}
 		if (Loader.isModLoaded(ModIDs.IC2)) {
 			event.getRegistry().register(new ItemBlock(blockSeedAnalyzer).setRegistryName("seed_analyzer"));
 			event.getRegistry().register(new ItemBlock(blockSeedLibrary).setRegistryName("seed_library"));
@@ -110,10 +117,9 @@ public class ModItems {
 		event.getRegistry().register(new ItemBlock(blockTimer).setRegistryName("timer"));
 
 		itemUpgrade = register(event, new ItemUpgrade(), "item_upgrade");
-		if (Loader.isModLoaded(ModIDs.IC2)) {
-			itemThermometer = register(event, new ItemThermometer(), "thermometer");
+		itemThermometer = register(event, new ItemThermometer(), "thermometer");
+		if (Loader.isModLoaded(ModIDs.IC2))
 			itemThermometerDigital = register(event, new ItemDigitalThermometer(), "thermometer_digital");
-		}
 
 		if (Loader.isModLoaded(ModIDs.IC2))
 			itemNanoBow = getItemClass("ItemNanoBowIC2");
@@ -138,6 +144,10 @@ public class ModItems {
 		register(event, itemCard, "item_card");
 
 		itemCardHolder = register(event, new ItemCardHolder(), "card_holder");
+		itemComponent = register(event, new ItemComponent(), "item_component");
+
+		OreDictionary.registerOre("circuitBasic", new ItemStack(itemComponent, 1, ItemComponent.BASIC_CIRCUIT));
+		OreDictionary.registerOre("circuitAdvanced", new ItemStack(itemComponent, 1, ItemComponent.ADVANCED_CIRCUIT));
 	}
 
 	private static Block register(Register<Block> event, Block block, String name) {
@@ -181,17 +191,15 @@ public class ModItems {
 		registerBlockModel(blockInfoPanelExtender, 0, "info_panel_extender");
 		registerBlockModel(blockInfoPanelAdvanced, 0, TileEntityAdvancedInfoPanel.NAME);
 		registerBlockModel(blockInfoPanelAdvancedExtender, 0, "info_panel_advanced_extender");
+		registerBlockModel(blockHoloPanel, 0, "holo_panel");
+		registerBlockModel(blockHoloPanelExtender, 0, "holo_panel_extender");
 		registerBlockModel(blockRangeTrigger, 0, "range_trigger");
 
 		registerBlockModel(blockAverageCounter, 0, "average_counter");
 		registerBlockModel(blockEnergyCounter, 0, "energy_counter");
 		registerBlockModel(blockKitAssembler, 0, "kit_assembler");
-		if (CrossModLoader.getCrossMod(ModIDs.IC2).getProfile() == 0) {
+		if (CrossModLoader.getCrossMod(ModIDs.IC2).getProfile() == 0)
 			registerBlockModel(blockAfsu, 0, "afsu");
-
-			/*((IC2Cable) blockIc2Cable).initModel();
-			registerBlockModel(ModItems.blockIc2Cable, 0, "ic2_cable");*/
-		}
 		if (Loader.isModLoaded(ModIDs.IC2)) {
 			registerBlockModel(blockSeedAnalyzer, 0, "seed_analyzer");
 			registerBlockModel(blockSeedLibrary, 0, "seed_library");
@@ -206,12 +214,16 @@ public class ModItems {
 		registerItemModel(itemUpgrade, ItemUpgrade.DAMAGE_RANGE, "upgrade_range");
 		registerItemModel(itemUpgrade, ItemUpgrade.DAMAGE_COLOR, "upgrade_color");
 		registerItemModel(itemUpgrade, ItemUpgrade.DAMAGE_TOUCH, "upgrade_touch");
-		if (Loader.isModLoaded(ModIDs.IC2)) {
-			registerItemModel(itemThermometer, 0, "thermometer");
+		registerItemModel(itemThermometer, 0, "thermometer");
+		if (Loader.isModLoaded(ModIDs.IC2))
 			registerItemModel(itemThermometerDigital, 0, "thermometer_digital");
-		}
 		registerItemModel(itemPortablePanel, 0, "portable_panel");
 		registerItemModel(itemCardHolder, 0, "card_holder");
+		registerItemModel(itemComponent, ItemComponent.ADVANCED_CIRCUIT, "advanced_circuit");
+		registerItemModel(itemComponent, ItemComponent.BASIC_CIRCUIT, "basic_circuit");
+		registerItemModel(itemComponent, ItemComponent.MACHINE_CASING, "machine_casing");
+		registerItemModel(itemComponent, ItemComponent.RADIO_TRANSMITTER, "radio_transmitter");
+		registerItemModel(itemComponent, ItemComponent.STRONG_STRING, "strong_string");
 		if (ModItems.itemNanoBow != null)
 			registerItemModel(itemNanoBow, 0, "nano_bow");
 		if (CrossModLoader.getCrossMod(ModIDs.IC2).getProfile() == 0) {
@@ -244,6 +256,8 @@ public class ModItems {
 		GameRegistry.registerTileEntity(TileEntityInfoPanelExtender.class, EnergyControl.MODID + ":info_panel_extender");
 		GameRegistry.registerTileEntity(TileEntityAdvancedInfoPanel.class, EnergyControl.MODID + ":" + TileEntityAdvancedInfoPanel.NAME);
 		GameRegistry.registerTileEntity(TileEntityAdvancedInfoPanelExtender.class, EnergyControl.MODID + ":info_panel_advanced_extender");
+		GameRegistry.registerTileEntity(TileEntityHoloPanel.class, EnergyControl.MODID + ":holo_panel");
+		GameRegistry.registerTileEntity(TileEntityHoloPanelExtender.class, EnergyControl.MODID + ":holo_panel_extender");
 		GameRegistry.registerTileEntity(TileEntityRangeTrigger.class, EnergyControl.MODID + ":range_trigger");
 		GameRegistry.registerTileEntity(TileEntityAverageCounter.class, EnergyControl.MODID + ":average_counter");
 		GameRegistry.registerTileEntity(TileEntityEnergyCounter.class, EnergyControl.MODID + ":energy_counter");

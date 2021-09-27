@@ -19,4 +19,6 @@ public class BlockDamages {
 	public static final int DAMAGE_SEED_ANALYZER = 15;
 	public static final int DAMAGE_SEED_LIBRARY = 16;
 	public static final int DAMAGE_TIMER = 17;
+	public static final int DAMAGE_HOLO_PANEL = 18;
+	public static final int DAMAGE_HOLO_EXTENDER = 19;
 }

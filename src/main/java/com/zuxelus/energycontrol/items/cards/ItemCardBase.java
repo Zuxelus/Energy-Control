@@ -33,18 +33,12 @@ public abstract class ItemCardBase {
 	public boolean isRemoteCard() {
 		return true;
 	}
-	
-	public abstract int getKitId();
-	
-	public abstract CardState update(World world, ICardReader reader, int range, BlockPos pos);
-	
-	public abstract List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels);
-	
-	public abstract List<PanelSetting> getSettingsList();
 
-	public ItemStack getKitFromCard() {
-		return ItemKitMain.getKitById(getKitId());
-	}
+	public abstract CardState update(World world, ICardReader reader, int range, BlockPos pos);
+
+	public abstract List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels);
+
+	public abstract List<PanelSetting> getSettingsList();
 
 	protected BlockPos getCoordinates(ICardReader reader, int cardNumber) {
 		if (cardNumber >= reader.getCardCount())

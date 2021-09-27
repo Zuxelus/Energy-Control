@@ -2,6 +2,8 @@ package com.zuxelus.energycontrol.crossmod;
 
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
+import com.zuxelus.energycontrol.utils.FluidInfo;
+
 import ic2.api.reactor.IReactor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -40,6 +42,16 @@ public class CrossModBase {
 		return false;
 	}
 
+	public boolean isElectricItem(ItemStack stack) {
+		return false;
+	}
+
+	public double dischargeItem(ItemStack stack, double needed) {
+		return 0;
+	}
+
+	//public void postModEvent(TileEntity te, String name) {}
+
 	public int getNuclearCellTimeLeft(ItemStack stack) {
 		return 0;
 	}
@@ -68,6 +80,10 @@ public class CrossModBase {
 		return ItemStack.EMPTY;
 	}
 
+	public NBTTagCompound getCardData(TileEntity te) {
+		return null;
+	}
+
 	public int getReactorHeat(World world, BlockPos pos) {
 		return -1;
 	}
@@ -84,7 +100,7 @@ public class CrossModBase {
 		return CardState.NO_TARGET;
 	}
 
-	public List<IFluidTank> getAllTanks(TileEntity te) {
+	public List<FluidInfo> getAllTanks(TileEntity te) {
 		return null;
 	}
 

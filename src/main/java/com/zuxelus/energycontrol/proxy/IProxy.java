@@ -40,15 +40,10 @@ public interface IProxy extends IGuiHandler {
 		switch (ID) {
 		case BlockDamages.DAMAGE_INFO_PANEL:
 			return new ContainerInfoPanel(player, (TileEntityInfoPanel) te);
-		case BlockDamages.DAMAGE_INFO_PANEL_EXTENDER:
-			if (te instanceof TileEntityInfoPanelExtender) {
-				TileEntityInfoPanel panel = ((TileEntityInfoPanelExtender) te).getCore();
-				if (panel != null)
-					return new ContainerInfoPanel(player, panel);
-			}
-			return null;
 		case BlockDamages.DAMAGE_ADVANCED_PANEL:
 			return new ContainerAdvancedInfoPanel(player, (TileEntityAdvancedInfoPanel) te);
+		case BlockDamages.DAMAGE_HOLO_PANEL:
+			return new ContainerHoloPanel(player, (TileEntityHoloPanel) te);
 		case BlockDamages.DAMAGE_RANGE_TRIGGER:
 			return new ContainerRangeTrigger(player, (TileEntityRangeTrigger) te);
 		case BlockDamages.DAMAGE_REMOTE_THERMO:

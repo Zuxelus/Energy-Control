@@ -1,0 +1,24 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " # ",
+        "RPR",
+        " # "
+    ],
+    "key": {
+        "P": {
+            "item": "energycontrol:info_panel"
+        },
+        "R": {
+            "type": "forge:ore_dict",
+            "ore": "dustRedstone"
+        },
+        "#": {
+            "item": "energycontrol:item_component",
+            "data": 4
+        }
+    },
+    "result": {
+        "item": "energycontrol:holo_panel"
+    }
+}

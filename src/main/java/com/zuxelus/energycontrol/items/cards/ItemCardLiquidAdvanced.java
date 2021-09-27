@@ -1,21 +1,20 @@
 package com.zuxelus.energycontrol.items.cards;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.utils.FluidInfo;
+
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ItemCardLiquidAdvanced extends ItemCardBase {
 
@@ -29,31 +28,17 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 		if (target == null)
 			return CardState.NO_TARGET;
 
-		List<IFluidTank> tanks = CrossModLoader.getAllTanks(world, target);
-		if (tanks == null)
+		List<FluidInfo> tanks = CrossModLoader.getAllTanks(world, target);
+		if (tanks == null || tanks.size() < 1)
 			return CardState.NO_TARGET;
 
 		int i = 0;
-		for (IFluidTank tank: tanks) {
-			addTankInfo(reader, tank, i);
+		for (FluidInfo tank: tanks) {
+			tank.write(reader, i);
 			i++;
 		}
 		reader.setInt("count", i);
 		return CardState.OK;
-	}
-
-	private void addTankInfo(ICardReader reader, IFluidTank tank, int i) {
-		FluidStack stack = tank.getFluid();
-		int amount = 0;
-		String name = "";
-		if (stack != null) {
-			amount = stack.amount;
-			if (stack.amount > 0)
-				name = FluidRegistry.getFluidName(stack);
-		}
-		reader.setInt(String.format("_%damount", i), amount);
-		reader.setString(String.format("_%dname", i), name);
-		reader.setInt(String.format("_%dcapacity", i), tank.getCapacity());
 	}
 
 	@Override
@@ -78,11 +63,11 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 			result.add(new PanelString("msg.ec.InfoPanelName", name, showLabels));
 		}
 		if ((settings & 2) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelAmountmB", amount, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelAmount", amount, "mB", showLabels));
 		if ((settings & 4) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelFreemB", capacity - amount, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelFree", capacity - amount, "mB", showLabels));
 		if ((settings & 8) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelCapacitymB", capacity, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelCapacity", capacity, "mB", showLabels));
 		if ((settings & 16) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelPercentage", capacity == 0 ? 100 : (amount * 100 / capacity), showLabels));
 	}
@@ -97,10 +82,5 @@ public class ItemCardLiquidAdvanced extends ItemCardBase {
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidCapacity"), 8));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidPercentage"), 16));
 		return result;
-	}
-
-	@Override
-	public int getKitId() {
-		return ItemCardType.KIT_LIQUID_ADVANCED;
 	}
 }

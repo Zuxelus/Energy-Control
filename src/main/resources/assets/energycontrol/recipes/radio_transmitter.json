@@ -1,0 +1,25 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "#C#",
+        " S "
+    ],
+    "key": {
+        "#": {
+            "item": "energycontrol:item_component",
+            "data": 4
+        },
+        "C": {
+            "type": "forge:ore_dict",
+            "ore": "circuitBasic"
+        },
+        "S": {
+            "type": "forge:ore_dict",
+             "ore": "slabWood"
+        }
+    },
+    "result": {
+        "item": "energycontrol:item_component",
+        "data": 3
+    }
+}

@@ -79,9 +79,4 @@ public class ItemCardReactorDraconic extends ItemCardBase {
 		result.add(new PanelSetting(I18n.format("msg.ec.cbFuel"), 32));
 		return result;
 	}
-
-	@Override
-	public int getKitId() {
-		return ItemCardType.KIT_DRACONIC;
-	}
 }

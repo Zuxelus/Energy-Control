@@ -10,8 +10,8 @@
             "item": "ic2:cropnalyzer"
         },
         "M": {
-            "item": "ic2:resource",
-            "data": 12
+            "item": "energycontrol:item_component",
+            "data": 2
         },
         "C": {
             "type": "forge:ore_dict",
@@ -19,7 +19,7 @@
         },
         "W": {
             "type": "forge:ore_dict",
-             "ore": "plankWood"
+            "ore": "plankWood"
         }
     },
     "result": {

@@ -15,7 +15,7 @@ public class CrossDraconicEvolution extends CrossModBase {
 			return null;
 
 		NBTTagCompound tag = new NBTTagCompound();
-		tag.setInteger("type", ItemCardType.EU_RF);
+		tag.setString("euType", "RF");
 		if (te instanceof IExtendedRFStorage) {
 			tag.setDouble("maxStorage", (double) ((IExtendedRFStorage)te).getExtendedCapacity());
 			tag.setDouble("storage", (double) ((IExtendedRFStorage)te).getExtendedStorage());

@@ -9,10 +9,12 @@ import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.ItemAFB;
 import com.zuxelus.energycontrol.items.ItemAFSUUpgradeKit;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
+import com.zuxelus.energycontrol.utils.FluidInfo;
 import com.zuxelus.energycontrol.utils.ReactorHelper;
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IC2Items;
 import ic2.api.item.ICustomDamageItem;
+import ic2.api.item.IElectricItem;
 import ic2.api.reactor.IReactor;
 import ic2.api.tile.IEnergyStorage;
 import ic2.core.block.BlockTileEntity;
@@ -44,6 +46,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
 
@@ -101,6 +104,27 @@ public class CrossIC2Exp extends CrossModBase {
 	}
 
 	@Override
+	public boolean isElectricItem(ItemStack stack) {
+		return !stack.isEmpty() && stack.getItem() instanceof IElectricItem;
+	}
+
+	@Override
+	public double dischargeItem(ItemStack stack, double needed) {
+		IElectricItem ielectricitem = (IElectricItem) stack.getItem();
+		if (ielectricitem.canProvideEnergy(stack))
+			return ElectricItem.manager.discharge(stack, needed, 1, false, false, false);
+		return 0;
+	}
+	
+	/*@Override
+	public void postModEvent(TileEntity te, String name) {
+		if (name.equals("EnergyTileLoadEvent"))
+			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(te));
+		if (name.equals("EnergyTileUnloadEvent"))
+			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
+	}*/
+
+	@Override
 	public int getNuclearCellTimeLeft(ItemStack stack) {
 		if (stack.isEmpty())
 			return 0;
@@ -124,7 +148,7 @@ public class CrossIC2Exp extends CrossModBase {
 		if (te instanceof IEnergyStorage) {
 			NBTTagCompound tag = new NBTTagCompound();
 			IEnergyStorage storage = (IEnergyStorage) te;
-			tag.setInteger("type", 1);
+			tag.setString("euType", "EU");
 			tag.setDouble("storage", storage.getStored());
 			tag.setDouble("maxStorage", storage.getCapacity());
 			return tag;
@@ -437,7 +461,7 @@ public class CrossIC2Exp extends CrossModBase {
 	}
 
 	@Override
-	public List<IFluidTank> getAllTanks(TileEntity te) {
+	public List<FluidInfo> getAllTanks(TileEntity te) {
 		if (!(te instanceof TileEntityBlock))
 			return null;
 
@@ -446,9 +470,9 @@ public class CrossIC2Exp extends CrossModBase {
 
 		Fluids fluid = ((TileEntityBlock)te).getComponent(Fluids.class);
 
-		List<IFluidTank> result = new ArrayList<>();
+		List<FluidInfo> result = new ArrayList<>();
 		for (FluidTank tank: fluid.getAllTanks())
-			result.add(tank);
+			result.add(new FluidInfo(tank));
 
 		return result;
 	}

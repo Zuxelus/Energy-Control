@@ -12,7 +12,8 @@
             "item": "minecraft:bucket"
         },
         "F": {
-            "item": "ic2:frequency_transmitter"
+            "item": "energycontrol:item_component",
+            "data": 3
         },
         "B": {
             "type": "forge:ore_dict",
@@ -22,23 +23,5 @@
     "result": {
         "item": "energycontrol:item_kit",
         "data": 2
-    },
-    "conditions": [
-        {
-            "type": "forge:and",
-            "values": [
-                {
-                    "type": "forge:mod_loaded",
-                    "modid": "ic2"
-                },
-                {
-                    "type": "forge:not",
-                    "value": {
-                        "type": "forge:mod_loaded",
-                        "modid": "ic2-classic-spmod"
-                    }
-                }
-            ]
-        }
-    ]
+    }
 }

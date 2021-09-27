@@ -34,6 +34,10 @@ public interface ICardReader {
 
 	String getString(String name);
 
+	void setByte(String name, Byte value);
+
+	Byte getByte(String name);
+
 	void setBoolean(String name, Boolean value);
 
 	Boolean getBoolean(String name);
@@ -102,4 +106,7 @@ public interface ICardReader {
 
 	int getCardType();
 
+	void reset();
+
+	void copyFrom(NBTTagCompound tag);
 }

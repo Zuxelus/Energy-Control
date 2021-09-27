@@ -249,7 +249,7 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		displayHeight = (float) ((displayHeight - 0.125F) / Math.cos(a));
 		displayWidth = (float) ((displayWidth - 0.125F) / Math.cos(b));
 
-		FontRenderer fontRenderer = getFontRenderer();
+		FontRenderer fontRenderer = getFontRenderer(); 
 		// getMaxWidth
 		int maxWidth = 1;
 		for (PanelString panelString : joinedData) {
@@ -276,6 +276,7 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			offsetY = 0;
 		}
 
+		GlStateManager.disableAlpha();
 		GlStateManager.disableLighting();
 
 		int row = 0;
