@@ -74,7 +74,7 @@ public class CubeRenderer { // net.minecraft.client.renderer.model.ModelRenderer
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public /* static */ class ModelBox {
+	public class ModelBox {
 		private final TexturedQuad[] quads;
 
 		public ModelBox(int texOffX, int texOffY, float x, float y, float z, float dx, float dy, float dz, float texWidth, float texHeight, float leftTop, float leftBottom, float rightTop, float rightBottom) {

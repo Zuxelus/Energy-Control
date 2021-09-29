@@ -12,6 +12,8 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Mirror;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -50,6 +52,16 @@ public abstract class FacingHorizontal extends HorizontalBlock {
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
 		return defaultBlockState().setValue(FACING, context.getPlayer().getDirection().getOpposite());
+	}
+
+	@Override
+	public BlockState rotate(BlockState state, Rotation rotation) {
+		return state;
+	}
+
+	@Override
+	public BlockState mirror(BlockState state, Mirror mirror) {
+		return state;
 	}
 
 	@SuppressWarnings("deprecation")

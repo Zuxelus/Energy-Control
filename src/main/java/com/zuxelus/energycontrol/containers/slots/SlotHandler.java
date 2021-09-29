@@ -17,16 +17,16 @@ public class SlotHandler {
 		if (!event.getMap().location().toString().equals(BLOCK_ATLAS)) {
 			return;
 		}
-		registerTexture(event, EnergyControl.MODID + ":slots/slot_card");
-		registerTexture(event, EnergyControl.MODID + ":slots/slot_color");
-		registerTexture(event, EnergyControl.MODID + ":slots/slot_range");
-		registerTexture(event, EnergyControl.MODID + ":slots/slot_touch");
-		registerTexture(event, EnergyControl.MODID + ":slots/slot_power");
-		//registerTexture(event, "zlib:slots/slot_chargeable");
-		registerTexture(event, "zlib:slots/slot_dischargeable");
+		registerTexture(event, EnergyControl.MODID, "slots/slot_card");
+		registerTexture(event, EnergyControl.MODID, "slots/slot_color");
+		registerTexture(event, EnergyControl.MODID, "slots/slot_range");
+		registerTexture(event, EnergyControl.MODID, "slots/slot_touch");
+		registerTexture(event, EnergyControl.MODID, "slots/slot_power");
+		//registerTexture(event, "zlib", "slots/slot_chargeable");
+		registerTexture(event, "zlib", "slots/slot_dischargeable");
 	}
 
-	private static void registerTexture(TextureStitchEvent.Pre event, String texture) {
-		event.addSprite(new ResourceLocation(texture));
+	private static void registerTexture(TextureStitchEvent.Pre event, String modid, String name) {
+		event.addSprite(new ResourceLocation(modid, name));
 	}
 }

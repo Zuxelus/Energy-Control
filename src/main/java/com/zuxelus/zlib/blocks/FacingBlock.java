@@ -1,6 +1,5 @@
 package com.zuxelus.zlib.blocks;
 
-import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
 import net.minecraft.block.Block;
@@ -80,7 +79,7 @@ public abstract class FacingBlock extends DirectionalBlock {
 	public void onRemove(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
 			TileEntity te = world.getBlockEntity(pos);
-			if (te instanceof TileEntityInfoPanel) {
+			if (te instanceof IInventory) {
 				InventoryHelper.dropContents(world, pos, (IInventory) te);
 				world.updateNeighbourForOutputSignal(pos, this);
 			}

@@ -59,7 +59,7 @@ public class ContainerKitAssembler extends ContainerBase<TileEntityKitAssembler>
 		super.broadcastChanges();
 		double energy = te.getEnergy();
 		double production = te.getProduction();
-		for (int i = 0; i < listeners.size(); i++)
+		for (IContainerListener listener : listeners)
 			if (lastEnergy != energy || lastProduction != production) {
 				CompoundNBT tag = new CompoundNBT();
 				tag.putInt("type", 1);
@@ -67,7 +67,7 @@ public class ContainerKitAssembler extends ContainerBase<TileEntityKitAssembler>
 				tag.putDouble("production", production);
 				tag.putDouble("production", production);
 				tag.putInt("time", te.getRecipeTime());
-				NetworkHelper.updateClientTileEntity(listeners.get(i), te.getBlockPos(), tag);
+				NetworkHelper.updateClientTileEntity(listener, te.getBlockPos(), tag);
 			}
 		lastEnergy = energy;
 		lastProduction = production;

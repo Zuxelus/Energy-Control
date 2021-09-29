@@ -93,9 +93,8 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements ITi
 		case 4:
 			if (tag.contains("slot") && tag.contains("title")) {
 				ItemStack itemStack = getItem(tag.getInt("slot"));
-				if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemCardMain) {
+				if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemCardMain)
 					new ItemCardReader(itemStack).setTitle(tag.getString("title"));
-				}
 			}
 			break;
 		}
@@ -190,8 +189,6 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements ITi
 				ItemStack stack3 = getItem(SLOT_CARD2);
 				ItemStack result = getItem(SLOT_RESULT);
 				stack1.shrink(recipe.count1);
-				if (stack1.getCount() == 0)
-					removeItemNoUpdate(SLOT_CARD1);
 				stack2.shrink(recipe.count2);
 				stack3.shrink(recipe.count3);
 				if (result.isEmpty())
@@ -219,12 +216,14 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements ITi
 		if (!stack.isEmpty() && needed > 0) {
 			if (stack.getItem().equals(Items.LAVA_BUCKET)) {
 				buffer += 2000;
+				buffer -= storage.receiveEnergy(buffer, false);
 				setItem(slot, new ItemStack(Items.BUCKET));
 				return;
 			}
 			IEnergyStorage stackStorage = getStackEnergyStorage(stack);
 			if (stackStorage != null)
-				storage.receiveEnergy(stackStorage.extractEnergy(needed, false), false);
+				if (storage.receiveEnergy(stackStorage.extractEnergy(needed, false), false) > 0)
+					active = true;
 		}
 	}
 

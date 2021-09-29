@@ -93,7 +93,7 @@ public class GuiRangeTrigger extends GuiContainerBase<ContainerRangeTrigger> {
 
 		if (newValue != initValue) {
 			TileEntityRangeTrigger trigger = container.te;
-			
+
 			CompoundNBT tag = new CompoundNBT();
 			tag.putDouble("value", newValue);
 			if (isEnd) {

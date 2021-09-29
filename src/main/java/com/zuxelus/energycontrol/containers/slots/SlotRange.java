@@ -19,6 +19,6 @@ public class SlotRange extends SlotFilter {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
-		return Pair.of(PlayerContainer.BLOCK_ATLAS, new ResourceLocation(EnergyControl.MODID + ":slots/slot_range"));
+		return Pair.of(PlayerContainer.BLOCK_ATLAS, new ResourceLocation(EnergyControl.MODID, "slots/slot_range"));
 	}
 }

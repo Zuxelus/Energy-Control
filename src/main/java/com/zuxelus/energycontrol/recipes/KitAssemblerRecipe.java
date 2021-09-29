@@ -58,7 +58,7 @@ public class KitAssemblerRecipe implements IRecipe<EmptyInventory>{
 
 	@Override
 	public boolean matches(EmptyInventory inv, World world) {
-		return true;
+		return false;
 	}
 
 	@Override

@@ -50,7 +50,7 @@ public class ItemCardMekanism extends ItemCardMain {
 		if (reader.hasField("boil_rate") && (settings & 32) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelBoilRate", reader.getDouble("boil_rate"), showLabels));
 		if (reader.hasField("production") && (settings & 1) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("production"), euType, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("production"), euType + "/t", showLabels));
 		if (reader.hasField("usage") && (settings & 2) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelUsing", reader.getDouble("usage"), euType, showLabels));
 		if (reader.hasField("storage") && (settings & 4) > 0)

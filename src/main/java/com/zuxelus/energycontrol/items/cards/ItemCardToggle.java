@@ -38,6 +38,8 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 	private static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 	private static final EnumProperty<AttachFace> FACE = BlockStateProperties.ATTACH_FACE;
 	private static final DirectionProperty HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
+	private static final ResourceLocation TEXTURE_ON = new ResourceLocation(EnergyControl.MODID, "textures/gui/green.png");
+	private static final ResourceLocation TEXTURE_OFF = new ResourceLocation(EnergyControl.MODID, "textures/gui/grey.png");
 
 	@Override
 	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
@@ -114,9 +116,9 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 		float textureX = 0;
 		float textureY = 0;
 		if (reader.getBoolean("value"))
-			manager.bind(new ResourceLocation(EnergyControl.MODID + ":textures/gui/green.png"));
+			manager.bind(TEXTURE_ON);
 		else
-			manager.bind(new ResourceLocation(EnergyControl.MODID + ":textures/gui/grey.png"));
+			manager.bind(TEXTURE_OFF);
 
 		RenderSystem.enableDepthTest();
 		RenderSystem.enableAlphaTest();

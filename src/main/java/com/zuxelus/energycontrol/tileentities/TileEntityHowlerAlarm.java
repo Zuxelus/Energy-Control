@@ -28,7 +28,7 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 
 	public TileEntityHowlerAlarm(TileEntityType<?> type) {
 		super(type);
-		tickRate = 60;
+		tickRate = 20;
 		updateTicker = 0;
 		powered = false;
 		soundName = prevSoundName = DEFAULT_SOUND_NAME;
@@ -154,21 +154,23 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 
 	@Override
 	public void tick() {
-		if (level.isClientSide) {
-			if (updateTicker-- > 0)
-				return;
-			updateTicker = tickRate;
+		if (level.isClientSide)
 			checkStatus();
-		}
 	}
 
 	protected void checkStatus() {
 		if (sound == null)
 			sound = new TileEntitySound();
-		if (powered && !sound.isPlaying())
-			sound.playAlarm(worldPosition.getX() + 0.5D, worldPosition.getY() + 0.5D, worldPosition.getZ() + 0.5D, SOUND_PREFIX + soundName, range);
-		if (!powered && sound.isPlaying())
+		if (!sound.isPlaying())
+			updateTicker--;
+		if (!powered && sound.isPlaying()) {
 			sound.stopAlarm();
+			updateTicker = tickRate;
+		}
+		if (powered && !sound.isPlaying() && updateTicker < 0) {
+			sound.playAlarm(worldPosition.getX() + 0.5D, worldPosition.getY() + 0.5D, worldPosition.getZ() + 0.5D, SOUND_PREFIX + soundName, range);
+			updateTicker = tickRate;
+		}
 	}
 
 	private void notifyBlockUpdate() {

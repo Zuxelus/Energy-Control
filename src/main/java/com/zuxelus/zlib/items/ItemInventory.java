@@ -71,9 +71,8 @@ public abstract class ItemInventory implements IInventory, ISlotItemFilter {
 
 	@Override
 	public ItemStack removeItem(int index, int count) {
-		ItemStack itemstack = ItemStackHelper.removeItem(inventory, index, count);
-		//if (!itemstack.isEmpty()) markDirty();
-		return itemstack;
+		ItemStack stack = ItemStackHelper.removeItem(inventory, index, count);
+		return stack;
 	}
 
 	@Override

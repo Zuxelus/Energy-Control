@@ -23,6 +23,10 @@ public class CrossModBase {
 		return null;
 	}
 
+	public CompoundNBT getInventoryData(TileEntity te) {
+		return null;
+	}
+
 	public int getReactorHeat(World world, BlockPos pos) {
 		return -1;
 	}

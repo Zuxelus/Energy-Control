@@ -2,7 +2,6 @@ package com.zuxelus.energycontrol.init;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
-import com.zuxelus.energycontrol.items.ItemLight;
 import com.zuxelus.energycontrol.items.cards.*;
 import com.zuxelus.energycontrol.items.kits.*;
 import com.zuxelus.energycontrol.recipes.KitAssemblerRecipeType;
@@ -22,8 +21,8 @@ public class ModEventHandler {
 
 	@SubscribeEvent
 	public static void onItemRegistry(Register<Item> event) {
-		event.getRegistry().register(new ItemLight(ModItems.white_lamp.get()).setRegistryName("white_lamp"));
-		event.getRegistry().register(new ItemLight(ModItems.orange_lamp.get()).setRegistryName("orange_lamp"));
+		event.getRegistry().register(new BlockItem(ModItems.white_lamp.get(), new Item.Properties().tab(EnergyControl.ITEM_GROUP)).setRegistryName("white_lamp"));
+		event.getRegistry().register(new BlockItem(ModItems.orange_lamp.get(), new Item.Properties().tab(EnergyControl.ITEM_GROUP)).setRegistryName("orange_lamp"));
 		event.getRegistry().register(new BlockItem(ModItems.howler_alarm.get(), new Item.Properties().tab(EnergyControl.ITEM_GROUP)).setRegistryName("howler_alarm"));
 		event.getRegistry().register(new BlockItem(ModItems.industrial_alarm.get(), new Item.Properties().tab(EnergyControl.ITEM_GROUP)).setRegistryName("industrial_alarm"));
 		event.getRegistry().register(new BlockItem(ModItems.thermal_monitor.get(), new Item.Properties().tab(EnergyControl.ITEM_GROUP)).setRegistryName("thermal_monitor"));

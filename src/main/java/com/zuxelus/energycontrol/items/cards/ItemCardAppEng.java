@@ -6,7 +6,6 @@ import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
-import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.utils.StringUtils;
 
 import appeng.api.networking.IGridHost;
@@ -22,7 +21,6 @@ import appeng.tile.crafting.CraftingMonitorTileEntity;
 import appeng.tile.storage.ChestTileEntity;
 import appeng.tile.storage.DriveTileEntity;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;

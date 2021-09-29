@@ -1,7 +1,6 @@
 package com.zuxelus.energycontrol.crossmod;
 
 import appeng.api.networking.energy.IAEPowerStorage;
-import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;

@@ -69,9 +69,8 @@ public abstract class TileEntityInventory extends TileEntityFacing implements II
 
 	@Override
 	public ItemStack removeItem(int index, int count) {
-		ItemStack itemstack = ItemStackHelper.removeItem(inventory, index, count);
-		//if (!itemstack.isEmpty()) markDirty();
-		return itemstack;
+		ItemStack stack = ItemStackHelper.removeItem(inventory, index, count);
+		return stack;
 	}
 
 	@Override

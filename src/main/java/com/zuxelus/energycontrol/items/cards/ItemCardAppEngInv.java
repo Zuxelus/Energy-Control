@@ -9,7 +9,6 @@ import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.ITouchAction;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
-import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.utils.StringUtils;
 
 import appeng.api.networking.IGridHost;
@@ -29,7 +28,6 @@ import appeng.tile.networking.CableBusTileEntity;
 import appeng.tile.storage.ChestTileEntity;
 import appeng.tile.storage.DriveTileEntity;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;

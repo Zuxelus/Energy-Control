@@ -106,77 +106,82 @@ public class CrossMekanism extends CrossModBase {
 	public List<FluidInfo> getAllTanks(TileEntity te) {
 		List<FluidInfo> result = new ArrayList<>();
 		if (te instanceof TileEntityFluidTank) {
-			result.add(CrossMekanism.toFluidInfo(((TileEntityFluidTank) te).fluidTank));
+			result.add(toFluidInfo(((TileEntityFluidTank) te).fluidTank));
 			return result;
 		}
 		if (te instanceof TileEntityItemStackGasToItemStackFactory) {
-			result.add(CrossMekanism.toFluidInfo(((TileEntityItemStackGasToItemStackFactory) te).getGasTank()));
+			result.add(toFluidInfo(((TileEntityItemStackGasToItemStackFactory) te).getGasTank()));
 			return result;
 		}
 		if (te instanceof TileEntityMetallurgicInfuserFactory) {
-			result.add(CrossMekanism.toFluidInfo(((TileEntityMetallurgicInfuserFactory) te).getInfusionTank()));
+			result.add(toFluidInfo(((TileEntityMetallurgicInfuserFactory) te).getInfusionTank()));
 			return result;
 		}
 		if (te instanceof TileEntityAdvancedElectricMachine) {
-			result.add(CrossMekanism.toFluidInfo(((TileEntityAdvancedElectricMachine) te).gasTank));
+			result.add(toFluidInfo(((TileEntityAdvancedElectricMachine) te).gasTank));
 			return result;
 		}
 		if (te instanceof TileEntityMetallurgicInfuser) {
-			result.add(CrossMekanism.toFluidInfo(((TileEntityMetallurgicInfuser) te).infusionTank));
+			result.add(toFluidInfo(((TileEntityMetallurgicInfuser) te).infusionTank));
 			return result;
 		}
 		if (te instanceof TileEntityElectricPump) {
-			result.add(CrossMekanism.toFluidInfo(((TileEntityElectricPump) te).fluidTank));
+			result.add(toFluidInfo(((TileEntityElectricPump) te).fluidTank));
 			return result;
 		}
 		if (te instanceof TileEntityRotaryCondensentrator) {
-			result.add(CrossMekanism.toFluidInfo(((TileEntityRotaryCondensentrator) te).gasTank));
+			result.add(toFluidInfo(((TileEntityRotaryCondensentrator) te).gasTank));
+			result.add(toFluidInfo(((TileEntityRotaryCondensentrator) te).fluidTank));
+			return result;
+		}
+		if (te instanceof TileEntityChemicalOxidizer) {
+			result.add(toFluidInfo(((TileEntityChemicalOxidizer) te).gasTank));
 			return result;
 		}
 		if (te instanceof TileEntityChemicalInfuser) {
-			result.add(CrossMekanism.toFluidInfo(((TileEntityChemicalInfuser) te).leftTank));
-			result.add(CrossMekanism.toFluidInfo(((TileEntityChemicalInfuser) te).rightTank));
-			result.add(CrossMekanism.toFluidInfo(((TileEntityChemicalInfuser) te).centerTank));
+			result.add(toFluidInfo(((TileEntityChemicalInfuser) te).leftTank));
+			result.add(toFluidInfo(((TileEntityChemicalInfuser) te).rightTank));
+			result.add(toFluidInfo(((TileEntityChemicalInfuser) te).centerTank));
 			return result;
 		}
 		if (te instanceof TileEntityElectrolyticSeparator) {
-			result.add(CrossMekanism.toFluidInfo(((TileEntityElectrolyticSeparator) te).fluidTank));
-			result.add(CrossMekanism.toFluidInfo(((TileEntityElectrolyticSeparator) te).leftTank));
-			result.add(CrossMekanism.toFluidInfo(((TileEntityElectrolyticSeparator) te).rightTank));
+			result.add(toFluidInfo(((TileEntityElectrolyticSeparator) te).fluidTank));
+			result.add(toFluidInfo(((TileEntityElectrolyticSeparator) te).leftTank));
+			result.add(toFluidInfo(((TileEntityElectrolyticSeparator) te).rightTank));
 			return result;
 		}
 		if (te instanceof TileEntityChemicalDissolutionChamber) {
-			result.add(CrossMekanism.toFluidInfo(((TileEntityChemicalDissolutionChamber) te).injectTank));
-			result.add(CrossMekanism.toFluidInfo(((TileEntityChemicalDissolutionChamber) te).outputTank.getGasTank()));
+			result.add(toFluidInfo(((TileEntityChemicalDissolutionChamber) te).injectTank));
+			result.add(toFluidInfo(((TileEntityChemicalDissolutionChamber) te).outputTank.getGasTank()));
 			return result;
 		}
 		if (te instanceof TileEntityChemicalWasher) {
-			result.add(CrossMekanism.toFluidInfo(((TileEntityChemicalWasher) te).fluidTank));
-			result.add(CrossMekanism.toFluidInfo(((TileEntityChemicalWasher) te).inputTank));
-			result.add(CrossMekanism.toFluidInfo(((TileEntityChemicalWasher) te).outputTank));
+			result.add(toFluidInfo(((TileEntityChemicalWasher) te).fluidTank));
+			result.add(toFluidInfo(((TileEntityChemicalWasher) te).inputTank));
+			result.add(toFluidInfo(((TileEntityChemicalWasher) te).outputTank));
 			return result;
 		}
 		if (te instanceof TileEntityChemicalCrystallizer) {
-			result.add(CrossMekanism.toFluidInfo(((TileEntityChemicalCrystallizer) te).inputTank));
+			result.add(toFluidInfo(((TileEntityChemicalCrystallizer) te).inputTank));
 			return result;
 		}
 		if (te instanceof TileEntityPressurizedReactionChamber) {
-			result.add(CrossMekanism.toFluidInfo(((TileEntityPressurizedReactionChamber) te).inputFluidTank));
-			result.add(CrossMekanism.toFluidInfo(((TileEntityPressurizedReactionChamber) te).inputGasTank));
-			result.add(CrossMekanism.toFluidInfo(((TileEntityPressurizedReactionChamber) te).outputGasTank));
+			result.add(toFluidInfo(((TileEntityPressurizedReactionChamber) te).inputFluidTank));
+			result.add(toFluidInfo(((TileEntityPressurizedReactionChamber) te).inputGasTank));
+			result.add(toFluidInfo(((TileEntityPressurizedReactionChamber) te).outputGasTank));
 			return result;
 		}
 		if (te instanceof TileEntityIsotopicCentrifuge) {
-			result.add(CrossMekanism.toFluidInfo(((TileEntityIsotopicCentrifuge) te).inputTank));
-			result.add(CrossMekanism.toFluidInfo(((TileEntityIsotopicCentrifuge) te).outputTank));
+			result.add(toFluidInfo(((TileEntityIsotopicCentrifuge) te).inputTank));
+			result.add(toFluidInfo(((TileEntityIsotopicCentrifuge) te).outputTank));
 			return result;
 		}
 		if (te instanceof TileEntityNutritionalLiquifier) {
-			result.add(CrossMekanism.toFluidInfo(((TileEntityNutritionalLiquifier) te).gasTank));
+			result.add(toFluidInfo(((TileEntityNutritionalLiquifier) te).gasTank));
 			return result;
 		}
 		if (te instanceof TileEntityAntiprotonicNucleosynthesizer) {
-			result.add(CrossMekanism.toFluidInfo(((TileEntityAntiprotonicNucleosynthesizer) te).gasTank));
+			result.add(toFluidInfo(((TileEntityAntiprotonicNucleosynthesizer) te).gasTank));
 			return result;
 		}
 		return null;
@@ -263,15 +268,13 @@ public class CrossMekanism extends CrossModBase {
 			CompoundNBT tag = setStorage(((TileEntityRotaryCondensentrator) te).getEnergyContainer());
 			addUsage(tag, ((TileEntityRotaryCondensentrator) te).getEnergyContainer(), ((TileEntityRotaryCondensentrator) te).getActive());
 			addTank("tank", tag, ((TileEntityRotaryCondensentrator) te).gasTank);
+			addTank("tanks", tag, ((TileEntityRotaryCondensentrator) te).fluidTank);
 			return tag;
 		}
 		if (te instanceof TileEntityChemicalOxidizer) {
 			CompoundNBT tag = setStorage(((TileEntityChemicalOxidizer) te).getEnergyContainer());
 			addUsage(tag, ((TileEntityChemicalOxidizer) te).getEnergyContainer(), ((TileEntityChemicalOxidizer) te).getActive());
-			return tag;
-		}
-		if (te instanceof TileEntityChemicalOxidizer) {
-			CompoundNBT tag = setStorage(((TileEntityChemicalOxidizer) te).getEnergyContainer());
+			addTank("tank", tag, ((TileEntityChemicalOxidizer) te).gasTank);
 			return tag;
 		}
 		if (te instanceof TileEntityChemicalInfuser) {
@@ -351,15 +354,15 @@ public class CrossMekanism extends CrossModBase {
 		if (te instanceof TileEntityResistiveHeater) {
 			CompoundNBT tag = setStorage(((TileEntityResistiveHeater) te).getEnergyContainer());
 			addUsage(tag, ((TileEntityResistiveHeater) te).getEnergyContainer(), ((TileEntityResistiveHeater) te).getActive());
-			tag.putString("temp", CrossMekanism.getTempString(((TileEntityResistiveHeater) te).getTotalTemperature()));
+			tag.putString("temp", getTempString(((TileEntityResistiveHeater) te).getTotalTemperature()));
 			return tag;
-		}
-		if (te instanceof TileEntityBoilerCasing) {
-			return boilerTag(((TileEntityBoilerCasing) te).getMultiblock());
 		}
 		if (te instanceof TileEntityBasicLaser) {
 			CompoundNBT tag = setStorage(((TileEntityBasicLaser) te).getEnergyContainer());
 			return tag;
+		}
+		if (te instanceof TileEntityBoilerCasing) {
+			return boilerTag(((TileEntityBoilerCasing) te).getMultiblock());
 		}
 		if (te instanceof TileEntityInductionCasing) {
 			MatrixMultiblockData matrix = ((TileEntityInductionCasing) te).getMultiblock();
@@ -408,11 +411,11 @@ public class CrossMekanism extends CrossModBase {
 			return null;
 		CompoundNBT tag = new CompoundNBT();
 		tag.putDouble("boil_rate", block.lastBoilRate);
-		tag.putString("temp", CrossMekanism.getTempString(block.heatCapacitor.getTemperature()));
-		CrossMekanism.addTank("tank", tag, ((BoilerMultiblockData) block).cooledCoolantTank);
-		CrossMekanism.addTank("tank2", tag, ((BoilerMultiblockData) block).waterTank);
-		CrossMekanism.addTank("tank4", tag, ((BoilerMultiblockData) block).steamTank);
-		CrossMekanism.addTank("tank3", tag, ((BoilerMultiblockData) block).superheatedCoolantTank);
+		tag.putString("temp", getTempString(block.heatCapacitor.getTemperature()));
+		addTank("tank", tag, ((BoilerMultiblockData) block).cooledCoolantTank);
+		addTank("tank2", tag, ((BoilerMultiblockData) block).waterTank);
+		addTank("tank4", tag, ((BoilerMultiblockData) block).steamTank);
+		addTank("tank3", tag, ((BoilerMultiblockData) block).superheatedCoolantTank);
 		return tag;
 	}
 

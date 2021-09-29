@@ -12,6 +12,8 @@ import com.zuxelus.energycontrol.crossmod.computercraft.CrossComputerCraft;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -21,8 +23,9 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 public class CrossModLoader {
 	private static final Map<String, CrossModBase> CROSS_MODS = new HashMap<>();
@@ -31,8 +34,8 @@ public class CrossModLoader {
 		loadCrossMod(ModIDs.BIG_REACTORS, CrossBigReactors::new);
 		loadCrossMod(ModIDs.BIGGER_REACTORS, CrossBiggerReactors::new);
 		loadCrossModSafely(ModIDs.COMPUTER_CRAFT, () -> CrossComputerCraft::new);
-		loadCrossMod(ModIDs.MEKANISM, CrossMekanism::new);
-		loadCrossMod(ModIDs.MEKANISM_GENERATORS, CrossMekanismGenerators::new);
+		loadCrossModSafely(ModIDs.MEKANISM, () -> CrossMekanism::new);
+		loadCrossModSafely(ModIDs.MEKANISM_GENERATORS, () -> CrossMekanismGenerators::new);
 		loadCrossMod(ModIDs.IMMERSIVE_ENGINEERING, CrossImmersiveEngineering::new);
 		loadCrossMod(ModIDs.THERMAL_EXPANSION, CrossThermalExpansion::new);
 	}
@@ -82,26 +85,21 @@ public class CrossModLoader {
 
 	public static List<FluidInfo> getAllTanks(World world, BlockPos pos) {
 		TileEntity te = world.getBlockEntity(pos);
-		if (te != null) {
-			Optional<IFluidHandler> fluid = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null).resolve();
-			if (fluid.isPresent()) {
-				IFluidHandler handler = fluid.get();
-				List<FluidInfo> result = new ArrayList<>();
-				for (int i = 0; i < handler.getTanks(); i++) {
-					FluidTank tank = new FluidTank(handler.getTankCapacity(i));
-					tank.setFluid(handler.getFluidInTank(i));
-					result.add(new FluidInfo(tank));
-				}
-				return result;
-			}
-
-			for (CrossModBase crossMod : CROSS_MODS.values()) {
-				List<FluidInfo> list = crossMod.getAllTanks(te);
-				if (list != null)
-					return list;
-			}
+		if (te == null)
+			return null;
+		for (CrossModBase crossMod : CROSS_MODS.values()) {
+			List<FluidInfo> list = crossMod.getAllTanks(te);
+			if (list != null)
+				return list;
 		}
-
+		Optional<IFluidHandler> fluid = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null).resolve();
+		if (fluid.isPresent()) {
+			IFluidHandler handler = fluid.get();
+			List<FluidInfo> result = new ArrayList<>();
+			for (int i = 0; i < handler.getTanks(); i++)
+				result.add(new FluidInfo(handler.getFluidInTank(i), handler.getTankCapacity(i)));
+			return result;
+		}
 		return null;
 	}
 
@@ -117,5 +115,51 @@ public class CrossModLoader {
 				return heat;
 		}
 		return -1;
+	}
+
+	public static CompoundNBT getInventoryData(TileEntity te) {
+		for (CrossModBase crossMod : CROSS_MODS.values()) {
+			CompoundNBT tag = crossMod.getInventoryData(te);
+			if (tag != null)
+				return tag;
+		}
+		Optional<IItemHandler> handler = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).resolve();
+		if (!handler.isPresent() && !(te instanceof IInventory))
+			return null;
+		CompoundNBT tag = new CompoundNBT();
+		if (handler.isPresent()) {
+			IItemHandler storage = handler.get();
+			int inUse = 0;
+			int items = 0;
+			tag.putInt("size", storage.getSlots());
+			for (int i = 0; i < Math.min(6, storage.getSlots()); i++) {
+				if (storage.getStackInSlot(i) != ItemStack.EMPTY) {
+					inUse++;
+					items += storage.getStackInSlot(i).getCount();
+				}
+				tag.put("slot" + Integer.toString(i), storage.getStackInSlot(i).save(new CompoundNBT()));
+			}
+			tag.putInt("used", inUse);
+			tag.putInt("items", items);
+		}
+		if (te instanceof IInventory) {
+			IInventory inv = (IInventory) te;
+			tag.putBoolean("sided", inv instanceof ISidedInventory);
+			if (!handler.isPresent()) {
+				int inUse = 0;
+				int items = 0;
+				tag.putInt("size", inv.getContainerSize());
+				for (int i = 0; i < Math.min(6, inv.getContainerSize()); i++) {
+					if (inv.getItem(i) != ItemStack.EMPTY) {
+						inUse++;
+						items += inv.getItem(i).getCount();
+					}
+					tag.put("slot" + Integer.toString(i), inv.getItem(i).save(new CompoundNBT()));
+				}
+				tag.putInt("used", inUse);
+				tag.putInt("items", items);
+			}
+		}
+		return tag;
 	}
 }

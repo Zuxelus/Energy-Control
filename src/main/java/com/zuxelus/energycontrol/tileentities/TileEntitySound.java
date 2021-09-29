@@ -20,7 +20,7 @@ public class TileEntitySound {
 			if (volume > 0) {
 				if (volume < 0.3)
 					volume = 0.3;
-				ISound sound = new SimpleSound(new SoundEvent(new ResourceLocation(name)), SoundCategory.MASTER, (float) volume, 1.0F, (float) person.x, (float) person.y, (float) person.z);
+				sound = new SimpleSound(new SoundEvent(new ResourceLocation(name)), SoundCategory.MASTER, (float) volume, 1.0F, (float) person.x, (float) person.y, (float) person.z);
 				Minecraft.getInstance().getSoundManager().play(sound);
 				return;
 			}

@@ -107,7 +107,4 @@ public interface ICardReader {
 	void reset();
 
 	void copyFrom(CompoundNBT tag);
-
-	//int getCardType();
-
 }

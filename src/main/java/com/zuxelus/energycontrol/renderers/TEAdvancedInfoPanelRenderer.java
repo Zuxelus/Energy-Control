@@ -127,14 +127,13 @@ public class TEAdvancedInfoPanelRenderer extends TileEntityRenderer<TileEntityAd
 		BlockPos pos = panel.getBlockPos();
 		float displayWidth = 1.0F;
 		float displayHeight = 1.0F;
-		float dx = 0; float dy = 0; float dz = 0;
+		float dx = 0; float dz = 0;
 		if (screen != null) {
 			switch (panel.getFacing()) {
 			case UP:
 				switch (panel.getRotation()) {
 				case NORTH:
 					dz = pos.getZ() - screen.maxZ - screen.minZ + pos.getZ();
-					dy = pos.getX() - screen.maxX - screen.minX + pos.getX();
 					displayWidth += screen.maxX - screen.minX;
 					displayHeight += screen.maxZ - screen.minZ;
 					break;
@@ -146,7 +145,6 @@ public class TEAdvancedInfoPanelRenderer extends TileEntityRenderer<TileEntityAd
 					break;
 				case EAST:
 					dz = pos.getZ() - screen.maxZ - screen.minZ + pos.getZ();
-					dy = pos.getX() - screen.maxX - screen.minX + pos.getX();
 					displayWidth += screen.maxZ - screen.minZ;
 					displayHeight += screen.maxX - screen.minX;
 					break;

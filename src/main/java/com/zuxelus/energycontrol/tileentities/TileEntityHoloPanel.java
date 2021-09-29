@@ -1,14 +1,17 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import com.zuxelus.energycontrol.blocks.HoloPanel;
 import com.zuxelus.energycontrol.containers.ContainerHoloPanel;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -30,6 +33,32 @@ public class TileEntityHoloPanel extends TileEntityInfoPanel {
 		if (stack.isEmpty())
 			return 1;
 		return stack.getCount() + 1;
+	}
+
+	@Override
+	public void notifyBlockUpdate() {
+		BlockState blockstate = level.getBlockState(worldPosition);
+		if (blockstate.getValue(HoloPanel.ACTIVE) == powered) {
+			level.sendBlockUpdated(worldPosition, blockstate, blockstate, 2);
+			return;
+		}
+		BlockState newState = blockstate.getBlock().defaultBlockState()
+				.setValue(HoloPanel.FACING, blockstate.getValue(HoloPanel.FACING))
+				.setValue(HoloPanel.ACTIVE, powered);
+		level.setBlock(worldPosition, newState, 3);
+	}
+
+	@Override
+	protected void readProperties(CompoundNBT tag) {
+		boolean old = powered;
+		super.readProperties(tag);
+		if (powered != old && level.isClientSide) {
+			BlockState iblockstate = level.getBlockState(worldPosition);
+			BlockState newState = iblockstate.getBlock().defaultBlockState()
+					.setValue(HoloPanel.FACING, iblockstate.getValue(HoloPanel.FACING))
+					.setValue(HoloPanel.ACTIVE, powered);
+			level.setBlock(worldPosition, newState, 3);
+		}
 	}
 
 	@Override
