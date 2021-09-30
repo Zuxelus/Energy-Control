@@ -88,7 +88,7 @@ public class CrossMekanismGenerators extends CrossModBase {
 				tag.setDouble("production", production);
 				tag.setBoolean("active", production > 0);
 				tag.setString("temp", CrossMekanism.getTempString(((TileEntityHeatGenerator) te).temperature));
-				CrossMekanism.addTank("tank", tag, ((TileEntityHeatGenerator) te).lavaTank);
+				FluidInfo.addTank("tank", tag, ((TileEntityHeatGenerator) te).lavaTank);
 			}
 			if (te instanceof TileEntityWindGenerator) {
 				double production = MekanismUtils.convertToDisplay((MekanismConfig.current()).generators.windGenerationMin.val() * ((TileEntityWindGenerator) te).getMultiplier());
@@ -156,8 +156,8 @@ public class CrossMekanismGenerators extends CrossModBase {
 			CrossMekanism.addTank("tank", tag, controller.deuteriumTank);
 			CrossMekanism.addTank("tank2", tag, controller.tritiumTank);
 			CrossMekanism.addTank("tank3", tag, controller.fuelTank);
-			CrossMekanism.addTank("tank4", tag, controller.waterTank);
-			CrossMekanism.addTank("tank5", tag, controller.steamTank);
+			FluidInfo.addTank("tank4", tag, controller.waterTank);
+			FluidInfo.addTank("tank5", tag, controller.steamTank);
 			return tag;
 		}
 		return null;

@@ -64,12 +64,18 @@ public class TEInfoPanelExtenderRenderer extends TileEntitySpecialRenderer<TileE
 			if (color > 15 || color < 0)
 				color = 2;
 		}
-		if (te.getPowered())
-			bindTexture(TEXTUREON[color]);
-		else
-			bindTexture(TEXTUREOFF[color]);
 
-		model[te.findTexture()].render(0.03125F);
+		if (destroyStage > -1) {
+			bindTexture(DESTROY_STAGES[destroyStage]);
+			TileEntityInfoPanelRenderer.DESTROY.render(0.03125F);
+		} else {
+			if (te.getPowered())
+				bindTexture(TEXTUREON[color]);
+			else
+				bindTexture(TEXTUREOFF[color]);
+
+			model[te.findTexture()].render(0.03125F);
+		}
 		GlStateManager.popMatrix();
 	}
 }

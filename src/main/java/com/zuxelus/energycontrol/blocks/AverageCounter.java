@@ -21,9 +21,4 @@ public class AverageCounter extends FacingBlock {
 	protected int getBlockGuiId() {
 		return BlockDamages.DAMAGE_AVERAGE_COUNTER;
 	}
-
-	@Override
-	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-		drops.add(CrossModLoader.getCrossMod(ModIDs.IC2).getItemStack("machine"));
-	}
 }

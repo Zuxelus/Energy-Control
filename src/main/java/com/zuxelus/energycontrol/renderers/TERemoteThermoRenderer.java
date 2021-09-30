@@ -46,36 +46,42 @@ public class TERemoteThermoRenderer extends TileEntitySpecialRenderer<TileEntity
 			GlStateManager.rotate(-90.0F, 0.0F, 1.0F, 0.0F);
 			break;
 		}
-		bindTexture(TEXTURE);
-		model.render(0.03125F);
 
-		GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
-		GlStateManager.translate(0.0F, -0.5F, 1.001F);
-
-		int status = te.getStatus();
-		int heat = te.getHeat();
-		int level = te.getHeatLevel();
-		if (status > -2) {
-			double rate = 1;
-			if (status > -1)
-				rate = Math.round((1 - Math.min((double) heat / level, 1)) * 16) / (double) 16;
-			Tessellator tessellator = Tessellator.getInstance();
-			BufferBuilder bufferbuilder = tessellator.getBuffer();
-			bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-			bufferbuilder.pos(rate, 0, 0).tex(rate * 0.25,0).endVertex();
-			bufferbuilder.pos(1, 0, 0).tex(0.25,0).endVertex();
-			bufferbuilder.pos(1, 0.375, 0).tex(0.25,0.1875).endVertex();
-			bufferbuilder.pos(rate, 0.375, 0).tex(rate * 0.25,0.1875).endVertex();
-			tessellator.draw();
+		if (destroyStage > -1) {
+			bindTexture(DESTROY_STAGES[destroyStage]);
+			TileEntityInfoPanelRenderer.DESTROY.render(0.03125F);
+		} else {
+			bindTexture(TEXTURE);
+			model.render(0.03125F);
+	
+			GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
+			GlStateManager.translate(0.0F, -0.5F, 1.001F);
+	
+			int status = te.getStatus();
+			int heat = te.getHeat();
+			int level = te.getHeatLevel();
+			if (status > -2) {
+				double rate = 1;
+				if (status > -1)
+					rate = Math.round((1 - Math.min((double) heat / level, 1)) * 16) / (double) 16;
+				Tessellator tessellator = Tessellator.getInstance();
+				BufferBuilder bufferbuilder = tessellator.getBuffer();
+				bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+				bufferbuilder.pos(rate, 0, 0).tex(rate * 0.25,0).endVertex();
+				bufferbuilder.pos(1, 0, 0).tex(0.25,0).endVertex();
+				bufferbuilder.pos(1, 0.375, 0).tex(0.25,0.1875).endVertex();
+				bufferbuilder.pos(rate, 0.375, 0).tex(rate * 0.25,0.1875).endVertex();
+				tessellator.draw();
+			}
+	
+			GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
+			GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+			GlStateManager.translate(-0.5F, -0.125F, 0.0F);
+			GlStateManager.scale(0.015625F, 0.015625F, 0.015625F);
+	
+			String text = Integer.toString(level);
+			getFontRenderer().drawString(text, -getFontRenderer().getStringWidth(text) / 2, -getFontRenderer().FONT_HEIGHT, 0x000000);
 		}
-
-		GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
-		GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
-		GlStateManager.translate(-0.5F, -0.125F, 0.0F);
-		GlStateManager.scale(0.015625F, 0.015625F, 0.015625F);
-
-		String text = Integer.toString(level);
-		getFontRenderer().drawString(text, -getFontRenderer().getStringWidth(text) / 2, -getFontRenderer().FONT_HEIGHT, 0x000000);
 		GlStateManager.popMatrix();
 	}
 }

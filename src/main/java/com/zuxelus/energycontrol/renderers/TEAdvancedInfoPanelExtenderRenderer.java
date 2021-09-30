@@ -64,7 +64,9 @@ public class TEAdvancedInfoPanelExtenderRenderer extends TileEntitySpecialRender
 			if (color > 15 || color < 0)
 				color = 6;
 		}
-		if (te.getPowered())
+		if (destroyStage > -1)
+			bindTexture(DESTROY_STAGES[destroyStage]);
+		else if (te.getPowered())
 			bindTexture(TEXTUREON[color]);
 		else
 			bindTexture(TEXTUREOFF[color]);
@@ -74,17 +76,21 @@ public class TEAdvancedInfoPanelExtenderRenderer extends TileEntitySpecialRender
 		if (thickness < 1 || thickness > 16)
 			thickness = 16;
 		int rotateHor = te.getRotateHor() / 7;
-		int rotateVert = te.getRotateVert() / 7; 
-		Screen screen = te.getScreen();
-		if (screen == null) {
-			if (thickness == 16 && rotateHor == 0 && rotateVert == 0)
+		int rotateVert = te.getRotateVert() / 7;
+
+		if (thickness == 16 && rotateHor == 0 && rotateVert == 0) {
+			if (destroyStage > -1)
+				TileEntityInfoPanelRenderer.DESTROY.render(0.03125F);
+			else
 				model[textureId].render(0.03125F);
 		} else {
-			if (thickness == 16 && rotateHor == 0 && rotateVert == 0)
-				model[textureId].render(0.03125F);
-			else {
+			Screen screen = te.getScreen();
+			if (screen != null) {
 				RotationOffset offset = new RotationOffset(thickness * 2, rotateHor, rotateVert);
-				new CubeRenderer(textureId / 4 * 32 + 64, textureId % 4 * 32 + 64, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation())).render(0.03125F);
+				if (destroyStage > -1)
+					new CubeRenderer(0.0F, 0.0F, 0.0F, 32, 32, 32, 32, 32, 0, 0, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation())).render(0.03125F);
+				else
+					new CubeRenderer(textureId / 4 * 32 + 64, textureId % 4 * 32 + 64, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation())).render(0.03125F);
 			}
 		}
 		GlStateManager.popMatrix();

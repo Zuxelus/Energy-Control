@@ -2,7 +2,7 @@
 	"type": "energycontrol:kit_assembler",
     "input1": {
         "item": "energycontrol:item_card",
-        "data": 0
+        "data": 24
     },
     "input2": {
         "item": "energycontrol:item_component",
@@ -11,7 +11,7 @@
     },
     "input3": {
         "item": "energycontrol:item_card",
-        "data": 0
+        "data": 24
     },
 	"result": {
         "item": "energycontrol:item_kit",

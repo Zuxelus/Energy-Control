@@ -183,7 +183,7 @@ public class CrossMekanism extends CrossModBase {
 		}
 		if (te instanceof TileEntityElectricPump) {
 			NBTTagCompound tag = setStorage(te);
-			addTank("tank", tag, ((TileEntityElectricPump) te).fluidTank);
+			FluidInfo.addTank("tank", tag, ((TileEntityElectricPump) te).fluidTank);
 			return tag;
 		}
 		if (te instanceof TileEntityChargepad) {
@@ -195,7 +195,7 @@ public class CrossMekanism extends CrossModBase {
 			NBTTagCompound tag = setStorage(te);
 			addUsage(tag, te);
 			addTank("tank", tag, ((TileEntityRotaryCondensentrator) te).gasTank);
-			addTank("tank2", tag, ((TileEntityRotaryCondensentrator) te).fluidTank);
+			FluidInfo.addTank("tank2", tag, ((TileEntityRotaryCondensentrator) te).fluidTank);
 			return tag;
 		}
 		if (te instanceof TileEntityChemicalOxidizer) {
@@ -215,7 +215,7 @@ public class CrossMekanism extends CrossModBase {
 		if (te instanceof TileEntityElectrolyticSeparator) {
 			NBTTagCompound tag = setStorage(te);
 			addUsage(tag, te);
-			addTank("tank", tag, ((TileEntityElectrolyticSeparator) te).fluidTank);
+			FluidInfo.addTank("tank", tag, ((TileEntityElectrolyticSeparator) te).fluidTank);
 			addTank("tank2", tag, ((TileEntityElectrolyticSeparator) te).leftTank);
 			addTank("tank3", tag, ((TileEntityElectrolyticSeparator) te).rightTank);
 			return tag;
@@ -235,7 +235,7 @@ public class CrossMekanism extends CrossModBase {
 		if (te instanceof TileEntityChemicalWasher) {
 			NBTTagCompound tag = setStorage(te);
 			addUsage(tag, te);
-			addTank("tank", tag, ((TileEntityChemicalWasher) te).fluidTank);
+			FluidInfo.addTank("tank", tag, ((TileEntityChemicalWasher) te).fluidTank);
 			addTank("tank2", tag, ((TileEntityChemicalWasher) te).inputTank);
 			addTank("tank3", tag, ((TileEntityChemicalWasher) te).outputTank);
 			return tag;
@@ -313,13 +313,13 @@ public class CrossMekanism extends CrossModBase {
 		if (te instanceof TileEntityFluidicPlenisher) {
 			NBTTagCompound tag = setStorage(te);
 			tag.setDouble("usage", MekanismUtils.convertToDisplay(((TileEntityFluidicPlenisher) te).energyPerTick));
-			addTank("tank", tag, ((TileEntityFluidicPlenisher) te).fluidTank);
+			FluidInfo.addTank("tank", tag, ((TileEntityFluidicPlenisher) te).fluidTank);
 			return tag;
 		}
 		if (te instanceof TileEntityPRC) {
 			NBTTagCompound tag = setStorage(te);
 			addUsage(tag, te);
-			addTank("tank", tag, ((TileEntityPRC) te).inputFluidTank);
+			FluidInfo.addTank("tank", tag, ((TileEntityPRC) te).inputFluidTank);
 			addTank("tank2", tag, ((TileEntityPRC) te).inputGasTank);
 			addTank("tank3", tag, ((TileEntityPRC) te).outputGasTank);
 			return tag;
@@ -353,14 +353,6 @@ public class CrossMekanism extends CrossModBase {
 			tag.setString(name, "N/A");
 		else
 			tag.setString(name, String.format("%s: %s mB", type.getLocalizedName(), tank.getAmount()));
-	}
-
-	public static void addTank(String name, NBTTagCompound tag, FluidTank tank) {
-		FluidStack stack = tank.getFluid();
-		if (stack == null)
-			tag.setString(name, "N/A");
-		else
-			tag.setString(name, String.format("%s: %s mB", stack.getLocalizedName(), tank.getFluidAmount()));
 	}
 
 	public static void addTank(String name, NBTTagCompound tag, FluidSlot tank, String fluid) {

@@ -15,6 +15,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ThermalMonitor extends FacingBlockSmall {
 	protected static final AxisAlignedBB AABB_DOWN = new AxisAlignedBB(0.0625D, 0.5625D, 0.0625D, 0.9375D, 1.0D, 0.9375D);
@@ -75,5 +77,10 @@ public class ThermalMonitor extends FacingBlockSmall {
 	@Override
 	public EnumBlockRenderType getRenderType(IBlockState state) {
 		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
+	}
+
+	@SideOnly(Side.CLIENT)
+	public boolean hasCustomBreakingProgress(IBlockState state) {
+		return true;
 	}
 }

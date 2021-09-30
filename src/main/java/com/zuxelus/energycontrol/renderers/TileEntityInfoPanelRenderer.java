@@ -16,6 +16,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 	private static final ResourceLocation[] TEXTUREOFF;
 	private static final ResourceLocation[] TEXTUREON;
 	private static final CubeRenderer[] model;
+	public static final CubeRenderer DESTROY = new CubeRenderer(0, 0, 0, 32, 32, 32, 32, 32, 0, 0);
 
 	static {
 		TEXTUREOFF = new ResourceLocation[16];
@@ -84,15 +85,23 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			if (color > 15 || color < 0)
 				color = 2;
 		}
-		if (te.getPowered())
+
+		if (destroyStage > -1)
+			bindTexture(DESTROY_STAGES[destroyStage]);
+		else if (te.getPowered())
 			bindTexture(TEXTUREON[color]);
 		else
 			bindTexture(TEXTUREOFF[color]);
 
-		model[te.findTexture()].render(0.03125F);
-		if (te.getPowered()) {
-			List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
-			drawText(te, joinedData);
+		if (destroyStage > -1)
+			DESTROY.render(0.03125F);
+		else {
+			model[te.findTexture()].render(0.03125F);
+
+			if (te.getPowered()) {
+				List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
+				drawText(te, joinedData);
+			}
 		}
 		GlStateManager.popMatrix();
 	}

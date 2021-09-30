@@ -84,6 +84,10 @@ public class CrossModBase {
 		return null;
 	}
 
+	public NBTTagCompound getInventoryData(TileEntity te) {
+		return null;
+	}
+
 	public int getReactorHeat(World world, BlockPos pos) {
 		return -1;
 	}

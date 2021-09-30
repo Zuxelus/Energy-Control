@@ -260,6 +260,8 @@ public class ItemCardReader implements ICardReader {
 				setLong(name, ((NBTTagLong) tag).getLong());
 			else if (type == 1)
 				setByte(name, ((NBTTagByte) tag).getByte());
+			else if (type == 10)
+				setTag(name, tag.copy());
 		}
 	}
 

@@ -2,9 +2,11 @@ package com.zuxelus.energycontrol.utils;
 
 import com.zuxelus.energycontrol.api.ICardReader;
 
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
 
 public class FluidInfo {
@@ -76,5 +78,13 @@ public class FluidInfo {
 			reader.setString(String.format("_%dname", i), "");
 		reader.setLong(String.format("_%damount", i), amount);
 		reader.setLong(String.format("_%dcapacity", i), capacity);
+	}
+
+	public static void addTank(String name, NBTTagCompound tag, FluidTank tank) {
+		FluidStack stack = tank.getFluid();
+		if (stack == null)
+			tag.setString(name, "N/A");
+		else
+			tag.setString(name, String.format("%s: %s mB", stack.getLocalizedName(), tank.getFluidAmount()));
 	}
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.crossmod.computercraft.CrossComputerCraft;
 import com.zuxelus.energycontrol.crossmod.opencomputers.CrossOpenComputers;
@@ -13,6 +14,8 @@ import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -26,6 +29,8 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 public class CrossModLoader {
 	private static final Map<String, CrossModBase> CROSS_MODS = new HashMap<>();
@@ -137,5 +142,51 @@ public class CrossModLoader {
 				return heat;
 		}
 		return -1;
+	}
+
+	public static NBTTagCompound getInventoryData(TileEntity te) {
+		for (CrossModBase crossMod : CROSS_MODS.values()) {
+			NBTTagCompound tag = crossMod.getInventoryData(te);
+			if (tag != null)
+				return tag;
+		}
+		IItemHandler storage = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		if (storage == null && !(te instanceof IInventory))
+			return null;
+		NBTTagCompound tag = new NBTTagCompound();
+		if (storage != null) {
+			int inUse = 0;
+			int items = 0;
+			tag.setInteger("size", storage.getSlots());
+			for (int i = 0; i < Math.min(6, storage.getSlots()); i++) {
+				if (storage.getStackInSlot(i) != ItemStack.EMPTY) {
+					inUse++;
+					items += storage.getStackInSlot(i).getCount();
+				}
+				tag.setTag("slot" + Integer.toString(i), storage.getStackInSlot(i).writeToNBT(new NBTTagCompound()));
+			}
+			tag.setInteger("used", inUse);
+			tag.setInteger("items", items);
+		}
+		if (te instanceof IInventory) {
+			IInventory inv = (IInventory) te;
+			tag.setString("name", inv.getName());
+			tag.setBoolean("sided", inv instanceof ISidedInventory);
+			if (storage == null) {
+				int inUse = 0;
+				int items = 0;
+				tag.setInteger("size", inv.getSizeInventory());
+				for (int i = 0; i < Math.min(6, inv.getSizeInventory()); i++) {
+					if (inv.getStackInSlot(i) != ItemStack.EMPTY) {
+						inUse++;
+						items += inv.getStackInSlot(i).getCount();
+					}
+					tag.setTag("slot" + Integer.toString(i), inv.getStackInSlot(i).writeToNBT(new NBTTagCompound()));
+				}
+				tag.setInteger("used", inUse);
+				tag.setInteger("items", items);
+			}
+		}
+		return tag;
 	}
 }

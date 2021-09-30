@@ -2,7 +2,7 @@
 	"type": "energycontrol:kit_assembler",
     "input1": {
         "item": "energycontrol:item_card",
-        "data": 29
+        "data": 26
     },
     "input2": {
         "item": "energycontrol:item_component",
@@ -11,11 +11,11 @@
     },
     "input3": {
         "item": "energycontrol:item_card",
-        "data": 29
+        "data": 26
     },
 	"result": {
-		"item": "energycontrol:kit_thermal_expansion",
-		"count": 17
+        "item": "energycontrol:item_kit",
+        "data": 15
 	},
 	"time": 1000,
 	"conditions": [
@@ -24,7 +24,7 @@
 			"values": [
 				{
 					"type": "forge:mod_loaded",
-					"modid": "thermalexpansion"
+					"modid": "nuclearcraft"
 				}
 			]
 		}

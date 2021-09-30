@@ -1,21 +1,25 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
+
 import net.minecraft.client.resources.I18n;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ItemCardReactorDraconic extends ItemCardBase {
+
 	public ItemCardReactorDraconic() {
 		super(ItemCardType.CARD_REACTOR_DRACONIC, "card_reactor_draconic");
 	}
@@ -27,20 +31,11 @@ public class ItemCardReactorDraconic extends ItemCardBase {
 			return CardState.NO_TARGET;
 
 		TileEntity te = world.getTileEntity(target);
-		if (!(te instanceof TileReactorCore))
+		NBTTagCompound tag = CrossModLoader.getCrossMod(ModIDs.DRACONIC_EVOLUTION).getCardData(te);
+		if (tag == null)
 			return CardState.NO_TARGET;
-
-		TileReactorCore reactor = ((TileReactorCore) te);
-		reader.setString("status", reactor.reactorState.value.name());
-		reader.setDouble("temp", reactor.temperature.value);
-		reader.setDouble("rate", reactor.generationRate.value);
-		reader.setDouble("input", reactor.fieldInputRate.value);
-		reader.setDouble("diam", reactor.getCoreDiameter());
-		reader.setInt("saturation", reactor.saturation.value);
-		reader.setDouble("fuel", reactor.convertedFuel.value);
-		reader.setDouble("shield", reactor.shieldCharge.value);
-		reader.setDouble("fuelMax", reactor.reactableFuel.value);
-		reader.setDouble("fuelRate", reactor.fuelUseRate.value);
+		reader.reset();
+		reader.copyFrom(tag);
 		return CardState.OK;
 	}
 

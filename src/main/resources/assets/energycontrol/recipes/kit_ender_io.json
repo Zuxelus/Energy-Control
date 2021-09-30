@@ -1,28 +1,29 @@
 {
     "type": "minecraft:crafting_shaped",
     "pattern": [
-        "DF",
-        "PW"
+        "IT",
+        "PD"
     ],
     "key": {
+        "I": {
+            "item": "enderio:item_material",
+            "data": 20
+        },
+        "T": {
+            "item": "energycontrol:item_component",
+            "data": 3
+        },
         "P": {
             "item": "minecraft:paper"
         },
         "D": {
-            "item": "energycontrol:thermometer"
-        },
-        "F": {
-            "item": "energycontrol:item_component",
-            "data": 3
-        },
-        "W": {
             "type": "forge:ore_dict",
-            "ore": "dyeYellow"
+            "ore": "dyePink"
         }
     },
     "result": {
         "item": "energycontrol:item_kit",
-        "data": 5
+        "data": 18
     },
     "conditions": [
         {
@@ -30,7 +31,7 @@
             "values": [
                 {
                     "type": "forge:mod_loaded",
-                    "modid": "ic2"
+                    "modid": "enderio"
                 }
             ]
         }

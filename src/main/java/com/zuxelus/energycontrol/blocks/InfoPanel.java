@@ -60,11 +60,6 @@ public class InfoPanel extends FacingBlock {
 				return true;
 		return super.onBlockActivated(world, pos, state, player, hand, facing, hitX, hitY, hitZ);
 	}
-	
-	@Override
-	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-		drops.add(CrossModLoader.getCrossMod(ModIDs.IC2).getItemStack("machine"));
-	}
 
 	@Override
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos fromPos) {

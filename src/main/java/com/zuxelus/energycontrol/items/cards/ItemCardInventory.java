@@ -4,6 +4,8 @@ import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.utils.StringUtils;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.inventory.IInventory;
@@ -30,36 +32,12 @@ public class ItemCardInventory extends ItemCardBase {
 			return CardState.NO_TARGET;
 
 		TileEntity te = world.getTileEntity(target);
-		if (te instanceof IInventory) {
-			IInventory inv = (IInventory) te;
-			reader.setString("name", inv.getName());
-			reader.setInt("size", inv.getSizeInventory());
-			reader.setBoolean("sided", inv instanceof ISidedInventory);
-			reader.removeField("slot0");
-			reader.removeField("slot1");
-			reader.removeField("slot2");
-			reader.removeField("slot3");
-			int inUse = 0;
-			int items = 0;
-			for (int i = 0; i < inv.getSizeInventory(); i++) {
-				if (inv.getStackInSlot(i) != ItemStack.EMPTY) {
-					inUse++;
-					items += inv.getStackInSlot(i).getCount();
-				}
-				if (i == 0)
-					reader.setTag("slot0", inv.getStackInSlot(0).writeToNBT(new NBTTagCompound()));
-				if (i == 1)
-					reader.setTag("slot1", inv.getStackInSlot(1).writeToNBT(new NBTTagCompound()));
-				if (i == 2)
-					reader.setTag("slot2", inv.getStackInSlot(2).writeToNBT(new NBTTagCompound()));
-				if (i == 3)
-					reader.setTag("slot3", inv.getStackInSlot(3).writeToNBT(new NBTTagCompound()));
-			}
-			reader.setInt("used", inUse);
-			reader.setInt("items", items);
-			return CardState.OK;
-		}
-		return CardState.NO_TARGET;
+		NBTTagCompound tag = CrossModLoader.getInventoryData(te);
+		if (tag == null)
+			return CardState.NO_TARGET;
+		reader.reset();
+		reader.copyFrom(tag);
+		return CardState.OK;
 	}
 
 	@Override
@@ -73,14 +51,11 @@ public class ItemCardInventory extends ItemCardBase {
 			result.add(new PanelString("msg.ec.InfoPanelTotalItems", reader.getInt("items"), showLabels));
 			result.add(new PanelString("msg.ec.InfoPanelSlotsUsed", String.format("%s/%s", reader.getInt("used"), reader.getInt("size")), showLabels));
 			result.add(new PanelString("msg.ec.InfoPanelSidedInventory", reader.getBoolean("sided").toString(), showLabels));
-			if (reader.hasField("slot0"))
-				result.add(new PanelString(String.format("msg.ec.InfoPanelSlot%d", 1), StringUtils.getItemName(new ItemStack(reader.getTag("slot0"))), showLabels));
-			if (reader.hasField("slot1"))
-				result.add(new PanelString(String.format("msg.ec.InfoPanelSlot%d", 2), StringUtils.getItemName(new ItemStack(reader.getTag("slot1"))), showLabels));
-			if (reader.hasField("slot2"))
-				result.add(new PanelString(String.format("msg.ec.InfoPanelSlot%d", 3), StringUtils.getItemName(new ItemStack(reader.getTag("slot2"))), showLabels));
-			if (reader.hasField("slot3"))
-				result.add(new PanelString(String.format("msg.ec.InfoPanelSlot%d", 4), StringUtils.getItemName(new ItemStack(reader.getTag("slot3"))), showLabels));
+			for (int i = 0; i < 6; i++)
+				if (reader.hasField("slot" + Integer.toString(i))) {
+					ItemStack stack = new ItemStack(reader.getTag("slot" + Integer.toString(i)));
+					result.add(new PanelString(String.format("msg.ec.InfoPanelSlot%d", i + 1), StringUtils.getItemName(stack) + " x" + Integer.toString(stack.getCount()), showLabels));
+				}
 		}
 		return result;
 	}

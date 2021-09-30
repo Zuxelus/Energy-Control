@@ -2,7 +2,9 @@ package com.zuxelus.energycontrol.crossmod;
 
 import com.brandon3055.draconicevolution.api.IExtendedRFStorage;
 import com.brandon3055.draconicevolution.blocks.energynet.tileentity.TileCrystalDirectIO;
+import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.brandon3055.draconicevolution.blocks.tileentity.TileEnergyInfuser;
+import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -29,6 +31,26 @@ public class CrossDraconicEvolution extends CrossModBase {
 		if (te instanceof TileCrystalDirectIO) {
 			tag.setDouble("maxStorage", ((TileCrystalDirectIO) te).getMaxEnergyStored());
 			tag.setDouble("storage", ((TileCrystalDirectIO) te).getEnergyStored());
+			return tag;
+		}
+		return null;
+	}
+
+	@Override
+	public NBTTagCompound getCardData(TileEntity te) {
+		if (te instanceof TileReactorCore) {
+			TileReactorCore reactor = ((TileReactorCore) te);
+			NBTTagCompound tag = new NBTTagCompound();
+			tag.setString("status", reactor.reactorState.value.name());
+			tag.setDouble("temp", reactor.temperature.value);
+			tag.setDouble("rate", reactor.generationRate.value);
+			tag.setDouble("input", reactor.fieldInputRate.value);
+			tag.setDouble("diam", reactor.getCoreDiameter());
+			tag.setInteger("saturation", reactor.saturation.value);
+			tag.setDouble("fuel", reactor.convertedFuel.value);
+			tag.setDouble("shield", reactor.shieldCharge.value);
+			tag.setDouble("fuelMax", reactor.reactableFuel.value);
+			tag.setDouble("fuelRate", reactor.fuelUseRate.value);
 			return tag;
 		}
 		return null;

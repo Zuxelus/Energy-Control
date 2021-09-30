@@ -10,6 +10,7 @@ public class TileEntityTimerRenderer extends TileEntitySpecialRenderer<TileEntit
 	private static final ResourceLocation TEXTURE = new ResourceLocation(
 			EnergyControl.MODID + ":textures/blocks/timer/all.png");
 	private static final CubeRenderer model = new CubeRenderer(2, 0, 2, 28, 14, 28, 128, 64, 0, 0);
+	private static final CubeRenderer DESTROY = new CubeRenderer(2, 0, 2, 28, 14, 28, 32, 32, 0, 0);
 
 	@Override
 	public void render(TileEntityTimer te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
@@ -123,13 +124,18 @@ public class TileEntityTimerRenderer extends TileEntitySpecialRenderer<TileEntit
 			break;
 		}
 
-		bindTexture(TEXTURE);
-		model.render(0.03125F);
-		String time = te.getTimeString();
-		GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
-		GlStateManager.translate(0.5F, 0.575F, -0.4376F);
-		GlStateManager.scale(0.015625F, 0.015625F, 0.015625F);
-		getFontRenderer().drawString(time, -getFontRenderer().getStringWidth(time) / 2, -getFontRenderer().FONT_HEIGHT, 0x000000);
+		if (destroyStage > -1) {
+			bindTexture(DESTROY_STAGES[destroyStage]);
+			DESTROY.render(0.03125F);
+		} else {
+			bindTexture(TEXTURE);
+			model.render(0.03125F);
+			String time = te.getTimeString();
+			GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
+			GlStateManager.translate(0.5F, 0.575F, -0.4376F);
+			GlStateManager.scale(0.015625F, 0.015625F, 0.015625F);
+			getFontRenderer().drawString(time, -getFontRenderer().getStringWidth(time) / 2, -getFontRenderer().FONT_HEIGHT, 0x000000);
+		}
 		GlStateManager.popMatrix();
 	}
 }

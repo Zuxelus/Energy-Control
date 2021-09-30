@@ -39,7 +39,7 @@ public abstract class FacingHorizontal extends BlockHorizontal implements ITileE
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta) {
 		TileEntityFacing te = createTileEntity(meta);
-		te.setFacing(meta);
+		te.setFacing(EnumFacing.getHorizontal(meta));
 		return te;
 	}
 
@@ -50,7 +50,7 @@ public abstract class FacingHorizontal extends BlockHorizontal implements ITileE
 
 	@Override
 	public int getMetaFromState(IBlockState state) {
-		return state.getValue(FACING).getIndex();
+		return state.getValue(FACING).getHorizontalIndex();
 	}
 
 	@Override

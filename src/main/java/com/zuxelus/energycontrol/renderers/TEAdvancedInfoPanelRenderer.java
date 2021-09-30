@@ -84,7 +84,10 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			if (color > 15 || color < 0)
 				color = 6;
 		}
-		if (te.powered)
+
+		if (destroyStage > -1)
+			bindTexture(DESTROY_STAGES[destroyStage]);
+		else if (te.powered)
 			bindTexture(TEXTUREON[color]);
 		else
 			bindTexture(TEXTUREOFF[color]);
@@ -98,11 +101,17 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		RotationOffset offset = new RotationOffset(thickness * 2, rotateHor, rotateVert);
 		Screen screen = te.getScreen();
 		if (screen != null) {
-			if (thickness == 16 && rotateHor == 0 && rotateVert == 0)
-				model[textureId].render(0.03125F);
-			else
-				new CubeRenderer(textureId / 4 * 32 + 64, textureId % 4 * 32 + 64, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation())).render(0.03125F);
-			if (te.powered) {
+			if (thickness == 16 && rotateHor == 0 && rotateVert == 0) {
+				if (destroyStage > -1)
+					TileEntityInfoPanelRenderer.DESTROY.render(0.03125F);
+				else
+					model[textureId].render(0.03125F);
+			} else
+				if (destroyStage > -1)
+					new CubeRenderer(0.0F, 0.0F, 0.0F, 32, 32, 32, 32, 32, 0, 0, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation())).render(0.03125F);
+				else
+					new CubeRenderer(textureId / 4 * 32 + 64, textureId % 4 * 32 + 64, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation())).render(0.03125F);
+			if (te.powered && destroyStage == -1) {
 				List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
 				if (joinedData != null)
 					drawText(te, joinedData, thickness, offset);
