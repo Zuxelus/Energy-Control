@@ -272,12 +272,12 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 			return;
 		KitAssemblerRecipe newRecipe;
 		if (recipe == null) {
-			newRecipe = KitAssemblerRecipeWrapper.findRecipe(this);
+			newRecipe = KitAssemblerRecipe.findRecipe(this);
 			if (newRecipe == null)
 				return;
 			recipe = newRecipe;
 		} else if (!recipe.isSuitable(this)) {
-			newRecipe = KitAssemblerRecipeWrapper.findRecipe(this);
+			newRecipe = KitAssemblerRecipe.findRecipe(this);
 			if (newRecipe == null) {
 				recipe = null;
 				return;

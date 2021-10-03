@@ -42,7 +42,7 @@ public class CrossModLoader {
 		loadCrossMod(ModIDs.BIG_REACTORS, CrossBigReactors::new);
 		loadCrossMod(ModIDs.BUILDCRAFT, CrossBuildCraft::new);
 		loadCrossMod(ModIDs.DRACONIC_EVOLUTION, CrossDraconicEvolution::new);
-		loadCrossMod(ModIDs.ENDER_IO, CrossEnderIO::new);
+		loadCrossModSafely(ModIDs.ENDER_IO, () -> CrossEnderIO::new);
 		loadCrossMod(ModIDs.GALACTICRAFT_PLANETS, CrossGalacticraft::new);
 		loadCrossMod(ModIDs.MEKANISM, CrossMekanism::new);
 		loadCrossMod(ModIDs.MEKANISM_GENERATORS, CrossMekanismGenerators::new);

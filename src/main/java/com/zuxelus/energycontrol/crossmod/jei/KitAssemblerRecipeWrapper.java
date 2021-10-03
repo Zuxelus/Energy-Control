@@ -1,24 +1,18 @@
 package com.zuxelus.energycontrol.crossmod.jei;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.zuxelus.energycontrol.recipes.KitAssemblerRecipe;
-import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
 
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.ingredients.VanillaTypes;
-import mezz.jei.api.recipe.IIngredientType;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 public class KitAssemblerRecipeWrapper implements IRecipeWrapper {
-	private static List<KitAssemblerRecipe> recipes = new ArrayList<KitAssemblerRecipe>();
 	public final KitAssemblerRecipe recipe;
-	public static final IIngredientType<Ingredient> INGREDIENTS = () -> Ingredient.class;
 
 	public KitAssemblerRecipeWrapper(KitAssemblerRecipe recipe) {
 		this.recipe = recipe;
@@ -46,14 +40,6 @@ public class KitAssemblerRecipeWrapper implements IRecipeWrapper {
 		return recipe.output;
 	}
 
-	public static void addRecipe(KitAssemblerRecipe recipe) {
-		recipes.add(recipe);
-	}
-
-	public static List<KitAssemblerRecipe> getRecipes() {
-		return recipes;
-	}
-
 	private static List<ItemStack> getStackList(Ingredient ingredient, int count) {
 		List<ItemStack> list = new ArrayList<>();
 		for (ItemStack stack : ingredient.getMatchingStacks()) {
@@ -66,13 +52,5 @@ public class KitAssemblerRecipeWrapper implements IRecipeWrapper {
 			}
 		}
 		return list;
-	}
-
-	public static KitAssemblerRecipe findRecipe(TileEntityKitAssembler te) {
-		for(KitAssemblerRecipe recipe : recipes) {
-			if (recipe.isSuitable(te))
-				return recipe; 
-		}
-		return null;
 	}
 }

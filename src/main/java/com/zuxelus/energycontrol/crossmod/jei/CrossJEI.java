@@ -31,7 +31,7 @@ public class CrossJEI implements IModPlugin {
 
 	@Override
 	public void register(IModRegistry registry) {
-		registry.addRecipes(KitAssemblerRecipeWrapper.getRecipes(), KitAssemblerRecipeCategory.id);
+		registry.addRecipes(KitAssemblerRecipe.getRecipes(), KitAssemblerRecipeCategory.id);
 		registry.handleRecipes(KitAssemblerRecipe.class, recipe -> new KitAssemblerRecipeWrapper(recipe), KitAssemblerRecipeCategory.id);
 		registry.addRecipeCatalyst(new ItemStack(ModItems.blockKitAssembler), KitAssemblerRecipeCategory.id);
 		registry.addRecipeClickArea(GuiKitAssembler.class, 87, 35, 22, 15, new String[] { KitAssemblerRecipeCategory.id });

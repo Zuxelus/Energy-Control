@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.recipes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.zuxelus.energycontrol.crossmod.jei.KitAssemblerRecipeWrapper;
@@ -14,6 +15,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 public class KitAssemblerRecipe implements IRecipe {
+	private static List<KitAssemblerRecipe> recipes = new ArrayList<KitAssemblerRecipe>();
 	private ResourceLocation id;
 	public final Ingredient input1;
 	public final Ingredient input2;
@@ -88,12 +90,28 @@ public class KitAssemblerRecipe implements IRecipe {
 	@Override
 	public IRecipe setRegistryName(ResourceLocation id) {
 		this.id = id;
-		KitAssemblerRecipeWrapper.addRecipe(this);
+		addRecipe(this);
 		return this;
 	}
 
 	@Override
 	public Class<IRecipe> getRegistryType() {
 		return IRecipe.class;
+	}
+
+	public static void addRecipe(KitAssemblerRecipe recipe) {
+		recipes.add(recipe);
+	}
+
+	public static List<KitAssemblerRecipe> getRecipes() {
+		return recipes;
+	}
+
+	public static KitAssemblerRecipe findRecipe(TileEntityKitAssembler te) {
+		for(KitAssemblerRecipe recipe : recipes) {
+			if (recipe.isSuitable(te))
+				return recipe; 
+		}
+		return null;
 	}
 }
