@@ -214,6 +214,7 @@ public class ModItems {
 		registerItemModel(itemUpgrade, ItemUpgrade.DAMAGE_RANGE, "upgrade_range");
 		registerItemModel(itemUpgrade, ItemUpgrade.DAMAGE_COLOR, "upgrade_color");
 		registerItemModel(itemUpgrade, ItemUpgrade.DAMAGE_TOUCH, "upgrade_touch");
+		registerItemModel(itemUpgrade, ItemUpgrade.DAMAGE_WEB, "upgrade_web");
 		registerItemModel(itemThermometer, 0, "thermometer");
 		if (Loader.isModLoaded(ModIDs.IC2))
 			registerItemModel(itemThermometerDigital, 0, "thermometer_digital");

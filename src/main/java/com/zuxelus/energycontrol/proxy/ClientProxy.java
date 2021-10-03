@@ -10,6 +10,7 @@ import com.zuxelus.energycontrol.items.cards.ItemCardHolder;
 import com.zuxelus.energycontrol.renderers.*;
 import com.zuxelus.energycontrol.tileentities.*;
 import com.zuxelus.energycontrol.utils.SoundHelper;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;

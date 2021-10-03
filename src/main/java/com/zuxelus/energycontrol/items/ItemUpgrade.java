@@ -11,6 +11,7 @@ public class ItemUpgrade extends Item {
 	public static final int DAMAGE_RANGE = 0;
 	public static final int DAMAGE_COLOR = 1;
 	public static final int DAMAGE_TOUCH = 2;
+	public static final int DAMAGE_WEB = 3;
 
 	public ItemUpgrade() {
 		super();
@@ -29,6 +30,8 @@ public class ItemUpgrade extends Item {
 			return "item.upgrade_color";
 		case DAMAGE_TOUCH:
 			return "item.upgrade_touch";
+		case DAMAGE_WEB:
+			return "item.upgrade_web";
 		default:
 			return "";
 		}
@@ -41,5 +44,6 @@ public class ItemUpgrade extends Item {
 		items.add(new ItemStack(ModItems.itemUpgrade, 1, DAMAGE_RANGE));
 		items.add(new ItemStack(ModItems.itemUpgrade, 1, DAMAGE_COLOR));
 		items.add(new ItemStack(ModItems.itemUpgrade, 1, DAMAGE_TOUCH));
+		items.add(new ItemStack(ModItems.itemUpgrade, 1, DAMAGE_WEB));
 	}
 }

@@ -7,6 +7,8 @@ import com.zuxelus.energycontrol.network.ChannelHandler;
 import com.zuxelus.energycontrol.proxy.IProxy;
 import com.zuxelus.energycontrol.recipes.RecipesNew;
 import com.zuxelus.energycontrol.tileentities.ScreenManager;
+import com.zuxelus.energycontrol.websockets.SocketClient;
+
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -16,6 +18,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -79,5 +82,12 @@ public class EnergyControl {
 	@EventHandler
 	public void onServerStarting(FMLServerStartingEvent event) {
 		OreHelper.initList(event.getServer().worlds);
+		if (!EnergyControlConfig.wsHost.isEmpty())
+			SocketClient.connect(EnergyControlConfig.wsHost, EnergyControlConfig.wsPort);
+	}
+
+	@EventHandler
+	public void onServerStopping(FMLServerStoppingEvent event) {
+		SocketClient.close();
 	}
 }

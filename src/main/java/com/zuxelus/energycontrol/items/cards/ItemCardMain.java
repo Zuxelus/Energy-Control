@@ -1,10 +1,17 @@
 package com.zuxelus.energycontrol.items.cards;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.EnergyControlConfig;
+import com.zuxelus.energycontrol.ServerTickHandler;
 import com.zuxelus.energycontrol.api.*;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
+
+import io.netty.handler.codec.http.websocketx.WebSocketVersion;
+import net.minecraft.block.BlockCommandBlock;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -168,11 +175,12 @@ public final class ItemCardMain extends Item implements IItemCard, ITouchAction,
 			upgradeCountRange = upgradeStack.getCount();
 
 		boolean needUpdate = true;
+
 		int range = LOCATION_RANGE * (int) Math.pow(2, Math.min(upgradeCountRange, 7));
 
 		CardState state = CardState.INVALID_CARD;
 		IItemCard card = ((IItemCard) stack.getItem());
-		if (card.isRemoteCard(stack)) {
+		if (!EnergyControlConfig.disableRangeCheck && card.isRemoteCard(stack)) {
 			BlockPos target = reader.getTarget();
 			if (target != null) {
 				int dx = target.getX() - pos.getX();
@@ -278,5 +286,32 @@ public final class ItemCardMain extends Item implements IItemCard, ITouchAction,
 
 	public static Set<Integer> getCardIds() {
 		return CARDS.keySet();
+	}
+
+	public static void sendCardToWS(List<PanelString> list, ICardReader reader) {
+		if (EnergyControlConfig.wsHost.isEmpty())
+			return;
+		String id = reader.getId();
+		JsonObject json = new JsonObject();
+		json.addProperty("id", id);
+		JsonArray array = new JsonArray();
+		for (PanelString panelString : list) {
+			JsonObject line = new JsonObject();
+			if (panelString.textLeft != null) {
+				line.addProperty("left", panelString.textLeft);
+				line.addProperty("left_color", panelString.colorLeft);
+			}
+			if (panelString.textCenter != null) {
+				line.addProperty("center", panelString.textCenter);
+				line.addProperty("center_color", panelString.colorCenter);
+			}
+			if (panelString.textRight != null) {
+				line.addProperty("right", panelString.textRight);
+				line.addProperty("right_color", panelString.colorRight);
+			}
+			array.add(line);
+		}
+		json.add("lines", array);
+		ServerTickHandler.instance.cards.put(id, json);
 	}
 }

@@ -3,6 +3,7 @@ package com.zuxelus.energycontrol.items.cards;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.CardState;
@@ -143,6 +144,21 @@ public class ItemCardReader implements ICardReader {
 	}
 
 	@Override
+	public void setId(String id) {
+		setString("id", id);
+	}
+
+	@Override
+	public String getId() {
+		String id = getString("id");
+		if (id.isEmpty()) {
+			id = UUID.randomUUID().toString();
+			setId(id);
+		}
+		return id;
+	}
+
+	@Override
 	public CardState getState() {
 		return CardState.fromInteger(getInt("state"));
 	}
@@ -238,11 +254,13 @@ public class ItemCardReader implements ICardReader {
 	public void reset() {
 		BlockPos pos = getTarget();
 		String title = getTitle();
+		String id = getId();
 		card.setTagCompound(new NBTTagCompound());
 		if (pos != null)
 			ItemStackHelper.setCoordinates(card, pos);
 		if (!title.isEmpty())
 			setTitle(title);
+		setId(id);
 	}
 
 	@Override

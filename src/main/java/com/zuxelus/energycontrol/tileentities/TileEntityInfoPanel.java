@@ -466,6 +466,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		if (ItemCardMain.isCard(card)) {
 			ItemCardReader reader = new ItemCardReader(card);
 			ItemCardMain.updateCardNBT(card, world, pos, reader, stack);
+			ItemCardMain.sendCardToWS(getPanelStringList(true, getShowLabels()), reader);
 			reader.updateClient(card, this, slot);
 		}
 	}
