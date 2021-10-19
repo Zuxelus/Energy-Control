@@ -13,7 +13,6 @@ import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.network.ChannelHandler;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
-import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagByte;
@@ -25,6 +24,7 @@ import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -283,16 +283,18 @@ public class ItemCardReader implements ICardReader {
 		}
 	}
 
-	@SideOnly(Side.CLIENT)
 	public static List<PanelString> getStateMessage(CardState state) {
 		List<PanelString> result = new LinkedList<>();
 		PanelString line = new PanelString();
 		switch (state) {
-		case OUT_OF_RANGE: line.textCenter = I18n.format("msg.ec.InfoPanelOutOfRange");
+		case OUT_OF_RANGE:
+			line.textCenter = I18n.translateToLocal("msg.ec.InfoPanelOutOfRange");
 			break;
-		case INVALID_CARD: line.textCenter = I18n.format("msg.ec.InfoPanelInvalidCard");
+		case INVALID_CARD:
+			line.textCenter = I18n.translateToLocal("msg.ec.InfoPanelInvalidCard");
 			break;
-		case NO_TARGET: line.textCenter = I18n.format("msg.ec.InfoPanelNoTarget");
+		case NO_TARGET:
+			line.textCenter = I18n.translateToLocal("msg.ec.InfoPanelNoTarget");
 			break;
 		case CUSTOM_ERROR:
 			break;

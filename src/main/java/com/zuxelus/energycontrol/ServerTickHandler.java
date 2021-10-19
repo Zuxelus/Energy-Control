@@ -38,7 +38,7 @@ public class ServerTickHandler {
 
 	@SubscribeEvent
 	public void onServerTick(ServerTickEvent event) {
-		if (event.phase == Phase.END)
+		if (event.phase == Phase.END && EnergyControlConfig.wsEnabled)
 			if (updateTicker-- < 0) {
 				updateTicker = EnergyControlConfig.wsRefreshRate - 1;
 				if (!cards.isEmpty()) {

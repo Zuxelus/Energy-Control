@@ -5,7 +5,7 @@
   "description": "Energy Control is a remastered version of original Nuclear Control, an Industrial Craft 2 addon that allows you to build efficient monitoring and notification system for your energy flow.",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "url": "",
+  "url": "https://www.curseforge.com/minecraft/mc-mods/energy-control",
   "updateUrl": "",
   "authorList": ["Shedar","xbony2","Zuxelus","DMF444"],
   "credits": "Remastered by Zuxelus, originally created by Shedar, based on an original idea by Nargon and Noosius",

@@ -73,15 +73,14 @@ public class ModItems {
 		blockHoloPanel = register(event, new HoloPanel(), "holo_panel");
 		blockHoloPanelExtender = register(event, new HoloPanelExtender(), "holo_panel_extender");
 		blockRangeTrigger = register(event, new RangeTrigger(), "range_trigger");
-		if (Loader.isModLoaded(ModIDs.IC2))
+		if (Loader.isModLoaded(ModIDs.IC2)) {
 			blockRemoteThermo = register(event, new RemoteThermo(), "remote_thermo");
-		blockAverageCounter = register(event, new AverageCounter(), "average_counter");
-		blockEnergyCounter = register(event, new EnergyCounter(), "energy_counter");
-		blockKitAssembler = register(event, new KitAssembler(), "kit_assembler");
-		if (CrossModLoader.getCrossMod(ModIDs.IC2).getProfile() == 0) {
-			blockAfsu = register(event, new AFSU(), "afsu");
-			//blockIc2Cable = register(event, new IC2Cable(), "ic2_cable");
+			blockAverageCounter = register(event, new AverageCounter(), "average_counter");
+			blockEnergyCounter = register(event, new EnergyCounter(), "energy_counter");
 		}
+		blockKitAssembler = register(event, new KitAssembler(), "kit_assembler");
+		if (CrossModLoader.getCrossMod(ModIDs.IC2).getProfile() == 0)
+			blockAfsu = register(event, new AFSU(), "afsu");
 		if (Loader.isModLoaded(ModIDs.IC2)) {
 			blockSeedAnalyzer = register(event, new SeedAnalyzer(), "seed_analyzer");
 			blockSeedLibrary = register(event, new SeedLibrary(), "seed_library");
@@ -103,10 +102,11 @@ public class ModItems {
 		event.getRegistry().register(new ItemBlock(blockInfoPanelAdvanced).setRegistryName(TileEntityAdvancedInfoPanel.NAME));
 		event.getRegistry().register(new ItemBlock(blockInfoPanelAdvancedExtender).setRegistryName("info_panel_advanced_extender"));
 		event.getRegistry().register(new ItemBlock(blockRangeTrigger).setRegistryName("range_trigger"));
-		if (Loader.isModLoaded(ModIDs.IC2))
+		if (Loader.isModLoaded(ModIDs.IC2)) {
 			event.getRegistry().register(new ItemBlock(blockRemoteThermo).setRegistryName("remote_thermo"));
-		event.getRegistry().register(new ItemBlock(blockAverageCounter).setRegistryName("average_counter"));
-		event.getRegistry().register(new ItemBlock(blockEnergyCounter).setRegistryName("energy_counter"));
+			event.getRegistry().register(new ItemBlock(blockAverageCounter).setRegistryName("average_counter"));
+			event.getRegistry().register(new ItemBlock(blockEnergyCounter).setRegistryName("energy_counter"));
+		}
 		event.getRegistry().register(new ItemBlock(blockKitAssembler).setRegistryName("kit_assembler"));
 		if (CrossModLoader.getCrossMod(ModIDs.IC2).getProfile() == 0)
 			event.getRegistry().register(new ItemAFSU(blockAfsu).setRegistryName("afsu"));
@@ -186,6 +186,8 @@ public class ModItems {
 		if (Loader.isModLoaded(ModIDs.IC2)) {
 			registerBlockModel(blockThermalMonitor, 0, "thermal_monitor");
 			registerBlockModel(blockRemoteThermo, 0, "remote_thermo");
+			registerBlockModel(blockAverageCounter, 0, "average_counter");
+			registerBlockModel(blockEnergyCounter, 0, "energy_counter");
 		}
 		registerBlockModel(blockInfoPanel, 0, TileEntityInfoPanel.NAME);
 		registerBlockModel(blockInfoPanelExtender, 0, "info_panel_extender");
@@ -194,9 +196,6 @@ public class ModItems {
 		registerBlockModel(blockHoloPanel, 0, "holo_panel");
 		registerBlockModel(blockHoloPanelExtender, 0, "holo_panel_extender");
 		registerBlockModel(blockRangeTrigger, 0, "range_trigger");
-
-		registerBlockModel(blockAverageCounter, 0, "average_counter");
-		registerBlockModel(blockEnergyCounter, 0, "energy_counter");
 		registerBlockModel(blockKitAssembler, 0, "kit_assembler");
 		if (CrossModLoader.getCrossMod(ModIDs.IC2).getProfile() == 0)
 			registerBlockModel(blockAfsu, 0, "afsu");

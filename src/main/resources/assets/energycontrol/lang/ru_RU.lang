@@ -103,6 +103,7 @@ ec.config.infoPanelRefreshPeriod=Info Panel Refresh Period
 ec.config.rangeTriggerRefreshPeriod=Range Trigger Refresh Period
 ec.config.useCustomSounds=Use Custom Sounds
 ec.config.disableRangeCheck=Disable Range Check
+ec.config.wsEnabled=Web Socket Enabled
 ec.config.wsHost=Web Socket Host
 ec.config.wsPort=Web Socket Port
 ec.config.wsRefreshRate=Web Socket Refresh Rate in ticks

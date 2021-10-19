@@ -58,7 +58,7 @@ public class EnergyControl {
 		//proxy.registerModelLoader();
 
 		ChannelHandler.init();
-		CrossModLoader.init();
+		CrossModLoader.preInit();
 		ModItems.registerTileEntities();
 		MinecraftForge.EVENT_BUS.register(new SlotHandler());
 	}
@@ -71,23 +71,24 @@ public class EnergyControl {
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
 
 		proxy.registerSpecialRenderers();
+		CrossModLoader.init();
 	}
 
 	@EventHandler
 	public static void postInit(FMLPostInitializationEvent event) {
 		RecipesNew.addRecipes();
-		CrossModLoader.postInit();
 	}
 
 	@EventHandler
 	public void onServerStarting(FMLServerStartingEvent event) {
 		OreHelper.initList(event.getServer().worlds);
-		if (!EnergyControlConfig.wsHost.isEmpty())
+		if (EnergyControlConfig.wsEnabled && !EnergyControlConfig.wsHost.isEmpty())
 			SocketClient.connect(EnergyControlConfig.wsHost, EnergyControlConfig.wsPort);
 	}
 
 	@EventHandler
 	public void onServerStopping(FMLServerStoppingEvent event) {
-		SocketClient.close();
+		if (EnergyControlConfig.wsEnabled)
+			SocketClient.close();
 	}
 }

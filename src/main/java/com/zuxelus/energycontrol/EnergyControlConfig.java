@@ -44,6 +44,9 @@ public class EnergyControlConfig {
 	@LangKey("ec.config.disableRangeCheck")
 	public static boolean disableRangeCheck = false;
 
+	@LangKey("ec.config.wsEnabled")
+	public static boolean wsEnabled = false;
+
 	@LangKey("ec.config.wsHost")
 	public static String wsHost = "";
 
