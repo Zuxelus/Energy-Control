@@ -29,6 +29,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -46,7 +47,12 @@ public class CrossModLoader {
 		loadCrossMod(ModIDs.GALACTICRAFT_PLANETS, CrossGalacticraft::new);
 		loadCrossMod(ModIDs.MEKANISM, CrossMekanism::new);
 		loadCrossMod(ModIDs.MEKANISM_GENERATORS, CrossMekanismGenerators::new);
-		loadCrossMod(ModIDs.NUCLEAR_CRAFT, CrossNuclearCraft::new);
+		ModContainer nc = Loader.instance().getIndexedModList().get(ModIDs.NUCLEAR_CRAFT);
+		if (nc != null)
+			if (nc.getVersion().contains("2o"))
+				loadCrossMod(ModIDs.NUCLEAR_CRAFT, CrossNuclearCraftOverhauled::new);
+			else
+				loadCrossMod(ModIDs.NUCLEAR_CRAFT, CrossNuclearCraft::new);
 		loadCrossModSafely(ModIDs.COMPUTER_CRAFT, () -> CrossComputerCraft::new);
 		loadCrossMod(ModIDs.PNEUMATICCRAFT, CrossPneumaticCraft::new);
 		loadCrossMod(ModIDs.THERMAL_EXPANSION, CrossThermalExpansion::new);

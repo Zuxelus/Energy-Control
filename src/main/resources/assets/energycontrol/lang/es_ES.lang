@@ -240,6 +240,16 @@ msg.ec.InfoPanelWaterFlow=Flujo de Agua: %s
 msg.ec.InfoPanelWater=Agua: %s
 msg.ec.InfoPanelWindStrength=Fuerza del Viento: %s
 
+msg.nc.CasingHeatLevel=Casing Heat Level: %s
+msg.nc.CasingTemp=Casing Temperature: %s
+msg.nc.MeanEfficiency=Mean Efficiency: %s%%
+msg.nc.NetClusterHeating=Net Cluster Heating: %s
+msg.nc.NumberOfClusters=Number of Clusters: %s
+msg.nc.ProductionRate=Production Rate: %s
+msg.nc.RawHeating=Raw Heating: %s
+msg.nc.SparsityEfficiencyMult=Sparsity Efficiency Mult: %s%%
+msg.nc.TotalClusterCooling=Total Cluster Cooling: %s
+
 msg.ec.cbInfoPanelLiquidName=Nombre del Líquido
 msg.ec.cbInfoPanelLiquidAmount=Cantidad
 msg.ec.cbInfoPanelLiquidCapacity=Capacidad

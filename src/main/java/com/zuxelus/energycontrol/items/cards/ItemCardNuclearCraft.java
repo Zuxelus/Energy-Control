@@ -95,18 +95,30 @@ public class ItemCardNuclearCraft extends ItemCardBase {
 			if (!reader.getString("liquidTank2Name").equals(""))
 				result.add(new PanelString(I18n.format(reader.getString("liquidTank2Name")) + ": " + reader.getString("liquidTank2")));
 			break;
-		case 10:
-			result.add(new PanelString("msg.ec.InfoPanelOutputgJ", reader.getInt("production"), showLabels));
-			result.add(new PanelString("msg.ec.InfoPanelEnvironmentalBoost", reader.getDouble("boost"), showLabels));
-			result.add(new PanelString("msg.ec.InfoPanelSunVisible", reader.getDouble("sunVisible"), showLabels));
+		case 8:
+			result.add(new PanelString("msg.ec.InfoPanelSize", reader.getString("size"), showLabels));
+			result.add(new PanelString("msg.nc.NumberOfClusters", reader.getInt("clusterCount"), showLabels));
+			result.add(new PanelString("msg.nc.MeanEfficiency", reader.getDouble("meanEfficiency"), showLabels));
+			result.add(new PanelString("msg.nc.ProductionRate", reader.getDouble("outputRate"), "mB/t", showLabels));
+			result.add(new PanelString("msg.nc.SparsityEfficiencyMult", reader.getDouble("sparsityEfficiencyMult"), showLabels));
+			result.add(new PanelString("msg.nc.CasingTemp", reader.getInt("temp"), "K", showLabels));
+			//result.add(new PanelString("msg.nc.RawHeating", reader.getLong("rawHeating"), "H/t", showLabels));
+			result.add(new PanelString("msg.nc.NetClusterHeating", reader.getLong("heat"), "H/t", showLabels));
+			result.add(new PanelString("msg.nc.CasingHeatLevel", reader.getString("level"), showLabels));
+			result.add(new PanelString("msg.nc.TotalClusterCooling", reader.getLong("cooling"), "H/t", showLabels));
+			addOnOff(result, isServer, reader.getBoolean("active"));
 			break;
-		case 11:
-			result.add(new PanelString("msg.ec.InfoPanelFrequency", reader.getInt("frequency"), showLabels));
-			result.add(new PanelString("msg.ec.InfoPanelTarget", reader.getInt("target"), showLabels));
-			break;
-		case 12:
-			result.add(new PanelString("msg.ec.InfoPanelOutputgJ", reader.getInt("production"), showLabels));
-			result.add(new PanelString("msg.ec.InfoPanelEnvironmentalBoost", reader.getDouble("boost"), showLabels));
+		case 9:
+			result.add(new PanelString("msg.ec.InfoPanelSize", reader.getString("size"), showLabels));
+			result.add(new PanelString("msg.nc.NumberOfClusters", reader.getInt("clusterCount"), showLabels));
+			result.add(new PanelString("msg.nc.MeanEfficiency", reader.getDouble("meanEfficiency"), showLabels));
+			result.add(new PanelString("msg.nc.SparsityEfficiencyMult", reader.getDouble("sparsityEfficiencyMult"), showLabels));
+			result.add(new PanelString("msg.nc.CasingTemp", reader.getInt("temp"), "K", showLabels));
+			//result.add(new PanelString("msg.nc.RawHeating", reader.getLong("rawHeating"), "H/t", showLabels));
+			result.add(new PanelString("msg.nc.NetClusterHeating", reader.getLong("heat"), "H/t", showLabels));
+			result.add(new PanelString("msg.nc.CasingHeatLevel", reader.getString("level"), showLabels));
+			result.add(new PanelString("msg.nc.TotalClusterCooling", reader.getLong("cooling"), "H/t", showLabels));
+			addOnOff(result, isServer, reader.getBoolean("active"));
 			break;
 		}
 		return result;

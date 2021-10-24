@@ -258,7 +258,7 @@ public class ItemCardGalacticraft extends ItemCardBase {
 				result.add(new PanelString(I18n.format(reader.getString("liquidTank2Name")) + ": " + reader.getString("liquidTank2")));
 			break;
 		case 10:
-			result.add(new PanelString("msg.ec.InfoPanelOutputgJ", reader.getInt("production"), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getInt("production"), "gJ", showLabels));
 			result.add(new PanelString("msg.ec.InfoPanelEnvironmentalBoost", reader.getDouble("boost"), showLabels));
 			result.add(new PanelString("msg.ec.InfoPanelSunVisible", reader.getDouble("sunVisible"), showLabels));
 			break;
@@ -267,7 +267,7 @@ public class ItemCardGalacticraft extends ItemCardBase {
 			result.add(new PanelString("msg.ec.InfoPanelTarget", reader.getInt("target"), showLabels));
 			break;
 		case 12:
-			result.add(new PanelString("msg.ec.InfoPanelOutputgJ", reader.getInt("production"), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getInt("production"), "gJ", showLabels));
 			result.add(new PanelString("msg.ec.InfoPanelEnvironmentalBoost", reader.getDouble("boost"), showLabels));
 			break;
 		case 13:
