@@ -45,6 +45,7 @@ public class ClientProxy {
 			ScreenManager.register(ModContainerTypes.timer.get(), GuiTimer::new);
 			ScreenManager.register(ModContainerTypes.card_holder.get(), GuiCardHolder::new);
 			ScreenManager.register(ModContainerTypes.portable_panel.get(), GuiPortablePanel::new);
+			ScreenManager.register(ModContainerTypes.fluid_control_valve.get(), GuiFluidControlValve::new);
 		});
 	}
 }

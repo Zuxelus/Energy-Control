@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		" S ",
+		"S#S",
+		" S "
+	],
+	"key": {
+		"#": {
+			"item": "minecraft:bucket"
+		},
+		"S": {
+			"item": "energycontrol:strong_string"
+		}
+	},
+	"result": {
+		"item": "energycontrol:fluid_control_valve"
+	}
+}

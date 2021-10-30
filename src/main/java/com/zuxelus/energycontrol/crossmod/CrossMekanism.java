@@ -15,6 +15,7 @@ import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.boiler.BoilerMultiblockData;
 import mekanism.common.content.matrix.MatrixMultiblockData;
+import mekanism.common.content.network.transmitter.MechanicalPipe;
 import mekanism.common.tile.*;
 import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.factory.TileEntityItemStackGasToItemStackFactory;
@@ -25,12 +26,14 @@ import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
 import mekanism.common.tile.multiblock.TileEntityInductionCasing;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
+import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.EnergyType;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fluids.IFluidTank;
 
 public class CrossMekanism extends CrossModBase {
 
@@ -447,5 +450,17 @@ public class CrossMekanism extends CrossModBase {
 
 	private static String formatTemp(TemperatureUnit unit, double temp) {
 		return String.format("%.3f %s", unit.convertFromK(temp, true), unit.getSymbol());
+	}
+
+	@Override
+	public IFluidTank getPipeTank(TileEntity te) {
+		if (te instanceof TileEntityMechanicalPipe) {
+			MechanicalPipe pipe = ((TileEntityMechanicalPipe) te).getTransmitter();
+			if (pipe != null && pipe.getTransmitterNetwork() != null)
+				return pipe.getTransmitterNetwork().fluidTank;
+		}
+		if (te instanceof TileEntityFluidTank)
+			return ((TileEntityFluidTank) te).fluidTank;
+		return null;
 	}
 }

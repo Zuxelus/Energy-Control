@@ -32,6 +32,7 @@ public class ModItems {
 	//public static final RegistryObject<Block> energy_counter = BLOCKS.register("energy_counter", () -> new EnergyCounter());
 	public static final RegistryObject<Block> kit_assembler = BLOCKS.register("kit_assembler", () -> new KitAssembler());
 	public static final RegistryObject<Block> timer = BLOCKS.register("timer", () -> new TimerBlock());
+	public static final RegistryObject<Block> fluid_control_valve = BLOCKS.register("fluid_control_valve", () -> new FluidControlValve());
 
 	public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, EnergyControl.MODID);
 	public static final RegistryObject<Item> kit_energy = ITEMS.register("kit_energy", () -> new ItemKitEnergy());
@@ -42,6 +43,7 @@ public class ModItems {
 	public static final RegistryObject<Item> kit_toggle = ITEMS.register("kit_toggle", () -> new ItemKitToggle());
 	public static Item kit_app_eng;
 	public static Item kit_big_reactors;
+	public static Item kit_botania;
 	public static Item kit_immersive_engineering;
 	public static Item kit_mekanism;
 	public static Item kit_thermal_expansion;
@@ -59,6 +61,7 @@ public class ModItems {
 	public static Item card_app_eng;
 	public static Item card_app_eng_inv;
 	public static Item card_big_reactors;
+	public static Item card_botania;
 	public static Item card_immersive_engineering;
 	public static Item card_mekanism;
 	public static Item card_thermal_expansion;

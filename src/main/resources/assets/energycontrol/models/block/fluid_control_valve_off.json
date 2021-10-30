@@ -1,0 +1,8 @@
+{
+    "parent": "energycontrol:block/pipe_box",
+    "textures": {
+        "particle": "energycontrol:block/fluid_control_valve/side",
+        "side": "energycontrol:block/fluid_control_valve/side",
+        "port": "energycontrol:block/fluid_control_valve/port"
+    }
+}

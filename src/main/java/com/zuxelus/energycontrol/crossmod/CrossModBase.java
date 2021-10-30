@@ -8,6 +8,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.IFluidTank;
 
 public class CrossModBase {
 
@@ -29,5 +30,9 @@ public class CrossModBase {
 
 	public int getReactorHeat(World world, BlockPos pos) {
 		return -1;
+	}
+
+	public IFluidTank getPipeTank(TileEntity te) {
+		return null;
 	}
 }

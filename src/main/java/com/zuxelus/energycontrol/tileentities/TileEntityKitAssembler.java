@@ -27,6 +27,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
@@ -327,9 +328,9 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements ITi
 
 	@Override
 	@Nonnull
-	public <T> LazyOptional<T> getCapability(Capability<T> cap) {
+	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
 		if (cap == CapabilityEnergy.ENERGY)
 			return LazyOptional.of(() -> this.storage).cast();
-		return super.getCapability(cap);
+		return super.getCapability(cap, side);
 	}
 }

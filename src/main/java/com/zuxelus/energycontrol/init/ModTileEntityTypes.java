@@ -39,5 +39,6 @@ public class ModTileEntityTypes {
 		TileEntityType.Builder.of(TileEntityKitAssembler::new, ModItems.kit_assembler.get()).build(null));
 	public static final RegistryObject<TileEntityType<TileEntityTimer>> timer = TILE_ENTITY_TYPES.register("timer", () ->
 		TileEntityType.Builder.of(TileEntityTimer::new, ModItems.timer.get()).build(null));
-
+	public static final RegistryObject<TileEntityType<TileEntityFluidControlValve>> fluid_control_valve = TILE_ENTITY_TYPES.register("fluid_control_valve", () ->
+		TileEntityType.Builder.of(TileEntityFluidControlValve::new, ModItems.fluid_control_valve.get()).build(null));
 }

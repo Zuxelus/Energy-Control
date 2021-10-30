@@ -21,6 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.ModList;
@@ -33,6 +34,7 @@ public class CrossModLoader {
 	public static void init() {
 		loadCrossMod(ModIDs.BIG_REACTORS, CrossBigReactors::new);
 		loadCrossMod(ModIDs.BIGGER_REACTORS, CrossBiggerReactors::new);
+		loadCrossMod(ModIDs.BOTANIA, CrossBotania::new);
 		loadCrossModSafely(ModIDs.COMPUTER_CRAFT, () -> CrossComputerCraft::new);
 		loadCrossModSafely(ModIDs.MEKANISM, () -> CrossMekanism::new);
 		loadCrossModSafely(ModIDs.MEKANISM_GENERATORS, () -> CrossMekanismGenerators::new);
@@ -71,7 +73,7 @@ public class CrossModLoader {
 			if (tag != null)
 				return tag;
 		}
-		Optional<IEnergyStorage> cap = te.getCapability(CapabilityEnergy.ENERGY).resolve();
+		Optional<IEnergyStorage> cap = te.getCapability(CapabilityEnergy.ENERGY, null).resolve();
 		if (cap.isPresent()) {
 			IEnergyStorage handler = cap.get();
 			CompoundNBT tag = new CompoundNBT();
@@ -161,5 +163,14 @@ public class CrossModLoader {
 			}
 		}
 		return tag;
+	}
+
+	public static IFluidTank getPipeTank(TileEntity te) {
+		for (CrossModBase crossMod : CROSS_MODS.values()) {
+			IFluidTank tank = crossMod.getPipeTank(te);
+			if (tank != null)
+				return tank;
+		}
+		return null;
 	}
 }

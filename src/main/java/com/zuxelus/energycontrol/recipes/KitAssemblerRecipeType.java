@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 
 import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
-import com.zuxelus.zlib.recipes.EmptyInventory;
 
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.RecipeManager;
@@ -20,7 +19,7 @@ public class KitAssemblerRecipeType implements IRecipeType<KitAssemblerRecipe> {
 
 		if (cachedRecipes.isEmpty()) {
 			RecipeManager recipeManager = world.getRecipeManager();
-			List<KitAssemblerRecipe> recipes = recipeManager.getRecipesFor(this, EmptyInventory.INSTANCE, world);
+			List<KitAssemblerRecipe> recipes = recipeManager.getAllRecipesFor(this);
 			cachedRecipes = recipes;
 		}
 		return cachedRecipes;

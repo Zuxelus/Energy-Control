@@ -60,6 +60,8 @@
     "item.energycontrol.card_thermal_expansion": "Thermal Expansion Sensor Card",
     "item.energycontrol.kit_immersive_engineering": "Immersive Engineering Sensor Kit",
     "item.energycontrol.card_immersive_engineering": "Immersive Engineering Sensor Card",
+    "item.energycontrol.kit_botania": "Botania Sensor Kit",
+    "item.energycontrol.card_botania": "Botania Sensor Kit",
 
     "_comment": "Internal Blocks",
     "block.energycontrol.thermal_monitor": "Thermal Monitor",
@@ -79,6 +81,7 @@
     "block.energycontrol.range_trigger": "Range Trigger",
     "block.energycontrol.kit_assembler": "Kit Assembler",
     "block.energycontrol.timer": "Timer",
+    "block.energycontrol.fluid_control_valve": "Fluid Control Valve",
 
     "_comment": "Original Screen Messages",
     "msg.ec.HowlerAlarmSoundRange": "Sound range: %s",
@@ -95,6 +98,7 @@
     "msg.ec.InfoPanelInvalidCard": "Invalid Card",
     "msg.ec.InfoPanelNoTarget": "Target Not Found",
 
+    "msg.ec.InfoPanelAge": "Age: %s ticks",
     "msg.ec.InfoPanelAmount": "Amount: %s",
     "msg.ec.InfoPanelAmountmB": "Amount: %s mB",
     "msg.ec.InfoPanelAugmentation": "Augmentation: %s",

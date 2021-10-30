@@ -10,6 +10,7 @@
     "item.energycontrol.kit_generator": "Набор для генератора",
     "item.energycontrol.kit_reactor": "Набор для реактора",
     "item.energycontrol.kit_toggle": "Набор для удаленного переключения",
+    "item.energycontrol.kit_vanilla": "Remote Vanilla Kit",
     "item.energycontrol.kit_redstone": "Remote Redstone Kit",
     "item.energycontrol.kit_inventory": "Remote Inventory Kit",
     "item.energycontrol.card_energy": "Карта-датчик расположения энергии",
@@ -23,6 +24,7 @@
     "item.energycontrol.card_reactor_5x5": "Карта-датчик расположения 5x5 реактора",
     "item.energycontrol.card_engine": "Карта-датчик расположения двигателя",
     "item.energycontrol.card_toggle": "Карта удаленного переключения",
+    "item.energycontrol.card_vanilla": "Remote Vanilla Card",
     "item.energycontrol.card_redstone": "Remote Redstone Card",
     "item.energycontrol.card_inventory": "Remote Inventory Card",
     "item.energycontrol.card_text": "Текстовая карта",
@@ -58,6 +60,8 @@
     "item.energycontrol.card_thermal_expansion": "Карта для Thermal Expansion",
     "item.energycontrol.kit_immersive_engineering": "Набор с датчиком для Immersive Engineering",
     "item.energycontrol.card_immersive_engineering": "Карта для Immersive Engineering",
+    "item.energycontrol.kit_botania": "Botania Sensor Kit",
+    "item.energycontrol.card_botania": "Botania Sensor Kit",
 
     "_comment": "Internal Blocks",
     "block.energycontrol.thermal_monitor": "Датчик температуры",
@@ -77,6 +81,7 @@
     "block.energycontrol.range_trigger": "Дистанционный триггер",
     "block.energycontrol.kit_assembler": "Сборщик наборов",
     "block.energycontrol.timer": "Таймер",
+    "block.energycontrol.fluid_control_valve": "Клапан управления жидкостью",
 
     "_comment": "Original Screen Messages",
     "msg.ec.HowlerAlarmSoundRange": "Дальность звука: %s",
@@ -264,7 +269,7 @@
     "ec.jei.blockInfoPanelAdvancedExtender": "When connected to a advanced industrial information panel a seamless monitor will form.",
     "ec.jei.blockHoloPanel": "Works in the same way as Information Panel. Put Advanced Circuits to increase panel height.",
     "ec.jei.blockKitAssembler": "Creates kits from cards and components for crafting. To charge put in energy slot bucket with lava or any Forge Energy item.",
-    "ec.jei.cards": "To get specific card click with kit on corresponding block. For example, to get Energy Card click with Energy Kit on any Energy Storage.",
+    "ec.jei.cards": "To get specific card click with kit on corresponding block. For example, to get Energy Sensor Card click with Energy Sensor Kit on any Energy Storage.",
 
     "ec.jei.itemCardHolder": "Portable storage for 54 sensor cards.",
     "ec.jei.itemPortablePanel": "Portable variant of information panel.",

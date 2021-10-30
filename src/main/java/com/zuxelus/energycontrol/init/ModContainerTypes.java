@@ -18,6 +18,7 @@ public final class ModContainerTypes {
 	public static final RegistryObject<ContainerType<ContainerRangeTrigger>> range_trigger = CONTAINER_TYPES.register("range_trigger", () -> IForgeContainerType.create(ContainerRangeTrigger::new));
 	public static final RegistryObject<ContainerType<ContainerKitAssembler>> kit_assembler = CONTAINER_TYPES.register("kit_assembler", () -> IForgeContainerType.create(ContainerKitAssembler::new));
 	public static final RegistryObject<ContainerType<ContainerTimer>> timer = CONTAINER_TYPES.register("timer", () -> IForgeContainerType.create(ContainerTimer::new));
+	public static final RegistryObject<ContainerType<ContainerFluidControlValve>> fluid_control_valve = CONTAINER_TYPES.register("fluid_control_valve", () -> IForgeContainerType.create(ContainerFluidControlValve::new));
 
 	public static final RegistryObject<ContainerType<ContainerPortablePanel>> portable_panel = CONTAINER_TYPES.register("portable_panel", () -> IForgeContainerType.create(ContainerPortablePanel::new));
 	public static final RegistryObject<ContainerType<ContainerCardHolder>> card_holder = CONTAINER_TYPES.register("card_holder", () -> IForgeContainerType.create(ContainerCardHolder::new));

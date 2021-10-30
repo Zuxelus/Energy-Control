@@ -7,6 +7,9 @@ import com.zuxelus.energycontrol.items.kits.*;
 import com.zuxelus.energycontrol.recipes.KitAssemblerRecipeType;
 import com.zuxelus.energycontrol.tileentities.*;
 
+import net.minecraft.block.Block;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -35,6 +38,7 @@ public class ModEventHandler {
 		event.getRegistry().register(new BlockItem(ModItems.range_trigger.get(), new Item.Properties().tab(EnergyControl.ITEM_GROUP)).setRegistryName("range_trigger"));
 		event.getRegistry().register(new BlockItem(ModItems.kit_assembler.get(), new Item.Properties().tab(EnergyControl.ITEM_GROUP)).setRegistryName("kit_assembler"));
 		event.getRegistry().register(new BlockItem(ModItems.timer.get(), new Item.Properties().tab(EnergyControl.ITEM_GROUP)).setRegistryName("timer"));
+		event.getRegistry().register(new BlockItem(ModItems.fluid_control_valve.get(), new Item.Properties().tab(EnergyControl.ITEM_GROUP)).setRegistryName("fluid_control_valve"));
 
 		ModList list = ModList.get();
 		if (list.isLoaded(ModIDs.APPLIED_ENERGISTICS)) {
@@ -50,6 +54,12 @@ public class ModEventHandler {
 			event.getRegistry().register(ModItems.kit_big_reactors);
 			ModItems.card_big_reactors = new ItemCardBigReactors().setRegistryName("card_big_reactors");
 			event.getRegistry().register(ModItems.card_big_reactors);
+		}
+		if (list.isLoaded(ModIDs.BOTANIA)) {
+			ModItems.kit_botania = new ItemKitBotania().setRegistryName("kit_botania");
+			event.getRegistry().register(ModItems.kit_botania);
+			ModItems.card_botania = new ItemCardBotania().setRegistryName("card_botania");
+			event.getRegistry().register(ModItems.card_botania);
 		}
 		/*if (list.isLoaded(ModIDs.IMMERSIVE_ENGINEERING)) {
 			ModItems.kit_immersive_engineering = new ItemKitImmersiveEngineering().setRegistryName("kit_immersive_engineering");
@@ -69,6 +79,11 @@ public class ModEventHandler {
 			ModItems.card_thermal_expansion = new ItemCardThermalExpansion().setRegistryName("card_thermal_expansion");
 			event.getRegistry().register(ModItems.card_thermal_expansion);
 		}
+	}
+
+	@SubscribeEvent
+	public static void onBlockRegistry(Register<Block> event) {
+		RenderTypeLookup.setRenderLayer(ModItems.fluid_control_valve.get(), RenderType.cutout());
 	}
 
 	@SubscribeEvent
