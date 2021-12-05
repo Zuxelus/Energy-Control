@@ -150,9 +150,7 @@ public class ScreenManager {
 			return false;
 		if (((TileEntityInfoPanelExtender) te).getFacing() != facing)
 			return false;
-		if (((IScreenPart) te).getScreen() != null)
-			return false;
-		return true;
+		return ((IScreenPart) te).getScreen() == null;
 	}
 
 	@SuppressWarnings("resource")
@@ -177,10 +175,10 @@ public class ScreenManager {
 		if (!screens.containsKey(getWorldKey(extender.getLevel())))
 			screens.put(getWorldKey(extender.getLevel()), new ArrayList<Screen>());
 		if (!unusedPanels.containsKey(getWorldKey(extender.getLevel())))
-			unusedPanels.put(getWorldKey(extender.getLevel()), new ArrayList<TileEntityInfoPanel>());
+			unusedPanels.put(getWorldKey(extender.getLevel()), new ArrayList<>());
 
-		List<TileEntityInfoPanel> rebuildPanels = new ArrayList<TileEntityInfoPanel>();
-		List<Screen> screensToDestroy = new ArrayList<Screen>();
+		List<TileEntityInfoPanel> rebuildPanels = new ArrayList<>();
+		List<Screen> screensToDestroy = new ArrayList<>();
 
 		for (Screen screen : screens.get(getWorldKey(extender.getLevel()))) {
 			TileEntityInfoPanel core = screen.getCore(extender.getLevel());
@@ -213,8 +211,7 @@ public class ScreenManager {
 		for (TileEntityInfoPanel panel : rebuildPanels) {
 			Screen screen = buildFromPanel(panel);
 			screens.get(getWorldKey(extender.getLevel())).add(screen);
-			if (unusedPanels.get(getWorldKey(extender.getLevel())).contains(panel))
-				unusedPanels.get(getWorldKey(extender.getLevel())).remove(panel);
+			unusedPanels.get(getWorldKey(extender.getLevel())).remove(panel);
 		}
 	}
 
@@ -231,7 +228,7 @@ public class ScreenManager {
 		IScreenPart screenPart = (IScreenPart) part;
 		Screen screen = screenPart.getScreen();
 		if (screen == null) {
-			if (part instanceof TileEntityInfoPanel && unusedPanels.get(getWorldKey(part.getLevel())).contains(part))
+			if (part instanceof TileEntityInfoPanel)
 				unusedPanels.get(getWorldKey(part.getLevel())).remove(part);
 			return;
 		}

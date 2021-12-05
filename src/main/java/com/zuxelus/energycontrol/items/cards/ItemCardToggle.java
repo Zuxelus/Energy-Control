@@ -91,7 +91,7 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 			world.setBlock(pos, state.setValue(POWERED, Boolean.valueOf(true)), 3);
 			world.updateNeighborsAt(pos, block);
 			world.updateNeighborsAt(pos.relative(getFacing(state).getOpposite()), block);
-			world.getBlockTicks().scheduleTick(pos, block, block instanceof WoodButtonBlock ? 30 : 20);
+			world.scheduleTick(pos, block, block instanceof WoodButtonBlock ? 30 : 20);
 		}
 		return false;
 	}

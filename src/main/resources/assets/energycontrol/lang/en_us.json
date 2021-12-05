@@ -157,6 +157,8 @@
     "msg.ec.InfoPanelSlot2": "Slot 2: %s",
     "msg.ec.InfoPanelSlot3": "Slot 3: %s",
     "msg.ec.InfoPanelSlot4": "Slot 4: %s",
+    "msg.ec.InfoPanelSlot5": "Slot 5: %s",
+    "msg.ec.InfoPanelSlot6": "Slot 6: %s",
     "msg.ec.InfoPanelSpeed": "Speed: %s",
     "msg.ec.InfoPanelStatus": "Status: %s",
     "msg.ec.InfoPanelStorage": "Storage: %s",

@@ -18,6 +18,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -152,11 +154,8 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements MenuP
 	public void onClientMessageReceived(CompoundTag tag) { }
 
 	@Override
-	public ClientboundBlockEntityDataPacket getUpdatePacket() {
-		CompoundTag tag = new CompoundTag();
-		tag = writeProperties(tag);
-		tag.putBoolean("poweredBlock", poweredBlock);
-		return new ClientboundBlockEntityDataPacket(getBlockPos(), 0, tag);
+	public Packet<ClientGamePacketListener> getUpdatePacket() {
+		return ClientboundBlockEntityDataPacket.create(this);
 	}
 
 	@Override
@@ -198,8 +197,9 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements MenuP
 	}
 
 	@Override
-	public CompoundTag save(CompoundTag tag) {
-		return writeProperties(super.save(tag));
+	protected void saveAdditional(CompoundTag tag) {
+		super.saveAdditional(tag);
+		writeProperties(tag);
 	}
 
 	@Override

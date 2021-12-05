@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 import com.zuxelus.energycontrol.EnergyControl;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.fmllegacy.network.NetworkEvent.Context;
+import net.minecraftforge.network.NetworkEvent.Context;
 
 public class PacketKeys {
 	private boolean altPressed;

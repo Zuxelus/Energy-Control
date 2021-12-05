@@ -8,6 +8,8 @@ import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -99,8 +101,8 @@ public class TileEntityHowlerAlarm extends BlockEntityFacing implements ITilePac
 	public void onClientMessageReceived(CompoundTag tag) { }
 
 	@Override
-	public ClientboundBlockEntityDataPacket getUpdatePacket() {
-		return new ClientboundBlockEntityDataPacket(worldPosition, 0, getUpdateTag());
+	public Packet<ClientGamePacketListener> getUpdatePacket() {
+		return ClientboundBlockEntityDataPacket.create(this);
 	}
 
 	@Override
@@ -143,8 +145,9 @@ public class TileEntityHowlerAlarm extends BlockEntityFacing implements ITilePac
 	}
 
 	@Override
-	public CompoundTag save(CompoundTag tag) {
-		return writeProperties(super.save(tag));
+	protected void saveAdditional(CompoundTag tag) {
+		super.saveAdditional(tag);
+		writeProperties(tag);
 	}
 
 	@Override

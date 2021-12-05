@@ -24,6 +24,6 @@ public class SlotPower extends SlotFilter {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
-		return Pair.of(InventoryMenu.BLOCK_ATLAS, new ResourceLocation(EnergyControl.MODID + ":slots/slot_power"));
+		return Pair.of(InventoryMenu.BLOCK_ATLAS, new ResourceLocation(EnergyControl.MODID, "slots/slot_power"));
 	}
 }

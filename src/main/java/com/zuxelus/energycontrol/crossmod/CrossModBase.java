@@ -23,6 +23,10 @@ public class CrossModBase {
 		return null;
 	}
 
+	public CompoundTag getInventoryData(BlockEntity te) {
+		return null;
+	}
+
 	public int getReactorHeat(Level world, BlockPos pos) {
 		return -1;
 	}

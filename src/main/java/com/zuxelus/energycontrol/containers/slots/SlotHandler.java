@@ -14,7 +14,7 @@ public class SlotHandler {
 
 	@SubscribeEvent
 	public static void loadTextures(TextureStitchEvent.Pre event) {
-		if (!event.getMap().location().toString().equals(BLOCK_ATLAS)) {
+		if (!event.getAtlas().location().toString().equals(BLOCK_ATLAS)) {
 			return;
 		}
 		registerTexture(event, EnergyControl.MODID + ":slots/slot_card");

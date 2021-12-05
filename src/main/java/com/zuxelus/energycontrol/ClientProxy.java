@@ -8,7 +8,6 @@ import com.zuxelus.energycontrol.utils.SoundHelper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent.RegisterRenderers;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -22,7 +21,6 @@ public class ClientProxy {
 	@SubscribeEvent
 	public static void onFMLClientSetupEvent(final FMLClientSetupEvent event) {
 		SoundHelper.initSound(Minecraft.getInstance().gameDirectory);
-		((ReloadableResourceManager) Minecraft.getInstance().getResourceManager()).registerReloadListener(new SoundHelper.SoundLoader());
 		SoundHelper.importSound();
 
 		MenuScreens.register(ModContainerTypes.info_panel.get(), GuiInfoPanel::new);

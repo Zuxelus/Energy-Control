@@ -11,9 +11,9 @@ import com.zuxelus.zlib.containers.slots.SlotFilter;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.ContainerListener;
 
 public class ContainerKitAssembler extends ContainerBase<TileEntityKitAssembler> {
 	private double lastEnergy = -1;
@@ -43,7 +43,7 @@ public class ContainerKitAssembler extends ContainerBase<TileEntityKitAssembler>
 		super.broadcastChanges();
 		double energy = te.getEnergy();
 		double production = te.getProduction();
-		for (int i = 0; i < listeners.size(); i++)
+		for (ServerPlayer listener : listeners)
 			if (lastEnergy != energy || lastProduction != production) {
 				CompoundTag tag = new CompoundTag();
 				tag.putInt("type", 1);
@@ -51,7 +51,7 @@ public class ContainerKitAssembler extends ContainerBase<TileEntityKitAssembler>
 				tag.putDouble("production", production);
 				tag.putDouble("production", production);
 				tag.putInt("time", te.getRecipeTime());
-				NetworkHelper.updateClientTileEntity(listeners.get(i), te.getBlockPos(), tag);
+				NetworkHelper.updateClientTileEntity(listener, te.getBlockPos(), tag);
 			}
 		lastEnergy = energy;
 		lastProduction = production;

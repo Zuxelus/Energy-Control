@@ -22,9 +22,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -40,7 +43,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.Constants;
 
 public class TileEntityInfoPanel extends TileEntityInventory implements MenuProvider, ITilePacketHandler, IScreenPart, ISlotItemFilter {
 	public static final String NAME = "info_panel";
@@ -230,14 +232,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	}
 
 	@Override
-	public ClientboundBlockEntityDataPacket getUpdatePacket() {
-		CompoundTag tag = new CompoundTag();
-		tag = writeProperties(tag);
-		calcPowered();
-		tag.putBoolean("powered", powered);
-		colored = isColoredEval();
-		tag.putBoolean("colored", colored);
-		return new ClientboundBlockEntityDataPacket(getBlockPos(), 0, tag);
+	public Packet<ClientGamePacketListener> getUpdatePacket() {
+		return ClientboundBlockEntityDataPacket.create(this);
 	}
 
 	@Override
@@ -263,7 +259,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	protected void deserializeSlotSettings(CompoundTag tag, String tagName, int slot) {
 		if (!(tag.contains(tagName)))
 			return;
-		ListTag settingsList = tag.getList(tagName, Constants.NBT.TAG_COMPOUND);
+		ListTag settingsList = tag.getList(tagName, Tag.TAG_COMPOUND);
 		for (int i = 0; i < settingsList.size(); i++) {
 			CompoundTag compound = settingsList.getCompound(i);
 			try {
@@ -345,8 +341,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	}
 
 	@Override
-	public CompoundTag save(CompoundTag tag) {
-		return writeProperties(super.save(tag));
+	protected void saveAdditional(CompoundTag tag) {
+		super.saveAdditional(tag);
+		writeProperties(tag);
 	}
 
 	@Override

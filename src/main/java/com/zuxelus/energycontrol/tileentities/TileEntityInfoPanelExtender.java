@@ -8,6 +8,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -67,10 +69,8 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	}
 
 	@Override
-	public ClientboundBlockEntityDataPacket getUpdatePacket() {
-		CompoundTag tag = new CompoundTag();
-		tag = writeProperties(tag);
-		return new ClientboundBlockEntityDataPacket(getBlockPos(), 0, tag);
+	public Packet<ClientGamePacketListener> getUpdatePacket() {
+		return ClientboundBlockEntityDataPacket.create(this);
 	}
 
 	@Override
@@ -119,8 +119,9 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	}
 
 	@Override
-	public CompoundTag save(CompoundTag tag) {
-		return writeProperties(super.save(tag));
+	protected void saveAdditional(CompoundTag tag) {
+		super.saveAdditional(tag);
+		writeProperties(tag);
 	}
 
 	@Override

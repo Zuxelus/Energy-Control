@@ -12,21 +12,20 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.17.1-0.2.0'
+version = '1.18-0.2.2'
 group = 'com.zuxelus.energycontrol'
 archivesBaseName = 'EnergyControl-forge'
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(16)
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
-    mappings channel: 'official', version: '1.17.1'
+    mappings channel: 'official', version: '1.18'
     runs {
         client {
             workingDirectory project.file('run')
             //property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-            property 'mixin.env.disableRefMap', 'true'
 
             mods {
                 EnergyControl {
@@ -39,7 +38,6 @@ minecraft {
             workingDirectory project.file('run')
             //property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-            property 'mixin.env.disableRefMap', 'true'
 
             mods {
                 EnergyControl {
@@ -74,11 +72,10 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.17.1-37.0.70'
-    compileOnly fg.deobf ("curse.maven:cctweaked-282001:3434682")
-    compileOnly fg.deobf ("curse.maven:jei-238222:3448057")
-    compileOnly fg.deobf ("curse.maven:extremereactors-250277:3445159")
-    compileOnly fg.deobf ("curse.maven:zerocore-247921:3466210")
+    minecraft 'net.minecraftforge:forge:1.18-38.0.14'
+    compileOnly fg.deobf ("curse.maven:cctweaked-282001:3544951")
+    compileOnly fg.deobf ("curse.maven:WTHIT-455982:3548826") //
+    compileOnly fg.deobf ("curse.maven:jei-238222:3550020")
 }
 
 jar {

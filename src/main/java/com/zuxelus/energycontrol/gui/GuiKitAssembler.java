@@ -52,7 +52,6 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 		ItemStack stack = slot.getItem();
 		if (stack.isEmpty() || !(stack.getItem() instanceof ItemCardMain))
 			return;
-		net.minecraftforge.fmlclient.gui.GuiUtils.preItemToolTip(stack);
 		List<Component> stackList = stack.getTooltipLines(minecraft.player, minecraft.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
 		List<Component> list = Lists.<Component>newArrayList();
 		if (stackList.size() > 0)
@@ -63,8 +62,7 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 				if (panelString.textLeft != null)
 					list.add(new TextComponent(ChatFormatting.GRAY + panelString.textLeft));
 			}
-		renderComponentToolTip(matrixStack, list, x, y, font);
-		net.minecraftforge.fmlclient.gui.GuiUtils.postItemToolTip();
+		renderTooltip(matrixStack, list, stack.getTooltipImage(), x, y);
 	}
 
 	@Override

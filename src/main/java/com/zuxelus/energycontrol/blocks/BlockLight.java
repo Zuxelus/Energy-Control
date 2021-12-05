@@ -48,7 +48,7 @@ public class BlockLight extends Block {
 			return;
 
 		if (flag)
-			world.getBlockTicks().scheduleTick(pos, this, 4);
+			world.scheduleTick(pos, this, 4);
 		else
 			world.setBlock(pos, state.cycle(LIT), 2);
 	}

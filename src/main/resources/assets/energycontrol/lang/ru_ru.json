@@ -157,6 +157,8 @@
     "msg.ec.InfoPanelSlot2": "Слот 2: %s",
     "msg.ec.InfoPanelSlot3": "Слот 3: %s",
     "msg.ec.InfoPanelSlot4": "Слот 4: %s",
+    "msg.ec.InfoPanelSlot5": "Слот 5: %s",
+    "msg.ec.InfoPanelSlot6": "Слот 6: %s",
     "msg.ec.InfoPanelSpeed": "Скорость: %s",
     "msg.ec.InfoPanelStatus": "Статус: %s",
     "msg.ec.InfoPanelStorage": "Хранится: %s",

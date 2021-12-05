@@ -8,6 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 public interface ICardReader {
@@ -66,7 +67,7 @@ public interface ICardReader {
 	/**
 	 * Set the state of card. In most cases shouldn't be called by card, use
 	 * return value of
-	 * {@link IItemCard#update(World, ICardReader, int, BlockPos)} instead.
+	 * {@link IItemCard#update(Level, ICardReader, int, BlockPos)} instead.
 	 * 
 	 * @param state
 	 */
@@ -106,7 +107,4 @@ public interface ICardReader {
 	void reset();
 
 	void copyFrom(CompoundTag tag);
-
-	//int getCardType();
-
 }

@@ -12,7 +12,6 @@ public final class ConfigHandler {
 	public static ForgeConfigSpec.IntValue HOWLER_ALARM_RANGE;
 	public static ForgeConfigSpec.IntValue MAX_ALARM_RANGE;
 	public static ForgeConfigSpec.ConfigValue<String> ALLOWED_ALARMS;
-	public static ForgeConfigSpec.IntValue REMOTE_MONITOR_ENERGY_CONSUMPTION;
 	public static ForgeConfigSpec.IntValue SCREEN_REFRESH_PERIOD;
 	public static ForgeConfigSpec.IntValue RANGE_TRIGGER_REFRESH_PERIOD;
 	public static ForgeConfigSpec.BooleanValue USE_CUSTOM_SOUNDS;
@@ -23,40 +22,25 @@ public final class ConfigHandler {
 
 		builder.comment("General settings").push(CATEGORY_GENERAL);
 
-		HOWLER_ALARM_RANGE = builder
-				.translation("ec.config.howlerAlarmRange")
+		HOWLER_ALARM_RANGE = builder.comment("Default Howler Alarm Range")
 				.defineInRange("howlerAlarmRange", 64, 0, Integer.MAX_VALUE);
 
-		MAX_ALARM_RANGE = builder
-				.translation("ec.config.maxAlarmRange")
+		MAX_ALARM_RANGE = builder.comment("Max Possible Howler Alarm Range")
 				.defineInRange("maxAlarmRange", 128, 0, Integer.MAX_VALUE);
 
-		ALLOWED_ALARMS = builder
-				.translation("ec.config.allowedAlarms")
+		ALLOWED_ALARMS = builder.comment("Allowed Alarms")
 				.define("allowedAlarms", "default,sci-fi,siren");
 
-		REMOTE_MONITOR_ENERGY_CONSUMPTION = builder
-				.translation("ec.config.remoteThermalMonitorEnergyConsumption")
-				.defineInRange("remoteThermalMonitorEnergyConsumption", 1, 1, Integer.MAX_VALUE);
-
-		SCREEN_REFRESH_PERIOD = builder
-				.translation("ec.config.screenRefreshPeriod")
+		SCREEN_REFRESH_PERIOD = builder.comment("Default Panel Refresh Period")
 				.defineInRange("infoPanelRefreshPeriod", 20, 1, Integer.MAX_VALUE);
 
-		RANGE_TRIGGER_REFRESH_PERIOD = builder
-				.translation("ec.config.rangeTriggerRefreshPeriod")
+		RANGE_TRIGGER_REFRESH_PERIOD = builder.comment("Default Range Trigger Refresh Period")
 				.defineInRange("rangeTriggerRefreshPeriod", 20, 1, Integer.MAX_VALUE);
 
-		USE_CUSTOM_SOUNDS =  builder
-				.translation("ec.config.useCustomSounds")
+		USE_CUSTOM_SOUNDS =  builder.comment("Load Custom Sounds")
 				.define("useCustomSounds", false);
 		builder.pop();
 
 		COMMON_CONFIG = builder.build();
 	}
-
-	/*@SubscribeEvent // TODO
-	public static void onModConfigEvent(ModConfig.ModConfigEvent event) {
-		
-	}*/
 }

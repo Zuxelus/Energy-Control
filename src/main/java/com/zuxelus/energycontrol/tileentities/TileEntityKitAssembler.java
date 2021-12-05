@@ -19,6 +19,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -95,9 +97,8 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 		case 4:
 			if (tag.contains("slot") && tag.contains("title")) {
 				ItemStack itemStack = getItem(tag.getInt("slot"));
-				if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemCardMain) {
+				if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemCardMain)
 					new ItemCardReader(itemStack).setTitle(tag.getString("title"));
-				}
 			}
 			break;
 		}
@@ -122,11 +123,8 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 	}
 
 	@Override
-	public ClientboundBlockEntityDataPacket getUpdatePacket() {
-		CompoundTag tag = new CompoundTag();
-		tag = writeProperties(tag);
-		tag.putBoolean("active", active);
-		return new ClientboundBlockEntityDataPacket(getBlockPos(), 0, tag);
+	public Packet<ClientGamePacketListener> getUpdatePacket() {
+		return ClientboundBlockEntityDataPacket.create(this);
 	}
 
 	@Override
@@ -172,8 +170,9 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 	}
 
 	@Override
-	public CompoundTag save(CompoundTag tag) {
-		return writeProperties(super.save(tag));
+	protected void saveAdditional(CompoundTag tag) {
+		super.saveAdditional(tag);
+		writeProperties(tag);
 	}
 
 	public static void tickStatic(Level level, BlockPos pos, BlockState state, BlockEntity be) {

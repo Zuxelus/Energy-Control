@@ -8,6 +8,8 @@ import com.zuxelus.zlib.tileentities.TileEntityInventory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -92,12 +94,8 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 	public void onClientMessageReceived(CompoundTag tag) { }
 
 	@Override
-	public ClientboundBlockEntityDataPacket getUpdatePacket() {
-		CompoundTag tag = new CompoundTag();
-		tag = writeProperties(tag);
-		tag.putInt("status", status);
-		tag.putBoolean("poweredBlock", poweredBlock);
-		return new ClientboundBlockEntityDataPacket(getBlockPos(), 0, tag);
+	public Packet<ClientGamePacketListener> getUpdatePacket() {
+		return ClientboundBlockEntityDataPacket.create(this);
 	}
 
 	@Override
@@ -142,8 +140,9 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 	}
 
 	@Override
-	public CompoundTag save(CompoundTag tag) {
-		return writeProperties(super.save(tag));
+	protected void saveAdditional(CompoundTag tag) {
+		super.saveAdditional(tag);
+		writeProperties(tag);
 	}
 
 	@Override

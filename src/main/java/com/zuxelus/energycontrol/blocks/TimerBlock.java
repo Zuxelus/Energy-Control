@@ -20,7 +20,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.fmllegacy.network.NetworkHooks;
+import net.minecraftforge.network.NetworkHooks;
 
 public class TimerBlock extends FacingBlockSmall {
 	protected static final VoxelShape AABB_DOWN = Block.box(1.0F, 9.0F, 1.0F, 15.0F, 15.0F, 15.0F);
@@ -40,7 +40,9 @@ public class TimerBlock extends FacingBlockSmall {
 		BlockEntity te = blockAccess.getBlockEntity(pos);
 		if (!(te instanceof TileEntityTimer))
 			return 0;
-		return ((TileEntityTimer) te).getPowered() ? side != state.getValue(FACING) ? 15 : 0 : 0;
+		if (side == state.getValue(FACING) || side == ((TileEntityTimer) te).getRotation().getOpposite())
+			return 0;
+		return ((TileEntityTimer) te).getPowered() ? 15 : 0;
 	}
 
 	@Override
@@ -76,5 +78,14 @@ public class TimerBlock extends FacingBlockSmall {
 			return InteractionResult.PASS;
 		NetworkHooks.openGui((ServerPlayer) player, (TileEntityTimer) te, pos);
 		return InteractionResult.SUCCESS;
+	}
+
+	@Override
+	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block fromBlock, BlockPos fromPos, boolean isMoving) {
+		if (!level.isClientSide) {
+			BlockEntity be = level.getBlockEntity(pos);
+			if (be instanceof TileEntityTimer)
+				((TileEntityTimer) be).onNeighborChange(fromBlock, fromPos);
+		}
 	}
 }
