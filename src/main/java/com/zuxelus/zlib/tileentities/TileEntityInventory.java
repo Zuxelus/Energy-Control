@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -16,7 +17,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.Constants;
 
 public abstract class TileEntityInventory extends BlockEntityFacing implements Container {
 	protected NonNullList<ItemStack> inventory;
@@ -29,7 +29,7 @@ public abstract class TileEntityInventory extends BlockEntityFacing implements C
 	@Override
 	protected void readProperties(CompoundTag tag) {
 		super.readProperties(tag);
-		ListTag list = tag.getList("Items", Constants.NBT.TAG_COMPOUND);
+		ListTag list = tag.getList("Items", Tag.TAG_COMPOUND);
 		inventory = NonNullList.<ItemStack>withSize(getContainerSize(), ItemStack.EMPTY);
 		for (int i = 0; i < list.size(); i++) {
 			CompoundTag stackTag = list.getCompound(i);

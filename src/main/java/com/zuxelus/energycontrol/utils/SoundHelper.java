@@ -21,13 +21,9 @@ import net.minecraft.client.resources.sounds.SoundEventRegistration;
 import net.minecraft.client.resources.sounds.SoundEventRegistrationSerializer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 
 public class SoundHelper {
 	private static final Gson gson = (new GsonBuilder()).registerTypeAdapter(SoundEventRegistration.class, new SoundEventRegistrationSerializer()).create();
-	private static File alarms;
-
 	private static final ParameterizedType type = new ParameterizedType() {
 
 		@Override
@@ -46,25 +42,47 @@ public class SoundHelper {
 		}
 	};
 
-	public static void initSound(File configFolder) {
+	public static void initSoundPack(File configFolder) {
 		if (configFolder == null || !ConfigHandler.USE_CUSTOM_SOUNDS.get())
 			return;
 		
-			alarms = new File(configFolder, "alarms");
-			File audioLoc = new File(alarms, "assets" + File.separator + EnergyControl.MODID + File.separator + "sounds");
+		File audioLoc = new File(SoundLoader.alarms, "assets" + File.separator + EnergyControl.MODID + File.separator + "sounds");
 
-			if (!alarms.exists()) {
-				try {
-					alarms.mkdir();
-					audioLoc.mkdirs();
-					buildJSON();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+		if (SoundLoader.alarms.exists())
+			importSound();
+		else {
+			try {
+				SoundLoader.alarms.mkdir();
+				audioLoc.mkdirs();
+				createSoundsJson();
+				createPackMeta();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
+	}
 
-		public static void importSound() {
+	private static void createSoundsJson() throws IOException {
+		JsonWriter writer = new JsonWriter(new FileWriter(SoundLoader.alarms.getAbsolutePath() + File.separator + "assets" + File.separator + EnergyControl.MODID + File.separator + "sounds.json"));
+		writer.beginObject();
+		writer.name("_comment").value("EXAMPLE 'alarm-name': {'category': 'master','sounds': [{'name': 'energycontrol:alarm-name','stream': true}]}");
+		writer.endObject();
+		writer.close();
+	}
+
+	private static void createPackMeta() throws IOException {
+		JsonWriter writer = new JsonWriter(new FileWriter(SoundLoader.alarms.getAbsolutePath() + File.separator + "pack.mcmeta"));
+		writer.beginObject();
+		writer.name("pack");
+		writer.beginObject();
+		writer.name("description").value("Energy Control custom alarms");
+		writer.name("pack_format").value(7); // for 1.17 only
+		writer.endObject();
+		writer.endObject();
+		writer.close();
+	}
+
+	public static void importSound() {
 		EnergyControl.INSTANCE.availableAlarms = new ArrayList<>();
 
 		try {
@@ -77,26 +95,5 @@ public class SoundHelper {
 				map.forEach((str, soundList) -> EnergyControl.INSTANCE.availableAlarms.add(str.replace("alarm-", "")));
 			}
 		} catch (IOException ignored) {}
-	}
-
-	private static void buildJSON() throws IOException {
-		JsonWriter parse = new JsonWriter(new FileWriter(alarms.getAbsolutePath() + File.separator + "assets" + File.separator + EnergyControl.MODID + File.separator + "sounds.json"));
-		parse.beginObject();
-		parse.name("_comment").value("EXAMPLE 'alarm-name': {'category': 'master','sounds': [{'name': 'energycontrol:alarm-name','stream': true}]}");
-		parse.endObject();
-		parse.close();
-	}
-
-	public static class SoundLoader implements ResourceManagerReloadListener {
-
-		@Override
-		public void onResourceManagerReload(ResourceManager resourceManager) {
-			// TODO Auto-generated method stub
-		/*public void onResourceManagerReload(ResourceManager resourceManager, Predicate<IResourceType> resourcePredicate) {
-			if (resourcePredicate.test(VanillaResourceType.SOUNDS) && resourceManager instanceof SimpleReloadableResourceManager && alarms != null) {
-				FolderPack pack = new FolderPack(alarms);
-				((SimpleReloadableResourceManager) resourceManager).add(pack);
-			}*/
-		}
 	}
 }

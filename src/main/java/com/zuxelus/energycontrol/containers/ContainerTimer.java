@@ -40,11 +40,11 @@ public class ContainerTimer extends AbstractContainerMenu {
 		super.broadcastChanges();
 		int time = te.getTime();
 		boolean isWorking = te.getIsWorking();
-		for (int i = 0; i < listeners.size(); i++) {
+		for (ServerPlayer listener : listeners) {
 			if (lastTime != time)
-				NetworkHelper.updateClientTileEntity(listeners.get(i), te.getBlockPos(), 1, time);
+				NetworkHelper.updateClientTileEntity(listener, te.getBlockPos(), 1, time);
 			if (lastIsWorking != isWorking)
-				NetworkHelper.updateClientTileEntity(listeners.get(i), te.getBlockPos(), 2, isWorking ? 1 : 0);
+				NetworkHelper.updateClientTileEntity(listener, te.getBlockPos(), 2, isWorking ? 1 : 0);
 		}
 		lastTime = time;
 		lastIsWorking = isWorking;

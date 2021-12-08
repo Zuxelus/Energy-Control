@@ -29,7 +29,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.Constants;
 
 public class ItemCardReader implements ICardReader {
 	private ItemStack card;
@@ -199,7 +198,7 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public ArrayList<ItemStack> getItemStackList(boolean reset) {
-		ListTag list = getTagList("Items", Constants.NBT.TAG_COMPOUND);
+		ListTag list = getTagList("Items", Tag.TAG_COMPOUND);
 		ArrayList<ItemStack> result = new ArrayList<ItemStack> ();
 		for (int i = 0; i < list.size(); i++) {
 			CompoundTag stackTag = list.getCompound(i);
@@ -259,6 +258,8 @@ public class ItemCardReader implements ICardReader {
 				setLong(name, ((NumericTag) tag).getAsLong());
 			else if (type == ByteTag.TYPE)
 				setByte(name, ((NumericTag) tag).getAsByte());
+			else if (type == CompoundTag.TYPE)
+				setTag(name, tag.copy());
 		}
 	}
 

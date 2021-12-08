@@ -13,6 +13,7 @@ import com.zuxelus.energycontrol.init.ModContainerTypes;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.ScreenManager;
+import com.zuxelus.energycontrol.utils.SoundLoader;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
@@ -54,6 +55,7 @@ public class EnergyControl {
 		INSTANCE = this;
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		modEventBus.addListener(SideProxy::commonSetup);
+		modEventBus.addListener(SoundLoader::locatePacks);
 		ModItems.BLOCKS.register(modEventBus);
 		ModItems.ITEMS.register(modEventBus);
 		ModContainerTypes.CONTAINER_TYPES.register(modEventBus);

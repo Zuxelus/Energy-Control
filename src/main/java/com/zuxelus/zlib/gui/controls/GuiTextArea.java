@@ -15,6 +15,7 @@ import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -60,6 +61,7 @@ public class GuiTextArea extends AbstractWidget implements Widget, GuiEventListe
 			drawCursorVertical(cursorPositionX, textTop - 1, cursorPositionX + 1, textTop + 1 + fontRenderer.lineHeight);
 	}
 
+	// Copy of TextFieldWidget.renderHighlight
 	private void drawCursorVertical(int left, int top, int right, int bottom) {
 		if (left < right) {
 			int i = left;
@@ -87,6 +89,10 @@ public class GuiTextArea extends AbstractWidget implements Widget, GuiEventListe
 		tesselator.end();
 		RenderSystem.disableColorLogicOp();
 		RenderSystem.enableTexture();
+	}
+
+	public void updateCursorCounter() {
+		cursorCounter++;
 	}
 
 	public void setCursorPosition(int x, int y) {
@@ -155,6 +161,18 @@ public class GuiTextArea extends AbstractWidget implements Widget, GuiEventListe
 	}
 
 	@Override
+	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
+		boolean flag = mouseX >= x && mouseX < (x + width) && mouseY >= y && mouseY < (y + height);
+		if (isFocused() && flag && mouseButton == 0) {
+			int xi = Mth.floor(mouseX) - x;
+			int yi = Mth.floor(mouseY) - y;
+			setCursorPosition(fontRenderer.plainSubstrByWidth(text[(yi - 4) / 10], xi).length(), (yi - 4) / 10);
+			return true;
+		}
+		return false;
+	}
+
+	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (!isFocused())
 			return false;
@@ -204,7 +222,8 @@ public class GuiTextArea extends AbstractWidget implements Widget, GuiEventListe
 	}
 
 	@Override
-	public void updateNarration(NarrationElementOutput output) {
+	public void updateNarration(NarrationElementOutput p_169152_) {
 		// TODO Auto-generated method stub
+		
 	}
 }

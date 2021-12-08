@@ -93,11 +93,7 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 
 	@Override
 	public ClientboundBlockEntityDataPacket getUpdatePacket() {
-		CompoundTag tag = new CompoundTag();
-		tag = writeProperties(tag);
-		tag.putInt("status", status);
-		tag.putBoolean("poweredBlock", poweredBlock);
-		return new ClientboundBlockEntityDataPacket(getBlockPos(), 0, tag);
+		return new ClientboundBlockEntityDataPacket(worldPosition, 0, getUpdateTag());
 	}
 
 	@Override

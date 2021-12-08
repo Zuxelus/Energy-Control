@@ -67,12 +67,14 @@ public abstract class FacingHorizontal extends BaseEntityBlock {
 		return defaultBlockState().setValue(FACING, context.getPlayer().getDirection().getOpposite());
 	}
 
-	public BlockState rotate(BlockState state, Rotation rotation) { // TODO
-		return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
+	@Override
+	public BlockState rotate(BlockState state, Rotation rotation) {
+		return state;
 	}
 
-	public BlockState mirror(BlockState state, Mirror mirror) { // TODO
-		return state.rotate(mirror.getRotation(state.getValue(FACING)));
+	@Override
+	public BlockState mirror(BlockState state, Mirror mirror) {
+		return state;
 	}
 
 	@SuppressWarnings("deprecation")

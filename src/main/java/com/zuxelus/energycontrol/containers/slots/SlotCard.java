@@ -19,6 +19,6 @@ public class SlotCard extends SlotFilter {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
-		return Pair.of(InventoryMenu.BLOCK_ATLAS, new ResourceLocation(EnergyControl.MODID + ":slots/slot_card"));
+		return Pair.of(InventoryMenu.BLOCK_ATLAS, new ResourceLocation(EnergyControl.MODID, "slots/slot_card"));
 	}
 }

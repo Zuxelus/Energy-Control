@@ -24,10 +24,12 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, ITilePacketHandler {
 	private int time;
+	private int startingTime;
 	private boolean invertRedstone;
 	private boolean isTicks;
 	private boolean isWorking;
-	private boolean poweredBlock;
+	private boolean sendSignal;
+	private boolean isPowered;
 
 	public TileEntityTimer(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -77,6 +79,8 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 	public void setIsWorking(boolean value) {
 		boolean old = isWorking;
 		isWorking = value;
+		if (isWorking)
+			startingTime = time;
 		if (!level.isClientSide && isWorking != old)
 			notifyBlockUpdate();
 	}
@@ -93,7 +97,18 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 	}
 
 	public boolean getPowered() {
-		return poweredBlock;
+		return sendSignal;
+	}
+
+	public void onNeighborChange(Block fromBlock, BlockPos fromPos) { // server
+		boolean newPowered = level.getSignal(worldPosition.relative(rotation), rotation) > 0;
+		if (newPowered != isPowered) {
+			if (!isPowered && newPowered) {
+				time = startingTime;
+				setIsWorking(true);
+			}
+			isPowered = newPowered;
+		}
 	}
 
 	@Override
@@ -138,11 +153,7 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 
 	@Override
 	public ClientboundBlockEntityDataPacket getUpdatePacket() {
-		CompoundTag tag = new CompoundTag();
-		tag = writeProperties(tag);
-		tag.putBoolean("isTicks", isTicks);
-		tag.putBoolean("poweredBlock", poweredBlock);
-		return new ClientboundBlockEntityDataPacket(getBlockPos(), 0, tag);
+		return new ClientboundBlockEntityDataPacket(worldPosition, 0, getUpdateTag());
 	}
 
 	@Override
@@ -155,7 +166,7 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 		CompoundTag tag = super.getUpdateTag();
 		tag = writeProperties(tag);
 		tag.putBoolean("isTicks", isTicks);
-		tag.putBoolean("poweredBlock", poweredBlock);
+		tag.putBoolean("poweredBlock", sendSignal);
 		return tag;
 	}
 
@@ -164,6 +175,8 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 		super.readProperties(tag);
 		if (tag.contains("timer"))
 			time = tag.getInt("timer");
+		if (tag.contains("startingTime"))
+			startingTime = tag.getInt("startingTime");
 		if (tag.contains("invert"))
 			invertRedstone = tag.getBoolean("invert");
 		if (tag.contains("isWorking"))
@@ -171,7 +184,9 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 		if (tag.contains("isTicks"))
 			isTicks = tag.getBoolean("isTicks");
 		if (tag.contains("poweredBlock"))
-			poweredBlock = tag.getBoolean("poweredBlock");
+			sendSignal = tag.getBoolean("poweredBlock");
+		if (tag.contains("isPowered"))
+			isPowered = tag.getBoolean("isPowered");
 	}
 
 	@Override
@@ -184,9 +199,11 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 	protected CompoundTag writeProperties(CompoundTag tag) {
 		tag = super.writeProperties(tag);
 		tag.putInt("timer", time);
+		tag.putInt("startingTime", startingTime);
 		tag.putBoolean("invert", invertRedstone);
 		tag.putBoolean("isWorking", isWorking);
 		tag.putBoolean("isTicks", isTicks);
+		tag.putBoolean("isPowered", isPowered);
 		return tag;
 	}
 
@@ -215,6 +232,7 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 			return;
 		if (time == 0) {
 			setIsWorking(false);
+			time = startingTime;
 			return;
 		}
 		time--;
@@ -227,8 +245,8 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 		Block block = iblockstate.getBlock();
 		if (block instanceof TimerBlock) {
 			boolean newValue = time > 0 && isWorking ? !invertRedstone : invertRedstone;
-			if (poweredBlock != newValue) {
-				poweredBlock = newValue;
+			if (sendSignal != newValue) {
+				sendSignal = newValue;
 				level.updateNeighborsAt(worldPosition, block);
 			}
 			level.sendBlockUpdated(worldPosition, iblockstate, iblockstate, 2);

@@ -15,6 +15,7 @@ import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.TileEntityItemHandler;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
@@ -95,9 +96,8 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 		case 4:
 			if (tag.contains("slot") && tag.contains("title")) {
 				ItemStack itemStack = getItem(tag.getInt("slot"));
-				if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemCardMain) {
+				if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemCardMain)
 					new ItemCardReader(itemStack).setTitle(tag.getString("title"));
-				}
 			}
 			break;
 		}
@@ -123,10 +123,7 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 
 	@Override
 	public ClientboundBlockEntityDataPacket getUpdatePacket() {
-		CompoundTag tag = new CompoundTag();
-		tag = writeProperties(tag);
-		tag.putBoolean("active", active);
-		return new ClientboundBlockEntityDataPacket(getBlockPos(), 0, tag);
+		return new ClientboundBlockEntityDataPacket(worldPosition, 0, getUpdateTag());
 	}
 
 	@Override
@@ -338,9 +335,9 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 
 	@Override
 	@Nonnull
-	public <T> LazyOptional<T> getCapability(Capability<T> cap) {
+	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
 		if (cap == CapabilityEnergy.ENERGY)
 			return LazyOptional.of(() -> this.storage).cast();
-		return super.getCapability(cap);
+		return super.getCapability(cap, side);
 	}
 }

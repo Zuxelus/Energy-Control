@@ -5,11 +5,11 @@ import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.Constants;
 
 public abstract class ItemInventory implements Container, ISlotItemFilter {
 
@@ -29,7 +29,7 @@ public abstract class ItemInventory implements Container, ISlotItemFilter {
 			parent.setTag(tag);
 		}
 
-		ListTag list = tag.getList("Items", Constants.NBT.TAG_COMPOUND);
+		ListTag list = tag.getList("Items", Tag.TAG_COMPOUND);
 		for (int i = 0; i < list.size(); i++) {
 			CompoundTag stackTag = list.getCompound(i);
 			setItem(stackTag.getByte("Slot"), ItemStack.of(stackTag));
