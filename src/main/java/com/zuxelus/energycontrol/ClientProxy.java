@@ -20,8 +20,7 @@ public class ClientProxy {
 	@SuppressWarnings("resource")
 	@SubscribeEvent
 	public static void onFMLClientSetupEvent(final FMLClientSetupEvent event) {
-		SoundHelper.initSound(Minecraft.getInstance().gameDirectory);
-		SoundHelper.importSound();
+		SoundHelper.initSoundPack(Minecraft.getInstance().gameDirectory);
 
 		MenuScreens.register(ModContainerTypes.info_panel.get(), GuiInfoPanel::new);
 		MenuScreens.register(ModContainerTypes.info_panel_advanced.get(), GuiAdvancedInfoPanel::new);

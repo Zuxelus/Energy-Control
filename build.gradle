@@ -12,7 +12,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.18-0.2.2'
+version = '1.18-0.2.3'
 group = 'com.zuxelus.energycontrol'
 archivesBaseName = 'EnergyControl-forge'
 
@@ -76,6 +76,8 @@ dependencies {
     compileOnly fg.deobf ("curse.maven:cctweaked-282001:3544951")
     compileOnly fg.deobf ("curse.maven:WTHIT-455982:3548826") //
     compileOnly fg.deobf ("curse.maven:jei-238222:3550020")
+    compileOnly fg.deobf ("curse.maven:extremereactors-250277:3549384")
+    compileOnly fg.deobf ("curse.maven:zerocore-247921:3549383")
 }
 
 jar {

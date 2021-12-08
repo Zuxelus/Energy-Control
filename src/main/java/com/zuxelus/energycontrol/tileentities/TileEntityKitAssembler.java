@@ -15,6 +15,7 @@ import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.TileEntityItemHandler;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
@@ -337,9 +338,9 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 
 	@Override
 	@Nonnull
-	public <T> LazyOptional<T> getCapability(Capability<T> cap) {
+	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
 		if (cap == CapabilityEnergy.ENERGY)
 			return LazyOptional.of(() -> this.storage).cast();
-		return super.getCapability(cap);
+		return super.getCapability(cap, side);
 	}
 }

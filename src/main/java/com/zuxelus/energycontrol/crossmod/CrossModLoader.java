@@ -15,6 +15,7 @@ import com.zuxelus.energycontrol.utils.FluidInfo;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
+import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
@@ -32,7 +33,7 @@ public class CrossModLoader {
 	private static final Map<String, CrossModBase> CROSS_MODS = new HashMap<>();
 
 	public static void init() {
-		//loadCrossMod(ModIDs.BIG_REACTORS, CrossBigReactors::new);
+		loadCrossMod(ModIDs.BIG_REACTORS, CrossBigReactors::new);
 		//loadCrossMod(ModIDs.BIGGER_REACTORS, CrossBiggerReactors::new);
 		loadCrossModSafely(ModIDs.COMPUTER_CRAFT, () -> CrossComputerCraft::new);
 		/*loadCrossMod(ModIDs.MEKANISM, CrossMekanism::new);
@@ -128,7 +129,7 @@ public class CrossModLoader {
 				return tag;
 		}
 		Optional<IItemHandler> handler = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).resolve();
-		if (!handler.isPresent())
+		if (!handler.isPresent() && !(te instanceof Container))
 			return null;
 		CompoundTag tag = new CompoundTag();
 		if (handler.isPresent()) {
@@ -150,7 +151,7 @@ public class CrossModLoader {
 			Container inv = (Container) te;
 			if (te instanceof BaseContainerBlockEntity)
 				tag.putString("name", ((BaseContainerBlockEntity) te).getDisplayName().getString());
-			//tag.putBoolean("sided", inv instanceof ISidedInventory);
+			tag.putBoolean("sided", inv instanceof WorldlyContainer);
 			if (!handler.isPresent()) {
 				int inUse = 0;
 				int items = 0;
