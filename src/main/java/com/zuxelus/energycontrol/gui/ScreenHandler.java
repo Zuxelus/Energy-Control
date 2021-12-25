@@ -2,19 +2,19 @@ package com.zuxelus.energycontrol.gui;
 
 import com.zuxelus.energycontrol.tileentities.*;
 
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 
 public class ScreenHandler {
 
 	public static void openHowlerAlarmScreen(TileEntityHowlerAlarm be) {
-		Minecraft.getInstance().setScreen(new GuiHowlerAlarm(be));
+		MinecraftClient.getInstance().setScreen(new GuiHowlerAlarm(be));
 	}
 
 	public static void openIndustrialAlarmScreen(TileEntityIndustrialAlarm be) {
-		Minecraft.getInstance().setScreen(new GuiIndustrialAlarm(be));
+		MinecraftClient.getInstance().setScreen(new GuiIndustrialAlarm(be));
 	}
 
 	public static void openThermalMonitorScreen(TileEntityThermalMonitor be) {
-		Minecraft.getInstance().setScreen(new GuiThermalMonitor(be));
+		MinecraftClient.getInstance().setScreen(new GuiThermalMonitor(be));
 	}
 }

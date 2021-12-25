@@ -1,41 +1,41 @@
 package com.zuxelus.energycontrol.api;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.BlockPos;
 
 public final class ItemStackHelper {
 
-	public static CompoundTag getTagCompound(ItemStack stack) {
-		CompoundTag tag = stack.getTag();
+	public static NbtCompound getTagCompound(ItemStack stack) {
+		NbtCompound tag = stack.getNbt();
 		if (tag == null) {
-			tag = new CompoundTag();
-			stack.setTag(tag);
+			tag = new NbtCompound();
+			stack.setNbt(tag);
 		}
 		return tag;
 	}
 
 	public static void setCoordinates(ItemStack stack, BlockPos pos) {
-		CompoundTag tag = getTagCompound(stack);
+		NbtCompound tag = getTagCompound(stack);
 		tag.putInt("x", pos.getX());
 		tag.putInt("y", pos.getY());
 		tag.putInt("z", pos.getZ());
 	}
 
-	public static CompoundTag getOrCreateNbtData(ItemStack stack) {
-		CompoundTag tag = stack.getTag();
+	public static NbtCompound getOrCreateNbtData(ItemStack stack) {
+		NbtCompound tag = stack.getNbt();
 		if (tag == null) {
-			tag = new CompoundTag();
-			stack.setTag(tag);
+			tag = new NbtCompound();
+			stack.setNbt(tag);
 		}
 		return tag;
 	}
 
 	public static ItemStack getStackWithEnergy(Item item, double energy) {
 		ItemStack stack = new ItemStack(item);
-		CompoundTag tag = new CompoundTag();
-		stack.setTag(tag);
+		NbtCompound tag = new NbtCompound();
+		stack.setNbt(tag);
 		tag.putDouble("charge", energy);
 		return stack;
 	}

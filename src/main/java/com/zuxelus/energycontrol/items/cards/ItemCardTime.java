@@ -7,19 +7,19 @@ import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 
-import net.minecraft.client.resources.language.I18n;
-import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.resource.language.I18n;
+import net.minecraft.world.World;
 
 public class ItemCardTime extends ItemCardMain {
 
 	@Override
-	public List<PanelString> getStringData(Level world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(World world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		int time = 0;
 		if (world != null)
-			time = (int) ((world.getDayTime() + 6000) % 24000);
+			time = (int) ((world.getTimeOfDay() + 6000) % 24000);
 		int hours = time / 1000;
 		int minutes = (time % 1000) * 6 / 100;
 		String suffix = "";
@@ -34,10 +34,10 @@ public class ItemCardTime extends ItemCardMain {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
+	@Environment(EnvType.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(1);
-		result.add(new PanelSetting(I18n.get("msg.ec.cb24h"), 1));
+		result.add(new PanelSetting(I18n.translate("msg.ec.cb24h"), 1));
 		return result;
 	}
 }

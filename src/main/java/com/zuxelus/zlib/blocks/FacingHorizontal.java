@@ -4,94 +4,89 @@ import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.*;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.Container;
-import net.minecraft.world.Containers;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Mirror;
-import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition.Builder;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.BlockWithEntity;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.state.StateManager.Builder;
+import net.minecraft.state.property.DirectionProperty;
+import net.minecraft.state.property.Properties;
+import net.minecraft.util.BlockMirror;
+import net.minecraft.util.BlockRotation;
+import net.minecraft.util.ItemScatterer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
 
-public abstract class FacingHorizontal extends BaseEntityBlock {
-	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+public abstract class FacingHorizontal extends BlockWithEntity {
+	public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
 
-	public FacingHorizontal() {
-		super(Block.Properties.of(Material.METAL).strength(3.0F));
-		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
+	public FacingHorizontal(AbstractBlock.Settings settings) {
+		super(settings);
+		setDefaultState(getDefaultState().with(FACING, Direction.NORTH));
 	}
 
-	public FacingHorizontal(Block.Properties builder) {
-		super(builder);
-		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
-	}
-
-	protected abstract BlockEntityFacing createBlockEntity(BlockPos pos, BlockState state);
+	protected abstract BlockEntityFacing newBlockEntity(BlockPos pos, BlockState state);
 
 	@Override
-	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		BlockEntityFacing be = createBlockEntity(pos, state);
-		be.setFacing(state.getValue(FACING).get3DDataValue());
+	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+		BlockEntityFacing be = newBlockEntity(pos, state);
+		be.setFacing(state.get(FACING).getId());
 		return be;
 	}
 
 	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-		if (type == ModTileEntityTypes.holo_panel.get())
-			return createTickerHelper(type, type, TileEntityHoloPanel::tickStatic);
-		if (type == ModTileEntityTypes.holo_panel_extender.get())
-			return createTickerHelper(type, type, TileEntityHoloPanelExtender::tickStatic);
-		if (type == ModTileEntityTypes.kit_assembler.get())
-			return createTickerHelper(type, type, TileEntityKitAssembler::tickStatic);
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
+		if (type == ModTileEntityTypes.holo_panel)
+			return checkType(type, type, TileEntityHoloPanel::tickStatic);
+		if (type == ModTileEntityTypes.holo_panel_extender)
+			return checkType(type, type, TileEntityHoloPanelExtender::tickStatic);
+		if (type == ModTileEntityTypes.kit_assembler)
+			return checkType(type, type, TileEntityKitAssembler::tickStatic);
 		return null;
 	}
 
 	@Override
-	protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
+	protected void appendProperties(Builder<Block, BlockState> builder) {
 		builder.add(FACING);
 	}
 
 	@Override
-	public BlockState getStateForPlacement(BlockPlaceContext context) {
-		return defaultBlockState().setValue(FACING, context.getPlayer().getDirection().getOpposite());
+	public BlockState getPlacementState(ItemPlacementContext context) {
+		return getDefaultState().with(FACING, context.getPlayer().getHorizontalFacing().getOpposite());
 	}
 
 	@Override
-	public BlockState rotate(BlockState state, Rotation rotation) {
+	public BlockState rotate(BlockState state, BlockRotation rotation) {
 		return state;
 	}
 
 	@Override
-	public BlockState mirror(BlockState state, Mirror mirror) {
+	public BlockState mirror(BlockState state, BlockMirror mirror) {
 		return state;
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
+	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
 			BlockEntity te = world.getBlockEntity(pos);
-			if (te instanceof Container) {
-				Containers.dropContents(world, pos, (Container) te);
-				world.updateNeighbourForOutputSignal(pos, this);
+			if (te instanceof Inventory) {
+				ItemScatterer.spawn(world, pos, (Inventory) te);
+				world.updateComparators(pos, this);
 			}
-			super.onRemove(state, world, pos, newState, isMoving);
+			super.onStateReplaced(state, world, pos, newState, isMoving);
 		}
 	}
 
 	@Override
-	public RenderShape getRenderShape(BlockState state) {
-		return RenderShape.MODEL;
+	public BlockRenderType getRenderType(BlockState state) {
+		return BlockRenderType.MODEL;
 	}
 }

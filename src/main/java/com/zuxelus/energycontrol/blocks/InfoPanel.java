@@ -1,65 +1,80 @@
 package com.zuxelus.energycontrol.blocks;
 
+import java.util.Random;
+
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
-import com.zuxelus.zlib.blocks.FacingBlock;
+import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
-public class InfoPanel extends FacingBlock {
+public class InfoPanel extends FacingBlockActive {
 
 	public InfoPanel() {
-		super();
+		super(FabricBlockSettings.copyOf(ModItems.settings).luminance(state -> state.get(ACTIVE) ? 10 : 0));
 	}
 
-	public InfoPanel(Block.Properties builder) {
-		super(builder);
-	}
-
-	@Override
-	protected BlockEntityFacing createBlockEntity(BlockPos pos, BlockState state) {
-		return ModTileEntityTypes.info_panel.get().create(pos, state);
+	public InfoPanel(AbstractBlock.Settings settings) {
+		super(settings.luminance(state -> state.get(ACTIVE) ? 10 : 0));
 	}
 
 	@Override
-	public int getLightEmission(BlockState state, BlockGetter world, BlockPos pos) {
+	protected BlockEntityFacing newBlockEntity(BlockPos pos, BlockState state) {
+		return ModTileEntityTypes.info_panel.instantiate(pos, state);
+	}
+
+	@Override
+	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
 		BlockEntity te = world.getBlockEntity(pos);
 		if (!(te instanceof TileEntityInfoPanel))
-			return 0;
-		return ((TileEntityInfoPanel)te).getPowered() ? 10 : 0;
+			return ActionResult.PASS;
+		if (!world.isClient && EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) te).getFacing() == hit.getSide())
+			if (((TileEntityInfoPanel) te).runTouchAction(player.getStackInHand(hand), pos, hit.getPos()))
+				return ActionResult.SUCCESS;
+		if (!world.isClient)
+			player.openHandledScreen(state.createScreenHandlerFactory(world, pos));
+		return ActionResult.SUCCESS;
+	}
+
+	public BlockState getPlacementState(ItemPlacementContext ctx) {
+		return super.getPlacementState(ctx).with(ACTIVE, ctx.getWorld().isReceivingRedstonePower(ctx.getBlockPos()));
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		BlockEntity te = world.getBlockEntity(pos);
-		if (!(te instanceof TileEntityInfoPanel))
-			return InteractionResult.PASS;
-		if (!world.isClientSide && EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) te).getFacing() == hit.getDirection())
-			if (((TileEntityInfoPanel) te).runTouchAction(player.getItemInHand(hand), pos, hit.getLocation()))
-				return InteractionResult.SUCCESS;
-		if (!world.isClientSide)
-				NetworkHooks.openGui((ServerPlayer) player, (TileEntityInfoPanel) te, pos);
-		return InteractionResult.SUCCESS;
+	public void neighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+		if (world.isClient)
+			return;
+
+		boolean flag = state.get(ACTIVE);
+		if (flag == world.isReceivingRedstonePower(pos))
+			return;
+
+		if (flag)
+			world.createAndScheduleBlockTick(pos, this, 4);
+		else
+			world.setBlockState(pos, state.cycle(ACTIVE), 2);
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
-		if (!world.isClientSide)
-			world.sendBlockUpdated(pos, state, state, 2);
+	public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+		if (state.get(ACTIVE).booleanValue() && !world.isReceivingRedstonePower(pos))
+			world.setBlockState(pos, state.cycle(ACTIVE), 2);
 	}
 
 	/*@Override // TODO
@@ -71,7 +86,7 @@ public class InfoPanel extends FacingBlock {
 	}*/
 
 	@Override
-	public RenderShape getRenderShape(BlockState state) {
-		return RenderShape.ENTITYBLOCK_ANIMATED;
+	public BlockRenderType getRenderType(BlockState state) {
+		return BlockRenderType.ENTITYBLOCK_ANIMATED;
 	}
 }

@@ -1,11 +1,11 @@
 package com.zuxelus.zlib.tileentities;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 
 public abstract class BlockEntityFacing extends BlockEntity {
 
@@ -21,7 +21,7 @@ public abstract class BlockEntityFacing extends BlockEntity {
 	}
 
 	public void setFacing(int meta) {
-		facing = Direction.from3DDataValue(meta);
+		facing = Direction.byId(meta);
 	}
 
 	protected boolean hasRotation() {
@@ -33,30 +33,35 @@ public abstract class BlockEntityFacing extends BlockEntity {
 	}
 
 	public void setRotation(int meta) {
-		rotation = Direction.from3DDataValue(meta);
+		rotation = Direction.byId(meta);
 	}
 
 	public void setRotation(Direction meta) {
 		rotation = meta;
 	}
 
-	protected void readProperties(CompoundTag tag) {
+	protected void readProperties(NbtCompound tag) {
 		if (tag.contains("facing"))
-			facing = Direction.from3DDataValue(tag.getInt("facing"));
+			facing = Direction.byId(tag.getInt("facing"));
 		else
 			facing = Direction.NORTH;
 		if (hasRotation()) {
 			if (tag.contains("rotation"))
-				rotation = Direction.from3DDataValue(tag.getInt("rotation"));
+				rotation = Direction.byId(tag.getInt("rotation"));
 			else
 				rotation = Direction.NORTH;
 		}
 	}
 
-	protected CompoundTag writeProperties(CompoundTag tag) {
-		tag.putInt("facing", facing.get3DDataValue());
+	protected NbtCompound writeProperties(NbtCompound tag) {
+		tag.putInt("facing", facing.getId());
 		if (hasRotation() && rotation != null)
-			tag.putInt("rotation", rotation.get3DDataValue());
+			tag.putInt("rotation", rotation.getId());
 		return tag;
+	}
+
+	protected void notifyBlockUpdate() {
+		BlockState state = world.getBlockState(pos);
+		world.updateListeners(pos, state, state, 2);
 	}
 }

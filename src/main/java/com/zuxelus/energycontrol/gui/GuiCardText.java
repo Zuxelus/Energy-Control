@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
@@ -8,15 +7,16 @@ import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.gui.GuiBase;
 import com.zuxelus.zlib.gui.controls.GuiTextArea;
 
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.screen.ScreenTexts;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.ItemStack;
+import net.minecraft.text.LiteralText;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class GuiCardText extends GuiBase {
 	private ICardReader reader;
 	private ItemStack stack;
@@ -39,10 +39,10 @@ public class GuiCardText extends GuiBase {
 	@Override
 	public void init() {
 		super.init();
-		addRenderableWidget(new Button(guiLeft + xSize - 60 - 8, guiTop + 120, 60, 20, CommonComponents.GUI_DONE, (button) -> { actionPerformed(1); }));
-		addRenderableWidget(new Button(guiLeft + 8, guiTop + 120, 60, 20, new TextComponent("Style"), (button) -> { actionPerformed(2); }));
-		textArea = new GuiTextArea(font, guiLeft + 8, guiTop + 5, xSize - 16, ySize - 35, lineCount);
-		addWidget(textArea);
+		addDrawableChild(new ButtonWidget(guiLeft + xSize - 60 - 8, guiTop + 120, 60, 20, ScreenTexts.DONE, (button) -> { actionPerformed(1); }));
+		addDrawableChild(new ButtonWidget(guiLeft + 8, guiTop + 120, 60, 20, new LiteralText("Style"), (button) -> { actionPerformed(2); }));
+		textArea = new GuiTextArea(textRenderer, guiLeft + 8, guiTop + 5, xSize - 16, ySize - 35, lineCount);
+		addSelectableChild(textArea);
 		setInitialFocus(textArea);
 		String[] data = textArea.getText();
 		for (int i = 0; i < lineCount; i++)
@@ -50,7 +50,7 @@ public class GuiCardText extends GuiBase {
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+	protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
 		super.drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
 		textArea.render(matrixStack, mouseY, mouseY, partialTicks);
 	}
@@ -71,7 +71,7 @@ public class GuiCardText extends GuiBase {
 						reader.setString("line_" + i, lines[i]);
 			}
 			reader.updateServer(stack, panel, slot);
-			minecraft.setScreen(parentGui);
+			client.setScreen(parentGui);
 			break;
 		case 2:
 			textArea.writeText("@");
@@ -81,7 +81,7 @@ public class GuiCardText extends GuiBase {
 
 	@Override
 	public boolean mouseClicked(double x, double y, int p_94697_) {
-		GuiEventListener control = getFocused();
+		Element control = getFocused();
 		if (control instanceof GuiTextArea) {
 			boolean result = super.mouseClicked(x, y, p_94697_);
 			setFocused(control);

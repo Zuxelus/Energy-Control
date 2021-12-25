@@ -5,35 +5,33 @@ import com.zuxelus.energycontrol.tileentities.TileEntityHoloPanelExtender;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public class HoloPanelExtender extends HoloPanel {
 
 	@Override
-	protected BlockEntityFacing createBlockEntity(BlockPos pos, BlockState state) {
-		return ModTileEntityTypes.holo_panel_extender.get().create(pos, state);
+	protected BlockEntityFacing newBlockEntity(BlockPos pos, BlockState state) {
+		return ModTileEntityTypes.holo_panel_extender.instantiate(pos, state);
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		if (world.isClientSide)
-			return InteractionResult.PASS;
+	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+		if (world.isClient)
+			return ActionResult.PASS;
 		BlockEntity te = world.getBlockEntity(pos);
 		if (!(te instanceof TileEntityHoloPanelExtender))
-			return InteractionResult.PASS;
+			return ActionResult.PASS;
 		TileEntityInfoPanel panel = ((TileEntityHoloPanelExtender) te).getCore();
 		if (panel == null)
-			return InteractionResult.PASS;
-		NetworkHooks.openGui((ServerPlayer) player, (TileEntityInfoPanel) panel, pos);
-		return InteractionResult.SUCCESS;
+			return ActionResult.PASS;
+		player.openHandledScreen(state.createScreenHandlerFactory(world, pos));
+		return ActionResult.SUCCESS;
 	}
 }

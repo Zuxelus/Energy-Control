@@ -1,7 +1,5 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import javax.annotation.Nonnull;
-
 import com.zuxelus.energycontrol.blocks.KitAssembler;
 import com.zuxelus.energycontrol.containers.ContainerKitAssembler;
 import com.zuxelus.energycontrol.init.ModItems;
@@ -14,32 +12,28 @@ import com.zuxelus.zlib.containers.EnergyStorage;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.TileEntityItemHandler;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.Packet;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
-public class TileEntityKitAssembler extends TileEntityItemHandler implements MenuProvider, ITilePacketHandler, ISlotItemFilter {
+public class TileEntityKitAssembler extends TileEntityItemHandler implements ExtendedScreenHandlerFactory, ITilePacketHandler, ISlotItemFilter {
 	public static final byte SLOT_INFO = 0;
 	public static final byte SLOT_CARD1 = 1;
 	public static final byte SLOT_ITEM = 2;
@@ -48,10 +42,10 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 	public static final byte SLOT_DISCHARGER = 5;
 	private EnergyStorage storage;
 	private int buffer;
-	private static final int CONSUMPTION = 5;
+	private static final long CONSUMPTION = 5;
 	private KitAssemblerRecipe recipe;
 	private int recipeTime; // client Only
-	public static final int CAPACITY = 2000;
+	public static final long CAPACITY = 2000;
 	private double production;
 	private boolean active;
 
@@ -63,15 +57,15 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 	}
 
 	public TileEntityKitAssembler(BlockPos pos, BlockState state) {
-		this(ModTileEntityTypes.kit_assembler.get(), pos, state);
+		this(ModTileEntityTypes.kit_assembler, pos, state);
 	}
 
 	public double getEnergy() {
-		return storage.getEnergyStored();
+		return storage.getAmount();
 	}
 
 	public int getEnergyFactor() {
-		return (int) Math.round(storage.getEnergyStored() * 52.0F / CAPACITY);
+		return (int) Math.round(storage.getAmount() * 52.0F / CAPACITY);
 	}
 
 	public double getProduction() {
@@ -91,13 +85,13 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 	}
 
 	@Override
-	public void onServerMessageReceived(CompoundTag tag) {
+	public void onServerMessageReceived(NbtCompound tag) {
 		if (!tag.contains("type"))
 			return;
 		switch (tag.getInt("type")) {
 		case 4:
 			if (tag.contains("slot") && tag.contains("title")) {
-				ItemStack itemStack = getItem(tag.getInt("slot"));
+				ItemStack itemStack = getStack(tag.getInt("slot"));
 				if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemCardMain)
 					new ItemCardReader(itemStack).setTitle(tag.getString("title"));
 			}
@@ -106,13 +100,13 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 	}
 
 	@Override
-	public void onClientMessageReceived(CompoundTag tag) {
+	public void onClientMessageReceived(NbtCompound tag) {
 		if (!tag.contains("type"))
 			return;
 		switch (tag.getInt("type")) {
 		case 1:
 			if (tag.contains("energy") && tag.contains("production")) {
-				storage.setEnergy(tag.getInt("energy"));
+				storage.setEnergy(tag.getLong("energy"));
 				production = tag.getDouble("production");
 			}
 			if (tag.contains("time"))
@@ -124,18 +118,18 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 	}
 
 	@Override
-	public Packet<ClientGamePacketListener> getUpdatePacket() {
-		return ClientboundBlockEntityDataPacket.create(this);
+	public Packet<ClientPlayPacketListener> toUpdatePacket() {
+		return BlockEntityUpdateS2CPacket.create(this);
 	}
 
 	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-		readProperties(pkt.getTag());
+	public void onDataPacket(BlockEntityUpdateS2CPacket pkt) {
+		readProperties(pkt.getNbt());
 	}
 
 	@Override
-	public CompoundTag getUpdateTag() {
-		CompoundTag tag = super.getUpdateTag();
+	public NbtCompound toInitialChunkDataNbt() {
+		NbtCompound tag = super.toInitialChunkDataNbt();
 		tag = writeProperties(tag);
 		updateActive();
 		tag.putBoolean("active", active);
@@ -143,10 +137,10 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 	}
 
 	@Override
-	protected void readProperties(CompoundTag tag) {
+	protected void readProperties(NbtCompound tag) {
 		super.readProperties(tag);
 		if (tag.contains("energy"))
-			storage.setEnergy(tag.getInt("energy"));
+			storage.setEnergy(tag.getLong("energy"));
 		if (tag.contains("buffer"))
 			buffer = tag.getInt("buffer");
 		if (tag.contains("production"))
@@ -156,27 +150,27 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 	}
 
 	@Override
-	public void load(CompoundTag tag) {
-		super.load(tag);
+	public void readNbt(NbtCompound tag) {
+		super.readNbt(tag);
 		readProperties(tag);
 	}
 
 	@Override
-	protected CompoundTag writeProperties(CompoundTag tag) {
+	protected NbtCompound writeProperties(NbtCompound tag) {
 		tag = super.writeProperties(tag);
-		tag.putInt("energy", storage.getEnergyStored());
+		tag.putLong("energy", storage.getAmount());
 		tag.putInt("buffer", buffer);
 		tag.putDouble("production", production);
 		return tag;
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag tag) {
-		super.saveAdditional(tag);
+	protected void writeNbt(NbtCompound tag) {
+		super.writeNbt(tag);
 		writeProperties(tag);
 	}
 
-	public static void tickStatic(Level level, BlockPos pos, BlockState state, BlockEntity be) {
+	public static void tickStatic(World level, BlockPos pos, BlockState state, BlockEntity be) {
 		if (!(be instanceof TileEntityKitAssembler))
 			return;
 		TileEntityKitAssembler te = (TileEntityKitAssembler) be;
@@ -184,28 +178,28 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 	}
 
 	protected void tick() {
-		if (level.isClientSide)
+		if (world.isClient)
 			return;
 		handleDischarger(SLOT_DISCHARGER);
 		if (!active)
 			return;
-		if (storage.getEnergyStored() >= CONSUMPTION) {
-			storage.extractEnergy(CONSUMPTION, false);
+		if (storage.getAmount() >= CONSUMPTION) {
+			storage.extract(CONSUMPTION, false);
 			production += 1;
 			if (recipe != null && production >= recipe.time) {
-				ItemStack stack1 = getItem(SLOT_CARD1);
-				ItemStack stack2 = getItem(SLOT_ITEM);
-				ItemStack stack3 = getItem(SLOT_CARD2);
-				ItemStack result = getItem(SLOT_RESULT);
-				stack1.shrink(recipe.count1);
+				ItemStack stack1 = getStack(SLOT_CARD1);
+				ItemStack stack2 = getStack(SLOT_ITEM);
+				ItemStack stack3 = getStack(SLOT_CARD2);
+				ItemStack result = getStack(SLOT_RESULT);
+				stack1.decrement(recipe.count1);
 				if (stack1.getCount() == 0)
-					removeItemNoUpdate(SLOT_CARD1);
-				stack2.shrink(recipe.count2);
-				stack3.shrink(recipe.count3);
+					removeStack(SLOT_CARD1);
+				stack2.decrement(recipe.count2);
+				stack3.decrement(recipe.count3);
 				if (result.isEmpty())
-					setItem(SLOT_RESULT, recipe.output.copy());
+					setStack(SLOT_RESULT, recipe.output.copy());
 				else
-					result.grow(recipe.output.getCount());
+					result.increment(recipe.output.getCount());
 				production = 0;
 				updateState();
 			}
@@ -217,50 +211,45 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 	}
 
 	private void handleDischarger(int slot) {
-		int needed = Math.min(32, storage.getMaxEnergyStored() - storage.getEnergyStored());
+		long needed = Math.min(32L, storage.getCapacity() - storage.getAmount());
 		if (needed <= 0)
 			return;
 		if (buffer > 0)
-			buffer -= storage.receiveEnergy(buffer, false);
-		needed = Math.min(32, storage.getMaxEnergyStored() - storage.getEnergyStored());
-		ItemStack stack = getStackInSlot(slot);
+			buffer -= storage.insert(buffer, false);
+		needed = Math.min(32, storage.getCapacity() - storage.getAmount());
+		ItemStack stack = getStack(slot);
 		if (!stack.isEmpty() && needed > 0) {
 			if (stack.getItem().equals(Items.LAVA_BUCKET)) {
 				buffer += 2000;
-				buffer -= storage.receiveEnergy(buffer, false);
-				setItem(slot, new ItemStack(Items.BUCKET));
+				buffer -= storage.insert(buffer, false);
+				setStack(slot, new ItemStack(Items.BUCKET));
 				return;
 			}
-			IEnergyStorage stackStorage = getStackEnergyStorage(stack);
+			/*IEnergyStorage stackStorage = getStackEnergyStorage(stack);
 			if (stackStorage != null)
 				if (storage.receiveEnergy(stackStorage.extractEnergy(needed, false), false) > 0)
-					active = true;
+					active = true;*/
 		}
 	}
 
-	private IEnergyStorage getStackEnergyStorage(ItemStack stack) {
+	/*private IEnergyStorage getStackEnergyStorage(ItemStack stack) {
 		LazyOptional<IEnergyStorage> cap = stack.getCapability(CapabilityEnergy.ENERGY);
 		if(cap.isPresent())
 			return cap.orElseThrow( NullPointerException::new );
 		return null;
-	}
-
-	public void notifyBlockUpdate() {
-		BlockState iblockstate = level.getBlockState(worldPosition);
-		level.sendBlockUpdated(worldPosition, iblockstate, iblockstate, 2);
-	}
+	}*/
 
 	@Override
-	public void setChanged() {
-		super.setChanged();
-		if (level == null || level.isClientSide)
+	public void markDirty() {
+		super.markDirty();
+		if (world == null || world.isClient)
 			return;
 		updateState();
 	}
 
 	private void updateActive() {
 		active = false;
-		if (storage.getEnergyStored() < CONSUMPTION)
+		if (storage.getAmount() < CONSUMPTION)
 			return;
 		KitAssemblerRecipe newRecipe;
 		if (recipe == null) {
@@ -287,24 +276,24 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 
 		production = 0;
 
-		BlockState blockstate = level.getBlockState(worldPosition);
+		BlockState blockstate = world.getBlockState(pos);
 		Block block = blockstate.getBlock();
-		if (!(block instanceof KitAssembler) || blockstate.getValue(KitAssembler.ACTIVE) == active)
+		if (!(block instanceof KitAssembler) || blockstate.get(KitAssembler.ACTIVE) == active)
 			return;
-		BlockState newState = block.defaultBlockState()
-				.setValue(KitAssembler.FACING, blockstate.getValue(KitAssembler.FACING))
-				.setValue(KitAssembler.ACTIVE, active);
-		level.setBlock(worldPosition, newState, 3);
+		BlockState newState = block.getDefaultState()
+				.with(KitAssembler.FACING, blockstate.get(KitAssembler.FACING))
+				.with(KitAssembler.ACTIVE, active);
+		world.setBlockState(pos, newState, 3);
 	}
 
 	// ------- Inventory -------
 	@Override
-	public int getContainerSize() {
+	public int size() {
 		return 6;
 	}
 
 	@Override
-	public boolean canPlaceItem(int slot, ItemStack stack) {
+	public boolean isValid(int slot, ItemStack stack) {
 		return isItemValid(slot, stack);
 	}
 
@@ -318,29 +307,26 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 		case SLOT_INFO:
 			return stack.getItem() instanceof ItemCardMain;
 		case SLOT_DISCHARGER:
-			return getStackEnergyStorage(stack) != null || stack.getItem().equals(Items.LAVA_BUCKET);
+			return /*getStackEnergyStorage(stack) != null ||*/ stack.getItem().equals(Items.LAVA_BUCKET);
 		case SLOT_RESULT:
 		default:
 			return false;
 		}
 	}
 
-	// MenuProvider
+	// NamedScreenHandlerFactory
 	@Override
-	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
+	public ScreenHandler createMenu(int windowId, PlayerInventory inventory, PlayerEntity player) {
 		return new ContainerKitAssembler(windowId, inventory, this);
 	}
 
 	@Override
-	public Component getDisplayName() {
-		return new TranslatableComponent(ModItems.kit_assembler.get().getDescriptionId());
+	public Text getDisplayName() {
+		return new TranslatableText(ModItems.kit_assembler.getTranslationKey());
 	}
 
 	@Override
-	@Nonnull
-	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-		if (cap == CapabilityEnergy.ENERGY)
-			return LazyOptional.of(() -> this.storage).cast();
-		return super.getCapability(cap, side);
+	public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
+		buf.writeBlockPos(pos);
 	}
 }

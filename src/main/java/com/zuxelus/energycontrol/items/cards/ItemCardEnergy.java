@@ -9,18 +9,18 @@ import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 
-import net.minecraft.client.resources.language.I18n;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.resource.language.I18n;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public class ItemCardEnergy extends ItemCardMain {
 
 	@Override
-	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
+	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
 		BlockPos target = reader.getTarget();
 		if (target == null)
 			return CardState.NO_TARGET;
@@ -29,7 +29,7 @@ public class ItemCardEnergy extends ItemCardMain {
 		if (te == null)
 			return CardState.NO_TARGET;
 
-		CompoundTag tag = CrossModLoader.getEnergyData(te);
+		NbtCompound tag = CrossModLoader.getEnergyData(te);
 		if (tag != null) {
 			reader.setDouble("storage", tag.getDouble("storage"));
 			reader.setDouble("maxStorage", tag.getDouble("maxStorage"));
@@ -40,7 +40,7 @@ public class ItemCardEnergy extends ItemCardMain {
 	}
 
 	@Override
-	public List<PanelString> getStringData(Level world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(World world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 
 		double energy = reader.getDouble("storage");
@@ -59,13 +59,13 @@ public class ItemCardEnergy extends ItemCardMain {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
+	@Environment(EnvType.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(4);
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelEnergy"), 1));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelFree"), 2));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelCapacity"), 4));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelPercentage"), 8));
+		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelEnergy"), 1));
+		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelFree"), 2));
+		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelCapacity"), 4));
+		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelPercentage"), 8));
 		return result;
 	}
 

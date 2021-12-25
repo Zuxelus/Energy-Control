@@ -3,36 +3,41 @@ package com.zuxelus.energycontrol.items.kits;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.IItemKit;
 
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.world.RaycastContext;
+import net.minecraft.world.World;
 
 public abstract class ItemKitMain extends Item implements IItemKit {
 
 	public ItemKitMain() {
-		super(new Item.Properties().tab(EnergyControl.ITEM_GROUP).stacksTo(16).setNoRepair());
+		super(new Item.Settings().group(EnergyControl.ITEM_GROUP).maxCount(16));
 	}
 
-	@Override
-	public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
-		Player player = context.getPlayer();
-		if (player == null || !(player instanceof ServerPlayer))
-			return InteractionResult.PASS;
+	public ActionResult onItemUseFirst(World world, PlayerEntity player, Hand hand) {
+		ItemStack stack = player.getStackInHand(hand);
+		if (!(player instanceof ServerPlayerEntity) || stack.isEmpty())
+			return ActionResult.PASS;
 
-		if (stack.isEmpty())
-			return InteractionResult.PASS;
-		ItemStack sensorLocationCard = ((ItemKitMain) stack.getItem()).getSensorCard(stack, player, context.getLevel(), context.getClickedPos(), context.getClickedFace());
+		BlockHitResult hitResult = raycast(world, player, RaycastContext.FluidHandling.NONE);
+		if (hitResult.getType() != HitResult.Type.BLOCK)
+			return ActionResult.PASS;
+
+		ItemStack sensorLocationCard = ((ItemKitMain) stack.getItem()).getSensorCard(stack, player, world, hitResult.getBlockPos(), hitResult.getSide());
 		if (sensorLocationCard.isEmpty())
-			return InteractionResult.PASS;
+			return ActionResult.PASS;
 
-		stack.shrink(1);
-		ItemEntity dropItem = new ItemEntity(context.getLevel(), player.getX(), player.getY(), player.getZ(), sensorLocationCard);
-		dropItem.setPickUpDelay(0);
-		context.getLevel().addFreshEntity(dropItem);
-		return InteractionResult.SUCCESS;
+		stack.decrement(1);
+		ItemEntity dropItem = new ItemEntity(world, player.getX(), player.getY(), player.getZ(), sensorLocationCard);
+		dropItem.setPickupDelay(0);
+		world.spawnEntity(dropItem);
+		return ActionResult.SUCCESS;
 	}
 }

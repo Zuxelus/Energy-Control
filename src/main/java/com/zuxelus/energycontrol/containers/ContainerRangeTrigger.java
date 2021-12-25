@@ -7,18 +7,18 @@ import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.tileentities.TileEntityRangeTrigger;
 import com.zuxelus.zlib.containers.ContainerBase;
 
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.screen.ScreenHandlerContext;
 
 public class ContainerRangeTrigger extends ContainerBase<TileEntityRangeTrigger> {
 
-	public ContainerRangeTrigger(int windowId, Inventory inventory, FriendlyByteBuf data) {
+	public ContainerRangeTrigger(int windowId, PlayerInventory inventory, PacketByteBuf data) {
 		this(windowId, inventory, (TileEntityRangeTrigger) getBlockEntity(inventory, data));
 	}
 
-	public ContainerRangeTrigger(int windowId, Inventory inventory, TileEntityRangeTrigger te) {
-		super(te, ModContainerTypes.range_trigger.get(), windowId, ModItems.range_trigger.get(), ContainerLevelAccess.create(te.getLevel(), te.getBlockPos()));
+	public ContainerRangeTrigger(int windowId, PlayerInventory inventory, TileEntityRangeTrigger te) {
+		super(te, ModContainerTypes.range_trigger, windowId, ModItems.range_trigger, ScreenHandlerContext.create(te.getWorld(), te.getPos()));
 
 		addSlot(new SlotCard(te, 0, 8, 21));
 		addSlot(new SlotRange(te, 1, 8, 39));

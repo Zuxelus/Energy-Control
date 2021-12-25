@@ -1,14 +1,14 @@
 package com.zuxelus.zlib.recipes;
 
-import net.minecraft.world.Container;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.item.ItemStack;
 
-public final class EmptyInventory implements Container {
+public final class EmptyInventory implements Inventory {
 	public static final EmptyInventory INSTANCE = new EmptyInventory();
 
 	@Override
-	public int getContainerSize() {
+	public int size() {
 		return 0;
 	}
 
@@ -18,31 +18,31 @@ public final class EmptyInventory implements Container {
 	}
 
 	@Override
-	public ItemStack getItem(int index) {
+	public ItemStack getStack(int index) {
 		return ItemStack.EMPTY;
 	}
 
 	@Override
-	public ItemStack removeItem(int index, int count) {
+	public ItemStack removeStack(int index, int count) {
 		return ItemStack.EMPTY;
 	}
 
 	@Override
-	public ItemStack removeItemNoUpdate(int index) {
+	public ItemStack removeStack(int index) {
 		return ItemStack.EMPTY;
 	}
 
 	@Override
-	public void setItem(int index, ItemStack stack) {}
+	public void setStack(int index, ItemStack stack) {}
 
 	@Override
-	public void setChanged() {}
+	public void markDirty() {}
 
 	@Override
-	public boolean stillValid(Player player) {
+	public boolean canPlayerUse(PlayerEntity player) {
 		return false;
 	}
 
 	@Override
-	public void clearContent() {}
+	public void clear() {}
 }

@@ -8,24 +8,24 @@ import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.containers.ContainerBase;
 
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.screen.ScreenHandlerContext;
 
 public class ContainerHoloPanel extends ContainerBase<TileEntityInfoPanel> {
 
-	public ContainerHoloPanel(int windowId, Inventory inventory, FriendlyByteBuf data) {
+	public ContainerHoloPanel(int windowId, PlayerInventory inventory, PacketByteBuf data) {
 		this(windowId, inventory, (TileEntityInfoPanel) getBlockEntity(inventory, data));
 	}
 
-	public ContainerHoloPanel(int windowId, Inventory inventory, TileEntityInfoPanel panel) {
-		super(panel, ModContainerTypes.holo_panel.get(), windowId, ModItems.holo_panel.get(), ContainerLevelAccess.create(panel.getLevel(), panel.getBlockPos()));
+	public ContainerHoloPanel(int windowId, PlayerInventory inventory, TileEntityInfoPanel panel) {
+		super(panel, ModContainerTypes.holo_panel, windowId, ModItems.holo_panel, ScreenHandlerContext.create(panel.getWorld(), panel.getPos()));
 		addSlot(new SlotCard(panel, 0, 8, 24 + 18) {
 			@SuppressWarnings("resource")
 			@Override
-			public void setChanged() {
-				if (panel.getLevel().isClientSide)
-					ContainerHoloPanel.this.broadcastChanges();
+			public void markDirty() {
+				if (panel.getWorld().isClient)
+					ContainerHoloPanel.this.sendContentUpdates();
 			};
 		});
 		addSlot(new SlotRange(panel, 1, 8, 24 + 18 * 2));

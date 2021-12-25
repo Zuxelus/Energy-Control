@@ -1,31 +1,62 @@
 package com.zuxelus.energycontrol.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.common.Mod;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Properties;
 
-@Mod.EventBusSubscriber
-public final class ConfigHandler {
-	public static final String CATEGORY_GENERAL = "General";
+import com.zuxelus.energycontrol.EnergyControl;
 
-	public static ForgeConfigSpec COMMON_CONFIG;
+import net.fabricmc.loader.api.FabricLoader;
 
-	public static ForgeConfigSpec.IntValue HOWLER_ALARM_RANGE;
-	public static ForgeConfigSpec.IntValue MAX_ALARM_RANGE;
-	public static ForgeConfigSpec.ConfigValue<String> ALLOWED_ALARMS;
-	public static ForgeConfigSpec.IntValue SCREEN_REFRESH_PERIOD;
-	public static ForgeConfigSpec.IntValue RANGE_TRIGGER_REFRESH_PERIOD;
-	public static ForgeConfigSpec.BooleanValue USE_CUSTOM_SOUNDS;
+public class ConfigHandler {
+	public static final File CONFIG_FILE = new File(FabricLoader.getInstance().getConfigDir().toFile(), EnergyControl.MODID + ".config");
 
-	static {
-		ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
-		builder.comment("General settings").push(CATEGORY_GENERAL);
-		HOWLER_ALARM_RANGE = builder.comment("Default Howler Alarm Range").defineInRange("howlerAlarmRange", 64, 0, Integer.MAX_VALUE);
-		MAX_ALARM_RANGE = builder.comment("Max Possible Howler Alarm Range").defineInRange("maxAlarmRange", 128, 0, Integer.MAX_VALUE);
-		ALLOWED_ALARMS = builder.comment("Allowed Alarms").define("allowedAlarms", "default,sci-fi,siren");
-		SCREEN_REFRESH_PERIOD = builder.comment("Default Panel Refresh Period").defineInRange("infoPanelRefreshPeriod", 20, 1, Integer.MAX_VALUE);
-		RANGE_TRIGGER_REFRESH_PERIOD = builder.comment("Default Range Trigger Refresh Period").defineInRange("rangeTriggerRefreshPeriod", 20, 1, Integer.MAX_VALUE);
-		USE_CUSTOM_SOUNDS =  builder.comment("Load Custom Sounds").define("useCustomSounds", false);
-		builder.pop();
-		COMMON_CONFIG = builder.build();
+	public static int howlerAlarmRange = 64;
+	public static int maxAlarmRange = 128;
+	public static String allowedAlarms = "default,sci-fi,siren";
+	public static int remoteThermalMonitorEnergyConsumption = 1;
+	public static int screenRefreshPeriod = 20;
+	public static int rangeTriggerRefreshPeriod = 20;
+	public static int SMPMaxAlarmRange = 256;
+	public static boolean useCustomSounds = false;
+
+	public ConfigHandler() {
+		loadConfig(CONFIG_FILE);
+	}
+
+	public static void loadConfig(File file) {
+		try {
+			Properties cfg = new Properties();
+			if (!file.exists())
+				saveConfig(file);
+			cfg.load(new FileInputStream(file));
+			howlerAlarmRange = Integer.parseInt(cfg.getProperty("howlerAlarmRange"));
+			maxAlarmRange = Integer.parseInt(cfg.getProperty("maxAlarmRange"));
+			allowedAlarms = cfg.getProperty("allowedAlarms");
+			remoteThermalMonitorEnergyConsumption = Integer.parseInt(cfg.getProperty("remoteThermalMonitorEnergyConsumption"));
+			screenRefreshPeriod = Integer.parseInt(cfg.getProperty("screenRefreshPeriod"));
+			rangeTriggerRefreshPeriod = Integer.parseInt(cfg.getProperty("rangeTriggerRefreshPeriod"));
+			SMPMaxAlarmRange = Integer.parseInt(cfg.getProperty("SMPMaxAlarmRange"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void saveConfig(File file) {
+		try {
+			FileOutputStream fos = new FileOutputStream(file, false);
+			fos.write(("howlerAlarmRange=" + howlerAlarmRange + "\n").getBytes());
+			fos.write(("maxAlarmRange=" + maxAlarmRange + "\n").getBytes());
+			fos.write(("allowedAlarms=" + allowedAlarms + "\n").getBytes());
+			fos.write(("remoteThermalMonitorEnergyConsumption=" + remoteThermalMonitorEnergyConsumption + "\n").getBytes());
+			fos.write(("screenRefreshPeriod=" + screenRefreshPeriod + "\n").getBytes());
+			fos.write(("rangeTriggerRefreshPeriod=" + rangeTriggerRefreshPeriod + "\n").getBytes());
+			fos.write(("SMPMaxAlarmRange=" + SMPMaxAlarmRange + "\n").getBytes());
+			fos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

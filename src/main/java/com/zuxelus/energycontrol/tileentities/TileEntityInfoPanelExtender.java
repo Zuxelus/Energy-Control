@@ -4,22 +4,20 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
 
-public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IScreenPart {
+public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IScreenPart, ITilePacketHandler {
 	protected boolean init;
 
 	protected Screen screen;
@@ -40,12 +38,12 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	}
 
 	public TileEntityInfoPanelExtender(BlockPos pos, BlockState state) {
-		this(ModTileEntityTypes.info_panel_extender.get(), pos, state);
+		this(ModTileEntityTypes.info_panel_extender, pos, state);
 	}
 
 	@Override
 	public void setFacing(int meta) {
-		Direction newFacing = Direction.from3DDataValue(meta);
+		Direction newFacing = Direction.byId(meta);
 		if (facing == newFacing)
 			return;
 		facing = newFacing;
@@ -57,36 +55,42 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 
 	private void updateScreen() {
 		if (partOfScreen && screen == null) {
-			BlockEntity core = level.getBlockEntity(new BlockPos(coreX, coreY, coreZ));
+			BlockEntity core = world.getBlockEntity(new BlockPos(coreX, coreY, coreZ));
 			if (core != null && core instanceof TileEntityInfoPanel) {
 				screen = ((TileEntityInfoPanel) core).getScreen();
 				if (screen != null)
-					screen.init(true, level);
+					screen.init(true, world);
 			}
 		}
-		if (level.isClientSide && !partOfScreen && screen != null)
+		if (world.isClient && !partOfScreen && screen != null)
 			setScreen(null);
 	}
 
 	@Override
-	public Packet<ClientGamePacketListener> getUpdatePacket() {
-		return ClientboundBlockEntityDataPacket.create(this);
+	public void onClientMessageReceived(NbtCompound tag) { }
+
+	@Override
+	public void onServerMessageReceived(NbtCompound tag) {}
+
+	@Override
+	public Packet<ClientPlayPacketListener> toUpdatePacket() {
+		return BlockEntityUpdateS2CPacket.create(this);
 	}
 
 	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-		readProperties(pkt.getTag());
+	public void onDataPacket(BlockEntityUpdateS2CPacket pkt) {
+		readProperties(pkt.getNbt());
 	}
 
 	@Override
-	public CompoundTag getUpdateTag() {
-		CompoundTag tag = super.getUpdateTag();
+	public NbtCompound toInitialChunkDataNbt() {
+		NbtCompound tag = super.toInitialChunkDataNbt();
 		tag = writeProperties(tag);
 		return tag;
 	}
 
 	@Override
-	protected void readProperties(CompoundTag tag) {
+	protected void readProperties(NbtCompound tag) {
 		super.readProperties(tag);
 		if (tag.contains("partOfScreen"))
 			partOfScreen = tag.getBoolean("partOfScreen");
@@ -95,21 +99,21 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 			coreY = tag.getInt("coreY");
 			coreZ = tag.getInt("coreZ");
 		}
-		if (level != null) {
+		if (world != null) {
 			updateScreen();
-			if (level.isClientSide)
-				level.getChunkSource().getLightEngine().checkBlock(worldPosition);
+			if (world.isClient)
+				world.getChunkManager().getLightingProvider().checkBlock(pos);
 		}
 	}
 
 	@Override
-	public void load(CompoundTag tag) {
-		super.load(tag);
+	public void readNbt(NbtCompound tag) {
+		super.readNbt(tag);
 		readProperties(tag);
 	}
 
 	@Override
-	protected CompoundTag writeProperties(CompoundTag tag) {
+	protected NbtCompound writeProperties(NbtCompound tag) {
 		tag = super.writeProperties(tag);
 		tag.putBoolean("partOfScreen", partOfScreen);
 		tag.putInt("coreX", coreX);
@@ -119,19 +123,19 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag tag) {
-		super.saveAdditional(tag);
+	protected void writeNbt(NbtCompound tag) {
+		super.writeNbt(tag);
 		writeProperties(tag);
 	}
 
 	@Override
-	public void setRemoved() {
-		if (!level.isClientSide)
+	public void markRemoved() {
+		if (!world.isClient)
 			EnergyControl.INSTANCE.screenManager.unregisterScreenPart(this);
-		super.setRemoved();
+		super.markRemoved();
 	}
 
-	public static void tickStatic(Level level, BlockPos pos, BlockState state, BlockEntity be) {
+	public static void tickStatic(World level, BlockPos pos, BlockState state, BlockEntity be) {
 		if (!(be instanceof TileEntityInfoPanelExtender))
 			return;
 		TileEntityInfoPanelExtender te = (TileEntityInfoPanelExtender) be;
@@ -142,7 +146,7 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 		if (init)
 			return;
 
-		if (!level.isClientSide && !partOfScreen)
+		if (!world.isClient && !partOfScreen)
 			EnergyControl.INSTANCE.screenManager.registerInfoPanelExtender(this);
 
 		updateScreen();
@@ -154,11 +158,11 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 		this.screen = screen;
 		if (screen != null) {
 			partOfScreen = true;
-			TileEntityInfoPanel core = screen.getCore(level);
+			TileEntityInfoPanel core = screen.getCore(world);
 			if (core != null) {
-				coreX = core.getBlockPos().getX();
-				coreY = core.getBlockPos().getY();
-				coreZ = core.getBlockPos().getZ();
+				coreX = core.getPos().getX();
+				coreY = core.getPos().getY();
+				coreZ = core.getPos().getZ();
 				return;
 			}
 		}
@@ -176,22 +180,21 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	public TileEntityInfoPanel getCore() {
 		if (screen == null)
 			return null;
-		return screen.getCore(level);
+		return screen.getCore(world);
 	}
 
 	@Override
 	public void updateData() { }
 
 	@Override
-	public void notifyBlockUpdate() {
-		BlockState iblockstate = level.getBlockState(worldPosition);
-		level.sendBlockUpdated(worldPosition, iblockstate, iblockstate, 2);
+	public void updateTileEntity() {
+		notifyBlockUpdate();
 	}
 
 	public boolean getColored() {
 		if (screen == null)
 			return false;
-		TileEntityInfoPanel core = screen.getCore(level);
+		TileEntityInfoPanel core = screen.getCore(world);
 		if (core == null)
 			return false;
 		return core.getColored();
@@ -200,7 +203,7 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	public boolean getPowered() {
 		if (screen == null)
 			return false;
-		TileEntityInfoPanel core = screen.getCore(level);
+		TileEntityInfoPanel core = screen.getCore(world);
 		if (core == null)
 			return false;
 		return core.powered;
@@ -209,28 +212,28 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	public int getColorBackground() {
 		if (screen == null)
 			return 2;
-		TileEntityInfoPanel core = screen.getCore(level);
+		TileEntityInfoPanel core = screen.getCore(world);
 		if (core == null)
 			return 2;
 		return core.getColorBackground();
 	}
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
+	/*@Override
+	@Environment(EnvType.CLIENT)
 	public AABB getRenderBoundingBox() {
-		return new AABB(worldPosition.offset(0, 0, 0), worldPosition.offset(1, 1, 1));
-	}
+		return new AABB(pos.offset(0, 0, 0), pos.offset(1, 1, 1));
+	}*/
 
 	/*@Override // TODO
 	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
 		return oldState.getBlock() != newSate.getBlock();
 	}*/
 
-	@OnlyIn(Dist.CLIENT)
+	@Environment(EnvType.CLIENT)
 	public int findTexture() {
 		Screen scr = getScreen();
 		if (scr != null) {
-			BlockPos pos = getBlockPos();
+			BlockPos pos = getPos();
 			switch (getFacing()) {
 			case SOUTH:
 				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 4 * boolToInt(pos.getY() == scr.minY) + 8 * boolToInt(pos.getY() == scr.maxY);

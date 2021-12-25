@@ -1,88 +1,87 @@
 package com.zuxelus.energycontrol.blocks;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.network.NetworkHooks;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.ShapeContext;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
 
 public class AdvancedInfoPanel extends InfoPanel {
 
 	public AdvancedInfoPanel() {
-		super(Block.Properties.of(Material.METAL).strength(12.0F).noOcclusion());
+		super(FabricBlockSettings.copyOf(ModItems.settings).nonOpaque());
 	}
 
 	@Override
-	protected BlockEntityFacing createBlockEntity(BlockPos pos, BlockState state) {
-		return ModTileEntityTypes.info_panel_advanced.get().create(pos, state);
+	protected BlockEntityFacing newBlockEntity(BlockPos pos, BlockState state) {
+		return ModTileEntityTypes.info_panel_advanced.instantiate(pos, state);
 	}
 
 	@Override
-	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
 		BlockEntity tile = world.getBlockEntity(pos);
 		if (!(tile instanceof TileEntityAdvancedInfoPanel))
-			return Shapes.block();
+			return VoxelShapes.fullCube();
 
 		TileEntityAdvancedInfoPanel te = (TileEntityAdvancedInfoPanel) tile;
 		Screen screen = te.getScreen();
 		if (screen == null)
-			return Shapes.block();
+			return VoxelShapes.fullCube();
 
-		Direction enumfacing = (Direction) state.getValue(FACING);
+		Direction enumfacing = (Direction) state.get(FACING);
 		if (!(te instanceof TileEntityAdvancedInfoPanel) || enumfacing == null)
-			return Shapes.block();
+			return VoxelShapes.fullCube();
 		switch (enumfacing) {
 		case EAST:
-			return Block.box(0.0D, 0.0D, 0.0D, te.thickness, 16.0D, 16.0D);
+			return Block.createCuboidShape(0.0D, 0.0D, 0.0D, te.thickness, 16.0D, 16.0D);
 		case WEST:
-			return Block.box(16.0D - te.thickness, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+			return Block.createCuboidShape(16.0D - te.thickness, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
 		case SOUTH:
-			return Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, te.thickness);
+			return Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, te.thickness);
 		case NORTH:
-			return Block.box(0.0D, 0.0D, 16.0D - te.thickness, 16.0D, 16.0D, 16.0D);
+			return Block.createCuboidShape(0.0D, 0.0D, 16.0D - te.thickness, 16.0D, 16.0D, 16.0D);
 		case UP:
-			return Block.box(0.0D, 0.0D, 0.0D, 16.0D, te.thickness, 16.0D);
+			return Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, te.thickness, 16.0D);
 		case DOWN:
-			return Block.box(0.0D, 16.0D - te.thickness, 0.0D, 16.0D, 16.0D, 16.0D);
+			return Block.createCuboidShape(0.0D, 16.0D - te.thickness, 0.0D, 16.0D, 16.0D, 16.0D);
 		default:
-			return Shapes.block();
+			return VoxelShapes.fullCube();
 		}
 	}
 
 	@Override
-	public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-		return getShape(state, world, pos, context);
+	public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+		return getOutlineShape(state, world, pos, context);
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
 		BlockEntity te = world.getBlockEntity(pos);
 		if (!(te instanceof TileEntityInfoPanel))
-			return InteractionResult.PASS;
-		if (!world.isClientSide && EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) te).getFacing() == hit.getDirection())
-			if (((TileEntityInfoPanel) te).runTouchAction(player.getItemInHand(hand), pos, hit.getLocation()))
-				return InteractionResult.SUCCESS;
-		if (!world.isClientSide)
-			NetworkHooks.openGui((ServerPlayer) player, (TileEntityAdvancedInfoPanel) te, pos);
-		return InteractionResult.SUCCESS;
+			return ActionResult.PASS;
+		if (!world.isClient && EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) te).getFacing() == hit.getSide())
+			if (((TileEntityInfoPanel) te).runTouchAction(player.getStackInHand(hand), pos, hit.getPos()))
+				return ActionResult.SUCCESS;
+		if (!world.isClient)
+			player.openHandledScreen(state.createScreenHandlerFactory(world, pos));
+		return ActionResult.SUCCESS;
 	}
 }

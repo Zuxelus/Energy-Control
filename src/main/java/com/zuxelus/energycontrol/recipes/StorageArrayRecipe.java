@@ -5,15 +5,15 @@ import java.util.Vector;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.*;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.ShapelessRecipe;
-import net.minecraft.world.level.Level;
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.recipe.CraftingRecipe;
+import net.minecraft.recipe.RecipeSerializer;
+import net.minecraft.recipe.ShapelessRecipe;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public class StorageArrayRecipe implements CraftingRecipe {
 	private final ShapelessRecipe recipe;
@@ -27,13 +27,13 @@ public class StorageArrayRecipe implements CraftingRecipe {
 	}
 
 	@Override
-	public boolean matches(CraftingContainer inv, Level level) {
-		return !assemble(inv).isEmpty();
+	public boolean matches(CraftingInventory inv, World level) {
+		return !craft(inv).isEmpty();
 	}
 
 	@Override
-	public ItemStack assemble(CraftingContainer inv) {
-		int inventoryLength = inv.getContainerSize();
+	public ItemStack craft(CraftingInventory inv) {
+		int inventoryLength = inv.size();
 		int cardCount = 0;
 		int arrayCount = 0;
 		int cardCountLiquid = 0;
@@ -41,7 +41,7 @@ public class StorageArrayRecipe implements CraftingRecipe {
 		ItemStack array = null;
 		Vector<ItemStack> cards = new Vector<>();
 		for (int i = 0; i < inventoryLength; i++) {
-			ItemStack itemStack = inv.getItem(i);
+			ItemStack itemStack = inv.getStack(i);
 			if (itemStack.isEmpty())
 				continue;
 			Item item = itemStack.getItem();
@@ -79,12 +79,12 @@ public class StorageArrayRecipe implements CraftingRecipe {
 		if (cardCount == 0 && arrayCount == 1) {
 			int cnt = new ItemCardReader(array).getInt("cardCount");
 			if (cnt > 0)
-				return new ItemStack(ModItems.radio_transmitter.get(), cnt);
+				return new ItemStack(ModItems.radio_transmitter, cnt);
 		} else if (arrayCount == 1 && cardCount > 0) {
 			int cnt = new ItemCardReader(array).getInt("cardCount");
 			if (cnt + cardCount <= 16) {
 				ItemStack itemStack = createCard(type);
-				itemStack.setTag(array.getTag().copy());
+				itemStack.setNbt(array.getNbt().copy());
 				initArray(itemStack, cards);
 				return itemStack;
 			}
@@ -94,9 +94,9 @@ public class StorageArrayRecipe implements CraftingRecipe {
 
 	private ItemStack createCard(int type) {
 		if (type == ItemCardType.CARD_ENERGY_ARRAY)
-			return new ItemStack(ModItems.card_energy_array.get());
+			return new ItemStack(ModItems.card_energy_array);
 		//if (type == ItemCardType.CARD_LIQUID_ARRAY)
-		return new ItemStack(ModItems.card_liquid_array.get());
+		return new ItemStack(ModItems.card_liquid_array);
 	}
 
 	private static void initArray(ItemStack stack, Vector<ItemStack> cards) {
@@ -118,22 +118,22 @@ public class StorageArrayRecipe implements CraftingRecipe {
 	}
 
 	@Override
-	public boolean canCraftInDimensions(int width, int height) {
+	public boolean fits(int width, int height) {
 		return width * height >= 2;
 	}
 
 	@Override
-	public ItemStack getResultItem() {
+	public ItemStack getOutput() {
 		return ItemStack.EMPTY;
 	}
 
 	@Override
-	public ResourceLocation getId() {
+	public Identifier getId() {
 		return recipe.getId();
 	}
 
 	@Override
 	public RecipeSerializer<?> getSerializer() {
-		return ModItems.ARRAY_SERIALIZER.get();
+		return ModItems.ARRAY_SERIALIZER;
 	}
 }

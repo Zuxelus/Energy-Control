@@ -3,23 +3,22 @@ package com.zuxelus.energycontrol.recipes;
 import com.google.gson.JsonObject;
 import com.zuxelus.energycontrol.EnergyControl;
 
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.ShapelessRecipe;
-import net.minecraftforge.registries.ForgeRegistryEntry;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.recipe.RecipeSerializer;
+import net.minecraft.recipe.ShapelessRecipe;
+import net.minecraft.util.Identifier;
 
-public class ArrayRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<StorageArrayRecipe> {
+public class ArrayRecipeSerializer implements RecipeSerializer<StorageArrayRecipe> {
 
 	@Override
-	public StorageArrayRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
-		return new StorageArrayRecipe((ShapelessRecipe) RecipeSerializer.SHAPELESS_RECIPE.fromJson(recipeId, json));
+	public StorageArrayRecipe read(Identifier recipeId, JsonObject json) {
+		return new StorageArrayRecipe((ShapelessRecipe) RecipeSerializer.SHAPELESS.read(recipeId, json));
 	}
 
 	@Override
-	public StorageArrayRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+	public StorageArrayRecipe read(Identifier recipeId, PacketByteBuf buffer) {
 		try {
-			return new StorageArrayRecipe((ShapelessRecipe) RecipeSerializer.SHAPELESS_RECIPE.fromNetwork(recipeId, buffer));
+			return new StorageArrayRecipe((ShapelessRecipe) RecipeSerializer.SHAPELESS.read(recipeId, buffer));
 		} catch (Exception e) {
 			EnergyControl.LOGGER.error("Error reading storage array recipe from packet.", e);
 			throw e;
@@ -27,13 +26,12 @@ public class ArrayRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?
 	}
 
 	@Override
-	public void toNetwork(FriendlyByteBuf buffer, StorageArrayRecipe recipe) {
+	public void write(PacketByteBuf buffer, StorageArrayRecipe recipe) {
 		try {
-			RecipeSerializer.SHAPELESS_RECIPE.toNetwork(buffer, recipe.getRecipe());
+			RecipeSerializer.SHAPELESS.write(buffer, recipe.getRecipe());
 		} catch (Exception e) {
 			EnergyControl.LOGGER.error("Error writing storage array recipe to packet.", e);
 			throw e;
 		}
 	}
-
 }

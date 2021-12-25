@@ -2,40 +2,40 @@ package com.zuxelus.energycontrol.renderers;
 
 import java.util.List;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory.Context;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3f;
 
 public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEntityInfoPanel> {
 	private static int[][] sides = new int[][] { { 3, 2, 1, 0, 5, 4 }, { 2, 3, 1, 0, 4, 5 }, { 4, 5, 1, 0, 3, 2 },
 		{ 5 ,4, 1, 0, 2, 3 }, { 1, 0, 3, 2, 4, 5 }, { 0, 1, 2, 3, 4, 5 } };
-	private static final ResourceLocation TEXTUREOFF[];
-	private static final ResourceLocation TEXTUREON[];
+	private static final Identifier TEXTUREOFF[];
+	private static final Identifier TEXTUREON[];
 	private static final CubeRenderer model[];
-	private final Font font;
+	private final TextRenderer font;
 
 	static {
-		TEXTUREOFF = new ResourceLocation[16];
-		TEXTUREON = new ResourceLocation[16];
+		TEXTUREOFF = new Identifier[16];
+		TEXTUREON = new Identifier[16];
 		for (int i = 0; i < 16; i++) {
-			TEXTUREOFF[i] = new ResourceLocation(
+			TEXTUREOFF[i] = new Identifier(
 					EnergyControl.MODID + String.format(":textures/block/info_panel/off/all%d.png", i));
-			TEXTUREON[i] = new ResourceLocation(
+			TEXTUREON[i] = new Identifier(
 					EnergyControl.MODID + String.format(":textures/block/info_panel/on/all%d.png", i));
 		}
 		model = new CubeRenderer[16];
@@ -63,44 +63,44 @@ public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 
 	public static int[] getBlockLight(BlockEntityFacing te) {
 		int[] light = new int[6];
-		light[sides[te.getFacing().get3DDataValue()][0]] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.DOWN));
-		light[sides[te.getFacing().get3DDataValue()][1]] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.UP));
-		light[sides[te.getFacing().get3DDataValue()][2]] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.WEST));
-		light[sides[te.getFacing().get3DDataValue()][3]] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.EAST));
-		light[sides[te.getFacing().get3DDataValue()][4]] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.NORTH));
-		light[sides[te.getFacing().get3DDataValue()][5]] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.SOUTH));
+		light[sides[te.getFacing().getId()][0]] = WorldRenderer.getLightmapCoordinates(te.getWorld(), te.getPos().offset(Direction.DOWN));
+		light[sides[te.getFacing().getId()][1]] = WorldRenderer.getLightmapCoordinates(te.getWorld(), te.getPos().offset(Direction.UP));
+		light[sides[te.getFacing().getId()][2]] = WorldRenderer.getLightmapCoordinates(te.getWorld(), te.getPos().offset(Direction.WEST));
+		light[sides[te.getFacing().getId()][3]] = WorldRenderer.getLightmapCoordinates(te.getWorld(), te.getPos().offset(Direction.EAST));
+		light[sides[te.getFacing().getId()][4]] = WorldRenderer.getLightmapCoordinates(te.getWorld(), te.getPos().offset(Direction.NORTH));
+		light[sides[te.getFacing().getId()][5]] = WorldRenderer.getLightmapCoordinates(te.getWorld(), te.getPos().offset(Direction.SOUTH));
 		return light;
 	}
 
 	public TileEntityInfoPanelRenderer(Context ctx) {
-		font = ctx.getFont();
+		font = ctx.getTextRenderer();
 	}
 
 	@Override
-	public void render(TileEntityInfoPanel te, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
-		matrixStack.pushPose();
+	public void render(TileEntityInfoPanel te, float partialTicks, MatrixStack matrixStack, VertexConsumerProvider buffer, int combinedLight, int combinedOverlay) {
+		matrixStack.push();
 		int[] light = getBlockLight(te);
 		switch (te.getFacing()) {
 		case UP:
 			break;
 		case NORTH:
-			matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
+			matrixStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90));
 			matrixStack.translate(0.0F, -1.0F, 0.0F);
 			break;
 		case SOUTH:
-			matrixStack.mulPose(Vector3f.XP.rotationDegrees(90));
+			matrixStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90));
 			matrixStack.translate(0.0F, 0.0F, -1.0F);
 			break;
 		case DOWN:
-			matrixStack.mulPose(Vector3f.XP.rotationDegrees(180));
+			matrixStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(180));
 			matrixStack.translate(0.0F, -1.0F, -1.0F);
 			break;
 		case WEST:
-			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(90));
+			matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(90));
 			matrixStack.translate(0.0F, -1.0F, 0.0F);
 			break;
 		case EAST:
-			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-90));
+			matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(-90));
 			matrixStack.translate(-1.0F, 0.0F, 0.0F);
 			break;
 		}
@@ -113,20 +113,20 @@ public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 		}
 		VertexConsumer vertexBuilder;
 		if (te.getPowered())
-			vertexBuilder = buffer.getBuffer(RenderType.entitySolid(TEXTUREON[color]));
+			vertexBuilder = buffer.getBuffer(RenderLayer.getEntitySolid(TEXTUREON[color]));
 		else
-			vertexBuilder = buffer.getBuffer(RenderType.entitySolid(TEXTUREOFF[color]));
+			vertexBuilder = buffer.getBuffer(RenderLayer.getEntitySolid(TEXTUREOFF[color]));
 		model[te.findTexture()].render(matrixStack, vertexBuilder, light, combinedOverlay);
 		if (te.getPowered()) {
 			List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
 			drawText(te, joinedData, matrixStack, buffer, combinedLight);
 		}
-		matrixStack.popPose();
+		matrixStack.pop();
 	}
 
-	private void drawText(TileEntityInfoPanel panel, List<PanelString> joinedData, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight) {
+	private void drawText(TileEntityInfoPanel panel, List<PanelString> joinedData, MatrixStack matrixStack, VertexConsumerProvider buffer, int combinedLight) {
 		Screen screen = panel.getScreen();
-		BlockPos pos = panel.getBlockPos();
+		BlockPos pos = panel.getPos();
 		float displayWidth = 1 - 2F / 16;
 		float displayHeight = 1 - 2F / 16;
 		float dx = 0; float dy = 0; float dz = 0;
@@ -194,30 +194,30 @@ public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 		}
 
 		matrixStack.translate(0.5F - dy / 2, 1.01F - dx / 2 , 0.5F - dz / 2);
-		matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
+		matrixStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90));
 		switch(panel.getRotation())
 		{
 		case UP:
 			break;
 		case NORTH:
-			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(180));
+			matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(180));
 			break;
 		case SOUTH:
 			break;
 		case DOWN:
 			break;
 		case WEST:
-			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-90));
+			matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(-90));
 			break;
 		case EAST:
-			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(90));
+			matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(90));
 			break;
 		}
 
 		if (panel.isTouchCard() || panel.hasBars()) {
-			matrixStack.mulPose(Vector3f.YP.rotationDegrees(180));
+			matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180));
 			panel.renderImage(displayWidth, displayHeight, matrixStack);
-			matrixStack.mulPose(Vector3f.YP.rotationDegrees(180));
+			matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180));
 		}
 		if (joinedData != null) {
 			matrixStack.translate(0, 0, 0.0002F);
@@ -228,15 +228,15 @@ public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 		}
 	}
 
-	public static void renderText(List<PanelString> joinedData, float displayWidth, float displayHeight, int colorHex, PoseStack matrixStack, Font fontRenderer) {
+	public static void renderText(List<PanelString> joinedData, float displayWidth, float displayHeight, int colorHex, MatrixStack matrixStack, TextRenderer fontRenderer) {
 		int maxWidth = 1;
 		for (PanelString panelString : joinedData) {
 			String currentString = implodeArray(new String[] { panelString.textLeft, panelString.textCenter, panelString.textRight }, " ");
-			maxWidth = Math.max(fontRenderer.width(currentString), maxWidth);
+			maxWidth = Math.max(fontRenderer.getWidth(currentString), maxWidth);
 		}
 		maxWidth += 4;
 
-		int lineHeight = fontRenderer.lineHeight + 2;
+		int lineHeight = fontRenderer.fontHeight + 2;
 		int requiredHeight = lineHeight * joinedData.size();
 		float scaleX = displayWidth / maxWidth;
 		float scaleY = displayHeight / requiredHeight;
@@ -260,17 +260,17 @@ public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 				fontRenderer.draw(matrixStack, panelString.textLeft, offsetX - realWidth / 2,
 					offsetY - realHeight / 2 + row * lineHeight, panelString.colorLeft != 0 ? panelString.colorLeft : colorHex);
 			if (panelString.textCenter != null)
-				fontRenderer.draw(matrixStack, panelString.textCenter, -fontRenderer.width(panelString.textCenter) / 2,
+				fontRenderer.draw(matrixStack, panelString.textCenter, -fontRenderer.getWidth(panelString.textCenter) / 2,
 					offsetY - realHeight / 2 + row * lineHeight, panelString.colorCenter != 0 ? panelString.colorCenter : colorHex);
 			if (panelString.textRight != null)
-				fontRenderer.draw(matrixStack, panelString.textRight, realWidth / 2 - fontRenderer.width(panelString.textRight),
+				fontRenderer.draw(matrixStack, panelString.textRight, realWidth / 2 - fontRenderer.getWidth(panelString.textRight),
 					offsetY - realHeight / 2 + row * lineHeight, panelString.colorRight != 0 ? panelString.colorRight : colorHex);
 			row++;
 		}
 	}
 
 	@Override
-	public int getViewDistance() {
+	public int getRenderDistance() {
 		return 65536;
 	}
 }

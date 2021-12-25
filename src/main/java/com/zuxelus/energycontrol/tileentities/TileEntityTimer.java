@@ -6,25 +6,24 @@ import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.screen.NamedScreenHandlerFactory;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
-public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, ITilePacketHandler {
+public class TileEntityTimer extends BlockEntityFacing implements NamedScreenHandlerFactory, ITilePacketHandler {
 	private int time;
 	private int startingTime;
 	private boolean invertRedstone;
@@ -42,7 +41,7 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 	}
 
 	public TileEntityTimer(BlockPos pos, BlockState state) {
-		this(ModTileEntityTypes.timer.get(), pos, state);
+		this(ModTileEntityTypes.timer, pos, state);
 	}
 
 	public int getTime() {
@@ -59,7 +58,7 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 	public void setTime(int value) {
 		int old = time;
 		time = value;
-		if (!level.isClientSide && time != old)
+		if (!world.isClient && time != old)
 			notifyBlockUpdate();
 	}
 
@@ -70,7 +69,7 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 	public void setInvertRedstone(boolean value) {
 		boolean old = invertRedstone;
 		invertRedstone = value;
-		if (!level.isClientSide && invertRedstone != old)
+		if (!world.isClient && invertRedstone != old)
 			notifyBlockUpdate();
 	}
 
@@ -83,7 +82,7 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 		isWorking = value;
 		if (isWorking)
 			startingTime = time;
-		if (!level.isClientSide && isWorking != old)
+		if (!world.isClient && isWorking != old)
 			notifyBlockUpdate();
 	}
 
@@ -94,7 +93,7 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 	public void setIsTicks(boolean value) {
 		boolean old = isTicks;
 		isTicks = value;
-		if (!level.isClientSide && isTicks != old)
+		if (!world.isClient && isTicks != old)
 			notifyBlockUpdate();
 	}
 
@@ -103,7 +102,7 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 	}
 
 	public void onNeighborChange(Block fromBlock, BlockPos fromPos) { // server
-		boolean newPowered = level.getSignal(worldPosition.relative(rotation), rotation) > 0;
+		boolean newPowered = world.getEmittedRedstonePower(pos.offset(rotation), rotation) > 0;
 		if (newPowered != isPowered) {
 			if (!isPowered && newPowered) {
 				time = startingTime;
@@ -114,7 +113,7 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 	}
 
 	@Override
-	public void onServerMessageReceived(CompoundTag tag) {
+	public void onServerMessageReceived(NbtCompound tag) {
 		if (!tag.contains("type"))
 			return;
 		switch (tag.getInt("type")) {
@@ -138,7 +137,7 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 	}
 
 	@Override
-	public void onClientMessageReceived(CompoundTag tag) {
+	public void onClientMessageReceived(NbtCompound tag) {
 		if (!tag.contains("type"))
 			return;
 		switch (tag.getInt("type")) {
@@ -154,18 +153,18 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 	}
 
 	@Override
-	public Packet<ClientGamePacketListener> getUpdatePacket() {
-		return ClientboundBlockEntityDataPacket.create(this);
+	public Packet<ClientPlayPacketListener> toUpdatePacket() {
+		return BlockEntityUpdateS2CPacket.create(this);
 	}
 
 	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-		readProperties(pkt.getTag());
+	public void onDataPacket(BlockEntityUpdateS2CPacket pkt) {
+		readProperties(pkt.getNbt());
 	}
 
 	@Override
-	public CompoundTag getUpdateTag() {
-		CompoundTag tag = super.getUpdateTag();
+	public NbtCompound toInitialChunkDataNbt() {
+		NbtCompound tag = super.toInitialChunkDataNbt();
 		tag = writeProperties(tag);
 		tag.putBoolean("isTicks", isTicks);
 		tag.putBoolean("poweredBlock", sendSignal);
@@ -173,7 +172,7 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 	}
 
 	@Override
-	protected void readProperties(CompoundTag tag) {
+	protected void readProperties(NbtCompound tag) {
 		super.readProperties(tag);
 		if (tag.contains("timer"))
 			time = tag.getInt("timer");
@@ -192,13 +191,13 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 	}
 
 	@Override
-	public void load(CompoundTag tag) {
-		super.load(tag);
+	public void readNbt(NbtCompound tag) {
+		super.readNbt(tag);
 		readProperties(tag);
 	}
 
 	@Override
-	protected CompoundTag writeProperties(CompoundTag tag) {
+	protected NbtCompound writeProperties(NbtCompound tag) {
 		tag = super.writeProperties(tag);
 		tag.putInt("timer", time);
 		tag.putInt("startingTime", startingTime);
@@ -210,18 +209,18 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag tag) {
-		super.saveAdditional(tag);
+	protected void writeNbt(NbtCompound tag) {
+		super.writeNbt(tag);
 		writeProperties(tag);
 	}
 
 	@Override
-	public void setRemoved() {
-		level.updateNeighborsAt(worldPosition, level.getBlockState(worldPosition).getBlock());
-		super.setRemoved();
+	public void markRemoved() {
+		world.updateNeighborsAlways(pos, world.getBlockState(pos).getBlock());
+		super.markRemoved();
 	}
 
-	public static void tickStatic(Level level, BlockPos pos, BlockState state, BlockEntity be) {
+	public static void tickStatic(World level, BlockPos pos, BlockState state, BlockEntity be) {
 		if (!(be instanceof TileEntityTimer))
 			return;
 		TileEntityTimer te = (TileEntityTimer) be;
@@ -229,7 +228,7 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 	}
 
 	protected void tick() {
-		if (level.isClientSide)
+		if (world.isClient)
 			return;
 		if (!isWorking)
 			return;
@@ -243,16 +242,17 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 			notifyBlockUpdate();
 	}
 
-	public void notifyBlockUpdate() {
-		BlockState iblockstate = level.getBlockState(worldPosition);
-		Block block = iblockstate.getBlock();
+	@Override
+	protected void notifyBlockUpdate() {
+		BlockState state = world.getBlockState(pos);
+		Block block = state.getBlock();
 		if (block instanceof TimerBlock) {
 			boolean newValue = time > 0 && isWorking ? !invertRedstone : invertRedstone;
 			if (sendSignal != newValue) {
 				sendSignal = newValue;
-				level.updateNeighborsAt(worldPosition, block);
+				world.updateNeighborsAlways(pos, block);
 			}
-			level.sendBlockUpdated(worldPosition, iblockstate, iblockstate, 2);
+			world.updateListeners(pos, state, state, 2);
 		}
 	}
 
@@ -261,14 +261,14 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 		return true;
 	}
 
-	// MenuProvider
+	// NamedScreenHandlerFactory
 	@Override
-	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
+	public ScreenHandler createMenu(int windowId, PlayerInventory inventory, PlayerEntity player) {
 		return new ContainerTimer(windowId, inventory, this);
 	}
 
 	@Override
-	public Component getDisplayName() {
-		return new TranslatableComponent(ModItems.timer.get().getDescriptionId());
+	public Text getDisplayName() {
+		return new TranslatableText(ModItems.timer.getTranslationKey());
 	}
 }

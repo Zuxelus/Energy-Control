@@ -1,32 +1,29 @@
 package com.zuxelus.energycontrol.containers.slots;
 
+import java.util.Set;
+
 import com.zuxelus.energycontrol.EnergyControl;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.util.Identifier;
 
-@EventBusSubscriber(modid = EnergyControl.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class SlotHandler {
 	private static final String BLOCK_ATLAS = "minecraft:textures/atlas/blocks.png";
 
-	@SubscribeEvent
-	public static void loadTextures(TextureStitchEvent.Pre event) {
-		if (!event.getAtlas().location().toString().equals(BLOCK_ATLAS)) {
+	public static void loadTextures(SpriteAtlasTexture atlas, Set<Identifier> set) {
+		if (!atlas.getId().toString().equals(BLOCK_ATLAS))
 			return;
-		}
-		registerTexture(event, EnergyControl.MODID + ":slots/slot_card");
-		registerTexture(event, EnergyControl.MODID + ":slots/slot_color");
-		registerTexture(event, EnergyControl.MODID + ":slots/slot_range");
-		registerTexture(event, EnergyControl.MODID + ":slots/slot_touch");
-		registerTexture(event, EnergyControl.MODID + ":slots/slot_power");
-		//registerTexture(event, "zlib:slots/slot_chargeable");
-		registerTexture(event, "zlib:slots/slot_dischargeable");
+
+		registerTexture(set, EnergyControl.MODID + ":slots/slot_card");
+		registerTexture(set, EnergyControl.MODID + ":slots/slot_color");
+		registerTexture(set, EnergyControl.MODID + ":slots/slot_range");
+		registerTexture(set, EnergyControl.MODID + ":slots/slot_touch");
+		registerTexture(set, EnergyControl.MODID + ":slots/slot_power");
+		//registerTexture(set, "zlib:slots/slot_chargeable");
+		registerTexture(set, "zlib:slots/slot_dischargeable");
 	}
 
-	private static void registerTexture(TextureStitchEvent.Pre event, String texture) {
-		event.addSprite(new ResourceLocation(texture));
+	private static void registerTexture(Set<Identifier> set, String texture) {
+		set.add(new Identifier(texture));
 	}
 }

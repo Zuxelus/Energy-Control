@@ -10,22 +10,22 @@ import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.utils.StringUtils;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public class ItemCardInventory extends ItemCardMain {
 
 	@Override
-	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
+	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
 		BlockPos target = reader.getTarget();
 		if (target == null)
 			return CardState.NO_TARGET;
 
 		BlockEntity te = world.getBlockEntity(target);
-		CompoundTag tag = CrossModLoader.getInventoryData(te);
+		NbtCompound tag = CrossModLoader.getInventoryData(te);
 		if (tag == null)
 			return CardState.NO_TARGET;
 		reader.reset();
@@ -34,7 +34,7 @@ public class ItemCardInventory extends ItemCardMain {
 	}
 
 	@Override
-	public List<PanelString> getStringData(Level world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(World world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = new LinkedList<PanelString>();
 		if (isServer) {
 			result.add(new PanelString("msg.ec.InfoPanelTotalItems", reader.getInt("items"), showLabels));
@@ -46,7 +46,7 @@ public class ItemCardInventory extends ItemCardMain {
 			result.add(new PanelString("msg.ec.InfoPanelSidedInventory", reader.getBoolean("sided").toString(), showLabels));
 			for (int i = 0; i < 6; i++)
 				if (reader.hasField("slot" + Integer.toString(i))) {
-					ItemStack stack = ItemStack.of(reader.getTag("slot" + Integer.toString(i)));
+					ItemStack stack = ItemStack.fromNbt(reader.getTag("slot" + Integer.toString(i)));
 					result.add(new PanelString(String.format("msg.ec.InfoPanelSlot%d", i + 1), StringUtils.getItemName(stack) + " x" + Integer.toString(stack.getCount()), showLabels));
 				}
 		}

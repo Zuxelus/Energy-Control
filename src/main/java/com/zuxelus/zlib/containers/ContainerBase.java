@@ -7,30 +7,30 @@ import com.google.common.collect.Lists;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanelExtender;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanelExtender;
 
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.Container;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.block.Block;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.ScreenHandlerContext;
+import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.screen.slot.Slot;
+import net.minecraft.server.network.ServerPlayerEntity;
 
-public abstract class ContainerBase<T extends Container> extends AbstractContainerMenu {
+public abstract class ContainerBase<T extends Inventory> extends ScreenHandler {
 	public final T te;
 	private final Block block;
-	private final ContainerLevelAccess posCallable;
-	public List<ServerPlayer> listeners = Lists.newArrayList();
+	private final ScreenHandlerContext posCallable;
+	public List<ServerPlayerEntity> listeners = Lists.newArrayList();
 
-	protected ContainerBase(T te, MenuType<?> type, int id) {
+	protected ContainerBase(T te, ScreenHandlerType<?> type, int id) {
 		this(te, type, id, null, null);
 	}
 
-	protected ContainerBase(T te, MenuType<?> type, int id, Block block, ContainerLevelAccess posCallable) {
+	protected ContainerBase(T te, ScreenHandlerType<?> type, int id, Block block, ScreenHandlerContext posCallable) {
 		super(type, id);
 		this.te = te;
 		this.block = block;
@@ -56,41 +56,41 @@ public abstract class ContainerBase<T extends Container> extends AbstractContain
 	}
 
 	@Override
-	public boolean stillValid(Player player) {
+	public boolean canUse(PlayerEntity player) {
 		if (posCallable == null || block == null)
 			return true;
-		return stillValid(posCallable, player, block);
+		return canUse(posCallable, player, block);
 	}
 
 	@Override
-	public ItemStack quickMoveStack(Player player, int index) {
+	public ItemStack transferSlot(PlayerEntity player, int index) {
 		Slot slot = slots.get(index);
-		if (slot == null || !slot.hasItem())
+		if (slot == null || !slot.hasStack())
 			return ItemStack.EMPTY;
 
-		ItemStack stack = slot.getItem();
+		ItemStack stack = slot.getStack();
 		ItemStack result = stack.copy();
 
-		int containerSlots = slots.size() - player.getInventory().items.size();
+		int containerSlots = slots.size() - player.getInventory().main.size();
 		if (index < containerSlots) {
-			if (!moveItemStackTo(stack, containerSlots, slots.size(), true))
+			if (!insertItem(stack, containerSlots, slots.size(), true))
 				return ItemStack.EMPTY;
-		} else if (!moveItemStackTo(stack, 0, containerSlots, false))
+		} else if (!insertItem(stack, 0, containerSlots, false))
 			return ItemStack.EMPTY;
 		if (stack.getCount() == 0)
-			slot.set(ItemStack.EMPTY);
+			slot.setStack(ItemStack.EMPTY);
 		else
-			slot.setChanged();
+			slot.markDirty();
 		if (stack.getCount() == result.getCount())
 			return ItemStack.EMPTY;
-		slot.onTake(player, stack);
+		slot.onTakeItem(player, stack);
 		return result;
 	}
 
-	public static BlockEntity getBlockEntity(Inventory player, FriendlyByteBuf data) {
+	public static BlockEntity getBlockEntity(PlayerInventory player, PacketByteBuf data) {
 		Objects.requireNonNull(player, "Player cannot be null!");
 		Objects.requireNonNull(data, "Data cannot be null!");
-		BlockEntity te = player.player.level.getBlockEntity(data.readBlockPos());
+		BlockEntity te = player.player.world.getBlockEntity(data.readBlockPos());
 		if (te instanceof TileEntityInfoPanelExtender)
 			te = ((TileEntityInfoPanelExtender) te).getCore();
 		if (te instanceof TileEntityAdvancedInfoPanelExtender)

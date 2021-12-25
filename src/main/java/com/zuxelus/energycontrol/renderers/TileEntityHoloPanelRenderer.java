@@ -2,55 +2,55 @@ package com.zuxelus.energycontrol.renderers;
 
 import java.util.List;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
-import com.zuxelus.energycontrol.ClientTickHandler;
+import com.zuxelus.energycontrol.EnergyControlClient;
 import com.zuxelus.energycontrol.api.IHasBars;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityHoloPanel;
 
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
-import net.minecraft.core.BlockPos;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory.Context;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3f;
 
 public class TileEntityHoloPanelRenderer implements BlockEntityRenderer<TileEntityHoloPanel> {
-	private final Font font;
+	private final TextRenderer font;
 
 	public TileEntityHoloPanelRenderer(Context ctx) {
-		font = ctx.getFont();
+		font = ctx.getTextRenderer();
 	}
 
 	@Override
-	public void render(TileEntityHoloPanel te, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
+	public void render(TileEntityHoloPanel te, float partialTicks, MatrixStack matrixStack, VertexConsumerProvider buffer, int combinedLight, int combinedOverlay) {
 		if (partialTicks != -1) {
-			ClientTickHandler.holo_panels.add(te);
+			EnergyControlClient.holo_panels.add(te);
 			//return;
 		}
-		matrixStack.pushPose();
+		matrixStack.push();
 		switch (te.getFacing()) {
 		case UP:
 			break;
 		case NORTH:
-			matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
+			matrixStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90));
 			matrixStack.translate(0.0F, -1.5F, 0.0F);
 			break;
 		case SOUTH:
-			matrixStack.mulPose(Vector3f.XP.rotationDegrees(90));
+			matrixStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90));
 			matrixStack.translate(0.0F, -0.5F, -1.0F);
 			break;
 		case DOWN:
-			matrixStack.mulPose(Vector3f.XP.rotationDegrees(180));
+			matrixStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(180));
 			matrixStack.translate(0.0F, -1.0F, -1.0F);
 			break;
 		case WEST:
-			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(90));
+			matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(90));
 			matrixStack.translate(0.0F, -1.5F, 0.0F);
 			break;
 		case EAST:
-			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-90));
+			matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(-90));
 			matrixStack.translate(-1.0F, -0.5F, 0.0F);
 			break;
 		}
@@ -65,13 +65,13 @@ public class TileEntityHoloPanelRenderer implements BlockEntityRenderer<TileEnti
 			List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
 			drawText(te, partialTicks, joinedData, matrixStack, buffer, combinedLight);
 		}
-		matrixStack.popPose();
+		matrixStack.pop();
 	}
 
 	@SuppressWarnings("incomplete-switch")
-	private void drawText(TileEntityHoloPanel panel, float partialTicks, List<PanelString> joinedData, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight) {
+	private void drawText(TileEntityHoloPanel panel, float partialTicks, List<PanelString> joinedData, MatrixStack matrixStack, VertexConsumerProvider buffer, int combinedLight) {
 		Screen screen = panel.getScreen();
-		BlockPos pos = panel.getBlockPos();
+		BlockPos pos = panel.getPos();
 		int power = panel.getPower();
 		float displayWidth = 1 - 2F / 16;
 		float displayHeight = power - 2F / 16;
@@ -106,28 +106,28 @@ public class TileEntityHoloPanelRenderer implements BlockEntityRenderer<TileEnti
 		}
 
 		matrixStack.translate(0.5F - dy / 2, 1.01F - dx / 2 , 0.5F - dz / 2);
-		matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
+		matrixStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90));
 		switch(panel.getFacing())
 		{
 		case NORTH:
-			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(180));
+			matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(180));
 			break;
 		case SOUTH:
 			break;
 		case WEST:
-			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-90));
+			matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(-90));
 			break;
 		case EAST:
-			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(90));
+			matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(90));
 			break;
 		}
 		float imageWidth = 0.475F + (displayWidth - 0.875F) / 2F;
 		float imageHeight = 0.5F + (power - 1) / 2F;
 		if (partialTicks == -1) {
 			IHasBars.drawTransparentRect(matrixStack, imageWidth, imageHeight, -imageWidth, -imageHeight, -0.0001F, 0x40AADDDD);
-			matrixStack.mulPose(Vector3f.YP.rotationDegrees(180));
+			matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180));
 			IHasBars.drawTransparentRect(matrixStack, imageWidth, imageHeight, -imageWidth, -imageHeight, -0.0001F, 0x40AADDDD);
-			matrixStack.mulPose(Vector3f.YP.rotationDegrees(180));
+			matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180));
 		} else if (joinedData != null) {
 			matrixStack.translate(0, 0, 0.0002F * (power + 1) / 2);
 			int colorHex = 0x000000;
@@ -138,7 +138,7 @@ public class TileEntityHoloPanelRenderer implements BlockEntityRenderer<TileEnti
 	}
 
 	@Override
-	public int getViewDistance() {
+	public int getRenderDistance() {
 		return 65536;
 	}
 }

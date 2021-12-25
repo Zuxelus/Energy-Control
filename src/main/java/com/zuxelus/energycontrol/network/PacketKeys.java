@@ -1,34 +1,31 @@
 package com.zuxelus.energycontrol.network;
 
-import java.util.function.Supplier;
-
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.zlib.network.PacketBase;
 
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent.Context;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.Identifier;
 
-public class PacketKeys {
-	private boolean altPressed;
-
-	public PacketKeys() { }
+public class PacketKeys extends PacketBase {
+	public static final Identifier ID = new Identifier(EnergyControl.MODID, "c2s_keys");
 
 	public PacketKeys(boolean altPressed) {
-		this.altPressed = altPressed;
+		writeBoolean(altPressed);
 	}
 
-	public static PacketKeys decode(FriendlyByteBuf buf) {
-		return new PacketKeys(buf.readBoolean());
+	@Override
+	public Identifier getId() {
+		return ID;
 	}
 
-	public static void encode(PacketKeys pkt, FriendlyByteBuf buf) {
-		buf.writeBoolean(pkt.altPressed);
-	}
-
-	public static void handle(PacketKeys message, Supplier<Context> context) {
-		Context ctx = context.get();
-		ctx.enqueueWork(() -> {
-			EnergyControl.altPressed.put(ctx.getSender(), message.altPressed);
+	public static void handle(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
+		boolean altPressed = buf.readBoolean();
+		server.execute(() -> {
+			EnergyControl.altPressed.put(player, altPressed);
 		});
-		ctx.setPacketHandled(true);
 	}
 }

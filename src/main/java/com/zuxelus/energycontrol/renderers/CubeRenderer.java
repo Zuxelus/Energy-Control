@@ -1,15 +1,14 @@
 package com.zuxelus.energycontrol.renderers;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
-import com.mojang.math.Vector4f;
-
-import net.minecraft.core.Direction;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Matrix3f;
+import net.minecraft.util.math.Matrix4f;
+import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.math.Vector4f;
 
 public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 	private ModelBox cube;
@@ -30,36 +29,36 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 		cube = new ModelBox(faceTexU, faceTexV, x, y, z, dx, dy, dz, textureWidth, textureHeight, offset.leftTop, offset.leftBottom, offset.rightTop, offset.rightBottom);
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	public void render(PoseStack matrixStack, VertexConsumer buffer, int[] light, int combinedOverlay) {
+	@Environment(EnvType.CLIENT)
+	public void render(MatrixStack matrixStack, VertexConsumer buffer, int[] light, int combinedOverlay) {
 		cube.render(matrixStack, buffer, light, combinedOverlay);
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	@Environment(EnvType.CLIENT)
 	static class PositionTextureVertex {
-		public final Vector3f position;
+		public final Vec3f position;
 		public final float textureU;
 		public final float textureV;
 
 		public PositionTextureVertex(float x, float y, float z, float texU, float texV) {
-			this(new Vector3f(x, y, z), texU, texV);
+			this(new Vec3f(x, y, z), texU, texV);
 		}
 
 		public PositionTextureVertex setTextureUV(float texU, float texV) {
 			return new PositionTextureVertex(this.position, texU, texV);
 		}
 
-		public PositionTextureVertex(Vector3f posIn, float texU, float texV) {
+		public PositionTextureVertex(Vec3f posIn, float texU, float texV) {
 			this.position = posIn;
 			this.textureU = texU;
 			this.textureV = texV;
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	@Environment(EnvType.CLIENT)
 	static class TexturedQuad {
 		public final PositionTextureVertex[] vertexPositions;
-		public final Vector3f normal;
+		public final Vec3f normal;
 
 		public TexturedQuad(PositionTextureVertex[] positionsIn, float u1, float v1, float u2, float v2, float texWidth, float texHeight, Direction direction) {
 			this.vertexPositions = positionsIn;
@@ -69,11 +68,11 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 			positionsIn[1] = positionsIn[1].setTextureUV(u1 / texWidth + f, v1 / texHeight + f1);
 			positionsIn[2] = positionsIn[2].setTextureUV(u1 / texWidth + f, v2 / texHeight - f1);
 			positionsIn[3] = positionsIn[3].setTextureUV(u2 / texWidth - f, v2 / texHeight - f1);
-			this.normal = direction.step();
+			this.normal = direction.getUnitVector();
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	@Environment(EnvType.CLIENT)
 	public class ModelBox {
 		private final TexturedQuad[] quads;
 
@@ -98,29 +97,29 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 			quads[5] = new TexturedQuad(new PositionTextureVertex[] { vertex5, vertex6, vertex7, vertex8 }, dz + dx + dz, dz, dz + dx + dz + dx, dz + dy, texWidth, texHeight, Direction.SOUTH);
 		}
 
-		public void render(PoseStack matrixStack, VertexConsumer buffer, int[] light, int combinedOverlay) {
+		public void render(MatrixStack matrixStack, VertexConsumer buffer, int[] light, int combinedOverlay) {
 			matrixStack.scale(0.5F, 0.5F, 0.5F);
-			render(matrixStack.last(), buffer, light, combinedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
+			render(matrixStack.peek(), buffer, light, combinedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
 			matrixStack.scale(2.0F, 2.0F, 2.0F);
 		}
 
-		public void render(PoseStack.Pose matrixEntry, VertexConsumer buffer, int[] light, int combinedOverlay, float red, float green, float blue, float alpha) {
-			Matrix4f matrix4f = matrixEntry.pose();
-			Matrix3f matrix3f = matrixEntry.normal();
+		public void render(MatrixStack.Entry matrixEntry, VertexConsumer buffer, int[] light, int combinedOverlay, float red, float green, float blue, float alpha) {
+			Matrix4f matrix4f = matrixEntry.getPositionMatrix();
+			Matrix3f matrix3f = matrixEntry.getNormalMatrix();
 
 			for (int n = 0; n < quads.length; ++n) {
 				TexturedQuad quad = quads[n];
-				Vector3f vector3f = quad.normal.copy();
+				Vec3f vector3f = quad.normal.copy();
 				vector3f.transform(matrix3f);
-				float f = vector3f.x();
-				float g = vector3f.y();
-				float h = vector3f.z();
+				float f = vector3f.getX();
+				float g = vector3f.getY();
+				float h = vector3f.getZ();
 
 				for (int i = 0; i < 4; ++i) {
 					PositionTextureVertex vertex = quad.vertexPositions[i];
-					Vector4f vector4f = new Vector4f(vertex.position.x() / 16.0F, vertex.position.y() / 16.0F, vertex.position.z() / 16.0F, 1.0F);
+					Vector4f vector4f = new Vector4f(vertex.position.getX() / 16.0F, vertex.position.getY() / 16.0F, vertex.position.getZ() / 16.0F, 1.0F);
 					vector4f.transform(matrix4f);
-					buffer.vertex(vector4f.x(), vector4f.y(), vector4f.z(), red, green, blue, alpha, vertex.textureU, vertex.textureV, combinedOverlay, light[n], f, g, h);
+					buffer.vertex(vector4f.getX(), vector4f.getY(), vector4f.getZ(), red, green, blue, alpha, vertex.textureU, vertex.textureV, combinedOverlay, light[n], f, g, h);
 				}
 			}
 		}

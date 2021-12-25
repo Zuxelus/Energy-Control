@@ -1,6 +1,6 @@
 package com.zuxelus.zlib.containers.slots;
 
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.item.ItemStack;
 
 public interface ISlotItemFilter {
 

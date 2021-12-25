@@ -8,43 +8,43 @@ import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityTimer;
 import com.zuxelus.zlib.containers.ContainerBase;
 
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
 
-public class ContainerTimer extends AbstractContainerMenu {
+public class ContainerTimer extends ScreenHandler {
 	public TileEntityTimer te;
 	private int lastTime;
 	private boolean lastIsWorking;
-	public List<ServerPlayer> listeners = Lists.newArrayList();
+	public List<ServerPlayerEntity> listeners = Lists.newArrayList();
 
-	public ContainerTimer(int windowId, Inventory inventory, FriendlyByteBuf data) {
+	public ContainerTimer(int windowId, PlayerInventory inventory, PacketByteBuf data) {
 		this(windowId, inventory, (TileEntityTimer) ContainerBase.getBlockEntity(inventory, data));
 	}
 
-	public ContainerTimer(int windowId, Inventory inventory, TileEntityTimer te) {
-		super(ModContainerTypes.timer.get(), windowId);
+	public ContainerTimer(int windowId, PlayerInventory inventory, TileEntityTimer te) {
+		super(ModContainerTypes.timer, windowId);
 		this.te = te;
 		lastTime = 0;
 	}
 
 	@Override
-	public boolean stillValid(Player player) {
-		return player.distanceToSqr(te.getBlockPos().getX() + 0.5D, te.getBlockPos().getY() + 0.5D, te.getBlockPos().getZ() + 0.5D) <= 64.0D;
+	public boolean canUse(PlayerEntity player) {
+		return player.squaredDistanceTo(te.getPos().getX() + 0.5D, te.getPos().getY() + 0.5D, te.getPos().getZ() + 0.5D) <= 64.0D;
 	}
 
 	@Override
-	public void broadcastChanges() {
-		super.broadcastChanges();
+	public void sendContentUpdates() {
+		super.sendContentUpdates();
 		int time = te.getTime();
 		boolean isWorking = te.getIsWorking();
-		for (ServerPlayer listener : listeners) {
+		for (ServerPlayerEntity listener : listeners) {
 			if (lastTime != time)
-				NetworkHelper.updateClientTileEntity(listener, te.getBlockPos(), 1, time);
+				NetworkHelper.updateClientTileEntity(listener, te.getPos(), 1, time);
 			if (lastIsWorking != isWorking)
-				NetworkHelper.updateClientTileEntity(listener, te.getBlockPos(), 2, isWorking ? 1 : 0);
+				NetworkHelper.updateClientTileEntity(listener, te.getPos(), 2, isWorking ? 1 : 0);
 		}
 		lastTime = time;
 		lastIsWorking = isWorking;

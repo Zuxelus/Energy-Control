@@ -3,22 +3,18 @@ package com.zuxelus.energycontrol.init;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.containers.*;
 
-import net.minecraft.world.inventory.MenuType;
-import net.minecraftforge.common.extensions.IForgeMenuType;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
+import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.util.Identifier;
 
 public final class ModContainerTypes {
-	public static final DeferredRegister<MenuType<?>> CONTAINER_TYPES = DeferredRegister.create(ForgeRegistries.CONTAINERS, EnergyControl.MODID);
+	public static final ScreenHandlerType<ContainerInfoPanel> info_panel = ScreenHandlerRegistry.registerExtended(new Identifier(EnergyControl.MODID, "info_panel"), ContainerInfoPanel::new);
+	public static final ScreenHandlerType<ContainerAdvancedInfoPanel> info_panel_advanced = ScreenHandlerRegistry.registerExtended(new Identifier(EnergyControl.MODID, "info_panel_advanced"), ContainerAdvancedInfoPanel::new);
+	public static final ScreenHandlerType<ContainerHoloPanel> holo_panel = ScreenHandlerRegistry.registerExtended(new Identifier(EnergyControl.MODID, "holo_panel"), ContainerHoloPanel::new);
+	public static final ScreenHandlerType<ContainerRangeTrigger> range_trigger = ScreenHandlerRegistry.registerExtended(new Identifier(EnergyControl.MODID, "range_trigger"), ContainerRangeTrigger::new);
+	public static final ScreenHandlerType<ContainerKitAssembler> kit_assembler = ScreenHandlerRegistry.registerExtended(new Identifier(EnergyControl.MODID, "kit_assembler"), ContainerKitAssembler::new);
+	public static final ScreenHandlerType<ContainerTimer> timer = ScreenHandlerRegistry.registerExtended(new Identifier(EnergyControl.MODID, "timer"), ContainerTimer::new);
 
-	public static final RegistryObject<MenuType<ContainerInfoPanel>> info_panel = CONTAINER_TYPES.register("info_panel", () -> IForgeMenuType.create(ContainerInfoPanel::new));
-	public static final RegistryObject<MenuType<ContainerAdvancedInfoPanel>> info_panel_advanced = CONTAINER_TYPES.register("info_panel_advanced", () -> IForgeMenuType.create(ContainerAdvancedInfoPanel::new));
-	public static final RegistryObject<MenuType<ContainerHoloPanel>> holo_panel = CONTAINER_TYPES.register("holo_panel", () -> IForgeMenuType.create(ContainerHoloPanel::new));
-	public static final RegistryObject<MenuType<ContainerRangeTrigger>> range_trigger = CONTAINER_TYPES.register("range_trigger", () -> IForgeMenuType.create(ContainerRangeTrigger::new));
-	public static final RegistryObject<MenuType<ContainerKitAssembler>> kit_assembler = CONTAINER_TYPES.register("kit_assembler", () -> IForgeMenuType.create(ContainerKitAssembler::new));
-	public static final RegistryObject<MenuType<ContainerTimer>> timer = CONTAINER_TYPES.register("timer", () -> IForgeMenuType.create(ContainerTimer::new));
-
-	public static final RegistryObject<MenuType<ContainerPortablePanel>> portable_panel = CONTAINER_TYPES.register("portable_panel", () -> IForgeMenuType.create(ContainerPortablePanel::new));
-	public static final RegistryObject<MenuType<ContainerCardHolder>> card_holder = CONTAINER_TYPES.register("card_holder", () -> IForgeMenuType.create(ContainerCardHolder::new));
+	public static final ScreenHandlerType<ContainerPortablePanel> portable_panel = ScreenHandlerRegistry.registerExtended(new Identifier(EnergyControl.MODID, "portable_panel"), ContainerPortablePanel::new);
+	public static final ScreenHandlerType<ContainerCardHolder> card_holder = ScreenHandlerRegistry.registerExtended(new Identifier(EnergyControl.MODID, "card_holder"), ContainerCardHolder::new);
 }

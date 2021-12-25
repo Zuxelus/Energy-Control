@@ -1,15 +1,15 @@
 package com.zuxelus.energycontrol.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 import com.zuxelus.zlib.gui.GuiBase;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.util.math.MatrixStack;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class GuiPanelSlope extends GuiBase {
 	private GuiPanelBase<?> parentGui;
 	private TileEntityAdvancedInfoPanel panel;
@@ -40,7 +40,7 @@ public class GuiPanelSlope extends GuiBase {
 				if (amount < 0)
 					amount = 0;
 			}
-			NetworkHelper.updateSeverTileEntity(panel.getBlockPos(), 10, offset + amount);
+			NetworkHelper.updateSeverTileEntity(panel.getPos(), 10, offset + amount);
 			panel.setValues(offset + amount);
 			return true;
 		}
@@ -48,17 +48,17 @@ public class GuiPanelSlope extends GuiBase {
 	}
 
 	@Override
-	public void drawGuiContainerBackgroundLayer(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+	public void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
 		super.drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
 		int textureHeight = 4 * (16 - panel.thickness);
 
-		blit(matrixStack, guiLeft + 21, guiTop + 25, 172, 0, 14, textureHeight);
-		blit(matrixStack, guiLeft + 79, guiTop + 25 + (panel.rotateHor < 0 ? 32 + panel.rotateHor * 4 / 7 : 32), 186, 0, 14, Math.abs(panel.rotateHor * 4 / 7));
-		blit(matrixStack, guiLeft + 137, guiTop + 25 + (panel.rotateVert < 0 ? 32 + panel.rotateVert * 4 / 7 : 32), 186, 0, 14, Math.abs(panel.rotateVert * 4 / 7));
+		drawTexture(matrixStack, guiLeft + 21, guiTop + 25, 172, 0, 14, textureHeight);
+		drawTexture(matrixStack, guiLeft + 79, guiTop + 25 + (panel.rotateHor < 0 ? 32 + panel.rotateHor * 4 / 7 : 32), 186, 0, 14, Math.abs(panel.rotateHor * 4 / 7));
+		drawTexture(matrixStack, guiLeft + 137, guiTop + 25 + (panel.rotateVert < 0 ? 32 + panel.rotateVert * 4 / 7 : 32), 186, 0, 14, Math.abs(panel.rotateVert * 4 / 7));
 	}
 
 	@Override
 	public void onClose() {
-		minecraft.setScreen(parentGui);
+		client.setScreen(parentGui);
 	}
 }

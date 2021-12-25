@@ -1,6 +1,6 @@
 {
     "_comment": "Tab Name",
-    "itemGroup.energycontrol": "Energy Control",
+    "itemGroup.energycontrol.general": "Energy Control",
 
     "_comment": "Internal Items",
     "item.energycontrol.kit_energy": "Energy Sensor Kit",

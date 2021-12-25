@@ -2,9 +2,8 @@ package com.zuxelus.energycontrol.utils;
 
 import com.zuxelus.energycontrol.api.ICardReader;
 
-import net.minecraft.client.resources.language.I18n;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
+import net.minecraft.client.resource.language.I18n;
 
 public class FluidInfo {
 	String translationKey;
@@ -20,7 +19,7 @@ public class FluidInfo {
 		this.capacity = capacity;
 	}
 
-	public FluidInfo(IFluidTank tank) {
+	/*public FluidInfo(IFluidTank tank) {
 		if (tank.getFluid() != null) {
 			amount = tank.getFluidAmount();
 			if (amount > 0) {
@@ -30,15 +29,15 @@ public class FluidInfo {
 			}
 		}
 		capacity = tank.getCapacity();
-	}
+	}*/
 
-	public FluidInfo(FluidStack stack, long capacity) {
+	public FluidInfo(FluidVolume stack, long capacity) {
 		if (stack != null) {
-			amount = stack.getAmount();
+			amount = stack.amount().whole;
 			if (amount > 0) {
-				translationKey = stack.getTranslationKey();
-				texture = stack.getFluid().getAttributes().getStillTexture().toString();
-				color = stack.getFluid().getAttributes().getColor();
+				/*translationKey = stack.getTranslationKey();
+				texture = stack.fluidKey.getRawFluid().getAttributes().getStillTexture().toString();
+				color = stack.fluidKey.getRawFluid().getAttributes().getColor();*/
 			}
 		}
 		this.capacity = capacity;
@@ -46,7 +45,7 @@ public class FluidInfo {
 
 	public void write(ICardReader reader) {
 		if (translationKey != null)
-			reader.setString("name", I18n.get(translationKey));
+			reader.setString("name", I18n.translate(translationKey));
 		else
 			reader.setString("name", "");
 		if (texture != null)
@@ -60,7 +59,7 @@ public class FluidInfo {
 
 	public void write(ICardReader reader, int i) {
 		if (translationKey != null)
-			reader.setString(String.format("_%dname", i), I18n.get(translationKey));
+			reader.setString(String.format("_%dname", i), I18n.translate(translationKey));
 		else
 			reader.setString(String.format("_%dname", i), "");
 		reader.setLong(String.format("_%damount", i), amount);

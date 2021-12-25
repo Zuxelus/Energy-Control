@@ -2,54 +2,54 @@ package com.zuxelus.zlib.items;
 
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 
-import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.world.Container;
-import net.minecraft.world.ContainerHelper;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.Inventories;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.util.collection.DefaultedList;
 
-public abstract class ItemInventory implements Container, ISlotItemFilter {
+public abstract class ItemInventory implements Inventory, ISlotItemFilter {
 
 	private final ItemStack parent;
-	protected NonNullList<ItemStack> inventory;
+	protected DefaultedList<ItemStack> inventory;
 
 	public ItemInventory(ItemStack parent) {
 		this.parent = parent;
-		inventory = NonNullList.<ItemStack>withSize(getContainerSize(), ItemStack.EMPTY);
+		inventory = DefaultedList.ofSize(size(), ItemStack.EMPTY);
 		readFromParentNBT();
 	}
 
 	private void readFromParentNBT() {
-		CompoundTag tag = parent.getTag();
+		NbtCompound tag = parent.getNbt();
 		if (tag == null) {
-			tag = new CompoundTag();
-			parent.setTag(tag);
+			tag = new NbtCompound();
+			parent.setNbt(tag);
 		}
 
-		ListTag list = tag.getList("Items", Tag.TAG_COMPOUND);
+		NbtList list = tag.getList("Items", NbtElement.COMPOUND_TYPE);
 		for (int i = 0; i < list.size(); i++) {
-			CompoundTag stackTag = list.getCompound(i);
-			setItem(stackTag.getByte("Slot"), ItemStack.of(stackTag));
+			NbtCompound stackTag = list.getCompound(i);
+			setStack(stackTag.getByte("Slot"), ItemStack.fromNbt(stackTag));
 		}
 	}
 
 	private void writeToParentNBT() {
-		CompoundTag tag = parent.getTag();
+		NbtCompound tag = parent.getNbt();
 		if (tag == null) {
-			tag = new CompoundTag();
-			parent.setTag(tag);
+			tag = new NbtCompound();
+			parent.setNbt(tag);
 		}
 
-		ListTag list = new ListTag();
-		for (byte i = 0; i < getContainerSize(); i++) {
-			ItemStack stack = getItem(i);
+		NbtList list = new NbtList();
+		for (byte i = 0; i < size(); i++) {
+			ItemStack stack = getStack(i);
 			if (!stack.isEmpty()) {
-				CompoundTag stackTag = new CompoundTag();
+				NbtCompound stackTag = new NbtCompound();
 				stackTag.putByte("Slot", i);
-				stack.save(stackTag);
+				stack.writeNbt(stackTag);
 				list.add(stackTag);
 			}
 		}
@@ -65,19 +65,19 @@ public abstract class ItemInventory implements Container, ISlotItemFilter {
 	}
 
 	@Override
-	public ItemStack getItem(int slot) {
-		return slot >= 0 && slot < getContainerSize() ? inventory.get(slot) : ItemStack.EMPTY;
+	public ItemStack getStack(int slot) {
+		return slot >= 0 && slot < size() ? inventory.get(slot) : ItemStack.EMPTY;
 	}
 
 	@Override
-	public ItemStack removeItem(int index, int count) {
-		ItemStack stack = ContainerHelper.removeItem(inventory, index, count);
+	public ItemStack removeStack(int index, int count) {
+		ItemStack stack = Inventories.splitStack(inventory, index, count);
 		return stack;
 	}
 
 	@Override
-	public ItemStack removeItemNoUpdate(int slot) {
-		ItemStack stack = getItem(slot);
+	public ItemStack removeStack(int slot) {
+		ItemStack stack = getStack(slot);
 		if (stack.isEmpty())
 			return ItemStack.EMPTY;
 		inventory.set(slot, ItemStack.EMPTY);
@@ -85,35 +85,35 @@ public abstract class ItemInventory implements Container, ISlotItemFilter {
 	}
 
 	@Override
-	public void setItem(int slot, ItemStack stack) {
+	public void setStack(int slot, ItemStack stack) {
 		inventory.set(slot, stack);
-		if (!stack.isEmpty() && stack.getCount() > getMaxStackSize())
-			stack.setCount(getMaxStackSize());
-		setChanged();
+		if (!stack.isEmpty() && stack.getCount() > getMaxCountPerStack())
+			stack.setCount(getMaxCountPerStack());
+		markDirty();
 	}
 
 	@Override
-	public int getMaxStackSize() {
+	public int getMaxCountPerStack() {
 		return 64;
 	}
 
 	@Override
-	public void setChanged() {
+	public void markDirty() {
 		writeToParentNBT();
 	}
 
 	@Override
-	public boolean stillValid(Player player) {
+	public boolean canPlayerUse(PlayerEntity player) {
 		return true;
 	}
 
 	@Override
-	public boolean canPlaceItem(int index, ItemStack stack) {
+	public boolean isValid(int index, ItemStack stack) {
 		return isItemValid(index, stack);
 	}
 
 	@Override
-	public void clearContent() {
+	public void clear() {
 		inventory.clear();
 	}
 }

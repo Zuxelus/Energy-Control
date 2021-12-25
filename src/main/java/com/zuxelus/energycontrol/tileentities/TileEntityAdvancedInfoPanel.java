@@ -5,18 +5,18 @@ import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
 public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	public static final String NAME = "info_panel_advanced";
@@ -47,7 +47,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	}
 
 	public TileEntityAdvancedInfoPanel(BlockPos pos, BlockState state) {
-		this(ModTileEntityTypes.info_panel_advanced.get(), pos, state);
+		this(ModTileEntityTypes.info_panel_advanced, pos, state);
 	}
 
 	public byte getPowerMode() {
@@ -56,7 +56,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 
 	public void setPowerMode(byte mode) {
 		powerMode = mode;
-		if (level != null && !level.isClientSide)
+		if (world != null && !world.isClient)
 			calcPowered();
 	}
 
@@ -76,7 +76,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 
 	@Override
 	protected void calcPowered() { //server
-		boolean newPowered = level.hasNeighborSignal(worldPosition);
+		boolean newPowered = world.isReceivingRedstonePower(pos);
 		switch (powerMode) {
 		case POWER_ON:
 			newPowered = true;
@@ -93,7 +93,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 		if (newPowered != powered) {
 			powered = newPowered;
 			if (screen != null)
-				screen.turnPower(powered, level);
+				screen.turnPower(powered, world);
 		}
 	}
 
@@ -121,7 +121,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	}
 
 	@Override
-	public void onServerMessageReceived(CompoundTag tag) {
+	public void onServerMessageReceived(NbtCompound tag) {
 		if (!tag.contains("type"))
 			return;
 		int type = tag.getInt("type");
@@ -140,14 +140,14 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	}
 
 	@Override
-	protected void deserializeDisplaySettings(CompoundTag tag) {
+	protected void deserializeDisplaySettings(NbtCompound tag) {
 		deserializeSlotSettings(tag, "dSettings1", SLOT_CARD1);
 		deserializeSlotSettings(tag, "dSettings2", SLOT_CARD2);
 		deserializeSlotSettings(tag, "dSettings3", SLOT_CARD3);
 	}
 
 	@Override
-	protected void readProperties(CompoundTag tag) {
+	protected void readProperties(NbtCompound tag) {
 		super.readProperties(tag);
 		if (tag.contains("powerMode"))
 			setPowerMode(tag.getByte("powerMode"));
@@ -160,14 +160,14 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	}
 
 	@Override
-	protected void serializeDisplaySettings(CompoundTag tag) {
+	protected void serializeDisplaySettings(NbtCompound tag) {
 		tag.put("dSettings1", serializeSlotSettings(SLOT_CARD1));
 		tag.put("dSettings2", serializeSlotSettings(SLOT_CARD2));
 		tag.put("dSettings3", serializeSlotSettings(SLOT_CARD3));
 	}
 
 	@Override
-	protected CompoundTag writeProperties(CompoundTag tag) {
+	protected NbtCompound writeProperties(NbtCompound tag) {
 		tag = super.writeProperties(tag);
 		tag.putByte("powerMode", powerMode);
 		tag.putByte("thickness", thickness);
@@ -177,11 +177,11 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	}
 
 	@Override
-	public NonNullList<ItemStack> getCards() {
-		NonNullList<ItemStack> data = NonNullList.create();
-		data.add(getItem(SLOT_CARD1));
-		data.add(getItem(SLOT_CARD2));
-		data.add(getItem(SLOT_CARD3));
+	public DefaultedList<ItemStack> getCards() {
+		DefaultedList<ItemStack> data = DefaultedList.of();
+		data.add(getStack(SLOT_CARD1));
+		data.add(getStack(SLOT_CARD2));
+		data.add(getStack(SLOT_CARD3));
 		return data;
 	}
 
@@ -201,7 +201,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	}
 
 	@Override
-	public int getContainerSize() {
+	public int size() {
 		return 4;
 	}
 
@@ -213,29 +213,29 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 		case SLOT_CARD3:
 			return ItemCardMain.isCard(stack);
 		case SLOT_UPGRADE_RANGE:
-			return stack.getItem().equals(ModItems.upgrade_range.get());
+			return stack.getItem().equals(ModItems.upgrade_range);
 		default:
 			return false;
 		}
 	}
 
 	@Override
-	public boolean runTouchAction(ItemStack stack, BlockPos pos, Vec3 hit) {
-		if (level.isClientSide)
+	public boolean runTouchAction(ItemStack stack, BlockPos pos, Vec3d hit) {
+		if (world.isClient)
 			return false;
-		ItemStack card = getItem(SLOT_CARD1);
+		ItemStack card = getStack(SLOT_CARD1);
 		runTouchAction(this, card, stack, SLOT_CARD1, false);
 		return true;
 	}
 
-	// MenuProvider
+	// NamedScreenHandlerFactory
 	@Override
-	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
+	public ScreenHandler createMenu(int windowId, PlayerInventory inventory, PlayerEntity player) {
 		return new ContainerAdvancedInfoPanel(windowId, inventory, this);
 	}
 
 	@Override
-	public Component getDisplayName() {
-		return new TranslatableComponent(ModItems.info_panel_advanced.get().getDescriptionId());
+	public Text getDisplayName() {
+		return new TranslatableText(ModItems.info_panel_advanced.getTranslationKey());
 	}
 }

@@ -2,60 +2,55 @@ package com.zuxelus.energycontrol.blocks;
 
 import java.util.Random;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition.Builder;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.material.Material;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Material;
+import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.state.StateManager;
+import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.state.property.Properties;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public class BlockLight extends Block {
-	public static final BooleanProperty LIT = BlockStateProperties.LIT;
+	public static final BooleanProperty LIT = Properties.LIT;
 
 	public BlockLight() {
-		super(Block.Properties.of(Material.BUILDABLE_GLASS).strength(0.3F).sound(SoundType.GLASS));
-		registerDefaultState(defaultBlockState().setValue(LIT, Boolean.valueOf(false)));
+		super(FabricBlockSettings.of(Material.REDSTONE_LAMP).luminance(state -> state.get(LIT) ? 15 : 0).strength(0.3F).sounds(BlockSoundGroup.GLASS));
+		setDefaultState(getStateManager().getDefaultState().with(LIT, false));
 	}
 
 	@Override
-	protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
-		builder.add(LIT);
+	protected void appendProperties(StateManager.Builder<Block, BlockState> stateManager) {
+		stateManager.add(LIT);
 	}
 
 	@Override
-	public int getLightEmission(BlockState state, BlockGetter world, BlockPos pos) {
-		return state.getValue(LIT) ? 15 : 0;
+	public BlockState getPlacementState(ItemPlacementContext ctx) {
+		return getDefaultState().with(LIT, ctx.getWorld().isReceivingRedstonePower(ctx.getBlockPos()));
 	}
 
 	@Override
-	public BlockState getStateForPlacement(BlockPlaceContext context) {
-		return defaultBlockState().setValue(LIT, Boolean.valueOf(context.getLevel().hasNeighborSignal(context.getClickedPos())));
-	}
-
-	@Override
-	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
-		if (world.isClientSide)
+	public void neighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos neighborPos, boolean moved) {
+		if (world.isClient)
 			return;
 
-		boolean flag = state.getValue(LIT);
-		if (flag == world.hasNeighborSignal(pos))
+		boolean flag = state.get(LIT);
+		if (flag == world.isReceivingRedstonePower(pos))
 			return;
 
 		if (flag)
-			world.scheduleTick(pos, this, 4);
+			world.createAndScheduleBlockTick(pos, this, 4);
 		else
-			world.setBlock(pos, state.cycle(LIT), 2);
+			world.setBlockState(pos, state.cycle(LIT), 2);
 	}
 
 	@Override
-	public void tick(BlockState state, ServerLevel world, BlockPos pos, Random rand) {
-		if (state.getValue(LIT) && !world.hasNeighborSignal(pos))
-			world.setBlock(pos, state.cycle(LIT), 2);
+	public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+		if (state.get(LIT).booleanValue() && !world.isReceivingRedstonePower(pos))
+			world.setBlockState(pos, state.cycle(LIT), 2);
 	}
 }

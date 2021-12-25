@@ -5,17 +5,14 @@ import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.math.BlockPos;
 
 public class TileEntityHoloPanel extends TileEntityInfoPanel {
 	private static final byte SLOT_CARD = 0;
@@ -23,11 +20,11 @@ public class TileEntityHoloPanel extends TileEntityInfoPanel {
 	private static final byte SLOT_UPGRADE_POWER = 2;
 
 	public TileEntityHoloPanel(BlockPos pos, BlockState state) {
-		super(ModTileEntityTypes.holo_panel.get(), pos, state);
+		super(ModTileEntityTypes.holo_panel, pos, state);
 	}
 
 	public int getPower() {
-		ItemStack stack = getItem(SLOT_UPGRADE_POWER);
+		ItemStack stack = getStack(SLOT_UPGRADE_POWER);
 		if (stack.isEmpty())
 			return 1;
 		return stack.getCount() + 1;
@@ -39,30 +36,30 @@ public class TileEntityHoloPanel extends TileEntityInfoPanel {
 		case SLOT_CARD:
 			return ItemCardMain.isCard(stack);
 		case SLOT_UPGRADE_RANGE:
-			return stack.getItem().equals(ModItems.upgrade_range.get());
+			return stack.getItem().equals(ModItems.upgrade_range);
 		case SLOT_UPGRADE_POWER:
-			return stack.getItem().equals(ModItems.advanced_circuit.get());
+			return stack.getItem().equals(ModItems.advanced_circuit);
 		default:
 			return false;
 		}
 	}
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
+	/*@Override
+	@Environment(EnvType.CLIENT)
 	public AABB getRenderBoundingBox() {
 		if (screen == null)
-			return new AABB(worldPosition.offset(0, 0, 0), worldPosition.offset(1, 1, 1));
+			return new AABB(pos.offset(0, 0, 0), pos.offset(1, 1, 1));
 		return new AABB(new BlockPos(screen.minX, screen.minY, screen.minZ), new BlockPos(screen.maxX + 1, screen.maxY + getPower(), screen.maxZ + 1));
-	}
+	}*/
 
-	// MenuProvider
+	// NamedScreenHandlerFactory
 	@Override
-	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
+	public ScreenHandler createMenu(int windowId, PlayerInventory inventory, PlayerEntity player) {
 		return new ContainerHoloPanel(windowId, inventory, this);
 	}
 
 	@Override
-	public Component getDisplayName() {
-		return new TranslatableComponent(ModItems.holo_panel.get().getDescriptionId());
+	public Text getDisplayName() {
+		return new TranslatableText(ModItems.holo_panel.getTranslationKey());
 	}
 }

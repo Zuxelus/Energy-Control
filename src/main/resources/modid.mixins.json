@@ -1,0 +1,18 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.zuxelus.energycontrol.mixin",
+  "compatibilityLevel": "JAVA_16",
+  "mixins": [
+    "PlayerManagerMixin"
+  ],
+  "client": [
+  	"AbstractBlockStateMixin",
+    "ClientPlayNetworkHandlerMixin",
+    "SpriteAtlasTextureMixin",
+    "WorldRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,43 +1,39 @@
 package com.zuxelus.energycontrol.init;
 
-import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.tileentities.*;
 
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.util.registry.Registry;
 
 public class ModTileEntityTypes {
-	public static final DeferredRegister<BlockEntityType<?>> TILE_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, EnergyControl.MODID);
-
-	public static final RegistryObject<BlockEntityType<TileEntityHowlerAlarm>> howler_alarm = TILE_ENTITY_TYPES.register("howler_alarm", () ->
-		BlockEntityType.Builder.of(TileEntityHowlerAlarm::new, ModItems.howler_alarm.get()).build(null));
-	public static final RegistryObject<BlockEntityType<TileEntityIndustrialAlarm>> industrial_alarm = TILE_ENTITY_TYPES.register("industrial_alarm", () ->
-		BlockEntityType.Builder.of(TileEntityIndustrialAlarm::new, ModItems.industrial_alarm.get()).build(null));
-	public static final RegistryObject<BlockEntityType<TileEntityThermalMonitor>> thermal_monitor = TILE_ENTITY_TYPES.register("thermal_monitor", () ->
-		BlockEntityType.Builder.of(TileEntityThermalMonitor::new, ModItems.thermal_monitor.get()).build(null));
-	public static final RegistryObject<BlockEntityType<TileEntityRangeTrigger>> range_trigger = TILE_ENTITY_TYPES.register("range_trigger", () ->
-		BlockEntityType.Builder.of(TileEntityRangeTrigger::new, ModItems.range_trigger.get()).build(null));
-	public static final RegistryObject<BlockEntityType<TileEntityInfoPanel>> info_panel = TILE_ENTITY_TYPES.register("info_panel", () ->
-		BlockEntityType.Builder.of(TileEntityInfoPanel::new, ModItems.info_panel.get()).build(null));
-	public static final RegistryObject<BlockEntityType<TileEntityInfoPanelExtender>> info_panel_extender = TILE_ENTITY_TYPES.register("info_panel_extender", () ->
-		BlockEntityType.Builder.of(TileEntityInfoPanelExtender::new, ModItems.info_panel_extender.get()).build(null));
-	public static final RegistryObject<BlockEntityType<TileEntityAdvancedInfoPanel>> info_panel_advanced = TILE_ENTITY_TYPES.register("info_panel_advanced", () ->
-		BlockEntityType.Builder.of(TileEntityAdvancedInfoPanel::new, ModItems.info_panel_advanced.get()).build(null));
-	public static final RegistryObject<BlockEntityType<TileEntityAdvancedInfoPanelExtender>> info_panel_advanced_extender = TILE_ENTITY_TYPES.register("info_panel_advanced_extender", () ->
-		BlockEntityType.Builder.of(TileEntityAdvancedInfoPanelExtender::new, ModItems.info_panel_advanced_extender.get()).build(null));
-	public static final RegistryObject<BlockEntityType<TileEntityHoloPanel>> holo_panel = TILE_ENTITY_TYPES.register("holo_panel", () ->
-		BlockEntityType.Builder.of(TileEntityHoloPanel::new, ModItems.holo_panel.get()).build(null));
-	public static final RegistryObject<BlockEntityType<TileEntityHoloPanelExtender>> holo_panel_extender = TILE_ENTITY_TYPES.register("holo_panel_extender", () ->
-		BlockEntityType.Builder.of(TileEntityHoloPanelExtender::new, ModItems.holo_panel_extender.get()).build(null));
-	//public static final RegistryObject<BlockEntityType<TileEntityAverageCounter>> average_counter = TILE_ENTITY_TYPES.register("average_counter", () ->
-	//	BlockEntityType.Builder.of(TileEntityAverageCounter::new, ModItems.average_counter.get()).build(null));
-	//public static final RegistryObject<BlockEntityType<TileEntityEnergyCounter>> energy_counter = TILE_ENTITY_TYPES.register("energy_counter", () ->
-	//	BlockEntityType.Builder.of(TileEntityEnergyCounter::new, ModItems.energy_counter.get()).build(null));
-	public static final RegistryObject<BlockEntityType<TileEntityKitAssembler>> kit_assembler = TILE_ENTITY_TYPES.register("kit_assembler", () ->
-		BlockEntityType.Builder.of(TileEntityKitAssembler::new, ModItems.kit_assembler.get()).build(null));
-	public static final RegistryObject<BlockEntityType<TileEntityTimer>> timer = TILE_ENTITY_TYPES.register("timer", () ->
-		BlockEntityType.Builder.of(TileEntityTimer::new, ModItems.timer.get()).build(null));
+	public static final BlockEntityType<TileEntityHowlerAlarm> howler_alarm = Registry.register(Registry.BLOCK_ENTITY_TYPE, "howler_alarm",
+		FabricBlockEntityTypeBuilder.create(TileEntityHowlerAlarm::new, ModItems.howler_alarm).build(null));
+	public static final BlockEntityType<TileEntityIndustrialAlarm> industrial_alarm = Registry.register(Registry.BLOCK_ENTITY_TYPE, "industrial_alarm",
+		FabricBlockEntityTypeBuilder.create(TileEntityIndustrialAlarm::new, ModItems.industrial_alarm).build(null));
+	public static final BlockEntityType<TileEntityThermalMonitor> thermal_monitor = Registry.register(Registry.BLOCK_ENTITY_TYPE, "thermal_monitor",
+		FabricBlockEntityTypeBuilder.create(TileEntityThermalMonitor::new, ModItems.thermal_monitor).build(null));
+	public static final BlockEntityType<TileEntityRangeTrigger> range_trigger = Registry.register(Registry.BLOCK_ENTITY_TYPE, "range_trigger",
+		FabricBlockEntityTypeBuilder.create(TileEntityRangeTrigger::new, ModItems.range_trigger).build(null));
+	public static final BlockEntityType<TileEntityInfoPanel> info_panel = Registry.register(Registry.BLOCK_ENTITY_TYPE, "info_panel",
+		FabricBlockEntityTypeBuilder.create(TileEntityInfoPanel::new, ModItems.info_panel).build(null)); 
+	public static final BlockEntityType<TileEntityInfoPanelExtender> info_panel_extender = Registry.register(Registry.BLOCK_ENTITY_TYPE, "info_panel_extender",
+		FabricBlockEntityTypeBuilder.create(TileEntityInfoPanelExtender::new, ModItems.info_panel_extender).build(null));
+	public static final BlockEntityType<TileEntityAdvancedInfoPanel> info_panel_advanced = Registry.register(Registry.BLOCK_ENTITY_TYPE, "info_panel_advanced",
+		FabricBlockEntityTypeBuilder.create(TileEntityAdvancedInfoPanel::new, ModItems.info_panel_advanced).build(null));
+	public static final BlockEntityType<TileEntityAdvancedInfoPanelExtender> info_panel_advanced_extender = Registry.register(Registry.BLOCK_ENTITY_TYPE, "info_panel_advanced_extender",
+		FabricBlockEntityTypeBuilder.create(TileEntityAdvancedInfoPanelExtender::new, ModItems.info_panel_advanced_extender).build(null));
+	public static final BlockEntityType<TileEntityHoloPanel> holo_panel = Registry.register(Registry.BLOCK_ENTITY_TYPE, "holo_panel",
+		FabricBlockEntityTypeBuilder.create(TileEntityHoloPanel::new, ModItems.holo_panel).build(null));
+	public static final BlockEntityType<TileEntityHoloPanelExtender> holo_panel_extender = Registry.register(Registry.BLOCK_ENTITY_TYPE, "holo_panel_extender",
+		FabricBlockEntityTypeBuilder.create(TileEntityHoloPanelExtender::new, ModItems.holo_panel_extender).build(null));
+	//public static final BlockEntityType<TileEntityAverageCounter> average_counter = Registry.register(Registry.BLOCK_ENTITY_TYPE, "average_counter",
+	//	FabricBlockEntityTypeBuilder.create(TileEntityAverageCounter::new, ModItems.average_counter).build(null));
+	//public static final BlockEntityType<TileEntityEnergyCounter> energy_counter = Registry.register(Registry.BLOCK_ENTITY_TYPE, "energy_counter",
+	//	FabricBlockEntityTypeBuilder.create(TileEntityEnergyCounter::new, ModItems.energy_counter).build(null));
+	public static final BlockEntityType<TileEntityKitAssembler> kit_assembler = Registry.register(Registry.BLOCK_ENTITY_TYPE, "kit_assembler",
+		FabricBlockEntityTypeBuilder.create(TileEntityKitAssembler::new, ModItems.kit_assembler).build(null));
+	public static final BlockEntityType<TileEntityTimer> timer = Registry.register(Registry.BLOCK_ENTITY_TYPE, "timer",
+		FabricBlockEntityTypeBuilder.create(TileEntityTimer::new, ModItems.timer).build(null));
 
 }

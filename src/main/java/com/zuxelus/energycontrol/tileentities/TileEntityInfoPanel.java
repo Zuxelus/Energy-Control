@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.*;
 import com.zuxelus.energycontrol.config.ConfigHandler;
@@ -17,34 +16,35 @@ import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.network.Packet;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
-public class TileEntityInfoPanel extends TileEntityInventory implements MenuProvider, ITilePacketHandler, IScreenPart, ISlotItemFilter {
+public class TileEntityInfoPanel extends TileEntityInventory implements ExtendedScreenHandlerFactory, ITilePacketHandler, IScreenPart, ISlotItemFilter {
 	public static final String NAME = "info_panel";
 	public static final int DISPLAY_DEFAULT = Integer.MAX_VALUE - 1024;
 	private static final int[] COLORS_HEX = { 0x000000, 0xe93535, 0x82e306, 0x702b14, 0x1f3ce7, 0x8f1fea, 0x1fd7e9,
@@ -58,7 +58,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	private final Map<Integer, List<PanelString>> cardData;
 	protected final Map<Integer, Map<String, Integer>> displaySettings;
 	protected Screen screen;
-	public CompoundTag screenData;
+	public NbtCompound screenData;
 	public boolean init;
 	protected int updateTicker;
 	protected int dataTicker;
@@ -76,7 +76,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 		cardData = new HashMap<>();
 		displaySettings = new HashMap<>(1);
 		displaySettings.put(0, new HashMap<>());
-		tickRate = ConfigHandler.SCREEN_REFRESH_PERIOD.get();
+		tickRate = ConfigHandler.screenRefreshPeriod;
 		updateTicker = tickRate - 1;
 		dataTicker = 4;
 		showLabels = true;
@@ -85,12 +85,12 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	}
 
 	public TileEntityInfoPanel(BlockPos pos, BlockState state) {
-		this(ModTileEntityTypes.info_panel.get(), pos, state);
+		this(ModTileEntityTypes.info_panel, pos, state);
 	}
 
 	private void initData() {
 		init = true;
-		if (level.isClientSide)
+		if (world.isClient)
 			return;
 
 		if (screenData == null) {
@@ -98,14 +98,14 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 		} else {
 			screen = EnergyControl.INSTANCE.screenManager.loadScreen(this);
 			if (screen != null)
-				screen.init(true, level);
+				screen.init(true, world);
 		}
 		notifyBlockUpdate();
 	}
 
 	@Override
 	public void setFacing(int meta) {
-		Direction newFacing = Direction.from3DDataValue(meta);
+		Direction newFacing = Direction.byId(meta);
 		if (facing == newFacing)
 			return;
 		facing = newFacing;
@@ -120,7 +120,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	}
 
 	public void setShowLabels(boolean newShowLabels) {
-		if (!level.isClientSide && showLabels != newShowLabels)
+		if (!world.isClient && showLabels != newShowLabels)
 			notifyBlockUpdate();
 		showLabels = newShowLabels;
 	}
@@ -130,7 +130,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	}
 
 	public void setTickRate(int newValue) {
-		if (!level.isClientSide && tickRate != newValue)
+		if (!world.isClient && tickRate != newValue)
 			notifyBlockUpdate();
 		tickRate = newValue;
 	}
@@ -140,7 +140,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	}
 
 	public void setColored(boolean newColored) {
-		if (!level.isClientSide && colored != newColored)
+		if (!world.isClient && colored != newColored)
 			notifyBlockUpdate();
 		colored = newColored;
 	}
@@ -150,7 +150,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	}
 
 	public void setColorBackground(int c) {
-		if (!level.isClientSide && colorBackground != c)
+		if (!world.isClient && colorBackground != c)
 			notifyBlockUpdate();
 		colorBackground = c;
 	}
@@ -164,7 +164,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	}
 
 	public void setColorText(int c) {
-		if (!level.isClientSide && colorText != c)
+		if (!world.isClient && colorText != c)
 			notifyBlockUpdate();
 		colorText = c;
 	}
@@ -174,30 +174,30 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	}
 
 	protected void calcPowered() { // server
-		boolean newPowered = level.hasNeighborSignal(worldPosition);
+		boolean newPowered = world.isReceivingRedstonePower(pos);
 		if (newPowered != powered) {
 			powered = newPowered;
 			if (screen != null)
-				screen.turnPower(powered, level);
+				screen.turnPower(powered, world);
 		}
 	}
 
-	public void setScreenData(CompoundTag nbtTagCompound) {
+	public void setScreenData(NbtCompound nbtTagCompound) {
 		screenData = nbtTagCompound;
-		if (screen != null && level.isClientSide)
-			screen.destroy(true, level);
+		if (screen != null && world.isClient)
+			screen.destroy(true, world);
 		if (screenData != null) {
 			screen = EnergyControl.INSTANCE.screenManager.loadScreen(this);
 			if (screen != null)
-				screen.init(true, level);
+				screen.init(true, world);
 		}
 	}
 
 	@Override
-	public void onClientMessageReceived(CompoundTag tag) { }
+	public void onClientMessageReceived(NbtCompound tag) { }
 
 	@Override
-	public void onServerMessageReceived(CompoundTag tag) {
+	public void onServerMessageReceived(NbtCompound tag) {
 		if (!tag.contains("type"))
 			return;
 		switch (tag.getInt("type")) {
@@ -218,7 +218,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 			break;
 		case 4:
 			if (tag.contains("slot") && tag.contains("title")) {
-				ItemStack itemStack = getItem(tag.getInt("slot"));
+				ItemStack itemStack = getStack(tag.getInt("slot"));
 				if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemCardMain) {
 					new ItemCardReader(itemStack).setTitle(tag.getString("title"));
 					resetCardData();
@@ -232,18 +232,18 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	}
 
 	@Override
-	public Packet<ClientGamePacketListener> getUpdatePacket() {
-		return ClientboundBlockEntityDataPacket.create(this);
+	public Packet<ClientPlayPacketListener> toUpdatePacket() {
+		return BlockEntityUpdateS2CPacket.create(this);
 	}
 
 	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-		readProperties(pkt.getTag());
+	public void onDataPacket(BlockEntityUpdateS2CPacket pkt) {
+		readProperties(pkt.getNbt());
 	}
 
 	@Override
-	public CompoundTag getUpdateTag() {
-		CompoundTag tag = super.getUpdateTag();
+	public NbtCompound toInitialChunkDataNbt() {
+		NbtCompound tag = super.toInitialChunkDataNbt();
 		tag = writeProperties(tag);
 		calcPowered();
 		tag.putBoolean("powered", powered);
@@ -252,16 +252,16 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 		return tag;
 	}
 
-	protected void deserializeDisplaySettings(CompoundTag tag) {
+	protected void deserializeDisplaySettings(NbtCompound tag) {
 		deserializeSlotSettings(tag, "dSettings", SLOT_CARD);
 	}
 
-	protected void deserializeSlotSettings(CompoundTag tag, String tagName, int slot) {
+	protected void deserializeSlotSettings(NbtCompound tag, String tagName, int slot) {
 		if (!(tag.contains(tagName)))
 			return;
-		ListTag settingsList = tag.getList(tagName, Tag.TAG_COMPOUND);
+		NbtList settingsList = tag.getList(tagName, NbtElement.COMPOUND_TYPE);
 		for (int i = 0; i < settingsList.size(); i++) {
-			CompoundTag compound = settingsList.getCompound(i);
+			NbtCompound compound = settingsList.getCompound(i);
 			try {
 				getDisplaySettingsForSlot(slot).put(compound.getString("key"), compound.getInt("value"));
 			} catch (IllegalArgumentException e) {
@@ -271,7 +271,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	}
 
 	@Override
-	protected void readProperties(CompoundTag tag) {
+	protected void readProperties(NbtCompound tag) {
 		super.readProperties(tag);
 		if (tag.contains("tickRate"))
 			tickRate = tag.getInt("tickRate");
@@ -287,36 +287,36 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 			setColored(tag.getBoolean("colored"));
 
 		if (tag.contains("screenData")) {
-			if (level != null)
-				setScreenData((CompoundTag) tag.get("screenData"));
+			if (world != null)
+				setScreenData((NbtCompound) tag.get("screenData"));
 			else
-				screenData = (CompoundTag) tag.get("screenData");
+				screenData = (NbtCompound) tag.get("screenData");
 		} else
 			screenData = null;
 		deserializeDisplaySettings(tag);
-		if (tag.contains("powered") && level.isClientSide) {
+		if (tag.contains("powered") && world.isClient) {
 			boolean newPowered = tag.getBoolean("powered");
 			if (powered != newPowered) {
 				powered = newPowered; 
-				level.getChunkSource().getLightEngine().checkBlock(worldPosition);
+				world.getChunkManager().getLightingProvider().checkBlock(pos);
 			}
 		}
 	}
 
 	@Override
-	public void load(CompoundTag tag) {
-		super.load(tag);
+	public void readNbt(NbtCompound tag) {
+		super.readNbt(tag);
 		readProperties(tag);
 	}
 
-	protected void serializeDisplaySettings(CompoundTag tag) {
+	protected void serializeDisplaySettings(NbtCompound tag) {
 		tag.put("dSettings", serializeSlotSettings(SLOT_CARD));
 	}
 
-	protected ListTag serializeSlotSettings(int slot) {
-		ListTag settingsList = new ListTag();
+	protected NbtList serializeSlotSettings(int slot) {
+		NbtList settingsList = new NbtList();
 		for (Map.Entry<String, Integer> item : getDisplaySettingsForSlot(slot).entrySet()) {
-			CompoundTag tag = new CompoundTag();
+			NbtCompound tag = new NbtCompound();
 			tag.putString("key", item.getKey());
 			tag.putInt("value", item.getValue());
 			settingsList.add(tag);
@@ -325,7 +325,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	}
 
 	@Override
-	protected CompoundTag writeProperties(CompoundTag tag) {
+	protected NbtCompound writeProperties(NbtCompound tag) {
 		tag = super.writeProperties(tag);
 		tag.putInt("tickRate",tickRate);
 		tag.putBoolean("showLabels", getShowLabels());
@@ -341,19 +341,19 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag tag) {
-		super.saveAdditional(tag);
+	protected void writeNbt(NbtCompound tag) {
+		super.writeNbt(tag);
 		writeProperties(tag);
 	}
 
 	@Override
-	public void setRemoved() {
-		if (!level.isClientSide)
+	public void markRemoved() {
+		if (!world.isClient)
 			EnergyControl.INSTANCE.screenManager.unregisterScreenPart(this);
-		super.setRemoved();
+		super.markRemoved();
 	}
 
-	public static void tickStatic(Level level, BlockPos pos, BlockState state, BlockEntity be) {
+	public static void tickStatic(World level, BlockPos pos, BlockState state, BlockEntity be) {
 		if (!(be instanceof TileEntityInfoPanel))
 			return;
 		TileEntityInfoPanel te = (TileEntityInfoPanel) be;
@@ -370,12 +370,12 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 			resetCardData();
 			dataTicker = 4;
 		}
-		if (!level.isClientSide) {
+		if (!world.isClient) {
 			if (updateTicker-- > 0)
 				return;
 			updateTicker = tickRate - 1;
 			if (hasCards())
-				setChanged();
+				markDirty();
 		}
 	}
 
@@ -387,16 +387,15 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	}
 
 	@Override
-	public void notifyBlockUpdate() {
-		BlockState iblockstate = level.getBlockState(worldPosition);
-		level.sendBlockUpdated(worldPosition, iblockstate, iblockstate, 2);
+	public void updateTileEntity() {
+		notifyBlockUpdate();
 	}
 
 	public void resetCardData() {
 		cardData.clear();
 	}
 
-	public List<PanelString> getCardData(Level world, int settings, ItemStack cardStack, ItemCardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getCardData(World world, int settings, ItemStack cardStack, ItemCardReader reader, boolean isServer, boolean showLabels) {
 		int slot = getCardSlot(cardStack);
 		List<PanelString> data = cardData.get(slot);
 		if (data == null) {
@@ -412,9 +411,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	}
 
 	// ------- Settings --------
-	public NonNullList<ItemStack> getCards() {
-		NonNullList<ItemStack> data = NonNullList.create();
-		data.add(getItem(SLOT_CARD));
+	public DefaultedList<ItemStack> getCards() {
+		DefaultedList<ItemStack> data = DefaultedList.of();
+		data.add(getStack(SLOT_CARD));
 		return data;
 	}
 
@@ -434,7 +433,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 			if (state != CardState.OK && state != CardState.CUSTOM_ERROR)
 				data = ItemCardReader.getStateMessage(state);
 			else
-				data = getCardData(level, settings, card, reader, isServer, showLabels);
+				data = getCardData(world, settings, card, reader, isServer, showLabels);
 			if (data == null)
 				continue;
 			joinedData.addAll(data);
@@ -447,7 +446,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 
 	public List<String> getPanelStringList() {
 		List<PanelString> joinedData = getPanelStringList(true, false);
-		List<String> list = NonNullList.create();
+		List<String> list = DefaultedList.of();
 		if (joinedData == null || joinedData.size() == 0)
 			return list;
 
@@ -467,8 +466,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 			return 0;
 
 		int slot = 0;
-		for (int i = 0; i < getContainerSize(); i++) {
-			ItemStack stack = getItem(i);
+		for (int i = 0; i < size(); i++) {
+			ItemStack stack = getStack(i);
 			if (!stack.isEmpty() && stack.equals(card)) {
 				slot = i;
 				break;
@@ -480,23 +479,23 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	private void processCard(ItemStack card, int slot, ItemStack stack) {
 		if (ItemCardMain.isCard(card)) {
 			ItemCardReader reader = new ItemCardReader(card);
-			((ItemCardMain) card.getItem()).updateCardNBT(level, worldPosition, reader, stack);
+			((ItemCardMain) card.getItem()).updateCardNBT(world, pos, reader, stack);
 			reader.updateClient(card, this, slot);
 		}
 	}
 
 	public boolean isColoredEval() {
-		ItemStack stack = getItem(SLOT_UPGRADE_COLOR);
-		return !stack.isEmpty() && stack.getItem().equals(ModItems.upgrade_color.get());
+		ItemStack stack = getStack(SLOT_UPGRADE_COLOR);
+		return !stack.isEmpty() && stack.getItem().equals(ModItems.upgrade_color);
 	}
 
 	@Override
-	public void setChanged() {
-		super.setChanged();
-		if (!level.isClientSide) {
+	public void markDirty() {
+		super.markDirty();
+		if (!world.isClient) {
 			setColored(isColoredEval());
 			if (powered) {
-				ItemStack itemStack = getItem(getSlotUpgradeRange());
+				ItemStack itemStack = getStack(getSlotUpgradeRange());
 				for (ItemStack card : getCards())
 					processCard(card, getCardSlot(card), itemStack);
 			}
@@ -518,7 +517,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	}
 
 	public int getDisplaySettingsForCardInSlot(int slot) {
-		ItemStack card = getItem(slot);
+		ItemStack card = getStack(slot);
 		if (card.isEmpty()) {
 			return 0;
 		}
@@ -532,7 +531,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 
 		if (displaySettings.containsKey(slot)) {
 			for (Map.Entry<String, Integer> entry : displaySettings.get(slot).entrySet()) {
-				if (card.getDescriptionId().equals(entry.getKey()))
+				if (card.getTranslationKey().equals(entry.getKey()))
 					return entry.getValue();
 			}
 		}
@@ -543,25 +542,25 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	public void setDisplaySettings(int slot, int settings) {
 		if (!isCardSlot(slot))
 			return;
-		ItemStack stack = getItem(slot);
+		ItemStack stack = getStack(slot);
 		if (!ItemCardMain.isCard(stack))
 			return;
 
 		if (!displaySettings.containsKey(slot))
 			displaySettings.put(slot, new HashMap<>());
-		displaySettings.get(slot).put(stack.getDescriptionId(), settings);
-		if (!level.isClientSide)
+		displaySettings.get(slot).put(stack.getTranslationKey(), settings);
+		if (!world.isClient)
 			notifyBlockUpdate();
 	}
 
 	// ------- Inventory ------- 
 	@Override
-	public int getContainerSize() {
+	public int size() {
 		return 4;
 	}
 
 	@Override
-	public boolean canPlaceItem(int index, ItemStack stack) {
+	public boolean isValid(int index, ItemStack stack) {
 		return isItemValid(index, stack);
 	}
 
@@ -571,11 +570,11 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 		case SLOT_CARD:
 			return ItemCardMain.isCard(stack);
 		case SLOT_UPGRADE_RANGE:
-			return stack.getItem().equals(ModItems.upgrade_range.get());
+			return stack.getItem().equals(ModItems.upgrade_range);
 		case SLOT_UPGRADE_COLOR:
-			return stack.getItem().equals(ModItems.upgrade_color.get());
+			return stack.getItem().equals(ModItems.upgrade_color);
 		case SLOT_UPGRADE_TOUCH:
-			return stack.getItem().equals(ModItems.upgrade_touch.get());
+			return stack.getItem().equals(ModItems.upgrade_touch);
 		default:
 			return false;
 		}
@@ -593,7 +592,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 
 	@Override
 	public void updateData() {
-		if (level.isClientSide)
+		if (world.isClient)
 			return;
 
 		if (screen == null) {
@@ -603,19 +602,19 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 		notifyBlockUpdate();
 	}
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
+	/*@Override
+	@Environment(EnvType.CLIENT)
 	public AABB getRenderBoundingBox() {
 		if (screen == null)
-			return new AABB(worldPosition.offset(0, 0, 0), worldPosition.offset(1, 1, 1));
+			return new AABB(pos.offset(0, 0, 0), pos.offset(1, 1, 1));
 		return new AABB(new BlockPos(screen.minX, screen.minY, screen.minZ), new BlockPos(screen.maxX + 1, screen.maxY + 1, screen.maxZ + 1));
-	}
+	}*/
 
-	@OnlyIn(Dist.CLIENT)
+	@Environment(EnvType.CLIENT)
 	public int findTexture() {
 		Screen scr = getScreen();
 		if (scr != null) {
-			BlockPos pos = getBlockPos();
+			BlockPos pos = getPos();
 			switch (getFacing()) {
 			case SOUTH:
 				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 4 * boolToInt(pos.getY() == scr.minY) + 8 * boolToInt(pos.getY() == scr.maxY);
@@ -638,16 +637,16 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 		return b ? 1 : 0;
 	}
 
-	public boolean runTouchAction(ItemStack stack, BlockPos pos, Vec3 hit) {
-		if (level.isClientSide)
+	public boolean runTouchAction(ItemStack stack, BlockPos pos, Vec3d hit) {
+		if (world.isClient)
 			return false;
-		ItemStack card = getItem(SLOT_CARD);
+		ItemStack card = getStack(SLOT_CARD);
 		runTouchAction(this, card, stack, SLOT_CARD, true);
 		return true;
 	}
 
 	public boolean isTouchCard() {
-		return isTouchCard(getItem(SLOT_CARD));
+		return isTouchCard(getStack(SLOT_CARD));
 	}
 
 	public boolean isTouchCard(ItemStack stack) {
@@ -656,7 +655,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	}
 
 	public boolean hasBars() {
-		return hasBars(getItem(SLOT_CARD));
+		return hasBars(getStack(SLOT_CARD));
 	}
 
 	public boolean hasBars(ItemStack stack) {
@@ -664,8 +663,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 		return !stack.isEmpty() && item instanceof IHasBars && ((IHasBars) item).enableBars(stack) && (getDisplaySettingsForCardInSlot(SLOT_CARD) & 1024) > 0;
 	}
 
-	public void renderImage(float displayWidth, float displayHeight, PoseStack matrixStack) {
-		ItemStack stack = getItem(SLOT_CARD);
+	public void renderImage(float displayWidth, float displayHeight, MatrixStack matrixStack) {
+		ItemStack stack = getStack(SLOT_CARD);
 		Item card = stack.getItem();
 		if (isTouchCard())
 			((ITouchAction) card).renderImage(new ItemCardReader(stack), matrixStack);
@@ -674,21 +673,26 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	}
 
 	protected void runTouchAction(TileEntityInfoPanel panel, ItemStack cardStack, ItemStack stack, int slot, boolean needsTouchUpgrade) {
-		if (isTouchCard(cardStack) && (!needsTouchUpgrade || !getItem(SLOT_UPGRADE_TOUCH).isEmpty())) {
+		if (isTouchCard(cardStack) && (!needsTouchUpgrade || !getStack(SLOT_UPGRADE_TOUCH).isEmpty())) {
 			ICardReader reader = new ItemCardReader(cardStack);
-			if (((ITouchAction) cardStack.getItem()).runTouchAction(panel.getLevel(), reader, stack))
+			if (((ITouchAction) cardStack.getItem()).runTouchAction(panel.getWorld(), reader, stack))
 				reader.updateClient(cardStack, panel, slot);
 		}
 	}
 
-	// MenuProvider
+	// NamedScreenHandlerFactory
 	@Override
-	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
+	public ScreenHandler createMenu(int windowId, PlayerInventory inventory, PlayerEntity player) {
 		return new ContainerInfoPanel(windowId, inventory, this);
 	}
 
 	@Override
-	public Component getDisplayName() {
-		return new TranslatableComponent(ModItems.info_panel.get().getDescriptionId());
+	public Text getDisplayName() {
+		return new TranslatableText(ModItems.info_panel.getTranslationKey());
+	}
+
+	@Override
+	public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
+		buf.writeBlockPos(pos);
 	}
 }

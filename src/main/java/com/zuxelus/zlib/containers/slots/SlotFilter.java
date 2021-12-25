@@ -1,19 +1,19 @@
 package com.zuxelus.zlib.containers.slots;
 
-import net.minecraft.world.Container;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.screen.slot.Slot;
 
 public class SlotFilter extends Slot {
 
-	public SlotFilter(Container inventory, int slotIndex, int x, int y) {
+	public SlotFilter(Inventory inventory, int slotIndex, int x, int y) {
 		super(inventory, slotIndex, x, y);
 	}
 
 	@Override
-	public boolean mayPlace(ItemStack itemStack) {
-		if (container instanceof ISlotItemFilter)
-			return ((ISlotItemFilter) container).isItemValid(getSlotIndex(), itemStack);
-		return super.mayPlace(itemStack);
+	public boolean canInsert(ItemStack itemStack) {
+		if (inventory instanceof ISlotItemFilter)
+			return ((ISlotItemFilter) inventory).isItemValid(getIndex(), itemStack);
+		return super.canInsert(itemStack);
 	}
 }

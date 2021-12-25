@@ -11,18 +11,18 @@ import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 import com.zuxelus.energycontrol.utils.StringUtils;
 
-import net.minecraft.client.resources.language.I18n;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.resource.language.I18n;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public class ItemCardLiquidArray extends ItemCardMain {
 	private static final long STATUS_NOT_FOUND = Integer.MIN_VALUE;
 	private static final long STATUS_OUT_OF_RANGE = Integer.MIN_VALUE + 1;
 
 	@Override
-	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
+	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
 		int cardCount = reader.getCardCount();
 		if (cardCount == 0)
 			return CardState.INVALID_CARD;
@@ -58,7 +58,7 @@ public class ItemCardLiquidArray extends ItemCardMain {
 	}
 
 	@Override
-	public List<PanelString> getStringData(Level world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(World world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		double totalAmount = 0;
 		double totalCapacity = 0;
@@ -140,15 +140,15 @@ public class ItemCardLiquidArray extends ItemCardMain {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
+	@Environment(EnvType.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(6);
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidName"), 1));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidFree"), 2));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidCapacity"), 4));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidPercentage"), 8));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelEachCard"), 16));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelTotal"), 32));
+		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelLiquidName"), 1));
+		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelLiquidFree"), 2));
+		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelLiquidCapacity"), 4));
+		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelLiquidPercentage"), 8));
+		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelEachCard"), 16));
+		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelTotal"), 32));
 		return result;
 	}
 

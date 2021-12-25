@@ -7,22 +7,22 @@ import com.zuxelus.energycontrol.api.*;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
-import net.minecraft.client.resources.language.I18n;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.resource.language.I18n;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public abstract class ItemCardMain extends Item implements IItemCard {
 	public static final int LOCATION_RANGE = 8;
 
 	public ItemCardMain() {
-		super(new Item.Properties().tab(EnergyControl.ITEM_GROUP).stacksTo(1).setNoRepair());
+		super(new Item.Settings().group(EnergyControl.ITEM_GROUP).maxCount(1));
 	}
 
 	public static boolean isCard(ItemStack stack) {
@@ -34,29 +34,29 @@ public abstract class ItemCardMain extends Item implements IItemCard {
 		return false;
 	}
 
-	protected void addInformation(ItemCardReader reader, List<Component> tooltip) { }
-	
+	protected void addInformation(ItemCardReader reader, List<Text> tooltip) { }
+
 	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag flag) {
+	@Environment(EnvType.CLIENT)
+	public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext flag) {
 		ItemCardReader reader = new ItemCardReader(stack);
 		String title = reader.getTitle();
 		if (title != null && !title.isEmpty())
-			tooltip.add(new TranslatableComponent(title));
-		
+			tooltip.add(new TranslatableText(title));
+
 		addInformation(reader, tooltip);
-		
+
 		BlockPos target = reader.getTarget();
 		if (target != null)
-			tooltip.add(new TranslatableComponent(String.format("x: %d, y: %d, z: %d", target.getX(), target.getY(), target.getZ())));
+			tooltip.add(new TranslatableText(String.format("x: %d, y: %d, z: %d", target.getX(), target.getY(), target.getZ())));
 		int count = reader.getCardCount();
 		if (count > 0)
-			tooltip.add(new TranslatableComponent(I18n.get("msg.ec.cards", reader.getCardCount())));
+			tooltip.add(new TranslatableText(I18n.translate("msg.ec.cards", reader.getCardCount())));
 	}
 
-	public CardState updateCardNBT(Level world, BlockPos pos, ICardReader reader, ItemStack upgradeStack) {
+	public CardState updateCardNBT(World world, BlockPos pos, ICardReader reader, ItemStack upgradeStack) {
 		int upgradeCountRange = 0;
-		if (upgradeStack != ItemStack.EMPTY && upgradeStack.getItem().equals(ModItems.upgrade_range.get()))
+		if (upgradeStack != ItemStack.EMPTY && upgradeStack.getItem().equals(ModItems.upgrade_range))
 			upgradeCountRange = upgradeStack.getCount();
 
 		boolean needUpdate = true;
@@ -84,7 +84,7 @@ public abstract class ItemCardMain extends Item implements IItemCard {
 	}
 
 	@Override
-	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
+	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
 		return CardState.OK;
 	}
 
@@ -103,7 +103,7 @@ public abstract class ItemCardMain extends Item implements IItemCard {
 	public void runTouchAction(TileEntityInfoPanel panel, ItemStack cardStack, ItemStack stack, int slot) { 
 		if (cardStack.getItem() instanceof ITouchAction) {
 			ICardReader reader = new ItemCardReader(cardStack);
-			if (((ITouchAction) cardStack.getItem()).runTouchAction(panel.getLevel(), reader, stack))
+			if (((ITouchAction) cardStack.getItem()).runTouchAction(panel.getWorld(), reader, stack))
 				reader.updateClient(cardStack, panel, slot);
 		}
 	}
@@ -113,10 +113,10 @@ public abstract class ItemCardMain extends Item implements IItemCard {
 		int txtColor = 0;
 		if (value) {
 			txtColor = 0x00ff00;
-			text = isServer ? "On" : I18n.get("msg.ec.InfoPanelOn");
+			text = isServer ? "On" : I18n.translate("msg.ec.InfoPanelOn");
 		} else {
 			txtColor = 0xff0000;
-			text = isServer ? "Off" : I18n.get("msg.ec.InfoPanelOff");
+			text = isServer ? "Off" : I18n.translate("msg.ec.InfoPanelOff");
 		}
 		if (result.size() > 0) {
 			PanelString firstLine = result.get(0);

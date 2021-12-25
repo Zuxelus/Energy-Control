@@ -8,20 +8,20 @@ import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.zlib.containers.ContainerBase;
 
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketByteBuf;
 
 public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel> {
-	private Player player;
+	private PlayerEntity player;
 
-	public ContainerPortablePanel(int windowId, Inventory inventory, FriendlyByteBuf data) {
+	public ContainerPortablePanel(int windowId, PlayerInventory inventory, PacketByteBuf data) {
 		this(windowId, inventory);
 	}
-	public ContainerPortablePanel(int windowId, Inventory inventory) {
-		super(new InventoryPortablePanel(inventory.player.getMainHandItem()), ModContainerTypes.portable_panel.get(), windowId);
+	public ContainerPortablePanel(int windowId, PlayerInventory inventory) {
+		super(new InventoryPortablePanel(inventory.player.getMainHandStack()), ModContainerTypes.portable_panel, windowId);
 		this.player = inventory.player;
 
 		addSlot(new SlotCard(te, 0, 174, 17));
@@ -31,13 +31,13 @@ public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel
 	}
 
 	@Override
-	public void broadcastChanges() {
+	public void sendContentUpdates() {
 		processCard();
-		super.broadcastChanges();
+		super.sendContentUpdates();
 	}
 
 	private void processCard() {
-		ItemStack card = te.getItem(InventoryPortablePanel.SLOT_CARD);
+		ItemStack card = te.getStack(InventoryPortablePanel.SLOT_CARD);
 		if (card.isEmpty())
 			return;
 
@@ -46,6 +46,6 @@ public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel
 			return;
 
 		ItemCardReader reader = new ItemCardReader(card);
-		((ItemCardMain) item).updateCardNBT(player.level, player.blockPosition(), reader, te.getItem(InventoryPortablePanel.SLOT_UPGRADE_RANGE));
+		((ItemCardMain) item).updateCardNBT(player.world, player.getBlockPos(), reader, te.getStack(InventoryPortablePanel.SLOT_UPGRADE_RANGE));
 	}
 }

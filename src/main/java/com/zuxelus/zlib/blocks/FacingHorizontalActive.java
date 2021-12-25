@@ -1,22 +1,27 @@
 package com.zuxelus.zlib.blocks;
 
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition.Builder;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.state.StateManager.Builder;
+import net.minecraft.state.property.BooleanProperty;
 
 public abstract class FacingHorizontalActive extends FacingHorizontal {
-	public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
+
+	public FacingHorizontalActive(Settings settings) {
+		super(settings);
+	}
+
+	public static final BooleanProperty ACTIVE = BooleanProperty.of("active");
 
 	@Override
-	protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
-		super.createBlockStateDefinition(builder);
+	protected void appendProperties(Builder<Block, BlockState> builder) {
+		super.appendProperties(builder);
 		builder.add(ACTIVE);
 	}
 
 	@Override
-	public BlockState getStateForPlacement(BlockPlaceContext context) {
-		return super.getStateForPlacement(context).setValue(ACTIVE, false);
+	public BlockState getPlacementState(ItemPlacementContext context) {
+		return super.getPlacementState(context).with(ACTIVE, false);
 	}
 }

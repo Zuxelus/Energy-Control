@@ -10,31 +10,32 @@ import com.zuxelus.energycontrol.items.cards.ItemCardEnergy;
 import com.zuxelus.energycontrol.items.cards.ItemCardLiquid;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
+import com.zuxelus.zlib.blocks.FacingHorizontal;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.Packet;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
-public class TileEntityRangeTrigger extends TileEntityInventory implements MenuProvider, ISlotItemFilter, ITilePacketHandler {
+public class TileEntityRangeTrigger extends TileEntityInventory implements ExtendedScreenHandlerFactory, ISlotItemFilter, ITilePacketHandler {
 	public static final int SLOT_CARD = 0;
 	public static final int SLOT_UPGRADE = 1;
 
@@ -55,7 +56,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements MenuP
 	public TileEntityRangeTrigger(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
 		init = false;
-		tickRate = ConfigHandler.RANGE_TRIGGER_REFRESH_PERIOD.get();
+		tickRate = ConfigHandler.rangeTriggerRefreshPeriod;
 		updateTicker = tickRate;
 		status = -1;
 		invertRedstone = false;
@@ -64,7 +65,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements MenuP
 	}
 
 	public TileEntityRangeTrigger(BlockPos pos, BlockState state) {
-		this(ModTileEntityTypes.range_trigger.get(), pos, state);
+		this(ModTileEntityTypes.range_trigger, pos, state);
 	}
 
 	public boolean getInvertRedstone() {
@@ -74,34 +75,34 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements MenuP
 	public void setInvertRedstone(boolean value) {
 		boolean old = invertRedstone;
 		invertRedstone = value;
-		if (!level.isClientSide && invertRedstone != old)
+		if (!world.isClient && invertRedstone != old)
 			notifyBlockUpdate();
 	}
 
 	public void setStatus(int value) {
 		int old = status;
 		status = value;
-		if (!level.isClientSide && status != old) {
-			BlockState iblockstate = level.getBlockState(worldPosition);
+		if (!world.isClient && status != old) {
+			BlockState iblockstate = world.getBlockState(pos);
 			Block block = iblockstate.getBlock();
 			if (block instanceof RangeTrigger) {
-				BlockState newState = block.defaultBlockState()
-						.setValue(HorizontalDirectionalBlock.FACING, iblockstate.getValue(HorizontalDirectionalBlock.FACING))
-						.setValue(RangeTrigger.STATE, RangeTrigger.EnumState.getState(status));
-				level.setBlock(worldPosition, newState, 3);
+				BlockState newState = block.getDefaultState()
+						.with(FacingHorizontal.FACING, iblockstate.get(FacingHorizontal.FACING))
+						.with(RangeTrigger.STATE, RangeTrigger.EnumState.getState(status));
+				world.setBlockState(pos, newState, 3);
 			}
 			notifyBlockUpdate();
 		}
 	}
 
 	public void setLevelStart(double start) {
-		if (!level.isClientSide && levelStart != start)
+		if (!world.isClient && levelStart != start)
 			notifyBlockUpdate();
 		levelStart = start;
 	}
 
 	public void setLevelEnd(double end) {
-		if (!level.isClientSide && levelEnd != end)
+		if (!world.isClient && levelEnd != end)
 			notifyBlockUpdate();
 		levelEnd = end;
 	}
@@ -114,7 +115,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements MenuP
 		return poweredBlock;
 	}
 
-	public static void tickStatic(Level level, BlockPos pos, BlockState state, BlockEntity be) {
+	public static void tickStatic(World level, BlockPos pos, BlockState state, BlockEntity be) {
 		if (!(be instanceof TileEntityRangeTrigger))
 			return;
 		TileEntityRangeTrigger te = (TileEntityRangeTrigger) be;
@@ -122,16 +123,16 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements MenuP
 	}
 
 	protected void tick() {
-		if (!level.isClientSide) {
+		if (!world.isClient) {
 			if (updateTicker-- > 0)
 				return;
 			updateTicker = tickRate;
-			setChanged();
+			markDirty();
 		}
 	}
 
 	@Override
-	public void onServerMessageReceived(CompoundTag tag) {
+	public void onServerMessageReceived(NbtCompound tag) {
 		if (!tag.contains("type"))
 			return;
 		switch (tag.getInt("type")) {
@@ -151,28 +152,28 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements MenuP
 	}
 
 	@Override
-	public void onClientMessageReceived(CompoundTag tag) { }
+	public void onClientMessageReceived(NbtCompound tag) { }
 
 	@Override
-	public Packet<ClientGamePacketListener> getUpdatePacket() {
-		return ClientboundBlockEntityDataPacket.create(this);
+	public Packet<ClientPlayPacketListener> toUpdatePacket() {
+		return BlockEntityUpdateS2CPacket.create(this);
 	}
 
 	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-		readProperties(pkt.getTag());
+	public void onDataPacket(BlockEntityUpdateS2CPacket pkt) {
+		readProperties(pkt.getNbt());
 	}
 
 	@Override
-	public CompoundTag getUpdateTag() {
-		CompoundTag tag = super.getUpdateTag();
+	public NbtCompound toInitialChunkDataNbt() {
+		NbtCompound tag = super.toInitialChunkDataNbt();
 		tag = writeProperties(tag);
 		tag.putBoolean("poweredBlock", poweredBlock);
 		return tag;
 	}
 
 	@Override
-	protected void readProperties(CompoundTag tag) {
+	protected void readProperties(NbtCompound tag) {
 		super.readProperties(tag);
 		invertRedstone = tag.getBoolean("invert");
 		levelStart = tag.getDouble("levelStart");
@@ -182,13 +183,13 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements MenuP
 	}
 
 	@Override
-	public void load(CompoundTag tag) {
-		super.load(tag);
+	public void readNbt(NbtCompound tag) {
+		super.readNbt(tag);
 		readProperties(tag);
 	}
 
 	@Override
-	protected CompoundTag writeProperties(CompoundTag tag) {
+	protected NbtCompound writeProperties(NbtCompound tag) {
 		tag = super.writeProperties(tag);
 		tag.putBoolean("invert", invertRedstone);
 		tag.putDouble("levelStart", levelStart);
@@ -197,24 +198,24 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements MenuP
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag tag) {
-		super.saveAdditional(tag);
+	protected void writeNbt(NbtCompound tag) {
+		super.writeNbt(tag);
 		writeProperties(tag);
 	}
 
 	@Override
-	public void setChanged() {
-		super.setChanged();
-		if (level == null || level.isClientSide)
+	public void markDirty() {
+		super.markDirty();
+		if (world == null || world.isClient)
 			return;
 		
 		int status = STATE_UNKNOWN;
-		ItemStack card = getItem(SLOT_CARD);
+		ItemStack card = getStack(SLOT_CARD);
 		if (!card.isEmpty()) {
 			Item item = card.getItem();
 			if (item instanceof ItemCardMain) {
 				ItemCardReader reader = new ItemCardReader(card);
-				CardState state = ((ItemCardMain) item).updateCardNBT(level, worldPosition, reader, getItem(SLOT_UPGRADE));
+				CardState state = ((ItemCardMain) item).updateCardNBT(world, pos, reader, getStack(SLOT_UPGRADE));
 				if (state == CardState.OK) {
 					double cur = item instanceof ItemCardEnergy ? reader.getDouble("storage") :  reader.getLong("amount");
 					status = cur > Math.max(levelStart, levelEnd) || cur < Math.min(levelStart, levelEnd) ? STATE_ACTIVE : STATE_PASSIVE;
@@ -225,27 +226,28 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements MenuP
 		setStatus(status);
 	}
 
-	public void notifyBlockUpdate() {
-		BlockState iblockstate = level.getBlockState(worldPosition);
-		Block block = iblockstate.getBlock();
+	@Override
+	protected void notifyBlockUpdate() {
+		BlockState state = world.getBlockState(pos);
+		Block block = state.getBlock();
 		if (!(block instanceof RangeTrigger))
 			return;
 		boolean newValue = status >= 1 && (status == 1 != invertRedstone);
 		if (poweredBlock != newValue) {
 			poweredBlock = newValue;
-			level.updateNeighborsAt(worldPosition, block);
+			world.updateNeighborsAlways(pos, block);
 		}
-		level.sendBlockUpdated(worldPosition, iblockstate, iblockstate, 2);
+		world.updateListeners(pos, state, state, 2);
 	}
 
 	// Inventory
 	@Override
-	public int getContainerSize() {
+	public int size() {
 		return 2;
 	}
 
 	@Override
-	public boolean canPlaceItem(int index, ItemStack stack) {
+	public boolean isValid(int index, ItemStack stack) {
 		return isItemValid(index, stack);
 	}
 
@@ -253,17 +255,22 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements MenuP
 	public boolean isItemValid(int slotIndex, ItemStack stack) { // ISlotItemFilter
 		if (slotIndex == SLOT_CARD)
 			return stack.getItem() instanceof ItemCardEnergy || stack.getItem() instanceof ItemCardLiquid;
-		return stack.getItem().equals(ModItems.upgrade_range.get());
+		return stack.getItem().equals(ModItems.upgrade_range);
 	}
 
-	// MenuProvider
+	// NamedScreenHandlerFactory
 	@Override
-	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
+	public ScreenHandler createMenu(int windowId, PlayerInventory inventory, PlayerEntity player) {
 		return new ContainerRangeTrigger(windowId, inventory, this);
 	}
 
 	@Override
-	public Component getDisplayName() {
-		return new TranslatableComponent(ModItems.range_trigger.get().getDescriptionId());
+	public Text getDisplayName() {
+		return new TranslatableText(ModItems.range_trigger.getTranslationKey());
+	}
+
+	@Override
+	public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
+		buf.writeBlockPos(pos);
 	}
 }

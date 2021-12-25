@@ -4,12 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Matrix4f;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.IHasBars;
@@ -18,22 +12,28 @@ import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.language.I18n;
-import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Matrix4f;
+import net.minecraft.world.World;
 
 public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 
 	@Override
-	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
+	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
 		BlockPos target = reader.getTarget();
 		if (target == null) {
 			reader.reset();
@@ -52,7 +52,7 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 	}
 
 	@Override
-	public List<PanelString> getStringData(Level world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(World world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		long capacity = reader.getLong("capacity");
 		long amount = reader.getLong("amount");
@@ -60,7 +60,7 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		if ((settings & 1) > 0) {
 			String name = reader.getString("name");
 			if (name.isEmpty())
-				name = isServer ? "N/A" : I18n.get("msg.ec.None");
+				name = isServer ? "N/A" : I18n.translate("msg.ec.None");
 			result.add(new PanelString("msg.ec.InfoPanelName", name, showLabels));
 		}
 		if ((settings & 2) > 0)
@@ -75,15 +75,15 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
+	@Environment(EnvType.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(5);
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidName"), 1));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidAmount"), 2));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidFree"), 4));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidCapacity"), 8));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidPercentage"), 16));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelShowBar"), 1024));
+		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelLiquidName"), 1));
+		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelLiquidAmount"), 2));
+		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelLiquidFree"), 4));
+		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelLiquidCapacity"), 8));
+		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelLiquidPercentage"), 16));
+		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelShowBar"), 1024));
 		return result;
 	}
 
@@ -100,7 +100,7 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void renderBars(float displayWidth, float displayHeight, ICardReader reader, PoseStack matrixStack) {
+	public void renderBars(float displayWidth, float displayHeight, ICardReader reader, MatrixStack matrixStack) {
 		float x = -0.5F + 1 / 16.0F;
 		float y = -0.5F + 1/ 16.0F;
 		float z = 0;
@@ -109,12 +109,12 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		if (texture.isEmpty())
 			return;
 
-		TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(new ResourceLocation(texture));
+		Sprite sprite = MinecraftClient.getInstance().getSpriteAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).apply(new Identifier(texture));
 		if (sprite == null)
 			return;
 
-		float textureX = sprite.getU0();
-		float textureY = sprite.getV0();
+		float textureX = sprite.getMinU();
+		float textureY = sprite.getMinV();
 		float width = 14 / 16.0F * reader.getInt("amount") / reader.getInt("capacity");
 		float height = 0.4375F;
 
@@ -126,18 +126,18 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 
 		matrixStack.scale(displayWidth / 0.875f, displayHeight / 0.875f, 1);
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
+		RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
 		RenderSystem.enableDepthTest();
 		RenderSystem.disableBlend();
-		Tesselator tesselator = Tesselator.getInstance();
-		BufferBuilder bufferbuilder = tesselator.getBuilder();
-		bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-		Matrix4f matrix = matrixStack.last().pose();
-		bufferbuilder.vertex(matrix, x, y + 0.4375F / 2 + height, z).uv(textureX + 0, textureY + sprite.getV1() - sprite.getV0()).color(f1, f2, f3, f).endVertex();
-		bufferbuilder.vertex(matrix, x + 0.875F, y + 0.4375F / 2 + height, z).uv(textureX + sprite.getU1() - sprite.getU0(), textureY + sprite.getV1() - sprite.getV0()).color(f1, f2, f3, f).endVertex();
-		bufferbuilder.vertex(matrix, x + 0.875F, y + 0.4375F / 2, z).uv(textureX + sprite.getU1() - sprite.getU0(), textureY + 0).color(f1, f2, f3, f).endVertex();
-		bufferbuilder.vertex(matrix, x, y + 0.4375F / 2, z).uv(textureX + 0, textureY + 0).color(f1, f2, f3, f).endVertex();
-		tesselator.end();
+		Tessellator tesselator = Tessellator.getInstance();
+		BufferBuilder bufferbuilder = tesselator.getBuffer();
+		bufferbuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
+		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
+		bufferbuilder.vertex(matrix, x, y + 0.4375F / 2 + height, z).texture(textureX, sprite.getMaxV()).color(f1, f2, f3, f).next();
+		bufferbuilder.vertex(matrix, x + 0.875F, y + 0.4375F / 2 + height, z).texture(sprite.getMaxU(), sprite.getMaxV()).color(f1, f2, f3, f).next();
+		bufferbuilder.vertex(matrix, x + 0.875F, y + 0.4375F / 2, z).texture(sprite.getMaxU(), textureY).color(f1, f2, f3, f).next();
+		bufferbuilder.vertex(matrix, x, y + 0.4375F / 2, z).texture(textureX, textureY).color(f1, f2, f3, f).next();
+		tesselator.draw();
 		RenderSystem.disableDepthTest();
 
 		IHasBars.drawTransparentRect(matrixStack, x + 0.875F - width, y + height + 0.4375F / 2, x, y + 0.4375F / 2, -0.0001F, 0xB0000000);

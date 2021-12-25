@@ -8,5 +8,5 @@ public interface IScreenPart {
 
 	void updateData();
 
-	void notifyBlockUpdate();
+	void updateTileEntity();
 }

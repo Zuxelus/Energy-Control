@@ -4,13 +4,13 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.List;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.language.I18n;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.resource.language.I18n;
+import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
 
 public class StringUtils {
 	private static DecimalFormat formatter = null;
@@ -28,7 +28,7 @@ public class StringUtils {
 
 	public static String getFormatted(String resourceName, String value, boolean showLabels) {
 		if (showLabels)
-			return I18n.get(resourceName, value);
+			return I18n.translate(resourceName, value);
 		return value;
 	}
 
@@ -37,14 +37,14 @@ public class StringUtils {
 	}
 
 	public static String getFormattedKey(String resourceName, Object... arguments) {
-		return I18n.get(resourceName, arguments);
+		return I18n.translate(resourceName, arguments);
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	@Environment(EnvType.CLIENT)
 	public static String getItemName(ItemStack stack) {
-		List<Component> list = stack.getTooltipLines(Minecraft.getInstance().player, TooltipFlag.Default.NORMAL);
+		List<Text> list = stack.getTooltip(MinecraftClient.getInstance().player, TooltipContext.Default.NORMAL);
 		if (list.size() == 0)
-			return stack.getItem().getDescriptionId();
+			return stack.getItem().getTranslationKey();
 		return list.get(0).getString();// .getFormattedText();
 	}
 }

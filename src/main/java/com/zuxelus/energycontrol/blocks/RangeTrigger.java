@@ -1,59 +1,63 @@
 package com.zuxelus.energycontrol.blocks;
 
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityRangeTrigger;
 import com.zuxelus.zlib.blocks.FacingHorizontal;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition.Builder;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.state.StateManager.Builder;
+import net.minecraft.state.property.EnumProperty;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.StringIdentifiable;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
 
 public class RangeTrigger extends FacingHorizontal {
-	public static final EnumProperty<EnumState> STATE = EnumProperty.create("state", EnumState.class);
+	public static final EnumProperty<EnumState> STATE = EnumProperty.of("state", EnumState.class);
 
-	@Override
-	protected BlockEntityFacing createBlockEntity(BlockPos pos, BlockState state) {
-		return ModTileEntityTypes.range_trigger.get().create(pos, state);
+	public RangeTrigger() {
+		super(FabricBlockSettings.copyOf(ModItems.settings));
 	}
 
 	@Override
-	protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
-		super.createBlockStateDefinition(builder);
+	protected BlockEntityFacing newBlockEntity(BlockPos pos, BlockState state) {
+		return ModTileEntityTypes.range_trigger.instantiate(pos, state);
+	}
+
+	@Override
+	protected void appendProperties(Builder<Block, BlockState> builder) {
+		super.appendProperties(builder);
 		builder.add(STATE);
 	}
 
 	@Override
-	public BlockState getStateForPlacement(BlockPlaceContext context) {
-		return super.getStateForPlacement(context).setValue(STATE, EnumState.OFF);
+	public BlockState getPlacementState(ItemPlacementContext context) {
+		return super.getPlacementState(context).with(STATE, EnumState.OFF);
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
 		BlockEntity te = world.getBlockEntity(pos);
 		if (!(te instanceof TileEntityRangeTrigger))
-			return InteractionResult.PASS;
-		if (!world.isClientSide)
-				NetworkHooks.openGui((ServerPlayer) player, (TileEntityRangeTrigger) te, pos);
-		return InteractionResult.SUCCESS;
+			return ActionResult.PASS;
+		if (!world.isClient)
+			player.openHandledScreen(state.createScreenHandlerFactory(world, pos));
+		return ActionResult.SUCCESS;
 	}
 
 	@Override
-	public int getSignal(BlockState blockState, BlockGetter blockAccess, BlockPos pos, Direction side) {
+	public int getWeakRedstonePower(BlockState blockState, BlockView blockAccess, BlockPos pos, Direction side) {
 		BlockEntity te = blockAccess.getBlockEntity(pos);
 		if (!(te instanceof TileEntityRangeTrigger))
 			return 0;
@@ -61,11 +65,11 @@ public class RangeTrigger extends FacingHorizontal {
 	}
 
 	@Override
-	public boolean isSignalSource(BlockState state) {
+	public boolean emitsRedstonePower(BlockState state) {
 		return true;
 	}
 
-	public enum EnumState implements StringRepresentable {
+	public enum EnumState implements StringIdentifiable {
 		OFF(0, "off"), ON(1, "on"), ERROR(2, "error");
 
 		private final int id;
@@ -81,7 +85,7 @@ public class RangeTrigger extends FacingHorizontal {
 		}
 
 		@Override
-		public String getSerializedName() {
+		public String asString() {
 			return name;
 		}
 

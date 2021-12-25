@@ -2,41 +2,36 @@ package com.zuxelus.energycontrol.network;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.function.Supplier;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.zlib.network.PacketBase;
 
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent.Context;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.Identifier;
 
-public class PacketAlarm {
-	private int maxAlarmRange;
-	private String allowedAlarms;
+public class PacketAlarm extends PacketBase {
+	public static final Identifier ID = new Identifier(EnergyControl.MODID, "s2c_alarm");
 
 	public PacketAlarm() { }
 
 	public PacketAlarm(int range, String alarms) {
-		maxAlarmRange = range;
-		allowedAlarms = alarms;
+		//writeVarInt(range);
+		writeString(alarms);
 	}
 
-	public static PacketAlarm decode(FriendlyByteBuf buf) {
-		int maxAlarmRange = buf.readInt();
-		String allowedAlarms = buf.readUtf();
-		return new PacketAlarm(maxAlarmRange, allowedAlarms);
+	@Override
+	public Identifier getId() {
+		return ID;
 	}
 
-	public static void encode(PacketAlarm pkt, FriendlyByteBuf buf) {
-		buf.writeInt(pkt.maxAlarmRange);
-		buf.writeUtf(pkt.allowedAlarms);
-	}
-
-	public static void handle(PacketAlarm message, Supplier<Context> context) {
-		Context ctx = context.get();
-		ctx.enqueueWork(() -> {
-			//ConfigHandler.MAX_ALARM_RANGE.set(message.maxAlarmRange);
-			EnergyControl.INSTANCE.serverAllowedAlarms = new ArrayList<String>(Arrays.asList(message.allowedAlarms.split(",")));
+	public static void handleClient(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
+		String alarms = buf.readString();
+		client.execute(() -> {
+			//ConfigHandler.MAX_ALARM_RANGE.set(buf.readVarInt());
+			EnergyControl.INSTANCE.serverAllowedAlarms = new ArrayList<String>(Arrays.asList(alarms.split(",")));
 		});
-		ctx.setPacketHandled(true);
 	}
 }

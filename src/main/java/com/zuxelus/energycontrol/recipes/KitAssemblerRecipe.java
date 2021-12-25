@@ -4,17 +4,17 @@ import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
 import com.zuxelus.zlib.recipes.EmptyInventory;
 
-import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.Level;
+import net.minecraft.item.ItemStack;
+import net.minecraft.recipe.Ingredient;
+import net.minecraft.recipe.Recipe;
+import net.minecraft.recipe.RecipeSerializer;
+import net.minecraft.recipe.RecipeType;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.world.World;
 
 public class KitAssemblerRecipe implements Recipe<EmptyInventory>{
-	private final ResourceLocation id;
+	private final Identifier id;
 	public final Ingredient input1;
 	public final Ingredient input2;
 	public final Ingredient input3;
@@ -24,7 +24,7 @@ public class KitAssemblerRecipe implements Recipe<EmptyInventory>{
 	public final ItemStack output;
 	public final int time;
 
-	public KitAssemblerRecipe(ResourceLocation id, Ingredient input1, int count1, Ingredient input2, int count2, Ingredient input3, int count3, ItemStack output, int time) {
+	public KitAssemblerRecipe(Identifier id, Ingredient input1, int count1, Ingredient input2, int count2, Ingredient input3, int count3, ItemStack output, int time) {
 		this.id = id;
 		this.input1 = input1;
 		this.count1 = count1;
@@ -37,63 +37,63 @@ public class KitAssemblerRecipe implements Recipe<EmptyInventory>{
 	}
 
 	public boolean isSuitable(TileEntityKitAssembler te) {
-		ItemStack stack1 = te.getItem(TileEntityKitAssembler.SLOT_CARD1);
+		ItemStack stack1 = te.getStack(TileEntityKitAssembler.SLOT_CARD1);
 		if (stack1.isEmpty() || stack1.getCount() < count1 || !input1.test(stack1))
 			return false;
-		ItemStack stack2 = te.getItem(TileEntityKitAssembler.SLOT_ITEM);
+		ItemStack stack2 = te.getStack(TileEntityKitAssembler.SLOT_ITEM);
 		if (stack2.isEmpty() || stack2.getCount() < count2 || !input2.test(stack2))
 			return false;
-		ItemStack stack3 = te.getItem(TileEntityKitAssembler.SLOT_CARD2);
+		ItemStack stack3 = te.getStack(TileEntityKitAssembler.SLOT_CARD2);
 		if (stack3.isEmpty() || stack3.getCount() < count3 || !input3.test(stack3))
 			return false;
-		ItemStack result = te.getItem(TileEntityKitAssembler.SLOT_RESULT);
+		ItemStack result = te.getStack(TileEntityKitAssembler.SLOT_RESULT);
 		if (!result.isEmpty()) {
-			if (!result.sameItem(output))
+			if (!result.isItemEqualIgnoreDamage(output))
 				return false;
-			if (result.getCount() + output.getCount() > result.getMaxStackSize())
+			if (result.getCount() + output.getCount() > result.getMaxCount())
 				return false;
 		}
 		return true;
 	}
 
 	@Override
-	public boolean matches(EmptyInventory inv, Level world) {
+	public boolean matches(EmptyInventory inv, World world) {
 		return false;
 	}
 
 	@Override
-	public boolean isSpecial() {
+	public boolean isIgnoredInRecipeBook() {
 		return true;
 	}
 
 	@Override
-	public ItemStack assemble(EmptyInventory inv) {
+	public ItemStack craft(EmptyInventory inv) {
 		return output;
 	}
 
 	@Override
-	public boolean canCraftInDimensions(int width, int height) {
+	public boolean fits(int width, int height) {
 		return true;
 	}
 
 	@Override
-	public ItemStack getResultItem() {
+	public ItemStack getOutput() {
 		return ItemStack.EMPTY;
 	}
 
 	@Override
-	public NonNullList<Ingredient> getIngredients() {
-		return NonNullList.of(Ingredient.EMPTY, input1, input2, input3);
+	public DefaultedList<Ingredient> getIngredients() {
+		return DefaultedList.copyOf(Ingredient.EMPTY, input1, input2, input3);
 	}
 
 	@Override
-	public ResourceLocation getId() {
+	public Identifier getId() {
 		return id;
 	}
 
 	@Override
 	public RecipeSerializer<?> getSerializer() {
-		return ModItems.KIT_ASSEMBLER_SERIALIZER.get();
+		return ModItems.KIT_ASSEMBLER_SERIALIZER;
 	}
 
 	@Override

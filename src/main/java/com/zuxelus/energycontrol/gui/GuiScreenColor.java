@@ -1,16 +1,16 @@
 package com.zuxelus.energycontrol.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.gui.GuiBase;
 
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.TranslatableText;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class GuiScreenColor extends GuiBase {
 
 	private GuiPanelBase<?> parentGui;
@@ -27,11 +27,11 @@ public class GuiScreenColor extends GuiBase {
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(PoseStack matrixStack, int mouseX, int mouseY) {
-		blit(matrixStack, 5 + colorBack * 14, 30, 234, 0, 14, 14);
-		blit(matrixStack, 5 + colorText * 14, 61, 234, 0, 14, 14);
-		font.draw(matrixStack, new TranslatableComponent("msg.ec.ScreenColor"), 8, 20, 0x404040);
-		font.draw(matrixStack, new TranslatableComponent("msg.ec.TextColor"), 8, 52, 0x404040);
+	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
+		drawTexture(matrixStack, 5 + colorBack * 14, 30, 234, 0, 14, 14);
+		drawTexture(matrixStack, 5 + colorText * 14, 61, 234, 0, 14, 14);
+		textRenderer.draw(matrixStack, new TranslatableText("msg.ec.ScreenColor"), 8, 20, 0x404040);
+		textRenderer.draw(matrixStack, new TranslatableText("msg.ec.TextColor"), 8, 52, 0x404040);
 	}
 
 	@Override
@@ -43,11 +43,11 @@ public class GuiScreenColor extends GuiBase {
 			int shift = ((int) mouseX - 7) % 14;
 			if (mouseY >= 32 && mouseY <= 41 && shift <= 9) {// back
 				colorBack = index;
-				NetworkHelper.updateSeverTileEntity(panel.getBlockPos(), 2, (colorBack << 4) | colorText);
+				NetworkHelper.updateSeverTileEntity(panel.getPos(), 2, (colorBack << 4) | colorText);
 				panel.setColorBackground(colorBack);
 			} else if (mouseY >= 63 && mouseY <= 72 && shift <= 9) {// /text
 				colorText = index;
-				NetworkHelper.updateSeverTileEntity(panel.getBlockPos(), 2, (colorBack << 4) | colorText);
+				NetworkHelper.updateSeverTileEntity(panel.getPos(), 2, (colorBack << 4) | colorText);
 				panel.setColorText(colorText);
 			}
 			return true;
@@ -58,7 +58,7 @@ public class GuiScreenColor extends GuiBase {
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (keyCode == 256) {
-			minecraft.setScreen(parentGui);
+			client.setScreen(parentGui);
 			return true;
 		}
 		return super.keyPressed(keyCode, scanCode, modifiers);

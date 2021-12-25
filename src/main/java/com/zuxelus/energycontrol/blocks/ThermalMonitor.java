@@ -1,50 +1,56 @@
 package com.zuxelus.energycontrol.blocks;
 
 import com.zuxelus.energycontrol.gui.ScreenHandler;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityThermalMonitor;
 import com.zuxelus.zlib.blocks.FacingBlockSmall;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.ShapeContext;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
 
 public class ThermalMonitor extends FacingBlockSmall {
-	protected static final VoxelShape AABB_DOWN = Block.box(1.0F, 9.0F, 1.0F, 15.0F, 15.0F, 15.0F);
-	protected static final VoxelShape AABB_UP = Block.box(1.0F, 0.0F, 1.0F, 15.0F, 7.0F, 15.0F);
-	protected static final VoxelShape AABB_NORTH = Block.box(1.0F, 1.0F, 9.0F, 15.0F, 15.0F, 15.0F);
-	protected static final VoxelShape AABB_SOUTH = Block.box(1.0F, 1.0F, 0.0F, 15.0F, 15.0F, 7.0F);
-	protected static final VoxelShape AABB_WEST = Block.box(9.0F, 1.0F, 1.0F, 15.0F, 15.0F, 15.0F);
-	protected static final VoxelShape AABB_EAST = Block.box(0.0F, 1.0F, 1.0F, 7.0F, 15.0F, 15.0F);
+	protected static final VoxelShape AABB_DOWN = Block.createCuboidShape(1.0F, 9.0F, 1.0F, 15.0F, 15.0F, 15.0F);
+	protected static final VoxelShape AABB_UP = Block.createCuboidShape(1.0F, 0.0F, 1.0F, 15.0F, 7.0F, 15.0F);
+	protected static final VoxelShape AABB_NORTH = Block.createCuboidShape(1.0F, 1.0F, 9.0F, 15.0F, 15.0F, 15.0F);
+	protected static final VoxelShape AABB_SOUTH = Block.createCuboidShape(1.0F, 1.0F, 0.0F, 15.0F, 15.0F, 7.0F);
+	protected static final VoxelShape AABB_WEST = Block.createCuboidShape(9.0F, 1.0F, 1.0F, 15.0F, 15.0F, 15.0F);
+	protected static final VoxelShape AABB_EAST = Block.createCuboidShape(0.0F, 1.0F, 1.0F, 7.0F, 15.0F, 15.0F);
 
-	@Override
-	protected BlockEntityFacing createBlockEntity(BlockPos pos, BlockState state) {
-		return ModTileEntityTypes.thermal_monitor.get().create(pos, state);
+	public ThermalMonitor() {
+		super(FabricBlockSettings.copyOf(ModItems.settings));
 	}
 
 	@Override
-	public int getSignal(BlockState state, BlockGetter blockAccess, BlockPos pos, Direction side) {
+	protected BlockEntityFacing newBlockEntity(BlockPos pos, BlockState state) {
+		return ModTileEntityTypes.thermal_monitor.instantiate(pos, state);
+	}
+
+	@Override
+	public int getWeakRedstonePower(BlockState state, BlockView blockAccess, BlockPos pos, Direction side) {
 		BlockEntity te = blockAccess.getBlockEntity(pos);
 		if (!(te instanceof TileEntityThermalMonitor))
 			return 0;
-		return ((TileEntityThermalMonitor) te).getPowered() ? side != state.getValue(FACING) ? 15 : 0 : 0;
+		return ((TileEntityThermalMonitor) te).getPowered() ? side != state.get(FACING) ? 15 : 0 : 0;
 	}
 
 	@Override
-	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-		switch (state.getValue(FACING)) {
+	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+		switch (state.get(FACING)) {
 		case EAST:
 			return AABB_EAST;
 		case WEST:
@@ -62,17 +68,17 @@ public class ThermalMonitor extends FacingBlockSmall {
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		if (world.isClientSide) {
+	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+		if (world.isClient) {
 			BlockEntity te = world.getBlockEntity(pos);
 			if (te instanceof TileEntityThermalMonitor)
 				ScreenHandler.openThermalMonitorScreen((TileEntityThermalMonitor) te);
 		}
-		return InteractionResult.SUCCESS;
+		return ActionResult.SUCCESS;
 	}
 
 	@Override
-	public RenderShape getRenderShape(BlockState state) {
-		return RenderShape.INVISIBLE;
+	public BlockRenderType getRenderType(BlockState state) {
+		return BlockRenderType.INVISIBLE;
 	}
 }

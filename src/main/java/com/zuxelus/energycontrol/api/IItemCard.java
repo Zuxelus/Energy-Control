@@ -2,10 +2,10 @@ package com.zuxelus.energycontrol.api;
 
 import java.util.List;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public interface IItemCard {
 	/**
@@ -14,18 +14,18 @@ public interface IItemCard {
 	 * @return The new state of the card
 	 * @see CardState
 	 */
-	CardState update(Level world, ICardReader reader, int range, BlockPos pos);
+	CardState update(World world, ICardReader reader, int range, BlockPos pos);
 
 	/**
 	 * Used to display data on Info Panels.
 	 */
-	List<PanelString> getStringData(Level world, int settings, ICardReader reader, boolean isServer, boolean showLabels);
+	List<PanelString> getStringData(World world, int settings, ICardReader reader, boolean isServer, boolean showLabels);
 
 	/**
 	 * @return A list of card settings
 	 * @see PanelSetting
 	 */
-	@OnlyIn(Dist.CLIENT)
+	@Environment(EnvType.CLIENT)
 	List<PanelSetting> getSettingsList();
 
 	/**

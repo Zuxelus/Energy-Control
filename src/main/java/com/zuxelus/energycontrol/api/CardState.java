@@ -1,10 +1,10 @@
 package com.zuxelus.energycontrol.api;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 /**
- * Enum of card states, used as return value of {@link IItemCard#update(Level, ICardReader, int, BlockPos)}. <br></br>
+ * Enum of card states, used as return value of {@link IItemCard#update(World, ICardReader, int, BlockPos)}. <br></br>
  * If the card state is OK or CUSTOM_ERROR, then {@link IItemCard#getStringData(int, ICardReader, boolean, boolean)} will be called. <br></br>
  * Otherwise standard message will be displayed.
  * 
