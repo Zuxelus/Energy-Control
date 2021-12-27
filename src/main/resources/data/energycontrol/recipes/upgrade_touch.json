@@ -7,16 +7,16 @@
 	],
 	"key": {
 		"R": {
-			"tag": "forge:dusts/redstone"
+			"tag": "c:redstone_dusts"
 		},
 		"I": {
 			"item": "energycontrol:strong_string"
 		},
 		"C": {
-			"tag": "forge:circuits/basic"
+			"item": "energycontrol:basic_circuit"
 		},
 		"A": {
-			"item": "minecraft:charcoal"
+			"tag": "c:charcoal"
 		}
 	},
 	"result": {

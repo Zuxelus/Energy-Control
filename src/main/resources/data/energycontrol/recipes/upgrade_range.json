@@ -12,7 +12,7 @@
 			"item": "energycontrol:radio_transmitter"
 		},
 		"C": {
-			"tag": "forge:ingots/iron"
+			"tag": "c:iron_ingots"
 		}
 	},
 	"result": {

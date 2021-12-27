@@ -24,7 +24,7 @@ public abstract class ContainerBase<T extends Inventory> extends ScreenHandler {
 	public final T te;
 	private final Block block;
 	private final ScreenHandlerContext posCallable;
-	public List<ServerPlayerEntity> listeners = Lists.newArrayList();
+	public List<ServerPlayerEntity> containerListeners = Lists.newArrayList();
 
 	protected ContainerBase(T te, ScreenHandlerType<?> type, int id) {
 		this(te, type, id, null, null);

@@ -16,10 +16,13 @@ public class KitAssemblerSerializer implements RecipeSerializer<KitAssemblerReci
 	public KitAssemblerRecipe read(Identifier id, JsonObject json) {
 		Ingredient input1 = getIngredient(json, "input1");
 		int count1 = JsonHelper.getInt(JsonHelper.getObject(json, "input1"), "count", 1);
+		input1 = updateIngredient(input1, count1);
 		Ingredient input2 = getIngredient(json, "input2");
 		int count2 = JsonHelper.getInt(JsonHelper.getObject(json, "input2"), "count", 1);
+		input2 = updateIngredient(input2, count2);
 		Ingredient input3 = getIngredient(json, "input3");
 		int count3 = JsonHelper.getInt(JsonHelper.getObject(json, "input3"), "count", 1);
+		input3 = updateIngredient(input3, count3);
 		ItemStack output = ShapedRecipe.outputFromJson(JsonHelper.getObject(json, "result"));
 		int time = JsonHelper.getInt(json, "time", 300);
 		return new KitAssemblerRecipe(id, input1, count1, input2, count2, input3, count3, output, time);
@@ -27,6 +30,15 @@ public class KitAssemblerSerializer implements RecipeSerializer<KitAssemblerReci
 
 	private Ingredient getIngredient(JsonObject json, String name) {
 		return Ingredient.fromJson(JsonHelper.hasArray(json, name) ? JsonHelper.getArray(json, name) : JsonHelper.getObject(json, name));
+	}
+
+	private Ingredient updateIngredient(Ingredient input, int count) {
+		if (count == 1)
+			return input;
+		ItemStack[] list = input.getMatchingStacks();
+		for (ItemStack stack : list)
+			stack.setCount(count);
+		return Ingredient.ofStacks(list);
 	}
 
 	@Override

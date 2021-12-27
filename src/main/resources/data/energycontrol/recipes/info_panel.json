@@ -7,16 +7,16 @@
 	],
 	"key": {
 		"P": {
-			"tag": "forge:glass_panes/lime"
+			"item": "minecraft:lime_stained_glass_pane"
 		},
 		"C": {
-			"tag": "forge:circuits/basic"
+			"item": "energycontrol:basic_circuit"
 		},
 		"I": {
-			"tag": "forge:dyes/black"
+			"tag": "c:black_dyes"
 		},
 		"R": {
-			"tag": "forge:dusts/redstone"
+			"tag": "c:redstone_dusts"
 		},
 		"M": {
 			"item": "energycontrol:machine_casing"

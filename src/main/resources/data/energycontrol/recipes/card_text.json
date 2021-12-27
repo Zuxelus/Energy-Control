@@ -10,7 +10,7 @@
 			"item": "minecraft:paper"
 		},
 		"C": {
-			"tag": "forge:circuits/basic"
+			"item": "energycontrol:basic_circuit"
 		},
 		"S": {
 			"item": "energycontrol:strong_string"

@@ -1,11 +1,11 @@
 {
 	"type": "energycontrol:kit_assembler",
 	"input1": {
-		"tag": "forge:ingots/iron",
+		"tag": "c:iron_ingots",
 		"count": 3
 	},
 	"input2": {
-		"tag": "forge:ingots/iron",
+		"tag": "c:iron_ingots",
 		"count": 3
 	},
 	"input3": {

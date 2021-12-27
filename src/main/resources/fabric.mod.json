@@ -1,46 +1,46 @@
 {
-  "schemaVersion": 1,
-  "id": "energycontrol",
-  "version": "${version}",
-
-  "name": "Energy Control",
-  "description": "Energy Control is a remastered version of original Nuclear Control, an Industrial Craft 2 addon that allows you to build efficient monitoring and notification system for your energy flow.",
-  "authors": [
-    "Zuxelus"
-  ],
-  "contact": {
-    "homepage": "https://www.curseforge.com/minecraft/mc-mods/energy-control",
-    "sources": "https://github.com/Zuxelus/Energy-Control",
-    "issues": "https://github.com/Zuxelus/Energy-Control/issues"
-  },
-
-  "license": "GPL v3",
-  "icon": "assets/energycontrol/icon.png",
-
-  "environment": "*",
-  "entrypoints": {
-    "main": [
-      "com.zuxelus.energycontrol.EnergyControl"
-    ],
-    "client": [
-      {
-        "value": "com.zuxelus.energycontrol.EnergyControlClient"
-      }
-    ],
-    "modmenu": [
-      "com.zuxelus.energycontrol.config.ModMenu"
-    ]
-  },
-  "mixins": [
-    "modid.mixins.json"
-  ],
-
-  "depends": {
-    "fabricloader": ">=0.11.3",
-    "fabric": "*",
-    "minecraft": "1.18.x",
-    "java": ">=17"
-  },
-  "suggests": {
-  }
+	"schemaVersion": 1,
+	"id": "energycontrol",
+	"version": "${version}",
+	"name": "Energy Control",
+	"description": "Energy Control is a remastered version of original Nuclear Control, an Industrial Craft 2 addon that allows you to build efficient monitoring and notification system for your energy flow.",
+	"authors": [
+		"Zuxelus"
+	],
+	"contact": {
+		"homepage": "https://www.curseforge.com/minecraft/mc-mods/energy-control",
+		"sources": "https://github.com/Zuxelus/Energy-Control",
+		"issues": "https://github.com/Zuxelus/Energy-Control/issues"
+	},
+	"license": "GPL v3",
+	"icon": "assets/energycontrol/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.zuxelus.energycontrol.EnergyControl"
+		],
+		"client": [
+			{
+				"value": "com.zuxelus.energycontrol.EnergyControlClient"
+			}
+		],
+		"modmenu": [
+			"com.zuxelus.energycontrol.config.ModMenu"
+		],
+		"rei": [
+			"com.zuxelus.energycontrol.crossmod.rei.ServerPlugin",
+			"com.zuxelus.energycontrol.crossmod.rei.ClientPlugin"
+		]
+	},
+	"mixins": [
+		"modid.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.11.3",
+		"fabric": "*",
+		"minecraft": "1.18.x",
+		"java": ">=17"
+	},
+	"suggests": {
+	}
 }

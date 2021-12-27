@@ -7,13 +7,13 @@
 	],
 	"key": {
 		"L": {
-			"tag": "forge:ingots/gold"
+			"tag": "c:gold_ingots"
 		},
 		"R": {
-			"tag": "forge:dusts/redstone"
+			"tag": "c:redstone_dusts"
 		},
 		"C": {
-			"tag": "forge:circuits/advanced"
+			"item": "energycontrol:advanced_circuit"
 		}
 	},
 	"result": {

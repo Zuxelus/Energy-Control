@@ -18,7 +18,7 @@ public class ContainerTimer extends ScreenHandler {
 	public TileEntityTimer te;
 	private int lastTime;
 	private boolean lastIsWorking;
-	public List<ServerPlayerEntity> listeners = Lists.newArrayList();
+	public List<ServerPlayerEntity> containerListeners = Lists.newArrayList();
 
 	public ContainerTimer(int windowId, PlayerInventory inventory, PacketByteBuf data) {
 		this(windowId, inventory, (TileEntityTimer) ContainerBase.getBlockEntity(inventory, data));
@@ -28,6 +28,8 @@ public class ContainerTimer extends ScreenHandler {
 		super(ModContainerTypes.timer, windowId);
 		this.te = te;
 		lastTime = 0;
+		if (inventory.player instanceof ServerPlayerEntity)
+			containerListeners.add((ServerPlayerEntity) inventory.player);
 	}
 
 	@Override
@@ -40,7 +42,7 @@ public class ContainerTimer extends ScreenHandler {
 		super.sendContentUpdates();
 		int time = te.getTime();
 		boolean isWorking = te.getIsWorking();
-		for (ServerPlayerEntity listener : listeners) {
+		for (ServerPlayerEntity listener : containerListeners) {
 			if (lastTime != time)
 				NetworkHelper.updateClientTileEntity(listener, te.getPos(), 1, time);
 			if (lastIsWorking != isWorking)

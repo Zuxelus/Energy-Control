@@ -7,13 +7,13 @@
 	],
 	"key": {
 		"I": {
-			"tag": "forge:ingots/iron"
+			"tag": "c:iron_ingots"
 		},
 		"N": {
 			"item": "minecraft:note_block"
 		},
 		"C": {
-			"tag": "forge:circuits/basic"
+			"item": "energycontrol:basic_circuit"
 		}
 	},
 	"result": {

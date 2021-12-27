@@ -15,7 +15,7 @@
             "item": "energycontrol:radio_transmitter"
         },
         "B": {
-			"tag": "forge:dyes/blue"
+			"tag": "c:blue_dyes"
         }
 	},
 	"result": {

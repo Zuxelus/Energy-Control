@@ -9,7 +9,7 @@
 			"item": "energycontrol:strong_string"
 		},
 		"C": {
-			"tag": "forge:circuits/basic"
+			"item": "energycontrol:basic_circuit"
 		},
 		"S": {
 			"tag": "minecraft:wooden_slabs"

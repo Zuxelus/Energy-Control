@@ -7,13 +7,13 @@
 	],
 	"key": {
 		"i": {
-			"tag": "forge:ingots/iron"
+			"tag": "c:iron_ingots"
 		},
 		"C": {
 			"item": "minecraft:crafting_table"
 		},
 		"R": {
-			"tag": "forge:dusts/redstone"
+			"tag": "c:redstone_dusts"
 		},
 		"H": {
 			"item": "minecraft:chest"

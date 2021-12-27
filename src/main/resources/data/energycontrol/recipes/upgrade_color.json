@@ -7,31 +7,31 @@
 	],
 	"key": {
 		"R": {
-			"tag": "forge:dyes/red"
+			"tag": "c:red_dyes"
 		},
 		"Y": {
-			"tag": "forge:dyes/yellow"
+			"tag": "c:yellow_dyes"
 		},
 		"G": {
-			"tag": "forge:dyes/green"
+			"tag": "c:green_dyes"
 		},
 		"W": {
-			"tag": "forge:dyes/white"
+			"tag": "c:white_dyes"
 		},
 		"C": {
-			"tag": "forge:circuits/basic"
+			"item": "energycontrol:basic_circuit"
 		},
 		"M": {
-			"tag": "forge:dyes/magenta"
+			"tag": "c:magenta_dyes"
 		},
 		"I": {
-			"tag": "forge:dyes/black"
+			"tag": "c:black_dyes"
 		},
 		"A": {
-			"tag": "forge:dyes/cyan"
+			"tag": "c:cyan_dyes"
 		},
 		"B": {
-			"tag": "forge:dyes/blue"
+			"tag": "c:blue_dyes"
 		}
 	},
 	"result": {

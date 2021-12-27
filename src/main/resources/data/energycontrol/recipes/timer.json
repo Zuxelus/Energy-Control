@@ -7,16 +7,16 @@
 	],
 	"key": {
 		"I": {
-			"tag": "forge:ingots/iron"
+			"tag": "c:iron_ingots"
 		},
 		"R": {
-			"tag": "forge:dusts/redstone"
+			"tag": "c:redstone_dusts"
 		},
 		"C": {
 			"item": "minecraft:clock"
 		},
 		"B": {
-			"tag": "forge:circuits/basic"
+			"item": "energycontrol:basic_circuit"
 		}
 	},
 	"result": {

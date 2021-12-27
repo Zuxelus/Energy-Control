@@ -9,13 +9,13 @@
             "item": "minecraft:paper"
         },
         "R": {
-            "tag": "forge:dusts/redstone"
+            "tag": "c:redstone_dusts"
         },
         "F": {
             "item": "energycontrol:radio_transmitter"
         },
         "O": {
-			"tag": "forge:dyes/red"
+			"tag": "c:red_dyes"
         }
 	},
 	"result": {

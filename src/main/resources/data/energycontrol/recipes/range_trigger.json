@@ -7,19 +7,19 @@
 	],
 	"key": {
 		"P": {
-			"tag": "forge:ingots/iron"
+			"tag": "c:iron_ingots"
 		},
 		"F": {
 			"item": "energycontrol:radio_transmitter"
 		},
 		"A": {
-			"tag": "forge:circuits/advanced"
+			"item": "energycontrol:advanced_circuit"
 		},
 		"M": {
 			"item": "energycontrol:machine_casing"
 		},
 		"R": {
-			"tag": "forge:dusts/redstone"
+			"tag": "c:redstone_dusts"
 		}
 	},
 	"result": {

@@ -15,7 +15,7 @@
             "item": "energycontrol:radio_transmitter"
         },
         "W": {
-			"tag": "forge:dyes/gray"
+			"tag": "c:gray_dyes"
         }
     },
     "result": {

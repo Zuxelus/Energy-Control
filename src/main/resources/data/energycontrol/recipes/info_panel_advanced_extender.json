@@ -7,13 +7,13 @@
 	],
 	"key": {
 		"P": {
-			"tag": "forge:glass_panes/cyan"
+			"item": "minecraft:cyan_stained_glass_pane"
 		},
 		"E": {
 			"item": "energycontrol:info_panel_extender"
 		},
 		"C": {
-			"item": "minecraft:charcoal"
+			"tag": "c:charcoal"
 		}
 	},
 	"result": {

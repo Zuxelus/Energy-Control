@@ -148,7 +148,7 @@ public class ModItems {
 	}
 
 	private static void register() {
-		ARRAY_SERIALIZER = Registry.register(Registry.RECIPE_SERIALIZER, "array", new ArrayRecipeSerializer());
-		KIT_ASSEMBLER_SERIALIZER = Registry.register(Registry.RECIPE_SERIALIZER, "kit_assembler", new KitAssemblerSerializer());
+		ARRAY_SERIALIZER = Registry.register(Registry.RECIPE_SERIALIZER, new Identifier(EnergyControl.MODID, "array"), new ArrayRecipeSerializer());
+		KIT_ASSEMBLER_SERIALIZER = Registry.register(Registry.RECIPE_SERIALIZER, new Identifier(EnergyControl.MODID, "kit_assembler"), new KitAssemblerSerializer());
 	}
 }

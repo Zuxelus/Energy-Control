@@ -7,10 +7,10 @@
 	],
 	"key": {
 		"P": {
-			"tag": "forge:glass_panes/lime"
+			"item": "minecraft:lime_stained_glass_pane"
 		},
 		"R": {
-			"tag": "forge:dusts/redstone"
+			"tag": "c:redstone_dusts"
 		},
 		"W": {
 			"tag": "minecraft:planks"

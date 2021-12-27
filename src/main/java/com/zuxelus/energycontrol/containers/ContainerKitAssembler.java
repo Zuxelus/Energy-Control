@@ -36,6 +36,8 @@ public class ContainerKitAssembler extends ContainerBase<TileEntityKitAssembler>
 		addSlot(new SlotDischargeable(te, 5, 8, 17 + 18 * 2));
 		// inventory
 		addPlayerInventorySlots(inventory, 166);
+		if (inventory.player instanceof ServerPlayerEntity)
+			containerListeners.add((ServerPlayerEntity) inventory.player);
 	}
 
 	@Override
@@ -43,12 +45,11 @@ public class ContainerKitAssembler extends ContainerBase<TileEntityKitAssembler>
 		super.sendContentUpdates();
 		double energy = te.getEnergy();
 		double production = te.getProduction();
-		for (ServerPlayerEntity listener : listeners)
+		for (ServerPlayerEntity listener : containerListeners)
 			if (lastEnergy != energy || lastProduction != production) {
 				NbtCompound tag = new NbtCompound();
 				tag.putInt("type", 1);
 				tag.putDouble("energy", energy);
-				tag.putDouble("production", production);
 				tag.putDouble("production", production);
 				tag.putInt("time", te.getRecipeTime());
 				NetworkHelper.updateClientTileEntity(listener, te.getPos(), tag);

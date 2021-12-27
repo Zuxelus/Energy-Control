@@ -10,7 +10,7 @@
 			"item": "energycontrol:info_panel_extender"
 		},
 		"R": {
-			"tag": "forge:dusts/redstone"
+			"tag": "c:redstone_dusts"
 		},
 		"#": {
 			"item": "energycontrol:strong_string"

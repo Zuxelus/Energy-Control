@@ -19,7 +19,7 @@
             "item": "energycontrol:upgrade_range"
         },
         "P": {
-            "item": "minecraft:charcoal"
+            "tag": "c:charcoal"
         }
     },
     "result": {

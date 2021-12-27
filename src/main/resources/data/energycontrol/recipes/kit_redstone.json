@@ -6,7 +6,7 @@
     ],
     "key": {
         "R": {
-            "tag": "forge:dusts/redstone"
+            "tag": "c:redstone_dusts"
         },
         "P": {
             "item": "minecraft:paper"
@@ -15,7 +15,7 @@
             "item": "energycontrol:radio_transmitter"
         },
         "W": {
-			"tag": "forge:dyes/gray"
+			"tag": "c:gray_dyes"
         }
     },
     "result": {

@@ -3,6 +3,8 @@ package com.zuxelus.energycontrol.utils;
 import com.zuxelus.energycontrol.api.ICardReader;
 
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.minecraft.client.resource.language.I18n;
 
 public class FluidInfo {
@@ -41,6 +43,18 @@ public class FluidInfo {
 			}
 		}
 		this.capacity = capacity;
+	}
+
+	public FluidInfo(SingleSlotStorage<FluidVariant> stack) {
+		if (stack != null) {
+			amount = stack.getAmount() / 81;
+			if (amount > 0) {
+				/*translationKey = stack.getTranslationKey();
+				texture = stack.fluidKey.getRawFluid().getAttributes().getStillTexture().toString();
+				color = stack.fluidKey.getRawFluid().getAttributes().getColor();*/
+			}
+		}
+		this.capacity = stack.getCapacity() / 81;
 	}
 
 	public void write(ICardReader reader) {
