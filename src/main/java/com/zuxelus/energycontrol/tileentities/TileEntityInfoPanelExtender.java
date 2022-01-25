@@ -2,6 +2,7 @@ package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
+import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.fabricmc.api.EnvType;
@@ -163,8 +164,17 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 				coreX = core.getPos().getX();
 				coreY = core.getPos().getY();
 				coreZ = core.getPos().getZ();
+
+				BlockState stateCore = world.getBlockState(core.getPos());
+				BlockState state = world.getBlockState(pos);
+				if (state.get(FacingBlockActive.ACTIVE) != stateCore.get(FacingBlockActive.ACTIVE))
+					world.setBlockState(pos, state.cycle(FacingBlockActive.ACTIVE), 2);
 				return;
 			}
+		} else {
+			BlockState state = world.getBlockState(pos);
+			if (state.get(FacingBlockActive.ACTIVE))
+				world.setBlockState(pos, state.with(FacingBlockActive.ACTIVE, false), 2);
 		}
 		partOfScreen = false;
 		coreX = 0;

@@ -67,14 +67,24 @@ public class InfoPanel extends FacingBlockActive {
 
 		if (flag)
 			world.createAndScheduleBlockTick(pos, this, 4);
-		else
+		else {
 			world.setBlockState(pos, state.cycle(ACTIVE), 2);
+			updateExtenders(state, world, pos);
+		}
 	}
 
 	@Override
 	public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-		if (state.get(ACTIVE).booleanValue() && !world.isReceivingRedstonePower(pos))
+		if (state.get(ACTIVE).booleanValue() && !world.isReceivingRedstonePower(pos)) {
 			world.setBlockState(pos, state.cycle(ACTIVE), 2);
+			updateExtenders(state, world, pos);
+		}
+	}
+
+	private void updateExtenders(BlockState state, World world, BlockPos pos) {
+		BlockEntity be = world.getBlockEntity(pos);
+		if (be instanceof TileEntityInfoPanel)
+			((TileEntityInfoPanel) be).updateExtenders(world, !state.get(ACTIVE));
 	}
 
 	/*@Override // TODO

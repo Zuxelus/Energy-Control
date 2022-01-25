@@ -7,18 +7,21 @@ import java.util.Map;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.*;
+import com.zuxelus.energycontrol.blocks.InfoPanelExtender;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.containers.ContainerInfoPanel;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
+import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -600,6 +603,20 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 		} else
 			screenData = screen.toTag();
 		notifyBlockUpdate();
+	}
+
+	public void updateExtenders(World world, Boolean active) {
+		if (screen == null)
+			return;
+
+		for (int x = screen.minX; x <= screen.maxX; x++)
+			for (int y = screen.minY; y <= screen.maxY; y++)
+				for (int z = screen.minZ; z <= screen.maxZ; z++) {
+					BlockPos pos = new BlockPos(x, y, z);
+					BlockState state = world.getBlockState(pos);
+					if (state.getBlock() instanceof InfoPanelExtender)
+						world.setBlockState(pos, state.with(FacingBlockActive.ACTIVE, active), 2);
+				}
 	}
 
 	/*@Override

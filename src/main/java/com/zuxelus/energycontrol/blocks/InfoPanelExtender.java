@@ -13,6 +13,7 @@ import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -45,6 +46,10 @@ public class InfoPanelExtender extends FacingBlockActive {
 				return ActionResult.SUCCESS;
 		player.openHandledScreen(state.createScreenHandlerFactory(world, pos));
 		return ActionResult.SUCCESS;
+	}
+
+	public BlockState getPlacementState(ItemPlacementContext ctx) {
+		return super.getPlacementState(ctx).with(ACTIVE, ctx.getWorld().isReceivingRedstonePower(ctx.getBlockPos()));
 	}
 
 	@Override

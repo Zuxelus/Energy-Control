@@ -39,6 +39,7 @@ public class ConfigHandler {
 			screenRefreshPeriod = Integer.parseInt(cfg.getProperty("screenRefreshPeriod"));
 			rangeTriggerRefreshPeriod = Integer.parseInt(cfg.getProperty("rangeTriggerRefreshPeriod"));
 			SMPMaxAlarmRange = Integer.parseInt(cfg.getProperty("SMPMaxAlarmRange"));
+			useCustomSounds = Boolean.parseBoolean(cfg.getProperty("useCustomSounds"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -54,6 +55,7 @@ public class ConfigHandler {
 			fos.write(("screenRefreshPeriod=" + screenRefreshPeriod + "\n").getBytes());
 			fos.write(("rangeTriggerRefreshPeriod=" + rangeTriggerRefreshPeriod + "\n").getBytes());
 			fos.write(("SMPMaxAlarmRange=" + SMPMaxAlarmRange + "\n").getBytes());
+			fos.write(("useCustomSounds=" + useCustomSounds + "\n").getBytes());
 			fos.close();
 		} catch (IOException e) {
 			e.printStackTrace();
