@@ -11,7 +11,6 @@ import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
@@ -19,18 +18,13 @@ public class BlockLight extends Block {
 	public static final BooleanProperty LIT = BlockStateProperties.LIT;
 
 	public BlockLight() {
-		super(Block.Properties.of(Material.BUILDABLE_GLASS).strength(0.3F).sound(SoundType.GLASS));
+		super(Block.Properties.of(Material.BUILDABLE_GLASS).lightLevel(state -> state.getValue(LIT) ? 15 : 0).strength(0.3F).sound(SoundType.GLASS));
 		registerDefaultState(defaultBlockState().setValue(LIT, Boolean.valueOf(false)));
 	}
 
 	@Override
 	protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
 		builder.add(LIT);
-	}
-
-	@Override
-	public int getLightValue(BlockState state, IBlockReader world, BlockPos pos) {
-		return state.getValue(LIT) ? 15 : 0;
 	}
 
 	@Override

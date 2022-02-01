@@ -125,6 +125,7 @@ public abstract class GuiPanelBase<T extends Container> extends GuiContainerBase
 			minecraft.setScreen(colorGui);
 			break;
 		case ID_TEXT:
+			oldStack = ItemStack.EMPTY;
 			openTextGui();
 			break;
 		case ID_TICKRATE:

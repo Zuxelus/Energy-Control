@@ -121,10 +121,7 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements ITi
 
 	@Override
 	public SUpdateTileEntityPacket getUpdatePacket() {
-		CompoundNBT tag = new CompoundNBT();
-		tag = writeProperties(tag);
-		tag.putBoolean("active", active);
-		return new SUpdateTileEntityPacket(getBlockPos(), 0, tag);
+		return new SUpdateTileEntityPacket(getBlockPos(), 0, getUpdateTag());
 	}
 
 	@Override

@@ -5,7 +5,7 @@ import java.util.List;
 import com.google.common.collect.Lists;
 import com.zuxelus.energycontrol.init.ModContainerTypes;
 import com.zuxelus.energycontrol.network.NetworkHelper;
-import com.zuxelus.energycontrol.tileentities.TileEntityFluidControlValve;
+import com.zuxelus.energycontrol.tileentities.TileEntityEnergyCounter;
 import com.zuxelus.zlib.containers.ContainerBase;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,17 +15,17 @@ import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.network.PacketBuffer;
 
-public class ContainerFluidControlValve extends Container {
-	public TileEntityFluidControlValve te;
+public class ContainerEnergyCounter extends Container {
+	public TileEntityEnergyCounter te;
 	private int lastTotal;
 	private final List<IContainerListener> listeners = Lists.newArrayList();
 
-	public ContainerFluidControlValve(int windowId, PlayerInventory inventory, PacketBuffer data) {
-		this(windowId, inventory, (TileEntityFluidControlValve) ContainerBase.getTileEntity(inventory, data));
+	public ContainerEnergyCounter(int windowId, PlayerInventory inventory, PacketBuffer data) {
+		this(windowId, inventory, (TileEntityEnergyCounter) ContainerBase.getTileEntity(inventory, data));
 	}
 
-	public ContainerFluidControlValve(int windowId, PlayerInventory inventory, TileEntityFluidControlValve te) {
-		super(ModContainerTypes.fluid_control_valve.get(), windowId);
+	public ContainerEnergyCounter(int windowId, PlayerInventory inventory, TileEntityEnergyCounter te) {
+		super(ModContainerTypes.energy_counter.get(), windowId);
 		this.te = te;
 		addPlayerInventorySlots(inventory, 166);
 	}

@@ -6,7 +6,6 @@ import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -24,12 +23,6 @@ public class FluidControlValve extends FacingHorizontalActive {
 	protected static final VoxelShape AABB_NORTH = Block.box(0.0F, 4.0F, 4.0F, 16.0F, 12.0F, 12.0F);
 	protected static final VoxelShape AABB_WEST = Block.box(4.0F, 4.0F, 0.0F, 12.0F, 12.0F, 16.0F);
 
-	public FluidControlValve() {
-		super(Block.Properties.of(Material.METAL).strength(12.0F));
-	}
-
-	
-	
 	@Override
 	protected TileEntityFacing createTileEntity() {
 		return new TileEntityFluidControlValve();

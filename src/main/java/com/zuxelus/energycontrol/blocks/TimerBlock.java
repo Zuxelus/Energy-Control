@@ -7,6 +7,7 @@ import com.zuxelus.zlib.tileentities.TileEntityFacing;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -29,6 +30,10 @@ public class TimerBlock extends FacingBlockSmall {
 	protected static final VoxelShape AABB_WEST = Block.box(9.0F, 1.0F, 1.0F, 15.0F, 15.0F, 15.0F);
 	protected static final VoxelShape AABB_EAST = Block.box(0.0F, 1.0F, 1.0F, 7.0F, 15.0F, 15.0F);
 
+	public TimerBlock() {
+		super(Block.Properties.of(Material.METAL).strength(3.0F));
+	}
+
 	@Override
 	protected TileEntityFacing createTileEntity() {
 		return new TileEntityTimer();
@@ -39,7 +44,9 @@ public class TimerBlock extends FacingBlockSmall {
 		TileEntity te = blockAccess.getBlockEntity(pos);
 		if (!(te instanceof TileEntityTimer))
 			return 0;
-		return ((TileEntityTimer) te).getPowered() ? side != state.getValue(FACING) ? 15 : 0 : 0;
+		if (side == state.getValue(FACING) || side == ((TileEntityTimer) te).getRotation().getOpposite())
+			return 0;
+		return ((TileEntityTimer) te).getPowered() ? 15 : 0;
 	}
 
 	@Override
@@ -75,5 +82,14 @@ public class TimerBlock extends FacingBlockSmall {
 			return ActionResultType.PASS;
 		NetworkHooks.openGui((ServerPlayerEntity) player, (TileEntityTimer) te, pos);
 		return ActionResultType.SUCCESS;
+	}
+
+	@Override
+	public void neighborChanged(BlockState state, World level, BlockPos pos, Block fromBlock, BlockPos fromPos, boolean isMoving) {
+		if (!level.isClientSide) {
+			TileEntity be = level.getBlockEntity(pos);
+			if (be instanceof TileEntityTimer)
+				((TileEntityTimer) be).onNeighborChange(fromBlock, fromPos);
+		}
 	}
 }

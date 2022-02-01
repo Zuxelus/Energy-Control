@@ -33,6 +33,7 @@ import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.IFluidTank;
 
 public class CrossMekanism extends CrossModBase {
@@ -450,6 +451,11 @@ public class CrossMekanism extends CrossModBase {
 
 	private static String formatTemp(TemperatureUnit unit, double temp) {
 		return String.format("%.3f %s", unit.convertFromK(temp, true), unit.getSymbol());
+	}
+
+	@Override
+	public IEnergyStorage getEnergyStorage(TileEntity te) {
+		return null;
 	}
 
 	@Override

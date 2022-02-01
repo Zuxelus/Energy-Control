@@ -10,12 +10,10 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
 
 public abstract class TileEntityInventory extends TileEntityFacing implements IInventory {
 	protected NonNullList<ItemStack> inventory;
@@ -28,29 +26,14 @@ public abstract class TileEntityInventory extends TileEntityFacing implements II
 	@Override
 	protected void readProperties(CompoundNBT tag) {
 		super.readProperties(tag);
-		ListNBT list = tag.getList("Items", Constants.NBT.TAG_COMPOUND);
 		inventory = NonNullList.<ItemStack>withSize(getContainerSize(), ItemStack.EMPTY);
-		for (int i = 0; i < list.size(); i++) {
-			CompoundNBT stackTag = list.getCompound(i);
-			inventory.set(stackTag.getByte("Slot"), ItemStack.of(stackTag));
-		}
+		ItemStackHelper.loadAllItems(tag, inventory);
 	}
 
 	@Override
 	protected CompoundNBT writeProperties(CompoundNBT tag) {
 		tag = super.writeProperties(tag);
-
-		ListNBT list = new ListNBT();
-		for (byte i = 0; i < getContainerSize(); i++) {
-			ItemStack stack = getItem(i);
-			if (!stack.isEmpty()) {
-				CompoundNBT stackTag = new CompoundNBT();
-				stackTag.putByte("Slot", i);
-				stack.save(stackTag);
-				list.add(stackTag);
-			}
-		}
-		tag.put("Items", list);
+		ItemStackHelper.saveAllItems(tag, inventory);
 		return tag;
 	}
 
@@ -123,9 +106,7 @@ public abstract class TileEntityInventory extends TileEntityFacing implements II
 			float ry = rand.nextFloat() * 0.8F + 0.1F;
 			float rz = rand.nextFloat() * 0.8F + 0.1F;
 
-			ItemEntity entityItem = new ItemEntity(world, pos.getX() + rx, pos.getY() + ry, pos.getZ() + rz,
-					new ItemStack(stack.getItem(), stack.getCount()));
-
+			ItemEntity entityItem = new ItemEntity(world, pos.getX() + rx, pos.getY() + ry, pos.getZ() + rz, new ItemStack(stack.getItem(), stack.getCount()));
 			if (stack.hasTag())
 				entityItem.getItem().setTag(stack.getTag().copy());
 

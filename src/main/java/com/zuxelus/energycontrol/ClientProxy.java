@@ -41,6 +41,7 @@ public class ClientProxy {
 			ScreenManager.<ContainerAdvancedInfoPanel, GuiAdvancedInfoPanel>register(ModContainerTypes.info_panel_advanced.get(), GuiAdvancedInfoPanel::new);
 			ScreenManager.<ContainerHoloPanel, GuiHoloPanel>register(ModContainerTypes.holo_panel.get(), GuiHoloPanel::new);
 			ScreenManager.register(ModContainerTypes.range_trigger.get(), GuiRangeTrigger::new);
+			ScreenManager.register(ModContainerTypes.energy_counter.get(), GuiEnergyCounter::new);
 			ScreenManager.register(ModContainerTypes.kit_assembler.get(), GuiKitAssembler::new);
 			ScreenManager.register(ModContainerTypes.timer.get(), GuiTimer::new);
 			ScreenManager.register(ModContainerTypes.card_holder.get(), GuiCardHolder::new);

@@ -131,10 +131,10 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		BufferBuilder bufferbuilder = tessellator.getBuilder();
 		bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
 		Matrix4f matrix = matrixStack.last().pose();
-		bufferbuilder.vertex(matrix, x, y + 0.4375F / 2 + height, z).uv(textureX + 0, textureY + sprite.getV1() - sprite.getV0()).color(f1, f2, f3, f).endVertex();
-		bufferbuilder.vertex(matrix, x + 0.875F, y + 0.4375F / 2 + height, z).uv(textureX + sprite.getU1() - sprite.getU0(), textureY + sprite.getV1() - sprite.getV0()).color(f1, f2, f3, f).endVertex();
-		bufferbuilder.vertex(matrix, x + 0.875F, y + 0.4375F / 2, z).uv(textureX + sprite.getU1() - sprite.getU0(), textureY + 0).color(f1, f2, f3, f).endVertex();
-		bufferbuilder.vertex(matrix, x, y + 0.4375F / 2, z).uv(textureX + 0, textureY + 0).color(f1, f2, f3, f).endVertex();
+		bufferbuilder.vertex(matrix, x, y + 0.4375F / 2 + height, z).uv(textureX, sprite.getV1()).color(f1, f2, f3, f).endVertex();
+		bufferbuilder.vertex(matrix, x + 0.875F, y + 0.4375F / 2 + height, z).uv(sprite.getU1(), sprite.getV1()).color(f1, f2, f3, f).endVertex();
+		bufferbuilder.vertex(matrix, x + 0.875F, y + 0.4375F / 2, z).uv(sprite.getU1(), textureY).color(f1, f2, f3, f).endVertex();
+		bufferbuilder.vertex(matrix, x, y + 0.4375F / 2, z).uv(textureX, textureY).color(f1, f2, f3, f).endVertex();
 		tessellator.end();
 		RenderSystem.disableDepthTest();
 

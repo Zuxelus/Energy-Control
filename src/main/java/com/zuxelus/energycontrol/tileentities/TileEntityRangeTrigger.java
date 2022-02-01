@@ -144,10 +144,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 
 	@Override
 	public SUpdateTileEntityPacket getUpdatePacket() {
-		CompoundNBT tag = new CompoundNBT();
-		tag = writeProperties(tag);
-		tag.putBoolean("poweredBlock", poweredBlock);
-		return new SUpdateTileEntityPacket(getBlockPos(), 0, tag);
+		return new SUpdateTileEntityPacket(getBlockPos(), 0, getUpdateTag());
 	}
 
 	@Override

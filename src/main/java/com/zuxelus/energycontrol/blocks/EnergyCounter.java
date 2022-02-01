@@ -1,7 +1,8 @@
 package com.zuxelus.energycontrol.blocks;
 
-import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
-import com.zuxelus.zlib.blocks.FacingHorizontalActive;
+import com.zuxelus.energycontrol.init.ModTileEntityTypes;
+import com.zuxelus.energycontrol.tileentities.TileEntityEnergyCounter;
+import com.zuxelus.zlib.blocks.FacingBlock;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
 import net.minecraft.block.BlockState;
@@ -15,20 +16,20 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class KitAssembler extends FacingHorizontalActive {
+public class EnergyCounter extends FacingBlock {
 
 	@Override
-	public TileEntityFacing createTileEntity() {
-		return new TileEntityKitAssembler();
+	protected TileEntityFacing createTileEntity() {
+		return ModTileEntityTypes.energy_counter.get().create();
 	}
 
 	@Override
 	public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
 		TileEntity te = world.getBlockEntity(pos);
-		if (!(te instanceof TileEntityKitAssembler))
+		if (!(te instanceof TileEntityEnergyCounter))
 			return ActionResultType.PASS;
 		if (!world.isClientSide)
-			NetworkHooks.openGui((ServerPlayerEntity) player, (TileEntityKitAssembler) te, pos);
+				NetworkHooks.openGui((ServerPlayerEntity) player, (TileEntityEnergyCounter) te, pos);
 		return ActionResultType.SUCCESS;
 	}
 }

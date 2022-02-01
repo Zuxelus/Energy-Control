@@ -28,8 +28,7 @@ public class ModItems {
 	public static final RegistryObject<Block> info_panel_advanced_extender = BLOCKS.register("info_panel_advanced_extender", () -> new AdvancedInfoPanelExtender());
 	public static final RegistryObject<Block> holo_panel = BLOCKS.register("holo_panel", () -> new HoloPanel());
 	public static final RegistryObject<Block> holo_panel_extender = BLOCKS.register("holo_panel_extender", () -> new HoloPanelExtender());
-	//public static final RegistryObject<Block> average_counter = BLOCKS.register("average_counter", () -> new AverageCounter());
-	//public static final RegistryObject<Block> energy_counter = BLOCKS.register("energy_counter", () -> new EnergyCounter());
+	public static final RegistryObject<Block> energy_counter = BLOCKS.register("energy_counter", () -> new EnergyCounter());
 	public static final RegistryObject<Block> kit_assembler = BLOCKS.register("kit_assembler", () -> new KitAssembler());
 	public static final RegistryObject<Block> timer = BLOCKS.register("timer", () -> new TimerBlock());
 	public static final RegistryObject<Block> fluid_control_valve = BLOCKS.register("fluid_control_valve", () -> new FluidControlValve());

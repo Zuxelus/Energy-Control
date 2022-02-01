@@ -6,29 +6,42 @@ import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 import com.zuxelus.energycontrol.tileentities.TileEntityIndustrialAlarm;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.state.IntegerProperty;
+import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 public class IndustrialAlarm extends HowlerAlarm {
+	public static final IntegerProperty LIGHT = IntegerProperty.create("light", 0, 3);
+	private static final int[] lightSteps = { 0, 7, 14, 7, 0};
+
+	public IndustrialAlarm() {
+		super(Block.Properties.of(Material.METAL).strength(3.0F).lightLevel(state -> lightSteps[state.getValue(LIGHT)]));
+	}
+
+	@Override
+	protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
+		super.createBlockStateDefinition(builder);
+		builder.add(LIGHT);
+	}
+
+	@Override
+	public BlockState getStateForPlacement(BlockItemUseContext context) {
+		return super.getStateForPlacement(context).setValue(LIGHT, 0);
+	}
 
 	@Override
 	protected TileEntityFacing createTileEntity() {
 		return ModTileEntityTypes.industrial_alarm.get().create();
-	}
-
-	@Override
-	public int getLightValue(BlockState state, IBlockReader world, BlockPos pos) {
-		TileEntity te = world.getBlockEntity(pos);
-		if (!(te instanceof TileEntityIndustrialAlarm))
-			return 0;
-		return ((TileEntityIndustrialAlarm)te).lightLevel;
 	}
 
 	@Override

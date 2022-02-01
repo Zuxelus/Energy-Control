@@ -93,11 +93,7 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 
 	@Override
 	public SUpdateTileEntityPacket getUpdatePacket() {
-		CompoundNBT tag = new CompoundNBT();
-		tag = writeProperties(tag);
-		tag.putInt("status", status);
-		tag.putBoolean("poweredBlock", poweredBlock);
-		return new SUpdateTileEntityPacket(getBlockPos(), 0, tag);
+		return new SUpdateTileEntityPacket(getBlockPos(), 0, getUpdateTag());
 	}
 
 	@Override

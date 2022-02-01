@@ -60,7 +60,7 @@ public class EnergyControl {
 		ModTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
 		ModItems.RECIPE_SERIALIZERS.register(modEventBus);
 		MinecraftForge.EVENT_BUS.register(ServerTickHandler.instance);
-		ModLoadingContext.get().registerConfig(Type.COMMON, ConfigHandler.COMMON_CONFIG, "energycontrol.toml");
+		ModLoadingContext.get().registerConfig(Type.COMMON, ConfigHandler.COMMON_CONFIG, "energycontrol-common.toml");
 		CrossModLoader.init();
 	}
 }

@@ -3,6 +3,7 @@ package com.zuxelus.energycontrol.tileentities;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
+import com.zuxelus.energycontrol.utils.TileEntitySound;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
 import net.minecraft.block.BlockState;
@@ -28,7 +29,7 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 
 	public TileEntityHowlerAlarm(TileEntityType<?> type) {
 		super(type);
-		tickRate = 20;
+		tickRate = ConfigHandler.ALARM_PAUSE.get();
 		updateTicker = 0;
 		powered = false;
 		soundName = prevSoundName = DEFAULT_SOUND_NAME;
@@ -171,10 +172,5 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 			sound.playAlarm(worldPosition.getX() + 0.5D, worldPosition.getY() + 0.5D, worldPosition.getZ() + 0.5D, SOUND_PREFIX + soundName, range);
 			updateTicker = tickRate;
 		}
-	}
-
-	private void notifyBlockUpdate() {
-		BlockState iblockstate = level.getBlockState(worldPosition);
-		level.sendBlockUpdated(worldPosition, iblockstate, iblockstate, 2);
 	}
 }

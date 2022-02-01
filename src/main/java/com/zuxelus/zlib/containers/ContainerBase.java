@@ -66,7 +66,7 @@ public abstract class ContainerBase<T extends IInventory> extends Container {
 
 		ItemStack stack = slot.getItem();
 		ItemStack result = stack.copy();
-		
+
 		int containerSlots = slots.size() - player.inventory.items.size();
 		if (index < containerSlots) {
 			if (!moveItemStackTo(stack, containerSlots, slots.size(), true))

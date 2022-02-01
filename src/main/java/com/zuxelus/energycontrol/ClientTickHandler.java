@@ -35,7 +35,8 @@ public class ClientTickHandler {
 		boolean alt = Screen.hasAltDown();
 		if (altPressed != alt) {
 			altPressed = alt;
-			ChannelHandler.updateSeverKeys(alt);
+			if (Minecraft.getInstance().getConnection() != null)
+				ChannelHandler.updateSeverKeys(alt);
 		}
 	}
 

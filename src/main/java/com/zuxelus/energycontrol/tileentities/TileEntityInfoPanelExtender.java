@@ -2,6 +2,7 @@ package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
+import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
 import net.minecraft.block.BlockState;
@@ -68,9 +69,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 
 	@Override
 	public SUpdateTileEntityPacket getUpdatePacket() {
-		CompoundNBT tag = new CompoundNBT();
-		tag = writeProperties(tag);
-		return new SUpdateTileEntityPacket(getBlockPos(), 0, tag);
+		return new SUpdateTileEntityPacket(getBlockPos(), 0, getUpdateTag());
 	}
 
 	@Override
@@ -134,10 +133,10 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	public void tick() {
 		if (init)
 			return;
-		
+
 		if (!level.isClientSide && !partOfScreen)
 			EnergyControl.INSTANCE.screenManager.registerInfoPanelExtender(this);
-		
+
 		updateScreen();
 		init = true;
 	}
@@ -152,8 +151,17 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 				coreX = core.getBlockPos().getX();
 				coreY = core.getBlockPos().getY();
 				coreZ = core.getBlockPos().getZ();
+
+				BlockState stateCore = level.getBlockState(core.getBlockPos());
+				BlockState state = level.getBlockState(worldPosition);
+				if (state.getValue(FacingBlockActive.ACTIVE) != stateCore.getValue(FacingBlockActive.ACTIVE))
+					level.setBlock(worldPosition, state.cycle(FacingBlockActive.ACTIVE), 2);
 				return;
 			}
+		} else {
+			BlockState state = level.getBlockState(worldPosition);
+			if (state.getValue(FacingBlockActive.ACTIVE))
+				level.setBlock(worldPosition, state.setValue(FacingBlockActive.ACTIVE, false), 2);
 		}
 		partOfScreen = false;
 		coreX = 0;
@@ -176,9 +184,8 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	public void updateData() { }
 
 	@Override
-	public void notifyBlockUpdate() {
-		BlockState iblockstate = level.getBlockState(worldPosition);
-		level.sendBlockUpdated(worldPosition, iblockstate, iblockstate, 2);
+	public void updateTileEntity() {
+		notifyBlockUpdate();
 	}
 
 	public boolean getColored() {

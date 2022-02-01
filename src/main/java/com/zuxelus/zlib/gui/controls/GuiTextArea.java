@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.SharedConstants;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -58,6 +59,7 @@ public class GuiTextArea extends Widget implements IRenderable, IGuiEventListene
 			drawCursorVertical(cursorPositionX, textTop - 1, cursorPositionX + 1, textTop + 1 + fontRenderer.lineHeight);
 	}
 
+	// Copy of TextFieldWidget.renderHighlight
 	private void drawCursorVertical(int left, int top, int right, int bottom) {
 		if (left < right) {
 			int i = left;
@@ -85,6 +87,10 @@ public class GuiTextArea extends Widget implements IRenderable, IGuiEventListene
 		tessellator.end();
 		RenderSystem.disableColorLogicOp();
 		RenderSystem.enableTexture();
+	}
+
+	public void updateCursorCounter() {
+		cursorCounter++;
 	}
 
 	public void setCursorPosition(int x, int y) {
@@ -150,6 +156,18 @@ public class GuiTextArea extends Widget implements IRenderable, IGuiEventListene
 			newCursorLine = lineCount - 1;
 		cursorPosition = Math.min(cursorPosition, text[newCursorLine].length());
 		cursorLine = newCursorLine;
+	}
+
+	@Override
+	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
+		boolean flag = mouseX >= x && mouseX < (x + width) && mouseY >= y && mouseY < (y + height);
+		if (isFocused() && flag && mouseButton == 0) {
+			int xi = MathHelper.floor(mouseX) - x;
+			int yi = MathHelper.floor(mouseY) - y;
+			setCursorPosition(fontRenderer.plainSubstrByWidth(text[(yi - 4) / 10], xi).length(), (yi - 4) / 10);
+			return true;
+		}
+		return false;
 	}
 
 	@Override

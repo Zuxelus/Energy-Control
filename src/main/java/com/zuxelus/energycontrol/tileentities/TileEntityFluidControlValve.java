@@ -36,6 +36,7 @@ public class TileEntityFluidControlValve extends TileEntityFacing implements ITi
 	private FluidTank tank = new FluidTank(FluidAttributes.BUCKET_VOLUME * 16);
 	private FluidStack inputStack;
 	private IFluidTank outputTank;
+	public int total;
 	private int speed = 20;
 	private double counter;
 	private boolean powered;
@@ -59,13 +60,27 @@ public class TileEntityFluidControlValve extends TileEntityFacing implements ITi
 		speed = newValue;
 	}
 
-	private void notifyBlockUpdate() {
-		BlockState iblockstate = level.getBlockState(worldPosition);
-		level.sendBlockUpdated(worldPosition, iblockstate, iblockstate, 2);
+	public int getTotal() {
+		return total;
+	}
+
+	public void setTotal(int newValue) {
+		if (!level.isClientSide && total != newValue)
+			notifyBlockUpdate();
+		total = newValue;
 	}
 
 	@Override
-	public void onClientMessageReceived(CompoundNBT tag) { }
+	public void onClientMessageReceived(CompoundNBT tag) {
+		if (!tag.contains("type"))
+			return;
+		switch (tag.getInt("type")) {
+		case 1:
+			if (tag.contains("value"))
+				total = tag.getInt("value");
+			break;
+		}
+	}
 
 	@Override
 	public void onServerMessageReceived(CompoundNBT tag) {
@@ -75,6 +90,11 @@ public class TileEntityFluidControlValve extends TileEntityFacing implements ITi
 		case 1:
 			if (tag.contains("value"))
 				speed = tag.getInt("value");
+			break;
+		case 2:
+			if (tag.contains("value"))
+				total = tag.getInt("total");
+			counter = 0;
 			break;
 		}
 	}
@@ -116,6 +136,8 @@ public class TileEntityFluidControlValve extends TileEntityFacing implements ITi
 			speed = tag.getInt("speed");
 		if (tag.contains("FluidName"))
 			tank.readFromNBT(tag);
+		if (tag.contains("total"))
+			total = tag.getInt("total");
 	}
 
 	@Override
@@ -128,6 +150,7 @@ public class TileEntityFluidControlValve extends TileEntityFacing implements ITi
 	protected CompoundNBT writeProperties(CompoundNBT tag) {
 		tag = super.writeProperties(tag);
 		tag.putInt("speed", speed);
+		tag.putInt("total", total);
 		return tag;
 	}
 
@@ -203,7 +226,7 @@ public class TileEntityFluidControlValve extends TileEntityFacing implements ITi
 		int outputAmount = Math.min(currentAmount, outputTank.getCapacity() - outputTank.getFluidAmount());
 		if (outputAmount > 0) {
 			FluidStack stack = tank.drain(outputAmount, FluidAction.EXECUTE);
-			outputTank.fill(stack, FluidAction.EXECUTE);
+			total += outputTank.fill(stack, FluidAction.EXECUTE);
 			if (tank.getFluidAmount() == 0)
 				tank.setFluid(FluidStack.EMPTY);
 		}

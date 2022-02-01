@@ -165,6 +165,18 @@ public class CrossModLoader {
 		return tag;
 	}
 
+	public static IEnergyStorage getEnergyStorage(TileEntity te) {
+		for (CrossModBase crossMod : CROSS_MODS.values()) {
+			IEnergyStorage storage = crossMod.getEnergyStorage(te);
+			if (storage != null)
+				return storage;
+		}
+		Optional<IEnergyStorage> cap = te.getCapability(CapabilityEnergy.ENERGY, null).resolve();
+		if (cap.isPresent())
+			return cap.get();
+		return null;
+	}
+
 	public static IFluidTank getPipeTank(TileEntity te) {
 		for (CrossModBase crossMod : CROSS_MODS.values()) {
 			IFluidTank tank = crossMod.getPipeTank(te);

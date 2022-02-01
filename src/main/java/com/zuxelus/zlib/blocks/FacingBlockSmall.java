@@ -11,6 +11,10 @@ import net.minecraft.world.IWorldReader;
 
 public abstract class FacingBlockSmall extends FacingBlock {
 
+	public FacingBlockSmall(Properties properties) {
+		super(properties);
+	}
+
 	@Override
 	public boolean canSurvive(BlockState state, IWorldReader world, BlockPos pos) {
 		return canPlaceAt(world, pos, state.getValue(FACING).getOpposite());

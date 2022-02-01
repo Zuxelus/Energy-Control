@@ -92,7 +92,7 @@ public class AdvancedInfoPanelPeripheral implements IPeripheral {
 	public final void setThickness(int value) {
 		if (value > 0 && value <= 16) {
 			te.thickness = (byte) value;
-			te.notifyBlockUpdate();
+			te.updateTileEntity();
 		}
 	}
 
@@ -105,7 +105,7 @@ public class AdvancedInfoPanelPeripheral implements IPeripheral {
 	public final void setRotHor(int value) {
 		if (value > -9 && value < 9) {
 			te.rotateHor = (byte) (value * 7);
-			te.notifyBlockUpdate();
+			te.updateTileEntity();
 		}
 	}
 
@@ -118,7 +118,7 @@ public class AdvancedInfoPanelPeripheral implements IPeripheral {
 	public final void setRotVert(int value) {
 		if (value > -9 && value < 9) {
 			te.rotateVert = (byte) (value * 7);
-			te.notifyBlockUpdate();
+			te.updateTileEntity();
 		}
 	}
 
