@@ -14,10 +14,8 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Con
 import net.minecraft.resources.ResourceLocation;
 
 public class TileEntityTimerRenderer implements BlockEntityRenderer<TileEntityTimer> {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(
-			EnergyControl.MODID + ":textures/block/timer/all.png");
-	private static final ResourceLocation TEXTURE_ACTIVE = new ResourceLocation(
-			EnergyControl.MODID + ":textures/block/timer/active.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID + ":textures/block/timer/all.png");
+	private static final ResourceLocation TEXTURE_ACTIVE = new ResourceLocation(EnergyControl.MODID + ":textures/block/timer/active.png");
 	private static final CubeRenderer model = new CubeRenderer(2, 0, 2, 28, 14, 28, 128, 64, 0, 0);
 	private final Font font;
 

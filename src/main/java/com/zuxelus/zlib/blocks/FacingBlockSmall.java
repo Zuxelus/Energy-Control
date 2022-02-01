@@ -12,6 +12,10 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class FacingBlockSmall extends FacingBlock {
 
+	public FacingBlockSmall(Properties properties) {
+		super(properties);
+	}
+
 	@Override
 	public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
 		return canPlaceAt(world, pos, state.getValue(FACING).getOpposite());

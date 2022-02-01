@@ -7,8 +7,6 @@ import java.util.Random;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -29,29 +27,14 @@ public abstract class TileEntityInventory extends BlockEntityFacing implements C
 	@Override
 	protected void readProperties(CompoundTag tag) {
 		super.readProperties(tag);
-		ListTag list = tag.getList("Items", Tag.TAG_COMPOUND);
 		inventory = NonNullList.<ItemStack>withSize(getContainerSize(), ItemStack.EMPTY);
-		for (int i = 0; i < list.size(); i++) {
-			CompoundTag stackTag = list.getCompound(i);
-			inventory.set(stackTag.getByte("Slot"), ItemStack.of(stackTag));
-		}
+		ContainerHelper.loadAllItems(tag, inventory);
 	}
 
 	@Override
 	protected CompoundTag writeProperties(CompoundTag tag) {
 		tag = super.writeProperties(tag);
-
-		ListTag list = new ListTag();
-		for (byte i = 0; i < getContainerSize(); i++) {
-			ItemStack stack = getItem(i);
-			if (!stack.isEmpty()) {
-				CompoundTag stackTag = new CompoundTag();
-				stackTag.putByte("Slot", i);
-				stack.save(stackTag);
-				list.add(stackTag);
-			}
-		}
-		tag.put("Items", list);
+		ContainerHelper.saveAllItems(tag, inventory);
 		return tag;
 	}
 

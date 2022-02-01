@@ -264,7 +264,7 @@
     "ec.jei.blockInfoPanelAdvancedExtender": "When connected to a advanced industrial information panel a seamless monitor will form.",
     "ec.jei.blockHoloPanel": "Works in the same way as Information Panel. Put Advanced Circuits to increase panel height.",
     "ec.jei.blockKitAssembler": "Creates kits from cards and components for crafting. To charge put in energy slot bucket with lava or any Forge Energy item.",
-    "ec.jei.cards": "To get specific card click with kit on corresponding block. For example, to get Energy Card click with Energy Kit on any Energy Storage.",
+    "ec.jei.cards": "To get specific card click with kit on corresponding block. For example, to get Energy Sensor Card click with Energy Sensor Kit on any Energy Storage.",
 
     "ec.jei.itemCardHolder": "Portable storage for 54 sensor cards.",
     "ec.jei.itemPortablePanel": "Portable variant of information panel.",

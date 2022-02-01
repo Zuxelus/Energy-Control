@@ -65,10 +65,9 @@ public class GuiAdvancedInfoPanel extends GuiPanelBase<ContainerAdvancedInfoPane
 
 			int hy = font.lineHeight + 1;
 			int y = 1;
-			int x = leftPos + 24;
 			if (settingsList != null)
 				for (PanelSetting panelSetting : settingsList) {
-					addRenderableWidget(new GuiInfoPanelCheckBox(x + 4, topPos + 51 + hy * y, panelSetting, panel, slot, font));
+					addRenderableWidget(new GuiInfoPanelCheckBox(leftPos + 28, topPos + 51 + hy * y, panelSetting, panel, slot, font));
 					y++;
 				}
 			if (!modified) {

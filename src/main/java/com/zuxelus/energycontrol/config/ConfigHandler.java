@@ -15,6 +15,7 @@ public final class ConfigHandler {
 	public static ForgeConfigSpec.IntValue SCREEN_REFRESH_PERIOD;
 	public static ForgeConfigSpec.IntValue RANGE_TRIGGER_REFRESH_PERIOD;
 	public static ForgeConfigSpec.BooleanValue USE_CUSTOM_SOUNDS;
+	public static ForgeConfigSpec.IntValue ALARM_PAUSE;
 
 	static {
 		ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -25,6 +26,7 @@ public final class ConfigHandler {
 		SCREEN_REFRESH_PERIOD = builder.comment("Default Panel Refresh Period").defineInRange("infoPanelRefreshPeriod", 20, 1, Integer.MAX_VALUE);
 		RANGE_TRIGGER_REFRESH_PERIOD = builder.comment("Default Range Trigger Refresh Period").defineInRange("rangeTriggerRefreshPeriod", 20, 1, Integer.MAX_VALUE);
 		USE_CUSTOM_SOUNDS =  builder.comment("Load Custom Sounds").define("useCustomSounds", false);
+		ALARM_PAUSE = builder.comment("Alarm Pause in Ticks").defineInRange("alarmPause", 60, 10, 2000);
 		builder.pop();
 		COMMON_CONFIG = builder.build();
 	}
