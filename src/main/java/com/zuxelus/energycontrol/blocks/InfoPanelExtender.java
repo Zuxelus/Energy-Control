@@ -4,7 +4,7 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanelExtender;
-import com.zuxelus.zlib.blocks.FacingBlock;
+import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.core.BlockPos;
@@ -12,31 +12,24 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 
-public class InfoPanelExtender extends FacingBlock {
+public class InfoPanelExtender extends FacingBlockActive {
 
 	public InfoPanelExtender() {
-		super();
+		super(Block.Properties.of(Material.METAL).strength(3.0F).lightLevel(state -> state.getValue(ACTIVE) ? 10 : 0));
 	}
 
 	@Override
 	protected BlockEntityFacing createBlockEntity(BlockPos pos, BlockState state) {
 		return ModTileEntityTypes.info_panel_extender.get().create(pos, state);
-	}
-
-	@Override
-	public int getLightEmission(BlockState state, BlockGetter world, BlockPos pos) {
-		BlockEntity te = world.getBlockEntity(pos);
-		if (!(te instanceof TileEntityInfoPanelExtender))
-			return 0;
-		return ((TileEntityInfoPanelExtender)te).getPowered() ? 10 : 0;
 	}
 
 	@Override

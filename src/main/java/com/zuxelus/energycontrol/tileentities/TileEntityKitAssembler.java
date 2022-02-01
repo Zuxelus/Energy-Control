@@ -223,7 +223,7 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 		if (buffer > 0)
 			buffer -= storage.receiveEnergy(buffer, false);
 		needed = Math.min(32, storage.getMaxEnergyStored() - storage.getEnergyStored());
-		ItemStack stack = getStackInSlot(slot);
+		ItemStack stack = getItem(slot);
 		if (!stack.isEmpty() && needed > 0) {
 			if (stack.getItem().equals(Items.LAVA_BUCKET)) {
 				buffer += 2000;

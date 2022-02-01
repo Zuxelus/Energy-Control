@@ -28,7 +28,7 @@ import net.minecraftforge.network.NetworkHooks;
 public class AdvancedInfoPanel extends InfoPanel {
 
 	public AdvancedInfoPanel() {
-		super(Block.Properties.of(Material.METAL).strength(12.0F).noOcclusion());
+		super(Block.Properties.of(Material.METAL).strength(3.0F).noOcclusion());
 	}
 
 	@Override

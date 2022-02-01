@@ -8,12 +8,14 @@ import java.util.Map;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.*;
+import com.zuxelus.energycontrol.blocks.InfoPanelExtender;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.containers.ContainerInfoPanel;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
+import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
@@ -387,9 +389,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	}
 
 	@Override
-	public void notifyBlockUpdate() {
-		BlockState iblockstate = level.getBlockState(worldPosition);
-		level.sendBlockUpdated(worldPosition, iblockstate, iblockstate, 2);
+	public void updateTileEntity() {
+		notifyBlockUpdate();
 	}
 
 	public void resetCardData() {
@@ -601,6 +602,20 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 		} else
 			screenData = screen.toTag();
 		notifyBlockUpdate();
+	}
+
+	public void updateExtenders(Level world, Boolean active) {
+		if (screen == null)
+			return;
+
+		for (int x = screen.minX; x <= screen.maxX; x++)
+			for (int y = screen.minY; y <= screen.maxY; y++)
+				for (int z = screen.minZ; z <= screen.maxZ; z++) {
+					BlockPos pos = new BlockPos(x, y, z);
+					BlockState state = world.getBlockState(pos);
+					if (state.getBlock() instanceof InfoPanelExtender)
+						world.setBlock(pos, state.setValue(FacingBlockActive.ACTIVE, active), 2);
+				}
 	}
 
 	@Override

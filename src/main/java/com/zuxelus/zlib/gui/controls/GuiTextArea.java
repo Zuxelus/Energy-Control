@@ -11,8 +11,6 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Widget;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.Mth;
@@ -20,7 +18,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiTextArea extends AbstractWidget implements Widget, GuiEventListener {
+public class GuiTextArea extends AbstractWidget {
 	private final int lineCount;
 	private int maxStringLength = 32;
 	private int cursorCounter;

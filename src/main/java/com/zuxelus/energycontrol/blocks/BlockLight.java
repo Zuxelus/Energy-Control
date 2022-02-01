@@ -5,7 +5,6 @@ import java.util.Random;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -19,7 +18,7 @@ public class BlockLight extends Block {
 	public static final BooleanProperty LIT = BlockStateProperties.LIT;
 
 	public BlockLight() {
-		super(Block.Properties.of(Material.BUILDABLE_GLASS).strength(0.3F).sound(SoundType.GLASS));
+		super(Block.Properties.of(Material.BUILDABLE_GLASS).lightLevel(state -> state.getValue(LIT) ? 15 : 0).strength(0.3F).sound(SoundType.GLASS));
 		registerDefaultState(defaultBlockState().setValue(LIT, Boolean.valueOf(false)));
 	}
 
@@ -29,13 +28,8 @@ public class BlockLight extends Block {
 	}
 
 	@Override
-	public int getLightEmission(BlockState state, BlockGetter world, BlockPos pos) {
-		return state.getValue(LIT) ? 15 : 0;
-	}
-
-	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context) {
-		return defaultBlockState().setValue(LIT, Boolean.valueOf(context.getLevel().hasNeighborSignal(context.getClickedPos())));
+		return defaultBlockState().setValue(LIT, context.getLevel().hasNeighborSignal(context.getClickedPos()));
 	}
 
 	@Override

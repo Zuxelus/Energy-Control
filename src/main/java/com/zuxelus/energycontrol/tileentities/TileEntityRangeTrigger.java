@@ -10,6 +10,7 @@ import com.zuxelus.energycontrol.items.cards.ItemCardEnergy;
 import com.zuxelus.energycontrol.items.cards.ItemCardLiquid;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
+import com.zuxelus.zlib.blocks.FacingHorizontal;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
@@ -29,7 +30,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -86,7 +86,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements MenuP
 			Block block = iblockstate.getBlock();
 			if (block instanceof RangeTrigger) {
 				BlockState newState = block.defaultBlockState()
-						.setValue(HorizontalDirectionalBlock.FACING, iblockstate.getValue(HorizontalDirectionalBlock.FACING))
+						.setValue(FacingHorizontal.FACING, iblockstate.getValue(FacingHorizontal.FACING))
 						.setValue(RangeTrigger.STATE, RangeTrigger.EnumState.getState(status));
 				level.setBlock(worldPosition, newState, 3);
 			}

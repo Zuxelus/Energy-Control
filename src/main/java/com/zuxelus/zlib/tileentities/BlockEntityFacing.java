@@ -59,4 +59,9 @@ public abstract class BlockEntityFacing extends BlockEntity {
 			tag.putInt("rotation", rotation.get3DDataValue());
 		return tag;
 	}
+
+	protected void notifyBlockUpdate() {
+		BlockState state = level.getBlockState(worldPosition);
+		level.sendBlockUpdated(worldPosition, state, state, 2);
+	}
 }
