@@ -12,7 +12,7 @@
             "item": "minecraft:paper"
         },
         "F": {
-            "item": "mekanism:alloy_infused"
+            "item": "energycontrol:radio_transmitter"
         },
         "W": {
 			"tag": "forge:dyes/gray"

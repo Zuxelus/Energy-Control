@@ -24,10 +24,7 @@ public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm {
 	@Override
 	public void tick() {
 		if (world.isRemote) {
-			if (updateTicker-- <= 0) {
-				updateTicker = tickRate;
-				super.checkStatus();
-			}
+			super.checkStatus();
 			if (updateLightTicker-- <= 0) {
 				updateLightTicker = tickRate / 20;
 				checkStatus();

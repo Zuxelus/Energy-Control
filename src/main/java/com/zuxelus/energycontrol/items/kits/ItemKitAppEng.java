@@ -1,8 +1,5 @@
 package com.zuxelus.energycontrol.items.kits;
 
-import com.zuxelus.energycontrol.api.ItemStackHelper;
-import com.zuxelus.energycontrol.init.ModItems;
-
 /*import appeng.api.util.AEPartLocation;
 import appeng.me.helpers.IGridProxyable;
 import appeng.parts.CableBusContainer;

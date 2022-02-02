@@ -1,23 +1,23 @@
 {
 	"type": "minecraft:crafting_shaped",
 	"pattern": [
-        " R ",
-        "ICI",
-        " A "
+		" R ",
+		"ICI",
+		" A "
 	],
 	"key": {
-        "R": {
-            "tag": "forge:dusts/redstone"
-        },
-        "I": {
-            "item": "mekanism:basic_universal_cable"
-        },
-        "C": {
+		"R": {
+			"tag": "forge:dusts/redstone"
+		},
+		"I": {
+			"item": "energycontrol:strong_string"
+		},
+		"C": {
 			"tag": "forge:circuits/basic"
-        },
-        "A": {
-            "item": "mekanism:enriched_carbon"
-        }
+		},
+		"A": {
+			"item": "minecraft:charcoal"
+		}
 	},
 	"result": {
 		"item": "energycontrol:upgrade_touch"

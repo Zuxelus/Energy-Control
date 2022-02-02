@@ -2,8 +2,6 @@ package com.zuxelus.energycontrol.api;
 
 import java.util.List;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -34,9 +32,4 @@ public interface IItemCard {
 	 * @return Whether the card has a limited range
 	 */
 	boolean isRemoteCard();
-
-	/**
-	 * @return The corresponding kit of the card, or en empty {@link ItemStack} if it doesn't have one
-	 */
-	Item getKitFromCard();
 }

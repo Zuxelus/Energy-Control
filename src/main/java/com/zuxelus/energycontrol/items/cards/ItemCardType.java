@@ -35,8 +35,4 @@ public class ItemCardType {
 	public static final int CARD_THERMAL_EXPANSION = 29;
 
 	public static final int CARD_MAX = 49;
-
-	public static final int EU_AE = 10;
-	public static final int EU_gJ = 11;
-	public static final int EU_RF = 13;
 }

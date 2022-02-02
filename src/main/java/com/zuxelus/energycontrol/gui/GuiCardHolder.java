@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.zuxelus.energycontrol.containers.ContainerCardHolder;
 
@@ -39,7 +38,6 @@ public class GuiCardHolder extends ContainerScreen<ContainerCardHolder> {
 		font.drawString(player.inventory.getDisplayName().getUnformattedComponentText(), 8, ySize - 96 + 2, 4210752);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int x, int y) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);

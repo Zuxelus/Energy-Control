@@ -1,17 +1,32 @@
 package com.zuxelus.energycontrol.utils;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.Vec3d;
 
 public class TileEntitySound {
-	private static final float DEFAULT_RANGE = 16F;
-	private SimpleSound sound;
+	private ISound sound;
 
 	public TileEntitySound() { }
+
+	public void playAlarm(double x, double y, double z, String name, float range) {
+		Vec3d person = Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView();
+		if (person != null) {
+			double volume = 1.0F - Math.sqrt(person.squareDistanceTo(x, y, z) / range / range);
+			if (volume > 0) {
+				if (volume < 0.3)
+					volume = 0.3;
+				sound = new SimpleSound(new SoundEvent(new ResourceLocation(name)), SoundCategory.MASTER, (float) volume, 1.0F, (float) person.x, (float) person.y, (float) person.z);
+				Minecraft.getInstance().getSoundHandler().play(sound);
+				return;
+			}
+		}
+		sound = null;
+	}
 
 	public void stopAlarm() {
 		if (sound != null) {
@@ -20,30 +35,7 @@ public class TileEntitySound {
 		}
 	}
 
-	public void playAlarm(double x, double y, double z, String soundName, float range, boolean skipCheck) {
-		if (sound == null || skipCheck)
-			sound = playAlarm(x, y, z, soundName, range);
-	}
-
 	public boolean isPlaying() {
-		if (sound == null)
-			return false;
-		return Minecraft.getInstance().getSoundHandler().isPlaying(sound);
-	}
-
-	public SimpleSound playAlarm(double x, double y, double z, String name, float volume) {
-		float range = DEFAULT_RANGE;
-
-		if (volume > 1.0F)
-			range *= volume;
-
-		Entity person = Minecraft.getInstance().getRenderViewEntity();
-
-		if (person != null && volume > 0 && person.getDistanceSq(x, y, z) < range * range) {
-			SimpleSound sound = new SimpleSound(new SoundEvent(new ResourceLocation(name)), SoundCategory.MASTER, volume, 1.0F, (float) x, (float) y, (float) z);
-			Minecraft.getInstance().getSoundHandler().play(sound);
-			return sound;
-		}
-		return null;
+		return sound == null ? false : Minecraft.getInstance().getSoundHandler().isPlaying(sound);
 	}
 }

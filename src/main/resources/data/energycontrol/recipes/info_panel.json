@@ -1,28 +1,28 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-        "PPP",
-        "CMC",
-        "IRI"
-    ],
-    "key": {
-        "P": {
-            "tag": "forge:glass_panes/lime"
-        },
-        "C": {
-            "tag":"forge:circuits/basic"
-        },
-        "I": {
-            "tag": "forge:dyes/black"
-        },
-        "R": {
-            "tag": "forge:dusts/redstone"
-        },
-        "M": {
-            "item": "mekanism:boiler_casing"
-        }
-    },
-    "result": {
-        "item": "energycontrol:info_panel"
-    }
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"PPP",
+		"CMC",
+		"IRI"
+	],
+	"key": {
+		"P": {
+			"tag": "forge:glass_panes/lime"
+		},
+		"C": {
+			"tag": "forge:circuits/basic"
+		},
+		"I": {
+			"tag": "forge:dyes/black"
+		},
+		"R": {
+			"tag": "forge:dusts/redstone"
+		},
+		"M": {
+			"item": "energycontrol:machine_casing"
+		}
+	},
+	"result": {
+		"item": "energycontrol:info_panel"
+	}
 }

@@ -1,28 +1,28 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-        "PFP",
-        "AMA",
-        " R "
-    ],
-    "key": {
-        "P": {
-            "tag": "forge:ingots/iron"
-        },
-        "F": {
-            "item": "mekanism:alloy_infused"
-        },
-        "A": {
-            "tag": "forge:circuits/advanced"
-        },
-        "M": {
-            "item": "mekanism:boiler_casing"
-        },
-        "R": {
-            "tag": "forge:dusts/redstone"
-        }
-    },
-    "result": {
-        "item": "energycontrol:range_trigger"
-    }
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"PFP",
+		"AMA",
+		" R "
+	],
+	"key": {
+		"P": {
+			"tag": "forge:ingots/iron"
+		},
+		"F": {
+			"item": "energycontrol:radio_transmitter"
+		},
+		"A": {
+			"tag": "forge:circuits/advanced"
+		},
+		"M": {
+			"item": "energycontrol:machine_casing"
+		},
+		"R": {
+			"tag": "forge:dusts/redstone"
+		}
+	},
+	"result": {
+		"item": "energycontrol:range_trigger"
+	}
 }

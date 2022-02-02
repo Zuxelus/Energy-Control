@@ -22,7 +22,7 @@ public class ItemKitMekanism extends ItemKitMain {
 		if (tag == null)
 			tag = CrossModLoader.getCrossMod(ModIDs.MEKANISM_GENERATORS).getCardData(te);
 		if (tag != null) {
-			ItemStack newCard = new ItemStack(ModItems.card_mekanism.get());
+			ItemStack newCard = new ItemStack(ModItems.card_mekanism);
 			ItemStackHelper.setCoordinates(newCard, pos);
 			return newCard;
 		}

@@ -1,0 +1,17 @@
+{
+	"type": "energycontrol:kit_assembler",
+	"input1": {
+		"tag": "forge:dusts/redstone",
+		"count": 2
+	},
+	"input2": {
+		"tag": "forge:ingots/gold"
+	},
+	"input3": {
+		"item": "energycontrol:basic_circuit"
+	},
+	"result": {
+		"item": "energycontrol:advanced_circuit"
+	},
+	"time": 300
+}

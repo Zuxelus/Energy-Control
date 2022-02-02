@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.containers.ContainerRangeTrigger;
 import com.zuxelus.energycontrol.gui.controls.CompactButton;
@@ -16,7 +15,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -93,7 +91,7 @@ public class GuiRangeTrigger extends GuiContainerBase<ContainerRangeTrigger> {
 
 		if (newValue != initValue) {
 			TileEntityRangeTrigger trigger = container.te;
-			
+
 			CompoundNBT tag = new CompoundNBT();
 			tag.putDouble("value", newValue);
 			if (isEnd) {

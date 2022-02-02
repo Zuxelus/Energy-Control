@@ -1,0 +1,18 @@
+{
+	"type": "energycontrol:kit_assembler",
+	"input1": {
+		"item": "energycontrol:card_toggle"
+	},
+	"input2": {
+		"item": "energycontrol:strong_string",
+		"count": 2
+	},
+	"input3": {
+		"item": "energycontrol:card_toggle"
+	},
+	"result": {
+		"item": "energycontrol:kit_toggle",
+		"count": 2
+	},
+	"time": 1000
+}

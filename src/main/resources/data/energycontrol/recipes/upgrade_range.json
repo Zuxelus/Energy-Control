@@ -1,19 +1,19 @@
 {
 	"type": "minecraft:crafting_shaped",
 	"pattern": [
-        "CCC",
-        "IFI"
+		"CCC",
+		"SFS"
 	],
 	"key": {
-        "I": {
-            "item": "mekanism:basic_universal_cable"
-        },
-        "F": {
-            "item": "mekanism:alloy_infused"
-        },
-        "C": {
-            "item": "mekanism:enriched_tin"
-        }
+		"S": {
+			"item": "energycontrol:strong_string"
+		},
+		"F": {
+			"item": "energycontrol:radio_transmitter"
+		},
+		"C": {
+			"tag": "forge:ingots/iron"
+		}
 	},
 	"result": {
 		"item": "energycontrol:upgrade_range"

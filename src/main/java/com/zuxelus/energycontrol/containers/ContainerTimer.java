@@ -52,11 +52,11 @@ public class ContainerTimer extends Container {
 		super.detectAndSendChanges();
 		int time = te.getTime();
 		boolean isWorking = te.getIsWorking();
-		for (int i = 0; i < listeners.size(); i++) {
+		for (IContainerListener listener : listeners) {
 			if (lastTime != time)
-				NetworkHelper.updateClientTileEntity(listeners.get(i), te.getPos(), 1, time);
+				NetworkHelper.updateClientTileEntity(listener, te.getPos(), 1, time);
 			if (lastIsWorking != isWorking)
-				NetworkHelper.updateClientTileEntity(listeners.get(i), te.getPos(), 2, isWorking ? 1 : 0);
+				NetworkHelper.updateClientTileEntity(listener, te.getPos(), 2, isWorking ? 1 : 0);
 		}
 		lastTime = time;
 		lastIsWorking = isWorking;

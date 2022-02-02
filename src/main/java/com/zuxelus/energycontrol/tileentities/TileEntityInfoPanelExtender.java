@@ -2,6 +2,7 @@ package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
+import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
 import net.minecraft.block.BlockState;
@@ -68,9 +69,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 
 	@Override
 	public SUpdateTileEntityPacket getUpdatePacket() {
-		CompoundNBT tag = new CompoundNBT();
-		tag = writeProperties(tag);
-		return new SUpdateTileEntityPacket(getPos(), 0, tag);
+		return new SUpdateTileEntityPacket(getPos(), 0, getUpdateTag());
 	}
 
 	@Override
@@ -134,10 +133,10 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	public void tick() {
 		if (init)
 			return;
-		
+
 		if (!world.isRemote && !partOfScreen)
 			EnergyControl.INSTANCE.screenManager.registerInfoPanelExtender(this);
-		
+
 		updateScreen();
 		init = true;
 	}
@@ -152,8 +151,17 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 				coreX = core.getPos().getX();
 				coreY = core.getPos().getY();
 				coreZ = core.getPos().getZ();
+
+				BlockState stateCore = world.getBlockState(core.getPos());
+				BlockState state = world.getBlockState(pos);
+				if (state.get(FacingBlockActive.ACTIVE) != stateCore.get(FacingBlockActive.ACTIVE))
+					world.setBlockState(pos, state.cycle(FacingBlockActive.ACTIVE), 2);
 				return;
 			}
+		} else {
+			BlockState state = world.getBlockState(pos);
+			if (state.get(FacingBlockActive.ACTIVE))
+				world.setBlockState(pos, state.with(FacingBlockActive.ACTIVE, false), 2);
 		}
 		partOfScreen = false;
 		coreX = 0;
@@ -176,9 +184,8 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	public void updateData() { }
 
 	@Override
-	public void notifyBlockUpdate() {
-		BlockState iblockstate = world.getBlockState(pos);
-		world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
+	public void updateTileEntity() {
+		notifyBlockUpdate();
 	}
 
 	public boolean getColored() {
@@ -219,11 +226,6 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	public AxisAlignedBB getRenderBoundingBox() {
 		return new AxisAlignedBB(pos.add(0, 0, 0), pos.add(1, 1, 1));
 	}
-
-	/*@Override // TODO
-	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
-		return oldState.getBlock() != newSate.getBlock();
-	}*/
 
 	@OnlyIn(Dist.CLIENT)
 	public int findTexture() {

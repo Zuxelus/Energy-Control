@@ -1,23 +1,22 @@
 package com.zuxelus.energycontrol.items.cards;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.utils.StringUtils;
+
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ItemCardEnergyArray extends ItemCardMain {
 	private static final int STATUS_NOT_FOUND = Integer.MIN_VALUE;
@@ -149,10 +148,5 @@ public class ItemCardEnergyArray extends ItemCardMain {
 	@Override
 	public boolean isRemoteCard() {
 		return false;
-	}
-
-	@Override
-	public Item getKitFromCard() {
-		return ModItems.kit_energy.get();
 	}
 }

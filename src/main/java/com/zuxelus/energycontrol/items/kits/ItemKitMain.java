@@ -18,12 +18,6 @@ public abstract class ItemKitMain extends Item implements IItemKit {
 	}
 
 	@Override
-	public ActionResultType onItemUse(ItemUseContext context) {
-		// TODO Auto-generated method stub
-		return super.onItemUse(context);
-	}
-
-	@Override
 	public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
 		PlayerEntity player = context.getPlayer();
 		if (player == null || !(player instanceof ServerPlayerEntity))

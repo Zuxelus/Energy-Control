@@ -13,32 +13,19 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.15.2-0.0.1'
-repositories {
-    maven {
-        name 'prog'
-        url 'http://dvs1.progwml6.com/files/maven'
-    }
-    //maven { url 'https://modmaven.dev/' }
-    flatDir {
-        dirs 'libs'
-    }
-}
-group = 'com.zuxelus.energycontrol' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+version = '1.15.2-0.2.4a'
+group = 'com.zuxelus.energycontrol'
 archivesBaseName = 'EnergyControl-forge'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
-
 minecraft {
     mappings channel: 'snapshot', version: '20200514-1.15.1'
     runs {
         client {
             workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-
+            //property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
 
             mods {
@@ -50,7 +37,7 @@ minecraft {
 
         server {
             workingDirectory project.file('run')
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            //property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
 
             mods {
@@ -75,14 +62,20 @@ minecraft {
     }
 }
 
+repositories {
+    maven {
+        name 'CurseMaven'
+        url "https://www.cursemaven.com"
+    }
+}
+
 dependencies {
     minecraft 'net.minecraftforge:forge:1.15.2-31.2.55'
-    //compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
-    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
-    runtimeOnly fg.deobf("mekanism:Mekanism:1.15.2-9.10.9.422")
-    runtimeOnly fg.deobf("mekanism:Mekanism:1.15.2-9.10.9.422:generators")
-    runtimeOnly fg.deobf("appeng:appliedenergistics2:7.0.5")
-    runtimeOnly fg.deobf("mcp.mobius.waila:Hwyla:forge-1.10.8-B72_1.15.2")
+    compileOnly fg.deobf ("curse.maven:ae2-223794:3098161")
+    compileOnly fg.deobf ("curse.maven:cctweaked-282001:3408526")
+    compileOnly fg.deobf ("curse.maven:mekanism-268560:2996531")
+    compileOnly fg.deobf ("curse.maven:mekanismgenerators-268566:2996533")
+    compileOnly fg.deobf ("curse.maven:jei-238222:3272032")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

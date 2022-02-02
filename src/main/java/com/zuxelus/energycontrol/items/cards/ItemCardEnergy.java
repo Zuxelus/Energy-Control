@@ -8,10 +8,8 @@ import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.init.ModItems;
 
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -32,12 +30,10 @@ public class ItemCardEnergy extends ItemCardMain {
 			return CardState.NO_TARGET;
 
 		CompoundNBT tag = CrossModLoader.getEnergyData(te);
-		if (tag != null && tag.contains("type")) {
-			reader.setInt("type", tag.getInt("type"));
+		if (tag != null) {
 			reader.setDouble("storage", tag.getDouble("storage"));
 			reader.setDouble("maxStorage", tag.getDouble("maxStorage"));
-			if (tag.getInt("type") == 12)
-				reader.setString("euType", tag.getString("euType"));
+			reader.setString("euType", tag.getString("euType"));
 			return CardState.OK;
 		}
 		return CardState.NO_TARGET;
@@ -49,31 +45,14 @@ public class ItemCardEnergy extends ItemCardMain {
 
 		double energy = reader.getDouble("storage");
 		double storage = reader.getDouble("maxStorage");
-		String euType;
+		String euType = reader.getString("euType");
 
-		switch (reader.getInt("type")) {
-		case ItemCardType.EU_AE:
-			euType = "AE";
-			break;
-		case ItemCardType.EU_gJ:
-			euType = "gJ";
-			break;
-		case 12:
-			euType = reader.getString("euType");
-			break;
-		case ItemCardType.EU_RF:
-			euType = "RF";
-			break;
-		default:
-			euType = "EU";
-			break;
-		}
 		if ((settings & 1) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelEnergy" + euType, energy, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelEnergy", energy, euType, showLabels));
 		if ((settings & 4) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelCapacity" + euType, storage, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelCapacity", storage, euType, showLabels));
 		if ((settings & 2) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelFree" + euType, storage - energy, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelFree", storage - energy, euType, showLabels));
 		if ((settings & 8) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelPercentage", storage == 0 ? 100 : ((energy / storage) * 100), showLabels));
 		return result;
@@ -88,11 +67,6 @@ public class ItemCardEnergy extends ItemCardMain {
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelCapacity"), 4));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelPercentage"), 8));
 		return result;
-	}
-
-	@Override
-	public Item getKitFromCard() {
-		return ModItems.kit_energy.get();
 	}
 
 	@Override

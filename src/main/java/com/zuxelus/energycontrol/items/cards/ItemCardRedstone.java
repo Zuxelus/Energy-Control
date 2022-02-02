@@ -7,12 +7,10 @@ import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
-import com.zuxelus.energycontrol.init.ModItems;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -65,10 +63,5 @@ public class ItemCardRedstone extends ItemCardMain {
 	@Override
 	public List<PanelSetting> getSettingsList() {
 		return null;
-	}
-
-	@Override
-	public Item getKitFromCard() {
-		return ModItems.kit_redstone.get();
 	}
 }

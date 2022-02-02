@@ -28,7 +28,7 @@ public class KitAssembler extends FacingHorizontalActive {
 		if (!(te instanceof TileEntityKitAssembler))
 			return ActionResultType.PASS;
 		if (!world.isRemote)
-				NetworkHooks.openGui((ServerPlayerEntity) player, (TileEntityKitAssembler) te, pos);
+			NetworkHooks.openGui((ServerPlayerEntity) player, (TileEntityKitAssembler) te, pos);
 		return ActionResultType.SUCCESS;
 	}
 }

@@ -8,6 +8,7 @@ import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
@@ -26,6 +27,14 @@ public class HowlerAlarm extends FacingBlockSmall {
 	protected static final VoxelShape AABB_SOUTH = Block.makeCuboidShape(2.0D, 2.0D, 0.0D, 14.0D, 14.0D, 7.0D);
 	protected static final VoxelShape AABB_WEST = Block.makeCuboidShape(9.0D, 2.0D, 2.0D, 16.0D, 14.0D, 14.0D);
 	protected static final VoxelShape AABB_EAST = Block.makeCuboidShape(0.0D, 2.0D, 2.0D, 7.0D, 14.0D, 14.0D);
+
+	public HowlerAlarm() {
+		super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.0F));
+	}
+
+	public HowlerAlarm(Properties properties) {
+		super(properties);
+	}
 
 	@Override
 	protected TileEntityFacing createTileEntity() {

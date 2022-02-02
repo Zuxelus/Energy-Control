@@ -10,7 +10,6 @@ import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.ITouchAction;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
-import com.zuxelus.energycontrol.init.ModItems;
 
 import net.minecraft.block.AbstractButtonBlock;
 import net.minecraft.block.Block;
@@ -18,10 +17,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.WoodButtonBlock;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
@@ -31,7 +30,6 @@ import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -40,6 +38,8 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 	private static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 	private static final EnumProperty<AttachFace> FACE = BlockStateProperties.FACE;
 	private static final DirectionProperty HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
+	private static final ResourceLocation TEXTURE_ON = new ResourceLocation(EnergyControl.MODID, "textures/gui/green.png");
+	private static final ResourceLocation TEXTURE_OFF = new ResourceLocation(EnergyControl.MODID, "textures/gui/grey.png");
 
 	@Override
 	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
@@ -75,11 +75,6 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 	@OnlyIn(Dist.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		return null;
-	}
-
-	@Override
-	public Item getKitFromCard() {
-		return ModItems.kit_toggle.get();
 	}
 
 	@Override
@@ -131,9 +126,9 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 		float textureX = 0;
 		float textureY = 0;
 		if (reader.getBoolean("value"))
-			manager.bindTexture(new ResourceLocation(EnergyControl.MODID + ":textures/gui/green.png"));
+			manager.bindTexture(TEXTURE_ON);
 		else
-			manager.bindTexture(new ResourceLocation(EnergyControl.MODID + ":textures/gui/grey.png"));
+			manager.bindTexture(TEXTURE_OFF);
 
 		RenderSystem.enableDepthTest();
 		RenderSystem.enableAlphaTest();

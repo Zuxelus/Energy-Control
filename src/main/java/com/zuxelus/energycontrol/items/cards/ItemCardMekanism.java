@@ -9,10 +9,8 @@ import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
-import com.zuxelus.energycontrol.init.ModItems;
 
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -52,7 +50,7 @@ public class ItemCardMekanism extends ItemCardMain {
 		if (reader.hasField("boil_rate") && (settings & 32) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelBoilRate", reader.getDouble("boil_rate"), showLabels));
 		if (reader.hasField("production") && (settings & 1) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("production"), euType, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("production"), euType + "/t", showLabels));
 		if (reader.hasField("usage") && (settings & 2) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelUsing", reader.getDouble("usage"), euType, showLabels));
 		if (reader.hasField("storage") && (settings & 4) > 0)
@@ -77,6 +75,10 @@ public class ItemCardMekanism extends ItemCardMain {
 			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString("tank4"), showLabels));
 		if (reader.hasField("tank5") && (settings & 16) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString("tank5"), showLabels));
+		if (reader.hasField("input") && (settings & 32) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelInput", reader.getDouble("input"), euType + "/t", showLabels));
+		if (reader.hasField("output") && (settings & 32) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("output"), euType + "/t", showLabels));
 		if (reader.hasField("active"))
 			addOnOff(result, isServer, reader.getBoolean("active"));
 		return result;
@@ -93,10 +95,5 @@ public class ItemCardMekanism extends ItemCardMain {
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelRate"), 32));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOther"), 64));
 		return result;
-	}
-
-	@Override
-	public Item getKitFromCard() {
-		return ModItems.kit_mekanism.get();
 	}
 }

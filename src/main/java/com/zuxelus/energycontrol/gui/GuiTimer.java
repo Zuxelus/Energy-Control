@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.containers.ContainerTimer;
 import com.zuxelus.energycontrol.gui.controls.CompactButton;
@@ -13,7 +12,6 @@ import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

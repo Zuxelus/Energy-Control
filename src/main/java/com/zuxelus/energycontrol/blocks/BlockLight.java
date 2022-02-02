@@ -11,7 +11,6 @@ import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
@@ -24,18 +23,18 @@ public class BlockLight extends Block {
 	}
 
 	@Override
+	public int getLightValue(BlockState state) {
+		return state.get(LIT) ? 15 : 0;
+	}
+
+	@Override
 	protected void fillStateContainer(Builder<Block, BlockState> builder) {
 		builder.add(LIT);
 	}
 
 	@Override
-	public int getLightValue(BlockState state, IBlockReader world, BlockPos pos) {
-		return state.get(LIT) ? 15 : 0;
-	}
-
-	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		return getDefaultState().with(LIT, Boolean.valueOf(context.getWorld().isBlockPowered(context.getPos())));
+		return getDefaultState().with(LIT, context.getWorld().isBlockPowered(context.getPos()));
 	}
 
 	@Override

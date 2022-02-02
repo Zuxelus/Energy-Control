@@ -1,6 +1,5 @@
 package com.zuxelus.zlib.blocks;
 
-import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
 import net.minecraft.block.Block;
@@ -13,6 +12,8 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Mirror;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -20,7 +21,7 @@ import net.minecraft.world.World;
 public abstract class FacingHorizontal extends HorizontalBlock {
 
 	public FacingHorizontal() {
-		super(Block.Properties.create(Material.IRON).hardnessAndResistance(12.0F));
+		super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.0F));
 		setDefaultState(getDefaultState().with(HORIZONTAL_FACING, Direction.NORTH));
 	}
 
@@ -53,12 +54,22 @@ public abstract class FacingHorizontal extends HorizontalBlock {
 		return getDefaultState().with(HORIZONTAL_FACING, context.getPlayer().getHorizontalFacing().getOpposite());
 	}
 
+	@Override
+	public BlockState rotate(BlockState state, Rotation rotation) {
+		return state;
+	}
+
+	@Override
+	public BlockState mirror(BlockState state, Mirror mirror) {
+		return state;
+	}
+
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
 			TileEntity te = world.getTileEntity(pos);
-			if (te instanceof TileEntityInfoPanel) {
+			if (te instanceof IInventory) {
 				InventoryHelper.dropInventoryItems(world, pos, (IInventory) te);
 				world.updateComparatorOutputLevel(pos, this);
 			}

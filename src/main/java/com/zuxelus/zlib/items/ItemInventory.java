@@ -71,9 +71,8 @@ public abstract class ItemInventory implements IInventory, ISlotItemFilter {
 
 	@Override
 	public ItemStack decrStackSize(int index, int count) {
-		ItemStack itemstack = ItemStackHelper.getAndSplit(inventory, index, count);
-		//if (!itemstack.isEmpty()) markDirty();
-		return itemstack;
+		ItemStack stack = ItemStackHelper.getAndSplit(inventory, index, count);
+		return stack;
 	}
 
 	@Override

@@ -1,0 +1,33 @@
+{
+	"type": "energycontrol:kit_assembler",
+	"input1": {
+		"item": "energycontrol:card_big_reactors"
+	},
+	"input2": {
+		"item": "energycontrol:strong_string",
+		"count": 2
+	},
+	"input3": {
+		"item": "energycontrol:card_big_reactors"
+	},
+	"result": {
+		"item": "energycontrol:kit_big_reactors",
+		"count": 2
+	},
+	"time": 1000,
+	"conditions": [
+		{
+			"type": "forge:or",
+			"values": [
+				{
+					"type": "forge:mod_loaded",
+					"modid": "bigreactors"
+				},
+				{
+					"type": "forge:mod_loaded",
+					"modid": "biggerreactors"
+				}
+			]
+		}
+	]
+}

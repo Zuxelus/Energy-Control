@@ -2,7 +2,6 @@ package com.zuxelus.energycontrol.gui;
 
 import java.util.List;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.CardState;
@@ -43,7 +42,6 @@ public class GuiPortablePanel extends ContainerScreen<ContainerPortablePanel> {
 		renderHoveredToolTip(mouseX, mouseY);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int x, int y) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);

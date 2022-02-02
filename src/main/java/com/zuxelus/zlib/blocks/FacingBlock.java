@@ -1,6 +1,5 @@
 package com.zuxelus.zlib.blocks;
 
-import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
 import net.minecraft.block.Block;
@@ -23,7 +22,7 @@ public abstract class FacingBlock extends DirectionalBlock {
 	protected Direction rotation;
 
 	public FacingBlock() {
-		super(Block.Properties.create(Material.IRON).hardnessAndResistance(12.0F));
+		super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.0F));
 		setDefaultState(getDefaultState().with(FACING, Direction.NORTH));
 	}
 
@@ -80,7 +79,7 @@ public abstract class FacingBlock extends DirectionalBlock {
 	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
 			TileEntity te = world.getTileEntity(pos);
-			if (te instanceof TileEntityInfoPanel) {
+			if (te instanceof IInventory) {
 				InventoryHelper.dropInventoryItems(world, pos, (IInventory) te);
 				world.updateComparatorOutputLevel(pos, this);
 			}

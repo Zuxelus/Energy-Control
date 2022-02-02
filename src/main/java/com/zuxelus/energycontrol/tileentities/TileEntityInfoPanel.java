@@ -8,17 +8,18 @@ import java.util.Map;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.*;
+import com.zuxelus.energycontrol.blocks.InfoPanelExtender;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.containers.ContainerInfoPanel;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
+import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.Vector3d;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -233,13 +234,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 
 	@Override
 	public SUpdateTileEntityPacket getUpdatePacket() {
-		CompoundNBT tag = new CompoundNBT();
-		tag = writeProperties(tag);
-		calcPowered();
-		tag.putBoolean("powered", powered);
-		colored = isColoredEval();
-		tag.putBoolean("colored", colored);
-		return new SUpdateTileEntityPacket(getPos(), 0, tag);
+		return new SUpdateTileEntityPacket(getPos(), 0, getUpdateTag());
 	}
 
 	@Override
@@ -386,9 +381,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	}
 
 	@Override
-	public void notifyBlockUpdate() {
-		BlockState iblockstate = world.getBlockState(pos);
-		world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
+	public void updateTileEntity() {
+		notifyBlockUpdate();
 	}
 
 	public void resetCardData() {
@@ -602,6 +596,20 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		notifyBlockUpdate();
 	}
 
+	public void updateExtenders(World world, Boolean active) {
+		if (screen == null)
+			return;
+
+		for (int x = screen.minX; x <= screen.maxX; x++)
+			for (int y = screen.minY; y <= screen.maxY; y++)
+				for (int z = screen.minZ; z <= screen.maxZ; z++) {
+					BlockPos pos = new BlockPos(x, y, z);
+					BlockState state = world.getBlockState(pos);
+					if (state.getBlock() instanceof InfoPanelExtender)
+						world.setBlockState(pos, state.with(FacingBlockActive.ACTIVE, active), 2);
+				}
+	}
+
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public double getMaxRenderDistanceSquared() {
@@ -615,11 +623,6 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 			return new AxisAlignedBB(pos.add(0, 0, 0), pos.add(1, 1, 1));
 		return new AxisAlignedBB(new BlockPos(screen.minX, screen.minY, screen.minZ), new BlockPos(screen.maxX + 1, screen.maxY + 1, screen.maxZ + 1));
 	}
-
-	/*@Override
-	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
-		return oldState.getBlock() != newSate.getBlock();
-	}*/
 
 	@OnlyIn(Dist.CLIENT)
 	public int findTexture() {

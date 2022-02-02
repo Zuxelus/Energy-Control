@@ -28,7 +28,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 public class AdvancedInfoPanel extends InfoPanel {
 
 	public AdvancedInfoPanel() {
-		super(Block.Properties.create(Material.IRON).hardnessAndResistance(12.0F).notSolid());
+		super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.0F).notSolid());
 	}
 
 	@Override

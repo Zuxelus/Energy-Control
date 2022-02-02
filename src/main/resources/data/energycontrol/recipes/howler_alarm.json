@@ -2,14 +2,11 @@
 	"type": "minecraft:crafting_shaped",
 	"pattern": [
 		"NNN",
-		"IMI",
-		"ICI"
+		"ICI",
+		"III"
 	],
 	"key": {
 		"I": {
-			"item": "mekanism:enriched_tin"
-		},
-		"M": {
 			"tag": "forge:ingots/iron"
 		},
 		"N": {

@@ -7,10 +7,10 @@
     ],
     "key": {
         "A": {
-            "item": "mekanism:basic_universal_cable"
+            "item": "energycontrol:strong_string"
         },
         "C": {
-            "item": "mekanism:alloy_infused"
+            "item": "energycontrol:radio_transmitter"
         },
         "M": {
             "item": "energycontrol:info_panel_extender"
@@ -19,7 +19,7 @@
             "item": "energycontrol:upgrade_range"
         },
         "P": {
-            "item": "mekanism:enriched_carbon"
+            "item": "minecraft:charcoal"
         }
     },
     "result": {

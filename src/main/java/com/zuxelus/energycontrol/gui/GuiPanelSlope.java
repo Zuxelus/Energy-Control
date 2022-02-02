@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;

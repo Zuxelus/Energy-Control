@@ -118,8 +118,7 @@ public class TileEntityInfoPanelRenderer extends TileEntityRenderer<TileEntityIn
 		model[te.findTexture()].render(matrixStack, vertexBuilder, light, combinedOverlay);
 		if (te.getPowered()) {
 			List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
-			if (joinedData != null)
-				drawText(te, joinedData, matrixStack, buffer, combinedLight);
+			drawText(te, joinedData, matrixStack, buffer, combinedLight);
 		}
 		matrixStack.pop();
 	}
@@ -214,22 +213,21 @@ public class TileEntityInfoPanelRenderer extends TileEntityRenderer<TileEntityIn
 			break;
 		}
 
-		if (panel.isTouchCard()) {
+		if (panel.isTouchCard() || panel.hasBars()) {
 			matrixStack.rotate(Vector3f.YP.rotationDegrees(180));
 			panel.renderImage(renderDispatcher.textureManager, displayWidth, displayHeight, matrixStack);
-		} else {
-			if (panel.hasBars()) {
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(180));
-				panel.renderImage(renderDispatcher.textureManager, displayWidth, displayHeight, matrixStack);
-				matrixStack.rotate(Vector3f.YP.rotationDegrees(180));
-			}
+			matrixStack.rotate(Vector3f.YP.rotationDegrees(180));
+		}
+		if (joinedData != null) {
 			matrixStack.translate(0, 0, 0.0002F);
-			renderText(panel, joinedData, displayWidth, displayHeight, matrixStack, buffer, combinedLight);
+			int colorHex = 0x000000;
+			if (panel.getColored())
+				colorHex = panel.getColorTextHex();
+			renderText(joinedData, displayWidth, displayHeight, colorHex, matrixStack, renderDispatcher.getFontRenderer(), buffer, combinedLight);
 		}
 	}
 
-	private void renderText(TileEntityInfoPanel panel, List<PanelString> joinedData, float displayWidth, float displayHeight, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight) {
-		FontRenderer fontRenderer = renderDispatcher.getFontRenderer();
+	public static void renderText(List<PanelString> joinedData, float displayWidth, float displayHeight, int colorHex, MatrixStack matrixStack, FontRenderer fontRenderer, IRenderTypeBuffer buffer, int combinedLight) {
 		int maxWidth = 1;
 		for (PanelString panelString : joinedData) {
 			String currentString = implodeArray(new String[] { panelString.textLeft, panelString.textCenter, panelString.textRight }, " ");
@@ -255,34 +253,18 @@ public class TileEntityInfoPanelRenderer extends TileEntityRenderer<TileEntityIn
 			offsetY = 0;
 		}
 
-		//GlStateManager.disableLighting();
-
 		int row = 0;
-		int colorHex = 0x000000;
-		if (panel.getColored())
-			colorHex = panel.getColorTextHex();
 		for (PanelString panelString : joinedData) {
-			if (panelString.textLeft != null) {
+			if (panelString.textLeft != null)
 				fontRenderer.renderString(panelString.textLeft, offsetX - realWidth / 2,
-						offsetY - realHeight / 2 + row * lineHeight,
-						panelString.colorLeft != 0 ? panelString.colorLeft : colorHex, false, matrixStack.getLast().getMatrix(), buffer, false, 0, combinedLight);
-			}
-			if (panelString.textCenter != null) {
-				fontRenderer.renderString(panelString.textCenter,
-						-fontRenderer.getStringWidth(panelString.textCenter) / 2,
-						offsetY - realHeight / 2 + row * lineHeight,
-						panelString.colorCenter != 0 ? panelString.colorCenter : colorHex, false, matrixStack.getLast().getMatrix(), buffer, false, 0, combinedLight);
-			}
-			if (panelString.textRight != null) {
-				fontRenderer.renderString(panelString.textRight,
-						realWidth / 2 - fontRenderer.getStringWidth(panelString.textRight),
-						offsetY - realHeight / 2 + row * lineHeight,
-						panelString.colorRight != 0 ? panelString.colorRight : colorHex, false, matrixStack.getLast().getMatrix(), buffer, false, 0, combinedLight);
-			}
+					offsetY - realHeight / 2 + row * lineHeight, panelString.colorLeft != 0 ? panelString.colorLeft : colorHex, false, matrixStack.getLast().getMatrix(), buffer, false, 0, combinedLight);
+			if (panelString.textCenter != null)
+				fontRenderer.renderString(panelString.textCenter, -fontRenderer.getStringWidth(panelString.textCenter) / 2,
+					offsetY - realHeight / 2 + row * lineHeight, panelString.colorCenter != 0 ? panelString.colorCenter : colorHex, false, matrixStack.getLast().getMatrix(), buffer, false, 0, combinedLight);
+			if (panelString.textRight != null)
+				fontRenderer.renderString(panelString.textRight, realWidth / 2 - fontRenderer.getStringWidth(panelString.textRight),
+					offsetY - realHeight / 2 + row * lineHeight, panelString.colorRight != 0 ? panelString.colorRight : colorHex, false, matrixStack.getLast().getMatrix(), buffer, false, 0, combinedLight);
 			row++;
 		}
-
-		//GlStateManager.enableLighting();
-		//GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 }

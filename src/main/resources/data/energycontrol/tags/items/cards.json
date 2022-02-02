@@ -1,9 +1,11 @@
 {
 	"values": [
 		"energycontrol:card_energy",
+		"energycontrol:card_energy_array",
+		"energycontrol:card_inventory",
 		"energycontrol:card_liquid_advanced",
+		"energycontrol:card_liquid_array",
 		"energycontrol:card_liquid",
-		"energycontrol:card_mekanism",
 		"energycontrol:card_redstone",
 		"energycontrol:card_toggle"
 	]

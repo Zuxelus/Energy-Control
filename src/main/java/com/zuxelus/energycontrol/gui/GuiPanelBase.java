@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardText;
@@ -125,6 +124,7 @@ public abstract class GuiPanelBase<T extends Container> extends GuiContainerBase
 			minecraft.displayGuiScreen(colorGui);
 			break;
 		case ID_TEXT:
+			oldStack = ItemStack.EMPTY;
 			openTextGui();
 			break;
 		case ID_TICKRATE:
