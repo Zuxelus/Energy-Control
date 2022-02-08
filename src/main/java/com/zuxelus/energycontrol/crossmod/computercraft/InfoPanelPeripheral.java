@@ -28,7 +28,7 @@ public class InfoPanelPeripheral implements IPeripheral {
 
 	@Override
 	public String[] getMethodNames() {
-		return new String[] { "hasColorUpgrade", "isActive", "getRange", "getCardData", "getColorBack", "getColorText",
+		return new String[] { "hasColorUpgrade", "isActive", "getRange", "getCardData", "getCardDataRaw", "getColorBack", "getColorText",
 				"setColorBack", "setColorText", "getCardTitle", "setCardTitle" };
 	}
 
@@ -51,33 +51,44 @@ public class InfoPanelPeripheral implements IPeripheral {
 			if (!Loader.isModLoaded("cctweaked")) {
 				Map<Integer, String> map = new HashMap<>();
 				int i = 1;
-				for (String line : te.getPanelStringList()) {
+				for (String line : te.getPanelStringList(false)) {
 					map.put(i, line);
 					i++;
 				}
 				return new Object[] { map };
 			}
-			return new Object[] { te.getPanelStringList() };
+			return new Object[] { te.getPanelStringList(false) };
 		case 4:
-			return new Object[] { te.getColorBackground() };
+			if (!Loader.isModLoaded("cctweaked")) {
+				Map<Integer, String> map = new HashMap<>();
+				int i = 1;
+				for (String line : te.getPanelStringList(true)) {
+					map.put(i, line);
+					i++;
+				}
+				return new Object[] { map };
+			}
+			return new Object[] { te.getPanelStringList(true) };
 		case 5:
-			return new Object[] { te.getColorText() };
+			return new Object[] { te.getColorBackground() };
 		case 6:
+			return new Object[] { te.getColorText() };
+		case 7:
 			value =  ArgumentHelper.getInt(args, 0);
 			if (value >= 0 && value < 16)
 				te.setColorBackground(value);
 			return null;
-		case 7:
+		case 8:
 			value =  ArgumentHelper.getInt(args, 0);
 			if (value >= 0 && value < 16)
 				te.setColorText(value);
 			return null;
-		case 8:
+		case 9:
 			stack = te.getStackInSlot(0);
 			if (!ItemCardMain.isCard(stack))
 				return new Object[] { "" }; 
 			return new Object[] { new ItemCardReader(stack).getTitle() };
-		case 9:
+		case 10:
 			String title = ArgumentHelper.getString(args, 0);
 			stack = te.getStackInSlot(0);
 			if (title != null && ItemCardMain.isCard(stack))

@@ -47,9 +47,10 @@ public class ItemKitMain extends Item implements IItemKit {
 		register(ItemKitEnergy::new);
 		register(ItemKitCounter::new);
 		register(ItemKitLiquid::new);
-		register(ItemKitGenerator::new);
-		if (Loader.isModLoaded(ModIDs.IC2))
+		if (Loader.isModLoaded(ModIDs.IC2)) {
+			register(ItemKitGenerator::new);
 			register(ItemKitReactor::new);
+		}
 		register(ItemKitLiquidAdvanced::new);
 		register(ItemKitToggle::new);
 		register(ItemKitVanilla::new);
@@ -65,6 +66,8 @@ public class ItemKitMain extends Item implements IItemKit {
 			register(ItemKitBigReactors::new);
 		if (Loader.isModLoaded(ModIDs.ENDER_IO))
 			register(ItemKitEnderIO::new);
+		if (Loader.isModLoaded(ModIDs.HBM))
+			register(ItemKitHBM::new);
 		if (Loader.isModLoaded(ModIDs.MEKANISM))
 			register(ItemKitMekanism::new);
 		if (Loader.isModLoaded(ModIDs.NUCLEAR_CRAFT))
@@ -112,8 +115,9 @@ public class ItemKitMain extends Item implements IItemKit {
 	@Override
 	public ItemStack getSensorCard(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side) {
 		int damage = stack.getItemDamage();
-		if (KITS.containsKey(damage)) return KITS.get(damage).getSensorCard(stack, player, world, pos, side);
-		else return ItemStack.EMPTY;
+		if (KITS.containsKey(damage))
+			return KITS.get(damage).getSensorCard(stack, player, world, pos, side);
+		return ItemStack.EMPTY;
 	}
 
 	@Override

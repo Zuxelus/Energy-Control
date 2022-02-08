@@ -31,7 +31,7 @@ public class NetworkHelper {
 	}
 
 	// server
-	public static void sendPacketToAllAround(BlockPos pos, int dist, World world, IMessage packet) {
+	public static void sendPacketToAllAround(World world, BlockPos pos, int dist, IMessage packet) {
 		List<EntityPlayer> players = world.playerEntities;
 		for (EntityPlayer player : players) {
 			if (player instanceof EntityPlayerMP) {
@@ -71,7 +71,7 @@ public class NetworkHelper {
 	}
 
 	public static void updateClientTileEntity(World world, BlockPos pos, NBTTagCompound tag) {
-		sendPacketToAllAround(pos, 64, world, new PacketTileEntity(pos, tag));
+		sendPacketToAllAround(world, pos, 64,new PacketTileEntity(pos, tag));
 	}
 
 	// client

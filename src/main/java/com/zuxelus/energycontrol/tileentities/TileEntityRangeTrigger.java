@@ -22,7 +22,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class TileEntityRangeTrigger extends TileEntityInventory implements ITickable, ISlotItemFilter, ITilePacketHandler {
-
 	public static final int SLOT_CARD = 0;
 	public static final int SLOT_UPGRADE = 1;
 
@@ -133,10 +132,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 
 	@Override
 	public SPacketUpdateTileEntity getUpdatePacket() {
-		NBTTagCompound tag = new NBTTagCompound();
-		tag = writeProperties(tag);
-		tag.setBoolean("poweredBlock", poweredBlock);
-		return new SPacketUpdateTileEntity(getPos(), 0, tag);
+		return new SPacketUpdateTileEntity(getPos(), 0, getUpdateTag());
 	}
 
 	@Override
@@ -233,10 +229,9 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 
 	@Override
 	public boolean isItemValid(int slotIndex, ItemStack stack) { // ISlotItemFilter
-		if (slotIndex == SLOT_CARD) {
+		if (slotIndex == SLOT_CARD)
 			return stack.getItem() instanceof ItemCardMain && (stack.getItemDamage() == ItemCardType.CARD_ENERGY
 					|| stack.getItemDamage() == ItemCardType.CARD_ENERGY_ARRAY);
-		}
 		return stack.getItem() instanceof ItemUpgrade && stack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE;
-	}
+	} // TODO ItemCardLiquid
 }

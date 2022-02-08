@@ -8,9 +8,9 @@ import net.minecraft.world.World;
  * Lets players interact with Info Panels, using them as touchscreen
  */
 public interface ITouchAction {
-	
+
 	boolean enableTouch(ItemStack stack);
-	
+
 	/**
 	 * Called when a player right-clicks a Panel screen. 
 	 * If <code>true</code> is returned, an update packet will be sent to the client.

@@ -71,14 +71,12 @@ public class Screen {
 		for (int x = minX; x <= maxX; x++) {
 			for (int y = minY; y <= maxY; y++) {
 				for (int z = minZ; z <= maxZ; z++) {
-					TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
-					if (!(tileEntity instanceof IScreenPart))
+					TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
+					if (te == null || !(te instanceof IScreenPart))
 						continue;
-					((IScreenPart) tileEntity).setScreen(this);
-					if (powered || force) {
-						((IScreenPart)tileEntity).notifyBlockUpdate();
-						//world.checkLight(new BlockPos(x , y, z));
-					}
+					((IScreenPart) te).setScreen(this);
+					if (powered || force)
+						((IScreenPart) te).updateTileEntity();
 				}
 			}
 		}
@@ -98,17 +96,10 @@ public class Screen {
 						part.updateData();
 					}
 					if (powered || force)
-						part.notifyBlockUpdate();
+						part.updateTileEntity();
 				}
 			}
 		}
-	}
-
-	public void turnPower(boolean on, World world) {
-		if (powered == on)
-			return;
-		powered = on;
-		markUpdate(world);
 	}
 
 	private void markUpdate(World world) {
@@ -117,7 +108,7 @@ public class Screen {
 				for (int z = minZ; z <= maxZ; z++) {
 					TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
 					if (te instanceof IScreenPart)
-						((IScreenPart)te).notifyBlockUpdate();
+						((IScreenPart) te).updateTileEntity();
 				}
 			}
 		}

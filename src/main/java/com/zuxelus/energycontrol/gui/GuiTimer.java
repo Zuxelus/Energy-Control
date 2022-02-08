@@ -4,6 +4,7 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.containers.ContainerTimer;
 import com.zuxelus.energycontrol.gui.controls.CompactButton;
 import com.zuxelus.energycontrol.network.NetworkHelper;
+import com.zuxelus.energycontrol.tileentities.TileEntityTimer;
 import com.zuxelus.zlib.gui.GuiContainerBase;
 
 import net.minecraft.client.gui.GuiButton;
@@ -15,23 +16,22 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiTimer extends GuiContainerBase {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_timer.png");
-
-	private ContainerTimer container;
+	private TileEntityTimer timer;
 	private GuiTextField textboxTimer;
 	private boolean lastIsWorking;
 
 	public GuiTimer(ContainerTimer container) {
 		super(container, "tile.timer.name", TEXTURE);
-		this.container = container;
 		xSize = 100;
 		ySize = 136;
-		lastIsWorking = container.te.getIsWorking();
+		timer = container.te;
+		lastIsWorking = timer.getIsWorking();
 	}
 
 	@Override
 	public void initGui() {
 		super.initGui();
-		lastIsWorking = container.te.getIsWorking();
+		lastIsWorking = timer.getIsWorking();
 
 		addButton(new CompactButton(0, guiLeft + 14, guiTop + 50, 34, 12, "+1"));
 		addButton(new CompactButton(1, guiLeft + 14, guiTop + 64, 34, 12, "+10"));
@@ -41,15 +41,15 @@ public class GuiTimer extends GuiContainerBase {
 
 		addButton(new CompactButton(5, guiLeft + 14, guiTop + 36, 34, 12, "Reset"));
 		addButton(new CompactButton(6, guiLeft + 50, guiTop + 36, 34, 12, "Ticks"));
-		addButton(new CompactButton(7, guiLeft + 14, guiTop + 92, 70, 12, container.te.getInvertRedstone() ? "No Redstone" : "Redstone"));
+		addButton(new CompactButton(7, guiLeft + 14, guiTop + 92, 70, 12, timer.getInvertRedstone() ? "No Redstone" : "Redstone"));
 		addButton(new CompactButton(8, guiLeft + 14, guiTop + 106, 70, 12, lastIsWorking ? "Stop" : "Start"));
 
-		updateCaptions(container.te.getIsTicks());
+		updateCaptions(timer.getIsTicks());
 
 		textboxTimer = new GuiTextField(11, fontRenderer, 20, 20, 58, 12);
 		textboxTimer.setEnabled(!lastIsWorking);
 		textboxTimer.setFocused(!lastIsWorking);
-		textboxTimer.setText(container.te.getTimeString());
+		textboxTimer.setText(timer.getTimeString());
 	}
 
 	private void updateCaptions(boolean isTicks) {
@@ -73,7 +73,7 @@ public class GuiTimer extends GuiContainerBase {
 		super.updateScreen();
 		if (textboxTimer != null) {
 			textboxTimer.updateCursorCounter();
-			boolean isWorking = container.te.getIsWorking();
+			boolean isWorking = timer.getIsWorking();
 			if (isWorking != lastIsWorking) {
 				textboxTimer.setEnabled(!isWorking);
 				textboxTimer.setFocused(!isWorking);
@@ -81,7 +81,7 @@ public class GuiTimer extends GuiContainerBase {
 				lastIsWorking = isWorking;
 			}
 			if (isWorking)
-				textboxTimer.setText(container.te.getTimeString());
+				textboxTimer.setText(timer.getTimeString());
 		}
 	}
 
@@ -97,7 +97,7 @@ public class GuiTimer extends GuiContainerBase {
 		int time = 0;
 		try {
 			String value = textboxTimer.getText();
-			if (container.te.getIsTicks()) {
+			if (timer.getIsTicks()) {
 				if (!"".equals(value))
 					time = Integer.parseInt(value);
 			} else {
@@ -113,16 +113,16 @@ public class GuiTimer extends GuiContainerBase {
 			time = 0;
 		if (time >= 1000000)
 			time = 1000000;
-		if (container.te.getTime() != time) {
-			NetworkHelper.updateSeverTileEntity(container.te.getPos(), 1, time);
-			container.te.setTime(time);
+		if (timer.getTime() != time) {
+			NetworkHelper.updateSeverTileEntity(timer.getPos(), 1, time);
+			timer.setTime(time);
 		}
-		textboxTimer.setText(container.te.getTimeString());
+		textboxTimer.setText(timer.getTimeString());
 	}
 
 	@Override
 	protected void actionPerformed(GuiButton button) {
-		boolean isTicks = container.te.getIsTicks();
+		boolean isTicks = timer.getIsTicks();
 		switch(button.id) {
 		case 0:
 			updateTime(isTicks ? 1 : 20);
@@ -140,27 +140,27 @@ public class GuiTimer extends GuiContainerBase {
 			updateTime(isTicks ? 10000 : 60 * 60 * 20);
 			break;
 		case 5:
-			NetworkHelper.updateSeverTileEntity(container.te.getPos(), 1, 0);
-			container.te.setTime(0);
-			textboxTimer.setText(container.te.getTimeString());
+			NetworkHelper.updateSeverTileEntity(timer.getPos(), 1, 0);
+			timer.setTime(0);
+			textboxTimer.setText(timer.getTimeString());
 			break;
 		case 6:
-			NetworkHelper.updateSeverTileEntity(container.te.getPos(), 4, isTicks ? 0 : 1);
-			container.te.setIsTicks(!isTicks);
-			textboxTimer.setText(container.te.getTimeString());
+			NetworkHelper.updateSeverTileEntity(timer.getPos(), 4, isTicks ? 0 : 1);
+			timer.setIsTicks(!isTicks);
+			textboxTimer.setText(timer.getTimeString());
 			updateCaptions(!isTicks);
 			break;
 		case 7:
-			boolean invertRedstone = container.te.getInvertRedstone();
-			NetworkHelper.updateSeverTileEntity(container.te.getPos(), 2, invertRedstone ? 0 : 1);
-			container.te.setInvertRedstone(!invertRedstone);
+			boolean invertRedstone = timer.getInvertRedstone();
+			NetworkHelper.updateSeverTileEntity(timer.getPos(), 2, invertRedstone ? 0 : 1);
+			timer.setInvertRedstone(!invertRedstone);
 			buttonList.get(7).displayString = !invertRedstone ? "No Redstone" : "Redstone";
 			break;
 		case 8:
 			updateTime(0);
-			boolean isWorking = container.te.getIsWorking();
-			NetworkHelper.updateSeverTileEntity(container.te.getPos(), 3, isWorking ? 0 : 1);
-			container.te.setIsWorking(!isWorking);
+			boolean isWorking = timer.getIsWorking();
+			NetworkHelper.updateSeverTileEntity(timer.getPos(), 3, isWorking ? 0 : 1);
+			timer.setIsWorking(!isWorking);
 			buttonList.get(8).displayString = !isWorking ? "Stop" : "Start";
 			textboxTimer.setEnabled(isWorking);
 			textboxTimer.setFocused(isWorking);

@@ -87,4 +87,11 @@ public class FluidInfo {
 		else
 			tag.setString(name, String.format("%s: %s mB", stack.getLocalizedName(), tank.getFluidAmount()));
 	}
+
+	public static void addTank(String name, NBTTagCompound tag, FluidStack stack) {
+		if (stack == null)
+			tag.setString(name, "N/A");
+		else
+			tag.setString(name, String.format("%s: %s mB", stack.getLocalizedName(), stack.amount));
+	}
 }

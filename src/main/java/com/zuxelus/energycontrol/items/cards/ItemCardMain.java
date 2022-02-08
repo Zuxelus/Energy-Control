@@ -48,8 +48,8 @@ public final class ItemCardMain extends Item implements IItemCard, ITouchAction,
 		register(ItemCardEnergy::new);
 		register(ItemCardCounter::new);
 		register(ItemCardLiquid::new);
-		register(ItemCardGenerator::new);
 		if (Loader.isModLoaded(ModIDs.IC2)) {
+			register(ItemCardGenerator::new);
 			register(ItemCardGeneratorKinetic::new);
 			register(ItemCardGeneratorHeat::new);
 			register(ItemCardReactor::new);
@@ -79,6 +79,8 @@ public final class ItemCardMain extends Item implements IItemCard, ITouchAction,
 			register(ItemCardBigReactors::new);
 		if (Loader.isModLoaded(ModIDs.ENDER_IO))
 			register(ItemCardEnderIO::new);
+		if (Loader.isModLoaded(ModIDs.HBM))
+			register(ItemCardHBM::new);
 		if (Loader.isModLoaded(ModIDs.MEKANISM))
 			register(ItemCardMekanism::new);
 		if (Loader.isModLoaded(ModIDs.NUCLEAR_CRAFT))

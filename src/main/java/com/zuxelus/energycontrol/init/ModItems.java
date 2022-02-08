@@ -55,7 +55,6 @@ public class ModItems {
 	public static Item itemPortablePanel;
 	public static Item itemCardHolder;
 	public static Item itemComponent;
-	public static Item itemNanoBow;
 	public static Item itemAFB;
 	public static Item itemAFSUUpgradeKit;
 
@@ -64,8 +63,7 @@ public class ModItems {
 		blockLight = register(event, new BlockLight(), "block_light");
 		blockHowlerAlarm = register(event, new HowlerAlarm(), "howler_alarm");
 		blockIndustrialAlarm = register(event, new IndustrialAlarm(), "industrial_alarm");
-		if (Loader.isModLoaded(ModIDs.IC2))
-			blockThermalMonitor = register(event, new ThermalMonitor(), "thermal_monitor");
+		blockThermalMonitor = register(event, new ThermalMonitor(), "thermal_monitor");
 		blockInfoPanel = register(event, new InfoPanel(), TileEntityInfoPanel.NAME);
 		blockInfoPanelExtender = register(event, new InfoPanelExtender(), "info_panel_extender");
 		blockInfoPanelAdvanced = register(event, new AdvancedInfoPanel(), TileEntityAdvancedInfoPanel.NAME);
@@ -93,8 +91,7 @@ public class ModItems {
 		event.getRegistry().register(new ItemLight(blockLight).setRegistryName("block_light"));
 		event.getRegistry().register(new ItemBlock(blockHowlerAlarm).setRegistryName("howler_alarm"));
 		event.getRegistry().register(new ItemBlock(blockIndustrialAlarm).setRegistryName("industrial_alarm"));
-		if (Loader.isModLoaded(ModIDs.IC2))
-			event.getRegistry().register(new ItemBlock(blockThermalMonitor).setRegistryName("thermal_monitor"));
+		event.getRegistry().register(new ItemBlock(blockThermalMonitor).setRegistryName("thermal_monitor"));
 		event.getRegistry().register(new ItemBlock(blockInfoPanel).setRegistryName(TileEntityInfoPanel.NAME));
 		event.getRegistry().register(new ItemBlock(blockInfoPanelExtender).setRegistryName("info_panel_extender"));
 		event.getRegistry().register(new ItemBlock(blockHoloPanel).setRegistryName("holo_panel"));
@@ -120,13 +117,6 @@ public class ModItems {
 		itemThermometer = register(event, new ItemThermometer(), "thermometer");
 		if (Loader.isModLoaded(ModIDs.IC2))
 			itemThermometerDigital = register(event, new ItemDigitalThermometer(), "thermometer_digital");
-
-		if (Loader.isModLoaded(ModIDs.IC2))
-			itemNanoBow = getItemClass("ItemNanoBowIC2");
-		else if (Loader.isModLoaded(ModIDs.TECH_REBORN))
-			itemNanoBow = getItemClass("ItemNanoBowTR");
-		if (itemNanoBow != null)
-			register(event, itemNanoBow, "nano_bow");
 
 		if (CrossModLoader.getCrossMod(ModIDs.IC2).getProfile() == 0) {
 			itemAFB = register(event, CrossModLoader.getCrossMod(ModIDs.IC2).getItem("afb"), "afb");
@@ -224,8 +214,6 @@ public class ModItems {
 		registerItemModel(itemComponent, ItemComponent.MACHINE_CASING, "machine_casing");
 		registerItemModel(itemComponent, ItemComponent.RADIO_TRANSMITTER, "radio_transmitter");
 		registerItemModel(itemComponent, ItemComponent.STRONG_STRING, "strong_string");
-		if (ModItems.itemNanoBow != null)
-			registerItemModel(itemNanoBow, 0, "nano_bow");
 		if (CrossModLoader.getCrossMod(ModIDs.IC2).getProfile() == 0) {
 			registerItemModel(itemAFB, 0, "afb");
 			registerItemModel(itemAFSUUpgradeKit, 0, "afsu_upgrade_kit");

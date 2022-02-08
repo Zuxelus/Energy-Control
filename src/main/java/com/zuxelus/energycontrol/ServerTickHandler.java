@@ -31,6 +31,7 @@ public class ServerTickHandler {
 	public void onPlayerLogin(PlayerLoggedInEvent event) {
 		if (!(event.player instanceof EntityPlayerMP))
 			return;
+		EnergyControl.altPressed.put(event.player, false);
 		NetworkHelper.network.sendTo(new PacketAlarm(EnergyControlConfig.howlerAlarmRange, EnergyControlConfig.allowedAlarms), (EntityPlayerMP) event.player);
 		if (EnergyControl.oreHelper != null)
 			NetworkHelper.network.sendTo(new PacketOreHelper(EnergyControl.oreHelper), (EntityPlayerMP) event.player);

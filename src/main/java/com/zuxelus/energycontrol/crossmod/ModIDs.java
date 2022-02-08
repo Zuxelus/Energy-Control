@@ -9,6 +9,7 @@ public class ModIDs {
     public static final String ENDER_IO = "enderio";
     public static final String GALACTICRAFT_CORE = "galacticraftcore";
     public static final String GALACTICRAFT_PLANETS = "galacticraftplanets";
+    public static final String HBM = "hbm";
     public static final String IC2 = "ic2";
     public static final String MEKANISM = "mekanism";
     public static final String MEKANISM_GENERATORS = "mekanismgenerators";

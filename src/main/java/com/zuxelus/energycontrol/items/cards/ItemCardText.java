@@ -33,12 +33,12 @@ public class ItemCardText extends ItemCardBase {
 			if (text.equals("") && !started)
 				continue;
 			started = true;
-			result.add(0, new PanelString(text));
+			result.add(0, new PanelString(text.replace("@", "\u00a7").replace("\u00a7\u00a7", "@")));
 		}
 		String title = reader.getTitle();
 		if (title != null && !title.isEmpty()) {
 			PanelString titleString = new PanelString();
-			titleString.textCenter = title;
+			titleString.textCenter = title.replace("@", "\u00a7").replace("\u00a7\u00a7", "@");
 			result.add(0, titleString);
 		}
 		return result;

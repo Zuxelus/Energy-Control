@@ -1,5 +1,9 @@
 package com.zuxelus.energycontrol.utils;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
@@ -7,10 +11,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.List;
 
 public class StringUtils {
 	private static DecimalFormat formatter;

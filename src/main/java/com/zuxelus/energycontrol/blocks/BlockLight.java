@@ -38,10 +38,10 @@ public class BlockLight extends Block implements IWrenchable {
 
 	public BlockLight() {
 		super(Material.REDSTONE_LIGHT);
-		blocks = new HashMap<>();
-		this.setHardness(0.3F);
-		this.setCreativeTab(EnergyControl.creativeTab);
+		setHardness(0.3F);
 		setSoundType(SoundType.GLASS);
+		setCreativeTab(EnergyControl.creativeTab);
+		blocks = new HashMap<>();
 		register(DAMAGE_WHITE_OFF, false);
 		register(DAMAGE_WHITE_ON, true);
 		register(DAMAGE_ORANGE_OFF, false);

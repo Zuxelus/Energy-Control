@@ -63,20 +63,12 @@ public class DriverAdvancedInfoPanel extends DriverSidedTileEntity {
 
 		@Callback(doc = "function():list<string> -- Get card data.")
 		public Object[] getCardData(final Context context, final Arguments args) {
-			List<PanelString> joinedData = tileEntity.getPanelStringList(true, false);
-			List<String> list = NonNullList.create();
-			if (joinedData == null || joinedData.size() == 0)
-				return new Object[] { list };
+			return new Object[] { tileEntity.getPanelStringList(false) };
+		}
 
-			for (PanelString panelString : joinedData) {
-				if (panelString.textLeft != null)
-					list.add(panelString.textLeft);
-				if (panelString.textCenter != null)
-					list.add(panelString.textCenter);
-				if (panelString.textRight != null)
-					list.add(panelString.textRight);
-			}
-			return new Object[] { list };
+		@Callback(doc = "function():list<string> -- Get raw card data.")
+		public Object[] getCardDataRaw(final Context context, final Arguments args) {
+			return new Object[] { tileEntity.getPanelStringList(true) };
 		}
 
 		@Callback(doc = "function():number -- Get background color.")
@@ -138,7 +130,7 @@ public class DriverAdvancedInfoPanel extends DriverSidedTileEntity {
 			int value = args.checkInteger(0);
 			if (value > 0 && value <= 16) {
 				tileEntity.thickness = (byte) value;
-				tileEntity.notifyBlockUpdate();
+				tileEntity.updateTileEntity();
 			}
 			return null;
 		}
@@ -153,7 +145,7 @@ public class DriverAdvancedInfoPanel extends DriverSidedTileEntity {
 			int value = args.checkInteger(0);
 			if (value > -9 && value < 9) {
 				tileEntity.rotateHor = (byte) (value * 7);
-				tileEntity.notifyBlockUpdate();
+				tileEntity.updateTileEntity();
 			}
 			return null;
 		}
@@ -168,7 +160,7 @@ public class DriverAdvancedInfoPanel extends DriverSidedTileEntity {
 			int value = args.checkInteger(0);
 			if (value > -9 && value < 9) {
 				tileEntity.rotateVert = (byte) (value * 7);
-				tileEntity.notifyBlockUpdate();
+				tileEntity.updateTileEntity();
 			}
 			return null;
 		}

@@ -10,16 +10,16 @@ import net.minecraft.world.IBlockAccess;
 public class IndustrialAlarm extends HowlerAlarm {
 
 	@Override
-	protected TileEntityFacing createTileEntity() {
-		return new TileEntityIndustrialAlarm();
-	}
-
-	@Override
 	public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
 		TileEntity te = world.getTileEntity(pos);
 		if (!(te instanceof TileEntityIndustrialAlarm))
 			return 0;
 		return ((TileEntityIndustrialAlarm)te).lightLevel;
+	}
+
+	@Override
+	protected TileEntityFacing createTileEntity() {
+		return new TileEntityIndustrialAlarm();
 	}
 
 	@Override

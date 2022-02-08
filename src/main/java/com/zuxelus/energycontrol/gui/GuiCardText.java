@@ -36,8 +36,8 @@ public class GuiCardText extends GuiBase {
 	@Override
 	public void initGui() {
 		super.initGui();
-		//buttonList.clear();
 		addButton(new GuiButton(1, guiLeft + xSize - 60 - 8, guiTop + 120, 60, 20, "Ok"));
+		addButton(new GuiButton(2, guiLeft + 8, guiTop + 120, 60, 20, "Style"));
 		textArea = new GuiTextArea(fontRenderer, guiLeft + 8, guiTop + 5, xSize - 16, ySize - 35, lineCount);
 		textArea.setFocused(true);
 		String[] data = textArea.getText();
@@ -53,14 +53,25 @@ public class GuiCardText extends GuiBase {
 	}
 
 	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-		super.mouseClicked(mouseX, mouseY, mouseButton);
+	public void updateScreen() {
+		super.updateScreen();
 		if (textArea != null)
-			textArea.mouseClicked(mouseX, mouseY, mouseButton);
+			textArea.updateCursorCounter();
 	}
 
 	@Override
 	protected void actionPerformed(GuiButton button) {
+		switch (button.id) {
+		case 1:
+			updateTextArea();
+			break;
+		case 2:
+			textArea.writeText("@");
+			break;
+		}
+	}
+
+	private void updateTextArea() { // not in 1.15
 		if (textArea != null) {
 			String[] lines = textArea.getText();
 			if (lines != null)
@@ -72,9 +83,18 @@ public class GuiCardText extends GuiBase {
 	}
 
 	@Override
+	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+		super.mouseClicked(mouseX, mouseY, mouseButton);
+		if (textArea != null) {
+			textArea.mouseClicked(mouseX, mouseY, mouseButton);
+			textArea.setFocused(true);
+		}
+	}
+
+	@Override
 	protected void keyTyped(char typedChar, int keyCode) throws IOException {
 		if (keyCode == 1 || (keyCode == this.mc.gameSettings.keyBindInventory.getKeyCode() && (textArea == null || !textArea.isFocused())))
-			actionPerformed(null);
+			updateTextArea();
 		else if (textArea != null && textArea.isFocused())
 			textArea.textAreaKeyTyped(typedChar, keyCode);
 		else

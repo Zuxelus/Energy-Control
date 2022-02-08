@@ -43,7 +43,8 @@ public class ItemCardReader implements ICardReader {
 		NBTTagCompound tag = card.getTagCompound();
 		if (tag == null)
 			return null;
-
+		if (!tag.hasKey("x") || !tag.hasKey("y") || !tag.hasKey("z"))
+			return null;
 		return new BlockPos(tag.getInteger("x"), tag.getInteger("y"), tag.getInteger("z"));
 	}
 

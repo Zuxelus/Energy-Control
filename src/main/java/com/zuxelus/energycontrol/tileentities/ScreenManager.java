@@ -1,5 +1,10 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.zuxelus.energycontrol.blocks.HoloPanelExtender;
 import com.zuxelus.energycontrol.blocks.InfoPanelExtender;
 
@@ -8,11 +13,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class ScreenManager {
 

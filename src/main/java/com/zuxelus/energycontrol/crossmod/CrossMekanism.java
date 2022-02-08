@@ -281,8 +281,8 @@ public class CrossMekanism extends CrossModBase {
 			NBTTagCompound tag = setStorage(te);
 			tag.setDouble("boil_rate", boiler.lastBoilRate);
 			tag.setString("temp", CrossMekanism.getTempString(boiler.getTemp() + 300));
-			addTank("tank", tag, boiler.waterStored);
-			addTank("tank2", tag, boiler.steamStored);
+			FluidInfo.addTank("tank", tag, boiler.waterStored);
+			FluidInfo.addTank("tank2", tag, boiler.steamStored);
 			return tag;
 		}
 		if (te instanceof TileEntityInductionCasing) {
@@ -360,13 +360,6 @@ public class CrossMekanism extends CrossModBase {
 			tag.setString(name, "N/A");
 		else
 			tag.setString(name, String.format("%s: %s mB", I18n.translateToLocal("gui.bioGenerator.bioFuel"), tank.fluidStored));
-	}
-
-	public static void addTank(String name, NBTTagCompound tag, FluidStack stack) {
-		if (stack == null)
-			tag.setString(name, "N/A");
-		else
-			tag.setString(name, String.format("%s: %s mB", stack.getLocalizedName(), stack.amount));
 	}
 
 	public static NBTTagCompound setStorage(TileEntity te) {

@@ -9,15 +9,18 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntityTimer extends TileEntityFacing implements ITickable, ITilePacketHandler {
 	private int time;
+	private int startingTime;
 	private boolean invertRedstone;
 	private boolean isTicks;
 	private boolean isWorking;
-	private boolean poweredBlock;
+	private boolean sendSignal;
+	private boolean isPowered;
 
 	public TileEntityTimer() {
 		time = 0;
@@ -62,6 +65,8 @@ public class TileEntityTimer extends TileEntityFacing implements ITickable, ITil
 	public void setIsWorking(boolean value) {
 		boolean old = isWorking;
 		isWorking = value;
+		if (isWorking)
+			startingTime = time;
 		if (!world.isRemote && isWorking != old)
 			notifyBlockUpdate();
 	}
@@ -78,7 +83,18 @@ public class TileEntityTimer extends TileEntityFacing implements ITickable, ITil
 	}
 
 	public boolean getPowered() {
-		return poweredBlock;
+		return sendSignal;
+	}
+
+	public void onNeighborChange(Block fromBlock, BlockPos fromPos) { // server
+		boolean newPowered = world.getRedstonePower(pos.offset(rotation), rotation) > 0;
+		if (newPowered != isPowered) {
+			if (!isPowered && newPowered) {
+				time = startingTime;
+				setIsWorking(true);
+			}
+			isPowered = newPowered;
+		}
 	}
 
 	@Override
@@ -123,11 +139,7 @@ public class TileEntityTimer extends TileEntityFacing implements ITickable, ITil
 
 	@Override
 	public SPacketUpdateTileEntity getUpdatePacket() {
-		NBTTagCompound tag = new NBTTagCompound();
-		tag = writeProperties(tag);
-		tag.setBoolean("isTicks", isTicks);
-		tag.setBoolean("poweredBlock", poweredBlock);
-		return new SPacketUpdateTileEntity(getPos(), 0, tag);
+		return new SPacketUpdateTileEntity(getPos(), 0, getUpdateTag());
 	}
 
 	@Override
@@ -140,7 +152,7 @@ public class TileEntityTimer extends TileEntityFacing implements ITickable, ITil
 		NBTTagCompound tag = super.getUpdateTag();
 		tag = writeProperties(tag);
 		tag.setBoolean("isTicks", isTicks);
-		tag.setBoolean("poweredBlock", poweredBlock);
+		tag.setBoolean("poweredBlock", sendSignal);
 		return tag;
 	}
 
@@ -149,6 +161,8 @@ public class TileEntityTimer extends TileEntityFacing implements ITickable, ITil
 		super.readProperties(tag);
 		if (tag.hasKey("timer"))
 			time = tag.getInteger("timer");
+		if (tag.hasKey("startingTime"))
+			startingTime = tag.getInteger("startingTime");
 		if (tag.hasKey("invert"))
 			invertRedstone = tag.getBoolean("invert");
 		if (tag.hasKey("isWorking"))
@@ -156,7 +170,9 @@ public class TileEntityTimer extends TileEntityFacing implements ITickable, ITil
 		if (tag.hasKey("isTicks"))
 			isTicks = tag.getBoolean("isTicks");
 		if (tag.hasKey("poweredBlock"))
-			poweredBlock = tag.getBoolean("poweredBlock");
+			sendSignal = tag.getBoolean("poweredBlock");
+		if (tag.hasKey("isPowered"))
+			isPowered = tag.getBoolean("isPowered");
 	}
 
 	@Override
@@ -169,9 +185,11 @@ public class TileEntityTimer extends TileEntityFacing implements ITickable, ITil
 	protected NBTTagCompound writeProperties(NBTTagCompound tag) {
 		tag = super.writeProperties(tag);
 		tag.setInteger("timer", time);
+		tag.setInteger("startingTime", startingTime);
 		tag.setBoolean("invert", invertRedstone);
 		tag.setBoolean("isWorking", isWorking);
 		tag.setBoolean("isTicks", isTicks);
+		tag.setBoolean("isPowered", isPowered);
 		return tag;
 	}
 
@@ -194,6 +212,7 @@ public class TileEntityTimer extends TileEntityFacing implements ITickable, ITil
 			return;
 		if (time == 0) {
 			setIsWorking(false);
+			time = startingTime;
 			return;
 		}
 		time--;
@@ -205,9 +224,9 @@ public class TileEntityTimer extends TileEntityFacing implements ITickable, ITil
 		IBlockState iblockstate = world.getBlockState(pos);
 		Block block = iblockstate.getBlock();
 		if (block instanceof TimerBlock) {
-			boolean newValue = (time > 0 && isWorking) != invertRedstone;
-			if (poweredBlock != newValue) {
-				poweredBlock = newValue;
+			boolean newValue = time > 0 && isWorking ? !invertRedstone : invertRedstone;
+			if (sendSignal != newValue) {
+				sendSignal = newValue;
 				world.notifyNeighborsOfStateChange(pos, block, false);
 			}
 			world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);

@@ -1,26 +1,24 @@
 package com.zuxelus.zlib.tileentities;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
+
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
 
 public abstract class TileEntityInventory extends TileEntityFacing implements ISidedInventory {
 	protected NonNullList<ItemStack> inventory;
@@ -35,29 +33,14 @@ public abstract class TileEntityInventory extends TileEntityFacing implements IS
 	@Override
 	protected void readProperties(NBTTagCompound tag) {
 		super.readProperties(tag);
-		NBTTagList list = tag.getTagList("Items", Constants.NBT.TAG_COMPOUND);
 		inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
-		for (int i = 0; i < list.tagCount(); i++) {
-			NBTTagCompound stackTag = list.getCompoundTagAt(i);
-			inventory.set(stackTag.getByte("Slot"), new ItemStack(stackTag));
-		}
+		ItemStackHelper.loadAllItems(tag, inventory);
 	}
 
 	@Override
 	protected NBTTagCompound writeProperties(NBTTagCompound tag) {
 		tag = super.writeProperties(tag);
-
-		NBTTagList list = new NBTTagList();
-		for (byte i = 0; i < getSizeInventory(); i++) {
-			ItemStack stack = getStackInSlot(i);
-			if (!stack.isEmpty()) {
-				NBTTagCompound stackTag = new NBTTagCompound();
-				stackTag.setByte("Slot", i);
-				stack.writeToNBT(stackTag);
-				list.appendTag(stackTag);
-			}
-		}
-		tag.setTag("Items", list);
+		ItemStackHelper.saveAllItems(tag, inventory);
 		return tag;
 	}
 
@@ -86,9 +69,8 @@ public abstract class TileEntityInventory extends TileEntityFacing implements IS
 
 	@Override
 	public ItemStack decrStackSize(int index, int count) {
-		ItemStack itemstack = ItemStackHelper.getAndSplit(inventory, index, count);
-		//if (!itemstack.isEmpty()) markDirty();
-		return itemstack;
+		ItemStack stack = ItemStackHelper.getAndSplit(inventory, index, count);
+		return stack;
 	}
 
 	@Override
@@ -143,13 +125,13 @@ public abstract class TileEntityInventory extends TileEntityFacing implements IS
 	}
 
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing side) {
-		return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, side);
+	public boolean hasCapability(Capability<?> cap, EnumFacing side) {
+		return cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(cap, side);
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing side) {
-		if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+	public <T> T getCapability(Capability<T> cap, EnumFacing side) {
+		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
 			IItemHandler handler = itemHandlers.get(side);
 			if (handler == null) {
 				handler = new SidedInvWrapper(this, side);
@@ -158,7 +140,7 @@ public abstract class TileEntityInventory extends TileEntityFacing implements IS
 			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(handler);
 		}
 
-		return super.getCapability(capability, side);
+		return super.getCapability(cap, side);
 	}
 
 	public List<ItemStack> getDrops(int fortune) {

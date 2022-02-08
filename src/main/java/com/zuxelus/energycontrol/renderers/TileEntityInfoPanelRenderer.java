@@ -207,7 +207,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			GlStateManager.translate(0, 0, 0.0002F);
 			int colorHex = 0x000000;
 			if (panel.getColored())
-				colorHex = panel.getColorTextHex();
+				colorHex = panel.getColorText();
 			renderText(joinedData, displayWidth, displayHeight, colorHex, getFontRenderer());
 		}
 	}

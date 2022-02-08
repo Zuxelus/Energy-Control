@@ -1,10 +1,22 @@
 package com.zuxelus.energycontrol.utils;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.EnergyControlConfig;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundList;
 import net.minecraft.client.audio.SoundListSerializer;
@@ -16,17 +28,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.resource.IResourceType;
 import net.minecraftforge.client.resource.ISelectiveResourceReloadListener;
 import net.minecraftforge.client.resource.VanillaResourceType;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Predicate;
 
 public class SoundHelper {
 	private static final Gson gson = (new GsonBuilder()).registerTypeAdapter(SoundList.class, new SoundListSerializer()).create();
@@ -80,7 +81,10 @@ public class SoundHelper {
 				Map<String, SoundList> map = gson.fromJson(new InputStreamReader(iresource.getInputStream()), type);
 				map.forEach((str, soundList) -> EnergyControl.instance.availableAlarms.add(str.replace("alarm-", "")));
 			}
-		} catch (IOException ignored) {}
+		} catch (Throwable ex) {
+			if (ex.getMessage() != null)
+				EnergyControl.logger.error(ex.getMessage());
+		}
 	}
 
 	private static void buildJSON() throws IOException {

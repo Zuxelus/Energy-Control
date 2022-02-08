@@ -6,6 +6,7 @@ import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanelExtender;
 import com.zuxelus.energycontrol.utils.KeyboardUtil;
+import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,7 +20,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class InfoPanelExtender extends FacingBlock {
+public class InfoPanelExtender extends FacingBlockActive {
 
 	@Override
 	protected TileEntityFacing createTileEntity() {

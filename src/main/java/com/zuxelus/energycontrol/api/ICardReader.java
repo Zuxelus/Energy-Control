@@ -118,7 +118,7 @@ public interface ICardReader {
 
 	int getCardCount();
 
-	int getCardType();
+	int getCardType(); // removed in 1.15.2
 
 	void reset();
 

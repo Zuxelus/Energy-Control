@@ -46,7 +46,7 @@ public class GuiThermalMonitor extends GuiBase {
 	@Override
 	protected void drawGuiContainerForegroundLayer(int par1, int par2) {
 		fontRenderer.drawString(name, (xSize - fontRenderer.getStringWidth(name)) / 2, 6, 0x404040);
-		
+
 		if (textboxHeat != null)
 			textboxHeat.drawTextBox();
 	}
@@ -57,7 +57,7 @@ public class GuiThermalMonitor extends GuiBase {
 		if (textboxHeat != null)
 			textboxHeat.updateCursorCounter();
 	}
-	
+
 	@Override
 	public void onGuiClosed() {
 		updateHeat(0);

@@ -41,6 +41,9 @@ public class EnergyControlConfig {
 	@LangKey("ec.config.useCustomSounds")
 	public static boolean useCustomSounds = false;
 
+	@LangKey("ec.config.alarmPause")
+	public static int alarmPause = 60;
+
 	@LangKey("ec.config.disableRangeCheck")
 	public static boolean disableRangeCheck = false;
 

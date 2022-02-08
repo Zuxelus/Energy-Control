@@ -78,8 +78,8 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 		}
 		if (newPowered != powered) {
 			powered = newPowered;
-			if (screen != null)
-				screen.turnPower(powered, world);
+			/*if (screen != null)
+				screen.turnPower(powered, world);*/
 		}
 	}
 

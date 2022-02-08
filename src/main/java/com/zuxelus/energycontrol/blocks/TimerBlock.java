@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.blocks;
 
 import com.zuxelus.energycontrol.tileentities.TileEntityTimer;
+import com.zuxelus.zlib.blocks.FacingBlockSmall;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;

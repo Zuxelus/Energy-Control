@@ -17,10 +17,10 @@ public final class ItemStackHelper {
 	}
 
 	public static void setCoordinates(ItemStack stack, BlockPos pos) {
-		NBTTagCompound nbtTagCompound = getTagCompound(stack);
-		nbtTagCompound.setInteger("x", pos.getX());
-		nbtTagCompound.setInteger("y", pos.getY());
-		nbtTagCompound.setInteger("z", pos.getZ());
+		NBTTagCompound tag = getTagCompound(stack);
+		tag.setInteger("x", pos.getX());
+		tag.setInteger("y", pos.getY());
+		tag.setInteger("z", pos.getZ());
 	}
 
 	public static ItemStack getStackWithEnergy(Item item, String name, double energy) {

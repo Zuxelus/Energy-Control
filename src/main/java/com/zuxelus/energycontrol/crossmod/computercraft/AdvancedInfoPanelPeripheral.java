@@ -28,7 +28,7 @@ public class AdvancedInfoPanelPeripheral implements IPeripheral {
 
 	@Override
 	public String[] getMethodNames() {
-		return new String[] { "isActive", "getRange", "getCardData", "getColorBack", "getColorText", "setColorBack",
+		return new String[] { "isActive", "getRange", "getCardData", "getCardDataRaw", "getColorBack", "getColorText", "setColorBack",
 				"setColorText", "getCardTitle", "setCardTitle", "getThickness", "setThickness", "getRotHor",
 				"setRotHor", "getRotVert", "setRotVert" };
 	}
@@ -50,28 +50,39 @@ public class AdvancedInfoPanelPeripheral implements IPeripheral {
 			if (!Loader.isModLoaded("cctweaked")) {
 				Map<Integer, String> map = new HashMap<>();
 				int i = 1;
-				for (String line : te.getPanelStringList()) {
+				for (String line : te.getPanelStringList(false)) {
 					map.put(i, line);
 					i++;
 				}
 				return new Object[] { map };
 			}
-			return new Object[] { te.getPanelStringList() };
+			return new Object[] { te.getPanelStringList(false) };
 		case 3:
-			return new Object[] { te.getColorBackground() };
+			if (!Loader.isModLoaded("cctweaked")) {
+				Map<Integer, String> map = new HashMap<>();
+				int i = 1;
+				for (String line : te.getPanelStringList(true)) {
+					map.put(i, line);
+					i++;
+				}
+				return new Object[] { map };
+			}
+			return new Object[] { te.getPanelStringList(true) };
 		case 4:
-			return new Object[] { te.getColorText() };
+			return new Object[] { te.getColorBackground() };
 		case 5:
+			return new Object[] { te.getColorText() };
+		case 6:
 			value = ArgumentHelper.getInt(args, 0);
 			if (value >= 0 && value < 16)
 				te.setColorBackground(value);
 			return null;
-		case 6:
+		case 7:
 			value = ArgumentHelper.getInt(args, 0);
 			if (value >= 0 && value < 16)
 				te.setColorText(value);
 			return null;
-		case 7:
+		case 8:
 			value = ArgumentHelper.getInt(args, 0);
 			if (value < 0 || value > 2)
 				return new Object[] { "" };
@@ -79,7 +90,7 @@ public class AdvancedInfoPanelPeripheral implements IPeripheral {
 			if (!ItemCardMain.isCard(stack))
 				return new Object[] { "" };
 			return new Object[] { new ItemCardReader(stack).getTitle() };
-		case 8:
+		case 9:
 			value = ArgumentHelper.getInt(args, 0);
 			String title = ArgumentHelper.getString(args, 1);
 			if (value < 0 || value > 2)
@@ -88,31 +99,31 @@ public class AdvancedInfoPanelPeripheral implements IPeripheral {
 			if (ItemCardMain.isCard(stack))
 				new ItemCardReader(stack).setTitle(title);
 			return null;
-		case 9:
-			return new Object[] { ((int) te.thickness) };
 		case 10:
+			return new Object[] { ((int) te.thickness) };
+		case 11:
 			value = ArgumentHelper.getInt(args, 0);
 			if (value > 0 && value <= 16) {
 				te.thickness = (byte) value;
-				te.notifyBlockUpdate();
+				te.updateTileEntity();
 			}
 			return null;
-		case 11:
-			return new Object[] { ((int) te.rotateHor / 7) };
 		case 12:
+			return new Object[] { ((int) te.rotateHor / 7) };
+		case 13:
 			value = ArgumentHelper.getInt(args, 0);
 			if (value > -9 && value < 9) {
 				te.rotateHor = (byte) (value * 7);
-				te.notifyBlockUpdate();
+				te.updateTileEntity();
 			}
 			return null;
-		case 13:
-			return new Object[] { ((int) te.rotateVert / 7) };
 		case 14:
+			return new Object[] { ((int) te.rotateVert / 7) };
+		case 15:
 			value = ArgumentHelper.getInt(args, 0);
 			if (value > -9 && value < 9) {
 				te.rotateVert = (byte) (value * 7);
-				te.notifyBlockUpdate();
+				te.updateTileEntity();
 			}
 			return null;
 		}

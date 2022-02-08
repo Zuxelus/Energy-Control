@@ -1,4 +1,4 @@
-package com.zuxelus.energycontrol.blocks;
+package com.zuxelus.zlib.blocks;
 
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;

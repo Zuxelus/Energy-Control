@@ -2,6 +2,7 @@ package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.blocks.RemoteThermo;
 import com.zuxelus.energycontrol.blocks.ThermalMonitor;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.utils.ReactorHelper;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
@@ -89,11 +90,7 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 
 	@Override
 	public SPacketUpdateTileEntity getUpdatePacket() {
-		NBTTagCompound tag = new NBTTagCompound();
-		tag = writeProperties(tag);
-		tag.setInteger("status", status);
-		tag.setBoolean("poweredBlock", poweredBlock);
-		return new SPacketUpdateTileEntity(getPos(), 0, tag);
+		return new SPacketUpdateTileEntity(getPos(), 0, getUpdateTag());
 	}
 
 	@Override
@@ -160,30 +157,8 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 	}
 
 	protected void checkStatus() {
-		int newStatus;
-		IReactor reactor = ReactorHelper.getReactorAround(world, pos);
-		if (reactor == null)
-			reactor = ReactorHelper.getReactor3x3(world, pos);
-
-		if (reactor != null) {
-			if (tickRate == -1) {
-				tickRate = reactor.getTickRate() / 2;
-
-				if (tickRate == 0)
-					tickRate = 1;
-
-				updateTicker = tickRate;
-			}
-
-			if (reactor.getHeat() >= heatLevel)// Normally mappedHeatLevel
-				newStatus = 1;
-			else
-				newStatus = 0;
-
-		} else {
-			int heat = ReactorHelper.getReactorHeat(world, pos);
-			newStatus = heat == -1 ? -2 : heat >= heatLevel ? 1 : 0;
-		}
+		int heat = CrossModLoader.getReactorHeat(world, pos);
+		int newStatus = heat == -1 ? -2 : heat >= heatLevel ? 1 : 0;
 
 		if (newStatus != status) {
 			status = newStatus;
@@ -196,7 +171,7 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 		IBlockState iblockstate = world.getBlockState(pos);
 		Block block = iblockstate.getBlock();
 		if (block instanceof ThermalMonitor || block instanceof RemoteThermo) {
-			boolean newValue = status >= 0 && (status == 1 != invertRedstone);
+			boolean newValue = status < 0 ? false : status == 1 ? !invertRedstone : invertRedstone;
 			if (poweredBlock != newValue) {
 				poweredBlock = newValue;
 				world.notifyNeighborsOfStateChange(pos, block, false);

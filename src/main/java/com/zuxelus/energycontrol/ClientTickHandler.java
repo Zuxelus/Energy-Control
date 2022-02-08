@@ -3,9 +3,11 @@ package com.zuxelus.energycontrol;
 import java.util.List;
 
 import com.google.common.collect.Lists;
+import com.zuxelus.energycontrol.network.ChannelHandler;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.ItemStack;
@@ -13,10 +15,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class ClientTickHandler {
 	public final static ClientTickHandler instance = new ClientTickHandler();
 	public static List<TileEntity> holo_panels = Lists.newArrayList();
+	public static boolean altPressed;
 
 	@SubscribeEvent
 	public void onItemTooltip(ItemTooltipEvent event)
@@ -29,6 +33,18 @@ public class ClientTickHandler {
 		OreHelper ore = EnergyControl.oreHelper.get(OreHelper.getId(Block.getBlockFromItem(stack.getItem()), stack.getItemDamage()));
 		if (ore != null)
 			event.getToolTip().add(1, ore.getDescription());
+	}
+
+	@SubscribeEvent
+	public static void onClientTick(TickEvent.ClientTickEvent event) {
+		if (event.phase == TickEvent.Phase.END)
+			return;
+		boolean alt = GuiScreen.isAltKeyDown();
+		if (altPressed != alt) {
+			altPressed = alt;
+			if (Minecraft.getMinecraft().getConnection() != null)
+				ChannelHandler.updateSeverKeys(alt);
+		}
 	}
 
 	@SubscribeEvent

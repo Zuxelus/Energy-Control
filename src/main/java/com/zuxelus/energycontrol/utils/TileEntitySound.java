@@ -1,4 +1,4 @@
-package com.zuxelus.energycontrol.tileentities;
+package com.zuxelus.energycontrol.utils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;

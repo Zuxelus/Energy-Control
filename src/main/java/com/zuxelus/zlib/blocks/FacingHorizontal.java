@@ -1,4 +1,4 @@
-package com.zuxelus.energycontrol.blocks;
+package com.zuxelus.zlib.blocks;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;

@@ -1,5 +1,6 @@
 package com.zuxelus.zlib.tileentities;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -54,5 +55,10 @@ public abstract class TileEntityFacing extends TileEntity {
 		if (hasRotation() && rotation != null)
 			tag.setInteger("rotation", rotation.getIndex());
 		return tag;
+	}
+
+	protected void notifyBlockUpdate() {
+		IBlockState state = world.getBlockState(pos);
+		world.notifyBlockUpdate(pos, state, state, 2);
 	}
 }

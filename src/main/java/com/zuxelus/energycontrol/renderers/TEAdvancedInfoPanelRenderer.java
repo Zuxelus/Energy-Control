@@ -291,7 +291,7 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		int row = 0;
 		int colorHex = 0x000000;
 		if (panel.getColored())
-			colorHex = panel.getColorTextHex();
+			colorHex = panel.getColorText();
 		for (PanelString panelString : joinedData) {
 			if (panelString.textLeft != null) {
 				fontRenderer.drawString(panelString.textLeft, offsetX - realWidth / 2,

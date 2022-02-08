@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ChatAllowedCharacters;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
@@ -61,6 +62,7 @@ public class GuiTextArea extends Gui {
 			drawCursorVertical(cursorPositionX, textTop - 1, cursorPositionX + 1, textTop + 1 + fontRenderer.FONT_HEIGHT);
 	}
 
+	// Copy of GuiTextField.drawSelectionBox
 	private void drawCursorVertical(int left, int top, int right, int bottom) {
 		if (left < right) {
 			int i = left;
@@ -88,6 +90,10 @@ public class GuiTextArea extends Gui {
 		tessellator.draw();
 		GlStateManager.disableColorLogic();
 		GlStateManager.enableTexture2D();
+	}
+
+	public void updateCursorCounter() {
+		cursorCounter++;
 	}
 
 	public void setCursorPosition(int x, int y) {
@@ -155,8 +161,13 @@ public class GuiTextArea extends Gui {
 		cursorLine = newCursorLine;
 	}
 
-	public void mouseClicked(int x, int y, int par3) {
-		isFocused = x >= xPos && x < xPos + width && y >= yPos && y < yPos + height;
+	public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+		isFocused = mouseX >= xPos && mouseX < xPos + width && mouseY >= yPos && mouseY < yPos + height;
+		if (isFocused && mouseButton == 0) {
+			int xi = MathHelper.floor(mouseX) - xPos;
+			int yi = MathHelper.floor(mouseY) - yPos;
+			setCursorPosition(fontRenderer.trimStringToWidth(text[(yi - 4) / 10], xi).length(), (yi - 4) / 10);
+		}
 	}
 
 	public boolean isFocused() {
@@ -170,7 +181,7 @@ public class GuiTextArea extends Gui {
 	public boolean textAreaKeyTyped(char typedChar, int keyCode) {
 		if (!isFocused)
 			return false;
-		
+
 		switch (typedChar) {
 		case 1:
 			setCursorPosition(text[cursorLine].length(), cursorLine);

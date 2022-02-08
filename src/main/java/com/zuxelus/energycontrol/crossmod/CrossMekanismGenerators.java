@@ -137,7 +137,7 @@ public class CrossMekanismGenerators extends CrossModBase {
 			tag.setDouble("flow_rate", turbine.clientFlow);
 			tag.setDouble("max_flow_rate", Math.min(rate, turbine.vents * (MekanismConfig.current()).generators.turbineVentGasFlow.val()));
 			tag.setBoolean("active", turbine.clientRotation > 0);
-			CrossMekanism.addTank("tank", tag, turbine.fluidStored);
+			FluidInfo.addTank("tank", tag, turbine.fluidStored);
 			return tag;
 		}
 		if (te instanceof TileEntityReactorFrame) {

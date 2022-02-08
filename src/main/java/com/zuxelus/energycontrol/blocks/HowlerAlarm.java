@@ -4,6 +4,7 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
+import com.zuxelus.zlib.blocks.FacingBlockSmall;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;

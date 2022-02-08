@@ -125,6 +125,7 @@ public abstract class GuiPanelBase extends GuiContainerBase implements IContaine
 			mc.displayGuiScreen(colorGui);
 			break;
 		case ID_TEXT:
+			oldStack = ItemStack.EMPTY;
 			openTextGui();
 			break;
 		case ID_TICKRATE:

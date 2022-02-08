@@ -73,20 +73,12 @@ public class DriverInfoPanel extends DriverSidedTileEntity {
 
 		@Callback(doc = "function():list<string> -- Get card data.")
 		public Object[] getCardData(final Context context, final Arguments args) {
-			List<PanelString> joinedData = tileEntity.getPanelStringList(true, false);
-			List<String> list = NonNullList.create();
-			if (joinedData == null || joinedData.size() == 0)
-				return new Object[] { list };
+			return new Object[] { tileEntity.getPanelStringList(false) };
+		}
 
-			for (PanelString panelString : joinedData) {
-				if (panelString.textLeft != null)
-					list.add(panelString.textLeft);
-				if (panelString.textCenter != null)
-					list.add(panelString.textCenter);
-				if (panelString.textRight != null)
-					list.add(panelString.textRight);
-			}
-			return new Object[] { list };
+		@Callback(doc = "function():list<string> -- Get raw card data.")
+		public Object[] getCardDataRaw(final Context context, final Arguments args) {
+			return new Object[] { tileEntity.getPanelStringList(true) };
 		}
 
 		@Callback(doc = "function():number -- Get background color.")

@@ -22,6 +22,7 @@ public class ItemCardType {
 	public static final int KIT_THERMAL_EXPANSION = 17;
 	public static final int KIT_ENDER_IO = 18;
 	public static final int KIT_PNEUMATICCRAFT = 19;
+	public static final int KIT_HBM = 20;
 
 	public static final int KIT_MAX = 49;
 
@@ -59,6 +60,7 @@ public class ItemCardType {
 	public static final int CARD_THERMAL_EXPANSION = 29;
 	public static final int CARD_ENDER_IO = 30;
 	public static final int CARD_PNEUMATICCRAFT = 31;
+	public static final int CARD_HBM = 32;
 
 	public static final int CARD_MAX = 49;
 }

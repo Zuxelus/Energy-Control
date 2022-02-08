@@ -8,10 +8,13 @@ import java.util.Map;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.EnergyControlConfig;
 import com.zuxelus.energycontrol.api.*;
+import com.zuxelus.energycontrol.blocks.HoloPanelExtender;
+import com.zuxelus.energycontrol.blocks.InfoPanelExtender;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.utils.StringUtils;
+import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
@@ -145,10 +148,6 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		return colorText;
 	}
 
-	public int getColorTextHex() {
-		return COLORS_HEX[colorText];
-	}
-
 	public void setColorText(int c) {
 		if (!world.isRemote && colorText != c)
 			notifyBlockUpdate();
@@ -163,8 +162,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		boolean newPowered = world.isBlockPowered(pos);
 		if (newPowered != powered) {
 			powered = newPowered;
-			if (screen != null)
-				screen.turnPower(powered, world);
+			/*if (screen != null)
+				screen.turnPower(powered, world);*/
 		}
 	}
 
@@ -191,13 +190,6 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 			if (tag.hasKey("slot") && tag.hasKey("value"))
 				setDisplaySettings(tag.getInteger("slot"), tag.getInteger("value"));
 			break;
-		case 2:
-			if (tag.hasKey("value")) {
-				int value = tag.getInteger("value");
-				setColorBackground(value >> 4);
-				setColorText(value & 0xf);
-			}
-			break;
 		case 3:
 			if (tag.hasKey("value"))
 				setShowLabels(tag.getInteger("value") == 1);
@@ -214,18 +206,20 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 			if (tag.hasKey("value"))
 				setTickRate(tag.getInteger("value"));
 			break;
+		case 6:
+			if (tag.hasKey("value"))
+				setColorBackground(tag.getInteger("value"));
+			break;
+		case 7:
+			if (tag.hasKey("value"))
+				setColorText(tag.getInteger("value"));
+			break;
 		}
 	}
 
 	@Override
 	public SPacketUpdateTileEntity getUpdatePacket() {
-		NBTTagCompound tag = new NBTTagCompound();
-		tag = writeProperties(tag);
-		calcPowered();
-		tag.setBoolean("powered", powered);
-		colored = isColoredEval();
-		tag.setBoolean("colored", colored);
-		return new SPacketUpdateTileEntity(getPos(), 0, tag);
+		return new SPacketUpdateTileEntity(getPos(), 0, getUpdateTag());
 	}
 
 	@Override
@@ -269,12 +263,10 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 			tickRate = tag.getInteger("tickRate");
 		if (tag.hasKey("showLabels"))
 			showLabels = tag.getBoolean("showLabels");
-
-		if (tag.hasKey("colorBackground")) {
+		if (tag.hasKey("colorText"))
 			colorText = tag.getInteger("colorText");
+		if (tag.hasKey("colorBackground"))
 			colorBackground = tag.getInteger("colorBackground");
-		}
-
 		if (tag.hasKey("colored"))
 			setColored(tag.getBoolean("colored"));
 
@@ -372,9 +364,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	}
 
 	@Override
-	public void notifyBlockUpdate() {
-		IBlockState iblockstate = world.getBlockState(pos);
-		world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
+	public void updateTileEntity() {
+		notifyBlockUpdate();
 	}
 
 	public void resetCardData() {
@@ -430,7 +421,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		return null;
 	}
 
-	public List<String> getPanelStringList() {
+	public List<String> getPanelStringList(boolean isRaw) {
 		List<PanelString> joinedData = getPanelStringList(true, false);
 		List<String> list = NonNullList.create();
 		if (joinedData == null || joinedData.size() == 0)
@@ -438,13 +429,17 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 
 		for (PanelString panelString : joinedData) {
 			if (panelString.textLeft != null)
-				list.add(panelString.textLeft);
+				list.add(formatString(panelString.textLeft, isRaw));
 			if (panelString.textCenter != null)
-				list.add(panelString.textCenter);
+				list.add(formatString(panelString.textCenter, isRaw));
 			if (panelString.textRight != null)
-				list.add(panelString.textRight);
+				list.add(formatString(panelString.textRight, isRaw));
 		}
 		return list;
+	}
+
+	private String formatString(String text, boolean isRaw) {
+		return isRaw ? text : text.replaceAll("\\u00a7[1-9,a-f]", "");
 	}
 
 	public int getCardSlot(ItemStack card) {
@@ -587,6 +582,20 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		} else
 			screenData = screen.toTag();
 		notifyBlockUpdate();
+	}
+
+	public void updateExtenders(World world, Boolean active) {
+		if (screen == null)
+			return;
+
+		for (int x = screen.minX; x <= screen.maxX; x++)
+			for (int y = screen.minY; y <= screen.maxY; y++)
+				for (int z = screen.minZ; z <= screen.maxZ; z++) {
+					BlockPos pos = new BlockPos(x, y, z);
+					IBlockState state = world.getBlockState(pos);
+					if (state.getBlock() instanceof InfoPanelExtender || state.getBlock() instanceof HoloPanelExtender)
+						world.setBlockState(pos, state.withProperty(FacingBlockActive.ACTIVE, active), 2);
+				}
 	}
 
 	@Override

@@ -162,11 +162,6 @@ public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable
 		return oldState.getBlock() != newSate.getBlock();
 	}
 
-	private void notifyBlockUpdate() {
-		IBlockState iblockstate = world.getBlockState(pos);
-		world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
-	}
-
 	// Inventory
 	@Override
 	public int getSizeInventory() {

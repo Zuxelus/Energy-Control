@@ -52,7 +52,7 @@ public class GuiButtonGeneral extends GuiButton {
 			drawGradientRect(x, y, x + width, y + height, 0x80FFFFFF, 0x80FFFFFF);
 		if (texture != null)
 			drawModalRectWithCustomSizedTexture(x, y, textureLeft / scale, hovered ? (textureTop + textureTopOff) / scale : textureTop / scale, width, height, 256 / scale, 256 / scale);
-		mouseDragged(mc, mouseX, mouseY);
+		mouseDragged(mc, mouseX, mouseY); // removed in 1.15
 		if (!displayString.equals(""))
 			mc.fontRenderer.drawString(displayString, x + (width - mc.fontRenderer.getStringWidth(displayString)) / 2, y - 3 + height / 2, 0x404040);
 	}

@@ -211,11 +211,6 @@ public class TileEntityAverageCounter extends TileEntityEnergyStorage implements
 		return stack.isItemEqual(CrossModLoader.getCrossMod(ModIDs.IC2).getItemStack("transformer"));
 	}
 
-	private void notifyBlockUpdate() {
-		IBlockState iblockstate = world.getBlockState(pos);
-		world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
-	}
-
 	// IEnergySource
 	@Override
 	public double getOfferedEnergy() {

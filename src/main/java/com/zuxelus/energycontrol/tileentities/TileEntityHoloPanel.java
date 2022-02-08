@@ -31,32 +31,6 @@ public class TileEntityHoloPanel extends TileEntityInfoPanel {
 	}
 
 	@Override
-	public void notifyBlockUpdate() {
-		IBlockState iblockstate = world.getBlockState(pos);
-		if (iblockstate.getValue(HoloPanel.ACTIVE) == powered) {
-			world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
-			return;
-		}
-		IBlockState newState = iblockstate.getBlock().getDefaultState()
-				.withProperty(HoloPanel.FACING, iblockstate.getValue(HoloPanel.FACING))
-				.withProperty(HoloPanel.ACTIVE, powered);
-		world.setBlockState(pos, newState, 3);
-	}
-
-	@Override
-	protected void readProperties(NBTTagCompound tag) {
-		boolean old = powered;
-		super.readProperties(tag);
-		if (powered != old && world.isRemote) {
-			IBlockState iblockstate = world.getBlockState(pos);
-			IBlockState newState = iblockstate.getBlock().getDefaultState()
-					.withProperty(HoloPanel.FACING, iblockstate.getValue(HoloPanel.FACING))
-					.withProperty(HoloPanel.ACTIVE, powered);
-			world.setBlockState(pos, newState, 3);
-		}
-	}
-
-	@Override
 	public boolean isItemValid(int index, ItemStack stack) { // ISlotItemFilter
 		switch (index) {
 		case SLOT_CARD:

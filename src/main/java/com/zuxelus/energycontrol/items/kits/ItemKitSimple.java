@@ -18,7 +18,7 @@ public abstract class ItemKitSimple extends ItemKitBase {
 		BlockPos position = getTargetCoordinates(world, pos, stack);
 		if (position == null)
 			return ItemStack.EMPTY;
-			
+
 		ItemStack newCard = getItemCard();
 		if (newCard.isEmpty())
 			return ItemStack.EMPTY;

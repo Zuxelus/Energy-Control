@@ -22,6 +22,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiInfoPanel extends GuiPanelBase {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_info_panel.png");
+	private boolean isColored;
 
 	public GuiInfoPanel(ContainerBase container) {
 		super(container, "tile.info_panel.name", TEXTURE);
@@ -32,7 +33,8 @@ public class GuiInfoPanel extends GuiPanelBase {
 	@Override
 	protected void initButtons() {
 		addButton(new GuiButtonGeneral(ID_LABELS, guiLeft + xSize - 24, guiTop + 42, 16, 16, TEXTURE, 176, panel.getShowLabels() ? 15 : 31).setGradient());
-		if (panel.isColoredEval())
+		isColored = panel.isColoredEval();
+		if (isColored)
 			addButton(new GuiButtonGeneral(ID_COLORS, guiLeft + xSize - 24, guiTop + 42 + 17, 16, 16, TEXTURE, 192, 0).setGradient().setScale(2));
 		addButton(new GuiButtonGeneral(ID_TICKRATE, guiLeft + xSize - 24, guiTop + 42 + 17 * 3, 16, 16, Integer.toString(panel.getTickRate())).setGradient());
 	}
@@ -40,7 +42,7 @@ public class GuiInfoPanel extends GuiPanelBase {
 	@Override
 	protected void initControls() {
 		ItemStack stack = panel.getCards().get(activeTab);
-		if (ItemStack.areItemsEqual(stack, oldStack))
+		if (ItemStack.areItemsEqual(stack, oldStack) && panel.isColoredEval() == isColored)
 			return;
 		if (!oldStack.isEmpty() && stack.isEmpty())
 			updateTitle();

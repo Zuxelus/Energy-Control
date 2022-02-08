@@ -1,4 +1,4 @@
-package com.zuxelus.energycontrol.blocks;
+package com.zuxelus.zlib.blocks;
 
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 import net.minecraft.block.Block;

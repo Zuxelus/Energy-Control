@@ -5,6 +5,8 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public interface IItemCard {
 	/**
@@ -24,10 +26,11 @@ public interface IItemCard {
 	 * @return A list of card settings
 	 * @see PanelSetting
 	 */
+	@SideOnly(Side.CLIENT)
 	List<PanelSetting> getSettingsList(ItemStack stack);
 
 	/**
 	 * @return Whether the card has a limited range
 	 */
-	boolean isRemoteCard(ItemStack stack);
+	boolean isRemoteCard(ItemStack stack); // In 1.12.2 we need id
 }

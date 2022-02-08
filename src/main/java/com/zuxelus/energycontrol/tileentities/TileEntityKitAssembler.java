@@ -1,16 +1,15 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import com.zuxelus.energycontrol.api.IItemCard;
 import com.zuxelus.energycontrol.blocks.KitAssembler;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
-import com.zuxelus.energycontrol.crossmod.jei.KitAssemblerRecipeWrapper;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.recipes.KitAssemblerRecipe;
+import com.zuxelus.zlib.containers.EnergyStorage;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
-import com.zuxelus.zlib.tileentities.TileEntityInventory;
+import com.zuxelus.zlib.tileentities.TileEntityItemHandler;
 
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
@@ -35,15 +34,15 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.common.Optional;
 
 @Optional.Interface(modid = ModIDs.IC2, iface = "ic2.api.energy.tile.IEnergySink")
-public class TileEntityKitAssembler extends TileEntityInventory implements ITickable, ITilePacketHandler, ISlotItemFilter, IEnergySink, IEnergyStorage {
+public class TileEntityKitAssembler extends TileEntityItemHandler implements ITickable, ITilePacketHandler, ISlotItemFilter, IEnergySink, IEnergyStorage {
 	public static final byte SLOT_INFO = 0;
 	public static final byte SLOT_CARD1 = 1;
 	public static final byte SLOT_ITEM = 2;
 	public static final byte SLOT_CARD2 = 3;
 	public static final byte SLOT_RESULT = 4;
 	public static final byte SLOT_DISCHARGER = 5;
-	private double energy;
-	private double buffer;
+	private EnergyStorage storage;
+	private int buffer;
 	private static final int CONSUMPTION = 5;
 	private KitAssemblerRecipe recipe;
 	private int recipeTime; // client Only
@@ -54,17 +53,18 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 
 	public TileEntityKitAssembler() {
 		super("tile.kit_assembler.name");
+		storage = new EnergyStorage(CAPACITY, 32, 32, 0);
 		addedToEnet = false;
 		active = false;
 		production = 0;
 	}
 
 	public double getEnergy() {
-		return energy;
+		return storage.getEnergyStored();
 	}
 
 	public int getEnergyFactor() {
-		return (int) Math.round(energy * 52.0F / CAPACITY);
+		return (int) Math.round(storage.getEnergyStored() * 52.0F / CAPACITY);
 	}
 
 	public double getProduction() {
@@ -87,12 +87,14 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 	public void onServerMessageReceived(NBTTagCompound tag) {
 		if (!tag.hasKey("type"))
 			return;
-		if (tag.getInteger("type") == 4) {
+		switch (tag.getInteger("type")) {
+		case 4:
 			if (tag.hasKey("slot") && tag.hasKey("title")) {
 				ItemStack stack = getStackInSlot(tag.getInteger("slot"));
 				if (ItemCardMain.isCard(stack))
 					new ItemCardReader(stack).setTitle(tag.getString("title"));
 			}
+			break;
 		}
 	}
 
@@ -100,24 +102,23 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 	public void onClientMessageReceived(NBTTagCompound tag) {
 		if (!tag.hasKey("type"))
 			return;
-		if (tag.getInteger("type") == 1) {
+		switch (tag.getInteger("type")) {
+		case 1:
 			if (tag.hasKey("energy") && tag.hasKey("production")) {
-				energy = tag.getDouble("energy");
+				storage.setEnergy(tag.getInteger("energy"));
 				production = tag.getDouble("production");
 			}
 			if (tag.hasKey("time"))
 				recipeTime = tag.getInteger("time");
 			else
 				recipeTime = 0;
+			break;
 		}
 	}
 
 	@Override
 	public SPacketUpdateTileEntity getUpdatePacket() {
-		NBTTagCompound tag = new NBTTagCompound();
-		tag = writeProperties(tag);
-		tag.setBoolean("active", active);
-		return new SPacketUpdateTileEntity(getPos(), 0, tag);
+		return new SPacketUpdateTileEntity(getPos(), 0, getUpdateTag());
 	}
 
 	@Override
@@ -138,9 +139,9 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 	protected void readProperties(NBTTagCompound tag) {
 		super.readProperties(tag);
 		if (tag.hasKey("energy"))
-			energy = tag.getDouble("energy");
+			storage.setEnergy(tag.getInteger("energy"));
 		if (tag.hasKey("buffer"))
-			buffer = tag.getDouble("buffer");
+			buffer = tag.getInteger("buffer");
 		if (tag.hasKey("production"))
 			production = tag.getDouble("production");
 		if (tag.hasKey("active"))
@@ -156,8 +157,8 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 	@Override
 	protected NBTTagCompound writeProperties(NBTTagCompound tag) {
 		tag = super.writeProperties(tag);
-		tag.setDouble("energy", energy);
-		tag.setDouble("buffer", buffer);
+		tag.setInteger("energy", storage.getEnergyStored());
+		tag.setInteger("buffer", buffer);
 		tag.setDouble("production", production);
 		return tag;
 	}
@@ -201,8 +202,8 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 		handleDischarger(SLOT_DISCHARGER);
 		if (!active)
 			return;
-		if (energy >= CONSUMPTION) {
-			energy -= CONSUMPTION;
+		if (storage.getEnergyStored() >= CONSUMPTION) {
+			storage.extractEnergy(CONSUMPTION, false);
 			production += 1;
 			if (recipe != null && production >= recipe.time) {
 				ItemStack stack1 = getStackInSlot(SLOT_CARD1);
@@ -220,39 +221,40 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 				updateState();
 			}
 		} else {
-			energy = 0;
+			storage.setEnergy(0);
 			production = 0;
 			updateState();
 		}
 	}
 
 	private void handleDischarger(int slot) {
-		double needed = Math.min(32, getDemandedEnergy());
+		int needed = Math.min(32, storage.getMaxEnergyStored() - storage.getEnergyStored());
 		if (needed <= 0)
 			return;
 		if (buffer > 0)
-			buffer = injectEnergy(null, buffer, 0); 
-		needed = Math.min(32, getDemandedEnergy());
+			buffer -= storage.receiveEnergy(buffer, false);
+		needed = Math.min(32, storage.getMaxEnergyStored() - storage.getEnergyStored());
 		ItemStack stack = getStackInSlot(slot);
 		if (!stack.isEmpty() && needed > 0) {
 			if (stack.getItem().equals(Items.LAVA_BUCKET)) {
 				buffer += 2000;
-				buffer = injectEnergy(null, buffer, 0);
+				buffer -= storage.receiveEnergy(buffer, false);
 				setInventorySlotContents(slot, new ItemStack(Items.BUCKET));
 				return;
 			}
 			IEnergyStorage stackStorage = stack.getCapability(CapabilityEnergy.ENERGY, null);
 			if (stackStorage != null) {
-				if (receiveEnergy(stackStorage.extractEnergy((int) Math.floor(needed), false), false) > 0)
+				if (storage.receiveEnergy(stackStorage.extractEnergy(needed, false), false) > 0)
 					active = true;
 			} else if (CrossModLoader.getCrossMod(ModIDs.IC2).isElectricItem(stack)) {
-				double old = energy;
-				energy += CrossModLoader.getCrossMod(ModIDs.IC2).dischargeItem(stack, getDemandedEnergy());
-				if (!active && energy > old)
+				double old = storage.getEnergyStored();
+				storage.receiveEnergy((int) CrossModLoader.getCrossMod(ModIDs.IC2).dischargeItem(stack, getDemandedEnergy()), false);
+				if (!active && storage.getEnergyStored() > old)
 					markDirty();
 			}
 		}
 	}
+
 	public void notifyBlockUpdate() {
 		IBlockState iblockstate = world.getBlockState(pos);
 		world.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
@@ -268,7 +270,7 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 
 	private void updateActive() {
 		active = false;
-		if (energy < CONSUMPTION)
+		if (storage.getEnergyStored() < CONSUMPTION)
 			return;
 		KitAssemblerRecipe newRecipe;
 		if (recipe == null) {
@@ -312,13 +314,13 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int index, ItemStack stack) {
-		return isItemValid(index, stack);
+	public boolean isItemValidForSlot(int slot, ItemStack stack) {
+		return isItemValid(slot, stack);
 	}
 
 	@Override
-	public boolean isItemValid(int index, ItemStack stack) { // ISlotItemFilter
-		switch (index) {
+	public boolean isItemValid(int slot, ItemStack stack) { // ISlotItemFilter
+		switch (slot) {
 		case SLOT_CARD1:
 		case SLOT_CARD2:
 		case SLOT_ITEM:
@@ -343,7 +345,7 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 
 	@Override
 	public double getDemandedEnergy() {
-		return Math.max(0, CAPACITY - energy);
+		return Math.max(0, storage.getMaxEnergyStored() - storage.getEnergyStored());
 	}
 
 	@Override
@@ -358,12 +360,7 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 			left = amount - 32;
 			amount = 32;
 		}
-		energy += amount;
-
-		if (energy > CAPACITY) {
-			left += energy - CAPACITY;
-			energy = CAPACITY;
-		}
+		left += amount - storage.receiveEnergy((int) amount, false);
 		return left;
 	}
 
@@ -382,10 +379,9 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 	// IEnergyStorage
 	@Override
 	public int receiveEnergy(int maxReceive, boolean simulate) {
+		
 		int energyReceived = Math.min(CAPACITY - getEnergyStored(), Math.min(32, maxReceive));
-		if (!simulate)
-			energy += energyReceived;
-		return energyReceived;
+		return storage.receiveEnergy(energyReceived, simulate);
 	}
 
 	@Override
@@ -395,12 +391,12 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 
 	@Override
 	public int getEnergyStored() {
-		return (int) Math.ceil(energy);
+		return storage.getEnergyStored();
 	}
 
 	@Override
 	public int getMaxEnergyStored() {
-		return CAPACITY;
+		return storage.getMaxEnergyStored();
 	}
 
 	@Override

@@ -24,5 +24,16 @@
     "result": {
         "item": "energycontrol:item_kit",
         "data": 4
-    }
+    },
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "forge:mod_loaded",
+                    "modid": "ic2"
+                }
+            ]
+        }
+    ]
 }

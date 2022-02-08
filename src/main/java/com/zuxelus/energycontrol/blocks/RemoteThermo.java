@@ -4,6 +4,7 @@ import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.tileentities.TileEntityRemoteThermo;
 import com.zuxelus.energycontrol.tileentities.TileEntityThermo;
+import com.zuxelus.zlib.blocks.FacingHorizontal;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
