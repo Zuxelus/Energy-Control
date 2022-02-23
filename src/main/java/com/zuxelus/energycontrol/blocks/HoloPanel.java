@@ -4,7 +4,6 @@ import java.util.Random;
 
 import com.zuxelus.energycontrol.tileentities.TileEntityHoloPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
-import com.zuxelus.zlib.blocks.FacingHorizontalActive;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
 import net.minecraft.block.Block;
@@ -19,7 +18,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class HoloPanel extends FacingHorizontalActive {
+public class HoloPanel extends FacingHorizontalActiveEC {
 	protected static final AxisAlignedBB AABB_NORTH = new AxisAlignedBB(0.0D, 0.0D, 0.25D, 1.0D, 0.0625D, 0.75D);
 	protected static final AxisAlignedBB AABB_WEST = new AxisAlignedBB(0.25D, 0.0D, 0.0D, 0.75D, 0.0625D, 1.0D);
 

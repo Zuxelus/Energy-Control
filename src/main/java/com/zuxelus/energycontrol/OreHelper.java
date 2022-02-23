@@ -63,8 +63,7 @@ public class OreHelper {
 					//EnergyControl.oreHelper.put(Item.getItemFromBlock(Blocks.QUARTZ_ORE), new OreHelper(Blocks.QUARTZ_ORE, over  .goldMinHeight, over.goldMaxHeight, over.goldSize, over.goldCount));
 				} catch (Throwable t) {
 				}
-				CrossModLoader.getCrossMod(ModIDs.NUCLEAR_CRAFT).loadOreInfo();
-				CrossModLoader.getCrossMod(ModIDs.IC2).loadOreInfo();
+				CrossModLoader.loadOreInfo();
 			}
 		}
 	}

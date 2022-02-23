@@ -31,7 +31,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Mod(modid = EnergyControl.MODID, dependencies="after:ic2;after:techreborn", acceptedMinecraftVersions = "[1.12.2]")
+@Mod(modid = EnergyControl.MODID, dependencies="after:ic2;after:techreborn;after:comboarmors@[1.12.2-0.0.8,)", acceptedMinecraftVersions = "[1.12.2]")
 public class EnergyControl {
 	public static final String MODID = "energycontrol";
 

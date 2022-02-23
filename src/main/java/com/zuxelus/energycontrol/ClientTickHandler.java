@@ -25,7 +25,7 @@ public class ClientTickHandler {
 	@SubscribeEvent
 	public void onItemTooltip(ItemTooltipEvent event)
 	{
-		if (EnergyControl.oreHelper == null)
+		if (EnergyControl.oreHelper == null || !EnergyControlConfig.showOreInfo)
 			return;
 		ItemStack stack = event.getItemStack();
 		if (stack.isEmpty())

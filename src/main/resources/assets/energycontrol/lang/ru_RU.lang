@@ -104,10 +104,13 @@ ec.config.remoteThermalMonitorEnergyConsumption=Remote Thermal Monitor EU Cons.
 ec.config.infoPanelRefreshPeriod=Info Panel Refresh Period
 ec.config.rangeTriggerRefreshPeriod=Range Trigger Refresh Period
 ec.config.useCustomSounds=Use Custom Sounds
+ec.config.alarmPause=Alarm Pause in ticks
 ec.config.disableRangeCheck=Disable Range Check
+ec.config.showOreInfo=Show Ore Info
 ec.config.wsEnabled=Web Socket Enabled
 ec.config.wsHost=Web Socket Host
 ec.config.wsPort=Web Socket Port
+ec.config.wsToken=Web Socket Token
 ec.config.wsRefreshRate=Web Socket Refresh Rate in ticks
 ec.config.wsServerID=Web Socket Server ID
 

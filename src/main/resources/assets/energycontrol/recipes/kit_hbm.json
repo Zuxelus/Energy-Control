@@ -1,0 +1,38 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "IT",
+        "PD"
+    ],
+    "key": {
+        "I": {
+            "item": "hbm:ingot_steel"
+        },
+        "T": {
+            "item": "energycontrol:item_component",
+            "data": 3
+        },
+        "P": {
+            "item": "minecraft:paper"
+        },
+        "D": {
+            "type": "forge:ore_dict",
+            "ore": "dyeBlack"
+        }
+    },
+    "result": {
+        "item": "energycontrol:item_kit",
+        "data": 20
+    },
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "forge:mod_loaded",
+                    "modid": "hbm"
+                }
+            ]
+        }
+    ]
+}

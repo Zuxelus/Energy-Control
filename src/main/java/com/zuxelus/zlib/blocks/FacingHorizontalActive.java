@@ -1,5 +1,6 @@
 package com.zuxelus.zlib.blocks;
 
+import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -10,6 +11,10 @@ import net.minecraft.world.World;
 
 public abstract class FacingHorizontalActive extends FacingHorizontal {
 	public static final PropertyBool ACTIVE = PropertyBool.create("active");
+
+	public FacingHorizontalActive(Material material) {
+		super(material);
+	}
 
 	@Override
 	public IBlockState getStateFromMeta(int meta) {

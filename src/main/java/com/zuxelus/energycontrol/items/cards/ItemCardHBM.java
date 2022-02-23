@@ -78,6 +78,8 @@ public class ItemCardHBM extends ItemCardBase {
 			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString("tank3"), showLabels));
 		if (reader.hasField("tank4"))
 			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString("tank4"), showLabels));
+		if (reader.hasField("tank5"))
+			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString("tank5"), showLabels));
 		if (reader.hasField("active"))
 			addOnOff(result, isServer, reader.getBoolean("active"));
 		return result;

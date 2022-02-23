@@ -196,4 +196,9 @@ public class CrossModLoader {
 		}
 		return tag;
 	}
+
+	public static void loadOreInfo() {
+		for (CrossModBase crossMod : CROSS_MODS.values())
+			crossMod.loadOreInfo();
+	}
 }

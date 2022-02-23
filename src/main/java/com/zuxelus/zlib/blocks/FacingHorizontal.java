@@ -1,14 +1,13 @@
 package com.zuxelus.zlib.blocks;
 
-import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.crossmod.ModIDs;
+import java.util.List;
+
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
+
 import ic2.api.tile.IWrenchable;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
-import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -17,21 +16,15 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 
-import java.util.List;
-
-@Optional.Interface(modid = ModIDs.IC2, iface = "ic2.api.tile.IWrenchable")
+@Optional.Interface(modid = "ic2", iface = "ic2.api.tile.IWrenchable")
 public abstract class FacingHorizontal extends BlockHorizontal implements ITileEntityProvider, IWrenchable {
 
-	public FacingHorizontal() {
-		super(Material.IRON);
-		setSoundType(SoundType.METAL);
-		setHardness(6.0F);
-		setCreativeTab(EnergyControl.creativeTab);
+	public FacingHorizontal(Material material) {
+		super(material);
 	}
 
 	protected abstract TileEntityFacing createTileEntity(int meta);
@@ -69,17 +62,6 @@ public abstract class FacingHorizontal extends BlockHorizontal implements ITileE
 		if (te instanceof TileEntityInventory)
 			((TileEntityInventory) te).dropItems(world, pos);
 		super.breakBlock(world, pos, state);
-	}
-
-	protected abstract int getBlockGuiId();
-
-	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		if (CrossModLoader.getCrossMod(ModIDs.IC2).isWrench(player.getHeldItem(hand)))
-			return true;
-		if (!world.isRemote)
-			player.openGui(EnergyControl.instance, getBlockGuiId(), world, pos.getX(), pos.getY(), pos.getZ());
-		return true;
 	}
 
 	// IWrenchable

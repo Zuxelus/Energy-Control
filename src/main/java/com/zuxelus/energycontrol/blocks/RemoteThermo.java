@@ -4,8 +4,8 @@ import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.tileentities.TileEntityRemoteThermo;
 import com.zuxelus.energycontrol.tileentities.TileEntityThermo;
-import com.zuxelus.zlib.blocks.FacingHorizontal;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
+
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -17,7 +17,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class RemoteThermo extends FacingHorizontal {
+public class RemoteThermo extends FacingHorizontalEC {
 
 	@Override
 	public TileEntityFacing createTileEntity(int meta) {

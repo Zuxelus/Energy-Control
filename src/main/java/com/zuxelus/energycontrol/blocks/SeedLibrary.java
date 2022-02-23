@@ -1,10 +1,9 @@
 package com.zuxelus.energycontrol.blocks;
 
 import com.zuxelus.energycontrol.tileentities.TileEntitySeedLibrary;
-import com.zuxelus.zlib.blocks.FacingHorizontalActive;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
-public class SeedLibrary extends FacingHorizontalActive {
+public class SeedLibrary extends FacingHorizontalActiveEC {
 
 	@Override
 	public TileEntityFacing createTileEntity(int meta) {

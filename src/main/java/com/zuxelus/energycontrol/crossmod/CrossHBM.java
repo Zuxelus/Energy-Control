@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.hbm.blocks.ModBlocks;
+import com.hbm.config.WorldConfig;
 import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.interfaces.IItemFluidHandler;
 import com.hbm.inventory.FusionRecipes;
@@ -14,6 +15,9 @@ import com.hbm.items.special.ItemAMSCore;
 import com.hbm.saveddata.RadiationSavedData;
 import com.hbm.tileentity.TileEntityProxyCombo;
 import com.hbm.tileentity.machine.*;
+import com.hbm.world.generator.DungeonToolbox;
+import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.OreHelper;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import net.minecraft.block.Block;
@@ -83,6 +87,31 @@ public class CrossHBM extends CrossModBase {
 			tag.setDouble("maxStorage", ((TileEntityMachineTurbine) te).maxPower);
 			return tag;
 		}
+		if (te instanceof TileEntityMachineShredder) {
+			tag.setDouble("storage", ((TileEntityMachineShredder) te).getPower());
+			tag.setDouble("maxStorage", ((TileEntityMachineShredder) te).maxPower);
+			return tag;
+		}
+		if (te instanceof TileEntityMachineBoilerElectric) {
+			tag.setDouble("storage", ((TileEntityMachineBoilerElectric) te).getPower());
+			tag.setDouble("maxStorage", ((TileEntityMachineBoilerElectric) te).maxPower);
+			return tag;
+		}
+		if (te instanceof TileEntityMachineArcFurnace) {
+			tag.setDouble("storage", ((TileEntityMachineArcFurnace) te).getPower());
+			tag.setDouble("maxStorage", ((TileEntityMachineArcFurnace) te).maxPower);
+			return tag;
+		}
+		if (te instanceof TileEntityMachineCentrifuge) {
+			tag.setDouble("storage", ((TileEntityMachineCentrifuge) te).getPower());
+			tag.setDouble("maxStorage", ((TileEntityMachineCentrifuge) te).maxPower);
+			return tag;
+		}
+		if (te instanceof TileEntityMachineGasCent) {
+			tag.setDouble("storage", ((TileEntityMachineGasCent) te).getPower());
+			tag.setDouble("maxStorage", ((TileEntityMachineGasCent) te).maxPower);
+			return tag;
+		}
 		if (te instanceof TileEntityProxyCombo) {
 			TileEntity base = ((TileEntityProxyCombo) te).getTile();
 			if (base instanceof TileEntityMachineLargeTurbine) {
@@ -105,45 +134,62 @@ public class CrossHBM extends CrossModBase {
 				tag.setDouble("maxStorage", ((TileEntityMachinePlasmaHeater) base).maxPower);
 				return tag;
 			}
+			if (base instanceof TileEntityMachineCrystallizer) {
+				tag.setDouble("storage", ((TileEntityMachineCrystallizer) base).getPower());
+				tag.setDouble("maxStorage", ((TileEntityMachineCrystallizer) base).maxPower);
+				return tag;
+			}
 		}
 		if (te instanceof TileEntityDummy) {
 			TileEntity base = te.getWorld().getTileEntity(((TileEntityDummy) te).target);
 			if (base instanceof TileEntityMachineGasFlare) {
-				tag.setDouble("storage", ((TileEntityMachineGasFlare) te).getSPower());
-				tag.setDouble("maxStorage", ((TileEntityMachineGasFlare) te).maxPower);
+				tag.setDouble("storage", ((TileEntityMachineGasFlare) base).getSPower());
+				tag.setDouble("maxStorage", ((TileEntityMachineGasFlare) base).maxPower);
 				return tag;
 			}
 			if (base instanceof TileEntityMachineTurbofan) {
-				tag.setDouble("storage", ((TileEntityMachineTurbofan) te).getSPower());
-				tag.setDouble("maxStorage", ((TileEntityMachineTurbofan) te).maxPower);
+				tag.setDouble("storage", ((TileEntityMachineTurbofan) base).getSPower());
+				tag.setDouble("maxStorage", ((TileEntityMachineTurbofan) base).maxPower);
 				return tag;
 			}
 			if (base instanceof TileEntityMachineRadGen) {
-				tag.setDouble("storage", ((TileEntityMachineRadGen) te).getSPower());
-				tag.setDouble("maxStorage", ((TileEntityMachineRadGen) te).maxPower);
+				tag.setDouble("storage", ((TileEntityMachineRadGen) base).getSPower());
+				tag.setDouble("maxStorage", ((TileEntityMachineRadGen) base).maxPower);
 				return tag;
 			}
 			if (base instanceof TileEntityAMSLimiter) {
-				tag.setDouble("storage", ((TileEntityAMSLimiter) te).getPower());
-				tag.setDouble("maxStorage", ((TileEntityAMSLimiter) te).maxPower);
+				tag.setDouble("storage", ((TileEntityAMSLimiter) base).getPower());
+				tag.setDouble("maxStorage", ((TileEntityAMSLimiter) base).maxPower);
 				return tag;
 			}
 			if (base instanceof TileEntityAMSBase) {
-				tag.setDouble("storage", ((TileEntityAMSBase) te).getSPower());
-				tag.setDouble("maxStorage", ((TileEntityAMSBase) te).maxPower);
+				tag.setDouble("storage", ((TileEntityAMSBase) base).getSPower());
+				tag.setDouble("maxStorage", ((TileEntityAMSBase) base).maxPower);
 				return tag;
 			}
 			if (base instanceof TileEntityAMSEmitter) {
-				tag.setDouble("storage", ((TileEntityAMSEmitter) te).getPower());
-				tag.setDouble("maxStorage", ((TileEntityAMSEmitter) te).maxPower);
+				tag.setDouble("storage", ((TileEntityAMSEmitter) base).getPower());
+				tag.setDouble("maxStorage", ((TileEntityAMSEmitter) base).maxPower);
 				return tag;
 			}
-		}
-		if (te instanceof TileEntityDummyFluidPort) {
-			TileEntity base = te.getWorld().getTileEntity(((TileEntityDummyFluidPort) te).target);
-			if (base instanceof TileEntityMachineGasFlare) {
-				tag.setDouble("storage", ((TileEntityMachineGasFlare) te).getSPower());
-				tag.setDouble("maxStorage", ((TileEntityMachineGasFlare) te).maxPower);
+			if (base instanceof TileEntityMachineOilWell) {
+				tag.setDouble("storage", ((TileEntityMachineOilWell) base).getPower());
+				tag.setDouble("maxStorage", ((TileEntityMachineOilWell) base).maxPower);
+				return tag;
+			}
+			if (base instanceof TileEntityMachineAssembler) {
+				tag.setDouble("storage", ((TileEntityMachineAssembler) base).getPower());
+				tag.setDouble("maxStorage", ((TileEntityMachineAssembler) base).maxPower);
+				return tag;
+			}
+			if (base instanceof TileEntityMachinePumpjack) {
+				tag.setDouble("storage", ((TileEntityMachinePumpjack) base).getPower());
+				tag.setDouble("maxStorage", ((TileEntityMachinePumpjack) base).maxPower);
+				return tag;
+			}
+			if (base instanceof TileEntityMachineRefinery) {
+				tag.setDouble("storage", ((TileEntityMachineRefinery) base).getPower());
+				tag.setDouble("maxStorage", ((TileEntityMachineRefinery) base).maxPower);
 				return tag;
 			}
 		}
@@ -172,14 +218,6 @@ public class CrossHBM extends CrossModBase {
 
 	@Override
 	public int getReactorHeat(World world, BlockPos pos) {
-		TileEntity te;
-		/*for (int xoffset = -1; xoffset < 2; xoffset++)
-			for (int yoffset = -1; yoffset < 2; yoffset++)
-				for (int zoffset = -1; zoffset < 2; zoffset++) {
-					te = world.getTileEntity(pos.east(xoffset).up(yoffset).south(zoffset));
-					if (te instanceof TileFissionController)
-						return (int) Math.round(((TileFissionController) te).heat);
-				}*/
 		return -1;
 	}
 
@@ -201,6 +239,20 @@ public class CrossHBM extends CrossModBase {
 		if (te instanceof TileEntityMachineTurbine) {
 			result.add(new FluidInfo(((TileEntityMachineTurbine) te).tanks[0]));
 			result.add(new FluidInfo(((TileEntityMachineTurbine) te).tanks[1]));
+			return result;
+		}
+		if (te instanceof TileEntityMachineBoiler) {
+			result.add(new FluidInfo(((TileEntityMachineBoiler) te).tanks[0]));
+			result.add(new FluidInfo(((TileEntityMachineBoiler) te).tanks[1]));
+			return result;
+		}
+		if (te instanceof TileEntityMachineBoilerElectric) {
+			result.add(new FluidInfo(((TileEntityMachineBoilerElectric) te).tanks[0]));
+			result.add(new FluidInfo(((TileEntityMachineBoilerElectric) te).tanks[1]));
+			return result;
+		}
+		if (te instanceof TileEntityMachineGasCent) {
+			result.add(new FluidInfo(((TileEntityMachineGasCent) te).tank));
 			return result;
 		}
 		if (te instanceof TileEntityProxyCombo) {
@@ -234,6 +286,20 @@ public class CrossHBM extends CrossModBase {
 				result.add(new FluidInfo(((TileEntityMachinePlasmaHeater) base).plasma));
 				return result;
 			}
+			if (base instanceof TileEntityMachineOrbus) {
+				result.add(new FluidInfo(((TileEntityMachineOrbus) base).tank));
+				return result;
+			}
+			if (base instanceof TileEntityMachineFractionTower) {
+				result.add(new FluidInfo(((TileEntityMachineFractionTower) base).tanks[0]));
+				result.add(new FluidInfo(((TileEntityMachineFractionTower) base).tanks[1]));
+				result.add(new FluidInfo(((TileEntityMachineFractionTower) base).tanks[2]));
+				return result;
+			}
+			if (base instanceof TileEntityMachineCrystallizer) {
+				result.add(new FluidInfo(((TileEntityMachineCrystallizer) base).tank));
+				return result;
+			}
 		}
 		if (te instanceof TileEntityDummy) {
 			TileEntity base = te.getWorld().getTileEntity(((TileEntityDummy) te).target);
@@ -264,11 +330,22 @@ public class CrossHBM extends CrossModBase {
 				result.add(new FluidInfo(((TileEntityAMSEmitter) base).tank));
 				return result;
 			}
-		}
-		if (te instanceof TileEntityDummyFluidPort) {
-			TileEntity base = te.getWorld().getTileEntity(((TileEntityDummyFluidPort) te).target);
-			if (base instanceof TileEntityMachineGasFlare) {
-				result.add(new FluidInfo(((TileEntityMachineGasFlare) base).tank));
+			if (base instanceof TileEntityMachineOilWell) {
+				result.add(new FluidInfo(((TileEntityMachineOilWell) base).tanks[0]));
+				result.add(new FluidInfo(((TileEntityMachineOilWell) base).tanks[1]));
+				return result;
+			}
+			if (base instanceof TileEntityMachinePumpjack) {
+				result.add(new FluidInfo(((TileEntityMachinePumpjack) base).tanks[0]));
+				result.add(new FluidInfo(((TileEntityMachinePumpjack) base).tanks[1]));
+				return result;
+			}
+			if (base instanceof TileEntityMachineRefinery) {
+				result.add(new FluidInfo(((TileEntityMachineRefinery) base).tanks[0]));
+				result.add(new FluidInfo(((TileEntityMachineRefinery) base).tanks[1]));
+				result.add(new FluidInfo(((TileEntityMachineRefinery) base).tanks[2]));
+				result.add(new FluidInfo(((TileEntityMachineRefinery) base).tanks[3]));
+				result.add(new FluidInfo(((TileEntityMachineRefinery) base).tanks[4]));
 				return result;
 			}
 		}
@@ -423,6 +500,47 @@ public class CrossHBM extends CrossModBase {
 			FluidInfo.addTank("tank2", tag, ((TileEntityMachineTurbine) te).tanks[1]);
 			return tag;
 		}
+		if (te instanceof TileEntityMachineShredder) {
+			NBTTagCompound tag = new NBTTagCompound();
+			tag.setLong("stored", ((TileEntityMachineShredder) te).getPower());
+			tag.setLong("capacity", ((TileEntityMachineShredder) te).maxPower);
+			return tag;
+		}
+		if (te instanceof TileEntityMachineBoiler) {
+			NBTTagCompound tag = new NBTTagCompound();
+			tag.setLong("hull", ((TileEntityMachineBoiler) te).heat / 100);
+			FluidInfo.addTank("tank", tag, ((TileEntityMachineBoiler) te).tanks[0]);
+			FluidInfo.addTank("tank2", tag, ((TileEntityMachineBoiler) te).tanks[1]);
+			return tag;
+		}
+		if (te instanceof TileEntityMachineBoilerElectric) {
+			NBTTagCompound tag = new NBTTagCompound();
+			tag.setLong("stored", ((TileEntityMachineBoilerElectric) te).getPower());
+			tag.setLong("capacity", ((TileEntityMachineBoilerElectric) te).maxPower);
+			tag.setLong("hull", ((TileEntityMachineBoilerElectric) te).heat / 100);
+			FluidInfo.addTank("tank", tag, ((TileEntityMachineBoilerElectric) te).tanks[0]);
+			FluidInfo.addTank("tank2", tag, ((TileEntityMachineBoilerElectric) te).tanks[1]);
+			return tag;
+		}
+		if (te instanceof TileEntityMachineArcFurnace) {
+			NBTTagCompound tag = new NBTTagCompound();
+			tag.setLong("stored", ((TileEntityMachineArcFurnace) te).getPower());
+			tag.setLong("capacity", ((TileEntityMachineArcFurnace) te).maxPower);
+			return tag;
+		}
+		if (te instanceof TileEntityMachineCentrifuge) {
+			NBTTagCompound tag = new NBTTagCompound();
+			tag.setLong("stored", ((TileEntityMachineCentrifuge) te).getPower());
+			tag.setLong("capacity", ((TileEntityMachineCentrifuge) te).maxPower);
+			return tag;
+		}
+		if (te instanceof TileEntityMachineGasCent) {
+			NBTTagCompound tag = new NBTTagCompound();
+			tag.setLong("stored", ((TileEntityMachineGasCent) te).getPower());
+			tag.setLong("capacity", ((TileEntityMachineGasCent) te).maxPower);
+			FluidInfo.addTank("tank", tag, ((TileEntityMachineGasCent) te).tank);
+			return tag;
+		}
 		if (te instanceof TileEntityProxyCombo) {
 			NBTTagCompound tag = new NBTTagCompound();
 			TileEntity base = ((TileEntityProxyCombo) te).getTile();
@@ -477,11 +595,41 @@ public class CrossHBM extends CrossModBase {
 				FluidInfo.addTank("tank3", tag, heater.plasma);
 				return tag;
 			}
+			if (base instanceof TileEntityMachineOrbus) {
+				FluidInfo.addTank("tank", tag, ((TileEntityMachineOrbus) base).tank);
+				return tag;
+			}
+			if (base instanceof TileEntityMachineFractionTower) {
+				FluidInfo.addTank("tank", tag, ((TileEntityMachineFractionTower) base).tanks[0]);
+				FluidInfo.addTank("tank2", tag, ((TileEntityMachineFractionTower) base).tanks[1]);
+				FluidInfo.addTank("tank3", tag, ((TileEntityMachineFractionTower) base).tanks[2]);
+				return tag;
+			}
+			if (base instanceof TileEntityMachineCrystallizer) {
+				tag.setLong("stored", ((TileEntityMachineCrystallizer) base).getPower());
+				tag.setLong("capacity", ((TileEntityMachineCrystallizer) base).maxPower);
+				FluidInfo.addTank("tank", tag, ((TileEntityMachineCrystallizer) base).tank);
+				return tag;
+			}
 		}
 		if (te instanceof TileEntityDummy) {
 			TileEntity base = te.getWorld().getTileEntity(((TileEntityDummy) te).target);
-			if (base instanceof TileEntityMachineGasFlare)
-				return getGasFlareInfo((TileEntityMachineGasFlare) base);
+			if (base instanceof TileEntityMachineGasFlare) {
+				NBTTagCompound tag = new NBTTagCompound();
+				if (((TileEntityMachineGasFlare) te).tank.getFluidAmount() >= 10) {
+					tag.setBoolean("active", true);
+					tag.setDouble("consumption", 10);
+					tag.setDouble("output", 50);
+				} else {
+					tag.setBoolean("active", false);
+					tag.setDouble("consumption", 0);
+					tag.setDouble("output", 0);
+				}
+				tag.setLong("stored", ((TileEntityMachineGasFlare) te).getSPower());
+				tag.setLong("capacity", ((TileEntityMachineGasFlare) te).maxPower);
+				FluidInfo.addTank("tank", tag, ((TileEntityMachineGasFlare) te).tank);
+				return tag;
+			}
 			if (base instanceof TileEntityMachineTurbofan) {
 				NBTTagCompound tag = new NBTTagCompound();
 				int nrg = 1250;
@@ -554,11 +702,39 @@ public class CrossHBM extends CrossModBase {
 				FluidInfo.addTank("tank", tag, ((TileEntityAMSEmitter) base).tank);
 				return tag;
 			}
-		}
-		if (te instanceof TileEntityDummyFluidPort) {
-			TileEntity base = te.getWorld().getTileEntity(((TileEntityDummyFluidPort) te).target);
-			if (base instanceof TileEntityMachineGasFlare)
-				return getGasFlareInfo((TileEntityMachineGasFlare) base);
+			if (base instanceof TileEntityMachineOilWell) {
+				NBTTagCompound tag = new NBTTagCompound();
+				tag.setLong("stored", ((TileEntityMachineOilWell) base).getPower());
+				tag.setLong("capacity", ((TileEntityMachineOilWell) base).maxPower);
+				FluidInfo.addTank("tank", tag, ((TileEntityMachineOilWell) base).tanks[0]);
+				FluidInfo.addTank("tank2", tag, ((TileEntityMachineOilWell) base).tanks[1]);
+				return tag;
+			}
+			if (base instanceof TileEntityMachineAssembler) {
+				NBTTagCompound tag = new NBTTagCompound();
+				tag.setLong("stored", ((TileEntityMachineAssembler) base).getPower());
+				tag.setLong("capacity", ((TileEntityMachineAssembler) base).maxPower);
+				return tag;
+			}
+			if (base instanceof TileEntityMachinePumpjack) {
+				NBTTagCompound tag = new NBTTagCompound();
+				tag.setLong("stored", ((TileEntityMachinePumpjack) base).getPower());
+				tag.setLong("capacity", ((TileEntityMachinePumpjack) base).maxPower);
+				FluidInfo.addTank("tank", tag, ((TileEntityMachinePumpjack) base).tanks[0]);
+				FluidInfo.addTank("tank2", tag, ((TileEntityMachinePumpjack) base).tanks[1]);
+				return tag;
+			}
+			if (base instanceof TileEntityMachineRefinery) {
+				NBTTagCompound tag = new NBTTagCompound();
+				tag.setLong("stored", ((TileEntityMachineRefinery) base).getPower());
+				tag.setLong("capacity", ((TileEntityMachineRefinery) base).maxPower);
+				FluidInfo.addTank("tank", tag, ((TileEntityMachineRefinery) base).tanks[0]);
+				FluidInfo.addTank("tank2", tag, ((TileEntityMachineRefinery) base).tanks[1]);
+				FluidInfo.addTank("tank3", tag, ((TileEntityMachineRefinery) base).tanks[2]);
+				FluidInfo.addTank("tank4", tag, ((TileEntityMachineRefinery) base).tanks[3]);
+				FluidInfo.addTank("tank5", tag, ((TileEntityMachineRefinery) base).tanks[4]);
+				return tag;
+			}
 		}
 		if (te instanceof TileEntityMachineReactorSmall) {
 			TileEntityMachineReactorSmall reactor = (TileEntityMachineReactorSmall) te;
@@ -815,20 +991,41 @@ public class CrossHBM extends CrossModBase {
 		return fluid;
 	}
 
-	private NBTTagCompound getGasFlareInfo(TileEntityMachineGasFlare te) {
-		NBTTagCompound tag = new NBTTagCompound();
-		if (te.tank.getFluidAmount() >= 10) {
-			tag.setBoolean("active", true);
-			tag.setDouble("consumption", 10);
-			tag.setDouble("output", 50);
-		} else {
-			tag.setBoolean("active", false);
-			tag.setDouble("consumption", 0);
-			tag.setDouble("output", 0);
-		}
-		tag.setLong("stored", te.getSPower());
-		tag.setLong("capacity", te.maxPower);
-		FluidInfo.addTank("tank", tag, te.tank);
-		return tag;
+	@Override
+	public void loadOreInfo() {
+		loadOre(1, 32, 30, 10, ModBlocks.gas_flammable);
+		loadOre(1, 32, 30, 10, ModBlocks.gas_explosive);
+		loadOre(25, 6, 30, 10, ModBlocks.ore_gneiss_iron);
+		loadOre(10, 6, 30, 10, ModBlocks.ore_gneiss_gold);
+		loadOre(WorldConfig.uraniumSpawn * 3, 6, 30, 10, ModBlocks.ore_gneiss_uranium);
+		loadOre(WorldConfig.copperSpawn * 3, 6, 30, 10, ModBlocks.ore_gneiss_copper);
+		loadOre(WorldConfig.asbestosSpawn * 3, 6, 30, 10, ModBlocks.ore_gneiss_asbestos);
+		loadOre(WorldConfig.lithiumSpawn, 6, 30, 10, ModBlocks.ore_gneiss_lithium);
+		loadOre(WorldConfig.rareSpawn, 6, 30, 10, ModBlocks.ore_gneiss_asbestos);
+		loadOre(WorldConfig.gassshaleSpawn * 3, 10, 30, 10, ModBlocks.ore_gneiss_gas);
+		loadOre(WorldConfig.uraniumSpawn, 5, 5, 20, ModBlocks.ore_uranium);
+		loadOre(WorldConfig.thoriumSpawn, 5, 5, 25, ModBlocks.ore_thorium);
+		loadOre(WorldConfig.titaniumSpawn, 6, 5, 30, ModBlocks.ore_titanium);
+		loadOre(WorldConfig.sulfurSpawn, 8, 5, 30, ModBlocks.ore_sulfur);
+		loadOre(WorldConfig.aluminiumSpawn, 6, 5, 40, ModBlocks.ore_aluminium);
+		loadOre(WorldConfig.copperSpawn, 6, 5, 45, ModBlocks.ore_copper);
+		loadOre(WorldConfig.fluoriteSpawn, 4, 5, 45, ModBlocks.ore_fluorite);
+		loadOre(WorldConfig.niterSpawn, 6, 5, 30, ModBlocks.ore_niter);
+		loadOre(WorldConfig.tungstenSpawn, 8, 5, 30, ModBlocks.ore_tungsten);
+		loadOre(WorldConfig.leadSpawn, 9, 5, 30, ModBlocks.ore_lead);
+		loadOre(WorldConfig.berylliumSpawn, 4, 5, 30, ModBlocks.ore_beryllium);
+		loadOre(WorldConfig.rareSpawn, 5, 5, 20, ModBlocks.ore_rare);
+		loadOre(WorldConfig.ligniteSpawn, 24, 35, 25, ModBlocks.ore_lignite);
+		loadOre(WorldConfig.asbestosSpawn, 4, 16, 16, ModBlocks.ore_asbestos);
+		loadOre(WorldConfig.cinnebarSpawn, 4, 8, 16, ModBlocks.ore_cinnebar);
+		loadOre(WorldConfig.cobaltSpawn, 4, 4, 8, ModBlocks.ore_cobalt);
+		loadOre(WorldConfig.ironClusterSpawn, 6, 5, 50, ModBlocks.cluster_iron);
+		loadOre(WorldConfig.titaniumClusterSpawn, 6, 5, 30, ModBlocks.cluster_titanium);
+		loadOre(WorldConfig.aluminiumClusterSpawn, 6, 5, 40, ModBlocks.cluster_aluminium);
+		loadOre(1, 64, 32, 32, ModBlocks.ore_coal_oil);
+	}
+
+	private void loadOre(int veinCount, int amount, int minHeight, int variance, Block block) {
+		EnergyControl.oreHelper.put(OreHelper.getId(block, 0), new OreHelper(minHeight, minHeight + variance, amount, veinCount));
 	}
 }

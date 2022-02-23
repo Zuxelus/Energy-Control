@@ -3,8 +3,8 @@ package com.zuxelus.energycontrol.blocks;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.tileentities.TileEntityRangeTrigger;
-import com.zuxelus.zlib.blocks.FacingHorizontal;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
+
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -18,7 +18,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class RangeTrigger extends FacingHorizontal {
+public class RangeTrigger extends FacingHorizontalEC {
 	public static final PropertyEnum<EnumState> STATE = PropertyEnum.create("state", EnumState.class);
 
 	@Override
