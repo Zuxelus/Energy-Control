@@ -1,18 +1,20 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import buildcraft.lib.engine.TileEngineBase_BC8;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
+
 import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ItemCardEngine extends ItemCardBase {
 
@@ -26,41 +28,13 @@ public class ItemCardEngine extends ItemCardBase {
 		if (target == null)
 			return CardState.NO_TARGET;
 
-		TileEntity entity = world.getTileEntity(target);
-		NBTTagCompound tag = getEngineData(entity);
-		if (tag == null || !tag.hasKey("type"))
+		TileEntity te = world.getTileEntity(target);
+		NBTTagCompound tag = CrossModLoader.getCrossMod(ModIDs.BUILDCRAFT).getCardData(te);
+		if (tag == null)
 			return CardState.NO_TARGET;
-
-		reader.setInt("type", tag.getInteger("type"));
-		if (tag.getInteger("type") == 1) {
-			reader.setDouble("output", tag.getDouble("output"));
-			reader.setDouble("power", tag.getDouble("power"));
-			reader.setDouble("powerLevel", tag.getDouble("powerLevel"));
-			reader.setDouble("maxPower", tag.getDouble("maxPower"));
-			reader.setDouble("heat", tag.getDouble("heat"));
-			reader.setDouble("heatLevel", tag.getDouble("heatLevel"));
-			reader.setDouble("speed", tag.getDouble("speed"));
-		}
-		reader.setBoolean("active", tag.getBoolean("active"));
+		reader.reset();
+		reader.copyFrom(tag);
 		return CardState.OK;
-	}
-
-	private NBTTagCompound getEngineData(TileEntity te) {
-		if (!(te instanceof TileEngineBase_BC8))
-			return null;
-		
-		NBTTagCompound tag = new NBTTagCompound();
-		tag.setInteger("type", 1);
-		tag.setDouble("output",(double) ((TileEngineBase_BC8) te).getCurrentOutput() / Math.pow(10, 6));
-		//tag.setBoolean("powered",((TileEngineBase_BC8) te).isRedstonePowered);
-		tag.setBoolean("active",((TileEngineBase_BC8) te).isBurning());
-		tag.setDouble("power", ((TileEngineBase_BC8) te).getEnergyStored() / Math.pow(10, 6));
-		tag.setDouble("powerLevel", ((TileEngineBase_BC8) te).getPowerLevel() * 100);
-		tag.setDouble("maxPower", ((TileEngineBase_BC8) te).getMaxPower() / Math.pow(10, 6));
-		tag.setDouble("heat", ((TileEngineBase_BC8) te).getHeat());
-		tag.setDouble("heatLevel", ((TileEngineBase_BC8) te).getHeatLevel() * 100);
-		tag.setDouble("speed", ((TileEngineBase_BC8) te).getPistonSpeed());
-		return tag;
 	}
 
 	@Override

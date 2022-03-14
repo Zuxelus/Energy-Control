@@ -104,6 +104,7 @@ ec.config.remoteThermalMonitorEnergyConsumption=远程温度监控器 EU 损耗�
 ec.config.infoPanelRefreshPeriod=信息面板刷新率
 ec.config.rangeTriggerRefreshPeriod=范围触发器刷新率
 ec.config.useCustomSounds=使用自定义声音
+ec.config.useCustomSounds=Use Custom Sounds
 ec.config.alarmPause=Alarm Pause in ticks
 ec.config.disableRangeCheck=Disable Range Check
 ec.config.showOreInfo=Show Ore Info

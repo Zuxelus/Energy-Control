@@ -1,21 +1,22 @@
 package com.zuxelus.energycontrol.items.cards;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
-import com.zuxelus.energycontrol.utils.ReactorHelper;
-import ic2.api.reactor.IReactor;
+
 import net.minecraft.client.resources.I18n;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ItemCardReactor extends ItemCardBase {
 
@@ -29,11 +30,13 @@ public class ItemCardReactor extends ItemCardBase {
 		if (target == null) 
 			return CardState.NO_TARGET;
 
-		IReactor reactor = ReactorHelper.getReactorAt(world, target);
-		if (reactor == null)
+		TileEntity te = world.getTileEntity(target);
+		NBTTagCompound tag = CrossModLoader.getCrossMod(ModIDs.IC2).getReactorData(te);
+		if (tag == null)
 			return CardState.NO_TARGET;
-		
-		return CrossModLoader.getCrossMod(ModIDs.IC2).updateCardReactor(world, reader, reactor);
+		reader.reset();
+		reader.copyFrom(tag);
+		return CardState.OK;
 	}
 
 	@Override

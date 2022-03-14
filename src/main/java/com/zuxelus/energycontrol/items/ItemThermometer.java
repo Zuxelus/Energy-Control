@@ -1,7 +1,8 @@
 package com.zuxelus.energycontrol.items;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.utils.ReactorHelper;
+import com.zuxelus.energycontrol.crossmod.IC2ReactorHelper;
+
 import ic2.api.reactor.IReactor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -38,9 +39,9 @@ public class ItemThermometer extends Item {
 		if (!canTakeDamage(stack, 2))
 			return EnumActionResult.PASS;
 
-		IReactor reactor = ReactorHelper.getReactorAround(world, pos);
+		IReactor reactor = IC2ReactorHelper.getReactorAround(world, pos);
 		if (reactor == null)
-			reactor = ReactorHelper.getReactor3x3(world, pos);
+			reactor = IC2ReactorHelper.getReactor3x3(world, pos);
 		if (reactor != null) {
 			messagePlayer(player, reactor);
 			damage(stack, 1, player);

@@ -23,7 +23,7 @@ public class GuiRemoteThermo extends GuiContainerBase {
 	public GuiRemoteThermo(ContainerRemoteThermo container) {
 		super(container, "tile.remote_thermo.name", TEXTURE);
 		this.container = container;
-		xSize = 214;
+		xSize = 178;
 		ySize = 166;
 	}
 
@@ -31,21 +31,21 @@ public class GuiRemoteThermo extends GuiContainerBase {
 	public void initGui() {
 		super.initGui();
 		buttonList.clear();
-		addButton(new CompactButton(0, guiLeft + 47, guiTop - 5 + 20, 22, 12, "-1"));
-		addButton(new CompactButton(1, guiLeft + 47, guiTop - 5 + 31, 22, 12, "-10"));
-		addButton(new CompactButton(2, guiLeft + 12, guiTop - 5 + 20, 36, 12, "-100"));
-		addButton(new CompactButton(3, guiLeft + 12, guiTop - 5 + 31, 36, 12, "-1000"));
-		addButton(new CompactButton(4, guiLeft + 12, guiTop - 5 + 42, 57, 12, "-10000"));
+		addButton(new CompactButton(0, guiLeft + 40, guiTop - 5 + 20, 22, 12, "-1"));
+		addButton(new CompactButton(1, guiLeft + 40, guiTop - 5 + 31, 22, 12, "-10"));
+		addButton(new CompactButton(2, guiLeft + 5, guiTop - 5 + 20, 36, 12, "-100"));
+		addButton(new CompactButton(3, guiLeft + 5, guiTop - 5 + 31, 36, 12, "-1000"));
+		addButton(new CompactButton(4, guiLeft + 5, guiTop - 5 + 42, 57, 12, "-10000"));
 
-		addButton(new CompactButton(5, guiLeft + 122, guiTop - 5 + 20, 22, 12, "+1"));
-		addButton(new CompactButton(6, guiLeft + 122, guiTop - 5 + 31, 22, 12, "+10"));
-		addButton(new CompactButton(7, guiLeft + 143, guiTop - 5 + 20, 36, 12, "+100"));
-		addButton(new CompactButton(8, guiLeft + 143, guiTop - 5 + 31, 36, 12, "+1000"));
-		addButton(new CompactButton(9, guiLeft + 122, guiTop - 5 + 42, 57, 12, "+10000"));
+		addButton(new CompactButton(5, guiLeft + 115, guiTop - 5 + 20, 22, 12, "+1"));
+		addButton(new CompactButton(6, guiLeft + 115, guiTop - 5 + 31, 22, 12, "+10"));
+		addButton(new CompactButton(7, guiLeft + 136, guiTop - 5 + 20, 36, 12, "+100"));
+		addButton(new CompactButton(8, guiLeft + 136, guiTop - 5 + 31, 36, 12, "+1000"));
+		addButton(new CompactButton(9, guiLeft + 115, guiTop - 5 + 42, 57, 12, "+10000"));
 
-		addButton(new GuiThermoInvertRedstone(10, guiLeft + 70, guiTop + 33, container.te));
+		addButton(new GuiThermoInvertRedstone(10, guiLeft + 63, guiTop + 33, container.te));
 
-		textboxHeat = new GuiTextField(10, fontRenderer, 70, 16, 51, 12);
+		textboxHeat = new GuiTextField(10, fontRenderer, 63, 16, 51, 12);
 		textboxHeat.setFocused(true);
 		textboxHeat.setText(Integer.toString(container.te.getHeatLevel()));
 	}
@@ -112,19 +112,6 @@ public class GuiRemoteThermo extends GuiContainerBase {
 
 		int delta = Integer.parseInt(button.displayString.replace("+", ""));
 		updateHeat(delta);
-	}
-
-	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
-
-		// Charge level progress bar
-		int chargeWidth = (int) (76F * container.te.getEnergy() / container.te.getMaxStorage());
-		if (chargeWidth > 76)
-			chargeWidth = 76;
-
-		if (chargeWidth > 0)
-			drawTexturedModalRect(guiLeft + 55 - 14, guiTop + 54, 8, 166, chargeWidth, 14);
 	}
 
 	@Override

@@ -103,6 +103,7 @@ ec.config.allowedAlarms=Allowed Alarms
 ec.config.remoteThermalMonitorEnergyConsumption=Remote Thermal Monitor EU Cons.
 ec.config.infoPanelRefreshPeriod=Info Panel Refresh Period
 ec.config.rangeTriggerRefreshPeriod=Range Trigger Refresh Period
+ec.config.thermalMonitorRefreshPeriod=Thermal Monitor Refresh Period
 ec.config.useCustomSounds=Use Custom Sounds
 ec.config.alarmPause=Alarm Pause in ticks
 ec.config.disableRangeCheck=Disable Range Check

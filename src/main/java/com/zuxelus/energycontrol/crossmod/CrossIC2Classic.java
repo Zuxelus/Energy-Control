@@ -1,12 +1,13 @@
 package com.zuxelus.energycontrol.crossmod;
 
-import com.zuxelus.energycontrol.api.CardState;
-import com.zuxelus.energycontrol.api.ICardReader;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.energycontrol.utils.FluidInfo;
-import com.zuxelus.energycontrol.utils.ReactorHelper;
+
 import ic2.api.classic.reactor.IChamberReactor;
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IC2Items;
@@ -25,10 +26,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.IFluidTank;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CrossIC2Classic extends CrossModBase {
 
@@ -126,74 +123,60 @@ public class CrossIC2Classic extends CrossModBase {
 	}
 
 	@Override
-	public NBTTagCompound getGeneratorKineticData(TileEntity entity) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public NBTTagCompound getGeneratorHeatData(TileEntity entity) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public ItemStack getReactorCard(World world, BlockPos pos) {
-		/*Block block = world.getBlockState(pos).getBlock();
-		if (!(block instanceof BlockTileEntity))
-			return ItemStack.EMPTY;*/
-
 		TileEntity te = world.getTileEntity(pos);
 		if (te instanceof TileEntityNuclearReactorElectric || te instanceof TileEntityReactorChamberElectric || te instanceof TileEntityNuclearSteamReactor) {
-			BlockPos position = ReactorHelper.getTargetCoordinates(world, pos);
+			BlockPos position = IC2ReactorHelper.getTargetCoordinates(world, pos);
 			if (position != null) {
 				ItemStack sensorLocationCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_REACTOR);
 				ItemStackHelper.setCoordinates(sensorLocationCard, position);
 				return sensorLocationCard;
 			}
-		}/* else if (te instanceof TileEntityReactorFluidPort || te instanceof TileEntityReactorRedstonePort
-				|| te instanceof TileEntityReactorAccessHatch) {
-			BlockPos position = ReactorHelper.get5x5TargetCoordinates(world, pos);
-			if (position != null) {
-				ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_REACTOR5X5);
-				ItemStackHelper.setCoordinates(sensorLocationCard, position);
-				return sensorLocationCard;
-			}
-		}*/
+		}
 		return ItemStack.EMPTY;
 	}
 
 	@Override
-	public CardState updateCardReactor(World world, ICardReader reader, IReactor reactor) {
-		if (!(reactor instanceof IChamberReactor))
-			return CardState.NO_TARGET;
-	
-		reader.setInt("heat", reactor.getHeat());
-		reader.setInt("maxHeat", reactor.getMaxHeat());
-		reader.setBoolean("reactorPoweredB", reactor.produceEnergy());
-		reader.setInt("output", (int) Math.round(reactor.getReactorEUEnergyOutput()));
-		boolean isSteam = ReactorHelper.isSteam(reactor);
-		reader.setBoolean("isSteam", isSteam);
+	public NBTTagCompound getReactorData(TileEntity te) {
+		if (!(te instanceof IChamberReactor))
+			return null;
+		IReactor reactor = (IReactor) te;
+		NBTTagCompound tag = new NBTTagCompound();
+		tag.setInteger("heat", reactor.getHeat());
+		tag.setInteger("maxHeat", reactor.getMaxHeat());
+		tag.setBoolean("reactorPoweredB", reactor.produceEnergy());
+		tag.setInteger("output", (int) Math.round(reactor.getReactorEUEnergyOutput()));
+		tag.setBoolean("isSteam", isSteamReactor(te));
 
 		IChamberReactor chamber = (IChamberReactor) reactor;
 		int size = chamber.getReactorSize();
 		int dmgLeft = 0;
-		for (int y = 0; y < 6; y++) {
+		for (int y = 0; y < 6; y++)
 			for (int x = 0; x < size; x++) {
 				ItemStack stack = chamber.getItemAt(x, y);
 				if (!stack.isEmpty())
-					dmgLeft = Math.max(dmgLeft, ReactorHelper.getNuclearCellTimeLeft(stack));
+					dmgLeft = Math.max(dmgLeft, IC2ReactorHelper.getNuclearCellTimeLeft(stack));
 			}
-		}
 
 		int timeLeft;
 		//Classic has a Higher Tick rate for Steam generation but damage tick rate is still the same...
-		if (isSteam) {
+		if (isSteamReactor(te)) {
 			timeLeft = dmgLeft;
 		} else
 			timeLeft = dmgLeft * reactor.getTickRate() / 20;
-		reader.setInt("timeLeft", timeLeft);
-		return CardState.OK;
+		tag.setInteger("timeLeft", timeLeft);
+
+		return tag;
+	}
+
+	public int getReactorHeat(World world, BlockPos pos) {
+		IReactor reactor = IC2ReactorHelper.getReactorAround(world, pos);
+		if (reactor != null)
+			return reactor.getHeat();
+		reactor = IC2ReactorHelper.getReactor3x3(world, pos);
+		if (reactor != null)
+			return reactor.getHeat();
+		return -1;
 	}
 
 	@Override

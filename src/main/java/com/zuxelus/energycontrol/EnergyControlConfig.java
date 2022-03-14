@@ -26,10 +26,6 @@ public class EnergyControlConfig {
 	@LangKey("ec.config.allowedAlarms")
 	public static String[] allowedAlarms = new String[] { "default", "sci-fi", "siren" };
 
-	@RangeInt(min = 1, max = 1000)
-	@LangKey("ec.config.remoteThermalMonitorEnergyConsumption")
-	public static int remoteThermalMonitorEnergyConsumption = 1;
-
 	@RangeInt(min = 0, max = 2000)
 	@LangKey("ec.config.infoPanelRefreshPeriod")
 	public static int infoPanelRefreshPeriod = 20;
@@ -37,6 +33,10 @@ public class EnergyControlConfig {
 	@RangeInt(min = 0, max = 2000)
 	@LangKey("ec.config.rangeTriggerRefreshPeriod")
 	public static int rangeTriggerRefreshPeriod = 20;
+
+	@RangeInt(min = 0, max = 2000)
+	@LangKey("ec.config.thermalMonitorRefreshPeriod")
+	public static int thermalMonitorRefreshPeriod = 20;
 
 	@LangKey("ec.config.useCustomSounds")
 	public static boolean useCustomSounds = false;

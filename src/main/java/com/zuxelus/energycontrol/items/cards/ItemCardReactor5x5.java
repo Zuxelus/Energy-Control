@@ -1,19 +1,22 @@
 package com.zuxelus.energycontrol.items.cards;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
+
 import net.minecraft.client.resources.I18n;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ItemCardReactor5x5 extends ItemCardBase {
 
@@ -27,7 +30,13 @@ public class ItemCardReactor5x5 extends ItemCardBase {
 		if (target == null) 
 			return CardState.NO_TARGET;
 
-		return CrossModLoader.getCrossMod(ModIDs.IC2).updateCardReactor5x5(world, reader, target);
+		TileEntity te = world.getTileEntity(target);
+		NBTTagCompound tag = CrossModLoader.getCrossMod(ModIDs.IC2).getReactor5x5Data(te);
+		if (tag == null)
+			return CardState.NO_TARGET;
+		reader.reset();
+		reader.copyFrom(tag);
+		return CardState.OK;
 	}
 
 	@Override
@@ -48,7 +57,6 @@ public class ItemCardReactor5x5 extends ItemCardBase {
 			int seconds = timeLeft % 60;
 			result.add(new PanelString("msg.ec.InfoPanelTimeRemaining", String.format("%d:%02d:%02d", hours, minutes, seconds), showLabels));
 		}
-
 		if ((settings & 1) > 0)
 			addOnOff(result, isServer, reader.getBoolean("reactorPoweredB"));
 		return result;

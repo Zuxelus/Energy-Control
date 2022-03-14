@@ -1,9 +1,10 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import com.zuxelus.energycontrol.EnergyControlConfig;
 import com.zuxelus.energycontrol.blocks.RemoteThermo;
 import com.zuxelus.energycontrol.blocks.ThermalMonitor;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.utils.ReactorHelper;
+import com.zuxelus.energycontrol.crossmod.IC2ReactorHelper;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 import ic2.api.reactor.IReactor;
@@ -31,7 +32,7 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 		invertRedstone = false;
 		heatLevel = 500;
 		updateTicker = 0;
-		tickRate = -1;
+		tickRate = EnergyControlConfig.thermalMonitorRefreshPeriod;
 		status = -1;
 	}
 
@@ -151,7 +152,7 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 			return;
 	
 		if (updateTicker-- > 0)
-				return;
+			return;
 		updateTicker = tickRate;
 		checkStatus();
 	}

@@ -88,20 +88,20 @@ public class CrossModBase {
 		return null;
 	}
 
+	public NBTTagCompound getReactorData(TileEntity te) {
+		return null;
+	}
+
+	public NBTTagCompound getReactor5x5Data(TileEntity te) {
+		return null;
+	}
+
 	public int getReactorHeat(World world, BlockPos pos) {
 		return -1;
 	}
 
 	public boolean isSteamReactor(TileEntity te) {
 		return false;
-	}
-
-	public CardState updateCardReactor(World world, ICardReader reader, IReactor reactor) {
-		return CardState.NO_TARGET;
-	}
-
-	public CardState updateCardReactor5x5(World world, ICardReader reader, BlockPos target) {
-		return CardState.NO_TARGET;
 	}
 
 	public List<FluidInfo> getAllTanks(TileEntity te) {

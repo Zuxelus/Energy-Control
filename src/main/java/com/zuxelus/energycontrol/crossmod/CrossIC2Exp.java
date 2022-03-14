@@ -10,7 +10,7 @@ import com.zuxelus.energycontrol.items.ItemAFB;
 import com.zuxelus.energycontrol.items.ItemAFSUUpgradeKit;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.energycontrol.utils.FluidInfo;
-import com.zuxelus.energycontrol.utils.ReactorHelper;
+
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IC2Items;
 import ic2.api.item.ICustomDamageItem;
@@ -389,32 +389,34 @@ public class CrossIC2Exp extends CrossModBase {
 
 		TileEntity te = world.getTileEntity(pos);
 		if (te instanceof TileEntityNuclearReactorElectric || te instanceof TileEntityReactorChamberElectric) {
-			BlockPos position = ReactorHelper.getTargetCoordinates(world, pos);
+			BlockPos position = IC2ReactorHelper.getTargetCoordinates(world, pos);
 			if (position != null) {
-				ItemStack sensorLocationCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_REACTOR);
-				ItemStackHelper.setCoordinates(sensorLocationCard, position);
-				return sensorLocationCard;
+				ItemStack card = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_REACTOR);
+				ItemStackHelper.setCoordinates(card, position);
+				return card;
 			}
 		} else if (te instanceof TileEntityReactorFluidPort || te instanceof TileEntityReactorRedstonePort
 				|| te instanceof TileEntityReactorAccessHatch) {
-			BlockPos position = ReactorHelper.get5x5TargetCoordinates(world, pos);
+			BlockPos position = IC2ReactorHelper.get5x5TargetCoordinates(world, pos);
 			if (position != null) {
-				ItemStack sensorLocationCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_REACTOR5X5);
-				ItemStackHelper.setCoordinates(sensorLocationCard, position);
-				return sensorLocationCard;
+				ItemStack card = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_REACTOR5X5);
+				ItemStackHelper.setCoordinates(card, position);
+				return card;
 			}
 		}
 		return ItemStack.EMPTY;
 	}
 
-	@Override
-	public CardState updateCardReactor(World world, ICardReader reader, IReactor reactor) {
-		reader.setInt("heat", reactor.getHeat());
-		reader.setInt("maxHeat", reactor.getMaxHeat());
-		reader.setBoolean("reactorPoweredB", reactor.produceEnergy());
-		reader.setInt("output", (int) Math.round(reactor.getReactorEUEnergyOutput()));
-		boolean isSteam = ReactorHelper.isSteam(reactor);
-		reader.setBoolean("isSteam", isSteam);
+	public NBTTagCompound getReactorData(TileEntity te) {
+		if (!(te instanceof TileEntityNuclearReactorElectric))
+			return null;
+		IReactor reactor = (IReactor) te;
+		NBTTagCompound tag = new NBTTagCompound();
+		tag.setInteger("heat", reactor.getHeat());
+		tag.setInteger("maxHeat", reactor.getMaxHeat());
+		tag.setBoolean("reactorPoweredB", reactor.produceEnergy());
+		tag.setInteger("output", (int) Math.round(reactor.getReactorEUEnergyOutput()));
+		tag.setBoolean("isSteam", false);
 
 		IInventory inventory = (IInventory) reactor;
 		int slotCount = inventory.getSizeInventory();
@@ -422,29 +424,21 @@ public class CrossIC2Exp extends CrossModBase {
 		for (int i = 0; i < slotCount; i++) {
 			ItemStack stack = inventory.getStackInSlot(i);
 			if (!stack.isEmpty())
-				dmgLeft = Math.max(dmgLeft, ReactorHelper.getNuclearCellTimeLeft(stack));
+				dmgLeft = Math.max(dmgLeft, IC2ReactorHelper.getNuclearCellTimeLeft(stack));
 		}
-
-		int timeLeft;
-		//Classic has a Higher Tick rate for Steam generation but damage tick rate is still the same...
-		if (isSteam) {
-			timeLeft = dmgLeft;
-		} else
-			timeLeft = dmgLeft * reactor.getTickRate() / 20;
-		reader.setInt("timeLeft", timeLeft);
-		return CardState.OK;
+		tag.setInteger("timeLeft", dmgLeft * reactor.getTickRate() / 20);
+		return tag;
 	}
 
-	@Override
-	public CardState updateCardReactor5x5(World world, ICardReader reader, BlockPos target) {
-		IReactor reactor = ReactorHelper.getReactorAt(world, target);
-		if (!(reactor instanceof TileEntityNuclearReactorElectric))
-			return CardState.NO_TARGET;
-		
-		reader.setInt("heat", reactor.getHeat());
-		reader.setInt("maxHeat", reactor.getMaxHeat());
-		reader.setBoolean("reactorPoweredB", reactor.produceEnergy());
-		reader.setInt("output", ((TileEntityNuclearReactorElectric)reactor).EmitHeat);
+	public NBTTagCompound getReactor5x5Data(TileEntity te) {
+		if (!(te instanceof TileEntityNuclearReactorElectric))
+			return null;
+		IReactor reactor = (IReactor) te;
+		NBTTagCompound tag = new NBTTagCompound();
+		tag.setInteger("heat", reactor.getHeat());
+		tag.setInteger("maxHeat", reactor.getMaxHeat());
+		tag.setBoolean("reactorPoweredB", reactor.produceEnergy());
+		tag.setInteger("output", ((TileEntityNuclearReactorElectric)reactor).EmitHeat);
 
 		IInventory inventory = (IInventory) reactor;
 		int slotCount = inventory.getSizeInventory();
@@ -452,12 +446,23 @@ public class CrossIC2Exp extends CrossModBase {
 		for (int i = 0; i < slotCount; i++) {
 			ItemStack stack = inventory.getStackInSlot(i);
 			if (!stack.isEmpty())
-				dmgLeft = Math.max(dmgLeft, ReactorHelper.getNuclearCellTimeLeft(stack));
+				dmgLeft = Math.max(dmgLeft, IC2ReactorHelper.getNuclearCellTimeLeft(stack));
 		}
 
 		int timeLeft = dmgLeft * reactor.getTickRate() / 20;
-		reader.setInt("timeLeft", timeLeft);
-		return CardState.OK;
+		tag.setInteger("timeLeft", timeLeft);
+		return tag;
+	}
+
+	@Override
+	public int getReactorHeat(World world, BlockPos pos) {
+		IReactor reactor = IC2ReactorHelper.getReactorAround(world, pos);
+		if (reactor != null)
+			return reactor.getHeat();
+		reactor = IC2ReactorHelper.getReactor3x3(world, pos);
+		if (reactor != null)
+			return reactor.getHeat();
+		return -1;
 	}
 
 	@Override

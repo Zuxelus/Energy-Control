@@ -1,7 +1,5 @@
-package com.zuxelus.energycontrol.utils;
+package com.zuxelus.energycontrol.crossmod;
 
-import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.crossmod.ModIDs;
 import ic2.api.reactor.IReactor;
 import ic2.api.reactor.IReactorChamber;
 import net.minecraft.item.ItemStack;
@@ -10,7 +8,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class ReactorHelper {
+public class IC2ReactorHelper {
 	private static final double STEAM_PER_EU = 3.2D;
 
 	public static IReactor getReactorAround(World world, BlockPos pos) {
@@ -24,7 +22,7 @@ public class ReactorHelper {
 		return getReactorNextBlock(world, pos);
 	}
 
-	public static IReactor getReactorNextBlock(World world, BlockPos pos) {
+	private static IReactor getReactorNextBlock(World world, BlockPos pos) {
 		if (world == null)
 			return null;
 
@@ -65,14 +63,14 @@ public class ReactorHelper {
 	}
 
 	public static BlockPos getTargetCoordinates(World world, BlockPos pos) {
-		IReactor reactor = ReactorHelper.getReactorAt(world, pos);
+		IReactor reactor = IC2ReactorHelper.getReactorAt(world, pos);
 		if (reactor != null)
 			return reactor.getPosition();
 		return null;
 	}
 
 	public static BlockPos get5x5TargetCoordinates(World world, BlockPos pos) {
-		IReactor reactor = ReactorHelper.getReactor3x3(world, pos);
+		IReactor reactor = IC2ReactorHelper.getReactor3x3(world, pos);
 		if (reactor != null)
 			return reactor.getPosition();
 		return null;
@@ -88,12 +86,5 @@ public class ReactorHelper {
 
 	public static int getNuclearCellTimeLeft(ItemStack rStack) {
 		return CrossModLoader.getCrossMod(ModIDs.IC2).getNuclearCellTimeLeft(rStack);
-	}
-
-	public static int getReactorHeat(World world, BlockPos pos) {
-		int heat = CrossModLoader.getCrossMod(ModIDs.BIG_REACTORS).getReactorHeat(world, pos);
-		if (heat > -1)
-			return heat;
-		return CrossModLoader.getCrossMod(ModIDs.NUCLEAR_CRAFT).getReactorHeat(world, pos);
 	}
 }
