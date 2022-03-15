@@ -96,7 +96,7 @@ dependencies {
     compileOnly fg.deobf ("curse.maven:phosphophyllite-412551:3397407")
     compileOnly fg.deobf ("curse.maven:thermal_expansion-69163:3404884");
     compileOnly fg.deobf ("curse.maven:thermal_foundation-222880:3412300");
-    compileOnly fg.deobf ("curse.maven:cofh_core-69162:3407019");
+    compileOnly fg.deobf ("curse.maven:cofh_core-69162:3621734");
     compileOnly fg.deobf ("curse.maven:ImmersiveEngineering-231951:3431122");
 }
 
