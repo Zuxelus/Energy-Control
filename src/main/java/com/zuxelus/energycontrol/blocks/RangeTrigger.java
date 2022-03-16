@@ -47,12 +47,12 @@ public class RangeTrigger extends FacingHorizontal {
 		if (!(te instanceof TileEntityRangeTrigger))
 			return ActionResultType.PASS;
 		if (!world.isRemote)
-				NetworkHooks.openGui((ServerPlayerEntity) player, (TileEntityRangeTrigger) te, pos);
+			NetworkHooks.openGui((ServerPlayerEntity) player, (TileEntityRangeTrigger) te, pos);
 		return ActionResultType.SUCCESS;
 	}
 
 	@Override
-	public int getWeakPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side) {
+	public int getWeakPower(BlockState state, IBlockReader blockAccess, BlockPos pos, Direction side) {
 		TileEntity te = blockAccess.getTileEntity(pos);
 		if (!(te instanceof TileEntityRangeTrigger))
 			return 0;

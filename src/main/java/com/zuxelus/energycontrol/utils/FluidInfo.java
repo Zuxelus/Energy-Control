@@ -2,9 +2,9 @@ package com.zuxelus.energycontrol.utils;
 
 import com.zuxelus.energycontrol.api.ICardReader;
 
-import net.minecraft.client.resources.I18n;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.text.LanguageMap;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -59,7 +59,7 @@ public class FluidInfo {
 
 	public void write(ICardReader reader) {
 		if (translationKey != null)
-			reader.setString("name", I18n.format(translationKey));
+			reader.setString("name", LanguageMap.getInstance().translateKey(translationKey));
 		else
 			reader.setString("name", "");
 		if (texture != null)
@@ -73,7 +73,7 @@ public class FluidInfo {
 
 	public void write(ICardReader reader, int i) {
 		if (translationKey != null)
-			reader.setString(String.format("_%dname", i), I18n.format(translationKey));
+			reader.setString(String.format("_%dname", i), LanguageMap.getInstance().translateKey(translationKey));
 		else
 			reader.setString(String.format("_%dname", i), "");
 		reader.setLong(String.format("_%damount", i), amount);
@@ -85,6 +85,6 @@ public class FluidInfo {
 		if (stack == null)
 			tag.putString(name, "N/A");
 		else
-			tag.putString(name, String.format("%s: %s mB", stack.getTranslationKey(), tank.getFluidAmount()));
+			tag.putString(name, String.format("%s: %s mB", stack.getDisplayName().getString(), tank.getFluidAmount()));
 	}
 }

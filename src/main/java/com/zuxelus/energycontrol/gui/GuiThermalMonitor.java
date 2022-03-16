@@ -15,7 +15,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiThermalMonitor extends GuiBase {
 	private TileEntityThermalMonitor thermo;
-	private TextFieldWidget textboxHeat = null;
+	private TextFieldWidget textboxHeat;
 
 	public GuiThermalMonitor(TileEntityThermalMonitor thermo) {
 		super("block.energycontrol.thermal_monitor", 191, 64, EnergyControl.MODID + ":textures/gui/gui_thermal_monitor.png");
@@ -47,6 +47,7 @@ public class GuiThermalMonitor extends GuiBase {
 		super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
 		textboxHeat.renderButton(mouseX, mouseY, partialTicks);
 	}
+
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		drawTitle();
@@ -73,7 +74,7 @@ public class GuiThermalMonitor extends GuiBase {
 			String value = textboxHeat.getText();
 			if (!"".equals(value))
 				heat = Integer.parseInt(value);
-		} catch (NumberFormatException e) {	}
+		} catch (NumberFormatException e) { }
 		heat += delta;
 		if (heat < 0)
 			heat = 0;
@@ -93,14 +94,4 @@ public class GuiThermalMonitor extends GuiBase {
 		int delta = Integer.parseInt(button.getMessage().replace("+", ""));
 		updateHeat(delta);
 	}
-
-	/*@Override
-	protected void keyTyped(char typedChar, int keyCode) {
-		if(keyCode == 1) // Esc button
-			mc.player.closeScreen();
-		else if(typedChar == 13) // Enter
-			updateHeat(0);
-		else if(textboxHeat != null && textboxHeat.isFocused() && (Character.isDigit(typedChar) || typedChar == 0 || typedChar == 8))
-			textboxHeat.textboxKeyTyped(typedChar, keyCode);
-	}*/
 }

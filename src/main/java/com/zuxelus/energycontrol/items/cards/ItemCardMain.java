@@ -2,8 +2,12 @@ package com.zuxelus.energycontrol.items.cards;
 
 import java.util.List;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.ServerTickHandler;
 import com.zuxelus.energycontrol.api.*;
+import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
@@ -63,7 +67,7 @@ public abstract class ItemCardMain extends Item implements IItemCard {
 		int range = LOCATION_RANGE * (int) Math.pow(2, Math.min(upgradeCountRange, 7));
 
 		CardState state = CardState.INVALID_CARD;
-		if (isRemoteCard()) {
+		if (!ConfigHandler.DISABLE_RANGE_CHECK.get() && isRemoteCard()) {
 			BlockPos target = reader.getTarget();
 			if (target != null) {
 				int dx = target.getX() - pos.getX();
@@ -136,5 +140,32 @@ public abstract class ItemCardMain extends Item implements IItemCard {
 		line.textLeft = text;
 		line.colorLeft = txtColor;
 		result.add(line);
+	}
+
+	public static void sendCardToWS(List<PanelString> list, ICardReader reader) {
+		if (ConfigHandler.WS_HOST.get().isEmpty())
+			return;
+		String id = reader.getId();
+		JsonObject json = new JsonObject();
+		json.addProperty("id", id);
+		JsonArray array = new JsonArray();
+		for (PanelString panelString : list) {
+			JsonObject line = new JsonObject();
+			if (panelString.textLeft != null) {
+				line.addProperty("left", panelString.textLeft);
+				line.addProperty("left_color", panelString.colorLeft);
+			}
+			if (panelString.textCenter != null) {
+				line.addProperty("center", panelString.textCenter);
+				line.addProperty("center_color", panelString.colorCenter);
+			}
+			if (panelString.textRight != null) {
+				line.addProperty("right", panelString.textRight);
+				line.addProperty("right_color", panelString.colorRight);
+			}
+			array.add(line);
+		}
+		json.add("lines", array);
+		ServerTickHandler.instance.cards.put(id, json);
 	}
 }

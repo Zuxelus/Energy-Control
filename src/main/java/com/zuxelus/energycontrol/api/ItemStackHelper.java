@@ -23,20 +23,11 @@ public final class ItemStackHelper {
 		tag.putInt("z", pos.getZ());
 	}
 
-	public static CompoundNBT getOrCreateNbtData(ItemStack stack) {
-		CompoundNBT tag = stack.getTag();
-		if (tag == null) {
-			tag = new CompoundNBT();
-			stack.setTag(tag);
-		}
-		return tag;
-	}
-
-	public static ItemStack getStackWithEnergy(Item item, double energy) {
+	public static ItemStack getStackWithEnergy(Item item, String name, double energy) {
 		ItemStack stack = new ItemStack(item);
 		CompoundNBT tag = new CompoundNBT();
 		stack.setTag(tag);
-		tag.putDouble("charge", energy);
+		tag.putDouble(name, energy);
 		return stack;
 	}
 }

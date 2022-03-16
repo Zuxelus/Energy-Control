@@ -11,6 +11,7 @@ import com.zuxelus.zlib.tileentities.TileEntityFacing;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -29,7 +30,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 public class InfoPanel extends FacingBlockActive {
 
 	public InfoPanel() {
-		super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.0F));
+		super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.0F).sound(SoundType.METAL));
 	}
 
 	public InfoPanel(Block.Properties builder) {
@@ -37,7 +38,7 @@ public class InfoPanel extends FacingBlockActive {
 	}
 
 	@Override
-	public int getLightValue(BlockState state) {
+	public int getLightValue(BlockState state) { // in 1.16 changed to ToIntFunction<>
 		return state.get(ACTIVE) ? 10 : 0;
 	}
 
@@ -55,7 +56,7 @@ public class InfoPanel extends FacingBlockActive {
 			if (((TileEntityInfoPanel) te).runTouchAction(player.getHeldItem(hand), pos, hit.getHitVec()))
 				return ActionResultType.SUCCESS;
 		if (!world.isRemote)
-				NetworkHooks.openGui((ServerPlayerEntity) player, (TileEntityInfoPanel) te, pos);
+			NetworkHooks.openGui((ServerPlayerEntity) player, (TileEntityInfoPanel) te, pos);
 		return ActionResultType.SUCCESS;
 	}
 

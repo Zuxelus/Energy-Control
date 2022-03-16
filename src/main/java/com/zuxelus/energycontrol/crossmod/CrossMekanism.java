@@ -42,11 +42,8 @@ public class CrossMekanism extends CrossModBase {
 			return setStorage(((TileEntityCombiner) te).getEnergyContainer());
 		if (te instanceof TileEntityAdvancedBoundingBlock) {
 			TileEntity tile = te.getWorld().getTileEntity(((TileEntityAdvancedBoundingBlock)te).getMainPos());
-			if (tile instanceof TileEntityDigitalMiner) {
-				CompoundNBT tag = setStorage(((TileEntityDigitalMiner) tile).getEnergyContainer());
-				tag.putInt("type", 12);
-				return tag;
-			}
+			if (tile instanceof TileEntityDigitalMiner)
+				return setStorage(((TileEntityDigitalMiner) tile).getEnergyContainer());
 		}
 		if (te instanceof TileEntityMetallurgicInfuser)
 			return setStorage(((TileEntityMetallurgicInfuser) te).getEnergyContainer());
@@ -59,9 +56,7 @@ public class CrossMekanism extends CrossModBase {
 				Field field = TileEntityChargepad.class.getDeclaredField("energyContainer");
 				field.setAccessible(true);
 				MachineEnergyContainer<TileEntityChargepad> energyContainer = (MachineEnergyContainer<TileEntityChargepad>) field.get(te);
-				CompoundNBT tag = setStorage(energyContainer);
-				tag.putInt("type", 12);
-				return tag;
+				return setStorage(energyContainer);
 			} catch (Throwable ignored) { }
 		}
 		if (te instanceof TileEntityRotaryCondensentrator)
@@ -95,64 +90,64 @@ public class CrossMekanism extends CrossModBase {
 	public List<FluidInfo> getAllTanks(TileEntity te) {
 		List<FluidInfo> result = new ArrayList<>();
 		if (te instanceof TileEntityFluidTank) {
-			result.add(CrossMekanism.toFluidInfo(((TileEntityFluidTank) te).fluidTank));
+			result.add(toFluidInfo(((TileEntityFluidTank) te).fluidTank));
 			return result;
 		}
 		if (te instanceof TileEntityItemStackGasToItemStackFactory) {
-			result.add(CrossMekanism.toFluidInfo(((TileEntityItemStackGasToItemStackFactory) te).getGasTank()));
+			result.add(toFluidInfo(((TileEntityItemStackGasToItemStackFactory) te).getGasTank()));
 			return result;
 		}
 		if (te instanceof TileEntityMetallurgicInfuserFactory) {
-			result.add(CrossMekanism.toFluidInfo(((TileEntityMetallurgicInfuserFactory) te).getInfusionTank()));
+			result.add(toFluidInfo(((TileEntityMetallurgicInfuserFactory) te).getInfusionTank()));
 			return result;
 		}
 		if (te instanceof TileEntityAdvancedElectricMachine) {
-			result.add(CrossMekanism.toFluidInfo(((TileEntityAdvancedElectricMachine) te).gasTank));
+			result.add(toFluidInfo(((TileEntityAdvancedElectricMachine) te).gasTank));
 			return result;
 		}
 		if (te instanceof TileEntityMetallurgicInfuser) {
-			result.add(CrossMekanism.toFluidInfo(((TileEntityMetallurgicInfuser) te).infusionTank));
+			result.add(toFluidInfo(((TileEntityMetallurgicInfuser) te).infusionTank));
 			return result;
 		}
 		if (te instanceof TileEntityElectricPump) {
-			result.add(CrossMekanism.toFluidInfo(((TileEntityElectricPump) te).fluidTank));
+			result.add(toFluidInfo(((TileEntityElectricPump) te).fluidTank));
 			return result;
 		}
 		if (te instanceof TileEntityRotaryCondensentrator) {
-			result.add(CrossMekanism.toFluidInfo(((TileEntityRotaryCondensentrator) te).gasTank));
+			result.add(toFluidInfo(((TileEntityRotaryCondensentrator) te).gasTank));
 			return result;
 		}
 		if (te instanceof TileEntityChemicalInfuser) {
-			result.add(CrossMekanism.toFluidInfo(((TileEntityChemicalInfuser) te).leftTank));
-			result.add(CrossMekanism.toFluidInfo(((TileEntityChemicalInfuser) te).rightTank));
-			result.add(CrossMekanism.toFluidInfo(((TileEntityChemicalInfuser) te).centerTank));
+			result.add(toFluidInfo(((TileEntityChemicalInfuser) te).leftTank));
+			result.add(toFluidInfo(((TileEntityChemicalInfuser) te).rightTank));
+			result.add(toFluidInfo(((TileEntityChemicalInfuser) te).centerTank));
 			return result;
 		}
 		if (te instanceof TileEntityElectrolyticSeparator) {
-			result.add(CrossMekanism.toFluidInfo(((TileEntityElectrolyticSeparator) te).fluidTank));
-			result.add(CrossMekanism.toFluidInfo(((TileEntityElectrolyticSeparator) te).leftTank));
-			result.add(CrossMekanism.toFluidInfo(((TileEntityElectrolyticSeparator) te).rightTank));
+			result.add(toFluidInfo(((TileEntityElectrolyticSeparator) te).fluidTank));
+			result.add(toFluidInfo(((TileEntityElectrolyticSeparator) te).leftTank));
+			result.add(toFluidInfo(((TileEntityElectrolyticSeparator) te).rightTank));
 			return result;
 		}
 		if (te instanceof TileEntityChemicalDissolutionChamber) {
-			result.add(CrossMekanism.toFluidInfo(((TileEntityChemicalDissolutionChamber) te).injectTank));
-			result.add(CrossMekanism.toFluidInfo(((TileEntityChemicalDissolutionChamber) te).outputTank));
+			result.add(toFluidInfo(((TileEntityChemicalDissolutionChamber) te).injectTank));
+			result.add(toFluidInfo(((TileEntityChemicalDissolutionChamber) te).outputTank));
 			return result;
 		}
 		if (te instanceof TileEntityChemicalWasher) {
-			result.add(CrossMekanism.toFluidInfo(((TileEntityChemicalWasher) te).fluidTank));
-			result.add(CrossMekanism.toFluidInfo(((TileEntityChemicalWasher) te).inputTank));
-			result.add(CrossMekanism.toFluidInfo(((TileEntityChemicalWasher) te).outputTank));
+			result.add(toFluidInfo(((TileEntityChemicalWasher) te).fluidTank));
+			result.add(toFluidInfo(((TileEntityChemicalWasher) te).inputTank));
+			result.add(toFluidInfo(((TileEntityChemicalWasher) te).outputTank));
 			return result;
 		}
 		if (te instanceof TileEntityChemicalCrystallizer) {
-			result.add(CrossMekanism.toFluidInfo(((TileEntityChemicalCrystallizer) te).inputTank));
+			result.add(toFluidInfo(((TileEntityChemicalCrystallizer) te).inputTank));
 			return result;
 		}
 		if (te instanceof TileEntityPressurizedReactionChamber) {
-			result.add(CrossMekanism.toFluidInfo(((TileEntityPressurizedReactionChamber) te).inputFluidTank));
-			result.add(CrossMekanism.toFluidInfo(((TileEntityPressurizedReactionChamber) te).inputGasTank));
-			result.add(CrossMekanism.toFluidInfo(((TileEntityPressurizedReactionChamber) te).outputGasTank));
+			result.add(toFluidInfo(((TileEntityPressurizedReactionChamber) te).inputFluidTank));
+			result.add(toFluidInfo(((TileEntityPressurizedReactionChamber) te).inputGasTank));
+			result.add(toFluidInfo(((TileEntityPressurizedReactionChamber) te).outputGasTank));
 			return result;
 		}
 		return null;
@@ -300,7 +295,7 @@ public class CrossMekanism extends CrossModBase {
 		if (te instanceof TileEntityResistiveHeater) {
 			CompoundNBT tag = setStorage(((TileEntityResistiveHeater) te).getEnergyContainer());
 			addUsage(tag, ((TileEntityResistiveHeater) te).getEnergyContainer(), ((TileEntityResistiveHeater) te).getActive());
-			tag.putString("temp", CrossMekanism.getTempString(((TileEntityResistiveHeater) te).getTotalTemperature()));
+			tag.putString("temp", getTempString(((TileEntityResistiveHeater) te).getTotalTemperature()));
 			return tag;
 		}
 		if (te instanceof TileEntityBoilerCasing) {
@@ -351,10 +346,9 @@ public class CrossMekanism extends CrossModBase {
 	public static CompoundNBT setStorage(IEnergyContainer container) {
 		CompoundNBT tag = new CompoundNBT();
 		EnergyType euType = MekanismConfig.general.energyUnit.get();
-		tag.putInt("type", 12);
 		tag.putString("euType", euType.name());
 		tag.putDouble("storage", MekanismUtils.convertToDisplay(container.getEnergy()).doubleValue());
-		tag.putDouble("maxStorage",  MekanismUtils.convertToDisplay(container.getMaxEnergy()).doubleValue());
+		tag.putDouble("maxStorage", MekanismUtils.convertToDisplay(container.getMaxEnergy()).doubleValue());
 		return tag;
 	}
 

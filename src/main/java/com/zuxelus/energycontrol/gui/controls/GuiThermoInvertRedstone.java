@@ -13,8 +13,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiThermoInvertRedstone extends AbstractButton {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/gui_thermal_monitor.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID + ":textures/gui/gui_thermal_monitor.png");
 
 	TileEntityThermalMonitor thermo;
 	private boolean checked;

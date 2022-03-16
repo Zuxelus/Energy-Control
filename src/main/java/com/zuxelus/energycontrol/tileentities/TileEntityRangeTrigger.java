@@ -11,6 +11,7 @@ import com.zuxelus.energycontrol.items.cards.ItemCardLiquid;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
+import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -195,7 +196,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 		super.markDirty();
 		if (world == null || world.isRemote)
 			return;
-		
+
 		int status = STATE_UNKNOWN;
 		ItemStack card = getStackInSlot(SLOT_CARD);
 		if (!card.isEmpty()) {
@@ -204,7 +205,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 				ItemCardReader reader = new ItemCardReader(card);
 				CardState state = ((ItemCardMain) item).updateCardNBT(world, pos, reader, getStackInSlot(SLOT_UPGRADE));
 				if (state == CardState.OK) {
-					double cur = item instanceof ItemCardEnergy ? reader.getDouble("storage") :  reader.getLong("amount");
+					double cur = item instanceof ItemCardEnergy ? reader.getDouble("storage") : reader.getLong("amount");
 					status = cur > Math.max(levelStart, levelEnd) || cur < Math.min(levelStart, levelEnd) ? STATE_ACTIVE : STATE_PASSIVE;
 				} else
 					status = STATE_UNKNOWN;

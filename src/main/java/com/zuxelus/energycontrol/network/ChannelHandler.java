@@ -26,7 +26,7 @@ public class ChannelHandler {
 		if (world == null || world.isRemote)
 			return;
 
-		NetworkHelper.sendPacketToAllAround(panel.getWorld(), panel.getPos(), new PacketCard(card, panel.getPos(), slot));
+		NetworkHelper.sendPacketToAllAround(world, panel.getPos(), new PacketCard(card, panel.getPos(), slot));
 	}
 
 	// client

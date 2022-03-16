@@ -66,6 +66,7 @@ public class TileEntityHoloPanelRenderer extends TileEntityRenderer<TileEntityHo
 		matrixStack.pop();
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	private void drawText(TileEntityHoloPanel panel, float partialTicks, List<PanelString> joinedData, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight) {
 		Screen screen = panel.getScreen();
 		BlockPos pos = panel.getPos();
@@ -129,7 +130,7 @@ public class TileEntityHoloPanelRenderer extends TileEntityRenderer<TileEntityHo
 			matrixStack.translate(0, 0, 0.0002F * (power + 1) / 2);
 			int colorHex = 0x000000;
 			if (panel.getColored())
-				colorHex = panel.getColorTextHex();
+				colorHex = panel.getColorText();
 			TileEntityInfoPanelRenderer.renderText(joinedData, displayWidth, displayHeight, colorHex, matrixStack, renderDispatcher.getFontRenderer(), buffer, combinedLight);
 		}
 	}

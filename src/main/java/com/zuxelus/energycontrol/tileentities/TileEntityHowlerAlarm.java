@@ -4,6 +4,7 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.utils.TileEntitySound;
+import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
 import net.minecraft.nbt.CompoundNBT;

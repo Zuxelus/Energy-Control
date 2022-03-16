@@ -4,6 +4,7 @@ import com.zuxelus.energycontrol.blocks.TimerBlock;
 import com.zuxelus.energycontrol.containers.ContainerTimer;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
+import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
 import net.minecraft.block.Block;

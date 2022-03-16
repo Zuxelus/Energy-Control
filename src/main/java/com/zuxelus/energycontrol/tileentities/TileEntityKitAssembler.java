@@ -12,6 +12,7 @@ import com.zuxelus.energycontrol.recipes.KitAssemblerRecipe;
 import com.zuxelus.energycontrol.recipes.KitAssemblerRecipeType;
 import com.zuxelus.zlib.containers.EnergyStorage;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
+import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityItemHandler;
 
 import net.minecraft.block.Block;
@@ -93,9 +94,9 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements ITi
 		switch (tag.getInt("type")) {
 		case 4:
 			if (tag.contains("slot") && tag.contains("title")) {
-				ItemStack itemStack = getStackInSlot(tag.getInt("slot"));
-				if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemCardMain)
-					new ItemCardReader(itemStack).setTitle(tag.getString("title"));
+				ItemStack stack = getStackInSlot(tag.getInt("slot"));
+				if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain)
+					new ItemCardReader(stack).setTitle(tag.getString("title"));
 			}
 			break;
 		}
@@ -312,6 +313,34 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements ITi
 		}
 	}
 
+	@Override
+	@Nonnull
+	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
+		if (cap == CapabilityEnergy.ENERGY)
+			return LazyOptional.of(() -> this.storage).cast();
+		return super.getCapability(cap, side);
+	}
+
+	// ISidedInventory
+	@Override
+	public int[] getSlotsForFace(Direction side) {
+		if (side == Direction.UP)
+			return new int[] { SLOT_CARD1, SLOT_ITEM, SLOT_CARD2 };
+		if (side == Direction.DOWN)
+			return new int[] { SLOT_RESULT };
+		return super.getSlotsForFace(side);
+	}
+
+	@Override
+	public boolean canInsertItem(int slot, ItemStack stack, Direction side) {
+		return side == Direction.UP && (slot == SLOT_CARD1 || slot == SLOT_ITEM || slot == SLOT_CARD2);
+	}
+
+	@Override
+	public boolean canExtractItem(int slot, ItemStack stack, Direction side) {
+		return side == Direction.DOWN && slot == SLOT_RESULT;
+	}
+
 	// INamedContainerProvider
 	@Override
 	public Container createMenu(int windowId, PlayerInventory inventory, PlayerEntity player) {
@@ -321,13 +350,5 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements ITi
 	@Override
 	public ITextComponent getDisplayName() {
 		return new TranslationTextComponent(ModItems.kit_assembler.get().getTranslationKey());
-	}
-
-	@Override
-    @Nonnull
-	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-		if (cap == CapabilityEnergy.ENERGY)
-			return LazyOptional.of(() -> this.storage).cast();
-		return super.getCapability(cap, side);
 	}
 }

@@ -23,6 +23,10 @@ public abstract class TileEntityFacing extends TileEntity {
 		facing = Direction.byIndex(meta);
 	}
 
+	public void setFacing(Direction meta) {
+		facing = meta;
+	}
+
 	protected boolean hasRotation() {
 		return false;
 	}

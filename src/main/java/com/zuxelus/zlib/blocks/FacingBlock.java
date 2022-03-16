@@ -5,6 +5,7 @@ import com.zuxelus.zlib.tileentities.TileEntityFacing;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.DirectionalBlock;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
@@ -22,7 +23,7 @@ public abstract class FacingBlock extends DirectionalBlock {
 	protected Direction rotation;
 
 	public FacingBlock() {
-		super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.0F));
+		super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.0F).sound(SoundType.METAL));
 		setDefaultState(getDefaultState().with(FACING, Direction.NORTH));
 	}
 

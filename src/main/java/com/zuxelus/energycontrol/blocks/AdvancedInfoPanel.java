@@ -9,6 +9,7 @@ import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -20,7 +21,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -28,7 +28,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 public class AdvancedInfoPanel extends InfoPanel {
 
 	public AdvancedInfoPanel() {
-		super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.0F).notSolid());
+		super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.0F).sound(SoundType.METAL).notSolid());
 	}
 
 	@Override
@@ -36,20 +36,21 @@ public class AdvancedInfoPanel extends InfoPanel {
 		return ModTileEntityTypes.info_panel_advanced.get().create();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
 		TileEntity tile = world.getTileEntity(pos);
 		if (!(tile instanceof TileEntityAdvancedInfoPanel))
-			return VoxelShapes.fullCube();
+			return super.getShape(state, world, pos, context);
 
 		TileEntityAdvancedInfoPanel te = (TileEntityAdvancedInfoPanel) tile;
 		Screen screen = te.getScreen();
 		if (screen == null)
-			return VoxelShapes.fullCube();
+			return super.getShape(state, world, pos, context);
 
-		Direction enumfacing = (Direction) state.get(FACING);
+		Direction enumfacing = state.get(FACING);
 		if (!(te instanceof TileEntityAdvancedInfoPanel) || enumfacing == null)
-			return VoxelShapes.fullCube();
+			return super.getShape(state, world, pos, context);
 		switch (enumfacing) {
 		case EAST:
 			return Block.makeCuboidShape(0.0D, 0.0D, 0.0D, te.thickness, 16.0D, 16.0D);
@@ -64,13 +65,8 @@ public class AdvancedInfoPanel extends InfoPanel {
 		case DOWN:
 			return Block.makeCuboidShape(0.0D, 16.0D - te.thickness, 0.0D, 16.0D, 16.0D, 16.0D);
 		default:
-			return VoxelShapes.fullCube();
+			return super.getShape(state, world, pos, context);
 		}
-	}
-
-	@Override
-	public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-		return getShape(state, world, pos, context);
 	}
 
 	@Override

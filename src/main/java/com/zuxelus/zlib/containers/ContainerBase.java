@@ -36,7 +36,7 @@ public abstract class ContainerBase<T extends IInventory> extends Container {
 	protected void addPlayerInventorySlots(PlayerInventory inventory, int height) {
 		addPlayerInventorySlots(inventory, 178, height);
 	}
-	
+
 	protected void addPlayerInventorySlots(PlayerInventory inventory, int width, int height) {
 		int xStart = (width - 162) / 2;
 		for (int row = 0; row < 3; row++)

@@ -33,6 +33,7 @@ public class GuiInfoPanel extends GuiPanelBase<ContainerInfoPanel> {
 		name = I18n.format("block.energycontrol.info_panel");
 	}
 
+	@Override
 	protected void initButtons() {
 		addButton(new GuiButtonGeneral(guiLeft + xSize - 24, guiTop + 42, 16, 16, TEXTURE, 176, panel.getShowLabels() ? 15 : 31, (button) -> { actionPerformed(button, ID_LABELS); }).setGradient());
 		isColored = panel.isColoredEval();
@@ -41,6 +42,7 @@ public class GuiInfoPanel extends GuiPanelBase<ContainerInfoPanel> {
 		addButton(new GuiButtonGeneral(guiLeft + xSize - 24, guiTop + 42 + 17 * 3, 16, 16, Integer.toString(panel.getTickRate()), (button) -> { actionPerformed(button, ID_TICKRATE); }).setGradient());
 	}
 
+	@Override
 	protected void initControls() {
 		ItemStack stack = panel.getCards().get(activeTab);
 		if (ItemStack.areItemsEqual(stack, oldStack) && panel.isColoredEval() == isColored)
@@ -56,7 +58,7 @@ public class GuiInfoPanel extends GuiPanelBase<ContainerInfoPanel> {
 			if (stack.getItem() instanceof ItemCardText)
 				addButton(new GuiButtonGeneral(guiLeft + xSize - 24, guiTop + 42 + 17 * 2, 16, 16, "txt", (button) -> { actionPerformed(button, ID_TEXT); }).setGradient());
 			List<PanelSetting> settingsList = ((ItemCardMain) stack.getItem()).getSettingsList();
-	
+
 			int hy = font.FONT_HEIGHT + 1;
 			int y = 1;
 			int x = guiLeft + 24;

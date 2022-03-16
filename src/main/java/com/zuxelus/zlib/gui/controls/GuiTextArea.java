@@ -20,8 +20,8 @@ public class GuiTextArea extends Widget implements IRenderable, IGuiEventListene
 	private final int lineCount;
 	private int maxStringLength = 32;
 	private int cursorCounter;
-	private int cursorPosition = 0;
-	private int cursorLine = 0;
+	private int cursorPosition;
+	private int cursorLine;
 	private String[] text;
 
 	private final FontRenderer fontRenderer;
@@ -57,7 +57,7 @@ public class GuiTextArea extends Widget implements IRenderable, IGuiEventListene
 			drawCursorVertical(cursorPositionX, textTop - 1, cursorPositionX + 1, textTop + 1 + fontRenderer.FONT_HEIGHT);
 	}
 
-	// Copy of TextFieldWidget.renderHighlight
+	// Copy of TextFieldWidget.drawSelectionBox
 	private void drawCursorVertical(int left, int top, int right, int bottom) {
 		if (left < right) {
 			int i = left;

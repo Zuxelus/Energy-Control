@@ -19,9 +19,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 
 public class TEAdvancedInfoPanelRenderer extends TileEntityRenderer<TileEntityAdvancedInfoPanel> {
-	private static final ResourceLocation TEXTUREOFF[];
-	private static final ResourceLocation TEXTUREON[];
-	private static final CubeRenderer model[];
+	private static final ResourceLocation[] TEXTUREOFF;
+	private static final ResourceLocation[] TEXTUREON;
+	private static final CubeRenderer[] model;
 
 	static {
 		TEXTUREOFF = new ResourceLocation[16];
@@ -290,7 +290,7 @@ public class TEAdvancedInfoPanelRenderer extends TileEntityRenderer<TileEntityAd
 		int row = 0;
 		int colorHex = 0x000000;
 		if (panel.getColored())
-			colorHex = panel.getColorTextHex();
+			colorHex = panel.getColorText();
 		for (PanelString panelString : joinedData) {
 			if (panelString.textLeft != null) {
 				fontRenderer.renderString(panelString.textLeft, offsetX - realWidth / 2,

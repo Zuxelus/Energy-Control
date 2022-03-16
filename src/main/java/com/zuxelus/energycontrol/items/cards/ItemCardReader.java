@@ -3,6 +3,7 @@ package com.zuxelus.energycontrol.items.cards;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.CardState;
@@ -32,7 +33,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
 
 public class ItemCardReader implements ICardReader {
-	private ItemStack card;
+	private final ItemStack card;
 
 	public ItemCardReader(ItemStack card) {
 		if (!(card.getItem() instanceof ItemCardMain))
@@ -147,6 +148,21 @@ public class ItemCardReader implements ICardReader {
 	}
 
 	@Override
+	public void setId(String id) {
+		setString("id", id);
+	}
+
+	@Override
+	public String getId() {
+		String id = getString("id");
+		if (id.isEmpty()) {
+			id = UUID.randomUUID().toString();
+			setId(id);
+		}
+		return id;
+	}
+
+	@Override
 	public CardState getState() {
 		return CardState.fromInteger(getInt("state"));
 	}
@@ -237,11 +253,13 @@ public class ItemCardReader implements ICardReader {
 	public void reset() {
 		BlockPos pos = getTarget();
 		String title = getTitle();
+		String id = getId();
 		card.setTag(new CompoundNBT());
 		if (pos != null)
 			ItemStackHelper.setCoordinates(card, pos);
 		if (!title.isEmpty())
 			setTitle(title);
+		setId(id);
 	}
 
 	@Override
@@ -259,6 +277,8 @@ public class ItemCardReader implements ICardReader {
 				setLong(name, ((NumberNBT) tag).getLong());
 			else if (type == ByteNBT.TYPE)
 				setByte(name, ((NumberNBT) tag).getByte());
+			else if (type == CompoundNBT.TYPE)
+				setTag(name, tag.copy());
 		}
 	}
 
@@ -267,11 +287,14 @@ public class ItemCardReader implements ICardReader {
 		List<PanelString> result = new LinkedList<PanelString>();
 		PanelString line = new PanelString();
 		switch (state) {
-		case OUT_OF_RANGE: line.textCenter = I18n.format("msg.ec.InfoPanelOutOfRange");
+		case OUT_OF_RANGE:
+			line.textCenter = I18n.format("msg.ec.InfoPanelOutOfRange");
 			break;
-		case INVALID_CARD: line.textCenter = I18n.format("msg.ec.InfoPanelInvalidCard");
+		case INVALID_CARD:
+			line.textCenter = I18n.format("msg.ec.InfoPanelInvalidCard");
 			break;
-		case NO_TARGET: line.textCenter = I18n.format("msg.ec.InfoPanelNoTarget");
+		case NO_TARGET:
+			line.textCenter = I18n.format("msg.ec.InfoPanelNoTarget");
 			break;
 		case CUSTOM_ERROR:
 			break;
@@ -286,7 +309,7 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public List<PanelString> getTitleList() {
-		List<PanelString> result = new LinkedList<PanelString>();
+		List<PanelString> result = new LinkedList<>();
 		String title = getTitle();
 		if (title != null && !title.isEmpty()) {
 			PanelString titleString = new PanelString();

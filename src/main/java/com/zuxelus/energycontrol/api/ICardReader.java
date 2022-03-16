@@ -58,6 +58,20 @@ public interface ICardReader {
 	String getTitle();
 
 	/**
+	 * Changes the id of the card. Used for Web Socket data.
+	 * 
+	 * @param id
+	 */
+	void setId(String id);
+
+	/**
+	 * Get id of the card. Used for Web Socket data.
+	 * 
+	 * @return
+	 */
+	String getId();
+
+	/**
 	 * Get current card state. In most cases shouldn't be called by card.
 	 * 
 	 * @return
@@ -107,7 +121,4 @@ public interface ICardReader {
 	void reset();
 
 	void copyFrom(CompoundNBT tag);
-
-	//int getCardType();
-
 }

@@ -8,6 +8,7 @@ import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
@@ -25,11 +26,11 @@ public class IndustrialAlarm extends HowlerAlarm {
 	private static final int[] lightSteps = { 0, 7, 14, 7, 0};
 
 	public IndustrialAlarm() {
-		super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.0F));
+		super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.0F).sound(SoundType.METAL));
 	}
 
 	@Override
-	public int getLightValue(BlockState state) {
+	public int getLightValue(BlockState state) { // in 1.16 changed to ToIntFunction<>
 		return lightSteps[state.get(LIGHT)];
 	}
 

@@ -7,6 +7,7 @@ import com.zuxelus.zlib.tileentities.TileEntityFacing;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -31,7 +32,7 @@ public class TimerBlock extends FacingBlockSmall {
 	protected static final VoxelShape AABB_EAST = Block.makeCuboidShape(0.0F, 1.0F, 1.0F, 7.0F, 15.0F, 15.0F);
 
 	public TimerBlock() {
-		super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.0F));
+		super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.0F).sound(SoundType.METAL));
 	}
 
 	@Override

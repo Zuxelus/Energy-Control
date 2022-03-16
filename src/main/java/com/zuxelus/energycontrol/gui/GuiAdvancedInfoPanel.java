@@ -60,7 +60,7 @@ public class GuiAdvancedInfoPanel extends GuiPanelBase<ContainerAdvancedInfoPane
 			if (stack.getItem() instanceof ItemCardText)
 				addButton(new GuiButtonGeneral(guiLeft + 83 + 17 * 4, guiTop + 42, 16, 16, "txt", (button) -> { actionPerformed(button, ID_TEXT); }).setGradient());
 			List<PanelSetting> settingsList = ((ItemCardMain) stack.getItem()).getSettingsList();
-	
+
 			int hy = font.FONT_HEIGHT + 1;
 			int y = 1;
 			int x = guiLeft + 24;

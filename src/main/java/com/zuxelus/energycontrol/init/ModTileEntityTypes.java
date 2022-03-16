@@ -19,6 +19,8 @@ public class ModTileEntityTypes {
 		TileEntityType.Builder.create(TileEntityThermalMonitor::new, ModItems.thermal_monitor.get()).build(null));
 	public static final RegistryObject<TileEntityType<TileEntityRangeTrigger>> range_trigger = TILE_ENTITY_TYPES.register("range_trigger", () ->
 		TileEntityType.Builder.create(TileEntityRangeTrigger::new, ModItems.range_trigger.get()).build(null));
+	public static final RegistryObject<TileEntityType<TileEntityRemoteThermalMonitor>> remote_thermo = TILE_ENTITY_TYPES.register("remote_thermo", () ->
+		TileEntityType.Builder.create(TileEntityRemoteThermalMonitor::new, ModItems.remote_thermo.get()).build(null));
 	public static final RegistryObject<TileEntityType<TileEntityInfoPanel>> info_panel = TILE_ENTITY_TYPES.register("info_panel", () ->
 		TileEntityType.Builder.create(TileEntityInfoPanel::new, ModItems.info_panel.get()).build(null));
 	public static final RegistryObject<TileEntityType<TileEntityInfoPanelExtender>> info_panel_extender = TILE_ENTITY_TYPES.register("info_panel_extender", () ->

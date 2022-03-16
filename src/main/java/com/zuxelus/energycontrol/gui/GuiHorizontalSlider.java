@@ -15,7 +15,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiHorizontalSlider extends GuiBase {
-
 	private GuiPanelBase<?> parentGui;
 	private TileEntityInfoPanel panel;
 	private HorizontalSlider slider;

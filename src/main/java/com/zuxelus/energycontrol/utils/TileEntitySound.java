@@ -36,6 +36,6 @@ public class TileEntitySound {
 	}
 
 	public boolean isPlaying() {
-		return sound == null ? false : Minecraft.getInstance().getSoundHandler().isPlaying(sound);
+		return sound != null && Minecraft.getInstance().getSoundHandler().isPlaying(sound);
 	}
 }

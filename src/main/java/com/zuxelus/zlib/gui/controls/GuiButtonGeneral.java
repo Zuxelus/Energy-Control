@@ -51,15 +51,10 @@ public class GuiButtonGeneral extends Button {
 		if (texture != null)
 			minecraft.getTextureManager().bindTexture(texture);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		//isHovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
-		/*RenderSystem.enableBlend();
-		RenderSystem.defaultBlendFunc();
-		RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);*/
 		if (isHovered && hasGradient)
 			fillGradient(x, y, x + width, y + height, 0x80FFFFFF, 0x80FFFFFF);
 		if (texture != null)
 			blit(x, y, textureLeft / scale, isHovered ? (textureTop + textureTopOff) / scale : textureTop / scale, width, height, 256 / scale, 256 / scale);
-		//mouseDragged(mc, mouseX, mouseY);
 		String displayString = getMessage();
 		if (!displayString.equals(""))
 			fontRenderer.drawString(displayString, x + (width - fontRenderer.getStringWidth(displayString)) / 2, y - 3 + height / 2, 0x404040);

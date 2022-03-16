@@ -5,6 +5,7 @@ import com.zuxelus.zlib.tileentities.TileEntityFacing;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalBlock;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
@@ -21,7 +22,7 @@ import net.minecraft.world.World;
 public abstract class FacingHorizontal extends HorizontalBlock {
 
 	public FacingHorizontal() {
-		super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.0F));
+		super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.0F).sound(SoundType.METAL));
 		setDefaultState(getDefaultState().with(HORIZONTAL_FACING, Direction.NORTH));
 	}
 

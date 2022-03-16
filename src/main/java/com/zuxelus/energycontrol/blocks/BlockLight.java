@@ -23,7 +23,7 @@ public class BlockLight extends Block {
 	}
 
 	@Override
-	public int getLightValue(BlockState state) {
+	public int getLightValue(BlockState state) { // in 1.16 changed to ToIntFunction<>
 		return state.get(LIT) ? 15 : 0;
 	}
 

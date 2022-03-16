@@ -29,6 +29,7 @@ public class ClientProxy {
 		SoundHelper.importSound();
 
 		ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.thermal_monitor.get(), TEThermalMonitorRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.remote_thermo.get(), TERemoteThermoRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.info_panel.get(), TileEntityInfoPanelRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.info_panel_extender.get(), TEInfoPanelExtenderRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.info_panel_advanced.get(), TEAdvancedInfoPanelRenderer::new);
@@ -41,6 +42,7 @@ public class ClientProxy {
 			ScreenManager.<ContainerAdvancedInfoPanel, GuiAdvancedInfoPanel>registerFactory(ModContainerTypes.info_panel_advanced.get(), GuiAdvancedInfoPanel::new);
 			ScreenManager.registerFactory(ModContainerTypes.holo_panel.get(), GuiHoloPanel::new);
 			ScreenManager.registerFactory(ModContainerTypes.range_trigger.get(), GuiRangeTrigger::new);
+			ScreenManager.registerFactory(ModContainerTypes.remote_thermo.get(), GuiRemoteThermalMonitor::new);
 			ScreenManager.registerFactory(ModContainerTypes.kit_assembler.get(), GuiKitAssembler::new);
 			ScreenManager.registerFactory(ModContainerTypes.timer.get(), GuiTimer::new);
 			ScreenManager.registerFactory(ModContainerTypes.card_holder.get(), GuiCardHolder::new);
