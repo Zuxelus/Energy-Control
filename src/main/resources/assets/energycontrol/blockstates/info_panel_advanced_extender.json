@@ -1,10 +1,16 @@
 {
     "variants": {
-        "facing=up":    { "model": "energycontrol:block/info_panel_advanced_extender" },
-        "facing=down":  { "model": "energycontrol:block/info_panel_advanced_extender", "x": 180 },
-        "facing=east":  { "model": "energycontrol:block/info_panel_advanced_extender", "x": 90, "y": 90 },
-        "facing=west":  { "model": "energycontrol:block/info_panel_advanced_extender", "x": 90, "y": 270 },
-        "facing=south": { "model": "energycontrol:block/info_panel_advanced_extender", "x": 90, "y": 180 },
-        "facing=north": { "model": "energycontrol:block/info_panel_advanced_extender", "x": 90 }
+        "active=false,facing=up":    { "model": "energycontrol:block/info_panel_advanced_extender" },
+        "active=false,facing=down":  { "model": "energycontrol:block/info_panel_advanced_extender", "x": 180 },
+        "active=false,facing=east":  { "model": "energycontrol:block/info_panel_advanced_extender", "x": 90, "y": 90 },
+        "active=false,facing=west":  { "model": "energycontrol:block/info_panel_advanced_extender", "x": 90, "y": 270 },
+        "active=false,facing=south": { "model": "energycontrol:block/info_panel_advanced_extender", "x": 90, "y": 180 },
+        "active=false,facing=north": { "model": "energycontrol:block/info_panel_advanced_extender", "x": 90 },
+        "active=true,facing=up":    { "model": "energycontrol:block/info_panel_advanced_extender" },
+        "active=true,facing=down":  { "model": "energycontrol:block/info_panel_advanced_extender", "x": 180 },
+        "active=true,facing=east":  { "model": "energycontrol:block/info_panel_advanced_extender", "x": 90, "y": 90 },
+        "active=true,facing=west":  { "model": "energycontrol:block/info_panel_advanced_extender", "x": 90, "y": 270 },
+        "active=true,facing=south": { "model": "energycontrol:block/info_panel_advanced_extender", "x": 90, "y": 180 },
+        "active=true,facing=north": { "model": "energycontrol:block/info_panel_advanced_extender", "x": 90 }
     }
-} 
+}

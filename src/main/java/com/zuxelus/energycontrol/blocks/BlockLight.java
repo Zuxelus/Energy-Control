@@ -29,7 +29,7 @@ public class BlockLight extends Block {
 
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		return defaultBlockState().setValue(LIT, Boolean.valueOf(context.getLevel().hasNeighborSignal(context.getClickedPos())));
+		return defaultBlockState().setValue(LIT, context.getLevel().hasNeighborSignal(context.getClickedPos()));
 	}
 
 	@Override

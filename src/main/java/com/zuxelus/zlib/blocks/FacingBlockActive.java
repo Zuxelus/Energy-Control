@@ -10,7 +10,6 @@ public abstract class FacingBlockActive extends FacingBlock {
 
 	public FacingBlockActive(Properties properties) {
 		super(properties);
-		//setDefaultState(getDefaultState().with(ACTIVE, false));
 	}
 
 	@Override
@@ -18,9 +17,4 @@ public abstract class FacingBlockActive extends FacingBlock {
 		super.createBlockStateDefinition(builder);
 		builder.add(ACTIVE);
 	}
-
-	/*@Override
-	public BlockState getPlacementState(ItemPlacementContext context) {
-		return super.getPlacementState(context).with(ACTIVE, false);
-	}*/
 }

@@ -47,7 +47,7 @@ public class RangeTrigger extends FacingHorizontal {
 		if (!(te instanceof TileEntityRangeTrigger))
 			return ActionResultType.PASS;
 		if (!world.isClientSide)
-				NetworkHooks.openGui((ServerPlayerEntity) player, (TileEntityRangeTrigger) te, pos);
+			NetworkHooks.openGui((ServerPlayerEntity) player, (TileEntityRangeTrigger) te, pos);
 		return ActionResultType.SUCCESS;
 	}
 

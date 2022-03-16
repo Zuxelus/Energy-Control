@@ -312,6 +312,34 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements ITi
 		}
 	}
 
+	@Override
+	@Nonnull
+	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
+		if (cap == CapabilityEnergy.ENERGY)
+			return LazyOptional.of(() -> this.storage).cast();
+		return super.getCapability(cap, side);
+	}
+
+	// ISidedInventory
+	@Override
+	public int[] getSlotsForFace(Direction side) {
+		if (side == Direction.UP)
+			return new int[] { SLOT_CARD1, SLOT_ITEM, SLOT_CARD2 };
+		if (side == Direction.DOWN)
+			return new int[] { SLOT_RESULT };
+		return super.getSlotsForFace(side);
+	}
+
+	@Override
+	public boolean canPlaceItemThroughFace(int slot, ItemStack stack, Direction side) {
+		return side == Direction.UP && (slot == SLOT_CARD1 || slot == SLOT_ITEM || slot == SLOT_CARD2);
+	}
+
+	@Override
+	public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) {
+		return side == Direction.DOWN && slot == SLOT_RESULT;
+	}
+
 	// INamedContainerProvider
 	@Override
 	public Container createMenu(int windowId, PlayerInventory inventory, PlayerEntity player) {
@@ -321,13 +349,5 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements ITi
 	@Override
 	public ITextComponent getDisplayName() {
 		return new TranslationTextComponent(ModItems.kit_assembler.get().getDescriptionId());
-	}
-
-	@Override
-	@Nonnull
-	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-		if (cap == CapabilityEnergy.ENERGY)
-			return LazyOptional.of(() -> this.storage).cast();
-		return super.getCapability(cap, side);
 	}
 }

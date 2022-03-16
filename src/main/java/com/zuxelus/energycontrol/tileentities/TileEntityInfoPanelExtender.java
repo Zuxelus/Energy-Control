@@ -227,11 +227,6 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 		return new AxisAlignedBB(worldPosition.offset(0, 0, 0), worldPosition.offset(1, 1, 1));
 	}
 
-	/*@Override // TODO
-	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
-		return oldState.getBlock() != newSate.getBlock();
-	}*/
-
 	@OnlyIn(Dist.CLIENT)
 	public int findTexture() {
 		Screen scr = getScreen();

@@ -10,9 +10,11 @@ import com.zuxelus.zlib.tileentities.TileEntityFacing;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -24,7 +26,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 public class InfoPanelExtender extends FacingBlockActive {
 
 	public InfoPanelExtender() {
-		super(Block.Properties.of(Material.METAL).strength(3.0F).lightLevel(state -> state.getValue(ACTIVE) ? 10 : 0));
+		super(Block.Properties.of(Material.METAL).strength(3.0F).lightLevel(state -> state.getValue(ACTIVE) ? 10 : 0).sound(SoundType.METAL));
 	}
 
 	@Override
@@ -47,6 +49,11 @@ public class InfoPanelExtender extends FacingBlockActive {
 				return ActionResultType.SUCCESS;
 		NetworkHooks.openGui((ServerPlayerEntity) player, (TileEntityInfoPanel) panel, pos);
 		return ActionResultType.SUCCESS;
+	}
+
+	@Override
+	public BlockState getStateForPlacement(BlockItemUseContext context) {
+		return super.getStateForPlacement(context).setValue(ACTIVE, false);
 	}
 
 	@Override

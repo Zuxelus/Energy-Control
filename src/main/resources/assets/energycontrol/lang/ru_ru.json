@@ -37,6 +37,7 @@
     "item.energycontrol.upgrade_range": "Улучшение «Усиление сигнала»",
     "item.energycontrol.upgrade_color": "Улучшение «Цветность»",
     "item.energycontrol.upgrade_touch": "Улучшение «Сенсорный экран»",
+    "item.energycontrol.upgrade_web": "Web Upgrade",
     "item.energycontrol.portable_panel": "Портативная панель",
     "item.energycontrol.card_holder": "Кардхолдер",
     "item.energycontrol.machine_casing": "Корпус машины",
@@ -98,6 +99,7 @@
     "msg.ec.InfoPanelInvalidCard": "Недействительная карта",
     "msg.ec.InfoPanelNoTarget": "Цель не найдена",
 
+    "msg.ec.InfoPanelAge": "Age: %s ticks",
     "msg.ec.InfoPanelAmount": "Количество: %s",
     "msg.ec.InfoPanelAmountmB": "Количество: %s mB",
     "msg.ec.InfoPanelAugmentation": "Augmentation: %s",

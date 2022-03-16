@@ -17,6 +17,7 @@ public final class ModContainerTypes {
 	public static final RegistryObject<ContainerType<ContainerHoloPanel>> holo_panel = CONTAINER_TYPES.register("holo_panel", () -> IForgeContainerType.create(ContainerHoloPanel::new));
 	public static final RegistryObject<ContainerType<ContainerEnergyCounter>> energy_counter = CONTAINER_TYPES.register("energy_counter", () -> IForgeContainerType.create(ContainerEnergyCounter::new));
 	public static final RegistryObject<ContainerType<ContainerRangeTrigger>> range_trigger = CONTAINER_TYPES.register("range_trigger", () -> IForgeContainerType.create(ContainerRangeTrigger::new));
+	public static final RegistryObject<ContainerType<ContainerRemoteThermalMonitor>> remote_thermo = CONTAINER_TYPES.register("remote_thermo", () -> IForgeContainerType.create(ContainerRemoteThermalMonitor::new));
 	public static final RegistryObject<ContainerType<ContainerKitAssembler>> kit_assembler = CONTAINER_TYPES.register("kit_assembler", () -> IForgeContainerType.create(ContainerKitAssembler::new));
 	public static final RegistryObject<ContainerType<ContainerTimer>> timer = CONTAINER_TYPES.register("timer", () -> IForgeContainerType.create(ContainerTimer::new));
 	public static final RegistryObject<ContainerType<ContainerFluidControlValve>> fluid_control_valve = CONTAINER_TYPES.register("fluid_control_valve", () -> IForgeContainerType.create(ContainerFluidControlValve::new));

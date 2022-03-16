@@ -13,7 +13,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class StringUtils {
-	private static DecimalFormat formatter = null;
+	private static DecimalFormat formatter;
 
 	private static DecimalFormat getFormatter() {
 		if (formatter == null) {

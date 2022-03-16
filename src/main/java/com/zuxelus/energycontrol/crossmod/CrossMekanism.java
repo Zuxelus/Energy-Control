@@ -199,7 +199,7 @@ public class CrossMekanism extends CrossModBase {
 		return new FluidInfo(tank);
 	}
 
-	public static FluidInfo toFluidInfo(MergedChemicalTank tank) {
+	public static FluidInfo toFluidInfo(MergedChemicalTank tank) { // MergedChemicalTank doesn't exist in 1.15
 		Current current = tank.getCurrent();
 		if (current == Current.EMPTY)
 			return new FluidInfo(null, null, 0, 0);
@@ -210,8 +210,8 @@ public class CrossMekanism extends CrossModBase {
 	public CompoundNBT getCardData(TileEntity te) {
 		if (te instanceof TileEntityFactory) {
 			CompoundNBT tag = setStorage(((TileEntityFactory<?>) te).getEnergyContainer());
-			tag.putDouble("usage", MekanismUtils.convertToDisplay(((TileEntityFactory<?>) te).lastUsage).doubleValue());
-			tag.putBoolean("active", (((TileEntityFactory<?>) te).lastUsage).doubleValue() > 0);
+			tag.putDouble("usage", MekanismUtils.convertToDisplay(((TileEntityFactory<?>) te).getLastUsage()).doubleValue());
+			tag.putBoolean("active", (((TileEntityFactory<?>) te).getLastUsage()).doubleValue() > 0);
 			if (te instanceof TileEntityItemStackGasToItemStackFactory)
 				addTank("tank", tag, ((TileEntityItemStackGasToItemStackFactory) te).getGasTank());
 			if (te instanceof TileEntityMetallurgicInfuserFactory)
@@ -351,7 +351,7 @@ public class CrossMekanism extends CrossModBase {
 		if (te instanceof TileEntityAntiprotonicNucleosynthesizer) {
 			CompoundNBT tag = setStorage(((TileEntityAntiprotonicNucleosynthesizer) te).getEnergyContainer());
 			addUsage(tag, ((TileEntityAntiprotonicNucleosynthesizer) te).getEnergyContainer(), ((TileEntityAntiprotonicNucleosynthesizer) te).getActive());
-			tag.putDouble("usage", MekanismUtils.convertToDisplay(((TileEntityAntiprotonicNucleosynthesizer) te).clientEnergyUsed).doubleValue());
+			tag.putDouble("usage", MekanismUtils.convertToDisplay(((TileEntityAntiprotonicNucleosynthesizer) te).getEnergyUsed()).doubleValue());
 			addTank("tank", tag, ((TileEntityAntiprotonicNucleosynthesizer) te).gasTank);
 			return tag;
 		}
@@ -402,7 +402,7 @@ public class CrossMekanism extends CrossModBase {
 			tag.putString(name, String.format("%s: %s mB", I18n.get(tank.getFluid().getTranslationKey()), tank.getFluidAmount()));
 	}
 
-	public static void addTank(String name, CompoundNBT tag, MergedChemicalTank tank) {
+	public static void addTank(String name, CompoundNBT tag, MergedChemicalTank tank) { // MergedChemicalTank doesn't exist in 1.15
 		Current current = tank.getCurrent();
 		if (current == Current.EMPTY)
 			tag.putString(name, "N/A");

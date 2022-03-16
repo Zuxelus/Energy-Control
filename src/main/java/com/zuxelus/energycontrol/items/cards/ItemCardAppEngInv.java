@@ -91,10 +91,10 @@ public class ItemCardAppEngInv extends ItemCardMain implements ITouchAction {
 				MEMonitorHandler<? extends IAEStack<?>> monitor = new MEMonitorHandler(handler);
 				for (Object st : monitor.getStorageList()) {
 					if (st instanceof IAEStack) {
-						IAEStack ae = (IAEStack) st;
+						IAEStack<?> ae = (IAEStack<?>) st;
 						for (ItemStack stack : stacks)
 							if (ae.asItemStackRepresentation().sameItem(stack))
-								stack.setCount(stack.getCount() + (int) ((IAEStack) st).getStackSize());
+								stack.setCount(stack.getCount() + (int) ae.getStackSize());
 					}
 				}
 			}

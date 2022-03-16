@@ -24,9 +24,9 @@ import net.minecraft.util.math.BlockPos;
 public class TileEntityInfoPanelRenderer extends TileEntityRenderer<TileEntityInfoPanel> {
 	private static int[][] sides = new int[][] { { 3, 2, 1, 0, 5, 4 }, { 2, 3, 1, 0, 4, 5 }, { 4, 5, 1, 0, 3, 2 },
 		{ 5 ,4, 1, 0, 2, 3 }, { 1, 0, 3, 2, 4, 5 }, { 0, 1, 2, 3, 4, 5 } };
-	private static final ResourceLocation TEXTUREOFF[];
-	private static final ResourceLocation TEXTUREON[];
-	private static final CubeRenderer model[];
+	private static final ResourceLocation[] TEXTUREOFF;
+	private static final ResourceLocation[] TEXTUREON;
+	private static final CubeRenderer[] model;
 
 	static {
 		TEXTUREOFF = new ResourceLocation[16];
@@ -222,7 +222,7 @@ public class TileEntityInfoPanelRenderer extends TileEntityRenderer<TileEntityIn
 			matrixStack.translate(0, 0, 0.0002F);
 			int colorHex = 0x000000;
 			if (panel.getColored())
-				colorHex = panel.getColorTextHex();
+				colorHex = panel.getColorText();
 			renderText(joinedData, displayWidth, displayHeight, colorHex, matrixStack, renderer.getFont());
 		}
 	}

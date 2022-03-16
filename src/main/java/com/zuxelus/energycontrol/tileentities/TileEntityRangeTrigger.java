@@ -195,7 +195,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 		super.setChanged();
 		if (level == null || level.isClientSide)
 			return;
-		
+
 		int status = STATE_UNKNOWN;
 		ItemStack card = getItem(SLOT_CARD);
 		if (!card.isEmpty()) {
@@ -204,7 +204,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 				ItemCardReader reader = new ItemCardReader(card);
 				CardState state = ((ItemCardMain) item).updateCardNBT(level, worldPosition, reader, getItem(SLOT_UPGRADE));
 				if (state == CardState.OK) {
-					double cur = item instanceof ItemCardEnergy ? reader.getDouble("storage") :  reader.getLong("amount");
+					double cur = item instanceof ItemCardEnergy ? reader.getDouble("storage") : reader.getLong("amount");
 					status = cur > Math.max(levelStart, levelEnd) || cur < Math.min(levelStart, levelEnd) ? STATE_ACTIVE : STATE_PASSIVE;
 				} else
 					status = STATE_UNKNOWN;

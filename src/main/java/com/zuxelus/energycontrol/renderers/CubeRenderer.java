@@ -82,20 +82,20 @@ public class CubeRenderer { // net.minecraft.client.renderer.model.ModelRenderer
 			float f = x + dx;
 			float f1 = y + dy;
 			float f2 = z + dz;
-			PositionTextureVertex vertex = new PositionTextureVertex(x, y, z, 0.0F, 0.0F);
-			PositionTextureVertex vertex2 = new PositionTextureVertex(f, y, z, 0.0F, 8.0F);
-			PositionTextureVertex vertex3 = new PositionTextureVertex(f, f1 - leftTop, z, 8.0F, 8.0F);
-			PositionTextureVertex vertex4 = new PositionTextureVertex(x, f1 - leftBottom, z, 8.0F, 0.0F);
-			PositionTextureVertex vertex5 = new PositionTextureVertex(x, y, f2, 0.0F, 0.0F);
-			PositionTextureVertex vertex6 = new PositionTextureVertex(f, y, f2, 0.0F, 8.0F);
-			PositionTextureVertex vertex7 = new PositionTextureVertex(f, f1 - rightTop, f2, 8.0F, 8.0F);
-			PositionTextureVertex vertex8 = new PositionTextureVertex(x, f1 - rightBottom, f2, 8.0F, 0.0F);
-			quads[2] = new TexturedQuad(new PositionTextureVertex[] { vertex6, vertex5, vertex, vertex2 }, dz, 0, dz + dx, dz, texWidth, texHeight, Direction.DOWN);
-			quads[3] = new TexturedQuad(new PositionTextureVertex[] { vertex3, vertex4, vertex8, vertex7 }, texOffX + dz + dx, texOffY + dz, texOffX + dz + dx + dx, texOffY, texWidth, texHeight, Direction.UP);
-			quads[1] = new TexturedQuad(new PositionTextureVertex[] { vertex, vertex5, vertex8, vertex4 }, 0, dz, dz, dz + dy, texWidth, texHeight, Direction.WEST);
-			quads[4] = new TexturedQuad(new PositionTextureVertex[] { vertex2, vertex, vertex4, vertex3 }, dz, dz, dz + dx, dz + dy, texWidth, texHeight, Direction.NORTH);
-			quads[0] = new TexturedQuad(new PositionTextureVertex[] { vertex6, vertex2, vertex3, vertex7 }, dz + dx, dz, dz + dx + dz, dz + dy, texWidth, texHeight, Direction.EAST);
-			quads[5] = new TexturedQuad(new PositionTextureVertex[] { vertex5, vertex6, vertex7, vertex8 }, dz + dx + dz, dz, dz + dx + dz + dx, dz + dy, texWidth, texHeight, Direction.SOUTH);
+			PositionTextureVertex v = new PositionTextureVertex(x, y, z, 0.0F, 0.0F);
+			PositionTextureVertex v2 = new PositionTextureVertex(f, y, z, 0.0F, 8.0F);
+			PositionTextureVertex v3 = new PositionTextureVertex(f, f1 - leftTop, z, 8.0F, 8.0F);
+			PositionTextureVertex v4 = new PositionTextureVertex(x, f1 - leftBottom, z, 8.0F, 0.0F);
+			PositionTextureVertex v5 = new PositionTextureVertex(x, y, f2, 0.0F, 0.0F);
+			PositionTextureVertex v6 = new PositionTextureVertex(f, y, f2, 0.0F, 8.0F);
+			PositionTextureVertex v7 = new PositionTextureVertex(f, f1 - rightTop, f2, 8.0F, 8.0F);
+			PositionTextureVertex v8 = new PositionTextureVertex(x, f1 - rightBottom, f2, 8.0F, 0.0F);
+			quads[2] = new TexturedQuad(new PositionTextureVertex[] { v6, v5, v, v2 }, dz, 0, dz + dx, dz, texWidth, texHeight, Direction.DOWN);
+			quads[3] = new TexturedQuad(new PositionTextureVertex[] { v3, v4, v8, v7 }, texOffX + dz + dx, texOffY + dz, texOffX + dz + dx + dx, texOffY, texWidth, texHeight, Direction.UP);
+			quads[1] = new TexturedQuad(new PositionTextureVertex[] { v, v5, v8, v4 }, 0, dz, dz, dz + dy, texWidth, texHeight, Direction.WEST);
+			quads[4] = new TexturedQuad(new PositionTextureVertex[] { v2, v, v4, v3 }, dz, dz, dz + dx, dz + dy, texWidth, texHeight, Direction.NORTH);
+			quads[0] = new TexturedQuad(new PositionTextureVertex[] { v6, v2, v3, v7 }, dz + dx, dz, dz + dx + dz, dz + dy, texWidth, texHeight, Direction.EAST);
+			quads[5] = new TexturedQuad(new PositionTextureVertex[] { v5, v6, v7, v8 }, dz + dx + dz, dz, dz + dx + dz + dx, dz + dy, texWidth, texHeight, Direction.SOUTH);
 		}
 
 		public void render(MatrixStack matrixStack, IVertexBuilder buffer, int[] light, int combinedOverlay) {

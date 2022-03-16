@@ -28,3 +28,10 @@ Energy Control is a remastered version of original Nuclear Control, an Industria
     versionRange="[1.16.5]"
     ordering="AFTER"
     side="BOTH"
+
+[[dependencies.energycontrol]]
+    modId="thermal_expansion"
+    mandatory=false
+    versionRange="[1.4.2.4,)"
+    ordering="AFTER"
+    side="BOTH"

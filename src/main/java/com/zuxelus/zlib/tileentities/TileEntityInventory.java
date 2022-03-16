@@ -1,22 +1,30 @@
 package com.zuxelus.zlib.tileentities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.SidedInvWrapper;
 
-public abstract class TileEntityInventory extends TileEntityFacing implements IInventory {
+public abstract class TileEntityInventory extends TileEntityFacing implements ISidedInventory {
 	protected NonNullList<ItemStack> inventory;
+	private HashMap<Direction, IItemHandler> itemHandlers = new HashMap<>();
 
 	public TileEntityInventory(TileEntityType<?> type) {
 		super(type);
@@ -80,12 +88,26 @@ public abstract class TileEntityInventory extends TileEntityFacing implements II
 
 	@Override
 	public boolean stillValid(PlayerEntity player) {
-		return level.getBlockEntity(worldPosition) != this ? false : player.distanceToSqr(worldPosition.getX() + 0.5D, worldPosition.getY() + 0.5D, worldPosition.getZ() + 0.5D) <= 64.0D;
+		return level.getBlockEntity(worldPosition) == this && player.distanceToSqr(worldPosition.getX() + 0.5D, worldPosition.getY() + 0.5D, worldPosition.getZ() + 0.5D) <= 64.0D;
 	}
 
 	@Override
 	public void clearContent() {
 		inventory.clear();
+	}
+
+	@Override
+	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
+		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+			IItemHandler handler = itemHandlers.get(side);
+			if (handler == null) {
+				handler = new SidedInvWrapper(this, side);
+				itemHandlers.put(side, handler);
+			}
+			return LazyOptional.of(() -> itemHandlers.get(side)).cast();
+		}
+
+		return super.getCapability(cap, side);
 	}
 
 	public List<ItemStack> getDrops(int fortune) {
@@ -115,5 +137,21 @@ public abstract class TileEntityInventory extends TileEntityFacing implements II
 			world.addFreshEntity(entityItem);
 			stack.setCount(0);
 		}
+	}
+
+	// ISidedInventory
+	@Override
+	public int[] getSlotsForFace(Direction side) {
+		return new int[0];
+	}
+
+	@Override
+	public boolean canPlaceItemThroughFace(int slot, ItemStack stack, Direction side) {
+		return false;
+	}
+
+	@Override
+	public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) {
+		return false;
 	}
 }

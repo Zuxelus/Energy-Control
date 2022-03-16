@@ -17,10 +17,6 @@ public class CrossModBase {
 		return null;
 	}
 
-	public List<FluidInfo> getAllTanks(TileEntity te) {
-		return null;
-	}
-
 	public CompoundNBT getCardData(TileEntity te) {
 		return null;
 	}
@@ -34,6 +30,10 @@ public class CrossModBase {
 	}
 
 	public IEnergyStorage getEnergyStorage(TileEntity te) {
+		return null;
+	}
+
+	public List<FluidInfo> getAllTanks(TileEntity te) {
 		return null;
 	}
 

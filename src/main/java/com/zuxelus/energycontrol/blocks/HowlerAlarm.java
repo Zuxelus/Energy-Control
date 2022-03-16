@@ -8,6 +8,7 @@ import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -29,7 +30,7 @@ public class HowlerAlarm extends FacingBlockSmall {
 	protected static final VoxelShape AABB_EAST = Block.box(0.0D, 2.0D, 2.0D, 7.0D, 14.0D, 14.0D);
 
 	public HowlerAlarm() {
-		super(Block.Properties.of(Material.METAL).strength(3.0F));
+		super(Block.Properties.of(Material.METAL).strength(3.0F).sound(SoundType.METAL));
 	}
 
 	public HowlerAlarm(Properties properties) {
