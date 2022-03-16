@@ -7,7 +7,7 @@ import cofh.lib.inventory.ItemStorageCoFH;
 import cofh.lib.item.IAugmentItem;
 import cofh.lib.util.helpers.StringHelper;
 import cofh.thermal.lib.tileentity.DynamoTileBase;
-import cofh.thermal.lib.tileentity.ThermalTileBase;
+import cofh.thermal.lib.tileentity.ThermalTileAugmentable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -17,16 +17,16 @@ public class CrossThermalExpansion extends CrossModBase {
 
 	@Override
 	public CompoundNBT getEnergyData(TileEntity te) {
-		if (te instanceof ThermalTileBase)
-			return setStorage(((ThermalTileBase) te).getEnergyStorage());
+		if (te instanceof ThermalTileAugmentable)
+			return setStorage(((ThermalTileAugmentable) te).getEnergyStorage());
 		return null;
 	}
 
 	@Override
 	public CompoundNBT getCardData(TileEntity te) {
 		try {
-			if (te instanceof ThermalTileBase) {
-				ThermalTileBase base = (ThermalTileBase) te;
+			if (te instanceof ThermalTileAugmentable) {
+				ThermalTileAugmentable base = (ThermalTileAugmentable) te;
 				CompoundNBT tag = setStorage(base.getEnergyStorage());
 				tag.putBoolean("active", base.getCurSpeed() != 0);
 				if (te instanceof DynamoTileBase) {
@@ -39,7 +39,7 @@ public class CrossThermalExpansion extends CrossModBase {
 				tag.putString("rsmode", base.redstoneControl().getMode().name());
 				String augmentation = "";
 				if (base.augSize() > 0) {
-					Field field = ThermalTileBase.class.getDeclaredField("augments");
+					Field field = ThermalTileAugmentable.class.getDeclaredField("augments");
 					field.setAccessible(true);
 					List<ItemStorageCoFH> augments = (List<ItemStorageCoFH>) field.get(base);
 					for (int i = 0; i < augments.size(); i++) {
