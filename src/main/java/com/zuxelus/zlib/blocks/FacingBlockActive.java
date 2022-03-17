@@ -1,5 +1,6 @@
 package com.zuxelus.zlib.blocks;
 
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
@@ -10,7 +11,7 @@ public abstract class FacingBlockActive extends FacingBlock {
 
 	public FacingBlockActive(Properties properties) {
 		super(properties);
-		//setDefaultState(getDefaultState().with(ACTIVE, false));
+		registerDefaultState(defaultBlockState().setValue(ACTIVE, false));
 	}
 
 	@Override
@@ -19,8 +20,8 @@ public abstract class FacingBlockActive extends FacingBlock {
 		builder.add(ACTIVE);
 	}
 
-	/*@Override
-	public BlockState getPlacementState(ItemPlacementContext context) {
-		return super.getPlacementState(context).with(ACTIVE, false);
-	}*/
+	@Override
+	public BlockState getStateForPlacement(BlockPlaceContext context) {
+		return super.getStateForPlacement(context).setValue(ACTIVE, false);
+	}
 }

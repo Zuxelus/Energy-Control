@@ -15,10 +15,6 @@ public class CrossModBase {
 		return null;
 	}
 
-	public List<FluidInfo> getAllTanks(BlockEntity te) {
-		return null;
-	}
-
 	public CompoundTag getCardData(BlockEntity te) {
 		return null;
 	}
@@ -29,5 +25,9 @@ public class CrossModBase {
 
 	public int getReactorHeat(Level world, BlockPos pos) {
 		return -1;
+	}
+
+	public List<FluidInfo> getAllTanks(BlockEntity te) {
+		return null;
 	}
 }

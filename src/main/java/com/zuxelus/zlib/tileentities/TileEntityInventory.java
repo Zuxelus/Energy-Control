@@ -1,23 +1,31 @@
 package com.zuxelus.zlib.tileentities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.SidedInvWrapper;
 
-public abstract class TileEntityInventory extends BlockEntityFacing implements Container {
+public abstract class TileEntityInventory extends BlockEntityFacing implements WorldlyContainer {
 	protected NonNullList<ItemStack> inventory;
+	private HashMap<Direction, IItemHandler> itemHandlers = new HashMap<>();
 
 	public TileEntityInventory(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -89,6 +97,20 @@ public abstract class TileEntityInventory extends BlockEntityFacing implements C
 		inventory.clear();
 	}
 
+	@Override
+	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
+		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+			IItemHandler handler = itemHandlers.get(side);
+			if (handler == null) {
+				handler = new SidedInvWrapper(this, side);
+				itemHandlers.put(side, handler);
+			}
+			return LazyOptional.of(() -> itemHandlers.get(side)).cast();
+		}
+
+		return super.getCapability(cap, side);
+	}
+
 	public List<ItemStack> getDrops(int fortune) {
 		List<ItemStack> list = new ArrayList<>();
 		for (int i = 0; i < getContainerSize(); i++) {
@@ -116,5 +138,21 @@ public abstract class TileEntityInventory extends BlockEntityFacing implements C
 			world.addFreshEntity(entityItem);
 			stack.setCount(0);
 		}
+	}
+
+	// ISidedInventory
+	@Override
+	public int[] getSlotsForFace(Direction side) {
+		return new int[0];
+	}
+
+	@Override
+	public boolean canPlaceItemThroughFace(int slot, ItemStack stack, Direction side) {
+		return false;
+	}
+
+	@Override
+	public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) {
+		return false;
 	}
 }

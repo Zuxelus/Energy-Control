@@ -16,19 +16,19 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 
 public class AdvancedInfoPanel extends InfoPanel {
 
 	public AdvancedInfoPanel() {
-		super(Block.Properties.of(Material.METAL).strength(3.0F).noOcclusion());
+		super(Block.Properties.of(Material.METAL).strength(3.0F).sound(SoundType.METAL).noOcclusion());
 	}
 
 	@Override
@@ -36,20 +36,21 @@ public class AdvancedInfoPanel extends InfoPanel {
 		return ModTileEntityTypes.info_panel_advanced.get().create(pos, state);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
 		BlockEntity tile = world.getBlockEntity(pos);
 		if (!(tile instanceof TileEntityAdvancedInfoPanel))
-			return Shapes.block();
+			return super.getShape(state, world, pos, context);
 
 		TileEntityAdvancedInfoPanel te = (TileEntityAdvancedInfoPanel) tile;
 		Screen screen = te.getScreen();
 		if (screen == null)
-			return Shapes.block();
+			return super.getShape(state, world, pos, context);
 
-		Direction enumfacing = (Direction) state.getValue(FACING);
+		Direction enumfacing = state.getValue(FACING);
 		if (!(te instanceof TileEntityAdvancedInfoPanel) || enumfacing == null)
-			return Shapes.block();
+			return super.getShape(state, world, pos, context);
 		switch (enumfacing) {
 		case EAST:
 			return Block.box(0.0D, 0.0D, 0.0D, te.thickness, 16.0D, 16.0D);
@@ -64,14 +65,14 @@ public class AdvancedInfoPanel extends InfoPanel {
 		case DOWN:
 			return Block.box(0.0D, 16.0D - te.thickness, 0.0D, 16.0D, 16.0D, 16.0D);
 		default:
-			return Shapes.block();
+			return super.getShape(state, world, pos, context);
 		}
 	}
 
-	@Override
+	/*@Override
 	public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
 		return getShape(state, world, pos, context);
-	}
+	}*/
 
 	@Override
 	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {

@@ -7,28 +7,30 @@ buildscript {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
     }
 }
+plugins {
+    id 'eclipse'
+    id 'maven-publish'
+}
 apply plugin: 'net.minecraftforge.gradle'
-// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
 
-version = '1.18-0.2.4'
+version = '1.18.2-0.2.5'
 group = 'com.zuxelus.energycontrol'
 archivesBaseName = 'EnergyControl-forge'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
-println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
+println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
-    mappings channel: 'official', version: '1.18'
+    mappings channel: 'official', version: '1.18.2'
     runs {
         client {
             workingDirectory project.file('run')
             //property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
+            property 'forge.enabledGameTestNamespaces', 'examplemod'
 
             mods {
-                EnergyControl {
+                examplemod {
                     source sourceSets.main
                 }
             }
@@ -40,7 +42,20 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                EnergyControl {
+                examplemod {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        gameTestServer {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            property 'forge.enabledGameTestNamespaces', 'examplemod'
+
+            mods {
+                examplemod {
                     source sourceSets.main
                 }
             }
@@ -53,7 +68,7 @@ minecraft {
             args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
-                EnergyControl {
+                examplemod {
                     source sourceSets.main
                 }
             }
@@ -72,12 +87,13 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.18-38.0.14'
-    compileOnly fg.deobf ("curse.maven:cctweaked-282001:3544951")
-    compileOnly fg.deobf ("curse.maven:WTHIT-455982:3548826") //
-    compileOnly fg.deobf ("curse.maven:jei-238222:3550020")
-    compileOnly fg.deobf ("curse.maven:extremereactors-250277:3549384")
-    compileOnly fg.deobf ("curse.maven:zerocore-247921:3549383")
+    minecraft 'net.minecraftforge:forge:1.18.2-40.0.18'
+    compileOnly fg.deobf ("curse.maven:ae2-223794:3646192")
+    compileOnly fg.deobf ("curse.maven:cctweaked-282001:3670782")
+    compileOnly fg.deobf ("curse.maven:WTHIT-455982:3680651") //
+    compileOnly fg.deobf ("curse.maven:jei-238222:3695636")
+    compileOnly fg.deobf ("curse.maven:extremereactors-250277:3681561")
+    compileOnly fg.deobf ("curse.maven:zerocore-247921:3681549")
 }
 
 jar {
@@ -107,4 +123,8 @@ publishing {
             url "file://${project.projectDir}/mcmodsrepo"
         }
     }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
 }

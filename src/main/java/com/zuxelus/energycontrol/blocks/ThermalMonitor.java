@@ -15,6 +15,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
@@ -31,7 +32,7 @@ public class ThermalMonitor extends FacingBlockSmall {
 	protected static final VoxelShape AABB_EAST = Block.box(0.0F, 1.0F, 1.0F, 7.0F, 15.0F, 15.0F);
 
 	public ThermalMonitor() {
-		super(Block.Properties.of(Material.METAL).strength(3.0F));
+		super(Block.Properties.of(Material.METAL).strength(3.0F).sound(SoundType.METAL));
 	}
 
 	@Override
@@ -45,6 +46,11 @@ public class ThermalMonitor extends FacingBlockSmall {
 		if (!(te instanceof TileEntityThermalMonitor))
 			return 0;
 		return ((TileEntityThermalMonitor) te).getPowered() ? side != state.getValue(FACING) ? 15 : 0 : 0;
+	}
+
+	@Override
+	public boolean isSignalSource(BlockState state) {
+		return true;
 	}
 
 	@Override

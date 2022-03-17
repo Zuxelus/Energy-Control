@@ -24,7 +24,6 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -33,6 +32,7 @@ public class CrossModLoader {
 	private static final Map<String, CrossModBase> CROSS_MODS = new HashMap<>();
 
 	public static void init() {
+		//loadCrossMod(ModIDs.APPLIED_ENERGISTICS, CrossAppEng::new);
 		loadCrossMod(ModIDs.BIG_REACTORS, CrossBigReactors::new);
 		//loadCrossMod(ModIDs.BIGGER_REACTORS, CrossBiggerReactors::new);
 		loadCrossModSafely(ModIDs.COMPUTER_CRAFT, () -> CrossComputerCraft::new);
@@ -98,11 +98,8 @@ public class CrossModLoader {
 		if (fluid.isPresent()) {
 			IFluidHandler handler = fluid.get();
 			List<FluidInfo> result = new ArrayList<>();
-			for (int i = 0; i < handler.getTanks(); i++) {
-				FluidTank tank = new FluidTank(handler.getTankCapacity(i));
-				tank.setFluid(handler.getFluidInTank(i));
-				result.add(new FluidInfo(tank));
-			}
+			for (int i = 0; i < handler.getTanks(); i++)
+				result.add(new FluidInfo(handler.getFluidInTank(i), handler.getTankCapacity(i)));
 			return result;
 		}
 		return null;

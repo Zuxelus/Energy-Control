@@ -22,6 +22,7 @@ public class ModItems {
 	public static final RegistryObject<Block> industrial_alarm = BLOCKS.register("industrial_alarm", () -> new IndustrialAlarm());
 	public static final RegistryObject<Block> thermal_monitor = BLOCKS.register("thermal_monitor", () -> new ThermalMonitor());
 	public static final RegistryObject<Block> range_trigger = BLOCKS.register("range_trigger", () -> new RangeTrigger());
+	public static final RegistryObject<Block> remote_thermo = BLOCKS.register("remote_thermo", () -> new RemoteThermalMonitor());
 	public static final RegistryObject<Block> info_panel = BLOCKS.register("info_panel", () -> new InfoPanel());
 	public static final RegistryObject<Block> info_panel_extender = BLOCKS.register("info_panel_extender", () -> new InfoPanelExtender());
 	public static final RegistryObject<Block> info_panel_advanced = BLOCKS.register("info_panel_advanced", () -> new AdvancedInfoPanel());
@@ -65,6 +66,7 @@ public class ModItems {
 	public static final RegistryObject<Item> upgrade_range = ITEMS.register("upgrade_range", () -> new Item(new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
 	public static final RegistryObject<Item> upgrade_color = ITEMS.register("upgrade_color", () -> new Item(new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
 	public static final RegistryObject<Item> upgrade_touch = ITEMS.register("upgrade_touch", () -> new Item(new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
+	public static final RegistryObject<Item> upgrade_web = ITEMS.register("upgrade_web", () -> new Item(new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
 	public static final RegistryObject<Item> portable_panel = ITEMS.register("portable_panel", () -> new ItemPortablePanel());
 	public static final RegistryObject<Item> machine_casing = ITEMS.register("machine_casing", () -> new Item(new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
 	public static final RegistryObject<Item> basic_circuit = ITEMS.register("basic_circuit", () -> new Item(new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
