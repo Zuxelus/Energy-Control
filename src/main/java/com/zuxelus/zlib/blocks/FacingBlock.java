@@ -14,6 +14,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -28,7 +29,7 @@ public abstract class FacingBlock extends BaseEntityBlock {
 	protected Direction rotation;
 
 	public FacingBlock() {
-		super(Block.Properties.of(Material.METAL).strength(3.0F));
+		super(Block.Properties.of(Material.METAL).strength(3.0F).sound(SoundType.METAL));
 		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
 	}
 

@@ -13,6 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
@@ -29,7 +30,7 @@ public class HowlerAlarm extends FacingBlockSmall {
 	protected static final VoxelShape AABB_EAST = Block.box(0.0D, 2.0D, 2.0D, 7.0D, 14.0D, 14.0D);
 
 	public HowlerAlarm() {
-		super(Block.Properties.of(Material.METAL).strength(3.0F));
+		super(Block.Properties.of(Material.METAL).strength(3.0F).sound(SoundType.METAL));
 	}
 
 	public HowlerAlarm(Properties properties) {

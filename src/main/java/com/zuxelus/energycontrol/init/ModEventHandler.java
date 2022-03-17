@@ -33,18 +33,19 @@ public class ModEventHandler {
 		event.getRegistry().register(new BlockItem(ModItems.holo_panel.get(), new Item.Properties().tab(EnergyControl.ITEM_GROUP)).setRegistryName("holo_panel"));
 		event.getRegistry().register(new BlockItem(ModItems.holo_panel_extender.get(), new Item.Properties().tab(EnergyControl.ITEM_GROUP)).setRegistryName("holo_panel_extender"));
 		event.getRegistry().register(new BlockItem(ModItems.range_trigger.get(), new Item.Properties().tab(EnergyControl.ITEM_GROUP)).setRegistryName("range_trigger"));
+		event.getRegistry().register(new BlockItem(ModItems.remote_thermo.get(), new Item.Properties().tab(EnergyControl.ITEM_GROUP)).setRegistryName("remote_thermo"));
 		event.getRegistry().register(new BlockItem(ModItems.kit_assembler.get(), new Item.Properties().tab(EnergyControl.ITEM_GROUP)).setRegistryName("kit_assembler"));
 		event.getRegistry().register(new BlockItem(ModItems.timer.get(), new Item.Properties().tab(EnergyControl.ITEM_GROUP)).setRegistryName("timer"));
 
 		ModList list = ModList.get();
-		/*if (list.isLoaded(ModIDs.APPLIED_ENERGISTICS)) {
+		if (list.isLoaded(ModIDs.APPLIED_ENERGISTICS)) {
 			ModItems.kit_app_eng = new ItemKitAppEng().setRegistryName("kit_app_eng");
 			event.getRegistry().register(ModItems.kit_app_eng);
 			ModItems.card_app_eng = new ItemCardAppEng().setRegistryName("card_app_eng");
 			event.getRegistry().register(ModItems.card_app_eng);
 			ModItems.card_app_eng_inv = new ItemCardAppEngInv().setRegistryName("card_app_eng_inv");
 			event.getRegistry().register(ModItems.card_app_eng_inv);
-		}*/
+		}
 		if (list.isLoaded(ModIDs.BIG_REACTORS) || list.isLoaded(ModIDs.BIGGER_REACTORS)) {
 			ModItems.kit_big_reactors = new ItemKitBigReactors().setRegistryName("kit_big_reactors");
 			event.getRegistry().register(ModItems.kit_big_reactors);

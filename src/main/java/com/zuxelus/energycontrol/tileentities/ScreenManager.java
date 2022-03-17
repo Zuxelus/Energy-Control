@@ -173,7 +173,7 @@ public class ScreenManager {
 		if (extender.getLevel().isClientSide)
 			return;
 		if (!screens.containsKey(getWorldKey(extender.getLevel())))
-			screens.put(getWorldKey(extender.getLevel()), new ArrayList<Screen>());
+			screens.put(getWorldKey(extender.getLevel()), new ArrayList<>());
 		if (!unusedPanels.containsKey(getWorldKey(extender.getLevel())))
 			unusedPanels.put(getWorldKey(extender.getLevel()), new ArrayList<>());
 

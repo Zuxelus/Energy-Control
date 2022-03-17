@@ -6,6 +6,7 @@ public class ModIDs {
     public static final String APPLIED_ENERGISTICS = "appliedenergistics2";
     public static final String BIG_REACTORS = "bigreactors";
     public static final String BIGGER_REACTORS = "biggerreactors";
+    public static final String BOTANIA = "botania";
     public static final String BUILDCRAFT = "buildcraftcore";
     public static final String DRACONIC_EVOLUTION = "draconicevolution";
     public static final String GALACTICRAFT_CORE = "galacticraftcore";

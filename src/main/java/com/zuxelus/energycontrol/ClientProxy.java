@@ -26,6 +26,7 @@ public class ClientProxy {
 		MenuScreens.register(ModContainerTypes.info_panel_advanced.get(), GuiAdvancedInfoPanel::new);
 		MenuScreens.register(ModContainerTypes.holo_panel.get(), GuiHoloPanel::new);
 		MenuScreens.register(ModContainerTypes.range_trigger.get(), GuiRangeTrigger::new);
+		MenuScreens.register(ModContainerTypes.remote_thermo.get(), GuiRemoteThermalMonitor::new);
 		MenuScreens.register(ModContainerTypes.kit_assembler.get(), GuiKitAssembler::new);
 		MenuScreens.register(ModContainerTypes.timer.get(), GuiTimer::new);
 		MenuScreens.register(ModContainerTypes.card_holder.get(), GuiCardHolder::new);
@@ -35,6 +36,7 @@ public class ClientProxy {
 	@SubscribeEvent
 	public static void registerRenders(RegisterRenderers event) {
 		event.registerBlockEntityRenderer(ModTileEntityTypes.thermal_monitor.get(), TEThermalMonitorRenderer::new);
+		event.registerBlockEntityRenderer(ModTileEntityTypes.remote_thermo.get(), TERemoteThermoRenderer::new);
 		event.registerBlockEntityRenderer(ModTileEntityTypes.info_panel.get(), TileEntityInfoPanelRenderer::new);
 		event.registerBlockEntityRenderer(ModTileEntityTypes.info_panel_extender.get(), TEInfoPanelExtenderRenderer::new);
 		event.registerBlockEntityRenderer(ModTileEntityTypes.info_panel_advanced.get(), TEAdvancedInfoPanelRenderer::new);

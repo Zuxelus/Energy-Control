@@ -173,14 +173,4 @@ public class GuiTimer extends GuiContainerBase<ContainerTimer> {
 			break;
 		}
 	}
-
-	/*@Override
-	protected void keyTyped(char typedChar, int keyCode) {
-		if (keyCode == 1) // Esc button
-			mc.player.closeScreen();
-		else if (typedChar == 13) // Enter
-			updateTime(0);
-		else if(textboxTimer != null && textboxTimer.isFocused() && (Character.isDigit(typedChar) || typedChar == 0 || typedChar == 8))
-			textboxTimer.textboxKeyTyped(typedChar, keyCode);
-	}*/
 }

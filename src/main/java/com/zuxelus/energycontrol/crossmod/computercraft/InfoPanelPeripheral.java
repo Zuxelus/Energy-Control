@@ -44,7 +44,12 @@ public class InfoPanelPeripheral implements IPeripheral {
 
 	@LuaFunction
 	public final List<String> getCardData() {
-		return te.getPanelStringList();
+		return te.getPanelStringList(false);
+	}
+
+	@LuaFunction
+	public final List<String> getCardDataRaw() {
+		return te.getPanelStringList(true);
 	}
 
 	@LuaFunction

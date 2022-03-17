@@ -48,10 +48,11 @@ public class AdvancedInfoPanelExtender extends InfoPanelExtender {
 		return InteractionResult.SUCCESS;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
 		BlockEntity te = world.getBlockEntity(pos);
-		Direction enumfacing = (Direction) state.getValue(FACING);
+		Direction enumfacing = state.getValue(FACING);
 		if (!(te instanceof TileEntityAdvancedInfoPanelExtender) || enumfacing == null)
 			return Block.box(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
 		switch (enumfacing) {
@@ -68,7 +69,7 @@ public class AdvancedInfoPanelExtender extends InfoPanelExtender {
 		case DOWN:
 			return Block.box(0.0D, 16.0D - ((TileEntityAdvancedInfoPanelExtender)te).getThickness(), 0.0D, 16.0D, 16.0D, 16.0D);
 		default:
-			return Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+			return super.getShape(state, world, pos, context);
 		}
 	}
 }

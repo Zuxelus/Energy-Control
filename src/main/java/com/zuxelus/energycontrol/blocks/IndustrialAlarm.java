@@ -13,6 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
@@ -25,7 +26,7 @@ public class IndustrialAlarm extends HowlerAlarm {
 	private static final int[] lightSteps = { 0, 7, 14, 7, 0};
 
 	public IndustrialAlarm() {
-		super(Block.Properties.of(Material.METAL).strength(3.0F).lightLevel(state -> lightSteps[state.getValue(LIGHT)]));
+		super(Block.Properties.of(Material.METAL).strength(3.0F).lightLevel(state -> lightSteps[state.getValue(LIGHT)]).sound(SoundType.METAL));
 	}
 
 	@Override

@@ -24,6 +24,10 @@ public abstract class BlockEntityFacing extends BlockEntity {
 		facing = Direction.from3DDataValue(meta);
 	}
 
+	public void setFacing(Direction meta) {
+		facing = meta;
+	}
+
 	protected boolean hasRotation() {
 		return false;
 	}

@@ -57,15 +57,10 @@ public class GuiButtonGeneral extends Button {
 			RenderSystem.setShaderTexture(0, texture);
 		}
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		//isHovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
-		/*RenderSystem.enableBlend();
-		RenderSystem.defaultBlendFunc();
-		RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);*/
 		if (isHovered && hasGradient)
 			fillGradient(matrixStack, x, y, x + width, y + height, 0x80FFFFFF, 0x80FFFFFF);
 		if (texture != null)
 			blit(matrixStack, x, y, textureLeft / scale, isHovered ? (textureTop + textureTopOff) / scale : textureTop / scale, width, height, 256 / scale, 256 / scale);
-		//mouseDragged(mc, mouseX, mouseY);
 		String displayString = getMessage().getString();
 		if (!displayString.equals(""))
 			fontRenderer.draw(matrixStack, displayString, x + (width - fontRenderer.width(displayString)) / 2, y - 3 + height / 2, 0x404040);

@@ -29,7 +29,7 @@ public class KitAssemblerSerializer extends ForgeRegistryEntry<RecipeSerializer<
 	private Ingredient getIngredient(JsonObject json, String name) {
 		return Ingredient.fromJson(GsonHelper.isArrayNode(json, name) ?
 				GsonHelper.getAsJsonArray(json, name) :
-					GsonHelper.getAsJsonObject(json, name));
+				GsonHelper.getAsJsonObject(json, name));
 	}
 
 	@Override

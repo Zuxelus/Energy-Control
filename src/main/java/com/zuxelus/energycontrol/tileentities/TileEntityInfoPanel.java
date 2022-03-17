@@ -8,6 +8,7 @@ import java.util.Map;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.*;
+import com.zuxelus.energycontrol.blocks.HoloPanelExtender;
 import com.zuxelus.energycontrol.blocks.InfoPanelExtender;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.containers.ContainerInfoPanel;
@@ -47,8 +48,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class TileEntityInfoPanel extends TileEntityInventory implements MenuProvider, ITilePacketHandler, IScreenPart, ISlotItemFilter {
 	public static final String NAME = "info_panel";
 	public static final int DISPLAY_DEFAULT = Integer.MAX_VALUE - 1024;
-	private static final int[] COLORS_HEX = { 0x000000, 0xe93535, 0x82e306, 0x702b14, 0x1f3ce7, 0x8f1fea, 0x1fd7e9,
-			0xcbcbcb, 0x222222, 0xe60675, 0x1fe723, 0xe9cc1f, 0x06aee4, 0xb006e3, 0xe7761f, 0xffffff };
 
 	private static final byte SLOT_CARD = 0;
 	private static final byte SLOT_UPGRADE_RANGE = 1;
@@ -159,10 +158,6 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 		return colorText;
 	}
 
-	public int getColorTextHex() {
-		return COLORS_HEX[colorText];
-	}
-
 	public void setColorText(int c) {
 		if (!level.isClientSide && colorText != c)
 			notifyBlockUpdate();
@@ -205,13 +200,6 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 			if (tag.contains("slot") && tag.contains("value"))
 				setDisplaySettings(tag.getInt("slot"), tag.getInt("value"));
 			break;
-		case 2:
-			if (tag.contains("value")) {
-				int value = tag.getInt("value");
-				setColorBackground(value >> 4);
-				setColorText(value & 0xf);
-			}
-			break;
 		case 3:
 			if (tag.contains("value"))
 				setShowLabels(tag.getInt("value") == 1);
@@ -227,6 +215,14 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 		case 5:
 			if (tag.contains("value"))
 				setTickRate(tag.getInt("value"));
+			break;
+		case 6:
+			if (tag.contains("value"))
+				setColorBackground(tag.getInt("value"));
+			break;
+		case 7:
+			if (tag.contains("value"))
+				setColorText(tag.getInt("value"));
 			break;
 		}
 	}
@@ -277,12 +273,10 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 			tickRate = tag.getInt("tickRate");
 		if (tag.contains("showLabels"))
 			showLabels = tag.getBoolean("showLabels");
-
-		if (tag.contains("colorBackground")) {
+		if (tag.contains("colorText"))
 			colorText = tag.getInt("colorText");
+		if (tag.contains("colorBackground"))
 			colorBackground = tag.getInt("colorBackground");
-		}
-
 		if (tag.contains("colored"))
 			setColored(tag.getBoolean("colored"));
 
@@ -443,7 +437,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 		return null;
 	}
 
-	public List<String> getPanelStringList() {
+	public List<String> getPanelStringList(boolean isRaw) {
 		List<PanelString> joinedData = getPanelStringList(true, false);
 		List<String> list = NonNullList.create();
 		if (joinedData == null || joinedData.size() == 0)
@@ -451,13 +445,17 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 
 		for (PanelString panelString : joinedData) {
 			if (panelString.textLeft != null)
-				list.add(panelString.textLeft);
+				list.add(formatString(panelString.textLeft, isRaw));
 			if (panelString.textCenter != null)
-				list.add(panelString.textCenter);
+				list.add(formatString(panelString.textCenter, isRaw));
 			if (panelString.textRight != null)
-				list.add(panelString.textRight);
+				list.add(formatString(panelString.textRight, isRaw));
 		}
 		return list;
+	}
+
+	private String formatString(String text, boolean isRaw) {
+		return isRaw ? text : text.replaceAll("\\u00a7[1-9,a-f]", "");
 	}
 
 	public int getCardSlot(ItemStack card) {
@@ -479,6 +477,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 		if (ItemCardMain.isCard(card)) {
 			ItemCardReader reader = new ItemCardReader(card);
 			((ItemCardMain) card.getItem()).updateCardNBT(level, worldPosition, reader, stack);
+			ItemCardMain.sendCardToWS(getPanelStringList(true, getShowLabels()), reader);
 			reader.updateClient(card, this, slot);
 		}
 	}
@@ -610,7 +609,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 				for (int z = screen.minZ; z <= screen.maxZ; z++) {
 					BlockPos pos = new BlockPos(x, y, z);
 					BlockState state = world.getBlockState(pos);
-					if (state.getBlock() instanceof InfoPanelExtender)
+					if (state.getBlock() instanceof InfoPanelExtender || state.getBlock() instanceof HoloPanelExtender)
 						world.setBlock(pos, state.setValue(FacingBlockActive.ACTIVE, active), 2);
 				}
 	}
@@ -630,17 +629,17 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 			BlockPos pos = getBlockPos();
 			switch (getFacing()) {
 			case SOUTH:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 4 * boolToInt(pos.getY() == scr.minY) + 8 * boolToInt(pos.getY() == scr.maxY);
+				return boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 4 * boolToInt(pos.getY() == scr.minY) + 8 * boolToInt(pos.getY() == scr.maxY);
 			case WEST:
-				return 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ) + 1 * boolToInt(pos.getY() == scr.minY) + 2 * boolToInt(pos.getY() == scr.maxY);
+				return 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ) + boolToInt(pos.getY() == scr.minY) + 2 * boolToInt(pos.getY() == scr.maxY);
 			case EAST:
-				return 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ) + 2 * boolToInt(pos.getY() == scr.minY) + 1 * boolToInt(pos.getY() == scr.maxY);
+				return 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ) + 2 * boolToInt(pos.getY() == scr.minY) + boolToInt(pos.getY() == scr.maxY);
 			case NORTH:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 8 * boolToInt(pos.getY() == scr.minY) + 4 * boolToInt(pos.getY() == scr.maxY);
+				return boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 8 * boolToInt(pos.getY() == scr.minY) + 4 * boolToInt(pos.getY() == scr.maxY);
 			case UP:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ);
+				return boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ);
 			case DOWN:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 4 * boolToInt(pos.getZ() == scr.minZ) + 8 * boolToInt(pos.getZ() == scr.maxZ);
+				return boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 4 * boolToInt(pos.getZ() == scr.minZ) + 8 * boolToInt(pos.getZ() == scr.maxZ);
 			}
 		}
 		return 15;

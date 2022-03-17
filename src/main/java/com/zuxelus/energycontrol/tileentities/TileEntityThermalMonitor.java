@@ -1,6 +1,8 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import com.zuxelus.energycontrol.blocks.RemoteThermalMonitor;
 import com.zuxelus.energycontrol.blocks.ThermalMonitor;
+import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
@@ -30,7 +32,7 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 		invertRedstone = false;
 		heatLevel = 500;
 		updateTicker = 0;
-		tickRate = -1;
+		tickRate = ConfigHandler.THERMAL_MONITOR_REFRESH_PERIOD.get();
 		status = -1;
 	}
 
@@ -160,7 +162,7 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 			return;
 	
 		if (updateTicker-- > 0)
-				return;
+			return;
 		updateTicker = tickRate;
 		checkStatus();
 	}
@@ -179,7 +181,7 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 	public void notifyBlockUpdate() {
 		BlockState iblockstate = level.getBlockState(worldPosition);
 		Block block = iblockstate.getBlock();
-		if (block instanceof ThermalMonitor /*|| block instanceof RemoteThermo*/) { // TODO
+		if (block instanceof ThermalMonitor || block instanceof RemoteThermalMonitor) {
 			boolean newValue = status < 0 ? false : status == 1 ? !invertRedstone : invertRedstone;
 			if (poweredBlock != newValue) {
 				poweredBlock = newValue;
