@@ -146,7 +146,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 		this.screen = screen;
 		if (screen != null) {
 			partOfScreen = true;
-			TileEntityInfoPanel core = screen.getCore(level);
+			TileEntityInfoPanel core = screen.getCore();
 			if (core != null) {
 				coreX = core.getBlockPos().getX();
 				coreY = core.getBlockPos().getY();
@@ -177,7 +177,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	public TileEntityInfoPanel getCore() {
 		if (screen == null)
 			return null;
-		return screen.getCore(level);
+		return screen.getCore();
 	}
 
 	@Override
@@ -191,7 +191,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	public boolean getColored() {
 		if (screen == null)
 			return false;
-		TileEntityInfoPanel core = screen.getCore(level);
+		TileEntityInfoPanel core = screen.getCore();
 		if (core == null)
 			return false;
 		return core.getColored();
@@ -200,7 +200,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	public boolean getPowered() {
 		if (screen == null)
 			return false;
-		TileEntityInfoPanel core = screen.getCore(level);
+		TileEntityInfoPanel core = screen.getCore();
 		if (core == null)
 			return false;
 		return core.powered;
@@ -209,7 +209,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	public int getColorBackground() {
 		if (screen == null)
 			return 2;
-		TileEntityInfoPanel core = screen.getCore(level);
+		TileEntityInfoPanel core = screen.getCore();
 		if (core == null)
 			return 2;
 		return core.getColorBackground();

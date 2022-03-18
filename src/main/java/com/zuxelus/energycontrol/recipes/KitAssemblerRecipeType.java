@@ -17,19 +17,26 @@ public class KitAssemblerRecipeType implements IRecipeType<KitAssemblerRecipe> {
 		if (world == null)
 			return Collections.emptyList();
 
-		if (cachedRecipes.isEmpty()) {
-			RecipeManager recipeManager = world.getRecipeManager();
-			List<KitAssemblerRecipe> recipes = recipeManager.getAllRecipesFor(this);
-			cachedRecipes = recipes;
-		}
+		if (cachedRecipes.isEmpty())
+			loadRecipes(world);
 		return cachedRecipes;
 	}
 
 	public KitAssemblerRecipe findRecipe(TileEntityKitAssembler te) {
+		if (cachedRecipes.isEmpty())
+			loadRecipes(te.getLevel());
 		for(KitAssemblerRecipe recipe : cachedRecipes) {
 			if (recipe.isSuitable(te))
 				return recipe; 
 		}
 		return null;
+	}
+
+	private void loadRecipes(World world) {
+		if (world == null)
+			return;
+		RecipeManager recipeManager = world.getRecipeManager();
+		List<KitAssemblerRecipe> recipes = recipeManager.getAllRecipesFor(this);
+		cachedRecipes = recipes;
 	}
 }

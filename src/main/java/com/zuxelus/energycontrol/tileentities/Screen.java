@@ -12,8 +12,8 @@ public class Screen {
 	public int maxX;
 	public int maxY;
 	public int maxZ;
+	private TileEntityInfoPanel coreTile;
 	private BlockPos corePos;
-	private boolean powered;
 
 	public Screen(TileEntityInfoPanel panel) {
 		BlockPos pos = panel.getBlockPos();
@@ -21,8 +21,8 @@ public class Screen {
 		maxY = minY = pos.getY();
 		maxZ = minZ = pos.getZ();
 
+		coreTile = panel;
 		corePos = pos;
-		powered = panel.getPowered();
 	}
 
 	public Screen(TileEntityInfoPanel panel, CompoundNBT tag) {
@@ -34,15 +34,12 @@ public class Screen {
 		maxY = tag.getInt("maxY");
 		maxZ = tag.getInt("maxZ");
 
+		coreTile = panel;
 		corePos = panel.getBlockPos();
-		powered = panel.getPowered();
 	}
 
-	public TileEntityInfoPanel getCore(World world) {
-		TileEntity te = world.getBlockEntity(corePos);
-		if (!(te instanceof TileEntityInfoPanel))
-			return null;
-		return (TileEntityInfoPanel) te;
+	public TileEntityInfoPanel getCore() {
+		return coreTile;
 	}
 
 	public boolean isBlockNearby(TileEntity tileEntity) {
@@ -74,7 +71,7 @@ public class Screen {
 					if (te == null || !(te instanceof IScreenPart))
 						continue;
 					((IScreenPart) te).setScreen(this);
-					if (powered || force)
+					if (coreTile.getPowered() || force)
 						((IScreenPart) te).updateTileEntity();
 				}
 			}
@@ -94,7 +91,7 @@ public class Screen {
 						part.setScreen(null);
 						part.updateData();
 					}
-					if (powered || force)
+					if (coreTile.getPowered() || force)
 						part.updateTileEntity();
 				}
 			}
@@ -102,23 +99,21 @@ public class Screen {
 	}
 
 	public void turnPower(boolean on, World world) {
-		if (powered == on)
+		/*if (powered == on)
 			return;
-		powered = on;
+		powered = on;*/
 		markUpdate(world);
 	}
 
 	private void markUpdate(World world) {
-		for (int x = minX; x <= maxX; x++) {
-			for (int y = minY; y <= maxY; y++) {
+		for (int x = minX; x <= maxX; x++)
+			for (int y = minY; y <= maxY; y++)
 				for (int z = minZ; z <= maxZ; z++) {
 					TileEntity te = world.getBlockEntity(new BlockPos(x, y, z));
 					if (te instanceof IScreenPart)
 						((IScreenPart) te).updateTileEntity();
 				}
-			}
-		}
-	}	
+	}
 
 	public CompoundNBT toTag() {
 		CompoundNBT tag = new CompoundNBT();

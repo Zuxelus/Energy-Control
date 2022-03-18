@@ -155,11 +155,12 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 
 	@Override
 	public void tick() {
-		if (level.isClientSide)
-			checkStatus();
+		checkStatus();
 	}
 
 	protected void checkStatus() {
+		if (!level.isClientSide)
+			return;
 		if (sound == null)
 			sound = new TileEntitySound();
 		if (!sound.isPlaying())

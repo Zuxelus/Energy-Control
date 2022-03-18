@@ -22,7 +22,7 @@ import net.minecraft.world.World;
 public abstract class FacingHorizontal extends HorizontalBlock {
 
 	public FacingHorizontal() {
-		super(Block.Properties.of(Material.METAL).strength(3.0F).sound(SoundType.METAL));
+		super(Block.Properties.of(Material.METAL).strength(1.0F, 3.0F).sound(SoundType.METAL));
 		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
 	}
 

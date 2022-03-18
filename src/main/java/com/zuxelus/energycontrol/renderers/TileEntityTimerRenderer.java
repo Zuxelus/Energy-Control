@@ -14,8 +14,8 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.ResourceLocation;
 
 public class TileEntityTimerRenderer extends TileEntityRenderer<TileEntityTimer> {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(
-			EnergyControl.MODID + ":textures/block/timer/all.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID + ":textures/block/timer/all.png");
+	private static final ResourceLocation TEXTURE_ACTIVE = new ResourceLocation(EnergyControl.MODID + ":textures/block/timer/active.png");
 	private static final CubeRenderer model = new CubeRenderer(2, 0, 2, 28, 14, 28, 128, 64, 0, 0);
 
 	public TileEntityTimerRenderer(TileEntityRendererDispatcher te) {
@@ -134,7 +134,7 @@ public class TileEntityTimerRenderer extends TileEntityRenderer<TileEntityTimer>
 			break;
 		}
 
-		IVertexBuilder vertexBuilder = buffer.getBuffer(RenderType.entitySolid(TEXTURE));
+		IVertexBuilder vertexBuilder = te.getIsWorking() ? buffer.getBuffer(RenderType.entitySolid(TEXTURE_ACTIVE)) : buffer.getBuffer(RenderType.entitySolid(TEXTURE));
 		model.render(matrixStack, vertexBuilder, TileEntityInfoPanelRenderer.getBlockLight(te), combinedOverlay);
 		String time = te.getTimeString();
 		matrixStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));

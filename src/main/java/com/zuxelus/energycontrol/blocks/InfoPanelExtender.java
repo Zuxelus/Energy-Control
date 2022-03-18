@@ -26,7 +26,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 public class InfoPanelExtender extends FacingBlockActive {
 
 	public InfoPanelExtender() {
-		super(Block.Properties.of(Material.METAL).strength(3.0F).lightLevel(state -> state.getValue(ACTIVE) ? 10 : 0).sound(SoundType.METAL));
+		super(Block.Properties.of(Material.METAL).strength(1.0F, 3.0F).lightLevel(state -> state.getValue(ACTIVE) ? 10 : 0).sound(SoundType.METAL));
 	}
 
 	@Override

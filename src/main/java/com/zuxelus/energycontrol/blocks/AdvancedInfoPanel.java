@@ -28,7 +28,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 public class AdvancedInfoPanel extends InfoPanel {
 
 	public AdvancedInfoPanel() {
-		super(Block.Properties.of(Material.METAL).strength(3.0F).sound(SoundType.METAL).noOcclusion());
+		super(Block.Properties.of(Material.METAL).strength(1.0F, 3.0F).sound(SoundType.METAL).dynamicShape().noOcclusion());
 	}
 
 	@Override
