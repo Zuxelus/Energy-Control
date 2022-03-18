@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import com.zuxelus.energycontrol.blocks.IndustrialAlarm;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 
 import net.minecraft.core.BlockPos;
@@ -9,15 +10,12 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm {
-	private static final int[] lightSteps = { 0, 7, 14, 7, 0 };
 
-	protected byte internalFire;
-	public int lightLevel;
+	private int lightLevel;
 	private int updateLightTicker;
 
 	public TileEntityIndustrialAlarm(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
-		internalFire = 0;
 		lightLevel = 0;
 	}
 
@@ -33,28 +31,29 @@ public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm {
 	}
 
 	protected void tick() {
-		if (level.isClientSide) {
-			super.checkStatus();
-			if (updateLightTicker-- <= 0) {
-				updateLightTicker = tickRate / 20;
-				checkStatus();
-			}
+		super.checkStatus();
+		if (updateLightTicker-- <= 0) {
+			updateLightTicker = 3;
+			checkStatus();
 		}
 	}
 
 	@Override
 	protected void checkStatus() {
+		if (level.isClientSide)
+			return;
 		int light = lightLevel;
-		if (!powered) {
+		if (!powered)
 			lightLevel = 0;
-			internalFire = 0;
-		} else {
-			lightLevel = lightSteps[internalFire];
-			internalFire++;
-			if (internalFire >= lightSteps.length)
-				internalFire = 0;
+		else {
+			lightLevel++;
+			if (lightLevel >= 4)
+				lightLevel = 0;
 		}
-		if (lightLevel != light)
-			level.getChunkSource().getLightEngine().checkBlock(worldPosition);
+		if (lightLevel != light) {
+			BlockState state = level.getBlockState(worldPosition);
+			if (state.getBlock() instanceof IndustrialAlarm)
+				level.setBlock(worldPosition, state.setValue(IndustrialAlarm.LIGHT, lightLevel), 2);
+		}
 	}
 }

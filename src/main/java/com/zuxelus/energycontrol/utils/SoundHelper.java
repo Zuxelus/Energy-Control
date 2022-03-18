@@ -43,9 +43,11 @@ public class SoundHelper {
 	};
 
 	public static void initSoundPack(File configFolder) {
-		if (configFolder == null || !ConfigHandler.USE_CUSTOM_SOUNDS.get())
+		if (configFolder == null || !ConfigHandler.USE_CUSTOM_SOUNDS.get()) {
+			importSound();
 			return;
-		
+		}
+
 		File audioLoc = new File(SoundLoader.alarms, "assets" + File.separator + EnergyControl.MODID + File.separator + "sounds");
 
 		if (SoundLoader.alarms.exists())

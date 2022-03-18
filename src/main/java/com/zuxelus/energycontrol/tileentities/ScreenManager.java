@@ -142,6 +142,8 @@ public class ScreenManager {
 		if (!(block instanceof InfoPanelExtender || block instanceof HoloPanelExtender))
 			return false;
 		BlockEntity te = world.getBlockEntity(pos);
+		if (te.isRemoved())
+			return false;
 		if (!(te instanceof TileEntityInfoPanelExtender))
 			return false;
 		if (advanced ^ (te instanceof TileEntityAdvancedInfoPanelExtender))
@@ -235,7 +237,7 @@ public class ScreenManager {
 		TileEntityInfoPanel core = screen.getCore(part.getLevel());
 		destroyScreen(screen, part.getLevel());
 		boolean isCoreDestroyed = part instanceof TileEntityInfoPanel;
-		if (!isCoreDestroyed && core != null) {
+		if (!isCoreDestroyed && core != null && !core.isRemoved()) {
 			Screen newScreen = buildFromPanel(core);
 			screens.get(getWorldKey(core.getLevel())).add(newScreen);
 		}
