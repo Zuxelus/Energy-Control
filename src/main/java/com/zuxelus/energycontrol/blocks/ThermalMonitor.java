@@ -32,7 +32,7 @@ public class ThermalMonitor extends FacingBlockSmall {
 	protected static final VoxelShape AABB_EAST = Block.box(0.0F, 1.0F, 1.0F, 7.0F, 15.0F, 15.0F);
 
 	public ThermalMonitor() {
-		super(Block.Properties.of(Material.METAL).strength(3.0F).sound(SoundType.METAL));
+		super(Block.Properties.of(Material.METAL).strength(1.0F, 3.0F).sound(SoundType.METAL));
 	}
 
 	@Override

@@ -28,7 +28,7 @@ import net.minecraftforge.network.NetworkHooks;
 public class InfoPanel extends FacingBlockActive {
 
 	public InfoPanel() {
-		super(Block.Properties.of(Material.METAL).strength(3.0F).lightLevel(state -> state.getValue(ACTIVE) ? 10 : 0).sound(SoundType.METAL));
+		super(Block.Properties.of(Material.METAL).strength(1.0F, 3.0F).lightLevel(state -> state.getValue(ACTIVE) ? 10 : 0).sound(SoundType.METAL));
 	}
 
 	public InfoPanel(Block.Properties builder) {

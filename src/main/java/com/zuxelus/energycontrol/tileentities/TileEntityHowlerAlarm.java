@@ -166,11 +166,12 @@ public class TileEntityHowlerAlarm extends BlockEntityFacing implements ITilePac
 	}
 
 	protected void tick() {
-		if (level.isClientSide)
-			checkStatus();
+		checkStatus();
 	}
 
 	protected void checkStatus() {
+		if (!level.isClientSide)
+			return;
 		if (sound == null)
 			sound = new TileEntitySound();
 		if (!sound.isPlaying())

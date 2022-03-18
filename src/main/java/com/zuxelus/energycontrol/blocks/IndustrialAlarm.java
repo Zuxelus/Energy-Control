@@ -23,10 +23,10 @@ import net.minecraft.world.phys.BlockHitResult;
 
 public class IndustrialAlarm extends HowlerAlarm {
 	public static final IntegerProperty LIGHT = IntegerProperty.create("light", 0, 3);
-	private static final int[] lightSteps = { 0, 7, 14, 7, 0};
+	private static final int[] lightSteps = { 0, 7, 14, 7};
 
 	public IndustrialAlarm() {
-		super(Block.Properties.of(Material.METAL).strength(3.0F).lightLevel(state -> lightSteps[state.getValue(LIGHT)]).sound(SoundType.METAL));
+		super(Block.Properties.of(Material.METAL).strength(1.0F, 3.0F).lightLevel(state -> lightSteps[state.getValue(LIGHT)]).sound(SoundType.METAL));
 	}
 
 	@Override
