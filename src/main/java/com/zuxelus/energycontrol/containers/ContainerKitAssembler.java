@@ -68,7 +68,9 @@ public class ContainerKitAssembler extends ContainerBase<TileEntityKitAssembler>
 				tag.putInt("time", te.getRecipeTime());
 				NetworkHelper.updateClientTileEntity(listener, te.getPos(), tag);
 			}
-		lastEnergy = energy;
-		lastProduction = production;
+		if (listeners.size() > 0) {
+			lastEnergy = energy;
+			lastProduction = production;
+		}
 	}
 }

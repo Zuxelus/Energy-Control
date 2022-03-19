@@ -10,16 +10,13 @@
             "item": "energycontrol:thermal_monitor"
         },
         "M": {
-            "item": "energycontrol:item_component",
-            "data": 2
+            "item": "energycontrol:machine_casing"
         },
         "F": {
-            "item": "energycontrol:item_component",
-            "data": 3
+            "item": "energycontrol:radio_transmitter"
         },
         "I": {
-            "type": "forge:ore_dict",
-            "ore": "ingotIron"
+            "tag": "forge:ingots/iron"
         }
     },
     "result": {

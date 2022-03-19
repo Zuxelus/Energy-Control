@@ -18,7 +18,7 @@ public class TileEntityAdvancedInfoPanelExtender extends TileEntityInfoPanelExte
 	public byte getThickness() {
 		if (screen == null)
 			return 16;
-		TileEntityInfoPanel core = screen.getCore(world);
+		TileEntityInfoPanel core = screen.getCore();
 		if (core == null || !(core instanceof TileEntityAdvancedInfoPanel))
 			return 16;
 		return ((TileEntityAdvancedInfoPanel) core).thickness;
@@ -27,7 +27,7 @@ public class TileEntityAdvancedInfoPanelExtender extends TileEntityInfoPanelExte
 	public byte getRotateHor() {
 		if (screen == null)
 			return 0;
-		TileEntityInfoPanel core = screen.getCore(world);
+		TileEntityInfoPanel core = screen.getCore();
 		if (core == null || !(core instanceof TileEntityAdvancedInfoPanel))
 			return 0;
 		return ((TileEntityAdvancedInfoPanel) core).rotateHor;
@@ -36,7 +36,7 @@ public class TileEntityAdvancedInfoPanelExtender extends TileEntityInfoPanelExte
 	public byte getRotateVert() {
 		if (screen == null)
 			return 0;
-		TileEntityInfoPanel core = screen.getCore(world);
+		TileEntityInfoPanel core = screen.getCore();
 		if (core == null || !(core instanceof TileEntityAdvancedInfoPanel))
 			return 0;
 		return ((TileEntityAdvancedInfoPanel) core).rotateVert;
@@ -46,7 +46,7 @@ public class TileEntityAdvancedInfoPanelExtender extends TileEntityInfoPanelExte
 	public Direction getRotation() {
 		if (screen == null)
 			return Direction.NORTH;
-		TileEntityInfoPanel core = screen.getCore(world);
+		TileEntityInfoPanel core = screen.getCore();
 		if (core == null || !(core instanceof TileEntityAdvancedInfoPanel))
 			return Direction.NORTH;
 		return ((TileEntityAdvancedInfoPanel) core).getRotation();

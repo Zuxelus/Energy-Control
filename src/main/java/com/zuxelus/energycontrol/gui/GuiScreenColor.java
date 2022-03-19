@@ -40,16 +40,16 @@ public class GuiScreenColor extends GuiBase {
 	public void init() {
 		super.init();
 		fieldList.clear();
-		rText = new GuiTextNumeric(font, guiLeft + 10, guiTop + 18, 26, 12, "");
+		rText = new GuiTextNumeric(font, guiLeft + 10, guiTop + 18, 26, 12, "", 255);
 		rText.setMaxStringLength(3);
 		rText.setText(Integer.toString((colorText & 0x00FF0000) >> 16));
 		//rText.setEnableBackgroundDrawing(false);
 		fieldList.add(rText);
-		gText = new GuiTextNumeric(font, guiLeft + 46, guiTop + 18, 26, 12, "");
+		gText = new GuiTextNumeric(font, guiLeft + 46, guiTop + 18, 26, 12, "", 255);
 		gText.setMaxStringLength(3);
 		gText.setText(Integer.toString((colorText & 0x0000FF00) >> 8));
 		fieldList.add(gText);
-		bText = new GuiTextNumeric(font, guiLeft + 82, guiTop + 18, 26, 12, "");
+		bText = new GuiTextNumeric(font, guiLeft + 82, guiTop + 18, 26, 12, "", 255);
 		bText.setMaxStringLength(3);
 		bText.setText(Integer.toString(colorText & 0x000000FF));
 		fieldList.add(bText);
@@ -59,7 +59,6 @@ public class GuiScreenColor extends GuiBase {
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		minecraft.getTextureManager().bindTexture(texture);
 		blit(158 + (colorBack % 4) * 14, 21 + (colorBack / 4) * 14, 234, 0, 14, 14);
-		//blit(5 + colorText * 14, 61, 234, 0, 14, 14);
 		font.drawString(I18n.format("msg.ec.ScreenColor"), 152, 6, 0x404040);
 		font.drawString(I18n.format("msg.ec.TextColor"), 8, 6, colorText);
 	}
@@ -76,11 +75,9 @@ public class GuiScreenColor extends GuiBase {
 
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
-		//mouseX -= guiLeft;
-		//mouseY -= guiTop;
 		if (mouseButton == 0) {
 			for (GuiTextNumeric text : fieldList)
-				text.mouseClicked(mouseX - guiLeft, mouseY - guiTop, mouseButton);
+				text.mouseClicked(mouseX, mouseY, mouseButton);
 			checkColorPicker(mouseX - guiLeft, mouseY - guiTop);
 		}
 		int screenColor = getScreenColor(mouseX - guiLeft, mouseY - guiTop);
@@ -90,7 +87,6 @@ public class GuiScreenColor extends GuiBase {
 			panel.setColorText(colorBack);
 		}
 		return true;
-		//return super.mouseClicked(mouseX, mouseY, mouseButton);
 	}
 
 	private void checkColorPicker(double mouseX, double mouseY) {
@@ -122,8 +118,6 @@ public class GuiScreenColor extends GuiBase {
 			fieldList.get(0).setText(Integer.toString(c.getRed()));
 			fieldList.get(1).setText(Integer.toString(c.getGreen()));
 			fieldList.get(2).setText(Integer.toString(c.getBlue()));
-			/*for (GuiTextNumeric text : fieldList)
-				text.setTextColor(c.getRGB());*/
 		}
 	}
 
@@ -177,7 +171,7 @@ public class GuiScreenColor extends GuiBase {
 			minecraft.displayGuiScreen(parentGui);
 			return true;
 		}
-		if (keyCode == 15) {
+		if (keyCode == 258) {
 			if (fieldList.get(0).isFocused()) {
 				fieldList.get(0).setFocused2(false);
 				fieldList.get(1).setFocused2(true);
@@ -188,18 +182,32 @@ public class GuiScreenColor extends GuiBase {
 				fieldList.get(2).setFocused2(false);
 				fieldList.get(0).setFocused2(true);
 			}
+			return true;
 		} else
 			for (GuiTextNumeric text : fieldList) {
 				String value = text.getText();
-				text.keyPressed(keyCode, scanCode, modifiers);
-				if (!value.equals(text.getText())) {
-					Color c = new Color(getColotInt(0), getColotInt(1), getColotInt(2));
-					setColorText(c);
+				if (text.keyPressed(keyCode, scanCode, modifiers)) {
+					if (!value.equals(text.getText()))
+						setColorText(new Color(getColotInt(0), getColotInt(1), getColotInt(2)));
+					return true;
 				}
 			}
 		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
-	
+
+	@Override
+	public boolean charTyped(char typedChar, int keyCode) {
+		for (GuiTextNumeric text : fieldList) {
+			String value = text.getText();
+			if (text.charTyped(typedChar, keyCode)) {
+				if (!value.equals(text.getText()))
+					setColorText(new Color(getColotInt(0), getColotInt(1), getColotInt(2)));
+				return true;
+			}
+		}
+		return super.charTyped(typedChar, keyCode);
+	}
+
 	private int getColotInt(int id) {
 		String text = fieldList.get(id).getText();
 		if (text == null || text.isEmpty())
