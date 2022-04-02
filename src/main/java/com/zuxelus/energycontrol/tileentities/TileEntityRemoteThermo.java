@@ -1,30 +1,17 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import com.zuxelus.energycontrol.EnergyControlConfig;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.crossmod.ModIDs;
-import com.zuxelus.energycontrol.crossmod.IC2ReactorHelper;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
-import ic2.api.energy.event.EnergyTileLoadEvent;
-import ic2.api.energy.event.EnergyTileUnloadEvent;
-import ic2.api.energy.tile.IEnergyEmitter;
-import ic2.api.energy.tile.IEnergySink;
-import ic2.api.info.Info;
-import ic2.api.item.ElectricItem;
-import ic2.api.item.IElectricItem;
-import ic2.api.reactor.IReactor;
+
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -101,7 +88,7 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements ISlotIte
 	}
 
 	@Override
-	public boolean isItemValid(int slotIndex, ItemStack stack) {
+	public boolean isItemValid(int slotIndex, ItemStack stack) { // ISlotItemFilter
 		if (stack.isEmpty())
 			return false;
 		switch (slotIndex) {

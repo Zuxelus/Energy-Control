@@ -27,7 +27,7 @@
     },
     "conditions": [
         {
-            "type": "forge:and",
+            "type": "forge:or",
             "values": [
                 {
                     "type": "forge:mod_loaded",

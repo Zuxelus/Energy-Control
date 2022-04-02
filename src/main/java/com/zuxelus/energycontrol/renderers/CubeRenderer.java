@@ -48,11 +48,9 @@ public class CubeRenderer {
 	}
 
 	private static class CubeBox {
-		private final PositionTextureVertex[] vertexPositions;
 		private final TexturedQuad[] quadList;
 
 		public CubeBox(float x, float y, float z, int dx, int dy, int dz, float textureWidth, float textureHeight, int faceTexU, int faceTexV, float leftTop, float leftBottom, float rightTop, float rightBottom) {
-			vertexPositions = new PositionTextureVertex[8];
 			quadList = new TexturedQuad[6];
 			float f = x + (float) dx;
 			float f1 = y + (float) dy;
@@ -66,14 +64,6 @@ public class CubeRenderer {
 			PositionTextureVertex v4 = new PositionTextureVertex(f, y, f2, 0.0F, 8.0F);
 			PositionTextureVertex v5 = new PositionTextureVertex(f, f1 - rightTop, f2, 8.0F, 8.0F);
 			PositionTextureVertex v6 = new PositionTextureVertex(x, f1 - rightBottom, f2, 8.0F, 0.0F);
-			vertexPositions[0] = v7;
-			vertexPositions[1] = v;
-			vertexPositions[2] = v1;
-			vertexPositions[3] = v2;
-			vertexPositions[4] = v3;
-			vertexPositions[5] = v4;
-			vertexPositions[6] = v5;
-			vertexPositions[7] = v6;
 			quadList[0] = new TexturedQuad(new PositionTextureVertex[] { v4, v, v1, v5 }, dz + dx, dz, dz + dx + dz, dz + dy, textureWidth, textureHeight);
 			quadList[1] = new TexturedQuad(new PositionTextureVertex[] { v7, v3, v6, v2 }, 0, dz, dz, dz + dy, textureWidth, textureHeight);
 			quadList[2] = new TexturedQuad(new PositionTextureVertex[] { v4, v3, v7, v }, dz, 0, dz + dx, dz, textureWidth, textureHeight);

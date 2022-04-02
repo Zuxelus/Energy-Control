@@ -24,16 +24,5 @@
     },
     "result": {
         "item": "energycontrol:remote_thermo"
-    },
-    "conditions": [
-        {
-            "type": "forge:and",
-            "values": [
-                {
-                    "type": "forge:mod_loaded",
-                    "modid": "ic2"
-                }
-            ]
-        }
-    ]
+    }
 }

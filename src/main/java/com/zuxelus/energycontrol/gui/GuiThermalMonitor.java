@@ -72,7 +72,7 @@ public class GuiThermalMonitor extends GuiBase {
 			String value = textboxHeat.getText();
 			if (!"".equals(value))
 				heat = Integer.parseInt(value);
-		} catch (NumberFormatException e) {	}
+		} catch (NumberFormatException e) { }
 		heat += delta;
 		if (heat < 0)
 			heat = 0;

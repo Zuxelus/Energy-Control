@@ -71,8 +71,8 @@ public class ModItems {
 		blockHoloPanel = register(event, new HoloPanel(), "holo_panel");
 		blockHoloPanelExtender = register(event, new HoloPanelExtender(), "holo_panel_extender");
 		blockRangeTrigger = register(event, new RangeTrigger(), "range_trigger");
+		blockRemoteThermo = register(event, new RemoteThermo(), "remote_thermo");
 		if (Loader.isModLoaded(ModIDs.IC2)) {
-			blockRemoteThermo = register(event, new RemoteThermo(), "remote_thermo");
 			blockAverageCounter = register(event, new AverageCounter(), "average_counter");
 			blockEnergyCounter = register(event, new EnergyCounter(), "energy_counter");
 		}
@@ -99,8 +99,8 @@ public class ModItems {
 		event.getRegistry().register(new ItemBlock(blockInfoPanelAdvanced).setRegistryName(TileEntityAdvancedInfoPanel.NAME));
 		event.getRegistry().register(new ItemBlock(blockInfoPanelAdvancedExtender).setRegistryName("info_panel_advanced_extender"));
 		event.getRegistry().register(new ItemBlock(blockRangeTrigger).setRegistryName("range_trigger"));
+		event.getRegistry().register(new ItemBlock(blockRemoteThermo).setRegistryName("remote_thermo"));
 		if (Loader.isModLoaded(ModIDs.IC2)) {
-			event.getRegistry().register(new ItemBlock(blockRemoteThermo).setRegistryName("remote_thermo"));
 			event.getRegistry().register(new ItemBlock(blockAverageCounter).setRegistryName("average_counter"));
 			event.getRegistry().register(new ItemBlock(blockEnergyCounter).setRegistryName("energy_counter"));
 		}
@@ -173,9 +173,9 @@ public class ModItems {
 
 		registerBlockModel(blockHowlerAlarm, 0, "howler_alarm");
 		registerBlockModel(blockIndustrialAlarm, 0, "industrial_alarm");
+		registerBlockModel(blockThermalMonitor, 0, "thermal_monitor");
+		registerBlockModel(blockRemoteThermo, 0, "remote_thermo");
 		if (Loader.isModLoaded(ModIDs.IC2)) {
-			registerBlockModel(blockThermalMonitor, 0, "thermal_monitor");
-			registerBlockModel(blockRemoteThermo, 0, "remote_thermo");
 			registerBlockModel(blockAverageCounter, 0, "average_counter");
 			registerBlockModel(blockEnergyCounter, 0, "energy_counter");
 		}
@@ -236,10 +236,8 @@ public class ModItems {
 	public static void registerTileEntities() { // TODO Change to event
 		GameRegistry.registerTileEntity(TileEntityHowlerAlarm.class, EnergyControl.MODID + ":howler_alarm");
 		GameRegistry.registerTileEntity(TileEntityIndustrialAlarm.class, EnergyControl.MODID + ":industrial_alarm");
-		if (Loader.isModLoaded(ModIDs.IC2)) {
-			GameRegistry.registerTileEntity(TileEntityThermo.class, EnergyControl.MODID + ":thermo");
-			GameRegistry.registerTileEntity(TileEntityRemoteThermo.class, EnergyControl.MODID + ":remote_thermo");
-		}
+		GameRegistry.registerTileEntity(TileEntityThermo.class, EnergyControl.MODID + ":thermo");
+		GameRegistry.registerTileEntity(TileEntityRemoteThermo.class, EnergyControl.MODID + ":remote_thermo");
 		GameRegistry.registerTileEntity(TileEntityInfoPanel.class, EnergyControl.MODID + ":" + TileEntityInfoPanel.NAME);
 		GameRegistry.registerTileEntity(TileEntityInfoPanelExtender.class, EnergyControl.MODID + ":info_panel_extender");
 		GameRegistry.registerTileEntity(TileEntityAdvancedInfoPanel.class, EnergyControl.MODID + ":" + TileEntityAdvancedInfoPanel.NAME);

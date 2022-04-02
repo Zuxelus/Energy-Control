@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 
 public class TERemoteThermoRenderer extends TileEntitySpecialRenderer<TileEntityRemoteThermo> {
@@ -18,8 +17,7 @@ public class TERemoteThermoRenderer extends TileEntitySpecialRenderer<TileEntity
 	public void render(TileEntityRemoteThermo te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x, y, z);
-		EnumFacing facing = te.getFacing();
-		switch (facing) {
+		switch (te.getFacing()) {
 		case UP:
 			break;
 		case NORTH:

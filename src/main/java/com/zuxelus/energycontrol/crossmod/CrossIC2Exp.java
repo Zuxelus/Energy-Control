@@ -26,7 +26,9 @@ import ic2.core.block.comp.Fluids.InternalFluidTank;
 import ic2.core.block.generator.tileentity.*;
 import ic2.core.block.heatgenerator.tileentity.TileEntityElectricHeatGenerator;
 import ic2.core.block.kineticgenerator.tileentity.*;
+import ic2.core.block.machine.tileentity.TileEntityCondenser;
 import ic2.core.block.machine.tileentity.TileEntityLiquidHeatExchanger;
+import ic2.core.block.machine.tileentity.TileEntitySteamGenerator;
 import ic2.core.block.reactor.tileentity.*;
 import ic2.core.block.type.ResourceBlock;
 import ic2.core.init.MainConfig;
@@ -158,7 +160,8 @@ public class CrossIC2Exp extends CrossModBase {
 
 	@Override
 	public ItemStack getGeneratorCard(TileEntity te) {
-		if (te instanceof TileEntityBaseGenerator || te instanceof TileEntityConversionGenerator) {
+		if (te instanceof TileEntityBaseGenerator || te instanceof TileEntityConversionGenerator
+				|| te instanceof TileEntitySteamGenerator|| te instanceof TileEntityCondenser) {
 			ItemStack card = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_GENERATOR);
 			ItemStackHelper.setCoordinates(card, te.getPos());
 			return card;
@@ -256,6 +259,29 @@ public class CrossIC2Exp extends CrossModBase {
 					field.setAccessible(true);
 					tag.setDouble("multiplier", (Double) field.get(te));
 				}
+				return tag;
+			}
+			if (te instanceof TileEntitySteamGenerator) {
+				tag.setInteger("type", 7);
+				tag.setBoolean("active", ((TileEntitySteamGenerator) te).getHeatInput() > 0);
+				tag.setDouble("heat", ((TileEntitySteamGenerator) te).getSystemHeat());
+				tag.setInteger("production", ((TileEntitySteamGenerator) te).getOutputMB());
+				tag.setInteger("consumption", ((TileEntitySteamGenerator) te).getInputMB());
+				tag.setInteger("heatChange", ((TileEntitySteamGenerator) te).getHeatInput());
+				tag.setInteger("water", ((TileEntitySteamGenerator) te).waterTank.getFluidAmount());
+				tag.setDouble("calcification", ((TileEntitySteamGenerator) te).getCalcification());
+				tag.setInteger("pressure", ((TileEntitySteamGenerator) te).getPressure());
+				return tag;
+			}
+			if (te instanceof TileEntityCondenser) {
+				tag.setInteger("type", 8);
+				tag.setBoolean("active", true);
+				Energy energy = ((TileEntityCondenser) te).getComponent(Energy.class);
+				tag.setDouble("storage", energy.getEnergy());
+				tag.setDouble("maxStorage", energy.getCapacity());
+				tag.setDouble("progress", ((TileEntityCondenser) te).progress * 100.0D / ((TileEntityCondenser) te).maxProgress);
+				tag.setInteger("steam", ((TileEntityCondenser) te).getInputTank().getFluidAmount());
+				tag.setInteger("water", ((TileEntityCondenser) te).getOutputTank().getFluidAmount());
 				return tag;
 			}
 		} catch (Throwable t) { }

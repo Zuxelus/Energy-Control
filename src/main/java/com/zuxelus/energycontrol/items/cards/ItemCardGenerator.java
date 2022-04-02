@@ -1,11 +1,15 @@
 package com.zuxelus.energycontrol.items.cards;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
+
 import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -13,9 +17,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ItemCardGenerator extends ItemCardBase {
 
@@ -77,6 +78,22 @@ public class ItemCardGenerator extends ItemCardBase {
 			reader.setDouble("multiplier", tag.getDouble("multiplier"));
 			reader.setInt("progress", tag.getInteger("progress"));
 			reader.setInt("coilCount", tag.getInteger("coilCount"));
+			break;
+		case 7:
+			reader.setDouble("heat", tag.getDouble("heat"));
+			reader.setInt("production", tag.getInteger("production"));
+			reader.setInt("consumption", tag.getInteger("consumption"));
+			reader.setInt("heatChange", tag.getInteger("heatChange"));
+			reader.setInt("water", tag.getInteger("water"));
+			reader.setDouble("calcification", tag.getDouble("calcification"));
+			reader.setInt("pressure", tag.getInteger("pressure"));
+			break;
+		case 8:
+			reader.setDouble("storage", tag.getDouble("storage"));
+			reader.setDouble("maxStorage", tag.getDouble("maxStorage"));
+			reader.setDouble("progress", tag.getDouble("progress"));
+			reader.setInt("steam", tag.getInteger("steam"));
+			reader.setInt("water", tag.getInteger("water"));
 			break;
 		}
 		reader.setBoolean("active", tag.getBoolean("active"));
@@ -147,6 +164,31 @@ public class ItemCardGenerator extends ItemCardBase {
 			if ((settings & 64) > 0) {
 				result.add(new PanelString("msg.ec.InfoPanelProgress", reader.getInt("progress"), showLabels));
 				result.add(new PanelString("msg.ec.InfoPanelCoils", reader.getInt("coilCount"), showLabels));
+			}
+			break;
+		case 7:
+			if ((settings & 1) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelHeat", reader.getDouble("heat"), "C", showLabels));
+			if ((settings & 8) > 0) {
+				result.add(new PanelString("msg.ec.InfoPanelHeatChange", reader.getInt("heatChange"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelConsumption", reader.getInt("consumption"), "mB/t", showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getInt("production"), "mB/t", showLabels));
+			}
+			if ((settings & 64) > 0) {
+				result.add(new PanelString("msg.ec.InfoPanelWater", reader.getInt("water"), "mB", showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelPressure", reader.getInt("pressure"), "Bar", showLabels));
+				result.add(new PanelString("ic2.SteamGenerator.gui.calcification", reader.getDouble("calcification"), "%", showLabels));
+			}
+			break;
+		case 8:
+			if ((settings & 1) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelEnergy", reader.getDouble("storage"), "EU", showLabels));
+			if ((settings & 2) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getDouble("maxStorage"), "EU", showLabels));
+			if ((settings & 64) > 0) {
+				result.add(new PanelString("msg.ec.InfoPanelProgress", reader.getDouble("progress"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelSteam", reader.getInt("steam"), "mB", showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelWater", reader.getInt("water"), "mB", showLabels));
 			}
 			break;
 		}

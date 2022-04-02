@@ -67,7 +67,7 @@ public class GuiRemoteThermo extends GuiContainerBase {
 			} catch (NumberFormatException e) { }
 			heat += delta;
 			if (heat <= 0)
-				heat = 1;
+				heat = 0;
 			if (heat >= 1000000)
 				heat = 1000000;
 			if (container.te.getWorld().isRemote && container.te.getHeatLevel() != heat) {

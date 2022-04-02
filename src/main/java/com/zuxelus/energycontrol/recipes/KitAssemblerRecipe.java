@@ -37,17 +37,31 @@ public class KitAssemblerRecipe implements IRecipe {
 		this.time = time;
 	}
 
+	public KitAssemblerRecipe(ItemStack stack1, ItemStack stack2, ItemStack stack3, ItemStack result, int time) {
+		this.input1 = Ingredient.fromStacks(stack1);
+		this.count1 = stack1.getCount();
+		this.input2 = Ingredient.fromStacks(stack2);
+		this.count2 = stack2.getCount();
+		this.input3 = Ingredient.fromStacks(stack3);
+		this.count3 = stack3.getCount();
+		this.output = result;
+		this.time = time;
+	}
+
 	public boolean isSuitable(TileEntityKitAssembler te) {
-		ItemStack stack1 = te.getStackInSlot(TileEntityKitAssembler.SLOT_CARD1);
+		return isSuitable(te.getStackInSlot(TileEntityKitAssembler.SLOT_CARD1),
+				te.getStackInSlot(TileEntityKitAssembler.SLOT_ITEM),
+				te.getStackInSlot(TileEntityKitAssembler.SLOT_CARD2),
+				te.getStackInSlot(TileEntityKitAssembler.SLOT_RESULT));
+	}
+
+	public boolean isSuitable(ItemStack stack1, ItemStack stack2, ItemStack stack3, ItemStack result) {
 		if (stack1.isEmpty() || stack1.getCount() < count1 || !input1.test(stack1))
 			return false;
-		ItemStack stack2 = te.getStackInSlot(TileEntityKitAssembler.SLOT_ITEM);
 		if (stack2.isEmpty() || stack2.getCount() < count2 || !input2.test(stack2))
 			return false;
-		ItemStack stack3 = te.getStackInSlot(TileEntityKitAssembler.SLOT_CARD2);
 		if (stack3.isEmpty() || stack3.getCount() < count3 || !input3.test(stack3))
 			return false;
-		ItemStack result = te.getStackInSlot(TileEntityKitAssembler.SLOT_RESULT);
 		if (!result.isEmpty()) {
 			if (!result.isItemEqual(output))
 				return false;
@@ -101,6 +115,12 @@ public class KitAssemblerRecipe implements IRecipe {
 
 	public static void addRecipe(KitAssemblerRecipe recipe) {
 		recipes.add(recipe);
+	}
+
+	public static void removeRecipe(ItemStack stack1, ItemStack stack2, ItemStack stack3, ItemStack result) {
+		for(KitAssemblerRecipe recipe : recipes)
+			if (recipe.isSuitable(stack1, stack2, stack3, result))
+				recipes.remove(recipe);
 	}
 
 	public static List<KitAssemblerRecipe> getRecipes() {
