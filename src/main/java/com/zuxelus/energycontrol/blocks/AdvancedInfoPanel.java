@@ -8,7 +8,7 @@ import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
-import net.minecraft.block.material.Material;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -71,5 +71,43 @@ public class AdvancedInfoPanel extends InfoPanel {
 		if (!world.isRemote)
 			player.openGui(EnergyControl.instance, BlockDamages.DAMAGE_ADVANCED_PANEL, world, pos.getX(), pos.getY(), pos.getZ());
 		return true;
+	}
+
+	@Override
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos fromPos) {
+		if (world.isRemote)
+			return;
+
+		TileEntity te = world.getTileEntity(pos);
+		if (!(te instanceof TileEntityAdvancedInfoPanel)) {
+			super.neighborChanged(state, world, pos, block, fromPos);
+			return;
+		}
+
+		boolean flag = world.isBlockPowered(pos);
+		switch (((TileEntityAdvancedInfoPanel) te).getPowerMode()) {
+		case TileEntityAdvancedInfoPanel.POWER_ON:
+			flag = true;
+			break;
+		case TileEntityAdvancedInfoPanel.POWER_OFF:
+			flag = false;
+			break;
+		case TileEntityAdvancedInfoPanel.POWER_REDSTONE:
+			break;
+		case TileEntityAdvancedInfoPanel.POWER_INVERTED:
+			flag = !flag;
+			break;
+		}
+
+		((TileEntityAdvancedInfoPanel) te).setPowered(flag);
+		if (flag == state.getValue(ACTIVE))
+			return;
+
+		if (flag)
+			world.scheduleUpdate(pos, this, 4);
+		else {
+			world.setBlockState(pos, state.cycleProperty(ACTIVE), 2);
+			updateExtenders(state, world, pos);
+		}
 	}
 }

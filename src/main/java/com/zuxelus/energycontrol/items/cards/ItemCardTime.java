@@ -1,18 +1,18 @@
 package com.zuxelus.energycontrol.items.cards;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
+
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ItemCardTime extends ItemCardBase {
 
@@ -22,13 +22,14 @@ public class ItemCardTime extends ItemCardBase {
 
 	@Override
 	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
+		reader.setInt("time", (int) ((world.getWorldTime() + 6000) % 24000));
 		return CardState.OK;
 	}
 
 	@Override
 	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
-		int time = (int) ((FMLClientHandler.instance().getClient().world.getWorldTime() + 6000) % 24000);
+		int time = reader.getInt("time");
 		int hours = time / 1000;
 		int minutes = (time % 1000) * 6 / 100;
 		String suffix = "";

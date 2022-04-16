@@ -87,7 +87,7 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 
 		if (destroyStage > -1)
 			bindTexture(DESTROY_STAGES[destroyStage]);
-		else if (te.powered)
+		else if (te.getPowered())
 			bindTexture(TEXTUREON[color]);
 		else
 			bindTexture(TEXTUREOFF[color]);

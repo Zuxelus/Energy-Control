@@ -119,8 +119,10 @@ public class KitAssemblerRecipe implements IRecipe {
 
 	public static void removeRecipe(ItemStack stack1, ItemStack stack2, ItemStack stack3, ItemStack result) {
 		for(KitAssemblerRecipe recipe : recipes)
-			if (recipe.isSuitable(stack1, stack2, stack3, result))
+			if (recipe.isSuitable(stack1, stack2, stack3, result)) {
 				recipes.remove(recipe);
+				return;
+			}
 	}
 
 	public static List<KitAssemblerRecipe> getRecipes() {

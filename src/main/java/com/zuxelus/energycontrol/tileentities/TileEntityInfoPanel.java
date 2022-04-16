@@ -158,13 +158,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		return powered;
 	}
 
-	protected void calcPowered() { // server
-		boolean newPowered = world.isBlockPowered(pos);
-		if (newPowered != powered) {
-			powered = newPowered;
-			/*if (screen != null)
-				screen.turnPower(powered, world);*/
-		}
+	public void setPowered(boolean value) {
+		powered = value;
 	}
 
 	public void setScreenData(NBTTagCompound nbtTagCompound) {
@@ -231,7 +226,6 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	public NBTTagCompound getUpdateTag() {
 		NBTTagCompound tag = super.getUpdateTag();
 		tag = writeProperties(tag);
-		calcPowered();
 		tag.setBoolean("powered", powered);
 		colored = isColoredEval();
 		tag.setBoolean("colored", colored);

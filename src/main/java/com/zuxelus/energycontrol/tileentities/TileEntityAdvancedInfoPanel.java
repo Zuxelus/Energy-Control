@@ -2,6 +2,8 @@ package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
+
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
@@ -42,8 +44,10 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 
 	public void setPowerMode(byte mode) {
 		powerMode = mode;
-		if (world != null && !world.isRemote)
-			calcPowered();
+		if (world != null && !world.isRemote) {
+			IBlockState state = world.getBlockState(pos);
+			state.getBlock().neighborChanged(state, world, pos, state.getBlock(), pos);
+		}
 	}
 
 	public byte getNextPowerMode() {
@@ -58,29 +62,6 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 			return POWER_REDSTONE;
 		}
 		return POWER_REDSTONE;
-	}
-
-	@Override
-	protected void calcPowered() { //server
-		boolean newPowered = world.isBlockPowered(pos);
-		switch (powerMode) {
-		case POWER_ON:
-			newPowered = true;
-			break;
-		case POWER_OFF:
-			newPowered = false;
-			break;
-		case POWER_REDSTONE:
-			break;
-		case POWER_INVERTED:
-			newPowered = !newPowered;
-			break;
-		}
-		if (newPowered != powered) {
-			powered = newPowered;
-			/*if (screen != null)
-				screen.turnPower(powered, world);*/
-		}
 	}
 
 	public void setValues(int i) {

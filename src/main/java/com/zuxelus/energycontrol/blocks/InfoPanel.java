@@ -4,12 +4,10 @@ import java.util.Random;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
-import com.zuxelus.energycontrol.utils.KeyboardUtil;
 import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -66,8 +64,13 @@ public class InfoPanel extends FacingBlockActive {
 		if (world.isRemote)
 			return;
 
-		boolean flag = state.getValue(ACTIVE);
-		if (flag == world.isBlockPowered(pos))
+		TileEntity te = world.getTileEntity(pos);
+		if (!(te instanceof TileEntityInfoPanel))
+			return;
+
+		boolean flag = world.isBlockPowered(pos);
+		((TileEntityInfoPanel) te).setPowered(flag);
+		if (flag == state.getValue(ACTIVE))
 			return;
 
 		if (flag)
@@ -80,13 +83,13 @@ public class InfoPanel extends FacingBlockActive {
 
 	@Override
 	public void updateTick(World world, BlockPos pos, IBlockState state, Random rand) {
-		if (state.getValue(ACTIVE) && !world.isBlockPowered(pos)) {
+		//if (state.getValue(ACTIVE) && !world.isBlockPowered(pos)) {
 			world.setBlockState(pos, state.cycleProperty(ACTIVE), 2);
 			updateExtenders(state, world, pos);
-		}
+		//}
 	}
 
-	private void updateExtenders(IBlockState state, World world, BlockPos pos) {
+	protected void updateExtenders(IBlockState state, World world, BlockPos pos) {
 		TileEntity be = world.getTileEntity(pos);
 		if (be instanceof TileEntityInfoPanel)
 			((TileEntityInfoPanel) be).updateExtenders(world, !state.getValue(ACTIVE));
