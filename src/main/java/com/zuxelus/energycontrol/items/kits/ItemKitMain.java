@@ -62,6 +62,8 @@ public class ItemKitMain extends Item implements IItemKit {
 			register(ItemKitAppEng::new);
 		if (Loader.isModLoaded(ModIDs.GALACTICRAFT_CORE) && Loader.isModLoaded(ModIDs.GALACTICRAFT_PLANETS))
 			register(ItemKitGalacticraft::new);
+		if (Loader.isModLoaded(ModIDs.GREGTECH))
+			register(ItemKitGregTech::new);
 		if (Loader.isModLoaded(ModIDs.BIG_REACTORS))
 			register(ItemKitBigReactors::new);
 		if (Loader.isModLoaded(ModIDs.ENDER_IO))

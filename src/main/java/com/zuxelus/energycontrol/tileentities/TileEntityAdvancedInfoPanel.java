@@ -2,6 +2,7 @@ package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
+import com.zuxelus.zlib.blocks.FacingBlockActive;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
@@ -44,10 +45,8 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 
 	public void setPowerMode(byte mode) {
 		powerMode = mode;
-		if (world != null && !world.isRemote) {
-			IBlockState state = world.getBlockState(pos);
-			state.getBlock().neighborChanged(state, world, pos, state.getBlock(), pos);
-		}
+		if (world != null && !world.isRemote)
+			updateBlockState(world.getBlockState(pos));
 	}
 
 	public byte getNextPowerMode() {
@@ -183,6 +182,35 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 			return stack.getItem() instanceof ItemUpgrade && stack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE;
 		default:
 			return false;
+		}
+	}
+
+	@Override
+	public void updateBlockState(IBlockState state) {
+		boolean flag = world.isBlockPowered(pos);
+		switch (powerMode) {
+		case POWER_ON:
+			flag = true;
+			break;
+		case POWER_OFF:
+			flag = false;
+			break;
+		case POWER_REDSTONE:
+			break;
+		case POWER_INVERTED:
+			flag = !flag;
+			break;
+		}
+
+		powered = flag;
+		if (flag == state.getValue(FacingBlockActive.ACTIVE))
+			return;
+
+		if (flag)
+			world.scheduleUpdate(pos, state.getBlock(), 4);
+		else {
+			world.setBlockState(pos, state.cycleProperty(FacingBlockActive.ACTIVE), 2);
+			updateExtenders(true);
 		}
 	}
 

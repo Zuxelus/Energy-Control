@@ -1,19 +1,22 @@
 package com.zuxelus.energycontrol.items.cards;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
+
 import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemCardVanilla extends ItemCardBase {
 	public static final int DISPLAY_BURNING = 1;
@@ -71,25 +74,25 @@ public class ItemCardVanilla extends ItemCardBase {
 			if (tagCompound.hasKey("Cooking"))
 				slot1pre = tagCompound.getString("Cooking");
 			if (showLabels)
-				result.add(new PanelString(I18n.format("msg.cooking", tagCompound.getInteger("Csize"), slot1pre)));
+				result.add(PanelString.create("msg.cooking", tagCompound.getInteger("Csize"), slot1pre));
 			else
 				result.add(new PanelString(String.format("%sx - %s", tagCompound.getInteger("Csize"), slot1pre)));
 		}
 		if ((settings & DISPLAY_SLOT_2) > 0) {
-			String slot2pre = I18n.format("msg.ec.None");
+			String slot2pre = isServer ? "N/A" : I18n.format("msg.ec.None");
 			if (tagCompound.hasKey("Fuel"))
 				slot2pre = tagCompound.getString("Fuel");
 			if (showLabels)
-				result.add(new PanelString(I18n.format("msg.fuel", tagCompound.getInteger("Fsize"), slot2pre)));
+				result.add(PanelString.create("msg.fuel", tagCompound.getInteger("Fsize"), slot2pre));
 			else
 				result.add(new PanelString(String.format("%sx - %s", tagCompound.getInteger("Fsize"), slot2pre)));
 		}
 		if ((settings & DISPLAY_SLOT_3) > 0) {
-			String slot3pre = I18n.format("msg.ec.None");
+			String slot3pre = isServer ? "N/A" : I18n.format("msg.ec.None");
 			if (tagCompound.hasKey("Output"))
 				slot3pre = tagCompound.getString("Output");
 			if (showLabels)
-				result.add(new PanelString(I18n.format("msg.output", tagCompound.getInteger("Osize"), slot3pre)));
+				result.add(PanelString.create("msg.output", tagCompound.getInteger("Osize"), slot3pre));
 			else
 				result.add(new PanelString(String.format("%sx - %s", tagCompound.getInteger("Osize"), slot3pre)));
 		}
@@ -99,6 +102,7 @@ public class ItemCardVanilla extends ItemCardBase {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>();
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOnOff"), DISPLAY_BURNING));

@@ -79,6 +79,8 @@ public final class ItemCardMain extends Item implements IItemCard, ITouchAction,
 			register(ItemCardBigReactors::new);
 		if (Loader.isModLoaded(ModIDs.ENDER_IO))
 			register(ItemCardEnderIO::new);
+		if (Loader.isModLoaded(ModIDs.GREGTECH))
+			register(ItemCardGregTech::new);
 		if (Loader.isModLoaded(ModIDs.HBM))
 			register(ItemCardHBM::new);
 		if (Loader.isModLoaded(ModIDs.MEKANISM))

@@ -85,7 +85,7 @@ public class HoloPanel extends FacingHorizontalActiveEC {
 	private void updateExtenders(IBlockState state, World world, BlockPos pos) {
 		TileEntity be = world.getTileEntity(pos);
 		if (be instanceof TileEntityInfoPanel)
-			((TileEntityInfoPanel) be).updateExtenders(world, !state.getValue(ACTIVE));
+			((TileEntityInfoPanel) be).updateExtenders(!state.getValue(ACTIVE));
 	}
 
 	@Override

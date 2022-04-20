@@ -82,6 +82,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		if (world.isRemote)
 			return;
 
+		updateBlockState(world.getBlockState(pos));
 		if (screenData == null) {
 			EnergyControl.instance.screenManager.registerInfoPanel(this);
 		} else {
@@ -578,7 +579,21 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		notifyBlockUpdate();
 	}
 
-	public void updateExtenders(World world, Boolean active) {
+	public void updateBlockState(IBlockState state) {
+		boolean flag = world.isBlockPowered(pos);
+		powered = flag;
+		if (flag == state.getValue(FacingBlockActive.ACTIVE))
+			return;
+
+		if (flag)
+			world.scheduleUpdate(pos, state.getBlock(), 4);
+		else {
+			world.setBlockState(pos, state.cycleProperty(FacingBlockActive.ACTIVE), 2);
+			updateExtenders(true);
+		}
+	}
+
+	public void updateExtenders(Boolean active) {
 		if (screen == null)
 			return;
 

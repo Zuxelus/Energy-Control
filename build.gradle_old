@@ -1,0 +1,92 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url = "https://files.minecraftforge.net/maven" }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+    }
+}
+apply plugin: 'net.minecraftforge.gradle.forge'
+
+version = "1.12.2-0.2.8b"
+group= "com.zuxelus.energycontrol"
+archivesBaseName = "EnergyControl"
+
+sourceCompatibility = targetCompatibility = '1.8'
+compileJava {
+    sourceCompatibility = targetCompatibility = '1.8'
+}
+
+minecraft {
+    version = "1.12.2-14.23.5.2847"
+    runDir = "run"
+
+    replaceIn "EnergyControl.java"
+    replace "@VERSION@", project.version
+    mappings = "snapshot_20171003"
+}
+
+repositories {
+    flatDir {
+        dir 'libs_'
+    }
+}
+
+dependencies {
+    compile files(
+        'libs_/appliedenergistics2-rv6-stable-7.jar',
+        'libs_/BrandonsCore-1.12.2-2.4.18.210-universal.jar',
+        'libs_/buildcraft-all-7.99.24.6.jar',
+        'libs_/CraftTweaker2-1.12-4.1.20.674.jar',
+        'libs_/cc-tweaked-1.12.2-1.87.0.jar',
+        'libs_/CodeChickenLib-1.12.2-3.2.3.358-universal.jar',
+        'libs_/CoFHCore-1.12.2-4.6.6.1-universal.jar',
+        'libs_/CoFHWorld-1.12.2-1.4.0.1-universal.jar',
+        'libs_/ComputerCraft1.80pr1.jar',
+        'libs_/Draconic-Evolution-1.12.2-2.3.25.351-universal.jar',
+        'libs_/EnderIO-1.12.2-5.3.70.jar',
+        'libs_/EnderCore-1.12.2-0.5.76.jar',
+        'libs_/ExtremeReactors-1.12.2-0.4.5.67.jar',
+        'libs_/Galacticraft-Planets-Dev-1.12.2-4.0.2.261.jar',
+        'libs_/GalacticraftCore-Dev-1.12.2-4.0.2.261.jar',
+        'libs_/gregtech-1.12.2-1.17.1.770.jar',
+        'libs_/hbm-1.6.4a-Gv2.jar',
+        'libs_/IC2Classic+1.12-1.5.4.5+Dev.jar',
+        'libs_/industrialcraft-2-2.8.197-ex112-dev.jar',
+        'libs_/jei_1.12.2-4.16.1.302.jar',
+        'libs_/Mekanism-1.12.2-9.8.3.390.jar',
+        'libs_/MekanismGenerators-1.12.2-9.8.3.390.jar',
+        'libs_/MicdoodleCore-Dev-1.12.2-4.0.2.261.jar',
+        'libs_/NuclearCraft-2.18x-1.12.2.jar',
+        'libs_/NuclearCraft-2o.5.5-1.12.2.jar',
+        'libs_/OpenComputers-MC1.12.2-1.7.5.192.jar',
+        'libs_/pneumaticcraft-repressurized-1.12.2-0.11.15-398.jar',
+        'libs_/RebornCore-1.12.2-3.19.4.529-dev.jar',
+        'libs_/RedstoneFlux-1.12-2.1.1.1-universal.jar',
+        'libs_/TechReborn-1.12.2-2.27.3.1084-dev.jar',
+        'libs_/ThermalExpansion-1.12.2-5.5.7.1-universal.jar',
+        'libs_/ThermalFoundation-1.12.2-2.6.7.1-universal.jar',
+        'libs_/zerocore-1.12.2-0.1.2.8.jar')
+}
+
+processResources {
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
+
+jar {
+  manifest {
+      attributes 'FMLCorePlugin': 'com.zuxelus.energycontrol.hooks.ECHookLoader'
+      attributes 'FMLCorePluginContainsFMLMod': 'true'
+  }
+}

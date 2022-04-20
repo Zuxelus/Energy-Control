@@ -25,6 +25,10 @@ public class PanelString {
 		this(resourceName, String.format("%s %s", getFormatter().format(value), eu), showLabels);
 	}
 
+	public static PanelString create(String resourceName, int value, String name) {
+		return new PanelString(I18n.translateToLocalFormatted(resourceName, value, name));
+	}
+
 	private static DecimalFormat formatter;
 	public static DecimalFormat getFormatter() {
 		if (formatter == null) {

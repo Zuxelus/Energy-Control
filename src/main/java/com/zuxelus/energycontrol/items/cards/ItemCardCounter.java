@@ -50,7 +50,7 @@ public class ItemCardCounter extends ItemCardBase {
 		// average counter
 		if (reader.hasField("average")) {
 			if ((displaySettings & 1) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelOutputEU", reader.getInt("average"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getInt("average"), "EU", showLabels));
 			if ((displaySettings & 2) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelPeriod", reader.getInt("period"), showLabels));
 			return result;
@@ -58,7 +58,7 @@ public class ItemCardCounter extends ItemCardBase {
 		// energy counter
 		if ((displaySettings & 1) > 0) {
 			double energy = reader.getDouble("energy");
-			result.add(new PanelString("msg.ec.InfoPanelEnergyEU", energy, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelEnergy", energy, "EU", showLabels));
 		}
 		return result;
 	}

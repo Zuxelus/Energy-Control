@@ -68,31 +68,15 @@ public class InfoPanel extends FacingBlockActive {
 		if (!(te instanceof TileEntityInfoPanel))
 			return;
 
-		boolean flag = world.isBlockPowered(pos);
-		((TileEntityInfoPanel) te).setPowered(flag);
-		if (flag == state.getValue(ACTIVE))
-			return;
-
-		if (flag)
-			world.scheduleUpdate(pos, this, 4);
-		else {
-			world.setBlockState(pos, state.cycleProperty(ACTIVE), 2);
-			updateExtenders(state, world, pos);
-		}
+		((TileEntityInfoPanel) te).updateBlockState(state);
 	}
 
 	@Override
 	public void updateTick(World world, BlockPos pos, IBlockState state, Random rand) {
-		//if (state.getValue(ACTIVE) && !world.isBlockPowered(pos)) {
-			world.setBlockState(pos, state.cycleProperty(ACTIVE), 2);
-			updateExtenders(state, world, pos);
-		//}
-	}
-
-	protected void updateExtenders(IBlockState state, World world, BlockPos pos) {
+		world.setBlockState(pos, state.cycleProperty(ACTIVE), 2);
 		TileEntity be = world.getTileEntity(pos);
 		if (be instanceof TileEntityInfoPanel)
-			((TileEntityInfoPanel) be).updateExtenders(world, !state.getValue(ACTIVE));
+			((TileEntityInfoPanel) be).updateExtenders(!state.getValue(ACTIVE));
 	}
 
 	@Override
