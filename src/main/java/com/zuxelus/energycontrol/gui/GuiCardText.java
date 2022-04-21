@@ -1,17 +1,18 @@
 package com.zuxelus.energycontrol.gui;
 
+import java.io.IOException;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.gui.GuiBase;
 import com.zuxelus.zlib.gui.controls.GuiTextArea;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.io.IOException;
 
 @SideOnly(Side.CLIENT)
 public class GuiCardText extends GuiBase {

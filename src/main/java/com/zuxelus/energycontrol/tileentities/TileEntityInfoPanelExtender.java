@@ -3,6 +3,7 @@ package com.zuxelus.energycontrol.tileentities;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
+
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -50,7 +51,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	private void updateScreen() {
 		if (partOfScreen && screen == null) {
 			TileEntity core = world.getTileEntity(new BlockPos(coreX, coreY, coreZ));
-			if (core != null && core instanceof TileEntityInfoPanel) {
+			if (core instanceof TileEntityInfoPanel) {
 				screen = ((TileEntityInfoPanel) core).getScreen();
 				if (screen != null)
 					screen.init(true, world);

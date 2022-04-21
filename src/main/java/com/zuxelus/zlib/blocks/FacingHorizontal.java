@@ -2,6 +2,7 @@ package com.zuxelus.zlib.blocks;
 
 import java.util.List;
 
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
@@ -20,7 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 
-@Optional.Interface(modid = "ic2", iface = "ic2.api.tile.IWrenchable")
+@Optional.Interface(modid = ModIDs.IC2, iface = "ic2.api.tile.IWrenchable")
 public abstract class FacingHorizontal extends BlockHorizontal implements ITileEntityProvider, IWrenchable {
 
 	public FacingHorizontal(Material material) {

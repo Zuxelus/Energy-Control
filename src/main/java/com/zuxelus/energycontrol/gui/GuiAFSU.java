@@ -1,17 +1,18 @@
 package com.zuxelus.energycontrol.gui;
 
+import java.util.Arrays;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.containers.ContainerAFSU;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.zlib.gui.GuiContainerBase;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiButtonImage;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.util.Arrays;
 
 @SideOnly(Side.CLIENT)
 public class GuiAFSU extends GuiContainerBase {

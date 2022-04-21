@@ -1,8 +1,13 @@
 package com.zuxelus.energycontrol.gui.controls;
 
+import java.util.List;
+
+import org.lwjgl.opengl.GL11;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -14,9 +19,6 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
-
-import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public class GuiHowlerAlarmListBox extends GuiButton {

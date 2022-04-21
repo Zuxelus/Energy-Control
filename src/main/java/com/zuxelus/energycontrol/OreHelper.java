@@ -61,8 +61,7 @@ public class OreHelper {
 					EnergyControl.oreHelper.put(getId(Blocks.DIAMOND_ORE, 0), new OreHelper(over.diamondMinHeight, over.diamondMaxHeight, over.diamondSize, over.diamondCount));
 					//EnergyControl.oreHelper.put(Item.getItemFromBlock(Blocks.EMERALD_ORE), new OreHelper(Blocks.EMERALD_ORE, over .goldMinHeight, over.goldMaxHeight, over.goldSize, over.goldCount));
 					//EnergyControl.oreHelper.put(Item.getItemFromBlock(Blocks.QUARTZ_ORE), new OreHelper(Blocks.QUARTZ_ORE, over  .goldMinHeight, over.goldMaxHeight, over.goldSize, over.goldCount));
-				} catch (Throwable t) {
-				}
+				} catch (Throwable t) { }
 				CrossModLoader.loadOreInfo();
 			}
 		}

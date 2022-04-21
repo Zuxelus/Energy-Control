@@ -1,5 +1,7 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import java.util.HashMap;
+
 import com.zuxelus.energycontrol.blocks.SeedLibrary;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
@@ -8,6 +10,7 @@ import com.zuxelus.energycontrol.utils.SeedLibraryFilter;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
+
 import ic2.api.crops.CropCard;
 import ic2.api.crops.Crops;
 import ic2.api.crops.ICropSeed;
@@ -32,8 +35,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-
-import java.util.HashMap;
 
 public class TileEntitySeedLibrary extends TileEntityInventory implements ITickable, ITilePacketHandler, ISlotItemFilter, IEnergySink {
 	public static final byte SLOT_DISCHARGER = 0;

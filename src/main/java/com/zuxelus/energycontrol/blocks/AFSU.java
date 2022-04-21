@@ -73,7 +73,7 @@ public class AFSU extends FacingBlock {
 	}
 
 	@Override
-	public void getSubBlocks(CreativeTabs itemIn, NonNullList<ItemStack> items) {
+	public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> items) {
 		items.add(getStackwithEnergy(0));
 		items.add(getStackwithEnergy(TileEntityAFSU.CAPACITY));
 	}

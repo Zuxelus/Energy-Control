@@ -1,10 +1,15 @@
 package com.zuxelus.energycontrol.items.cards;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.GalacticraftHelper;
+
 import micdoodle8.mods.galacticraft.core.blocks.BlockOxygenDetector;
 import micdoodle8.mods.galacticraft.core.tile.*;
 import micdoodle8.mods.galacticraft.planets.asteroids.items.ItemAtmosphericValve;
@@ -18,10 +23,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
-
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ItemCardGalacticraft extends ItemCardBase {
 	private static DecimalFormat df = new DecimalFormat("0.0");

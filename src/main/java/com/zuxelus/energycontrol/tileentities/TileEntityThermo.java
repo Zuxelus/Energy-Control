@@ -4,10 +4,9 @@ import com.zuxelus.energycontrol.EnergyControlConfig;
 import com.zuxelus.energycontrol.blocks.RemoteThermo;
 import com.zuxelus.energycontrol.blocks.ThermalMonitor;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.crossmod.IC2ReactorHelper;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
-import ic2.api.reactor.IReactor;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;

@@ -12,6 +12,7 @@ public class ModIDs {
     public static final String GREGTECH = "gregtech";
     public static final String HBM = "hbm";
     public static final String IC2 = "ic2";
+    public static final String IC2_CLASSIC = "ic2-classic-spmod";
     public static final String MEKANISM = "mekanism";
     public static final String MEKANISM_GENERATORS = "mekanismgenerators";
     public static final String NUCLEAR_CRAFT = "nuclearcraft";

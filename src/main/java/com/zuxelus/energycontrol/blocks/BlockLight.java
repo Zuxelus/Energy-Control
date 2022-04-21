@@ -1,7 +1,12 @@
 package com.zuxelus.energycontrol.blocks;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
+
 import ic2.api.tile.IWrenchable;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -19,10 +24,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Optional.Interface(modid = ModIDs.IC2, iface = "ic2.api.tile.IWrenchable")
 public class BlockLight extends Block implements IWrenchable {
@@ -89,7 +90,7 @@ public class BlockLight extends Block implements IWrenchable {
 	}
 
 	@Override
-	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos) {
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos fromPos) {
 		updateBlockState(world, pos, state);
 	}
 
@@ -105,7 +106,7 @@ public class BlockLight extends Block implements IWrenchable {
 	}
 
 	@Override
-	public void getSubBlocks(CreativeTabs itemIn, NonNullList<ItemStack> items) {
+	public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> items) {
 		for (int i = 0; i <= DAMAGE_MAX; i++)
 			if (i % 2 == 0)
 				items.add(new ItemStack(this, 1, i));

@@ -1,11 +1,13 @@
 package com.zuxelus.energycontrol.gui;
 
+import org.lwjgl.opengl.GL11;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.containers.ContainerSeedAnalyzer;
+
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
 public class GuiSeedAnalyzer extends GuiContainer {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_seed_analyzer.png");

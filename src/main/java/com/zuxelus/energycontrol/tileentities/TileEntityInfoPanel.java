@@ -495,9 +495,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 
 	public int getDisplaySettingsForCardInSlot(int slot) {
 		ItemStack card = getStackInSlot(slot);
-		if (card.isEmpty()) {
+		if (card.isEmpty())
 			return 0;
-		}
 		return getDisplaySettingsByCard(card);
 	}
 
@@ -666,7 +665,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	}
 
 	public boolean isTouchCard(ItemStack stack) {
-		Item item = stack.getItem();
+		Item item = stack.getItem(); // raise error in 1.10 and less
 		return !stack.isEmpty() && item instanceof ITouchAction && ((ITouchAction) item).enableTouch(stack);
 	}
 
@@ -675,7 +674,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 	}
 
 	public boolean hasBars(ItemStack stack) {
-		Item item = stack.getItem();
+		Item item = stack.getItem(); // raise error in 1.10 and less
 		return !stack.isEmpty() && item instanceof IHasBars && ((IHasBars) item).enableBars(stack) && (getDisplaySettingsForCardInSlot(SLOT_CARD) & 1024) > 0;
 	}
 

@@ -61,28 +61,17 @@ public class HoloPanel extends FacingHorizontalActiveEC {
 			world.setBlockToAir(pos);
 		} else 
 			if (!world.isRemote) {
-				boolean flag = state.getValue(ACTIVE);
-				if (flag == world.isBlockPowered(pos))
+				TileEntity te = world.getTileEntity(pos);
+				if (!(te instanceof TileEntityInfoPanel))
 					return;
 
-				if (flag)
-					world.scheduleUpdate(pos, this, 4);
-				else {
-					world.setBlockState(pos, state.cycleProperty(ACTIVE), 2);
-					updateExtenders(state, world, pos);
-				}
+				((TileEntityInfoPanel) te).updateBlockState(state);
 			}
 	}
 
 	@Override
 	public void updateTick(World world, BlockPos pos, IBlockState state, Random rand) {
-		if (state.getValue(ACTIVE) && !world.isBlockPowered(pos)) {
-			world.setBlockState(pos, state.cycleProperty(ACTIVE), 2);
-			updateExtenders(state, world, pos);
-		}
-	}
-
-	private void updateExtenders(IBlockState state, World world, BlockPos pos) {
+		world.setBlockState(pos, state.cycleProperty(ACTIVE), 2);
 		TileEntity be = world.getTileEntity(pos);
 		if (be instanceof TileEntityInfoPanel)
 			((TileEntityInfoPanel) be).updateExtenders(!state.getValue(ACTIVE));

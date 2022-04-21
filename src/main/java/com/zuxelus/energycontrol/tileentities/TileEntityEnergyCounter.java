@@ -2,6 +2,7 @@ package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
+
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.info.Info;
@@ -109,9 +110,9 @@ public class TileEntityEnergyCounter extends TileEntityEnergyStorage {
 
 	private void refreshData() {
 		int upgradeCountTransormer = 0;
-		ItemStack itemStack = getStackInSlot(0);
-		if (!itemStack.isEmpty() && itemStack.isItemEqual(CrossModLoader.getCrossMod(ModIDs.IC2).getItemStack("transformer")))
-			upgradeCountTransormer = itemStack.getCount();
+		ItemStack stack = getStackInSlot(0);
+		if (!stack.isEmpty() && stack.isItemEqual(CrossModLoader.getCrossMod(ModIDs.IC2).getItemStack("transformer")))
+			upgradeCountTransormer = stack.getCount();
 		upgradeCountTransormer = Math.min(upgradeCountTransormer, 4);
 		if (world != null && !world.isRemote) {
 			output = BASE_PACKET_SIZE * (int) Math.pow(4D, upgradeCountTransormer);

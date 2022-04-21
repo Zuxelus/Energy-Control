@@ -2,6 +2,7 @@ package com.zuxelus.energycontrol.items;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.init.ModItems;
+
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -39,7 +40,7 @@ public class ItemUpgrade extends Item {
 
 	@Override
 	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
-		if (!this.isInCreativeTab(tab))
+		if (!isInCreativeTab(tab))
 			return;
 		items.add(new ItemStack(ModItems.itemUpgrade, 1, DAMAGE_RANGE));
 		items.add(new ItemStack(ModItems.itemUpgrade, 1, DAMAGE_COLOR));

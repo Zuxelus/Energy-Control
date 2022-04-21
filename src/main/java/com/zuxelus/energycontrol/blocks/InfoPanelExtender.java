@@ -38,11 +38,8 @@ public class InfoPanelExtender extends FacingBlockActive {
 	}
 
 	@Override
-	public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
-		TileEntity te = world.getTileEntity(pos);
-		if (!(te instanceof TileEntityInfoPanelExtender))
-			return 0;
-		return ((TileEntityInfoPanelExtender)te).getPowered() ? 10 : 0;
+	public int getLightValue(IBlockState state) {
+		return state.getValue(ACTIVE) ? 10 : 0;
 	}
 
 	@Override

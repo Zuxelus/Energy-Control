@@ -1,10 +1,15 @@
 package com.zuxelus.energycontrol.gui;
 
+import java.io.IOException;
+
+import org.lwjgl.opengl.GL11;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.containers.ContainerSeedLibrary;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.utils.SeedLibraryFilter;
 import com.zuxelus.zlib.gui.controls.GuiButtonGeneral;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
@@ -12,9 +17,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
-
-import java.io.IOException;
 
 @SideOnly(Side.CLIENT)
 public class GuiSeedLibrary extends GuiContainer {

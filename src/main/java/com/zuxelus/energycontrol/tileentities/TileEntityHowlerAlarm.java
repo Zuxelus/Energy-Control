@@ -5,7 +5,7 @@ import com.zuxelus.energycontrol.EnergyControlConfig;
 import com.zuxelus.energycontrol.utils.TileEntitySound;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
-import net.minecraft.block.state.IBlockState;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;

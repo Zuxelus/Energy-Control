@@ -97,7 +97,8 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements ISlotIte
 		case SLOT_CARD:
 			return stack.getItem() instanceof ItemCardMain && (stack.getItemDamage() == ItemCardType.CARD_REACTOR
 					|| stack.getItemDamage() == ItemCardType.CARD_REACTOR5X5
-					|| stack.getItemDamage() == ItemCardType.CARD_BIG_REACTORS);
+					|| stack.getItemDamage() == ItemCardType.CARD_BIG_REACTORS
+					|| stack.getItemDamage() == ItemCardType.CARD_HBM);
 		case SLOT_UPGRADE_RANGE:
 			return stack.getItem() instanceof ItemUpgrade && stack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE;
 		default:
