@@ -88,15 +88,15 @@ public class ItemCardGeneratorKinetic extends ItemCardBase {
 		switch (reader.getInt("type")) {
 		case 1: // TileEntityElectricKineticGenerator
 			if ((settings & 1) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelOutputKU", reader.getDouble("output"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("output"), "KU/t", showLabels));
 			if ((settings & 2) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelEnergyKU", reader.getDouble("storage"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelEnergy", reader.getDouble("storage"), "KU", showLabels));
 			if ((settings & 4) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelCapacityKU", reader.getDouble("maxStorage"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getDouble("maxStorage"), "KU", showLabels));
 			if ((settings & 8) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelStorageEU", reader.getInt("energy"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelStorage", reader.getInt("energy"), "EU", showLabels));
 			if ((settings & 4) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelCapacityEU", reader.getDouble("maxEnergy"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getDouble("maxEnergy"), "EU", showLabels));
 			if ((settings & 16) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelMotors", reader.getInt("items"), showLabels));
 			if ((settings & 32) > 0)
@@ -105,35 +105,35 @@ public class ItemCardGeneratorKinetic extends ItemCardBase {
 			break;
 		case 2: // TileEntityManualKineticGenerator
 			if ((settings & 2) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelEnergyKU", reader.getDouble("storage"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelEnergy", reader.getDouble("storage"), "KU", showLabels));
 			if ((settings & 4) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelCapacityKU", reader.getDouble("maxStorage"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getDouble("maxStorage"), "KU", showLabels));
 			break;
 		case 3: // TileEntitySteamKineticGenerator
 			if ((settings & 1) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelOutputKU", reader.getDouble("output"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("output"), "KU/t", showLabels));
 			if ((settings & 8) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelStorageL", reader.getDouble("storage"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelStorage", reader.getDouble("storage"), "L", showLabels));
 			if ((settings & 4) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelCapacityL", reader.getDouble("maxStorage"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getDouble("maxStorage"), "L", showLabels));
 			addOnOff(result, isServer, reader.getBoolean("active"));
 			break;
 		case 4: // TileEntityStirlingKineticGenerator
 			if ((settings & 2) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelEnergyKU", reader.getDouble("storage"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelEnergy", reader.getDouble("storage"), "KU", showLabels));
 			if ((settings & 4) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelCapacityKU", reader.getDouble("maxStorage"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getDouble("maxStorage"), "KU", showLabels));
 			if ((settings & 8) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelStorageHU", reader.getInt("energy"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelStorage", reader.getInt("energy"), "HU", showLabels));
 			if ((settings & 4) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelCapacityHU", reader.getDouble("maxEnergy"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getDouble("maxEnergy"), "HU", showLabels));
 			if ((settings & 32) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelMultiplier", reader.getDouble("multiplier"), showLabels));
 				addOnOff(result, isServer, reader.getBoolean("active"));
 			break;
 		case 5: // TileEntityWindKineticGenerator
 			if ((settings & 1) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelOutputKU", reader.getDouble("output"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("output"), "KU/t", showLabels));
 			if ((settings & 2) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelWindStrength", reader.getDouble("wind"), showLabels));
 			if ((settings & 32) > 0)
@@ -145,7 +145,7 @@ public class ItemCardGeneratorKinetic extends ItemCardBase {
 			break;
 		case 6: // TileEntityWaterKineticGenerator
 			if ((settings & 1) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelOutputKU", reader.getDouble("output"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("output"), "KU/t", showLabels));
 			if ((settings & 2) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelWaterFlow", reader.getDouble("wind"), showLabels));
 			if ((settings & 32) > 0)
@@ -159,7 +159,7 @@ public class ItemCardGeneratorKinetic extends ItemCardBase {
 			if ((settings & 2) > 0)
 				result.add(new PanelString(reader.getString("status"), "", true));
 			if ((settings & 1) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelOutputKU", reader.getDouble("output"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("output"), "KU/t", showLabels));
 			if ((settings & 32) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelMultiplier", reader.getDouble("multiplier"), showLabels));
 			if ((settings & 8) > 0)

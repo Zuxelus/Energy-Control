@@ -49,7 +49,7 @@ public class ItemCardReactor extends ItemCardBase {
 		if ((settings & 8) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelMelting", reader.getInt("maxHeat") * 85 / 100, showLabels));
 		if ((settings & 16) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelOutputEU", reader.getInt("output"), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getInt("output"), "EU/t", showLabels));
 		int timeLeft = reader.getInt("timeLeft");
 		if ((settings & 32) > 0) {
 			int hours = timeLeft / 3600;

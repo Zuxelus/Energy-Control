@@ -52,14 +52,14 @@ public class ItemCardBigReactors extends ItemCardBase {
 				result.add(new PanelString("msg.ec.InfoPanelPassiveCooling", reader.getBoolean("cooling").toString(), showLabels));
 			}
 			if ((settings & 4) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelEnergyFE", reader.getString("storage"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelEnergy", reader.getString("storage") + " FE", showLabels));
 			if ((settings & 16) > 0)
 				if (reader.getBoolean("cooling"))
 					result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("output"), "FE/t", showLabels));
 				else
 					result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("output"), "mB/t", showLabels));
 			if ((settings & 32) > 0) {
-				result.add(new PanelString("msg.ec.InfoPanelFuelmb", reader.getString("fuel"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelFuel", reader.getString("fuel") + " mB", showLabels));
 				result.add(new PanelString("msg.ec.InfoPanelWastemb", reader.getDouble("waste"), showLabels));
 				result.add(new PanelString("msg.ec.InfoPanelBurnupRatemb", reader.getDouble("consumption"), showLabels));
 			}

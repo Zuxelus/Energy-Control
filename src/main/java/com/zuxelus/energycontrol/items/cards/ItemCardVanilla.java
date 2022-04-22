@@ -65,36 +65,37 @@ public class ItemCardVanilla extends ItemCardBase {
 	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = new LinkedList<>();
 		int burnTime = reader.getInt("burnTime");
-		NBTTagCompound tagCompound = reader.getTag("Info");
-
-		if ((settings & DISPLAY_TIME) > 0)
-			result.add(new PanelString("msg.burnTime", burnTime, showLabels));
-		if ((settings & DISPLAY_SLOT_1) > 0) {
-			String slot1pre = isServer ? "N/A" : I18n.format("msg.ec.None");
-			if (tagCompound.hasKey("Cooking"))
-				slot1pre = tagCompound.getString("Cooking");
-			if (showLabels)
-				result.add(PanelString.create("msg.cooking", tagCompound.getInteger("Csize"), slot1pre));
-			else
-				result.add(new PanelString(String.format("%sx - %s", tagCompound.getInteger("Csize"), slot1pre)));
-		}
-		if ((settings & DISPLAY_SLOT_2) > 0) {
-			String slot2pre = isServer ? "N/A" : I18n.format("msg.ec.None");
-			if (tagCompound.hasKey("Fuel"))
-				slot2pre = tagCompound.getString("Fuel");
-			if (showLabels)
-				result.add(PanelString.create("msg.fuel", tagCompound.getInteger("Fsize"), slot2pre));
-			else
-				result.add(new PanelString(String.format("%sx - %s", tagCompound.getInteger("Fsize"), slot2pre)));
-		}
-		if ((settings & DISPLAY_SLOT_3) > 0) {
-			String slot3pre = isServer ? "N/A" : I18n.format("msg.ec.None");
-			if (tagCompound.hasKey("Output"))
-				slot3pre = tagCompound.getString("Output");
-			if (showLabels)
-				result.add(PanelString.create("msg.output", tagCompound.getInteger("Osize"), slot3pre));
-			else
-				result.add(new PanelString(String.format("%sx - %s", tagCompound.getInteger("Osize"), slot3pre)));
+		NBTTagCompound tag = reader.getTag("Info");
+		if (tag != null) {
+			if ((settings & DISPLAY_TIME) > 0)
+				result.add(new PanelString("msg.burnTime", burnTime, showLabels));
+			if ((settings & DISPLAY_SLOT_1) > 0) {
+				String slot1pre = isServer ? "N/A" : I18n.format("msg.ec.None");
+				if (tag.hasKey("Cooking"))
+					slot1pre = tag.getString("Cooking");
+				if (showLabels)
+					result.add(PanelString.create("msg.cooking", tag.getInteger("Csize"), slot1pre));
+				else
+					result.add(new PanelString(String.format("%sx - %s", tag.getInteger("Csize"), slot1pre)));
+			}
+			if ((settings & DISPLAY_SLOT_2) > 0) {
+				String slot2pre = isServer ? "N/A" : I18n.format("msg.ec.None");
+				if (tag.hasKey("Fuel"))
+					slot2pre = tag.getString("Fuel");
+				if (showLabels)
+					result.add(PanelString.create("msg.fuel", tag.getInteger("Fsize"), slot2pre));
+				else
+					result.add(new PanelString(String.format("%sx - %s", tag.getInteger("Fsize"), slot2pre)));
+			}
+			if ((settings & DISPLAY_SLOT_3) > 0) {
+				String slot3pre = isServer ? "N/A" : I18n.format("msg.ec.None");
+				if (tag.hasKey("Output"))
+					slot3pre = tag.getString("Output");
+				if (showLabels)
+					result.add(PanelString.create("msg.output", tag.getInteger("Osize"), slot3pre));
+				else
+					result.add(new PanelString(String.format("%sx - %s", tag.getInteger("Osize"), slot3pre)));
+			}
 		}
 		if ((settings & DISPLAY_BURNING) > 0)
 			addOnOff(result, isServer, reader.getBoolean("burning"));

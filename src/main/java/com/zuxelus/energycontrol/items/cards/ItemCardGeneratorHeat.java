@@ -61,29 +61,29 @@ public class ItemCardGeneratorHeat extends ItemCardBase {
 	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		if ((settings & 1) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelOutputHU", reader.getInt("output"), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getInt("output"), "HU/t", showLabels));
 		if ((settings & 2) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelBufferHU", reader.getInt("energy"), showLabels));
 		switch (reader.getInt("type")) {
 		case 1: // TileEntityElectricHeatGenerator
 			if ((settings & 4) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelStorageEU", reader.getDouble("storage"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelStorage", reader.getDouble("storage"), "EU", showLabels));
 			if ((settings & 8) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelCapacityEU", reader.getDouble("maxStorage"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getDouble("maxStorage"), "EU", showLabels));
 			if ((settings & 16) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelCoils", reader.getInt("items"), showLabels));
 			break;
 		case 2: // TileEntityFluidHeatGenerator
 			if ((settings & 4) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelStorageL", reader.getDouble("storage"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelStorage", reader.getDouble("storage"), "L", showLabels));
 			if ((settings & 8) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelCapacityL", reader.getDouble("maxStorage"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getDouble("maxStorage"), "L", showLabels));
 			break;
 		case 3: // TileEntityLiquidHeatExchanger
 			if ((settings & 4) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelStorageL", reader.getDouble("storage"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelStorage", reader.getDouble("storage"), "L", showLabels));
 			if ((settings & 8) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelCapacityL", reader.getDouble("maxStorage"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getDouble("maxStorage"), "L", showLabels));
 			if ((settings & 16) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelConductors", reader.getInt("items"), showLabels));
 			break;

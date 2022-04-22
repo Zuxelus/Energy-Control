@@ -41,7 +41,7 @@ public class ItemCardEngine extends ItemCardBase {
 	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		if (reader.getInt("type") == 1) {
-			result.add(new PanelString("msg.ec.InfoPanelOutputMJ", reader.getDouble("output"), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("output"), "MJ/t", showLabels));
 			if ((settings & 1) > 0) {
 				result.add(new PanelString("msg.ec.InfoPanelHeat", reader.getDouble("heat"), showLabels));
 				result.add(new PanelString("msg.ec.InfoPanelHeatPercentage", reader.getDouble("heatLevel"), showLabels));

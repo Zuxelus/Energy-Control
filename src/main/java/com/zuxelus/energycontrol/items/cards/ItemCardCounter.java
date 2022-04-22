@@ -50,7 +50,7 @@ public class ItemCardCounter extends ItemCardBase {
 		// average counter
 		if (reader.hasField("average")) {
 			if ((displaySettings & 1) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getInt("average"), "EU", showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getInt("average"), "EU/t", showLabels));
 			if ((displaySettings & 2) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelPeriod", reader.getInt("period"), showLabels));
 			return result;
