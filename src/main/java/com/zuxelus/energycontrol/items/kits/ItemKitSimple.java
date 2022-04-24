@@ -1,10 +1,9 @@
 package com.zuxelus.energycontrol.items.kits;
 
 import com.zuxelus.energycontrol.api.ItemStackHelper;
-
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -15,17 +14,17 @@ public abstract class ItemKitSimple extends ItemKitBase {
 	}
 
 	@Override
-	public ItemStack getSensorCard(ItemStack stack, Item card, EntityPlayer player, World world, BlockPos pos) {
+	public ItemStack getSensorCard(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side) {
 		BlockPos position = getTargetCoordinates(world, pos, stack);
 		if (position == null)
 			return null;
-			
-		ItemStack sensorLocationCard = getItemCard();
-		if (sensorLocationCard == null)
+
+		ItemStack newCard = getItemCard();
+		if (newCard == null)
 			return null;
 
-		ItemStackHelper.setCoordinates(sensorLocationCard, position);
-		return sensorLocationCard;
+		ItemStackHelper.setCoordinates(newCard, position);
+		return newCard;
 	}
 
 	protected abstract BlockPos getTargetCoordinates(World world, BlockPos pos, ItemStack stack);

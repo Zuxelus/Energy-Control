@@ -1,8 +1,11 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
 import ic2.api.tile.IEnergyStorage;
+import micdoodle8.mods.galacticraft.api.power.EnergySource;
+import micdoodle8.mods.galacticraft.api.power.IEnergyHandlerGC;
+import micdoodle8.mods.galacticraft.api.transmission.NetworkType;
+import micdoodle8.mods.galacticraft.api.transmission.tile.IElectrical;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -12,8 +15,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Optional;
 
-public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable, IEnergyStorage {
+@Optional.InterfaceList({ @Optional.Interface(iface = "micdoodle8.mods.galacticraft.api.power.IEnergyHandlerGC", modid = "galacticraftcore"),
+	@Optional.Interface(iface = "micdoodle8.mods.galacticraft.api.transmission.tile.IElectrical", modid = "galacticraftcore") })
+public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable, IEnergyStorage, IEnergyHandlerGC, IElectrical {
 	public static final int TIER = 5;
 	public static final int CAPACITY = 400000000;
 	public static final int OUTPUT = 8192;
@@ -36,7 +42,7 @@ public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable
 	public void setRedstoneMode(byte value) {
 		byte old = redstoneMode;
 		redstoneMode = value;
-		if (worldObj != null && !worldObj.isRemote && redstoneMode != old) 
+		if (worldObj!= null && !worldObj.isRemote && redstoneMode != old) 
 			notifyBlockUpdate();
 	}
 
@@ -71,11 +77,9 @@ public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable
 	public void onServerMessageReceived(NBTTagCompound tag) { 
 		if (!tag.hasKey("type"))
 			return;
-		switch (tag.getInteger("type")) {
-		case 1:
+		if (tag.getInteger("type") == 1) {
 			if (tag.hasKey("value"))
 				setRedstoneMode((byte) tag.getDouble("value"));
-			break;
 		}
 	}
 
@@ -83,11 +87,9 @@ public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable
 	public void onClientMessageReceived(NBTTagCompound tag) {
 		if (!tag.hasKey("type"))
 			return;
-		switch (tag.getInteger("type")) {
-		case 1:
+		if (tag.getInteger("type") == 1) {
 			if (tag.hasKey("value"))
 				energy = tag.getDouble("value");
-			break;
 		}
 	}
 
@@ -137,23 +139,10 @@ public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable
 	public void update() {
 		if (worldObj.isRemote)
 			return;
-		
+
 		onLoad();
-		ItemStack stack = getStackInSlot(SLOT_DISCHARGER);
-		if (stack != null && energy < CAPACITY && stack.getItem() instanceof IElectricItem) {
-			IElectricItem ielectricitem = (IElectricItem) stack.getItem();
-			if (ielectricitem.canProvideEnergy(stack))
-				energy += ElectricItem.manager.discharge(stack, CAPACITY - energy, TIER, false, false, false);
-		}
-		stack = getStackInSlot(SLOT_CHARGER);
-		if (stack != null && energy > 0 && stack.getItem() instanceof IElectricItem) {
-			IElectricItem item = (IElectricItem) stack.getItem();
-			int tier = item.getTier(stack);
-			double amount = ElectricItem.manager.charge(stack, Double.POSITIVE_INFINITY, tier, true, true);
-			amount = Math.min(amount, energy);
-			if (amount > 0)
-				energy -= ElectricItem.manager.charge(stack, amount, tier, false, false);
-		}
+		handleDischarger(SLOT_DISCHARGER);
+		handleCharger(SLOT_CHARGER);
 		updateState();
 	}
 
@@ -173,11 +162,6 @@ public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable
 		return oldState.getBlock() != newSate.getBlock();
 	}
 
-	private void notifyBlockUpdate() {
-		IBlockState iblockstate = worldObj.getBlockState(pos);
-		worldObj.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
-	}
-
 	// Inventory
 	@Override
 	public int getSizeInventory() {
@@ -194,9 +178,7 @@ public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable
 		if (!(stack.getItem() instanceof IElectricItem))
 				return false;
 		IElectricItem item = (IElectricItem) stack.getItem();
-		if ((item.canProvideEnergy(stack) || slot == SLOT_CHARGER) && item.getTier(stack) <= TIER)
-			return true;
-		return false;
+		return (item.canProvideEnergy(stack) || slot == SLOT_CHARGER) && item.getTier(stack) <= TIER;
 	}
 
 	// IEnergyStorage
@@ -228,5 +210,77 @@ public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable
 	@Override
 	public boolean isTeleporterCompatible(EnumFacing side) {
 		return true;
+	}
+
+	// IEnergyHandlerGC
+	@Override
+	@Optional.Method(modid = "galacticraftcore")
+	public float receiveEnergyGC(EnergySource from, float amount, boolean simulate) {
+		float energyReceived = (float) Math.min(capacity - energy, amount);
+		if (!simulate)
+			energy += energyReceived;
+		return energyReceived;
+	}
+
+	@Override
+	@Optional.Method(modid = "galacticraftcore")
+	public float extractEnergyGC(EnergySource from, float amount, boolean simulate) {
+		return 0;
+	}
+
+	@Override
+	@Optional.Method(modid = "galacticraftcore")
+	public boolean nodeAvailable(EnergySource from) {
+		return true;
+	}
+
+	@Override
+	@Optional.Method(modid = "galacticraftcore")
+	public float getEnergyStoredGC(EnergySource from) {
+		return (float) energy;
+	}
+
+	@Override
+	@Optional.Method(modid = "galacticraftcore")
+	public float getMaxEnergyStoredGC(EnergySource from) {
+		return (float) capacity;
+	}
+
+	@Override
+	@Optional.Method(modid = "galacticraftcore")
+	public boolean canConnect(EnumFacing direction, NetworkType type) {
+		return direction != facing;
+	}
+
+	@Override
+	@Optional.Method(modid = "galacticraftcore")
+	public float receiveElectricity(EnumFacing from, float receive, int tierProduced, boolean doReceive) {
+		if (from == facing)
+			return 0;
+		return receiveEnergyGC(null, receive, !doReceive);
+	}
+
+	@Override
+	@Optional.Method(modid = "galacticraftcore")
+	public float provideElectricity(EnumFacing from, float request, boolean doProvide) {
+		return extractEnergyGC(null, request, !doProvide);
+	}
+
+	@Override
+	@Optional.Method(modid = "galacticraftcore")
+	public float getRequest(EnumFacing direction) {
+		return (float) (capacity - energy);
+	}
+
+	@Override
+	@Optional.Method(modid = "galacticraftcore")
+	public float getProvide(EnumFacing direction) {
+		return 0;
+	}
+
+	@Override
+	@Optional.Method(modid = "galacticraftcore")
+	public int getTierGC() {
+		return 3;
 	}
 }

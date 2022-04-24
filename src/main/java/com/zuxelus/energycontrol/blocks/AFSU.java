@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.tileentities.TileEntityAFSU;
-import com.zuxelus.energycontrol.tileentities.TileEntityInventory;
+import com.zuxelus.zlib.blocks.FacingBlock;
+import com.zuxelus.zlib.tileentities.TileEntityFacing;
+import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -19,7 +21,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -27,17 +28,13 @@ import net.minecraft.world.World;
 public class AFSU extends FacingBlock {
 
 	@Override
-	public TileEntity createNewTileEntity(World world, int meta) {
-		TileEntityAFSU te = new TileEntityAFSU();
-		te.setFacing(meta);
-		return te;
+	protected TileEntityFacing createTileEntity() {
+		return new TileEntityAFSU();
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
-		if (!world.isRemote)
-			player.openGui(EnergyControl.instance, BlockDamages.DAMAGE_AFSU, world, pos.getX(), pos.getY(), pos.getZ());
-		return true;
+	protected int getBlockGuiId() {
+		return BlockDamages.DAMAGE_AFSU;
 	}
 
 	@Override
@@ -64,17 +61,9 @@ public class AFSU extends FacingBlock {
 	}
 
 	@Override
-	public void breakBlock(World world, BlockPos pos, IBlockState state) {
-		TileEntity te = world.getTileEntity(pos);
-		if (te instanceof TileEntityInventory)
-			((TileEntityInventory)te).dropItems(world, pos);
-		super.breakBlock(world, pos, state);
-	}
-
-	@Override
 	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
 		List<ItemStack> drops = new ArrayList<ItemStack>();
-		drops.add(CrossModLoader.ic2.getItemStack("mfsu"));
+		drops.add(CrossModLoader.getCrossMod(ModIDs.IC2).getItemStack("mfsu"));
 		return drops;
 	}
 
@@ -87,7 +76,7 @@ public class AFSU extends FacingBlock {
 	}
 
 	@Override
-	public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> items) {
+	public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> items) {
 		items.add(getStackwithEnergy(0));
 		items.add(getStackwithEnergy(TileEntityAFSU.CAPACITY));
 	}

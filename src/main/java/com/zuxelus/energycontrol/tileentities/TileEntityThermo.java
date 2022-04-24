@@ -1,10 +1,12 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import com.zuxelus.energycontrol.EnergyControlConfig;
 import com.zuxelus.energycontrol.blocks.RemoteThermo;
 import com.zuxelus.energycontrol.blocks.ThermalMonitor;
-import com.zuxelus.energycontrol.utils.ReactorHelper;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.zlib.tileentities.ITilePacketHandler;
+import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
-import ic2.api.reactor.IReactor;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
@@ -29,7 +31,7 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 		invertRedstone = false;
 		heatLevel = 500;
 		updateTicker = 0;
-		tickRate = -1;
+		tickRate = EnergyControlConfig.thermalMonitorRefreshPeriod;
 		status = -1;
 	}
 
@@ -88,11 +90,7 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 
 	@Override
 	public SPacketUpdateTileEntity getUpdatePacket() {
-		NBTTagCompound tag = new NBTTagCompound();
-		tag = writeProperties(tag);
-		tag.setInteger("status", status);
-		tag.setBoolean("poweredBlock", poweredBlock);
-		return new SPacketUpdateTileEntity(getPos(), 0, tag);
+		return new SPacketUpdateTileEntity(getPos(), 0, getUpdateTag());
 	}
 
 	@Override
@@ -153,37 +151,14 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 			return;
 	
 		if (updateTicker-- > 0)
-				return;
+			return;
 		updateTicker = tickRate;
 		checkStatus();
 	}
-	
 
 	protected void checkStatus() {
-		int newStatus;
-		IReactor reactor = ReactorHelper.getReactorAround(worldObj, pos);
-		if (reactor == null)
-			reactor = ReactorHelper.getReactor3x3(worldObj, pos);
-
-		if (reactor != null) {
-			if (tickRate == -1) {
-				tickRate = reactor.getTickRate() / 2;
-
-				if (tickRate == 0)
-					tickRate = 1;
-
-				updateTicker = tickRate;
-			}
-
-			if (reactor.getHeat() >= heatLevel)// Normally mappedHeatLevel
-				newStatus = 1;
-			else
-				newStatus = 0;
-
-		} else {
-			int heat = ReactorHelper.getReactorHeat(worldObj, pos);
-			newStatus = heat == -1 ? -2 : heat >= heatLevel ? 1 : 0;
-		}
+		int heat = CrossModLoader.getReactorHeat(worldObj, pos);
+		int newStatus = heat == -1 ? -2 : heat >= heatLevel ? 1 : 0;
 
 		if (newStatus != status) {
 			status = newStatus;

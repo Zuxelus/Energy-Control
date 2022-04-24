@@ -3,17 +3,15 @@ package com.zuxelus.energycontrol.renderers;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanelExtender;
-
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 
 public class TEAdvancedInfoPanelExtenderRenderer extends TileEntitySpecialRenderer<TileEntityAdvancedInfoPanelExtender> {
-	private static final ResourceLocation TEXTUREOFF[];
-	private static final ResourceLocation TEXTUREON[];
-	private static final CubeRenderer model[];
+	private static final ResourceLocation[] TEXTUREOFF;
+	private static final ResourceLocation[] TEXTUREON;
+	private static final CubeRenderer[] model;
 
 	static {
 		TEXTUREOFF = new ResourceLocation[16];
@@ -66,7 +64,9 @@ public class TEAdvancedInfoPanelExtenderRenderer extends TileEntitySpecialRender
 			if (color > 15 || color < 0)
 				color = 6;
 		}
-		if (te.getPowered())
+		if (destroyStage > -1)
+			bindTexture(DESTROY_STAGES[destroyStage]);
+		else if (te.getPowered())
 			bindTexture(TEXTUREON[color]);
 		else
 			bindTexture(TEXTUREOFF[color]);
@@ -76,14 +76,21 @@ public class TEAdvancedInfoPanelExtenderRenderer extends TileEntitySpecialRender
 		if (thickness < 1 || thickness > 16)
 			thickness = 16;
 		int rotateHor = te.getRotateHor() / 7;
-		int rotateVert = te.getRotateVert() / 7; 
-		Screen screen = te.getScreen();
-		if (screen != null) {
-			if (thickness == 16 && rotateHor == 0 && rotateVert == 0)
+		int rotateVert = te.getRotateVert() / 7;
+
+		if (thickness == 16 && rotateHor == 0 && rotateVert == 0) {
+			if (destroyStage > -1)
+				TileEntityInfoPanelRenderer.DESTROY.render(0.03125F);
+			else
 				model[textureId].render(0.03125F);
-			else {
+		} else {
+			Screen screen = te.getScreen();
+			if (screen != null) {
 				RotationOffset offset = new RotationOffset(thickness * 2, rotateHor, rotateVert);
-				new CubeRenderer(textureId / 4 * 32 + 64, textureId % 4 * 32 + 64, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation())).render(0.03125F);
+				if (destroyStage > -1)
+					new CubeRenderer(0.0F, 0.0F, 0.0F, 32, 32, 32, 32, 32, 0, 0, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation())).render(0.03125F);
+				else
+					new CubeRenderer(textureId / 4 * 32 + 64, textureId % 4 * 32 + 64, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation())).render(0.03125F);
 			}
 		}
 		GlStateManager.popMatrix();

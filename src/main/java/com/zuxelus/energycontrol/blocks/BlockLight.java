@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.Map;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 
 import ic2.api.tile.IWrenchable;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -23,7 +23,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Optional;
 
+@Optional.Interface(modid = ModIDs.IC2, iface = "ic2.api.tile.IWrenchable")
 public class BlockLight extends Block implements IWrenchable {
 	public static final int DAMAGE_WHITE_OFF = 0;
 	public static final int DAMAGE_WHITE_ON = 1;
@@ -37,10 +39,10 @@ public class BlockLight extends Block implements IWrenchable {
 
 	public BlockLight() {
 		super(Material.REDSTONE_LIGHT);
-		blocks = new HashMap<Integer, Boolean>();
-		this.setHardness(0.3F);
-		this.setCreativeTab(EnergyControl.creativeTab);
+		setHardness(0.3F);
 		setSoundType(SoundType.GLASS);
+		setCreativeTab(EnergyControl.creativeTab);
+		blocks = new HashMap<>();
 		register(DAMAGE_WHITE_OFF, false);
 		register(DAMAGE_WHITE_ON, true);
 		register(DAMAGE_ORANGE_OFF, false);
@@ -53,7 +55,7 @@ public class BlockLight extends Block implements IWrenchable {
 
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, new IProperty[] { TYPE });
+		return new BlockStateContainer(this, TYPE);
 	}
 
 	@Override
@@ -126,6 +128,7 @@ public class BlockLight extends Block implements IWrenchable {
 		return true;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public List<ItemStack> getWrenchDrops(World world, BlockPos pos, IBlockState state, TileEntity te, EntityPlayer player, int fortune) {
 		return getDrops(world, pos, state, 1);

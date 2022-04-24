@@ -1,17 +1,18 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.EnergyControlConfig;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.blocks.RangeTrigger;
-import com.zuxelus.energycontrol.containers.ISlotItemFilter;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
-
+import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
+import com.zuxelus.zlib.tileentities.ITilePacketHandler;
+import com.zuxelus.zlib.tileentities.TileEntityInventory;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -21,10 +22,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class TileEntityRangeTrigger extends TileEntityInventory implements ITickable, ISlotItemFilter, ITilePacketHandler {
-
 	public static final int SLOT_CARD = 0;
 	public static final int SLOT_UPGRADE = 1;
-	private static final int LOCATION_RANGE = 8;
 
 	private static final int STATE_UNKNOWN = 0;
 	private static final int STATE_PASSIVE = 1;
@@ -43,7 +42,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 	public TileEntityRangeTrigger() {
 		super("tile.range_trigger.name");
 		init = false;
-		tickRate = EnergyControl.config.rangeTriggerRefreshPeriod;
+		tickRate = EnergyControlConfig.rangeTriggerRefreshPeriod;
 		updateTicker = tickRate;
 		status = -1;
 		invertRedstone = false;
@@ -70,8 +69,8 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 			Block block = iblockstate.getBlock();
 			if (block instanceof RangeTrigger) {
 				IBlockState newState = block.getDefaultState()
-						.withProperty(((RangeTrigger) block).FACING, iblockstate.getValue(((RangeTrigger) block).FACING))
-						.withProperty(((RangeTrigger) block).STATE, RangeTrigger.EnumState.getState(status));
+						.withProperty(BlockHorizontal.FACING, iblockstate.getValue(BlockHorizontal.FACING))
+						.withProperty(RangeTrigger.STATE, RangeTrigger.EnumState.getState(status));
 				worldObj.setBlockState(pos, newState, 3);
 			}
 			notifyBlockUpdate();
@@ -133,10 +132,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 
 	@Override
 	public SPacketUpdateTileEntity getUpdatePacket() {
-		NBTTagCompound tag = new NBTTagCompound();
-		tag = writeProperties(tag);
-		tag.setBoolean("poweredBlock", poweredBlock);
-		return new SPacketUpdateTileEntity(getPos(), 0, tag);
+		return new SPacketUpdateTileEntity(getPos(), 0, getUpdateTag());
 	}
 
 	@Override
@@ -192,30 +188,17 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 		super.markDirty();
 		if (worldObj == null || worldObj.isRemote)
 			return;
-		
+
 		int status = STATE_UNKNOWN;
 		ItemStack card = getStackInSlot(SLOT_CARD);
-		if (card != null) {
-			Item item = card.getItem();
-			if (item instanceof ItemCardMain) {
-				ItemCardReader reader = new ItemCardReader(card);
-				CardState state = ItemCardMain.updateCardNBT(worldObj, pos, reader, getStackInSlot(SLOT_UPGRADE));
-				if (state == CardState.OK) {
-					double min = Math.min(levelStart, levelEnd);
-					double max = Math.max(levelStart, levelEnd);
-					double cur = reader.getDouble("storage");
-
-					if (cur > max) {
-						status = STATE_ACTIVE;
-					} else if (cur < min) {
-						status = STATE_PASSIVE;
-					} else if (status == STATE_UNKNOWN) {
-						status = STATE_PASSIVE;
-					} else
-						status = STATE_PASSIVE;
-				} else
-					status = STATE_UNKNOWN;
-			}
+		if (ItemCardMain.isCard(card)) {
+			ItemCardReader reader = new ItemCardReader(card);
+			CardState state = ItemCardMain.updateCardNBT(card, worldObj, pos, reader, getStackInSlot(SLOT_UPGRADE));
+			if (state == CardState.OK) {
+				double cur = reader.getDouble("storage");
+				status = cur > Math.max(levelStart, levelEnd) || cur < Math.min(levelStart, levelEnd) ? STATE_ACTIVE : STATE_PASSIVE;
+			} else
+				status = STATE_UNKNOWN;
 		}
 		setStatus(status);
 	}
@@ -225,7 +208,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 		Block block = iblockstate.getBlock();
 		if (!(block instanceof RangeTrigger))
 			return;
-		boolean newValue = status < 1 ? false : status == 1 ? !invertRedstone : invertRedstone;
+		boolean newValue = status >= 1 && (status == 1 != invertRedstone);
 		if (poweredBlock != newValue) {
 			poweredBlock = newValue;
 			worldObj.notifyNeighborsOfStateChange(pos, block);
@@ -245,13 +228,10 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 	}
 
 	@Override
-	public boolean isItemValid(int slotIndex, ItemStack itemstack) { // ISlotItemFilter
-		switch (slotIndex) {
-		case SLOT_CARD:
-			return itemstack.getItem() instanceof ItemCardMain && (itemstack.getItemDamage() == ItemCardType.CARD_ENERGY
-					|| itemstack.getItemDamage() == ItemCardType.CARD_ENERGY_ARRAY);
-		default:
-			return itemstack.getItem() instanceof ItemUpgrade && itemstack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE;
-		}
+	public boolean isItemValid(int slotIndex, ItemStack stack) { // ISlotItemFilter
+		if (slotIndex == SLOT_CARD)
+			return stack.getItem() instanceof ItemCardMain && (stack.getItemDamage() == ItemCardType.CARD_ENERGY
+					|| stack.getItemDamage() == ItemCardType.CARD_ENERGY_ARRAY);
+		return stack.getItem() instanceof ItemUpgrade && stack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE;
 	}
 }

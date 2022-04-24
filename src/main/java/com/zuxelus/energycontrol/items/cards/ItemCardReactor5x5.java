@@ -8,15 +8,18 @@ import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemCardReactor5x5 extends ItemCardBase {
+
 	public ItemCardReactor5x5() {
 		super(ItemCardType.CARD_REACTOR5X5, "card_reactor_5x5");
 	}
@@ -27,68 +30,48 @@ public class ItemCardReactor5x5 extends ItemCardBase {
 		if (target == null) 
 			return CardState.NO_TARGET;
 
-		return CrossModLoader.ic2.updateCardReactor5x5(world, reader, target);
+		TileEntity te = world.getTileEntity(target);
+		NBTTagCompound tag = CrossModLoader.getCrossMod(ModIDs.IC2).getReactor5x5Data(te);
+		if (tag == null)
+			return CardState.NO_TARGET;
+		reader.reset();
+		reader.copyFrom(tag);
+		return CardState.OK;
 	}
 
 	@Override
-	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
-		if ((displaySettings & 2) > 0)
+		if ((settings & 2) > 0)
 			addHeat(result, reader.getInt("heat"), reader.getInt("maxHeat"), showLabels);
-		if ((displaySettings & 4) > 0)
+		if ((settings & 4) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelMaxHeat", reader.getInt("maxHeat"), showLabels));
-		if ((displaySettings & 8) > 0)
+		if ((settings & 8) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelMelting", reader.getInt("maxHeat") * 85 / 100, showLabels));
-		if ((displaySettings & 16) > 0)
+		if ((settings & 16) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelOutputHeat", reader.getInt("output"), showLabels));
 		int timeLeft = reader.getInt("timeLeft");
-		if ((displaySettings & 32) > 0) {
+		if ((settings & 32) > 0) {
 			int hours = timeLeft / 3600;
 			int minutes = (timeLeft % 3600) / 60;
 			int seconds = timeLeft % 60;
 			result.add(new PanelString("msg.ec.InfoPanelTimeRemaining", String.format("%d:%02d:%02d", hours, minutes, seconds), showLabels));
 		}
-
-		int txtColor = 0;
-		if ((displaySettings & 1) > 0) {
-			String text;
-			boolean reactorPowered = reader.getBoolean("reactorPowered");
-			if (reactorPowered) {
-				txtColor = 0x00ff00;
-				text = I18n.format("msg.ec.InfoPanelOn");
-			} else {
-				txtColor = 0xff0000;
-				text = I18n.format("msg.ec.InfoPanelOff");
-			}
-			if (result.size() > 0) {
-				PanelString firstLine = result.get(0);
-				firstLine.textRight = text;
-				firstLine.colorRight = txtColor;
-			} else {
-				PanelString line = new PanelString();
-				line.textLeft = text;
-				line.colorLeft = txtColor;
-				result.add(line);
-			}
-		}
+		if ((settings & 1) > 0)
+			addOnOff(result, isServer, reader.getBoolean("reactorPoweredB"));
 		return result;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList() {
-		List<PanelSetting> result = new ArrayList<PanelSetting>(6);
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOnOff"), 1, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelHeat"), 2, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMaxHeat"), 4, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMelting"), 8, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOutput"), 16, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelTimeRemaining"), 32, damage));
+		List<PanelSetting> result = new ArrayList<>(6);
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOnOff"), 1));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelHeat"), 2));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMaxHeat"), 4));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMelting"), 8));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOutput"), 16));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelTimeRemaining"), 32));
 		return result;
-	}
-
-	@Override
-	public int getKitFromCard() {
-		return ItemCardType.KIT_REACTOR;
 	}
 }

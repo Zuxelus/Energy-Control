@@ -1,17 +1,12 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.utils.StringUtils;
-
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -19,10 +14,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ItemCardEnergyArray extends ItemCardBase {
 	private static final int STATUS_NOT_FOUND = Integer.MIN_VALUE;
-	private static final int STATUS_OUT_OF_RANGE = Integer.MIN_VALUE + 1;	
-	
+	private static final int STATUS_OUT_OF_RANGE = Integer.MIN_VALUE + 1;
+
 	public ItemCardEnergyArray() {
 		super(ItemCardType.CARD_ENERGY_ARRAY, "card_energy_array");
 	}
@@ -44,7 +42,7 @@ public class ItemCardEnergyArray extends ItemCardBase {
 			if (Math.abs(dx) <= range && Math.abs(dy) <= range && Math.abs(dz) <= range) {
 				TileEntity te = world.getTileEntity(target);
 				if (te != null) {
-					NBTTagCompound tag = CrossModLoader.ic2.getEnergyData(te);
+					NBTTagCompound tag = CrossModLoader.getEnergyData(te);
 					if (tag != null) {
 						double stored = tag.getDouble("storage");
 						double capacity = tag.getDouble("maxStorage");
@@ -71,16 +69,16 @@ public class ItemCardEnergyArray extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		double totalEnergy = 0;
 		double totalStorage = 0;
-		boolean showEach = (displaySettings & 1) > 0;
-		boolean showSummary = (displaySettings & 2) > 0;
-		boolean showEnergy = (displaySettings & 4) > 0;
-		boolean showFree = (displaySettings & 8) > 0;
-		boolean showStorage = (displaySettings & 16) > 0;
-		boolean showPercentage = (displaySettings & 32) > 0;
+		boolean showEach = (settings & 1) > 0;
+		boolean showSummary = (settings & 2) > 0;
+		boolean showEnergy = (settings & 4) > 0;
+		boolean showFree = (settings & 8) > 0;
+		boolean showStorage = (settings & 16) > 0;
+		boolean showPercentage = (settings & 32) > 0;
 		for (int i = 0; i < reader.getCardCount(); i++) {
 			int energy = reader.getInt(String.format("_%denergy", i));
 			int storage = reader.getInt(String.format("_%dmaxStorage", i));
@@ -140,23 +138,18 @@ public class ItemCardEnergyArray extends ItemCardBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList() {
-		List<PanelSetting> result = new ArrayList<PanelSetting>(6);
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEachCard"), 1,damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 4,damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelFree"), 8, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelStorage"), 16, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelPercentage"), 32, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelTotal"), 2,damage));
+		List<PanelSetting> result = new ArrayList<>(6);
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEachCard"), 1));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 4));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelFree"), 8));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelStorage"), 16));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelPercentage"), 32));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelTotal"), 2));
 		return result;
 	}
 
 	@Override
 	public boolean isRemoteCard() {
 		return false;
-	}
-
-	@Override
-	public int getKitFromCard() {
-		return ItemCardType.KIT_ENERGY;
 	}
 }

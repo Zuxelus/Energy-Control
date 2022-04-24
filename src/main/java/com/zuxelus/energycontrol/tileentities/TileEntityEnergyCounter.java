@@ -1,7 +1,7 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.info.Info;
@@ -27,24 +27,20 @@ public class TileEntityEnergyCounter extends TileEntityEnergyStorage {
 	public void onServerMessageReceived(NBTTagCompound tag) {
 		if (!tag.hasKey("type"))
 			return;
-		switch (tag.getInteger("type")) {
-		case 1:
-			if (tag.hasKey("value"))
-				counter = tag.getInteger("value");
-			break;
-		}
+        if (tag.getInteger("type") == 1) {
+            if (tag.hasKey("value"))
+                counter = tag.getInteger("value");
+        }
 	}
 
 	@Override
 	public void onClientMessageReceived(NBTTagCompound tag) {
 		if (!tag.hasKey("type"))
 			return;
-		switch (tag.getInteger("type")) {
-		case 1:
-			if (tag.hasKey("value"))
-				counter = tag.getDouble("value");
-			break;
-		}
+        if (tag.getInteger("type") == 1) {
+            if (tag.hasKey("value"))
+                counter = tag.getDouble("value");
+        }
 	}
 
 	@Override
@@ -113,9 +109,9 @@ public class TileEntityEnergyCounter extends TileEntityEnergyStorage {
 
 	private void refreshData() {
 		int upgradeCountTransormer = 0;
-		ItemStack itemStack = getStackInSlot(0);
-		if (itemStack != null && itemStack.isItemEqual(CrossModLoader.ic2.getItemStack("transformer")))
-			upgradeCountTransormer = itemStack.stackSize;
+		ItemStack stack = getStackInSlot(0);
+		if (stack != null && stack.isItemEqual(CrossModLoader.getCrossMod(ModIDs.IC2).getItemStack("transformer")))
+			upgradeCountTransormer = stack.stackSize;
 		upgradeCountTransormer = Math.min(upgradeCountTransormer, 4);
 		if (worldObj != null && !worldObj.isRemote) {
 			output = BASE_PACKET_SIZE * (int) Math.pow(4D, upgradeCountTransormer);
@@ -147,7 +143,13 @@ public class TileEntityEnergyCounter extends TileEntityEnergyStorage {
 	}
 
 	@Override
-	public boolean isItemValid(int slotIndex, ItemStack itemstack) { // ISlotItemFilter
-		return itemstack.isItemEqual(CrossModLoader.ic2.getItemStack("transformer"));
+	public boolean isItemValid(int slotIndex, ItemStack stack) { // ISlotItemFilter
+		return stack.isItemEqual(CrossModLoader.getCrossMod(ModIDs.IC2).getItemStack("transformer"));
+	}
+
+	// IEnergySource
+	@Override
+	public double getOfferedEnergy() {
+		return allowEmit ? energy >= output ? output : energy : 0.0D; 
 	}
 }

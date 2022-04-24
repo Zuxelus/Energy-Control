@@ -9,10 +9,8 @@ import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -24,13 +22,14 @@ public class ItemCardTime extends ItemCardBase {
 
 	@Override
 	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
+		reader.setInt("time", (int) ((world.getWorldTime() + 6000) % 24000));
 		return CardState.OK;
 	}
 
 	@Override
-	public List<PanelString> getStringData(int settings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
-		int time = (int) ((FMLClientHandler.instance().getClient().theWorld.getWorldTime() + 6000) % 24000);
+		int time = reader.getInt("time");
 		int hours = time / 1000;
 		int minutes = (time % 1000) * 6 / 100;
 		String suffix = "";
@@ -47,18 +46,13 @@ public class ItemCardTime extends ItemCardBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList() {
-		List<PanelSetting> result = new ArrayList<PanelSetting>(1);
-		result.add(new PanelSetting(I18n.format("msg.ec.cb24h"), 1, damage));
+		List<PanelSetting> result = new ArrayList<>(1);
+		result.add(new PanelSetting(I18n.format("msg.ec.cb24h"), 1));
 		return result;
 	}
 
 	@Override
 	public boolean isRemoteCard() {
 		return false;
-	}
-
-	@Override
-	public int getKitFromCard() {
-		return -1;
 	}
 }

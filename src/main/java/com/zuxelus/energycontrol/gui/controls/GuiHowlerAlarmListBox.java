@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
+import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 
@@ -21,8 +22,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiHowlerAlarmListBox extends GuiButton {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(
-			"energycontrol:textures/gui/gui_howler_alarm.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_howler_alarm.png");
 
 	private static final int BASIC_X_OFFSET = 2;
 	private static final int BASIC_Y_OFFSET = 2;
@@ -144,14 +144,14 @@ public class GuiHowlerAlarmListBox extends GuiButton {
 		drawTexturedModalRect(sliderX, sliderY, 131, 16, SCROLL_WIDTH - 1, 1);
 
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer vertexbuffer = tessellator.getBuffer();
-		vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-		vertexbuffer.pos((sliderX), sliderY + sliderHeight - 1, zLevel).tex(131 / 256F, (18) / 256F).endVertex();
-		vertexbuffer.pos(sliderX + SCROLL_WIDTH - 1, sliderY + sliderHeight - 1, zLevel).tex(
+		VertexBuffer bufferbuilder = tessellator.getBuffer();
+		bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+		bufferbuilder.pos((sliderX), sliderY + sliderHeight - 1, zLevel).tex(131 / 256F, (18) / 256F).endVertex();
+		bufferbuilder.pos(sliderX + SCROLL_WIDTH - 1, sliderY + sliderHeight - 1, zLevel).tex(
 				(131 + SCROLL_WIDTH - 1) / 256F, (18) / 256F).endVertex();
-		vertexbuffer.pos(sliderX + SCROLL_WIDTH - 1, sliderY + 1, zLevel).tex((131 + SCROLL_WIDTH - 1) / 256F,
+		bufferbuilder.pos(sliderX + SCROLL_WIDTH - 1, sliderY + 1, zLevel).tex((131 + SCROLL_WIDTH - 1) / 256F,
 				(17) / 256F).endVertex();
-		vertexbuffer.pos((sliderX), sliderY + 1, zLevel).tex(131 / 256F, (17) / 256F).endVertex();
+		bufferbuilder.pos((sliderX), sliderY + 1, zLevel).tex(131 / 256F, (17) / 256F).endVertex();
 		tessellator.draw();
 
 		drawTexturedModalRect(sliderX, sliderY + sliderHeight - 1, 131, 19, SCROLL_WIDTH - 1, 1);

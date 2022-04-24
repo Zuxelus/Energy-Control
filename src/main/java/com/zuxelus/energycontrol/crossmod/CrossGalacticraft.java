@@ -3,34 +3,29 @@ package com.zuxelus.energycontrol.crossmod;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.zuxelus.energycontrol.api.ItemStackHelper;
-import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.init.ModItems;
+import com.zuxelus.energycontrol.items.ItemComponent;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
+import com.zuxelus.energycontrol.recipes.Recipes;
+import com.zuxelus.energycontrol.tileentities.TileEntityAFSU;
+import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import micdoodle8.mods.galacticraft.api.power.IEnergyHandlerGC;
 import micdoodle8.mods.galacticraft.core.GCBlocks;
 import micdoodle8.mods.galacticraft.core.wrappers.IFluidHandlerWrapper;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.FluidTankProperties;
 
 public class CrossGalacticraft extends CrossModBase {
 
-	public CrossGalacticraft() {
-		super("galacticraftplanets", null, null);
-	}
-
+	@Override
 	public NBTTagCompound getEnergyData(TileEntity te) {
-		if (!modLoaded)
+		if (te instanceof TileEntityAFSU)
 			return null;
-
 		if (te instanceof IEnergyHandlerGC) {
 			NBTTagCompound tag = new NBTTagCompound();
 			IEnergyHandlerGC storage = (IEnergyHandlerGC) te;
@@ -42,37 +37,29 @@ public class CrossGalacticraft extends CrossModBase {
 		return null;
 	}
 
-	public ItemStack getEnergyCard(World world, BlockPos pos) {
-		TileEntity te = world.getTileEntity(pos);
-		if (te instanceof IEnergyHandlerGC) {
-			ItemStack sensorLocationCard = new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_ENERGY);
-			ItemStackHelper.setCoordinates(sensorLocationCard, pos);
-			return sensorLocationCard;
-		}
-		return null;
-	}
-
-	public FluidTankProperties[] getAllTanks(TileEntity te) {
+	@Override
+	public List<FluidInfo> getAllTanks(TileEntity te) {
 		if (te instanceof IFluidHandlerWrapper) {
 			FluidTankInfo[] info = ((IFluidHandlerWrapper) te).getTankInfo(null);
-			FluidTankProperties[] result = FluidTankProperties.convert(info);
-			if (result.length > 0)
+			List<FluidInfo> result = new ArrayList<>();
+			for (FluidTankInfo tank : info)
+				result.add(new FluidInfo(tank.fluid, tank.capacity));
+			if (result.size() > 0)
 				return result;
-			for (EnumFacing facing : EnumFacing.VALUES)
+			for (EnumFacing facing : EnumFacing.VALUES) {
 				info = ((IFluidHandlerWrapper) te).getTankInfo(facing);
-			return FluidTankProperties.convert(info);
+				for (FluidTankInfo tank : info)
+					result.add(new FluidInfo(tank.fluid, tank.capacity));
+			}
+			return result;
 		}
 		return null;
 	}
 
-	public ItemStack getItemStack(String name) {
-		if (!modLoaded)
-			return null;
-
-		switch (name) {
-		case "aluminum_wire":
-			return new ItemStack(GCBlocks.aluminumWire);
-		}
-		return null;
+	@Override
+	public void loadRecipes() { // 1.10.2 and less
+		Recipes.addShapedRecipe(ModItems.itemKit, ItemCardType.KIT_GALACTICRAFT,
+			new Object[] { "RF", "PB", 'P', Items.PAPER, 'R', "dustRedstone", 'B', GCBlocks.aluminumWire,
+				'F', new ItemStack(ModItems.itemComponent, 1, ItemComponent.RADIO_TRANSMITTER) });
 	}
 }

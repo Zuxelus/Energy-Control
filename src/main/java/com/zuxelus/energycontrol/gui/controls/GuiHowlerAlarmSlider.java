@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.gui.controls;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.EnergyControlConfig;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 
@@ -14,12 +15,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiHowlerAlarmSlider extends GuiButton {
-	private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(
-			"energycontrol:textures/gui/gui_howler_alarm.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_howler_alarm.png");
 
 	public float sliderValue;
 	public boolean dragging;
-	private int minValue = 0;
+	private int minValue;
 	private int maxValue = 256;
 	private int step = 8;
 	private TileEntityHowlerAlarm alarm;
@@ -29,7 +29,7 @@ public class GuiHowlerAlarmSlider extends GuiButton {
 		this.alarm = alarm;
 		dragging = false;
 		if (alarm.getWorld().isRemote)
-			maxValue = EnergyControl.config.maxAlarmRange;
+			maxValue = EnergyControlConfig.maxAlarmRange;
 		int currentRange = alarm.getRange();
 		if (alarm.getWorld().isRemote && currentRange > maxValue)
 			currentRange = maxValue;
@@ -62,7 +62,7 @@ public class GuiHowlerAlarmSlider extends GuiButton {
 	public void drawButton(Minecraft mc, int mouseX, int mouseY) {
 		if (!visible)
 			return;
-		mc.getTextureManager().bindTexture(TEXTURE_LOCATION);
+		mc.getTextureManager().bindTexture(TEXTURE);
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		if (dragging)
 			setSliderPos(mouseX);

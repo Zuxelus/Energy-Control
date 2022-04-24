@@ -1,6 +1,6 @@
 package com.zuxelus.energycontrol;
 
-import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.init.ModItems;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
@@ -20,14 +20,14 @@ public class EnCtrlTab extends CreativeTabs {
 	@SideOnly(Side.CLIENT)
 	public ItemStack getIconItemStack() {
 		if (itemEnergyKit == null)
-			itemEnergyKit = new ItemStack(ItemHelper.itemKit);
+			itemEnergyKit = new ItemStack(ModItems.itemKit);
 		return itemEnergyKit;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public Item getTabIconItem() {
-		return ItemHelper.itemKit;
+		return ModItems.itemKit;
 	}
 
 	@Override

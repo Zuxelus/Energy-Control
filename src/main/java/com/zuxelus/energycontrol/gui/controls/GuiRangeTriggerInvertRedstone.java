@@ -13,8 +13,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiRangeTriggerInvertRedstone extends GuiButton {
-	private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/gui_range_trigger.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_range_trigger.png");
 
 	TileEntityRangeTrigger trigger;
 	private boolean checked;
@@ -32,7 +31,7 @@ public class GuiRangeTriggerInvertRedstone extends GuiButton {
 		if (!visible)
 			return;
 
-		mc.getTextureManager().bindTexture(TEXTURE_LOCATION);
+		mc.getTextureManager().bindTexture(TEXTURE);
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		drawTexturedModalRect(xPosition, yPosition + 1, 176, checked ? 15 : 0, 18, 15);
 	}
@@ -50,7 +49,7 @@ public class GuiRangeTriggerInvertRedstone extends GuiButton {
 		checked = !checked;
 
 		if (trigger.getWorld().isRemote && trigger.getInvertRedstone() != checked) {
-			NetworkHelper.updateSeverTileEntity(trigger.getPos(), 2, checked ? (int) 1 : (int) 0);
+			NetworkHelper.updateSeverTileEntity(trigger.getPos(), 2, checked ? 1 : 0);
 			trigger.setInvertRedstone(checked);
 		}
 		return true;

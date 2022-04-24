@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.gui;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import com.zuxelus.energycontrol.EnergyControl;
@@ -13,10 +12,12 @@ import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class GuiPortablePanel extends GuiContainer {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(
 			EnergyControl.MODID + ":textures/gui/gui_portable_panel.png");
@@ -42,15 +43,15 @@ public class GuiPortablePanel extends GuiContainer {
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		ItemStack stack = te.getStackInSlot(InventoryPortablePanel.SLOT_CARD);
-		if (stack != null && stack.getItem() instanceof ItemCardMain) {
+		if (ItemCardMain.isCard(stack)) {
 			ItemCardReader reader = new ItemCardReader(stack);
 
 			CardState state = reader.getState();
 			List<PanelString> joinedData;
 			if (state != CardState.OK && state != CardState.CUSTOM_ERROR)
-				joinedData = reader.getStateMessage(state);
+				joinedData = ItemCardReader.getStateMessage(state);
 			else
-				joinedData = ItemCardMain.getStringData(Integer.MAX_VALUE, reader, true);
+				joinedData = ItemCardMain.getStringData(Integer.MAX_VALUE, reader, false, true);
 
 			int row = 0;
 			for (PanelString panelString : joinedData) {
@@ -66,30 +67,5 @@ public class GuiPortablePanel extends GuiContainer {
 				row++;
 			}
 		}
-	}
-
-	private List<PanelString> getRemoteCustomMSG() {
-		List<PanelString> result = new LinkedList<PanelString>();
-		PanelString line = new PanelString();
-		line.textCenter = I18n.format("nc.msg.notValid");
-		result.add(line);
-		line = new PanelString();
-		line.textCenter = I18n.format("nc.msg.notValid2");
-		result.add(line);
-		line = new PanelString();
-		line.textCenter = "";
-		result.add(line);
-		line = new PanelString();
-		line.textCenter = I18n.format("nc.msg.notValid3");
-		result.add(line);
-		return result;
-	}
-
-	@Override
-	public void updateScreen() {
-		super.updateScreen();
-
-		if (mc.thePlayer.getHeldItemMainhand() == null)
-			mc.thePlayer.closeScreen();
 	}
 }

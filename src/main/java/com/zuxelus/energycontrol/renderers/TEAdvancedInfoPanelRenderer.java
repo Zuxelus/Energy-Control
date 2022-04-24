@@ -1,22 +1,21 @@
 package com.zuxelus.energycontrol.renderers;
 
-import java.util.List;
-
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
-
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 
+import java.util.List;
+
 public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileEntityAdvancedInfoPanel> {
-	private static final ResourceLocation TEXTUREOFF[];
-	private static final ResourceLocation TEXTUREON[];
-	private static final CubeRenderer model[];
+	private static final ResourceLocation[] TEXTUREOFF;
+	private static final ResourceLocation[] TEXTUREON;
+	private static final CubeRenderer[] model;
 
 	static {
 		TEXTUREOFF = new ResourceLocation[16];
@@ -37,11 +36,11 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		String output = "";
 		if (inputArray.length > 0) {
 			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < inputArray.length; i++) {
-				if (inputArray[i] == null || inputArray[i].isEmpty())
+			for (String s : inputArray) {
+				if (s == null || s.isEmpty())
 					continue;
 				sb.append(glueString);
-				sb.append(inputArray[i]);
+				sb.append(s);
 			}
 			output = sb.toString();
 			if (output.length() > 1)
@@ -85,7 +84,10 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			if (color > 15 || color < 0)
 				color = 6;
 		}
-		if (te.powered)
+
+		if (destroyStage > -1)
+			bindTexture(DESTROY_STAGES[destroyStage]);
+		else if (te.getPowered())
 			bindTexture(TEXTUREON[color]);
 		else
 			bindTexture(TEXTUREOFF[color]);
@@ -99,14 +101,18 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		RotationOffset offset = new RotationOffset(thickness * 2, rotateHor, rotateVert);
 		Screen screen = te.getScreen();
 		if (screen != null) {
-			if (thickness == 16 && rotateHor == 0 && rotateVert == 0)
-				model[textureId].render(0.03125F);
-			else {
-				new CubeRenderer(textureId / 4 * 32 + 64, textureId % 4 * 32 + 64, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation())).render(0.03125F);
-			}
-			if (te.powered) {
-				boolean anyCardFound = false;
-				List<PanelString> joinedData = te.getPanelStringList(te.getShowLabels());
+			if (thickness == 16 && rotateHor == 0 && rotateVert == 0) {
+				if (destroyStage > -1)
+					TileEntityInfoPanelRenderer.DESTROY.render(0.03125F);
+				else
+					model[textureId].render(0.03125F);
+			} else
+				if (destroyStage > -1)
+					new CubeRenderer(0.0F, 0.0F, 0.0F, 32, 32, 32, 32, 32, 0, 0, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation())).render(0.03125F);
+				else
+					new CubeRenderer(textureId / 4 * 32 + 64, textureId % 4 * 32 + 64, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation())).render(0.03125F);
+			if (te.powered && destroyStage == -1) {
+				List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
 				if (joinedData != null)
 					drawText(te, joinedData, thickness, offset);
 			}
@@ -241,8 +247,8 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		double v = (offset.leftTop - offset.leftBottom) / 32;
 		double b = Math.atan(h / displayWidth);
 		double a = Math.atan(Math.cos(b) * v / displayHeight);
-		int i = offset.rotateVert == 0 ? 0 : offset.rotateVert > 0 ? -1 : 1;
-		int j = offset.rotateHor == 0 ? 0 : offset.rotateHor > 0 ? -1 : 1;
+		int i = Integer.compare(0, offset.rotateVert);
+		int j = Integer.compare(0, offset.rotateHor);
 		GlStateManager.translate(displayWidth / 2, displayHeight / 2, 1 + (32 * h - offset.leftTop - offset.leftBottom) / 64);
 		GlStateManager.rotate((float) Math.toDegrees(b), 0.0F, -1.0F, 0.0F);
 		GlStateManager.rotate((float) Math.toDegrees(a), -1.0F, 0.0F, 0.0F);
@@ -252,7 +258,7 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		displayHeight = (float) ((displayHeight - 0.125F) / Math.cos(a));
 		displayWidth = (float) ((displayWidth - 0.125F) / Math.cos(b));
 
-		FontRenderer fontRenderer = getFontRenderer();
+		FontRenderer fontRenderer = getFontRenderer(); 
 		// getMaxWidth
 		int maxWidth = 1;
 		for (PanelString panelString : joinedData) {
@@ -279,12 +285,13 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			offsetY = 0;
 		}
 
+		GlStateManager.disableAlpha();
 		GlStateManager.disableLighting();
 
 		int row = 0;
 		int colorHex = 0x000000;
 		if (panel.getColored())
-			colorHex = panel.getColorTextHex();
+			colorHex = panel.getColorText();
 		for (PanelString panelString : joinedData) {
 			if (panelString.textLeft != null) {
 				fontRenderer.drawString(panelString.textLeft, offsetX - realWidth / 2,

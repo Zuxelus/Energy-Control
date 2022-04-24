@@ -1,19 +1,16 @@
 package com.zuxelus.energycontrol.renderers;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.tileentities.Screen;
+import com.zuxelus.energycontrol.tileentities.TileEntityHoloPanelExtender;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanelExtender;
-
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 
 public class TEInfoPanelExtenderRenderer extends TileEntitySpecialRenderer<TileEntityInfoPanelExtender> {
-	private static final ResourceLocation TEXTUREOFF[];
-	private static final ResourceLocation TEXTUREON[];
-	private static final CubeRenderer model[];
+	private static final ResourceLocation[] TEXTUREOFF;
+	private static final ResourceLocation[] TEXTUREON;
+	private static final CubeRenderer[] model;
 
 	static {
 		TEXTUREOFF = new ResourceLocation[16];
@@ -32,6 +29,8 @@ public class TEInfoPanelExtenderRenderer extends TileEntitySpecialRenderer<TileE
 
 	@Override
 	public void renderTileEntityAt(TileEntityInfoPanelExtender te, double x, double y, double z, float partialTicks, int destroyStage) {
+		if (te instanceof TileEntityHoloPanelExtender)
+			return;
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x, y, z);
 		switch (te.getFacing()) {
@@ -65,12 +64,18 @@ public class TEInfoPanelExtenderRenderer extends TileEntitySpecialRenderer<TileE
 			if (color > 15 || color < 0)
 				color = 2;
 		}
-		if (te.getPowered())
-			bindTexture(TEXTUREON[color]);
-		else
-			bindTexture(TEXTUREOFF[color]);
 
-		model[te.findTexture()].render(0.03125F);
+		if (destroyStage > -1) {
+			bindTexture(DESTROY_STAGES[destroyStage]);
+			TileEntityInfoPanelRenderer.DESTROY.render(0.03125F);
+		} else {
+			if (te.getPowered())
+				bindTexture(TEXTUREON[color]);
+			else
+				bindTexture(TEXTUREOFF[color]);
+
+			model[te.findTexture()].render(0.03125F);
+		}
 		GlStateManager.popMatrix();
 	}
 }

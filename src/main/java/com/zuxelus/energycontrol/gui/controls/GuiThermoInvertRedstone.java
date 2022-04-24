@@ -13,8 +13,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiThermoInvertRedstone extends GuiButton {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/gui_thermal_monitor.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_thermal_monitor.png");
 
 	TileEntityThermo thermo;
 	private boolean checked;
@@ -49,7 +48,7 @@ public class GuiThermoInvertRedstone extends GuiButton {
 			return false;
 		checked = !checked;
 		if (thermo.getWorld().isRemote && thermo.getInvertRedstone() != checked) {
-			NetworkHelper.updateSeverTileEntity(thermo.getPos(), 2, checked ? (int) 1 : (int) 0);
+			NetworkHelper.updateSeverTileEntity(thermo.getPos(), 2, checked ? 1 : 0);
 			thermo.setInvertRedstone(checked);
 		}
 		return true;

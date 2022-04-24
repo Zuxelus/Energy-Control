@@ -1,34 +1,37 @@
 package com.zuxelus.energycontrol.network;
 
-import java.util.List;
-import java.util.Map;
-
-import com.zuxelus.energycontrol.tileentities.TileEntityAverageCounter;
-import com.zuxelus.energycontrol.tileentities.TileEntityEnergyCounter;
-import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
-
+import com.zuxelus.zlib.network.PacketTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IContainerListener;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.relauncher.Side;
+
+import java.util.List;
 
 public class NetworkHelper {
-	public static final int FIELD_DOUBLE = 1;
-	public static final int FIELD_INT = 2;
-	public static final int FIELD_STRING = 3;
-	public static final int FIELD_BOOLEAN = 4;
-	public static final int FIELD_TAG = 5;
-	public static final int FIELD_NULL = 6;
-	public static final int FIELD_LONG = 7;
+	public static SimpleNetworkWrapper network;
+
+	public static void createChannel(String name) {
+		network = NetworkRegistry.INSTANCE.newSimpleChannel(name);
+	}
+
+	public static <REQ extends IMessage, REPLY extends IMessage> void registerClientToServer(Class<? extends IMessageHandler<REQ, REPLY>> handler, Class<REQ> request, int id) {
+		network.registerMessage(handler, request, id, Side.SERVER);
+	}
+
+	public static <REQ extends IMessage, REPLY extends IMessage> void registerServerToClient(Class<? extends IMessageHandler<REQ, REPLY>> handler, Class<REQ> request, int id) {
+		network.registerMessage(handler, request, id, Side.CLIENT);
+	}
 
 	// server
-	private static void sendPacketToAllAround(BlockPos pos, int dist, World world, IMessage packet) {
+	public static void sendPacketToAllAround(World world, BlockPos pos, int dist, IMessage packet) {
 		List<EntityPlayer> players = world.playerEntities;
 		for (EntityPlayer player : players) {
 			if (player instanceof EntityPlayerMP) {
@@ -37,40 +40,9 @@ public class NetworkHelper {
 				double dz = pos.getZ() - player.posZ;
 	
 				if (dx * dx + dy * dy + dz * dz < dist * dist)
-					ChannelHandler.network.sendTo(packet, (EntityPlayerMP)player);
+					network.sendTo(packet, (EntityPlayerMP)player);
 			}
 		}
-	}
-
-	// server
-	public static void setSensorCardField(TileEntity panel, int slot, Map<String, Object> fields) {
-		if (fields == null || fields.isEmpty() || panel == null || !(panel instanceof TileEntityInfoPanel) || slot == -1)
-			return;
-
-		if (panel.getWorld().isRemote)
-			return;
-
-		sendPacketToAllAround(panel.getPos(), 64, panel.getWorld(), new PacketCard(panel.getPos(), slot, fields));
-	}
-
-	// client
-	public static void setCardSettings(ItemStack card, TileEntityInfoPanel panel, Map<String, Object> fields, byte slot) {
-		if (card == null || fields == null || fields.isEmpty() || panel == null)
-			return;
-
-		if (!panel.getWorld().isRemote)
-			return;
-
-		ChannelHandler.network.sendToServer(new PacketClientSensor(panel.getPos(), slot, card.getItem().getClass().getName(), fields));
-	}
-
-	public static void chatMessage(EntityPlayer player, String message) {
-		chatMessage(player, message, 0, 0);
-	}
-
-	public static void chatMessage(EntityPlayer player, String message, int type, int value) {
-		if (player instanceof EntityPlayerMP)
-			ChannelHandler.network.sendTo(new PacketChat(message, type, value), (EntityPlayerMP) player);
 	}
 
 	// server
@@ -80,7 +52,7 @@ public class NetworkHelper {
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setInteger("type", type);
 		tag.setInteger("value", value);
-		ChannelHandler.network.sendTo(new PacketTileEntity(pos, tag), (EntityPlayerMP) crafter);
+		network.sendTo(new PacketTileEntity(pos, tag), (EntityPlayerMP) crafter);
 	}
 
 	public static void updateClientTileEntity(IContainerListener crafter, BlockPos pos, int type, double value) {
@@ -89,13 +61,17 @@ public class NetworkHelper {
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setInteger("type", type);
 		tag.setDouble("value", value);
-		ChannelHandler.network.sendTo(new PacketTileEntity(pos, tag), (EntityPlayerMP) crafter);
+		network.sendTo(new PacketTileEntity(pos, tag), (EntityPlayerMP) crafter);
 	}
 
 	public static void updateClientTileEntity(IContainerListener crafter, BlockPos pos, NBTTagCompound tag) {
 		if (!(crafter instanceof EntityPlayerMP))
 			return;
-		ChannelHandler.network.sendTo(new PacketTileEntity(pos, tag), (EntityPlayerMP) crafter);
+		network.sendTo(new PacketTileEntity(pos, tag), (EntityPlayerMP) crafter);
+	}
+
+	public static void updateClientTileEntity(World world, BlockPos pos, NBTTagCompound tag) {
+		sendPacketToAllAround(world, pos, 64,new PacketTileEntity(pos, tag));
 	}
 
 	// client
@@ -103,17 +79,17 @@ public class NetworkHelper {
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setInteger("type", type);
 		tag.setString("string", string);
-		ChannelHandler.network.sendToServer(new PacketTileEntity(pos, tag));
+		network.sendToServer(new PacketTileEntity(pos, tag));
 	}
 
 	public static void updateSeverTileEntity(BlockPos pos, int type, int value) {
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setInteger("type", type);
 		tag.setInteger("value", value);
-		ChannelHandler.network.sendToServer(new PacketTileEntity(pos, tag));
+		network.sendToServer(new PacketTileEntity(pos, tag));
 	}
 
 	public static void updateSeverTileEntity(BlockPos pos, NBTTagCompound tag) {
-		ChannelHandler.network.sendToServer(new PacketTileEntity(pos, tag));
+		network.sendToServer(new PacketTileEntity(pos, tag));
 	}
 }

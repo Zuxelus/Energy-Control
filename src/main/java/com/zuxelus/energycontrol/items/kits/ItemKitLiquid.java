@@ -1,13 +1,14 @@
 package com.zuxelus.energycontrol.items.kits;
 
-import com.zuxelus.energycontrol.crossmod.LiquidCardHelper;
-import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
+import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
+import net.minecraftforge.fluids.IFluidTank;
 
 public class ItemKitLiquid extends ItemKitSimple {
 	public ItemKitLiquid() {
@@ -16,7 +17,7 @@ public class ItemKitLiquid extends ItemKitSimple {
 
 	@Override
 	protected BlockPos getTargetCoordinates(World world, BlockPos pos, ItemStack stack) {
-		IFluidTankProperties tank = LiquidCardHelper.getStorageAt(world, pos);
+		FluidInfo tank = CrossModLoader.getTankAt(world, pos);
 		if (tank != null)
 			return pos;
 		return null;
@@ -24,6 +25,6 @@ public class ItemKitLiquid extends ItemKitSimple {
 
 	@Override
 	protected ItemStack getItemCard() {
-		return new ItemStack(ItemHelper.itemCard, 1, ItemCardType.CARD_LIQUID);
+		return new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_LIQUID);
 	}
 }

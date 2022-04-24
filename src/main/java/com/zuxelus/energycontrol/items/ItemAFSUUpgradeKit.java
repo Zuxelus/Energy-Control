@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.items;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.tileentities.TileEntityAFSU;
 
 import ic2.core.block.BlockTileEntity;
@@ -9,7 +10,6 @@ import ic2.core.util.StackUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -41,11 +41,11 @@ public class ItemAFSUUpgradeKit extends Item {
 		int eustored = mfsu.getStored();
 		int facing = mfsu.getFacing().getIndex();
 		byte mode = mfsu.redstoneMode;
-		ItemStack[] items = new ItemStack[((IInventory) mfsu).getSizeInventory()];
+		ItemStack[] items = new ItemStack[mfsu.getSizeInventory()];
 		for (int i = 0; i < items.length; i++)
-			items[i] = ((IInventory) mfsu).getStackInSlot(i);
+			items[i] = mfsu.getStackInSlot(i);
 		world.removeTileEntity(pos);
-		IBlockState state = ItemHelper.afsu.getStateFromMeta(facing);
+		IBlockState state = ModItems.blockAfsu.getStateFromMeta(facing);
 		world.setBlockState(pos, state);
 		TileEntityAFSU afsu = new TileEntityAFSU();
 		afsu.addEnergy(eustored);

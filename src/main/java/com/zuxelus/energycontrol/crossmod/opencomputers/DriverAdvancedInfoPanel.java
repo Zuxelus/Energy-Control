@@ -1,14 +1,10 @@
 package com.zuxelus.energycontrol.crossmod.opencomputers;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
-
 import li.cil.oc.api.driver.NamedBlock;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
@@ -20,6 +16,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DriverAdvancedInfoPanel extends DriverSidedTileEntity {
 
@@ -64,20 +63,12 @@ public class DriverAdvancedInfoPanel extends DriverSidedTileEntity {
 
 		@Callback(doc = "function():list<string> -- Get card data.")
 		public Object[] getCardData(final Context context, final Arguments args) {
-			List<PanelString> joinedData = tileEntity.getPanelStringList(false);
-			List<String> list = new ArrayList<String>();
-			if (joinedData == null || joinedData.size() == 0)
-				return new Object[] { list };
+			return new Object[] { tileEntity.getPanelStringList(false) };
+		}
 
-			for (PanelString panelString : joinedData) {
-				if (panelString.textLeft != null)
-					list.add(panelString.textLeft);
-				if (panelString.textCenter != null)
-					list.add(panelString.textCenter);
-				if (panelString.textRight != null)
-					list.add(panelString.textRight);
-			}
-			return new Object[] { list };
+		@Callback(doc = "function():list<string> -- Get raw card data.")
+		public Object[] getCardDataRaw(final Context context, final Arguments args) {
+			return new Object[] { tileEntity.getPanelStringList(true) };
 		}
 
 		@Callback(doc = "function():number -- Get background color.")
@@ -112,7 +103,7 @@ public class DriverAdvancedInfoPanel extends DriverSidedTileEntity {
 			if (value < 0 || value > 2)
 				return new Object[] { "" };
 			ItemStack stack = tileEntity.getStackInSlot(value);
-			if (stack == null || !(stack.getItem() instanceof ItemCardMain))
+			if (!ItemCardMain.isCard(stack))
 				return new Object[] { "" }; 
 			return new Object[] { new ItemCardReader(stack).getTitle() };
 		}
@@ -124,7 +115,7 @@ public class DriverAdvancedInfoPanel extends DriverSidedTileEntity {
 			if (value < 0 || value > 2)
 				return null;
 			ItemStack stack = tileEntity.getStackInSlot(value);
-			if (stack != null && stack.getItem() instanceof ItemCardMain)
+			if (ItemCardMain.isCard(stack))
 				new ItemCardReader(stack).setTitle(title);
 			return null;
 		}
@@ -139,7 +130,7 @@ public class DriverAdvancedInfoPanel extends DriverSidedTileEntity {
 			int value = args.checkInteger(0);
 			if (value > 0 && value <= 16) {
 				tileEntity.thickness = (byte) value;
-				tileEntity.notifyBlockUpdate();
+				tileEntity.updateTileEntity();
 			}
 			return null;
 		}
@@ -154,7 +145,7 @@ public class DriverAdvancedInfoPanel extends DriverSidedTileEntity {
 			int value = args.checkInteger(0);
 			if (value > -9 && value < 9) {
 				tileEntity.rotateHor = (byte) (value * 7);
-				tileEntity.notifyBlockUpdate();
+				tileEntity.updateTileEntity();
 			}
 			return null;
 		}
@@ -169,7 +160,7 @@ public class DriverAdvancedInfoPanel extends DriverSidedTileEntity {
 			int value = args.checkInteger(0);
 			if (value > -9 && value < 9) {
 				tileEntity.rotateVert = (byte) (value * 7);
-				tileEntity.notifyBlockUpdate();
+				tileEntity.updateTileEntity();
 			}
 			return null;
 		}

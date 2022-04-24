@@ -183,11 +183,21 @@ public class ItemCardGalacticraft extends ItemCardBase {
 			//reader.setDouble("sunVisible", Math.round(((TileEntitySolarArrayController) te).solarStrength / 9.0F * 1000) / 10.0D);
 			return CardState.OK;
 		}
+		if (te instanceof TileEntityOxygenDistributor) {
+			reader.setInt("type", 13);
+			reader.setString("status", GalacticraftHelper.getStatus((TileEntityOxygenDistributor) te));
+			reader.setDouble("stored", (double) ((TileEntityOxygenDistributor) te).storage.getEnergyStoredGC());
+			reader.setDouble("capacity", (double) ((TileEntityOxygenDistributor) te).storage.getCapacityGC());
+			reader.setDouble("oxygenPerTick", (double) ((TileEntityOxygenDistributor) te).oxygenPerTick * 20);
+			reader.setInt("oxygenStored", ((TileEntityOxygenDistributor) te).getOxygenStored());
+			reader.setInt("oxygenCapacity", ((TileEntityOxygenDistributor) te).getMaxOxygenStored());
+			return CardState.OK;
+		}
 		return CardState.NO_TARGET;
 	}
 
 	@Override
-	public List<PanelString> getStringData(int settings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		if (!reader.hasField("type"))
 			return result;
@@ -250,7 +260,7 @@ public class ItemCardGalacticraft extends ItemCardBase {
 				result.add(new PanelString(I18n.format(reader.getString("liquidTank2Name")) + ": " + reader.getString("liquidTank2")));
 			break;
 		case 10:
-			result.add(new PanelString("msg.ec.InfoPanelOutputgJ", reader.getInt("production"), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getInt("production"), "gJ", showLabels));
 			result.add(new PanelString("msg.ec.InfoPanelEnvironmentalBoost", reader.getDouble("boost"), showLabels));
 			result.add(new PanelString("msg.ec.InfoPanelSunVisible", reader.getDouble("sunVisible"), showLabels));
 			break;
@@ -259,8 +269,13 @@ public class ItemCardGalacticraft extends ItemCardBase {
 			result.add(new PanelString("msg.ec.InfoPanelTarget", reader.getInt("target"), showLabels));
 			break;
 		case 12:
-			result.add(new PanelString("msg.ec.InfoPanelOutputgJ", reader.getInt("production"), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getInt("production"), "gJ", showLabels));
 			result.add(new PanelString("msg.ec.InfoPanelEnvironmentalBoost", reader.getDouble("boost"), showLabels));
+			break;
+		case 13:
+			result.add(new PanelString("msg.ec.InfoPanelOxygenUse", reader.getDouble("oxygenPerTick"), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelOxygen",
+					String.format("%s / %s mB", reader.getInt("oxygenStored"), reader.getInt("oxygenCapacity")), showLabels));
 			break;
 		}
 		return result;
@@ -268,14 +283,9 @@ public class ItemCardGalacticraft extends ItemCardBase {
 
 	@Override
 	public List<PanelSetting> getSettingsList() {
-		List<PanelSetting> result = new ArrayList<PanelSetting>(2);
-		result.add(new PanelSetting(I18n.format("msg.ec.cbStatus"), 1, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 2, damage));
+		List<PanelSetting> result = new ArrayList<>(2);
+		result.add(new PanelSetting(I18n.format("msg.ec.cbStatus"), 1));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 2));
 		return result;
-	}
-
-	@Override
-	public int getKitFromCard() {
-		return ItemCardType.KIT_GALACTICRAFT;
 	}
 }

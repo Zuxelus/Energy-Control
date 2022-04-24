@@ -1,15 +1,12 @@
 package com.zuxelus.energycontrol.blocks;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Random;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.tileentities.TileEntityFacing;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
-import com.zuxelus.energycontrol.tileentities.TileEntityInventory;
+import com.zuxelus.zlib.blocks.FacingBlockActive;
+import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
-import ic2.api.util.Keys;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -20,27 +17,12 @@ import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class InfoPanel extends FacingBlock {
-	EnumFacing rotation;
-
-	public InfoPanel() {
-		super();
-	}
-
-	@Override
-	public TileEntity createNewTileEntity(World world, int meta) {
-		TileEntityInfoPanel te = new TileEntityInfoPanel();
-		te.setFacing(meta);
-		if (rotation != null)
-			te.setRotation(rotation.getIndex());
-		return te;
-	}
+public class InfoPanel extends FacingBlockActive {
 
 	@Override
 	public boolean isOpaqueCube(IBlockState state) {
@@ -53,69 +35,49 @@ public class InfoPanel extends FacingBlock {
 	}
 
 	@Override
-	public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
-		TileEntity te = world.getTileEntity(pos);
-		if (!(te instanceof TileEntityInfoPanel))
-			return 0;
-		return ((TileEntityInfoPanel)te).getPowered() ? 10 : 0;
+	public int getLightValue(IBlockState state) {
+		return state.getValue(ACTIVE) ? 10 : 0;
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing facing, float hitX, float hitY, float hitZ) {
+	protected TileEntityFacing createTileEntity() {
+		return new TileEntityInfoPanel();
+	}
+
+	@Override
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack stack, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		TileEntity te = world.getTileEntity(pos);
 		if (!(te instanceof TileEntityInfoPanel))
 			return true;
-		if (!world.isRemote && Keys.instance.isAltKeyDown(player) && ((TileEntityInfoPanel) te).getFacing() == facing)
-			if (((TileEntityInfoPanel) te).runTouchAction(pos, hitX, hitY, hitZ))
+		if (!world.isRemote && EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) te).getFacing() == facing)
+			if (((TileEntityInfoPanel) te).runTouchAction(player.getHeldItem(hand), pos, hitX, hitY, hitZ))
 				return true;
-		if (CrossModLoader.ic2.isWrench(player.getHeldItem(hand)))
-			return true;
-		if (!world.isRemote)
-			player.openGui(EnergyControl.instance, BlockDamages.DAMAGE_INFO_PANEL, world, pos.getX(), pos.getY(), pos.getZ());
-		return true;
+		return super.onBlockActivated(world, pos, state, player, hand, stack, facing, hitX, hitY, hitZ);
 	}
 
 	@Override
-	public IBlockState onBlockPlaced(World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-		rotation = placer.getHorizontalFacing().getOpposite();
-		if (placer.rotationPitch >= 65)
-			return getDefaultState().withProperty(FACING, EnumFacing.UP);
-		if (placer.rotationPitch <= -65) {
-			rotation = placer.getHorizontalFacing();
-			return getDefaultState().withProperty(FACING, EnumFacing.DOWN);
-		}
-		switch (MathHelper.floor_double(placer.rotationYaw * 4.0F / 360.0F + 0.5D) & 3) {
-		case 0:
-			return getDefaultState().withProperty(FACING, EnumFacing.NORTH);
-		case 1:
-			return getDefaultState().withProperty(FACING, EnumFacing.EAST);
-		case 2:
-			return getDefaultState().withProperty(FACING, EnumFacing.SOUTH);
-		case 3:
-			return getDefaultState().withProperty(FACING, EnumFacing.WEST);
-		}
-		return getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
-	}
-
-	@Override
-	public void breakBlock(World world, BlockPos pos, IBlockState state) {
-		TileEntity te = world.getTileEntity(pos);
-		if (te instanceof TileEntityInventory)
-			((TileEntityInventory) te).dropItems(world, pos);
-		super.breakBlock(world, pos, state);
-	}
-
-	@Override
-	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-		List<ItemStack> drops = new ArrayList<ItemStack>();
-		drops.add(CrossModLoader.ic2.getItemStack("machine"));
-		return drops;
+	public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, ItemStack stack) {
+		return super.getStateForPlacement(world, pos, facing, hitZ, hitZ, hitZ, meta, placer, stack).withProperty(ACTIVE, world.isBlockPowered(pos));
 	}
 
 	@Override
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block) {
-		if (!world.isRemote)
-			world.notifyBlockUpdate(pos, state, state, 2);
+		if (world.isRemote)
+			return;
+
+		TileEntity te = world.getTileEntity(pos);
+		if (!(te instanceof TileEntityInfoPanel))
+			return;
+
+		((TileEntityInfoPanel) te).updateBlockState(state);
+	}
+
+	@Override
+	public void updateTick(World world, BlockPos pos, IBlockState state, Random rand) {
+		world.setBlockState(pos, state.cycleProperty(ACTIVE), 2);
+		TileEntity be = world.getTileEntity(pos);
+		if (be instanceof TileEntityInfoPanel)
+			((TileEntityInfoPanel) be).updateExtenders(!state.getValue(ACTIVE));
 	}
 
 	@Override
@@ -129,6 +91,11 @@ public class InfoPanel extends FacingBlock {
 	@Override
 	public EnumBlockRenderType getRenderType(IBlockState state) {
 		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
+	}
+
+	@Override
+	protected int getBlockGuiId() {
+		return BlockDamages.DAMAGE_INFO_PANEL;
 	}
 
 	@SideOnly(Side.CLIENT)

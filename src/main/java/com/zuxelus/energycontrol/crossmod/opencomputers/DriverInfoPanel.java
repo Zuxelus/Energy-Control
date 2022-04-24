@@ -1,15 +1,11 @@
 package com.zuxelus.energycontrol.crossmod.opencomputers;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
-
 import li.cil.oc.api.driver.NamedBlock;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
@@ -22,6 +18,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DriverInfoPanel extends DriverSidedTileEntity {
 
@@ -74,8 +73,8 @@ public class DriverInfoPanel extends DriverSidedTileEntity {
 
 		@Callback(doc = "function():list<string> -- Get card data.")
 		public Object[] getCardData(final Context context, final Arguments args) {
-			List<PanelString> joinedData = tileEntity.getPanelStringList(false);
-			List<String> list = new ArrayList<String>();
+			List<PanelString> joinedData = tileEntity.getPanelStringList(true, false);
+			List<String> list = new ArrayList<>();
 			if (joinedData == null || joinedData.size() == 0)
 				return new Object[] { list };
 
@@ -119,7 +118,7 @@ public class DriverInfoPanel extends DriverSidedTileEntity {
 		@Callback(doc = "function():string -- Get card title.")
 		public Object[] getCardTitle(final Context context, final Arguments args) {
 			ItemStack stack = tileEntity.getStackInSlot(0);
-			if (stack == null || !(stack.getItem() instanceof ItemCardMain))
+			if (!ItemCardMain.isCard(stack))
 				return new Object[] { "" }; 
 			return new Object[] { new ItemCardReader(stack).getTitle() };
 		}
@@ -128,7 +127,7 @@ public class DriverInfoPanel extends DriverSidedTileEntity {
 		public Object[] setCardTitle(final Context context, final Arguments args) {
 			String title = args.checkString(0);
 			ItemStack stack = tileEntity.getStackInSlot(0);
-			if (stack != null && stack.getItem() instanceof ItemCardMain)
+			if (ItemCardMain.isCard(stack))
 				new ItemCardReader(stack).setTitle(title);
 			return null;
 		}

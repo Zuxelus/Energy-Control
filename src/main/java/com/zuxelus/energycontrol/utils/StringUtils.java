@@ -2,11 +2,17 @@ package com.zuxelus.energycontrol.utils;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.List;
 
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.Minecraft;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.translation.I18n;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class StringUtils {
-	private static DecimalFormat formatter = null;
+	private static DecimalFormat formatter;
 
 	private static DecimalFormat getFormatter() {
 		if (formatter == null) {
@@ -21,7 +27,7 @@ public class StringUtils {
 
 	public static String getFormatted(String resourceName, String value, boolean showLabels) {
 		if (showLabels)
-			return I18n.format(resourceName, value);
+			return I18n.translateToLocalFormatted(resourceName, value);
 		return value;
 	}
 
@@ -30,6 +36,18 @@ public class StringUtils {
 	}
 
 	public static String getFormattedKey(String resourceName, Object... arguments) {
-		return I18n.format(resourceName, arguments);
+		return I18n.translateToLocalFormatted(resourceName, arguments);
+	}
+
+	public static String getItemId(ItemStack stack) {
+		return Item.REGISTRY.getNameForObject(stack.getItem()).toString();
+	}
+
+	@SideOnly(Side.CLIENT)
+	public static String getItemName(ItemStack stack) {
+		List<String> list = stack.getTooltip(Minecraft.getMinecraft().thePlayer, false);
+		if (list.size() == 0)
+			return stack.getItem().getUnlocalizedName();
+		return list.get(0);
 	}
 }

@@ -1,36 +1,24 @@
 package com.zuxelus.energycontrol.gui;
 
-import java.io.IOException;
-
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
-
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.ResourceLocation;
+import com.zuxelus.zlib.gui.GuiBase;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class GuiPanelSlope extends GuiScreen {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/gui_slope.png");
+import java.io.IOException;
 
-	protected int xSize = 171;
-	protected int ySize = 94;
-	protected int guiLeft;
-	protected int guiTop;
-
-	private GuiInfoPanel parentGui;
+@SideOnly(Side.CLIENT)
+public class GuiPanelSlope extends GuiBase {
+	private GuiPanelBase parentGui;
 	private TileEntityAdvancedInfoPanel panel;
 
-	public GuiPanelSlope(GuiInfoPanel parentGui, TileEntityAdvancedInfoPanel panel) {
+	public GuiPanelSlope(GuiPanelBase parentGui, TileEntityAdvancedInfoPanel panel) {
+		super("", 171, 94, EnergyControl.MODID + ":textures/gui/gui_slope.png");
 		this.parentGui = parentGui;
 		this.panel = panel;
-	}
-
-	@Override
-	public boolean doesGuiPauseGame() {
-		return false;
 	}
 
 	@Override
@@ -60,19 +48,13 @@ public class GuiPanelSlope extends GuiScreen {
 	}
 
 	@Override
-	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		mc.getTextureManager().bindTexture(TEXTURE);
-		int left = (width - xSize) / 2;
-		int top = (height - ySize) / 2;
-		drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
+	public void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+		super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
 		int textureHeight = 4 * (16 - panel.thickness);
 
-		drawTexturedModalRect(left + 21, top + 25, 172, 0, 14, textureHeight);
-		drawTexturedModalRect(left + 79, top + 25 + (panel.rotateHor < 0 ? 32 + panel.rotateHor * 4 / 7 : 32), 186, 0, 14, Math.abs(panel.rotateHor * 4 / 7));
-		drawTexturedModalRect(left + 137, top + 25 + (panel.rotateVert < 0 ? 32 + panel.rotateVert * 4 / 7 : 32), 186, 0, 14, Math.abs(panel.rotateVert * 4 / 7));
-
-		super.drawScreen(mouseX, mouseY, partialTicks);
+		drawTexturedModalRect(guiLeft + 21, guiTop + 25, 172, 0, 14, textureHeight);
+		drawTexturedModalRect(guiLeft + 79, guiTop + 25 + (panel.rotateHor < 0 ? 32 + panel.rotateHor * 4 / 7 : 32), 186, 0, 14, Math.abs(panel.rotateHor * 4 / 7));
+		drawTexturedModalRect(guiLeft + 137, guiTop + 25 + (panel.rotateVert < 0 ? 32 + panel.rotateVert * 4 / 7 : 32), 186, 0, 14, Math.abs(panel.rotateVert * 4 / 7));
 	}
 
 	@Override
@@ -81,13 +63,5 @@ public class GuiPanelSlope extends GuiScreen {
 			FMLClientHandler.instance().getClient().displayGuiScreen(parentGui);
 		else
 			super.keyTyped(typedChar, keyCode);
-	}
-
-	@Override
-	public void initGui() {
-		super.initGui();
-		guiLeft = (width - xSize) / 2;
-		guiTop = (height - ySize) / 2;
-		buttonList.clear();
 	}
 }

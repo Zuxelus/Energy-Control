@@ -1,24 +1,22 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.utils.StringUtils;
-
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemCardGeneratorArray extends ItemCardBase {
 	private static final double STATUS_NOT_FOUND = Integer.MIN_VALUE;
@@ -34,7 +32,6 @@ public class ItemCardGeneratorArray extends ItemCardBase {
 		if (cardCount == 0)
 			return CardState.INVALID_CARD;
 
-		double totalEnergy = 0.0;
 		boolean foundAny = false;
 		boolean outOfRange = false;
 		for (int i = 0; i < cardCount; i++) {
@@ -44,7 +41,7 @@ public class ItemCardGeneratorArray extends ItemCardBase {
 			int dz = target.getZ() - pos.getZ();
 			if (Math.abs(dx) <= range && Math.abs(dy) <= range && Math.abs(dz) <= range) {
 				TileEntity entity = world.getTileEntity(target);
-				NBTTagCompound tag = CrossModLoader.ic2.getGeneratorData(entity);
+				NBTTagCompound tag = CrossModLoader.getCrossMod(ModIDs.IC2).getGeneratorData(entity);
 				if (tag != null && tag.hasKey("type")) {
 					int type = tag.getInteger("type");
 					reader.setInt(String.format("_%dtype", i), type);
@@ -75,9 +72,8 @@ public class ItemCardGeneratorArray extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
-		PanelString line;
 		double totalEnergy = 0;
 		double totalStorage = 0;
 		double totalOutput = 0;
@@ -148,22 +144,17 @@ public class ItemCardGeneratorArray extends ItemCardBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList() {
-		List<PanelSetting> result = new ArrayList<PanelSetting>(5);
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelStorage"), 1, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMaxStorage"), 2, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOutput"), 8, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEachCard"), 32, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelTotal"), 64, damage));
+		List<PanelSetting> result = new ArrayList<>(5);
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelStorage"), 1));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMaxStorage"), 2));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOutput"), 8));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEachCard"), 32));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelTotal"), 64));
 		return result;
 	}
 
 	@Override
 	public boolean isRemoteCard() {
 		return false;
-	}
-
-	@Override
-	public int getKitFromCard() {
-		return ItemCardType.KIT_GENERATOR;
 	}
 }

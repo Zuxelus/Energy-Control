@@ -2,7 +2,8 @@ package com.zuxelus.energycontrol.containers;
 
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityEnergyCounter;
-
+import com.zuxelus.zlib.containers.ContainerBase;
+import com.zuxelus.zlib.containers.slots.SlotFilter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IContainerListener;
@@ -25,9 +26,9 @@ public class ContainerEnergyCounter extends ContainerBase<TileEntityEnergyCounte
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
 		double counter = te.counter;
-		for (int i = 0; i < listeners.size(); i++)
+		for (IContainerListener listener : listeners)
 			if (lastCounter != counter)
-				NetworkHelper.updateClientTileEntity(listeners.get(i), te.getPos(), 1, counter);
+				NetworkHelper.updateClientTileEntity(listener, te.getPos(), 1, counter);
 		lastCounter = counter;
 	}
 

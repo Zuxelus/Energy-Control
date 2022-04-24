@@ -1,10 +1,9 @@
 package com.zuxelus.energycontrol.recipes;
 
-import ic2.api.item.IC2Items;
-
 import java.util.Vector;
 
-import com.zuxelus.energycontrol.items.ItemHelper;
+import com.zuxelus.energycontrol.init.ModItems;
+import com.zuxelus.energycontrol.items.ItemComponent;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
@@ -12,15 +11,13 @@ import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.RecipeSorter;
 
 public class StorageArrayRecipe implements IRecipe {
 	static {
-		RecipeSorter.register("EnergyControl:storagearrayRecipe", StorageArrayRecipe.class,
-				RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
+		RecipeSorter.register("EnergyControl:storagearrayRecipe", StorageArrayRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
 	}
 
 	@Override
@@ -38,38 +35,38 @@ public class StorageArrayRecipe implements IRecipe {
 		int cardCountGenerator = 0;
 		int arrayCountGenerator = 0;
 		ItemStack array = null;
-		Vector<ItemStack> cards = new Vector<ItemStack>();
+		Vector<ItemStack> cards = new Vector<>();
 		for (int i = 0; i < inventoryLength; i++) {
-			ItemStack itemStack = inventory.getStackInSlot(i);
-			if (itemStack == null)
+			ItemStack stack = inventory.getStackInSlot(i);
+			if (stack == null)
 				continue;
-			if (!(itemStack.getItem() instanceof ItemCardMain))
+			if (!ItemCardMain.isCard(stack))
 				return null;
 
-			switch (itemStack.getItemDamage())
+			switch (stack.getItemDamage())
 			{
 			case ItemCardType.CARD_ENERGY:
-				cards.add(itemStack);
+				cards.add(stack);
 				cardCount++;
 				break;
 			case ItemCardType.CARD_LIQUID:
-				cards.add(itemStack);
+				cards.add(stack);
 				cardCountLiquid++;
 				break;
 			case ItemCardType.CARD_GENERATOR:
-				cards.add(itemStack);
+				cards.add(stack);
 				cardCountGenerator++;
 				break;
 			case ItemCardType.CARD_ENERGY_ARRAY:
-				array = itemStack;				
+				array = stack;				
 				arrayCount++;
 				break;
 			case ItemCardType.CARD_LIQUID_ARRAY:
-				array = itemStack;
+				array = stack;
 				arrayCountLiquid++;
 				break;
 			case ItemCardType.CARD_GENERATOR_ARRAY:
-				array = itemStack;
+				array = stack;
 				arrayCountGenerator++;
 				break;
 			}
@@ -90,19 +87,19 @@ public class StorageArrayRecipe implements IRecipe {
 
 	private ItemStack getCraftingResult(int cardCount, int arrayCount, int type, Vector<ItemStack> cards, ItemStack array) {
 		if (cardCount >= 2 && cardCount <= 16 && arrayCount == 0) {
-			ItemStack itemStack = new ItemStack(ItemHelper.itemCard, 1, type);
+			ItemStack itemStack = new ItemStack(ModItems.itemCard, 1, type);
 			initArray(itemStack, cards);
 			return itemStack;
 		}
 		if (cardCount == 0 && arrayCount == 1) {
 			int cnt = new ItemCardReader(array).getInt("cardCount");
 			if (cnt > 0)
-				return new ItemStack(IC2Items.getItem("crafting","circuit").getItem(), cnt, IC2Items.getItem("crafting","circuit").getItemDamage());
+				return new ItemStack(ModItems.itemComponent, cnt, ItemComponent.BASIC_CIRCUIT);
 		} else if (arrayCount == 1 && cardCount > 0) {
 			int cnt = new ItemCardReader(array).getInt("cardCount");
 			if (cnt + cardCount <= 16) {
-				ItemStack itemStack = new ItemStack(ItemHelper.itemCard, 1, type);
-				itemStack.setTagCompound((NBTTagCompound) array.getTagCompound().copy());
+				ItemStack itemStack = new ItemStack(ModItems.itemCard, 1, type);
+				itemStack.setTagCompound(array.getTagCompound().copy());
 				initArray(itemStack, cards);
 				return itemStack;
 			}

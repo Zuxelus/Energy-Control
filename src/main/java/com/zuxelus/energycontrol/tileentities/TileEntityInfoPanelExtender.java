@@ -1,8 +1,8 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.EnergyControl;
-
-import net.minecraft.block.Block;
+import com.zuxelus.zlib.blocks.FacingBlockActive;
+import com.zuxelus.zlib.tileentities.TileEntityFacing;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -50,7 +50,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	private void updateScreen() {
 		if (partOfScreen && screen == null) {
 			TileEntity core = worldObj.getTileEntity(new BlockPos(coreX, coreY, coreZ));
-			if (core != null && core instanceof TileEntityInfoPanel) {
+			if (core instanceof TileEntityInfoPanel) {
 				screen = ((TileEntityInfoPanel) core).getScreen();
 				if (screen != null)
 					screen.init(true, worldObj);
@@ -62,9 +62,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 
 	@Override
 	public SPacketUpdateTileEntity getUpdatePacket() {
-		NBTTagCompound tag = new NBTTagCompound();
-		tag = writeProperties(tag);
-		return new SPacketUpdateTileEntity(getPos(), 0, tag);
+		return new SPacketUpdateTileEntity(getPos(), 0, getUpdateTag());
 	}
 
 	@Override
@@ -128,10 +126,10 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	public void update() {
 		if (init)
 			return;
-		
+
 		if (!worldObj.isRemote && !partOfScreen)
 			EnergyControl.instance.screenManager.registerInfoPanelExtender(this);
-		
+
 		updateScreen();
 		init = true;
 	}
@@ -146,8 +144,17 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 				coreX = core.getPos().getX();
 				coreY = core.getPos().getY();
 				coreZ = core.getPos().getZ();
+
+				IBlockState stateCore = worldObj.getBlockState(core.getPos());
+				IBlockState state = worldObj.getBlockState(pos);
+				if (state.getValue(FacingBlockActive.ACTIVE) != stateCore.getValue(FacingBlockActive.ACTIVE))
+					worldObj.setBlockState(pos, state.cycleProperty(FacingBlockActive.ACTIVE), 2);
 				return;
 			}
+		} else {
+			IBlockState state = worldObj.getBlockState(pos);
+			if (state.getValue(FacingBlockActive.ACTIVE))
+				worldObj.setBlockState(pos, state.withProperty(FacingBlockActive.ACTIVE, false), 2);
 		}
 		partOfScreen = false;
 		coreX = 0;
@@ -170,9 +177,8 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 	public void updateData() { }
 
 	@Override
-	public void notifyBlockUpdate() {
-		IBlockState iblockstate = worldObj.getBlockState(pos);
-		worldObj.notifyBlockUpdate(pos, iblockstate, iblockstate, 2);
+	public void updateTileEntity() {
+		notifyBlockUpdate();
 	}
 
 	public boolean getColored() {
@@ -220,17 +226,17 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ITi
 			BlockPos pos = getPos();
 			switch (getFacing()) {
 			case SOUTH:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 4 * boolToInt(pos.getY() == scr.minY) + 8 * boolToInt(pos.getY() == scr.maxY);
+				return boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 4 * boolToInt(pos.getY() == scr.minY) + 8 * boolToInt(pos.getY() == scr.maxY);
 			case WEST:
-				return 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ) + 1 * boolToInt(pos.getY() == scr.minY) + 2 * boolToInt(pos.getY() == scr.maxY);
+				return 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ) + boolToInt(pos.getY() == scr.minY) + 2 * boolToInt(pos.getY() == scr.maxY);
 			case EAST:
-				return 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ) + 2 * boolToInt(pos.getY() == scr.minY) + 1 * boolToInt(pos.getY() == scr.maxY);
+				return 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ) + 2 * boolToInt(pos.getY() == scr.minY) + boolToInt(pos.getY() == scr.maxY);
 			case NORTH:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 8 * boolToInt(pos.getY() == scr.minY) + 4 * boolToInt(pos.getY() == scr.maxY);
+				return boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 8 * boolToInt(pos.getY() == scr.minY) + 4 * boolToInt(pos.getY() == scr.maxY);
 			case UP:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ);
+				return boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ);
 			case DOWN:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 4 * boolToInt(pos.getZ() == scr.minZ) + 8 * boolToInt(pos.getZ() == scr.maxZ);
+				return boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 4 * boolToInt(pos.getZ() == scr.minZ) + 8 * boolToInt(pos.getZ() == scr.maxZ);
 			}
 		}
 		return 15;

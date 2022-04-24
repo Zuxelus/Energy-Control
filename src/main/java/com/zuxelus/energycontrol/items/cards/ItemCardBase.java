@@ -1,65 +1,50 @@
 package com.zuxelus.energycontrol.items.cards;
 
+import com.zuxelus.energycontrol.api.*;
+import com.zuxelus.energycontrol.items.kits.ItemKitMain;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+
 import java.util.List;
 
-import com.zuxelus.energycontrol.api.ICardGui;
-import com.zuxelus.energycontrol.api.ICardReader;
-import com.zuxelus.energycontrol.api.IItemCard;
-import com.zuxelus.energycontrol.api.PanelString;
-
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-
-public abstract class ItemCardBase implements IItemCard {
+public abstract class ItemCardBase {
 	protected String name;
 	protected int damage;
-	private Object[] recipe;
 
 	public ItemCardBase(int damage, String name) {
 		this.damage = damage;
 		this.name = name;
 	}
-
-	@Override
+	
 	public final int getDamage() {
 		return damage;
 	}
 
-	@Override
 	public final String getName() {
 		return name;
 	}
 
-	@Override
 	public final String getUnlocalizedName() {
 		return "item." + name;
 	}
 
-	@Override
-	public ICardGui getSettingsScreen(ICardReader reader) {
-		return null;
-	}
-
-	@Override
 	public boolean isRemoteCard() {
 		return true;
 	}
+
+	public abstract CardState update(World world, ICardReader reader, int range, BlockPos pos);
+
+	public abstract List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels);
+
+	public abstract List<PanelSetting> getSettingsList();
 
 	protected BlockPos getCoordinates(ICardReader reader, int cardNumber) {
 		if (cardNumber >= reader.getCardCount())
 			return null;
 		return new BlockPos(reader.getInt(String.format("_%dx", cardNumber)),
 				reader.getInt(String.format("_%dy", cardNumber)), reader.getInt(String.format("_%dz", cardNumber)));
-	}
-
-	@Override
-	public Object[] getRecipe() {
-		return recipe;
-	}
-
-	protected final void addRecipe(Object[] recipe) {
-		this.recipe = recipe;
 	}
 
 	protected void addHeat(List<PanelString> result, int heat, int maxHeat, boolean showLabels) {
@@ -69,15 +54,15 @@ public abstract class ItemCardBase implements IItemCard {
 		result.add(line);
 	}
 
-	protected void addOnOff(List<PanelString> result, Boolean value) {
+	protected void addOnOff(List<PanelString> result, boolean isServer, boolean value) {
 		String text;
-		int txtColor = 0;
+		int txtColor;
 		if (value) {
 			txtColor = 0x00ff00;
-			text = FMLCommonHandler.instance().getEffectiveSide().isClient() ? I18n.format("msg.ec.InfoPanelOn") : "On";
+			text = isServer ? "On" : I18n.format("msg.ec.InfoPanelOn");
 		} else {
 			txtColor = 0xff0000;
-			text = FMLCommonHandler.instance().getEffectiveSide().isClient() ? I18n.format("msg.ec.InfoPanelOff") : "Off";
+			text = isServer ? "Off" : I18n.format("msg.ec.InfoPanelOff");
 		}
 		if (result.size() > 0) {
 			PanelString firstLine = result.get(0);

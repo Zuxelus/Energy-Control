@@ -1,7 +1,6 @@
 package com.zuxelus.energycontrol.crossmod.opencomputers;
 
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
-
 import li.cil.oc.api.driver.NamedBlock;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;

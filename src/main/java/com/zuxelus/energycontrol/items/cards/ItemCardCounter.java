@@ -1,23 +1,21 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.tileentities.TileEntityAverageCounter;
 import com.zuxelus.energycontrol.tileentities.TileEntityEnergyCounter;
-
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.List;
+
 public class ItemCardCounter extends ItemCardBase {
+
 	public ItemCardCounter() {
 		super(ItemCardType.CARD_COUNTER, "card_counter");
 	}
@@ -47,12 +45,12 @@ public class ItemCardCounter extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		// average counter
 		if (reader.hasField("average")) {
 			if ((displaySettings & 1) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelOutputEU", reader.getInt("average"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getInt("average"), "EU/t", showLabels));
 			if ((displaySettings & 2) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelPeriod", reader.getInt("period"), showLabels));
 			return result;
@@ -60,7 +58,7 @@ public class ItemCardCounter extends ItemCardBase {
 		// energy counter
 		if ((displaySettings & 1) > 0) {
 			double energy = reader.getDouble("energy");
-			result.add(new PanelString("msg.ec.InfoPanelEnergyEU", energy, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelEnergy", energy, "EU", showLabels));
 		}
 		return result;
 	}
@@ -69,10 +67,5 @@ public class ItemCardCounter extends ItemCardBase {
 	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		return null;
-	}
-
-	@Override
-	public int getKitFromCard() {
-		return ItemCardType.KIT_COUNTER;
 	}
 }

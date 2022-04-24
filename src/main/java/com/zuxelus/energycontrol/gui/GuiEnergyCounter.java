@@ -3,28 +3,22 @@ package com.zuxelus.energycontrol.gui;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.containers.ContainerEnergyCounter;
 import com.zuxelus.energycontrol.network.NetworkHelper;
-import com.zuxelus.energycontrol.utils.StringUtils;
+import com.zuxelus.zlib.gui.GuiContainerBase;
 
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiEnergyCounter extends GuiContainer {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/gui_energy_counter.png");
-
-	private String name;
+public class GuiEnergyCounter extends GuiContainerBase {
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_energy_counter.png");
 	private ContainerEnergyCounter container;
 
 	public GuiEnergyCounter(ContainerEnergyCounter container) {
-		super(container);
+		super(container, "tile.energy_counter.name", TEXTURE);
 		this.container = container;
-		name = I18n.format("tile.energy_counter.name");
 	}
 
 	private void initControls() {
@@ -40,19 +34,9 @@ public class GuiEnergyCounter extends GuiContainer {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-		fontRendererObj.drawString(name, (xSize - fontRendererObj.getStringWidth(name)) / 2, 6, 0x404040);
-		fontRendererObj.drawString(I18n.format("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-		String value = StringUtils.getFormatted("", container.te.counter, false);
-		fontRendererObj.drawString(value, (xSize - fontRendererObj.getStringWidth(value)) / 2, 22, 0x404040);
-	}
-
-	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		mc.getTextureManager().bindTexture(TEXTURE);
-		int left = (width - xSize) / 2;
-		int top = (height - ySize) / 2;
-		drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
+		drawCenteredText(name, xSize, 6);
+		drawLeftAlignedText(I18n.format("container.inventory"), 8, (ySize - 96) + 2);
+		drawCenteredText(I18n.format("%s", container.te.counter), xSize, 22);
 	}
 
 	@Override

@@ -1,13 +1,7 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import java.util.List;
-
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.api.CardState;
-import com.zuxelus.energycontrol.api.ICardReader;
-import com.zuxelus.energycontrol.api.ITouchAction;
-import com.zuxelus.energycontrol.api.PanelSetting;
-import com.zuxelus.energycontrol.api.PanelString;
+import com.zuxelus.energycontrol.api.*;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockButton;
@@ -27,10 +21,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.List;
+
 public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 	private static final PropertyBool POWERED = PropertyBool.create("powered");
-	private static final ResourceLocation TEXTURE = new ResourceLocation(
-			EnergyControl.MODID + ":textures/blocks/remote_thermo/all.png");
 
 	public ItemCardToggle() {
 		super(ItemCardType.CARD_TOGGLE, "card_toggle");
@@ -43,19 +37,16 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 			return CardState.NO_TARGET;
 
 		IBlockState state = world.getBlockState(target);
-		if (state == null)
-			return CardState.NO_TARGET;
-		
-		if (state.getBlock() == Blocks.LEVER || state.getBlock() instanceof BlockButton) {
-			boolean value = ((Boolean)state.getValue(POWERED)).booleanValue();
-			reader.setBoolean("value", value);
+		Block block = state.getBlock();
+		if (block == Blocks.LEVER || block instanceof BlockButton) {
+			reader.setBoolean("value", state.getValue(POWERED));
 			return CardState.OK;
 		}
 		return CardState.NO_TARGET;
 	}
 
 	@Override
-	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		PanelString line = new PanelString();
 		if (reader.getBoolean("value")) {
@@ -76,35 +67,33 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 	}
 
 	@Override
-	public int getKitFromCard() {
-		return ItemCardType.KIT_TOGGLE;
+	public boolean enableTouch(ItemStack stack) {
+		return true;
 	}
 
 	@Override
-	public void runTouchAction(World world, ICardReader reader) {
+	public boolean runTouchAction(World world, ICardReader reader, ItemStack stack) {
 		BlockPos pos = reader.getTarget();
 		if (pos == null)
-			return;
+			return false;
 
 		IBlockState state = world.getBlockState(pos);
-		if (state == null)
-			return;
-		
 		Block block = state.getBlock();
 		if (block == Blocks.LEVER) {
 			state = state.cycleProperty(POWERED);
 			world.setBlockState(pos, state, 3);
 			world.notifyNeighborsOfStateChange(pos, state.getBlock());
-			EnumFacing enumfacing = ((BlockLever.EnumOrientation) state.getValue(BlockLever.FACING)).getFacing();
+			EnumFacing enumfacing = state.getValue(BlockLever.FACING).getFacing();
 			world.notifyNeighborsOfStateChange(pos.offset(enumfacing.getOpposite()), state.getBlock());
 		}
-		if (state.getBlock() instanceof BlockButton) {
-			world.setBlockState(pos, state.withProperty(POWERED, Boolean.valueOf(true)), 3);
+		if (block instanceof BlockButton) {
+			world.setBlockState(pos, state.withProperty(POWERED, Boolean.TRUE), 3);
 			world.markBlockRangeForRenderUpdate(pos, pos);
 			world.notifyNeighborsOfStateChange(pos, block);
 			world.notifyNeighborsOfStateChange(pos.offset(state.getValue(BlockButton.FACING).getOpposite()), block);
 			world.scheduleUpdate(pos, block, block.tickRate(world));
 		}
+		return false;
 	}
 
 	@Override
@@ -121,12 +110,12 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 		else
 			manager.bindTexture(new ResourceLocation(EnergyControl.MODID + ":textures/gui/grey.png"));
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer vertexbuffer = tessellator.getBuffer();
-		vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-		vertexbuffer.pos(x + 0, y + height, z).tex((double)((float)(textureX + 0)), (double)((float)(textureY + height))).endVertex();
-		vertexbuffer.pos(x + width, y + height, z).tex((double)((float)(textureX + width)), (double)((float)(textureY + height))).endVertex();
-		vertexbuffer.pos(x + width, y + 0, z).tex((double)((float)(textureX + width)), (double)((float)(textureY + 0))).endVertex();
-		vertexbuffer.pos(x + 0, y + 0, z).tex((double)((float)(textureX + 0)), (double)((float)(textureY + 0))).endVertex();
+		VertexBuffer bufferbuilder = tessellator.getBuffer();
+		bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+		bufferbuilder.pos(x + 0, y + height, z).tex((float)(textureX + 0), (float)(textureY + height)).endVertex();
+		bufferbuilder.pos(x + width, y + height, z).tex((float)(textureX + width), (float)(textureY + height)).endVertex();
+		bufferbuilder.pos(x + width, y + 0, z).tex((float)(textureX + width), (float)(textureY + 0)).endVertex();
+		bufferbuilder.pos(x + 0, y + 0, z).tex((float)(textureX + 0), (float)(textureY + 0)).endVertex();
 		tessellator.draw();
 	}
 }

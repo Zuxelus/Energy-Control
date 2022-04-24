@@ -3,17 +3,15 @@ package com.zuxelus.energycontrol.items.cards;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.brandon3055.draconicevolution.blocks.reactor.tileentity.TileReactorCore;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
-import com.zuxelus.energycontrol.utils.ReactorHelper;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 
-import ic2.api.reactor.IReactor;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -21,6 +19,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemCardReactorDraconic extends ItemCardBase {
+
 	public ItemCardReactorDraconic() {
 		super(ItemCardType.CARD_REACTOR_DRACONIC, "card_reactor_draconic");
 	}
@@ -32,25 +31,16 @@ public class ItemCardReactorDraconic extends ItemCardBase {
 			return CardState.NO_TARGET;
 
 		TileEntity te = world.getTileEntity(target);
-		if (!(te instanceof TileReactorCore))
+		NBTTagCompound tag = CrossModLoader.getCrossMod(ModIDs.DRACONIC_EVOLUTION).getCardData(te);
+		if (tag == null)
 			return CardState.NO_TARGET;
-
-		TileReactorCore reactor = ((TileReactorCore) te);
-		reader.setString("status", reactor.reactorState.value.name());
-		reader.setDouble("temp", reactor.temperature.value);
-		reader.setDouble("rate", reactor.generationRate.value);
-		reader.setDouble("input", reactor.fieldInputRate.value);
-		reader.setDouble("diam", reactor.getCoreDiameter());
-		reader.setInt("saturation", reactor.saturation.value);
-		reader.setDouble("fuel", reactor.convertedFuel.value);
-		reader.setDouble("shield", reactor.shieldCharge.value);
-		reader.setDouble("fuelMax", reactor.reactableFuel.value);
-		reader.setDouble("fuelRate", reactor.fuelUseRate.value);
+		reader.reset();
+		reader.copyFrom(tag);
 		return CardState.OK;
 	}
 
 	@Override
-	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean showLabels) {
+	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		if ((displaySettings & 1) > 0)
 			result.add(new PanelString("msg.ec.Status", reader.getString("status"), showLabels));
@@ -75,18 +65,13 @@ public class ItemCardReactorDraconic extends ItemCardBase {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList() {
-		List<PanelSetting> result = new ArrayList<PanelSetting>(6);
-		result.add(new PanelSetting(I18n.format("msg.ec.cbStatus"), 1, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbDiameter"), 2, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInputRate"), 4, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbFieldStrength"), 8, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbSaturation"), 16, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbFuel"), 32, damage));
+		List<PanelSetting> result = new ArrayList<>(6);
+		result.add(new PanelSetting(I18n.format("msg.ec.cbStatus"), 1));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbDiameter"), 2));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInputRate"), 4));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbFieldStrength"), 8));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbSaturation"), 16));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbFuel"), 32));
 		return result;
-	}
-
-	@Override
-	public int getKitFromCard() {
-		return ItemCardType.KIT_DRACONIC;
 	}
 }
