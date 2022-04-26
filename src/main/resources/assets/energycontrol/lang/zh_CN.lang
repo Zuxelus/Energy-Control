@@ -362,6 +362,15 @@ msg.ec.cbFieldStrength=场强
 msg.ec.cbSaturation=饱腹
 msg.ec.cbFuel=燃料
 
+msg.cooking=Cooking: %sx - %s
+msg.fuel=Fuel: %sx - %s
+msg.output=Output: %sx - %s
+msg.burnTime=Burn Time: %s
+msg.cookingText=Cooking
+msg.fuelText=Fuel
+msg.outputText=Output
+msg.burnTimeText=Burn Time
+
 #JEI Description
 ec.jei.blockLightWhite=  红石给白色灯供能。
 ec.jei.blockLightOrange=  红石给橙色灯供能。

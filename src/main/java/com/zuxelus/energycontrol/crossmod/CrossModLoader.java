@@ -198,6 +198,26 @@ public class CrossModLoader {
 		return tag;
 	}
 
+	public static boolean isElectricItem(ItemStack stack) {
+		if (stack.isEmpty())
+			return false;
+
+		for (CrossModBase crossMod : CROSS_MODS.values())
+			if (crossMod.isElectricItem(stack))
+				return true;
+		return false;
+	}
+
+	public static double dischargeItem(ItemStack stack, double amount) {
+		for (CrossModBase crossMod : CROSS_MODS.values())
+			if (crossMod.isElectricItem(stack)) {
+				double result = crossMod.dischargeItem(stack, amount);
+				if (result > 0)
+					return result;
+			}
+		return 0;
+	}
+
 	public static void loadOreInfo() {
 		for (CrossModBase crossMod : CROSS_MODS.values())
 			crossMod.loadOreInfo();

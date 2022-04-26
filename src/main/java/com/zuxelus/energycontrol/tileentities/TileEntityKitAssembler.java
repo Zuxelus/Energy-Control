@@ -47,13 +47,14 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements ITi
 	private KitAssemblerRecipe recipe;
 	private int recipeTime; // client Only
 	public static final int CAPACITY = 2000;
+	public static final int OUTPUT = 32;
 	private double production;
 	private boolean addedToEnet;
 	private boolean active;
 
 	public TileEntityKitAssembler() {
 		super("tile.kit_assembler.name");
-		storage = new EnergyStorage(CAPACITY, 32, 32, 0);
+		storage = new EnergyStorage(CAPACITY, OUTPUT, OUTPUT, 0);
 		addedToEnet = false;
 		active = false;
 		production = 0;
@@ -228,12 +229,12 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements ITi
 	}
 
 	private void handleDischarger(int slot) {
-		int needed = Math.min(32, storage.getMaxEnergyStored() - storage.getEnergyStored());
+		int needed = Math.min(OUTPUT, storage.getMaxEnergyStored() - storage.getEnergyStored());
 		if (needed <= 0)
 			return;
 		if (buffer > 0)
 			buffer -= storage.receiveEnergy(buffer, false);
-		needed = Math.min(32, storage.getMaxEnergyStored() - storage.getEnergyStored());
+		needed = Math.min(OUTPUT, storage.getMaxEnergyStored() - storage.getEnergyStored());
 		ItemStack stack = getStackInSlot(slot);
 		if (!stack.isEmpty() && needed > 0) {
 			if (stack.getItem().equals(Items.LAVA_BUCKET)) {
@@ -246,9 +247,9 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements ITi
 			if (stackStorage != null) {
 				if (storage.receiveEnergy(stackStorage.extractEnergy(needed, false), false) > 0)
 					active = true;
-			} else if (CrossModLoader.getCrossMod(ModIDs.IC2).isElectricItem(stack)) {
+			} else if (CrossModLoader.isElectricItem(stack)) {
 				double old = storage.getEnergyStored();
-				storage.receiveEnergy((int) CrossModLoader.getCrossMod(ModIDs.IC2).dischargeItem(stack, getDemandedEnergy()), false);
+				storage.receiveEnergy((int) CrossModLoader.dischargeItem(stack, needed), false);
 				if (!active && storage.getEnergyStored() > old)
 					markDirty();
 			}
@@ -329,8 +330,7 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements ITi
 			return ItemCardMain.isCard(stack);
 		case SLOT_DISCHARGER:
 			return stack.getCapability(CapabilityEnergy.ENERGY, null) != null ||
-				CrossModLoader.getCrossMod(ModIDs.IC2).isElectricItem(stack) ||
-				stack.getItem().equals(Items.LAVA_BUCKET);
+				CrossModLoader.isElectricItem(stack) || stack.getItem().equals(Items.LAVA_BUCKET);
 		case SLOT_RESULT:
 		default:
 			return false;
@@ -368,18 +368,17 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements ITi
 	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
 		return oldState.getBlock() != newSate.getBlock();
 	}
-	
+
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		if (capability == CapabilityEnergy.ENERGY)
+	public <T> T getCapability(Capability<T> cap, EnumFacing side) {
+		if (cap == CapabilityEnergy.ENERGY)
 			return (T) this;
-		return null;
+		return super.getCapability(cap, side);
 	}
 
 	// IEnergyStorage
 	@Override
 	public int receiveEnergy(int maxReceive, boolean simulate) {
-		
 		int energyReceived = Math.min(CAPACITY - getEnergyStored(), Math.min(32, maxReceive));
 		return storage.receiveEnergy(energyReceived, simulate);
 	}

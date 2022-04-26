@@ -362,6 +362,15 @@ msg.ec.cbFieldStrength=Сила поля
 msg.ec.cbSaturation=Насыщение
 msg.ec.cbFuel=Топливо
 
+msg.cooking=Cooking: %sx - %s
+msg.fuel=Fuel: %sx - %s
+msg.output=Output: %sx - %s
+msg.burnTime=Burn Time: %s
+msg.cookingText=Cooking
+msg.fuelText=Fuel
+msg.outputText=Output
+msg.burnTimeText=Burn Time
+
 #JEI Description
 ec.jei.blockLightWhite=  Redstone powered white lamp.
 ec.jei.blockLightOrange=  Redstone powered orange lamp.

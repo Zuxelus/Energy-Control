@@ -11,6 +11,7 @@ import com.hbm.interfaces.IItemFluidHandler;
 import com.hbm.inventory.FusionRecipes;
 import com.hbm.inventory.MachineRecipes;
 import com.hbm.items.ModItems;
+import com.hbm.items.machine.ItemBattery;
 import com.hbm.items.machine.ItemCatalyst;
 import com.hbm.items.machine.ItemRBMKRod;
 import com.hbm.items.special.ItemAMSCore;
@@ -42,6 +43,21 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 public class CrossHBM extends CrossModBase {
+
+	@Override
+	public boolean isElectricItem(ItemStack stack) {
+		if (stack.getItem() instanceof ItemBattery)
+			return true;
+		return false;
+	}
+
+	@Override
+	public double dischargeItem(ItemStack stack, double needed) {
+		ItemBattery item = (ItemBattery) stack.getItem();
+		long amount =  Math.min(Math.min((long) needed, item.getDischargeRate()), item.getCharge(stack));
+		item.dischargeBattery(stack, amount);
+		return amount;
+	}
 
 	@Override
 	public NBTTagCompound getEnergyData(TileEntity te) {

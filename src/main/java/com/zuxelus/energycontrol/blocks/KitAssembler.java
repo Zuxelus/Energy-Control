@@ -19,11 +19,6 @@ public class KitAssembler extends FacingHorizontalActiveEC {
 	}
 
 	@Override
-	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-		drops.add(CrossModLoader.getCrossMod(ModIDs.IC2).getItemStack("machine"));
-	}
-
-	@Override
 	protected int getBlockGuiId() {
 		return BlockDamages.GUI_KIT_ASSEMBER;
 	}

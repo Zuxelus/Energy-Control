@@ -3,6 +3,7 @@ package com.zuxelus.energycontrol.tileentities;
 import com.zuxelus.energycontrol.blocks.TimerBlock;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
@@ -86,7 +87,7 @@ public class TileEntityTimer extends TileEntityFacing implements ITickable, ITil
 		return sendSignal;
 	}
 
-	public void onNeighborChange(Block fromBlock, BlockPos fromPos) { // server
+	public void onNeighborChange() { // server
 		boolean newPowered = world.getRedstonePower(pos.offset(rotation), rotation) > 0;
 		if (newPowered != isPowered) {
 			if (!isPowered && newPowered) {

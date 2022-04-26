@@ -4,6 +4,7 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.gui.controls.GuiHowlerAlarmSlider;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 import com.zuxelus.zlib.gui.GuiBase;
+
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 

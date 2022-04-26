@@ -1,16 +1,17 @@
 package com.zuxelus.energycontrol.gui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.gui.controls.GuiHowlerAlarmListBox;
 import com.zuxelus.energycontrol.gui.controls.GuiHowlerAlarmSlider;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 import com.zuxelus.zlib.gui.GuiBase;
+
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public class GuiHowlerAlarm extends GuiBase {

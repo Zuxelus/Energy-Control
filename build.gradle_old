@@ -9,7 +9,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.12.2-0.2.8d"
+version = "1.12.2-0.2.8e"
 group= "com.zuxelus.energycontrol"
 archivesBaseName = "EnergyControl"
 
