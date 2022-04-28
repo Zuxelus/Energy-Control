@@ -76,8 +76,8 @@ public abstract class TileEntityInventory extends TileEntityFacing implements IS
 	}
 
 	@Override
-	public ItemStack decrStackSize(int index, int count) {
-		ItemStack stack = ItemStackHelper.getAndSplit(inventory, index, count);
+	public ItemStack decrStackSize(int slot, int count) {
+		ItemStack stack = ItemStackHelper.getAndSplit(inventory, slot, count);
 		return stack;
 	}
 
@@ -171,7 +171,7 @@ public abstract class TileEntityInventory extends TileEntityFacing implements IS
 			float rz = rand.nextFloat() * 0.8F + 0.1F;
 
 			EntityItem entityItem = new EntityItem(world, pos.getX() + rx, pos.getY() + ry, pos.getZ() + rz,
-					new ItemStack(stack.getItem(), stack.stackSize, stack.getItemDamage()));
+				new ItemStack(stack.getItem(), stack.stackSize, stack.getItemDamage()));
 
 			if (stack.hasTagCompound())
 				entityItem.getEntityItem().setTagCompound(stack.getTagCompound().copy());

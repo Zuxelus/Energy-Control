@@ -20,8 +20,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Optional;
 
 @Optional.InterfaceList({
-		@Optional.Interface(modid = ModIDs.IC2, iface = "ic2.api.energy.tile.IEnergySink"),
-		@Optional.Interface(modid = ModIDs.IC2, iface = "ic2.api.energy.tile.IEnergySource")
+	@Optional.Interface(modid = ModIDs.IC2, iface = "ic2.api.energy.tile.IEnergySink"),
+	@Optional.Interface(modid = ModIDs.IC2, iface = "ic2.api.energy.tile.IEnergySource")
 })
 public abstract class TileEntityEnergyStorage extends TileEntityInventory implements IEnergySink, IEnergySource, ISlotItemFilter, ITilePacketHandler {
 	protected boolean addedToEnet;
@@ -73,7 +73,7 @@ public abstract class TileEntityEnergyStorage extends TileEntityInventory implem
 		return tag;
 	}
 
-	@Override
+	@Override // 1.10.2 and more
 	public void onLoad() {
 		if (!addedToEnet && worldObj != null && !worldObj.isRemote && Info.isIc2Available()) {
 			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));

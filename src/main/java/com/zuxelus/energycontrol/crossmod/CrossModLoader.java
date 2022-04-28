@@ -86,7 +86,7 @@ public class CrossModLoader {
 			if (tag != null)
 				return tag;
 		}
-		IEnergyStorage storage = te.getCapability(CapabilityEnergy.ENERGY, null);
+		IEnergyStorage storage = te.getCapability(CapabilityEnergy.ENERGY, null); // 1.10 +
 		if (storage != null) {
 			NBTTagCompound tag = new NBTTagCompound();
 			tag.setString("euType", "FE");
@@ -118,7 +118,7 @@ public class CrossModLoader {
 			if (list != null)
 				return list;
 		}
-		IFluidHandler fluid = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+		IFluidHandler fluid = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null); // 1.10 +
 		if (fluid != null) {
 			IFluidTankProperties[] tanks = fluid.getTankProperties();
 			List<FluidInfo> result = new ArrayList<>();
@@ -149,7 +149,7 @@ public class CrossModLoader {
 			if (tag != null)
 				return tag;
 		}
-		IItemHandler storage = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		IItemHandler storage = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null); // 1.10 +
 		if (storage == null && !(te instanceof IInventory))
 			return null;
 		NBTTagCompound tag = new NBTTagCompound();
@@ -187,6 +187,26 @@ public class CrossModLoader {
 			}
 		}
 		return tag;
+	}
+
+	public static boolean isElectricItem(ItemStack stack) {
+		if (stack == null)
+			return false;
+
+		for (CrossModBase crossMod : CROSS_MODS.values())
+			if (crossMod.isElectricItem(stack))
+				return true;
+		return false;
+	}
+
+	public static double dischargeItem(ItemStack stack, double amount) {
+		for (CrossModBase crossMod : CROSS_MODS.values())
+			if (crossMod.isElectricItem(stack)) {
+				double result = crossMod.dischargeItem(stack, amount);
+				if (result > 0)
+					return result;
+			}
+		return 0;
 	}
 
 	public static void registerItems(boolean isClient) { // 1.10.2 and less

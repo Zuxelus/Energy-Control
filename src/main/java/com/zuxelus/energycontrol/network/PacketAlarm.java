@@ -1,14 +1,14 @@
 package com.zuxelus.energycontrol.network;
 
+import java.util.Arrays;
+
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.EnergyControlConfig;
+
 import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-
-import java.util.Arrays;
 
 public class PacketAlarm implements IMessage, IMessageHandler<PacketAlarm, IMessage> {
 	private int maxAlarmRange;
@@ -35,7 +35,7 @@ public class PacketAlarm implements IMessage, IMessageHandler<PacketAlarm, IMess
 
 	@Override
 	public IMessage onMessage(PacketAlarm message, MessageContext ctx) {
-		EnergyControlConfig.maxAlarmRange = message.maxAlarmRange;
+		EnergyControl.config.maxAlarmRange = message.maxAlarmRange;
 		EnergyControl.instance.serverAllowedAlarms = Arrays.asList(message.allowedAlarms);
 		return null;
 	}

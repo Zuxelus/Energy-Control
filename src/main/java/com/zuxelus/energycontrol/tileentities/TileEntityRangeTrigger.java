@@ -1,6 +1,6 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import com.zuxelus.energycontrol.EnergyControlConfig;
+import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.blocks.RangeTrigger;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
@@ -10,6 +10,7 @@ import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.state.IBlockState;
@@ -42,7 +43,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 	public TileEntityRangeTrigger() {
 		super("tile.range_trigger.name");
 		init = false;
-		tickRate = EnergyControlConfig.rangeTriggerRefreshPeriod;
+		tickRate = EnergyControl.config.rangeTriggerRefreshPeriod;
 		updateTicker = tickRate;
 		status = -1;
 		invertRedstone = false;

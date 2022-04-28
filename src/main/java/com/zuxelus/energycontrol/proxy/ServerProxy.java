@@ -2,7 +2,9 @@ package com.zuxelus.energycontrol.proxy;
 
 import java.io.File;
 
+import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.ServerTickHandler;
+import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,8 +15,10 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 public class ServerProxy implements IProxy {
 
-	@Override
-	public void loadConfig(FMLPreInitializationEvent event) {}
+	public void loadConfig(FMLPreInitializationEvent event) {
+		EnergyControl.config = new ConfigHandler();
+		EnergyControl.config.init(event.getSuggestedConfigurationFile());
+	}
 
 	@Override
 	public void registerSpecialRenderers() {}

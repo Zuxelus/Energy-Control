@@ -36,7 +36,7 @@ public class GuiAFSU extends GuiContainerBase {
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		super.drawScreen(mouseX, mouseY, partialTicks);
 		if (buttonList.get(0).isMouseOver())
-			drawHoveringText(Arrays.asList(I18n.format("info.redstoneMode"),I18n.format("info.redstoneMode" + container.te.getRedstoneMode())),mouseX, mouseY);
+			drawHoveringText(Arrays.asList(I18n.format("info.redstoneMode"),I18n.format("info.redstoneMode" + container.te.getRedstoneMode())), mouseX, mouseY);
 		if (mouseX >= guiLeft + 51 && mouseY >= guiTop + 34 && mouseX < guiLeft + 84 && mouseY < guiTop + 51)
 			drawCreativeTabHoveringText(String.format("%.2f M/%d M EU", container.te.getEnergy() / 1000000, container.te.getCapacity() / 1000000), mouseX, mouseY);
 	}

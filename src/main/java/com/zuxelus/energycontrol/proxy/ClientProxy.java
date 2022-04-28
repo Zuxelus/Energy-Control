@@ -1,8 +1,10 @@
 package com.zuxelus.energycontrol.proxy;
 
 import com.zuxelus.energycontrol.ClientTickHandler;
+import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.ServerTickHandler;
 import com.zuxelus.energycontrol.blocks.BlockDamages;
+import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.containers.*;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
@@ -31,14 +33,12 @@ import java.io.File;
 import java.util.List;
 
 public class ClientProxy implements IProxy {
-	public static KeyBinding modeSwitchKey;
 
 	@Override
 	public void loadConfig(FMLPreInitializationEvent event) {
-		if (!Loader.isModLoaded(ModIDs.IC2) && Loader.isModLoaded(ModIDs.TECH_REBORN)) {
-			modeSwitchKey = new KeyBinding("Mode Switch Key", 50, "Energy Control");
-			ClientRegistry.registerKeyBinding(modeSwitchKey);
-		}
+		EnergyControl.config = new ConfigHandler();
+		MinecraftForge.EVENT_BUS.register(EnergyControl.config);
+		EnergyControl.config.init(event.getSuggestedConfigurationFile());
 	}
 
 	@Override

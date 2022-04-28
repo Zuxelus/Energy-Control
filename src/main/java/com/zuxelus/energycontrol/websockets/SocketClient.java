@@ -1,13 +1,10 @@
 package com.zuxelus.energycontrol.websockets;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.net.URI;
 
-import com.zuxelus.energycontrol.EnergyControlConfig;
+import com.zuxelus.energycontrol.EnergyControl;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -18,8 +15,6 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.DefaultHttpHeaders;
 import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpObjectAggregator;
-import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.PingWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketClientHandshakerFactory;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
@@ -34,7 +29,7 @@ public class SocketClient {
 			group = new NioEventLoopGroup();
 		try {
 			final SocketClientHandler handler = new SocketClientHandler(WebSocketClientHandshakerFactory.newHandshaker(
-					new URI(String.format("ws://%s:%s/?token=%s&id=%s", host, port, EnergyControlConfig.wsToken, EnergyControlConfig.wsServerID)), WebSocketVersion.V13, null, true, new DefaultHttpHeaders()));
+					new URI(String.format("ws://%s:%s/?token=%s&id=%s", host, port, EnergyControl.config.wsToken, EnergyControl.config.wsServerID)), WebSocketVersion.V13, null, true, new DefaultHttpHeaders()));
 
 			Bootstrap bootstrap = new Bootstrap().group(group).channel(NioSocketChannel.class)
 					.handler(new ChannelInitializer<SocketChannel>() {

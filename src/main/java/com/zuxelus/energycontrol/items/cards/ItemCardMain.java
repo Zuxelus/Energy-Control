@@ -3,7 +3,6 @@ package com.zuxelus.energycontrol.items.cards;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.EnergyControlConfig;
 import com.zuxelus.energycontrol.ServerTickHandler;
 import com.zuxelus.energycontrol.api.*;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
@@ -121,6 +120,7 @@ public final class ItemCardMain extends Item implements IItemCard, ITouchAction,
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT) // 1.10.2 and less
 	public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> items) {
 		for (Map.Entry<Integer, ItemCardBase> entry : CARDS.entrySet()) {
 			Integer key = entry.getKey();
@@ -176,7 +176,7 @@ public final class ItemCardMain extends Item implements IItemCard, ITouchAction,
 
 		CardState state = CardState.INVALID_CARD;
 		IItemCard card = ((IItemCard) stack.getItem());
-		if (!EnergyControlConfig.disableRangeCheck && card.isRemoteCard(stack)) {
+		if (!EnergyControl.config.disableRangeCheck && card.isRemoteCard(stack)) {
 			BlockPos target = reader.getTarget();
 			if (target != null) {
 				int dx = target.getX() - pos.getX();
@@ -284,8 +284,8 @@ public final class ItemCardMain extends Item implements IItemCard, ITouchAction,
 		return CARDS.keySet();
 	}
 
-	public static void sendCardToWS(List<PanelString> list, ICardReader reader) {
-		if (EnergyControlConfig.wsHost.isEmpty())
+	/*public static void sendCardToWS(List<PanelString> list, ICardReader reader) {
+		if (EnergyControl.config.wsHost.isEmpty())
 			return;
 		String id = reader.getId();
 		JsonObject json = new JsonObject();
@@ -309,5 +309,5 @@ public final class ItemCardMain extends Item implements IItemCard, ITouchAction,
 		}
 		json.add("lines", array);
 		ServerTickHandler.instance.cards.put(id, json);
-	}
+	}*/
 }

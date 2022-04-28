@@ -70,7 +70,7 @@ public abstract class ItemInventory implements IInventory, ISlotItemFilter {
 	}
 
 	@Override
-	public ITextComponent getDisplayName() {
+	public ITextComponent getDisplayName() { // 1.10.2 from IWorldNameable
 		return new TextComponentString(customName);
 	}
 
@@ -80,10 +80,10 @@ public abstract class ItemInventory implements IInventory, ISlotItemFilter {
 	}
 
 	@Override
-	public ItemStack decrStackSize(int index, int count) {
-		ItemStack itemstack = ItemStackHelper.getAndSplit(inventory, index, count);
+	public ItemStack decrStackSize(int slot, int count) {
+		ItemStack stack = ItemStackHelper.getAndSplit(inventory, slot, count);
 		//if (!itemstack.isEmpty()) markDirty();
-		return itemstack;
+		return stack;
 	}
 
 	@Override

@@ -9,6 +9,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public interface IItemCard {
+
 	/**
 	 * Called when the card is processed, for example in a Panel or Range Trigerrer.
 	 * 

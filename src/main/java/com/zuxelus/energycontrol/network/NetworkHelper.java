@@ -1,6 +1,9 @@
 package com.zuxelus.energycontrol.network;
 
+import java.util.List;
+
 import com.zuxelus.zlib.network.PacketTileEntity;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IContainerListener;
@@ -12,8 +15,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
-
-import java.util.List;
 
 public class NetworkHelper {
 	public static SimpleNetworkWrapper network;
@@ -33,7 +34,7 @@ public class NetworkHelper {
 	// server
 	public static void sendPacketToAllAround(World world, BlockPos pos, int dist, IMessage packet) {
 		List<EntityPlayer> players = world.playerEntities;
-		for (EntityPlayer player : players) {
+		for (EntityPlayer player : players)
 			if (player instanceof EntityPlayerMP) {
 				double dx = pos.getX() - player.posX;
 				double dy = pos.getY() - player.posY;
@@ -42,7 +43,6 @@ public class NetworkHelper {
 				if (dx * dx + dy * dy + dz * dz < dist * dist)
 					network.sendTo(packet, (EntityPlayerMP)player);
 			}
-		}
 	}
 
 	// server

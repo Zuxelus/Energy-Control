@@ -26,7 +26,7 @@ public class KitAssemblerRecipeCategory extends BlankRecipeCategory<KitAssembler
 
 	public KitAssemblerRecipeCategory(IGuiHelper guiHelper) {
 		background = guiHelper.createDrawable(texture, 28, 16, 144, 54);
-		icon = guiHelper.createDrawable(texture, 2, 2, 28, 28);
+		icon = new DrawableIcon(texture, 50, 0, 14, 16, 64, 64);
 		arrow = guiHelper.createDrawable(texture, 176, 0, 24, 17);
 		animatedarrow = guiHelper.createAnimatedDrawable(arrow, 24, StartDirection.LEFT, false);
 	}
@@ -38,7 +38,7 @@ public class KitAssemblerRecipeCategory extends BlankRecipeCategory<KitAssembler
 
 	@Override
 	public IDrawable getIcon() {
-		return new DrawableIcon(texture, 50, 0, 14, 16, 64, 64);
+		return icon;
 	}
 
 	@Override

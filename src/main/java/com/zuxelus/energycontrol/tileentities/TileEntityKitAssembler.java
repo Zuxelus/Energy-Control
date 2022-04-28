@@ -1,17 +1,15 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import com.zuxelus.energycontrol.api.IItemCard;
 import com.zuxelus.energycontrol.blocks.KitAssembler;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
-import com.zuxelus.energycontrol.crossmod.jei.KitAssemblerRecipeWrapper;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.recipes.KitAssemblerRecipe;
 import com.zuxelus.zlib.containers.EnergyStorage;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
-import com.zuxelus.zlib.tileentities.TileEntityInventory;
+import com.zuxelus.zlib.tileentities.TileEntityItemHandler;
 
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
@@ -36,7 +34,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.common.Optional;
 
 @Optional.Interface(modid = ModIDs.IC2, iface = "ic2.api.energy.tile.IEnergySink")
-public class TileEntityKitAssembler extends TileEntityInventory implements ITickable, ITilePacketHandler, ISlotItemFilter, IEnergySink, IEnergyStorage {
+public class TileEntityKitAssembler extends TileEntityItemHandler implements ITickable, ITilePacketHandler, ISlotItemFilter, IEnergySink, IEnergyStorage {
 	public static final byte SLOT_INFO = 0;
 	public static final byte SLOT_CARD1 = 1;
 	public static final byte SLOT_ITEM = 2;
@@ -49,13 +47,14 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 	private KitAssemblerRecipe recipe;
 	private int recipeTime; // client Only
 	public static final int CAPACITY = 2000;
+	public static final int OUTPUT = 32;
 	private double production;
 	private boolean addedToEnet;
 	private boolean active;
 
 	public TileEntityKitAssembler() {
 		super("tile.kit_assembler.name");
-		storage = new EnergyStorage(CAPACITY, 32, 32, 0);
+		storage = new EnergyStorage(CAPACITY, OUTPUT, OUTPUT, 0);
 		addedToEnet = false;
 		active = false;
 		production = 0;
@@ -230,12 +229,12 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 	}
 
 	private void handleDischarger(int slot) {
-		int needed = Math.min(32, storage.getMaxEnergyStored() - storage.getEnergyStored());
+		int needed = Math.min(OUTPUT, storage.getMaxEnergyStored() - storage.getEnergyStored());
 		if (needed <= 0)
 			return;
 		if (buffer > 0)
 			buffer -= storage.receiveEnergy(buffer, false);
-		needed = Math.min(32, storage.getMaxEnergyStored() - storage.getEnergyStored());
+		needed = Math.min(OUTPUT, storage.getMaxEnergyStored() - storage.getEnergyStored());
 		ItemStack stack = getStackInSlot(slot);
 		if (stack != null && needed > 0) {
 			if (stack.getItem().equals(Items.LAVA_BUCKET)) {
@@ -244,13 +243,13 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 				setInventorySlotContents(slot, new ItemStack(Items.BUCKET));
 				return;
 			}
-			IEnergyStorage stackStorage = stack.getCapability(CapabilityEnergy.ENERGY, null);
+			IEnergyStorage stackStorage = stack.getCapability(CapabilityEnergy.ENERGY, null); // 1.10 +
 			if (stackStorage != null) {
 				if (storage.receiveEnergy(stackStorage.extractEnergy(needed, false), false) > 0)
 					active = true;
-			} else if (CrossModLoader.getCrossMod(ModIDs.IC2).isElectricItem(stack)) {
+			} else if (CrossModLoader.isElectricItem(stack)) {
 				double old = storage.getEnergyStored();
-				storage.receiveEnergy((int) CrossModLoader.getCrossMod(ModIDs.IC2).dischargeItem(stack, getDemandedEnergy()), false);
+				storage.receiveEnergy((int) CrossModLoader.dischargeItem(stack, needed), false);
 				if (!active && storage.getEnergyStored() > old)
 					markDirty();
 			}
@@ -330,9 +329,8 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 		case SLOT_INFO:
 			return ItemCardMain.isCard(stack);
 		case SLOT_DISCHARGER:
-			return stack.getCapability(CapabilityEnergy.ENERGY, null) != null ||
-				CrossModLoader.getCrossMod(ModIDs.IC2).isElectricItem(stack) ||
-				stack.getItem().equals(Items.LAVA_BUCKET);
+			return stack.getCapability(CapabilityEnergy.ENERGY, null) != null || // 1.10 +
+				CrossModLoader.isElectricItem(stack) || stack.getItem().equals(Items.LAVA_BUCKET);
 		case SLOT_RESULT:
 		default:
 			return false;
@@ -370,15 +368,15 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITick
 	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
 		return oldState.getBlock() != newSate.getBlock();
 	}
-	
+
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		if (capability == CapabilityEnergy.ENERGY)
+	public <T> T getCapability(Capability<T> cap, EnumFacing side) { // 1.10 +
+		if (cap == CapabilityEnergy.ENERGY)
 			return (T) this;
-		return null;
+		return super.getCapability(cap, side);
 	}
 
-	// IEnergyStorage
+	// IEnergyStorage  1.10.2 and more
 	@Override
 	public int receiveEnergy(int maxReceive, boolean simulate) {
 		int energyReceived = Math.min(CAPACITY - getEnergyStored(), Math.min(32, maxReceive));

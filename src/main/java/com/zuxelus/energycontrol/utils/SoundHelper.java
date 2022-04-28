@@ -9,13 +9,11 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.EnergyControlConfig;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundList;
@@ -50,7 +48,7 @@ public class SoundHelper {
 	};
 
 	public static void initSound(File configFolder) {
-		if (configFolder == null || !EnergyControlConfig.useCustomSounds)
+		if (configFolder == null || !EnergyControl.config.useCustomSounds)
 			return;
 		
 			alarms = new File(configFolder, "alarms");

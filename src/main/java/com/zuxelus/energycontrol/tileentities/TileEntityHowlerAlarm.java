@@ -1,11 +1,10 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.EnergyControlConfig;
 import com.zuxelus.energycontrol.utils.TileEntitySound;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
-import net.minecraft.block.state.IBlockState;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -26,11 +25,11 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITickable
 	private TileEntitySound sound;
 
 	public TileEntityHowlerAlarm() {
-		tickRate = EnergyControlConfig.alarmPause;
+		tickRate = EnergyControl.config.alarmPause;
 		updateTicker = 0;
 		powered = false;
 		soundName = prevSoundName = DEFAULT_SOUND_NAME;
-		range = EnergyControlConfig.howlerAlarmRange;
+		range = EnergyControl.config.howlerAlarmRange;
 	}
 
 	public int getRange() {

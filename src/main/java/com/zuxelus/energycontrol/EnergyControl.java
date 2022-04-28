@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
 
+import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.containers.slots.SlotHandler;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.init.ModItems;
@@ -13,7 +14,6 @@ import com.zuxelus.energycontrol.network.ChannelHandler;
 import com.zuxelus.energycontrol.proxy.IProxy;
 import com.zuxelus.energycontrol.recipes.Recipes;
 import com.zuxelus.energycontrol.tileentities.ScreenManager;
-import com.zuxelus.energycontrol.websockets.SocketClient;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
@@ -30,7 +30,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Mod(modid = EnergyControl.MODID, dependencies="after:IC2;after:techreborn", acceptedMinecraftVersions = "[1.10.2]")
+@Mod(modid = EnergyControl.MODID, dependencies="after:IC2;after:techreborn", guiFactory = "com.zuxelus.energycontrol.config.GuiFactory", acceptedMinecraftVersions = "[1.10.2]")
 public class EnergyControl {
 	public static final String MODID = "energycontrol";
 
@@ -43,7 +43,7 @@ public class EnergyControl {
 	public static EnCtrlTab creativeTab = new EnCtrlTab();
 
 	public static Logger logger;
-
+	public static ConfigHandler config;
 	public ScreenManager screenManager = new ScreenManager();
 
 	@SideOnly(Side.CLIENT)
@@ -83,15 +83,15 @@ public class EnergyControl {
 		Recipes.addRecipes();
 	}
 
-	@EventHandler
+	/*@EventHandler
 	public void onServerStarting(FMLServerStartingEvent event) {
-		if (EnergyControlConfig.wsEnabled && !EnergyControlConfig.wsHost.isEmpty())
-			SocketClient.connect(EnergyControlConfig.wsHost, EnergyControlConfig.wsPort);
+		if (EnergyControl.config.wsEnabled && !EnergyControl.config.wsHost.isEmpty())
+			SocketClient.connect(EnergyControl.config.wsHost, EnergyControl.config.wsPort);
 	}
 
 	@EventHandler
 	public void onServerStopping(FMLServerStoppingEvent event) {
-		if (EnergyControlConfig.wsEnabled)
+		if (EnergyControl.config.wsEnabled)
 			SocketClient.close();
-	}
+	}*/
 }

@@ -1,20 +1,12 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import com.zuxelus.energycontrol.blocks.HoloPanel;
-import com.zuxelus.energycontrol.blocks.RangeTrigger;
-import com.zuxelus.energycontrol.containers.ContainerHoloPanel;
-import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.ItemComponent;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 
-import net.minecraft.block.BlockHorizontal;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 

@@ -22,7 +22,7 @@ public class ClientTickHandler {
 	public static void onClientTick(TickEvent.ClientTickEvent event) {
 		if (event.phase == TickEvent.Phase.END)
 			return;
-		boolean alt = GuiScreen.isAltKeyDown();
+		boolean alt = GuiScreen.isAltKeyDown(); // 1.10.2 and more
 		if (altPressed != alt) {
 			altPressed = alt;
 			if (Minecraft.getMinecraft().getConnection() != null)

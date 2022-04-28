@@ -1,13 +1,12 @@
 package com.zuxelus.energycontrol.items.cards;
 
+import java.util.List;
+
 import com.zuxelus.energycontrol.api.*;
-import com.zuxelus.energycontrol.items.kits.ItemKitMain;
+
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import java.util.List;
 
 public abstract class ItemCardBase {
 	protected String name;
@@ -17,7 +16,7 @@ public abstract class ItemCardBase {
 		this.damage = damage;
 		this.name = name;
 	}
-	
+
 	public final int getDamage() {
 		return damage;
 	}

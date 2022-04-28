@@ -73,7 +73,7 @@ public class GuiCardText extends GuiBase {
 		}
 	}
 
-	private void updateTextArea() { // not in 1.15
+	private void updateTextArea() {
 		if (textArea != null) {
 			String[] lines = textArea.getText();
 			if (lines != null)

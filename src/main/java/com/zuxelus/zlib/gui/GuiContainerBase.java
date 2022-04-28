@@ -1,5 +1,7 @@
 package com.zuxelus.zlib.gui;
 
+import java.text.DecimalFormat;
+
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
@@ -7,8 +9,6 @@ import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.text.DecimalFormat;
 
 @SideOnly(Side.CLIENT)
 public class GuiContainerBase extends GuiContainer {

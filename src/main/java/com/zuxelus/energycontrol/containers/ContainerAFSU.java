@@ -6,6 +6,7 @@ import com.zuxelus.zlib.containers.ContainerBase;
 import com.zuxelus.zlib.containers.slots.SlotArmor;
 import com.zuxelus.zlib.containers.slots.SlotChargeable;
 import com.zuxelus.zlib.containers.slots.SlotDischargeable;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.IContainerListener;

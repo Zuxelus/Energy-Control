@@ -399,6 +399,7 @@ public class CrossIC2Exp extends CrossModBase {
 		return null;
 	}
 
+	@Override
 	public NBTTagCompound getReactorData(TileEntity te) {
 		if (!(te instanceof TileEntityNuclearReactorElectric))
 			return null;
@@ -422,6 +423,7 @@ public class CrossIC2Exp extends CrossModBase {
 		return tag;
 	}
 
+	@Override
 	public NBTTagCompound getReactor5x5Data(TileEntity te) {
 		if (!(te instanceof TileEntityNuclearReactorElectric))
 			return null;

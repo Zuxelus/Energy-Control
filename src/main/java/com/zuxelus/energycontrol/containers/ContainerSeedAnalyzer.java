@@ -5,6 +5,7 @@ import com.zuxelus.energycontrol.tileentities.TileEntitySeedAnalyzer;
 import com.zuxelus.zlib.containers.ContainerBase;
 import com.zuxelus.zlib.containers.slots.SlotDischargeable;
 import com.zuxelus.zlib.containers.slots.SlotFilter;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.nbt.NBTTagCompound;
@@ -12,7 +13,7 @@ import net.minecraft.nbt.NBTTagCompound;
 public class ContainerSeedAnalyzer extends ContainerBase<TileEntitySeedAnalyzer> {
 	private double lastEnergy = -1;
 	private double lastProduction = -1;
-	
+
 	public ContainerSeedAnalyzer(EntityPlayer player, TileEntitySeedAnalyzer te) {
 		super(te);
 		
@@ -28,15 +29,15 @@ public class ContainerSeedAnalyzer extends ContainerBase<TileEntitySeedAnalyzer>
 		super.detectAndSendChanges();
 		double energy = te.getEnergy();
 		double production = te.getProduction();
-        for (IContainerListener listener : listeners)
-            if (lastEnergy != energy || lastProduction != production) {
-                NBTTagCompound tag = new NBTTagCompound();
-                tag.setInteger("type", 1);
-                tag.setDouble("energy", energy);
-                tag.setDouble("production", production);
-                tag.setInteger("productionMax", te.getProductionMax());
-                NetworkHelper.updateClientTileEntity(listener, te.getPos(), tag);
-            }
+		for (IContainerListener listener : listeners)
+			if (lastEnergy != energy || lastProduction != production) {
+				NBTTagCompound tag = new NBTTagCompound();
+				tag.setInteger("type", 1);
+				tag.setDouble("energy", energy);
+				tag.setDouble("production", production);
+				tag.setInteger("productionMax", te.getProductionMax());
+				NetworkHelper.updateClientTileEntity(listener, te.getPos(), tag);
+			}
 		lastEnergy = energy;
 		lastProduction = production;
 	}

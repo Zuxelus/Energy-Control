@@ -17,8 +17,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 
-@Optional.InterfaceList({ @Optional.Interface(iface = "micdoodle8.mods.galacticraft.api.power.IEnergyHandlerGC", modid = "galacticraftcore"),
-	@Optional.Interface(iface = "micdoodle8.mods.galacticraft.api.transmission.tile.IElectrical", modid = "galacticraftcore") })
+@Optional.InterfaceList({
+	@Optional.Interface(iface = "micdoodle8.mods.galacticraft.api.power.IEnergyHandlerGC", modid = "galacticraftcore"),
+	@Optional.Interface(iface = "micdoodle8.mods.galacticraft.api.transmission.tile.IElectrical", modid = "galacticraftcore")
+})
 public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable, IEnergyStorage, IEnergyHandlerGC, IElectrical {
 	public static final int TIER = 5;
 	public static final int CAPACITY = 400000000;
@@ -42,7 +44,7 @@ public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable
 	public void setRedstoneMode(byte value) {
 		byte old = redstoneMode;
 		redstoneMode = value;
-		if (worldObj!= null && !worldObj.isRemote && redstoneMode != old) 
+		if (worldObj != null && !worldObj.isRemote && redstoneMode != old) 
 			notifyBlockUpdate();
 	}
 
@@ -77,9 +79,11 @@ public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable
 	public void onServerMessageReceived(NBTTagCompound tag) { 
 		if (!tag.hasKey("type"))
 			return;
-		if (tag.getInteger("type") == 1) {
+		switch (tag.getInteger("type")) {
+		case 1:
 			if (tag.hasKey("value"))
 				setRedstoneMode((byte) tag.getDouble("value"));
+			break;
 		}
 	}
 
@@ -87,9 +91,11 @@ public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable
 	public void onClientMessageReceived(NBTTagCompound tag) {
 		if (!tag.hasKey("type"))
 			return;
-		if (tag.getInteger("type") == 1) {
+		switch (tag.getInteger("type")) {
+		case 1:
 			if (tag.hasKey("value"))
 				energy = tag.getDouble("value");
+			break;
 		}
 	}
 

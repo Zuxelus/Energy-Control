@@ -87,7 +87,7 @@ public class TileEntityTimer extends TileEntityFacing implements ITickable, ITil
 		return sendSignal;
 	}
 
-	public void onNeighborChange(Block fromBlock, BlockPos fromPos) { // server
+	public void onNeighborChange() { // server
 		boolean newPowered = worldObj.getRedstonePower(pos.offset(rotation), rotation) > 0;
 		if (newPowered != isPowered) {
 			if (!isPowered && newPowered) {

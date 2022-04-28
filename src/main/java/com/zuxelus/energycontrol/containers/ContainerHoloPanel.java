@@ -1,8 +1,6 @@
 package com.zuxelus.energycontrol.containers;
 
-import com.zuxelus.energycontrol.containers.slots.SlotCard;
-import com.zuxelus.energycontrol.containers.slots.SlotPower;
-import com.zuxelus.energycontrol.containers.slots.SlotRange;
+import com.zuxelus.energycontrol.containers.slots.*;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.containers.ContainerBase;
 

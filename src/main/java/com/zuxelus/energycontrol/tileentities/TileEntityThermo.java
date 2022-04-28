@@ -1,6 +1,6 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import com.zuxelus.energycontrol.EnergyControlConfig;
+import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.blocks.RemoteThermo;
 import com.zuxelus.energycontrol.blocks.ThermalMonitor;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
@@ -31,7 +31,7 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 		invertRedstone = false;
 		heatLevel = 500;
 		updateTicker = 0;
-		tickRate = EnergyControlConfig.thermalMonitorRefreshPeriod;
+		tickRate = EnergyControl.config.thermalMonitorRefreshPeriod;
 		status = -1;
 	}
 

@@ -3,6 +3,7 @@ package com.zuxelus.energycontrol.containers;
 import com.zuxelus.energycontrol.containers.slots.*;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.containers.ContainerBase;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 

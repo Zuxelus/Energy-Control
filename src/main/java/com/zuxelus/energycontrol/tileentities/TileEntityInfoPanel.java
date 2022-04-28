@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.EnergyControlConfig;
 import com.zuxelus.energycontrol.api.*;
 import com.zuxelus.energycontrol.blocks.HoloPanelExtender;
 import com.zuxelus.energycontrol.blocks.InfoPanelExtender;
@@ -69,7 +68,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		cardData = new HashMap<>();
 		displaySettings = new HashMap<>(1);
 		displaySettings.put(0, new HashMap<>());
-		tickRate = EnergyControlConfig.infoPanelRefreshPeriod;
+		tickRate = EnergyControl.config.infoPanelRefreshPeriod;
 		updateTicker = tickRate - 1;
 		dataTicker = 4;
 		showLabels = true;
@@ -456,7 +455,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		if (ItemCardMain.isCard(card)) {
 			ItemCardReader reader = new ItemCardReader(card);
 			ItemCardMain.updateCardNBT(card, worldObj, pos, reader, stack);
-			ItemCardMain.sendCardToWS(getPanelStringList(true, getShowLabels()), reader);
+			//ItemCardMain.sendCardToWS(getPanelStringList(true, getShowLabels()), reader);
 			reader.updateClient(card, this, slot);
 		}
 	}

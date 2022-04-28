@@ -3,6 +3,8 @@ package com.zuxelus.energycontrol.blocks;
 import com.zuxelus.energycontrol.tileentities.TileEntityTimer;
 import com.zuxelus.zlib.blocks.FacingBlockSmall;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
+
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
@@ -10,6 +12,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -31,14 +34,14 @@ public class TimerBlock extends FacingBlockSmall {
 		TileEntity te = blockAccess.getTileEntity(pos);
 		if (!(te instanceof TileEntityTimer))
 			return 0;
-		return ((TileEntityTimer) te).getPowered() ? side != state.getValue(FACING) ? 15 : 0 : 0;
+		if (side == state.getValue(FACING) || side == ((TileEntityTimer) te).getRotation().getOpposite())
+			return 0;
+		return ((TileEntityTimer) te).getPowered() ? 15 : 0;
 	}
 
 	@Override
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-		EnumFacing enumfacing = state.getValue(FACING);
-
-		switch (enumfacing) {
+		switch (state.getValue(FACING)) {
 		case EAST:
 			return AABB_EAST;
 		case WEST:
@@ -63,6 +66,16 @@ public class TimerBlock extends FacingBlockSmall {
 	@Override
 	public EnumBlockRenderType getRenderType(IBlockState state) {
 		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
+	}
+
+	@Override
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block fromBlock) {
+		super.neighborChanged(state, world, pos, fromBlock);
+		if (!world.isRemote) {
+			TileEntity be = world.getTileEntity(pos);
+			if (be instanceof TileEntityTimer)
+				((TileEntityTimer) be).onNeighborChange();
+		}
 	}
 
 	@SideOnly(Side.CLIENT)

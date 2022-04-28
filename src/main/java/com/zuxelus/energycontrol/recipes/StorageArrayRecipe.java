@@ -58,7 +58,7 @@ public class StorageArrayRecipe implements IRecipe {
 				cardCountGenerator++;
 				break;
 			case ItemCardType.CARD_ENERGY_ARRAY:
-				array = stack;				
+				array = stack;
 				arrayCount++;
 				break;
 			case ItemCardType.CARD_LIQUID_ARRAY:
