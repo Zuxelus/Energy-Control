@@ -1,9 +1,9 @@
 package com.zuxelus.energycontrol.containers;
 
+import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityAverageCounter;
 import com.zuxelus.zlib.containers.ContainerBase;
 import com.zuxelus.zlib.containers.slots.SlotFilter;
-import com.zuxelus.zlib.network.NetworkHelper;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ICrafting;
@@ -30,7 +30,7 @@ public class ContainerAverageCounter extends ContainerBase<TileEntityAverageCoun
 	@Override
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
-		int average = te.getClientAverage();
+		double average = te.getClientAverage();
 		for (int i = 0; i < crafters.size(); i++)
 			if (lastAverage != average)
 				NetworkHelper.updateClientTileEntity((ICrafting)crafters.get(i), te.xCoord, te.yCoord, te.zCoord, 1, average);

@@ -1,12 +1,18 @@
 package com.zuxelus.zlib.tileentities;
 
-import net.minecraft.entity.EntityLivingBase;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
+import com.zuxelus.zlib.blocks.FacingHorizontal;
+
+import cpw.mods.fml.common.Optional;
+import ic2.api.tile.IWrenchable;
+import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public abstract class TileEntityFacing extends TileEntity {
+@Optional.Interface(modid = ModIDs.IC2, iface = "ic2.api.tile.IWrenchable")
+public abstract class TileEntityFacing extends TileEntity implements IWrenchable {
 	protected ForgeDirection facing;
 	protected ForgeDirection rotation;
 
@@ -15,9 +21,6 @@ public abstract class TileEntityFacing extends TileEntity {
 	}
 
 	public void setFacing(int meta) {
-		ForgeDirection newFacing = ForgeDirection.getOrientation(meta);
-		if (worldObj != null && !worldObj.isRemote && newFacing != facing)
-			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		facing = ForgeDirection.getOrientation(meta);
 	}
 
@@ -47,8 +50,6 @@ public abstract class TileEntityFacing extends TileEntity {
 			facing = ForgeDirection.getOrientation(tag.getInteger("facing"));
 		else
 			facing = ForgeDirection.NORTH;
-		if (worldObj != null && worldObj.isRemote && oldFacing != facing)
-			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		if (hasRotation()) {
 			if (tag.hasKey("rotation"))
 				rotation = ForgeDirection.getOrientation(tag.getInteger("rotation"));
@@ -64,17 +65,40 @@ public abstract class TileEntityFacing extends TileEntity {
 		return tag;
 	}
 
-	public static ForgeDirection getHorizontalFacing(EntityLivingBase placer) {
-		switch (MathHelper.floor_double(placer.rotationYaw * 4.0F / 360.0F + 0.5D) & 3) {
-		case 0:
-			return ForgeDirection.NORTH;
-		case 1:
-			return ForgeDirection.EAST;
-		case 2:
-			return ForgeDirection.SOUTH;
-		case 3:
-			return ForgeDirection.WEST;
-		}
-		return ForgeDirection.NORTH;
+	protected void notifyBlockUpdate() {
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+	}
+
+	// IWrenchable, 1.7.10
+	@Override
+	public boolean wrenchCanSetFacing(EntityPlayer player, int side) {
+		return facing.ordinal() != side;
+	}
+
+	@Override
+	public short getFacing() {
+		return (short) facing.ordinal();
+	}
+
+	@Override
+	public void setFacing(short facing) {
+		Block block = worldObj.getBlock(xCoord, yCoord, zCoord);
+		if (block instanceof FacingHorizontal && (facing == 0 || facing == 1))
+			return;
+
+		int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+		meta = meta - meta % 6 + facing;
+		worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, meta, 3);
+		setFacing((int) facing);
+	}
+
+	@Override
+	public boolean wrenchCanRemove(EntityPlayer player) {
+		return true;
+	}
+
+	@Override
+	public float getWrenchDropRate() {
+		return 1;
 	}
 }

@@ -13,7 +13,7 @@ public class TileEntityAdvancedInfoPanelExtender extends TileEntityInfoPanelExte
 		if (screen == null)
 			return 16;
 		TileEntityInfoPanel core = screen.getCore(worldObj);
-		if (core == null || !(core instanceof TileEntityAdvancedInfoPanel))
+		if (!(core instanceof TileEntityAdvancedInfoPanel))
 			return 16;
 		return ((TileEntityAdvancedInfoPanel) core).thickness;
 	}
@@ -22,7 +22,7 @@ public class TileEntityAdvancedInfoPanelExtender extends TileEntityInfoPanelExte
 		if (screen == null)
 			return 0;
 		TileEntityInfoPanel core = screen.getCore(worldObj);
-		if (core == null || !(core instanceof TileEntityAdvancedInfoPanel))
+		if (!(core instanceof TileEntityAdvancedInfoPanel))
 			return 0;
 		return ((TileEntityAdvancedInfoPanel) core).rotateHor;
 	}
@@ -31,7 +31,7 @@ public class TileEntityAdvancedInfoPanelExtender extends TileEntityInfoPanelExte
 		if (screen == null)
 			return 0;
 		TileEntityInfoPanel core = screen.getCore(worldObj);
-		if (core == null || !(core instanceof TileEntityAdvancedInfoPanel))
+		if (!(core instanceof TileEntityAdvancedInfoPanel))
 			return 0;
 		return ((TileEntityAdvancedInfoPanel) core).rotateVert;
 	}
@@ -41,13 +41,14 @@ public class TileEntityAdvancedInfoPanelExtender extends TileEntityInfoPanelExte
 		if (screen == null)
 			return ForgeDirection.NORTH;
 		TileEntityInfoPanel core = screen.getCore(worldObj);
-		if (core == null || !(core instanceof TileEntityAdvancedInfoPanel))
+		if (!(core instanceof TileEntityAdvancedInfoPanel))
 			return ForgeDirection.NORTH;
-		return ((TileEntityAdvancedInfoPanel) core).getRotation();
+		return core.getRotation();
 	}
 
+	// IWrenchable
 	@Override
-	public ItemStack getWrenchDrop(EntityPlayer entityPlayer) {
-		return new ItemStack(ModItems.blockMain, 1, BlockDamages.DAMAGE_ADVANCED_EXTENDER);
+	public ItemStack getWrenchDrop(EntityPlayer player) {
+		return new ItemStack(ModItems.blockInfoPanelAdvancedExtender);
 	}
 }

@@ -13,11 +13,11 @@ import io.netty.buffer.ByteBuf;
 
 public class PacketAlarm implements IMessage, IMessageHandler<PacketAlarm, IMessage> {
 	private int maxAlarmRange;
-	private String allowedAlarms;
+	private String[] allowedAlarms;
 
 	public PacketAlarm() { }
 
-	public PacketAlarm(int range, String alarms) {
+	public PacketAlarm(int range, String[] alarms) {
 		maxAlarmRange = range;
 		allowedAlarms = alarms;
 	}
@@ -25,19 +25,19 @@ public class PacketAlarm implements IMessage, IMessageHandler<PacketAlarm, IMess
 	@Override
 	public void fromBytes(ByteBuf buf) {
 		maxAlarmRange = buf.readInt();
-		allowedAlarms = ByteBufUtils.readUTF8String(buf);
+		allowedAlarms = ByteBufUtils.readUTF8String(buf).split(",");
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf) {
 		buf.writeInt(maxAlarmRange);
-		ByteBufUtils.writeUTF8String(buf, allowedAlarms);
+		ByteBufUtils.writeUTF8String(buf, String.join(",", allowedAlarms));
 	}
 
 	@Override
 	public IMessage onMessage(PacketAlarm message, MessageContext ctx) {
 		EnergyControl.config.maxAlarmRange = message.maxAlarmRange;
-		EnergyControl.instance.serverAllowedAlarms = new ArrayList<String>(Arrays.asList(message.allowedAlarms.split(",")));
+		EnergyControl.instance.serverAllowedAlarms = Arrays.asList(message.allowedAlarms);
 		return null;
 	}
 }

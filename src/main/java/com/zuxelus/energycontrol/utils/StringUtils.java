@@ -7,11 +7,12 @@ import java.util.List;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 
 public class StringUtils {
-	private static DecimalFormat formatter = null;
+	private static DecimalFormat formatter;
 
 	private static DecimalFormat getFormatter() {
 		if (formatter == null) {
@@ -26,7 +27,7 @@ public class StringUtils {
 
 	public static String getFormatted(String resourceName, String value, boolean showLabels) {
 		if (showLabels)
-			return I18n.format(resourceName, value);
+			return StatCollector.translateToLocalFormatted(resourceName, value);
 		return value;
 	}
 
@@ -35,15 +36,18 @@ public class StringUtils {
 	}
 
 	public static String getFormattedKey(String resourceName, Object... arguments) {
-		return I18n.format(resourceName, arguments);
+		return StatCollector.translateToLocalFormatted(resourceName, arguments);
 	}
 
-	@SuppressWarnings("rawtypes")
+	public static String getItemId(ItemStack stack) {
+		return Item.itemRegistry.getNameForObject(stack.getItem()).toString();
+	}
+
 	@SideOnly(Side.CLIENT)
 	public static String getItemName(ItemStack stack) {
-		List list = stack.getTooltip(Minecraft.getMinecraft().thePlayer, false);
+		List<String> list = stack.getTooltip(Minecraft.getMinecraft().thePlayer, false);
 		if (list.size() == 0)
 			return stack.getItem().getUnlocalizedName();
-		return (String) list.get(0);
+		return list.get(0);
 	}
 }

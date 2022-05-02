@@ -15,9 +15,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
 public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
-	private static final ResourceLocation TEXTUREOFF[];
-	private static final ResourceLocation TEXTUREON[];
-	private static final CubeRenderer model[];
+	private static final ResourceLocation[] TEXTUREOFF;
+	private static final ResourceLocation[] TEXTUREON;
+	private static final CubeRenderer[] model;
 
 	static {
 		TEXTUREOFF = new ResourceLocation[16];
@@ -38,11 +38,11 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
 		String output = "";
 		if (inputArray.length > 0) {
 			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < inputArray.length; i++) {
-				if (inputArray[i] == null || inputArray[i].isEmpty())
+			for (String s : inputArray) {
+				if (s == null || s.isEmpty())
 					continue;
 				sb.append(glueString);
-				sb.append(inputArray[i]);
+				sb.append(s);
 			}
 			output = sb.toString();
 			if (output.length() > 1)
@@ -51,6 +51,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
 		return output;
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	public void renderTileEntityAt(TileEntityInfoPanel te, double x, double y, double z) {
 		GL11.glPushMatrix();
 		GL11.glTranslated(x, y, z);
@@ -93,12 +94,12 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
 		model[te.findTexture()].render(0.03125F);
 		if (te.getPowered()) {
 			List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
-			if (joinedData != null)
-				drawText(te, joinedData);
+			drawText(te, joinedData);
 		}
 		GL11.glPopMatrix();
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	private void drawText(TileEntityInfoPanel panel, List<PanelString> joinedData) {
 		Screen screen = panel.getScreen();
 		float displayWidth = 1 - 2F / 16;
@@ -109,37 +110,41 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
 			case UP:
 				switch (panel.getRotation()) {
 				case NORTH:
-					dz = (panel.zCoord - screen.maxZ - screen.minZ + panel.zCoord);
-					dy = panel.xCoord - screen.maxX - screen.minX + panel.xCoord;
-					displayWidth += screen.maxX - screen.minX;
-					displayHeight += screen.maxZ - screen.minZ;
-					break;
 				case SOUTH:
-					dz = (panel.zCoord - screen.maxZ - screen.minZ + panel.zCoord);
+					dz = panel.zCoord - screen.maxZ - screen.minZ + panel.zCoord;
 					dy = panel.xCoord - screen.maxX - screen.minX + panel.xCoord;
 					displayWidth += screen.maxX - screen.minX;
 					displayHeight += screen.maxZ - screen.minZ;
 					break;
 				case EAST:
-					dz = (panel.zCoord - screen.maxZ - screen.minZ + panel.zCoord);
-					dy = panel.xCoord - screen.maxX - screen.minX + panel.xCoord;
-					displayWidth += screen.maxZ - screen.minZ;
-					displayHeight += screen.maxX - screen.minX;
-					break;
 				case WEST:
-					dz = (panel.zCoord - screen.maxZ - screen.minZ + panel.zCoord);
+					dz = panel.zCoord - screen.maxZ - screen.minZ + panel.zCoord;
 					dy = panel.xCoord - screen.maxX - screen.minX + panel.xCoord;
 					displayWidth += screen.maxZ - screen.minZ;
 					displayHeight += screen.maxX - screen.minX;
 					break;
-				case DOWN:
+				}
+				break;
+			case DOWN:
+				switch (panel.getRotation()) {
+				case NORTH:
+				case SOUTH:
+					dz = panel.zCoord - screen.maxZ - screen.minZ + panel.zCoord;
+					dy = panel.xCoord - screen.maxX - screen.minX + panel.xCoord;
+					displayWidth += screen.maxX - screen.minX;
+					displayHeight += screen.maxZ - screen.minZ;
 					break;
-				case UP:
+				case EAST:
+				case WEST:
+					dz = - (panel.zCoord - screen.maxZ - screen.minZ + panel.zCoord);
+					dy = panel.xCoord - screen.maxX - screen.minX + panel.xCoord;
+					displayWidth += screen.maxZ - screen.minZ;
+					displayHeight += screen.maxX - screen.minX;
 					break;
 				}
 				break;
 			case NORTH:
-				dz = (panel.yCoord - screen.maxY - screen.minY + panel.yCoord);
+				dz = panel.yCoord - screen.maxY - screen.minY + panel.yCoord;
 				dy = panel.xCoord - screen.maxX - screen.minX + panel.xCoord;
 				displayWidth += screen.maxX - screen.minX;
 				displayHeight += screen.maxY - screen.minY;
@@ -150,11 +155,9 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
 				displayWidth += screen.maxX - screen.minX;
 				displayHeight += screen.maxY - screen.minY;
 				break;
-			case DOWN:
- 				break;
 			case WEST:
 				dz = panel.zCoord - screen.maxZ + panel.zCoord - screen.minZ;
-				dy = (panel.yCoord - screen.maxY - screen.minY + panel.yCoord);
+				dy = panel.yCoord - screen.maxY - screen.minY + panel.yCoord;
 				displayWidth += screen.maxZ - screen.minZ;
 				displayHeight += screen.maxY - screen.minY;
 				break;
@@ -169,16 +172,16 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
 
 		GL11.glTranslatef(0.5F - dy / 2, 1.01F - dx / 2 , 0.5F - dz / 2);
 		GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F);
-		switch(panel.getRotation())
+		switch(panel.getFacingForge())
 		{
+		case DOWN:
+			break;
 		case UP:
 			break;
 		case NORTH:
 			GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
 			break;
 		case SOUTH:
-			break;
-		case DOWN:
 			break;
 		case WEST:
 			GL11.glRotatef(-90.0F, 0.0F, 0.0F, 1.0F);
@@ -187,18 +190,41 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
 			GL11.glRotatef(90.0F, 0.0F, 0.0F, 1.0F);
 			break;
 		}
-
-		if (panel.isTouchCard()) {
+		switch(panel.getRotation())
+		{
+		case DOWN:
+			break;
+		case UP:
+			break;
+		case NORTH:
+			GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
+			break;
+		case SOUTH:
+			break;
+		case WEST:
+			GL11.glRotatef(-90.0F, 0.0F, 0.0F, 1.0F);
+			break;
+		case EAST:
+			GL11.glRotatef(90.0F, 0.0F, 0.0F, 1.0F);
+			break;
+		}
+		if (panel.isTouchCard() || panel.hasBars()) {
 			GL11.glRotatef(180.0F, 0.0F, 1.0F, 0.0F);
 			GL11.glDisable(GL11.GL_LIGHTING);
-			panel.renderImage(field_147501_a.field_147553_e);
+			panel.renderImage(field_147501_a.field_147553_e, displayWidth, displayHeight);
 			GL11.glEnable(GL11.GL_LIGHTING);
-		} else 
-			renderText(panel, joinedData, displayWidth, displayHeight);
+			GL11.glRotatef(180.0F, 0.0F, 1.0F, 0.0F);
+		}
+		if (joinedData != null) {
+			GL11.glTranslatef(0, 0, 0.0002F);
+			int colorHex = 0x000000;
+			if (panel.getColored())
+				colorHex = panel.getColorText();
+			renderText(joinedData, displayWidth, displayHeight, colorHex, func_147498_b());
+		}
 	}
 
-	private void renderText(TileEntityInfoPanel panel, List<PanelString> joinedData, float displayWidth, float displayHeight) {
-		FontRenderer fontRenderer = func_147498_b();
+	public static void renderText(List<PanelString> joinedData, float displayWidth, float displayHeight, int colorHex, FontRenderer fontRenderer) {
 		int maxWidth = 1;
 		for (PanelString panelString : joinedData) {
 			String currentString = implodeArray(new String[] { panelString.textLeft, panelString.textCenter, panelString.textRight }, " ");
@@ -227,27 +253,16 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer {
 		GL11.glDisable(GL11.GL_LIGHTING);
 
 		int row = 0;
-		int colorHex = 0x000000;
-		if (panel.getColored())
-			colorHex = panel.getColorTextHex();
 		for (PanelString panelString : joinedData) {
-			if (panelString.textLeft != null) {
+			if (panelString.textLeft != null)
 				fontRenderer.drawString(panelString.textLeft, offsetX - realWidth / 2,
-						offsetY - realHeight / 2 + row * lineHeight,
-						panelString.colorLeft != 0 ? panelString.colorLeft : colorHex);
-			}
-			if (panelString.textCenter != null) {
-				fontRenderer.drawString(panelString.textCenter,
-						-fontRenderer.getStringWidth(panelString.textCenter) / 2,
-						offsetY - realHeight / 2 + row * lineHeight,
-						panelString.colorCenter != 0 ? panelString.colorCenter : colorHex);
-			}
-			if (panelString.textRight != null) {
-				fontRenderer.drawString(panelString.textRight,
-						realWidth / 2 - fontRenderer.getStringWidth(panelString.textRight),
-						offsetY - realHeight / 2 + row * lineHeight,
-						panelString.colorRight != 0 ? panelString.colorRight : colorHex);
-			}
+						offsetY - realHeight / 2 + row * lineHeight, panelString.colorLeft != 0 ? panelString.colorLeft : colorHex);
+			if (panelString.textCenter != null)
+				fontRenderer.drawString(panelString.textCenter, -fontRenderer.getStringWidth(panelString.textCenter) / 2,
+						offsetY - realHeight / 2 + row * lineHeight, panelString.colorCenter != 0 ? panelString.colorCenter : colorHex);
+			if (panelString.textRight != null)
+				fontRenderer.drawString(panelString.textRight, realWidth / 2 - fontRenderer.getStringWidth(panelString.textRight),
+						offsetY - realHeight / 2 + row * lineHeight, panelString.colorRight != 0 ? panelString.colorRight : colorHex);
 			row++;
 		}
 

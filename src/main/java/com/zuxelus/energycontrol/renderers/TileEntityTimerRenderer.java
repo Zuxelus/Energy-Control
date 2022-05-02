@@ -14,6 +14,7 @@ public class TileEntityTimerRenderer extends TileEntitySpecialRenderer {
 			EnergyControl.MODID + ":textures/blocks/timer/all.png");
 	private static final CubeRenderer model = new CubeRenderer(2, 0, 2, 28, 14, 28, 128, 64, 0, 0);
 
+	@SuppressWarnings("incomplete-switch")
 	public void renderTileEntityAt(TileEntityTimer te, double x, double y, double z) {
 		GL11.glPushMatrix();
 		GL11.glTranslated(x, y, z);

@@ -1,14 +1,12 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import com.zuxelus.energycontrol.blocks.BlockDamages;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.init.ModItems;
-import com.zuxelus.zlib.tileentities.TileEntitySinkSource;
 
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.info.Info;
-import ic2.api.tile.IWrenchable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,7 +15,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraftforge.common.MinecraftForge;
 
-public class TileEntityEnergyCounter extends TileEntitySinkSource implements IWrenchable {
+public class TileEntityEnergyCounter extends TileEntityEnergyStorage {
 	private static final int BASE_PACKET_SIZE = 32;
 	private boolean init;
 	protected int updateTicker;
@@ -109,7 +107,7 @@ public class TileEntityEnergyCounter extends TileEntitySinkSource implements IWr
 
 	@Override
 	public void updateEntity() {
-		onLoad();
+		onLoad(); // 1.7.10
 	}
 
 	@Override
@@ -120,9 +118,9 @@ public class TileEntityEnergyCounter extends TileEntitySinkSource implements IWr
 
 	private void refreshData() {
 		int upgradeCountTransormer = 0;
-		ItemStack itemStack = getStackInSlot(0);
-		if (itemStack != null && itemStack.isItemEqual(CrossModLoader.ic2.getItemStack("transformer")))
-			upgradeCountTransormer = itemStack.stackSize;
+		ItemStack stack = getStackInSlot(0);
+		if (stack != null && stack.isItemEqual(CrossModLoader.getCrossMod(ModIDs.IC2).getItemStack("transformer")))
+			upgradeCountTransormer = stack.stackSize;
 		upgradeCountTransormer = Math.min(upgradeCountTransormer, 4);
 		if (worldObj != null && !worldObj.isRemote) {
 			output = BASE_PACKET_SIZE * (int) Math.pow(4D, upgradeCountTransormer);
@@ -154,38 +152,19 @@ public class TileEntityEnergyCounter extends TileEntitySinkSource implements IWr
 	}
 
 	@Override
-	public boolean isItemValid(int slotIndex, ItemStack itemstack) { // ISlotItemFilter
-		return itemstack.isItemEqual(CrossModLoader.ic2.getItemStack("transformer"));
+	public boolean isItemValid(int slotIndex, ItemStack stack) { // ISlotItemFilter
+		return stack.isItemEqual(CrossModLoader.getCrossMod(ModIDs.IC2).getItemStack("transformer"));
+	}
+
+	// IEnergySource
+	@Override
+	public double getOfferedEnergy() {
+		return allowEmit ? energy >= output ? output : energy : 0.0D; 
 	}
 
 	// IWrenchable
 	@Override
-	public boolean wrenchCanSetFacing(EntityPlayer entityPlayer, int side) {
-		return facing.ordinal() != side;
-	}
-
-	@Override
-	public short getFacing() {
-		return (short) facing.ordinal();
-	}
-
-	@Override
-	public void setFacing(short facing) {
-		setFacing((int) facing);
-	}
-
-	@Override
-	public boolean wrenchCanRemove(EntityPlayer entityPlayer) {
-		return true;
-	}
-
-	@Override
-	public float getWrenchDropRate() {
-		return 1;
-	}
-
-	@Override
-	public ItemStack getWrenchDrop(EntityPlayer entityPlayer) {
-		return new ItemStack(ModItems.blockMain, 1, BlockDamages.DAMAGE_ENERGY_COUNTER);
+	public ItemStack getWrenchDrop(EntityPlayer player) {
+		return new ItemStack(ModItems.blockEnergyCounter);
 	}
 }

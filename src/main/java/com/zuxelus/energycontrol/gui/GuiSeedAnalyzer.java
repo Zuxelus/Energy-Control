@@ -10,14 +10,12 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiSeedAnalyzer extends GuiContainer {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/gui_seed_analyzer.png");
-	
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_seed_analyzer.png");
+
 	private String name;
 	private ContainerSeedAnalyzer container;
 
-	public GuiSeedAnalyzer(ContainerSeedAnalyzer container)
-	{
+	public GuiSeedAnalyzer(ContainerSeedAnalyzer container) {
 		super(container);
 		this.container = container;
 		name = I18n.format("tile.seed_analyzer.name");
@@ -36,7 +34,7 @@ public class GuiSeedAnalyzer extends GuiContainer {
 		int left = (width - xSize) / 2;
 		int top = (height - ySize) / 2;
 		drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
-		
+
 		int energyHeight = container.te.getEnergyFactor();
 		if (energyHeight > 0)
 			drawTexturedModalRect(left + 56, top + 36 + 14 - energyHeight, 176, 14 - energyHeight, 14, energyHeight);

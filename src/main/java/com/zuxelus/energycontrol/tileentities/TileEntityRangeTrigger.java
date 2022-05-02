@@ -2,6 +2,7 @@ package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.CardState;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
@@ -12,6 +13,7 @@ import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -43,10 +45,10 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ISlot
 		init = false;
 		tickRate = EnergyControl.config.rangeTriggerRefreshPeriod;
 		updateTicker = tickRate;
-		status = 0;
+		status = -1;
 		invertRedstone = false;
-		levelStart = 10000000;
-		levelEnd = 9000000;
+		levelStart = 0;
+		levelEnd = 40000;
 	}
 
 	public boolean getInvertRedstone() {
@@ -54,15 +56,26 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ISlot
 	}
 
 	public void setInvertRedstone(boolean value) {
-		if (!worldObj.isRemote && invertRedstone != value)
-			notifyBlockUpdate();
+		boolean old = invertRedstone;
 		invertRedstone = value;
+		if (!worldObj.isRemote && invertRedstone != old)
+			notifyBlockUpdate();
 	}
 
 	public void setStatus(int value) {
-		if (!worldObj.isRemote && status != value)
-			notifyBlockUpdate();
+		int old = status;
 		status = value;
+		if (!worldObj.isRemote && status != old) {
+			/*IBlockState iblockstate = worldObj.getBlockState(pos);
+			Block block = iblockstate.getBlock();
+			if (block instanceof RangeTrigger) {
+				IBlockState newState = block.getDefaultState()
+						.withProperty(BlockHorizontal.FACING, iblockstate.getValue(BlockHorizontal.FACING))
+						.withProperty(RangeTrigger.STATE, RangeTrigger.EnumState.getState(status));
+				worldObj.setBlockState(pos, newState, 3);
+			}*/
+			notifyBlockUpdate();
+		}
 	}
 
 	public void setLevelStart(double start) {
@@ -122,7 +135,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ISlot
 	public Packet getDescriptionPacket() {
 		NBTTagCompound tag = new NBTTagCompound();
 		tag = writeProperties(tag);
-		tag.setInteger("status", status);
+		tag.setBoolean("poweredBlock", poweredBlock);
 		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, tag);
 	}
 
@@ -139,12 +152,8 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ISlot
 		invertRedstone = tag.getBoolean("invert");
 		levelStart = tag.getDouble("levelStart");
 		levelEnd = tag.getDouble("levelEnd");
-		if (tag.hasKey("status")) {
-			int old = status;
-			status = tag.getInteger("status");
-			if (worldObj.isRemote && status != old)
-				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-		}
+		if (tag.hasKey("poweredBlock"))
+			poweredBlock = tag.getBoolean("poweredBlock");
 	}
 
 	@Override
@@ -178,40 +187,30 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ISlot
 		super.markDirty();
 		if (worldObj == null || worldObj.isRemote)
 			return;
-		
+
 		int status = STATE_UNKNOWN;
 		ItemStack card = getStackInSlot(SLOT_CARD);
-		if (card != null) {
-			Item item = card.getItem();
-			if (item instanceof ItemCardMain) {
-				ItemCardReader reader = new ItemCardReader(card);
-				CardState state = ItemCardMain.updateCardNBT(worldObj, xCoord, yCoord, zCoord, reader, getStackInSlot(SLOT_UPGRADE));
-				if (state == CardState.OK) {
-					double min = Math.min(levelStart, levelEnd);
-					double max = Math.max(levelStart, levelEnd);
-					double cur = reader.getDouble("storage");
-
-					if (cur > max) {
-						status = STATE_ACTIVE;
-					} else if (cur < min) {
-						status = STATE_PASSIVE;
-					} else if (status == STATE_UNKNOWN) {
-						status = STATE_PASSIVE;
-					} else
-						status = STATE_PASSIVE;
-				} else
-					status = STATE_UNKNOWN;
-			}
+		if (ItemCardMain.isCard(card)) {
+			ItemCardReader reader = new ItemCardReader(card);
+				CardState state = ItemCardMain.updateCardNBT(card, worldObj, xCoord, yCoord, zCoord, reader, getStackInSlot(SLOT_UPGRADE));
+			if (state == CardState.OK) {
+				double cur = reader.getDouble("storage");
+				status = cur > Math.max(levelStart, levelEnd) || cur < Math.min(levelStart, levelEnd) ? STATE_ACTIVE : STATE_PASSIVE;
+			} else
+				status = STATE_UNKNOWN;
 		}
 		setStatus(status);
 	}
 
 	public void notifyBlockUpdate() {
 		Block block = worldObj.getBlock(xCoord, yCoord, zCoord);
-		boolean newValue = status == 2 ? !invertRedstone : invertRedstone;
-		if (poweredBlock != newValue)
+		//if (!(block instanceof RangeTrigger))
+		//	return;
+		boolean newValue = status >= 1 && (status == 1 != invertRedstone);
+		if (poweredBlock != newValue) {
+			poweredBlock = newValue;
 			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, block);
-		poweredBlock = newValue;
+		}
 		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 
@@ -227,13 +226,16 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ISlot
 	}
 
 	@Override
-	public boolean isItemValid(int slotIndex, ItemStack itemstack) { // ISlotItemFilter
-		switch (slotIndex) {
-		case SLOT_CARD:
-			return itemstack.getItem() instanceof ItemCardMain && (itemstack.getItemDamage() == ItemCardType.CARD_ENERGY
-					|| itemstack.getItemDamage() == ItemCardType.CARD_ENERGY_ARRAY);
-		default:
-			return itemstack.getItem() instanceof ItemUpgrade && itemstack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE;
-		}
+	public boolean isItemValid(int slotIndex, ItemStack stack) { // ISlotItemFilter
+		if (slotIndex == SLOT_CARD)
+			return stack.getItem() instanceof ItemCardMain && (stack.getItemDamage() == ItemCardType.CARD_ENERGY
+					|| stack.getItemDamage() == ItemCardType.CARD_ENERGY_ARRAY);
+		return stack.getItem() instanceof ItemUpgrade && stack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE;
+	}
+
+	// IWrenchable
+	@Override
+	public ItemStack getWrenchDrop(EntityPlayer player) {
+		return new ItemStack(ModItems.blockRangeTrigger);
 	}
 }

@@ -1,5 +1,10 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import com.zuxelus.energycontrol.init.ModItems;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+
 public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm {
 	private static final int[] lightSteps = { 0, 7, 14, 7, 0 };
 
@@ -16,10 +21,7 @@ public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm {
 	@Override
 	public void updateEntity() {
 		if (worldObj.isRemote) {
-			if (updateTicker-- <= 0) {
-				updateTicker = tickRate;
-				super.checkStatus();
-			}
+			super.checkStatus();
 			if (updateLightTicker-- <= 0) {
 				updateLightTicker = tickRate / 20;
 				checkStatus();
@@ -29,7 +31,6 @@ public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm {
 
 	@Override
 	protected void checkStatus() {
-		super.checkStatus();
 		int light = lightLevel;
 		if (!powered) {
 			lightLevel = 0;
@@ -42,5 +43,11 @@ public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm {
 		}
 		if (lightLevel != light)
 			worldObj.func_147451_t(xCoord, yCoord, zCoord);
+	}
+
+	// IWrenchable
+	@Override
+	public ItemStack getWrenchDrop(EntityPlayer player) {
+		return new ItemStack(ModItems.blockIndustrialAlarm);
 	}
 }

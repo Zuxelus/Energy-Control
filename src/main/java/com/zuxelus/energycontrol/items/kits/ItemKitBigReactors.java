@@ -19,7 +19,7 @@ public class ItemKitBigReactors extends ItemKitBase {
 	}
 
 	@Override
-	public ItemStack getSensorCard(ItemStack stack, Item card, EntityPlayer player, World world, int x, int y, int z) {
+	public ItemStack getSensorCard(ItemStack stack, Item card, EntityPlayer player, World world, int x, int y, int z, int side) {
 		TileEntity te = world.getTileEntity(x, y, z);
 		if (te instanceof TileEntityReactorPartBase || te instanceof TileEntityTurbinePartBase) {
 			ItemStack newCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_BIG_REACTORS);

@@ -65,9 +65,4 @@ public class ItemCardRedstone extends ItemCardBase {
 	public List<PanelSetting> getSettingsList() {
 		return null;
 	}
-
-	@Override
-	public int getKitFromCard() {
-		return ItemCardType.KIT_REDSTONE;
-	}
 }

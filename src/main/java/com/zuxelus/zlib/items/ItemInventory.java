@@ -36,11 +36,8 @@ public abstract class ItemInventory implements IInventory, ISlotItemFilter {
 		}
 	}
 
-	public void writeToParentNBT(EntityPlayer player) {
-		if (player.getHeldItem() == null)
-			return;
-
-		NBTTagCompound tag = player.getHeldItem().getTagCompound();
+	private void writeToParentNBT() {
+		NBTTagCompound tag = parent.getTagCompound();
 		if (tag == null) {
 			tag = new NBTTagCompound();
 			parent.setTagCompound(tag);
@@ -56,7 +53,6 @@ public abstract class ItemInventory implements IInventory, ISlotItemFilter {
 				list.appendTag(stackTag);
 			}
 		}
-
 		tag.setTag("Items", list);
 	}
 
@@ -78,11 +74,11 @@ public abstract class ItemInventory implements IInventory, ISlotItemFilter {
 	@Override
 	public ItemStack decrStackSize(int slot, int count) {
 		ItemStack stack = getAndSplit(inventory, slot, count);
-		if (stack != null) markDirty();
+		//if (stack != null) markDirty();
 		return stack;
 	}
 
-	private static ItemStack getAndSplit(ItemStack[] stacks, int slot, int amount) {
+	private static ItemStack getAndSplit(ItemStack[] stacks, int slot, int amount) { // 1.7.10
 		if (slot >= 0 && slot < stacks.length && stacks[slot] != null && amount > 0) {
 			ItemStack stack = stacks[slot].splitStack(amount);
 			if (stacks[slot].stackSize == 0)
@@ -93,20 +89,20 @@ public abstract class ItemInventory implements IInventory, ISlotItemFilter {
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int index) {
-		ItemStack itemstack = getStackInSlot(index);
-		if (itemstack == null)
+	public ItemStack getStackInSlotOnClosing(int slot) {
+		ItemStack stack = getStackInSlot(slot);
+		if (stack == null)
 			return null;
-		inventory[index] = null;
-		return itemstack;
+		inventory[slot] = null;
+		return stack;
 	}
 
 	@Override
-	public void setInventorySlotContents(int index, ItemStack stack) {
-		inventory[index] = stack;
+	public void setInventorySlotContents(int slot, ItemStack stack) {
+		inventory[slot] = stack;
 		if (stack != null && stack.stackSize > getInventoryStackLimit())
 			stack.stackSize = getInventoryStackLimit();
-		//markDirty();
+		markDirty();
 	}
 
 	@Override
@@ -115,7 +111,9 @@ public abstract class ItemInventory implements IInventory, ISlotItemFilter {
 	}
 
 	@Override
-	public void markDirty() { }
+	public void markDirty() {
+		writeToParentNBT();
+	}
 
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer player) {

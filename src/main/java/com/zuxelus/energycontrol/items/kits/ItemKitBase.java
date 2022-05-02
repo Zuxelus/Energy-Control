@@ -17,22 +17,18 @@ public abstract class ItemKitBase implements IItemKit {
 		this.name = name;
 	}
 
-	@Override
 	public final int getDamage() {
 		return damage;
 	}
 
-	@Override
 	public final String getName() {
 		return name;
 	}
 
-	@Override
 	public final String getUnlocalizedName() {
 		return "item." + name;
 	}
 
-	@Override
 	public Object[] getRecipe() {
 		return recipe;
 	}

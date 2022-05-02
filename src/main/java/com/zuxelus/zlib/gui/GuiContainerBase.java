@@ -13,8 +13,8 @@ import net.minecraft.util.ResourceLocation;
 
 @SideOnly(Side.CLIENT)
 public class GuiContainerBase extends GuiContainer {
-	private static final int oX[] = {0, -1, 0, 1};
-	private static final int oY[] = {-1, 0, 1, 0};
+	private static final int[] oX = {0, -1, 0, 1};
+	private static final int[] oY = {-1, 0, 1, 0};
 	private static final int MASKR = 0xFF0000;
 	private static final int MASKG = 0x00FF00;
 	private static final int MASKB = 0x0000FF;
@@ -24,13 +24,13 @@ public class GuiContainerBase extends GuiContainer {
 	protected static final int REDGLOW = multiplyColorComponents(RED, 0.16F);
 	protected DecimalFormat fraction = new DecimalFormat("##0.00");
 
-	protected final ResourceLocation texture;
+	private final ResourceLocation texture;
 	protected String name;
 
-	public GuiContainerBase(Container container, String name, String texture) {
+	public GuiContainerBase(Container container, String name, ResourceLocation texture) {
 		super(container);
 		this.name = I18n.format(name);
-		this.texture = new ResourceLocation(texture);
+		this.texture = texture;
 	}
 
 	@Override

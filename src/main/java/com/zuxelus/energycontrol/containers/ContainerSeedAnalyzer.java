@@ -1,9 +1,10 @@
 package com.zuxelus.energycontrol.containers;
 
+import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntitySeedAnalyzer;
 import com.zuxelus.zlib.containers.ContainerBase;
+import com.zuxelus.zlib.containers.slots.SlotDischargeable;
 import com.zuxelus.zlib.containers.slots.SlotFilter;
-import com.zuxelus.zlib.network.NetworkHelper;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ICrafting;
@@ -12,13 +13,13 @@ import net.minecraft.nbt.NBTTagCompound;
 public class ContainerSeedAnalyzer extends ContainerBase<TileEntitySeedAnalyzer> {
 	private double lastEnergy = -1;
 	private double lastProduction = -1;
-	
+
 	public ContainerSeedAnalyzer(EntityPlayer player, TileEntitySeedAnalyzer te) {
 		super(te);
 		
 		addSlotToContainer(new SlotFilter(te, TileEntitySeedAnalyzer.SLOT_IN, 56, 17));
 		addSlotToContainer(new SlotFilter(te, TileEntitySeedAnalyzer.SLOT_OUT, 116, 35));
-		addSlotToContainer(new SlotFilter(te, TileEntitySeedAnalyzer.SLOT_DISCHARGER, 56, 53));
+		addSlotToContainer(new SlotDischargeable(te, TileEntitySeedAnalyzer.SLOT_DISCHARGER, 56, 53, TileEntitySeedAnalyzer.TIER));
 		// inventory
 		addPlayerInventorySlots(player, 166);
 	}

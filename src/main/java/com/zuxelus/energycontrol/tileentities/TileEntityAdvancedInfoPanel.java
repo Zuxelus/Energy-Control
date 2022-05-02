@@ -37,12 +37,8 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 		super();
 		customName = "tile." + NAME + ".name";
 		colorBackground = 6;
+		colored = true;
 		thickness = 16;
-	}
-
-	@Override
-	public boolean getColored() {
-		return true;
 	}
 
 	public byte getPowerMode() {
@@ -52,7 +48,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	public void setPowerMode(byte mode) {
 		powerMode = mode;
 		if (worldObj != null && !worldObj.isRemote)
-			calcPowered();
+			updateBlockState();
 	}
 
 	public byte getNextPowerMode() {
@@ -67,29 +63,6 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 			return POWER_REDSTONE;
 		}
 		return POWER_REDSTONE;
-	}
-
-	@Override
-	protected void calcPowered() { //server
-		boolean newPowered = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
-		switch (powerMode) {
-		case POWER_ON:
-			newPowered = true;
-			break;
-		case POWER_OFF:
-			newPowered = false;
-			break;
-		case POWER_REDSTONE:
-			break;
-		case POWER_INVERTED:
-			newPowered = !newPowered;
-			break;
-		}
-		if (newPowered != powered) {
-			powered = newPowered;
-			if (screen != null)
-				screen.turnPower(powered, worldObj);
-		}
 	}
 
 	public void setValues(int i) {
@@ -173,11 +146,16 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 
 	@Override
 	public List<ItemStack> getCards() {
-		List<ItemStack> data = new ArrayList<ItemStack>();
+		List<ItemStack> data = new ArrayList<>();
 		data.add(getStackInSlot(SLOT_CARD1));
 		data.add(getStackInSlot(SLOT_CARD2));
 		data.add(getStackInSlot(SLOT_CARD3));
 		return data;
+	}
+
+	@Override
+	public boolean isColoredEval() {
+		return true;
 	}
 
 	@Override
@@ -201,7 +179,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 		case SLOT_CARD1:
 		case SLOT_CARD2:
 		case SLOT_CARD3:
-			return stack.getItem() instanceof ItemCardMain;
+			return ItemCardMain.isCard(stack);
 		case SLOT_UPGRADE_RANGE:
 			return stack.getItem() instanceof ItemUpgrade && stack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE;
 		default:
@@ -210,7 +188,48 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	}
 
 	@Override
-	public ItemStack getWrenchDrop(EntityPlayer entityPlayer) {
-		return new ItemStack(ModItems.blockMain, 1, BlockDamages.DAMAGE_ADVANCED_PANEL);
+	public void updateBlockState() {
+		int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+		boolean flag = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
+
+		switch (powerMode) {
+		case POWER_ON:
+			flag = true;
+			break;
+		case POWER_OFF:
+			flag = false;
+			break;
+		case POWER_REDSTONE:
+			break;
+		case POWER_INVERTED:
+			flag = !flag;
+			break;
+		}
+
+		powered = flag;
+		if (flag == (meta > 5))
+			return;
+
+		if (flag)
+			worldObj.scheduleBlockUpdate(xCoord, yCoord, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord), 4);
+		else {
+			worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, meta > 5 ? meta - 6 : meta + 6, 2);
+			updateExtenders(true);
+		}
+	}
+
+	@Override
+	public boolean runTouchAction(ItemStack stack, int x, int y, int z, float hitX, float hitY, float hitZ) {
+		if (worldObj.isRemote)
+			return false;
+		ItemStack card = getStackInSlot(SLOT_CARD1);
+		runTouchAction(this, card, stack, SLOT_CARD1, false);
+		return true;
+	}
+
+	// IWrenchable
+	@Override
+	public ItemStack getWrenchDrop(EntityPlayer player) {
+		return new ItemStack(ModItems.blockInfoPanelAdvanced);
 	}
 }

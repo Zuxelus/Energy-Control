@@ -1,33 +1,36 @@
 package com.zuxelus.energycontrol.blocks;
 
 import com.zuxelus.energycontrol.tileentities.TileEntityAverageCounter;
+import com.zuxelus.zlib.blocks.FacingBlock;
+import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 
-public class AverageCounter extends BlockBase {
-	private IIcon[] icons = new IIcon[2];
+public class AverageCounter extends FacingBlock {
 
-	public AverageCounter() {
-		super(BlockDamages.DAMAGE_AVERAGE_COUNTER, "average_counter");
+	@Override
+	protected TileEntityFacing createTileEntity() {
+		return new TileEntityAverageCounter();
 	}
 
 	@Override
-	public TileEntity createNewTileEntity() {
-		TileEntityAverageCounter te = new TileEntityAverageCounter();
-		te.setFacing(0);
-		return te;
+	@SideOnly(Side.CLIENT)
+	public IIcon getIcon(int side, int meta) { // 1.7.10
+		return side == meta % 6 ? icons[1] : icons[0];
 	}
 
 	@Override
-	public IIcon getIconFromSide(int side) {
-		return side == 1 ? icons[1] : icons[0];
+	@SideOnly(Side.CLIENT)
+	public void registerBlockIcons(IIconRegister ir) { // 1.7.10
+		icons[0] = registerIcon(ir,"average_counter/input");
+		icons[1] = registerIcon(ir,"average_counter/output");
 	}
 
 	@Override
-	public void registerIcons(IIconRegister iconRegister) {
-		icons[0] = registerIcon(iconRegister,"average_counter/input");
-		icons[1] = registerIcon(iconRegister,"average_counter/output");
+	protected int getBlockGuiId() {
+		return BlockDamages.DAMAGE_AVERAGE_COUNTER;
 	}
 }

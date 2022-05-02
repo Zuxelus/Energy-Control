@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -37,7 +38,6 @@ public class ItemDigitalThermometer extends ItemThermometer implements IElectric
 	protected void messagePlayer(EntityPlayer player, IReactor reactor) {
 		int maxHeat = reactor.getMaxHeat();
 		player.addChatMessage(new ChatComponentTranslation("msg.ec.ThermoDigital", reactor.getHeat(), maxHeat * 50 / 100, maxHeat * 85 / 100));
-		//NetworkHelper.chatMessage(entityplayer, I18n.format("msg.ec.ThermoDigital", heat, maxHeat * 50 / 100, maxHeat * 85 / 100));
 	}
 
 	@Override
@@ -80,7 +80,12 @@ public class ItemDigitalThermometer extends ItemThermometer implements IElectric
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(Item item, CreativeTabs tab, List items) {
-		items.add(CrossModLoader.ic2.getChargedStack(new ItemStack(this, 1)));
+		items.add(getChargedStack(new ItemStack(this, 1)));
 		items.add(new ItemStack(this, 1, getMaxDamage()));
+	}
+
+	private ItemStack getChargedStack(ItemStack stack) {
+		ElectricItem.manager.charge(stack, Integer.MAX_VALUE, Integer.MAX_VALUE, true, false);
+		return stack;
 	}
 }

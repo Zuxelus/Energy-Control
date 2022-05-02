@@ -19,7 +19,7 @@ public class ItemKitGalacticraft extends ItemKitBase {
 	}
 
 	@Override
-	public ItemStack getSensorCard(ItemStack stack, Item card, EntityPlayer player, World world, int x, int y, int z) {
+	public ItemStack getSensorCard(ItemStack stack, Item card, EntityPlayer player, World world, int x, int y, int z, int side) {
 		TileEntity te = world.getTileEntity(x, y, z);
 		if (te instanceof TileEntityOxygenCollector || te instanceof TileEntityOxygenSealer
 				|| te instanceof TileEntityOxygenDetector || te instanceof TileEntityRefinery

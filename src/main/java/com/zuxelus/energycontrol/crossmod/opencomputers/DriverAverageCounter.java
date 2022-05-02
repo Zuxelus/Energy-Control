@@ -26,8 +26,9 @@ public class DriverAverageCounter extends DriverSidedTileEntity {
 	}
 
 	public static final class Environment extends ManagedTileEntityEnvironment<TileEntityAverageCounter> implements NamedBlock {
-		public Environment(final TileEntityAverageCounter tileentity) {
-			super(tileentity, NAME);
+
+		public Environment(final TileEntityAverageCounter te) {
+			super(te, NAME);
 		}
 
 		@Override

@@ -43,7 +43,7 @@ public class ItemCardEnergyArray extends ItemCardBase {
 			if (Math.abs(dx) <= range && Math.abs(dy) <= range && Math.abs(dz) <= range) {
 				TileEntity te = world.getTileEntity(target.posX, target.posY, target.posZ);
 				if (te != null) {
-					NBTTagCompound tag = CrossModLoader.ic2.getEnergyData(te);
+					NBTTagCompound tag = CrossModLoader.getEnergyData(te);
 					if (tag != null) {
 						double stored = tag.getDouble("storage");
 						double capacity = tag.getDouble("maxStorage");
@@ -140,22 +140,17 @@ public class ItemCardEnergyArray extends ItemCardBase {
 	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(6);
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEachCard"), 1,damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 4,damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelFree"), 8, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelStorage"), 16, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelPercentage"), 32, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelTotal"), 2,damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEachCard"), 1));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 4));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelFree"), 8));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelStorage"), 16));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelPercentage"), 32));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelTotal"), 2));
 		return result;
 	}
 
 	@Override
 	public boolean isRemoteCard() {
 		return false;
-	}
-
-	@Override
-	public int getKitFromCard() {
-		return ItemCardType.KIT_ENERGY;
 	}
 }

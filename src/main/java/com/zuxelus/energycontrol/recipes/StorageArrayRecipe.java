@@ -5,6 +5,7 @@ import ic2.api.item.IC2Items;
 import java.util.Vector;
 
 import com.zuxelus.energycontrol.init.ModItems;
+import com.zuxelus.energycontrol.items.ItemComponent;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
@@ -19,8 +20,7 @@ import net.minecraftforge.oredict.RecipeSorter;
 
 public class StorageArrayRecipe implements IRecipe {
 	static {
-		RecipeSorter.register("EnergyControl:storagearrayRecipe", StorageArrayRecipe.class,
-				RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
+		RecipeSorter.register("EnergyControl:storagearrayRecipe", StorageArrayRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
 	}
 
 	@Override
@@ -35,57 +35,43 @@ public class StorageArrayRecipe implements IRecipe {
 		int arrayCount = 0;
 		int cardCountLiquid = 0;
 		int arrayCountLiquid = 0;
-		int cardCountGenerator = 0;
-		int arrayCountGenerator = 0;
 		ItemStack array = null;
-		Vector<ItemStack> cards = new Vector<ItemStack>();
+		Vector<ItemStack> cards = new Vector<>();
 		for (int i = 0; i < inventoryLength; i++) {
-			ItemStack itemStack = inventory.getStackInSlot(i);
-			if (itemStack == null)
+			ItemStack stack = inventory.getStackInSlot(i);
+			if (stack == null)
 				continue;
-			if (!(itemStack.getItem() instanceof ItemCardMain))
+			if (!ItemCardMain.isCard(stack))
 				return null;
 
-			switch (itemStack.getItemDamage())
+			switch (stack.getItemDamage())
 			{
 			case ItemCardType.CARD_ENERGY:
-				cards.add(itemStack);
+				cards.add(stack);
 				cardCount++;
 				break;
 			case ItemCardType.CARD_LIQUID:
-				cards.add(itemStack);
+				cards.add(stack);
 				cardCountLiquid++;
 				break;
-			case ItemCardType.CARD_GENERATOR:
-				cards.add(itemStack);
-				cardCountGenerator++;
-				break;
 			case ItemCardType.CARD_ENERGY_ARRAY:
-				array = itemStack;				
+				array = stack;
 				arrayCount++;
 				break;
 			case ItemCardType.CARD_LIQUID_ARRAY:
-				array = itemStack;
+				array = stack;
 				arrayCountLiquid++;
-				break;
-			case ItemCardType.CARD_GENERATOR_ARRAY:
-				array = itemStack;
-				arrayCountGenerator++;
 				break;
 			}
 		}
-		if (((cardCount + arrayCount) != 0 && (cardCountLiquid + arrayCountLiquid) != 0)
-				|| ((cardCount + arrayCount) != 0 && (cardCountGenerator + arrayCountGenerator) != 0)
-				|| ((cardCountLiquid + arrayCountLiquid) != 0 && (cardCountGenerator + arrayCountGenerator) != 0))
+
+		if ((cardCount + arrayCount) != 0 && (cardCountLiquid + arrayCountLiquid) != 0)
 			return null;
 
 		ItemStack stack = getCraftingResult(cardCount, arrayCount, ItemCardType.CARD_ENERGY_ARRAY, cards, array);
 		if (stack != null)
 			return stack;
-		stack = getCraftingResult(cardCountLiquid, arrayCountLiquid, ItemCardType.CARD_LIQUID_ARRAY, cards, array);
-		if (stack != null)
-			return stack;
-		return getCraftingResult(cardCountGenerator, arrayCountGenerator, ItemCardType.CARD_GENERATOR_ARRAY, cards, array);
+		return getCraftingResult(cardCountLiquid, arrayCountLiquid, ItemCardType.CARD_LIQUID_ARRAY, cards, array);
 	}
 
 	private ItemStack getCraftingResult(int cardCount, int arrayCount, int type, Vector<ItemStack> cards, ItemStack array) {
@@ -97,7 +83,7 @@ public class StorageArrayRecipe implements IRecipe {
 		if (cardCount == 0 && arrayCount == 1) {
 			int cnt = new ItemCardReader(array).getInt("cardCount");
 			if (cnt > 0)
-				return new ItemStack(IC2Items.getItem("electronicCircuit").getItem(), cnt, IC2Items.getItem("electronicCircuit").getItemDamage());
+				return new ItemStack(ModItems.itemComponent, cnt, ItemComponent.BASIC_CIRCUIT);
 		} else if (arrayCount == 1 && cardCount > 0) {
 			int cnt = new ItemCardReader(array).getInt("cardCount");
 			if (cnt + cardCount <= 16) {

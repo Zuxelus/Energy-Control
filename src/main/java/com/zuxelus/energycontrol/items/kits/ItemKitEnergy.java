@@ -4,7 +4,6 @@ import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -15,7 +14,7 @@ public class ItemKitEnergy extends ItemKitBase {
 	}
 
 	@Override
-	public ItemStack getSensorCard(ItemStack stack, Item card, EntityPlayer player, World world, int x, int y, int z) {
+	public ItemStack getSensorCard(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side) {
 		return CrossModLoader.getEnergyCard(world, x, y, z);
 	}
 }

@@ -26,8 +26,9 @@ public class DriverEnergyCounter extends DriverSidedTileEntity {
 	}
 
 	public static final class Environment extends ManagedTileEntityEnvironment<TileEntityEnergyCounter> implements NamedBlock {
-		public Environment(final TileEntityEnergyCounter tileentity) {
-			super(tileentity, NAME);
+
+		public Environment(final TileEntityEnergyCounter te) {
+			super(te, NAME);
 		}
 
 		@Override

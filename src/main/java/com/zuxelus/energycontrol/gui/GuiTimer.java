@@ -1,29 +1,33 @@
 package com.zuxelus.energycontrol.gui;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.containers.ContainerTimer;
 import com.zuxelus.energycontrol.gui.controls.CompactButton;
+import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityTimer;
-import com.zuxelus.zlib.gui.GuiBase;
-import com.zuxelus.zlib.network.NetworkHelper;
+import com.zuxelus.zlib.gui.GuiContainerBase;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.util.ResourceLocation;
 
 @SideOnly(Side.CLIENT)
-public class GuiTimer extends GuiBase {
+public class GuiTimer extends GuiContainerBase {
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_timer.png");
 	private TileEntityTimer timer;
-	private GuiTextField textboxTimer = null;
+	private GuiTextField textboxTimer;
 	private boolean lastIsWorking;
 
-	public GuiTimer(TileEntityTimer timer) {
-		super("tile.timer.name", 100, 136, EnergyControl.MODID + ":textures/gui/gui_timer.png");
-		this.timer = timer;
+	public GuiTimer(ContainerTimer container) {
+		super(container, "tile.timer.name", TEXTURE);
+		xSize = 100;
+		ySize = 136;
+		timer = container.te;
 		lastIsWorking = timer.getIsWorking();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void initGui() {
 		super.initGui();
@@ -58,7 +62,7 @@ public class GuiTimer extends GuiBase {
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(int par1, int par2) {
+	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		fontRendererObj.drawString(name, (xSize - fontRendererObj.getStringWidth(name)) / 2, 6, 0x404040);
 		if (textboxTimer != null)
 			textboxTimer.drawTextBox();
@@ -121,7 +125,7 @@ public class GuiTimer extends GuiBase {
 		boolean isTicks = timer.getIsTicks();
 		switch(button.id) {
 		case 0:
-			updateTime(isTicks ? 1 : 1 * 20);
+			updateTime(isTicks ? 1 : 20);
 			break;
 		case 1:
 			updateTime(isTicks ? 10 : 30 * 20);

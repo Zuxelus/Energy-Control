@@ -3,8 +3,8 @@ package com.zuxelus.energycontrol.gui.controls;
 import org.lwjgl.opengl.GL11;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.tileentities.TileEntityThermo;
-import com.zuxelus.zlib.network.NetworkHelper;
+import com.zuxelus.energycontrol.network.NetworkHelper;
+import com.zuxelus.energycontrol.tileentities.TileEntityThermalMonitor;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -14,13 +14,12 @@ import net.minecraft.util.ResourceLocation;
 
 @SideOnly(Side.CLIENT)
 public class GuiThermoInvertRedstone extends GuiButton {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/gui_thermal_monitor.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_thermal_monitor.png");
 
-	TileEntityThermo thermo;
+	TileEntityThermalMonitor thermo;
 	private boolean checked;
 
-	public GuiThermoInvertRedstone(int id, int x, int y, TileEntityThermo thermo) {
+	public GuiThermoInvertRedstone(int id, int x, int y, TileEntityThermalMonitor thermo) {
 		super(id, x, y, 0, 0, "");
 		height = 15;
 		width = 51;
@@ -50,7 +49,7 @@ public class GuiThermoInvertRedstone extends GuiButton {
 			return false;
 		checked = !checked;
 		if (thermo.getWorldObj().isRemote && thermo.getInvertRedstone() != checked) {
-			NetworkHelper.updateSeverTileEntity(thermo.xCoord, thermo.yCoord, thermo.zCoord, 2, checked ? (int) 1 : (int) 0);
+			NetworkHelper.updateSeverTileEntity(thermo.xCoord, thermo.yCoord, thermo.zCoord, 2, checked ? 1 : 0);
 			thermo.setInvertRedstone(checked);
 		}
 		return true;

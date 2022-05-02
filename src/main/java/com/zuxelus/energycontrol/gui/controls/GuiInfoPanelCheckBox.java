@@ -4,8 +4,8 @@ import org.lwjgl.opengl.GL11;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelSetting;
+import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
-import com.zuxelus.zlib.network.NetworkHelper;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -17,8 +17,7 @@ import net.minecraft.util.ResourceLocation;
 
 @SideOnly(Side.CLIENT)
 public class GuiInfoPanelCheckBox extends GuiButton {
-	private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/gui_info_panel.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_info_panel.png");
 
 	private TileEntityInfoPanel panel;
 	private boolean checked;
@@ -26,11 +25,9 @@ public class GuiInfoPanelCheckBox extends GuiButton {
 	private int slot;
 
 	public GuiInfoPanelCheckBox(int id, int x, int y, PanelSetting setting, TileEntityInfoPanel panel, int slot, FontRenderer renderer) {
-		super(id, x, y, 0, 0, setting.title);
+		super(id, x, y, renderer.getStringWidth(setting.title) + 8, renderer.FONT_HEIGHT + 1, setting.title);
 		this.setting = setting;
 		this.slot = slot;
-		height = renderer.FONT_HEIGHT + 1;
-		width = renderer.getStringWidth(setting.title) + 8;
 		this.panel = panel;
 	}
 
@@ -39,7 +36,7 @@ public class GuiInfoPanelCheckBox extends GuiButton {
 		if (!visible)
 			return;
 		checked = (panel.getDisplaySettingsForCardInSlot(slot) & setting.displayBit) > 0;
-		mc.getTextureManager().bindTexture(TEXTURE_LOCATION);
+		mc.getTextureManager().bindTexture(TEXTURE);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int delta = checked ? 6 : 0;
 		drawTexturedModalRect(xPosition, yPosition + 1, 176, delta, 6, 6);

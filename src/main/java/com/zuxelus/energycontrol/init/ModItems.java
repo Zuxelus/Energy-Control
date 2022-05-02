@@ -1,31 +1,46 @@
 package com.zuxelus.energycontrol.init;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.blocks.BlockLight;
-import com.zuxelus.energycontrol.blocks.BlockMain;
-import com.zuxelus.energycontrol.blocks.BlockSeedManager;
+import com.zuxelus.energycontrol.blocks.*;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.items.ItemDigitalThermometer;
-import com.zuxelus.energycontrol.items.ItemLight;
-import com.zuxelus.energycontrol.items.ItemMain;
-import com.zuxelus.energycontrol.items.ItemNanoBowIC2;
-import com.zuxelus.energycontrol.items.ItemPortablePanel;
-import com.zuxelus.energycontrol.items.ItemSeedManager;
-import com.zuxelus.energycontrol.items.ItemThermometer;
-import com.zuxelus.energycontrol.items.ItemUpgrade;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
+import com.zuxelus.energycontrol.items.*;
 import com.zuxelus.energycontrol.items.cards.ItemCardHolder;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.kits.ItemKitMain;
 import com.zuxelus.energycontrol.tileentities.*;
 
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class ModItems {
-	public static BlockLight blockLight;
-	public static BlockMain blockMain;
-	public static BlockSeedManager blockSeedManager;
+	public static Block blockLight;
+	public static Block blockHowlerAlarm;
+	public static Block blockIndustrialAlarm;
+	public static Block blockThermalMonitor;
+	public static Block blockInfoPanel;
+	public static Block blockInfoPanelExtender;
+	public static Block blockInfoPanelAdvanced;
+	public static Block blockInfoPanelAdvancedExtender;
+	public static Block blockHoloPanel;
+	public static Block blockHoloPanelExtender;
+	public static Block blockRangeTrigger;
+	public static Block blockRemoteThermo;
+	public static Block blockAverageCounter;
+	public static Block blockEnergyCounter;
+	public static Block blockKitAssembler;
+	public static Block blockTimer;
+
+	public static Block blockAfsu;
+	public static Block blockIc2Cable;
+	public static Block blockSeedAnalyzer;
+	public static Block blockSeedLibrary;
+
 	public static Item itemKit;
 	public static Item itemCard;
 	public static Item itemUpgrade;
@@ -33,100 +48,87 @@ public class ModItems {
 	public static Item itemThermometerDigital;
 	public static Item itemPortablePanel;
 	public static Item itemCardHolder;
-	public static Item itemNanoBow;
+	public static Item itemComponent;
 	public static Item itemAFB;
 	public static Item itemAFSUUpgradeKit;
 
 	public static void onBlockRegistry() {
-		blockLight = new BlockLight();
-		setNames(blockLight, "block_light");
-		GameRegistry.registerBlock(blockLight, ItemLight.class,"block_light");
-
-		blockMain = new BlockMain();
-		setNames(blockMain, "block_main");
-		GameRegistry.registerBlock(blockMain, ItemMain.class, "block_main");
-		
-		blockSeedManager = new BlockSeedManager();
-		setNames(blockMain, "block_seed_manager");
-		GameRegistry.registerBlock(blockSeedManager, ItemSeedManager.class, "block_seed_manager");
+		blockLight = register(new BlockLight(), "block_light");
+		blockHowlerAlarm = register(new HowlerAlarm(), "howler_alarm");
+		blockIndustrialAlarm = register(new IndustrialAlarm(), "industrial_alarm");
+		blockThermalMonitor = register(new ThermalMonitor(), "thermal_monitor");
+		blockInfoPanel = register(new InfoPanel(), TileEntityInfoPanel.NAME);
+		blockInfoPanelExtender = register(new InfoPanelExtender(), "info_panel_extender");
+		blockInfoPanelAdvanced = register(new AdvancedInfoPanel(), TileEntityAdvancedInfoPanel.NAME);
+		blockInfoPanelAdvancedExtender = register(new AdvancedInfoPanelExtender(), "info_panel_advanced_extender");
+		blockHoloPanel = register(new HoloPanel(), "holo_panel");
+		blockHoloPanelExtender = register(new HoloPanelExtender(), "holo_panel_extender");
+		blockRangeTrigger = register(new RangeTrigger(), "range_trigger");
+		blockRemoteThermo = register(new RemoteThermalMonitor(), "remote_thermo");
+		blockAverageCounter = register(new AverageCounter(), "average_counter");
+		blockEnergyCounter = register(new EnergyCounter(), "energy_counter");
+		blockKitAssembler = register(new KitAssembler(), "kit_assembler");
+		blockTimer = register(new TimerBlock(), "timer");
 	}
 
 	public static void onItemRegistry() {
-		itemUpgrade = new ItemUpgrade();
-		setNames(itemUpgrade, "item_upgrade");
-		GameRegistry.registerItem(itemUpgrade, "item_upgrade");
-
-		itemThermometer = new ItemThermometer();
-		setNames(itemThermometer, "thermometer");
-		GameRegistry.registerItem(itemThermometer, "thermometer");
-
-		itemThermometerDigital = new ItemDigitalThermometer();
-		setNames(itemThermometerDigital, "thermometer_digital");
-		GameRegistry.registerItem(itemThermometerDigital, "thermometer_digital");
-
-		itemNanoBow = new ItemNanoBowIC2();
-		setNames(itemNanoBow, "nano_bow");
-		GameRegistry.registerItem(itemNanoBow, "nano_bow");
-
-		if (CrossModLoader.ic2.getModType() == "IC2Exp") {
-			itemAFB = CrossModLoader.ic2.getItem("afb");
-			setNames(itemAFB, "afb");
-			GameRegistry.registerItem(itemAFB, "afb");
-	
-			itemAFSUUpgradeKit = CrossModLoader.ic2.getItem("afsu_upgrade_kit");
-			setNames(itemAFSUUpgradeKit, "afsu_upgrade_kit");
-			GameRegistry.registerItem(itemAFSUUpgradeKit, "afsu_upgrade_kit");
-		}
-
-		itemPortablePanel = new ItemPortablePanel();
-		setNames(itemPortablePanel, "portable_panel");
-		GameRegistry.registerItem(itemPortablePanel, "portable_panel");
+		itemUpgrade = register(new ItemUpgrade(), "item_upgrade");
+		itemThermometer = register(new ItemThermometer(), "thermometer");
+		itemPortablePanel = register(new ItemPortablePanel(), "portable_panel");
 
 		itemKit = new ItemKitMain();
 		((ItemKitMain) itemKit).registerKits();
-		setNames(itemKit, "item_kit");
-		GameRegistry.registerItem(itemKit, "item_kit");
+		register(itemKit, "item_kit");
 
 		itemCard = new ItemCardMain();
 		((ItemCardMain) itemCard).registerCards();
-		setNames(itemCard, "item_card");
-		GameRegistry.registerItem(itemCard, "item_card");
+		register(itemCard, "item_card");
 
-		itemCardHolder = new ItemCardHolder();
-		setNames(itemCardHolder, "card_holder");
-		GameRegistry.registerItem(itemCardHolder, "card_holder");
+		itemCardHolder = register(new ItemCardHolder(), "card_holder");
+		itemComponent = register(new ItemComponent(), "item_component");
+
+		CrossModLoader.registerItems();
+
+		OreDictionary.registerOre("circuitBasic", new ItemStack(itemComponent, 1, ItemComponent.BASIC_CIRCUIT));
+		OreDictionary.registerOre("circuitAdvanced", new ItemStack(itemComponent, 1, ItemComponent.ADVANCED_CIRCUIT));
 	}
 
-	private static void setNames(Object obj, String name) {
-		if (obj instanceof Block) {
-			Block block = (Block) obj;
-			block.setBlockName(name);
-			//block.setRegistryName(name);
-		} else if (obj instanceof Item) {
-			Item item = (Item) obj;
-			item.setUnlocalizedName(name);
-			//item.setRegistryName(name);
-		} else
-			throw new IllegalArgumentException("Item or Block required");
+	public static Block register(Block block, String name) {
+		return register(block, ItemBase.class, name);
 	}
 
-	public static void registerTileEntities() { // TODO Change to event
+	public static Block register(Block block, Class<? extends ItemBlock> itemClass, String name) {
+		block.setBlockName(name);
+		GameRegistry.registerBlock(block, itemClass, name);
+		return block;
+	}
+
+	public static Item register(Item item, String name) {
+		item.setUnlocalizedName(name);
+		GameRegistry.registerItem(item, name);
+		return item;
+	}
+
+	public static void registerTileEntities() {
 		GameRegistry.registerTileEntity(TileEntityHowlerAlarm.class, EnergyControl.MODID + ":howler_alarm");
 		GameRegistry.registerTileEntity(TileEntityIndustrialAlarm.class, EnergyControl.MODID + ":industrial_alarm");
-		GameRegistry.registerTileEntity(TileEntityThermo.class, EnergyControl.MODID + ":thermo");
-		GameRegistry.registerTileEntity(TileEntityRemoteThermo.class, EnergyControl.MODID + ":remote_thermo");
+		GameRegistry.registerTileEntity(TileEntityThermalMonitor.class, EnergyControl.MODID + ":thermo");
+		GameRegistry.registerTileEntity(TileEntityRemoteThermalMonitor.class, EnergyControl.MODID + ":remote_thermo");
 		GameRegistry.registerTileEntity(TileEntityInfoPanel.class, EnergyControl.MODID + ":" + TileEntityInfoPanel.NAME);
 		GameRegistry.registerTileEntity(TileEntityInfoPanelExtender.class, EnergyControl.MODID + ":info_panel_extender");
 		GameRegistry.registerTileEntity(TileEntityAdvancedInfoPanel.class, EnergyControl.MODID + ":" + TileEntityAdvancedInfoPanel.NAME);
 		GameRegistry.registerTileEntity(TileEntityAdvancedInfoPanelExtender.class, EnergyControl.MODID + ":info_panel_advanced_extender");
+		GameRegistry.registerTileEntity(TileEntityHoloPanel.class, EnergyControl.MODID + ":holo_panel");
+		GameRegistry.registerTileEntity(TileEntityHoloPanelExtender.class, EnergyControl.MODID + ":holo_panel_extender");
 		GameRegistry.registerTileEntity(TileEntityRangeTrigger.class, EnergyControl.MODID + ":range_trigger");
 		GameRegistry.registerTileEntity(TileEntityAverageCounter.class, EnergyControl.MODID + ":average_counter");
 		GameRegistry.registerTileEntity(TileEntityEnergyCounter.class, EnergyControl.MODID + ":energy_counter");
 		GameRegistry.registerTileEntity(TileEntityKitAssembler.class, EnergyControl.MODID + ":kit_assembler");
-		if (CrossModLoader.ic2.getModType() == "IC2Exp")
+		if (Loader.isModLoaded(ModIDs.IC2)) {
 			GameRegistry.registerTileEntity(TileEntityAFSU.class, EnergyControl.MODID + ":afsu");
-		GameRegistry.registerTileEntity(TileEntitySeedAnalyzer.class, EnergyControl.MODID + ":seed_analyzer");
-		GameRegistry.registerTileEntity(TileEntitySeedLibrary.class, EnergyControl.MODID + ":seed_library");
+			GameRegistry.registerTileEntity(TileEntitySeedAnalyzer.class, EnergyControl.MODID + ":seed_analyzer");
+			GameRegistry.registerTileEntity(TileEntitySeedLibrary.class, EnergyControl.MODID + ":seed_library");
+		}
 		GameRegistry.registerTileEntity(TileEntityTimer.class, EnergyControl.MODID + ":timer");
 	}
 }

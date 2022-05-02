@@ -3,7 +3,7 @@ package com.zuxelus.energycontrol.renderers;
 import org.lwjgl.opengl.GL11;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.tileentities.TileEntityRemoteThermo;
+import com.zuxelus.energycontrol.tileentities.TileEntityRemoteThermalMonitor;
 
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -12,15 +12,13 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class TERemoteThermoRenderer extends TileEntitySpecialRenderer {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(
-			EnergyControl.MODID + ":textures/blocks/remote_thermo/all.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/blocks/remote_thermo/all.png");
 	private static final CubeRenderer model = new CubeRenderer(0, 0, 0, 32, 32, 32, 128, 64, 0, 0);
 
-	public void renderTileEntityAt(TileEntityRemoteThermo te, double x, double y, double z) {
+	public void renderTileEntityAt(TileEntityRemoteThermalMonitor te, double x, double y, double z) {
 		GL11.glPushMatrix();
 		GL11.glTranslated(x, y, z);
-		ForgeDirection facing = te.getFacingForge();
-		switch (facing) {
+		switch (te.getFacingForge()) {
 		case UP:
 			break;
 		case NORTH:
@@ -62,7 +60,6 @@ public class TERemoteThermoRenderer extends TileEntitySpecialRenderer {
 				rate = Math.round((1 - Math.min((double) heat / level, 1)) * 16) / (double) 16;
 			Tessellator tessellator = Tessellator.instance;
 			tessellator.startDrawingQuads();
-			// vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
 			tessellator.addVertexWithUV(rate, 0, 0, rate * 0.25, 0);
 			tessellator.addVertexWithUV(1, 0, 0, 0.25, 0);
 			tessellator.addVertexWithUV(1, 0.375, 0, 0.25, 0.1875);
@@ -82,6 +79,6 @@ public class TERemoteThermoRenderer extends TileEntitySpecialRenderer {
 
 	@Override
 	public void renderTileEntityAt(TileEntity te, double x, double y, double z, float partialTicks) {
-		renderTileEntityAt((TileEntityRemoteThermo) te, x, y, z);
+		renderTileEntityAt((TileEntityRemoteThermalMonitor) te, x, y, z);
 	}
 }

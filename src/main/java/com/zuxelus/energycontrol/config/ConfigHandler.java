@@ -13,12 +13,13 @@ public class ConfigHandler {
 
 	public int howlerAlarmRange;
 	public int maxAlarmRange;
-	public String allowedAlarms;	
-	public int remoteThermalMonitorEnergyConsumption;
+	public String allowedAlarms;
 	public int infoPanelRefreshPeriod;
 	public int rangeTriggerRefreshPeriod;
-	public int SMPMaxAlarmRange;
+	public int thermalMonitorRefreshPeriod;
 	public boolean useCustomSounds;
+	public int alarmPause;
+	public boolean disableRangeCheck;
 
 	public void init(File configFile) {
 		if (config == null)
@@ -28,14 +29,15 @@ public class ConfigHandler {
 
 	private void loadConfig() {
 		try {
-			howlerAlarmRange = config.get(Configuration.CATEGORY_GENERAL, "howlerAlarmRange", 64).getInt();
-			maxAlarmRange = config.get(Configuration.CATEGORY_GENERAL, "maxAlarmRange", 128).getInt();
-			allowedAlarms = config.get(Configuration.CATEGORY_GENERAL, "allowedAlarms", "default,sci-fi,siren").getString().replaceAll(" ", "");
-			remoteThermalMonitorEnergyConsumption = config.get(Configuration.CATEGORY_GENERAL, "remoteThermalMonitorEnergyConsumption", 1).getInt();
-			infoPanelRefreshPeriod = config.get(Configuration.CATEGORY_GENERAL, "infoPanelRefreshPeriod",20).getInt();
-			rangeTriggerRefreshPeriod = config.get(Configuration.CATEGORY_GENERAL, "rangeTriggerRefreshPeriod", 20).getInt();
-			SMPMaxAlarmRange = config.get(Configuration.CATEGORY_GENERAL, "SMPMaxAlarmRange", 256).getInt();
-			useCustomSounds = config.get(Configuration.CATEGORY_GENERAL, "useCustomSounds", false).getBoolean();
+			howlerAlarmRange = config.getInt("howlerAlarmRange", Configuration.CATEGORY_GENERAL, 64, 0, 256, "", "ec.config.howlerAlarmRange");
+			maxAlarmRange = config.getInt("maxAlarmRange", Configuration.CATEGORY_GENERAL, 128, 0, 256, "", "ec.config.maxAlarmRange");
+			allowedAlarms = config.getString("allowedAlarms", Configuration.CATEGORY_GENERAL, "default,sci-fi,siren", "", "ec.config.allowedAlarms").replaceAll(" ", "");
+			infoPanelRefreshPeriod = config.getInt("infoPanelRefreshPeriod", Configuration.CATEGORY_GENERAL, 20, 0, 2000, "", "ec.config.screenRefreshPeriod");
+			rangeTriggerRefreshPeriod = config.getInt("rangeTriggerRefreshPeriod", Configuration.CATEGORY_GENERAL, 20, 0, 2000, "", "ec.config.rangeTriggerRefreshPeriod");
+			thermalMonitorRefreshPeriod = config.getInt("thermalMonitorRefreshPeriod", Configuration.CATEGORY_GENERAL, 20, 0, 2000, "", "ec.config.thermalMonitorRefreshPeriod");
+			useCustomSounds = config.getBoolean("useCustomSounds", Configuration.CATEGORY_GENERAL, false, "", "ec.config.useCustomSounds");
+			alarmPause = config.getInt("alarmPause", Configuration.CATEGORY_GENERAL, 60, 0, 2000, "", "ec.config.alarmPause");
+			disableRangeCheck = config.getBoolean("disableRangeCheck", Configuration.CATEGORY_GENERAL, false, "", "ec.config.disableRangeCheck");
 		} catch (Exception e) {
 			EnergyControl.logger.error("Mod has a problem loading it's configuration", e);
 		} finally {

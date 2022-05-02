@@ -114,9 +114,4 @@ public class ItemCardGeneratorHeat extends ItemCardBase {
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOnOff"), 64, damage));
 		return result;
 	}
-
-	@Override
-	public int getKitFromCard() {
-		return ItemCardType.KIT_GENERATOR;
-	}
 }

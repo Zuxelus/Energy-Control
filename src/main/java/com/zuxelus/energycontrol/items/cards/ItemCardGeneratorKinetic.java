@@ -72,6 +72,12 @@ public class ItemCardGeneratorKinetic extends ItemCardBase {
 			reader.setInt("height", tag.getInteger("height"));
 			reader.setDouble("health", tag.getDouble("health"));
 			break;
+		case 7: // TileEntitySteamKineticGenerator
+			reader.setString("status", tag.getString("status"));
+			reader.setDouble("output", tag.getDouble("output"));
+			reader.setDouble("multiplier", tag.getDouble("multiplier"));
+			reader.setInt("condProgress", tag.getInteger("condProgress"));
+			break;
 		}
 		return CardState.OK;
 	}
@@ -125,7 +131,19 @@ public class ItemCardGeneratorKinetic extends ItemCardBase {
 				result.add(new PanelString("msg.ec.InfoPanelMultiplier", reader.getDouble("multiplier"), showLabels));
 				addOnOff(result, isServer, reader.getBoolean("active"));
 			break;
-		case 5: // TileEntityWaterKineticGenerator
+		case 5: // TileEntityWindKineticGenerator
+			if ((settings & 1) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelOutputKU", reader.getDouble("output"), showLabels));
+			if ((settings & 2) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelWindStrength", reader.getDouble("wind"), showLabels));
+			if ((settings & 32) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelMultiplier", reader.getDouble("multiplier"), showLabels));
+			if ((settings & 64) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelHeight", reader.getInt("height"), showLabels));
+			if ((settings & 16) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelRotorHealth", reader.getDouble("health"), showLabels));
+			break;
+		case 6: // TileEntityWaterKineticGenerator
 			if ((settings & 1) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelOutputKU", reader.getDouble("output"), showLabels));
 			if ((settings & 2) > 0)
@@ -137,17 +155,15 @@ public class ItemCardGeneratorKinetic extends ItemCardBase {
 			if ((settings & 16) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelRotorHealth", reader.getDouble("health"), showLabels));
 			break;
-		case 6: // TileEntityWindKineticGenerator
+		case 7: // TileEntitySteamKineticGenerator
+			if ((settings & 2) > 0)
+				result.add(new PanelString(reader.getString("status"), "", true));
 			if ((settings & 1) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelOutputKU", reader.getDouble("output"), showLabels));
-			if ((settings & 2) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelWindStrength", reader.getDouble("wind"), showLabels));
 			if ((settings & 32) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelMultiplier", reader.getDouble("multiplier"), showLabels));
-			if ((settings & 64) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelHeight", reader.getInt("height"), showLabels));
-			if ((settings & 16) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelRotorHealth", reader.getDouble("health"), showLabels));
+			if ((settings & 8) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelWater", String.format("%s mB", reader.getInt("condProgress") / 100.0F), showLabels));
 			break;
 		}
 		return result;
@@ -165,10 +181,5 @@ public class ItemCardGeneratorKinetic extends ItemCardBase {
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMultiplier"), 32, damage));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelHeight"), 64, damage));
 		return result;
-	}
-
-	@Override
-	public int getKitFromCard() {
-		return ItemCardType.KIT_GENERATOR;
 	}
 }

@@ -15,9 +15,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
 public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer {
-	private static final ResourceLocation TEXTUREOFF[];
-	private static final ResourceLocation TEXTUREON[];
-	private static final CubeRenderer model[];
+	private static final ResourceLocation[] TEXTUREOFF;
+	private static final ResourceLocation[] TEXTUREON;
+	private static final CubeRenderer[] model;
 
 	static {
 		TEXTUREOFF = new ResourceLocation[16];
@@ -38,11 +38,11 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer {
 		String output = "";
 		if (inputArray.length > 0) {
 			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < inputArray.length; i++) {
-				if (inputArray[i] == null || inputArray[i].isEmpty())
+			for (String s : inputArray) {
+				if (s == null || s.isEmpty())
 					continue;
 				sb.append(glueString);
-				sb.append(inputArray[i]);
+				sb.append(s);
 			}
 			output = sb.toString();
 			if (output.length() > 1)
@@ -85,7 +85,7 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer {
 			if (color > 15 || color < 0)
 				color = 6;
 		}
-		if (te.powered)
+		if (te.getPowered())
 			bindTexture(TEXTUREON[color]);
 		else
 			bindTexture(TEXTUREOFF[color]);
@@ -112,18 +112,19 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer {
 		GL11.glPopMatrix();
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	private void drawText(TileEntityAdvancedInfoPanel panel, List<PanelString> joinedData, byte thickness, RotationOffset offset) {
 		Screen screen = panel.getScreen();
 		float displayWidth = 1.0F;
 		float displayHeight = 1.0F;
-		float dx = 0; float dz = 0;
+		float dx = 0; float dy = 0; float dz = 0;
 		if (screen != null) {
 			switch (panel.getFacingForge()) {
 			case UP:
 				switch (panel.getRotation()) {
 				case NORTH:
-					dz = (panel.zCoord - screen.maxZ - screen.minZ + panel.zCoord);
-					//dy = panel.xCoord - screen.maxX - screen.minX + panel.xCoord;
+					dx = panel.xCoord - screen.maxX;
+					dz = screen.minZ - panel.zCoord;
 					displayWidth += screen.maxX - screen.minX;
 					displayHeight += screen.maxZ - screen.minZ;
 					break;
@@ -134,8 +135,8 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer {
 					displayHeight += screen.maxZ - screen.minZ;
 					break;
 				case EAST:
-					dz = (panel.zCoord - screen.maxZ - screen.minZ + panel.zCoord);
-					//dy = panel.xCoord - screen.maxX - screen.minX + panel.xCoord;
+					dx = panel.xCoord - screen.maxX;
+					dz = panel.zCoord - screen.maxZ;
 					displayWidth += screen.maxZ - screen.minZ;
 					displayHeight += screen.maxX - screen.minX;
 					break;
@@ -144,10 +145,6 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer {
 					dz = screen.minZ - panel.zCoord;
 					displayWidth += screen.maxZ - screen.minZ;
 					displayHeight += screen.maxX - screen.minX;
-					break;
-				case DOWN:
-					break;
-				case UP:
 					break;
 				}
 				break;
@@ -177,12 +174,8 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer {
 					displayWidth += screen.maxZ - screen.minZ;
 					displayHeight += screen.maxX - screen.minX;
 					break;
-				case DOWN:
-					break;
-				case UP:
-					break;
 				}
- 				break;
+				break;
 			case NORTH:
 				dx = panel.xCoord - screen.maxX;
 				dz = screen.minY - panel.yCoord;
@@ -211,7 +204,7 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer {
 		}
 
 		GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F);
-		switch(panel.getRotation())
+		switch(panel.getFacingForge())
 		{
 		case UP:
 			break;
@@ -233,13 +226,35 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer {
 			GL11.glTranslatef(dz - 1.0F, dx - 1.0F, 0.0F);
 			break;
 		}
+		switch(panel.getRotation())
+		{
+		case DOWN:
+			break;
+		case UP:
+			break;
+		case NORTH:
+			GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
+			GL11.glTranslatef(dx - 1.0F, dz, 0.0F);
+			break;
+		case SOUTH:
+			GL11.glTranslatef(dx, dz - 1.0F, 0.0F);
+			break;
+		case WEST:
+			GL11.glRotatef(-90.0F, 0.0F, 0.0F, 1.0F);
+			GL11.glTranslatef(dz, dx, 0.0F);
+			break;
+		case EAST:
+			GL11.glRotatef(90.0F, 0.0F, 0.0F, 1.0F);
+			GL11.glTranslatef(dz - 1.0F, dx - 1.0F, 0.0F);
+			break;
+		}
 
 		double h = (offset.leftBottom - offset.rightBottom) / 32;
 		double v = (offset.leftTop - offset.leftBottom) / 32;
 		double b = Math.atan(h / displayWidth);
 		double a = Math.atan(Math.cos(b) * v / displayHeight);
-		int i = offset.rotateVert == 0 ? 0 : offset.rotateVert > 0 ? -1 : 1;
-		int j = offset.rotateHor == 0 ? 0 : offset.rotateHor > 0 ? -1 : 1;
+		int i = Integer.compare(0, offset.rotateVert);
+		int j = Integer.compare(0, offset.rotateHor);
 		GL11.glTranslated(displayWidth / 2, displayHeight / 2, 1 + (32 * h - offset.leftTop - offset.leftBottom) / 64);
 		GL11.glRotated(Math.toDegrees(b), 0.0D, -1.0D, 0.0D);
 		GL11.glRotated(Math.toDegrees(a), -1.0D, 0.0D, 0.0D);
@@ -281,7 +296,7 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer {
 		int row = 0;
 		int colorHex = 0x000000;
 		if (panel.getColored())
-			colorHex = panel.getColorTextHex();
+			colorHex = panel.getColorText();
 		for (PanelString panelString : joinedData) {
 			if (panelString.textLeft != null) {
 				fontRenderer.drawString(panelString.textLeft, offsetX - realWidth / 2,

@@ -3,7 +3,6 @@ package com.zuxelus.energycontrol.items.kits;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
@@ -15,7 +14,7 @@ public abstract class ItemKitSimple extends ItemKitBase {
 	}
 
 	@Override
-	public ItemStack getSensorCard(ItemStack stack, Item card, EntityPlayer player, World world, int x, int y, int z) {
+	public ItemStack getSensorCard(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side) {
 		ChunkCoordinates position = getTargetCoordinates(world, x, y, z, stack);
 		if (position == null)
 			return null;

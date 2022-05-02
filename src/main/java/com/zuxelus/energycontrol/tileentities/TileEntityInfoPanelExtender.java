@@ -7,7 +7,6 @@ import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import ic2.api.tile.IWrenchable;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -19,7 +18,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityInfoPanelExtender extends TileEntityFacing implements IScreenPart, IWrenchable {
+public class TileEntityInfoPanelExtender extends TileEntityFacing implements IScreenPart {
 	protected boolean init;
 
 	protected Screen screen;
@@ -119,19 +118,19 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ISc
 
 	@Override
 	public void invalidate() {
-		super.invalidate();
 		if (!worldObj.isRemote)
 			EnergyControl.instance.screenManager.unregisterScreenPart(this);
+		super.invalidate();
 	}
 
 	@Override
 	public void updateEntity() {
 		if (init)
 			return;
-		
+
 		if (!worldObj.isRemote && !partOfScreen)
 			EnergyControl.instance.screenManager.registerInfoPanelExtender(this);
-		
+
 		updateScreen();
 		init = true;
 	}
@@ -146,8 +145,17 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ISc
 				coreX = core.xCoord;
 				coreY = core.yCoord;
 				coreZ = core.zCoord;
+
+				int metaCore =  worldObj.getBlockMetadata(coreX, coreY, coreZ);
+				int meta =  worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+				if (meta != metaCore)
+					worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, metaCore, 2);
 				return;
 			}
+		} else {
+			int meta =  worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+			if (meta > 5)
+				worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, meta - 6, 2);
 		}
 		partOfScreen = false;
 		coreX = 0;
@@ -170,8 +178,8 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ISc
 	public void updateData() { }
 
 	@Override
-	public void notifyBlockUpdate() {
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+	public void updateTileEntity() {
+		notifyBlockUpdate();
 	}
 
 	public boolean getColored() {
@@ -212,6 +220,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ISc
 		return oldBlock != newBlock;
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	@SideOnly(Side.CLIENT)
 	public int findTexture() {
 		Screen scr = getScreen();
@@ -240,33 +249,7 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ISc
 
 	// IWrenchable
 	@Override
-	public boolean wrenchCanSetFacing(EntityPlayer entityPlayer, int side) {
-		return facing.ordinal() != side;
-	}
-
-	@Override
-	public short getFacing() {
-		return (short) facing.ordinal();
-	}
-
-	@Override
-	public void setFacing(short facing) {
-		setFacing((int) facing);
-		notifyBlockUpdate();
-	}
-
-	@Override
-	public boolean wrenchCanRemove(EntityPlayer entityPlayer) {
-		return true;
-	}
-
-	@Override
-	public float getWrenchDropRate() {
-		return 1;
-	}
-
-	@Override
-	public ItemStack getWrenchDrop(EntityPlayer entityPlayer) {
-		return new ItemStack(ModItems.blockMain, 1, BlockDamages.DAMAGE_INFO_PANEL_EXTENDER);
+	public ItemStack getWrenchDrop(EntityPlayer player) {
+		return new ItemStack(ModItems.blockInfoPanelExtender);
 	}
 }

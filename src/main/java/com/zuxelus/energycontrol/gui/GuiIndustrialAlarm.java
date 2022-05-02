@@ -18,12 +18,10 @@ public class GuiIndustrialAlarm extends GuiBase {
 		this.alarm = alarm;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void initGui() {
 		super.initGui();
-		guiLeft = (this.width - xSize) / 2;
-		guiTop = (this.height - ySize) / 2;
-		buttonList.clear();
 		slider = new GuiHowlerAlarmSlider(3, guiLeft + 12, guiTop + 33, alarm);
 		buttonList.add(slider);
 	}

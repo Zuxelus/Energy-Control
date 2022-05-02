@@ -67,9 +67,10 @@ public class RotationOffset {
 		offset.leftTop += length * (pos + ((state >> 3) & 1));
 		offset.rightTop += length * (pos + ((state >> 2) & 1));
 		offset.leftBottom += length * (pos + ((state >> 1) & 1));
-		offset.rightBottom += length * (pos + ((state >> 0) & 1));
+		offset.rightBottom += length * (pos + ((state) & 1));
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	public RotationOffset addOffset(Screen screen, int x, int y, int z, ForgeDirection facing, ForgeDirection rotation) {
 		if (rotateHor == 0 && rotateVert == 0)
 			return this;

@@ -37,7 +37,7 @@ public class ItemCardCounter extends ItemCardBase {
 		}
 		if (tileEntity instanceof TileEntityAverageCounter) {
 			TileEntityAverageCounter avgCounter = (TileEntityAverageCounter) tileEntity;
-			reader.setInt("average", avgCounter.getClientAverage());
+			reader.setDouble("average", avgCounter.getClientAverage());
 			reader.setInt("period", (int) avgCounter.period);
 			return CardState.OK;
 		}
@@ -45,20 +45,20 @@ public class ItemCardCounter extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelString> getStringData(int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		// average counter
 		if (reader.hasField("average")) {
-			if ((displaySettings & 1) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelOutputEU", reader.getInt("average"), showLabels));
-			if ((displaySettings & 2) > 0)
+			if ((settings & 1) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("average"), "EU/t", showLabels));
+			if ((settings & 2) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelPeriod", reader.getInt("period"), showLabels));
 			return result;
 		}
 		// energy counter
-		if ((displaySettings & 1) > 0) {
+		if ((settings & 1) > 0) {
 			double energy = reader.getDouble("energy");
-			result.add(new PanelString("msg.ec.InfoPanelEnergyEU", energy, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelEnergy", energy, "EU", showLabels));
 		}
 		return result;
 	}
@@ -67,10 +67,5 @@ public class ItemCardCounter extends ItemCardBase {
 	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		return null;
-	}
-
-	@Override
-	public int getKitFromCard() {
-		return ItemCardType.KIT_COUNTER;
 	}
 }

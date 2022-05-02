@@ -17,13 +17,13 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.7.10-0.1.1b"
+version = "1.7.10-0.3.0a"
 group= "com.zuxelus.energycontrol"
 archivesBaseName = "EnergyControl"
 
-sourceCompatibility = targetCompatibility = "1.8"
+sourceCompatibility = targetCompatibility = '1.8'
 compileJava {
-    sourceCompatibility = targetCompatibility = "1.8"
+    sourceCompatibility = targetCompatibility = '1.8'
 }
 
 minecraft {
@@ -49,4 +49,11 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+}
+
+jar {
+  manifest {
+      attributes 'FMLCorePlugin': 'com.zuxelus.energycontrol.hooks.ECHookLoader'
+      attributes 'FMLCorePluginContainsFMLMod': 'true'
+  }
 }

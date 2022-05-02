@@ -1,11 +1,14 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.blocks.AFSU;
-import com.zuxelus.zlib.tileentities.TileEntityEnergyStorage;
 
-import ic2.api.energy.tile.IEnergySource;
+import cpw.mods.fml.common.Optional;
 import ic2.api.item.IElectricItem;
-import ic2.api.tile.IWrenchable;
+import ic2.api.tile.IEnergyStorage;
+import micdoodle8.mods.galacticraft.api.power.EnergySource;
+import micdoodle8.mods.galacticraft.api.power.IEnergyHandlerGC;
+import micdoodle8.mods.galacticraft.api.transmission.NetworkType;
+import micdoodle8.mods.galacticraft.api.transmission.tile.IElectrical;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -13,11 +16,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityAFSU extends TileEntityEnergyStorage implements IEnergySource, IWrenchable {
+@Optional.InterfaceList({
+	@Optional.Interface(iface = "micdoodle8.mods.galacticraft.api.power.IEnergyHandlerGC", modid = "galacticraftcore"),
+	@Optional.Interface(iface = "micdoodle8.mods.galacticraft.api.transmission.tile.IElectrical", modid = "galacticraftcore")
+})
+public class TileEntityAFSU extends TileEntityEnergyStorage implements IEnergyStorage, IEnergyHandlerGC, IElectrical {
 	public static final int TIER = 5;
 	public static final int CAPACITY = 400000000;
 	public static final int OUTPUT = 8192;
@@ -162,10 +168,6 @@ public class TileEntityAFSU extends TileEntityEnergyStorage implements IEnergySo
 		return oldBlock != newBlock;
 	}
 
-	private void notifyBlockUpdate() {
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-	}
-
 	// Inventory
 	@Override
 	public int getSizeInventory() {
@@ -182,66 +184,115 @@ public class TileEntityAFSU extends TileEntityEnergyStorage implements IEnergySo
 		if (!(stack.getItem() instanceof IElectricItem))
 				return false;
 		IElectricItem item = (IElectricItem) stack.getItem();
-		if ((item.canProvideEnergy(stack) || slot == SLOT_CHARGER) && item.getTier(stack) <= TIER)
-			return true;
-		return false;
-	}
-
-	// IEnergySource
-	@Override
-	public boolean emitsEnergyTo(TileEntity receiver, ForgeDirection dir) {
-		return dir == getFacingForge();
-	}
-
-	@Override
-	public void drawEnergy(double amount) {
-		energy -= amount;
-	}
-
-	@Override
-	public double getOfferedEnergy() {
-		return allowEmit ? energy >= output ? output : 0.0D : 0.0D; 
-	}
-
-	@Override
-	public int getSourceTier() {
-		return tier;
+		return (item.canProvideEnergy(stack) || slot == SLOT_CHARGER) && item.getTier(stack) <= TIER;
 	}
 
 	// IEnergyStorage
+	@Override
+	public int getStored() {
+		return (int) getEnergy();
+	}
+
+	@Override
+	public void setStored(int energy) { }
+
+	@Override
+	public int addEnergy(int amount) {
+		amount = (int) Math.min(capacity - energy, amount);
+		energy += amount;
+		return amount;
+	}
+
+	@Override
+	public int getCapacity() {
+		return (int) capacity;
+	}
+
+	@Override
+	public double getOutputEnergyUnitsPerTick() {
+		return OUTPUT;
+	}
+
 	@Override
 	public boolean isTeleporterCompatible(ForgeDirection side) {
 		return true;
 	}
 
-	// IWrenchable
+	// IEnergyHandlerGC
 	@Override
-	public boolean wrenchCanSetFacing(EntityPlayer entityPlayer, int side) {
-		return facing.ordinal() != side;
+	@Optional.Method(modid = "galacticraftcore")
+	public float receiveEnergyGC(EnergySource from, float amount, boolean simulate) {
+		float energyReceived = (float) Math.min(capacity - energy, amount);
+		if (!simulate)
+			energy += energyReceived;
+		return energyReceived;
 	}
 
 	@Override
-	public short getFacing() {
-		return (short) facing.ordinal();
+	@Optional.Method(modid = "galacticraftcore")
+	public float extractEnergyGC(EnergySource from, float amount, boolean simulate) {
+		return 0;
 	}
 
 	@Override
-	public void setFacing(short facing) {
-		setFacing((int) facing);
-	}
-
-	@Override
-	public boolean wrenchCanRemove(EntityPlayer entityPlayer) {
+	@Optional.Method(modid = "galacticraftcore")
+	public boolean nodeAvailable(EnergySource from) {
 		return true;
 	}
 
 	@Override
-	public float getWrenchDropRate() {
-		return 1;
+	@Optional.Method(modid = "galacticraftcore")
+	public float getEnergyStoredGC(EnergySource from) {
+		return (float) energy;
 	}
 
 	@Override
-	public ItemStack getWrenchDrop(EntityPlayer entityPlayer) {
+	@Optional.Method(modid = "galacticraftcore")
+	public float getMaxEnergyStoredGC(EnergySource from) {
+		return (float) capacity;
+	}
+
+	@Override
+	@Optional.Method(modid = "galacticraftcore")
+	public boolean canConnect(ForgeDirection direction, NetworkType type) {
+		return direction != facing;
+	}
+
+	@Override
+	@Optional.Method(modid = "galacticraftcore")
+	public float receiveElectricity(ForgeDirection from, float receive, int tierProduced, boolean doReceive) {
+		if (from == facing)
+			return 0;
+		return receiveEnergyGC(null, receive, !doReceive);
+	}
+
+	@Override
+	@Optional.Method(modid = "galacticraftcore")
+	public float provideElectricity(ForgeDirection from, float request, boolean doProvide) {
+		return extractEnergyGC(null, request, !doProvide);
+	}
+
+	@Override
+	@Optional.Method(modid = "galacticraftcore")
+	public float getRequest(ForgeDirection direction) {
+		return (float) (capacity - energy);
+	}
+
+	@Override
+	@Optional.Method(modid = "galacticraftcore")
+	public float getProvide(ForgeDirection direction) {
+		return 0;
+	}
+
+	@Override
+	@Optional.Method(modid = "galacticraftcore")
+	public int getTierGC() {
+		return 3;
+	}
+
+	// IWrenchable
+	@Override
+	public ItemStack getWrenchDrop(EntityPlayer player) {
 		return AFSU.getStackwithEnergy(getEnergy() * 0.8D);
 	}
 }

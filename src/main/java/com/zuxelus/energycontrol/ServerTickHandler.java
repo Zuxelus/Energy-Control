@@ -1,6 +1,6 @@
 package com.zuxelus.energycontrol;
 
-import com.zuxelus.energycontrol.network.ChannelHandler;
+import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.network.PacketAlarm;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -18,8 +18,9 @@ public class ServerTickHandler {
 
 	@SubscribeEvent
 	public void onPlayerLogin(PlayerLoggedInEvent event) {
-		if (event.player instanceof EntityPlayerMP)
-			ChannelHandler.network.sendTo(
-					new PacketAlarm(EnergyControl.config.maxAlarmRange, EnergyControl.config.allowedAlarms), (EntityPlayerMP) event.player);
+		if (!(event.player instanceof EntityPlayerMP))
+			return;
+		EnergyControl.altPressed.put(event.player, false);
+		NetworkHelper.network.sendTo(new PacketAlarm(EnergyControl.config.howlerAlarmRange, EnergyControl.config.allowedAlarms.split(",")), (EntityPlayerMP) event.player);
 	}
 }

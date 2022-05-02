@@ -24,7 +24,7 @@ public class ItemKitDraconic extends ItemKitBase {
 	}
 
 	@Override
-	public ItemStack getSensorCard(ItemStack stack, Item card, EntityPlayer player, World world, int x, int y, int z) {
+	public ItemStack getSensorCard(ItemStack stack, Item card, EntityPlayer player, World world, int x, int y, int z, int side) {
 		TileEntity te = world.getTileEntity(x, y, z);
 		TileEnergyStorageCore core = null;
 		if (te instanceof TileParticleGenerator)

@@ -1,57 +1,56 @@
 package com.zuxelus.energycontrol.blocks;
 
+import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
+import com.zuxelus.zlib.blocks.FacingBlockSmall;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
-public class HowlerAlarm extends BlockBase {
+public class HowlerAlarm extends FacingBlockSmall {
 	private static final float[] AABB_DOWN = { 0.125F, 0.5625F, 0.125F, 0.875F, 1.0F, 0.875F };
 	private static final float[] AABB_UP = { 0.125F, 0.0F, 0.125F, 0.875F, 0.4375F, 0.875F };
 	private static final float[] AABB_NORTH = { 0.125F, 0.125F, 0.5625F, 0.875F, 0.875F, 1.0F };
 	private static final float[] AABB_SOUTH = { 0.125F, 0.125F, 0.0F, 0.875F, 0.875F, 0.4375F };
 	private static final float[] AABB_WEST = { 0.5625F, 0.125F, 0.125F, 1.0F, 0.875F, 0.875F };
 	private static final float[] AABB_EAST = { 0.0F, 0.125F, 0.125F, 0.4375F, 0.875F, 0.875F };
-	private IIcon[] icons = new IIcon[4];
 
-	public HowlerAlarm() {
-		super(BlockDamages.DAMAGE_HOWLER_ALARM, "howler_alarm");
+	@Override
+	protected TileEntityFacing createTileEntity() {
+		return new TileEntityHowlerAlarm();
 	}
 
 	@Override
-	public TileEntity createNewTileEntity() {
-		TileEntityHowlerAlarm te = new TileEntityHowlerAlarm();
-		te.setFacing(0);
-		return te;
+	@SideOnly(Side.CLIENT)
+	public void registerBlockIcons(IIconRegister ir) {
+		icons[0] = registerIcon(ir,"howler_alarm/back");
+		icons[1] = registerIcon(ir,"howler_alarm/face");
+		icons[2] = registerIcon(ir,"howler_alarm/side_hor");
+		icons[3] = registerIcon(ir,"howler_alarm/side_vert");
 	}
 
 	@Override
-	public IIcon getIconFromSide(int side) {
-		if (side > 3)
-			return icons[2];
-		return icons[side];
+	public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
+		int meta = world.getBlockMetadata(x, y, z);
+		if (checkForDrop(world, x, y, z, meta) && !canPlaceBlock(world, x, y, z, ForgeDirection.getOrientation(meta).getOpposite())) {
+			dropBlockAsItem(world, x, y, z, meta, 0);
+			world.setBlockToAir(x, y, z);
+		} else 
+			if (!world.isRemote)
+				world.markBlockForUpdate(x, y, z);
 	}
 
 	@Override
-	public void registerIcons(IIconRegister iconRegister) {
-		icons[0] = registerIcon(iconRegister,"howler_alarm/back");
-		icons[1] = registerIcon(iconRegister,"howler_alarm/face");
-		icons[2] = registerIcon(iconRegister,"howler_alarm/side_hor");
-		icons[3] = registerIcon(iconRegister,"howler_alarm/side_vert");
-	}
-
-	@Override
-	public boolean isSolidBlockRequired() {
-		return true;
-	}
-
-	@Override
-	public float[] getBlockBounds(TileEntity te) {
-		if (!(te instanceof TileEntityFacing))
-			return AABB_UP;
-		switch (((TileEntityFacing) te).getFacingForge()) {
+	public float[] getBlockBounds(ForgeDirection dir) {
+		switch (dir) {
 		case EAST:
 			return AABB_EAST;
 		case WEST:
@@ -66,5 +65,19 @@ public class HowlerAlarm extends BlockBase {
 		case DOWN:
 			return AABB_DOWN;
 		}
+	}
+
+	@Override
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int facing, float hitX, float hitY, float hitZ) {
+		if (CrossModLoader.getCrossMod(ModIDs.IC2).isWrench(player.getHeldItem()))
+			return true;
+		if (world.isRemote)
+			player.openGui(EnergyControl.instance, getBlockGuiId(), world, x, y, z);
+		return true;
+	}
+
+	@Override
+	protected int getBlockGuiId() {
+		return BlockDamages.DAMAGE_HOWLER_ALARM;
 	}
 }

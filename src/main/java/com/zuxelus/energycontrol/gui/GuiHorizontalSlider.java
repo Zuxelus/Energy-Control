@@ -3,22 +3,24 @@ package com.zuxelus.energycontrol.gui;
 import org.lwjgl.opengl.GL11;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.gui.GuiBase;
-import com.zuxelus.zlib.network.NetworkHelper;
 
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.resources.I18n;
 
+@SideOnly(Side.CLIENT)
 public class GuiHorizontalSlider extends GuiBase {
-
-	private GuiInfoPanel parentGui;
+	private GuiPanelBase parentGui;
 	private TileEntityInfoPanel panel;
 	private HorizontalSlider slider;
 
-	public GuiHorizontalSlider(GuiInfoPanel parentGui, TileEntityInfoPanel panel) {
+	public GuiHorizontalSlider(GuiPanelBase parentGui, TileEntityInfoPanel panel) {
 		super("msg.ec.PanelRefreshRate", 152, 64, EnergyControl.MODID + ":textures/gui/gui_horizontal_slider.png");
 		this.parentGui = parentGui;
 		this.panel = panel;
@@ -52,10 +54,9 @@ public class GuiHorizontalSlider extends GuiBase {
 		private int maxValue = 128;
 
 		public HorizontalSlider(int id, int x, int y) {
-			super(id, x, y, 132, 16, "");
+			super(id, x, y, 132, 16, I18n.format("msg.ec.Ticks", Integer.toString(panel.getTickRate())));
 			dragging = false;
 			sliderValue = panel.getTickRate();
-			displayString = I18n.format("msg.ec.Ticks", Integer.toString(sliderValue));
 		}
 
 		private void setSliderPos(int targetX) {

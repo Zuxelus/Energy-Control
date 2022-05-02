@@ -1,33 +1,36 @@
 package com.zuxelus.energycontrol.blocks;
 
 import com.zuxelus.energycontrol.tileentities.TileEntityEnergyCounter;
+import com.zuxelus.zlib.blocks.FacingBlock;
+import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 
-public class EnergyCounter extends BlockBase {
-	private IIcon[] icons = new IIcon[2];
+public class EnergyCounter extends FacingBlock {
 
-	public EnergyCounter() {
-		super(BlockDamages.DAMAGE_ENERGY_COUNTER, "energy_counter");
+	@Override
+	protected TileEntityFacing createTileEntity() {
+		return new TileEntityEnergyCounter();
 	}
 
 	@Override
-	public TileEntity createNewTileEntity() {
-		TileEntityEnergyCounter te = new TileEntityEnergyCounter();
-		te.setFacing(0);
-		return te;
+	@SideOnly(Side.CLIENT)
+	public IIcon getIcon(int side, int meta) { // 1.7.10
+		return side == meta % 6 ? icons[1] : icons[0];
 	}
 
 	@Override
-	public IIcon getIconFromSide(int side) {
-		return side == 1 ? icons[1] : icons[0];
+	@SideOnly(Side.CLIENT)
+	public void registerBlockIcons(IIconRegister ir) { // 1.7.10
+		icons[0] = registerIcon(ir,"energy_counter/input");
+		icons[1] = registerIcon(ir,"energy_counter/output");
 	}
 
 	@Override
-	public void registerIcons(IIconRegister iconRegister) {
-		icons[0] = registerIcon(iconRegister,"energy_counter/input");
-		icons[1] = registerIcon(iconRegister,"energy_counter/output");
+	protected int getBlockGuiId() {
+		return BlockDamages.DAMAGE_ENERGY_COUNTER;
 	}
 }

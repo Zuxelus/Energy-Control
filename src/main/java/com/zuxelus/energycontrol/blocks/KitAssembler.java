@@ -1,45 +1,43 @@
 package com.zuxelus.energycontrol.blocks;
 
 import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
+import com.zuxelus.zlib.blocks.FacingHorizontal;
+import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 
-public class KitAssembler extends BlockBase {
-	private IIcon[] icons = new IIcon[5];
+public class KitAssembler extends FacingHorizontal {
 
-	public KitAssembler() {
-		super(BlockDamages.GUI_KIT_ASSEMBER, "kit_assembler");
+	@Override
+	public TileEntityFacing createTileEntity() {
+		return new TileEntityKitAssembler();
 	}
 
 	@Override
-	public TileEntity createNewTileEntity() {
-		TileEntityKitAssembler te = new TileEntityKitAssembler();
-		te.setFacing(0);
-		return te;
-	}
-
-	@Override
-	public IIcon getIconFromSide(int side) {
-		switch (side) {
-		case 1:
-		case 2:
-		case 3:
+	@SideOnly(Side.CLIENT)
+	public IIcon getIcon(int side, int meta) { // 1.7.10
+		if (side == meta % 6)
+			return meta > 5 ? icons[4] : icons[3];
+		if (side < 2)
 			return icons[side];
-		case 6:
-			return icons[4];
-		default:
-			return icons[0];
-		}
+		return icons[2];
 	}
 
 	@Override
-	public void registerIcons(IIconRegister iconRegister) {
-		icons[0] = registerIcon(iconRegister,"kit_assembler/side");
-		icons[1] = registerIcon(iconRegister,"kit_assembler/face");
-		icons[2] = registerIcon(iconRegister,"kit_assembler/top");
-		icons[3] = registerIcon(iconRegister,"kit_assembler/bottom");
-		icons[4] = registerIcon(iconRegister,"kit_assembler/face_active");
+	@SideOnly(Side.CLIENT)
+	public void registerBlockIcons(IIconRegister ir) { // 1.7.10
+		icons[0] = registerIcon(ir,"kit_assembler/bottom");
+		icons[1] = registerIcon(ir,"kit_assembler/top");
+		icons[2] = registerIcon(ir,"kit_assembler/side");
+		icons[3] = registerIcon(ir,"kit_assembler/face");
+		icons[4] = registerIcon(ir,"kit_assembler/face_active");
+	}
+
+	@Override
+	protected int getBlockGuiId() {
+		return BlockDamages.GUI_KIT_ASSEMBER;
 	}
 }

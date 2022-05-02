@@ -15,7 +15,7 @@ public class Screen {
 	private int coreX;
 	private int coreY;
 	private int coreZ;
-	private boolean powered = false;
+	private boolean powered;
 
 	public Screen(TileEntityInfoPanel panel) {
 		maxX = minX = coreX = panel.xCoord;
@@ -41,10 +41,10 @@ public class Screen {
 	}
 
 	public TileEntityInfoPanel getCore(IBlockAccess world) {
-		TileEntity tileEntity = world.getTileEntity(coreX, coreY, coreZ);
-		if (tileEntity == null || !(tileEntity instanceof TileEntityInfoPanel))
+		TileEntity te = world.getTileEntity(coreX, coreY, coreZ);
+		if (!(te instanceof TileEntityInfoPanel))
 			return null;
-		return (TileEntityInfoPanel) tileEntity;
+		return (TileEntityInfoPanel) te;
 	}
 
 	public boolean isBlockNearby(TileEntity tileEntity) {
@@ -70,14 +70,12 @@ public class Screen {
 		for (int x = minX; x <= maxX; x++) {
 			for (int y = minY; y <= maxY; y++) {
 				for (int z = minZ; z <= maxZ; z++) {
-					TileEntity tileEntity = world.getTileEntity(x, y, z);
-					if (tileEntity == null || !(tileEntity instanceof IScreenPart))
+					TileEntity te = world.getTileEntity(x, y, z);
+					if (te == null || !(te instanceof IScreenPart))
 						continue;
-					((IScreenPart) tileEntity).setScreen(this);
-					if (powered || force) {
-						((IScreenPart)tileEntity).notifyBlockUpdate();
-						//world.checkLight(new BlockPos(x , y, z));
-					}
+					((IScreenPart) te).setScreen(this);
+					if (powered || force)
+						((IScreenPart) te).updateTileEntity();
 				}
 			}
 		}
@@ -87,29 +85,20 @@ public class Screen {
 		for (int x = minX; x <= maxX; x++) {
 			for (int y = minY; y <= maxY; y++) {
 				for (int z = minZ; z <= maxZ; z++) {
-					TileEntity tileEntity = world.getTileEntity(x, y, z);
-					if (tileEntity == null || !(tileEntity instanceof IScreenPart))
+					TileEntity te = world.getTileEntity(x, y, z);
+					if (!(te instanceof IScreenPart))
 						continue;
-					IScreenPart part = (IScreenPart) tileEntity;
+					IScreenPart part = (IScreenPart) te;
 					Screen targetScreen = part.getScreen();
 					if (targetScreen != null && targetScreen.equals(this)) {
 						part.setScreen(null);
 						part.updateData();
 					}
-					if (powered || force) {
-						part.notifyBlockUpdate();
-						//world.checkLight(new BlockPos(x , y, z));
-					}
+					if (powered || force)
+						part.updateTileEntity();
 				}
 			}
 		}
-	}
-
-	public void turnPower(boolean on, World world) {
-		if (powered == on)
-			return;
-		powered = on;
-		markUpdate(world);
 	}
 
 	private void markUpdate(World world) {
@@ -118,8 +107,7 @@ public class Screen {
 				for (int z = minZ; z <= maxZ; z++) {
 					TileEntity te = world.getTileEntity(x, y, z);
 					if (te instanceof IScreenPart)
-						((IScreenPart)te).notifyBlockUpdate();
-						//world.checkLight(new BlockPos(x, y, z));
+						((IScreenPart) te).updateTileEntity();
 				}
 			}
 		}
@@ -200,8 +188,6 @@ public class Screen {
 			return false;
 		if (minY != other.minY)
 			return false;
-		if (minZ != other.minZ)
-			return false;
-		return true;
+		return minZ == other.minZ;
 	}
 }

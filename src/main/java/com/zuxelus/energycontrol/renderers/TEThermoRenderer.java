@@ -3,22 +3,20 @@ package com.zuxelus.energycontrol.renderers;
 import org.lwjgl.opengl.GL11;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.tileentities.TileEntityThermo;
+import com.zuxelus.energycontrol.tileentities.TileEntityThermalMonitor;
 
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
 public class TEThermoRenderer extends TileEntitySpecialRenderer {
-	private static final ResourceLocation TEXTURE0 = new ResourceLocation(
-			EnergyControl.MODID + ":textures/blocks/thermal_monitor/all0.png");
-	private static final ResourceLocation TEXTURE1 = new ResourceLocation(
-			EnergyControl.MODID + ":textures/blocks/thermal_monitor/all1.png");
-	private static final ResourceLocation TEXTURE2 = new ResourceLocation(
-			EnergyControl.MODID + ":textures/blocks/thermal_monitor/all2.png");
+	private static final ResourceLocation TEXTURE0 = new ResourceLocation(EnergyControl.MODID, "textures/blocks/thermal_monitor/all0.png");
+	private static final ResourceLocation TEXTURE1 = new ResourceLocation(EnergyControl.MODID, "textures/blocks/thermal_monitor/all1.png");
+	private static final ResourceLocation TEXTURE2 = new ResourceLocation(EnergyControl.MODID, "textures/blocks/thermal_monitor/all2.png");
 	private static final CubeRenderer model = new CubeRenderer(2, 0, 2, 28, 14, 28, 128, 64, 0, 0);
 
-	public void renderTileEntityAt(TileEntityThermo te, double x, double y, double z) {
+	@SuppressWarnings("incomplete-switch")
+	public void renderTileEntityAt(TileEntityThermalMonitor te, double x, double y, double z) {
 		GL11.glPushMatrix();
 		GL11.glTranslated(x, y, z);
 		switch (te.getFacingForge()) {
@@ -151,6 +149,6 @@ public class TEThermoRenderer extends TileEntitySpecialRenderer {
 
 	@Override
 	public void renderTileEntityAt(TileEntity te, double x, double y, double z, float partialTicks) {
-		renderTileEntityAt((TileEntityThermo)te, x, y, z);
+		renderTileEntityAt((TileEntityThermalMonitor)te, x, y, z);
 	}
 }

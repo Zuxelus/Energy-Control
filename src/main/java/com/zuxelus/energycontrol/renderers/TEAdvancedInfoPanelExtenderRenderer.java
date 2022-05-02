@@ -12,9 +12,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class TEAdvancedInfoPanelExtenderRenderer extends TileEntitySpecialRenderer {
-	private static final ResourceLocation TEXTUREOFF[];
-	private static final ResourceLocation TEXTUREON[];
-	private static final CubeRenderer model[];
+	private static final ResourceLocation[] TEXTUREOFF;
+	private static final ResourceLocation[] TEXTUREON;
+	private static final CubeRenderer[] model;
 
 	static {
 		TEXTUREOFF = new ResourceLocation[16];
@@ -78,11 +78,16 @@ public class TEAdvancedInfoPanelExtenderRenderer extends TileEntitySpecialRender
 		int rotateHor = te.getRotateHor() / 7;
 		int rotateVert = te.getRotateVert() / 7; 
 		Screen screen = te.getScreen();
-		if (thickness == 16 && rotateHor == 0 && rotateVert == 0)
-			model[textureId].render(0.03125F);
-		else {
-			RotationOffset offset = new RotationOffset(thickness * 2, rotateHor, rotateVert);
-			new CubeRenderer(textureId / 4 * 32 + 64, textureId % 4 * 32 + 64, offset.addOffset(screen, te.xCoord, te.yCoord, te.zCoord, te.getFacingForge(), te.getRotation())).render(0.03125F);
+		if (screen == null) {
+			if (thickness == 16 && rotateHor == 0 && rotateVert == 0)
+				model[textureId].render(0.03125F);
+		} else {
+			if (thickness == 16 && rotateHor == 0 && rotateVert == 0)
+				model[textureId].render(0.03125F);
+			else {
+				RotationOffset offset = new RotationOffset(thickness * 2, rotateHor, rotateVert);
+				new CubeRenderer(textureId / 4 * 32 + 64, textureId % 4 * 32 + 64, offset.addOffset(screen, te.xCoord, te.yCoord, te.zCoord, te.getFacingForge(), te.getRotation())).render(0.03125F);
+			}
 		}
 		GL11.glPopMatrix();
 	}

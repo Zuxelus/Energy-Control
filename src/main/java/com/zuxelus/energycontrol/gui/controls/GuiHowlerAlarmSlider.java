@@ -3,8 +3,8 @@ package com.zuxelus.energycontrol.gui.controls;
 import org.lwjgl.opengl.GL11;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
-import com.zuxelus.zlib.network.NetworkHelper;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -15,12 +15,11 @@ import net.minecraft.util.ResourceLocation;
 
 @SideOnly(Side.CLIENT)
 public class GuiHowlerAlarmSlider extends GuiButton {
-	private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(
-			"energycontrol:textures/gui/gui_howler_alarm.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_howler_alarm.png");
 
 	public float sliderValue;
 	public boolean dragging;
-	private int minValue = 0;
+	private int minValue;
 	private int maxValue = 256;
 	private int step = 8;
 	private TileEntityHowlerAlarm alarm;
@@ -63,7 +62,7 @@ public class GuiHowlerAlarmSlider extends GuiButton {
 	public void drawButton(Minecraft mc, int mouseX, int mouseY) {
 		if (!visible)
 			return;
-		mc.getTextureManager().bindTexture(TEXTURE_LOCATION);
+		mc.getTextureManager().bindTexture(TEXTURE);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		if (dragging)
 			setSliderPos(mouseX);

@@ -2,11 +2,11 @@ package com.zuxelus.energycontrol.tileentities;
 
 public interface IScreenPart {
 
-	public void setScreen(Screen screen);
+	void setScreen(Screen screen);
 
-	public Screen getScreen();
+	Screen getScreen();
 
-	public void updateData();
+	void updateData();
 
-	public void notifyBlockUpdate();
+	void updateTileEntity();
 }

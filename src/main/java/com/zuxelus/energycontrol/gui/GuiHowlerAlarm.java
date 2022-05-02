@@ -30,7 +30,7 @@ public class GuiHowlerAlarm extends GuiBase {
 		super.initGui();
 		slider = new GuiHowlerAlarmSlider(3, guiLeft + 12, guiTop + 33, alarm);
 
-		List<String> items = new ArrayList<String>(EnergyControl.instance.availableAlarms);
+		List<String> items = new ArrayList<>(EnergyControl.instance.availableAlarms);
 		items.retainAll(EnergyControl.instance.serverAllowedAlarms);
 
 		listBox = new GuiHowlerAlarmListBox(4, guiLeft + 13, guiTop + 63, 105, 65, items, alarm);

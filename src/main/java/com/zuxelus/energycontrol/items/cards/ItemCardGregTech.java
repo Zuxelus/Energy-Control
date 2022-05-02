@@ -226,9 +226,4 @@ public class ItemCardGregTech extends ItemCardBase {
 	public List<PanelSetting> getSettingsList() {
 		return null;
 	}
-
-	@Override
-	public int getKitFromCard() {
-		return ItemCardType.KIT_GREGTECH;
-	}
 }

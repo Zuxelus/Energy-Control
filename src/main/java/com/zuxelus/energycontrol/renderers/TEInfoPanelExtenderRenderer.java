@@ -3,6 +3,7 @@ package com.zuxelus.energycontrol.renderers;
 import org.lwjgl.opengl.GL11;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.tileentities.TileEntityHoloPanelExtender;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanelExtender;
 
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -10,9 +11,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
 public class TEInfoPanelExtenderRenderer extends TileEntitySpecialRenderer {
-	private static final ResourceLocation TEXTUREOFF[];
-	private static final ResourceLocation TEXTUREON[];
-	private static final CubeRenderer model[];
+	private static final ResourceLocation[] TEXTUREOFF;
+	private static final ResourceLocation[] TEXTUREON;
+	private static final CubeRenderer[] model;
 
 	static {
 		TEXTUREOFF = new ResourceLocation[16];
@@ -29,7 +30,10 @@ public class TEInfoPanelExtenderRenderer extends TileEntitySpecialRenderer {
 				model[i * 4 + j] = new CubeRenderer(i * 32 + 64, j * 32 + 64);
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	public void renderTileEntityAt(TileEntityInfoPanelExtender te, double x, double y, double z) {
+		if (te instanceof TileEntityHoloPanelExtender)
+			return;
 		GL11.glPushMatrix();
 		GL11.glTranslated(x, y, z);
 		switch (te.getFacingForge()) {

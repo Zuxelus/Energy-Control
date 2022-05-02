@@ -25,10 +25,10 @@ public abstract class TileEntityInventory extends TileEntityFacing implements IS
 	@Override
 	protected void readProperties(NBTTagCompound tag) {
 		super.readProperties(tag);
-		NBTTagList nbttaglist = tag.getTagList("Items", Constants.NBT.TAG_COMPOUND);
+		NBTTagList list = tag.getTagList("Items", Constants.NBT.TAG_COMPOUND);
 		inventory = new ItemStack[getSizeInventory()];
-		for (int i = 0; i < nbttaglist.tagCount(); i++) {
-			NBTTagCompound stackTag = nbttaglist.getCompoundTagAt(i);
+		for (int i = 0; i < list.tagCount(); i++) {
+			NBTTagCompound stackTag = list.getCompoundTagAt(i);
 			inventory[stackTag.getByte("Slot")] = ItemStack.loadItemStackFromNBT(stackTag);
 		}
 	}
@@ -69,7 +69,6 @@ public abstract class TileEntityInventory extends TileEntityFacing implements IS
 	@Override
 	public ItemStack decrStackSize(int slot, int count) {
 		ItemStack stack = getAndSplit(inventory, slot, count);
-		//if (!stack.isEmpty()) markDirty();
 		return stack;
 	}
 
@@ -84,17 +83,17 @@ public abstract class TileEntityInventory extends TileEntityFacing implements IS
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int index) {
-		ItemStack stack = getStackInSlot(index);
+	public ItemStack getStackInSlotOnClosing(int slot) {
+		ItemStack stack = getStackInSlot(slot);
 		if (stack == null)
 			return null;
-		inventory[index] = null;
+		inventory[slot] = null;
 		return stack;
 	}
 
 	@Override
-	public void setInventorySlotContents(int index, ItemStack stack) {
-		inventory[index] = stack;
+	public void setInventorySlotContents(int slot, ItemStack stack) {
+		inventory[slot] = stack;
 		if (stack != null && stack.stackSize > getInventoryStackLimit())
 			stack.stackSize = getInventoryStackLimit();
 		markDirty();
@@ -117,7 +116,7 @@ public abstract class TileEntityInventory extends TileEntityFacing implements IS
 	public void closeInventory() { }
 
 	public List<ItemStack> getDrops(int fortune) {
-		List<ItemStack> list = new ArrayList<ItemStack>();
+		List<ItemStack> list = new ArrayList<>();
 		for (int i = 0; i < getSizeInventory(); i++) {
 			ItemStack stack = getStackInSlot(i);
 			if (stack != null)
@@ -137,7 +136,7 @@ public abstract class TileEntityInventory extends TileEntityFacing implements IS
 				float rz = rand.nextFloat() * 0.8F + 0.1F;
 
 				EntityItem entityItem = new EntityItem(world, x + rx, y + ry, z + rz,
-						new ItemStack(item.getItem(), item.stackSize, item.getItemDamage()));
+					new ItemStack(item.getItem(), item.stackSize, item.getItemDamage()));
 
 				if (item.hasTagCompound())
 					entityItem.getEntityItem().setTagCompound((NBTTagCompound) item.getTagCompound().copy());
@@ -155,7 +154,7 @@ public abstract class TileEntityInventory extends TileEntityFacing implements IS
 	// ISidedInventory
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side) {
-		return null;
+		return new int[0];
 	}
 
 	@Override

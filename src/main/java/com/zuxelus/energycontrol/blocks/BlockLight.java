@@ -87,9 +87,9 @@ public class BlockLight extends Block {
 		int meta = world.getBlockMetadata(x, y, z);
 		if (meta % 2 == 1) {
 			if (!world.isBlockIndirectlyGettingPowered(x, y, z))
-				world.setBlock(x, y, z, this, meta - 1, 2);
+				world.setBlockMetadataWithNotify(x, y, z, meta - 1, 2);
 		} else if (world.isBlockIndirectlyGettingPowered(x, y, z))
-			world.setBlock(x, y, z, this, meta + 1, 2);
+			world.setBlockMetadataWithNotify(x, y, z, meta + 1, 2);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })

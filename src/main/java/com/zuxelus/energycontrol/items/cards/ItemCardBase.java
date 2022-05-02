@@ -3,38 +3,36 @@ package com.zuxelus.energycontrol.items.cards;
 import java.util.List;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.api.ICardGui;
+import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.IItemCard;
+import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.IIcon;
+import net.minecraft.world.World;
 
-public abstract class ItemCardBase implements IItemCard {
+public abstract class ItemCardBase {
 	private IIcon icon;
 	protected String name;
 	protected int damage;
-	private Object[] recipe;
 
 	public ItemCardBase(int damage, String name) {
 		this.damage = damage;
 		this.name = name;
 	}
 
-	@Override
 	public final int getDamage() {
 		return damage;
 	}
 
-	@Override
 	public final String getName() {
 		return name;
 	}
 
-	@Override
 	public final String getUnlocalizedName() {
 		return "item." + name;
 	}
@@ -47,30 +45,21 @@ public abstract class ItemCardBase implements IItemCard {
 		return icon;
 	}
 
-	@Override
-	public ICardGui getSettingsScreen(ICardReader reader) {
-		return null;
-	}
-
-	@Override
 	public boolean isRemoteCard() {
 		return true;
 	}
+
+	public abstract CardState update(World world, ICardReader reader, int range, int x, int y, int z);
+
+	public abstract List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels);
+
+	public abstract List<PanelSetting> getSettingsList();
 
 	protected ChunkCoordinates getCoordinates(ICardReader reader, int cardNumber) {
 		if (cardNumber >= reader.getCardCount())
 			return null;
 		return new ChunkCoordinates(reader.getInt(String.format("_%dx", cardNumber)),
 				reader.getInt(String.format("_%dy", cardNumber)), reader.getInt(String.format("_%dz", cardNumber)));
-	}
-
-	@Override
-	public Object[] getRecipe() {
-		return recipe;
-	}
-
-	protected final void addRecipe(Object[] recipe) {
-		this.recipe = recipe;
 	}
 
 	protected void addHeat(List<PanelString> result, int heat, int maxHeat, boolean showLabels) {
@@ -82,7 +71,7 @@ public abstract class ItemCardBase implements IItemCard {
 
 	protected void addOnOff(List<PanelString> result, boolean isServer, boolean value) {
 		String text;
-		int txtColor = 0;
+		int txtColor;
 		if (value) {
 			txtColor = 0x00ff00;
 			text = isServer ? "On" : I18n.format("msg.ec.InfoPanelOn");

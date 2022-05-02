@@ -28,6 +28,7 @@ public class ItemAFSUUpgradeKit extends Item {
 			return false;
 
 		Block block = world.getBlock(x, y, z);
+		int meta =  world.getBlockMetadata(x, y, z);
 		if (!(block instanceof BlockElectric))
 			return false;
 		TileEntity te = world.getTileEntity(x, y, z);
@@ -42,7 +43,7 @@ public class ItemAFSUUpgradeKit extends Item {
 		for (int i = 0; i < items.length; i++)
 			items[i] = ((TileEntityElectricBlock) mfsu).getStackInSlot(i);
 		world.removeTileEntity(x, y, z);
-		world.setBlock(x, y, z, ModItems.blockMain, BlockDamages.DAMAGE_AFSU, 2);
+		world.setBlock(x, y, z, ModItems.blockAfsu, meta, 2);
 		TileEntityAFSU afsu = new TileEntityAFSU();
 		afsu.addEnergy(eustored);
 		afsu.setFacing(facing);

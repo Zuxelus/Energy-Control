@@ -1,10 +1,11 @@
 package com.zuxelus.energycontrol.containers;
 
+import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityAFSU;
 import com.zuxelus.zlib.containers.ContainerBase;
 import com.zuxelus.zlib.containers.slots.SlotArmor;
-import com.zuxelus.zlib.containers.slots.SlotFilter;
-import com.zuxelus.zlib.network.NetworkHelper;
+import com.zuxelus.zlib.containers.slots.SlotChargeable;
+import com.zuxelus.zlib.containers.slots.SlotDischargeable;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ICrafting;
@@ -16,8 +17,8 @@ public class ContainerAFSU extends ContainerBase<TileEntityAFSU> {
 	public ContainerAFSU(EntityPlayer player, TileEntityAFSU te) {
 		super(te);
 
-		addSlotToContainer(new SlotFilter(te, TileEntityAFSU.SLOT_CHARGER, 26, 17)); // chargeSlot
-		addSlotToContainer(new SlotFilter(te, TileEntityAFSU.SLOT_DISCHARGER, 26, 53)); // dischargeSlot
+		addSlotToContainer(new SlotChargeable(te, TileEntityAFSU.SLOT_CHARGER, 26, 17)); // chargeSlot
+		addSlotToContainer(new SlotDischargeable(te, TileEntityAFSU.SLOT_DISCHARGER, 26, 53, TileEntityAFSU.TIER)); // dischargeSlot
 		for (int col = 0; col < 4; col++)
 			addSlotToContainer((Slot) new SlotArmor(player.inventory, col, 8 + col * 18, 84));
 		// inventory

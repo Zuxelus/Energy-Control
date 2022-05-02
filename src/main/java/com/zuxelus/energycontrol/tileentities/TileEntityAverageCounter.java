@@ -1,14 +1,12 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import com.zuxelus.energycontrol.blocks.BlockDamages;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.init.ModItems;
-import com.zuxelus.zlib.tileentities.TileEntitySinkSource;
 
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.info.Info;
-import ic2.api.tile.IWrenchable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,7 +15,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraftforge.common.MinecraftForge;
 
-public class TileEntityAverageCounter extends TileEntitySinkSource implements IWrenchable {
+public class TileEntityAverageCounter extends TileEntityEnergyStorage {
 	private static final int BASE_PACKET_SIZE = 32;
 	protected static final int DATA_POINTS = 11 * 20;
 	private boolean init;
@@ -29,7 +27,7 @@ public class TileEntityAverageCounter extends TileEntitySinkSource implements IW
 
 	protected short prevPeriod;
 	public short period;
-	protected int clientAverage = -1;
+	protected double clientAverage = -1;
 
 	public TileEntityAverageCounter() {
 		super("tile.average_counter.name", 1, BASE_PACKET_SIZE, BASE_PACKET_SIZE * 2);
@@ -40,18 +38,18 @@ public class TileEntityAverageCounter extends TileEntitySinkSource implements IW
 		prevPeriod = period = 1;
 	}
 
-	public int getClientAverage() {
+	public double getClientAverage() {
 		if (clientAverage == -1)
 			return getAverage();
 		return clientAverage;
 	}
 
-	private int getAverage() {
+	private double getAverage() {
 		int start = DATA_POINTS + index - period * 20;
 		double sum = 0;
 		for (int i = 0; i < period * 20; i++)
 			sum += data[(start + i) % DATA_POINTS];
-		clientAverage = (int) Math.round(sum / period / 20);
+		clientAverage = sum / period / 20;
 		return clientAverage;
 	}
 
@@ -90,7 +88,7 @@ public class TileEntityAverageCounter extends TileEntitySinkSource implements IW
 		switch (tag.getInteger("type")) {
 		case 1:
 			if (tag.hasKey("value"))
-				clientAverage = tag.getInteger("value");
+				clientAverage = tag.getDouble("value");
 			break;
 		}
 	}
@@ -117,7 +115,7 @@ public class TileEntityAverageCounter extends TileEntitySinkSource implements IW
 		prevPeriod = period = tag.getShort("period");
 
 		for (int i = 0; i < DATA_POINTS; i++)
-			data[i] = tag.getLong("point-" + i);
+			data[i] = tag.getDouble("point-" + i);
 	}
 
 	@Override
@@ -134,7 +132,7 @@ public class TileEntityAverageCounter extends TileEntitySinkSource implements IW
 		tag.setShort("period", period);
 
 		for (int i = 0; i < DATA_POINTS; i++)
-			tag.setLong("point-" + i, (long) data[i]);
+			tag.setDouble("point-" + i, data[i]);
 		return tag;
 	}
 
@@ -161,8 +159,7 @@ public class TileEntityAverageCounter extends TileEntitySinkSource implements IW
 
 	@Override
 	public void updateEntity() {
-		onLoad();
-
+		onLoad(); // 1.7.10
 		if (worldObj.isRemote)
 			return;
 
@@ -179,9 +176,9 @@ public class TileEntityAverageCounter extends TileEntitySinkSource implements IW
 
 	private void refreshData() {
 		int upgradeCountTransormer = 0;
-		ItemStack itemStack = getStackInSlot(0);
-		if (itemStack != null && itemStack.isItemEqual(CrossModLoader.ic2.getItemStack("transformer")))
-			upgradeCountTransormer = itemStack.stackSize;
+		ItemStack stack = getStackInSlot(0);
+		if (stack != null && stack.isItemEqual(CrossModLoader.getCrossMod(ModIDs.IC2).getItemStack("transformer")))
+			upgradeCountTransormer = stack.stackSize;
 		upgradeCountTransormer = Math.min(upgradeCountTransormer, 4);
 		if (worldObj != null && !worldObj.isRemote) {
 			output = BASE_PACKET_SIZE * (int) Math.pow(4D, upgradeCountTransormer);
@@ -213,42 +210,19 @@ public class TileEntityAverageCounter extends TileEntitySinkSource implements IW
 	}
 
 	@Override
-	public boolean isItemValid(int slotIndex, ItemStack itemstack) { // ISlotItemFilter
-		return itemstack.isItemEqual(CrossModLoader.ic2.getItemStack("transformer"));
+	public boolean isItemValid(int slotIndex, ItemStack stack) { // ISlotItemFilter
+		return stack.isItemEqual(CrossModLoader.getCrossMod(ModIDs.IC2).getItemStack("transformer"));
 	}
 
-	private void notifyBlockUpdate() {
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+	// IEnergySource
+	@Override
+	public double getOfferedEnergy() {
+		return allowEmit ? energy >= output ? output : energy : 0.0D; 
 	}
 
 	// IWrenchable
 	@Override
-	public boolean wrenchCanSetFacing(EntityPlayer entityPlayer, int side) {
-		return facing.ordinal() != side;
-	}
-
-	@Override
-	public short getFacing() {
-		return (short) facing.ordinal();
-	}
-
-	@Override
-	public void setFacing(short facing) {
-		setFacing((int) facing);
-	}
-
-	@Override
-	public boolean wrenchCanRemove(EntityPlayer entityPlayer) {
-		return true;
-	}
-
-	@Override
-	public float getWrenchDropRate() {
-		return 1;
-	}
-
-	@Override
-	public ItemStack getWrenchDrop(EntityPlayer entityPlayer) {
-		return new ItemStack(ModItems.blockMain, 1, BlockDamages.DAMAGE_AVERAGE_COUNTER);
+	public ItemStack getWrenchDrop(EntityPlayer player) {
+		return new ItemStack(ModItems.blockAverageCounter);
 	}
 }

@@ -18,7 +18,7 @@ public class ItemKitNuclearCraft extends ItemKitBase {
 	}
 
 	@Override
-	public ItemStack getSensorCard(ItemStack stack, Item card, EntityPlayer player, World world, int x, int y, int z) {
+	public ItemStack getSensorCard(ItemStack stack, Item card, EntityPlayer player, World world, int x, int y, int z, int side) {
 		TileEntity te = world.getTileEntity(x, y, z);
 		if (/*te instanceof TileDecayGenerator ||*/ te instanceof TileSolarPanel /*|| te instanceof TileItemProcessor || te instanceof TileItemFluidProcessor || te instanceof TileBattery || te instanceof TileFluidProcessor || te instanceof TileFissionController*/) {
 			ItemStack newCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_NUCLEARCRAFT);

@@ -16,13 +16,12 @@ import net.minecraft.block.BlockButton;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 public class ItemCardToggle extends ItemCardBase implements ITouchAction {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(
-			EnergyControl.MODID + ":textures/blocks/remote_thermo/all.png");
 
 	public ItemCardToggle() {
 		super(ItemCardType.CARD_TOGGLE, "card_toggle");
@@ -37,7 +36,7 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 		Block block = world.getBlock(target.posX, target.posY, target.posZ);
 		if (block == null)
 			return CardState.NO_TARGET;
-		
+
 		if (block == Blocks.lever || block instanceof BlockButton) {
 			boolean value = (world.getBlockMetadata(target.posX, target.posY, target.posZ) & 8) > 0;
 			reader.setBoolean("value", value);
@@ -68,15 +67,15 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 	}
 
 	@Override
-	public int getKitFromCard() {
-		return ItemCardType.KIT_TOGGLE;
+	public boolean enableTouch(ItemStack stack) {
+		return true;
 	}
 
 	@Override
-	public void runTouchAction(World world, ICardReader reader) {
+	public boolean runTouchAction(World world, ICardReader reader, ItemStack stack) {
 		ChunkCoordinates pos = reader.getTarget();
 		if (pos == null)
-			return;
+			return false;
 
 		Block block = world.getBlock(pos.posX, pos.posY, pos.posZ);
 		if (block == Blocks.lever) {
@@ -123,6 +122,7 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 				world.scheduleBlockUpdate(pos.posX, pos.posY, pos.posZ, block, block.tickRate(world));
 			}
 		}
+		return false;
 	}
 
 	@Override

@@ -1,49 +1,43 @@
 package com.zuxelus.energycontrol.gui;
 
-import org.lwjgl.opengl.GL11;
-
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.api.ICardGui;
 import com.zuxelus.energycontrol.api.ICardReader;
-import com.zuxelus.energycontrol.gui.controls.GuiTextArea;
-import com.zuxelus.energycontrol.items.cards.ItemCardSettingsReader;
+import com.zuxelus.energycontrol.items.cards.ItemCardReader;
+import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
+import com.zuxelus.zlib.gui.GuiBase;
+import com.zuxelus.zlib.gui.controls.GuiTextArea;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.ItemStack;
 
-public class GuiCardText extends GuiScreen implements ICardGui {
-	private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(
-			EnergyControl.MODID + ":textures/gui/gui_text_card.png");
-
-	private ItemCardSettingsReader wrapper;
+@SideOnly(Side.CLIENT)
+public class GuiCardText extends GuiBase {
 	private ICardReader reader;
+	private ItemStack stack;
+	private TileEntityInfoPanel panel;
+	private GuiPanelBase parentGui;
+	private int slot;
 	private GuiTextArea textArea;
-
-	protected int xSize = 226;
-	protected int ySize = 146;
-	protected int guiLeft;
-	protected int guiTop;
 
 	private static final int lineCount = 10;
 
-	public GuiCardText(ICardReader helper) {
-		this.reader = helper;
+	public GuiCardText(ItemStack card, TileEntityInfoPanel panel, GuiPanelBase gui, int slot) {
+		super("", 226, 146, EnergyControl.MODID + ":textures/gui/gui_text_card.png");
+		this.reader = new ItemCardReader(card);
+		this.stack = card;
+		this.panel = panel;
+		parentGui = gui;
+		this.slot = slot;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public boolean doesGuiPauseGame(){
-		return false;
-	}
-
-	@Override
-	public void setCardSettingsHelper(ItemCardSettingsReader wrapper) {
-		this.wrapper = wrapper;
-	}
-
-	private void initControls() {
-		buttonList.clear();
+	public void initGui() {
+		super.initGui();
 		buttonList.add(new GuiButton(1, guiLeft + xSize - 60 - 8, guiTop + 120, 60, 20, "Ok"));
+		buttonList.add(new GuiButton(2, guiLeft + 8, guiTop + 120, 60, 20, "Style"));
 		textArea = new GuiTextArea(fontRendererObj, guiLeft + 8, guiTop + 5, xSize - 16, ySize - 35, lineCount);
 		textArea.setFocused(true);
 		String[] data = textArea.getText();
@@ -52,53 +46,58 @@ public class GuiCardText extends GuiScreen implements ICardGui {
 	}
 
 	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
-		super.mouseClicked(mouseX, mouseY, mouseButton);
-		if (textArea != null)
-			textArea.mouseClicked(mouseX, mouseY, mouseButton);
-	}
-
-	@Override
-	protected void actionPerformed(GuiButton par1GuiButton) {
-		if (textArea != null && wrapper != null) {
-			String[] lines = textArea.getText();
-			
-			if (lines != null)
-				for (int i = 0; i < lines.length; i++)
-					wrapper.setString("line_" + i, lines[i]);
-				
-		}
-		wrapper.commit();
-		wrapper.closeGui();
-	}
-
-	@Override
-	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-		mc.getTextureManager().bindTexture(TEXTURE_LOCATION);
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		int left = (width - xSize) / 2;
-		int top = (height - ySize) / 2;
-		drawTexturedModalRect(left, top, 0, 0, xSize, ySize);
+	public void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+		super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
 		if (textArea != null)
 			textArea.drawTextBox();
-		super.drawScreen(mouseX, mouseY, partialTicks);
+	}
+
+	@Override
+	public void updateScreen() {
+		super.updateScreen();
+		if (textArea != null)
+			textArea.updateCursorCounter();
+	}
+
+	@Override
+	protected void actionPerformed(GuiButton button) {
+		switch (button.id) {
+		case 1:
+			updateTextArea();
+			break;
+		case 2:
+			textArea.writeText("@");
+			break;
+		}
+	}
+
+	private void updateTextArea() {
+		if (textArea != null) {
+			String[] lines = textArea.getText();
+			if (lines != null)
+				for (int i = 0; i < lines.length; i++)
+					reader.setString("line_" + i, lines[i]);
+		}
+		reader.updateServer(stack, panel, slot);
+		mc.displayGuiScreen(parentGui);
+	}
+
+	@Override
+	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+		super.mouseClicked(mouseX, mouseY, mouseButton);
+		if (textArea != null) {
+			textArea.mouseClicked(mouseX, mouseY, mouseButton);
+			textArea.setFocused(true);
+		}
 	}
 
 	@Override
 	protected void keyTyped(char typedChar, int keyCode) {
 		if (keyCode == 1 || (keyCode == this.mc.gameSettings.keyBindInventory.getKeyCode() && (textArea == null || !textArea.isFocused())))
-			actionPerformed(null);
+			updateTextArea();
 		else if (textArea != null && textArea.isFocused())
 			textArea.textAreaKeyTyped(typedChar, keyCode);
 		else
 			super.keyTyped(typedChar, keyCode);
-	}
-
-	@Override
-	public void initGui() {
-		super.initGui();
-		guiLeft = (width - xSize) / 2;
-		guiTop = (height - ySize) / 2;
-		initControls();
 	}
 }

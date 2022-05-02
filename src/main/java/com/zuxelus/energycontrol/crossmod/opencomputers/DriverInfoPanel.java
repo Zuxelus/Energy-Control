@@ -73,20 +73,12 @@ public class DriverInfoPanel extends DriverSidedTileEntity {
 
 		@Callback(doc = "function():list<string> -- Get card data.")
 		public Object[] getCardData(final Context context, final Arguments args) {
-			List<PanelString> joinedData = tileEntity.getPanelStringList(true, false);
-			List<String> list = new ArrayList<String>();
-			if (joinedData == null || joinedData.size() == 0)
-				return new Object[] { list };
+			return new Object[] { tileEntity.getPanelStringList(false) };
+		}
 
-			for (PanelString panelString : joinedData) {
-				if (panelString.textLeft != null)
-					list.add(panelString.textLeft);
-				if (panelString.textCenter != null)
-					list.add(panelString.textCenter);
-				if (panelString.textRight != null)
-					list.add(panelString.textRight);
-			}
-			return new Object[] { list };
+		@Callback(doc = "function():list<string> -- Get raw card data.")
+		public Object[] getCardDataRaw(final Context context, final Arguments args) {
+			return new Object[] { tileEntity.getPanelStringList(true) };
 		}
 
 		@Callback(doc = "function():number -- Get background color.")
@@ -118,7 +110,7 @@ public class DriverInfoPanel extends DriverSidedTileEntity {
 		@Callback(doc = "function():string -- Get card title.")
 		public Object[] getCardTitle(final Context context, final Arguments args) {
 			ItemStack stack = tileEntity.getStackInSlot(0);
-			if (stack == null || !(stack.getItem() instanceof ItemCardMain))
+			if (!ItemCardMain.isCard(stack))
 				return new Object[] { "" }; 
 			return new Object[] { new ItemCardReader(stack).getTitle() };
 		}
@@ -127,7 +119,7 @@ public class DriverInfoPanel extends DriverSidedTileEntity {
 		public Object[] setCardTitle(final Context context, final Arguments args) {
 			String title = args.checkString(0);
 			ItemStack stack = tileEntity.getStackInSlot(0);
-			if (stack != null && stack.getItem() instanceof ItemCardMain)
+			if (ItemCardMain.isCard(stack))
 				new ItemCardReader(stack).setTitle(title);
 			return null;
 		}

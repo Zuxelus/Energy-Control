@@ -1,13 +1,15 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import com.zuxelus.energycontrol.blocks.BlockDamages;
-import com.zuxelus.energycontrol.blocks.BlockMain;
+import com.zuxelus.energycontrol.blocks.TimerBlock;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -15,10 +17,12 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 
 public class TileEntityTimer extends TileEntityFacing implements ITilePacketHandler {
 	private int time;
+	private int startingTime;
 	private boolean invertRedstone;
 	private boolean isTicks;
 	private boolean isWorking;
-	private boolean poweredBlock;
+	private boolean sendSignal;
+	private boolean isPowered;
 
 	public TileEntityTimer() {
 		time = 0;
@@ -63,6 +67,8 @@ public class TileEntityTimer extends TileEntityFacing implements ITilePacketHand
 	public void setIsWorking(boolean value) {
 		boolean old = isWorking;
 		isWorking = value;
+		if (isWorking)
+			startingTime = time;
 		if (!worldObj.isRemote && isWorking != old)
 			notifyBlockUpdate();
 	}
@@ -79,7 +85,18 @@ public class TileEntityTimer extends TileEntityFacing implements ITilePacketHand
 	}
 
 	public boolean getPowered() {
-		return poweredBlock;
+		return sendSignal;
+	}
+
+	public void onNeighborChange() { // server
+		boolean newPowered = worldObj.getIndirectPowerLevelTo(xCoord + rotation.offsetX, yCoord + rotation.offsetY, zCoord + rotation.offsetZ, rotation.ordinal()) > 0;
+		if (newPowered != isPowered) {
+			if (!isPowered && newPowered) {
+				time = startingTime;
+				setIsWorking(true);
+			}
+			isPowered = newPowered;
+		}
 	}
 
 	@Override
@@ -127,7 +144,7 @@ public class TileEntityTimer extends TileEntityFacing implements ITilePacketHand
 		NBTTagCompound tag = new NBTTagCompound();
 		tag = writeProperties(tag);
 		tag.setBoolean("isTicks", isTicks);
-		tag.setBoolean("poweredBlock", poweredBlock);
+		tag.setBoolean("poweredBlock", sendSignal);
 		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, tag);
 	}
 
@@ -143,6 +160,8 @@ public class TileEntityTimer extends TileEntityFacing implements ITilePacketHand
 		super.readProperties(tag);
 		if (tag.hasKey("timer"))
 			time = tag.getInteger("timer");
+		if (tag.hasKey("startingTime"))
+			startingTime = tag.getInteger("startingTime");
 		if (tag.hasKey("invert"))
 			invertRedstone = tag.getBoolean("invert");
 		if (tag.hasKey("isWorking"))
@@ -150,7 +169,9 @@ public class TileEntityTimer extends TileEntityFacing implements ITilePacketHand
 		if (tag.hasKey("isTicks"))
 			isTicks = tag.getBoolean("isTicks");
 		if (tag.hasKey("poweredBlock"))
-			poweredBlock = tag.getBoolean("poweredBlock");
+			sendSignal = tag.getBoolean("poweredBlock");
+		if (tag.hasKey("isPowered"))
+			isPowered = tag.getBoolean("isPowered");
 	}
 
 	@Override
@@ -163,9 +184,11 @@ public class TileEntityTimer extends TileEntityFacing implements ITilePacketHand
 	protected NBTTagCompound writeProperties(NBTTagCompound tag) {
 		tag = super.writeProperties(tag);
 		tag.setInteger("timer", time);
+		tag.setInteger("startingTime", startingTime);
 		tag.setBoolean("invert", invertRedstone);
 		tag.setBoolean("isWorking", isWorking);
 		tag.setBoolean("isTicks", isTicks);
+		tag.setBoolean("isPowered", isPowered);
 		return tag;
 	}
 
@@ -189,6 +212,7 @@ public class TileEntityTimer extends TileEntityFacing implements ITilePacketHand
 			return;
 		if (time == 0) {
 			setIsWorking(false);
+			time = startingTime;
 			return;
 		}
 		time--;
@@ -198,13 +222,10 @@ public class TileEntityTimer extends TileEntityFacing implements ITilePacketHand
 
 	public void notifyBlockUpdate() {
 		Block block = worldObj.getBlock(xCoord, yCoord, zCoord);
-		if (!(block instanceof BlockMain))
-			return;
-		int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
-		if (meta == BlockDamages.DAMAGE_TIMER) {
+		if (block instanceof TimerBlock) {
 			boolean newValue = time > 0 && isWorking ? !invertRedstone : invertRedstone;
-			if (poweredBlock != newValue) {
-				poweredBlock = newValue;
+			if (sendSignal != newValue) {
+				sendSignal = newValue;
 				worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, block);
 			}
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
@@ -220,5 +241,11 @@ public class TileEntityTimer extends TileEntityFacing implements ITilePacketHand
 	@SideOnly(Side.CLIENT)
 	public double getMaxRenderDistanceSquared() {
 		return 65536.0D;
+	}
+
+	// IWrenchable
+	@Override
+	public ItemStack getWrenchDrop(EntityPlayer player) {
+		return new ItemStack(ModItems.blockTimer);
 	}
 }

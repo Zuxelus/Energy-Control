@@ -1,9 +1,11 @@
 package com.zuxelus.energycontrol.containers;
 
+import com.zuxelus.energycontrol.containers.slots.SlotCard;
+import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
 import com.zuxelus.zlib.containers.ContainerBase;
+import com.zuxelus.zlib.containers.slots.SlotDischargeable;
 import com.zuxelus.zlib.containers.slots.SlotFilter;
-import com.zuxelus.zlib.network.NetworkHelper;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ICrafting;
@@ -16,14 +18,16 @@ public class ContainerKitAssembler extends ContainerBase<TileEntityKitAssembler>
 	public ContainerKitAssembler(EntityPlayer player, TileEntityKitAssembler te) {
 		super(te);
 		// info card
-		addSlotToContainer(new SlotFilter(te, 0, 8, 42));
-		
-		addSlotToContainer(new SlotFilter(te, 1, 62, 42));
-		addSlotToContainer(new SlotFilter(te, 2, 62, 42 + 18));
-		addSlotToContainer(new SlotFilter(te, 3, 62, 42 + 18 * 2));
-		addSlotToContainer(new SlotFilter(te, 4, 121, 60));
+		addSlotToContainer(new SlotCard(te, 0, 8, 17));
+
+		addSlotToContainer(new SlotFilter(te, 1, 62, 17));
+		addSlotToContainer(new SlotFilter(te, 2, 62, 17 + 18));
+		addSlotToContainer(new SlotFilter(te, 3, 62, 17 + 18 * 2));
+		addSlotToContainer(new SlotFilter(te, 4, 121, 35));
+
+		addSlotToContainer(new SlotDischargeable(te, 5, 8, 17 + 18 * 2, 1));
 		// inventory
-		addPlayerInventorySlots(player, 190);
+		addPlayerInventorySlots(player, 166);
 	}
 
 	@Override
@@ -37,6 +41,7 @@ public class ContainerKitAssembler extends ContainerBase<TileEntityKitAssembler>
 				tag.setInteger("type", 1);
 				tag.setDouble("energy", energy);
 				tag.setDouble("production", production);
+				tag.setInteger("time", te.getRecipeTime());
 				NetworkHelper.updateClientTileEntity((ICrafting)crafters.get(i), te.xCoord, te.yCoord, te.zCoord, tag);
 			}
 		lastEnergy = energy;

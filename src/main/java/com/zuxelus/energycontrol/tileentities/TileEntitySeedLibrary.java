@@ -3,9 +3,10 @@ package com.zuxelus.energycontrol.tileentities;
 import java.util.HashMap;
 import java.util.Vector;
 
+import com.zuxelus.energycontrol.init.ModItems;
+import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.utils.SeedLibraryFilter;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
-import com.zuxelus.zlib.network.NetworkHelper;
 import com.zuxelus.zlib.tileentities.IBlockHorizontal;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
@@ -22,6 +23,7 @@ import ic2.api.item.IC2Items;
 import ic2.api.item.IElectricItem;
 import ic2.core.Ic2Items;
 import ic2.core.item.ItemCropSeed;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -521,5 +523,11 @@ public class TileEntitySeedLibrary extends TileEntityInventory implements ITileP
 		if (energy >= CONSUMPTION && old == 0 && !worldObj.isRemote)
 			updateState();
 		return left;
+	}
+
+	// IWrenchable
+	@Override
+	public ItemStack getWrenchDrop(EntityPlayer player) {
+		return new ItemStack(ModItems.blockSeedLibrary);
 	}
 }

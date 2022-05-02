@@ -4,8 +4,9 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
+import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
-import com.zuxelus.zlib.network.NetworkHelper;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -18,8 +19,7 @@ import net.minecraft.util.ResourceLocation;
 
 @SideOnly(Side.CLIENT)
 public class GuiHowlerAlarmListBox extends GuiButton {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(
-			"energycontrol:textures/gui/gui_howler_alarm.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_howler_alarm.png");
 
 	private static final int BASIC_X_OFFSET = 2;
 	private static final int BASIC_Y_OFFSET = 2;

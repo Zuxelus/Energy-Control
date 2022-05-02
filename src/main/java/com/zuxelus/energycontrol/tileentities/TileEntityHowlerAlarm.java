@@ -1,9 +1,13 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.init.ModItems;
+import com.zuxelus.energycontrol.utils.TileEntitySound;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -11,7 +15,6 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 
 public class TileEntityHowlerAlarm extends TileEntityFacing implements ITilePacketHandler {
 	private static final String DEFAULT_SOUND_NAME = "default";
-	private static final float BASE_SOUND_RANGE = 16F;
 	private static final String SOUND_PREFIX = "energycontrol:alarm-";
 
 	public int range;
@@ -25,7 +28,7 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITilePack
 	private TileEntitySound sound;
 
 	public TileEntityHowlerAlarm() {
-		tickRate = 60;
+		tickRate = EnergyControl.config.alarmPause;
 		updateTicker = 0;
 		powered = false;
 		soundName = prevSoundName = DEFAULT_SOUND_NAME;
@@ -64,16 +67,10 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITilePack
 	}
 
 	public void updatePowered(boolean isPowered) {
-		if (worldObj.isRemote) {
+		if (worldObj.isRemote && isPowered != powered) {
 			powered = isPowered;
 			checkStatus();
 		}
-	}
-
-	private float getNormalizedRange() {
-		if (worldObj.isRemote)
-			return Math.min(range, EnergyControl.config.SMPMaxAlarmRange) / BASE_SOUND_RANGE;
-		return range / BASE_SOUND_RANGE;
 	}
 
 	@Override
@@ -151,25 +148,28 @@ public class TileEntityHowlerAlarm extends TileEntityFacing implements ITilePack
 
 	@Override
 	public void updateEntity() {
-		if (worldObj.isRemote) {
-			if (updateTicker-- > 0)
-					return;
-			updateTicker = tickRate;
+		if (worldObj.isRemote)
 			checkStatus();
-		}
 	}
 
 	protected void checkStatus() {
 		if (sound == null)
 			sound = new TileEntitySound();
-		if (powered && !sound.isPlaying())
-			sound.playAlarm(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, SOUND_PREFIX + soundName, getNormalizedRange(), true);
-		
-		if (!powered && sound.isPlaying())
+		if (!sound.isPlaying())
+			updateTicker--;
+		if (!powered && sound.isPlaying()) {
 			sound.stopAlarm();
-	}	
+			updateTicker = tickRate;
+		}
+		if (powered && !sound.isPlaying() && updateTicker < 0) {
+			sound.playAlarm(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, SOUND_PREFIX + soundName, range);
+			updateTicker = tickRate;
+		}
+	}
 
-	private void notifyBlockUpdate() {
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+	// IWrenchable
+	@Override
+	public ItemStack getWrenchDrop(EntityPlayer player) {
+		return new ItemStack(ModItems.blockHowlerAlarm);
 	}
 }

@@ -54,6 +54,8 @@ item.kit_galacticraft.name=Набор с датчиком для Galacticraft
 item.card_galacticraft.name=Карта-датчик для Galacticraft
 item.kit_nuclearcraft.name=NuclearCraft Sensor Kit
 item.card_nuclearcraft.name=NuclearCraft Sensor Card
+item.kit_gregtech.name=GregTech Sensor Kit
+item.card_gregtech.name=GregTech Sensor Card
 
 #Internal Blocks
 tile.thermal_monitor.name=Датчик температуры
@@ -75,7 +77,7 @@ tile.kit_assembler.name=Сборщик наборов
 tile.afsu.name=УФСУ
 tile.seed_analyzer.name=Seed Analyzer
 tile.seed_library.name=Seed Library
-tile.timer.name=Timer
+tile.timer.name=Таймер
 
 #Config
 ec.config.howlerAlarmRange=Howler Alarm Range
@@ -209,11 +211,13 @@ msg.ec.InfoPanelPellets=Гранулы: %s
 msg.ec.InfoPanelPercentage=Заполнено: %s%%
 msg.ec.InfoPanelPeriod=Период: %s сек
 msg.ec.InfoPanelPowerMultiplierRF=Power Multiplier: x%s
+msg.ec.InfoPanelPowerUsage=Power Usage: %s RF/t
 msg.ec.InfoPanelProcessPowerRF=ProcessPower: %s RF/t
 msg.ec.InfoPanelProcessTime=Process Time: %s t
 msg.ec.InfoPanelProgress=Прогресс: %s%%
 msg.ec.InfoPanelRadiation=Radiation: %s
 msg.ec.InfoPanelRedstonePower=Redstone Power: %s
+msg.ec.InfoPanelRedstoneMode=Redstone Mode: %s
 msg.ec.InfoPanelRotorEfficiency=Rotor Efficiency: %s
 msg.ec.InfoPanelRotorMass=Rotor Mass: %s
 msg.ec.InfoPanelRotorSpeed=Скорость ротора: %s об/мин
@@ -289,6 +293,7 @@ msg.ec.cbInfoPanelOnOff=Вкл./Выкл. Состояние
 msg.ec.cbInfoPanelOutput=Выход (EU/т)
 msg.ec.cbInfoPanelOutputRF=Выход (RF/т)
 msg.ec.cbInfoPanelPercentage=Процент заполнения
+msg.ec.cbInfoPanelShowBar=Показать отображение
 msg.ec.cbInfoPanelStorage=Хранилище
 msg.ec.cbInfoPanelTimeRemaining=Время до окончания цикла
 msg.ec.cbInfoPanelTotal=Суммарно

@@ -1,24 +1,27 @@
 package com.zuxelus.energycontrol.crossmod;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.zuxelus.energycontrol.api.CardState;
-import com.zuxelus.energycontrol.api.ICardReader;
-import com.zuxelus.energycontrol.api.ItemStackHelper;
+import com.zuxelus.energycontrol.blocks.AFSU;
+import com.zuxelus.energycontrol.blocks.SeedAnalyzer;
+import com.zuxelus.energycontrol.blocks.SeedLibrary;
+import com.zuxelus.energycontrol.hooks.IC2Hooks;
 import com.zuxelus.energycontrol.init.ModItems;
-import com.zuxelus.energycontrol.items.ItemAFB;
-import com.zuxelus.energycontrol.items.ItemAFSUUpgradeKit;
+import com.zuxelus.energycontrol.items.*;
+import com.zuxelus.energycontrol.items.cards.ItemCardIC2;
+import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
-import com.zuxelus.energycontrol.utils.ReactorHelper;
+import com.zuxelus.energycontrol.items.kits.ItemKitIC2;
+import com.zuxelus.energycontrol.items.kits.ItemKitMain;
+import com.zuxelus.energycontrol.recipes.Recipes;
+import com.zuxelus.energycontrol.utils.DataHelper;
+import com.zuxelus.energycontrol.utils.FluidInfo;
 
-import ic2.api.item.ElectricItem;
-import ic2.api.item.IC2Items;
-import ic2.api.item.ICustomDamageItem;
+import ic2.api.item.*;
 import ic2.api.reactor.IReactor;
 import ic2.api.tile.IEnergyStorage;
-import ic2.core.block.BlockMultiID;
-import ic2.core.block.BlockTileEntity;
-import ic2.core.block.TileEntityBarrel;
 import ic2.core.block.TileEntityBlock;
 import ic2.core.block.TileEntityHeatSourceInventory;
 import ic2.core.block.comp.Energy;
@@ -26,23 +29,21 @@ import ic2.core.block.generator.tileentity.*;
 import ic2.core.block.heatgenerator.tileentity.*;
 import ic2.core.block.kineticgenerator.tileentity.*;
 import ic2.core.block.machine.tileentity.TileEntityLiquidHeatExchanger;
-import ic2.core.block.machine.tileentity.TileEntitySteamGenerator;
-import ic2.core.block.reactor.tileentity.*;
+import ic2.core.block.reactor.tileentity.TileEntityNuclearReactorElectric;
+import ic2.core.block.reactor.tileentity.TileEntityReactorAccessHatch;
+import ic2.core.block.reactor.tileentity.TileEntityReactorChamberElectric;
 import ic2.core.item.reactor.ItemReactorLithiumCell;
 import ic2.core.item.reactor.ItemReactorMOX;
 import ic2.core.item.reactor.ItemReactorUranium;
 import ic2.core.item.tool.ItemToolWrench;
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
@@ -50,43 +51,14 @@ import net.minecraftforge.fluids.IFluidHandler;
 public class CrossIC2Exp extends CrossModBase {
 
 	@Override
-	public String getModType() {
-		return "IC2Exp";
-	}
-	
-	@Override
-	public Item getItem(String name) {
-		switch (name) {
-		case "afb":
-			return new ItemAFB();
-		case "afsu_upgrade_kit":
-			return new ItemAFSUUpgradeKit();
-		default:
-			return null;
-		}
-	}
-
-	@Override
 	public ItemStack getItemStack(String name) {
 		switch (name) {
 		case "transformer":
 			return IC2Items.getItem("transformerUpgrade");
-		case "energy_storage":
-			return IC2Items.getItem("energyStorageUpgrade");
-		case "machine":
-			return IC2Items.getItem("machine");
 		case "mfsu":
-			return IC2Items.getItem("mfsu");
-		case "circuit":
-			return IC2Items.getItem("circuit");
+			return IC2Items.getItem("mfsUnit");
 		}
 		return null;
-	}
-
-	@Override
-	public ItemStack getChargedStack(ItemStack stack) {
-		ElectricItem.manager.charge(stack, Integer.MAX_VALUE, Integer.MAX_VALUE, true, false);
-		return stack;
 	}
 
 	@Override
@@ -95,22 +67,16 @@ public class CrossIC2Exp extends CrossModBase {
 	}
 
 	@Override
-	public int getNuclearCellTimeLeft(ItemStack stack) {
-		if (stack == null)
-			return 0;
-		Item item = stack.getItem();
-		if (item instanceof ItemReactorUranium || item instanceof ItemReactorLithiumCell || item instanceof ItemReactorMOX)
-			return ((ICustomDamageItem)item).getMaxCustomDamage(stack) - ((ICustomDamageItem)item).getCustomDamage(stack);
-		// Coaxium Mod
-		if (item.getClass().getName() == "com.sm.FirstMod.items.ItemCoaxiumRod" || item.getClass().getName() == "com.sm.FirstMod.items.ItemCesiumRod")
-			return stack.getMaxDamage() - getCoaxiumDamage(stack);
-		return 0;
+	public boolean isElectricItem(ItemStack stack) {
+		return stack != null && stack.getItem() instanceof IElectricItem;
 	}
 
-	private int getCoaxiumDamage(ItemStack stack) {
-		if (!stack.hasTagCompound())
-			return 0;
-		return stack.getTagCompound().getInteger("fuelRodDamage");
+	@Override
+	public double dischargeItem(ItemStack stack, double needed) {
+		IElectricItem ielectricitem = (IElectricItem) stack.getItem();
+		if (ielectricitem.canProvideEnergy(stack))
+			return ElectricItem.manager.discharge(stack, needed, 1, false, false, false);
+		return 0;
 	}
 
 	@Override
@@ -118,323 +84,242 @@ public class CrossIC2Exp extends CrossModBase {
 		if (te instanceof IEnergyStorage) {
 			NBTTagCompound tag = new NBTTagCompound();
 			IEnergyStorage storage = (IEnergyStorage) te;
-			tag.setInteger("type", 1);
-			tag.setDouble("storage", storage.getStored());
-			tag.setDouble("maxStorage", storage.getCapacity());
+			tag.setString(DataHelper.EUTYPE, "EU");
+			tag.setDouble(DataHelper.ENERGY, storage.getStored());
+			tag.setDouble(DataHelper.CAPACITY, storage.getCapacity());
 			return tag;
 		}
 		return null;
 	}
 
 	@Override
-	public ItemStack getGeneratorCard(World world, int x, int y, int z) {
-		Block block = world.getBlock(x, y, z);
-		if (!(block instanceof BlockMultiID))
-			return null;
-
-		TileEntity te = world.getTileEntity(x, y, z);
-		if (te instanceof TileEntityBaseGenerator || te instanceof TileEntitySemifluidGenerator
-				|| te instanceof TileEntityStirlingGenerator || te instanceof TileEntityGeoGenerator
-				|| te instanceof TileEntityKineticGenerator || te instanceof TileEntitySteamGenerator) {
-			ItemStack card = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_GENERATOR);
-			ItemStackHelper.setCoordinates(card, x, y, z);
-			return card;
-		}
-		if (te instanceof TileEntityElectricKineticGenerator || te instanceof TileEntityManualKineticGenerator
-				|| te instanceof TileEntitySteamKineticGenerator || te instanceof TileEntityStirlingKineticGenerator
-				|| te instanceof TileEntityWaterKineticGenerator || te instanceof TileEntityWindKineticGenerator) {
-			ItemStack card = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_GENERATOR_KINETIC);
-			ItemStackHelper.setCoordinates(card, x, y, z);
-			return card;
-		}
-		if (te instanceof TileEntityHeatSourceInventory) {
-			ItemStack card = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_GENERATOR_HEAT);
-			ItemStackHelper.setCoordinates(card, x, y, z);
-			return card;
-		}
-		return null;
-	}
-
-	@Override
-	public NBTTagCompound getGeneratorData(TileEntity te) {
+	public NBTTagCompound getCardData(TileEntity te) {
 		try {
 			NBTTagCompound tag = new NBTTagCompound();
-			Boolean active = isActive(te);
-			tag.setBoolean("active", active);
-			tag.setString("euType", "EU");
+			if (te instanceof IEnergyStorage) {
+				IEnergyStorage storage = (IEnergyStorage) te;
+				tag.setString(DataHelper.EUTYPE, "EU");
+				tag.setDouble(DataHelper.ENERGY, storage.getStored());
+				tag.setDouble(DataHelper.CAPACITY, storage.getCapacity());
+				return tag;
+			}
+
+			// GeneratorData
 			if (te instanceof TileEntityBaseGenerator) {
-				tag.setInteger("type", 1);
-				tag.setDouble("storage", ((TileEntityBaseGenerator) te).storage);
-				tag.setDouble("maxStorage", ((TileEntityBaseGenerator) te).maxStorage);
-				if (te instanceof TileEntitySolarGenerator) {
-					Field field = TileEntitySolarGenerator.class.getDeclaredField("solarbasevalue");
-					field.setAccessible(true);
-					double solarbasevalue = (Double) field.get(te);
-					double light = ((TileEntitySolarGenerator)te).sunIsVisible ? solarbasevalue : 0.0D; //((TileEntitySolarGenerator) te).solarbasevalue : 0.0D;
-					active = light > 0 && ((TileEntityBaseGenerator) te).storage < ((TileEntityBaseGenerator) te).maxStorage;
-					tag.setBoolean("active", active);
-					if (active)
-						tag.setDouble("production", (double) light);
-					else
-						tag.setDouble("production", 0);
+				tag.setDouble(DataHelper.ENERGY, ((TileEntityBaseGenerator) te).storage);
+				tag.setDouble(DataHelper.CAPACITY, ((TileEntityBaseGenerator) te).maxStorage);
+				if (te instanceof TileEntityGenerator) {
+					tag.setDouble(DataHelper.OUTPUT, isActive(te) ? ((TileEntityBaseGenerator) te).production : 0);
 					return tag;
 				}
 				if (te instanceof TileEntityRTGenerator) {
-					tag.setInteger("type", 4);
 					int counter = 0;
 					for (int i = 0; i < ((TileEntityRTGenerator) te).fuelSlot.size(); i++)
 						if (((TileEntityRTGenerator) te).fuelSlot.get(i) != null)
 							counter++;
-					tag.setInteger("items", counter);
+					tag.setInteger("pellets", counter);
 					if (counter == 0 || ((TileEntityBaseGenerator) te).storage >= ((TileEntityBaseGenerator) te).maxStorage) {
-						tag.setBoolean("active", false);
-						tag.setDouble("production", 0);
+						tag.setBoolean(DataHelper.ACTIVE, false);
+						tag.setDouble(DataHelper.OUTPUT, 0);
 						return tag;
 					}
-					tag.setBoolean("active", true);
-					Field field = TileEntityRTGenerator.class.getDeclaredField("efficiency");
-					field.setAccessible(true);
-					tag.setDouble("multiplier", (double) (float) field.get(te));
-					tag.setDouble("production", (double) Math.pow(2.0D, (counter - 1)) * (float) field.get(te));
+					tag.setBoolean(DataHelper.ACTIVE, true);
+					double efficiency = DataHelper.getFloat(TileEntityRTGenerator.class, "efficiency", te);
+					tag.setDouble(DataHelper.MULTIPLIER, efficiency);
+					tag.setDouble(DataHelper.OUTPUT, Math.pow(2.0D, (counter - 1)) * efficiency);
+					return tag;
+				}
+				if (te instanceof TileEntitySolarGenerator) {
+					double light = ((TileEntitySolarGenerator)te).sunIsVisible ? ((TileEntitySolarGenerator) te).solarbasevalue : 0.0D;
+					Boolean active = light > 0 && ((TileEntityBaseGenerator) te).storage < ((TileEntityBaseGenerator) te).maxStorage;
+					tag.setBoolean(DataHelper.ACTIVE, active);
+					tag.setDouble(DataHelper.OUTPUT, active ? (double) light : 0);
 					return tag;
 				}
 				if (te instanceof TileEntityWaterGenerator) {
-					active = ((TileEntityWaterGenerator)te).water > 0 || ((TileEntityWaterGenerator)te).fuel > 0;
-					tag.setBoolean("active", active);
-					if (((TileEntityWaterGenerator) te).fuel <= 0) {
-						Field field = TileEntityWaterGenerator.class.getDeclaredField("waterbasevalue");
-						field.setAccessible(true);
-						double waterbasevalue = (Float) field.get(te);
-						tag.setDouble("production", waterbasevalue * ((TileEntityWaterGenerator) te).water / 100);
-					}
+					Boolean active = ((TileEntityWaterGenerator) te).water > 0 || ((TileEntityWaterGenerator) te).fuel > 0;
+					tag.setBoolean(DataHelper.ACTIVE, active);
+					if (((TileEntityWaterGenerator) te).fuel <= 0)
+						tag.setDouble(DataHelper.OUTPUT, ((TileEntityWaterGenerator) te).waterbasevalue * ((TileEntityWaterGenerator) te).water / 100);
 					return tag;
 				}
-				if (active)
-					tag.setDouble("production", ((TileEntityBaseGenerator) te).production);
-				else
-					tag.setDouble("production", 0);
-				return tag;
+				if (te instanceof TileEntityWindGenerator) {
+					Boolean active = ((TileEntityWindGenerator) te).subproduction > 0 && ((TileEntityBaseGenerator) te).storage < 4;
+					tag.setBoolean(DataHelper.ACTIVE, active);
+					tag.setDouble(DataHelper.OUTPUT, active ? ((TileEntityWindGenerator) te).subproduction : 0);
+					return tag;
+				}
 			}
 
 			if (te instanceof TileEntitySemifluidGenerator) {
-				tag.setInteger("type", 1);
-				tag.setDouble("storage", ((TileEntitySemifluidGenerator) te).storage);
-				Field field = TileEntitySemifluidGenerator.class.getDeclaredField("maxStorage");
-				field.setAccessible(true);
-				tag.setDouble("maxStorage", (short) field.get(te));
-				field = TileEntitySemifluidGenerator.class.getDeclaredField("production");
-				field.setAccessible(true);
-				tag.setDouble("production", (Double) field.get(te));
-				tag.setBoolean("active", ((TileEntitySemifluidGenerator) te).isConverting());
+				tag.setDouble(DataHelper.ENERGY, ((TileEntitySemifluidGenerator) te).storage);
+				tag.setDouble(DataHelper.CAPACITY, DataHelper.getShort(TileEntitySemifluidGenerator.class, "maxStorage", te));
+				tag.setDouble(DataHelper.OUTPUT, DataHelper.getDouble(TileEntitySemifluidGenerator.class, "production", te));
+				tag.setBoolean(DataHelper.ACTIVE, ((TileEntitySemifluidGenerator) te).isConverting());
+				FluidInfo.addTank(DataHelper.TANK, tag, ((TileEntitySemifluidGenerator) te).getFluidTank());
 				return tag;
 			}
 
 			if (te instanceof TileEntityStirlingGenerator) {
-				tag.setInteger("type", 3);
-				tag.setDouble("storage", ((TileEntityStirlingGenerator) te).EUstorage);
-				tag.setDouble("maxStorage", ((TileEntityStirlingGenerator) te).maxEUStorage);
-				tag.setDouble("production", ((TileEntityStirlingGenerator) te).production);
-				tag.setDouble("multiplier", ((TileEntityStirlingGenerator) te).productionpeerheat);
+				tag.setBoolean(DataHelper.ACTIVE, ((TileEntityStirlingGenerator) te).production > 0);
+				tag.setDouble(DataHelper.ENERGY, ((TileEntityStirlingGenerator) te).EUstorage);
+				tag.setDouble(DataHelper.CAPACITY, ((TileEntityStirlingGenerator) te).maxEUStorage);
+				tag.setDouble(DataHelper.OUTPUT, ((TileEntityStirlingGenerator) te).production);
+				tag.setDouble(DataHelper.MULTIPLIER, ((TileEntityStirlingGenerator) te).productionpeerheat);
 				return tag;
 			}
 
 			if (te instanceof TileEntityGeoGenerator) {
-				tag.setInteger("type", 1);
-				tag.setDouble("storage", ((TileEntityGeoGenerator) te).storage);
-				tag.setDouble("maxStorage", ((TileEntityGeoGenerator) te).maxStorage);
-				active = ((TileEntityGeoGenerator) te).isConverting();
-				tag.setBoolean("active", active);
-				if (active)
-					tag.setDouble("production", ((TileEntityGeoGenerator) te).production);
-				else
-					tag.setDouble("production", 0);
+				tag.setDouble(DataHelper.ENERGY, ((TileEntityGeoGenerator) te).storage);
+				tag.setDouble(DataHelper.CAPACITY, ((TileEntityGeoGenerator) te).maxStorage);
+				Boolean active = ((TileEntityGeoGenerator) te).isConverting();
+				tag.setBoolean(DataHelper.ACTIVE, active);
+				tag.setDouble(DataHelper.OUTPUT, active ? ((TileEntityGeoGenerator) te).production : 0);
 				return tag;
 			}
 
 			if (te instanceof TileEntityKineticGenerator) {
-				tag.setInteger("type", 3);
-				active = ((TileEntityKineticGenerator)te).getActive();
-				tag.setBoolean("active", active);
-				tag.setDouble("storage", ((TileEntityKineticGenerator)te).EUstorage);
-				Field field = TileEntityKineticGenerator.class.getDeclaredField("maxEUStorage");
-				field.setAccessible(true);
-				tag.setDouble("maxStorage", (double) (int) field.get(te));
-				tag.setDouble("production", ((TileEntityKineticGenerator) te).getproduction());
-				field = TileEntityKineticGenerator.class.getDeclaredField("productionpeerkineticunit");
-				field.setAccessible(true);
-				tag.setDouble("multiplier", (Double) field.get(te));
+				Boolean active = ((TileEntityKineticGenerator)te).getActive();
+				tag.setBoolean(DataHelper.ACTIVE, active);
+				tag.setDouble(DataHelper.ENERGY, ((TileEntityKineticGenerator)te).EUstorage);
+				tag.setDouble(DataHelper.CAPACITY, DataHelper.getInt(TileEntityKineticGenerator.class, "maxEUStorage", te));
+				tag.setDouble(DataHelper.OUTPUT, ((TileEntityKineticGenerator) te).getproduction());
+				tag.setDouble(DataHelper.MULTIPLIER, DataHelper.getDouble(TileEntityKineticGenerator.class, "productionpeerkineticunit", te));
 				return tag;
 			}
-		} catch (Throwable t) { }
-		return null;
-	}
 
-	@Override
-	public NBTTagCompound getGeneratorKineticData(TileEntity te) {
-		try {
-			NBTTagCompound tag = new NBTTagCompound();
-			Boolean active = ((TileEntityBlock) te).getActive();
+			// KineticData
 			if (te instanceof TileEntityElectricKineticGenerator) {
-				TileEntityElectricKineticGenerator entity = ((TileEntityElectricKineticGenerator) te);
-				tag.setInteger("type", 1);
+				TileEntityElectricKineticGenerator generator = ((TileEntityElectricKineticGenerator) te);
 				int counter = 0;
-				for (int i = 0; i < ((TileEntityElectricKineticGenerator) te).slotMotor.size(); i++)
-					if (((TileEntityElectricKineticGenerator) te).slotMotor.get(i) != null)
+				for (int i = 0; i < generator.slotMotor.size(); i++)
+					if (generator.slotMotor.get(i) != null)
 						counter++;
-				tag.setInteger("items", counter);
-				if (counter == 0)
-					active = false;
-				tag.setBoolean("active", active);
-				tag.setDouble("output", entity.getMaxKU());
-				tag.setDouble("storage", ((TileEntityElectricKineticGenerator)te).ku);
-				tag.setDouble("maxStorage", ((TileEntityElectricKineticGenerator)te).maxKU);
-				//Energy energy = (Energy) ((TileEntityElectricKineticGenerator) te).getComponent("energy");
-				Field field = TileEntityElectricKineticGenerator.class.getDeclaredField("energy");
-				field.setAccessible(true);
-				Energy energy = (Energy) field.get(te);
-				tag.setDouble("energy", energy.getEnergy());
-				tag.setDouble("maxEnergy", energy.getCapacity());
-				tag.setDouble("items", counter);
-				field = TileEntityElectricKineticGenerator.class.getDeclaredField("kuPerEU");
-				field.setAccessible(true);
-				tag.setDouble("multiplier", (double) (float) field.get(te));
+				tag.setInteger("motors", counter);
+				tag.setBoolean(DataHelper.ACTIVE, counter != 0);
+				tag.setDouble(DataHelper.ENERGYKU, generator.ku);
+				tag.setDouble(DataHelper.CAPACITYKU, generator.maxKU);
+				ArrayList values = IC2Hooks.map.get(te);
+				if (values != null)
+					tag.setDouble(DataHelper.OUTPUTKU, (double) values.get(0));
+				Energy energy = (Energy) generator.getComponent("energy");
+				tag.setDouble(DataHelper.ENERGY, energy.getEnergy());
+				tag.setDouble(DataHelper.CAPACITY, energy.getCapacity());
+				tag.setDouble(DataHelper.MULTIPLIER, DataHelper.getFloat(TileEntityElectricKineticGenerator.class, "kuPerEU", te));
 				return tag;
 			}
 			if (te instanceof TileEntityManualKineticGenerator) {
-				tag.setInteger("type", 2);
-				tag.setDouble("storage", ((TileEntityManualKineticGenerator)te).currentKU);
-				tag.setDouble("maxStorage", ((TileEntityManualKineticGenerator)te).maxKU);
+				tag.setDouble(DataHelper.ENERGY, ((TileEntityManualKineticGenerator)te).currentKU);
+				tag.setDouble(DataHelper.CAPACITY, ((TileEntityManualKineticGenerator)te).maxKU);
 				return tag;
 			}
 			if (te instanceof TileEntitySteamKineticGenerator) {
-				tag.setInteger("type", 3);
-				tag.setBoolean("active", active);
-				tag.setDouble("output", ((TileEntitySteamKineticGenerator) te).gethUoutput());
+				tag.setBoolean(DataHelper.ACTIVE, ((TileEntityBlock) te).getActive());
+				tag.setDouble(DataHelper.OUTPUTHU, ((TileEntitySteamKineticGenerator) te).gethUoutput());
 				Field field = TileEntitySteamKineticGenerator.class.getDeclaredField("steamTank");
 				field.setAccessible(true);
-				FluidTank tank = (FluidTank) field.get(te);
-				tag.setDouble("storage", tank.getFluidAmount());
-				tag.setDouble("maxStorage", tank.getCapacity());
+				FluidInfo.addTank(DataHelper.TANK, tag, (FluidTank) field.get(te));
 				return tag;
 			}
 			if (te instanceof TileEntityStirlingKineticGenerator) {
-				tag.setInteger("type", 4);
-				tag.setBoolean("active", ((TileEntityBlock)te).getActive());
-				Field field = TileEntityStirlingKineticGenerator.class.getDeclaredField("kUBuffer");
-				field.setAccessible(true);
-				tag.setDouble("storage", (double) (int) field.get(te));
-				field = TileEntityStirlingKineticGenerator.class.getDeclaredField("maxkUBuffer");
-				field.setAccessible(true);
-				tag.setDouble("maxStorage", (double) (int) field.get(te));
-				field = TileEntityStirlingKineticGenerator.class.getDeclaredField("heatbuffer");
-				field.setAccessible(true);
-				tag.setDouble("energy", (double) (int) field.get(te));
-				field = TileEntityStirlingKineticGenerator.class.getDeclaredField("maxHeatbuffer");
-				field.setAccessible(true);
-				tag.setDouble("maxEnergy", (double) (int) field.get(te));
-				tag.setDouble("multiplier", 3);
+				tag.setBoolean(DataHelper.ACTIVE, ((TileEntityBlock)te).getActive());
+				tag.setDouble(DataHelper.ENERGYKU, DataHelper.getInt(TileEntityStirlingKineticGenerator.class, "kUBuffer", te));
+				tag.setDouble(DataHelper.CAPACITYKU, DataHelper.getInt(TileEntityStirlingKineticGenerator.class, "maxkUBuffer", te));
+				tag.setDouble(DataHelper.ENERGYHU, DataHelper.getInt(TileEntityStirlingKineticGenerator.class, "heatbuffer", te));
+				tag.setDouble(DataHelper.CAPACITYHU, DataHelper.getInt(TileEntityStirlingKineticGenerator.class, "maxHeatbuffer", te));
+				tag.setDouble(DataHelper.MULTIPLIER, 3);
 				return tag;
 			}
 			if (te instanceof TileEntityWaterKineticGenerator) {
-				TileEntityWaterKineticGenerator entity = ((TileEntityWaterKineticGenerator) te);
-				tag.setInteger("type", 5);
-				tag.setDouble("output", entity.getKuOutput());
-				Field field = TileEntityWaterKineticGenerator.class.getDeclaredField("waterFlow");
-				field.setAccessible(true);
-				tag.setDouble("wind", (Integer) field.get(te));
-				field = TileEntityWaterKineticGenerator.class.getDeclaredField("outputModifier");
-				field.setAccessible(true);
-				tag.setDouble("multiplier", (double) (Float) field.get(te));
-				tag.setInteger("height", entity.yCoord);
-				 if (entity.rotorSlot.isEmpty())
-					 tag.setInteger("health", -1);
+				TileEntityWaterKineticGenerator generator = ((TileEntityWaterKineticGenerator) te);
+				tag.setDouble(DataHelper.OUTPUTKU, generator.getKuOutput());
+				tag.setDouble("waterFlow", DataHelper.getInt(TileEntityWaterKineticGenerator.class, "waterFlow", te));
+				tag.setDouble(DataHelper.MULTIPLIER, DataHelper.getFloat(TileEntityWaterKineticGenerator.class, "outputModifier", te));
+				tag.setInteger("height", generator.yCoord);
+				 if (generator.rotorSlot.isEmpty())
+					 tag.setDouble("health", -1);
 				 else
-					 tag.setDouble("health", (double)(100.0F - entity.rotorSlot.get().getItemDamage() * 100.0F / entity.rotorSlot.get().getMaxDamage()));
+					 tag.setDouble("health", (double)(100.0F - generator.rotorSlot.get().getItemDamage() * 100.0F / generator.rotorSlot.get().getMaxDamage()));
 				return tag;
 			}
 			if (te instanceof TileEntityWindKineticGenerator) {
-				TileEntityWindKineticGenerator entity = ((TileEntityWindKineticGenerator) te);
-				tag.setInteger("type", 6);
-				tag.setDouble("output", entity.getKuOutput());
-				Field field = TileEntityWindKineticGenerator.class.getDeclaredField("windStrength");
-				field.setAccessible(true);
-				tag.setDouble("wind", (Double) field.get(te));
-				tag.setDouble("multiplier", entity.getefficiency() * TileEntityWindKineticGenerator.outputModifier);
-				tag.setInteger("height", entity.yCoord);
-				 if (entity.rotorSlot.isEmpty())
-					 tag.setInteger("health", -1);
+				TileEntityWindKineticGenerator generator = ((TileEntityWindKineticGenerator) te);
+				tag.setDouble(DataHelper.OUTPUTKU, generator.getKuOutput());
+				tag.setDouble("wind", DataHelper.getDouble(TileEntityWindKineticGenerator.class, "windStrength", te));
+				tag.setDouble(DataHelper.MULTIPLIER, generator.getefficiency() * TileEntityWindKineticGenerator.outputModifier);
+				tag.setInteger("height", generator.yCoord);
+				 if (generator.rotorSlot.isEmpty())
+					 tag.setDouble("health", -1);
 				 else
-					 tag.setDouble("health", (double)(100.0F - entity.rotorSlot.get().getItemDamage() * 100.0F / entity.rotorSlot.get().getMaxDamage()));
+					 tag.setDouble("health", (double)(100.0F - generator.rotorSlot.get().getItemDamage() * 100.0F / generator.rotorSlot.get().getMaxDamage()));
 				return tag;
 			}
-		} catch (Throwable t) {
-		}
-		return null;
-	}
 
-	@Override
-	public NBTTagCompound getGeneratorHeatData(TileEntity te) {
-		if (!(te instanceof TileEntityHeatSourceInventory))
-			return null;
+			// Heat Data
+			if (te instanceof TileEntityHeatSourceInventory) {
+				int buffer = ((TileEntityHeatSourceInventory) te).getHeatBuffer();
+				tag.setInteger(DataHelper.ENERGYHU, buffer);
+				if (te instanceof TileEntityElectricHeatGenerator) {
+					Energy energy = (Energy) ((TileEntityElectricHeatGenerator) te).getComponent("energy");
+					tag.setDouble(DataHelper.ENERGY, energy.getEnergy());
+					tag.setDouble(DataHelper.CAPACITY, energy.getCapacity());
+					int counter = 0;
+					for (int i = 0; i < ((TileEntityElectricHeatGenerator) te).CoilSlot.size(); i++)
+						if (((TileEntityElectricHeatGenerator) te).CoilSlot.get(i) != null)
+							counter++;
+					tag.setInteger("coils", counter);
 
-		try {
-			NBTTagCompound tag = new NBTTagCompound();
-			int buffer = ((TileEntityHeatSourceInventory) te).getHeatBuffer();
-			Boolean active = /*buffer > 0 ? false : */((TileEntityHeatSourceInventory)te).getActive();
-			tag.setBoolean("active", active);
-			if (active)
-				tag.setInteger("output", ((TileEntityHeatSourceInventory)te).gettransmitHeat());
-			else
-				tag.setInteger("output", 0);
-			tag.setInteger("energy", buffer);
-
-			if (te instanceof TileEntityElectricHeatGenerator) {
-				tag.setInteger("type", 1);
-				//Energy energy = (Energy) ((TileEntityElectricHeatGenerator) te).getComponent("energy");
-				Field field = TileEntityElectricHeatGenerator.class.getDeclaredField("energy");
-				field.setAccessible(true);
-				Energy energy = (Energy) field.get(te);
-				tag.setDouble("storage", energy.getEnergy());
-				tag.setDouble("maxStorage", energy.getCapacity());
-				int counter = 0;
-				for (int i = 0; i < ((TileEntityElectricHeatGenerator) te).CoilSlot.size(); i++)
-					if (((TileEntityElectricHeatGenerator) te).CoilSlot.get(i) != null)
-						counter++;
-				tag.setInteger("items", counter);
+					boolean active = ((TileEntityHeatSourceInventory)te).getActive();
+					tag.setBoolean(DataHelper.ACTIVE, active);
+					tag.setInteger(DataHelper.OUTPUTHU, active ? ((TileEntityHeatSourceInventory)te).gettransmitHeat() : 0);
+					return tag;
+				}
+				if (te instanceof TileEntityFluidHeatGenerator) {
+					boolean active = ((TileEntityFluidHeatGenerator)te).isConverting();
+					tag.setBoolean(DataHelper.ACTIVE, active);
+					tag.setInteger(DataHelper.OUTPUTHU, active ? ((TileEntityHeatSourceInventory)te).gettransmitHeat() : 0);
+					FluidInfo.addTank(DataHelper.TANK, tag, ((TileEntityFluidHeatGenerator) te).getFluidTank());
+					return tag;
+				}
+				if (te instanceof TileEntityLiquidHeatExchanger) {
+					FluidInfo.addTank(DataHelper.TANK, tag, ((TileEntityLiquidHeatExchanger) te).inputTank);
+					FluidInfo.addTank(DataHelper.TANK2, tag, ((TileEntityLiquidHeatExchanger) te).outputTank);
+					int counter = 0;
+					for (int i = 0; i < ((TileEntityLiquidHeatExchanger) te).heatexchangerslots.size(); i++)
+						if (((TileEntityLiquidHeatExchanger) te).heatexchangerslots.get(i) != null)
+							counter++;
+					boolean active = buffer == 0;
+					tag.setBoolean(DataHelper.ACTIVE, active);
+					tag.setInteger(DataHelper.OUTPUTHU, active ? ((TileEntityHeatSourceInventory)te).gettransmitHeat() : 0);
+					tag.setInteger("conductors", counter);
+					return tag;
+				}
+				if (te instanceof TileEntityRTHeatGenerator) {
+					int counter = 0;
+					for (int i = 0; i < ((TileEntityRTHeatGenerator) te).fuelSlot.size(); i++)
+						if (((TileEntityRTHeatGenerator) te).fuelSlot.get(i) != null)
+							counter++;
+					tag.setInteger("pellets", counter);
+					boolean active = counter > 0;
+					tag.setBoolean(DataHelper.ACTIVE, active);
+					tag.setInteger(DataHelper.OUTPUTHU, active ? ((TileEntityHeatSourceInventory)te).gettransmitHeat() : 0);
+					tag.setDouble(DataHelper.MULTIPLIER, TileEntityRTHeatGenerator.outputMultiplier);
+					return tag;
+				}
+				if (te instanceof TileEntitySolidHeatGenerator) {
+					boolean active = ((TileEntityBlock) te).getActive();
+					tag.setBoolean(DataHelper.ACTIVE, active);
+					tag.setInteger(DataHelper.OUTPUTHU, active ? ((TileEntityHeatSourceInventory)te).gettransmitHeat() : 0);
+					tag.setInteger("energy", DataHelper.getInt(TileEntitySolidHeatGenerator.class, "heatbuffer", te) + ((TileEntitySolidHeatGenerator) te).getHeatBuffer());
+					return tag;
+				}
 			}
-			if (te instanceof TileEntityFluidHeatGenerator) {
-				tag.setInteger("type", 2);
-				FluidTank tank = ((TileEntityFluidHeatGenerator) te).getFluidTank();
-				tag.setDouble("storage", tank.getFluidAmount());
-				tag.setDouble("maxStorage", tank.getCapacity());
-			}
-			if (te instanceof TileEntityLiquidHeatExchanger) {
-				tag.setInteger("type", 3);
-				FluidTank tank = ((TileEntityLiquidHeatExchanger) te).inputTank;
-				tag.setDouble("storage", tank.getFluidAmount());
-				tag.setDouble("maxStorage", tank.getCapacity());
-				int counter = 0;
-				for (int i = 0; i < ((TileEntityLiquidHeatExchanger) te).heatexchangerslots.size(); i++)
-					if (((TileEntityLiquidHeatExchanger) te).heatexchangerslots.get(i) != null)
-						counter++;
-				tag.setInteger("items", counter);
-			}
-			if (te instanceof TileEntityRTHeatGenerator) {
-				tag.setInteger("type", 4);
-				int counter = 0;
-				for (int i = 0; i < ((TileEntityRTHeatGenerator) te).fuelSlot.size(); i++)
-					if (((TileEntityRTHeatGenerator) te).fuelSlot.get(i) != null)
-						counter++;
-				tag.setInteger("items", counter);
-				tag.setDouble("multiplier", (double) TileEntityRTHeatGenerator.outputMultiplier);
-			}
-			if (te instanceof TileEntitySolidHeatGenerator) {
-				tag.setInteger("type", 5);
-				Field field = TileEntitySolidHeatGenerator.class.getDeclaredField("heatbuffer");
-				field.setAccessible(true);
-				tag.setInteger("energy", (int) field.get(te) + ((TileEntitySolidHeatGenerator) te).getHeatBuffer());
-			}
-			return tag;
+			if (te instanceof TileEntityReactorChamberElectric)
+				return getReactorData(((TileEntityReactorChamberElectric) te).getReactor());
+			if (te instanceof TileEntityNuclearReactorElectric)
+				return getReactorData((TileEntityNuclearReactorElectric) te);
+			if (te instanceof TileEntityReactorAccessHatch)
+				return getReactorData(((TileEntityReactorChamberElectric)((TileEntityReactorAccessHatch) te).getReactor()).getReactor());
 		} catch (Throwable t) { }
 		return null;
 	}
@@ -447,114 +332,150 @@ public class CrossIC2Exp extends CrossModBase {
 		return false;
 	}
 
-	@Override
-	public ItemStack getReactorCard(World world, int x, int y, int z) {
-		TileEntity te = world.getTileEntity(x, y, z);
-		if (te instanceof TileEntityNuclearReactorElectric || te instanceof TileEntityReactorChamberElectric) {
-			ChunkCoordinates position = ReactorHelper.getTargetCoordinates(world, x, y, z);
-			if (position != null) {
-				ItemStack card = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_REACTOR);
-				ItemStackHelper.setCoordinates(card, position.posX, position.posY, position.posZ);
-				return card;
-			}
-		} else if (te instanceof TileEntityReactorFluidPort || te instanceof TileEntityReactorRedstonePort
-				|| te instanceof TileEntityReactorAccessHatch) {
-			ChunkCoordinates position = ReactorHelper.get5x5TargetCoordinates(world, x, y, z);
-			if (position != null) {
-				ItemStack card = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_REACTOR5X5);
-				ItemStackHelper.setCoordinates(card, position.posX, position.posY, position.posZ);
-				return card;
-			}
-		}
-		return null;
-	}
-
-	@Override
-	public CardState updateCardReactor(World world, ICardReader reader, IReactor reactor) {
-		reader.setInt("heat", reactor.getHeat());
-		reader.setInt("maxHeat", reactor.getMaxHeat());
-		reader.setBoolean("reactorPoweredB", reactor.produceEnergy());
-		reader.setInt("output", (int) Math.round(reactor.getReactorEUEnergyOutput()));
-
-		IInventory inventory = (IInventory) reactor;
-		int slotCount = inventory.getSizeInventory();
-		int dmgLeft = 0;
-		for (int i = 0; i < slotCount; i++) {
-			ItemStack stack = inventory.getStackInSlot(i);
-			if (stack != null)
-				dmgLeft = Math.max(dmgLeft, ReactorHelper.getNuclearCellTimeLeft(stack));
-		}
-
-		reader.setInt("timeLeft", dmgLeft * reactor.getTickRate() / 20);
-		return CardState.OK;
-	}
-
-	@Override
-	public CardState updateCardReactor5x5(World world, ICardReader reader, int x, int y, int z) {
-		IReactor reactor = ReactorHelper.getReactorAt(world, x, y, z);
-		if (reactor == null || !(reactor instanceof TileEntityNuclearReactorElectric))
-			return CardState.NO_TARGET;
-		
-		reader.setInt("heat", reactor.getHeat());
-		reader.setInt("maxHeat", reactor.getMaxHeat());
-		reader.setBoolean("reactorPowered", reactor.produceEnergy());
-		reader.setInt("output", ((TileEntityNuclearReactorElectric)reactor).EmitHeat);
-
-		IInventory inventory = (IInventory) reactor;
-		int slotCount = inventory.getSizeInventory();
-		int dmgLeft = 0;
-		for (int i = 0; i < slotCount; i++) {
-			ItemStack stack = inventory.getStackInSlot(i);
-			if (stack != null)
-				dmgLeft = Math.max(dmgLeft, ReactorHelper.getNuclearCellTimeLeft(stack));
-		}
-
-		int timeLeft = dmgLeft * reactor.getTickRate() / 20;
-		reader.setInt("timeLeft", timeLeft);
-		return CardState.OK;
-	}
-
-	//@Override
-	public ItemStack getLiquidAdvancedCard(World world, int x, int y, int z) {
-		Block block = world.getBlock(x, y, z);
-		if (!(block instanceof BlockTileEntity))
+	private NBTTagCompound getReactorData(TileEntityNuclearReactorElectric reactor) {
+		if (reactor == null)
 			return null;
-		
-		TileEntity te = world.getTileEntity(x, y, z);
-		if (te instanceof TileEntityReactorFluidPort || te instanceof TileEntityReactorRedstonePort
-				|| te instanceof TileEntityReactorAccessHatch) {
-			ChunkCoordinates position = ReactorHelper.get5x5TargetCoordinates(world, x, y, z);
-			if (position != null) {
-				ItemStack sensorLocationCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_LIQUID_ADVANCED);
-				ItemStackHelper.setCoordinates(sensorLocationCard, position.posX, position.posY, position.posZ);
-				return sensorLocationCard;
-			}
+		NBTTagCompound tag = new NBTTagCompound();
+		tag.setInteger(DataHelper.HEAT, reactor.getHeat());
+		tag.setInteger(DataHelper.MAXHEAT, reactor.getMaxHeat());
+		tag.setBoolean(DataHelper.ACTIVE, reactor.produceEnergy());
+		if (reactor.isFluidCooled())
+			tag.setDouble("outputmB", reactor.EmitHeat);
+		else
+			tag.setDouble(DataHelper.OUTPUT, reactor.getReactorEUEnergyOutput());
+
+		IInventory inventory = (IInventory) reactor;
+		int slotCount = inventory.getSizeInventory();
+		int dmgLeft = 0;
+		for (int i = 0; i < slotCount; i++) {
+			ItemStack stack = inventory.getStackInSlot(i);
+			if (stack != null)
+				dmgLeft = Math.max(dmgLeft, getNuclearCellTimeLeft(stack));
 		}
-		return null;
+
+		tag.setInteger("timeLeft", dmgLeft * reactor.getTickRate() / 20);
+		FluidInfo.addTank(DataHelper.TANK, tag, reactor.inputTank);
+		FluidInfo.addTank(DataHelper.TANK2, tag, reactor.outputTank);
+		return tag;
+	}
+
+	private static int getNuclearCellTimeLeft(ItemStack stack) {
+		if (stack == null)
+			return 0;
+		Item item = stack.getItem();
+		if (item instanceof ItemReactorUranium || item instanceof ItemReactorLithiumCell || item instanceof ItemReactorMOX)
+			return ((ICustomDamageItem)item).getMaxCustomDamage(stack) - ((ICustomDamageItem)item).getCustomDamage(stack);
+		// Coaxium Mod
+		if (item.getClass().getName().equals("com.sm.FirstMod.items.ItemCoaxiumRod") || item.getClass().getName().equals("com.sm.FirstMod.items.ItemCesiumRod"))
+			return stack.getMaxDamage() - getCoaxiumDamage(stack);
+		return 0;
+	}
+
+	private static int getCoaxiumDamage(ItemStack stack) {
+		if (!stack.hasTagCompound())
+			return 0;
+		return stack.getTagCompound().getInteger("fuelRodDamage");
 	}
 
 	@Override
-	public FluidTankInfo[] getAllTanks(TileEntity te) {
+	public int getHeat(World world, int x, int y, int z) {
+		IReactor reactor = IC2ReactorHelper.getReactorAround(world, x, y, z);
+		if (reactor != null)
+			return reactor.getHeat();
+		reactor = IC2ReactorHelper.getReactor3x3(world, x, y, z);
+		if (reactor != null)
+			return reactor.getHeat();
+		return -1;
+	}
+
+	@Override
+	public List<FluidInfo> getAllTanks(TileEntity te) {
 		if (!(te instanceof IFluidHandler))
 			return null;
 
-		return ((IFluidHandler) te).getTankInfo(ForgeDirection.UP);
+		FluidTankInfo[] list = ((IFluidHandler) te).getTankInfo(null);
+		List<FluidInfo> result = new ArrayList<>();
+		for (FluidTankInfo tank: list)
+			result.add(new FluidInfo(tank.fluid, tank.capacity));
+
+		return result;
 	}
 
-	public void showBarrelInfo(EntityPlayer player, TileEntity te) {
-		if (te instanceof TileEntityBarrel) {
-			int age = -1;
-			int boozeAmount = 0;
-			try {
-				Field field = TileEntityBarrel.class.getDeclaredField("age");
-				field.setAccessible(true);
-				age = (int) field.get(te);
-				field = TileEntityBarrel.class.getDeclaredField("boozeAmount");
-				field.setAccessible(true);
-				boozeAmount = (int) field.get(te);
-			} catch (Throwable t) { }
-			if (age >= 0)
-				player.addChatMessage(new ChatComponentText(age + " / " + ((TileEntityBarrel) te).timeNedForRum(boozeAmount)));
-		}
+	@Override
+	public void registerItems() {
+		ModItems.blockAfsu = ModItems.register(new AFSU(), ItemAFSU.class, "afsu");
+		ModItems.blockSeedAnalyzer = ModItems.register(new SeedAnalyzer(), "seed_analyzer");
+		ModItems.blockSeedLibrary = ModItems.register(new SeedLibrary(), "seed_library");
+
+		ModItems.itemThermometerDigital = ModItems.register(new ItemDigitalThermometer(), "thermometer_digital");
+		ModItems.itemAFB = ModItems.register(new ItemAFB(), "afb");
+		ModItems.itemAFSUUpgradeKit = ModItems.register(new ItemAFSUUpgradeKit(), "afsu_upgrade_kit");
+
+		ItemKitMain.register(ItemKitIC2::new);
+		ItemCardMain.register(ItemCardIC2::new);
+	}
+
+	@Override
+	public void loadRecipes() {
+		Recipes.addShapedRecipe(ModItems.blockAverageCounter, new Object[] {
+			"LAL", "FTF",
+				'A', "circuitAdvanced",
+				'F', IC2Items.getItem("goldCableItem"),
+				'T', IC2Items.getItem("mvTransformer"),
+				'L', "plateLead" });
+
+		Recipes.addShapedRecipe(ModItems.blockEnergyCounter, new Object[] {
+			"IAI", "FTF", 
+				'A', "circuitAdvanced",
+				'F', IC2Items.getItem("goldCableItem"),
+				'T', IC2Items.getItem("mvTransformer"),
+				'I', "plateIron" });
+
+		Recipes.addShapedRecipe(ModItems.blockAfsu, new Object[] {
+			"MGM", "IAI", "MGM",
+				'I', IC2Items.getItem("iridiumPlate"),
+				'G', IC2Items.getItem("glassFiberCableItem"),
+				'M', IC2Items.getItem("mfsUnit"),
+				'A', new ItemStack(ModItems.itemAFB, 1, Short.MAX_VALUE) });
+
+		Recipes.addShapedRecipe(ModItems.blockSeedAnalyzer, new Object[] {
+			" C ", "WAW", "WBW",
+				'C', IC2Items.getItem("cropnalyzer"),
+				'W', "plankWood",
+				'A', new ItemStack(ModItems.itemComponent, 1, ItemComponent.MACHINE_CASING),
+				'B', "circuitBasic" });
+
+		Recipes.addShapedRecipe(ModItems.blockSeedLibrary, new Object[] {
+			"GGG", "CAC", "CSC",
+				'G', "blockGlass",
+				'C', Blocks.chest,
+				'A', "circuitAdvanced",
+				'S', ModItems.blockSeedAnalyzer });
+
+		Recipes.addShapedRecipe(ModItems.itemThermometerDigital, 32767, new Object[] { 
+			"RI ", "ITI", " IP",
+				'R', "itemRubber",
+				'T', ModItems.itemThermometer,
+				'I', "plateIron",
+				'P', IC2Items.getItem("powerunitsmall") });
+
+		Recipes.addShapedRecipe(ModItems.itemAFB, new Object[] {
+				"GIG", "IUI", "GIG",
+					'G', IC2Items.getItem("glassFiberCableItem"),
+					'I', IC2Items.getItem("iridiumPlate"),
+					'U', IC2Items.getItem("uuMatterCell") });
+
+		Recipes.addShapedRecipe(ModItems.itemAFSUUpgradeKit, new Object[] {
+			"MGM", "IAI", "MGM",
+				'I', IC2Items.getItem("iridiumPlate"),
+				'G', IC2Items.getItem("glassFiberCableItem"),
+				'M', IC2Items.getItem("mfsUnit"),
+				'A', new ItemStack(ModItems.itemAFB, 1, Short.MAX_VALUE) });
+
+		Recipes.addShapedRecipe(ModItems.itemKit, ItemCardType.KIT_IC2,
+			new Object[] { "CF", "PL", 'P', Items.paper, 'C', IC2Items.getItem("advIronIngot"),
+				'F', new ItemStack(ModItems.itemComponent, 1, ItemComponent.RADIO_TRANSMITTER), 'L', "dyeLightGray" });
+
+		Recipes.addKitRecipe(ItemCardType.KIT_IC2, ItemCardType.CARD_IC2);
 	}
 }

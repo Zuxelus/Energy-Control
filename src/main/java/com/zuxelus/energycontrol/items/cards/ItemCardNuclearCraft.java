@@ -171,9 +171,4 @@ public class ItemCardNuclearCraft extends ItemCardBase {
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 2, damage));
 		return result;
 	}
-
-	@Override
-	public int getKitFromCard() {
-		return ItemCardType.KIT_NUCLEARCRAFT;
-	}
 }
