@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 import com.zuxelus.energycontrol.api.CardState;
@@ -10,18 +9,6 @@ import com.zuxelus.energycontrol.api.PanelString;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import gregapi.data.CS;
-import gregapi.data.TD;
-import gregapi.fluid.FluidTankGT;
-import gregapi.recipes.Recipe;
-import gregapi.tileentity.connectors.MultiTileEntityWireElectric;
-import gregapi.util.UT;
-import gregtech.api.interfaces.tileentity.IGregTechDeviceInformation;
-import gregtech.api.util.GT_LanguageManager;
-import gregtech.tileentity.energy.converters.MultiTileEntityBoilerTank;
-import gregtech.tileentity.energy.converters.MultiTileEntityDynamoElectric;
-import gregtech.tileentity.energy.converters.MultiTileEntityTurbineSteam;
-import gregtech.tileentity.energy.generators.MultiTileEntityGeneratorSolid;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -43,7 +30,7 @@ public class ItemCardGregTech extends ItemCardBase {
 			return CardState.NO_TARGET;
 
 		TileEntity te = world.getTileEntity(target.posX, target.posY, target.posZ);
-		try {
+		/*try {
 			Class.forName("gregtech.GT6_Main");
 			if (te instanceof MultiTileEntityGeneratorSolid) {
 				reader.setInt("type", 1);
@@ -149,7 +136,7 @@ public class ItemCardGregTech extends ItemCardBase {
 				reader.setInt("mString", strCount = tInfoData.length);
 			}
 			return CardState.OK;
-		} catch (Exception ignored) { }
+		} catch (Exception ignored) { }*/
 
 		return CardState.NO_TARGET;
 	}
@@ -209,7 +196,7 @@ public class ItemCardGregTech extends ItemCardBase {
 			}
 		} catch (Exception ignored) { }
 
-		try {
+		/*try {
 			Class.forName("gregtech.GT_Mod");
 			for (int i = 0; i < (strCount = reader.getInt("mString")); i++)
 				if ((settings & 1 << i) != 0) {
@@ -217,7 +204,7 @@ public class ItemCardGregTech extends ItemCardBase {
 					line.textLeft = GT_LanguageManager.getTranslation(reader.getString("mString" + i), "\\\\");
 					result.add(line);
 				}
-		} catch (Exception ignored) { }
+		} catch (Exception ignored) { }*/
 
 		return result;
 	}

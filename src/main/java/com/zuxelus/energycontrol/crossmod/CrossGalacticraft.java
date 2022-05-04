@@ -5,12 +5,16 @@ import java.util.List;
 
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.ItemComponent;
+import com.zuxelus.energycontrol.items.cards.ItemCardGalacticraft;
+import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
+import com.zuxelus.energycontrol.items.kits.ItemKitGalacticraft;
+import com.zuxelus.energycontrol.items.kits.ItemKitMain;
 import com.zuxelus.energycontrol.recipes.Recipes;
 import com.zuxelus.energycontrol.tileentities.TileEntityAFSU;
+import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
-import ic2.api.item.IC2Items;
 import micdoodle8.mods.galacticraft.api.power.IEnergyHandlerGC;
 import micdoodle8.mods.galacticraft.core.blocks.GCBlocks;
 import net.minecraft.init.Items;
@@ -30,9 +34,9 @@ public class CrossGalacticraft extends CrossModBase {
 		if (te instanceof IEnergyHandlerGC) {
 			NBTTagCompound tag = new NBTTagCompound();
 			IEnergyHandlerGC storage = (IEnergyHandlerGC) te;
-			tag.setInteger("type", 11);
-			tag.setDouble("storage", storage.getEnergyStoredGC(null));
-			tag.setDouble("maxStorage", storage.getMaxEnergyStoredGC(null));
+			tag.setString(DataHelper.EUTYPE, "gJ");
+			tag.setDouble(DataHelper.ENERGY, storage.getEnergyStoredGC(null));
+			tag.setDouble(DataHelper.CAPACITY, storage.getMaxEnergyStoredGC(null));
 			return tag;
 		}
 		return null;
@@ -55,6 +59,12 @@ public class CrossGalacticraft extends CrossModBase {
 			return result;
 		}
 		return null;
+	}
+
+	@Override
+	public void registerItems() {
+		ItemKitMain.register(ItemKitGalacticraft::new);
+		ItemCardMain.register(ItemCardGalacticraft::new);
 	}
 
 	@Override

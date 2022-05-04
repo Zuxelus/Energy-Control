@@ -8,9 +8,11 @@ import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 
-import nc.tile.generator.TileSolarPanel;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
@@ -29,66 +31,12 @@ public class ItemCardNuclearCraft extends ItemCardBase {
 			return CardState.NO_TARGET;
 
 		TileEntity te = world.getTileEntity(target.posX, target.posY, target.posZ);
-		/*if (te instanceof TileDecayGenerator) {
-			reader.setInt("type", 1);
-			reader.setInt("stored", ((TileDecayGenerator) te).getEnergyStored());
-			reader.setInt("capacity", ((TileDecayGenerator) te).getMaxEnergyStored());
-			reader.setInt("output", ((TileDecayGenerator) te).getGenerated());
-			reader.setDouble("radiation", ((TileDecayGenerator) te).getRadiation());
-			return CardState.OK;
-		}
-		if (te instanceof TileItemProcessor) {
-			reader.setInt("type", 2);
-			reader.setInt("stored", ((TileItemProcessor) te).getEnergyStored());
-			reader.setInt("capacity", ((TileItemProcessor) te).getMaxEnergyStored());
-			reader.setInt("power", ((TileItemProcessor) te).getProcessPower());
-			reader.setDouble("speedM", ((TileItemProcessor) te).getSpeedMultiplier());
-			reader.setDouble("powerM", ((TileItemProcessor) te).getPowerMultiplier());
-			reader.setInt("time", ((TileItemProcessor) te).getProcessTime());
-			return CardState.OK;
-		}
-		if (te instanceof TileFluidProcessor) {
-			reader.setInt("type", 2);
-			reader.setInt("stored", ((TileFluidProcessor) te).getEnergyStored());
-			reader.setInt("capacity", ((TileFluidProcessor) te).getMaxEnergyStored());
-			reader.setInt("power", ((TileFluidProcessor) te).getProcessPower());
-			reader.setDouble("speedM", ((TileFluidProcessor) te).getSpeedMultiplier());
-			reader.setDouble("powerM", ((TileFluidProcessor) te).getPowerMultiplier());
-			reader.setInt("time", ((TileFluidProcessor) te).getProcessTime());
-			return CardState.OK;
-		}*/
-		if (te instanceof TileSolarPanel) {
-			reader.setInt("type", 4);
-			reader.setInt("stored", ((TileSolarPanel) te).getEnergyStored(null));
-			reader.setInt("capacity", ((TileSolarPanel) te).getMaxEnergyStored(null));
-			//reader.setInt("output", ((TileSolarPanel) te).getGenerated());
-			return CardState.OK;
-		}
-		/*if (te instanceof TileBattery) {
-			reader.setInt("type", 5);
-			reader.setInt("stored", ((TileBattery) te).getEnergyStored());
-			reader.setInt("capacity", ((TileBattery) te).getMaxEnergyStored());
-			return CardState.OK;
-		}
-		if (te instanceof TileFissionController) {
-			reader.setInt("type", 6);
-			TileFissionController reactor = (TileFissionController) te;
-			reader.setBoolean("active", reactor.isProcessing);
-			reader.setString("size", reactor.getLengthX() + "*" + reactor.getLengthY() + "*" + reactor.getLengthZ());
-			reader.setString("fuel", reactor.getFuelName());
-			reader.setInt("stored", reactor.getEnergyStored());
-			reader.setInt("capacity", reactor.getMaxEnergyStored());
-			reader.setDouble("efficiency", reactor.efficiency);
-			reader.setDouble("heat", reactor.heat);
-			reader.setInt("maxHeat", reactor.getMaxHeat());
-			reader.setDouble("heatChange", reactor.heatChange);
-			reader.setDouble("cooling", reactor.cooling);
-			reader.setDouble("heatMult", reactor.heatMult);
-			reader.setDouble("power", reactor.processPower);
-			reader.setInt("cells", reactor.cells);
-			return CardState.OK;
-		}*/
-		return CardState.NO_TARGET;
+		NBTTagCompound tag = CrossModLoader.getCrossMod(ModIDs.NUCLEAR_CRAFT).getCardData(te);
+		if (tag == null)
+			return CardState.NO_TARGET;
+		reader.reset();
+		reader.copyFrom(tag);
+		return CardState.OK;
 	}
 
 	@Override
@@ -100,31 +48,31 @@ public class ItemCardNuclearCraft extends ItemCardBase {
 		int type = reader.getInt("type");
 		switch (type) {
 		case 1:
-			result.add(new PanelString("msg.ec.InfoPanelEnergyRF", reader.getInt("stored"), showLabels));
-			result.add(new PanelString("msg.ec.InfoPanelCapacityRF", reader.getInt("capacity"), showLabels));
-			result.add(new PanelString("msg.ec.InfoPanelOutputRF", reader.getInt("output"), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelEnergy", reader.getInt("stored"), "RF", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getInt("capacity"), "RF", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getInt("output"), "RF/t", showLabels));
 			result.add(new PanelString("msg.ec.InfoPanelRadiation", reader.getDouble("radiation"), showLabels));
 			break;
 		case 2:
-			result.add(new PanelString("msg.ec.InfoPanelEnergyRF", reader.getInt("stored"), showLabels));
-			result.add(new PanelString("msg.ec.InfoPanelCapacityRF", reader.getInt("capacity"), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelEnergy", reader.getInt("stored"), "RF", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getInt("capacity"), "RF", showLabels));
 			result.add(new PanelString("msg.ec.InfoPanelProcessPowerRF", reader.getInt("power"), showLabels));
 			result.add(new PanelString("msg.ec.InfoPanelSpeedMultiplierRF", reader.getDouble("speedM"), showLabels));
 			result.add(new PanelString("msg.ec.InfoPanelPowerMultiplierRF", reader.getDouble("powerM"), showLabels));
 			result.add(new PanelString("msg.ec.InfoPanelProcessTime", reader.getInt("time"), showLabels));
 			break;
 		case 3:
-			result.add(new PanelString("msg.ec.InfoPanelEnergyRF", reader.getInt("stored"), showLabels));
-			result.add(new PanelString("msg.ec.InfoPanelCapacityRF", reader.getInt("capacity"), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelEnergy", reader.getInt("stored"), "RF", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getInt("capacity"), "RF", showLabels));
 			break;
 		case 4:
-			result.add(new PanelString("msg.ec.InfoPanelEnergyRF", reader.getInt("stored"), showLabels));
-			result.add(new PanelString("msg.ec.InfoPanelCapacityRF", reader.getInt("capacity"), showLabels));
-			//result.add(new PanelString("msg.ec.InfoPanelOutputRF", reader.getInt("output"), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelEnergy", reader.getInt("stored"), "RF", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getInt("capacity"), "RF", showLabels));
+			//result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getInt("output"), "RF/t", showLabels));
 			break;
 		case 5:
-			result.add(new PanelString("msg.ec.InfoPanelEnergyRF", reader.getInt("stored"), showLabels));
-			result.add(new PanelString("msg.ec.InfoPanelCapacityRF", reader.getInt("capacity"), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelEnergy", reader.getInt("stored"), "RF", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getInt("capacity"), "RF", showLabels));
 			break;
 		case 6:
 			addHeat(result, (int) Math.round(reader.getDouble("heat")), reader.getInt("maxHeat"), showLabels);
@@ -132,8 +80,8 @@ public class ItemCardNuclearCraft extends ItemCardBase {
 			result.add(new PanelString("msg.ec.InfoPanelSize", reader.getString("size"), showLabels));
 			result.add(new PanelString("msg.ec.InfoPanelFuel", reader.getString("fuel"), showLabels));
 			result.add(new PanelString("msg.ec.InfoPanelProcessPowerRF", reader.getDouble("power"), showLabels));
-			result.add(new PanelString("msg.ec.InfoPanelEnergyRF", reader.getInt("stored"), showLabels));
-			result.add(new PanelString("msg.ec.InfoPanelCapacityRF", reader.getInt("capacity"), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelEnergy", reader.getInt("stored"), "RF", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getInt("capacity"), "RF", showLabels));
 			result.add(new PanelString("msg.ec.InfoPanelCoolingRate", reader.getDouble("cooling"), showLabels));
 			result.add(new PanelString("msg.ec.InfoPanelCells", reader.getInt("cells"), showLabels));
 			addOnOff(result, isServer, reader.getBoolean("active"));
@@ -167,8 +115,8 @@ public class ItemCardNuclearCraft extends ItemCardBase {
 	@Override
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(2);
-		result.add(new PanelSetting(I18n.format("msg.ec.cbStatus"), 1, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 2, damage));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbStatus"), 1));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 2));
 		return result;
 	}
 }

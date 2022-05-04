@@ -1,5 +1,8 @@
 package com.zuxelus.energycontrol.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.zuxelus.energycontrol.api.ICardReader;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -8,6 +11,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidTank;
 
 public class FluidInfo {
@@ -93,5 +97,15 @@ public class FluidInfo {
 			tag.setString(name, "N/A");
 		else
 			tag.setString(name, String.format("%s: %s mB", stack.getLocalizedName(), stack.amount));
+	}
+
+	public static List<FluidInfo> toFluidInfoList(FluidTankInfo[] tanks) { // 1.7.10
+		if (tanks == null || tanks.length == 0)
+			return null;
+
+		List<FluidInfo> result = new ArrayList<>();
+		for (FluidTankInfo tank : tanks)
+			result.add(new FluidInfo(tank.fluid, tank.capacity));
+		return result;
 	}
 }

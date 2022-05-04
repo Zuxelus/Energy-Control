@@ -21,7 +21,7 @@ public class ClientTickHandler {
 	public static boolean altPressed;
 
 	@SubscribeEvent
-	public static void onClientTick(TickEvent.ClientTickEvent event) {
+	public void onClientTick(TickEvent.ClientTickEvent event) {
 		if (event.phase == TickEvent.Phase.END)
 			return;
 		boolean alt = Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184);

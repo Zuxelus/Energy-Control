@@ -6,18 +6,25 @@ import java.util.Map;
 
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.recipes.MachineRecipes;
+import com.hbm.items.ModItems;
+import com.hbm.items.machine.ItemRTGPellet;
 import com.hbm.tileentity.machine.*;
 import com.hbm.tileentity.machine.rbmk.RBMKDials;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKBoiler;
+import com.hbm.tileentity.machine.storage.TileEntityMachineBattery;
+import com.hbm.util.RTGUtil;
 import com.zuxelus.hooklib.asm.Hook;
 
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityFurnace;
 
 public class HBMHooks {
 	public static Map<TileEntity, ArrayList> map = new HashMap<TileEntity, ArrayList>();
 
 	@Hook
-	public static void update(TileEntityChungus te) {
+	public static void updateEntity(TileEntityChungus te) {
 		if (te.getWorldObj().isRemote)
 			return;
 
@@ -46,7 +53,7 @@ public class HBMHooks {
 	}
 
 	@Hook
-	public static void update(TileEntityCondenser te) {
+	public static void updateEntity(TileEntityCondenser te) {
 		if (te.getWorldObj().isRemote)
 			return;
 
@@ -57,7 +64,7 @@ public class HBMHooks {
 	}
 
 	@Hook
-	public static void update(TileEntityRBMKBoiler te) {
+	public static void updateEntity(TileEntityRBMKBoiler te) {
 		if (te.getWorldObj().isRemote)
 			return;
 
@@ -77,7 +84,7 @@ public class HBMHooks {
 	}
 
 	@Hook
-	public static void update(TileEntityMachineTurbine te) {
+	public static void updateEntity(TileEntityMachineTurbine te) {
 		if (te.getWorldObj().isRemote)
 			return;
 
@@ -100,7 +107,7 @@ public class HBMHooks {
 	}
 
 	@Hook
-	public static void update(TileEntityMachineLargeTurbine te) {
+	public static void updateEntity(TileEntityMachineLargeTurbine te) {
 		if (te.getWorldObj().isRemote)
 			return;
 
@@ -119,6 +126,55 @@ public class HBMHooks {
 			values.add(0);
 			values.add(0);
 		}
+		map.put(te, values);
+	}
+
+	@Hook
+	public static void updateEntity(TileEntityMachineBattery te) {
+		if (te.getWorldObj().isRemote)
+			return;
+
+		ArrayList<Long> values = map.get(te);
+		if (values != null && values.size() > 0) {
+			values.set(1, values.get(0));
+			values.set(0, ((TileEntityMachineBattery) te).power);
+		} else {
+			values = new ArrayList<>();
+			values.add(((TileEntityMachineBattery) te).power);
+			values.add(((TileEntityMachineBattery) te).power);
+			map.put(te, values);
+		}
+	}
+
+	@Hook
+	public static void updateEntity(TileEntityMachineIGenerator te) {
+		if (te.getWorldObj().isRemote)
+			return;
+
+		int spin = 0;
+		if (te.tanks[1].getFill() > 0)
+			spin += te.getPowerFromFuel();
+
+		for (int i = 0; i < 4; i++)
+			if (te.burn[i] > 0)
+				spin += 75;
+
+		int newHeat = 0;
+		for (int slot : te.RTGSlots)
+			if (te.slots[slot] != null && te.slots[slot].getItem() instanceof ItemRTGPellet)
+				newHeat += RTGUtil.getPower((ItemRTGPellet) te.slots[slot].getItem(), te.slots[slot]);
+		spin = (int) (spin + newHeat * 0.2D);
+
+		int powerGen = spin;
+		if (spin > 0) {
+			if (te.tanks[0].getFill() >= 10)
+				powerGen += spin;
+			if (te.tanks[2].getFill() >= 1)
+				powerGen += spin * 3;
+			powerGen = (int) Math.pow(powerGen, 1.1D);
+		}
+		ArrayList<Integer> values = new ArrayList<>();
+		values.add(powerGen);
 		map.put(te, values);
 	}
 }

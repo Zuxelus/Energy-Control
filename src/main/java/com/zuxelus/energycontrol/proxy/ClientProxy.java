@@ -146,7 +146,8 @@ public class ClientProxy implements IProxy {
 	@Override
 	public void registerEventHandlers() {
 		//FMLCommonHandler.instance().bus().register(EnergyControl.config);
-		MinecraftForge.EVENT_BUS.register(ClientTickHandler.instance);
+		MinecraftForge.EVENT_BUS.register(ClientTickHandler.instance); // render
+		FMLCommonHandler.instance().bus().register(ClientTickHandler.instance); // 1.7.10 (onClientTick)
 		FMLCommonHandler.instance().bus().register(ServerTickHandler.instance); // for single client, FML in 1.7.10
 	}
 

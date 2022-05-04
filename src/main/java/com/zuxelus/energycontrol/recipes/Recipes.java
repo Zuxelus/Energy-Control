@@ -154,6 +154,12 @@ public class Recipes {
 				'R', ModItems.itemUpgrade,
 				'P', new ItemStack(Items.coal, 1, 1) });
 
+		addShapedRecipe(ModItems.itemComponent, ItemComponent.RADIO_TRANSMITTER, new Object[] {
+				"#C#", " S ",
+					'#', new ItemStack(ModItems.itemComponent, 1, ItemComponent.STRONG_STRING),
+					'C', "circuitBasic",
+					'S', "slabWood" });
+
 		addShapedRecipe(ModItems.itemComponent, ItemComponent.STRONG_STRING, new Object[] {
 			"#S ", "S#S", " S#",
 				'#', Blocks.cactus,

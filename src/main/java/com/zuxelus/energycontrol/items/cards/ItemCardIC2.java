@@ -97,8 +97,8 @@ public class ItemCardIC2 extends ItemCardBase {
 			int seconds = timeLeft % 60;
 			result.add(new PanelString("msg.ec.InfoPanelTimeRemaining", String.format("%d:%02d:%02d", hours, minutes, seconds), showLabels));
 		}
-		if (reader.hasField("active") && (settings & 32) > 0)
-			addOnOff(result, isServer, reader.getBoolean("active"));
+		if (reader.hasField(DataHelper.ACTIVE) && (settings & 32) > 0)
+			addOnOff(result, isServer, reader.getBoolean(DataHelper.ACTIVE));
 		return result;
 	}
 

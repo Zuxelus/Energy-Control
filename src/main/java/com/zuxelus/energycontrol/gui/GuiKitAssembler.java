@@ -28,7 +28,6 @@ public class GuiKitAssembler extends GuiContainerBase {
 	public GuiKitAssembler(ContainerKitAssembler container) {
 		super(container, "tile.kit_assembler.name", TEXTURE);
 		this.container = container;
-		ySize = 182;
 	}
 
 	@Override

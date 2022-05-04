@@ -8,15 +8,14 @@ import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
+import com.zuxelus.energycontrol.utils.DataHelper;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import erogenousbeef.bigreactors.common.multiblock.MultiblockReactor;
-import erogenousbeef.bigreactors.common.multiblock.MultiblockTurbine;
-import erogenousbeef.bigreactors.common.multiblock.tileentity.TileEntityReactorPartBase;
-import erogenousbeef.bigreactors.common.multiblock.tileentity.TileEntityTurbinePartBase;
-import erogenousbeef.core.common.CoordTriplet;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
@@ -35,130 +34,71 @@ public class ItemCardBigReactors extends ItemCardBase {
 			return CardState.NO_TARGET;
 
 		TileEntity te = world.getTileEntity(target.posX, target.posY, target.posZ);
-		if (te instanceof TileEntityReactorPartBase) {
-			MultiblockReactor reactor = ((TileEntityReactorPartBase) te).getReactorController();
-			if (reactor == null)
-				return CardState.NO_TARGET;
-
-			reader.setInt("type", 1);
-			reader.setBoolean("reactorPoweredB", reactor.getActive());
-			reader.setBoolean("cooling", reactor.isPassivelyCooled());
-			reader.setString("system", "RF" /*reactor.getPowerSystem().unitOfMeasure*/);
-			reader.setDouble("heat", (double) reactor.getFuelHeat());
-			reader.setInt("coreHeat", (int) reactor.getReactorHeat());
-			reader.setDouble("storage", (double) reactor.getEnergyStored());
-			reader.setDouble("capacity", 1.0E7D);
-			reader.setDouble("output", (double) reactor.getEnergyGeneratedLastTick());
-			reader.setInt("rods", reactor.getFuelRodCount());
-			reader.setInt("fuel", reactor.getFuelAmount());
-			reader.setInt("waste", reactor.getWasteAmount());
-			reader.setInt("fuelCapacity", reactor.getCapacity());
-			reader.setDouble("consumption", (double) reactor.getFuelConsumedLastTick());
-			CoordTriplet min = reactor.getMinimumCoord();
-			CoordTriplet max = reactor.getMaximumCoord();
-			reader.setString("size", String.format("%sx%sx%s",max.x - min.x + 1, max.y - min.y + 1, max.z - min.z + 1));
-			return CardState.OK;
-		}
-		if (te instanceof TileEntityTurbinePartBase) {
-			MultiblockTurbine turbine = ((TileEntityTurbinePartBase) te).getTurbine();
-			if (turbine == null)
-				return CardState.NO_TARGET;
-			
-			reader.setInt("type", 2);
-			reader.setBoolean("reactorPoweredB", turbine.getActive());
-			reader.setString("system", "RF" /*turbine.getPowerSystem().unitOfMeasure*/);
-			reader.setDouble("storage", (double) turbine.getEnergyStored());
-			reader.setDouble("capacity", (double) turbine.getMaxEnergyStored(null));
-			reader.setDouble("output", (double) turbine.getEnergyGeneratedLastTick());
-			reader.setDouble("speed", (double) turbine.getRotorSpeed());
-			reader.setDouble("speedMax", (double) turbine.getMaxRotorSpeed());
-			reader.setDouble("efficiency", (double) turbine.getRotorEfficiencyLastTick());
-			reader.setDouble("consumption", (double) turbine.getFluidConsumedLastTick());
-			reader.setInt("blades", turbine.getNumRotorBlades());
-			reader.setInt("mass", turbine.getRotorMass());
-			CoordTriplet min = turbine.getMinimumCoord();
-			CoordTriplet max = turbine.getMaximumCoord();
-			reader.setString("size", String.format("%sx%sx%s",max.x - min.x + 1, max.y - min.y + 1, max.z - min.z + 1));
-			return CardState.OK;
-		}
-		return CardState.NO_TARGET;
+		NBTTagCompound tag = CrossModLoader.getCrossMod(ModIDs.BIG_REACTORS).getCardData(te);
+		if (tag == null)
+			return CardState.NO_TARGET;
+		reader.reset();
+		reader.copyFrom(tag);
+		return CardState.OK;
 	}
 
 	@Override
 	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
-		String euType = reader.getString("system");
-		switch (reader.getInt("type")) {
-		case 1:
-			if ((settings & 2) > 0) {
-				result.add(new PanelString("msg.ec.InfoPanelCoreHeat", reader.getInt("heat"), showLabels));
-				result.add(new PanelString("msg.ec.InfoPanelCasingHeat", reader.getDouble("coreHeat"), showLabels));
-				result.add(new PanelString("msg.ec.InfoPanelPassiveCooling", reader.getBoolean("cooling").toString(), showLabels));
-			}
-			if ((settings & 4) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelEnergy" + euType, reader.getDouble("storage"), showLabels));
-			if ((settings & 8) > 0)
-				result.add(
-						new PanelString("msg.ec.InfoPanelCapacity" + euType, reader.getDouble("capacity"), showLabels));
-			if ((settings & 16) > 0)
-				if (reader.getBoolean("cooling"))
-					result.add(new PanelString("msg.ec.InfoPanelOutput" + euType, reader.getDouble("output"), showLabels));
-				else
-					result.add(new PanelString("msg.ec.InfoPanelOutputmB", reader.getDouble("output"), showLabels));
-			if ((settings & 32) > 0) {
-				result.add(new PanelString("msg.ec.InfoPanelFuelmb", reader.getInt("fuel"), showLabels));
-				result.add(new PanelString("msg.ec.InfoPanelWastemb", reader.getInt("waste"), showLabels));
-				result.add(new PanelString("msg.ec.InfoPanelCapacitymB", reader.getInt("fuelCapacity"), showLabels));
+		if (reader.hasField("fuelHeat") && (settings & 1) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelCoreHeat", reader.getInt("fuelHeat"), showLabels));
+		if (reader.hasField(DataHelper.HEAT) && (settings & 1) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelCasingHeat", reader.getInt(DataHelper.HEAT), showLabels));
+		if (reader.hasField("cooling") && (settings & 64) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelPassiveCooling", reader.getBoolean("cooling").toString(), showLabels));
+		if (reader.hasField(DataHelper.ENERGY) && (settings & 2) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelEnergy", reader.getDouble(DataHelper.ENERGY), "RF", showLabels));
+		if (reader.hasField(DataHelper.CAPACITY) && (settings & 2) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getDouble(DataHelper.CAPACITY), "RF", showLabels));
+		if (reader.hasField(DataHelper.OUTPUT) && (settings & 4) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble(DataHelper.OUTPUT), "RF/t", showLabels));
+		if (reader.hasField(DataHelper.OUTPUTMB) && (settings & 4) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble(DataHelper.OUTPUTMB), "mB/t", showLabels));
+		if (reader.hasField("fuel") && (settings & 8) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelFuel", reader.getInt("fuel"), "mB", showLabels));
+		if (reader.hasField("waste") && (settings & 8) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelWastemb", reader.getInt("waste"), showLabels));
+		if ((settings & 64) > 0) {
+			if (reader.hasField("fuelCapacity"))
+				result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getInt("fuelCapacity"), "mB", showLabels));
+			if (reader.hasField("consumption"))
 				result.add(new PanelString("msg.ec.InfoPanelBurnupRatemb", reader.getDouble("consumption"), showLabels));
-			}
-			if ((settings & 64) > 0) {
+			if (reader.hasField("rods"))
 				result.add(new PanelString("msg.ec.InfoPanelFuelRods", reader.getDouble("rods"), showLabels));
-				result.add(new PanelString("msg.ec.InfoPanelSize", reader.getString("size"), showLabels));
-			}
-			break;
-		case 2:
-			if ((settings & 2) > 0) {
-				result.add(new PanelString("msg.ec.InfoPanelRotorSpeed", df.format(reader.getDouble("speed")), showLabels));
+			if (reader.hasField("speed"))
+				result.add(new PanelString("msg.ec.InfoPanelRotorSpeed", reader.getDouble("speed"), showLabels));
+			if (reader.hasField("speedMax"))
 				result.add(new PanelString("msg.ec.InfoPanelMaxSpeed", reader.getDouble("speedMax"), showLabels));
+			if (reader.hasField("efficiency"))
 				result.add(new PanelString("msg.ec.InfoPanelRotorEfficiency", reader.getDouble("efficiency"), showLabels));
-			}
-			if ((settings & 4) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelEnergy" + euType, reader.getDouble("storage"), showLabels));
-			if ((settings & 8) > 0)
-				result.add(
-						new PanelString("msg.ec.InfoPanelCapacity" + euType, reader.getDouble("capacity"), showLabels));
-			if ((settings & 16) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelOutput" + euType, reader.getDouble("output"), showLabels));
-			if ((settings & 32) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelBurnupRatemb", reader.getDouble("consumption"), showLabels));
-			if ((settings & 64) > 0) {
+			if (reader.hasField("blades"))
 				result.add(new PanelString("msg.ec.InfoPanelBlades", reader.getInt("blades"), showLabels));
+			if (reader.hasField("mass"))
 				result.add(new PanelString("msg.ec.InfoPanelRotorMass", reader.getInt("mass"), showLabels));
+			if (reader.hasField("size"))
 				result.add(new PanelString("msg.ec.InfoPanelSize", reader.getString("size"), showLabels));
-			}
-			break;
 		}
-		if ((settings & 1) > 0)
-			addOnOff(result, isServer, reader.getBoolean("reactorPoweredB"));
+		if (reader.hasField(DataHelper.ACTIVE) && (settings & 32) > 0)
+			addOnOff(result, isServer, reader.getBoolean(DataHelper.ACTIVE));
 		return result;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList() {
-		List<PanelSetting> result = new ArrayList<PanelSetting>(6);
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOnOff"), 1, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelHeat"), 2, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 4, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelCapacity"), 8, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOutputRF"), 16, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbFuel"), 32, damage));
-		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelAdditionalInfo"), 64, damage));
+		List<PanelSetting> result = new ArrayList<>(6);
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelHeat"), 1));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 2));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOutput"), 4));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbFuel"), 8));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelTank"), 16));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOnOff"), 32));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOther"), 64));
 		return result;
-	}
-
-	@Override
-	public int getKitFromCard() {
-		return ItemCardType.KIT_BIG_REACTORS;
 	}
 }

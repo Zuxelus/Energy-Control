@@ -10,6 +10,7 @@ public class DataHelper {
 	public static final String CAPACITY = "capacity";
 	public static final String CAPACITYHU = "capacityHU";
 	public static final String CAPACITYKU = "capacityKU";
+	public static final String CONSUMPTION = "consumption";
 	public static final String ENERGY = "energy";
 	public static final String ENERGYHU = "energyHU";
 	public static final String ENERGYKU = "energyKU";
@@ -20,8 +21,12 @@ public class DataHelper {
 	public static final String OUTPUT = "output";
 	public static final String OUTPUTHU = "outputHU";
 	public static final String OUTPUTKU = "outputKU";
+	public static final String OUTPUTMB = "outputmb";
 	public static final String TANK = "tank";
 	public static final String TANK2 = "tank2";
+	public static final String TANK3 = "tank3";
+	public static final String TANK4 = "tank4";
+	public static final String TANK5 = "tank5";
 
 	public static double getDouble(Class obj, String name, TileEntity te) {
 		try {

@@ -6,6 +6,7 @@ import java.util.List;
 import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
 
 import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
@@ -55,21 +56,27 @@ public class KitAssemblerRecipe {
 
 	public static void addRecipe(Object input1, int count1, Object input2, int count2, Object input3, int count3, ItemStack output, int time) {
 		List<ItemStack> input1list = new ArrayList<>();
-		if (input1 instanceof ItemStack)
+		if (input1 instanceof Item)
+			input1list.add(new ItemStack((Item) input1));
+		else if (input1 instanceof ItemStack)
 			input1list.add((ItemStack) input1);
 		else if (input1 instanceof String)
 			input1list.addAll(OreDictionary.getOres((String) input1));
 		else
 			return;
 		List<ItemStack> input2list = new ArrayList<>();
-		if (input2 instanceof ItemStack)
+		if (input2 instanceof Item)
+			input2list.add(new ItemStack((Item) input2));
+		else if (input2 instanceof ItemStack)
 			input2list.add((ItemStack) input2);
 		else if (input2 instanceof String)
 			input2list.addAll(OreDictionary.getOres((String) input2));
 		else
 			return;
 		List<ItemStack> input3list = new ArrayList<>();
-		if (input3 instanceof ItemStack)
+		if (input3 instanceof Item)
+			input3list.add(new ItemStack((Item) input3));
+		else if (input3 instanceof ItemStack)
 			input3list.add((ItemStack) input3);
 		else if (input3 instanceof String)
 			input3list.addAll(OreDictionary.getOres((String) input3));

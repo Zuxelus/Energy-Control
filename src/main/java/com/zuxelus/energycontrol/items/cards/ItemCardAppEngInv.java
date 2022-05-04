@@ -14,13 +14,16 @@ import appeng.api.AEApi;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IPart;
+import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ICellInventoryHandler;
-import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.IMEInventory;
+import appeng.api.storage.IMEInventoryHandler;
+import appeng.api.storage.MEMonitorHandler;
+import appeng.api.storage.StorageChannel;
+import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.util.AEPartLocation;
 import appeng.api.util.IReadOnlyCollection;
 import appeng.me.helpers.AENetworkProxy;
-import appeng.me.helpers.MEMonitorHandler;
 import appeng.parts.CableBusContainer;
 import appeng.parts.reporting.PartStorageMonitor;
 import appeng.tile.networking.TileCableBus;
@@ -31,9 +34,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class ItemCardAppEngInv extends ItemCardBase implements ITouchAction {
 
@@ -42,8 +46,8 @@ public class ItemCardAppEngInv extends ItemCardBase implements ITouchAction {
 	}
 
 	@Override
-	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
-		BlockPos target = reader.getTarget();
+	public CardState update(World world, ICardReader reader, int range, int x, int y, int z) {
+		ChunkCoordinates target = reader.getTarget();
 		if (target == null)
 			return CardState.NO_TARGET;
 
@@ -51,13 +55,13 @@ public class ItemCardAppEngInv extends ItemCardBase implements ITouchAction {
 		if (stacks.size() < 1)
 			return CardState.OK;
 
-		IReadOnlyCollection<IGridNode> gridList = null;
+		IReadOnlyCollection<IGridNode> gridList;
 
-		TileEntity te = world.getTileEntity(target);
+		TileEntity te = world.getTileEntity(target.posX, target.posY, target.posZ);
 		if (te instanceof TileCableBus) {
 			CableBusContainer cb = ((TileCableBus) te).getCableBus();
 			if (cb != null)
-				for (AEPartLocation side : AEPartLocation.SIDE_LOCATIONS) {
+				for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS) {
 					IPart part = cb.getPart(side);
 					if (part instanceof PartStorageMonitor) {
 						PartStorageMonitor monitor = (PartStorageMonitor) part;
@@ -68,10 +72,10 @@ public class ItemCardAppEngInv extends ItemCardBase implements ITouchAction {
 								for (IGridNode node : gridList) {
 									IGridHost host = node.getMachine();
 									if (host instanceof TileChest) {
-										ItemStack stack = ((TileChest) host).getCell();
+										ItemStack stack = ((TileChest) host).getInternalInventory().getStackInSlot(1);
 										updateValues(stack, stacks);
 									} else if (host instanceof TileDrive) {
-										for (int i = 0; i < ((TileDrive) host).getInternalInventory().getSlots(); i++) {
+										for (int i = 0; i < ((TileDrive) host).getInternalInventory().getSizeInventory(); i++) {
 											ItemStack stack = ((TileDrive) host).getInternalInventory().getStackInSlot(i);
 											updateValues(stack, stacks);
 										}
@@ -88,18 +92,17 @@ public class ItemCardAppEngInv extends ItemCardBase implements ITouchAction {
 	}
 
 	private void updateValues(ItemStack cell, ArrayList<ItemStack> stacks) {
-		for (IStorageChannel<? extends IAEStack<?>> channel : AEApi.instance().storage().storageChannels()) {
-			ICellInventoryHandler<? extends IAEStack<?>> handler = AEApi.instance().registries().cell().getCellInventory(cell, null, channel);
-			if (handler != null) {
-				MEMonitorHandler<? extends IAEStack<?>> monitor = new MEMonitorHandler(handler);
-				for (Object st : monitor.getStorageList()) {
-					if (st instanceof IAEStack && ((IAEStack) st).isItem()) {
-						IAEStack ae = (IAEStack) st;
+		if (cell == null)
+			return;
+		for (StorageChannel channel : StorageChannel.values()) {
+			IMEInventory handler = AEApi.instance().registries().cell().getCellInventory(cell, null, channel);
+			if (handler instanceof IMEInventoryHandler) {
+				MEMonitorHandler<?> monitor = new MEMonitorHandler((IMEInventoryHandler) handler);
+				for (IAEStack st : monitor.getStorageList())
+					if (st instanceof IAEItemStack)
 						for (ItemStack stack : stacks)
-							if (ae.asItemStackRepresentation().isItemEqual(stack))
-								stack.setCount(stack.getCount() + (int) ((IAEStack) st).getStackSize());
-					}
-				}
+							if (stack.isItemEqual(((IAEItemStack) st).getItemStack()))
+								stack.stackSize = stack.stackSize + (int) st.getStackSize();
 			}
 		}
 	}
@@ -110,8 +113,8 @@ public class ItemCardAppEngInv extends ItemCardBase implements ITouchAction {
 		NBTTagList list = reader.getTagList("Items", Constants.NBT.TAG_COMPOUND);
 		for (int i = 0; i < list.tagCount(); i++) {
 			NBTTagCompound stackTag = list.getCompoundTagAt(i);
-			ItemStack stack = new ItemStack(stackTag);
-			result.add(new PanelString(String.format("%s %d", StringUtils.getItemName(stack), stack.getCount() - 1)));
+			ItemStack stack = ItemStack.loadItemStackFromNBT(stackTag);
+			result.add(new PanelString(String.format("%s %d", StringUtils.getItemName(stack), stack.stackSize - 1)));
 		}
 		return result;
 	}
@@ -122,14 +125,14 @@ public class ItemCardAppEngInv extends ItemCardBase implements ITouchAction {
 	}
 
 	@Override
-	public int getKitFromCard() {
-		return ItemCardType.KIT_APPENG;
+	public boolean enableTouch(ItemStack stack) {
+		return true;
 	}
 
 	@Override
 	public boolean runTouchAction(World world, ICardReader reader, ItemStack current) {
 		NBTTagList list = reader.getTagList("Items", Constants.NBT.TAG_COMPOUND);
-		if (current.isEmpty()) {
+		if (current == null) {
 			if (list.tagCount() > 0) {
 				list.removeTag(list.tagCount() - 1);
 				reader.setTag("Items", list);
@@ -142,7 +145,7 @@ public class ItemCardAppEngInv extends ItemCardBase implements ITouchAction {
 			if (stack.isItemEqual(current))
 				return false;
 		ItemStack item = current.copy();
-		item.setCount(1);
+		item.stackSize = 1;
 		list.appendTag(item.writeToNBT(new NBTTagCompound()));
 		reader.setTag("Items", list);
 		return true;

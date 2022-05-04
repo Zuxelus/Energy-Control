@@ -18,13 +18,13 @@ public abstract class ItemKitSimple extends ItemKitBase {
 		ChunkCoordinates position = getTargetCoordinates(world, x, y, z, stack);
 		if (position == null)
 			return null;
-			
-		ItemStack sensorLocationCard = getItemCard();
-		if (sensorLocationCard == null)
+
+		ItemStack newCard = getItemCard();
+		if (newCard == null)
 			return null;
 
-		ItemStackHelper.setCoordinates(sensorLocationCard, position.posX, position.posY, position.posZ);
-		return sensorLocationCard;
+		ItemStackHelper.setCoordinates(newCard, position.posX, position.posY, position.posZ);
+		return newCard;
 	}
 
 	protected abstract ChunkCoordinates getTargetCoordinates(World world, int x, int y, int z, ItemStack stack);
