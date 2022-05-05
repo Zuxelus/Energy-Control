@@ -22,6 +22,7 @@ public class DataHelper {
 	public static final String OUTPUTHU = "outputHU";
 	public static final String OUTPUTKU = "outputKU";
 	public static final String OUTPUTMB = "outputmb";
+	public static final String PRESSURE = "pressure";
 	public static final String TANK = "tank";
 	public static final String TANK2 = "tank2";
 	public static final String TANK3 = "tank3";

@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.crossmod;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.zuxelus.energycontrol.utils.FluidInfo;
@@ -45,6 +46,10 @@ public class CrossModBase {
 	}
 
 	public List<FluidInfo> getAllTanks(TileEntity te) {
+		return null;
+	}
+
+	public ArrayList getHookValues(TileEntity te) {
 		return null;
 	}
 

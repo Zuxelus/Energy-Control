@@ -52,6 +52,8 @@ public class ItemCardHBM extends ItemCardBase {
 			result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getLong(DataHelper.CAPACITY), "HE", showLabels));
 		if (reader.hasField("capacity_"))
 			result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getLong("capacity_"), showLabels));
+		if (reader.hasField("consumptionHE"))
+			result.add(new PanelString("msg.ec.InfoPanelConsumption", reader.getDouble("consumptionHE"), "HE/t", showLabels));
 		if (reader.hasField(DataHelper.CONSUMPTION))
 			result.add(new PanelString("msg.ec.InfoPanelConsumption", reader.getDouble(DataHelper.CONSUMPTION), "mB/t", showLabels));
 		if (reader.hasField(DataHelper.OUTPUT))
@@ -70,10 +72,12 @@ public class ItemCardHBM extends ItemCardBase {
 			result.add(new PanelString("msg.ec.InfoPanelHullHeat", reader.getLong("hull"), "°C", showLabels));
 		if (reader.hasField("level"))
 			result.add(new PanelString("msg.ec.InfoPanelOperatingLevel", reader.getString("level"), showLabels));
-		if (reader.hasField("heat"))
-			result.add(new PanelString("msg.ec.InfoPanelHeat", reader.getLong("heat"), showLabels));
-		if (reader.hasField("heatD"))
-			result.add(new PanelString("msg.ec.InfoPanelHeat", reader.getDouble("heatD"), "°C", showLabels));
+		if (reader.hasField("heatL"))
+			result.add(new PanelString("msg.ec.InfoPanelHeat", reader.getLong("heatL"), showLabels));
+		if (reader.hasField(DataHelper.HEAT))
+			result.add(new PanelString("msg.ec.InfoPanelHeat", reader.getDouble("heat"), "°C", showLabels));
+		if (reader.hasField("pressure"))
+			result.add(new PanelString("msg.ec.InfoPanelPressure", reader.getLong("pressure"), "bar", showLabels));
 		if (reader.hasField("fuel"))
 			result.add(new PanelString("msg.ec.InfoPanelFuel", reader.getInt("fuel"), showLabels));
 		if (reader.hasField("fuelText"))
@@ -92,6 +96,10 @@ public class ItemCardHBM extends ItemCardBase {
 			result.add(new PanelString("trait.rbmk.melt", reader.getDouble("melt"), "°C", showLabels));
 		if (reader.hasField("progress"))
 			result.add(new PanelString("msg.ec.InfoPanelProgress", reader.getInt("progress"), showLabels));
+		if (reader.hasField("flux"))
+			result.add(new PanelString("msg.ec.InfoPanelFlux", reader.getInt("flux"), showLabels));
+		if (reader.hasField("water"))
+			result.add(new PanelString("msg.ec.InfoPanelWater", reader.getInt("water"), showLabels));
 		if (reader.hasField(DataHelper.TANK))
 			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString(DataHelper.TANK), showLabels));
 		if (reader.hasField(DataHelper.TANK2))

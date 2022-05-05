@@ -150,6 +150,7 @@ msg.ec.InfoPanelEnergyFE=Energy: %s FE
 msg.ec.InfoPanelEnvironmentalBoost=Environmental Boost: %s%%
 msg.ec.InfoPanelFalse=False
 msg.ec.InfoPanelFill=Fill: %s%%
+msg.ec.InfoPanelFlux=Flux: %s
 msg.ec.InfoPanelFragmentedCarbon=Fragmented Carbon: %s
 msg.ec.InfoPanelFree=Free: %s
 msg.ec.InfoPanelFlowRate=Flow Rate: %s mB/t

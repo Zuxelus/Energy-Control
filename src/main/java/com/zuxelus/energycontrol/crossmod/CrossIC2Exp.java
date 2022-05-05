@@ -199,7 +199,7 @@ public class CrossIC2Exp extends CrossModBase {
 				tag.setBoolean(DataHelper.ACTIVE, counter != 0);
 				tag.setDouble(DataHelper.ENERGYKU, generator.ku);
 				tag.setDouble(DataHelper.CAPACITYKU, generator.maxKU);
-				ArrayList values = IC2Hooks.map.get(te);
+				ArrayList values = getHookValues(te);
 				if (values != null)
 					tag.setDouble(DataHelper.OUTPUTKU, (double) values.get(0));
 				Energy energy = (Energy) generator.getComponent("energy");
@@ -399,6 +399,14 @@ public class CrossIC2Exp extends CrossModBase {
 			result.add(new FluidInfo(tank.fluid, tank.capacity));
 
 		return result;
+	}
+
+	@Override
+	public ArrayList getHookValues(TileEntity te) {
+		ArrayList values = IC2Hooks.map.get(te);
+		if (values == null)
+			IC2Hooks.map.put(te, null);
+		return values;
 	}
 
 	@Override

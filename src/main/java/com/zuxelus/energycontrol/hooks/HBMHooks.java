@@ -25,7 +25,7 @@ public class HBMHooks {
 
 	@Hook
 	public static void updateEntity(TileEntityChungus te) {
-		if (te.getWorldObj().isRemote)
+		if (!map.containsKey(te) || te.getWorldObj().isRemote)
 			return;
 
 		ArrayList<Integer> values = new ArrayList<>();
@@ -54,7 +54,7 @@ public class HBMHooks {
 
 	@Hook
 	public static void updateEntity(TileEntityCondenser te) {
-		if (te.getWorldObj().isRemote)
+		if (!map.containsKey(te) || te.getWorldObj().isRemote)
 			return;
 
 		int convert = Math.min(te.tanks[0].getFill(), te.tanks[1].getMaxFill() - te.tanks[1].getFill());
@@ -65,17 +65,18 @@ public class HBMHooks {
 
 	@Hook
 	public static void updateEntity(TileEntityRBMKBoiler te) {
-		if (te.getWorldObj().isRemote)
+		if (!map.containsKey(te) || te.getWorldObj().isRemote)
 			return;
 
 		int consumption = 0;
 		int output = 0;
 		double heatCap = te.getHeatFromSteam(te.steam.getTankType());
 		double heatProvided = te.heat - heatCap;
-		if (heatProvided > 0.0D) {
+		if (heatProvided > 0.0D && RBMKDials.getBoilerHeatConsumption(te.getWorldObj()) > 0) {
 			int waterUsed = (int) Math.floor(heatProvided / RBMKDials.getBoilerHeatConsumption(te.getWorldObj()));
 			consumption = Math.min(waterUsed, te.feed.getFill());
-			output = (int) Math.floor((waterUsed * 100) / te.getFactorFromSteam(te.steam.getTankType()));
+			if (te.getFactorFromSteam(te.steam.getTankType()) != 0)
+				output = (int) Math.floor((waterUsed * 100) / te.getFactorFromSteam(te.steam.getTankType()));
 		}
 		ArrayList<Integer> values = new ArrayList<>();
 		values.add(consumption);
@@ -85,7 +86,7 @@ public class HBMHooks {
 
 	@Hook
 	public static void updateEntity(TileEntityMachineTurbine te) {
-		if (te.getWorldObj().isRemote)
+		if (!map.containsKey(te) || te.getWorldObj().isRemote)
 			return;
 
 		ArrayList<Integer> values = new ArrayList<>();
@@ -108,7 +109,7 @@ public class HBMHooks {
 
 	@Hook
 	public static void updateEntity(TileEntityMachineLargeTurbine te) {
-		if (te.getWorldObj().isRemote)
+		if (!map.containsKey(te) || te.getWorldObj().isRemote)
 			return;
 
 		ArrayList<Integer> values = new ArrayList<>();
@@ -131,24 +132,25 @@ public class HBMHooks {
 
 	@Hook
 	public static void updateEntity(TileEntityMachineBattery te) {
-		if (te.getWorldObj().isRemote)
+		if (!map.containsKey(te) || te.getWorldObj().isRemote)
 			return;
 
 		ArrayList<Long> values = map.get(te);
 		if (values != null && values.size() > 0) {
-			values.set(1, values.get(0));
+			for (int i = 20; i > 0; i--)
+				values.set(i, values.get(i - 1));
 			values.set(0, ((TileEntityMachineBattery) te).power);
 		} else {
 			values = new ArrayList<>();
-			values.add(((TileEntityMachineBattery) te).power);
-			values.add(((TileEntityMachineBattery) te).power);
+			for (int i = 0; i < 21; i++)
+				values.add(((TileEntityMachineBattery) te).power);
 			map.put(te, values);
 		}
 	}
 
 	@Hook
 	public static void updateEntity(TileEntityMachineIGenerator te) {
-		if (te.getWorldObj().isRemote)
+		if (!map.containsKey(te) || te.getWorldObj().isRemote)
 			return;
 
 		int spin = 0;

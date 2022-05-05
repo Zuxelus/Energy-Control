@@ -6,8 +6,8 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import com.zuxelus.energycontrol.api.ItemStackHelper;
-/*import com.zuxelus.energycontrol.crossmod.computercraft.CrossComputerCraft;
-import com.zuxelus.energycontrol.crossmod.opencomputers.CrossOpenComputers;*/
+import com.zuxelus.energycontrol.crossmod.computercraft.CrossComputerCraft;
+import com.zuxelus.energycontrol.crossmod.opencomputers.CrossOpenComputers;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.energycontrol.utils.FluidInfo;
@@ -27,10 +27,10 @@ public class CrossModLoader {
 
 	public static void preInit() {
 		CROSS_MODS.put(ModIDs.IC2, Loader.isModLoaded(ModIDs.IC2_CLASSIC) ? new CrossModBase() /*CrossIC2Classic*/ : Loader.isModLoaded(ModIDs.IC2) ? new CrossIC2Exp() : new CrossModBase());
-		//loadCrossMod(ModIDs.APPLIED_ENERGISTICS, CrossAppEng::new);
-		//loadCrossModSafely(ModIDs.BIG_REACTORS, () -> CrossBigReactors::new);
-		//loadCrossModSafely(ModIDs.COMPUTER_CRAFT, () -> CrossComputerCraft::new);
-		//loadCrossMod(ModIDs.DRACONIC_EVOLUTION, CrossDraconicEvolution::new);
+		loadCrossMod(ModIDs.APPLIED_ENERGISTICS, CrossAppEng::new);
+		loadCrossModSafely(ModIDs.BIG_REACTORS, () -> CrossBigReactors::new);
+		loadCrossModSafely(ModIDs.COMPUTER_CRAFT, () -> CrossComputerCraft::new);
+		loadCrossMod(ModIDs.DRACONIC_EVOLUTION, CrossDraconicEvolution::new);
 		loadCrossMod(ModIDs.GALACTICRAFT_PLANETS, CrossGalacticraft::new);
 		loadCrossModSafely(ModIDs.HBM, () -> CrossHBM::new);
 		loadCrossMod(ModIDs.NUCLEAR_CRAFT, CrossNuclearCraft::new);
@@ -45,7 +45,7 @@ public class CrossModLoader {
 	}
 
 	public static void init() {
-		//loadCrossMod(ModIDs.OPEN_COMPUTERS, CrossOpenComputers::new);
+		loadCrossMod(ModIDs.OPEN_COMPUTERS, CrossOpenComputers::new);
 	}
 
 	public static CrossModBase getCrossMod(String modid) {

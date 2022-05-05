@@ -19,7 +19,7 @@ public class IC2Hooks {
 
 	@Hook
 	public static void updateEntityServer(TileEntityElectricKineticGenerator te) {
-		if (te.getWorldObj().isRemote)
+		if (!map.containsKey(te) || te.getWorldObj().isRemote)
 			return;
 
 		double output = 0.0D;
