@@ -56,6 +56,8 @@ public class ItemCardHBM extends ItemCardBase {
 			result.add(new PanelString("msg.ec.InfoPanelConsumption", reader.getDouble("consumptionHE"), "HE/t", showLabels));
 		if (reader.hasField(DataHelper.CONSUMPTION))
 			result.add(new PanelString("msg.ec.InfoPanelConsumption", reader.getDouble(DataHelper.CONSUMPTION), "mB/t", showLabels));
+		if (reader.hasField("consumption_"))
+			result.add(new PanelString("msg.ec.InfoPanelConsumption", reader.getString("consumption_") + " mB/t", showLabels));
 		if (reader.hasField(DataHelper.OUTPUT))
 			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble(DataHelper.OUTPUT), "HE/t", showLabels));
 		if (reader.hasField(DataHelper.OUTPUTMB))
@@ -100,6 +102,8 @@ public class ItemCardHBM extends ItemCardBase {
 			result.add(new PanelString("msg.ec.InfoPanelFlux", reader.getInt("flux"), showLabels));
 		if (reader.hasField("water"))
 			result.add(new PanelString("msg.ec.InfoPanelWater", reader.getInt("water"), showLabels));
+		if (reader.hasField("durability"))
+			result.add(new PanelString("msg.ec.InfoPanelLensDurability", reader.getLong("durability"), showLabels));
 		if (reader.hasField(DataHelper.TANK))
 			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString(DataHelper.TANK), showLabels));
 		if (reader.hasField(DataHelper.TANK2))

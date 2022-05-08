@@ -74,18 +74,6 @@ public class CrossModLoader {
 		return null;
 	}
 
-	public static ItemStack getGeneratorCard(World world, int x, int y, int z) {
-		/*TileEntity te = world.getTileEntity(x, y, z);
-		if (te != null) {
-			for (CrossModBase crossMod : CROSS_MODS.values()) {
-				ItemStack card = crossMod.getGeneratorCard(te);
-				if (card != null)
-					return card;
-			}
-		}*/
-		return null;
-	}
-
 	public static List<FluidInfo> getAllTanks(World world, int x, int y, int z) {
 		TileEntity te = world.getTileEntity(x, y, z);
 		if (te == null)

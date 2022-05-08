@@ -139,11 +139,29 @@ public class HBMHooks {
 		if (values != null && values.size() > 0) {
 			for (int i = 20; i > 0; i--)
 				values.set(i, values.get(i - 1));
-			values.set(0, ((TileEntityMachineBattery) te).power);
+			values.set(0, te.power);
 		} else {
 			values = new ArrayList<>();
 			for (int i = 0; i < 21; i++)
-				values.add(((TileEntityMachineBattery) te).power);
+				values.add(te.power);
+			map.put(te, values);
+		}
+	}
+
+	@Hook
+	public static void updateEntity(TileEntityMachineFENSU te) {
+		if (!map.containsKey(te) || te.getWorldObj().isRemote)
+			return;
+
+		ArrayList<Long> values = map.get(te);
+		if (values != null && values.size() > 0) {
+			for (int i = 20; i > 0; i--)
+				values.set(i, values.get(i - 1));
+			values.set(0, te.power);
+		} else {
+			values = new ArrayList<>();
+			for (int i = 0; i < 21; i++)
+				values.add(te.power);
 			map.put(te, values);
 		}
 	}
@@ -177,6 +195,20 @@ public class HBMHooks {
 		}
 		ArrayList<Integer> values = new ArrayList<>();
 		values.add(powerGen);
+		map.put(te, values);
+	}
+
+	@Hook
+	public static void burn(TileEntityCore te, long joules) {
+		if (!map.containsKey(te) || te.getWorldObj().isRemote)
+			return;
+
+		int demand = (int) Math.ceil(joules / 1000D);
+		if (te.tanks[0].getFill() < demand || te.tanks[1].getFill() < demand)
+			return;
+
+		ArrayList<Integer> values = new ArrayList<>();
+		values.add(demand);
 		map.put(te, values);
 	}
 }

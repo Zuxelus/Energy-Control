@@ -168,6 +168,7 @@ msg.ec.InfoPanelIn=In: %s
 msg.ec.InfoPanelIndirectPower=Indirect Power: %s
 msg.ec.InfoPanelInjectionRate=Injection Rate: %s
 msg.ec.InfoPanelInput=Input: %s
+msg.ec.InfoPanelLensDurability=Lens Durability: %s
 msg.ec.InfoPanelLeakage=Leakage: %s
 msg.ec.InfoPanelMaxFlowRate=Max Flow Rate: %s mB/t
 msg.ec.InfoPanelMaxHeat=Max Heat: %s
