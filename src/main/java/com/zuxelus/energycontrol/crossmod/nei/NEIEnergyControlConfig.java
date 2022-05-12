@@ -5,6 +5,7 @@ import com.zuxelus.energycontrol.gui.GuiKitAssembler;
 
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
+import codechicken.nei.guihook.GuiContainerManager;
 import codechicken.nei.recipe.DefaultOverlayHandler;
 
 public class NEIEnergyControlConfig implements IConfigureNEI {
@@ -25,6 +26,7 @@ public class NEIEnergyControlConfig implements IConfigureNEI {
 		API.registerUsageHandler(new KitAssemblerRecipeHandler());
 		//API.registerGuiOverlay(GuiKitAssembler.class, EnergyControl.MODID + ".kit_assembler");
 		//API.registerGuiOverlayHandler(GuiKitAssembler.class, new DefaultOverlayHandler(), EnergyControl.MODID + ".kit_assembler");
+		GuiContainerManager.addTooltipHandler(new TooltipHandler()); // 1.7.10
 	}
 
 }

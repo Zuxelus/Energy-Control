@@ -46,6 +46,11 @@ public class GuiKitAssembler extends GuiContainerBase {
 			super.renderToolTip(stack, mouseX, mouseY);
 	}
 
+	public boolean isInfoSlot(int mouseX, int mouseY) { // 1.7.10
+		Slot slot = container.getSlot(TileEntityKitAssembler.SLOT_INFO);
+		return func_146978_c(slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, mouseX, mouseY);
+	}
+
 	private void renderInfoToolTip(Slot slot, int x, int y) {
 		ItemStack stack = slot.getStack();
 		if (!ItemCardMain.isCard(stack))

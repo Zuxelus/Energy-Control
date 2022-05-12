@@ -62,8 +62,8 @@ public abstract class ItemCardBase {
 				reader.getInt(String.format("_%dy", cardNumber)), reader.getInt(String.format("_%dz", cardNumber)));
 	}
 
-	protected void addHeat(List<PanelString> result, int heat, int maxHeat, boolean showLabels) {
-		PanelString line = new PanelString("msg.ec.InfoPanelHeat", heat, showLabels);
+	protected void addHeat(List<PanelString> result, String name, int heat, int maxHeat, boolean showLabels) {
+		PanelString line = new PanelString(name, heat, showLabels);
 		int rate = maxHeat == 0? 0 : 10 * heat / maxHeat;
 		line.colorLeft = rate < 4 ? 0x00ff00 : rate < 8 ? 0xffff00 : 0xff0000;
 		result.add(line);

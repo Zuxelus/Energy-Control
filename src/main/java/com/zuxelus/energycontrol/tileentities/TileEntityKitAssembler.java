@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import com.zuxelus.energycontrol.blocks.KitAssembler;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.init.ModItems;
@@ -12,12 +11,13 @@ import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
+import api.hbm.energy.IEnergyUser;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Optional;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.info.Info;
-import ic2.api.tile.IEnergyStorage;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -27,13 +27,15 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 
-@Optional.Interface(modid = ModIDs.IC2, iface = "ic2.api.energy.tile.IEnergySink")
-public class TileEntityKitAssembler extends TileEntityInventory implements ITilePacketHandler, ISlotItemFilter, IEnergySink {
+@Optional.InterfaceList({
+	@Optional.Interface(modid = ModIDs.IC2, iface = "ic2.api.energy.tile.IEnergySink"),
+	@Optional.Interface(modid = ModIDs.HBM, iface = "api.hbm.energy.IEnergyUser")
+})
+public class TileEntityKitAssembler extends TileEntityInventory implements ITilePacketHandler, ISlotItemFilter, IEnergySink, IEnergyUser {
 	public static final byte SLOT_INFO = 0;
 	public static final byte SLOT_CARD1 = 1;
 	public static final byte SLOT_ITEM = 2;
@@ -50,6 +52,7 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITile
 	private double production;
 	private boolean addedToEnet;
 	private boolean active;
+	boolean isLoaded = true; // HBM only
 
 	public TileEntityKitAssembler() {
 		super("tile.kit_assembler.name");
@@ -135,7 +138,7 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITile
 	protected void readProperties(NBTTagCompound tag) {
 		super.readProperties(tag);
 		if (tag.hasKey("energy"))
-			storage.setEnergy(tag.getInteger("energy"));
+			storage.setEnergy(tag.getLong("energy"));
 		if (tag.hasKey("buffer"))
 			buffer = tag.getInteger("buffer");
 		if (tag.hasKey("production"))
@@ -157,7 +160,7 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITile
 	@Override
 	protected NBTTagCompound writeProperties(NBTTagCompound tag) {
 		tag = super.writeProperties(tag);
-		tag.setInteger("energy", storage.getEnergyStored());
+		tag.setLong("energy", storage.getEnergyStored());
 		tag.setInteger("buffer", buffer);
 		tag.setDouble("production", production);
 		return tag;
@@ -191,6 +194,7 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITile
 			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
 			addedToEnet = false;
 		}
+		isLoaded = false; // HBM only
 	}
 
 	@Override
@@ -200,6 +204,8 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITile
 		if (worldObj.isRemote)
 			return;
 		handleDischarger(SLOT_DISCHARGER);
+		if (Loader.isModLoaded(ModIDs.HBM))
+			updateStandardConnections(worldObj, xCoord, yCoord, zCoord);
 		if (!active)
 			return;
 		if (storage.getEnergyStored() >= CONSUMPTION) {
@@ -228,7 +234,7 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITile
 	}
 
 	private void handleDischarger(int slot) {
-		int needed = Math.min(OUTPUT, storage.getMaxEnergyStored() - storage.getEnergyStored());
+		long needed = Math.min(OUTPUT, storage.getMaxEnergyStored() - storage.getEnergyStored());
 		if (needed <= 0)
 			return;
 		if (buffer > 0)
@@ -386,5 +392,29 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITile
 	@Override
 	public ItemStack getWrenchDrop(EntityPlayer player) {
 		return new ItemStack(ModItems.blockKitAssembler);
+	}
+
+	// IEnergyUser
+	@Override
+	@Optional.Method(modid = ModIDs.HBM)
+	public long getPower() {
+		return  storage.getEnergyStored();
+	}
+
+	@Override
+	@Optional.Method(modid = ModIDs.HBM)
+	public long getMaxPower() {
+		return storage.getMaxEnergyStored();
+	}
+
+	@Override
+	@Optional.Method(modid = ModIDs.HBM)
+	public void setPower(long power) {
+		storage.setEnergy(power);
+	}
+
+	@Override
+	public boolean isLoaded() {
+		return isLoaded;
 	}
 }

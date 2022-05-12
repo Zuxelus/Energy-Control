@@ -13,6 +13,7 @@ import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ModContainer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -30,7 +31,20 @@ public class CrossModLoader {
 		loadCrossMod(ModIDs.APPLIED_ENERGISTICS, CrossAppEng::new);
 		loadCrossModSafely(ModIDs.BIG_REACTORS, () -> CrossBigReactors::new);
 		loadCrossModSafely(ModIDs.COMPUTER_CRAFT, () -> CrossComputerCraft::new);
-		loadCrossMod(ModIDs.DRACONIC_EVOLUTION, CrossDraconicEvolution::new);
+		loadCrossModSafely(ModIDs.DRACONIC_EVOLUTION, () -> CrossDraconicEvolution::new);
+		if (Loader.isModLoaded(ModIDs.GREGTECH)) {
+			ModContainer container = Loader.instance().getIndexedModList().get(ModIDs.GREGTECH);
+			if (container != null) {
+				Object mod = container.getMod();
+				if (mod != null) {
+					if (mod.getClass().getName().equals("gregtech.GT6_Main"))
+						loadCrossMod(ModIDs.GREGTECH, CrossGregTech6::new);
+					if (mod.getClass().getName().equals("gregtech.GT_Mod"))
+						loadCrossMod(ModIDs.GREGTECH, CrossGregTech5u::new);
+				}
+			}
+		}
+		loadCrossMod(ModIDs.ENDER_IO, CrossEnderIO::new);
 		loadCrossMod(ModIDs.GALACTICRAFT_PLANETS, CrossGalacticraft::new);
 		loadCrossModSafely(ModIDs.HBM, () -> CrossHBM::new);
 		loadCrossMod(ModIDs.NUCLEAR_CRAFT, CrossNuclearCraft::new);

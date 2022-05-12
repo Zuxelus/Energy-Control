@@ -11,7 +11,7 @@ import com.hbm.items.machine.ItemRTGPellet;
 import com.hbm.tileentity.machine.*;
 import com.hbm.tileentity.machine.rbmk.RBMKDials;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKBoiler;
-import com.hbm.tileentity.machine.storage.TileEntityMachineBattery;
+import com.hbm.tileentity.machine.storage.*;
 import com.hbm.util.RTGUtil;
 import com.zuxelus.hooklib.asm.Hook;
 

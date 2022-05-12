@@ -36,7 +36,8 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	public TileEntityAdvancedInfoPanel() {
 		super();
 		customName = "tile." + NAME + ".name";
-		colorBackground = 6;
+		colorText = -1;
+		colorBackground = 8;
 		colored = true;
 		thickness = 16;
 	}

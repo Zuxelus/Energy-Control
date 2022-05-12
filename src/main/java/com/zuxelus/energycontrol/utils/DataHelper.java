@@ -11,10 +11,12 @@ public class DataHelper {
 	public static final String CAPACITYHU = "capacityHU";
 	public static final String CAPACITYKU = "capacityKU";
 	public static final String CONSUMPTION = "consumption";
+	public static final String DIFF = "diff";
 	public static final String ENERGY = "energy";
 	public static final String ENERGYHU = "energyHU";
 	public static final String ENERGYKU = "energyKU";
 	public static final String EUTYPE = "euType";
+	public static final String FUEL = "fuel";
 	public static final String HEAT = "heat";
 	public static final String MAXHEAT = "maxHeat";
 	public static final String MULTIPLIER = "multiplier";

@@ -43,7 +43,7 @@ public class ItemCardIC2 extends ItemCardBase {
 	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		if (reader.hasField(DataHelper.HEAT) && (settings & 1) > 0)
-			addHeat(result, reader.getInt(DataHelper.HEAT), reader.getInt(DataHelper.MAXHEAT), showLabels);
+			addHeat(result, "msg.ec.InfoPanelTemp", reader.getInt(DataHelper.HEAT), reader.getInt(DataHelper.MAXHEAT), showLabels);
 		if (reader.hasField(DataHelper.MAXHEAT) && (settings & 1) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelMaxHeat", reader.getInt(DataHelper.MAXHEAT), showLabels));
 		if (reader.hasField(DataHelper.MAXHEAT) && (settings & 1) > 0)

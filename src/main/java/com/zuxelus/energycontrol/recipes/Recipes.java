@@ -86,7 +86,7 @@ public class Recipes {
 		ItemStack infoPanelAdvanced = new ItemStack(ModItems.blockInfoPanelAdvanced);
 		addShapedRecipe(infoPanelAdvanced, new Object[] { 
 			"PPP", "1I2", "CAC",
-				'P', "paneGlassLime",
+				'P', "paneGlass",
 				'I', new ItemStack(ModItems.blockInfoPanel),
 				'1', new ItemStack(ModItems.itemUpgrade, 1, ItemUpgrade.DAMAGE_COLOR),
 				'2', new ItemStack(ModItems.itemUpgrade, 1, ItemUpgrade.DAMAGE_RANGE),
@@ -96,7 +96,7 @@ public class Recipes {
 		ItemStack infoPanelExtenderAdvanced = new ItemStack(ModItems.blockInfoPanelAdvancedExtender);
 		addShapedRecipe(infoPanelExtenderAdvanced, new Object[] { 
 			"PPP", "CEC", "CCC",
-				'P', "paneGlassLime",
+				'P', "paneGlass",
 				'E', new ItemStack(ModItems.blockInfoPanelExtender),
 				'C', new ItemStack(Items.coal, 1, 1) });
 
@@ -155,16 +155,20 @@ public class Recipes {
 				'P', new ItemStack(Items.coal, 1, 1) });
 
 		addShapedRecipe(ModItems.itemComponent, ItemComponent.RADIO_TRANSMITTER, new Object[] {
-				"#C#", " S ",
-					'#', new ItemStack(ModItems.itemComponent, 1, ItemComponent.STRONG_STRING),
-					'C', "circuitBasic",
-					'S', "slabWood" });
+			"#C#", " S ",
+				'#', new ItemStack(ModItems.itemComponent, 1, ItemComponent.STRONG_STRING),
+				'C', "circuitBasic",
+				'S', "slabWood" });
 
 		addShapedRecipe(ModItems.itemComponent, ItemComponent.STRONG_STRING, new Object[] {
 			"#S ", "S#S", " S#",
 				'#', Blocks.cactus,
 				'S', Items.reeds });
-		
+
+		addShapedRecipe(Items.dye, 10, new Object[] {
+			"SS ", "SS ",
+				'S', new ItemStack(ModItems.itemComponent, 1, ItemComponent.STRONG_STRING) });
+
 		addShapedRecipe(ModItems.itemCardHolder,
 			new Object[] { " L ", "LCL", " L ", 'C', Blocks.chest, 'L', "leather" });
 

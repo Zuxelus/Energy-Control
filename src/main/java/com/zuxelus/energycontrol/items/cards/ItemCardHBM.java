@@ -75,9 +75,9 @@ public class ItemCardHBM extends ItemCardBase {
 		if (reader.hasField("level"))
 			result.add(new PanelString("msg.ec.InfoPanelOperatingLevel", reader.getString("level"), showLabels));
 		if (reader.hasField("heatL"))
-			result.add(new PanelString("msg.ec.InfoPanelHeat", reader.getLong("heatL"), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelTemp", reader.getLong("heatL"), showLabels));
 		if (reader.hasField(DataHelper.HEAT))
-			result.add(new PanelString("msg.ec.InfoPanelHeat", reader.getDouble("heat"), "°C", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelTemp", reader.getDouble("heat"), "°C", showLabels));
 		if (reader.hasField("pressure"))
 			result.add(new PanelString("msg.ec.InfoPanelPressure", reader.getLong("pressure"), "bar", showLabels));
 		if (reader.hasField("fuel"))

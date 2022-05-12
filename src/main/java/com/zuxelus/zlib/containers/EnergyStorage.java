@@ -1,47 +1,48 @@
 package com.zuxelus.zlib.containers;
 
 public class EnergyStorage { // copy from 1.10.2 net.minecraftforge.energy.EnergyStorage
-	protected int energy;
-	protected int capacity;
-	protected int maxReceive;
-	protected int maxExtract;
+	protected long energy;
+	protected long capacity;
+	protected long maxReceive;
+	protected long maxExtract;
 
-	public EnergyStorage(int capacity, int maxReceive, int maxExtract, int energy) {
+	public EnergyStorage(long capacity, long maxReceive, long maxExtract, long energy) {
 		this.capacity = capacity;
 		this.maxReceive = maxReceive;
 		this.maxExtract = maxExtract;
 		this.energy = energy;
 	}
 
-	public void setEnergy(int value) {
-		energy = Math.min(value, capacity);
+	public void setEnergy(long value) {
+		//energy = Math.min(value, capacity);
+		energy = value;
 	}
 
-	public int receiveEnergy(int maxReceive, boolean simulate) {
+	public long receiveEnergy(long maxReceive, boolean simulate) {
 		if (!canReceive())
 			return 0;
 
-		int energyReceived = Math.min(capacity - energy, Math.min(maxReceive, maxReceive));
+		long energyReceived = Math.min(capacity - energy, Math.min(maxReceive, maxReceive));
 		if (!simulate)
 			energy += energyReceived;
 		return energyReceived;
 	}
 
-	public int extractEnergy(int maxExtract, boolean simulate) {
+	public long extractEnergy(long maxExtract, boolean simulate) {
 		if (!canExtract())
 			return 0;
 
-		int energyExtracted = Math.min(energy, Math.min(maxExtract, maxExtract));
+		long energyExtracted = Math.min(energy, Math.min(maxExtract, maxExtract));
 		if (!simulate)
 			energy -= energyExtracted;
 		return energyExtracted;
 	}
 
-	public int getEnergyStored() {
+	public long getEnergyStored() {
 		return energy;
 	}
 
-	public int getMaxEnergyStored() {
+	public long getMaxEnergyStored() {
 		return capacity;
 	}
 

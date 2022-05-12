@@ -30,7 +30,8 @@ public class BlockRenderer implements ISimpleBlockRenderingHandler { // 1.7.10
 			return;
 
 		meta = 1;
-		if (block instanceof KitAssembler || block instanceof RemoteThermalMonitor ||
+		if (block instanceof InfoPanel || block instanceof InfoPanelExtender ||
+			block instanceof KitAssembler || block instanceof RemoteThermalMonitor ||
 			block instanceof AverageCounter || block instanceof EnergyCounter ||
 			block instanceof SeedAnalyzer || block instanceof SeedLibrary ||
 			block instanceof RangeTrigger || block instanceof AFSU)

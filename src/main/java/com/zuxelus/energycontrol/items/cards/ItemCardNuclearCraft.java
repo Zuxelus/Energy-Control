@@ -10,6 +10,7 @@ import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
+import com.zuxelus.energycontrol.utils.DataHelper;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.NBTTagCompound;
@@ -42,7 +43,58 @@ public class ItemCardNuclearCraft extends ItemCardBase {
 	@Override
 	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
-		if (!reader.hasField("type"))
+		if (reader.hasField(DataHelper.HEAT) && (settings & 1) > 0)
+			addHeat(result, "msg.ec.InfoPanelHeat", reader.getInt(DataHelper.HEAT), reader.getInt(DataHelper.MAXHEAT), showLabels);
+		if (reader.hasField("heatChange") && (settings & 1) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelHeatChange", reader.getInt("heatChange"), showLabels));
+		if (reader.hasField(DataHelper.ENERGY) && (settings & 2) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelEnergy", reader.getLong(DataHelper.ENERGY), "RF", showLabels));
+		if (reader.hasField(DataHelper.CAPACITY) && (settings & 2) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getLong(DataHelper.CAPACITY), "RF", showLabels));
+		if (reader.hasField(DataHelper.DIFF) && (settings & 64) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelDifference", reader.getLong(DataHelper.DIFF), "RF/t", showLabels));
+		if (reader.hasField(DataHelper.CONSUMPTION) && (settings & 4) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelConsumption", reader.getDouble(DataHelper.CONSUMPTION), "RF/t", showLabels));
+		if (reader.hasField(DataHelper.OUTPUT) && (settings & 4) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble(DataHelper.OUTPUT), "RF/t", showLabels));
+		if (reader.hasField(DataHelper.OUTPUTMB) && (settings & 4) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble(DataHelper.OUTPUTMB), "mB/t", showLabels));
+		if (reader.hasField(DataHelper.TANK) && (settings & 16) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString(DataHelper.TANK), showLabels));
+		if (reader.hasField(DataHelper.FUEL))
+			result.add(new PanelString("msg.ec.InfoPanelFuel", reader.getInt(DataHelper.FUEL), showLabels));
+		if (reader.hasField("level1"))
+			result.add(new PanelString(reader.getString("level1")));
+		if (reader.hasField("level2"))
+			result.add(new PanelString(reader.getString("level2")));
+		if (reader.hasField("fuelp"))
+			result.add(new PanelString("msg.ec.InfoPanelFuel", reader.getDouble("fuelp"), "%", showLabels));
+
+		if (reader.hasField("HOut") && (settings & 4) > 0)
+			result.add(new PanelString("Hydrogen: %s", reader.getDouble("HOut"), "mB", showLabels));
+		if (reader.hasField("DOut") && (settings & 4) > 0)
+			result.add(new PanelString("Deuterium: %s", reader.getDouble("DOut"), "mB", showLabels));
+		if (reader.hasField("TOut") && (settings & 4) > 0)
+			result.add(new PanelString("Tritium: %s", reader.getDouble("TOut"), "mB", showLabels));
+		if (reader.hasField("HE3Out") && (settings & 4) > 0)
+			result.add(new PanelString("Helium-3: %s", reader.getDouble("HE3Out"), "mB", showLabels));
+		if (reader.hasField("HE4Out") && (settings & 4) > 0)
+			result.add(new PanelString("Helium-4: %s", reader.getDouble("HE4Out"), "mB", showLabels));
+		if (reader.hasField("nOut") && (settings & 4) > 0)
+			result.add(new PanelString("Neutron: %s", reader.getDouble("nOut"), "mB", showLabels));
+		if (reader.hasField("efficiency"))
+			result.add(new PanelString("msg.ec.InfoPanelEfficiency", reader.getDouble("efficiency"), "%", showLabels));
+		if (reader.hasField("size") && (settings & 64) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelSize", reader.getString("size"), showLabels));
+		if (reader.hasField("cells") && (settings & 64) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelCells", reader.getInt("cells"), showLabels));
+		
+		
+		
+		
+		if (reader.hasField(DataHelper.ACTIVE))
+			addOnOff(result, isServer, reader.getBoolean(DataHelper.ACTIVE));
+		/*if (!reader.hasField("type"))
 			return result;
 		
 		int type = reader.getInt("type");
@@ -108,7 +160,7 @@ public class ItemCardNuclearCraft extends ItemCardBase {
 			result.add(new PanelString("msg.ec.InfoPanelOutputgJ", reader.getInt("production"), showLabels));
 			result.add(new PanelString("msg.ec.InfoPanelEnvironmentalBoost", reader.getDouble("boost"), showLabels));
 			break;
-		}
+		}*/
 		return result;
 	}
 

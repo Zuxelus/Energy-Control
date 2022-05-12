@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.crossmod;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -429,10 +430,15 @@ public class CrossHBM extends CrossModBase {
 				return result;
 			}
 			if (base instanceof TileEntitySolarBoiler) {
-				List<FluidTank> tanks = ((TileEntitySolarBoiler) base).getTanks();
-				result.add(toFluidInfo(tanks.get(0)));
-				result.add(toFluidInfo(tanks.get(1)));
-				return result;
+				try {
+					Field field = TileEntitySolarBoiler.class.getDeclaredField("water");
+					field.setAccessible(true);
+					result.add(toFluidInfo((FluidTank) field.get(te)));
+					field = TileEntitySolarBoiler.class.getDeclaredField("steam");
+					field.setAccessible(true);
+					result.add(toFluidInfo((FluidTank) field.get(te)));
+					return result;
+				} catch (Throwable t) { }
 			}
 			if (base instanceof TileEntityMachineIGenerator) {
 				result.add(toFluidInfo(((TileEntityMachineIGenerator) base).tanks[0]));
@@ -915,10 +921,15 @@ public class CrossHBM extends CrossModBase {
 				return tag;
 			}
 			if (base instanceof TileEntitySolarBoiler) {
-				List<FluidTank> tanks = ((TileEntitySolarBoiler) base).getTanks();
-				addTank("tank", tag, tanks.get(0));
-				addTank("tank2", tag, tanks.get(1));
-				return tag;
+				try {
+					Field field = TileEntitySolarBoiler.class.getDeclaredField("water");
+					field.setAccessible(true);
+					addTank("tank", tag, (FluidTank) field.get(te));
+					field = TileEntitySolarBoiler.class.getDeclaredField("steam");
+					field.setAccessible(true);
+					addTank("tank2", tag, (FluidTank) field.get(te));
+					return tag;
+				} catch (Throwable t) { }
 			}
 			if (base instanceof TileEntityMachineIGenerator) {
 				TileEntityMachineIGenerator generator = (TileEntityMachineIGenerator) base;

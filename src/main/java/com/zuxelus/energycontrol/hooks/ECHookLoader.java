@@ -12,7 +12,10 @@ public class ECHookLoader extends HookLoader {
 
 	@Override
 	public void registerHooks() {
-		registerHookContainer("com.zuxelus.energycontrol.hooks.IC2Hooks");
+		registerHookContainer("com.zuxelus.energycontrol.hooks.DraconicEvolutionHooks");
+		registerHookContainer("com.zuxelus.energycontrol.hooks.EnderIOHooks");
 		registerHookContainer("com.zuxelus.energycontrol.hooks.HBMHooks");
+		registerHookContainer("com.zuxelus.energycontrol.hooks.IC2Hooks");
+		registerHookContainer("com.zuxelus.energycontrol.hooks.NuclearCraftHooks");
 	}
 }

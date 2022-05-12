@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.blocks.AFSU;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 
 import cpw.mods.fml.common.Optional;
 import ic2.api.item.IElectricItem;
@@ -20,8 +21,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 @Optional.InterfaceList({
-	@Optional.Interface(iface = "micdoodle8.mods.galacticraft.api.power.IEnergyHandlerGC", modid = "galacticraftcore"),
-	@Optional.Interface(iface = "micdoodle8.mods.galacticraft.api.transmission.tile.IElectrical", modid = "galacticraftcore")
+	@Optional.Interface(modid = ModIDs.GALACTICRAFT_CORE, iface = "micdoodle8.mods.galacticraft.api.power.IEnergyHandlerGC"),
+	@Optional.Interface(modid = ModIDs.GALACTICRAFT_CORE, iface = "micdoodle8.mods.galacticraft.api.transmission.tile.IElectrical")
 })
 public class TileEntityAFSU extends TileEntityEnergyStorage implements IEnergyStorage, IEnergyHandlerGC, IElectrical {
 	public static final int TIER = 5;
@@ -220,7 +221,7 @@ public class TileEntityAFSU extends TileEntityEnergyStorage implements IEnergySt
 
 	// IEnergyHandlerGC
 	@Override
-	@Optional.Method(modid = "galacticraftcore")
+	@Optional.Method(modid = ModIDs.GALACTICRAFT_CORE)
 	public float receiveEnergyGC(EnergySource from, float amount, boolean simulate) {
 		float energyReceived = (float) Math.min(capacity - energy, amount);
 		if (!simulate)
@@ -229,37 +230,37 @@ public class TileEntityAFSU extends TileEntityEnergyStorage implements IEnergySt
 	}
 
 	@Override
-	@Optional.Method(modid = "galacticraftcore")
+	@Optional.Method(modid = ModIDs.GALACTICRAFT_CORE)
 	public float extractEnergyGC(EnergySource from, float amount, boolean simulate) {
 		return 0;
 	}
 
 	@Override
-	@Optional.Method(modid = "galacticraftcore")
+	@Optional.Method(modid = ModIDs.GALACTICRAFT_CORE)
 	public boolean nodeAvailable(EnergySource from) {
 		return true;
 	}
 
 	@Override
-	@Optional.Method(modid = "galacticraftcore")
+	@Optional.Method(modid = ModIDs.GALACTICRAFT_CORE)
 	public float getEnergyStoredGC(EnergySource from) {
 		return (float) energy;
 	}
 
 	@Override
-	@Optional.Method(modid = "galacticraftcore")
+	@Optional.Method(modid = ModIDs.GALACTICRAFT_CORE)
 	public float getMaxEnergyStoredGC(EnergySource from) {
 		return (float) capacity;
 	}
 
 	@Override
-	@Optional.Method(modid = "galacticraftcore")
+	@Optional.Method(modid = ModIDs.GALACTICRAFT_CORE)
 	public boolean canConnect(ForgeDirection direction, NetworkType type) {
 		return direction != facing;
 	}
 
 	@Override
-	@Optional.Method(modid = "galacticraftcore")
+	@Optional.Method(modid = ModIDs.GALACTICRAFT_CORE)
 	public float receiveElectricity(ForgeDirection from, float receive, int tierProduced, boolean doReceive) {
 		if (from == facing)
 			return 0;
@@ -267,25 +268,25 @@ public class TileEntityAFSU extends TileEntityEnergyStorage implements IEnergySt
 	}
 
 	@Override
-	@Optional.Method(modid = "galacticraftcore")
+	@Optional.Method(modid = ModIDs.GALACTICRAFT_CORE)
 	public float provideElectricity(ForgeDirection from, float request, boolean doProvide) {
 		return extractEnergyGC(null, request, !doProvide);
 	}
 
 	@Override
-	@Optional.Method(modid = "galacticraftcore")
+	@Optional.Method(modid = ModIDs.GALACTICRAFT_CORE)
 	public float getRequest(ForgeDirection direction) {
 		return (float) (capacity - energy);
 	}
 
 	@Override
-	@Optional.Method(modid = "galacticraftcore")
+	@Optional.Method(modid = ModIDs.GALACTICRAFT_CORE)
 	public float getProvide(ForgeDirection direction) {
 		return 0;
 	}
 
 	@Override
-	@Optional.Method(modid = "galacticraftcore")
+	@Optional.Method(modid = ModIDs.GALACTICRAFT_CORE)
 	public int getTierGC() {
 		return 3;
 	}
