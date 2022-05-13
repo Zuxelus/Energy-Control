@@ -11,7 +11,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TERemoteThermoRenderer extends TileEntitySpecialRenderer {
+public class TERemoteThermalMonitorRenderer extends TileEntitySpecialRenderer {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/blocks/remote_thermo/all.png");
 	private static final CubeRenderer model = new CubeRenderer(0, 0, 0, 32, 32, 32, 128, 64, 0, 0);
 

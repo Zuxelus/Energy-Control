@@ -1,10 +1,38 @@
 package com.zuxelus.energycontrol.api;
 
+import net.minecraft.world.World;
+
+/**
+ * Enum of card states, used as return value of {@link IItemCard#update(World, ICardReader, int, int, int, int) update}. <br></br>
+ * If the card state is OK or CUSTOM_ERROR, then {@link IItemCard#getStringData(int, ICardReader, boolean, boolean) getStringData} will be called. <br></br>
+ * Otherwise standard message will be displayed.
+ * 
+ * @author Shedar
+ */
 public enum CardState {
+	/**
+	 * All required data found, ready to display it
+	 */
 	OK(1),
+
+	/**
+	 * Target block doesn't exist or has invalid type
+	 */
 	NO_TARGET(2),
+
+	/**
+	 * Target is out of range
+	 */
 	OUT_OF_RANGE(3),
+
+	/**
+	 * Card doesn't have required fields. Maybe was spawned via NEI
+	 */
 	INVALID_CARD(4),
+
+	/**
+	 * Reserved for future use
+	 */
 	CUSTOM_ERROR(5);
 
 	private final int index;

@@ -44,22 +44,6 @@ public class ItemKitMain extends Item implements IItemKit {
 		register(ItemKitVanilla::new);
 		register(ItemKitInventory::new);
 		register(ItemKitRedstone::new);
-		/*if (Loader.isModLoaded("DraconicEvolution"))
-			register("ItemKitDraconic");
-		if (Loader.isModLoaded("appliedenergistics2"))
-			register("ItemKitAppEng");
-		if (Loader.isModLoaded("GalacticraftCore") && Loader.isModLoaded("GalacticraftMars"))
-			register("ItemKitGalacticraft");
-		if (Loader.isModLoaded("BigReactors"))
-			register("ItemKitBigReactors");
-		if (Loader.isModLoaded("gregtech"))
-			register(new ItemKitGregTech());
-		if (Loader.isModLoaded("nuclearcraft"))
-			register("ItemKitNuclearCraft");
-		if (Loader.isModLoaded("mekanismgenerators"))
-			register("ItemKitMekanism");
-		if (Loader.isModLoaded("thermalexpansion"))
-			register("ItemKitThermalExpansion");*/
 	}
 
 	public static void register(Supplier<ItemKitBase> factory) {

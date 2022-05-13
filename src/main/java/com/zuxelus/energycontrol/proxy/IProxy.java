@@ -47,7 +47,7 @@ public interface IProxy extends IGuiHandler {
 		case BlockDamages.DAMAGE_RANGE_TRIGGER:
 			return new ContainerRangeTrigger(player, (TileEntityRangeTrigger) te);
 		case BlockDamages.DAMAGE_REMOTE_THERMO:
-			return new ContainerRemoteThermo(player, (TileEntityRemoteThermalMonitor) te);
+			return new ContainerRemoteThermalMonitor(player, (TileEntityRemoteThermalMonitor) te);
 		case BlockDamages.DAMAGE_AVERAGE_COUNTER:
 			return new ContainerAverageCounter(player, (TileEntityAverageCounter) te);
 		case BlockDamages.DAMAGE_ENERGY_COUNTER:

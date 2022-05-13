@@ -7,15 +7,13 @@ import com.zuxelus.zlib.containers.ContainerBase;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-public class ContainerRemoteThermo extends ContainerBase<TileEntityRemoteThermalMonitor> {
+public class ContainerRemoteThermalMonitor extends ContainerBase<TileEntityRemoteThermalMonitor> {
 
-	public ContainerRemoteThermo(EntityPlayer player, TileEntityRemoteThermalMonitor remoteThermo) {
-		super(remoteThermo);
-		// energy charger
-		// addSlotToContainer(new SlotFilter(remoteThermo, 0, 13, 53));
+	public ContainerRemoteThermalMonitor(EntityPlayer player, TileEntityRemoteThermalMonitor te) {
+		super(te);
 		// upgrades
-		addSlotToContainer(new SlotCard(remoteThermo, 1, 9, 53));
-		addSlotToContainer(new SlotRange(remoteThermo, 2, 27, 53));
+		addSlotToContainer(new SlotCard(te, 1, 9, 53));
+		addSlotToContainer(new SlotRange(te, 2, 27, 53));
 		// inventory
 		addPlayerInventorySlots(player, 180, 166);
 	}

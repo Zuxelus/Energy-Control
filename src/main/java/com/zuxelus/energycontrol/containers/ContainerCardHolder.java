@@ -18,9 +18,9 @@ public class ContainerCardHolder extends ContainerBase<InventoryCardHolder> {
 		addPlayerInventorySlots(player, 167 + 18 * 3, ModItems.itemCardHolder);
 	}
 
-	/*@Override
-	public void onContainerClosed(EntityPlayer player) {
+	@Override
+	public void onContainerClosed(EntityPlayer player) { // 1.7.10
 		super.onContainerClosed(player);
 		te.writeToParentNBT(player);
-	}*/
+	}
 }

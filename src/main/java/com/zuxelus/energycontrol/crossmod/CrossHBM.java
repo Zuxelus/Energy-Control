@@ -644,7 +644,7 @@ public class CrossHBM extends CrossModBase {
 			tag.setLong(DataHelper.CAPACITY, ((TileEntityMachineBattery) te).getMaxPower());
 			ArrayList values = getHookValues(te);
 			if (values != null)
-				tag.setLong("diff", ((Long) values.get(0) - (Long) values.get(20)) / 20);
+				tag.setLong(DataHelper.DIFF, ((Long) values.get(0) - (Long) values.get(20)) / 20);
 			return tag;
 		}
 		if (te instanceof TileEntityMachineCoal) {

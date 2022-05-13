@@ -3,6 +3,8 @@ package com.zuxelus.energycontrol.api;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.zuxelus.energycontrol.items.cards.ItemCardMain;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -80,7 +82,7 @@ public interface ICardReader {
 	/**
 	 * Set the state of card. In most cases shouldn't be called by card, use
 	 * return value of
-	 * {@link IPanelDataSource#update(TileEntity, ICardWrapper, int)} instead.
+	 * {@link ItemCardMain#updateCardNBT(ItemStack, World, int, int, int, ICardReader, ItemStack) updateCardNBT} instead.
 	 * 
 	 * @param state
 	 */

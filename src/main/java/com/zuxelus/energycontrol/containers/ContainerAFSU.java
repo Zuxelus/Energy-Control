@@ -17,8 +17,8 @@ public class ContainerAFSU extends ContainerBase<TileEntityAFSU> {
 	public ContainerAFSU(EntityPlayer player, TileEntityAFSU te) {
 		super(te);
 
-		addSlotToContainer(new SlotChargeable(te, TileEntityAFSU.SLOT_CHARGER, 26, 17)); // chargeSlot
-		addSlotToContainer(new SlotDischargeable(te, TileEntityAFSU.SLOT_DISCHARGER, 26, 53, TileEntityAFSU.TIER)); // dischargeSlot
+		addSlotToContainer(new SlotChargeable(te, TileEntityAFSU.SLOT_CHARGER, 26, 17));
+		addSlotToContainer(new SlotDischargeable(te, TileEntityAFSU.SLOT_DISCHARGER, 26, 53, TileEntityAFSU.TIER));
 		for (int col = 0; col < 4; col++)
 			addSlotToContainer((Slot) new SlotArmor(player.inventory, col, 8 + col * 18, 84));
 		// inventory

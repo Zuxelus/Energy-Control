@@ -62,8 +62,8 @@ public class ItemCardHBM extends ItemCardBase {
 			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble(DataHelper.OUTPUT), "HE/t", showLabels));
 		if (reader.hasField(DataHelper.OUTPUTMB))
 			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble(DataHelper.OUTPUTMB), "mB/t", showLabels));
-		if (reader.hasField("diff"))
-			result.add(new PanelString("msg.ec.InfoPanelDifference", reader.getLong("diff"), "HE/t", showLabels));
+		if (reader.hasField(DataHelper.DIFF))
+			result.add(new PanelString("msg.ec.InfoPanelDifference", reader.getLong(DataHelper.DIFF), "HE/t", showLabels));
 		if (reader.hasField("temp"))
 			result.add(new PanelString("msg.ec.InfoPanelTemperature", reader.getInt("temp"), "K", showLabels));
 		if (reader.hasField("speed"))

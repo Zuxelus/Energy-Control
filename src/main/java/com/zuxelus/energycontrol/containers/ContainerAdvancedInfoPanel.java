@@ -11,33 +11,33 @@ import net.minecraft.entity.player.EntityPlayerMP;
 public class ContainerAdvancedInfoPanel extends ContainerBase<TileEntityAdvancedInfoPanel> {
 	private EntityPlayer player;
 
-	public ContainerAdvancedInfoPanel(EntityPlayer player, TileEntityAdvancedInfoPanel panel) {
-		super(panel);
+	public ContainerAdvancedInfoPanel(EntityPlayer player, TileEntityAdvancedInfoPanel te) {
+		super(te);
 		this.player = player;
 
 		// cards
-		addSlotToContainer(new SlotCard(panel, 0, 8, 24 + 18) {
+		addSlotToContainer(new SlotCard(te, 0, 8, 24 + 18) {
 			@Override
 			public void onSlotChanged() {
-				if (panel.getWorldObj().isRemote)
-				ContainerAdvancedInfoPanel.this.onCraftMatrixChanged(panel);
+				if (te.getWorldObj().isRemote)
+					ContainerAdvancedInfoPanel.this.onCraftMatrixChanged(te);
 			}
 		});
-		addSlotToContainer(new SlotCard(panel, 1, 8 + 18, 24 + 18) {
+		addSlotToContainer(new SlotCard(te, 1, 8 + 18, 24 + 18) {
 			@Override
 			public void onSlotChanged() {
-				if (panel.getWorldObj().isRemote)
-				ContainerAdvancedInfoPanel.this.onCraftMatrixChanged(panel);
+				if (te.getWorldObj().isRemote)
+					ContainerAdvancedInfoPanel.this.onCraftMatrixChanged(te);
 			}
 		});
-		addSlotToContainer(new SlotCard(panel, 2, 8 + 36, 24 + 18) {
+		addSlotToContainer(new SlotCard(te, 2, 8 + 36, 24 + 18) {
 			@Override
 			public void onSlotChanged() {
-				if (panel.getWorldObj().isRemote)
-				ContainerAdvancedInfoPanel.this.onCraftMatrixChanged(panel);
+				if (te.getWorldObj().isRemote)
+					ContainerAdvancedInfoPanel.this.onCraftMatrixChanged(te);
 			}
 		});
-		addSlotToContainer(new SlotRange(panel, 3, 8 + 54, 24 + 18));
+		addSlotToContainer(new SlotRange(te, 3, 8 + 54, 24 + 18));
 		// inventory
 		addPlayerInventorySlots(player, 223);
 	}

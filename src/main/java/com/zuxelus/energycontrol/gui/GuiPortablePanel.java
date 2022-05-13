@@ -71,7 +71,7 @@ public class GuiPortablePanel extends GuiContainer {
 	}
 
 	@Override
-	public void updateScreen() {
+	public void updateScreen() { // 1.7.10
 		super.updateScreen();
 
 		if (mc.thePlayer.getHeldItem() == null)

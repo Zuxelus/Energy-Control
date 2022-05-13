@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 public interface IItemCard {
 
 	/**
-	 * Called when the card is processed, for example in a Panel or Range Trigerrer.
+	 * Called when the card is processed, for example in a Panel or Range Trigger.
 	 * 
 	 * @return The new state of the card
 	 * @see CardState

@@ -36,8 +36,11 @@ public abstract class ItemInventory implements IInventory, ISlotItemFilter {
 		}
 	}
 
-	private void writeToParentNBT() {
-		NBTTagCompound tag = parent.getTagCompound();
+	public void writeToParentNBT(EntityPlayer player) { // player in 1.7.10
+		if (player.getHeldItem() == null)
+			return;
+
+		NBTTagCompound tag = player.getHeldItem().getTagCompound(); // 1.7.10
 		if (tag == null) {
 			tag = new NBTTagCompound();
 			parent.setTagCompound(tag);
@@ -111,9 +114,7 @@ public abstract class ItemInventory implements IInventory, ISlotItemFilter {
 	}
 
 	@Override
-	public void markDirty() {
-		writeToParentNBT();
-	}
+	public void markDirty() { }
 
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer player) {

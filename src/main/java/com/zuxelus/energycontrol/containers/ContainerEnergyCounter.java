@@ -13,11 +13,11 @@ public class ContainerEnergyCounter extends ContainerBase<TileEntityEnergyCounte
 {
 	private double lastCounter = -1;
 
-	public ContainerEnergyCounter(EntityPlayer player, TileEntityEnergyCounter energyCounter)
+	public ContainerEnergyCounter(EntityPlayer player, TileEntityEnergyCounter te)
 	{
-		super(energyCounter);
+		super(te);
 		// transformer upgrades
-		addSlotToContainer(new SlotFilter(energyCounter, 0, 8, 18));
+		addSlotToContainer(new SlotFilter(te, 0, 8, 18));
 		// inventory
 		addPlayerInventorySlots(player, 166);
 	}

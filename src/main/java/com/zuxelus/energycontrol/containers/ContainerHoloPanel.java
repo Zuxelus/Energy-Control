@@ -12,18 +12,18 @@ import net.minecraft.entity.player.EntityPlayerMP;
 public class ContainerHoloPanel extends ContainerBase<TileEntityInfoPanel> {
 	private EntityPlayer player;
 
-	public ContainerHoloPanel(EntityPlayer player, TileEntityInfoPanel panel) {
-		super(panel);
+	public ContainerHoloPanel(EntityPlayer player, TileEntityInfoPanel te) {
+		super(te);
 		this.player = player;
-		addSlotToContainer(new SlotCard(panel, 0, 8, 24 + 18) {
+		addSlotToContainer(new SlotCard(te, 0, 8, 24 + 18) {
 			@Override
 			public void onSlotChanged() {
-				if (panel.getWorldObj().isRemote)
+				if (te.getWorldObj().isRemote)
 					ContainerHoloPanel.this.detectAndSendChanges();
 			}
 		});
-		addSlotToContainer(new SlotRange(panel, 1, 8, 24 + 18 * 2));
-		addSlotToContainer(new SlotPower(panel, 2, 8, 24 + 18 * 3));
+		addSlotToContainer(new SlotRange(te, 1, 8, 24 + 18 * 2));
+		addSlotToContainer(new SlotPower(te, 2, 8, 24 + 18 * 3));
 		// inventory
 		addPlayerInventorySlots(player, 201);
 	}

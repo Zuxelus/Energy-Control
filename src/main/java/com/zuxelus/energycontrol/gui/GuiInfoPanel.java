@@ -24,7 +24,6 @@ public class GuiInfoPanel extends GuiPanelBase {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_info_panel.png");
 	private boolean isColored;
 
-	@SuppressWarnings("rawtypes")
 	public GuiInfoPanel(ContainerBase container) {
 		super(container, "tile.info_panel.name", TEXTURE);
 		ySize = 201;
@@ -40,7 +39,6 @@ public class GuiInfoPanel extends GuiPanelBase {
 		buttonList.add(new GuiButtonGeneral(ID_TICKRATE, guiLeft + xSize - 24, guiTop + 42 + 17 * 3, 16, 16, Integer.toString(panel.getTickRate())).setGradient());
 	}
 
-	@SuppressWarnings("unchecked")
 	protected void initControls() {
 		ItemStack stack = panel.getCards().get(activeTab);
 		if (ItemStack.areItemStacksEqual(stack, oldStack) && panel.isColoredEval() == isColored)

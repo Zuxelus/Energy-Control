@@ -26,7 +26,6 @@ public class GuiHorizontalSlider extends GuiBase {
 		this.panel = panel;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void initGui() {
 		super.initGui();

@@ -5,17 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Supplier;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.*;
-import com.zuxelus.energycontrol.crossmod.ModIDs;
-import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -28,7 +23,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
-import net.minecraftforge.oredict.ShapedOreRecipe;
 
 public final class ItemCardMain extends Item implements IItemCard, ITouchAction, IHasBars {
 	private static final Map<Integer, ItemCardBase> CARDS = new HashMap<>();
@@ -50,49 +44,15 @@ public final class ItemCardMain extends Item implements IItemCard, ITouchAction,
 		register(ItemCardEnergy::new);
 		register(ItemCardCounter::new);
 		register(ItemCardLiquid::new);
-		/*if (Loader.isModLoaded(ModIDs.IC2)) {
-			register(ItemCardGenerator::new);
-			register(ItemCardGeneratorKinetic::new);
-			register(ItemCardGeneratorHeat::new);
-			register(ItemCardReactor::new);
-			register(ItemCardReactor5x5::new);
-		}*/
 		register(ItemCardLiquidAdvanced::new);
 		register(ItemCardText::new);
 		register(ItemCardTime::new);
 		register(ItemCardEnergyArray::new);
 		register(ItemCardLiquidArray::new);
-		//register(ItemCardGeneratorArray::new);
 		register(ItemCardToggle::new);
 		register(ItemCardVanilla::new);
 		register(ItemCardInventory::new);
 		register(ItemCardRedstone::new);
-		/*if (Loader.isModLoaded(ModIDs.BUILDCRAFT))
-			register(ItemCardEngine::new);
-		if (Loader.isModLoaded(ModIDs.DRACONIC_EVOLUTION))
-			register(ItemCardReactorDraconic::new);
-		if (Loader.isModLoaded(ModIDs.APPLIED_ENERGISTICS)) {
-			register(ItemCardAppEng::new);
-			register(ItemCardAppEngInv::new);
-		}
-		if (Loader.isModLoaded(ModIDs.GALACTICRAFT_CORE) && Loader.isModLoaded(ModIDs.GALACTICRAFT_PLANETS))
-			register(ItemCardGalacticraft::new);
-		if (Loader.isModLoaded(ModIDs.BIG_REACTORS))
-			register(ItemCardBigReactors::new);
-		if (Loader.isModLoaded(ModIDs.ENDER_IO))
-			register(ItemCardEnderIO::new);
-		if (Loader.isModLoaded(ModIDs.GREGTECH))
-			register(ItemCardGregTech::new);
-		if (Loader.isModLoaded(ModIDs.HBM))
-			register(ItemCardHBM::new);
-		if (Loader.isModLoaded(ModIDs.MEKANISM))
-			register(ItemCardMekanism::new);
-		if (Loader.isModLoaded(ModIDs.NUCLEAR_CRAFT))
-			register(ItemCardNuclearCraft::new);
-		if (Loader.isModLoaded(ModIDs.PNEUMATICCRAFT))
-			register(ItemCardPneumaticCraft::new);
-		if (Loader.isModLoaded(ModIDs.THERMAL_EXPANSION))
-			register(ItemCardThermalExpansion::new);*/
 	}
 
 	public static void register(Supplier<ItemCardBase> factory) {

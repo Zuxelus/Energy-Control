@@ -23,7 +23,6 @@ public class GuiAverageCounter extends GuiContainerBase {
 		this.container = container;
 	}
 
-	@SuppressWarnings("unchecked")
 	private void initControls() {
 		buttonList.clear();
 		buttonList.add(new GuiButton(1, guiLeft + 35, guiTop + 42, 30, 20, "1"));

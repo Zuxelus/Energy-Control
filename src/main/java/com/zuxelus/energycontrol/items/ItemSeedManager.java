@@ -6,7 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
-public class ItemSeedManager extends ItemBlock {
+public class ItemSeedManager extends ItemBlock { // 1.7.10
 	public ItemSeedManager(Block block) {
 		super(block);
 		setMaxDamage(0);

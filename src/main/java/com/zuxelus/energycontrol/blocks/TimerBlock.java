@@ -28,7 +28,7 @@ public class TimerBlock extends FacingBlockSmall {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister ir) {
+	public void registerBlockIcons(IIconRegister ir) { // 1.7.10
 		icons[0] = registerIcon(ir,"timer/back");
 		icons[1] = registerIcon(ir,"timer/face");
 		icons[2] = registerIcon(ir,"timer/side_hor");
@@ -85,9 +85,4 @@ public class TimerBlock extends FacingBlockSmall {
 				((TileEntityTimer) be).onNeighborChange();
 		}
 	}
-
-	/*@SideOnly(Side.CLIENT)
-	public boolean hasCustomBreakingProgress(IBlockState state) {
-		return true;
-	}*/
 }

@@ -33,7 +33,7 @@ public class IndustrialAlarm extends HowlerAlarm {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister ir) {
+	public void registerBlockIcons(IIconRegister ir) { // 1.7.10
 		icons[0] = registerIcon(ir,"industrial_alarm/back");
 		icons[1] = registerIcon(ir,"industrial_alarm/face");
 		icons[2] = registerIcon(ir,"industrial_alarm/side_hor");

@@ -28,8 +28,8 @@ public class ItemAFSU extends ItemBase {
 	public void addInformation(ItemStack stack, EntityPlayer player, List tooltip, boolean advanced) {
 		super.addInformation(stack, player, tooltip, advanced);
 		//tooltip.add(I18n.format("ic2.item.tooltip.PowerTier",TileEntityAFSU.TIER));
-		tooltip.add(String.format("%s %.0f %s %s %d M %s", I18n.format("ic2.item.tooltip.Output"), Double.valueOf(EnergyNet.instance.getPowerFromTier(TileEntityAFSU.TIER)),
-				I18n.format("ic2.generic.text.EUt"), I18n.format("ic2.item.tooltip.Capacity"), Integer.valueOf(TileEntityAFSU.CAPACITY) / 1000000, I18n.format("ic2.generic.text.EU")));
+		tooltip.add(String.format("%s %.0f%s %s %dm %s", I18n.format("ic2.item.tooltip.Output"), EnergyNet.instance.getPowerFromTier(TileEntityAFSU.TIER),
+				I18n.format("ic2.generic.text.EUt"), I18n.format("ic2.item.tooltip.Capacity"), TileEntityAFSU.CAPACITY / 1000000, I18n.format("ic2.generic.text.EU")));
 		tooltip.add(I18n.format("ic2.item.tooltip.Store") + " " + (long) ItemStackHelper.getTagCompound(stack).getDouble("energy") + " " + I18n.format("ic2.generic.text.EU"));
 	}
 

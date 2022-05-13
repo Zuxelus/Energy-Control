@@ -60,6 +60,8 @@ public class ItemCardIC2 extends ItemCardBase {
 			result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getLong(DataHelper.CAPACITYHU), "HU", showLabels));
 		if (reader.hasField(DataHelper.CAPACITYKU) && (settings & 2) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getLong(DataHelper.CAPACITYKU), "KU", showLabels));
+		if (reader.hasField(DataHelper.DIFF))
+			result.add(new PanelString("msg.ec.InfoPanelDifference", reader.getDouble(DataHelper.DIFF), "EU/t", showLabels));
 		if (reader.hasField(DataHelper.OUTPUT) && (settings & 4) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble(DataHelper.OUTPUT), "EU/t", showLabels));
 		if (reader.hasField(DataHelper.OUTPUTHU) && (settings & 4) > 0)

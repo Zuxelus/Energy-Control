@@ -24,7 +24,6 @@ public class GuiHowlerAlarm extends GuiBase {
 		this.alarm = alarm;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void initGui() {
 		super.initGui();

@@ -1,6 +1,8 @@
 package com.zuxelus.energycontrol.blocks;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.tileentities.TileEntityHoloPanelExtender;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
@@ -33,8 +35,8 @@ public class HoloPanelExtender extends HoloPanel {
 
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int facing, float hitX, float hitY, float hitZ) {
-		/*if (CrossModLoader.getCrossMod(ModIDs.IC2).isWrench(player.getHeldItem()))
-			return true;*/
+		if (CrossModLoader.getCrossMod(ModIDs.IC2).isWrench(player.getHeldItem()))
+			return true;
 		if (world.isRemote)
 			return true;
 		TileEntity te = world.getTileEntity(x, y, z);

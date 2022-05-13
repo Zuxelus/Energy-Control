@@ -41,8 +41,8 @@ public class ClientProxy implements IProxy {
 
 	@Override
 	public void registerSpecialRenderers() {
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityThermalMonitor.class, new TEThermoRenderer());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRemoteThermalMonitor.class, new TERemoteThermoRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityThermalMonitor.class, new TEThermalMonitorRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRemoteThermalMonitor.class, new TERemoteThermalMonitorRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityInfoPanel.class, new TileEntityInfoPanelRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityInfoPanelExtender.class, new TEInfoPanelExtenderRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAdvancedInfoPanel.class, new TEAdvancedInfoPanelRenderer());
@@ -109,7 +109,7 @@ public class ClientProxy implements IProxy {
 			break;
 		case BlockDamages.DAMAGE_REMOTE_THERMO:
 			if (te instanceof TileEntityRemoteThermalMonitor)
-				return new GuiRemoteThermo(new ContainerRemoteThermo(player, (TileEntityRemoteThermalMonitor) te));
+				return new GuiRemoteThermo(new ContainerRemoteThermalMonitor(player, (TileEntityRemoteThermalMonitor) te));
 			break;
 		case BlockDamages.DAMAGE_AVERAGE_COUNTER:
 			if (te instanceof TileEntityAverageCounter)

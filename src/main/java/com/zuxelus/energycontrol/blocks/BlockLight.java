@@ -61,12 +61,12 @@ public class BlockLight extends Block {
 	}
 
 	@Override
-	public IIcon getIcon(int side, int metadata) {
+	public IIcon getIcon(int side, int metadata) { // 1.7.10
 		return icon[metadata];
 	}
 
 	@Override
-	public void registerBlockIcons(IIconRegister register) {
+	public void registerBlockIcons(IIconRegister register) { // 1.7.10
 		for (int i = 0; i < blocks.size(); i++)
 			icon[i] = register.registerIcon(EnergyControl.MODID + ":light/lamp" + i);
 	}
@@ -92,7 +92,6 @@ public class BlockLight extends Block {
 			world.setBlockMetadataWithNotify(x, y, z, meta + 1, 2);
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(Item id, CreativeTabs tab, List items) {

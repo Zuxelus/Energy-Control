@@ -77,8 +77,9 @@ public class BlockRenderer implements ISimpleBlockRenderingHandler { // 1.7.10
 			return false;
 
 		// To skip standard renderer
-		if (block instanceof TimerBlock || block instanceof InfoPanel || block instanceof InfoPanelExtender ||
-			block instanceof ThermalMonitor)
+		if ((!(renderer.overrideBlockTexture != null && renderer.overrideBlockTexture.getIconName().indexOf("destroy_stage") > -1)) &&
+				(block instanceof TimerBlock || block instanceof InfoPanel || block instanceof InfoPanelExtender ||
+				block instanceof ThermalMonitor || block instanceof RemoteThermalMonitor))
 			return true;
 
 		renderer.renderStandardBlock(block, x, y, z);

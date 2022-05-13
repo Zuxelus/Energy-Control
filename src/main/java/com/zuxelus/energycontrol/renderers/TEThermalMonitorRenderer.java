@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
-public class TEThermoRenderer extends TileEntitySpecialRenderer {
+public class TEThermalMonitorRenderer extends TileEntitySpecialRenderer {
 	private static final ResourceLocation TEXTURE0 = new ResourceLocation(EnergyControl.MODID, "textures/blocks/thermal_monitor/all0.png");
 	private static final ResourceLocation TEXTURE1 = new ResourceLocation(EnergyControl.MODID, "textures/blocks/thermal_monitor/all1.png");
 	private static final ResourceLocation TEXTURE2 = new ResourceLocation(EnergyControl.MODID, "textures/blocks/thermal_monitor/all2.png");

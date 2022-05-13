@@ -80,8 +80,7 @@ public class AFSU extends FacingBlock {
 	@Override
 	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune) {
 		ArrayList<ItemStack> drops = new ArrayList<>();
-		ItemStack stack = CrossModLoader.getCrossMod(ModIDs.IC2).getItemStack("mfsu");
-		drops.add(stack.copy());
+		drops.add(CrossModLoader.getCrossMod(ModIDs.IC2).getItemStack("mfsu").copy());
 		return drops;
 	}
 

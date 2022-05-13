@@ -48,6 +48,7 @@ public class CrossModLoader {
 		loadCrossMod(ModIDs.GALACTICRAFT_PLANETS, CrossGalacticraft::new);
 		loadCrossModSafely(ModIDs.HBM, () -> CrossHBM::new);
 		loadCrossMod(ModIDs.NUCLEAR_CRAFT, CrossNuclearCraft::new);
+		loadCrossModSafely(ModIDs.RAILCRAFT, () -> CrossRailcraft::new);
 	}
 
 	private static void loadCrossMod(String modid, Supplier<? extends CrossModBase> factory) {

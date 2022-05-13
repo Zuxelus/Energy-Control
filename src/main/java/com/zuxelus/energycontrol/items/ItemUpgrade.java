@@ -32,7 +32,7 @@ public class ItemUpgrade extends Item {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister ir) {
+	public void registerIcons(IIconRegister ir) { // 1.7.10
 		icons[0] = ir.registerIcon(EnergyControl.MODID + ":" + "upgrade_range");
 		icons[1] = ir.registerIcon(EnergyControl.MODID + ":" + "upgrade_color");
 		icons[2] = ir.registerIcon(EnergyControl.MODID + ":" + "upgrade_touch");
@@ -68,7 +68,7 @@ public class ItemUpgrade extends Item {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public IIcon getIconFromDamage(int damage) {
+	public IIcon getIconFromDamage(int damage) { // 1.7.10
 		if (damage > 3)
 			return icons[0];
 		return icons[damage];

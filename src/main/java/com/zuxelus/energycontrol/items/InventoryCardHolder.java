@@ -23,6 +23,6 @@ public class InventoryCardHolder extends ItemInventory {
 
 	@Override
 	public boolean isItemValid(int index, ItemStack stack) {
-		return stack.getItem() instanceof ItemCardMain;
+		return ItemCardMain.isCard(stack);
 	}
 }

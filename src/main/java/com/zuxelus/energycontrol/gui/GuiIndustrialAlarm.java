@@ -18,7 +18,6 @@ public class GuiIndustrialAlarm extends GuiBase {
 		this.alarm = alarm;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void initGui() {
 		super.initGui();

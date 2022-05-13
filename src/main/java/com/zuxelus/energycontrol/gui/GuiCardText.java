@@ -32,7 +32,6 @@ public class GuiCardText extends GuiBase {
 		this.slot = slot;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void initGui() {
 		super.initGui();

@@ -18,7 +18,7 @@ public class ItemThermometer extends Item {
 		setMaxDamage(102);
 		setMaxStackSize(1);
 		setCreativeTab(EnergyControl.creativeTab);
-		setTextureName(EnergyControl.MODID + ":" + "thermometer");
+		setTextureName(EnergyControl.MODID + ":" + "thermometer"); // 1.7.10
 	}
 
 	protected boolean canTakeDamage(ItemStack itemstack, int i) {

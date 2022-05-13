@@ -81,12 +81,48 @@ public class CrossIC2Exp extends CrossModBase {
 
 	@Override
 	public NBTTagCompound getEnergyData(TileEntity te) {
+		NBTTagCompound tag = new NBTTagCompound();
+		tag.setString(DataHelper.EUTYPE, "EU");
 		if (te instanceof IEnergyStorage) {
-			NBTTagCompound tag = new NBTTagCompound();
-			IEnergyStorage storage = (IEnergyStorage) te;
-			tag.setString(DataHelper.EUTYPE, "EU");
-			tag.setDouble(DataHelper.ENERGY, storage.getStored());
-			tag.setDouble(DataHelper.CAPACITY, storage.getCapacity());
+			tag.setDouble(DataHelper.ENERGY, ((IEnergyStorage) te).getStored());
+			tag.setDouble(DataHelper.CAPACITY, ((IEnergyStorage) te).getCapacity());
+			return tag;
+		}
+		if (te instanceof TileEntityBaseGenerator) {
+			tag.setDouble(DataHelper.ENERGY, ((TileEntityBaseGenerator) te).storage);
+			tag.setDouble(DataHelper.CAPACITY, ((TileEntityBaseGenerator) te).maxStorage);
+			return tag;
+		}
+		if (te instanceof TileEntitySemifluidGenerator) {
+			tag.setDouble(DataHelper.ENERGY, ((TileEntitySemifluidGenerator) te).storage);
+			tag.setDouble(DataHelper.CAPACITY, DataHelper.getShort(TileEntitySemifluidGenerator.class, "maxStorage", te));
+			return tag;
+		}
+		if (te instanceof TileEntityStirlingGenerator) {
+			tag.setDouble(DataHelper.ENERGY, ((TileEntityStirlingGenerator) te).EUstorage);
+			tag.setDouble(DataHelper.CAPACITY, ((TileEntityStirlingGenerator) te).maxEUStorage);
+			return tag;
+		}
+		if (te instanceof TileEntityGeoGenerator) {
+			tag.setDouble(DataHelper.ENERGY, ((TileEntityGeoGenerator) te).storage);
+			tag.setDouble(DataHelper.CAPACITY, ((TileEntityGeoGenerator) te).maxStorage);
+			return tag;
+		}
+		if (te instanceof TileEntityKineticGenerator) {
+			tag.setDouble(DataHelper.ENERGY, ((TileEntityKineticGenerator)te).EUstorage);
+			tag.setDouble(DataHelper.CAPACITY, DataHelper.getInt(TileEntityKineticGenerator.class, "maxEUStorage", te));
+			return tag;
+		}
+		if (te instanceof TileEntityElectricKineticGenerator) {
+			Energy energy = (Energy) ((TileEntityElectricKineticGenerator) te).getComponent("energy");
+			tag.setDouble(DataHelper.ENERGY, energy.getEnergy());
+			tag.setDouble(DataHelper.CAPACITY, energy.getCapacity());
+			return tag;
+		}
+		if (te instanceof TileEntityElectricHeatGenerator) {
+			Energy energy = (Energy) ((TileEntityElectricHeatGenerator) te).getComponent("energy");
+			tag.setDouble(DataHelper.ENERGY, energy.getEnergy());
+			tag.setDouble(DataHelper.CAPACITY, energy.getCapacity());
 			return tag;
 		}
 		return null;
@@ -97,10 +133,11 @@ public class CrossIC2Exp extends CrossModBase {
 		try {
 			NBTTagCompound tag = new NBTTagCompound();
 			if (te instanceof IEnergyStorage) {
-				IEnergyStorage storage = (IEnergyStorage) te;
-				tag.setString(DataHelper.EUTYPE, "EU");
-				tag.setDouble(DataHelper.ENERGY, storage.getStored());
-				tag.setDouble(DataHelper.CAPACITY, storage.getCapacity());
+				tag.setDouble(DataHelper.ENERGY, ((IEnergyStorage) te).getStored());
+				tag.setDouble(DataHelper.CAPACITY, ((IEnergyStorage) te).getCapacity());
+				ArrayList values = getHookValues(te);
+				if (values != null)
+					tag.setDouble(DataHelper.DIFF, ((Double) values.get(0) - (Double) values.get(20)) / 20);
 				return tag;
 			}
 
@@ -130,21 +167,28 @@ public class CrossIC2Exp extends CrossModBase {
 					return tag;
 				}
 				if (te instanceof TileEntitySolarGenerator) {
-					double light = ((TileEntitySolarGenerator)te).sunIsVisible ? ((TileEntitySolarGenerator) te).solarbasevalue : 0.0D;
-					Boolean active = light > 0 && ((TileEntityBaseGenerator) te).storage < ((TileEntityBaseGenerator) te).maxStorage;
+					double multiplier = ((TileEntitySolarGenerator) te).solarbasevalue;
+					Boolean active = ((TileEntitySolarGenerator)te).sunIsVisible && ((TileEntityBaseGenerator) te).storage < ((TileEntityBaseGenerator) te).maxStorage;
+					tag.setDouble(DataHelper.MULTIPLIER, multiplier);
 					tag.setBoolean(DataHelper.ACTIVE, active);
-					tag.setDouble(DataHelper.OUTPUT, active ? (double) light : 0);
+					tag.setDouble(DataHelper.OUTPUT, active ? multiplier * (te.getWorldObj().getBlockLightValue(te.xCoord, 255, te.zCoord) / 15.0F) : 0);
 					return tag;
 				}
 				if (te instanceof TileEntityWaterGenerator) {
-					Boolean active = ((TileEntityWaterGenerator) te).water > 0 || ((TileEntityWaterGenerator) te).fuel > 0;
+					Boolean active = (((TileEntityWaterGenerator) te).water > 0 || ((TileEntityWaterGenerator) te).fuel > 0) && ((TileEntityBaseGenerator) te).storage < 4;
+					double multiplier = ((TileEntityWaterGenerator) te).waterbasevalue;
+					tag.setDouble(DataHelper.MULTIPLIER, multiplier);
 					tag.setBoolean(DataHelper.ACTIVE, active);
 					if (((TileEntityWaterGenerator) te).fuel <= 0)
-						tag.setDouble(DataHelper.OUTPUT, ((TileEntityWaterGenerator) te).waterbasevalue * ((TileEntityWaterGenerator) te).water / 100);
+						tag.setDouble(DataHelper.OUTPUT, multiplier * ((TileEntityWaterGenerator) te).water / 100);
+					else
+						tag.setDouble(DataHelper.OUTPUT, 0);
 					return tag;
 				}
 				if (te instanceof TileEntityWindGenerator) {
 					Boolean active = ((TileEntityWindGenerator) te).subproduction > 0 && ((TileEntityBaseGenerator) te).storage < 4;
+					double multiplier = ((TileEntityWindGenerator) te).windbasevalue;
+					tag.setDouble(DataHelper.MULTIPLIER, multiplier);
 					tag.setBoolean(DataHelper.ACTIVE, active);
 					tag.setDouble(DataHelper.OUTPUT, active ? ((TileEntityWindGenerator) te).subproduction : 0);
 					return tag;
@@ -190,7 +234,7 @@ public class CrossIC2Exp extends CrossModBase {
 
 			// KineticData
 			if (te instanceof TileEntityElectricKineticGenerator) {
-				TileEntityElectricKineticGenerator generator = ((TileEntityElectricKineticGenerator) te);
+				TileEntityElectricKineticGenerator generator = (TileEntityElectricKineticGenerator) te;
 				int counter = 0;
 				for (int i = 0; i < generator.slotMotor.size(); i++)
 					if (generator.slotMotor.get(i) != null)
@@ -209,8 +253,8 @@ public class CrossIC2Exp extends CrossModBase {
 				return tag;
 			}
 			if (te instanceof TileEntityManualKineticGenerator) {
-				tag.setDouble(DataHelper.ENERGY, ((TileEntityManualKineticGenerator)te).currentKU);
-				tag.setDouble(DataHelper.CAPACITY, ((TileEntityManualKineticGenerator)te).maxKU);
+				tag.setDouble(DataHelper.ENERGYKU, ((TileEntityManualKineticGenerator)te).currentKU);
+				tag.setDouble(DataHelper.CAPACITYKU, ((TileEntityManualKineticGenerator)te).maxKU);
 				return tag;
 			}
 			if (te instanceof TileEntitySteamKineticGenerator) {
@@ -365,16 +409,7 @@ public class CrossIC2Exp extends CrossModBase {
 		Item item = stack.getItem();
 		if (item instanceof ItemReactorUranium || item instanceof ItemReactorLithiumCell || item instanceof ItemReactorMOX)
 			return ((ICustomDamageItem)item).getMaxCustomDamage(stack) - ((ICustomDamageItem)item).getCustomDamage(stack);
-		// Coaxium Mod
-		if (item.getClass().getName().equals("com.sm.FirstMod.items.ItemCoaxiumRod") || item.getClass().getName().equals("com.sm.FirstMod.items.ItemCesiumRod"))
-			return stack.getMaxDamage() - getCoaxiumDamage(stack);
 		return 0;
-	}
-
-	private static int getCoaxiumDamage(ItemStack stack) {
-		if (!stack.hasTagCompound())
-			return 0;
-		return stack.getTagCompound().getInteger("fuelRodDamage");
 	}
 
 	@Override

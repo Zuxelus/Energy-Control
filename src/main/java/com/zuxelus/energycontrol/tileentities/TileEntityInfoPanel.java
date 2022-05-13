@@ -697,6 +697,15 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITilePac
 
 	// IWrenchable
 	@Override
+	public void setFacing(short facing) {
+		super.setFacing(facing);
+		if ((facing == 0 || facing == 1) && rotation == ForgeDirection.DOWN)
+			rotation = ForgeDirection.NORTH;
+		if (facing != 0 && facing != 1 && rotation != ForgeDirection.DOWN)
+			rotation = ForgeDirection.DOWN;
+	}
+
+	@Override
 	public ItemStack getWrenchDrop(EntityPlayer player) {
 		return new ItemStack(ModItems.blockInfoPanel);
 	}

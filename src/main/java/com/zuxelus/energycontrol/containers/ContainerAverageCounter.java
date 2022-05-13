@@ -13,10 +13,10 @@ public class ContainerAverageCounter extends ContainerBase<TileEntityAverageCoun
 {
 	private double lastAverage = -1;
 
-	public ContainerAverageCounter(EntityPlayer player, TileEntityAverageCounter averageCounter) {
-		super(averageCounter);
+	public ContainerAverageCounter(EntityPlayer player, TileEntityAverageCounter te) {
+		super(te);
 		// transformer upgrades
-		addSlotToContainer(new SlotFilter(averageCounter, 0, 8, 18));
+		addSlotToContainer(new SlotFilter(te, 0, 8, 18));
 		// inventory
 		addPlayerInventorySlots(player, 166);
 	}
