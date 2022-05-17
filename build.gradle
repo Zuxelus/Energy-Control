@@ -17,7 +17,7 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.7.10-0.3.0f"
+version = "1.7.10-0.3.1"
 group= "com.zuxelus.energycontrol"
 archivesBaseName = "EnergyControl"
 
@@ -52,6 +52,7 @@ dependencies {
         'libs_/NotEnoughItems-1.7.10-1.0.5.120-universal.jar',
         'libs_/NuclearCraft-1.9g--1.7.10.jar',
         'libs_/OpenComputers-MC1.7.10-1.7.5.1290-universal.jar',
+        'libs_/Railcraft_1.7.10-9.12.2.1.jar',
         'libs_/RotaryCraft+1.7.10+V31b.jar')
 }
 

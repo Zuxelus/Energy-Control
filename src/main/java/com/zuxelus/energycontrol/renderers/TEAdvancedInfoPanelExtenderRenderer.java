@@ -4,6 +4,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.tileentities.Screen;
+import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanelExtender;
 
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -60,11 +61,11 @@ public class TEAdvancedInfoPanelExtenderRenderer extends TileEntitySpecialRender
 			break;
 		}
 
-		int color = 6;
+		int color = TileEntityAdvancedInfoPanel.DEFAULT_BACKGROUND;
 		if (te.getColored()) {
 			color = te.getColorBackground();
 			if (color > 15 || color < 0)
-				color = 6;
+				color = TileEntityAdvancedInfoPanel.DEFAULT_BACKGROUND;
 		}
 		if (te.getPowered())
 			bindTexture(TEXTUREON[color]);
@@ -76,7 +77,7 @@ public class TEAdvancedInfoPanelExtenderRenderer extends TileEntitySpecialRender
 		if (thickness < 1 || thickness > 16)
 			thickness = 16;
 		int rotateHor = te.getRotateHor() / 7;
-		int rotateVert = te.getRotateVert() / 7; 
+		int rotateVert = te.getRotateVert() / 7;
 		Screen screen = te.getScreen();
 		if (screen == null) {
 			if (thickness == 16 && rotateHor == 0 && rotateVert == 0)

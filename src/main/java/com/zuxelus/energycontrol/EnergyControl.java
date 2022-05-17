@@ -26,9 +26,8 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 
-@Mod(name = EnergyControl.NAME, modid = EnergyControl.MODID, version = EnergyControl.VERSION, dependencies = "after:IC2", guiFactory = "com.zuxelus.energycontrol.config.GuiFactory", acceptedMinecraftVersions = "[1.7.10]")
+@Mod(modid = EnergyControl.MODID, dependencies = "after:IC2", guiFactory = "com.zuxelus.energycontrol.config.GuiFactory", acceptedMinecraftVersions = "[1.7.10]")
 public class EnergyControl {
-	public static final String NAME = "Energy Control";
 	public static final String MODID = "energycontrol";
 	public static final String VERSION = "@VERSION@";
 
@@ -42,8 +41,8 @@ public class EnergyControl {
 
 	public static Logger logger;
 	public static ConfigHandler config;
-	
-	public int modelId;
+
+	public int modelId; // 1.7.10
 	public ScreenManager screenManager = new ScreenManager();
 
 	@SideOnly(Side.CLIENT)

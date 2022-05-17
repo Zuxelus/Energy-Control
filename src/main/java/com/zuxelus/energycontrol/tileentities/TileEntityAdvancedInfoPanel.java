@@ -28,6 +28,9 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	public static final int OFFSET_ROTATE_HOR = 200;
 	public static final int OFFSET_ROTATE_VERT = 300;
 
+	public static final int DEFAULT_TEXT = -1;
+	public static final int DEFAULT_BACKGROUND = 8;
+
 	public byte powerMode;
 	public byte thickness;
 	public byte rotateHor;
@@ -36,8 +39,8 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	public TileEntityAdvancedInfoPanel() {
 		super();
 		customName = "tile." + NAME + ".name";
-		colorText = -1;
-		colorBackground = 8;
+		colorText = DEFAULT_TEXT;
+		colorBackground = DEFAULT_BACKGROUND;
 		colored = true;
 		thickness = 16;
 	}
@@ -192,7 +195,6 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	public void updateBlockState() {
 		int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
 		boolean flag = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
-
 		switch (powerMode) {
 		case POWER_ON:
 			flag = true;

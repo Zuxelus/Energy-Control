@@ -79,11 +79,11 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer {
 			break;
 		}
 
-		int color = 6;
+		int color = TileEntityAdvancedInfoPanel.DEFAULT_BACKGROUND;
 		if (te.getColored()) {
 			color = te.getColorBackground();
 			if (color > 15 || color < 0)
-				color = 6;
+				color = TileEntityAdvancedInfoPanel.DEFAULT_BACKGROUND;
 		}
 		if (te.getPowered())
 			bindTexture(TEXTUREON[color]);
@@ -294,7 +294,7 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer {
 		GL11.glDisable(GL11.GL_LIGHTING);
 
 		int row = 0;
-		int colorHex = 0x000000;
+		int colorHex = TileEntityAdvancedInfoPanel.DEFAULT_TEXT;
 		if (panel.getColored())
 			colorHex = panel.getColorText();
 		for (PanelString panelString : joinedData) {

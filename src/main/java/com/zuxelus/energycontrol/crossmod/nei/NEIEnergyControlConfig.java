@@ -12,7 +12,7 @@ public class NEIEnergyControlConfig implements IConfigureNEI {
 
 	@Override
 	public String getName() {
-		return EnergyControl.NAME;
+		return "Energy Control";
 	}
 
 	@Override

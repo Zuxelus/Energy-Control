@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import com.zuxelus.energycontrol.blocks.KitAssembler;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.init.ModItems;
@@ -298,14 +299,11 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITile
 
 		production = 0;
 
-		/*IBlockState iblockstate = worldObj.getBlockState(pos);
-		Block block = iblockstate.getBlock();
-		if (!(block instanceof KitAssembler) || iblockstate.getValue(KitAssembler.ACTIVE) == active)
+		int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+		Block block = worldObj.getBlock(xCoord, yCoord, zCoord);
+		if (!(block instanceof KitAssembler) || meta > 5 == active)
 			return;
-		IBlockState newState = block.getDefaultState()
-				.withProperty(KitAssembler.FACING, iblockstate.getValue(KitAssembler.FACING))
-				.withProperty(KitAssembler.ACTIVE, active);
-		worldObj.setBlockState(pos, newState, 3);*/
+		worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, active ? meta + 6 : meta - 6, 3);
 	}
 
 	// ------- Inventory -------
