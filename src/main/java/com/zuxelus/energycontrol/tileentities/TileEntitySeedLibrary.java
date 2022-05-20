@@ -3,6 +3,7 @@ package com.zuxelus.energycontrol.tileentities;
 import java.util.HashMap;
 import java.util.Vector;
 
+import com.zuxelus.energycontrol.blocks.SeedLibrary;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.utils.SeedLibraryFilter;
@@ -23,6 +24,7 @@ import ic2.api.item.IC2Items;
 import ic2.api.item.IElectricItem;
 import ic2.core.Ic2Items;
 import ic2.core.item.ItemCropSeed;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -57,7 +59,7 @@ public class TileEntitySeedLibrary extends TileEntityInventory implements ITileP
 		addedToEnet = false;
 		active = false;
 		energy = 0;
-		
+
 		for (int i = 0; i < filters.length - 1; i++)
 			filters[i] = new SeedLibraryFilter(null);
 		// The GUI filter gets a reference to the library, so that it can announce when its count changes.
@@ -72,8 +74,7 @@ public class TileEntitySeedLibrary extends TileEntityInventory implements ITileP
 		return active;
 	}
 
-	public SeedLibraryFilter getGUIFilter()
-	{
+	public SeedLibraryFilter getGUIFilter() {
 		return filters[6];
 	}
 
@@ -81,53 +82,38 @@ public class TileEntitySeedLibrary extends TileEntityInventory implements ITileP
 		SeedLibraryFilter filter = getGUIFilter();
 		int bar = slider / 2;
 		int arrow = slider % 2;
-		if (bar == 0) {
-			if (arrow == 0)
-				return filter.min_growth;
-			return filter.max_growth;
-		} else if (bar == 1) {
-			if (arrow == 0)
-				return filter.min_gain;
-			return filter.max_gain;
-		} else if (bar == 2) {
-			if (arrow == 0)
-				return filter.min_resistance;
-			return filter.max_resistance;
-		} else { // if (bar == 3)
-			if (arrow == 0)
-				return filter.min_total / 3;
-			return filter.max_total / 3;
+		switch (bar) {
+		case 0:
+			return arrow == 0 ? filter.min_growth : filter.max_growth;
+		case 1:
+			return arrow == 0 ? filter.min_gain : filter.max_gain;
+		case 2:
+			return arrow == 0 ? filter.min_resistance : filter.max_resistance;
+		default:
+			return arrow == 0 ? filter.min_total / 3 : filter.max_total / 3;
 		}
 	}
 
-	public void setSliderValue(int slider, int value)
-	{
+	public void setSliderValue(int slider, int value) {
 		SeedLibraryFilter filter = getGUIFilter();
 		int bar = slider / 2;
 		int arrow = slider % 2;
-		if (bar == 0)
-		{
+		if (bar == 0) {
 			if (arrow == 0)
 				filter.min_growth = value;
 			else
 				filter.max_growth = value;
-		}
-		else if (bar == 1)
-		{
+		} else if (bar == 1) {
 			if (arrow == 0)
 				filter.min_gain = value;
 			else
 				filter.max_gain = value;
-		}
-		else if (bar == 2)
-		{
+		} else if (bar == 2) {
 			if (arrow == 0)
 				filter.min_resistance = value;
 			else
 				filter.max_resistance = value;
-		}
-		else
-		{ // if (bar == 3)
+		} else { // if (bar == 3)
 			if (arrow == 0)
 				filter.min_total = value * 3;
 			else
@@ -152,8 +138,7 @@ public class TileEntitySeedLibrary extends TileEntityInventory implements ITileP
 		}
 	}
 
-	private void actionPerformed(int button, boolean rightClick)
-	{
+	private void actionPerformed(int button, boolean rightClick) {
 		if (button == 0)
 			importFromInventory();
 		else if (button == 1)
@@ -299,9 +284,9 @@ public class TileEntitySeedLibrary extends TileEntityInventory implements ITileP
 			return;
 		ItemStack stack = getStackInSlot(SLOT_DISCHARGER);
 		if (stack != null && energy < CAPACITY && stack.getItem() instanceof IElectricItem) {
-			IElectricItem ielectricitem = (IElectricItem) stack.getItem();
+			IElectricItem item = (IElectricItem) stack.getItem();
 			double old = energy;
-			if (ielectricitem.canProvideEnergy(stack))
+			if (item.canProvideEnergy(stack))
 				energy += ElectricItem.manager.discharge(stack, CAPACITY - energy, TIER, false, false, false);
 			if (old == 0 && energy >= CONSUMPTION)
 				updateState();
@@ -324,7 +309,10 @@ public class TileEntitySeedLibrary extends TileEntityInventory implements ITileP
 		if (active == old)
 			return;
 
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+		Block block = worldObj.getBlock(xCoord, yCoord, zCoord);
+		if (block instanceof SeedLibrary)
+			worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, active ? meta % 6 + 6 : meta % 6, 3);
 	}
 
 	// ------- Inventory -------
@@ -457,8 +445,7 @@ public class TileEntitySeedLibrary extends TileEntityInventory implements ITileP
 		updateSeedCount();
 	}
 
-	public void exportToInventory()
-	{
+	public void exportToInventory() {
 		getGUIFilter().bulk_mode = true;
 		for (int i = 1; i < 9; i++)
 			if (getStackInSlot(i) == null) {
@@ -478,8 +465,7 @@ public class TileEntitySeedLibrary extends TileEntityInventory implements ITileP
 		updateSeedCount();
 	}
 
-	public void updateGUIFilter()
-	{
+	public void updateGUIFilter() {
 		// We only need to do this on the server side.
 		if (worldObj == null || worldObj.isRemote)
 			return;

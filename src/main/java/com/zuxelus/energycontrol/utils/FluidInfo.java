@@ -69,8 +69,8 @@ public class FluidInfo {
 				reader.setString("name", "");
 		}
 		reader.setString("fluidName", fluidName);
-		reader.setLong("amount", amount);
-		reader.setLong("capacity", capacity);
+		reader.setLong(DataHelper.AMOUNT, amount);
+		reader.setLong(DataHelper.CAPACITY, capacity);
 		reader.setInt("color", color);
 	}
 

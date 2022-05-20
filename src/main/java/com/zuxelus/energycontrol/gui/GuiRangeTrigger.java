@@ -44,7 +44,7 @@ public class GuiRangeTrigger extends GuiContainerBase {
 			buttonList.add(new CompactButton(100 + i * 10, guiLeft + 30 + i * 12 + (i + 2) / 3 * 6, guiTop + 57, 12, 12, "-"));
 			buttonList.add(new CompactButton(100 + i * 10 + 1, guiLeft + 30 + i * 12 + (i + 2) / 3 * 6, guiTop + 79, 12, 12, "+"));
 		}
-		buttonList.add(new GuiRangeTriggerInvertRedstone(10, guiLeft + 8, guiTop + 62, container.te));
+		buttonList.add(new GuiRangeTriggerInvertRedstone(0, guiLeft + 8, guiTop + 62, container.te));
 	}
 
 	@Override
@@ -65,27 +65,33 @@ public class GuiRangeTrigger extends GuiContainerBase {
 
 	@Override
 	protected void actionPerformed(GuiButton button) {
+		if (button instanceof GuiRangeTriggerInvertRedstone)
+			return;
+
 		int id = button.id;
 		boolean isPlus = id % 2 == 1;
 		id /= 10;
 		int power = 9 - (id % 10);
 		id /= 10;
 		boolean isEnd = id % 2 == 1;
-		double initValue = isEnd ? container.te.levelEnd : container.te.levelStart;
-		double newValue = initValue;
-		double delta = (long) Math.pow(10, power);
-		double digit = (initValue / delta) % 10;
+		long initValue = isEnd ? container.te.levelEnd : container.te.levelStart;
+		long newValue = initValue;
+		long delta = (long) Math.pow(10, power);
+		long digit = (initValue / delta) % 10;
+
+		if ((digit == 0 && !isPlus) || (digit == 9 && isPlus))
+			return;
 
 		if (isPlus && digit < 9)
 			newValue += delta;
 		else if (!isPlus && digit > 0)
 			newValue -= delta;
 
-		if (newValue != initValue) {
+		if (newValue != initValue && ((isEnd && newValue >= container.te.levelStart) || (!isEnd && container.te.levelEnd >= newValue))) {
 			TileEntityRangeTrigger trigger = container.te;
 			
 			NBTTagCompound tag = new NBTTagCompound();
-			tag.setDouble("value", newValue);
+			tag.setLong("value", newValue);
 			if (isEnd) {
 				tag.setInteger("type", 3);
 				NetworkHelper.updateSeverTileEntity(trigger.xCoord, trigger.yCoord, trigger.zCoord, tag);

@@ -11,6 +11,7 @@ import com.zuxelus.energycontrol.api.IHasBars;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import cpw.mods.fml.relauncher.Side;
@@ -57,8 +58,8 @@ public class ItemCardLiquid extends ItemCardBase implements IHasBars {
 	@Override
 	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
-		long capacity = reader.getLong("capacity");
-		long amount = reader.getLong("amount");
+		long capacity = reader.getLong(DataHelper.CAPACITY);
+		long amount = reader.getLong(DataHelper.AMOUNT);
 
 		if ((settings & 1) > 0) {
 			String name = reader.getString("name");

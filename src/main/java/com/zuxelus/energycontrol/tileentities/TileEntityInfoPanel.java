@@ -623,11 +623,6 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITilePac
 		return AxisAlignedBB.getBoundingBox(screen.minX, screen.minY, screen.minZ, screen.maxX + 1, screen.maxY + 1, screen.maxZ + 1);
 	}
 
-	@Override
-	public boolean shouldRefresh(Block oldBlock, Block newBlock, int oldMeta, int newMeta, World world, int x, int y, int z) {
-		return oldBlock != newBlock;
-	}
-
 	@SideOnly(Side.CLIENT)
 	public int findTexture() {
 		Screen scr = getScreen();

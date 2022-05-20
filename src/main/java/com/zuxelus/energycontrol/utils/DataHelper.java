@@ -7,6 +7,7 @@ import net.minecraft.tileentity.TileEntity;
 
 public class DataHelper {
 	public static final String ACTIVE = "active";
+	public static final String AMOUNT = "amount"; 
 	public static final String CAPACITY = "capacity";
 	public static final String CAPACITYHU = "capacityHU";
 	public static final String CAPACITYKU = "capacityKU";

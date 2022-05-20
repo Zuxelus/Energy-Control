@@ -164,11 +164,6 @@ public class TileEntityAFSU extends TileEntityEnergyStorage implements IEnergySt
 		}
 	}
 
-	@Override
-	public boolean shouldRefresh(Block oldBlock, Block newBlock, int oldMeta, int newMeta, World world, int x, int y, int z) {
-		return oldBlock != newBlock;
-	}
-
 	// Inventory
 	@Override
 	public int getSizeInventory() {

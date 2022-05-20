@@ -48,6 +48,10 @@ public class ItemCardIC2 extends ItemCardBase {
 			result.add(new PanelString("msg.ec.InfoPanelMaxHeat", reader.getInt(DataHelper.MAXHEAT), showLabels));
 		if (reader.hasField(DataHelper.MAXHEAT) && (settings & 1) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelMelting", reader.getInt(DataHelper.MAXHEAT) * 85 / 100, showLabels));
+		if (reader.hasField("heatD") && (settings & 1) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelTemp", reader.getDouble("heatD"), "°C", showLabels));
+		if (reader.hasField("heatChange") && (settings & 1) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelHeatChange", reader.getInt("heatChange"), showLabels));
 		if (reader.hasField(DataHelper.ENERGY) && (settings & 2) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelEnergy", reader.getLong(DataHelper.ENERGY), "EU", showLabels));
 		if (reader.hasField(DataHelper.ENERGYHU) && (settings & 2) > 0)
@@ -60,16 +64,18 @@ public class ItemCardIC2 extends ItemCardBase {
 			result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getLong(DataHelper.CAPACITYHU), "HU", showLabels));
 		if (reader.hasField(DataHelper.CAPACITYKU) && (settings & 2) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getLong(DataHelper.CAPACITYKU), "KU", showLabels));
-		if (reader.hasField(DataHelper.DIFF))
+		if (reader.hasField(DataHelper.DIFF) && (settings & 2) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelDifference", reader.getDouble(DataHelper.DIFF), "EU/t", showLabels));
+		if (reader.hasField(DataHelper.CONSUMPTION) && (settings & 4) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelConsumption", reader.getDouble(DataHelper.CONSUMPTION), "mB/s", showLabels));
 		if (reader.hasField(DataHelper.OUTPUT) && (settings & 4) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble(DataHelper.OUTPUT), "EU/t", showLabels));
 		if (reader.hasField(DataHelper.OUTPUTHU) && (settings & 4) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble(DataHelper.OUTPUTHU), "HU/t", showLabels));
 		if (reader.hasField(DataHelper.OUTPUTKU) && (settings & 4) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble(DataHelper.OUTPUTKU), "KU/t", showLabels));
-		if (reader.hasField("outputmB") && (settings & 4) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("outputmB"), "mB/s", showLabels));
+		if (reader.hasField(DataHelper.OUTPUTMB) && (settings & 4) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble(DataHelper.OUTPUTMB), "mB/s", showLabels));
 		if (reader.hasField(DataHelper.MULTIPLIER) && (settings & 8) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelMultiplier", reader.getDouble(DataHelper.MULTIPLIER), showLabels));
 		if (reader.hasField(DataHelper.TANK) && (settings & 16) > 0)
@@ -92,6 +98,12 @@ public class ItemCardIC2 extends ItemCardBase {
 			result.add(new PanelString("msg.ec.InfoPanelHeight", reader.getInt("height"), showLabels));
 		if (reader.hasField("health") && (settings & 64) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelRotorHealth", reader.getDouble("health"), showLabels));
+		if (reader.hasField("progress") && (settings & 64) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelProgress", reader.getDouble("progress"), showLabels));
+		if (reader.hasField("pressure") && (settings & 64) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelPressure", reader.getInt("pressure"), "bar", showLabels));
+		if (reader.hasField("calcification") && (settings & 64) > 0)
+			result.add(new PanelString("ic2.SteamGenerator.gui.calcification", reader.getDouble("calcification"), "%", showLabels));
 		if (reader.hasField("timeLeft") && (settings & 64) > 0) {
 			int timeLeft = reader.getInt("timeLeft");
 			int hours = timeLeft / 3600;

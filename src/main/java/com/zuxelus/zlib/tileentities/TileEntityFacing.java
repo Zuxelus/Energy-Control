@@ -9,6 +9,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 @Optional.Interface(modid = ModIDs.IC2, iface = "ic2.api.tile.IWrenchable")
@@ -67,6 +68,11 @@ public abstract class TileEntityFacing extends TileEntity implements IWrenchable
 
 	protected void notifyBlockUpdate() {
 		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+	}
+
+	@Override
+	public boolean shouldRefresh(Block oldBlock, Block newBlock, int oldMeta, int newMeta, World world, int x, int y, int z) {
+		return oldBlock != newBlock;
 	}
 
 	// IWrenchable, 1.7.10

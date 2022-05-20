@@ -215,11 +215,6 @@ public class TileEntityInfoPanelExtender extends TileEntityFacing implements ISc
 		return 65536.0D;
 	}
 
-	@Override
-	public boolean shouldRefresh(Block oldBlock, Block newBlock, int oldMeta, int newMeta, World world, int x, int y, int z) {
-		return oldBlock != newBlock;
-	}
-
 	@SuppressWarnings("incomplete-switch")
 	@SideOnly(Side.CLIENT)
 	public int findTexture() {

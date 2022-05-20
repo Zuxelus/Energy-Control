@@ -25,7 +25,7 @@ public class SeedAnalyzer extends FacingHorizontal {
 			return icons[0];
 		if (side == EnumFacing.UP.ordinal())
 			return meta > 5 ? icons[6] : icons[5];
-		if (side == meta)
+		if (side == meta % 6)
 			return meta > 11 ? icons[4] : meta > 5 ? icons[3] : icons[2];
 		return icons[1];
 	}

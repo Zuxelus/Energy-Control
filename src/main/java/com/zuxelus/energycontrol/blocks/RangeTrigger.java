@@ -22,12 +22,12 @@ public class RangeTrigger extends FacingHorizontal {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int meta) { // 1.7.10
-		if (side == meta) {
+		if (side == meta % 6) {
 			if (meta < 6)
 				return icons[1];
 			return meta > 11 ? icons[4] : icons[3];
 		}
-		if (side == ForgeDirection.getOrientation(meta).getOpposite().ordinal())
+		if (side == ForgeDirection.getOrientation(meta % 6).getOpposite().ordinal())
 			return icons[0];
 		return icons[2];
 	}

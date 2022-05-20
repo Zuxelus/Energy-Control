@@ -361,11 +361,6 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITile
 		return left;
 	}
 
-	@Override
-	public boolean shouldRefresh(Block oldBlock, Block newBlock, int oldMeta, int newMeta, World world, int x, int y, int z) {
-		return oldBlock != newBlock;
-	}
-
 	// ISidedInventory
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side) {

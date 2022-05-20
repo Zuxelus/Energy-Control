@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import com.zuxelus.energycontrol.blocks.SeedAnalyzer;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.IBlockHorizontal;
@@ -14,6 +15,7 @@ import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
 import ic2.core.Ic2Items;
 import ic2.core.item.ItemCropSeed;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -174,9 +176,9 @@ public class TileEntitySeedAnalyzer extends TileEntityInventory implements ITile
 			return;
 		ItemStack stack = getStackInSlot(SLOT_DISCHARGER);
 		if (stack != null && energy < CAPACITY && stack.getItem() instanceof IElectricItem) {
-			IElectricItem ielectricitem = (IElectricItem) stack.getItem();
+			IElectricItem item = (IElectricItem) stack.getItem();
 			double old = energy;
-			if (ielectricitem.canProvideEnergy(stack))
+			if (item.canProvideEnergy(stack))
 				energy += ElectricItem.manager.discharge(stack, CAPACITY - energy, TIER, false, false, false);
 			if (old == 0 && energy >= CONSUMPTION)
 				updateState();
@@ -235,11 +237,14 @@ public class TileEntitySeedAnalyzer extends TileEntityInventory implements ITile
 	private void updateState() {
 		boolean old = active;
 		updateActive();
-		if (active == old)
-			return;
+		if (active != old)
+			production = 0;
 
-		production = 0;
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+		Block block = worldObj.getBlock(xCoord, yCoord, zCoord);
+		int newMeta = active ? 12 + meta % 6 : energy > 0 ? 6 + meta % 6 : meta % 6;
+		if (block instanceof SeedAnalyzer && meta != newMeta)
+			worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, newMeta, 3);
 	}
 
 	// ------- Inventory -------

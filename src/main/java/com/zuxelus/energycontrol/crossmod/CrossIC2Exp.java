@@ -28,10 +28,9 @@ import ic2.core.block.comp.Energy;
 import ic2.core.block.generator.tileentity.*;
 import ic2.core.block.heatgenerator.tileentity.*;
 import ic2.core.block.kineticgenerator.tileentity.*;
-import ic2.core.block.machine.tileentity.TileEntityLiquidHeatExchanger;
-import ic2.core.block.reactor.tileentity.TileEntityNuclearReactorElectric;
-import ic2.core.block.reactor.tileentity.TileEntityReactorAccessHatch;
-import ic2.core.block.reactor.tileentity.TileEntityReactorChamberElectric;
+import ic2.core.block.machine.tileentity.*;
+import ic2.core.block.machine.tileentity.*;
+import ic2.core.block.reactor.tileentity.*;
 import ic2.core.item.reactor.ItemReactorLithiumCell;
 import ic2.core.item.reactor.ItemReactorMOX;
 import ic2.core.item.reactor.ItemReactorUranium;
@@ -357,6 +356,27 @@ public class CrossIC2Exp extends CrossModBase {
 					tag.setInteger("energy", DataHelper.getInt(TileEntitySolidHeatGenerator.class, "heatbuffer", te) + ((TileEntitySolidHeatGenerator) te).getHeatBuffer());
 					return tag;
 				}
+			}
+
+			if (te instanceof TileEntitySteamGenerator) {
+				tag.setBoolean(DataHelper.ACTIVE, ((TileEntitySteamGenerator) te).getheatinput() > 0);
+				tag.setDouble("heatD", ((TileEntitySteamGenerator) te).getsystemheat());
+				tag.setInteger(DataHelper.OUTPUTMB, ((TileEntitySteamGenerator) te).getoutputmb());
+				tag.setInteger(DataHelper.CONSUMPTION, ((TileEntitySteamGenerator) te).getinputmb());
+				tag.setInteger("heatChange", ((TileEntitySteamGenerator) te).getheatinput());
+				FluidInfo.addTank(DataHelper.TANK, tag, ((TileEntitySteamGenerator) te).WaterTank);
+				tag.setDouble("calcification", ((TileEntitySteamGenerator) te).getcalcification());
+				tag.setInteger("pressure", ((TileEntitySteamGenerator) te).getpressurevalve());
+				return tag;
+			}
+			if (te instanceof TileEntityCondenser) {
+				tag.setBoolean(DataHelper.ACTIVE, true);
+				tag.setDouble(DataHelper.ENERGY, ((TileEntityCondenser) te).energy);
+				tag.setDouble(DataHelper.CAPACITY, ((TileEntityCondenser) te).maxEnergy);
+				tag.setDouble("progress", ((TileEntityCondenser) te).progress * 100.0D / ((TileEntityCondenser) te).maxprogress);
+				FluidInfo.addTank(DataHelper.TANK, tag, ((TileEntityCondenser) te).inputTank);
+				FluidInfo.addTank(DataHelper.TANK2, tag, ((TileEntityCondenser) te).outputTank);
+				return tag;
 			}
 			if (te instanceof TileEntityReactorChamberElectric)
 				return getReactorData(((TileEntityReactorChamberElectric) te).getReactor());

@@ -110,11 +110,6 @@ public class TileEntityRemoteThermalMonitor extends TileEntityThermalMonitor imp
 		return 65536.0D;
 	}
 
-	@Override
-	public boolean shouldRefresh(Block oldBlock, Block newBlock, int oldMeta, int newMeta, World world, int x, int y, int z) {
-		return oldBlock != newBlock;
-	}
-
 	// IWrenchable
 	@Override
 	public ItemStack getWrenchDrop(EntityPlayer player) {
