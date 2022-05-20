@@ -35,7 +35,7 @@ public class ConfigHandler {
 			infoPanelRefreshPeriod = config.getInt("infoPanelRefreshPeriod", Configuration.CATEGORY_GENERAL, 20, 0, 2000, "", "ec.config.screenRefreshPeriod");
 			rangeTriggerRefreshPeriod = config.getInt("rangeTriggerRefreshPeriod", Configuration.CATEGORY_GENERAL, 20, 0, 2000, "", "ec.config.rangeTriggerRefreshPeriod");
 			thermalMonitorRefreshPeriod = config.getInt("thermalMonitorRefreshPeriod", Configuration.CATEGORY_GENERAL, 20, 0, 2000, "", "ec.config.thermalMonitorRefreshPeriod");
-			useCustomSounds = config.getBoolean("useCustomSounds", Configuration.CATEGORY_GENERAL, false, "", "ec.config.useCustomSounds");
+			useCustomSounds = config.getBoolean("useCustomSounds", Configuration.CATEGORY_GENERAL, false, "Update file config\\alarms\\assets\\energycontrol\\sounds.json to see your sounds in game", "ec.config.useCustomSounds");
 			alarmPause = config.getInt("alarmPause", Configuration.CATEGORY_GENERAL, 60, 0, 2000, "", "ec.config.alarmPause");
 			disableRangeCheck = config.getBoolean("disableRangeCheck", Configuration.CATEGORY_GENERAL, false, "", "ec.config.disableRangeCheck");
 		} catch (Exception e) {

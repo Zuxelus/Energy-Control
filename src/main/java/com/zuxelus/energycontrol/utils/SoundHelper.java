@@ -50,22 +50,22 @@ public class SoundHelper {
 	public static void initSound(File configFolder) {
 		if (configFolder == null || !EnergyControl.config.useCustomSounds)
 			return;
-		
-			alarms = new File(configFolder, "alarms");
-			File audioLoc = new File(alarms, "assets" + File.separator + EnergyControl.MODID + File.separator + "sounds");
 
-			if (!alarms.exists()) {
-				try {
-					alarms.mkdir();
-					audioLoc.mkdirs();
-					buildJSON();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+		alarms = new File(configFolder, "alarms");
+		File audioLoc = new File(alarms, "assets" + File.separator + EnergyControl.MODID + File.separator + "sounds");
+
+		if (!alarms.exists()) {
+			try {
+				alarms.mkdir();
+				audioLoc.mkdirs();
+				buildJSON();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
+	}
 
-		public static void importSound() {
+	public static void importSound() {
 		EnergyControl.instance.availableAlarms = new ArrayList<>();
 
 		try {
@@ -74,13 +74,15 @@ public class SoundHelper {
 			for (int i = list.size() - 1; i >= 0; --i) {
 				IResource iresource = list.get(i);
 
-				Map<String, SoundList> map = gson.fromJson(new InputStreamReader(iresource.getInputStream()), type);
-				map.forEach((str, soundList) -> EnergyControl.instance.availableAlarms.add(str.replace("alarm-", "")));
+				try {
+					Map<String, SoundList> map = gson.fromJson(new InputStreamReader(iresource.getInputStream()), type);
+					map.forEach((str, soundList) -> EnergyControl.instance.availableAlarms.add(str.replace("alarm-", "")));
+				} catch (Throwable ex) {
+					if (ex.getMessage() != null)
+						EnergyControl.logger.error(ex.getMessage());
+				}
 			}
-		} catch (Throwable ex) {
-			if (ex.getMessage() != null)
-				EnergyControl.logger.error(ex.getMessage());
-		}
+		} catch (Throwable ex) { }
 	}
 
 	private static void buildJSON() throws IOException {

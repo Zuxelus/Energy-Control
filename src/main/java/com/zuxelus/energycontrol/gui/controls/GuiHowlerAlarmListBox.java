@@ -154,7 +154,7 @@ public class GuiHowlerAlarmListBox extends GuiButton {
 	}
 
 	private void setCurrent(int targetY) {
-		if (lineHeight == 0)
+		if (lineHeight == 0 || items.size() == 0)
 			return;
 
 		int itemIndex = (targetY - BASIC_Y_OFFSET - yPosition + scrollTop) / lineHeight;
