@@ -8,7 +8,6 @@ import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.utils.SeedLibraryFilter;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
-import com.zuxelus.zlib.tileentities.IBlockHorizontal;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
@@ -37,7 +36,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntitySeedLibrary extends TileEntityInventory implements ITilePacketHandler, ISlotItemFilter, IEnergySink, IBlockHorizontal {
+public class TileEntitySeedLibrary extends TileEntityInventory implements ITilePacketHandler, ISlotItemFilter, IEnergySink {
 	public static final byte SLOT_DISCHARGER = 0;
 	public static final byte FAKE_SLOT = 9;
 
@@ -49,10 +48,9 @@ public class TileEntitySeedLibrary extends TileEntityInventory implements ITileP
 	private boolean active;
 
 	protected SeedLibraryFilter[] filters = new SeedLibraryFilter[7];
-	protected HashMap<String, ItemStack> deepContents = new HashMap<String, ItemStack>();
-	protected Vector<ItemStack> unresearched = new Vector<ItemStack>();
+	protected HashMap<String, ItemStack> deepContents = new HashMap<>();
 	// The number of seeds that match the GUI filter.
-	public int seeds_available = 0;
+	public int seeds_available;
 
 	public TileEntitySeedLibrary() {
 		super("tile.seed_library.name");
@@ -181,6 +179,7 @@ public class TileEntitySeedLibrary extends TileEntityInventory implements ITileP
 	public Packet getDescriptionPacket() {
 		NBTTagCompound tag = new NBTTagCompound();
 		tag = writeProperties(tag);
+		updateActive();
 		tag.setBoolean("active", active);
 		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, tag);
 	}
@@ -197,12 +196,8 @@ public class TileEntitySeedLibrary extends TileEntityInventory implements ITileP
 		super.readProperties(tag);
 		if (tag.hasKey("energy"))
 			energy = tag.getDouble("energy");
-		if (tag.hasKey("active")) {
-			boolean old = active;
+		if (tag.hasKey("active"))
 			active = tag.getBoolean("active");
-			if (worldObj.isRemote && active != old)
-				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-		}
 	}
 
 	@Override
@@ -211,7 +206,6 @@ public class TileEntitySeedLibrary extends TileEntityInventory implements ITileP
 		readProperties(tag);
 
 		deepContents.clear();
-		unresearched.clear();
 
 		NBTTagList filterList = tag.getTagList("Filters", Constants.NBT.TAG_COMPOUND);
 		for (int i = 0; i < 7; i++)
@@ -219,9 +213,9 @@ public class TileEntitySeedLibrary extends TileEntityInventory implements ITileP
 		NBTTagList bufferList = tag.getTagList("Items_", Constants.NBT.TAG_COMPOUND);
 		for (int i = 0; i < bufferList.tagCount(); i++) {
 			NBTTagCompound slot = bufferList.getCompoundTagAt(i);
-			//int j = slot.getByte("Slot");
 			ItemStack stack = ItemStack.loadItemStackFromNBT(slot);
-			loadSeed(stack);
+			if (stack != null)
+				loadSeed(stack);
 		}
 	}
 
@@ -237,10 +231,12 @@ public class TileEntitySeedLibrary extends TileEntityInventory implements ITileP
 		super.writeToNBT(tag);
 		NBTTagList inventoryTag = new NBTTagList();
 		for (ItemStack seed : deepContents.values()) {
-			NBTTagCompound seedtag = new NBTTagCompound();
-			seedtag.setByte("Slot", (byte) -1);
-			seed.writeToNBT(seedtag);
-			inventoryTag.appendTag(seedtag);
+			if (seed != null) {
+				NBTTagCompound seedtag = new NBTTagCompound();
+				seedtag.setByte("Slot", (byte) -1);
+				seed.writeToNBT(seedtag);
+				inventoryTag.appendTag(seedtag);
+			}
 		}
 		tag.setTag("Items_", inventoryTag);
 
@@ -330,7 +326,7 @@ public class TileEntitySeedLibrary extends TileEntityInventory implements ITileP
 	public boolean isItemValid(int index, ItemStack stack) { // ISlotItemFilter
 		switch (index) {
 		case SLOT_DISCHARGER:
-			return stack.getItem() instanceof IElectricItem;
+			return stack.getItem() instanceof IElectricItem && ((IElectricItem) stack.getItem()).getTier(stack) <= TIER;
 		case FAKE_SLOT:
 			return false;
 		default:
@@ -353,18 +349,19 @@ public class TileEntitySeedLibrary extends TileEntityInventory implements ITileP
 
 	public String getKey(ItemStack seed) {
 		CropCard card = Crops.instance.getCropCard(seed);
+		String owner = card.owner();
 		int id = card.getId();
 		byte growth = ItemCropSeed.getGrowthFromStack(seed);
 		byte gain = ItemCropSeed.getGainFromStack(seed);
 		byte resistance = ItemCropSeed.getResistanceFromStack(seed);
 		byte scan = ItemCropSeed.getScannedFromStack(seed);
-		return id + ":" + growth + ":" + gain + ":" + resistance + ":" + scan;
+		return owner + ":" + id + ":" + growth + ":" + gain + ":" + resistance + ":" + scan;
 	}
 
 	private void loadSeed(ItemStack seed) {
 		String key = getKey(seed);
 		ItemStack stored = deepContents.get(key);
-		if (stored != null) {
+		if (stored != null && stored != null) {
 			// Found a pre-existing stack. Using it will update everything...
 			stored.stackSize += seed.stackSize;
 			// ...except the GUI's seed count, so update that now.
@@ -372,9 +369,6 @@ public class TileEntitySeedLibrary extends TileEntityInventory implements ITileP
 		} else {
 			// No pre-existing stack. Make a new one.
 			stored = seed.copy();
-			// If it's not fully scanned, prep it for analysis.
-			if (ItemCropSeed.getScannedFromStack(stored) < 4)
-				unresearched.add(stored);
 			// Add it to the main storage bank.
 			deepContents.put(key, stored);
 			// Inform filters of the new seed.
@@ -413,25 +407,23 @@ public class TileEntitySeedLibrary extends TileEntityInventory implements ITileP
 		ItemStack stored = deepContents.get(key);
 		if (stored == null)
 			return;
-		// Found a pre-existing stack, so we can reduce it.
-		stored.stackSize -= seed.stackSize;
-		if (stored.stackSize <= 0) {
+		if (stored.stackSize <= seed.stackSize) {
 			// None left.
-			// If it's not fully scanned, remove it from the analyser menu.
-			if (ItemCropSeed.getScannedFromStack(stored) < 4)
-				unresearched.remove(stored);
 			// Remove it from main storage.
-			deepContents.remove(getKey(stored));
+			deepContents.remove(key);
 			// Inform filters that the seed isn't available anymore.
 			for (SeedLibraryFilter filter : filters)
 				filter.lostSeed(stored);
-		} else
+			stored.stackSize -= seed.stackSize;
+		} else {
+			// Found a pre-existing stack, so we can reduce it.
+			stored.stackSize -= seed.stackSize;
 			// All we need to do is update the GUI count.
 			updateCountIfMatch(stored);
+		}
 	}
 
-	public void importFromInventory()
-	{
+	public void importFromInventory() {
 		getGUIFilter().bulk_mode = true;
 		for (int i = 1; i < 9; i++) {
 			ItemStack stack = getStackInSlot(i);
@@ -451,14 +443,14 @@ public class TileEntitySeedLibrary extends TileEntityInventory implements ITileP
 			if (getStackInSlot(i) == null) {
 				// Get a seed from the active filter.
 				ItemStack seed = filters[6].getSeed(deepContents.values());
-				if (seed == null)
+				if (seed == null || seed.stackSize == 0)
 					break; // No seeds left; stop exporting.
 				// Add one of the seed to the inventory.
 				ItemStack stack = seed.copy();
 				stack.stackSize = 1;
 				inventory[i] = stack;
 				// And remove the seed from main storage.
-				unloadSeed(inventory[i]);
+				unloadSeed(getStackInSlot(i));
 			}
 		getGUIFilter().bulk_mode = false;
 		markDirty();
@@ -506,7 +498,7 @@ public class TileEntitySeedLibrary extends TileEntityInventory implements ITileP
 			left = energy - CAPACITY;
 			energy = CAPACITY;
 		}
-		if (energy >= CONSUMPTION && old == 0 && !worldObj.isRemote)
+		if (energy >= CONSUMPTION && old < CONSUMPTION && !worldObj.isRemote)
 			updateState();
 		return left;
 	}

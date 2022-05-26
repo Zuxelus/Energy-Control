@@ -67,7 +67,7 @@ public class ItemCardIC2 extends ItemCardBase {
 		if (reader.hasField(DataHelper.DIFF) && (settings & 2) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelDifference", reader.getDouble(DataHelper.DIFF), "EU/t", showLabels));
 		if (reader.hasField(DataHelper.CONSUMPTION) && (settings & 4) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelConsumption", reader.getDouble(DataHelper.CONSUMPTION), "mB/s", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelConsumption", reader.getDouble(DataHelper.CONSUMPTION), "mB/t", showLabels));
 		if (reader.hasField(DataHelper.OUTPUT) && (settings & 4) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble(DataHelper.OUTPUT), "EU/t", showLabels));
 		if (reader.hasField(DataHelper.OUTPUTHU) && (settings & 4) > 0)
@@ -75,7 +75,7 @@ public class ItemCardIC2 extends ItemCardBase {
 		if (reader.hasField(DataHelper.OUTPUTKU) && (settings & 4) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble(DataHelper.OUTPUTKU), "KU/t", showLabels));
 		if (reader.hasField(DataHelper.OUTPUTMB) && (settings & 4) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble(DataHelper.OUTPUTMB), "mB/s", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble(DataHelper.OUTPUTMB), "mB/t", showLabels));
 		if (reader.hasField(DataHelper.MULTIPLIER) && (settings & 8) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelMultiplier", reader.getDouble(DataHelper.MULTIPLIER), showLabels));
 		if (reader.hasField(DataHelper.TANK) && (settings & 16) > 0)

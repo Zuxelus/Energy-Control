@@ -9,6 +9,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 public class CrossModBase {
@@ -55,5 +56,11 @@ public class CrossModBase {
 
 	public void registerItems() { }
 
+	public void registerTileEntities() {}
+
 	public void loadRecipes() { }
+
+	public ResourceLocation getFluidTexture(String fluidName) {
+		return null;
+	}
 }

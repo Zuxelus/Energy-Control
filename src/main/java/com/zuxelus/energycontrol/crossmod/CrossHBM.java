@@ -44,6 +44,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -1516,5 +1517,11 @@ public class CrossHBM extends CrossModBase {
 					'T', new ItemStack(ModItems.itemComponent, 1, ItemComponent.RADIO_TRANSMITTER), 'I', com.hbm.items.ModItems.ingot_steel });
 
 			Recipes.addKitRecipe(ItemCardType.KIT_HBM, ItemCardType.CARD_HBM);
+	}
+
+	@Override
+	public ResourceLocation getFluidTexture(String fluidName) {
+		FluidType type = Fluids.fromName(fluidName);
+		return type == null ? null : type.getTexture();
 	}
 }

@@ -167,6 +167,12 @@ public class CrossModLoader {
 			crossMod.registerItems();
 	}
 
+
+	public static void registerTileEntities() {
+		for (CrossModBase crossMod : CROSS_MODS.values())
+			crossMod.registerTileEntities();
+	}
+
 	public static void loadRecipes() {
 		for (CrossModBase crossMod : CROSS_MODS.values())
 			crossMod.loadRecipes();

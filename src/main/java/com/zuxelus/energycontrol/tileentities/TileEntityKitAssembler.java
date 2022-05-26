@@ -144,12 +144,8 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITile
 			buffer = tag.getInteger("buffer");
 		if (tag.hasKey("production"))
 			production = tag.getDouble("production");
-		if (tag.hasKey("active")) {
-			//boolean old = active;
+		if (tag.hasKey("active"))
 			active = tag.getBoolean("active");
-			//if (worldObj.isRemote && active != old)
-			//	worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-		}
 	}
 
 	@Override

@@ -18,7 +18,6 @@ public class FluidInfo {
 	String fluidName;
 	long amount;
 	long capacity;
-	int color;
 
 	public FluidInfo(String fluidName, long amount, long capacity) {
 		this.fluidName = fluidName;
@@ -29,10 +28,8 @@ public class FluidInfo {
 	public FluidInfo(IFluidTank tank) {
 		if (tank.getFluid() != null) {
 			amount = tank.getFluidAmount();
-			if (amount > 0) {
+			if (amount > 0)
 				fluidName = FluidRegistry.getFluidName(tank.getFluid());
-				color = tank.getFluid().getFluid().getColor();
-			}
 		}
 		capacity = tank.getCapacity();
 	}
@@ -40,38 +37,36 @@ public class FluidInfo {
 	public FluidInfo(FluidStack stack, long capacity) {
 		if (stack != null) {
 			amount = stack.amount;
-			if (amount > 0) {
+			if (amount > 0)
 				fluidName = FluidRegistry.getFluidName(stack.getFluid());
-				color = stack.getFluid().getColor();
-			}
 		}
 		this.capacity = capacity;
 	}
 
 	public FluidInfo(Fluid fluid, long amount, long capacity) {
-		if (fluid != null) {
+		if (fluid != null)
 			fluidName = FluidRegistry.getFluidName(fluid);
-			color = fluid.getColor();
-		}
 		this.amount = amount;
 		this.capacity = capacity;
 	}
 
 	public void write(ICardReader reader) {
-		Fluid fluid = FluidRegistry.getFluid(fluidName);
-		if (fluid != null)
-			reader.setString("name", fluid.getLocalizedName());
-		else { // HBM 1.7.10
-			String hbmName = "hbmfluid." + fluidName.toLowerCase();
-			if (!StatCollector.translateToLocal(hbmName).equals(hbmName))
-				reader.setString("name", StatCollector.translateToLocal(hbmName));
-			else
-				reader.setString("name", "");
-		}
-		reader.setString("fluidName", fluidName);
+		if (fluidName != null) {
+			Fluid fluid = FluidRegistry.getFluid(fluidName);
+			if (fluid != null)
+				reader.setString("name", fluid.getLocalizedName());
+			else { // HBM 1.7.10
+				String hbmName = "hbmfluid." + fluidName.toLowerCase();
+				if (!StatCollector.translateToLocal(hbmName).equals(hbmName))
+					reader.setString("name", StatCollector.translateToLocal(hbmName));
+				else
+					reader.setString("name", "");
+			}
+			reader.setString("fluidName", fluidName);
+		} else
+			reader.setString("fluidName", "");
 		reader.setLong(DataHelper.AMOUNT, amount);
 		reader.setLong(DataHelper.CAPACITY, capacity);
-		reader.setInt("color", color);
 	}
 
 	public void write(ICardReader reader, int i) {

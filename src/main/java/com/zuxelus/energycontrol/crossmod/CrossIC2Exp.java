@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.blocks.AFSU;
 import com.zuxelus.energycontrol.blocks.SeedAnalyzer;
 import com.zuxelus.energycontrol.blocks.SeedLibrary;
@@ -16,9 +17,13 @@ import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.energycontrol.items.kits.ItemKitIC2;
 import com.zuxelus.energycontrol.items.kits.ItemKitMain;
 import com.zuxelus.energycontrol.recipes.Recipes;
+import com.zuxelus.energycontrol.tileentities.TileEntityAFSU;
+import com.zuxelus.energycontrol.tileentities.TileEntitySeedAnalyzer;
+import com.zuxelus.energycontrol.tileentities.TileEntitySeedLibrary;
 import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
+import cpw.mods.fml.common.registry.GameRegistry;
 import ic2.api.item.*;
 import ic2.api.reactor.IReactor;
 import ic2.api.tile.IEnergyStorage;
@@ -124,6 +129,34 @@ public class CrossIC2Exp extends CrossModBase {
 			tag.setDouble(DataHelper.CAPACITY, energy.getCapacity());
 			return tag;
 		}
+		if (te instanceof TileEntityElectricMachine) {
+			tag.setDouble(DataHelper.ENERGY, ((TileEntityElectricMachine) te).energy);
+			tag.setDouble(DataHelper.CAPACITY, ((TileEntityElectricMachine) te).maxEnergy);
+			return tag;
+		}
+		return null;
+	}
+
+	@Override
+	public List<FluidInfo> getAllTanks(TileEntity te) {
+		List<FluidInfo> result = new ArrayList<>();
+		if (te instanceof IFluidHandler) {
+			FluidTankInfo[] list = ((IFluidHandler) te).getTankInfo(null);
+			for (FluidTankInfo tank: list)
+				result.add(new FluidInfo(tank.fluid, tank.capacity));
+			return result;
+		}
+		if (te instanceof TileEntityReactorAccessHatch) {
+			IInventory chamber = ((TileEntityReactorAccessHatch) te).getReactor();
+			if (chamber instanceof TileEntityReactorChamberElectric) {
+				TileEntityNuclearReactorElectric reactor = ((TileEntityReactorChamberElectric) chamber).getReactor();
+				if (reactor != null) {
+					result.add(new FluidInfo(reactor.inputTank));
+					result.add(new FluidInfo(reactor.outputTank));
+					return result;
+				}
+			}
+		}
 		return null;
 	}
 
@@ -167,14 +200,14 @@ public class CrossIC2Exp extends CrossModBase {
 				}
 				if (te instanceof TileEntitySolarGenerator) {
 					double multiplier = ((TileEntitySolarGenerator) te).solarbasevalue;
-					Boolean active = ((TileEntitySolarGenerator)te).sunIsVisible && ((TileEntityBaseGenerator) te).storage < ((TileEntityBaseGenerator) te).maxStorage;
+					boolean active = ((TileEntitySolarGenerator)te).sunIsVisible && ((TileEntityBaseGenerator) te).storage < ((TileEntityBaseGenerator) te).maxStorage;
 					tag.setDouble(DataHelper.MULTIPLIER, multiplier);
 					tag.setBoolean(DataHelper.ACTIVE, active);
 					tag.setDouble(DataHelper.OUTPUT, active ? multiplier * (te.getWorldObj().getBlockLightValue(te.xCoord, 255, te.zCoord) / 15.0F) : 0);
 					return tag;
 				}
 				if (te instanceof TileEntityWaterGenerator) {
-					Boolean active = (((TileEntityWaterGenerator) te).water > 0 || ((TileEntityWaterGenerator) te).fuel > 0) && ((TileEntityBaseGenerator) te).storage < 4;
+					boolean active = (((TileEntityWaterGenerator) te).water > 0 || ((TileEntityWaterGenerator) te).fuel > 0) && ((TileEntityBaseGenerator) te).storage < 4;
 					double multiplier = ((TileEntityWaterGenerator) te).waterbasevalue;
 					tag.setDouble(DataHelper.MULTIPLIER, multiplier);
 					tag.setBoolean(DataHelper.ACTIVE, active);
@@ -185,7 +218,7 @@ public class CrossIC2Exp extends CrossModBase {
 					return tag;
 				}
 				if (te instanceof TileEntityWindGenerator) {
-					Boolean active = ((TileEntityWindGenerator) te).subproduction > 0 && ((TileEntityBaseGenerator) te).storage < 4;
+					boolean active = ((TileEntityWindGenerator) te).subproduction > 0 && ((TileEntityBaseGenerator) te).storage < 4;
 					double multiplier = ((TileEntityWindGenerator) te).windbasevalue;
 					tag.setDouble(DataHelper.MULTIPLIER, multiplier);
 					tag.setBoolean(DataHelper.ACTIVE, active);
@@ -215,14 +248,14 @@ public class CrossIC2Exp extends CrossModBase {
 			if (te instanceof TileEntityGeoGenerator) {
 				tag.setDouble(DataHelper.ENERGY, ((TileEntityGeoGenerator) te).storage);
 				tag.setDouble(DataHelper.CAPACITY, ((TileEntityGeoGenerator) te).maxStorage);
-				Boolean active = ((TileEntityGeoGenerator) te).isConverting();
+				boolean active = ((TileEntityGeoGenerator) te).isConverting();
 				tag.setBoolean(DataHelper.ACTIVE, active);
 				tag.setDouble(DataHelper.OUTPUT, active ? ((TileEntityGeoGenerator) te).production : 0);
 				return tag;
 			}
 
 			if (te instanceof TileEntityKineticGenerator) {
-				Boolean active = ((TileEntityKineticGenerator)te).getActive();
+				boolean active = ((TileEntityKineticGenerator)te).getActive();
 				tag.setBoolean(DataHelper.ACTIVE, active);
 				tag.setDouble(DataHelper.ENERGY, ((TileEntityKineticGenerator)te).EUstorage);
 				tag.setDouble(DataHelper.CAPACITY, DataHelper.getInt(TileEntityKineticGenerator.class, "maxEUStorage", te));
@@ -258,7 +291,7 @@ public class CrossIC2Exp extends CrossModBase {
 			}
 			if (te instanceof TileEntitySteamKineticGenerator) {
 				tag.setBoolean(DataHelper.ACTIVE, ((TileEntityBlock) te).getActive());
-				tag.setDouble(DataHelper.OUTPUTHU, ((TileEntitySteamKineticGenerator) te).gethUoutput());
+				tag.setDouble(DataHelper.OUTPUTKU, ((TileEntitySteamKineticGenerator) te).gethUoutput());
 				Field field = TileEntitySteamKineticGenerator.class.getDeclaredField("steamTank");
 				field.setAccessible(true);
 				FluidInfo.addTank(DataHelper.TANK, tag, (FluidTank) field.get(te));
@@ -369,13 +402,30 @@ public class CrossIC2Exp extends CrossModBase {
 				tag.setInteger("pressure", ((TileEntitySteamGenerator) te).getpressurevalve());
 				return tag;
 			}
-			if (te instanceof TileEntityCondenser) {
-				tag.setBoolean(DataHelper.ACTIVE, true);
-				tag.setDouble(DataHelper.ENERGY, ((TileEntityCondenser) te).energy);
-				tag.setDouble(DataHelper.CAPACITY, ((TileEntityCondenser) te).maxEnergy);
-				tag.setDouble("progress", ((TileEntityCondenser) te).progress * 100.0D / ((TileEntityCondenser) te).maxprogress);
-				FluidInfo.addTank(DataHelper.TANK, tag, ((TileEntityCondenser) te).inputTank);
-				FluidInfo.addTank(DataHelper.TANK2, tag, ((TileEntityCondenser) te).outputTank);
+			if (te instanceof TileEntityElectricMachine) {
+				tag.setDouble(DataHelper.ENERGY, ((TileEntityElectricMachine) te).energy);
+				tag.setDouble(DataHelper.CAPACITY, ((TileEntityElectricMachine) te).maxEnergy);
+				if (te instanceof TileEntityCondenser) {
+					tag.setBoolean(DataHelper.ACTIVE, true);
+					tag.setDouble("progress", ((TileEntityCondenser) te).progress * 100.0D / ((TileEntityCondenser) te).maxprogress);
+					FluidInfo.addTank(DataHelper.TANK, tag, ((TileEntityCondenser) te).getinputtank());
+					FluidInfo.addTank(DataHelper.TANK2, tag, ((TileEntityCondenser) te).getoutputtank());
+				}
+				if (te instanceof TileEntityFluidRegulator) {
+					tag.setDouble(DataHelper.OUTPUTMB, DataHelper.getInt(TileEntityFluidRegulator.class, "mode", te) == 0 ? ((TileEntityFluidRegulator) te).getoutputmb() / 20.0D : ((TileEntityFluidRegulator) te).getoutputmb());
+					FluidInfo.addTank(DataHelper.TANK, tag, ((TileEntityFluidRegulator) te).getFluidTank());
+				}
+				if (te instanceof TileEntityOreWashing) {
+					FluidInfo.addTank(DataHelper.TANK, tag, ((TileEntityOreWashing) te).getFluidTank());
+					return tag;
+				}
+				if (te instanceof TileEntityMetalFormer) {
+					tag.setBoolean(DataHelper.ACTIVE, ((TileEntityMetalFormer) te).getActive());
+				}
+				return tag;
+			}
+			if (te instanceof TileEntityElectrolyzer) {
+				tag.setDouble(DataHelper.ENERGY, ((TileEntityElectrolyzer) te).energy);
 				return tag;
 			}
 			if (te instanceof TileEntityReactorChamberElectric)
@@ -444,19 +494,6 @@ public class CrossIC2Exp extends CrossModBase {
 	}
 
 	@Override
-	public List<FluidInfo> getAllTanks(TileEntity te) {
-		if (!(te instanceof IFluidHandler))
-			return null;
-
-		FluidTankInfo[] list = ((IFluidHandler) te).getTankInfo(null);
-		List<FluidInfo> result = new ArrayList<>();
-		for (FluidTankInfo tank: list)
-			result.add(new FluidInfo(tank.fluid, tank.capacity));
-
-		return result;
-	}
-
-	@Override
 	public ArrayList getHookValues(TileEntity te) {
 		ArrayList values = IC2Hooks.map.get(te);
 		if (values == null)
@@ -479,21 +516,14 @@ public class CrossIC2Exp extends CrossModBase {
 	}
 
 	@Override
+	public void registerTileEntities() {
+		GameRegistry.registerTileEntity(TileEntityAFSU.class, EnergyControl.MODID + ":afsu");
+		GameRegistry.registerTileEntity(TileEntitySeedAnalyzer.class, EnergyControl.MODID + ":seed_analyzer");
+		GameRegistry.registerTileEntity(TileEntitySeedLibrary.class, EnergyControl.MODID + ":seed_library");
+	}
+
+	@Override
 	public void loadRecipes() {
-		Recipes.addShapedRecipe(ModItems.blockAverageCounter, new Object[] {
-			"LAL", "FTF",
-				'A', "circuitAdvanced",
-				'F', IC2Items.getItem("goldCableItem"),
-				'T', IC2Items.getItem("mvTransformer"),
-				'L', "plateLead" });
-
-		Recipes.addShapedRecipe(ModItems.blockEnergyCounter, new Object[] {
-			"IAI", "FTF", 
-				'A', "circuitAdvanced",
-				'F', IC2Items.getItem("goldCableItem"),
-				'T', IC2Items.getItem("mvTransformer"),
-				'I', "plateIron" });
-
 		Recipes.addShapedRecipe(ModItems.blockAfsu, new Object[] {
 			"MGM", "IAI", "MGM",
 				'I', IC2Items.getItem("iridiumPlate"),

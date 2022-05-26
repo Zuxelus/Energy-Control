@@ -3,7 +3,6 @@ package com.zuxelus.energycontrol.tileentities;
 import com.zuxelus.energycontrol.blocks.SeedAnalyzer;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
-import com.zuxelus.zlib.tileentities.IBlockHorizontal;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
@@ -26,7 +25,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntitySeedAnalyzer extends TileEntityInventory implements ITilePacketHandler, ISlotItemFilter, IEnergySink, IBlockHorizontal {
+public class TileEntitySeedAnalyzer extends TileEntityInventory implements ITilePacketHandler, ISlotItemFilter, IEnergySink {
 	public static final byte SLOT_IN = 0;
 	public static final byte SLOT_OUT = 1;
 	public static final byte SLOT_DISCHARGER = 2;

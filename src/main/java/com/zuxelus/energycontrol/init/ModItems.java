@@ -87,7 +87,7 @@ public class ModItems {
 		itemCardHolder = register(new ItemCardHolder(), "card_holder");
 		itemComponent = register(new ItemComponent(), "item_component");
 
-		CrossModLoader.registerItems();
+		CrossModLoader.registerItems(); // In 1.10.2 in EnergyControl class
 
 		OreDictionary.registerOre("circuitBasic", new ItemStack(itemComponent, 1, ItemComponent.BASIC_CIRCUIT));
 		OreDictionary.registerOre("circuitAdvanced", new ItemStack(itemComponent, 1, ItemComponent.ADVANCED_CIRCUIT));
@@ -124,11 +124,7 @@ public class ModItems {
 		GameRegistry.registerTileEntity(TileEntityAverageCounter.class, EnergyControl.MODID + ":average_counter");
 		GameRegistry.registerTileEntity(TileEntityEnergyCounter.class, EnergyControl.MODID + ":energy_counter");
 		GameRegistry.registerTileEntity(TileEntityKitAssembler.class, EnergyControl.MODID + ":kit_assembler");
-		if (Loader.isModLoaded(ModIDs.IC2)) {
-			GameRegistry.registerTileEntity(TileEntityAFSU.class, EnergyControl.MODID + ":afsu");
-			GameRegistry.registerTileEntity(TileEntitySeedAnalyzer.class, EnergyControl.MODID + ":seed_analyzer");
-			GameRegistry.registerTileEntity(TileEntitySeedLibrary.class, EnergyControl.MODID + ":seed_library");
-		}
 		GameRegistry.registerTileEntity(TileEntityTimer.class, EnergyControl.MODID + ":timer");
+		CrossModLoader.registerTileEntities();
 	}
 }

@@ -7,24 +7,20 @@ import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
-import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
-import com.zuxelus.zlib.tileentities.IBlockHorizontal;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.world.World;
 
-public class TileEntityRangeTrigger extends TileEntityInventory implements ISlotItemFilter, ITilePacketHandler, IBlockHorizontal {
+public class TileEntityRangeTrigger extends TileEntityInventory implements ISlotItemFilter, ITilePacketHandler {
 	public static final int SLOT_CARD = 0;
 	public static final int SLOT_UPGRADE = 1;
 

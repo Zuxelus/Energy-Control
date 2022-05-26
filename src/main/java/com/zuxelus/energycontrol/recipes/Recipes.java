@@ -2,7 +2,6 @@ package com.zuxelus.energycontrol.recipes;
 
 import com.zuxelus.energycontrol.blocks.BlockLight;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.ItemComponent;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
@@ -16,7 +15,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
-import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
@@ -108,6 +106,19 @@ public class Recipes {
 				'M', new ItemStack(ModItems.itemComponent, 1, ItemComponent.MACHINE_CASING),
 				'R', Items.redstone });
 
+		Recipes.addShapedRecipe(ModItems.blockAverageCounter, new Object[] {
+				"SAS", "FTF",
+					'A', "circuitAdvanced",
+					'F', "ingotGold",
+					'T', new ItemStack(ModItems.itemComponent, 1, ItemComponent.MACHINE_CASING),
+					'S', new ItemStack(ModItems.itemComponent, 1, ItemComponent.STRONG_STRING) });
+
+			Recipes.addShapedRecipe(ModItems.blockEnergyCounter, new Object[] {
+				" A ", "FTF",
+					'A', "circuitAdvanced",
+					'F', "ingotGold",
+					'T', new ItemStack(ModItems.itemComponent, 1, ItemComponent.MACHINE_CASING) });
+
 		addShapedRecipe(ModItems.blockKitAssembler, new Object[] {
 			"ITI", "RCR", "IFI",
 				'T', Blocks.crafting_table,
@@ -170,7 +181,7 @@ public class Recipes {
 				'S', new ItemStack(ModItems.itemComponent, 1, ItemComponent.STRONG_STRING) });
 
 		addShapedRecipe(ModItems.itemCardHolder,
-			new Object[] { " L ", "LCL", " L ", 'C', Blocks.chest, 'L', "leather" });
+			new Object[] { " L ", "LCL", " L ", 'C', Blocks.chest, 'L', Items.leather }); // 1.7.10
 
 		CraftingManager.getInstance().getRecipeList().add(new StorageArrayRecipe());
 

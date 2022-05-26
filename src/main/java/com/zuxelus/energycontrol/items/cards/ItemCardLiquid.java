@@ -11,20 +11,20 @@ import com.zuxelus.energycontrol.api.IHasBars;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
@@ -108,8 +108,10 @@ public class ItemCardLiquid extends ItemCardBase implements IHasBars {
 			return;
 
 		Fluid fluid = FluidRegistry.getFluid(fluidName); // 1.7.10
-		if (fluid == null)
+		if (fluid == null) {
+			tryRenderHBMFluid(manager, displayWidth, displayHeight, reader, fluidName);
 			return;
+		}
 
 		IIcon sprite = fluid.getStillIcon(); // 1.7.10
 		if (sprite == null)
@@ -117,14 +119,8 @@ public class ItemCardLiquid extends ItemCardBase implements IHasBars {
 
 		double textureX = sprite.getMinU();
 		double textureY = sprite.getMinV();
-		double width = 14 / 16.0F * reader.getInt("amount") / reader.getInt("capacity");
+		double width = 14 / 16.0F * reader.getInt(DataHelper.AMOUNT) / reader.getInt(DataHelper.CAPACITY);
 		double height = 0.4375;
-
-		int color = reader.getInt("color");
-		float f = (color >> 24 & 255) / 255.0F;
-		float f1 = (color >> 16 & 255) / 255.0F;
-		float f2 = (color >> 8 & 255) / 255.0F;
-		float f3 = (color & 255) / 255.0F;
 
 		GL11.glScaled(displayWidth / 0.875, displayHeight / 0.875, 1);
 		manager.bindTexture(TextureMap.locationBlocksTexture);
@@ -136,6 +132,34 @@ public class ItemCardLiquid extends ItemCardBase implements IHasBars {
 		tessellator.addVertexWithUV(x + 0.875, y + 0.4375 / 2 + height, z, textureX + sprite.getMaxU() - sprite.getMinU(), textureY + sprite.getMaxV() - sprite.getMinV());
 		tessellator.addVertexWithUV(x + 0.875, y + 0.4375 / 2, z, textureX + sprite.getMaxU() - sprite.getMinU(), textureY + 0);
 		tessellator.addVertexWithUV(x, y + 0.4375 / 2, z, textureX + 0, textureY + 0);
+		tessellator.draw();
+
+		IHasBars.drawTransparentRect(x + 0.875 - width, y + height + 0.4375 / 2, x, y + 0.4375 / 2, -0.0001, 0xB0000000);
+		GL11.glScaled(0.875D / displayWidth, 0.875D / displayHeight, 1);
+	}
+
+	public void tryRenderHBMFluid(TextureManager manager, double displayWidth, double displayHeight, ICardReader reader, String fluidName) {
+		ResourceLocation texture = CrossModLoader.getCrossMod(ModIDs.HBM).getFluidTexture(fluidName);
+		if (texture == null)
+			return;
+
+		double x = -0.5D + 1 / 16.0F;
+		double y = -0.5D + 1/ 16.0F;
+		double z = 0;
+
+		double width = 14 / 16.0F * reader.getInt(DataHelper.AMOUNT) / reader.getInt(DataHelper.CAPACITY);
+		double height = 0.4375;
+
+		GL11.glScaled(displayWidth / 0.875, displayHeight / 0.875, 1);
+		manager.bindTexture(texture);
+
+		GL11.glDisable(GL11.GL_BLEND);
+		Tessellator tessellator = Tessellator.instance;
+		tessellator.startDrawingQuads();
+		tessellator.addVertexWithUV(x, y + 0.4375 / 2 + height, z, 0, 2 * (displayHeight + 0.125D));
+		tessellator.addVertexWithUV(x + 0.875, y + 0.4375 / 2 + height, z, 4 * (displayWidth + 0.125D), 2 * (displayHeight + 0.125D));
+		tessellator.addVertexWithUV(x + 0.875, y + 0.4375 / 2, z, 4 * (displayWidth + 0.125D), 0);
+		tessellator.addVertexWithUV(x, y + 0.4375 / 2, z, 0, 0);
 		tessellator.draw();
 
 		IHasBars.drawTransparentRect(x + 0.875 - width, y + height + 0.4375 / 2, x, y + 0.4375 / 2, -0.0001, 0xB0000000);
