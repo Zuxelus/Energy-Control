@@ -37,9 +37,9 @@ public class ScreenManager {
 
 	private void checkWorldLists(String key) {
 		if (!screens.containsKey(key))
-			screens.put(key, new ArrayList<Screen>());
+			screens.put(key, new ArrayList<>());
 		if (!unusedPanels.containsKey(key))
-			unusedPanels.put(key, new ArrayList<TileEntityInfoPanel>());
+			unusedPanels.put(key, new ArrayList<>());
 	}
 
 	public void clearWorld(IWorld world) {

@@ -11,7 +11,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.16.5-0.2.6'
+version = '1.16.5-0.2.6a'
 group = 'com.zuxelus.energycontrol'
 archivesBaseName = 'EnergyControl-forge'
 
@@ -73,25 +73,25 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.5-36.2.20'
+    minecraft 'net.minecraftforge:forge:1.16.5-36.2.35'
     compileOnly fg.deobf ("curse.maven:mekanism-268560:3659389")
     compileOnly fg.deobf ("curse.maven:mekanismgenerators-268566:3659391")
-    compileOnly fg.deobf ("curse.maven:ae2-223794:3455386")
+    compileOnly fg.deobf ("curse.maven:ae2-223794:3608871")
 
-    compileOnly fg.deobf ("curse.maven:botania-225643:3386883")
-    compileOnly fg.deobf ("curse.maven:curios-309927:3456953")
+    compileOnly fg.deobf ("curse.maven:botania-225643:3608755")
+    compileOnly fg.deobf ("curse.maven:curios-309927:3725386")
     compileOnly fg.deobf ("curse.maven:patchouli-306770:3459118")
 
-    compileOnly fg.deobf ("curse.maven:cctweaked-282001:3670779")
-    compileOnly fg.deobf ("curse.maven:jei-238222:3438494")
-    compileOnly fg.deobf ("curse.maven:extremereactors-250277:3426518")
-    compileOnly fg.deobf ("curse.maven:zerocore-247921:3426514")
+    compileOnly fg.deobf ("curse.maven:cctweaked-282001:3770722")
+    compileOnly fg.deobf ("curse.maven:jei-238222:3681294")
+    compileOnly fg.deobf ("curse.maven:extremereactors-250277:3768556")
+    compileOnly fg.deobf ("curse.maven:zerocore-247921:3768307")
     compileOnly fg.deobf ("curse.maven:biggerreactors-407780:3407098")
     compileOnly fg.deobf ("curse.maven:phosphophyllite-412551:3397407")
-    compileOnly fg.deobf ("curse.maven:thermal_expansion-69163:3607549");
-    compileOnly fg.deobf ("curse.maven:thermal_foundation-222880:3621736");
-    compileOnly fg.deobf ("curse.maven:cofh_core-69162:3407019");
-    compileOnly fg.deobf ("curse.maven:ImmersiveEngineering-231951:3431122");
+    compileOnly fg.deobf ("curse.maven:thermal_expansion-69163:3788892");
+    compileOnly fg.deobf ("curse.maven:thermal_foundation-222880:3788893");
+    compileOnly fg.deobf ("curse.maven:cofh_core-69162:3788884");
+    compileOnly fg.deobf ("curse.maven:ImmersiveEngineering-231951:3578181");
 }
 
 jar {
@@ -118,7 +118,7 @@ publishing {
     }
     repositories {
         maven {
-            url "file://${project.projectDir}/mcmodsrepo"
+            url "file:///${project.projectDir}/mcmodsrepo"
         }
     }
 }

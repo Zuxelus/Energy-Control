@@ -11,6 +11,7 @@ import com.zuxelus.energycontrol.items.cards.ItemCardLiquid;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
+import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

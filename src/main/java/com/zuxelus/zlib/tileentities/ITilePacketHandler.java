@@ -1,4 +1,4 @@
-package com.zuxelus.energycontrol.tileentities;
+package com.zuxelus.zlib.tileentities;
 
 import net.minecraft.nbt.CompoundNBT;
 

@@ -1,26 +1,26 @@
 package com.zuxelus.energycontrol.utils;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.stream.JsonWriter;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundList;
 import net.minecraft.client.audio.SoundListSerializer;
-import net.minecraft.resources.FolderPack;
 import net.minecraft.resources.IResource;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.SimpleReloadableResourceManager;
@@ -51,29 +51,49 @@ public class SoundHelper {
 		}
 	};
 
-	public static void initSound(File configFolder) {
-		if (configFolder == null || !ConfigHandler.USE_CUSTOM_SOUNDS.get())
+	public static void initSound(File packFolder) {
+		if (packFolder == null || !ConfigHandler.USE_CUSTOM_SOUNDS.get())
 			return;
-		
-			alarms = new File(configFolder, "alarms");
-			File audioLoc = new File(alarms, "assets" + File.separator + EnergyControl.MODID + File.separator + "sounds");
 
-			if (!alarms.exists()) {
-				try {
-					alarms.mkdir();
-					audioLoc.mkdirs();
-					buildJSON();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+		alarms = new File(packFolder, "Alarms");
+		File audioLoc = new File(alarms, "assets" + File.separator + EnergyControl.MODID + File.separator + "sounds");
+
+		if (!alarms.exists()) {
+			try {
+				alarms.mkdir();
+				audioLoc.mkdirs();
+
+				PrintWriter writer = new PrintWriter(alarms.getAbsolutePath() + File.separator + "pack.mcmeta",
+						"UTF-8");
+				writer.println("{");
+				writer.println("  \"pack\": {");
+				writer.println("    \"pack_format\": 6,");
+				writer.println("    \"description\": \"Energy Control custom alarms\"");
+				writer.println("  }");
+				writer.println("}");
+				writer.close();
+
+				writer = new PrintWriter(alarms.getAbsolutePath() + File.separator + "assets" + File.separator + EnergyControl.MODID + File.separator + "sounds.json", "UTF-8");
+				writer.println("{");
+				writer.println("    \"alarm-boom\": {\"category\": \"master\",\"sounds\": [{\"name\": \"energycontrol:alarm-boom\",\"stream\": true}]}");
+				writer.println("}");
+				writer.close();
+
+				byte[] data = Base64.getDecoder().decode(SoundExample.soundFile);
+				OutputStream stream = new FileOutputStream(audioLoc.getAbsolutePath() + File.separator + "alarm-boom.ogg");
+				stream.write(data);
+				stream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
+	}
 
-		public static void importSound() {
+	public static void importSound(IResourceManager resourceManager) {
 		EnergyControl.INSTANCE.availableAlarms = new ArrayList<>();
 
 		try {
-			List<IResource> list = Minecraft.getInstance().getResourceManager().getResources(new ResourceLocation(EnergyControl.MODID, "sounds.json"));
+			List<IResource> list = resourceManager.getResources(new ResourceLocation(EnergyControl.MODID, "sounds.json"));
 
 			for (int i = list.size() - 1; i >= 0; --i) {
 				IResource iresource = list.get(i);
@@ -81,25 +101,16 @@ public class SoundHelper {
 				Map<String, SoundList> map = gson.fromJson(new InputStreamReader(iresource.getInputStream()), type);
 				map.forEach((str, soundList) -> EnergyControl.INSTANCE.availableAlarms.add(str.replace("alarm-", "")));
 			}
-		} catch (IOException ignored) {}
-	}
-
-	private static void buildJSON() throws IOException {
-		JsonWriter parse = new JsonWriter(new FileWriter(alarms.getAbsolutePath() + File.separator + "assets" + File.separator + EnergyControl.MODID + File.separator + "sounds.json"));
-		parse.beginObject();
-		parse.name("_comment").value("EXAMPLE 'alarm-name': {'category': 'master','sounds': [{'name': 'energycontrol:alarm-name','stream': true}]}");
-		parse.endObject();
-		parse.close();
+		} catch (IOException ignored) {
+		}
 	}
 
 	public static class SoundLoader implements ISelectiveResourceReloadListener {
 
 		@Override
 		public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate) {
-			if (resourcePredicate.test(VanillaResourceType.SOUNDS) && resourceManager instanceof SimpleReloadableResourceManager && alarms != null) {
-				FolderPack pack = new FolderPack(alarms);
-				((SimpleReloadableResourceManager) resourceManager).add(pack);
-			}
+			if (resourcePredicate.test(VanillaResourceType.SOUNDS) && resourceManager instanceof SimpleReloadableResourceManager)
+				importSound(resourceManager);
 		}
 	}
 }

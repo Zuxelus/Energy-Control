@@ -12,6 +12,7 @@ import com.zuxelus.energycontrol.recipes.KitAssemblerRecipe;
 import com.zuxelus.energycontrol.recipes.KitAssemblerRecipeType;
 import com.zuxelus.zlib.containers.EnergyStorage;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
+import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityItemHandler;
 
 import net.minecraft.block.Block;

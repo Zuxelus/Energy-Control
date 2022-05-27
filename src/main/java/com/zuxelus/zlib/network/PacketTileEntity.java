@@ -2,7 +2,7 @@ package com.zuxelus.zlib.network;
 
 import java.util.function.Supplier;
 
-import com.zuxelus.energycontrol.tileentities.ITilePacketHandler;
+import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;

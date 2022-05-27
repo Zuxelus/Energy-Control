@@ -5,6 +5,7 @@ import com.zuxelus.energycontrol.blocks.ThermalMonitor;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
+import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import net.minecraft.block.Block;

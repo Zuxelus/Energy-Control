@@ -30,9 +30,9 @@ import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.EnergyType;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.text.LanguageMap;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.IFluidTank;
 
@@ -392,14 +392,14 @@ public class CrossMekanism extends CrossModBase {
 		if (tank.isEmpty())
 			tag.putString(name, "N/A");
 		else
-			tag.putString(name, String.format("%s: %s mB", I18n.get(tank.getType().getTranslationKey()), tank.getStored()));
+			tag.putString(name, String.format("%s: %s mB", LanguageMap.getInstance().getOrDefault(tank.getType().getTranslationKey()), tank.getStored()));
 	}
 
 	public static void addTank(String name, CompoundNBT tag, IExtendedFluidTank tank) {
 		if (tank.isEmpty())
 			tag.putString(name, "N/A");
 		else
-			tag.putString(name, String.format("%s: %s mB", I18n.get(tank.getFluid().getTranslationKey()), tank.getFluidAmount()));
+			tag.putString(name, String.format("%s: %s mB", LanguageMap.getInstance().getOrDefault(tank.getFluid().getTranslationKey()), tank.getFluidAmount()));
 	}
 
 	public static void addTank(String name, CompoundNBT tag, MergedChemicalTank tank) { // MergedChemicalTank doesn't exist in 1.15

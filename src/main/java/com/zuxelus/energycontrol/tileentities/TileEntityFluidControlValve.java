@@ -6,6 +6,7 @@ import com.zuxelus.energycontrol.containers.ContainerFluidControlValve;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
+import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
 import net.minecraft.block.BlockState;

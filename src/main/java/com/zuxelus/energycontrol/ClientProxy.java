@@ -24,9 +24,10 @@ public class ClientProxy {
 	@SuppressWarnings("resource")
 	@SubscribeEvent
 	public static void onFMLClientSetupEvent(final FMLClientSetupEvent event) {
-		SoundHelper.initSound(Minecraft.getInstance().gameDirectory);
-		((IReloadableResourceManager) Minecraft.getInstance().getResourceManager()).registerReloadListener(new SoundHelper.SoundLoader());
-		SoundHelper.importSound();
+		SoundHelper.initSound(Minecraft.getInstance().getResourcePackDirectory());
+		IReloadableResourceManager manager = (IReloadableResourceManager) Minecraft.getInstance().getResourceManager();
+		manager.registerReloadListener(new SoundHelper.SoundLoader());
+		SoundHelper.importSound(manager);
 
 		ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.thermal_monitor.get(), TEThermalMonitorRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(ModTileEntityTypes.remote_thermo.get(), TERemoteThermoRenderer::new);
