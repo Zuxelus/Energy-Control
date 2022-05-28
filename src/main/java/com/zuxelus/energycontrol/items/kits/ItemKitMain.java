@@ -39,48 +39,18 @@ public class ItemKitMain extends Item implements IItemKit {
 		setCreativeTab(EnergyControl.creativeTab);
 	}
 
-	public static ItemStack getKitById(int id) {
-		return KITS.containsKey(id) ? new ItemStack(ModItems.itemKit, 1, id) : ItemStack.EMPTY;
-	}
-
 	public final void registerKits() {
 		register(ItemKitEnergy::new);
 		register(ItemKitCounter::new);
 		register(ItemKitLiquid::new);
-		if (Loader.isModLoaded(ModIDs.IC2)) {
-			register(ItemKitGenerator::new);
-			register(ItemKitReactor::new);
-		}
 		register(ItemKitLiquidAdvanced::new);
 		register(ItemKitToggle::new);
 		register(ItemKitVanilla::new);
 		register(ItemKitInventory::new);
 		register(ItemKitRedstone::new);
-		if (Loader.isModLoaded(ModIDs.DRACONIC_EVOLUTION))
-			register(ItemKitDraconic::new);
-		if (Loader.isModLoaded(ModIDs.APPLIED_ENERGISTICS))
-			register(ItemKitAppEng::new);
-		if (Loader.isModLoaded(ModIDs.GALACTICRAFT_CORE) && Loader.isModLoaded(ModIDs.GALACTICRAFT_PLANETS))
-			register(ItemKitGalacticraft::new);
-		if (Loader.isModLoaded(ModIDs.GREGTECH))
-			register(ItemKitGregTech::new);
-		if (Loader.isModLoaded(ModIDs.BIG_REACTORS))
-			register(ItemKitBigReactors::new);
-		if (Loader.isModLoaded(ModIDs.ENDER_IO))
-			register(ItemKitEnderIO::new);
-		if (Loader.isModLoaded(ModIDs.HBM))
-			register(ItemKitHBM::new);
-		if (Loader.isModLoaded(ModIDs.MEKANISM))
-			register(ItemKitMekanism::new);
-		if (Loader.isModLoaded(ModIDs.NUCLEAR_CRAFT))
-			register(ItemKitNuclearCraft::new);
-		if (Loader.isModLoaded(ModIDs.PNEUMATICCRAFT))
-			register(ItemKitPneumaticCraft::new);
-		if (Loader.isModLoaded(ModIDs.THERMAL_EXPANSION))
-			register(ItemKitThermalExpansion::new);
 	}
 
-	private static void register(Supplier<ItemKitBase> factory) {
+	public static void register(Supplier<ItemKitBase> factory) {
 		ItemKitBase item = factory.get();
 		if (checkKit(item))
 			KITS.put(item.getDamage(), item);

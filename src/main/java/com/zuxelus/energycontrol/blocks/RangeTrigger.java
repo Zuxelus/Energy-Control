@@ -47,11 +47,6 @@ public class RangeTrigger extends FacingHorizontalEC {
 	}
 
 	@Override
-	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-		drops.add(CrossModLoader.getCrossMod(ModIDs.IC2).getItemStack("machine"));
-	}
-
-	@Override
 	public int getWeakPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
 		TileEntity te = blockAccess.getTileEntity(pos);
 		if (!(te instanceof TileEntityRangeTrigger))

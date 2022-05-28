@@ -14,6 +14,8 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -60,8 +62,10 @@ public abstract class FacingHorizontal extends BlockHorizontal implements ITileE
 	@Override
 	public void breakBlock(World world, BlockPos pos, IBlockState state) {
 		TileEntity te = world.getTileEntity(pos);
-		if (te instanceof TileEntityInventory)
-			((TileEntityInventory) te).dropItems(world, pos);
+		if (te instanceof IInventory) {
+			InventoryHelper.dropInventoryItems(world, pos, (IInventory) te);
+			world.updateComparatorOutputLevel(pos, this);
+		}
 		super.breakBlock(world, pos, state);
 	}
 

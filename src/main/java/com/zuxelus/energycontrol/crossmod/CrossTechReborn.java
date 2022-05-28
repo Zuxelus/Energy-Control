@@ -78,7 +78,7 @@ public class CrossTechReborn extends CrossModBase {
 		return null;
 	}
 
-	@Override
+	/*@Override
 	public ItemStack getGeneratorCard(TileEntity te) {
 		if (te instanceof TileFluidGenerator || te instanceof TileSolidFuelGenerator || te instanceof TileSolarPanel
 				|| te instanceof TileCreativeSolarPanel || te instanceof TileWaterMill || te instanceof TileWindMill
@@ -252,7 +252,7 @@ public class CrossTechReborn extends CrossModBase {
 			}
 		} catch (Throwable t) { }
 		return null;
-	}
+	}*/
 
 	@Override
 	public List<FluidInfo> getAllTanks(TileEntity te) {

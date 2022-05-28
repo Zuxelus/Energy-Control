@@ -48,52 +48,18 @@ public final class ItemCardMain extends Item implements IItemCard, ITouchAction,
 		register(ItemCardEnergy::new);
 		register(ItemCardCounter::new);
 		register(ItemCardLiquid::new);
-		if (Loader.isModLoaded(ModIDs.IC2)) {
-			register(ItemCardGenerator::new);
-			register(ItemCardGeneratorKinetic::new);
-			register(ItemCardGeneratorHeat::new);
-			register(ItemCardReactor::new);
-			register(ItemCardReactor5x5::new);
-		}
 		register(ItemCardLiquidAdvanced::new);
 		register(ItemCardText::new);
 		register(ItemCardTime::new);
 		register(ItemCardEnergyArray::new);
 		register(ItemCardLiquidArray::new);
-		register(ItemCardGeneratorArray::new);
 		register(ItemCardToggle::new);
 		register(ItemCardVanilla::new);
 		register(ItemCardInventory::new);
 		register(ItemCardRedstone::new);
-		if (Loader.isModLoaded(ModIDs.BUILDCRAFT))
-			register(ItemCardEngine::new);
-		if (Loader.isModLoaded(ModIDs.DRACONIC_EVOLUTION))
-			register(ItemCardReactorDraconic::new);
-		if (Loader.isModLoaded(ModIDs.APPLIED_ENERGISTICS)) {
-			register(ItemCardAppEng::new);
-			register(ItemCardAppEngInv::new);
-		}
-		if (Loader.isModLoaded(ModIDs.GALACTICRAFT_CORE) && Loader.isModLoaded(ModIDs.GALACTICRAFT_PLANETS))
-			register(ItemCardGalacticraft::new);
-		if (Loader.isModLoaded(ModIDs.BIG_REACTORS))
-			register(ItemCardBigReactors::new);
-		if (Loader.isModLoaded(ModIDs.ENDER_IO))
-			register(ItemCardEnderIO::new);
-		if (Loader.isModLoaded(ModIDs.GREGTECH))
-			register(ItemCardGregTech::new);
-		if (Loader.isModLoaded(ModIDs.HBM))
-			register(ItemCardHBM::new);
-		if (Loader.isModLoaded(ModIDs.MEKANISM))
-			register(ItemCardMekanism::new);
-		if (Loader.isModLoaded(ModIDs.NUCLEAR_CRAFT))
-			register(ItemCardNuclearCraft::new);
-		if (Loader.isModLoaded(ModIDs.PNEUMATICCRAFT))
-			register(ItemCardPneumaticCraft::new);
-		if (Loader.isModLoaded(ModIDs.THERMAL_EXPANSION))
-			register(ItemCardThermalExpansion::new);
 	}
 
-	private static void register(Supplier<ItemCardBase> factory) {
+	public static void register(Supplier<ItemCardBase> factory) {
 		ItemCardBase item = factory.get();
 		if (checkCard(item))
 			CARDS.put(item.getDamage(), item);
@@ -208,68 +174,71 @@ public final class ItemCardMain extends Item implements IItemCard, ITouchAction,
 		return Optional.ofNullable(CARDS.get(id));
 	}
 
+	// IItemCard
 	@Override
 	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
 		return getCardById(reader.getCardType())
-				.map(card -> card.update(world, reader, range, pos))
-				.orElse(null);
+			.map(card -> card.update(world, reader, range, pos))
+			.orElse(null);
 	}
 
 	@Override
 	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		return getCardById(reader.getCardType())
-				.map(card -> card.getStringData(settings, reader, isServer, showLabels))
-				.orElseGet(Collections::emptyList);
+			.map(card -> card.getStringData(settings, reader, isServer, showLabels))
+			.orElseGet(Collections::emptyList);
 	}
 
 	@Override
 	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		return getCardById(stack.getItemDamage())
-				.map(ItemCardBase::getSettingsList)
-				.orElse(null);
+			.map(ItemCardBase::getSettingsList)
+			.orElse(null);
 	}
 
 	@Override
 	public boolean isRemoteCard(ItemStack stack) {
 		return getCardById(stack.getItemDamage())
-				.map(ItemCardBase::isRemoteCard)
-				.orElse(false);
+			.map(ItemCardBase::isRemoteCard)
+			.orElse(false);
 	}
 
+	// ITouchAction
 	@Override
 	public boolean enableTouch(ItemStack stack) {
 		return getCardById(stack.getItemDamage())
-				.map(card -> card instanceof ITouchAction)
-				.orElse(false);
+			.map(card -> card instanceof ITouchAction)
+			.orElse(false);
 	}
 
 	@Override
 	public boolean runTouchAction(World world, ICardReader reader, ItemStack stack) {
 		return getCardById(reader.getCardType())
-				.filter(card -> card instanceof ITouchAction)
-				.map(card -> ((ITouchAction) card).runTouchAction(world, reader, stack))
-				.orElse(false);
+			.filter(card -> card instanceof ITouchAction)
+			.map(card -> ((ITouchAction) card).runTouchAction(world, reader, stack))
+			.orElse(false);
 	}
 
 	@Override
 	public void renderImage(TextureManager manager, ICardReader reader) {
 		getCardById(reader.getCardType())
-				.filter(card -> card instanceof ITouchAction)
-				.ifPresent(card -> ((ITouchAction) card).renderImage(manager, reader));
+			.filter(card -> card instanceof ITouchAction)
+			.ifPresent(card -> ((ITouchAction) card).renderImage(manager, reader));
 	}
 
+	// IHasBars
 	@Override
 	public boolean enableBars(ItemStack stack) {
 		return getCardById(stack.getItemDamage())
-				.map(card -> card instanceof IHasBars)
-				.orElse(false);
+			.map(card -> card instanceof IHasBars)
+			.orElse(false);
 	}
 
 	@Override
 	public void renderBars(TextureManager manager, double displayWidth, double displayHeight, ICardReader reader) {
 		getCardById(reader.getCardType())
-				.filter(card -> card instanceof IHasBars)
-				.ifPresent(card -> ((IHasBars) card).renderBars(manager, displayWidth, displayHeight, reader));
+			.filter(card -> card instanceof IHasBars)
+			.ifPresent(card -> ((IHasBars) card).renderBars(manager, displayWidth, displayHeight, reader));
 	}
 
 	public static void registerModels() {

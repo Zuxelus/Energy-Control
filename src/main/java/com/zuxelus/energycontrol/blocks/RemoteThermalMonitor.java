@@ -2,8 +2,8 @@ package com.zuxelus.energycontrol.blocks;
 
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
-import com.zuxelus.energycontrol.tileentities.TileEntityRemoteThermo;
-import com.zuxelus.energycontrol.tileentities.TileEntityThermo;
+import com.zuxelus.energycontrol.tileentities.TileEntityRemoteThermalMonitor;
+import com.zuxelus.energycontrol.tileentities.TileEntityThermalMonitor;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 
 import net.minecraft.block.state.IBlockState;
@@ -17,11 +17,11 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class RemoteThermo extends FacingHorizontalEC {
+public class RemoteThermalMonitor extends FacingHorizontalEC {
 
 	@Override
 	public TileEntityFacing createTileEntity(int meta) {
-		return new TileEntityRemoteThermo();
+		return new TileEntityRemoteThermalMonitor();
 	}
 
 	@Override
@@ -29,18 +29,12 @@ public class RemoteThermo extends FacingHorizontalEC {
 		return false;
 	}
 
-
-	@Override
-	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-		drops.add(CrossModLoader.getCrossMod(ModIDs.IC2).getItemStack("machine"));
-	}
-
 	@Override
 	public int getWeakPower(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
 		TileEntity te = blockAccess.getTileEntity(pos);
-		if (!(te instanceof TileEntityThermo))
+		if (!(te instanceof TileEntityThermalMonitor))
 			return 0;
-		return ((TileEntityThermo) te).getPowered() ? 15 : 0;
+		return ((TileEntityThermalMonitor) te).getPowered() ? 15 : 0;
 	}
 
 	@Override
@@ -58,6 +52,7 @@ public class RemoteThermo extends FacingHorizontalEC {
 		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
 	}
 
+	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean hasCustomBreakingProgress(IBlockState state) {
 		return true;

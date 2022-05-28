@@ -23,8 +23,7 @@ public class ClientTickHandler {
 	public static boolean altPressed;
 
 	@SubscribeEvent
-	public void onItemTooltip(ItemTooltipEvent event)
-	{
+	public void onItemTooltip(ItemTooltipEvent event) {
 		if (EnergyControl.oreHelper == null || !EnergyControlConfig.showOreInfo)
 			return;
 		ItemStack stack = event.getItemStack();
@@ -36,7 +35,7 @@ public class ClientTickHandler {
 	}
 
 	@SubscribeEvent
-	public static void onClientTick(TickEvent.ClientTickEvent event) {
+	public void onClientTick(TickEvent.ClientTickEvent event) {
 		if (event.phase == TickEvent.Phase.END)
 			return;
 		boolean alt = GuiScreen.isAltKeyDown();

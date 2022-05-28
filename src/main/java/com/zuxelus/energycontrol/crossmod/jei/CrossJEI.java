@@ -64,13 +64,11 @@ public class CrossJEI implements IModPlugin {
 		registerItem(registry, ModItems.itemKit, ItemCardType.KIT_APPENG, "ec.jei.kitAppEng");
 		registerItem(registry, ModItems.itemKit, ItemCardType.KIT_BIG_REACTORS, "ec.jei.kitBigReactors");
 		registerItem(registry, ModItems.itemKit, ItemCardType.KIT_COUNTER, "ec.jei.kitCounter");
-		registerItem(registry, ModItems.itemKit, ItemCardType.KIT_DRACONIC, "ec.jei.kitDraconic");
+		registerItem(registry, ModItems.itemKit, ItemCardType.KIT_DRACONIC_EVOLUTION, "ec.jei.kitDraconic");
 		registerItem(registry, ModItems.itemKit, ItemCardType.KIT_ENERGY, "ec.jei.kitEnergy");
 		registerItem(registry, ModItems.itemKit, ItemCardType.KIT_GALACTICRAFT, "ec.jei.kitGalacticraft");
-		registerItem(registry, ModItems.itemKit, ItemCardType.KIT_GENERATOR, "ec.jei.kitGenerator");
 		registerItem(registry, ModItems.itemKit, ItemCardType.KIT_LIQUID, "ec.jei.kitLiquid");
 		registerItem(registry, ModItems.itemKit, ItemCardType.KIT_LIQUID_ADVANCED, "ec.jei.kitLiquidAdv");
-		registerItem(registry, ModItems.itemKit, ItemCardType.KIT_REACTOR, "ec.jei.kitReactor");
 		registerItem(registry, ModItems.itemKit, ItemCardType.KIT_TOGGLE, "ec.jei.kitToggle");
 		for(Integer key : ItemCardMain.getCardIds())
 			if (key != ItemCardType.CARD_TEXT && key != ItemCardType.CARD_TIME)

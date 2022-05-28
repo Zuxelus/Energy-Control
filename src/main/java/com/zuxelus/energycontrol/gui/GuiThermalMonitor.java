@@ -4,8 +4,9 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.gui.controls.CompactButton;
 import com.zuxelus.energycontrol.gui.controls.GuiThermoInvertRedstone;
 import com.zuxelus.energycontrol.network.NetworkHelper;
-import com.zuxelus.energycontrol.tileentities.TileEntityThermo;
+import com.zuxelus.energycontrol.tileentities.TileEntityThermalMonitor;
 import com.zuxelus.zlib.gui.GuiBase;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraftforge.fml.relauncher.Side;
@@ -13,10 +14,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiThermalMonitor extends GuiBase {
-	private TileEntityThermo thermo;
+	private TileEntityThermalMonitor thermo;
 	private GuiTextField textboxHeat;
 
-	public GuiThermalMonitor(TileEntityThermo thermo) {
+	public GuiThermalMonitor(TileEntityThermalMonitor thermo) {
 		super("tile.thermal_monitor.name", 191, 64, EnergyControl.MODID + ":textures/gui/gui_thermal_monitor.png");
 		this.thermo = thermo;
 	}

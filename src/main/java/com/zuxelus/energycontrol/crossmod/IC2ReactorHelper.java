@@ -63,14 +63,14 @@ public class IC2ReactorHelper {
 	}
 
 	public static BlockPos getTargetCoordinates(World world, BlockPos pos) {
-		IReactor reactor = IC2ReactorHelper.getReactorAt(world, pos);
+		IReactor reactor = getReactorAt(world, pos);
 		if (reactor != null)
 			return reactor.getPosition();
 		return null;
 	}
 
 	public static BlockPos get5x5TargetCoordinates(World world, BlockPos pos) {
-		IReactor reactor = IC2ReactorHelper.getReactor3x3(world, pos);
+		IReactor reactor = getReactor3x3(world, pos);
 		if (reactor != null)
 			return reactor.getPosition();
 		return null;
@@ -78,13 +78,5 @@ public class IC2ReactorHelper {
 
 	public static int euToSteam(int eu) {
 		return (int) Math.floor((eu) * STEAM_PER_EU);
-	}
-
-	public static boolean isSteam(IReactor reactor) {
-		return CrossModLoader.getCrossMod(ModIDs.IC2).isSteamReactor((TileEntity) reactor);
-	}
-
-	public static int getNuclearCellTimeLeft(ItemStack rStack) {
-		return CrossModLoader.getCrossMod(ModIDs.IC2).getNuclearCellTimeLeft(rStack);
 	}
 }

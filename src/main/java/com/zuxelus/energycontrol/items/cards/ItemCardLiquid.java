@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.zuxelus.energycontrol.api.*;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import net.minecraft.client.Minecraft;
@@ -50,14 +51,14 @@ public class ItemCardLiquid extends ItemCardBase implements IHasBars {
 	@Override
 	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
-		long capacity = reader.getLong("capacity");
-		long amount = reader.getLong("amount");
+		long capacity = reader.getLong(DataHelper.CAPACITY);
+		long amount = reader.getLong(DataHelper.AMOUNT);
 
 		if ((settings & 1) > 0) {
 			String name = reader.getString("name");
 			if (name.isEmpty())
 				name = isServer ? "N/A" : I18n.format("msg.ec.None");
-			result.add(new PanelString("msg.ec.InfoPanelName", name, showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelName", net.minecraft.util.text.translation.I18n.translateToLocal(name), showLabels));
 		}
 		if ((settings & 2) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelAmount", amount, "mB", showLabels));

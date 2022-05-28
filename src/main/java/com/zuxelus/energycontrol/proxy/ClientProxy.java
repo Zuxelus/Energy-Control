@@ -31,20 +31,11 @@ import java.io.File;
 import java.util.List;
 
 public class ClientProxy implements IProxy {
-	public static KeyBinding modeSwitchKey;
-
-	@Override
-	public void loadConfig(FMLPreInitializationEvent event) {
-		if (!Loader.isModLoaded(ModIDs.IC2) && Loader.isModLoaded(ModIDs.TECH_REBORN)) {
-			modeSwitchKey = new KeyBinding("Mode Switch Key", 50, "Energy Control");
-			ClientRegistry.registerKeyBinding(modeSwitchKey);
-		}
-	}
 
 	@Override
 	public void registerSpecialRenderers() {
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityThermo.class, new TEThermoRenderer());
-		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRemoteThermo.class, new TERemoteThermoRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityThermalMonitor.class, new TEThermalMonitorRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRemoteThermalMonitor.class, new TERemoteThermalMonitorRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityInfoPanel.class, new TileEntityInfoPanelRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityInfoPanelExtender.class, new TEInfoPanelExtenderRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAdvancedInfoPanel.class, new TEAdvancedInfoPanelRenderer());
@@ -66,8 +57,8 @@ public class ClientProxy implements IProxy {
 		TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
 		switch (ID) {
 		case BlockDamages.DAMAGE_THERMAL_MONITOR:
-			if (te instanceof TileEntityThermo)
-				return new GuiThermalMonitor((TileEntityThermo) te);
+			if (te instanceof TileEntityThermalMonitor)
+				return new GuiThermalMonitor((TileEntityThermalMonitor) te);
 			break;
 		case BlockDamages.DAMAGE_HOWLER_ALARM:
 			if (te instanceof TileEntityHowlerAlarm)
@@ -93,8 +84,8 @@ public class ClientProxy implements IProxy {
 				return new GuiRangeTrigger(new ContainerRangeTrigger(player, (TileEntityRangeTrigger) te));
 			break;
 		case BlockDamages.DAMAGE_REMOTE_THERMO:
-			if (te instanceof TileEntityRemoteThermo)
-				return new GuiRemoteThermo(new ContainerRemoteThermo(player, (TileEntityRemoteThermo) te));
+			if (te instanceof TileEntityRemoteThermalMonitor)
+				return new GuiRemoteThermo(new ContainerRemoteThermalMonitor(player, (TileEntityRemoteThermalMonitor) te));
 			break;
 		case BlockDamages.DAMAGE_AVERAGE_COUNTER:
 			if (te instanceof TileEntityAverageCounter)

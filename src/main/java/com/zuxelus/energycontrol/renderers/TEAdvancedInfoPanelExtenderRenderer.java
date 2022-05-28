@@ -2,7 +2,9 @@ package com.zuxelus.energycontrol.renderers;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.tileentities.Screen;
+import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanelExtender;
+
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.EnumFacing;
@@ -58,11 +60,11 @@ public class TEAdvancedInfoPanelExtenderRenderer extends TileEntitySpecialRender
 			break;
 		}
 
-		int color = 6;
+		int color = TileEntityAdvancedInfoPanel.DEFAULT_BACKGROUND;
 		if (te.getColored()) {
 			color = te.getColorBackground();
 			if (color > 15 || color < 0)
-				color = 6;
+				color = TileEntityAdvancedInfoPanel.DEFAULT_BACKGROUND;
 		}
 		if (destroyStage > -1)
 			bindTexture(DESTROY_STAGES[destroyStage]);

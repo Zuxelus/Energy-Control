@@ -1,7 +1,7 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.EnergyControlConfig;
-import com.zuxelus.energycontrol.blocks.RemoteThermo;
+import com.zuxelus.energycontrol.blocks.RemoteThermalMonitor;
 import com.zuxelus.energycontrol.blocks.ThermalMonitor;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
@@ -17,7 +17,7 @@ import net.minecraft.util.ITickable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityThermo extends TileEntityInventory implements ITickable, ITilePacketHandler {
+public class TileEntityThermalMonitor extends TileEntityInventory implements ITickable, ITilePacketHandler {
 	private int heatLevel;
 	private boolean invertRedstone;
 	protected int status;
@@ -26,7 +26,7 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 	protected int updateTicker;
 	protected int tickRate;
 
-	public TileEntityThermo() {
+	public TileEntityThermalMonitor() {
 		super("tile.thermal_monitor.name");
 		invertRedstone = false;
 		heatLevel = 500;
@@ -157,7 +157,7 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 	}
 
 	protected void checkStatus() {
-		int heat = CrossModLoader.getReactorHeat(world, pos);
+		int heat = CrossModLoader.getHeat(world, pos);
 		int newStatus = heat == -1 ? -2 : heat >= heatLevel ? 1 : 0;
 
 		if (newStatus != status) {
@@ -170,7 +170,7 @@ public class TileEntityThermo extends TileEntityInventory implements ITickable, 
 	public void notifyBlockUpdate() {
 		IBlockState iblockstate = world.getBlockState(pos);
 		Block block = iblockstate.getBlock();
-		if (block instanceof ThermalMonitor || block instanceof RemoteThermo) {
+		if (block instanceof ThermalMonitor || block instanceof RemoteThermalMonitor) {
 			boolean newValue = status < 0 ? false : status == 1 ? !invertRedstone : invertRedstone;
 			if (poweredBlock != newValue) {
 				poweredBlock = newValue;

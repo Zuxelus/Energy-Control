@@ -2,14 +2,14 @@ package com.zuxelus.energycontrol.containers;
 
 import com.zuxelus.energycontrol.containers.slots.SlotCard;
 import com.zuxelus.energycontrol.containers.slots.SlotRange;
-import com.zuxelus.energycontrol.tileentities.TileEntityRemoteThermo;
+import com.zuxelus.energycontrol.tileentities.TileEntityRemoteThermalMonitor;
 import com.zuxelus.zlib.containers.ContainerBase;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-public class ContainerRemoteThermo extends ContainerBase<TileEntityRemoteThermo> {
+public class ContainerRemoteThermalMonitor extends ContainerBase<TileEntityRemoteThermalMonitor> {
 
-	public ContainerRemoteThermo(EntityPlayer player, TileEntityRemoteThermo remoteThermo) {
+	public ContainerRemoteThermalMonitor(EntityPlayer player, TileEntityRemoteThermalMonitor remoteThermo) {
 		super(remoteThermo);
 		// energy charger
 		// addSlotToContainer(new SlotFilter(remoteThermo, 0, 13, 53));

@@ -3,7 +3,11 @@ package com.zuxelus.energycontrol.crossmod;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.OreHelper;
 import com.zuxelus.energycontrol.api.CardState;
+import com.zuxelus.energycontrol.items.cards.ItemCardMain;
+import com.zuxelus.energycontrol.items.cards.ItemCardNuclearCraft;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
+import com.zuxelus.energycontrol.items.kits.ItemKitMain;
+import com.zuxelus.energycontrol.items.kits.ItemKitNuclearCraft;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import nc.config.NCConfig;
@@ -16,10 +20,12 @@ import nc.tile.generator.TileSolarPanel;
 import nc.tile.internal.fluid.Tank;
 import nc.tile.processor.TileFluidProcessor;
 import nc.tile.processor.TileItemProcessor;
+import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.fluids.IFluidTank;
 
 import java.util.ArrayList;
@@ -40,7 +46,7 @@ public class CrossNuclearCraft extends CrossModBase {
 	}
 
 	@Override
-	public int getReactorHeat(World world, BlockPos pos) {
+	public int getHeat(World world, BlockPos pos) {
 		TileEntity te;
 		for (int xoffset = -1; xoffset < 2; xoffset++)
 			for (int yoffset = -1; yoffset < 2; yoffset++)
@@ -125,6 +131,12 @@ public class CrossNuclearCraft extends CrossModBase {
 			return tag;
 		}
 		return null;
+	}
+
+	@Override
+	public void registerItems(Register<Item> event) {
+		ItemKitMain.register(ItemKitNuclearCraft::new);
+		ItemCardMain.register(ItemCardNuclearCraft::new);
 	}
 
 	@Override

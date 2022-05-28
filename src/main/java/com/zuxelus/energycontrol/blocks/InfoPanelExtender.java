@@ -5,9 +5,9 @@ import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanelExtender;
-import com.zuxelus.energycontrol.utils.KeyboardUtil;
 import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
+
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -15,7 +15,6 @@ import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -57,7 +56,7 @@ public class InfoPanelExtender extends FacingBlockActive {
 		if (!(te instanceof TileEntityInfoPanelExtender))
 			return true;
 		TileEntityInfoPanel panel = ((TileEntityInfoPanelExtender) te).getCore();
-		if (KeyboardUtil.isAltKeyDown(player) && panel.getFacing() == facing)
+		if (EnergyControl.altPressed.get(player) && panel.getFacing() == facing)
 			if (panel.runTouchAction(player.getHeldItem(hand), pos, hitX, hitY, hitZ))
 				return true;
 		if (panel != null)
@@ -70,8 +69,9 @@ public class InfoPanelExtender extends FacingBlockActive {
 		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
 	}
 
+	@Override
 	@SideOnly(Side.CLIENT)
-	public boolean hasCustomBreakingProgress(IBlockState state) {
+	public boolean hasCustomBreakingProgress(IBlockState state) { // 1.12.2 only (in 1.10.2 in TileEntity)
 		return true;
 	}
 }

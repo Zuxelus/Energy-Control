@@ -1,11 +1,12 @@
 package com.zuxelus.energycontrol.gui;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.containers.ContainerRemoteThermo;
+import com.zuxelus.energycontrol.containers.ContainerRemoteThermalMonitor;
 import com.zuxelus.energycontrol.gui.controls.CompactButton;
 import com.zuxelus.energycontrol.gui.controls.GuiThermoInvertRedstone;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.zlib.gui.GuiContainerBase;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
@@ -17,10 +18,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class GuiRemoteThermo extends GuiContainerBase {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_remote_thermo.png");
 
-	private ContainerRemoteThermo container;
+	private ContainerRemoteThermalMonitor container;
 	private GuiTextField textboxHeat;
 
-	public GuiRemoteThermo(ContainerRemoteThermo container) {
+	public GuiRemoteThermo(ContainerRemoteThermalMonitor container) {
 		super(container, "tile.remote_thermo.name", TEXTURE);
 		this.container = container;
 		xSize = 178;

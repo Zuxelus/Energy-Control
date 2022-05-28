@@ -1,11 +1,13 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import com.zuxelus.energycontrol.crossmod.ModIDs;
+
 import ic2.api.item.IElectricItem;
 import ic2.api.tile.IEnergyStorage;
-import micdoodle8.mods.galacticraft.api.power.EnergySource;
+/*import micdoodle8.mods.galacticraft.api.power.EnergySource;
 import micdoodle8.mods.galacticraft.api.power.IEnergyHandlerGC;
 import micdoodle8.mods.galacticraft.api.transmission.NetworkType;
-import micdoodle8.mods.galacticraft.api.transmission.tile.IElectrical;
+import micdoodle8.mods.galacticraft.api.transmission.tile.IElectrical;*/
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,9 +19,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 
-@Optional.InterfaceList({ @Optional.Interface(iface = "micdoodle8.mods.galacticraft.api.power.IEnergyHandlerGC", modid = "galacticraftcore"),
-	@Optional.Interface(iface = "micdoodle8.mods.galacticraft.api.transmission.tile.IElectrical", modid = "galacticraftcore") })
-public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable, IEnergyStorage, IEnergyHandlerGC, IElectrical {
+@Optional.InterfaceList({
+	@Optional.Interface(modid = ModIDs.GALACTICRAFT_CORE, iface = "micdoodle8.mods.galacticraft.api.power.IEnergyHandlerGC"),
+	@Optional.Interface(modid = ModIDs.GALACTICRAFT_CORE, iface = "micdoodle8.mods.galacticraft.api.transmission.tile.IElectrical")
+})
+public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable, IEnergyStorage/*, IEnergyHandlerGC, IElectrical*/ {
 	public static final int TIER = 5;
 	public static final int CAPACITY = 400000000;
 	public static final int OUTPUT = 8192;
@@ -77,9 +81,11 @@ public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable
 	public void onServerMessageReceived(NBTTagCompound tag) { 
 		if (!tag.hasKey("type"))
 			return;
-		if (tag.getInteger("type") == 1) {
+		switch (tag.getInteger("type")) {
+		case 1:
 			if (tag.hasKey("value"))
 				setRedstoneMode((byte) tag.getDouble("value"));
+			break;
 		}
 	}
 
@@ -87,9 +93,11 @@ public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable
 	public void onClientMessageReceived(NBTTagCompound tag) {
 		if (!tag.hasKey("type"))
 			return;
-		if (tag.getInteger("type") == 1) {
+		switch (tag.getInteger("type")) {
+		case 1:
 			if (tag.hasKey("value"))
 				energy = tag.getDouble("value");
+			break;
 		}
 	}
 
@@ -213,8 +221,8 @@ public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable
 	}
 
 	// IEnergyHandlerGC
-	@Override
-	@Optional.Method(modid = "galacticraftcore")
+	/*@Override
+	@Optional.Method(modid = ModIDs.GALACTICRAFT_CORE)
 	public float receiveEnergyGC(EnergySource from, float amount, boolean simulate) {
 		float energyReceived = (float) Math.min(capacity - energy, amount);
 		if (!simulate)
@@ -223,37 +231,37 @@ public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable
 	}
 
 	@Override
-	@Optional.Method(modid = "galacticraftcore")
+	@Optional.Method(modid = ModIDs.GALACTICRAFT_CORE)
 	public float extractEnergyGC(EnergySource from, float amount, boolean simulate) {
 		return 0;
 	}
 
 	@Override
-	@Optional.Method(modid = "galacticraftcore")
+	@Optional.Method(modid = ModIDs.GALACTICRAFT_CORE)
 	public boolean nodeAvailable(EnergySource from) {
 		return true;
 	}
 
 	@Override
-	@Optional.Method(modid = "galacticraftcore")
+	@Optional.Method(modid = ModIDs.GALACTICRAFT_CORE)
 	public float getEnergyStoredGC(EnergySource from) {
 		return (float) energy;
 	}
 
 	@Override
-	@Optional.Method(modid = "galacticraftcore")
+	@Optional.Method(modid = ModIDs.GALACTICRAFT_CORE)
 	public float getMaxEnergyStoredGC(EnergySource from) {
 		return (float) capacity;
 	}
 
 	@Override
-	@Optional.Method(modid = "galacticraftcore")
+	@Optional.Method(modid = ModIDs.GALACTICRAFT_CORE)
 	public boolean canConnect(EnumFacing direction, NetworkType type) {
 		return direction != facing;
 	}
 
 	@Override
-	@Optional.Method(modid = "galacticraftcore")
+	@Optional.Method(modid = ModIDs.GALACTICRAFT_CORE)
 	public float receiveElectricity(EnumFacing from, float receive, int tierProduced, boolean doReceive) {
 		if (from == facing)
 			return 0;
@@ -261,26 +269,26 @@ public class TileEntityAFSU extends TileEntityEnergyStorage implements ITickable
 	}
 
 	@Override
-	@Optional.Method(modid = "galacticraftcore")
+	@Optional.Method(modid = ModIDs.GALACTICRAFT_CORE)
 	public float provideElectricity(EnumFacing from, float request, boolean doProvide) {
 		return extractEnergyGC(null, request, !doProvide);
 	}
 
 	@Override
-	@Optional.Method(modid = "galacticraftcore")
+	@Optional.Method(modid = ModIDs.GALACTICRAFT_CORE)
 	public float getRequest(EnumFacing direction) {
 		return (float) (capacity - energy);
 	}
 
 	@Override
-	@Optional.Method(modid = "galacticraftcore")
+	@Optional.Method(modid = ModIDs.GALACTICRAFT_CORE)
 	public float getProvide(EnumFacing direction) {
 		return 0;
 	}
 
 	@Override
-	@Optional.Method(modid = "galacticraftcore")
+	@Optional.Method(modid = ModIDs.GALACTICRAFT_CORE)
 	public int getTierGC() {
 		return 3;
-	}
+	}*/
 }

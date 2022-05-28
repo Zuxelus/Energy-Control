@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.crossmod.opencomputers;
 
-import com.zuxelus.energycontrol.tileentities.TileEntityThermo;
+import com.zuxelus.energycontrol.tileentities.TileEntityThermalMonitor;
+
 import li.cil.oc.api.driver.NamedBlock;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
@@ -17,16 +18,16 @@ public class DriverThermalMonitor extends DriverSidedTileEntity {
 
 	@Override
 	public Class<?> getTileEntityClass() {
-		return TileEntityThermo.class;
+		return TileEntityThermalMonitor.class;
 	}
 
 	@Override
 	public ManagedEnvironment createEnvironment(final World world, final BlockPos pos, final EnumFacing side) {
-		return new Environment((TileEntityThermo) world.getTileEntity(pos));
+		return new Environment((TileEntityThermalMonitor) world.getTileEntity(pos));
 	}
 
-	public static final class Environment extends ManagedTileEntityEnvironment<TileEntityThermo> implements NamedBlock {
-		public Environment(final TileEntityThermo tileentity) {
+	public static final class Environment extends ManagedTileEntityEnvironment<TileEntityThermalMonitor> implements NamedBlock {
+		public Environment(final TileEntityThermalMonitor tileentity) {
 			super(tileentity, NAME);
 		}
 

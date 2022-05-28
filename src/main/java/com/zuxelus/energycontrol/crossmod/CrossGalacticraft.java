@@ -2,9 +2,11 @@ package com.zuxelus.energycontrol.crossmod;
 
 import micdoodle8.mods.galacticraft.api.power.IEnergyHandlerGC;
 import micdoodle8.mods.galacticraft.core.wrappers.IFluidHandlerWrapper;
+import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidTank;
@@ -12,6 +14,10 @@ import net.minecraftforge.fluids.IFluidTank;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.zuxelus.energycontrol.items.cards.ItemCardGalacticraft;
+import com.zuxelus.energycontrol.items.cards.ItemCardMain;
+import com.zuxelus.energycontrol.items.kits.ItemKitGalacticraft;
+import com.zuxelus.energycontrol.items.kits.ItemKitMain;
 import com.zuxelus.energycontrol.tileentities.TileEntityAFSU;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
@@ -49,5 +55,11 @@ public class CrossGalacticraft extends CrossModBase {
 			return result;
 		}
 		return null;
+	}
+
+	@Override
+	public void registerItems(Register<Item> event) {
+		ItemKitMain.register(ItemKitGalacticraft::new);
+		ItemCardMain.register(ItemCardGalacticraft::new);
 	}
 }

@@ -14,15 +14,19 @@ import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
+import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -40,13 +44,13 @@ public class CrossModLoader {
 		CROSS_MODS.put(ModIDs.IC2, Loader.isModLoaded("ic2-classic-spmod") ? new CrossIC2Classic() : Loader.isModLoaded(ModIDs.IC2) ? new CrossIC2Exp() : new CrossModBase());
 		loadCrossMod(ModIDs.TECH_REBORN, CrossTechReborn::new);
 		loadCrossMod(ModIDs.APPLIED_ENERGISTICS, CrossAppEng::new);
-		loadCrossMod(ModIDs.BIG_REACTORS, CrossBigReactors::new);
+		loadCrossMod(ModIDs.EXTREME_REACTORS, CrossExtremeReactors::new);
 		loadCrossMod(ModIDs.BUILDCRAFT, CrossBuildCraft::new);
-		loadCrossMod(ModIDs.DRACONIC_EVOLUTION, CrossDraconicEvolution::new);
+		loadCrossModSafely(ModIDs.DRACONIC_EVOLUTION, () -> CrossDraconicEvolution::new);
 		loadCrossModSafely(ModIDs.ENDER_IO, () -> CrossEnderIO::new);
 		loadCrossMod(ModIDs.GALACTICRAFT_PLANETS, CrossGalacticraft::new);
 		loadCrossMod(ModIDs.GREGTECH, CrossGregTech::new);
-		loadCrossMod(ModIDs.HBM, CrossHBM::new);
+		loadCrossModSafely(ModIDs.HBM, () -> CrossHBM::new);
 		loadCrossMod(ModIDs.MEKANISM, CrossMekanism::new);
 		loadCrossMod(ModIDs.MEKANISM_GENERATORS, CrossMekanismGenerators::new);
 		ModContainer nc = Loader.instance().getIndexedModList().get(ModIDs.NUCLEAR_CRAFT);
@@ -106,18 +110,6 @@ public class CrossModLoader {
 		return null;
 	}
 
-	public static ItemStack getGeneratorCard(World world, BlockPos pos) {
-		TileEntity te = world.getTileEntity(pos);
-		if (te != null) {
-			for (CrossModBase crossMod : CROSS_MODS.values()) {
-				ItemStack card = crossMod.getGeneratorCard(te);
-				if (!card.isEmpty())
-					return card;
-			}
-		}
-		return ItemStack.EMPTY;
-	}
-
 	public static List<FluidInfo> getAllTanks(World world, BlockPos pos) {
 		TileEntity te = world.getTileEntity(pos);
 		if (te == null)
@@ -143,9 +135,9 @@ public class CrossModLoader {
 		return tanks != null && tanks.size() > 0 ? tanks.get(0) : null;
 	}
 
-	public static int getReactorHeat(World world, BlockPos pos) {
+	public static int getHeat(World world, BlockPos pos) {
 		for (CrossModBase crossMod : CROSS_MODS.values()) {
-			int heat = crossMod.getReactorHeat(world, pos);
+			int heat = crossMod.getHeat(world, pos);
 			if (heat != -1)
 				return heat;
 		}
@@ -216,6 +208,26 @@ public class CrossModLoader {
 					return result;
 			}
 		return 0;
+	}
+
+	public static void registerBlocks(Register<Block> event) {
+		for (CrossModBase crossMod : CROSS_MODS.values())
+			crossMod.registerBlocks(event);
+	}
+
+	public static void registerItems(Register<Item> event) {
+		for (CrossModBase crossMod : CROSS_MODS.values())
+			crossMod.registerItems(event);
+	}
+
+	public static void registerModels(ModelRegistryEvent event) {
+		for (CrossModBase crossMod : CROSS_MODS.values())
+			crossMod.registerModels(event);
+	}
+
+	public static void registerTileEntities() {
+		for (CrossModBase crossMod : CROSS_MODS.values())
+			crossMod.registerTileEntities();
 	}
 
 	public static void loadOreInfo() {

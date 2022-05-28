@@ -25,7 +25,7 @@ import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 public class CrossBuildCraft extends CrossModBase {
 
-	@Override
+	/*@Override
 	public ItemStack getGeneratorCard(TileEntity te) {
 		if (te instanceof TileEngineBase_BC8) {
 			ItemStack card = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_ENGINE);
@@ -33,7 +33,7 @@ public class CrossBuildCraft extends CrossModBase {
 			return card;
 		}
 		return ItemStack.EMPTY;
-	}
+	}*/
 
 	@Override
 	public List<FluidInfo> getAllTanks(TileEntity te) {

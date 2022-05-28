@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "energycontrol:items/card_generator"
+    "layer0": "energycontrol:items/card_ic2"
   }
 }

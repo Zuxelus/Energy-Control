@@ -153,7 +153,7 @@ public abstract class TileEntityInventory extends TileEntityFacing implements IS
 		return list;
 	}
 
-	public void dropItems(World world, BlockPos pos) {
+	/*public void dropItems(World world, BlockPos pos) {
 		Random rand = new Random();
 		List<ItemStack> list = getDrops(1);
 		for (ItemStack stack : list) {
@@ -174,7 +174,7 @@ public abstract class TileEntityInventory extends TileEntityFacing implements IS
 			world.spawnEntity(entityItem);
 			stack.setCount(0);
 		}
-	}
+	}*/
 
 	// ISidedInventory
 	@Override

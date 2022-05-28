@@ -3,9 +3,10 @@ package com.zuxelus.energycontrol.blocks;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
-import com.zuxelus.energycontrol.tileentities.TileEntityThermo;
+import com.zuxelus.energycontrol.tileentities.TileEntityThermalMonitor;
 import com.zuxelus.zlib.blocks.FacingBlockSmall;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
+
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -29,15 +30,15 @@ public class ThermalMonitor extends FacingBlockSmall {
 
 	@Override
 	protected TileEntityFacing createTileEntity() {
-		return new TileEntityThermo();
+		return new TileEntityThermalMonitor();
 	}
 
 	@Override
 	public int getWeakPower(IBlockState state, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
 		TileEntity te = blockAccess.getTileEntity(pos);
-		if (!(te instanceof TileEntityThermo))
+		if (!(te instanceof TileEntityThermalMonitor))
 			return 0;
-		return ((TileEntityThermo) te).getPowered() ? side != state.getValue(FACING) ? 15 : 0 : 0;
+		return ((TileEntityThermalMonitor) te).getPowered() ? side != state.getValue(FACING) ? 15 : 0 : 0;
 	}
 
 	@Override
@@ -76,12 +77,18 @@ public class ThermalMonitor extends FacingBlockSmall {
 	}
 
 	@Override
+	public boolean canProvidePower(IBlockState state) {
+		return true;
+	}
+
+	@Override
 	public EnumBlockRenderType getRenderType(IBlockState state) {
 		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
 	}
 
+	@Override
 	@SideOnly(Side.CLIENT)
-	public boolean hasCustomBreakingProgress(IBlockState state) {
+	public boolean hasCustomBreakingProgress(IBlockState state) { // 1.12.2 only (in 1.10.2 in TileEntity)
 		return true;
 	}
 }

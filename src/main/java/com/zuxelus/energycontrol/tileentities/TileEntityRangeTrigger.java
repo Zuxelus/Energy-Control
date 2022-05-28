@@ -7,9 +7,11 @@ import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
+import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.state.IBlockState;
@@ -36,8 +38,8 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 	private int status;
 	private boolean poweredBlock;
 	private boolean invertRedstone;
-	public double levelStart;
-	public double levelEnd;
+	public long levelStart;
+	public long levelEnd;
 
 	public TileEntityRangeTrigger() {
 		super("tile.range_trigger.name");
@@ -77,13 +79,13 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 		}
 	}
 
-	public void setLevelStart(double start) {
+	public void setLevelStart(long start) {
 		if (!world.isRemote && levelStart != start)
 			notifyBlockUpdate();
 		levelStart = start;
 	}
 
-	public void setLevelEnd(double end) {
+	public void setLevelEnd(long end) {
 		if (!world.isRemote && levelEnd != end)
 			notifyBlockUpdate();
 		levelEnd = end;
@@ -114,7 +116,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 		switch (tag.getInteger("type")) {
 		case 1:
 			if (tag.hasKey("value"))
-				setLevelStart(tag.getDouble("value"));
+				setLevelStart(tag.getLong("value"));
 			break;
 		case 2:
 			if (tag.hasKey("value"))
@@ -122,7 +124,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 			break;
 		case 3:
 			if (tag.hasKey("value"))
-				setLevelEnd(tag.getDouble("value"));
+				setLevelEnd(tag.getLong("value"));
 			break;
 		}
 	}
@@ -152,8 +154,8 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 	protected void readProperties(NBTTagCompound tag) {
 		super.readProperties(tag);
 		invertRedstone = tag.getBoolean("invert");
-		levelStart = tag.getDouble("levelStart");
-		levelEnd = tag.getDouble("levelEnd");
+		levelStart = tag.getLong("levelStart");
+		levelEnd = tag.getLong("levelEnd");
 		if (tag.hasKey("poweredBlock"))
 			poweredBlock = tag.getBoolean("poweredBlock");
 	}
@@ -168,8 +170,8 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 	protected NBTTagCompound writeProperties(NBTTagCompound tag) {
 		tag = super.writeProperties(tag);
 		tag.setBoolean("invert", invertRedstone);
-		tag.setDouble("levelStart", levelStart);
-		tag.setDouble("levelEnd", levelEnd);
+		tag.setLong("levelStart", levelStart);
+		tag.setLong("levelEnd", levelEnd);
 		return tag;
 	}
 
@@ -195,7 +197,11 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 			ItemCardReader reader = new ItemCardReader(card);
 			CardState state = ItemCardMain.updateCardNBT(card, world, pos, reader, getStackInSlot(SLOT_UPGRADE));
 			if (state == CardState.OK) {
-				double cur = reader.getDouble("storage");
+				double cur = 0;
+				if (reader.hasField(DataHelper.ENERGY))
+					cur = reader.getDouble(DataHelper.ENERGY);
+				else if (reader.hasField(DataHelper.AMOUNT))
+					cur = reader.getDouble(DataHelper.AMOUNT);
 				status = cur > Math.max(levelStart, levelEnd) || cur < Math.min(levelStart, levelEnd) ? STATE_ACTIVE : STATE_PASSIVE;
 			} else
 				status = STATE_UNKNOWN;
@@ -230,8 +236,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements ITick
 	@Override
 	public boolean isItemValid(int slotIndex, ItemStack stack) { // ISlotItemFilter
 		if (slotIndex == SLOT_CARD)
-			return stack.getItem() instanceof ItemCardMain && (stack.getItemDamage() == ItemCardType.CARD_ENERGY
-					|| stack.getItemDamage() == ItemCardType.CARD_ENERGY_ARRAY);
+			return ItemCardMain.isCard(stack);
 		return stack.getItem() instanceof ItemUpgrade && stack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE;
 	} // TODO ItemCardLiquid
 }

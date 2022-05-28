@@ -3,8 +3,8 @@
     "textures": {
         "particle": "energycontrol:blocks/info_panel/panel_advanced_side",
         "down": "energycontrol:blocks/info_panel/panel_advanced_side",
-        "up": "energycontrol:blocks/info_panel/panel_advanced_face",
-        "north": "energycontrol:blocks/info_panel/panel_advanced_side",
+        "up": "energycontrol:blocks/info_panel/panel_advanced_side",
+        "north": "energycontrol:blocks/info_panel/panel_advanced_face",
         "east": "energycontrol:blocks/info_panel/panel_advanced_side",
         "south": "energycontrol:blocks/info_panel/panel_advanced_side",
         "west": "energycontrol:blocks/info_panel/panel_advanced_side"

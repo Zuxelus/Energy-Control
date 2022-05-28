@@ -4,6 +4,7 @@ import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityAverageCounter;
 import com.zuxelus.zlib.containers.ContainerBase;
 import com.zuxelus.zlib.containers.slots.SlotFilter;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IContainerListener;
@@ -13,10 +14,10 @@ public class ContainerAverageCounter extends ContainerBase<TileEntityAverageCoun
 {
 	private double lastAverage = -1;
 
-	public ContainerAverageCounter(EntityPlayer player, TileEntityAverageCounter averageCounter) {
-		super(averageCounter);
+	public ContainerAverageCounter(EntityPlayer player, TileEntityAverageCounter te) {
+		super(te);
 		// transformer upgrades
-		addSlotToContainer(new SlotFilter(averageCounter, 0, 8, 18));
+		addSlotToContainer(new SlotFilter(te, 0, 8, 18));
 		// inventory
 		addPlayerInventorySlots(player, 166);
 	}
@@ -30,7 +31,7 @@ public class ContainerAverageCounter extends ContainerBase<TileEntityAverageCoun
 	@Override
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
-		int average = te.getClientAverage();
+		double average = te.getClientAverage();
 		for (IContainerListener listener : listeners)
 			if (lastAverage != average)
 				NetworkHelper.updateClientTileEntity(listener, te.getPos(), 1, average);

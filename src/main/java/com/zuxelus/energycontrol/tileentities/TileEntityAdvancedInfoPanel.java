@@ -26,6 +26,9 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	public static final int OFFSET_ROTATE_HOR = 200;
 	public static final int OFFSET_ROTATE_VERT = 300;
 
+	public static final int DEFAULT_TEXT = -1;
+	public static final int DEFAULT_BACKGROUND = 8;
+
 	public byte powerMode;
 	public byte thickness;
 	public byte rotateHor;
@@ -34,7 +37,8 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	public TileEntityAdvancedInfoPanel() {
 		super();
 		customName = "tile." + NAME + ".name";
-		colorBackground = 6;
+		colorText = DEFAULT_TEXT;
+		colorBackground = DEFAULT_BACKGROUND;
 		colored = true;
 		thickness = 16;
 	}

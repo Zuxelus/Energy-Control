@@ -1,11 +1,14 @@
 package com.zuxelus.zlib.blocks;
 
+import java.util.List;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.tileentities.TileEntityFacing;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
+
 import ic2.api.tile.IWrenchable;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.ITileEntityProvider;
@@ -26,11 +29,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 
-import java.util.List;
-
 @Optional.Interface(modid = ModIDs.IC2, iface = "ic2.api.tile.IWrenchable")
 public abstract class FacingBlock extends BlockDirectional implements ITileEntityProvider, IWrenchable {
-	private EnumFacing rotation;
 
 	public FacingBlock() {
 		super(Material.IRON);
@@ -45,7 +45,6 @@ public abstract class FacingBlock extends BlockDirectional implements ITileEntit
 	public TileEntity createNewTileEntity(World world, int meta) {
 		TileEntityFacing te = createTileEntity();
 		te.setFacing(meta);
-		te.setRotation(rotation);
 		return te;
 	}
 
@@ -66,13 +65,10 @@ public abstract class FacingBlock extends BlockDirectional implements ITileEntit
 
 	@Override
 	public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-		rotation = placer.getHorizontalFacing().getOpposite();
 		if (placer.rotationPitch >= 65)
 			return getDefaultState().withProperty(FACING, EnumFacing.UP);
-		if (placer.rotationPitch <= -65) {
-			rotation = placer.getHorizontalFacing();
+		if (placer.rotationPitch <= -65)
 			return getDefaultState().withProperty(FACING, EnumFacing.DOWN);
-		}
 		switch (MathHelper.floor(placer.rotationYaw * 4.0F / 360.0F + 0.5D) & 3) {
 		case 0:
 			return getDefaultState().withProperty(FACING, EnumFacing.NORTH);
@@ -84,6 +80,24 @@ public abstract class FacingBlock extends BlockDirectional implements ITileEntit
 			return getDefaultState().withProperty(FACING, EnumFacing.WEST);
 		}
 		return getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
+	}
+
+	@Override
+	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+		TileEntity te = world.getTileEntity(pos);
+		if (te instanceof TileEntityFacing)
+			switch (((TileEntityFacing) te).getFacing()) {
+			case UP:
+			case DOWN:
+				((TileEntityFacing) te).setRotation(placer.getHorizontalFacing().getOpposite());
+				break;
+			case NORTH:
+			case SOUTH:
+			case EAST:
+			case WEST:
+				((TileEntityFacing) te).setRotation(EnumFacing.DOWN);
+				break;
+			}
 	}
 
 	@Override

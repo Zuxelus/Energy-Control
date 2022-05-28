@@ -9,7 +9,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.12.2-0.2.8e"
+version = "1.12.2-0.3.0a"
 group= "com.zuxelus.energycontrol"
 archivesBaseName = "EnergyControl"
 
@@ -27,12 +27,6 @@ minecraft {
     mappings = "snapshot_20171003"
 }
 
-repositories {
-    flatDir {
-        dir 'libs_'
-    }
-}
-
 dependencies {
     compile files(
         'libs_/appliedenergistics2-rv6-stable-7.jar',
@@ -47,7 +41,7 @@ dependencies {
         'libs_/Draconic-Evolution-1.12.2-2.3.25.351-universal.jar',
         'libs_/EnderIO-1.12.2-5.3.70.jar',
         'libs_/EnderCore-1.12.2-0.5.76.jar',
-        'libs_/ExtremeReactors-1.12.2-0.4.5.67.jar',
+        'libs_/ExtremeReactors-1.12.2-0.4.5.68.jar',
         'libs_/Galacticraft-Planets-Dev-1.12.2-4.0.2.261.jar',
         'libs_/GalacticraftCore-Dev-1.12.2-4.0.2.261.jar',
         'libs_/gregtech-1.12.2-1.17.1.770.jar',
@@ -67,7 +61,7 @@ dependencies {
         'libs_/TechReborn-1.12.2-2.27.3.1084-dev.jar',
         'libs_/ThermalExpansion-1.12.2-5.5.7.1-universal.jar',
         'libs_/ThermalFoundation-1.12.2-2.6.7.1-universal.jar',
-        'libs_/zerocore-1.12.2-0.1.2.8.jar')
+        'libs_/zerocore-1.12.2-0.1.2.9.jar')
 }
 
 processResources {

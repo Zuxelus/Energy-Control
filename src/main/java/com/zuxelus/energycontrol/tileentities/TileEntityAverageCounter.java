@@ -25,7 +25,7 @@ public class TileEntityAverageCounter extends TileEntityEnergyStorage implements
 
 	protected short prevPeriod;
 	public short period;
-	protected int clientAverage = -1;
+	protected double clientAverage = -1;
 
 	public TileEntityAverageCounter() {
 		super("tile.average_counter.name", 1, BASE_PACKET_SIZE, BASE_PACKET_SIZE * 2);
@@ -36,18 +36,18 @@ public class TileEntityAverageCounter extends TileEntityEnergyStorage implements
 		prevPeriod = period = 1;
 	}
 
-	public int getClientAverage() {
+	public double getClientAverage() {
 		if (clientAverage == -1)
 			return getAverage();
 		return clientAverage;
 	}
 
-	private int getAverage() {
+	private double getAverage() {
 		int start = DATA_POINTS + index - period * 20;
 		double sum = 0;
 		for (int i = 0; i < period * 20; i++)
 			sum += data[(start + i) % DATA_POINTS];
-		clientAverage = (int) Math.round(sum / period / 20);
+		clientAverage = sum / period / 20;
 		return clientAverage;
 	}
 
@@ -62,29 +62,33 @@ public class TileEntityAverageCounter extends TileEntityEnergyStorage implements
 	public void onServerMessageReceived(NBTTagCompound tag) {
 		if (!tag.hasKey("type"))
 			return;
-        if (tag.getInteger("type") == 1) {
-            if (tag.hasKey("value")) {
-                int event = tag.getInteger("value");
-                if (event == 0) {
-                    for (int i = 0; i < DATA_POINTS; i++)
-                        data[i] = 0;
+		switch (tag.getInteger("type")) {
+		case 1:
+			if (tag.hasKey("value")) {
+				int event = tag.getInteger("value");
+				if (event == 0) {
+					for (int i = 0; i < DATA_POINTS; i++)
+						data[i] = 0;
 
-                    updateTicker = tickRate;
-                    index = 0;
-                } else
-                    setPeriod((short) event);
-            }
-        }
+					updateTicker = tickRate;
+					index = 0;
+				} else
+					setPeriod((short) event);
+			}
+			break;
+		}
 	}
 
 	@Override
 	public void onClientMessageReceived(NBTTagCompound tag) {
 		if (!tag.hasKey("type"))
 			return;
-        if (tag.getInteger("type") == 1) {
-            if (tag.hasKey("value"))
-                clientAverage = tag.getInteger("value");
-        }
+		switch (tag.getInteger("type")) {
+		case 1:
+			if (tag.hasKey("value"))
+				clientAverage = tag.getDouble("value");
+			break;
+		}
 	}
 
 	@Override
@@ -114,7 +118,7 @@ public class TileEntityAverageCounter extends TileEntityEnergyStorage implements
 		prevPeriod = period = tag.getShort("period");
 
 		for (int i = 0; i < DATA_POINTS; i++)
-			data[i] = tag.getLong("point-" + i);
+			data[i] = tag.getDouble("point-" + i);
 	}
 
 	@Override
@@ -131,7 +135,7 @@ public class TileEntityAverageCounter extends TileEntityEnergyStorage implements
 		tag.setShort("period", period);
 
 		for (int i = 0; i < DATA_POINTS; i++)
-			tag.setLong("point-" + i, (long) data[i]);
+			tag.setDouble("point-" + i, data[i]);
 		return tag;
 	}
 

@@ -4,6 +4,10 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.zuxelus.energycontrol.items.cards.ItemCardEnderIO;
+import com.zuxelus.energycontrol.items.cards.ItemCardMain;
+import com.zuxelus.energycontrol.items.kits.ItemKitEnderIO;
+import com.zuxelus.energycontrol.items.kits.ItemKitMain;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import crazypants.enderio.api.capacitor.ICapacitorKey;
@@ -22,8 +26,10 @@ import ic2.core.block.kineticgenerator.tileentity.TileEntityWindKineticGenerator
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -122,5 +128,11 @@ public class CrossEnderIO extends CrossModBase {
 			return tag;
 		}
 		return null;
+	}
+
+	@Override
+	public void registerItems(Register<Item> event) {
+		ItemKitMain.register(ItemKitEnderIO::new);
+		ItemCardMain.register(ItemCardEnderIO::new);
 	}
 }

@@ -1,6 +1,12 @@
 package com.zuxelus.energycontrol.crossmod;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.items.cards.ItemCardAppEng;
+import com.zuxelus.energycontrol.items.cards.ItemCardAppEngInv;
+import com.zuxelus.energycontrol.items.cards.ItemCardMain;
+import com.zuxelus.energycontrol.items.kits.ItemKitAppEng;
+import com.zuxelus.energycontrol.items.kits.ItemKitMain;
+import com.zuxelus.energycontrol.utils.DataHelper;
 
 import appeng.api.AEApi;
 import appeng.api.networking.IGridHost;
@@ -14,9 +20,11 @@ import appeng.me.helpers.IGridProxyable;
 import appeng.tile.crafting.TileCraftingMonitorTile;
 import appeng.tile.storage.TileChest;
 import appeng.tile.storage.TileDrive;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.event.RegistryEvent.Register;
 
 public class CrossAppEng extends CrossModBase {
 
@@ -25,9 +33,9 @@ public class CrossAppEng extends CrossModBase {
 		if (te instanceof IAEPowerStorage) {
 			NBTTagCompound tag = new NBTTagCompound();
 			IAEPowerStorage storage = (IAEPowerStorage) te;
-			tag.setString("euType", "AE");
-			tag.setDouble("storage", storage.getAECurrentPower());
-			tag.setDouble("maxStorage", storage.getAEMaxPower());
+			tag.setString(DataHelper.EUTYPE, "AE");
+			tag.setDouble(DataHelper.ENERGY, storage.getAECurrentPower());
+			tag.setDouble(DataHelper.CAPACITY, storage.getAEMaxPower());
 			return tag;
 		}
 		return null;
@@ -101,5 +109,12 @@ public class CrossAppEng extends CrossModBase {
 			}
 		}
 		return cells;
+	}
+
+	@Override
+	public void registerItems(Register<Item> event) {
+		ItemKitMain.register(ItemKitAppEng::new);
+		ItemCardMain.register(ItemCardAppEng::new);
+		ItemCardMain.register(ItemCardAppEngInv::new);
 	}
 }

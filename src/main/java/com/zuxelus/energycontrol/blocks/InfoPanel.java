@@ -97,8 +97,9 @@ public class InfoPanel extends FacingBlockActive {
 		return BlockDamages.DAMAGE_INFO_PANEL;
 	}
 
+	@Override
 	@SideOnly(Side.CLIENT)
-	public boolean hasCustomBreakingProgress(IBlockState state) { // removed in 1.15
+	public boolean hasCustomBreakingProgress(IBlockState state) { // 1.12.2 only (in 1.10.2 in TileEntity)
 		return true;
 	}
 }

@@ -3,6 +3,10 @@ package com.zuxelus.energycontrol.crossmod;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.zuxelus.energycontrol.items.cards.ItemCardMain;
+import com.zuxelus.energycontrol.items.cards.ItemCardMekanism;
+import com.zuxelus.energycontrol.items.kits.ItemKitMain;
+import com.zuxelus.energycontrol.items.kits.ItemKitMekanism;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import mekanism.common.config.MekanismConfig;
@@ -13,8 +17,10 @@ import mekanism.generators.common.tile.*;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import mekanism.generators.common.tile.reactor.TileEntityReactorFrame;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
+import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.event.RegistryEvent.Register;
 
 public class CrossMekanismGenerators extends CrossModBase {
 
@@ -161,5 +167,11 @@ public class CrossMekanismGenerators extends CrossModBase {
 			return tag;
 		}
 		return null;
+	}
+
+	@Override
+	public void registerItems(Register<Item> event) {
+		ItemKitMain.register(ItemKitMekanism::new);
+		ItemCardMain.register(ItemCardMekanism::new);
 	}
 }

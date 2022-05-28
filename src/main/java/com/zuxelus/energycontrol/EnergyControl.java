@@ -57,8 +57,6 @@ public class EnergyControl {
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		logger = event.getModLog();
-
-		proxy.loadConfig(event);
 		proxy.importSound(event.getModConfigurationDirectory());
 		//proxy.registerModelLoader();
 

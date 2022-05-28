@@ -1,16 +1,17 @@
 package com.zuxelus.energycontrol.renderers;
 
+import java.util.List;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
+
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-
-import java.util.List;
 
 public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileEntityAdvancedInfoPanel> {
 	private static final ResourceLocation[] TEXTUREOFF;
@@ -78,11 +79,11 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			break;
 		}
 
-		int color = 6;
+		int color = TileEntityAdvancedInfoPanel.DEFAULT_BACKGROUND;
 		if (te.getColored()) {
 			color = te.getColorBackground();
 			if (color > 15 || color < 0)
-				color = 6;
+				color = TileEntityAdvancedInfoPanel.DEFAULT_BACKGROUND;
 		}
 
 		if (destroyStage > -1)
@@ -131,8 +132,8 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			case UP:
 				switch (panel.getRotation()) {
 				case NORTH:
-					dz = pos.getZ() - screen.maxZ - screen.minZ + pos.getZ();
-					dy = pos.getX() - screen.maxX - screen.minX + pos.getX();
+					dx = pos.getX() - screen.maxX;
+					dz = screen.minZ - pos.getZ();
 					displayWidth += screen.maxX - screen.minX;
 					displayHeight += screen.maxZ - screen.minZ;
 					break;
@@ -143,8 +144,8 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 					displayHeight += screen.maxZ - screen.minZ;
 					break;
 				case EAST:
-					dz = pos.getZ() - screen.maxZ - screen.minZ + pos.getZ();
-					dy = pos.getX() - screen.maxX - screen.minX + pos.getX();
+					dx = pos.getX() - screen.maxX;
+					dz = pos.getZ() - screen.maxZ;
 					displayWidth += screen.maxZ - screen.minZ;
 					displayHeight += screen.maxX - screen.minX;
 					break;
@@ -153,10 +154,6 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 					dz = screen.minZ - pos.getZ();
 					displayWidth += screen.maxZ - screen.minZ;
 					displayHeight += screen.maxX - screen.minX;
-					break;
-				case DOWN:
-					break;
-				case UP:
 					break;
 				}
 				break;
@@ -186,12 +183,8 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 					displayWidth += screen.maxZ - screen.minZ;
 					displayHeight += screen.maxX - screen.minX;
 					break;
-				case DOWN:
-					break;
-				case UP:
-					break;
 				}
- 				break;
+				break;
 			case NORTH:
 				dx = pos.getX() - screen.maxX;
 				dz = screen.minY - pos.getY();
@@ -220,7 +213,7 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		}
 
 		GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
-		switch(panel.getRotation())
+		switch(panel.getFacing())
 		{
 		case UP:
 			break;
@@ -232,6 +225,28 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			GlStateManager.translate(dx, dz - 1.0F, 0.0F);
 			break;
 		case DOWN:
+			break;
+		case WEST:
+			GlStateManager.rotate(-90.0F, 0.0F, 0.0F, 1.0F);
+			GlStateManager.translate(dz, dx, 0.0F);
+			break;
+		case EAST:
+			GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
+			GlStateManager.translate(dz - 1.0F, dx - 1.0F, 0.0F);
+			break;
+		}
+		switch(panel.getRotation())
+		{
+		case DOWN:
+			break;
+		case UP:
+			break;
+		case NORTH:
+			GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+			GlStateManager.translate(dx - 1.0F, dz, 0.0F);
+			break;
+		case SOUTH:
+			GlStateManager.translate(dx, dz - 1.0F, 0.0F);
 			break;
 		case WEST:
 			GlStateManager.rotate(-90.0F, 0.0F, 0.0F, 1.0F);
@@ -289,7 +304,7 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		GlStateManager.disableLighting();
 
 		int row = 0;
-		int colorHex = 0x000000;
+		int colorHex = TileEntityAdvancedInfoPanel.DEFAULT_TEXT;
 		if (panel.getColored())
 			colorHex = panel.getColorText();
 		for (PanelString panelString : joinedData) {

@@ -1,12 +1,13 @@
 package com.zuxelus.energycontrol.renderers;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.tileentities.TileEntityThermo;
+import com.zuxelus.energycontrol.tileentities.TileEntityThermalMonitor;
+
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.ResourceLocation;
 
-public class TEThermoRenderer extends TileEntitySpecialRenderer<TileEntityThermo> {
+public class TEThermalMonitorRenderer extends TileEntitySpecialRenderer<TileEntityThermalMonitor> {
 	private static final ResourceLocation TEXTURE0 = new ResourceLocation(EnergyControl.MODID, "textures/blocks/thermal_monitor/all0.png");
 	private static final ResourceLocation TEXTURE1 = new ResourceLocation(EnergyControl.MODID, "textures/blocks/thermal_monitor/all1.png");
 	private static final ResourceLocation TEXTURE2 = new ResourceLocation(EnergyControl.MODID, "textures/blocks/thermal_monitor/all2.png");
@@ -14,7 +15,7 @@ public class TEThermoRenderer extends TileEntitySpecialRenderer<TileEntityThermo
 	public static final CubeRenderer DESTROY = new CubeRenderer(2, 0, 2, 28, 14, 28, 32, 32, 0, 0);
 
 	@Override
-	public void render(TileEntityThermo te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+	public void render(TileEntityThermalMonitor te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x, y, z);
 		switch (te.getFacing()) {

@@ -4,20 +4,19 @@ import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityEnergyCounter;
 import com.zuxelus.zlib.containers.ContainerBase;
 import com.zuxelus.zlib.containers.slots.SlotFilter;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.item.ItemStack;
 
-public class ContainerEnergyCounter extends ContainerBase<TileEntityEnergyCounter>
-{
+public class ContainerEnergyCounter extends ContainerBase<TileEntityEnergyCounter> {
 	private double lastCounter = -1;
 
-	public ContainerEnergyCounter(EntityPlayer player, TileEntityEnergyCounter energyCounter)
-	{
-		super(energyCounter);
+	public ContainerEnergyCounter(EntityPlayer player, TileEntityEnergyCounter te) {
+		super(te);
 		// transformer upgrades
-		addSlotToContainer(new SlotFilter(energyCounter, 0, 8, 18));
+		addSlotToContainer(new SlotFilter(te, 0, 8, 18));
 		// inventory
 		addPlayerInventorySlots(player, 166);
 	}

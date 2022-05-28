@@ -23,11 +23,6 @@ public class HoloPanel extends FacingHorizontalActiveEC {
 	protected static final AxisAlignedBB AABB_WEST = new AxisAlignedBB(0.25D, 0.0D, 0.0D, 0.75D, 0.0625D, 1.0D);
 
 	@Override
-	protected TileEntityFacing createTileEntity(int meta) {
-		return new TileEntityHoloPanel();
-	}
-
-	@Override
 	public boolean isOpaqueCube(IBlockState state) {
 		return false;
 	}
@@ -35,6 +30,11 @@ public class HoloPanel extends FacingHorizontalActiveEC {
 	@Override
 	public boolean isFullCube(IBlockState state) {
 		return false;
+	}
+
+	@Override
+	protected TileEntityFacing createTileEntity(int meta) {
+		return new TileEntityHoloPanel();
 	}
 
 	@Override

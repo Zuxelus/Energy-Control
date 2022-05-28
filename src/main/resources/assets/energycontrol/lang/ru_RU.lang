@@ -178,6 +178,7 @@ msg.ec.InfoPanelHullHeat=Hull Heat: %s
 msg.ec.InfoPanelHydrogen=Водород: %s
 msg.ec.InfoPanelIndirectPower=Indirect Power: %s
 msg.ec.InfoPanelInjectionRate=Injection Rate: %s
+msg.ec.InfoPanelInput=Input: %s
 msg.ec.InfoPanelLeakage=Leakage: %s
 msg.ec.InfoPanelMaxFlowRate=Max Flow Rate: %s mB/t
 msg.ec.InfoPanelMaxHeat=Макс. нагрев: %s

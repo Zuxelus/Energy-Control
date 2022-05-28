@@ -7,13 +7,14 @@ import com.zuxelus.energycontrol.items.InventoryPortablePanel;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.zlib.containers.ContainerBase;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 
 public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel> {
 	private EntityPlayer player;
-	
+
 	public ContainerPortablePanel(EntityPlayer player) {
 		super(new InventoryPortablePanel(player.getHeldItemMainhand(), "item.portable_panel.name"));
 		this.player = player;

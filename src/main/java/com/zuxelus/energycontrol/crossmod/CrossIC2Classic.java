@@ -53,7 +53,7 @@ public class CrossIC2Classic extends CrossModBase {
 		return par1 != null && par1.getItem() instanceof ItemToolWrench;
 	}
 
-	@Override
+	/*@Override
 	public int getNuclearCellTimeLeft(ItemStack stack) {
 		if (stack.isEmpty())
 			return 0;
@@ -63,7 +63,7 @@ public class CrossIC2Classic extends CrossModBase {
 			return ((ICustomDamageItem)item).getMaxCustomDamage(stack) - ((ICustomDamageItem)item).getCustomDamage(stack);
 		
 		return 0;
-	}
+	}*/
 
 	@Override
 	public NBTTagCompound getEnergyData(TileEntity te) {
@@ -78,7 +78,7 @@ public class CrossIC2Classic extends CrossModBase {
 		return null;
 	}
 
-	@Override
+	/*@Override
 	public ItemStack getGeneratorCard(TileEntity te) {
 		if (te instanceof TileEntitySolarPanel || te instanceof TileEntityGeneratorBase) {
 			ItemStack card = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_GENERATOR);
@@ -167,9 +167,10 @@ public class CrossIC2Classic extends CrossModBase {
 		tag.setInteger("timeLeft", timeLeft);
 
 		return tag;
-	}
+	}*/
 
-	public int getReactorHeat(World world, BlockPos pos) {
+	@Override
+	public int getHeat(World world, BlockPos pos) {
 		IReactor reactor = IC2ReactorHelper.getReactorAround(world, pos);
 		if (reactor != null)
 			return reactor.getHeat();

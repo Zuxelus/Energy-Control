@@ -5,6 +5,7 @@ import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,18 +14,18 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class ItemKitBigReactors extends ItemKitBase {
+public class ItemKitIC2 extends ItemKitBase {
 
-	public ItemKitBigReactors() {
-		super(ItemCardType.KIT_BIG_REACTORS, "kit_big_reactors");
+	public ItemKitIC2() {
+		super(ItemCardType.KIT_IC2, "kit_ic2");
 	}
 
 	@Override
 	public ItemStack getSensorCard(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side) {
 		TileEntity te = world.getTileEntity(pos);
-		NBTTagCompound tag = CrossModLoader.getCrossMod(ModIDs.BIG_REACTORS).getCardData(te);
+		NBTTagCompound tag = CrossModLoader.getCrossMod(ModIDs.IC2).getCardData(te);
 		if (tag != null) {
-			ItemStack newCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_BIG_REACTORS);
+			ItemStack newCard = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_IC2);
 			ItemStackHelper.setCoordinates(newCard, pos);
 			return newCard;
 		}

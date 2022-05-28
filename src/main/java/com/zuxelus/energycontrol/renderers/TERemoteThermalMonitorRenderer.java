@@ -1,7 +1,8 @@
 package com.zuxelus.energycontrol.renderers;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.tileentities.TileEntityRemoteThermo;
+import com.zuxelus.energycontrol.tileentities.TileEntityRemoteThermalMonitor;
+
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -9,12 +10,12 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 
-public class TERemoteThermoRenderer extends TileEntitySpecialRenderer<TileEntityRemoteThermo> {
+public class TERemoteThermalMonitorRenderer extends TileEntitySpecialRenderer<TileEntityRemoteThermalMonitor> {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/blocks/remote_thermo/all.png");
 	private static final CubeRenderer model = new CubeRenderer(0, 0, 0, 32, 32, 32, 128, 64, 0, 0);
 
 	@Override
-	public void render(TileEntityRemoteThermo te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+	public void render(TileEntityRemoteThermalMonitor te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x, y, z);
 		switch (te.getFacing()) {

@@ -1,39 +1,43 @@
 package com.zuxelus.energycontrol.crossmod;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.zuxelus.energycontrol.items.cards.ItemCardExtremeReactors;
+import com.zuxelus.energycontrol.items.cards.ItemCardMain;
+import com.zuxelus.energycontrol.items.kits.ItemKitExtremeReactors;
+import com.zuxelus.energycontrol.items.kits.ItemKitMain;
+import com.zuxelus.energycontrol.utils.DataHelper;
+import com.zuxelus.energycontrol.utils.FluidInfo;
+
 import erogenousbeef.bigreactors.common.multiblock.IInputOutputPort.Direction;
 import erogenousbeef.bigreactors.common.multiblock.MultiblockReactor;
 import erogenousbeef.bigreactors.common.multiblock.MultiblockTurbine;
 import erogenousbeef.bigreactors.common.multiblock.tileentity.TileEntityReactorPartBase;
 import erogenousbeef.bigreactors.common.multiblock.tileentity.TileEntityTurbinePartBase;
+import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.zuxelus.energycontrol.api.CardState;
-import com.zuxelus.energycontrol.utils.FluidInfo;
-
-public class CrossBigReactors extends CrossModBase {
+public class CrossExtremeReactors extends CrossModBase {
 
 	@Override
 	public NBTTagCompound getEnergyData(TileEntity te) {
+		NBTTagCompound tag = new NBTTagCompound();
+		tag.setString(DataHelper.EUTYPE, "FE");
 		if (te instanceof TileEntityReactorPartBase) {
 			MultiblockReactor reactor = ((TileEntityReactorPartBase) te).getReactorController();
 			if (reactor == null)
 				return null;
 
-			NBTTagCompound tag = new NBTTagCompound();
-			tag.setString("euType", "FE");
-			tag.setDouble("storage", reactor.getEnergyStored());
-			tag.setDouble("maxStorage", reactor.getEnergyCapacity());
+			tag.setDouble(DataHelper.ENERGY, reactor.getEnergyStored());
+			tag.setDouble(DataHelper.CAPACITY, reactor.getEnergyCapacity());
 			return tag;
 		}
 		if (te instanceof TileEntityTurbinePartBase) {
@@ -41,27 +45,11 @@ public class CrossBigReactors extends CrossModBase {
 			if (turbine == null)
 				return null;
 
-			NBTTagCompound tag = new NBTTagCompound();
-			tag.setString("euType", "FE");
-			tag.setDouble("storage", turbine.getEnergyStored());
-			tag.setDouble("maxStorage", turbine.getEnergyCapacity());
+			tag.setDouble(DataHelper.ENERGY, turbine.getEnergyStored());
+			tag.setDouble(DataHelper.CAPACITY, turbine.getEnergyCapacity());
 			return tag;
 		}
 		return null;
-	}
-
-	@Override
-	public int getReactorHeat(World world, BlockPos pos) {
-		TileEntity te;
-		for (EnumFacing dir : EnumFacing.VALUES) {
-			te = world.getTileEntity(pos.offset(dir));
-			if (te instanceof TileEntityReactorPartBase) {
-				MultiblockReactor reactor = ((TileEntityReactorPartBase) te).getReactorController();
-				if (reactor != null)
-					return (int) reactor.getReactorHeat();
-			}
-		}
-		return -1;
 	}
 
 	@Override
@@ -95,26 +83,24 @@ public class CrossBigReactors extends CrossModBase {
 
 	@Override
 	public NBTTagCompound getCardData(TileEntity te) {
+		NBTTagCompound tag = new NBTTagCompound();
 		if (te instanceof TileEntityReactorPartBase) {
 			MultiblockReactor reactor = ((TileEntityReactorPartBase) te).getReactorController();
 			if (reactor == null)
 				return null;
 
-			NBTTagCompound tag = new NBTTagCompound();
-			tag.setInteger("type", 1);
-			tag.setBoolean("reactorPoweredB", reactor.getActive());
+			tag.setBoolean(DataHelper.ACTIVE, reactor.getActive());
 			tag.setBoolean("cooling", reactor.isPassivelyCooled());
-			tag.setString("system", reactor.getPowerSystem().unitOfMeasure);
-			tag.setDouble("heat", (double) reactor.getFuelHeat());
-			tag.setInteger("coreHeat", (int) reactor.getReactorHeat());
-			tag.setDouble("storage", (double) reactor.getEnergyStored());
-			tag.setDouble("capacity", (double) reactor.getEnergyCapacity());
-			tag.setDouble("output", (double) reactor.getEnergyGeneratedLastTick());
+			tag.setDouble("fuelHeat", reactor.getFuelHeat());
+			tag.setDouble(DataHelper.HEAT, reactor.getReactorHeat());
+			tag.setDouble(DataHelper.ENERGY, reactor.getEnergyStored());
+			tag.setDouble(DataHelper.CAPACITY, reactor.getEnergyCapacity());
+			tag.setDouble(DataHelper.OUTPUT, reactor.getEnergyGeneratedLastTick());
 			tag.setInteger("rods", reactor.getFuelRodCount());
 			tag.setInteger("fuel", reactor.getFuelAmount());
 			tag.setInteger("waste", reactor.getWasteAmount());
 			tag.setInteger("fuelCapacity", reactor.getCapacity());
-			tag.setDouble("consumption", (double) reactor.getFuelConsumedLastTick());
+			tag.setDouble("consumption", reactor.getFuelConsumedLastTick());
 			BlockPos min = reactor.getMinimumCoord();
 			BlockPos max = reactor.getMaximumCoord();
 			tag.setString("size", String.format("%sx%sx%s",max.getX() - min.getX() + 1, max.getY() - min.getY() + 1, max.getZ() - min.getZ() + 1));
@@ -125,17 +111,14 @@ public class CrossBigReactors extends CrossModBase {
 			if (turbine == null)
 				return null;
 
-			NBTTagCompound tag = new NBTTagCompound();
-			tag.setInteger("type", 2);
-			tag.setBoolean("reactorPoweredB", turbine.getActive());
-			tag.setString("system", turbine.getPowerSystem().unitOfMeasure);
-			tag.setDouble("storage", (double) turbine.getEnergyStored());
-			tag.setDouble("capacity", (double) turbine.getEnergyCapacity());
-			tag.setDouble("output", (double) turbine.getEnergyGeneratedLastTick());
-			tag.setDouble("speed", (double) turbine.getRotorSpeed());
-			tag.setDouble("speedMax", (double) turbine.getMaxRotorSpeed());
-			tag.setDouble("efficiency", (double) turbine.getRotorEfficiencyLastTick());
-			tag.setDouble("consumption", (double) turbine.getFluidConsumedLastTick());
+			tag.setBoolean(DataHelper.ACTIVE, turbine.getActive());
+			tag.setDouble(DataHelper.ENERGY, turbine.getEnergyStored());
+			tag.setDouble(DataHelper.CAPACITY, turbine.getEnergyCapacity());
+			tag.setDouble(DataHelper.OUTPUT, turbine.getEnergyGeneratedLastTick());
+			tag.setDouble("speed", turbine.getRotorSpeed());
+			tag.setDouble("speedMax", turbine.getMaxRotorSpeed());
+			tag.setDouble("efficiency", turbine.getRotorEfficiencyLastTick());
+			tag.setDouble("consumption", turbine.getFluidConsumedLastTick());
 			tag.setInteger("blades", turbine.getNumRotorBlades());
 			tag.setInteger("mass", turbine.getRotorMass());
 			BlockPos min = turbine.getMinimumCoord();
@@ -144,5 +127,25 @@ public class CrossBigReactors extends CrossModBase {
 			return tag;
 		}
 		return null;
+	}
+
+	@Override
+	public int getHeat(World world, BlockPos pos) {
+		TileEntity te;
+		for (EnumFacing dir : EnumFacing.VALUES) {
+			te = world.getTileEntity(pos.offset(dir));
+			if (te instanceof TileEntityReactorPartBase) {
+				MultiblockReactor reactor = ((TileEntityReactorPartBase) te).getReactorController();
+				if (reactor != null)
+					return (int) reactor.getReactorHeat();
+			}
+		}
+		return -1;
+	}
+
+	@Override
+	public void registerItems(Register<Item> event) {
+		ItemKitMain.register(ItemKitExtremeReactors::new);
+		ItemCardMain.register(ItemCardExtremeReactors::new);
 	}
 }

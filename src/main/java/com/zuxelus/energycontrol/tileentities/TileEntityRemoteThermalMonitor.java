@@ -15,14 +15,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityRemoteThermo extends TileEntityThermo implements ISlotItemFilter {
+public class TileEntityRemoteThermalMonitor extends TileEntityThermalMonitor implements ISlotItemFilter {
 	public static final int SLOT_CHARGER = 0;
 	public static final int SLOT_CARD = 1;
 	public static final byte SLOT_UPGRADE_RANGE = 2;
 	private static final int LOCATION_RANGE = 8;
 	private int heat;
 
-	public TileEntityRemoteThermo() {
+	public TileEntityRemoteThermalMonitor() {
 		super();
 		customName = "tile.remote_thermo.name";
 		heat = 0;
@@ -60,7 +60,7 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements ISlotIte
 					upgradeCountRange = stack.getCount();
 				int range = LOCATION_RANGE * (int) Math.pow(2, upgradeCountRange);
 				if (Math.abs(target.getX() - pos.getX()) <= range && Math.abs(target.getY() - pos.getY()) <= range && Math.abs(target.getZ() - pos.getZ()) <= range) {
-					newHeat = CrossModLoader.getReactorHeat(world, target);
+					newHeat = CrossModLoader.getHeat(world, target);
 					newStatus = newHeat == -1 ? -2 : newHeat >= getHeatLevel() ? 1 : 0;
 					if (newHeat == -1)
 						newHeat = 0;
@@ -95,10 +95,7 @@ public class TileEntityRemoteThermo extends TileEntityThermo implements ISlotIte
 		case SLOT_CHARGER:
 			return false;
 		case SLOT_CARD:
-			return stack.getItem() instanceof ItemCardMain && (stack.getItemDamage() == ItemCardType.CARD_REACTOR
-					|| stack.getItemDamage() == ItemCardType.CARD_REACTOR5X5
-					|| stack.getItemDamage() == ItemCardType.CARD_BIG_REACTORS
-					|| stack.getItemDamage() == ItemCardType.CARD_HBM);
+			return stack.getItem() instanceof ItemCardMain;
 		case SLOT_UPGRADE_RANGE:
 			return stack.getItem() instanceof ItemUpgrade && stack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE;
 		default:

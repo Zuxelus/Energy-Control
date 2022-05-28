@@ -10,6 +10,7 @@ import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
+import com.zuxelus.energycontrol.utils.DataHelper;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.NBTTagCompound;
@@ -52,6 +53,8 @@ public class ItemCardHBM extends ItemCardBase {
 			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("output"), "HE/t", showLabels));
 		if (reader.hasField("outputmb"))
 			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("outputmb"), "mB/t", showLabels));
+		if (reader.hasField(DataHelper.DIFF))
+			result.add(new PanelString("msg.ec.InfoPanelDifference", reader.getLong(DataHelper.DIFF), "HE/t", showLabels));
 		if (reader.hasField("temp"))
 			result.add(new PanelString("msg.ec.InfoPanelTemperature", reader.getInt("temp"), "K", showLabels));
 		if (reader.hasField("speed"))
@@ -72,6 +75,10 @@ public class ItemCardHBM extends ItemCardBase {
 			result.add(new PanelString("msg.ec.InfoPanelFuel", reader.getString("fuelText"), showLabels));
 		if (reader.hasField("depleted"))
 			result.add(new PanelString("msg.ec.InfoPanelDepleted", reader.getString("depleted"), showLabels));
+		if (reader.hasField("fluxFast"))
+			result.add(new PanelString("msg.ec.InfoPanelFluxFast", reader.getDouble("fluxFast"), showLabels));
+		if (reader.hasField("fluxSlow"))
+			result.add(new PanelString("msg.ec.InfoPanelFluxSlow", reader.getDouble("fluxSlow"), showLabels));
 		if (reader.hasField("depletion"))
 			result.add(new PanelString("rbmk.rod.depletion", reader.getDouble("depletion"), "%", showLabels));
 		if (reader.hasField("xenon"))
@@ -98,8 +105,8 @@ public class ItemCardHBM extends ItemCardBase {
 						" " + reader.getString("chunkRad")));
 			else
 				result.add(new PanelString(reader.getString("chunkRad")));
-		if (reader.hasField("active"))
-			addOnOff(result, isServer, reader.getBoolean("active"));
+		if (reader.hasField(DataHelper.ACTIVE))
+			addOnOff(result, isServer, reader.getBoolean(DataHelper.ACTIVE));
 		return result;
 	}
 

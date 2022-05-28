@@ -64,6 +64,11 @@ public class TimerBlock extends FacingBlockSmall {
 	}
 
 	@Override
+	public boolean canProvidePower(IBlockState state) {
+		return true;
+	}
+
+	@Override
 	public EnumBlockRenderType getRenderType(IBlockState state) {
 		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
 	}
@@ -78,8 +83,9 @@ public class TimerBlock extends FacingBlockSmall {
 		}
 	}
 
+	@Override
 	@SideOnly(Side.CLIENT)
-	public boolean hasCustomBreakingProgress(IBlockState state) {
+	public boolean hasCustomBreakingProgress(IBlockState state) { // 1.12.2 only (in 1.10.2 in TileEntity)
 		return true;
 	}
 }

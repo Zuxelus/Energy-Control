@@ -28,8 +28,6 @@ public class StorageArrayRecipe extends net.minecraftforge.registries.IForgeRegi
 		int arrayCount = 0;
 		int cardCountLiquid = 0;
 		int arrayCountLiquid = 0;
-		int cardCountGenerator = 0;
-		int arrayCountGenerator = 0;
 		ItemStack array = null;
 		Vector<ItemStack> cards = new Vector<>();
 		for (int i = 0; i < inventoryLength; i++) {
@@ -49,36 +47,24 @@ public class StorageArrayRecipe extends net.minecraftforge.registries.IForgeRegi
 				cards.add(stack);
 				cardCountLiquid++;
 				break;
-			case ItemCardType.CARD_GENERATOR:
-				cards.add(stack);
-				cardCountGenerator++;
-				break;
 			case ItemCardType.CARD_ENERGY_ARRAY:
-				array = stack;				
+				array = stack;
 				arrayCount++;
 				break;
 			case ItemCardType.CARD_LIQUID_ARRAY:
 				array = stack;
 				arrayCountLiquid++;
 				break;
-			case ItemCardType.CARD_GENERATOR_ARRAY:
-				array = stack;
-				arrayCountGenerator++;
-				break;
 			}
 		}
-		if (((cardCount + arrayCount) != 0 && (cardCountLiquid + arrayCountLiquid) != 0)
-				|| ((cardCount + arrayCount) != 0 && (cardCountGenerator + arrayCountGenerator) != 0)
-				|| ((cardCountLiquid + arrayCountLiquid) != 0 && (cardCountGenerator + arrayCountGenerator) != 0))
+
+		if ((cardCount + arrayCount) != 0 && (cardCountLiquid + arrayCountLiquid) != 0)
 			return ItemStack.EMPTY;
 
 		ItemStack stack = getCraftingResult(cardCount, arrayCount, ItemCardType.CARD_ENERGY_ARRAY, cards, array);
 		if (!stack.isEmpty())
 			return stack;
-		stack = getCraftingResult(cardCountLiquid, arrayCountLiquid, ItemCardType.CARD_LIQUID_ARRAY, cards, array);
-		if (!stack.isEmpty())
-			return stack;
-		return getCraftingResult(cardCountGenerator, arrayCountGenerator, ItemCardType.CARD_GENERATOR_ARRAY, cards, array);
+		return getCraftingResult(cardCountLiquid, arrayCountLiquid, ItemCardType.CARD_LIQUID_ARRAY, cards, array);
 	}
 
 	private ItemStack getCraftingResult(int cardCount, int arrayCount, int type, Vector<ItemStack> cards, ItemStack array) {

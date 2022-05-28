@@ -1,6 +1,7 @@
 package com.zuxelus.zlib.items;
 
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
@@ -75,7 +76,7 @@ public abstract class ItemInventory implements IInventory, ISlotItemFilter {
 	}
 
 	@Override
-	public boolean isEmpty() {
+	public boolean isEmpty() { // 1.12.2 and more
 		for (ItemStack stack : inventory)
 			if (!stack.isEmpty())
 				return false;
@@ -88,10 +89,10 @@ public abstract class ItemInventory implements IInventory, ISlotItemFilter {
 	}
 
 	@Override
-	public ItemStack decrStackSize(int index, int count) {
-		ItemStack itemstack = ItemStackHelper.getAndSplit(inventory, index, count);
+	public ItemStack decrStackSize(int slot, int count) {
+		ItemStack stack = ItemStackHelper.getAndSplit(inventory, slot, count);
 		//if (!itemstack.isEmpty()) markDirty();
-		return itemstack;
+		return stack;
 	}
 
 	@Override

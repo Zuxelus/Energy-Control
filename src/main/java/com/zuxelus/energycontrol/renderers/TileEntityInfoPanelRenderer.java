@@ -1,16 +1,17 @@
 package com.zuxelus.energycontrol.renderers;
 
+import java.util.List;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
+
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-
-import java.util.List;
 
 public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileEntityInfoPanel> {
 	private static final ResourceLocation[] TEXTUREOFF;
@@ -117,37 +118,41 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			case UP:
 				switch (panel.getRotation()) {
 				case NORTH:
-					dz = (pos.getZ() - screen.maxZ - screen.minZ + pos.getZ());
-					dy = pos.getX() - screen.maxX - screen.minX + pos.getX();
-					displayWidth += screen.maxX - screen.minX;
-					displayHeight += screen.maxZ - screen.minZ;
-					break;
 				case SOUTH:
-					dz = (pos.getZ() - screen.maxZ - screen.minZ + pos.getZ());
+					dz = pos.getZ() - screen.maxZ - screen.minZ + pos.getZ();
 					dy = pos.getX() - screen.maxX - screen.minX + pos.getX();
 					displayWidth += screen.maxX - screen.minX;
 					displayHeight += screen.maxZ - screen.minZ;
 					break;
 				case EAST:
-					dz = (pos.getZ() - screen.maxZ - screen.minZ + pos.getZ());
-					dy = pos.getX() - screen.maxX - screen.minX + pos.getX();
-					displayWidth += screen.maxZ - screen.minZ;
-					displayHeight += screen.maxX - screen.minX;
-					break;
 				case WEST:
-					dz = (pos.getZ() - screen.maxZ - screen.minZ + pos.getZ());
+					dz = pos.getZ() - screen.maxZ - screen.minZ + pos.getZ();
 					dy = pos.getX() - screen.maxX - screen.minX + pos.getX();
 					displayWidth += screen.maxZ - screen.minZ;
 					displayHeight += screen.maxX - screen.minX;
 					break;
-				case DOWN:
+				}
+				break;
+			case DOWN:
+				switch (panel.getRotation()) {
+				case NORTH:
+				case SOUTH:
+					dz = pos.getZ() - screen.maxZ - screen.minZ + pos.getZ();
+					dy = pos.getX() - screen.maxX - screen.minX + pos.getX();
+					displayWidth += screen.maxX - screen.minX;
+					displayHeight += screen.maxZ - screen.minZ;
 					break;
-				case UP:
+				case EAST:
+				case WEST:
+					dz = - (pos.getZ() - screen.maxZ - screen.minZ + pos.getZ());
+					dy = pos.getX() - screen.maxX - screen.minX + pos.getX();
+					displayWidth += screen.maxZ - screen.minZ;
+					displayHeight += screen.maxX - screen.minX;
 					break;
 				}
 				break;
 			case NORTH:
-				dz = (pos.getY() - screen.maxY - screen.minY + pos.getY());
+				dz = pos.getY() - screen.maxY - screen.minY + pos.getY();
 				dy = pos.getX() - screen.maxX - screen.minX + pos.getX();
 				displayWidth += screen.maxX - screen.minX;
 				displayHeight += screen.maxY - screen.minY;
@@ -158,11 +163,9 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 				displayWidth += screen.maxX - screen.minX;
 				displayHeight += screen.maxY - screen.minY;
 				break;
-			case DOWN:
- 				break;
 			case WEST:
 				dz = pos.getZ() - screen.maxZ + pos.getZ() - screen.minZ;
-				dy = (pos.getY() - screen.maxY - screen.minY + pos.getY());
+				dy = pos.getY() - screen.maxY - screen.minY + pos.getY();
 				displayWidth += screen.maxZ - screen.minZ;
 				displayHeight += screen.maxY - screen.minY;
 				break;
@@ -177,16 +180,16 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 
 		GlStateManager.translate(0.5F - dy / 2, 1.01F - dx / 2 , 0.5F - dz / 2);
 		GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
-		switch(panel.getRotation())
+		switch(panel.getFacing())
 		{
+		case DOWN:
+			break;
 		case UP:
 			break;
 		case NORTH:
 			GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
 			break;
 		case SOUTH:
-			break;
-		case DOWN:
 			break;
 		case WEST:
 			GlStateManager.rotate(-90.0F, 0.0F, 0.0F, 1.0F);
@@ -195,7 +198,24 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
 			break;
 		}
-
+		switch(panel.getRotation())
+		{
+		case DOWN:
+			break;
+		case UP:
+			break;
+		case NORTH:
+			GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+			break;
+		case SOUTH:
+			break;
+		case WEST:
+			GlStateManager.rotate(-90.0F, 0.0F, 0.0F, 1.0F);
+			break;
+		case EAST:
+			GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
+			break;
+		}
 		if (panel.isTouchCard() || panel.hasBars()) {
 			GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
 			GlStateManager.disableLighting();

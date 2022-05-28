@@ -7,7 +7,11 @@ import java.util.List;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.init.ModItems;
+import com.zuxelus.energycontrol.items.cards.ItemCardMain;
+import com.zuxelus.energycontrol.items.cards.ItemCardThermalExpansion;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
+import com.zuxelus.energycontrol.items.kits.ItemKitMain;
+import com.zuxelus.energycontrol.items.kits.ItemKitThermalExpansion;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import cofh.core.block.TileNameable;
@@ -26,9 +30,11 @@ import cofh.thermalexpansion.block.machine.TileMachineBase;
 import cofh.thermalexpansion.block.machine.TileRefinery;
 import cofh.thermalexpansion.block.machine.TileSmelter;
 import cofh.thermalexpansion.item.ItemAugment;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.fluids.IFluidTank;
 
 public class CrossThermalExpansion extends CrossModBase {
@@ -48,7 +54,7 @@ public class CrossThermalExpansion extends CrossModBase {
 		return null;
 	}
 
-	@Override
+	/*@Override
 	public ItemStack getGeneratorCard(TileEntity te) {
 		if (te instanceof TileDynamoBase) {
 			ItemStack card = new ItemStack(ModItems.itemCard, 1, ItemCardType.CARD_GENERATOR);
@@ -75,7 +81,7 @@ public class CrossThermalExpansion extends CrossModBase {
 			}
 		} catch (Throwable t) { }
 		return null;
-	}
+	}*/
 
 	@Override
 	public List<FluidInfo> getAllTanks(TileEntity te) {
@@ -198,5 +204,11 @@ public class CrossThermalExpansion extends CrossModBase {
 			}
 		} catch (Throwable t) {}
 		return null;
+	}
+
+	@Override
+	public void registerItems(Register<Item> event) {
+		ItemKitMain.register(ItemKitThermalExpansion::new);
+		ItemCardMain.register(ItemCardThermalExpansion::new);
 	}
 }

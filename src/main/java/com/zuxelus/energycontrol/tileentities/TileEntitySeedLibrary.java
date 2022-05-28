@@ -20,6 +20,7 @@ import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.info.Info;
 import ic2.api.item.ElectricItem;
+import ic2.api.item.IC2Items;
 import ic2.api.item.IElectricItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -359,7 +360,7 @@ public class TileEntitySeedLibrary extends TileEntityInventory implements ITicka
 		case FAKE_SLOT:
 			return false;
 		default:
-			return stack.getItem() == CrossModLoader.getCrossMod(ModIDs.IC2).getItem("seed");
+			return stack.getItem() == IC2Items.getItem("crop_seed_bag").getItem();
 		}
 	}
 
@@ -373,7 +374,7 @@ public class TileEntitySeedLibrary extends TileEntityInventory implements ITicka
 	public boolean canInsertItem(int slot, ItemStack stack, EnumFacing side) {
 		if (slot < 1 || slot > 8)
 			return false;
-		return stack.getItem() == CrossModLoader.getCrossMod(ModIDs.IC2).getItem("seed");
+		return stack.getItem() == IC2Items.getItem("crop_seed_bag").getItem();
 	}
 
 	public String getKey(ItemStack seed) {
@@ -458,7 +459,7 @@ public class TileEntitySeedLibrary extends TileEntityInventory implements ITicka
 		getGUIFilter().bulk_mode = true;
 		for (int i = 1; i < 9; i++) {
 			ItemStack stack = getStackInSlot(i);
-			if (!stack.isEmpty() && stack.getItem() == CrossModLoader.getCrossMod(ModIDs.IC2).getItem("seed")) {
+			if (!stack.isEmpty() && stack.getItem() == IC2Items.getItem("crop_seed_bag").getItem()) {
 				loadSeed(stack);
 				inventory.set(i, ItemStack.EMPTY);
 			}

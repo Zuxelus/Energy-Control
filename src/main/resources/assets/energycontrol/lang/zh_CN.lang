@@ -178,6 +178,7 @@ msg.ec.InfoPanelHullHeat=Hull Heat: %s
 msg.ec.InfoPanelHydrogen=氢气：%s
 msg.ec.InfoPanelIndirectPower=间接电源：%s
 msg.ec.InfoPanelInjectionRate=Injection Rate: %s
+msg.ec.InfoPanelInput=Input: %s
 msg.ec.InfoPanelLeakage=Leakage: %s
 msg.ec.InfoPanelMaxFlowRate=Max Flow Rate: %s mB/t
 msg.ec.InfoPanelMaxHeat=最大热量：%s

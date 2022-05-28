@@ -75,7 +75,7 @@ public class ItemCardNuclearCraft extends ItemCardBase {
 			result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getInt("capacity"), "RF", showLabels));
 			break;
 		case 6:
-			addHeat(result, (int) Math.round(reader.getDouble("heat")), reader.getInt("maxHeat"), showLabels);
+			addHeat(result, "msg.ec.InfoPanelTemp", (int) Math.round(reader.getDouble("heat")), reader.getInt("maxHeat"), showLabels);
 			result.add(new PanelString("msg.ec.InfoPanelHeatChange", reader.getDouble("heatChange"), showLabels));
 			result.add(new PanelString("msg.ec.InfoPanelSize", reader.getString("size"), showLabels));
 			result.add(new PanelString("msg.ec.InfoPanelFuel", reader.getString("fuel"), showLabels));

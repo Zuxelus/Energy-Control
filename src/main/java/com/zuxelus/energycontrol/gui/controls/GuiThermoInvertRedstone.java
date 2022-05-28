@@ -2,7 +2,8 @@ package com.zuxelus.energycontrol.gui.controls;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.network.NetworkHelper;
-import com.zuxelus.energycontrol.tileentities.TileEntityThermo;
+import com.zuxelus.energycontrol.tileentities.TileEntityThermalMonitor;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
@@ -14,10 +15,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class GuiThermoInvertRedstone extends GuiButton {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_thermal_monitor.png");
 
-	TileEntityThermo thermo;
+	TileEntityThermalMonitor thermo;
 	private boolean checked;
 
-	public GuiThermoInvertRedstone(int id, int x, int y, TileEntityThermo thermo) {
+	public GuiThermoInvertRedstone(int id, int x, int y, TileEntityThermalMonitor thermo) {
 		super(id, x, y, 0, 0, "");
 		height = 15;
 		width = 51;
