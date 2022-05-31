@@ -53,7 +53,7 @@ public class ModItems {
 	public static Item itemAFSUUpgradeKit;
 
 	public static void onBlockRegistry() {
-		blockLight = register(new BlockLight(), "block_light");
+		blockLight = register(new BlockLight(), ItemLight.class, "block_light");
 		blockHowlerAlarm = register(new HowlerAlarm(), "howler_alarm");
 		blockIndustrialAlarm = register(new IndustrialAlarm(), "industrial_alarm");
 		blockThermalMonitor = register(new ThermalMonitor(), "thermal_monitor");

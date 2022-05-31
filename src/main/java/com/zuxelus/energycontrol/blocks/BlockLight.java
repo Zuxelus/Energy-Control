@@ -31,8 +31,8 @@ public class BlockLight extends Block {
 	public BlockLight() {
 		super(Material.redstoneLight);
 		blocks = new HashMap<Integer, Boolean>();
-		this.setHardness(0.3F);
-		this.setCreativeTab(EnergyControl.creativeTab);
+		setHardness(0.3F);
+		setCreativeTab(EnergyControl.creativeTab);
 		setStepSound(soundTypeGlass);
 		register(DAMAGE_WHITE_OFF, false);
 		register(DAMAGE_WHITE_ON, true);

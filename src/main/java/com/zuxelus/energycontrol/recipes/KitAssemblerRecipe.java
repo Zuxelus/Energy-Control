@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
 
+import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -58,6 +59,8 @@ public class KitAssemblerRecipe {
 		List<ItemStack> input1list = new ArrayList<>();
 		if (input1 instanceof Item)
 			input1list.add(new ItemStack((Item) input1));
+		if (input1 instanceof Block)
+			input1list.add(new ItemStack((Block) input1));
 		else if (input1 instanceof ItemStack)
 			input1list.add((ItemStack) input1);
 		else if (input1 instanceof String)
@@ -67,6 +70,8 @@ public class KitAssemblerRecipe {
 		List<ItemStack> input2list = new ArrayList<>();
 		if (input2 instanceof Item)
 			input2list.add(new ItemStack((Item) input2));
+		if (input2 instanceof Block)
+			input2list.add(new ItemStack((Block) input2));
 		else if (input2 instanceof ItemStack)
 			input2list.add((ItemStack) input2);
 		else if (input2 instanceof String)
@@ -76,6 +81,8 @@ public class KitAssemblerRecipe {
 		List<ItemStack> input3list = new ArrayList<>();
 		if (input3 instanceof Item)
 			input3list.add(new ItemStack((Item) input3));
+		if (input3 instanceof Block)
+			input3list.add(new ItemStack((Block) input3));
 		else if (input3 instanceof ItemStack)
 			input3list.add((ItemStack) input3);
 		else if (input3 instanceof String)

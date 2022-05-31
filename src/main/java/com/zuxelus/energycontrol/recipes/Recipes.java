@@ -171,14 +171,20 @@ public class Recipes {
 				'C', "circuitBasic",
 				'S', "slabWood" });
 
-		addShapedRecipe(ModItems.itemComponent, ItemComponent.STRONG_STRING, new Object[] {
+		addShapedRecipe(new ItemStack(ModItems.itemComponent, 3, ItemComponent.STRONG_STRING), new Object[] {
 			"#S ", "S#S", " S#",
 				'#', Blocks.cactus,
 				'S', Items.reeds });
 
+		addShapedRecipe(new ItemStack(ModItems.itemComponent, 3, ItemComponent.STRONG_STRING), new Object[] {
+				"#S ", "S#S", " S#",
+					'#', Blocks.vine,
+					'S', Items.reeds });
+
 		addShapedRecipe(Items.dye, 10, new Object[] {
-			"SS ", "SS ",
-				'S', new ItemStack(ModItems.itemComponent, 1, ItemComponent.STRONG_STRING) });
+			"SSS", "SSS", " B ",
+				'S', new ItemStack(ModItems.itemComponent, 1, ItemComponent.STRONG_STRING),
+				'B', Items.water_bucket });
 
 		addShapedRecipe(ModItems.itemCardHolder,
 			new Object[] { " L ", "LCL", " L ", 'C', Blocks.chest, 'L', Items.leather }); // 1.7.10
@@ -219,7 +225,7 @@ public class Recipes {
 			new ItemStack(ModItems.itemComponent, 1, ItemComponent.ADVANCED_CIRCUIT), 300);
 		KitAssemblerRecipe.addRecipe("dustRedstone", 2, "ingotIron", 1, Items.flint, 1,
 			new ItemStack(ModItems.itemComponent, 1, ItemComponent.BASIC_CIRCUIT), 300);
-		KitAssemblerRecipe.addRecipe("ingotIron", 3, "ingotIron", 3, new ItemStack(ModItems.itemComponent, 1, ItemComponent.STRONG_STRING), 3,
+		KitAssemblerRecipe.addRecipe("ingotIron", 4, Blocks.heavy_weighted_pressure_plate, 1, new ItemStack(ModItems.itemComponent, 1, ItemComponent.STRONG_STRING), 3,
 			new ItemStack(ModItems.itemComponent, 1, ItemComponent.MACHINE_CASING), 400);
 		addKitRecipe(ItemCardType.KIT_ENERGY, ItemCardType.CARD_ENERGY);
 		addKitRecipe(ItemCardType.KIT_COUNTER, ItemCardType.CARD_COUNTER);

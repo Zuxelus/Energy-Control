@@ -35,6 +35,26 @@ public class CrossBigReactors extends CrossModBase {
 	}
 
 	@Override
+	public List<FluidInfo> getAllTanks(TileEntity te) {
+		FluidTankInfo[] info = null;
+		if (te instanceof TileEntityReactorPartBase) {
+			MultiblockReactor reactor = ((TileEntityReactorPartBase) te).getReactorController();
+			if (reactor == null)
+				return null;
+			if (reactor.isPassivelyCooled())
+				return null;
+			return FluidInfo.toFluidInfoList(reactor.getCoolantContainer().getTankInfo(-1));
+		}
+		if (te instanceof TileEntityTurbinePartBase) {
+			MultiblockTurbine turbine = ((TileEntityTurbinePartBase) te).getTurbine();
+			if (turbine == null)
+				return null;
+			return FluidInfo.toFluidInfoList(turbine.getTankInfo());
+		}
+		return null;
+	}
+
+	@Override
 	public NBTTagCompound getCardData(TileEntity te) {
 		NBTTagCompound tag = new NBTTagCompound();
 		if (te instanceof TileEntityReactorPartBase) {
@@ -97,26 +117,6 @@ public class CrossBigReactors extends CrossModBase {
 			}
 		}
 		return -1;
-	}
-
-	@Override
-	public List<FluidInfo> getAllTanks(TileEntity te) {
-		FluidTankInfo[] info = null;
-		if (te instanceof TileEntityReactorPartBase) {
-			MultiblockReactor reactor = ((TileEntityReactorPartBase) te).getReactorController();
-			if (reactor == null)
-				return null;
-			if (reactor.isPassivelyCooled())
-				return null;
-			return FluidInfo.toFluidInfoList(reactor.getCoolantContainer().getTankInfo(-1));
-		}
-		if (te instanceof TileEntityTurbinePartBase) {
-			MultiblockTurbine turbine = ((TileEntityTurbinePartBase) te).getTurbine();
-			if (turbine == null)
-				return null;
-			return FluidInfo.toFluidInfoList(turbine.getTankInfo());
-		}
-		return null;
 	}
 
 	@Override

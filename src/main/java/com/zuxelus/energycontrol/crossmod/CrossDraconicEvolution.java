@@ -76,15 +76,10 @@ public class CrossDraconicEvolution extends CrossModBase {
 	@Override
 	public NBTTagCompound getCardData(TileEntity te) {
 		NBTTagCompound tag = new NBTTagCompound();
-		if (te instanceof TileEnergyStorageCore) {
-			tag.setDouble(DataHelper.ENERGY, ((TileEnergyStorageCore)te).getEnergyStored());
-			tag.setDouble(DataHelper.CAPACITY, ((TileEnergyStorageCore)te).getMaxEnergyStored());
-			ArrayList values = getHookValues(te);
-			if (values != null)
-				tag.setLong("diff", ((Long) values.get(0) - (Long) values.get(20)) / 20);
-			tag.setInteger("tier", ((TileEnergyStorageCore)te).getTier());
-			return tag;
-		}
+		if (te instanceof TileInvisibleMultiblock)
+			return getStorageData(((TileInvisibleMultiblock) te).getMaster());
+		if (te instanceof TileEnergyStorageCore)
+			return getStorageData((TileEnergyStorageCore) te);
 		if (te instanceof TileEnergyInfuser) {
 			tag.setDouble(DataHelper.ENERGY, ((TileEnergyInfuser) te).energy.getEnergyStored());
 			tag.setDouble(DataHelper.CAPACITY, ((TileEnergyInfuser) te).energy.getMaxEnergyStored());
@@ -111,28 +106,30 @@ public class CrossDraconicEvolution extends CrossModBase {
 			tag.setInteger("flowHigh", ((TileFluxGate)te).flowRSHigh);
 			return tag;
 		}
-		if (te instanceof TileInvisibleMultiblock) {
-			TileEnergyStorageCore core = ((TileInvisibleMultiblock) te).getMaster();
-			if (core == null)
-				return null;
-			tag.setDouble(DataHelper.ENERGY, core.getEnergyStored());
-			tag.setDouble(DataHelper.CAPACITY, core.getMaxEnergyStored());
-			ArrayList values = getHookValues(core);
-			if (values != null)
-				tag.setLong("diff", ((Long) values.get(0) - (Long) values.get(20)) / 20);
-			tag.setInteger("tier", core.getTier() + 1);
-			return tag;
-		}
 		if (te instanceof TileReactorEnergyInjector) {
 			TileReactorCore core = ((TileReactorEnergyInjector) te).getCore();
-			return getCoreData((TileReactorCore) core);
+			return getReactorData((TileReactorCore) core);
 		}
 		if (te instanceof TileReactorCore)
-			return getCoreData((TileReactorCore) te);
+			return getReactorData((TileReactorCore) te);
 		return null;
 	}
 
-	private NBTTagCompound getCoreData(TileReactorCore reactor) {
+	private NBTTagCompound getStorageData(TileEnergyStorageCore core) {
+		if (core == null)
+			return null;
+
+		NBTTagCompound tag = new NBTTagCompound();
+		tag.setDouble(DataHelper.ENERGY, core.getEnergyStored());
+		tag.setDouble(DataHelper.CAPACITY, core.getMaxEnergyStored());
+		ArrayList values = getHookValues(core);
+		if (values != null)
+			tag.setLong(DataHelper.DIFF, ((Long) values.get(0) - (Long) values.get(20)) / 20);
+		tag.setInteger("tier", core.getTier() + 1);
+		return tag;
+	}
+
+	private NBTTagCompound getReactorData(TileReactorCore reactor) {
 		if (reactor == null)
 			return null;
 		NBTTagCompound tag = new NBTTagCompound();

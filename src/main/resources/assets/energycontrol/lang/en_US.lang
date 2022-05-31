@@ -113,7 +113,6 @@ msg.ec.ThermalMonitorSignalAt=Signal at %s heat
 msg.ec.Thermo=Hull heat: %s
 msg.ec.ThermoDigital=Hull heat: %s (Water evaporate: %s / melting: %s)
 msg.ec.Ticks=%s tick(s)
-msg.ec.SensorKit=Remote Sensor mounted, Sensor Location Card received
 
 msg.ec.InfoPanelOutOfRange=Out Of Range
 msg.ec.InfoPanelInvalidCard=Invalid Card
@@ -253,7 +252,7 @@ msg.ec.InfoPanelUsing=Using: %s
 msg.ec.InfoPanelWastemb=Waste: %s mB
 msg.ec.InfoPanelWaterFlow=WaterFlow: %s
 msg.ec.InfoPanelWater=Water: %s
-msg.ec.InfoPanelWindStrength=WindStrength: %s
+msg.ec.InfoPanelWindStrength=Wind Strength: %s
 
 msg.nc.CasingHeatLevel=Casing Heat Level: %s
 msg.nc.CasingTemp=Casing Temperature: %s
