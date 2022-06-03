@@ -130,10 +130,9 @@ public class KitAssemblerRecipe implements IRecipe {
 	}
 
 	public static KitAssemblerRecipe findRecipe(TileEntityKitAssembler te) {
-		for(KitAssemblerRecipe recipe : recipes) {
+		for(KitAssemblerRecipe recipe : recipes)
 			if (recipe.isSuitable(te))
 				return recipe; 
-		}
 		return null;
 	}
 }

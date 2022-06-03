@@ -2,37 +2,25 @@ package com.zuxelus.energycontrol.renderers;
 
 import java.util.List;
 
+import org.lwjgl.opengl.GL11;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 
 public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileEntityInfoPanel> {
-	private static final ResourceLocation[] TEXTUREOFF;
-	private static final ResourceLocation[] TEXTUREON;
-	private static final CubeRenderer[] model;
-	public static final CubeRenderer DESTROY = new CubeRenderer(0, 0, 0, 32, 32, 32, 32, 32, 0, 0);
-
-	static {
-		TEXTUREOFF = new ResourceLocation[16];
-		TEXTUREON = new ResourceLocation[16];
-		for (int i = 0; i < 16; i++) {
-			TEXTUREOFF[i] = new ResourceLocation(
-					EnergyControl.MODID + String.format(":textures/blocks/info_panel/off/all%d.png", i));
-			TEXTUREON[i] = new ResourceLocation(
-					EnergyControl.MODID + String.format(":textures/blocks/info_panel/on/all%d.png", i));
-		}
-		model = new CubeRenderer[16];
-		for (int i = 0; i < 4; i++)
-			for (int j = 0; j < 4; j++)
-				model[i * 4 + j] = new CubeRenderer(i * 32 + 64, j * 32 + 64);
-	}
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID + ":textures/blocks/info_panel/panel_all.png");
+	public static final ResourceLocation SCREEN = new ResourceLocation(EnergyControl.MODID + ":textures/blocks/info_panel/panel_screen.png");
 
 	private static String implodeArray(String[] inputArray, String glueString) {
 		String output = "";
@@ -55,49 +43,48 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 	public void render(TileEntityInfoPanel te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x, y, z);
-		switch (te.getFacing()) {
-		case UP:
-			break;
-		case NORTH:
-			GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
-			GlStateManager.translate(0.0F, -1.0F, 0.0F);
-			break;
-		case SOUTH:
-			GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
-			GlStateManager.translate(0.0F, 0.0F, -1.0F);
-			break;
-		case DOWN:
-			GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
-			GlStateManager.translate(0.0F, -1.0F, -1.0F);
-			break;
-		case WEST:
-			GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
-			GlStateManager.translate(0.0F, -1.0F, 0.0F);
-			break;
-		case EAST:
-			GlStateManager.rotate(-90.0F, 0.0F, 0.0F, 1.0F);
-			GlStateManager.translate(-1.0F, 0.0F, 0.0F);
-			break;
-		}
+		CubeRenderer.rotateBlock(te.getFacing());
 
-		int color = 2;
-		if (te.getColored()) {
-			color = te.getColorBackground();
-			if (color > 15 || color < 0)
-				color = 2;
-		}
-
-		if (destroyStage > -1)
+		int color = te.getColored() ? te.getColorBackground() : TileEntityInfoPanel.GREEN;
+		if (destroyStage > -1) {
 			bindTexture(DESTROY_STAGES[destroyStage]);
-		else if (te.getPowered())
-			bindTexture(TEXTUREON[color]);
-		else
-			bindTexture(TEXTUREOFF[color]);
+			CubeRenderer.DESTROY.render(0.03125F);
+		} else {
+			bindTexture(TEXTURE);
+			CubeRenderer.MODEL.render(0.03125F);
+			//new CubeRenderer(0, 0, 0, 32, 32, 32, 128, 128, 0, 0, false).render(0.03125F);
 
-		if (destroyStage > -1)
-			DESTROY.render(0.03125F);
-		else {
-			model[te.findTexture()].render(0.03125F);
+			bindTexture(SCREEN);
+			drawFace(te.findTexture(), color);
+
+			switch (te.getFacing()) {
+			case UP:
+				GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+				GlStateManager.translate(0.0F, -1.0F, 0.0F);
+				break;
+			case DOWN:
+				GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+				GlStateManager.translate(0.0F, -1.0F, 0.0F);
+				break;
+			case NORTH:
+				GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+				GlStateManager.translate(0.0F, -1.0F, 0.0F);
+				break;
+			case SOUTH:
+				GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+				GlStateManager.translate(0.0F, -1.0F, 0.0F);
+				break;
+			case WEST:
+				GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
+				GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+				GlStateManager.translate(0.0F, -1.0F, -1.0F);
+				break;
+			case EAST:
+				GlStateManager.rotate(90.0F, 0.0F, 0.0F, -1.0F);
+				GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+				GlStateManager.translate(-1.0F, -1.0F, 0.0F);
+				break;
+			}
 
 			if (te.getPowered()) {
 				List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
@@ -105,6 +92,27 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			}
 		}
 		GlStateManager.popMatrix();
+	}
+
+	public static void drawFace(int texture, int color) {
+		Tessellator tessellator = Tessellator.getInstance();
+		BufferBuilder bufferbuilder = tessellator.getBuffer();
+		bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
+		double x = (texture / 4) * 0.25;
+		double y = (texture % 4) * 0.25;
+		drawPositionColor(bufferbuilder, x, y, x + 0.25, y + 0.25, color);
+		tessellator.draw();
+	}
+
+	static void drawPositionColor(BufferBuilder builder, double uMin, double vMin, double uMax, double vMax, long color) {
+		float f = (color >> 24 & 255) / 255.0F;
+		float f1 = (color >> 16 & 255) / 255.0F;
+		float f2 = (color >> 8 & 255) / 255.0F;
+		float f3 = (color & 255) / 255.0F;
+		builder.pos(1, 0, 0).tex(uMin, vMax).color(f1, f2, f3, f).endVertex();
+		builder.pos(0, 0, 0).tex(uMax, vMax).color(f1, f2, f3, f).endVertex();
+		builder.pos(0, 1, 0).tex(uMax, vMin).color(f1, f2, f3, f).endVertex();
+		builder.pos(1, 1, 0).tex(uMin, vMin).color(f1, f2, f3, f).endVertex();
 	}
 
 	private void drawText(TileEntityInfoPanel panel, List<PanelString> joinedData) {
@@ -136,8 +144,13 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			case DOWN:
 				switch (panel.getRotation()) {
 				case NORTH:
+					dz = pos.getZ() - screen.maxZ + screen.minZ - pos.getZ();
+					dy = pos.getX() - screen.maxX - screen.minX + pos.getX();
+					displayWidth += screen.maxX - screen.minX;
+					displayHeight += screen.maxZ - screen.minZ;
+					break;
 				case SOUTH:
-					dz = pos.getZ() - screen.maxZ - screen.minZ + pos.getZ();
+					dz = -pos.getZ() + screen.maxZ + screen.minZ - pos.getZ();
 					dy = pos.getX() - screen.maxX - screen.minX + pos.getX();
 					displayWidth += screen.maxX - screen.minX;
 					displayHeight += screen.maxZ - screen.minZ;
@@ -210,7 +223,7 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		case SOUTH:
 			break;
 		case WEST:
-			GlStateManager.rotate(-90.0F, 0.0F, 0.0F, 1.0F);
+			GlStateManager.rotate(90.0F, 0.0F, 0.0F, -1.0F);
 			break;
 		case EAST:
 			GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);

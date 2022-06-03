@@ -83,33 +83,33 @@ public class RotationOffset {
 		switch (facing) {
 		case NORTH:
 			if (rotateVert > 0)
-				updateOffset(offset, -lengthY, screen.maxY - pos.getY(), 10);
+				updateOffset(offset, -lengthY, screen.maxY - pos.getY(), 3);
 			if (rotateVert < 0)
-				updateOffset(offset, lengthY, pos.getY() - screen.minY, 5);
+				updateOffset(offset, lengthY, pos.getY() - screen.minY, 12);
 			if (rotateHor > 0)
-				updateOffset(offset, -lengthX, screen.maxX - pos.getX(), 3);
+				updateOffset(offset, -lengthX, screen.maxX - pos.getX(), 5);
 			if (rotateHor < 0)
-				updateOffset(offset, lengthX, pos.getX() - screen.minX, 12);
+				updateOffset(offset, lengthX, pos.getX() - screen.minX, 10);
 			break;
 		case SOUTH:
-			if (rotateVert > 0)
-				updateOffset(offset, -lengthY, screen.maxY - pos.getY(), 5);
-			if (rotateVert < 0)
-				updateOffset(offset, lengthY, pos.getY() - screen.minY, 10);
-			if (rotateHor > 0)
-				updateOffset(offset, -lengthX, pos.getX() - screen.minX, 12);
-			if (rotateHor < 0)
-				updateOffset(offset, lengthX, screen.maxX - pos.getX(), 3);
-			break;
-		case EAST:
 			if (rotateVert > 0)
 				updateOffset(offset, -lengthY, screen.maxY - pos.getY(), 12);
 			if (rotateVert < 0)
 				updateOffset(offset, lengthY, pos.getY() - screen.minY, 3);
 			if (rotateHor > 0)
-				updateOffset(offset, -lengthZ, screen.maxZ - pos.getZ(), 10);
+				updateOffset(offset, -lengthX, pos.getX() - screen.minX, 10);
 			if (rotateHor < 0)
-				updateOffset(offset, lengthZ, pos.getZ() - screen.minZ, 5);
+				updateOffset(offset, lengthX, screen.maxX - pos.getX(), 5);
+			break;
+		case EAST:
+			if (rotateVert > 0)
+				updateOffset(offset, -lengthY, screen.maxY - pos.getY(), 3);
+			if (rotateVert < 0)
+				updateOffset(offset, lengthY, pos.getY() - screen.minY, 12);
+			if (rotateHor > 0)
+				updateOffset(offset, -lengthZ, screen.maxZ - pos.getZ(), 5);
+			if (rotateHor < 0)
+				updateOffset(offset, lengthZ, pos.getZ() - screen.minZ, 10);
 			break;
 		case WEST:
 			if (rotateVert > 0)

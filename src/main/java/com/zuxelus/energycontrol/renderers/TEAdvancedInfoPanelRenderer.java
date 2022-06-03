@@ -6,32 +6,22 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
+import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.model.PositionTextureVertex;
+import net.minecraft.client.model.TexturedQuad;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
 public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileEntityAdvancedInfoPanel> {
-	private static final ResourceLocation[] TEXTUREOFF;
-	private static final ResourceLocation[] TEXTUREON;
-	private static final CubeRenderer[] model;
-
-	static {
-		TEXTUREOFF = new ResourceLocation[16];
-		TEXTUREON = new ResourceLocation[16];
-		for (int i = 0; i < 16; i++) {
-			TEXTUREOFF[i] = new ResourceLocation(
-					EnergyControl.MODID + String.format(":textures/blocks/info_panel/off/alladv%d.png", i));
-			TEXTUREON[i] = new ResourceLocation(
-					EnergyControl.MODID + String.format(":textures/blocks/info_panel/on/alladv%d.png", i));
-		}
-		model = new CubeRenderer[16];
-		for (int i = 0; i < 4; i++)
-			for (int j = 0; j < 4; j++)
-				model[i * 4 + j] = new CubeRenderer(i * 32 + 64, j * 32 + 64);
-	}
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID + ":textures/blocks/info_panel/panel_advanced_all.png");
 
 	private static String implodeArray(String[] inputArray, String glueString) {
 		String output = "";
@@ -54,44 +44,13 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 	public void render(TileEntityAdvancedInfoPanel te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x, y, z);
-		switch (te.getFacing()) {
-		case UP:
-			break;
-		case NORTH:
-			GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
-			GlStateManager.translate(0.0F, -1.0F, 0.0F);
-			break;
-		case SOUTH:
-			GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
-			GlStateManager.translate(0.0F, 0.0F, -1.0F);
-			break;
-		case DOWN:
-			GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
-			GlStateManager.translate(0.0F, -1.0F, -1.0F);
-			break;
-		case WEST:
-			GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
-			GlStateManager.translate(0.0F, -1.0F, 0.0F);
-			break;
-		case EAST:
-			GlStateManager.rotate(-90.0F, 0.0F, 0.0F, 1.0F);
-			GlStateManager.translate(-1.0F, 0.0F, 0.0F);
-			break;
-		}
+		CubeRenderer.rotateBlock(te.getFacing());
 
-		int color = TileEntityAdvancedInfoPanel.DEFAULT_BACKGROUND;
-		if (te.getColored()) {
-			color = te.getColorBackground();
-			if (color > 15 || color < 0)
-				color = TileEntityAdvancedInfoPanel.DEFAULT_BACKGROUND;
-		}
-
+		int color = te.getColored() ? te.getColorBackground() : TileEntityAdvancedInfoPanel.DEFAULT_BACKGROUND;
 		if (destroyStage > -1)
 			bindTexture(DESTROY_STAGES[destroyStage]);
-		else if (te.getPowered())
-			bindTexture(TEXTUREON[color]);
 		else
-			bindTexture(TEXTUREOFF[color]);
+			bindTexture(TEXTURE);
 
 		int textureId = te.findTexture();
 		byte thickness = te.thickness;
@@ -104,14 +63,49 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		if (screen != null) {
 			if (thickness == 16 && rotateHor == 0 && rotateVert == 0) {
 				if (destroyStage > -1)
-					TileEntityInfoPanelRenderer.DESTROY.render(0.03125F);
-				else
-					model[textureId].render(0.03125F);
-			} else
+					CubeRenderer.DESTROY.render(0.03125F);
+				else {
+					CubeRenderer.MODEL.render(0.03125F);
+					bindTexture(TileEntityInfoPanelRenderer.SCREEN);
+					TileEntityInfoPanelRenderer.drawFace(te.findTexture(), color);
+				}
+			} else {
 				if (destroyStage > -1)
-					new CubeRenderer(0.0F, 0.0F, 0.0F, 32, 32, 32, 32, 32, 0, 0, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation())).render(0.03125F);
-				else
-					new CubeRenderer(textureId / 4 * 32 + 64, textureId % 4 * 32 + 64, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation())).render(0.03125F);
+					new CubeRenderer(0, 0, 0, 32, 32, 32, 32, 32, 0, 0, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation()), false).render(0.03125F);
+				else {
+					new CubeRenderer(0, 0, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation()), false).render(0.03125F);
+					bindTexture(TileEntityInfoPanelRenderer.SCREEN);
+					new CubeRenderer(textureId / 4 * 32, textureId % 4 * 32, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation()), true).render(0.03125F, color);
+				}
+			}
+			switch (te.getFacing()) {
+			case UP:
+				GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+				GlStateManager.translate(0.0F, -1.0F, 0.0F);
+				break;
+			case DOWN:
+				GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+				GlStateManager.translate(0.0F, -1.0F, 0.0F);
+				break;
+			case NORTH:
+				GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+				GlStateManager.translate(0.0F, -1.0F, 0.0F);
+				break;
+			case SOUTH:
+				//GlStateManager.rotate(90.0F, 0.0F, 1.0F, 0.0F);
+				GlStateManager.translate(-2.0F, -2.0F, 0.0F);
+				break;
+			case WEST:
+				GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
+				GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+				GlStateManager.translate(0.0F, -1.0F, -1.0F);
+				break;
+			case EAST:
+				GlStateManager.rotate(90.0F, 0.0F, 0.0F, -1.0F);
+				GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+				GlStateManager.translate(-1.0F, -1.0F, 0.0F);
+				break;
+			}
 			if (te.powered && destroyStage == -1) {
 				List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
 				if (joinedData != null)

@@ -40,6 +40,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class TileEntityInfoPanel extends TileEntityInventory implements ITickable, ITilePacketHandler, IScreenPart, ISlotItemFilter {
 	public static final String NAME = "info_panel";
 	public static final int DISPLAY_DEFAULT = Integer.MAX_VALUE - 1024;
+	public static final int GREEN = -16711936;
 	private static final byte SLOT_CARD = 0;
 	private static final byte SLOT_UPGRADE_RANGE = 1;
 	private static final byte SLOT_UPGRADE_COLOR = 2;
@@ -70,7 +71,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		updateTicker = tickRate - 1;
 		dataTicker = 4;
 		showLabels = true;
-		colorBackground = 2;
+		colorBackground = GREEN;
 		colored = false;
 	}
 
@@ -631,9 +632,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 			case SOUTH:
 				return boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 4 * boolToInt(pos.getY() == scr.minY) + 8 * boolToInt(pos.getY() == scr.maxY);
 			case WEST:
-				return 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ) + boolToInt(pos.getY() == scr.minY) + 2 * boolToInt(pos.getY() == scr.maxY);
+				return 2 * boolToInt(pos.getZ() == scr.minZ) + 1 * boolToInt(pos.getZ() == scr.maxZ) + 8 * boolToInt(pos.getY() == scr.minY) + 4 * boolToInt(pos.getY() == scr.maxY);
 			case EAST:
-				return 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ) + 2 * boolToInt(pos.getY() == scr.minY) + boolToInt(pos.getY() == scr.maxY);
+				return 1 * boolToInt(pos.getZ() == scr.minZ) + 2 * boolToInt(pos.getZ() == scr.maxZ) + 8 * boolToInt(pos.getY() == scr.minY) + 4 * boolToInt(pos.getY() == scr.maxY);
 			case NORTH:
 				return boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 8 * boolToInt(pos.getY() == scr.minY) + 4 * boolToInt(pos.getY() == scr.maxY);
 			case UP:
@@ -645,7 +646,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		return 15;
 	}
 
-	private int boolToInt(boolean b) {
+	protected int boolToInt(boolean b) {
 		return b ? 1 : 0;
 	}
 

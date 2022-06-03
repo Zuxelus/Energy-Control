@@ -27,7 +27,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	public static final int OFFSET_ROTATE_VERT = 300;
 
 	public static final int DEFAULT_TEXT = -1;
-	public static final int DEFAULT_BACKGROUND = 8;
+	public static final int DEFAULT_BACKGROUND = -12171706; // 0xFF464646
 
 	public byte powerMode;
 	public byte thickness;

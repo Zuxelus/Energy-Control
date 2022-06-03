@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "#S ",
+        "S#S",
+        " S#"
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:vine"
+        },
+        "S": {
+            "item": "minecraft:reeds"
+        }
+    },
+    "result": {
+        "item": "energycontrol:item_component",
+        "data": 4,
+        "count": 6
+    }
+}

@@ -11,50 +11,24 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 
 public class TERemoteThermalMonitorRenderer extends TileEntitySpecialRenderer<TileEntityRemoteThermalMonitor> {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/blocks/remote_thermo/all.png");
-	private static final CubeRenderer model = new CubeRenderer(0, 0, 0, 32, 32, 32, 128, 64, 0, 0);
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/blocks/remote_thermal_monitor/all.png");
 
 	@Override
 	public void render(TileEntityRemoteThermalMonitor te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x, y, z);
-		switch (te.getFacing()) {
-		case UP:
-			break;
-		case NORTH:
-			GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
-			GlStateManager.translate(0.0F, -1.0F, 0.0F);
-			break;
-		case SOUTH:
-			GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
-			GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
-			GlStateManager.translate(-1.0F, 0.0F, 0.0F);
-			break;
-		case DOWN:
-			GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
-			GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
-			GlStateManager.translate(-1.0F, -1.0F, 0.0F);
-			break;
-		case WEST:
-			GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
-			GlStateManager.rotate(90.0F, 0.0F, 1.0F, 0.0F);
-			GlStateManager.translate(-1.0F, -1.0F, 0.0F);
-			break;
-		case EAST:
-			GlStateManager.rotate(-90.0F, 0.0F, 0.0F, 1.0F);
-			GlStateManager.rotate(-90.0F, 0.0F, 1.0F, 0.0F);
-			break;
-		}
+		CubeRenderer.rotateBlock(te.getFacing());
 
 		if (destroyStage > -1) {
 			bindTexture(DESTROY_STAGES[destroyStage]);
-			TileEntityInfoPanelRenderer.DESTROY.render(0.03125F);
+			CubeRenderer.DESTROY.render(0.03125F);
 		} else {
 			bindTexture(TEXTURE);
-			model.render(0.03125F);
+			CubeRenderer.MODEL.render(0.03125F);
 	
-			GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
-			GlStateManager.translate(0.0F, -0.5F, 1.001F);
+			GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F); // y axis
+			GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F); // x axis
+			GlStateManager.translate(0.0F, -0.5F, 0.001F);
 	
 			int status = te.getStatus();
 			int heat = te.getHeat();
@@ -68,8 +42,8 @@ public class TERemoteThermalMonitorRenderer extends TileEntitySpecialRenderer<Ti
 				bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
 				bufferbuilder.pos(rate, 0, 0).tex(rate * 0.25,0).endVertex();
 				bufferbuilder.pos(1, 0, 0).tex(0.25,0).endVertex();
-				bufferbuilder.pos(1, 0.375, 0).tex(0.25,0.1875).endVertex();
-				bufferbuilder.pos(rate, 0.375, 0).tex(rate * 0.25,0.1875).endVertex();
+				bufferbuilder.pos(1, 0.75, 0).tex(0.25,0.1875).endVertex();
+				bufferbuilder.pos(rate, 0.75, 0).tex(rate * 0.25,0.1875).endVertex();
 				tessellator.draw();
 			}
 	

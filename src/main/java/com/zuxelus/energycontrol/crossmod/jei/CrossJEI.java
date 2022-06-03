@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.crossmod.jei;
 
 import com.zuxelus.energycontrol.blocks.BlockLight;
+import com.zuxelus.energycontrol.containers.ContainerKitAssembler;
 import com.zuxelus.energycontrol.gui.GuiKitAssembler;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
@@ -33,6 +34,7 @@ public class CrossJEI implements IModPlugin {
 	public void register(IModRegistry registry) {
 		registry.addRecipes(KitAssemblerRecipe.getRecipes(), KitAssemblerRecipeCategory.id);
 		registry.handleRecipes(KitAssemblerRecipe.class, recipe -> new KitAssemblerRecipeWrapper(recipe), KitAssemblerRecipeCategory.id);
+		registry.getRecipeTransferRegistry().addRecipeTransferHandler(ContainerKitAssembler.class, KitAssemblerRecipeCategory.id, 1, 3, 6, 36);
 		registry.addRecipeCatalyst(new ItemStack(ModItems.blockKitAssembler), KitAssemblerRecipeCategory.id);
 		registry.addRecipeClickArea(GuiKitAssembler.class, 87, 35, 22, 15, new String[] { KitAssemblerRecipeCategory.id });
 

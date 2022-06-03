@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import com.hbm.interfaces.IConsumer;
 import com.zuxelus.energycontrol.blocks.KitAssembler;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
@@ -11,6 +12,7 @@ import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityItemHandler;
 
+import cofh.redstoneflux.api.IEnergyReceiver;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergyEmitter;
@@ -35,14 +37,15 @@ import net.minecraftforge.fml.common.Optional;
 
 @Optional.InterfaceList({
 	@Optional.Interface(modid = ModIDs.IC2, iface = "ic2.api.energy.tile.IEnergySink"),
-	@Optional.Interface(modid = ModIDs.HBM, iface = "api.hbm.energy.IEnergyUser")
+	@Optional.Interface(modid = ModIDs.HBM, iface = "com.hbm.interfaces.IConsumer"),
+	@Optional.Interface(modid = ModIDs.THERMAL_EXPANSION, iface = "cofh.redstoneflux.api.IEnergyReceiver"),
 })
-public class TileEntityKitAssembler extends TileEntityItemHandler implements ITickable, ITilePacketHandler, ISlotItemFilter, IEnergySink, IEnergyStorage/*, IEnergyUser*/ {
+public class TileEntityKitAssembler extends TileEntityItemHandler implements ITickable, ITilePacketHandler, ISlotItemFilter, IEnergySink, IEnergyStorage, /*IConsumer,*/ IEnergyReceiver {
 	public static final byte SLOT_INFO = 0;
 	public static final byte SLOT_CARD1 = 1;
 	public static final byte SLOT_ITEM = 2;
 	public static final byte SLOT_CARD2 = 3;
-	public static final byte SLOT_RESULT = 4;
+	public static final byte SLOT_RESULT = 4; 
 	public static final byte SLOT_DISCHARGER = 5;
 	private EnergyStorage storage;
 	private int buffer;
@@ -409,6 +412,44 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements ITi
 	@Override
 	public boolean canReceive() {
 		return true;
+	}
+
+	// IConsumer
+	@Override
+	public long getMaxPower() {
+		return storage.getMaxEnergyStored();
+	}
+
+	@Override
+	public long getPower() {
+		return storage.getEnergyStored();
+	}
+
+	@Override
+	public void setPower(long arg0) {
+		// TODO Auto-generated method stub
+	}
+
+	// IEnergyReceiver
+	@Override
+	public int getEnergyStored(EnumFacing side) {
+		return storage.getEnergyStored();
+	}
+
+	@Override
+	public int getMaxEnergyStored(EnumFacing side) {
+		return storage.getMaxEnergyStored();
+	}
+
+	@Override
+	public boolean canConnectEnergy(EnumFacing side) {
+		return true;
+	}
+
+	@Override
+	public int receiveEnergy(EnumFacing side, int maxReceive, boolean simulate) {
+		int energyReceived = Math.min(CAPACITY - getEnergyStored(), Math.min(32, maxReceive));
+		return storage.receiveEnergy(energyReceived, simulate);
 	}
 
 	// ISidedInventory

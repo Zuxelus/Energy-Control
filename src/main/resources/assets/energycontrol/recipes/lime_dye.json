@@ -1,0 +1,22 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "###",
+        "###",
+        " W "
+    ],
+    "key": {
+        "#": {
+            "item": "energycontrol:item_component",
+            "data": 4
+        },
+        "W": {
+            "item": "minecraft:water_bucket"
+        }
+    },
+    "result": {
+        "item": "minecraft:dye",
+        "data": 10,
+        "count": 1
+    }
+}

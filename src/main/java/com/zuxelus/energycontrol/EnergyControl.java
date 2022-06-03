@@ -31,9 +31,10 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Mod(modid = EnergyControl.MODID, dependencies="after:ic2;after:techreborn;after:comboarmors@[1.12.2-0.0.9,)", acceptedMinecraftVersions = "[1.12.2]")
+@Mod(modid = EnergyControl.MODID, version = EnergyControl.VERSION, dependencies="after:ic2;after:techreborn;after:comboarmors@[1.12.2-0.0.9,)", acceptedMinecraftVersions = "[1.12.2]")
 public class EnergyControl {
 	public static final String MODID = "energycontrol";
+	public static final String VERSION = "@VERSION@";
 
 	@SidedProxy(clientSide = "com.zuxelus.energycontrol.proxy.ClientProxy", serverSide = "com.zuxelus.energycontrol.proxy.ServerProxy")
 	public static IProxy proxy;

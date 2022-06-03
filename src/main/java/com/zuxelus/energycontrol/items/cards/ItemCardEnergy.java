@@ -8,6 +8,7 @@ import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.utils.DataHelper;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.NBTTagCompound;
@@ -30,26 +31,21 @@ public class ItemCardEnergy extends ItemCardBase {
 			return CardState.NO_TARGET;
 
 		TileEntity te = world.getTileEntity(target);
-		if (te == null)
-			return CardState.NO_TARGET;
-
 		NBTTagCompound tag = CrossModLoader.getEnergyData(te);
-		if (tag != null) {
-			reader.setDouble("storage", tag.getDouble("storage"));
-			reader.setDouble("maxStorage", tag.getDouble("maxStorage"));
-			reader.setString("euType", tag.getString("euType"));
-			return CardState.OK;
-		}
-		return CardState.NO_TARGET;
+		if (tag == null)
+			return CardState.NO_TARGET;
+		reader.reset();
+		reader.copyFrom(tag);
+		return CardState.OK;
 	}
 
 	@Override
 	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 
-		double energy = reader.getDouble("storage");
-		double storage = reader.getDouble("maxStorage");
-		String euType = reader.getString("euType");
+		double energy = reader.getDouble(DataHelper.ENERGY);
+		double storage = reader.getDouble(DataHelper.CAPACITY);
+		String euType = reader.getString(DataHelper.EUTYPE);
 
 		if ((settings & 1) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelEnergy", energy, euType, showLabels));

@@ -1,9 +1,8 @@
 {
     "parent": "energycontrol:block/medium_box",
     "textures": {
-        "particle": "energycontrol:blocks/timer/back",
-        "side": "energycontrol:blocks/timer/side",
-        "face": "energycontrol:blocks/timer/face",
-        "back": "energycontrol:blocks/timer/back"
+        "particle": "energycontrol:blocks/timer/face",
+        "all": "energycontrol:blocks/timer/all",
+        "face": "energycontrol:blocks/timer/face"
     }
 }
