@@ -40,7 +40,7 @@ import net.minecraftforge.fml.common.Optional;
 	@Optional.Interface(modid = ModIDs.HBM, iface = "com.hbm.interfaces.IConsumer"),
 	@Optional.Interface(modid = ModIDs.THERMAL_EXPANSION, iface = "cofh.redstoneflux.api.IEnergyReceiver"),
 })
-public class TileEntityKitAssembler extends TileEntityItemHandler implements ITickable, ITilePacketHandler, ISlotItemFilter, IEnergySink, IEnergyStorage, /*IConsumer,*/ IEnergyReceiver {
+public class TileEntityKitAssembler extends TileEntityItemHandler implements ITickable, ITilePacketHandler, ISlotItemFilter, IEnergySink, IEnergyStorage, IConsumer, IEnergyReceiver {
 	public static final byte SLOT_INFO = 0;
 	public static final byte SLOT_CARD1 = 1;
 	public static final byte SLOT_ITEM = 2;

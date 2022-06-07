@@ -54,6 +54,10 @@ public class CrossModBase {
 		return null;
 	}
 
+	public List<FluidInfo> getAllTanks(TileEntity te) {
+		return null;
+	}
+
 	public NBTTagCompound getCardData(TileEntity te) {
 		return null;
 	}
@@ -64,10 +68,6 @@ public class CrossModBase {
 
 	public int getHeat(World world, BlockPos pos) {
 		return -1;
-	}
-
-	public List<FluidInfo> getAllTanks(TileEntity te) {
-		return null;
 	}
 
 	public ArrayList getHookValues(TileEntity te) {

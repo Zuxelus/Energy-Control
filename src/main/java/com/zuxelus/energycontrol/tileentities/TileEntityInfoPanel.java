@@ -40,7 +40,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class TileEntityInfoPanel extends TileEntityInventory implements ITickable, ITilePacketHandler, IScreenPart, ISlotItemFilter {
 	public static final String NAME = "info_panel";
 	public static final int DISPLAY_DEFAULT = Integer.MAX_VALUE - 1024;
-	public static final int GREEN = -16711936;
+	public static final int GREEN = -16724992; // 00CC00
 	private static final byte SLOT_CARD = 0;
 	private static final byte SLOT_UPGRADE_RANGE = 1;
 	private static final byte SLOT_UPGRADE_COLOR = 2;
@@ -630,7 +630,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 			BlockPos pos = getPos();
 			switch (getFacing()) {
 			case SOUTH:
-				return boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 4 * boolToInt(pos.getY() == scr.minY) + 8 * boolToInt(pos.getY() == scr.maxY);
+				return 2 * boolToInt(pos.getX() == scr.minX) + 1 * boolToInt(pos.getX() == scr.maxX) + 8 * boolToInt(pos.getY() == scr.minY) + 4 * boolToInt(pos.getY() == scr.maxY);
 			case WEST:
 				return 2 * boolToInt(pos.getZ() == scr.minZ) + 1 * boolToInt(pos.getZ() == scr.maxZ) + 8 * boolToInt(pos.getY() == scr.minY) + 4 * boolToInt(pos.getY() == scr.maxY);
 			case EAST:

@@ -93,13 +93,13 @@ public class RotationOffset {
 			break;
 		case SOUTH:
 			if (rotateVert > 0)
-				updateOffset(offset, -lengthY, screen.maxY - pos.getY(), 12);
+				updateOffset(offset, -lengthY, screen.maxY - pos.getY(), 3);
 			if (rotateVert < 0)
-				updateOffset(offset, lengthY, pos.getY() - screen.minY, 3);
+				updateOffset(offset, lengthY, pos.getY() - screen.minY, 12);
 			if (rotateHor > 0)
-				updateOffset(offset, -lengthX, pos.getX() - screen.minX, 10);
+				updateOffset(offset, -lengthX, pos.getX() - screen.minX, 5);
 			if (rotateHor < 0)
-				updateOffset(offset, lengthX, screen.maxX - pos.getX(), 5);
+				updateOffset(offset, lengthX, screen.maxX - pos.getX(), 10);
 			break;
 		case EAST:
 			if (rotateVert > 0)

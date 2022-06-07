@@ -2,7 +2,6 @@ package com.zuxelus.energycontrol.utils;
 
 import java.lang.reflect.Field;
 
-import ic2.core.block.generator.tileentity.TileEntityRTGenerator;
 import net.minecraft.tileentity.TileEntity;
 
 public class DataHelper {

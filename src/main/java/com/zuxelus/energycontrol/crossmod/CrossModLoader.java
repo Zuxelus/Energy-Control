@@ -94,6 +94,8 @@ public class CrossModLoader {
 	}
 
 	public static NBTTagCompound getEnergyData(TileEntity te) {
+		if (te == null)
+			return null;
 		for (CrossModBase crossMod : CROSS_MODS.values()) {
 			NBTTagCompound tag = crossMod.getEnergyData(te);
 			if (tag != null)
@@ -145,6 +147,8 @@ public class CrossModLoader {
 	}
 
 	public static NBTTagCompound getInventoryData(TileEntity te) {
+		if (te == null)
+			return null;
 		for (CrossModBase crossMod : CROSS_MODS.values()) {
 			NBTTagCompound tag = crossMod.getInventoryData(te);
 			if (tag != null)

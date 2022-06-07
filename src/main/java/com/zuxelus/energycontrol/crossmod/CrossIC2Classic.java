@@ -3,22 +3,31 @@ package com.zuxelus.energycontrol.crossmod;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.zuxelus.energycontrol.api.ItemStackHelper;
+import com.zuxelus.energycontrol.hooks.IC2ClassicHooks;
 import com.zuxelus.energycontrol.init.ModItems;
-import com.zuxelus.energycontrol.items.cards.ItemCardType;
+import com.zuxelus.energycontrol.items.ItemDigitalThermometer;
+import com.zuxelus.energycontrol.items.cards.ItemCardIC2;
+import com.zuxelus.energycontrol.items.cards.ItemCardMain;
+import com.zuxelus.energycontrol.items.kits.ItemKitIC2;
+import com.zuxelus.energycontrol.items.kits.ItemKitMain;
+import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import ic2.api.classic.reactor.IChamberReactor;
+import ic2.api.classic.tile.machine.IEUStorage;
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IC2Items;
 import ic2.api.item.ICustomDamageItem;
 import ic2.api.reactor.IReactor;
 import ic2.api.tile.IEnergyStorage;
-import ic2.core.block.base.tile.TileEntityGeneratorBase;
+import ic2.core.IC2;
+import ic2.core.block.base.tile.*;
 import ic2.core.block.generator.tile.*;
 import ic2.core.block.machine.low.TileEntityMachineTank;
 import ic2.core.block.personal.tile.TileEntityPersonalTank;
 import ic2.core.item.reactor.ItemReactorUraniumRod;
+import ic2.core.item.reactor.base.ItemHeatVentBase;
+import ic2.core.item.reactor.base.ItemHeatVentBase.VentProperty;
 import ic2.core.item.tool.ItemToolWrench;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -26,6 +35,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.event.RegistryEvent.Register;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 public class CrossIC2Classic extends CrossModBase {
 
@@ -36,8 +48,6 @@ public class CrossIC2Classic extends CrossModBase {
 			return IC2Items.getItem("upgrade", "transformer");
 		case "energy_storage":
 			return IC2Items.getItem("upgrade", "energy_storage");
-		case "machine":
-			return IC2Items.getItem("resource", "machine");
 		}
 		return ItemStack.EMPTY;
 	}
@@ -49,33 +59,165 @@ public class CrossIC2Classic extends CrossModBase {
 	}
 
 	@Override
-	public boolean isWrench(ItemStack par1) {
-		return par1 != null && par1.getItem() instanceof ItemToolWrench;
+	public boolean isWrench(ItemStack stack) {
+		return !stack.isEmpty() && stack.getItem() instanceof ItemToolWrench;
 	}
 
-	/*@Override
-	public int getNuclearCellTimeLeft(ItemStack stack) {
+	@Override
+	public NBTTagCompound getEnergyData(TileEntity te) {
+		NBTTagCompound tag = new NBTTagCompound();
+		tag.setString(DataHelper.EUTYPE, "EU");
+		if (te instanceof IEnergyStorage) {
+			tag.setDouble(DataHelper.ENERGY, ((IEnergyStorage) te).getStored());
+			tag.setDouble(DataHelper.CAPACITY, ((IEnergyStorage) te).getCapacity());
+			return tag;
+		}
+		return null;
+	}
+
+	@Override
+	public List<FluidInfo> getAllTanks(TileEntity te) {
+		List<FluidInfo> result = new ArrayList<>();
+		if (te instanceof TileEntityNuclearSteamReactor) {
+			result.add(new FluidInfo(((TileEntityNuclearSteamReactor) te).getWaterTank()));
+			result.add(new FluidInfo(((TileEntityNuclearSteamReactor) te).getSteamTank()));
+		}
+		if (te instanceof TileEntityMachineTank)
+			result.add(new FluidInfo(((TileEntityMachineTank) te).tank));
+		if (te instanceof TileEntityPersonalTank)
+			result.add(new FluidInfo(((TileEntityPersonalTank) te).tank));
+		if (te instanceof TileEntityLiquidFuelGenerator)
+			result.add(new FluidInfo(((TileEntityLiquidFuelGenerator) te).tank));
+		if (result.size() == 0)
+			return null;
+		return result;
+	}
+
+	@Override
+	public NBTTagCompound getCardData(TileEntity te) {
+		try {
+			NBTTagCompound tag = new NBTTagCompound();
+			if (te instanceof IEUStorage) {
+				tag.setDouble(DataHelper.ENERGY, ((IEUStorage) te).getStoredEU());
+				tag.setDouble(DataHelper.CAPACITY, ((IEUStorage) te).getMaxEU());
+				if (te instanceof TileEntityFuelGeneratorBase) {
+					tag.setBoolean(DataHelper.ACTIVE, ((TileEntityFuelGeneratorBase) te).fuel > 0);
+					tag.setDouble(DataHelper.OUTPUT, ((TileEntityFuelGeneratorBase) te).fuel > 0 ? ((TileEntityGeneratorBase) te).getOutput() : 0);
+					tag.setInteger(DataHelper.FUEL, ((TileEntityFuelGeneratorBase) te).fuel);
+					if (te instanceof TileEntityWaterGenerator) {
+						tag.setBoolean(DataHelper.ACTIVE, ((TileEntityFuelGeneratorBase) te).fuel > 0 || ((TileEntityWaterGenerator) te).water > 0);
+						tag.setDouble(DataHelper.OUTPUT, ((TileEntityFuelGeneratorBase) te).fuel > 0 ? ((TileEntityGeneratorBase) te).getOutput() : ((TileEntityWaterGenerator) te).water * IC2.config.getInt("energyGeneratorWater") / 10000D);
+					}
+				}
+				if (te instanceof TileEntityElectricBlock) {
+					ArrayList values = getHookValues(te);
+					if (values != null)
+						tag.setDouble(DataHelper.DIFF, ((Integer) values.get(0) - (Integer) values.get(20)) / 20.0D);
+				}
+				if (te instanceof TileEntityWindGenerator) {
+					tag.setDouble(DataHelper.OUTPUT, ((TileEntityWindGenerator) te).subProduction * 4);
+				}
+				if (te instanceof TileEntityBasicSteamTurbine) {
+					FluidInfo.addTank(DataHelper.TANK, tag, ((TileEntityBasicSteamTurbine) te).tank);
+				}
+				return tag;
+			}
+			if (te instanceof TileEntitySolarPanel) {
+				tag.setBoolean(DataHelper.ACTIVE, ((TileEntitySolarPanel) te).getActive());
+				tag.setDouble(DataHelper.OUTPUT, ((TileEntitySolarPanel) te).getActive() ? ((TileEntitySolarPanel) te).getOutput() : 0);
+				return tag;
+			}
+			if (te instanceof TileEntityFuelBoiler) {
+				int realHeat = ((TileEntityFuelBoiler) te).heat / 30;
+				tag.setInteger(DataHelper.HEAT, realHeat);
+				tag.setInteger(DataHelper.MAXHEAT, 800);
+				tag.setDouble(DataHelper.CONSUMPTION, realHeat >= 100 ? realHeat * 0.32F / 160.0F : 0);
+				tag.setDouble(DataHelper.OUTPUTMB, realHeat >= 100 ? (int) (realHeat * 0.32F) : 0);
+				IFluidTankProperties[] tanks = ((TileEntityFuelBoiler) te).getTankProperties();
+				FluidInfo.addTank(DataHelper.TANK, tag, tanks[0].getContents());
+				FluidInfo.addTank(DataHelper.TANK2, tag, tanks[1].getContents());
+				return tag;
+			}
+			if (te instanceof TileEntityNuclearReactorElectric)
+				return getReactorData((TileEntityNuclearReactorElectric) te);
+			if (te instanceof TileEntityReactorChamberElectric) {
+				IReactor reactor = ((TileEntityReactorChamberElectric) te).getReactorInstance();
+				if (reactor instanceof TileEntityNuclearReactorElectric)
+					return getReactorData((TileEntityNuclearReactorElectric) reactor);
+			}
+			if (te instanceof TileEntityNuclearSteamReactor)
+				return getReactorData((TileEntityNuclearSteamReactor) te);
+			if (te instanceof TileEntitySteamReactorChamber) {
+				IReactor reactor = ((TileEntitySteamReactorChamber) te).getReactorInstance();
+				if (reactor instanceof TileEntityNuclearSteamReactor)
+					return getReactorData((TileEntityNuclearSteamReactor) reactor);
+			}
+		} catch (Throwable t) { }
+		return null;
+	}
+
+	private NBTTagCompound getReactorData(TileEntityNuclearReactorElectric reactor) {
+		if (reactor == null)
+			return null;
+		NBTTagCompound tag = new NBTTagCompound();
+		tag.setInteger(DataHelper.HEAT, reactor.getHeat());
+		tag.setInteger(DataHelper.MAXHEAT, reactor.getMaxHeat());
+		tag.setBoolean(DataHelper.ACTIVE, reactor.produceEnergy());
+		tag.setInteger(DataHelper.OUTPUT, (int) Math.round(reactor.getReactorEUEnergyOutput()));
+		IChamberReactor chamber = (IChamberReactor) reactor;
+		int size = chamber.getReactorSize();
+		int dmgLeft = 0;
+		for (int y = 0; y < 6; y++)
+			for (int x = 0; x < size; x++) {
+				ItemStack stack = chamber.getItemAt(x, y);
+				if (!stack.isEmpty())
+					dmgLeft = Math.max(dmgLeft, getNuclearCellTimeLeft(stack));
+			}
+		tag.setInteger("timeLeft", dmgLeft * reactor.getTickRate() / 20);
+		return tag;
+	}
+
+	private NBTTagCompound getReactorData(TileEntityNuclearSteamReactor reactor) {
+		if (reactor == null)
+			return null;
+		NBTTagCompound tag = new NBTTagCompound();
+		tag.setInteger(DataHelper.HEAT, reactor.getHeat());
+		tag.setInteger(DataHelper.MAXHEAT, reactor.getMaxHeat());
+		tag.setBoolean(DataHelper.ACTIVE, reactor.produceEnergy());
+		tag.setDouble(DataHelper.CONSUMPTION, reactor.output * 3.2D / 160.0D);
+		tag.setDouble(DataHelper.OUTPUTMB, reactor.output * 3.2D);
+		IChamberReactor chamber = (IChamberReactor) reactor;
+		int size = chamber.getReactorSize();
+		int dmgLeft = 0;
+		for (int y = 0; y < 6; y++)
+			for (int x = 0; x < size; x++) {
+				ItemStack stack = chamber.getItemAt(x, y);
+				if (!stack.isEmpty()) {
+					dmgLeft = Math.max(dmgLeft, getNuclearCellTimeLeft(stack));
+					/*if (stack.getItem() instanceof ItemHeatVentBase) {
+						ItemHeatVentBase vent = (ItemHeatVentBase) stack.getItem(); 
+					    VentProperty prop = vent.getProperty(stack);
+					    if (prop != null) {
+					    	int type = prop.getType();
+					    	
+					    }
+					}*/
+				}
+			}
+		tag.setInteger("timeLeft", dmgLeft);
+		FluidInfo.addTank(DataHelper.TANK, tag, reactor.getWaterTank());
+		FluidInfo.addTank(DataHelper.TANK2, tag, reactor.getSteamTank());
+		return tag;
+	}
+
+	private int getNuclearCellTimeLeft(ItemStack stack) {
 		if (stack.isEmpty())
 			return 0;
 		
 		Item item = stack.getItem();
 		if (item instanceof ItemReactorUraniumRod)
-			return ((ICustomDamageItem)item).getMaxCustomDamage(stack) - ((ICustomDamageItem)item).getCustomDamage(stack);
-		
+			return ((ICustomDamageItem) item).getMaxCustomDamage(stack) - ((ICustomDamageItem) item).getCustomDamage(stack);
 		return 0;
-	}*/
-
-	@Override
-	public NBTTagCompound getEnergyData(TileEntity te) {
-		if (te instanceof IEnergyStorage) {
-			NBTTagCompound tag = new NBTTagCompound();
-			IEnergyStorage storage = (IEnergyStorage) te;
-			tag.setInteger("type", 1);
-			tag.setDouble("storage", storage.getStored());
-			tag.setDouble("maxStorage", storage.getCapacity());
-			return tag;
-		}
-		return null;
 	}
 
 	/*@Override
@@ -181,20 +323,22 @@ public class CrossIC2Classic extends CrossModBase {
 	}
 
 	@Override
-	public List<FluidInfo> getAllTanks(TileEntity te) {
-		List<FluidInfo> result = new ArrayList<>();
-		if (te instanceof TileEntityNuclearSteamReactor) {
-			result.add(new FluidInfo(((TileEntityNuclearSteamReactor) te).getWaterTank()));
-			result.add(new FluidInfo(((TileEntityNuclearSteamReactor) te).getSteamTank()));
-		}
-		if (te instanceof TileEntityMachineTank)
-			result.add(new FluidInfo(((TileEntityMachineTank) te).tank));
-		if (te instanceof TileEntityPersonalTank)
-			result.add(new FluidInfo(((TileEntityPersonalTank) te).tank));
-		if (te instanceof TileEntityLiquidFuelGenerator)
-			result.add(new FluidInfo(((TileEntityLiquidFuelGenerator) te).tank));
-		if (result.size() == 0)
-			return null;
-		return result;
+	public ArrayList getHookValues(TileEntity te) {
+		ArrayList values = IC2ClassicHooks.map.get(te);
+		if (values == null)
+			IC2ClassicHooks.map.put(te, null);
+		return values;
+	}
+
+	@Override
+	public void registerItems(Register<Item> event) {
+		ModItems.itemThermometerDigital = ModItems.register(event, new ItemDigitalThermometer(), "thermometer_digital");
+		ItemKitMain.register(ItemKitIC2::new);
+		ItemCardMain.register(ItemCardIC2::new);
+	}
+
+	@Override
+	public void registerModels(ModelRegistryEvent event) {
+		ModItems.registerItemModel(ModItems.itemThermometerDigital, 0, "thermometer_digital");
 	}
 }

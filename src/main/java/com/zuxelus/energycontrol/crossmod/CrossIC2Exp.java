@@ -74,12 +74,8 @@ public class CrossIC2Exp extends CrossModBase {
 			return IC2Items.getItem("upgrade", "transformer");
 		case "energy_storage":
 			return IC2Items.getItem("upgrade", "energy_storage");
-		case "machine":
-			return IC2Items.getItem("resource", "machine");
 		case "mfsu":
 			return IC2Items.getItem("te","mfsu");
-		case "circuit":
-			return IC2Items.getItem("crafting","circuit");
 		}
 		return ItemStack.EMPTY;
 	}

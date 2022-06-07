@@ -67,7 +67,7 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 				else {
 					CubeRenderer.MODEL.render(0.03125F);
 					bindTexture(TileEntityInfoPanelRenderer.SCREEN);
-					TileEntityInfoPanelRenderer.drawFace(te.findTexture(), color);
+					TileEntityInfoPanelRenderer.drawFace(te.findTexture(), color, te.getPowered());
 				}
 			} else {
 				if (destroyStage > -1)
@@ -92,8 +92,9 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 				GlStateManager.translate(0.0F, -1.0F, 0.0F);
 				break;
 			case SOUTH:
-				//GlStateManager.rotate(90.0F, 0.0F, 1.0F, 0.0F);
-				GlStateManager.translate(-2.0F, -2.0F, 0.0F);
+				GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
+				GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+				GlStateManager.translate(-1.0F, -1.0F, -1.0F);
 				break;
 			case WEST:
 				GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);

@@ -37,7 +37,7 @@ public class TEAdvancedInfoPanelExtenderRenderer extends TileEntitySpecialRender
 			else {
 				CubeRenderer.MODEL.render(0.03125F);
 				bindTexture(TileEntityInfoPanelRenderer.SCREEN);
-				TileEntityInfoPanelRenderer.drawFace(te.findTexture(), color);
+				TileEntityInfoPanelRenderer.drawFace(te.findTexture(), color, te.getPowered());
 			}
 		} else {
 			Screen screen = te.getScreen();

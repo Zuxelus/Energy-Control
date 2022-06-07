@@ -52,10 +52,8 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		} else {
 			bindTexture(TEXTURE);
 			CubeRenderer.MODEL.render(0.03125F);
-			//new CubeRenderer(0, 0, 0, 32, 32, 32, 128, 128, 0, 0, false).render(0.03125F);
-
 			bindTexture(SCREEN);
-			drawFace(te.findTexture(), color);
+			drawFace(te.findTexture(), color, te.getPowered());
 
 			switch (te.getFacing()) {
 			case UP:
@@ -71,8 +69,9 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 				GlStateManager.translate(0.0F, -1.0F, 0.0F);
 				break;
 			case SOUTH:
-				GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
-				GlStateManager.translate(0.0F, -1.0F, 0.0F);
+				GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
+				GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+				GlStateManager.translate(-1.0F, -1.0F, -1.0F);
 				break;
 			case WEST:
 				GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
@@ -94,7 +93,9 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		GlStateManager.popMatrix();
 	}
 
-	public static void drawFace(int texture, int color) {
+	public static void drawFace(int texture, int color, boolean isPowered) {
+		if (isPowered)
+			GlStateManager.disableLighting();
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferbuilder = tessellator.getBuffer();
 		bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
@@ -102,6 +103,8 @@ public class TileEntityInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		double y = (texture % 4) * 0.25;
 		drawPositionColor(bufferbuilder, x, y, x + 0.25, y + 0.25, color);
 		tessellator.draw();
+		if (isPowered)
+			GlStateManager.enableLighting();
 	}
 
 	static void drawPositionColor(BufferBuilder builder, double uMin, double vMin, double uMax, double vMax, long color) {

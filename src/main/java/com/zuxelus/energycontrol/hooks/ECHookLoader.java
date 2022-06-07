@@ -15,5 +15,6 @@ public class ECHookLoader extends HookLoader {
 		registerHookContainer("com.zuxelus.energycontrol.hooks.DraconicEvolutionHooks");
 		registerHookContainer("com.zuxelus.energycontrol.hooks.HBMHooks");
 		registerHookContainer("com.zuxelus.energycontrol.hooks.IC2Hooks");
+		registerHookContainer("com.zuxelus.energycontrol.hooks.IC2ClassicHooks");
 	}
 }
