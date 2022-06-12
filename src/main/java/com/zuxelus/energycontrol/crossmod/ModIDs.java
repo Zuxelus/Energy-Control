@@ -18,6 +18,7 @@ public class ModIDs {
     public static final String NUCLEAR_CRAFT = "nuclearcraft";
     public static final String OPEN_COMPUTERS = "opencomputers";
     public static final String PNEUMATICCRAFT = "pneumaticcraft";
+	public static final String RAILCRAFT = "railcraft";
     public static final String TECH_REBORN = "techreborn";
     public static final String THERMAL_EXPANSION = "thermalexpansion";
 }

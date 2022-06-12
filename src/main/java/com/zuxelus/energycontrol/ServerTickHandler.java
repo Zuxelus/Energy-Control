@@ -39,12 +39,12 @@ public class ServerTickHandler {
 
 	@SubscribeEvent
 	public void onServerTick(ServerTickEvent event) {
-		if (event.phase == Phase.END && EnergyControlConfig.wsEnabled)
+		if (event.phase == Phase.END && EnergyControlConfig.webSocket.wsEnabled)
 			if (updateTicker-- < 0) {
-				updateTicker = EnergyControlConfig.wsRefreshRate - 1;
+				updateTicker = EnergyControlConfig.webSocket.wsRefreshRate - 1;
 				if (!cards.isEmpty()) {
 					JsonObject json = new JsonObject();
-					json.addProperty("id", EnergyControlConfig.wsServerID);
+					json.addProperty("id", EnergyControlConfig.webSocket.wsServerID);
 					JsonArray array = new JsonArray();
 					for (Map.Entry<String, JsonObject> card : cards.entrySet())
 						array.add(card.getValue());

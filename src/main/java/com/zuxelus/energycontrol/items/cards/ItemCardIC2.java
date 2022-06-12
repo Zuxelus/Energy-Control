@@ -13,7 +13,6 @@ import com.zuxelus.energycontrol.utils.DataHelper;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -30,8 +29,7 @@ public class ItemCardIC2 extends ItemCardBase {
 		if (target == null)
 			return CardState.NO_TARGET;
 
-		TileEntity te = world.getTileEntity(target);
-		NBTTagCompound tag = CrossModLoader.getCrossMod(ModIDs.IC2).getCardData(te);
+		NBTTagCompound tag = CrossModLoader.getCrossMod(ModIDs.IC2).getCardData(world, target);
 		if (tag == null)
 			return CardState.NO_TARGET;
 		reader.reset();

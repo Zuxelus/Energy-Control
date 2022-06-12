@@ -20,6 +20,8 @@ import com.zuxelus.energycontrol.utils.DataHelper;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent.Register;
 
 public class CrossDraconicEvolution extends CrossModBase {
@@ -56,7 +58,8 @@ public class CrossDraconicEvolution extends CrossModBase {
 	}
 
 	@Override
-	public NBTTagCompound getCardData(TileEntity te) {
+	public NBTTagCompound getCardData(World world, BlockPos pos) {
+		TileEntity te = world.getTileEntity(pos);
 		NBTTagCompound tag = new NBTTagCompound();
 		if (te instanceof TileInvisECoreBlock) {
 			IMultiBlockPart core = ((TileInvisECoreBlock) te).getController();

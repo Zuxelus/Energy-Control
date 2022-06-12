@@ -176,7 +176,8 @@ public class CrossIC2Exp extends CrossModBase {
 	}
 
 	@Override
-	public NBTTagCompound getCardData(TileEntity te) {
+	public NBTTagCompound getCardData(World world, BlockPos pos) {
+		TileEntity te = world.getTileEntity(pos);
 		try {
 			NBTTagCompound tag = new NBTTagCompound();
 			if (te instanceof IEnergyStorage) {

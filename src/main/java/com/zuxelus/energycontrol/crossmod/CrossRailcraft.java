@@ -1,34 +1,35 @@
 package com.zuxelus.energycontrol.crossmod;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import com.zuxelus.energycontrol.utils.FluidInfo;
+
+import mods.railcraft.common.blocks.TileLogic;
+import mods.railcraft.common.blocks.logic.FluidLogic;
+import mods.railcraft.common.fluids.TankManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
 
-import java.lang.reflect.Method;
+public class CrossRailcraft extends CrossModBase {
 
-public class CrossRailcraft {
-	public boolean modLoaded;
-	private Class<?> _tankTile;
-
-	public CrossRailcraft() {
-		try {
-			_tankTile = Class.forName("mods.railcraft.common.blocks.machine.ITankTile", false, this.getClass().getClassLoader());
-			modLoaded = true;
-		} catch (ClassNotFoundException ignored) { }
-	}
-
-	public FluidTankInfo getIronTank(TileEntity entity) {
-		if (!modLoaded || entity == null)
-			return null;
-		
-		try {
-			if (_tankTile.isAssignableFrom(entity.getClass())) {
-				Method method = entity.getClass().getMethod("getTank");
-				FluidTank tank = (FluidTank) method.invoke(entity);
-				if (tank != null)
-					return tank.getInfo();
-			}
-		} catch (Exception ignored) {	}
+	@Override
+	public List<FluidInfo> getAllTanks(TileEntity te) {
+		List<FluidInfo> result = new ArrayList<>();
+		if (te instanceof TileLogic) {
+			Optional<FluidLogic> logic = ((TileLogic) te).getLogic(FluidLogic.class);
+			if (!logic.isPresent())
+				return null;
+			TankManager manager = logic.get().getTankManager();
+			if (manager == null)
+				return null;
+			FluidTank tank = manager.get(0);
+			if (tank == null)
+				return null;
+			result.add(new FluidInfo(tank));
+			return result;
+		}
 		return null;
 	}
 }

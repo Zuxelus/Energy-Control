@@ -82,7 +82,8 @@ public class CrossExtremeReactors extends CrossModBase {
 	}
 
 	@Override
-	public NBTTagCompound getCardData(TileEntity te) {
+	public NBTTagCompound getCardData(World world, BlockPos pos) {
+		TileEntity te = world.getTileEntity(pos);
 		NBTTagCompound tag = new NBTTagCompound();
 		if (te instanceof TileEntityReactorPartBase) {
 			MultiblockReactor reactor = ((TileEntityReactorPartBase) te).getReactorController();
@@ -117,7 +118,7 @@ public class CrossExtremeReactors extends CrossModBase {
 			tag.setDouble(DataHelper.OUTPUT, turbine.getEnergyGeneratedLastTick());
 			tag.setDouble("speed", turbine.getRotorSpeed());
 			tag.setDouble("speedMax", turbine.getMaxRotorSpeed());
-			tag.setDouble("efficiency", turbine.getRotorEfficiencyLastTick());
+			tag.setDouble(DataHelper.EFFICIENCY, turbine.getRotorEfficiencyLastTick());
 			tag.setDouble("consumption", turbine.getFluidConsumedLastTick());
 			tag.setInteger("blades", turbine.getNumRotorBlades());
 			tag.setInteger("mass", turbine.getRotorMass());

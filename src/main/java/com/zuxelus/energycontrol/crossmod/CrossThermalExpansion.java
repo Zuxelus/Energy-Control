@@ -34,6 +34,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.fluids.IFluidTank;
 
@@ -151,7 +153,8 @@ public class CrossThermalExpansion extends CrossModBase {
 	}
 
 	@Override
-	public NBTTagCompound getCardData(TileEntity te) {
+	public NBTTagCompound getCardData(World world, BlockPos pos) {
+		TileEntity te = world.getTileEntity(pos);
 		try {
 			if (te instanceof TileMachineBase) {
 				NBTTagCompound tag = new NBTTagCompound();

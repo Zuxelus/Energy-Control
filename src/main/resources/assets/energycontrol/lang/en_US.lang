@@ -6,7 +6,6 @@ item.kit_energy.name=Energy Sensor Kit
 item.kit_counter.name=Counter Sensor Kit
 item.kit_liquid.name=Liquid Sensor Kit
 item.kit_liquid_advanced.name=Advanced Liquid Sensor Kit
-item.kit_reactor.name=Reactor Sensor Kit
 item.kit_toggle.name=Remote Toggle Kit
 item.kit_vanilla.name=Remote Vanilla Kit
 item.kit_redstone.name=Remote Redstone Kit
@@ -15,9 +14,6 @@ item.card_energy.name=Energy Sensor Card
 item.card_counter.name=Counter Sensor Card
 item.card_liquid.name=Liquid Sensor Card
 item.card_liquid_advanced.name=Advanced Liquid Sensor Card
-item.card_reactor.name=Reactor Sensor Card
-item.card_reactor_5x5.name=5x5 Reactor Sensor Card
-item.card_engine.name=Engine Sensor Card
 item.card_toggle.name=Remote Toggle Card
 item.card_vanilla.name=Remote Vanilla Card
 item.card_redstone.name=Remote Redstone Card
@@ -99,7 +95,6 @@ ec.config.title=Energy Control Configuration
 ec.config.howlerAlarmRange=Howler Alarm Range
 ec.config.maxAlarmRange=Max Alarm Range
 ec.config.allowedAlarms=Allowed Alarms
-ec.config.remoteThermalMonitorEnergyConsumption=Remote Thermal Monitor EU Cons.
 ec.config.infoPanelRefreshPeriod=Info Panel Refresh Period
 ec.config.rangeTriggerRefreshPeriod=Range Trigger Refresh Period
 ec.config.thermalMonitorRefreshPeriod=Thermal Monitor Refresh Period
@@ -123,7 +118,6 @@ msg.ec.ThermalMonitorSignalAt=Signal at %s heat
 msg.ec.Thermo=Hull heat: %s
 msg.ec.ThermoDigital=Hull heat: %s (Water evaporate: %s / melting: %s)
 msg.ec.Ticks=%s tick(s)
-msg.ec.SensorKit=Remote Sensor mounted, Sensor Location Card received
 
 msg.ec.InfoPanelOutOfRange=Out Of Range
 msg.ec.InfoPanelInvalidCard=Invalid Card
@@ -171,7 +165,6 @@ msg.ec.InfoPanelFree=Free: %s
 msg.ec.InfoPanelFlowRate=Flow Rate: %s mB/t
 msg.ec.InfoPanelFrequency=Frequency: %s
 msg.ec.InfoPanelFuel=Fuel: %s
-msg.ec.InfoPanelFuelmb=Fuel: %s mB
 msg.ec.InfoPanelFuelRods=Fuel Rods: %s
 msg.ec.InfoPanelGas=Gas: %s
 msg.ec.InfoPanelHeat=Heat: %s
@@ -334,15 +327,6 @@ msg.ec.InfoPanelBytesUsed=%d of %d Bytes Used
 msg.ec.InfoPanelTypes=%d of %d Types
 msg.ec.InfoPanelTotalItems=Total Items %d
 
-#5x5 Reactor Messages
-msg.ec.InfoPanel55.Output=Output: %s Hu/s
-msg.ec.InfoPanel55.Temp=Core Temperature: %s%%
-msg.ec.InfoPanel55.tarkin=Tank In: %s / 10000 mB
-msg.ec.InfoPanel55.tankout=Tank Out: %s / 10000 mB
-msg.ec.InfoPanel55.Out=Output (Hu/s)
-msg.ec.InfoPanel55.BufferIn=Coolant Storage Tank
-msg.ec.InfoPanel55.BufferOut=Hot Coolant Buffer Tank
-
 info.redstoneMode=Redstone Behavior:
 info.redstoneMode0=Nothing
 info.redstoneMode1=Emit if full
@@ -351,25 +335,6 @@ info.redstoneMode3=Emit if partially filled or empty
 info.redstoneMode4=Emit if empty
 info.redstoneMode5=Do not output energy
 info.redstoneMode6=Do not output energy unless full
-
-#Draconic Evolution
-msg.ec.Status=Status: %s
-msg.ec.CoreTemp=Core Temp: %s
-msg.ec.Diameter=Diameter: %s
-msg.ec.GenerationRate=Generation Rate: %s
-msg.ec.InputRate=Input Rate: %s
-msg.ec.Saturation=Saturation: %s
-msg.ec.ConvertedFuel=Converted Fuel: %s
-msg.ec.FieldStrength=Field Strength: %s
-msg.ec.ConversionRate=Conversion Rate: %s
-msg.ec.Fuel=Fuel: %s
-
-msg.ec.cbStatus=Status
-msg.ec.cbDiameter=Diameter
-msg.ec.cbInputRate=InputRate
-msg.ec.cbFieldStrength=FieldStrength
-msg.ec.cbSaturation=Saturation
-msg.ec.cbFuel=Fuel
 
 msg.cooking=Cooking: %sx - %s
 msg.fuel=Fuel: %sx - %s

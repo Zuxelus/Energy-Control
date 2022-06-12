@@ -61,6 +61,7 @@ public class CrossModLoader {
 				loadCrossMod(ModIDs.NUCLEAR_CRAFT, CrossNuclearCraft::new);
 		loadCrossModSafely(ModIDs.COMPUTER_CRAFT, () -> CrossComputerCraft::new);
 		loadCrossMod(ModIDs.PNEUMATICCRAFT, CrossPneumaticCraft::new);
+		loadCrossModSafely(ModIDs.RAILCRAFT, () -> CrossRailcraft::new);
 		loadCrossMod(ModIDs.THERMAL_EXPANSION, CrossThermalExpansion::new);
 	}
 

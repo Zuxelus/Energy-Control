@@ -7,6 +7,7 @@ import java.util.Map;
 import com.zuxelus.hooklib.asm.Hook;
 
 import ic2.core.block.base.tile.TileEntityElectricBlock;
+import ic2.core.block.generator.tile.TileEntityBasicSteamTurbine;
 import net.minecraft.tileentity.TileEntity;
 
 public class IC2ClassicHooks {
@@ -30,18 +31,14 @@ public class IC2ClassicHooks {
 		}
 	}
 
-	/*@Hook
-	public static void updateEntityServer(TileEntityElectricKineticGenerator te) {
+	@Hook
+	public static void update(TileEntityBasicSteamTurbine te) {
 		if (!map.containsKey(te) || te.getWorld().isRemote)
 			return;
 
-		double output = 0.0D;
-		if (1000.0D - te.ku > 1.0D) {
-			Energy energy = te.getComponent(Energy.class);
-			output = Math.min(1000.0D - te.ku, energy.getEnergy() * DataHelper.getFloat(TileEntityElectricKineticGenerator.class, "kuPerEU", te));
-		}
-		ArrayList<Double> values = new ArrayList<>();
+		int output = (int) (te.energy >= 4000 ? 0 : 32D * te.speed + Math.min(64, te.tank.getFluidAmount()) / 8.0D);
+		ArrayList<Integer> values = new ArrayList<>();
 		values.add(output);
 		map.put(te, values);
-	}*/
+	}
 }

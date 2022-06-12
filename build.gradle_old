@@ -9,7 +9,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.12.2-0.3.0d"
+version = "1.12.2-0.3.1"
 group= "com.zuxelus.energycontrol"
 archivesBaseName = "EnergyControl"
 
@@ -56,6 +56,7 @@ dependencies {
         'libs_/NuclearCraft-2o.5.5-1.12.2.jar',
         'libs_/OpenComputers-MC1.12.2-1.7.5.192.jar',
         'libs_/pneumaticcraft-repressurized-1.12.2-0.11.15-398.jar',
+        'libs_/railcraft-12.1.0-beta-2.jar',
         'libs_/RebornCore-1.12.2-3.19.4.529-dev.jar',
         'libs_/RedstoneFlux-1.12-2.1.1.1-universal.jar',
         'libs_/TechReborn-1.12.2-2.27.3.1084-dev.jar',

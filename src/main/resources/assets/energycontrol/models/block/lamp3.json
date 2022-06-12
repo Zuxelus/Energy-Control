@@ -1,7 +1,6 @@
 {
-  "parent": "block/cube_all",
-  "textures":
-  {
-    "all": "energycontrol:blocks/light/lamp3"
-  }
+    "parent": "block/cube_all",
+    "textures": {
+        "all": "energycontrol:blocks/light/lamp3"
+    }
 }

@@ -30,7 +30,7 @@ public class SocketClient {
 			group = new NioEventLoopGroup();
 		try {
 			final SocketClientHandler handler = new SocketClientHandler(WebSocketClientHandshakerFactory.newHandshaker(
-					new URI(String.format("ws://%s:%s/?token=%s&id=%s", host, port, EnergyControlConfig.wsToken, EnergyControlConfig.wsServerID)), WebSocketVersion.V13, null, true, new DefaultHttpHeaders()));
+					new URI(String.format("ws://%s:%s/?token=%s&id=%s", host, port, EnergyControlConfig.webSocket.wsToken, EnergyControlConfig.webSocket.wsServerID)), WebSocketVersion.V13, null, true, new DefaultHttpHeaders()));
 
 			Bootstrap bootstrap = new Bootstrap().group(group).channel(NioSocketChannel.class)
 					.handler(new ChannelInitializer<SocketChannel>() {

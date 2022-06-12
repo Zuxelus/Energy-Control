@@ -58,7 +58,7 @@ public class CrossModBase {
 		return null;
 	}
 
-	public NBTTagCompound getCardData(TileEntity te) {
+	public NBTTagCompound getCardData(World world, BlockPos pos) {
 		return null;
 	}
 

@@ -3,6 +3,8 @@ package com.zuxelus.energycontrol.crossmod;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.zuxelus.energycontrol.hooks.MekanismHooks;
+import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import mekanism.api.gas.GasStack;
@@ -20,7 +22,9 @@ import mekanism.common.util.UnitDisplayUtils.EnergyType;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -29,12 +33,11 @@ public class CrossMekanism extends CrossModBase {
 
 	@Override
 	public NBTTagCompound getEnergyData(TileEntity te) {
-		String euType = getEUType();
+		NBTTagCompound tag = new NBTTagCompound();
+		tag.setString(DataHelper.EUTYPE, getEUType());
 		if (te instanceof TileEntityInductionCell) {
-			NBTTagCompound tag = new NBTTagCompound();
-			tag.setString("euType", euType);
-			tag.setDouble("storage", MekanismUtils.convertToDisplay(((TileEntityInductionCell) te).getEnergy()));
-			tag.setDouble("maxStorage", MekanismUtils.convertToDisplay(((TileEntityInductionCell) te).getMaxEnergy()));
+			tag.setDouble(DataHelper.ENERGY, MekanismUtils.convertToDisplay(((TileEntityInductionCell) te).getEnergy()));
+			tag.setDouble(DataHelper.CAPACITY, MekanismUtils.convertToDisplay(((TileEntityInductionCell) te).getMaxEnergy()));
 			return tag;
 		}
 		if (te instanceof TileEntityElectricBlock)
@@ -43,17 +46,13 @@ public class CrossMekanism extends CrossModBase {
 			SynchronizedMatrixData matrix = ((TileEntityInductionCasing) te).getSynchronizedData();
 			if (matrix == null)
 				return null;
-			NBTTagCompound tag = new NBTTagCompound();
-			tag.setString("euType", euType);
-			tag.setDouble("storage", MekanismUtils.convertToDisplay(matrix.getEnergy()));
-			tag.setDouble("maxStorage", MekanismUtils.convertToDisplay(matrix.getStorageCap()));
+			tag.setDouble(DataHelper.ENERGY, MekanismUtils.convertToDisplay(matrix.getEnergy()));
+			tag.setDouble(DataHelper.CAPACITY, MekanismUtils.convertToDisplay(matrix.getStorageCap()));
 			return tag;
 		}
 		if (te instanceof TileEntityLaserAmplifier) {
-			NBTTagCompound tag = new NBTTagCompound();
-			tag.setString("euType", euType);
-			tag.setDouble("storage", MekanismUtils.convertToDisplay(((TileEntityLaserAmplifier) te).getEnergy()));
-			tag.setDouble("maxStorage", MekanismUtils.convertToDisplay(((TileEntityLaserAmplifier) te).getMaxEnergy()));
+			tag.setDouble(DataHelper.ENERGY, MekanismUtils.convertToDisplay(((TileEntityLaserAmplifier) te).getEnergy()));
+			tag.setDouble(DataHelper.CAPACITY, MekanismUtils.convertToDisplay(((TileEntityLaserAmplifier) te).getMaxEnergy()));
 			return tag;
 		}
 		return null;
@@ -144,15 +143,19 @@ public class CrossMekanism extends CrossModBase {
 	}
 
 	@Override
-	public NBTTagCompound getCardData(TileEntity te) {
+	public NBTTagCompound getCardData(World world, BlockPos pos) {
+		TileEntity te = world.getTileEntity(pos);
 		if (te instanceof TileEntityEnergyCube) {
 			NBTTagCompound tag = setStorage(te);
+			ArrayList values = getHookValues(te);
+			if (values != null)
+				tag.setDouble(DataHelper.DIFF, MekanismUtils.convertToDisplay(((Double) values.get(0) - (Double) values.get(20)) / 20.0D));
 			return tag;
 		}
 		if (te instanceof TileEntityFactory) {
 			NBTTagCompound tag = setStorage(te);
 			tag.setDouble("usage", MekanismUtils.convertToDisplay(((TileEntityFactory) te).lastUsage));
-			tag.setBoolean("active", ((TileEntityFactory) te).lastUsage > 0);
+			tag.setBoolean(DataHelper.ACTIVE, ((TileEntityFactory) te).lastUsage > 0);
 			return tag;
 		}
 		if (te instanceof TileEntityElectricMachine) {
@@ -163,7 +166,7 @@ public class CrossMekanism extends CrossModBase {
 		if (te instanceof TileEntityAdvancedElectricMachine) {
 			NBTTagCompound tag = setStorage(te);
 			addUsage(tag, te);
-			addTank("tank", tag, ((TileEntityAdvancedElectricMachine) te).gasTank);
+			addTank(DataHelper.TANK, tag, ((TileEntityAdvancedElectricMachine) te).gasTank);
 			return tag;
 		}
 		if (te instanceof TileEntityCombiner) {
@@ -174,7 +177,7 @@ public class CrossMekanism extends CrossModBase {
 		if (te instanceof TileEntityMetallurgicInfuser) {
 			NBTTagCompound tag = setStorage(te);
 			addUsage(tag, te);
-			addTank("tank", tag, ((TileEntityMetallurgicInfuser) te).infuseStored);
+			addTank(DataHelper.TANK, tag, ((TileEntityMetallurgicInfuser) te).infuseStored);
 			return tag;
 		}
 		if (te instanceof TileEntityTeleporter) {
@@ -183,41 +186,41 @@ public class CrossMekanism extends CrossModBase {
 		}
 		if (te instanceof TileEntityElectricPump) {
 			NBTTagCompound tag = setStorage(te);
-			FluidInfo.addTank("tank", tag, ((TileEntityElectricPump) te).fluidTank);
+			FluidInfo.addTank(DataHelper.TANK, tag, ((TileEntityElectricPump) te).fluidTank);
 			return tag;
 		}
 		if (te instanceof TileEntityChargepad) {
 			NBTTagCompound tag = setStorage(te);
-			tag.setBoolean("active", ((TileEntityChargepad) te).getActive());
+			tag.setBoolean(DataHelper.ACTIVE, ((TileEntityChargepad) te).getActive());
 			return tag;
 		}
 		if (te instanceof TileEntityRotaryCondensentrator) {
 			NBTTagCompound tag = setStorage(te);
 			addUsage(tag, te);
-			addTank("tank", tag, ((TileEntityRotaryCondensentrator) te).gasTank);
-			FluidInfo.addTank("tank2", tag, ((TileEntityRotaryCondensentrator) te).fluidTank);
+			addTank(DataHelper.TANK, tag, ((TileEntityRotaryCondensentrator) te).gasTank);
+			FluidInfo.addTank(DataHelper.TANK2, tag, ((TileEntityRotaryCondensentrator) te).fluidTank);
 			return tag;
 		}
 		if (te instanceof TileEntityChemicalOxidizer) {
 			NBTTagCompound tag = setStorage(te);
 			addUsage(tag, te);
-			addTank("tank", tag, ((TileEntityChemicalOxidizer) te).gasTank);
+			addTank(DataHelper.TANK, tag, ((TileEntityChemicalOxidizer) te).gasTank);
 			return tag;
 		}
 		if (te instanceof TileEntityChemicalInfuser) {
 			NBTTagCompound tag = setStorage(te);
 			addUsage(tag, te);
-			addTank("tank", tag, ((TileEntityChemicalInfuser) te).leftTank);
-			addTank("tank2", tag, ((TileEntityChemicalInfuser) te).rightTank);
-			addTank("tank3", tag, ((TileEntityChemicalInfuser) te).centerTank);
+			addTank(DataHelper.TANK, tag, ((TileEntityChemicalInfuser) te).leftTank);
+			addTank(DataHelper.TANK2, tag, ((TileEntityChemicalInfuser) te).rightTank);
+			addTank(DataHelper.TANK3, tag, ((TileEntityChemicalInfuser) te).centerTank);
 			return tag;
 		}
 		if (te instanceof TileEntityElectrolyticSeparator) {
 			NBTTagCompound tag = setStorage(te);
 			addUsage(tag, te);
-			FluidInfo.addTank("tank", tag, ((TileEntityElectrolyticSeparator) te).fluidTank);
-			addTank("tank2", tag, ((TileEntityElectrolyticSeparator) te).leftTank);
-			addTank("tank3", tag, ((TileEntityElectrolyticSeparator) te).rightTank);
+			FluidInfo.addTank(DataHelper.TANK, tag, ((TileEntityElectrolyticSeparator) te).fluidTank);
+			addTank(DataHelper.TANK2, tag, ((TileEntityElectrolyticSeparator) te).leftTank);
+			addTank(DataHelper.TANK3, tag, ((TileEntityElectrolyticSeparator) te).rightTank);
 			return tag;
 		}
 		if (te instanceof TileEntityPrecisionSawmill) {
@@ -228,22 +231,22 @@ public class CrossMekanism extends CrossModBase {
 		if (te instanceof TileEntityChemicalDissolutionChamber) {
 			NBTTagCompound tag = setStorage(te);
 			addUsage(tag, te);
-			addTank("tank", tag, ((TileEntityChemicalDissolutionChamber) te).injectTank);
-			addTank("tank2", tag, ((TileEntityChemicalDissolutionChamber) te).outputTank);
+			addTank(DataHelper.TANK, tag, ((TileEntityChemicalDissolutionChamber) te).injectTank);
+			addTank(DataHelper.TANK2, tag, ((TileEntityChemicalDissolutionChamber) te).outputTank);
 			return tag;
 		}
 		if (te instanceof TileEntityChemicalWasher) {
 			NBTTagCompound tag = setStorage(te);
 			addUsage(tag, te);
-			FluidInfo.addTank("tank", tag, ((TileEntityChemicalWasher) te).fluidTank);
-			addTank("tank2", tag, ((TileEntityChemicalWasher) te).inputTank);
-			addTank("tank3", tag, ((TileEntityChemicalWasher) te).outputTank);
+			FluidInfo.addTank(DataHelper.TANK, tag, ((TileEntityChemicalWasher) te).fluidTank);
+			addTank(DataHelper.TANK2, tag, ((TileEntityChemicalWasher) te).inputTank);
+			addTank(DataHelper.TANK3, tag, ((TileEntityChemicalWasher) te).outputTank);
 			return tag;
 		}
 		if (te instanceof TileEntityChemicalCrystallizer) {
 			NBTTagCompound tag = setStorage(te);
 			addUsage(tag, te);
-			addTank("tank", tag, ((TileEntityChemicalCrystallizer) te).inputTank);
+			addTank(DataHelper.TANK, tag, ((TileEntityChemicalCrystallizer) te).inputTank);
 			return tag;
 		}
 		if (te instanceof TileEntitySeismicVibrator) {
@@ -254,10 +257,10 @@ public class CrossMekanism extends CrossModBase {
 			NBTTagCompound tag = setStorage(te);
 			if (((TileEntityResistiveHeater) te).getActive()) {
 				tag.setDouble("usage", MekanismUtils.convertToDisplay(((TileEntityResistiveHeater) te).energyUsage));
-				tag.setBoolean("active", true);
+				tag.setBoolean(DataHelper.ACTIVE, true);
 			} else {
 				tag.setDouble("usage", 0);
-				tag.setBoolean("active", false);
+				tag.setBoolean(DataHelper.ACTIVE, false);
 			}
 			tag.setString("temp", CrossMekanism.getTempString(((TileEntityResistiveHeater) te).temperature + 300));
 			return tag;
@@ -269,9 +272,9 @@ public class CrossMekanism extends CrossModBase {
 		if (te instanceof TileEntityLaserAmplifier) {
 			NBTTagCompound tag = new NBTTagCompound();
 			EnergyType euType = MekanismConfig.current().general.energyUnit.val();
-			tag.setString("euType", euType.name());
-			tag.setDouble("storage", MekanismUtils.convertToDisplay(((TileEntityLaserAmplifier) te).getEnergy()));
-			tag.setDouble("maxStorage", MekanismUtils.convertToDisplay(((TileEntityLaserAmplifier) te).getMaxEnergy()));
+			tag.setString(DataHelper.EUTYPE, euType.name());
+			tag.setDouble(DataHelper.ENERGY, MekanismUtils.convertToDisplay(((TileEntityLaserAmplifier) te).getEnergy()));
+			tag.setDouble(DataHelper.CAPACITY, MekanismUtils.convertToDisplay(((TileEntityLaserAmplifier) te).getMaxEnergy()));
 			return tag;
 		}
 		if (te instanceof TileEntityBoilerCasing) {
@@ -281,15 +284,18 @@ public class CrossMekanism extends CrossModBase {
 			NBTTagCompound tag = setStorage(te);
 			tag.setDouble("boil_rate", boiler.lastBoilRate);
 			tag.setString("temp", CrossMekanism.getTempString(boiler.getTemp() + 300));
-			FluidInfo.addTank("tank", tag, boiler.waterStored);
-			FluidInfo.addTank("tank2", tag, boiler.steamStored);
+			FluidInfo.addTank(DataHelper.TANK, tag, boiler.waterStored);
+			FluidInfo.addTank(DataHelper.TANK2, tag, boiler.steamStored);
 			return tag;
 		}
 		if (te instanceof TileEntityInductionCasing) {
 			SynchronizedMatrixData matrix = ((TileEntityInductionCasing) te).getSynchronizedData();
 			if (matrix == null)
 				return null;
-			NBTTagCompound tag = setStorage(te);
+			NBTTagCompound tag = new NBTTagCompound();
+			tag.setString(DataHelper.EUTYPE, getEUType());
+			tag.setDouble(DataHelper.ENERGY, MekanismUtils.convertToDisplay(matrix.getEnergy()));
+			tag.setDouble(DataHelper.CAPACITY, MekanismUtils.convertToDisplay(matrix.getStorageCap()));
 			tag.setDouble("input", MekanismUtils.convertToDisplay(matrix.getLastInput()));
 			tag.setDouble("output", MekanismUtils.convertToDisplay(matrix.getLastOutput()));
 			return tag;
@@ -300,28 +306,28 @@ public class CrossMekanism extends CrossModBase {
 		}
 		if (te instanceof TileEntitySolarNeutronActivator) {
 			NBTTagCompound tag = new NBTTagCompound();
-			addTank("tank", tag, ((TileEntitySolarNeutronActivator) te).inputTank);
-			addTank("tank2", tag, ((TileEntitySolarNeutronActivator) te).outputTank);
+			addTank(DataHelper.TANK, tag, ((TileEntitySolarNeutronActivator) te).inputTank);
+			addTank(DataHelper.TANK2, tag, ((TileEntitySolarNeutronActivator) te).outputTank);
 			return tag;
 		}
 		if (te instanceof TileEntityFuelwoodHeater) {
 			NBTTagCompound tag = new NBTTagCompound();
-			tag.setBoolean("active", ((TileEntityFuelwoodHeater) te).getActive());
+			tag.setBoolean(DataHelper.ACTIVE, ((TileEntityFuelwoodHeater) te).getActive());
 			tag.setString("temp", CrossMekanism.getTempString(((TileEntityFuelwoodHeater) te).temperature + 300));
 			return tag;
 		}
 		if (te instanceof TileEntityFluidicPlenisher) {
 			NBTTagCompound tag = setStorage(te);
 			tag.setDouble("usage", MekanismUtils.convertToDisplay(((TileEntityFluidicPlenisher) te).energyPerTick));
-			FluidInfo.addTank("tank", tag, ((TileEntityFluidicPlenisher) te).fluidTank);
+			FluidInfo.addTank(DataHelper.TANK, tag, ((TileEntityFluidicPlenisher) te).fluidTank);
 			return tag;
 		}
 		if (te instanceof TileEntityPRC) {
 			NBTTagCompound tag = setStorage(te);
 			addUsage(tag, te);
-			FluidInfo.addTank("tank", tag, ((TileEntityPRC) te).inputFluidTank);
-			addTank("tank2", tag, ((TileEntityPRC) te).inputGasTank);
-			addTank("tank3", tag, ((TileEntityPRC) te).outputGasTank);
+			FluidInfo.addTank(DataHelper.TANK, tag, ((TileEntityPRC) te).inputFluidTank);
+			addTank(DataHelper.TANK2, tag, ((TileEntityPRC) te).inputGasTank);
+			addTank(DataHelper.TANK3, tag, ((TileEntityPRC) te).outputGasTank);
 			return tag;
 		}
 		return null;
@@ -332,10 +338,10 @@ public class CrossMekanism extends CrossModBase {
 			return;
 		if (((TileEntityMachine) te).getActive()) {
 			tag.setDouble("usage", MekanismUtils.convertToDisplay(((TileEntityMachine) te).energyPerTick));
-			tag.setBoolean("active", true);
+			tag.setBoolean(DataHelper.ACTIVE, true);
 		} else {
 			tag.setDouble("usage", 0);
-			tag.setBoolean("active", false);
+			tag.setBoolean(DataHelper.ACTIVE, false);
 		}
 	}
 
@@ -367,9 +373,9 @@ public class CrossMekanism extends CrossModBase {
 		if (!(te instanceof TileEntityElectricBlock))
 			return tag;
 		TileEntityElectricBlock tile = (TileEntityElectricBlock) te;
-		tag.setString("euType", getEUType());
-		tag.setDouble("storage", MekanismUtils.convertToDisplay(tile.getEnergy()));
-		tag.setDouble("maxStorage", MekanismUtils.convertToDisplay(tile.getMaxEnergy()));
+		tag.setString(DataHelper.EUTYPE, getEUType());
+		tag.setDouble(DataHelper.ENERGY, MekanismUtils.convertToDisplay(tile.getEnergy()));
+		tag.setDouble(DataHelper.CAPACITY, MekanismUtils.convertToDisplay(tile.getMaxEnergy()));
 		return tag;
 	}
 
@@ -396,5 +402,13 @@ public class CrossMekanism extends CrossModBase {
 
 	public static String getEUType() {
 		return MekanismConfig.current().general.energyUnit.val().name();
+	}
+
+	@Override
+	public ArrayList getHookValues(TileEntity te) {
+		ArrayList values = MekanismHooks.map.get(te);
+		if (values == null)
+			MekanismHooks.map.put(te, null);
+		return values;
 	}
 }

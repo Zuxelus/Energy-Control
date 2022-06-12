@@ -50,23 +50,28 @@ public class EnergyControlConfig {
 	@LangKey("ec.config.showOreInfo")
 	public static boolean showOreInfo = true;
 
-	@LangKey("ec.config.wsEnabled")
-	public static boolean wsEnabled = false;
+	public static WebSocket webSocket = new WebSocket();
 
-	@LangKey("ec.config.wsHost")
-	public static String wsHost = "";
+	public static class WebSocket {
 
-	@LangKey("ec.config.wsPort")
-	public static int wsPort = 0;
-
-	@LangKey("ec.config.wsToken")
-	public static String wsToken = "78c2b80a-1203-43fd-a9af-75cec29f5acf";
-
-	@LangKey("ec.config.wsRefreshRate")
-	public static int wsRefreshRate = 100;
-
-	@LangKey("ec.config.wsServerID")
-	public static String wsServerID = UUID.randomUUID().toString();
+		@LangKey("ec.config.wsEnabled")
+		public boolean wsEnabled = false;
+	
+		@LangKey("ec.config.wsHost")
+		public String wsHost = "";
+	
+		@LangKey("ec.config.wsPort")
+		public int wsPort = 0;
+	
+		@LangKey("ec.config.wsToken")
+		public String wsToken = "78c2b80a-1203-43fd-a9af-75cec29f5acf";
+	
+		@LangKey("ec.config.wsRefreshRate")
+		public int wsRefreshRate = 100;
+	
+		@LangKey("ec.config.wsServerID")
+		public String wsServerID = UUID.randomUUID().toString();
+	}
 
 	@SubscribeEvent
 	public static void onConfigChanged(final ConfigChangedEvent.OnConfigChangedEvent event) {

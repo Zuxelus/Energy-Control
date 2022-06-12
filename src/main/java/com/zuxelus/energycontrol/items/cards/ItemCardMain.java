@@ -262,7 +262,7 @@ public final class ItemCardMain extends Item implements IItemCard, ITouchAction,
 	}
 
 	public static void sendCardToWS(List<PanelString> list, ICardReader reader) {
-		if (EnergyControlConfig.wsHost.isEmpty())
+		if (EnergyControlConfig.webSocket.wsHost.isEmpty())
 			return;
 		String id = reader.getId();
 		JsonObject json = new JsonObject();

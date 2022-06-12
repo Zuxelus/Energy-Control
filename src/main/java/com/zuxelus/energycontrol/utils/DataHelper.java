@@ -12,6 +12,7 @@ public class DataHelper {
 	public static final String CAPACITYKU = "capacityKU";
 	public static final String CONSUMPTION = "consumption";
 	public static final String DIFF = "diff";
+	public static final String EFFICIENCY = "efficiency";
 	public static final String ENERGY = "energy";
 	public static final String ENERGYHU = "energyHU";
 	public static final String ENERGYKU = "energyKU";
@@ -68,4 +69,3 @@ public class DataHelper {
 		return 0;
 	}
 }
-

@@ -59,7 +59,6 @@ public class EnergyControl {
 	public void preInit(FMLPreInitializationEvent event) {
 		logger = event.getModLog();
 		proxy.importSound(event.getModConfigurationDirectory());
-		//proxy.registerModelLoader();
 
 		ChannelHandler.init();
 		CrossModLoader.preInit();
@@ -86,13 +85,13 @@ public class EnergyControl {
 	@EventHandler
 	public void onServerStarting(FMLServerStartingEvent event) {
 		OreHelper.initList(event.getServer().worlds);
-		if (EnergyControlConfig.wsEnabled && !EnergyControlConfig.wsHost.isEmpty())
-			SocketClient.connect(EnergyControlConfig.wsHost, EnergyControlConfig.wsPort);
+		if (EnergyControlConfig.webSocket.wsEnabled && !EnergyControlConfig.webSocket.wsHost.isEmpty())
+			SocketClient.connect(EnergyControlConfig.webSocket.wsHost, EnergyControlConfig.webSocket.wsPort);
 	}
 
 	@EventHandler
 	public void onServerStopping(FMLServerStoppingEvent event) {
-		if (EnergyControlConfig.wsEnabled)
+		if (EnergyControlConfig.webSocket.wsEnabled)
 			SocketClient.close();
 	}
 }

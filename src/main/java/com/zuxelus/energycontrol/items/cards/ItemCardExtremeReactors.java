@@ -1,5 +1,9 @@
 package com.zuxelus.energycontrol.items.cards;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
@@ -10,15 +14,10 @@ import com.zuxelus.energycontrol.utils.DataHelper;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ItemCardExtremeReactors extends ItemCardBase {
 	private static final DecimalFormat df = new DecimalFormat("0.0");
@@ -33,8 +32,7 @@ public class ItemCardExtremeReactors extends ItemCardBase {
 		if (target == null)
 			return CardState.NO_TARGET;
 
-		TileEntity te = world.getTileEntity(target);
-		NBTTagCompound tag = CrossModLoader.getCrossMod(ModIDs.EXTREME_REACTORS).getCardData(te);
+		NBTTagCompound tag = CrossModLoader.getCrossMod(ModIDs.EXTREME_REACTORS).getCardData(world, target);
 		if (tag == null)
 			return CardState.NO_TARGET;
 		reader.reset();

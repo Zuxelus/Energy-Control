@@ -94,7 +94,8 @@ public class CrossIC2Classic extends CrossModBase {
 	}
 
 	@Override
-	public NBTTagCompound getCardData(TileEntity te) {
+	public NBTTagCompound getCardData(World world, BlockPos pos) {
+		TileEntity te = world.getTileEntity(pos);
 		try {
 			NBTTagCompound tag = new NBTTagCompound();
 			if (te instanceof IEUStorage) {
@@ -118,6 +119,11 @@ public class CrossIC2Classic extends CrossModBase {
 					tag.setDouble(DataHelper.OUTPUT, ((TileEntityWindGenerator) te).subProduction * 4);
 				}
 				if (te instanceof TileEntityBasicSteamTurbine) {
+					tag.setBoolean(DataHelper.ACTIVE, ((TileEntityBasicSteamTurbine) te).getActive());
+					double speed = ((TileEntityBasicSteamTurbine) te).speed;
+					ArrayList values = getHookValues(te);
+					if (values != null)
+						tag.setDouble(DataHelper.OUTPUT, (Integer) values.get(0));
 					FluidInfo.addTank(DataHelper.TANK, tag, ((TileEntityBasicSteamTurbine) te).tank);
 				}
 				return tag;

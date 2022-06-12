@@ -8,6 +8,7 @@ import com.zuxelus.energycontrol.items.cards.ItemCardNuclearCraft;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.energycontrol.items.kits.ItemKitMain;
 import com.zuxelus.energycontrol.items.kits.ItemKitNuclearCraft;
+import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import nc.config.NCConfig;
@@ -37,9 +38,9 @@ public class CrossNuclearCraft extends CrossModBase {
 	public NBTTagCompound getEnergyData(TileEntity te) {
 		if (te instanceof TileBattery) {
 			NBTTagCompound tag = new NBTTagCompound();
-			tag.setString("euType", "RF");
-			tag.setDouble("storage", ((TileBattery) te).getEnergyStored());
-			tag.setDouble("maxStorage", ((TileBattery) te).getMaxEnergyStored());
+			tag.setString(DataHelper.EUTYPE, "RF");
+			tag.setDouble(DataHelper.ENERGY, ((TileBattery) te).getEnergyStored());
+			tag.setDouble(DataHelper.CAPACITY, ((TileBattery) te).getMaxEnergyStored());
 			return tag;
 		}
 		return null;
@@ -71,12 +72,13 @@ public class CrossNuclearCraft extends CrossModBase {
 	}
 
 	@Override
-	public NBTTagCompound getCardData(TileEntity te) {
+	public NBTTagCompound getCardData(World world, BlockPos pos) {
+		TileEntity te = world.getTileEntity(pos);
 		if (te instanceof TileDecayGenerator) {
 			NBTTagCompound tag = new NBTTagCompound();
 			tag.setInteger("type", 1);
-			tag.setInteger("stored", ((TileDecayGenerator) te).getEnergyStored());
-			tag.setInteger("capacity", ((TileDecayGenerator) te).getMaxEnergyStored());
+			tag.setInteger(DataHelper.ENERGY, ((TileDecayGenerator) te).getEnergyStored());
+			tag.setInteger(DataHelper.CAPACITY, ((TileDecayGenerator) te).getMaxEnergyStored());
 			tag.setInteger("output", ((TileDecayGenerator) te).getGenerated());
 			tag.setDouble("radiation", ((TileDecayGenerator) te).getRadiation());
 			return tag;
@@ -84,8 +86,8 @@ public class CrossNuclearCraft extends CrossModBase {
 		if (te instanceof TileItemProcessor) {
 			NBTTagCompound tag = new NBTTagCompound();
 			tag.setInteger("type", 2);
-			tag.setInteger("stored", ((TileItemProcessor) te).getEnergyStored());
-			tag.setInteger("capacity", ((TileItemProcessor) te).getMaxEnergyStored());
+			tag.setInteger(DataHelper.ENERGY, ((TileItemProcessor) te).getEnergyStored());
+			tag.setInteger(DataHelper.CAPACITY, ((TileItemProcessor) te).getMaxEnergyStored());
 			tag.setInteger("power", ((TileItemProcessor) te).getProcessPower());
 			tag.setDouble("speedM", ((TileItemProcessor) te).getSpeedMultiplier());
 			tag.setDouble("powerM", ((TileItemProcessor) te).getPowerMultiplier());
@@ -95,8 +97,8 @@ public class CrossNuclearCraft extends CrossModBase {
 		if (te instanceof TileFluidProcessor) {
 			NBTTagCompound tag = new NBTTagCompound();
 			tag.setInteger("type", 2);
-			tag.setInteger("stored", ((TileFluidProcessor) te).getEnergyStored());
-			tag.setInteger("capacity", ((TileFluidProcessor) te).getMaxEnergyStored());
+			tag.setInteger(DataHelper.ENERGY, ((TileFluidProcessor) te).getEnergyStored());
+			tag.setInteger(DataHelper.CAPACITY, ((TileFluidProcessor) te).getMaxEnergyStored());
 			tag.setInteger("power", ((TileFluidProcessor) te).getProcessPower());
 			tag.setDouble("speedM", ((TileFluidProcessor) te).getSpeedMultiplier());
 			tag.setDouble("powerM", ((TileFluidProcessor) te).getPowerMultiplier());
@@ -106,8 +108,8 @@ public class CrossNuclearCraft extends CrossModBase {
 		if (te instanceof TileSolarPanel) {
 			NBTTagCompound tag = new NBTTagCompound();
 			tag.setInteger("type", 4);
-			tag.setInteger("stored", ((TileSolarPanel) te).getEnergyStored());
-			tag.setInteger("capacity", ((TileSolarPanel) te).getMaxEnergyStored());
+			tag.setInteger(DataHelper.ENERGY, ((TileSolarPanel) te).getEnergyStored());
+			tag.setInteger(DataHelper.CAPACITY, ((TileSolarPanel) te).getMaxEnergyStored());
 			tag.setInteger("output", ((TileSolarPanel) te).getGenerated());
 			return tag;
 		}
@@ -118,8 +120,8 @@ public class CrossNuclearCraft extends CrossModBase {
 			tag.setBoolean("active", reactor.isProcessing);
 			tag.setString("size", reactor.getLengthX() + "*" + reactor.getLengthY() + "*" + reactor.getLengthZ());
 			tag.setString("fuel", reactor.getFuelName());
-			tag.setInteger("stored", reactor.getEnergyStored());
-			tag.setInteger("capacity", reactor.getMaxEnergyStored());
+			tag.setInteger(DataHelper.ENERGY, reactor.getEnergyStored());
+			tag.setInteger(DataHelper.CAPACITY, reactor.getMaxEnergyStored());
 			tag.setDouble("efficiency", reactor.efficiency);
 			tag.setDouble("heat", reactor.heat);
 			tag.setInteger("maxHeat", reactor.getMaxHeat());

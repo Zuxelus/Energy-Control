@@ -24,6 +24,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent.Register;
 
 public class CrossAppEng extends CrossModBase {
@@ -42,7 +44,8 @@ public class CrossAppEng extends CrossModBase {
 	}
 
 	@Override
-	public NBTTagCompound getCardData(TileEntity te) {
+	public NBTTagCompound getCardData(World world, BlockPos pos) {
+		TileEntity te = world.getTileEntity(pos);
 		int[] values = { 0, 0, 0, 0, 0 };
 		IReadOnlyCollection<IGridNode> list = null;
 		NBTTagCompound tag = new NBTTagCompound();

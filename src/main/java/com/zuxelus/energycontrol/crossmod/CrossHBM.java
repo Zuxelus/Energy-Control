@@ -32,6 +32,7 @@ import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -464,7 +465,17 @@ public class CrossHBM extends CrossModBase {
 	}
 
 	@Override
-	public NBTTagCompound getCardData(TileEntity te) {
+	public NBTTagCompound getCardData(World world, BlockPos pos) {
+		TileEntity te = world.getTileEntity(pos);
+		if (te == null) {
+			IBlockState state = world.getBlockState(pos);
+			if (state.getBlock() != null && state.getBlock().getClass().getName().equals("com.hbm.blocks.machine.FactoryHatch"))
+				for (EnumFacing dir : EnumFacing.HORIZONTALS) {
+					te = world.getTileEntity(pos.offset(dir));
+					if (te != null)
+						break;
+				}
+		}
 		if (te instanceof TileEntityMachineBattery) {
 			NBTTagCompound tag = new NBTTagCompound();
 			tag.setLong("stored", ((TileEntityMachineBattery) te).getSPower());

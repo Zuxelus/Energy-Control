@@ -13,7 +13,6 @@ import com.zuxelus.energycontrol.crossmod.ModIDs;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -30,8 +29,7 @@ public class ItemCardGregTech extends ItemCardBase {
 		if (target == null)
 			return CardState.NO_TARGET;
 
-		TileEntity te = world.getTileEntity(target);
-		NBTTagCompound tag = CrossModLoader.getCrossMod(ModIDs.GREGTECH).getCardData(te);
+		NBTTagCompound tag = CrossModLoader.getCrossMod(ModIDs.GREGTECH).getCardData(world, target);
 		if (tag == null)
 			return CardState.NO_TARGET;
 		reader.reset();

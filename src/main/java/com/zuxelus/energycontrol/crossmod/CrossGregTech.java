@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import gregtech.api.metatileentity.MetaTileEntity;
@@ -14,6 +15,8 @@ import gregtech.common.metatileentities.steam.boiler.SteamCoalBoiler;
 import ic2.core.block.generator.tileentity.TileEntityConversionGenerator;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidTank;
 
 public class CrossGregTech extends CrossModBase {
@@ -21,7 +24,7 @@ public class CrossGregTech extends CrossModBase {
 	@Override
 	public NBTTagCompound getEnergyData(TileEntity te) {
 		NBTTagCompound tag = new NBTTagCompound();
-		tag.setString("euType", "HE");
+		tag.setString(DataHelper.EUTYPE, "EU");
 		return null;
 	}
 
@@ -52,7 +55,8 @@ public class CrossGregTech extends CrossModBase {
 	}
 
 	@Override
-	public NBTTagCompound getCardData(TileEntity te) {
+	public NBTTagCompound getCardData(World world, BlockPos pos) {
+		TileEntity te = world.getTileEntity(pos);
 		if (te instanceof MetaTileEntityHolder) {
 			NBTTagCompound tag = new NBTTagCompound();
 			MetaTileEntity base = ((MetaTileEntityHolder) te).getMetaTileEntity();

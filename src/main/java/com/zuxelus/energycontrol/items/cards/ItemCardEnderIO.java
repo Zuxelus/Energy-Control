@@ -9,9 +9,9 @@ import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
+import com.zuxelus.energycontrol.utils.DataHelper;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -27,8 +27,7 @@ public class ItemCardEnderIO extends ItemCardBase {
 		if (target == null)
 			return CardState.NO_TARGET;
 
-		TileEntity te = world.getTileEntity(target);
-		NBTTagCompound tag = CrossModLoader.getCrossMod(ModIDs.ENDER_IO).getCardData(te);
+		NBTTagCompound tag = CrossModLoader.getCrossMod(ModIDs.ENDER_IO).getCardData(world, target);
 		if (tag == null)
 			return CardState.NO_TARGET;
 		reader.reset();
@@ -39,35 +38,34 @@ public class ItemCardEnderIO extends ItemCardBase {
 	@Override
 	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
-		String euType = reader.getString("euType");
-		if (reader.hasField("storage") && (settings & 4) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelEnergy", reader.getDouble("storage"), euType, showLabels));
-		if (reader.hasField("maxStorage") && (settings & 8) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getDouble("maxStorage"), euType, showLabels));
+		if (reader.hasField(DataHelper.ENERGY) && (settings & 4) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelEnergy", reader.getDouble(DataHelper.ENERGY), "µI", showLabels));
+		if (reader.hasField(DataHelper.CAPACITY) && (settings & 8) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getDouble(DataHelper.CAPACITY), "µI", showLabels));
 		if (reader.hasField("leakage") && (settings & 32) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelLeakage", reader.getDouble("leakage"), euType + "/t", showLabels));
-		if (reader.hasField("output") && (settings & 32) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("output"), euType + "/t", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelLeakage", reader.getDouble("leakage"), "µI/t", showLabels));
+		if (reader.hasField(DataHelper.OUTPUT) && (settings & 32) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble(DataHelper.OUTPUT), "µI/t", showLabels));
 		if (reader.hasField("maxInput") && (settings & 32) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelMaxInput", reader.getDouble("maxInput"), euType + "/t", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelMaxInput", reader.getDouble("maxInput"), "µI/t", showLabels));
 		if (reader.hasField("maxOutput") && (settings & 32) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelMaxOutput", reader.getDouble("maxOutput"), euType + "/t", showLabels));
-		if (reader.hasField("difference") && (settings & 32) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelDifference", reader.getDouble("difference"), euType + "/t", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelMaxOutput", reader.getDouble("maxOutput"), "µI/t", showLabels));
+		if (reader.hasField(DataHelper.DIFF) && (settings & 32) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelDifference", reader.getDouble(DataHelper.DIFF), "µI/t", showLabels));
 		if (reader.hasField("usage") && (settings & 2) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelUsing", reader.getDouble("usage"), euType + "/t", showLabels));
-		if (reader.hasField("efficiency") && (settings & 32) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelEfficiency", reader.getDouble("efficiency"), "%", showLabels));
-		if (reader.hasField("tank") && (settings & 16) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString("tank"), showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelUsing", reader.getDouble("usage"), "µI/t", showLabels));
+		if (reader.hasField(DataHelper.EFFICIENCY) && (settings & 32) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelEfficiency", reader.getDouble(DataHelper.EFFICIENCY), "%", showLabels));
+		if (reader.hasField(DataHelper.TANK) && (settings & 16) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString(DataHelper.TANK), showLabels));
 		if (reader.hasField("usage1") && (settings & 2) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelUsing", reader.getDouble("usage1"), "t/mB", showLabels));
-		if (reader.hasField("tank2") && (settings & 16) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString("tank2"), showLabels));
+		if (reader.hasField(DataHelper.TANK2) && (settings & 16) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString(DataHelper.TANK2), showLabels));
 		if (reader.hasField("usage2") && (settings & 2) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelUsing", reader.getDouble("usage2"), "t/mB", showLabels));
-		if (reader.hasField("active"))
-			addOnOff(result, isServer, reader.getBoolean("active"));
+		if (reader.hasField(DataHelper.ACTIVE))
+			addOnOff(result, isServer, reader.getBoolean(DataHelper.ACTIVE));
 		return result;
 	}
 
