@@ -26,7 +26,7 @@ public class GuiCardText extends GuiBase {
 	private static final int lineCount = 10;
 
 	public GuiCardText(ItemStack card, TileEntityInfoPanel panel, GuiPanelBase gui, int slot) {
-		super("", 226, 146, EnergyControl.MODID + ":textures/gui/gui_text_card.png");
+		super("", 256, 146, EnergyControl.MODID + ":textures/gui/gui_text_card.png");
 		this.reader = new ItemCardReader(card);
 		this.stack = card;
 		this.panel = panel;
