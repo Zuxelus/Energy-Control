@@ -13,6 +13,7 @@ import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import api.hbm.energy.IEnergyUser;
+import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Optional;
 import ic2.api.energy.event.EnergyTileLoadEvent;
@@ -28,15 +29,15 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 
 @Optional.InterfaceList({
 	@Optional.Interface(modid = ModIDs.IC2, iface = "ic2.api.energy.tile.IEnergySink"),
-	@Optional.Interface(modid = ModIDs.HBM, iface = "api.hbm.energy.IEnergyUser")
+	@Optional.Interface(modid = ModIDs.HBM, iface = "api.hbm.energy.IEnergyUser"),
+	@Optional.Interface(modid = ModIDs.THERMAL_EXPANSION, iface = "cofh.redstoneflux.api.IEnergyReceiver"),
 })
-public class TileEntityKitAssembler extends TileEntityInventory implements ITilePacketHandler, ISlotItemFilter, IEnergySink, IEnergyUser {
+public class TileEntityKitAssembler extends TileEntityInventory implements ITilePacketHandler, ISlotItemFilter, IEnergySink, IEnergyUser, IEnergyReceiver {
 	public static final byte SLOT_INFO = 0;
 	public static final byte SLOT_CARD1 = 1;
 	public static final byte SLOT_ITEM = 2;
@@ -196,7 +197,7 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITile
 
 	@Override
 	public void updateEntity() {
-		if (!addedToEnet)
+		if (!addedToEnet && Loader.isModLoaded(ModIDs.IC2))
 			onLoad();
 		if (worldObj.isRemote)
 			return;
@@ -405,5 +406,27 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITile
 	@Override
 	public boolean isLoaded() {
 		return isLoaded;
+	}
+
+	// IEnergyReceiver
+	@Override
+	public int getEnergyStored(ForgeDirection side) {
+		return (int) storage.getEnergyStored();
+	}
+
+	@Override
+	public int getMaxEnergyStored(ForgeDirection side) {
+		return (int) storage.getMaxEnergyStored();
+	}
+
+	@Override
+	public boolean canConnectEnergy(ForgeDirection side) {
+		return true;
+	}
+
+	@Override
+	public int receiveEnergy(ForgeDirection side, int maxReceive, boolean simulate) {
+		long energyReceived = Math.min(CAPACITY - storage.getEnergyStored(), Math.min(32, maxReceive));
+		return (int) storage.receiveEnergy(energyReceived, simulate);
 	}
 }

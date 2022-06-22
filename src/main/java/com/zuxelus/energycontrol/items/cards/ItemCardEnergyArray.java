@@ -8,6 +8,7 @@ import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.energycontrol.utils.StringUtils;
 
 import cpw.mods.fml.relauncher.Side;
@@ -45,8 +46,8 @@ public class ItemCardEnergyArray extends ItemCardBase {
 				if (te != null) {
 					NBTTagCompound tag = CrossModLoader.getEnergyData(te);
 					if (tag != null) {
-						double stored = tag.getDouble("storage");
-						double capacity = tag.getDouble("maxStorage");
+						double stored = tag.getDouble(DataHelper.ENERGY);
+						double capacity = tag.getDouble(DataHelper.CAPACITY);
 						totalEnergy += stored;
 						reader.setInt(String.format("_%denergy", i), (int) stored);
 						reader.setInt(String.format("_%dmaxStorage", i), (int) capacity);
@@ -60,7 +61,7 @@ public class ItemCardEnergyArray extends ItemCardBase {
 				outOfRange = true;
 			}
 		}
-		reader.setDouble("energy", totalEnergy);
+		reader.setDouble(DataHelper.ENERGY, totalEnergy);
 		if (!foundAny) {
 			if (outOfRange)
 				return CardState.OUT_OF_RANGE;

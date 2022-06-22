@@ -10,6 +10,7 @@ import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 
 import net.minecraft.client.resources.I18n;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
@@ -36,24 +37,15 @@ public class ItemCardVanilla extends ItemCardBase {
 		TileEntity te = world.getTileEntity(target.posX, target.posY, target.posZ);
 		if (te instanceof TileEntityFurnace) {
 			TileEntityFurnace furnace = (TileEntityFurnace) te;
-			reader.setInt("type", 1);
 			reader.setString("entity", "furnace");
 			reader.setBoolean("burning", furnace.isBurning());
 			reader.setInt("burnTime", furnace.furnaceBurnTime);
-			NBTTagCompound tag = new NBTTagCompound();
-			if (furnace.getStackInSlot(0) != null) {
-				tag.setString("Cooking", furnace.getStackInSlot(0).getDisplayName());
-				tag.setInteger("Csize", furnace.getStackInSlot(0).stackSize);
-			}
-			if (furnace.getStackInSlot(1) != null) {
-				tag.setString("Fuel", furnace.getStackInSlot(1).getDisplayName());
-				tag.setInteger("Fsize", furnace.getStackInSlot(1).stackSize);
-			}
-			if (furnace.getStackInSlot(2) != null) {
-				tag.setString("Output", furnace.getStackInSlot(2).getDisplayName());
-				tag.setInteger("Osize", furnace.getStackInSlot(2).stackSize);
-			}
-			reader.setTag("Info", tag);
+			ItemStack stack = furnace.getStackInSlot(0);
+			reader.setString("cooking", stack != null ? String.format("%sx %s", stack.stackSize, stack.getDisplayName()) : "-");
+			stack = furnace.getStackInSlot(1);
+			reader.setString("fuel", stack != null ? String.format("%sx %s", stack.stackSize, stack.getDisplayName()) : "-");
+			stack = furnace.getStackInSlot(2);
+			reader.setString("output", stack != null ? String.format("%sx %s", stack.stackSize, stack.getDisplayName()) : "-");
 			return CardState.OK;
 		}
 		return CardState.NO_TARGET;
@@ -62,39 +54,15 @@ public class ItemCardVanilla extends ItemCardBase {
 	@Override
 	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = new LinkedList<PanelString>();
-		int burnTime = reader.getInt("burnTime");
-		NBTTagCompound tagCompound = reader.getTag("Info");
-
-		if ((settings & DISPLAY_TIME) > 0)
-			result.add(new PanelString("msg.burnTime", burnTime, showLabels));
-		if ((settings & DISPLAY_SLOT_1) > 0) {
-			String slot1pre = isServer ? "N/A" : I18n.format("msg.ec.None");
-			if (tagCompound.hasKey("Cooking"))
-				slot1pre = tagCompound.getString("Cooking");
-			if (showLabels)
-				result.add(new PanelString(I18n.format("msg.cooking", tagCompound.getInteger("Csize"), slot1pre)));
-			else
-				result.add(new PanelString(String.format("%sx - %s", tagCompound.getInteger("Csize"), slot1pre)));
-		}
-		if ((settings & DISPLAY_SLOT_2) > 0) {
-			String slot2pre = I18n.format("msg.ec.None");
-			if (tagCompound.hasKey("Fuel"))
-				slot2pre = tagCompound.getString("Fuel");
-			if (showLabels)
-				result.add(new PanelString(I18n.format("msg.fuel", tagCompound.getInteger("Fsize"), slot2pre)));
-			else
-				result.add(new PanelString(String.format("%sx - %s", tagCompound.getInteger("Fsize"), slot2pre)));
-		}
-		if ((settings & DISPLAY_SLOT_3) > 0) {
-			String slot3pre = I18n.format("msg.ec.None");
-			if (tagCompound.hasKey("Output"))
-				slot3pre = tagCompound.getString("Output");
-			if (showLabels)
-				result.add(new PanelString(I18n.format("msg.output", tagCompound.getInteger("Osize"), slot3pre)));
-			else
-				result.add(new PanelString(String.format("%sx - %s", tagCompound.getInteger("Osize"), slot3pre)));
-		}
-		if ((settings & DISPLAY_BURNING) > 0)
+		if (reader.hasField("burnTime") && (settings & DISPLAY_TIME) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelBurnTime", reader.getInt("burnTime"), showLabels));
+		if (reader.hasField("cooking") && (settings & DISPLAY_SLOT_1) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelInput", reader.getString("cooking"), showLabels));
+		if (reader.hasField("fuel") && (settings & DISPLAY_SLOT_2) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelFuel", reader.getString("fuel"), showLabels));
+		if (reader.hasField("output") && (settings & DISPLAY_SLOT_3) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getString("output"), showLabels));
+		if (reader.hasField("burning") && (settings & DISPLAY_BURNING) > 0)
 			addOnOff(result, isServer, reader.getBoolean("burning"));
 		return result;
 	}

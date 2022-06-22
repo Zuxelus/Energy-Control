@@ -1,9 +1,8 @@
 package com.zuxelus.energycontrol.items;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.crossmod.IC2ReactorHelper;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 
-import ic2.api.reactor.IReactor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -35,19 +34,13 @@ public class ItemThermometer extends Item {
 		if (!canTakeDamage(stack, 2))
 			return false;
 
-		IReactor reactor = IC2ReactorHelper.getReactorAround(world, x, y, z);
-		if (reactor == null)
-			reactor = IC2ReactorHelper.getReactor3x3(world, x, y, z);
-		if (reactor != null) {
-			messagePlayer(player, reactor);
+		int heat = CrossModLoader.getHeat(world, x, y, z);
+		if (heat > -1) {
+			player.addChatMessage(new ChatComponentTranslation("msg.ec.Thermo", heat));
 			damage(stack, 1, player);
 			return true;
 		}
 		return false;
-	}
-
-	protected void messagePlayer(EntityPlayer player, IReactor reactor) {
-		player.addChatMessage(new ChatComponentTranslation("msg.ec.Thermo", reactor.getHeat()));
 	}
 
 	protected void damage(ItemStack stack, int i, EntityPlayer player) {

@@ -7,17 +7,22 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.MathHelper;
 
 @SideOnly(Side.CLIENT)
 public class GuiTextArea extends Gui {
+	private final static int maxStringLength = 128;
+	private final static int maxGuiLength = 39;
+
 	private final int lineCount;
-	private int maxStringLength = 32;
 	private int cursorCounter;
 	private int cursorPosition;
 	private int cursorLine;
+	private int lineScrollOffset;
+	private int selectionEnd;
 	private boolean isFocused;
 	private String[] text;
 
@@ -40,8 +45,265 @@ public class GuiTextArea extends Gui {
 			text[i] = "";
 	}
 
+	public void updateCursorCounter() {
+		cursorCounter++;
+	}
+
 	public String[] getText() {
 		return text;
+	}
+
+	public String getSelectedText() {
+		int i = cursorPosition < selectionEnd ? cursorPosition : selectionEnd;
+		int j = cursorPosition < selectionEnd ? selectionEnd : cursorPosition;
+		return text[cursorLine].substring(i, j);
+	}
+
+	public void writeText(String textToWrite) {
+		String newLine = "";
+		String filteredText = ChatAllowedCharacters.filerAllowedCharacters(textToWrite);
+		int i = cursorPosition < selectionEnd ? cursorPosition : selectionEnd;
+		int j = cursorPosition < selectionEnd ? selectionEnd : cursorPosition;
+		int freeCharCount = maxStringLength - text[cursorLine].length() - (i - j);
+
+		if (text[cursorLine].length() > 0)
+			newLine = newLine + text[cursorLine].substring(0, i);
+
+		int l;
+		if (freeCharCount < filteredText.length()) {
+			newLine = newLine + filteredText.substring(0, freeCharCount);
+			l = freeCharCount;
+		} else {
+			newLine = newLine + filteredText;
+			l = filteredText.length();
+		}
+
+		if (text[cursorLine].length() > 0 && j < text[cursorLine].length())
+			newLine = newLine + text[cursorLine].substring(j);
+
+		text[cursorLine] = newLine;
+		moveCursorBy(i - selectionEnd + l);
+	}
+
+	public void deleteWords(int num) {
+		if (text[cursorLine].isEmpty())
+			return;
+
+		if (selectionEnd != cursorPosition)
+			writeText("");
+		else
+			deleteFromCursor(getNthWordFromCursor(num) - cursorPosition);
+
+	}
+
+	public void deleteFromCursor(int count) {
+		if (text[cursorLine].isEmpty())
+			return;
+
+		if (selectionEnd != cursorPosition) {
+			writeText("");
+			return;
+		}
+
+		boolean back = count < 0;
+		int left = back ? cursorPosition + count : cursorPosition;
+		int right = back ? cursorPosition : cursorPosition + count;
+		String newLine = "";
+
+		if (left >= 0)
+			newLine = text[cursorLine].substring(0, left);
+		if (right < text[cursorLine].length())
+			newLine = newLine + text[cursorLine].substring(right);
+		text[cursorLine] = newLine;
+		if (back)
+			moveCursorBy(count);
+	}
+
+	/**
+	 * Gets the starting index of the word at the specified number of words away from the cursor position.
+	 */
+	public int getNthWordFromCursor(int numWords) {
+		return getNthWordFromPos(numWords, cursorPosition);
+	}
+
+	/**
+	 * Gets the starting index of the word at a distance of the specified number of words away from the given position.
+	 */
+	public int getNthWordFromPos(int n, int pos) {
+		return getNthWordFromPosWS(n, pos, true);
+	}
+
+	/**
+	 * Like getNthWordFromPos (which wraps this), but adds option for skipping consecutive spaces
+	 */
+	public int getNthWordFromPosWS(int n, int pos, boolean skipWs) {
+		int i = pos;
+		boolean flag = n < 0;
+		int j = Math.abs(n);
+
+		for (int k = 0; k < j; ++k)
+			if (!flag) {
+				int l = text[cursorLine].length();
+				i = text[cursorLine].indexOf(32, i);
+
+				if (i == -1)
+					i = l;
+				else
+					while (skipWs && i < l && text[cursorLine].charAt(i) == ' ')
+						++i;
+			} else {
+				while (skipWs && i > 0 && text[cursorLine].charAt(i - 1) == ' ')
+					--i;
+				while (i > 0 && text[cursorLine].charAt(i - 1) != ' ')
+					--i;
+			}
+		return i;
+	}
+
+	private void setCursorLine(int delta) {
+		int newCursorLine = cursorLine + delta;
+		if (newCursorLine < 0)
+			newCursorLine = 0;
+		if (newCursorLine >= lineCount)
+			newCursorLine = lineCount - 1;
+		cursorPosition = Math.min(selectionEnd, text[newCursorLine].length());
+		setSelectionPos(cursorPosition);
+		cursorLine = newCursorLine;
+	}
+
+	/**
+	 * Moves the text cursor by a specified number of characters and clears the selection
+	 */
+	public void moveCursorBy(int num) {
+		setCursorPosition(selectionEnd + num, cursorLine);
+	}
+
+	/**
+	 * Sets the current position of the cursor.
+	 */
+	public void setCursorPosition(int x, int y) {
+		if (y >= text.length)
+			y = text.length - 1;
+		cursorPosition = x;
+		cursorLine = y;
+
+		int lineLength = text[y].length();
+		if (cursorPosition < 0)
+			cursorPosition = 0;
+		if (cursorPosition > lineLength)
+			cursorPosition = lineLength;
+		setSelectionPos(cursorPosition);
+	}
+
+	public void setCursorPositionZero() {
+		setCursorPosition(0, cursorLine);
+	}
+
+	public void setCursorPositionEnd() {
+		setCursorPosition(text[cursorLine].length(), cursorLine);
+	}
+
+	public boolean textAreaKeyTyped(char typedChar, int keyCode) {
+		if (!isFocused)
+			return false;
+
+		if (typedChar == 1) {
+			setCursorPositionEnd();
+			setSelectionPos(0);
+			return true;
+		}
+		if (typedChar == 3) {
+			GuiScreen.setClipboardString(getSelectedText());
+			return true;
+		}
+		if (typedChar == 22) {
+			writeText(GuiScreen.getClipboardString());
+			return true;
+		}
+		if (typedChar == 24) {
+			GuiScreen.setClipboardString(getSelectedText());
+			writeText("");
+			return true;
+		}
+
+		switch (typedChar) {
+		case 1:
+			setCursorPosition(text[cursorLine].length(), cursorLine);
+			return true;
+		case 13:
+			setCursorLine(1);
+			return true;
+		default:
+			switch (keyCode) {
+			case Keyboard.KEY_BACK: // backspace
+				if (GuiScreen.isCtrlKeyDown())
+					deleteWords(-1);
+				else
+					deleteFromCursor(-1);
+				return true;
+			case Keyboard.KEY_HOME:
+				if (GuiScreen.isShiftKeyDown())
+					setSelectionPos(0);
+				else
+					setCursorPositionZero();
+				return true;
+			case Keyboard.KEY_LEFT:
+				if (GuiScreen.isShiftKeyDown()) {
+					if (GuiScreen.isCtrlKeyDown())
+						setSelectionPos(getNthWordFromPos(-1, selectionEnd));
+					else
+						setSelectionPos(selectionEnd - 1);
+				} else if (GuiScreen.isCtrlKeyDown())
+					setCursorPosition(getNthWordFromCursor(-1), cursorLine);
+				else
+					moveCursorBy(-1);
+				return true;
+			case Keyboard.KEY_RIGHT:
+				if (GuiScreen.isShiftKeyDown()) {
+					if (GuiScreen.isCtrlKeyDown())
+						setSelectionPos(getNthWordFromPos(1, selectionEnd));
+					else
+						setSelectionPos(selectionEnd + 1);
+				} else if (GuiScreen.isCtrlKeyDown())
+					setCursorPosition(getNthWordFromCursor(1), cursorLine);
+				else
+					moveCursorBy(1);
+				return true;
+			case Keyboard.KEY_UP:
+				setCursorLine(-1);
+				return true;
+			case Keyboard.KEY_DOWN:
+				setCursorLine(1);
+				return true;
+			case Keyboard.KEY_END:
+				if (GuiScreen.isShiftKeyDown())
+					setSelectionPos(text[cursorLine].length());
+				else
+					setCursorPositionEnd();
+				return true;
+			case Keyboard.KEY_DELETE:
+				if (GuiScreen.isCtrlKeyDown())
+					deleteWords(1);
+				else
+					deleteFromCursor(1);
+				return true;
+			default:
+				if (ChatAllowedCharacters.isAllowedCharacter(typedChar)) {
+					writeText(Character.toString(typedChar));
+					return true;
+				}
+				return false;
+			}
+		}
+	}
+
+	public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+		isFocused = mouseX >= xPos && mouseX < xPos + width && mouseY >= yPos && mouseY < yPos + height;
+		if (isFocused && mouseButton == 0) {
+			int xi = mouseX - xPos;
+			int yi = mouseY - yPos;
+			setCursorPosition(xi / 6, (yi - 4) / 10);
+		}
 	}
 
 	public void drawTextBox() {
@@ -53,12 +315,56 @@ public class GuiTextArea extends Gui {
 		int textTop = yPos + (height - lineCount * (fontRenderer.FONT_HEIGHT + 1)) / 2;
 
 		for (int i = 0; i < lineCount; i++)
-			fontRenderer.drawStringWithShadow(text[i], textLeft, textTop + (fontRenderer.FONT_HEIGHT + 1) * i, textColor);
+			if (text[i].length() > lineScrollOffset)
+				for (int j = 0; j < Math.min(text[i].length() - lineScrollOffset, maxGuiLength); j++) {
+					String line = text[i].substring(j + lineScrollOffset, j + lineScrollOffset + 1);
+					fontRenderer.drawStringWithShadow(line, textLeft + j * 6 + (6 - fontRenderer.getStringWidth(line)) / 2, textTop + (fontRenderer.FONT_HEIGHT + 1) * i, textColor);
+				}
+
 		textTop += (fontRenderer.FONT_HEIGHT + 1) * cursorLine;
-		int cursorPositionX = textLeft + fontRenderer.getStringWidth(text[cursorLine].substring(0, Math.min(text[cursorLine].length(), cursorPosition))) - 1;
+		int cursorPositionX = textLeft + selectionEnd * 6 - 1 - lineScrollOffset * 6;
 		boolean drawCursor = isFocused && cursorCounter / 6 % 2 == 0;
 		if (drawCursor)
 			drawCursorVertical(cursorPositionX, textTop - 1, cursorPositionX + 1, textTop + 1 + fontRenderer.FONT_HEIGHT);
+		int selectionPositionX = textLeft + cursorPosition * 6 - 1 - lineScrollOffset * 6;
+		drawSelectionBox(cursorPositionX, textTop - 1, Math.max(selectionPositionX, xPos), textTop + 1 + fontRenderer.FONT_HEIGHT);
+	}
+
+	// Copy of GuiTextField.drawSelectionBox
+	private void drawSelectionBox(int startX, int startY, int endX, int endY) {
+		if (startX < endX) {
+			int i = startX;
+			startX = endX;
+			endX = i;
+		}
+
+		if (startY < endY) {
+			int j = startY;
+			startY = endY;
+			endY = j;
+		}
+
+		if (endX > xPos + width) {
+			endX = xPos + width;
+		}
+
+		if (startX > xPos + width) {
+			startX = xPos + width;
+		}
+
+		Tessellator tessellator = Tessellator.instance;
+		GL11.glColor4f(0.0F, 0.0F, 255.0F, 255.0F);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GL11.glEnable(GL11.GL_COLOR_LOGIC_OP);
+		GL11.glLogicOp(GL11.GL_OR_REVERSE);
+		tessellator.startDrawingQuads();
+		tessellator.addVertex(startX, endY, 0.0D);
+		tessellator.addVertex(endX, endY, 0.0D);
+		tessellator.addVertex(endX, startY, 0.0D);
+		tessellator.addVertex(startX, startY, 0.0D);
+		tessellator.draw();
+		GL11.glDisable(GL11.GL_COLOR_LOGIC_OP);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
 
 	// Copy of GuiTextField.drawSelectionBox
@@ -90,136 +396,25 @@ public class GuiTextArea extends Gui {
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
 
-	public void updateCursorCounter() {
-		cursorCounter++;
-	}
-
-	public void setCursorPosition(int x, int y) {
-		if (y >= text.length)
-			y = text.length - 1;
-		cursorPosition = x;
-		cursorLine = y;
-		int lineLength = text[y].length();
-
-		if (cursorPosition < 0)
-			cursorPosition = 0;
-
-		if (cursorPosition > lineLength)
-			cursorPosition = lineLength;
-	}
-
-	public void deleteFromCursor(int count) {
-		if (text[cursorLine].length() != 0) {
-			boolean back = count < 0;
-			String curLine = text[cursorLine];
-			int left = back ? cursorPosition + count : cursorPosition;
-			int right = back ? cursorPosition : cursorPosition + count;
-			String newLine = "";
-
-			if (left >= 0)
-				newLine = curLine.substring(0, left);
-
-			if (right < curLine.length())
-				newLine = newLine + curLine.substring(right);
-
-			text[cursorLine] = newLine;
-
-			if (back)
-				setCursorPosition(cursorPosition + count, cursorLine);
-		}
-	}
-
-	public void writeText(String additionalText) {
-		String newLine = "";
-		String filteredText = ChatAllowedCharacters.filerAllowedCharacters(additionalText);
-		int freeCharCount = this.maxStringLength - text[cursorLine].length();
-
-		if (text[cursorLine].length() > 0)
-			newLine = newLine + text[cursorLine].substring(0, cursorPosition);
-
-		if (freeCharCount < filteredText.length())
-			newLine = newLine + filteredText.substring(0, freeCharCount);
-		else
-			newLine = newLine + filteredText;
-
-		if (text[cursorLine].length() > 0 && cursorPosition < text[cursorLine].length())
-			newLine = newLine + text[cursorLine].substring(cursorPosition);
-
-		text[cursorLine] = newLine;
-		setCursorPosition(cursorPosition + filteredText.length(), cursorLine);
-	}
-
-	private void setCursorLine(int delta) {
-		int newCursorLine = cursorLine + delta;
-		if (newCursorLine < 0)
-			newCursorLine = 0;
-		if (newCursorLine >= lineCount)
-			newCursorLine = lineCount - 1;
-		cursorPosition = Math.min(cursorPosition, text[newCursorLine].length());
-		cursorLine = newCursorLine;
-	}
-
-	public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
-		isFocused = mouseX >= xPos && mouseX < xPos + width && mouseY >= yPos && mouseY < yPos + height;
-		if (isFocused && mouseButton == 0) {
-			int xi = MathHelper.floor_float(mouseX) - xPos;
-			int yi = MathHelper.floor_float(mouseY) - yPos;
-			setCursorPosition(fontRenderer.trimStringToWidth(text[(yi - 4) / 10], xi).length(), (yi - 4) / 10);
-		}
+	public void setFocused(boolean focused) {
+		isFocused = focused;
 	}
 
 	public boolean isFocused() {
 		return isFocused;
 	}
 
-	public void setFocused(boolean focused) {
-		isFocused = focused;
-	}
+	public void setSelectionPos(int position) {
+		int i = text[cursorLine].length();
+		if (position > i)
+			position = i;
+		if (position < 0)
+			position = 0;
+		selectionEnd = position;
 
-	public boolean textAreaKeyTyped(char typedChar, int keyCode) {
-		if (!isFocused)
-			return false;
-
-		switch (typedChar) {
-		case 1:
-			setCursorPosition(text[cursorLine].length(), cursorLine);
-			return true;
-		case 13:
-			setCursorLine(1);
-			return true;
-		default:
-			switch (keyCode) {
-			case 14:// backspace
-				deleteFromCursor(-1);
-				return true;
-			case Keyboard.KEY_HOME:
-				setCursorPosition(0, cursorLine);
-				return true;
-			case Keyboard.KEY_LEFT:
-				setCursorPosition(cursorPosition - 1, cursorLine);
-				return true;
-			case Keyboard.KEY_RIGHT:
-				setCursorPosition(cursorPosition + 1, cursorLine);
-				return true;
-			case Keyboard.KEY_UP:
-				setCursorLine(-1);
-				return true;
-			case Keyboard.KEY_DOWN:
-				setCursorLine(1);
-				return true;
-			case Keyboard.KEY_END:
-				setCursorPosition(text[cursorLine].length(), cursorLine);
-				return true;
-			case Keyboard.KEY_DELETE:
-				deleteFromCursor(1);
-				return true;
-			default:
-				if (ChatAllowedCharacters.isAllowedCharacter(typedChar)) {
-					writeText(Character.toString(typedChar));
-					return true;
-				}
-				return false;
-			}
-		}
+		if (position - lineScrollOffset > maxGuiLength)
+			lineScrollOffset += position - lineScrollOffset - maxGuiLength;
+		if (position - lineScrollOffset < 0 && lineScrollOffset > 0)
+			lineScrollOffset += position - lineScrollOffset;
 	}
 }

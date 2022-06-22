@@ -20,5 +20,5 @@ public class ModIDs {
     public static final String PNEUMATICCRAFT = "pneumaticcraft";
 	public static final String RAILCRAFT = "Railcraft";
     public static final String TECH_REBORN = "techreborn";
-    public static final String THERMAL_EXPANSION = "thermalexpansion";
+    public static final String THERMAL_EXPANSION = "ThermalExpansion";
 }

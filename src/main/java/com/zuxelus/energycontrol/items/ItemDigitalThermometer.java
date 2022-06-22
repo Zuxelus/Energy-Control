@@ -3,8 +3,7 @@ package com.zuxelus.energycontrol.items;
 import java.util.List;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.crossmod.CrossModLoader;
-import com.zuxelus.energycontrol.crossmod.ModIDs;
+import com.zuxelus.energycontrol.crossmod.IC2ReactorHelper;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -13,9 +12,11 @@ import ic2.api.item.IElectricItem;
 import ic2.api.reactor.IReactor;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.world.World;
 
 public class ItemDigitalThermometer extends ItemThermometer implements IElectricItem {
 	protected final static int CAPACITY = 12000;
@@ -35,9 +36,25 @@ public class ItemDigitalThermometer extends ItemThermometer implements IElectric
 	}
 
 	@Override
-	protected void messagePlayer(EntityPlayer player, IReactor reactor) {
-		int maxHeat = reactor.getMaxHeat();
-		player.addChatMessage(new ChatComponentTranslation("msg.ec.ThermoDigital", reactor.getHeat(), maxHeat * 50 / 100, maxHeat * 85 / 100));
+	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
+		if (!(player instanceof EntityPlayerMP))
+			return false;
+
+		if (stack == null)
+			return false;
+		if (!canTakeDamage(stack, 2))
+			return false;
+
+		IReactor reactor = IC2ReactorHelper.getReactorAround(world, x, y, z);
+		if (reactor == null)
+			reactor = IC2ReactorHelper.getReactor3x3(world, x, y, z);
+		if (reactor != null) {
+			int maxHeat = reactor.getMaxHeat();
+			player.addChatMessage(new ChatComponentTranslation("msg.ec.ThermoDigital", reactor.getHeat(), maxHeat * 50 / 100, maxHeat * 85 / 100));
+			damage(stack, 1, player);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
