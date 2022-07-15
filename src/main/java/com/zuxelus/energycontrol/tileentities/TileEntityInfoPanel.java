@@ -369,7 +369,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 		int slot = getCardSlot(cardStack);
 		List<PanelString> data = cardData.get(slot);
 		if (data == null) {
-			data = ItemCardMain.getStringData(settings, reader, isServer, showLabels);
+			data = ((IItemCard) cardStack.getItem()).getStringData(settings, reader, isServer, showLabels);
 			cardData.put(slot, data);
 		}
 		return data;

@@ -62,7 +62,7 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public List<PanelSetting> getSettingsList() {
+	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		return null;
 	}
 

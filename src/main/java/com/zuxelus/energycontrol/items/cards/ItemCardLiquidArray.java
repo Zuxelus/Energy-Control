@@ -12,6 +12,7 @@ import com.zuxelus.energycontrol.utils.FluidInfo;
 import com.zuxelus.energycontrol.utils.StringUtils;
 
 import net.minecraft.client.resources.I18n;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -145,7 +146,7 @@ public class ItemCardLiquidArray extends ItemCardBase {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public List<PanelSetting> getSettingsList() {
+	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		List<PanelSetting> result = new ArrayList<>(6);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidName"), 1));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidFree"), 2));
@@ -157,7 +158,7 @@ public class ItemCardLiquidArray extends ItemCardBase {
 	}
 
 	@Override
-	public boolean isRemoteCard() {
+	public boolean isRemoteCard(ItemStack stack) {
 		return false;
 	}
 }

@@ -6,12 +6,8 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.EnergyControlConfig;
 import com.zuxelus.energycontrol.ServerTickHandler;
 import com.zuxelus.energycontrol.api.*;
-import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
-
-import io.netty.handler.codec.http.websocketx.WebSocketVersion;
-import net.minecraft.block.BlockCommandBlock;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -21,7 +17,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -132,13 +127,6 @@ public final class ItemCardMain extends Item implements IItemCard, ITouchAction,
 			tooltip.add(String.format("x: %d, y: %d, z: %d", target.getX(), target.getY(), target.getZ()));
 	}
 
-	public static List<PanelString> getStringData(int settings, ItemCardReader reader, boolean isServer, boolean showLabels) {
-		if (CARDS.containsKey(reader.getCardType())) {
-			return CARDS.get(reader.getCardType()).getStringData(settings, reader, isServer, showLabels);
-		}
-		return null;
-	}
-
 	public static CardState updateCardNBT(ItemStack stack, World world, BlockPos pos, ICardReader reader, ItemStack upgradeStack) {
 		int upgradeCountRange = 0;
 		if (upgradeStack != ItemStack.EMPTY && upgradeStack.getItem() instanceof ItemUpgrade && upgradeStack.getItemDamage() == ItemUpgrade.DAMAGE_RANGE)
@@ -170,7 +158,7 @@ public final class ItemCardMain extends Item implements IItemCard, ITouchAction,
 		return state;
 	}
 	
-	public static Optional<ItemCardBase> getCardById(int id) {
+	private static Optional<ItemCardBase> getCardById(int id) {
 		return Optional.ofNullable(CARDS.get(id));
 	}
 
@@ -192,14 +180,14 @@ public final class ItemCardMain extends Item implements IItemCard, ITouchAction,
 	@Override
 	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		return getCardById(stack.getItemDamage())
-			.map(ItemCardBase::getSettingsList)
+			.map(itemCardBase -> itemCardBase.getSettingsList(stack))
 			.orElse(null);
 	}
 
 	@Override
 	public boolean isRemoteCard(ItemStack stack) {
 		return getCardById(stack.getItemDamage())
-			.map(ItemCardBase::isRemoteCard)
+			.map(itemCardBase -> itemCardBase.isRemoteCard(stack))
 			.orElse(false);
 	}
 

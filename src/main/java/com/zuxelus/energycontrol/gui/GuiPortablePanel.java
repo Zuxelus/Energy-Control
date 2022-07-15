@@ -1,21 +1,21 @@
 package com.zuxelus.energycontrol.gui;
 
-import java.util.List;
-
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.CardState;
+import com.zuxelus.energycontrol.api.IItemCard;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.containers.ContainerPortablePanel;
 import com.zuxelus.energycontrol.items.InventoryPortablePanel;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
-
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public class GuiPortablePanel extends GuiContainer {
@@ -58,7 +58,7 @@ public class GuiPortablePanel extends GuiContainer {
 			if (state != CardState.OK && state != CardState.CUSTOM_ERROR)
 				joinedData = ItemCardReader.getStateMessage(state);
 			else
-				joinedData = ItemCardMain.getStringData(Integer.MAX_VALUE, reader, false, true);
+				joinedData = ((IItemCard) stack.getItem()).getStringData(Integer.MAX_VALUE, reader, false, true);
 
 			int row = 0;
 			for (PanelString panelString : joinedData) {
