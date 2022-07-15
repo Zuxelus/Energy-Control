@@ -2,7 +2,6 @@ plugins {
     id 'java'
     id 'eclipse'
     id 'net.minecraftforge.gradle' version '5.1.+'
-    id 'de.undercouch.download' version '4.0.4'
     id 'wtf.gofancy.fancygradle' version '1.1.+'
 }
 
@@ -59,21 +58,6 @@ fancyGradle {
     }
 }
 
-def downloadDir = "$buildDir/download"
-
-task downloadGalacticraft {
-    download {
-        src([
-                'https://micdoodle8.com/new-builds/GC-1.12-dev/261/GalacticraftCore-Dev-1.12.2-4.0.2.261.jar',
-                'https://micdoodle8.com/new-builds/GC-1.12-dev/261/Galacticraft-Planets-Dev-1.12.2-4.0.2.261.jar',
-                'https://micdoodle8.com/new-builds/GC-1.12-dev/261/MicdoodleCore-Dev-1.12.2-4.0.2.261.jar'
-        ])
-        mkdir downloadDir
-        dest downloadDir
-        overwrite false
-    }
-}
-
 repositories {
     maven {
         name 'CurseMaven'
@@ -106,10 +90,6 @@ repositories {
     maven {
         name 'OpenComputers'
         url 'https://maven.cil.li/'
-    }
-    flatDir {
-        name 'Downloads'
-        dir downloadDir
     }
 }
 
@@ -145,9 +125,7 @@ dependencies {
     compileOnly fg.deobf(group: 'cofh', name: "ThermalExpansion", version: "1.12.2-$VERSION_THERMALEXPANSION", classifier: 'universal') {
         exclude group: 'mezz.jei'
     }
-    compileOnly group: 'micdoodle8.mods.galacticraft', name: "GalacticraftCore-Dev", version: VERSION_GALACTICRAFT
-    compileOnly group: 'micdoodle8.mods.galacticraft', name: "Galacticraft-Planets-Dev", version: VERSION_GALACTICRAFT
-    compileOnly group: 'micdoodle8.mods.galacticraft', name: "MicdoodleCore-Dev", version: VERSION_GALACTICRAFT
+    compileOnly fg.deobf(group: 'curse.maven', name: "galacticraft-legacy-564236", version: VERSION_GALACTICRAFT)
     compileOnly fg.deobf(group: 'curse.maven', name: "applied-energistics-2-223794", version: VERSION_AE2)
     compileOnly fg.deobf(group: 'curse.maven', name: "mekanism-268560", version: VERSION_MEKANISM)
     compileOnly fg.deobf(group: 'curse.maven', name: "mekanism-generators-268566", version: VERSION_MEKANISM_GENERATORS)
@@ -159,7 +137,7 @@ dependencies {
 
 processResources {
     filesMatching("mcmod.info") {
-        expand 'version':project.version, 'mcversion': '1.12.2'
+        expand 'version': project.version, 'mcversion': '1.12.2'
     }
 }
 
