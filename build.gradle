@@ -91,6 +91,17 @@ repositories {
         name 'OpenComputers'
         url 'https://maven.cil.li/'
     }
+    maven { 
+        name 'BlameJared Maven'
+        url 'https://maven.blamejared.com'
+    }
+    maven { 
+        name 'EnderIO'
+        url 'https://maven.tterrag.com'
+    }
+    flatDir {
+        dir 'lib'
+    }
 }
 
 dependencies {
@@ -125,6 +136,11 @@ dependencies {
     compileOnly fg.deobf(group: 'cofh', name: "ThermalExpansion", version: "1.12.2-$VERSION_THERMALEXPANSION", classifier: 'universal') {
         exclude group: 'mezz.jei'
     }
+    compileOnly fg.deobf(group: 'info.loenwind.autosave', name: "AutoSave", version: VERSION_AUTOSAVE)
+    compileOnly fg.deobf(group: 'com.enderio.core', name: "EnderCore", version: VERSION_ENDERCORE)
+    compileOnly fg.deobf(group: 'com.enderio', name: "EnderIO", version: VERSION_ENDERIO) {
+        transitive = false
+    }
     compileOnly fg.deobf(group: 'curse.maven', name: "galacticraft-legacy-564236", version: VERSION_GALACTICRAFT)
     compileOnly fg.deobf(group: 'curse.maven', name: "applied-energistics-2-223794", version: VERSION_AE2)
     compileOnly fg.deobf(group: 'curse.maven', name: "mekanism-268560", version: VERSION_MEKANISM)
@@ -133,6 +149,12 @@ dependencies {
     compileOnly fg.deobf(group: 'curse.maven', name: "zerocore-247921", version: VERSION_ZEROCORE)
     compileOnly fg.deobf(group: 'curse.maven', name: "nuclearcraft-mod-226254", version: VERSION_NUCLEARCRAFT)
     compileOnly fg.deobf(group: 'curse.maven', name: "ic2-classic-242942", version: VERSION_IC2_CLASSIC)
+    compileOnly fg.deobf(group: 'curse.maven', name: "gregtech-ce-unofficial-557242", version: VERSION_GTCEU)
+    compileOnly fg.deobf(group: 'curse.maven', name: "railcraft-51195", version: VERSION_RAILCRAFT)
+    compileOnly fg.deobf(group: 'curse.maven', name: "nuclearcraft-overhauled-336895", version: VERSION_NUCLEARCRAFT_OVERHAULED)
+    // 1.12.2 HBM fork from https://github.com/Drillgon200/Hbm-s-Nuclear-Tech-GIT/releases/tag/hbm-1.6.4a-1.12.2
+    compileOnly (group: 'com.hbm', name: 'hbm', version: VERSION_HBM)
+    compileOnly (group: 'CraftTweaker2', name: 'CraftTweaker2-MC1120-Main', version: VERSION_CRAFTTWEAKER)
 }
 
 processResources {
