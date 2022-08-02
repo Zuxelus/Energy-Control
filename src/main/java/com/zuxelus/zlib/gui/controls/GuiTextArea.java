@@ -216,7 +216,6 @@ public class GuiTextArea extends Gui {
 			return true;
 		}
 		if (GuiScreen.isKeyComboCtrlV(keyCode)) {
-
 			writeText(GuiScreen.getClipboardString());
 			return true;
 		}

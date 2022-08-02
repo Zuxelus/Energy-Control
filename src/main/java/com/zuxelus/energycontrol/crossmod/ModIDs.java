@@ -4,7 +4,7 @@ public class ModIDs {
     public static final String APPLIED_ENERGISTICS = "appliedenergistics2";
     public static final String BUILDCRAFT = "buildcraftcore";
     public static final String COMPUTER_CRAFT = "computercraft";
-    public static final String DRACONIC_EVOLUTION = "draconicevolution";
+    public static final String DRACONIC_EVOLUTION = "draconicevolution"; // 1.12.2, 1.16.5
     public static final String ENDER_IO = "enderio";
     public static final String EXTREME_REACTORS = "bigreactors";
     public static final String GALACTICRAFT_CORE = "galacticraftcore";

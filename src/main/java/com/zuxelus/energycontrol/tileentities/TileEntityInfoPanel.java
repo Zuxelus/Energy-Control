@@ -586,7 +586,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITickabl
 			world.scheduleUpdate(pos, state.getBlock(), 4);
 		else {
 			world.setBlockState(pos, state.cycleProperty(FacingBlockActive.ACTIVE), 2);
-			updateExtenders(true);
+			updateExtenders(false);
 		}
 	}
 

@@ -103,16 +103,14 @@ public class Screen {
 	}
 
 	private void markUpdate(World world) {
-		for (int x = minX; x <= maxX; x++) {
-			for (int y = minY; y <= maxY; y++) {
+		for (int x = minX; x <= maxX; x++)
+			for (int y = minY; y <= maxY; y++)
 				for (int z = minZ; z <= maxZ; z++) {
 					TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
 					if (te instanceof IScreenPart)
 						((IScreenPart) te).updateTileEntity();
 				}
-			}
-		}
-	}	
+	}
 
 	public NBTTagCompound toTag() {
 		NBTTagCompound tag = new NBTTagCompound();

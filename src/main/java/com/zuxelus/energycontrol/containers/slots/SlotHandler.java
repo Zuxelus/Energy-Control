@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.containers.slots;
 
 import com.zuxelus.energycontrol.EnergyControl;
+
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;

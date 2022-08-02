@@ -85,7 +85,7 @@ public class ClientProxy implements IProxy {
 			break;
 		case BlockDamages.DAMAGE_REMOTE_THERMO:
 			if (te instanceof TileEntityRemoteThermalMonitor)
-				return new GuiRemoteThermo(new ContainerRemoteThermalMonitor(player, (TileEntityRemoteThermalMonitor) te));
+				return new GuiRemoteThermalMonitor(new ContainerRemoteThermalMonitor(player, (TileEntityRemoteThermalMonitor) te));
 			break;
 		case BlockDamages.DAMAGE_AVERAGE_COUNTER:
 			if (te instanceof TileEntityAverageCounter)

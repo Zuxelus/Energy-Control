@@ -138,6 +138,8 @@ public class ScreenManager {
 		if (!(block instanceof InfoPanelExtender || block instanceof HoloPanelExtender))
 			return false;
 		TileEntity te = world.getTileEntity(pos);
+		if (te.isInvalid())
+			return false;
 		if (!(te instanceof TileEntityInfoPanelExtender))
 			return false;
 		if (advanced ^ (te instanceof TileEntityAdvancedInfoPanelExtender))
@@ -228,7 +230,7 @@ public class ScreenManager {
 		TileEntityInfoPanel core = screen.getCore(part.getWorld());
 		destroyScreen(screen, part.getWorld());
 		boolean isCoreDestroyed = part instanceof TileEntityInfoPanel;
-		if (!isCoreDestroyed && core != null) {
+		if (!isCoreDestroyed && core != null && !core.isInvalid()) {
 			Screen newScreen = buildFromPanel(core);
 			screens.get(getWorldKey(core.getWorld())).add(newScreen);
 		}

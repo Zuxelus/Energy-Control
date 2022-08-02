@@ -9,6 +9,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class TileEntityTimerRenderer extends TileEntitySpecialRenderer<TileEntityTimer> {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID + ":textures/blocks/timer/all.png");
+	private static final ResourceLocation TEXTURE_ACTIVE = new ResourceLocation(EnergyControl.MODID + ":textures/blocks/timer/active.png");
 
 	@Override
 	public void render(TileEntityTimer te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
@@ -20,7 +21,7 @@ public class TileEntityTimerRenderer extends TileEntitySpecialRenderer<TileEntit
 			bindTexture(DESTROY_STAGES[destroyStage]);
 			CubeSmallRenderer.DESTROY.render(0.03125F);
 		} else {
-			bindTexture(TEXTURE);
+			bindTexture(te.getIsWorking() ? TEXTURE : TEXTURE_ACTIVE);
 			CubeSmallRenderer.MODEL.render(0.03125F);
 			String time = te.getTimeString();
 			GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);

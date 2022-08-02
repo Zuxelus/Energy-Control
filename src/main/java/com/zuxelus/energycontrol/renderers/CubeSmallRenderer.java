@@ -26,13 +26,13 @@ public class CubeSmallRenderer {
 	public void render(float scale) {
 		if (!compiled)
 			compileDisplayList(scale);
-		GlStateManager.callList(this.displayList);
+		GlStateManager.callList(displayList);
 	}
 
 	@SideOnly(Side.CLIENT)
 	private void compileDisplayList(float scale) {
 		displayList = GLAllocation.generateDisplayLists(1);
-		GlStateManager.glNewList(this.displayList, 4864);
+		GlStateManager.glNewList(displayList, 4864);
 		BufferBuilder bufferbuilder = Tessellator.getInstance().getBuffer();
 		cube.render(bufferbuilder, scale);
 		GlStateManager.glEndList();
@@ -66,8 +66,8 @@ public class CubeSmallRenderer {
 
 		@SideOnly(Side.CLIENT)
 		public void render(BufferBuilder renderer, float scale) {
-			for (TexturedQuad texturedquad : this.quadList)
-				texturedquad.draw(renderer, scale);
+			for (TexturedQuad quad : quadList)
+				quad.draw(renderer, scale);
 		}
 	}
 

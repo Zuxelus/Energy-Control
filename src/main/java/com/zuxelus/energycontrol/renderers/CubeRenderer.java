@@ -19,7 +19,6 @@ public class CubeRenderer {
 	private boolean compiled;
 	private int displayList;
 	private CubeBox cube;
-	private boolean faceOnly;
 
 	public CubeRenderer(float offX, float offY, float offZ, int width, int height, int depth, float textureWidth, float textureHeight, int faceOffsetX, int faceOffsetY, boolean faceOnly) {
 		this(offX, offY, offZ, width, height, depth, textureWidth, textureHeight, faceOffsetX, faceOffsetY, new RotationOffset(), faceOnly);
@@ -67,7 +66,7 @@ public class CubeRenderer {
 		compiled = true;
 	}
 
-	private /*static*/ class CubeBox {
+	private static class CubeBox {
 		private final TexturedQuad[] quadList;
 
 		public CubeBox(float x, float y, float z, int dx, int dy, int dz, float textureWidth, float textureHeight, int faceTexU, int faceTexV, float leftTop, float leftBottom, float rightTop, float rightBottom, boolean faceOnly) {
@@ -158,6 +157,38 @@ public class CubeRenderer {
 		case EAST:
 			GlStateManager.rotate(90.0F, 0.0F, -1.0F, 0.0F);
 			GlStateManager.translate(0.0F, 0.0F, -1.0F);
+			break;
+		}
+	}
+
+	public static void rotateBlockText(EnumFacing facing) {
+		switch (facing) {
+		case UP:
+			GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+			GlStateManager.translate(0.0F, -1.0F, 0.0F);
+			break;
+		case DOWN:
+			GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+			GlStateManager.translate(0.0F, -1.0F, 0.0F);
+			break;
+		case NORTH:
+			GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+			GlStateManager.translate(0.0F, -1.0F, 0.0F);
+			break;
+		case SOUTH:
+			GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
+			GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+			GlStateManager.translate(-1.0F, -1.0F, -1.0F);
+			break;
+		case WEST:
+			GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
+			GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+			GlStateManager.translate(0.0F, -1.0F, -1.0F);
+			break;
+		case EAST:
+			GlStateManager.rotate(90.0F, 0.0F, 0.0F, -1.0F);
+			GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+			GlStateManager.translate(-1.0F, -1.0F, 0.0F);
 			break;
 		}
 	}

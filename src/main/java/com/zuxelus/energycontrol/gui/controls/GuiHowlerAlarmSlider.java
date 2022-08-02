@@ -43,13 +43,13 @@ public class GuiHowlerAlarmSlider extends GuiButton {
 
 	private void setSliderPos(int targetX) {
 		sliderValue = (float) (targetX - (x + 4)) / (float) (width - 8);
-		
+
 		if (sliderValue < 0.0F)
 			sliderValue = 0.0F;
-		
+
 		if (sliderValue > 1.0F)
 			sliderValue = 1.0F;
-		
+
 		int newValue = getNormalizedValue();
 		if (alarm.getWorld().isRemote && alarm.getRange() != newValue) {
 			NetworkHelper.updateSeverTileEntity(alarm.getPos(), 2, newValue);
@@ -66,7 +66,7 @@ public class GuiHowlerAlarmSlider extends GuiButton {
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		if (dragging)
 			setSliderPos(mouseX);
-		
+
 		drawTexturedModalRect(x + (int) (sliderValue * (width - 8)), y, 131, 0, 8, 16);
 		mc.fontRenderer.drawString(displayString, x, y - 12, 0x404040);
 	}

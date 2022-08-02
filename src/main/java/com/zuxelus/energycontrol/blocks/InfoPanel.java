@@ -76,7 +76,7 @@ public class InfoPanel extends FacingBlockActive {
 		world.setBlockState(pos, state.cycleProperty(ACTIVE), 2);
 		TileEntity be = world.getTileEntity(pos);
 		if (be instanceof TileEntityInfoPanel)
-			((TileEntityInfoPanel) be).updateExtenders(!state.getValue(ACTIVE));
+			((TileEntityInfoPanel) be).updateExtenders(true);
 	}
 
 	@Override

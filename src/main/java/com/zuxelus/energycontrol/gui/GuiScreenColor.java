@@ -108,12 +108,6 @@ public class GuiScreenColor extends GuiBase {
 			checkColorPicker(mouseX - guiLeft, mouseY - guiTop);
 			checkColorPicker2(mouseX - guiLeft, mouseY - guiTop);
 		}
-		/*int screenColor = getScreenColor(mouseX - guiLeft, mouseY - guiTop);
-		if (screenColor > -1) {
-			colorBack = screenColor;
-			NetworkHelper.updateSeverTileEntity(panel.getPos(), 6, colorBack);
-			panel.setColorText(colorBack);
-		}*/
 	}
 
 	private void checkColorPicker(int mouseX, int mouseY) {

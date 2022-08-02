@@ -78,35 +78,9 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 					new CubeRenderer(textureId / 4 * 32, textureId % 4 * 32, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation()), true).render(0.03125F, color);
 				}
 			}
-			switch (te.getFacing()) {
-			case UP:
-				GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
-				GlStateManager.translate(0.0F, -1.0F, 0.0F);
-				break;
-			case DOWN:
-				GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
-				GlStateManager.translate(0.0F, -1.0F, 0.0F);
-				break;
-			case NORTH:
-				GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
-				GlStateManager.translate(0.0F, -1.0F, 0.0F);
-				break;
-			case SOUTH:
-				GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
-				GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
-				GlStateManager.translate(-1.0F, -1.0F, -1.0F);
-				break;
-			case WEST:
-				GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
-				GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
-				GlStateManager.translate(0.0F, -1.0F, -1.0F);
-				break;
-			case EAST:
-				GlStateManager.rotate(90.0F, 0.0F, 0.0F, -1.0F);
-				GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
-				GlStateManager.translate(-1.0F, -1.0F, 0.0F);
-				break;
-			}
+
+			CubeRenderer.rotateBlockText(te.getFacing());
+
 			if (te.powered && destroyStage == -1) {
 				List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
 				if (joinedData != null)

@@ -45,7 +45,7 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements ITi
 	public static final byte SLOT_CARD1 = 1;
 	public static final byte SLOT_ITEM = 2;
 	public static final byte SLOT_CARD2 = 3;
-	public static final byte SLOT_RESULT = 4; 
+	public static final byte SLOT_RESULT = 4;
 	public static final byte SLOT_DISCHARGER = 5;
 	private EnergyStorage storage;
 	private int buffer;

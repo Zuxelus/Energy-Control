@@ -45,7 +45,7 @@ public class AdvancedInfoPanelExtender extends InfoPanelExtender {
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
 		TileEntity te = source.getTileEntity(pos);
 		EnumFacing enumfacing = state.getValue(FACING);
-		if (!(te instanceof TileEntityAdvancedInfoPanelExtender))
+		if (!(te instanceof TileEntityAdvancedInfoPanelExtender) || enumfacing == null)
 			return new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
 		switch (enumfacing) {
 		case EAST:

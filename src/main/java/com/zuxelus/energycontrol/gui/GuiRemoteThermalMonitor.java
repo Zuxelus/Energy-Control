@@ -15,13 +15,13 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiRemoteThermo extends GuiContainerBase {
+public class GuiRemoteThermalMonitor extends GuiContainerBase {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_remote_thermo.png");
 
 	private ContainerRemoteThermalMonitor container;
 	private GuiTextField textboxHeat;
 
-	public GuiRemoteThermo(ContainerRemoteThermalMonitor container) {
+	public GuiRemoteThermalMonitor(ContainerRemoteThermalMonitor container) {
 		super(container, "tile.remote_thermo.name", TEXTURE);
 		this.container = container;
 		xSize = 178;
