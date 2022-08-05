@@ -46,12 +46,12 @@ public class ItemCardText extends ItemCardBase {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public List<PanelSetting> getSettingsList() {
+	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		return null;
 	}
 
 	@Override
-	public boolean isRemoteCard() {
+	public boolean isRemoteCard(ItemStack stack) {
 		return false;
 	}
 }

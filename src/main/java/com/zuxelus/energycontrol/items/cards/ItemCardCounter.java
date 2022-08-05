@@ -6,6 +6,7 @@ import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.tileentities.TileEntityAverageCounter;
 import com.zuxelus.energycontrol.tileentities.TileEntityEnergyCounter;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -65,7 +66,7 @@ public class ItemCardCounter extends ItemCardBase {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public List<PanelSetting> getSettingsList() {
+	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		return null;
 	}
 }

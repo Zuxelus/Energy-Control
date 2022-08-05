@@ -11,6 +11,7 @@ import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.utils.DataHelper;
 
 import net.minecraft.client.resources.I18n;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -60,7 +61,7 @@ public class ItemCardEnergy extends ItemCardBase {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public List<PanelSetting> getSettingsList() {
+	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		List<PanelSetting> result = new ArrayList<>(4);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 1));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelFree"), 2));

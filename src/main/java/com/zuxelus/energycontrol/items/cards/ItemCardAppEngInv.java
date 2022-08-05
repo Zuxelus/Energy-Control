@@ -111,7 +111,7 @@ public class ItemCardAppEngInv extends ItemCardBase implements ITouchAction {
 	}
 
 	@Override
-	public List<PanelSetting> getSettingsList() {
+	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		return null;
 	}
 

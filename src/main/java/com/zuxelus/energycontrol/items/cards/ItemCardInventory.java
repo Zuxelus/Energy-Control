@@ -59,7 +59,7 @@ public class ItemCardInventory extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelSetting> getSettingsList() {
+	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		return null;
 	}
 }

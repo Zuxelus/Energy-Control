@@ -2,8 +2,7 @@ plugins {
     id 'java'
     id 'eclipse'
     id 'net.minecraftforge.gradle' version '5.1.+'
-    id 'de.undercouch.download' version '4.0.4'
-    id 'wtf.gofancy.fancygradle' version '1.0.1'
+    id 'wtf.gofancy.fancygradle' version '1.1.+'
 }
 
 version = "$VERSION_MC-$VERSION_MAJOR.$VERSION_MINOR.$VERSION_PATCH"
@@ -51,27 +50,11 @@ minecraft {
 
 fancyGradle {
     patches {
-        patch(
-                wtf.gofancy.fancygradle.patch.Patch.RESOURCES, 
-                wtf.gofancy.fancygradle.patch.Patch.COREMODS, 
-                wtf.gofancy.fancygradle.patch.Patch.CODE_CHICKEN_LIB, 
-                wtf.gofancy.fancygradle.patch.Patch.ASM
-        )
-    }
-}
-
-def downloadDir = "$buildDir/download"
-
-task downloadGalacticraft {
-    download {
-        src([
-                'https://micdoodle8.com/new-builds/GC-1.12-dev/261/GalacticraftCore-Dev-1.12.2-4.0.2.261.jar',
-                'https://micdoodle8.com/new-builds/GC-1.12-dev/261/Galacticraft-Planets-Dev-1.12.2-4.0.2.261.jar',
-                'https://micdoodle8.com/new-builds/GC-1.12-dev/261/MicdoodleCore-Dev-1.12.2-4.0.2.261.jar'
-        ])
-        mkdir downloadDir
-        dest downloadDir
-        overwrite false
+        resources
+        coremods
+        codeChickenLib
+        asm
+        mergetool
     }
 }
 
@@ -108,9 +91,16 @@ repositories {
         name 'OpenComputers'
         url 'https://maven.cil.li/'
     }
+    maven { 
+        name 'BlameJared Maven'
+        url 'https://maven.blamejared.com'
+    }
+    maven { 
+        name 'EnderIO'
+        url 'https://maven.tterrag.com'
+    }
     flatDir {
-        name 'Downloads'
-        dir downloadDir
+        dir 'lib'
     }
 }
 
@@ -146,21 +136,30 @@ dependencies {
     compileOnly fg.deobf(group: 'cofh', name: "ThermalExpansion", version: "1.12.2-$VERSION_THERMALEXPANSION", classifier: 'universal') {
         exclude group: 'mezz.jei'
     }
-    compileOnly group: 'micdoodle8.mods.galacticraft', name: "GalacticraftCore-Dev", version: VERSION_GALACTICRAFT
-    compileOnly group: 'micdoodle8.mods.galacticraft', name: "Galacticraft-Planets-Dev", version: VERSION_GALACTICRAFT
-    compileOnly group: 'micdoodle8.mods.galacticraft', name: "MicdoodleCore-Dev", version: VERSION_GALACTICRAFT
+    compileOnly fg.deobf(group: 'info.loenwind.autosave', name: "AutoSave", version: VERSION_AUTOSAVE)
+    compileOnly fg.deobf(group: 'com.enderio.core', name: "EnderCore", version: VERSION_ENDERCORE)
+    compileOnly fg.deobf(group: 'com.enderio', name: "EnderIO", version: VERSION_ENDERIO) {
+        transitive = false
+    }
+    compileOnly fg.deobf(group: 'curse.maven', name: "galacticraft-legacy-564236", version: VERSION_GALACTICRAFT)
     compileOnly fg.deobf(group: 'curse.maven', name: "applied-energistics-2-223794", version: VERSION_AE2)
     compileOnly fg.deobf(group: 'curse.maven', name: "mekanism-268560", version: VERSION_MEKANISM)
     compileOnly fg.deobf(group: 'curse.maven', name: "mekanism-generators-268566", version: VERSION_MEKANISM_GENERATORS)
     compileOnly fg.deobf(group: 'curse.maven', name: "extreme-reactors-250277", version: VERSION_EXTREME_REACTORS)
     compileOnly fg.deobf(group: 'curse.maven', name: "zerocore-247921", version: VERSION_ZEROCORE)
     compileOnly fg.deobf(group: 'curse.maven', name: "nuclearcraft-mod-226254", version: VERSION_NUCLEARCRAFT)
-    compileOnly fg.deobf(group: 'curse.maven', name: "ic2-classic-3093608", version: VERSION_IC2_CLASSIC)
+    compileOnly fg.deobf(group: 'curse.maven', name: "ic2-classic-242942", version: VERSION_IC2_CLASSIC)
+    compileOnly fg.deobf(group: 'curse.maven', name: "gregtech-ce-unofficial-557242", version: VERSION_GTCEU)
+    compileOnly fg.deobf(group: 'curse.maven', name: "railcraft-51195", version: VERSION_RAILCRAFT)
+    compileOnly fg.deobf(group: 'curse.maven', name: "nuclearcraft-overhauled-336895", version: VERSION_NUCLEARCRAFT_OVERHAULED)
+    // 1.12.2 HBM fork from https://github.com/Drillgon200/Hbm-s-Nuclear-Tech-GIT/releases/tag/hbm-1.6.4a-1.12.2
+    compileOnly (group: 'com.hbm', name: 'hbm', version: VERSION_HBM)
+    compileOnly (group: 'CraftTweaker2', name: 'CraftTweaker2-MC1120-Main', version: VERSION_CRAFTTWEAKER)
 }
 
 processResources {
     filesMatching("mcmod.info") {
-        expand 'version':project.version, 'mcversion': '1.12.2'
+        expand 'version': project.version, 'mcversion': '1.12.2'
     }
 }
 

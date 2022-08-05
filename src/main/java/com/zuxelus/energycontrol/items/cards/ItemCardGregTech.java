@@ -12,6 +12,7 @@ import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
 
 import net.minecraft.client.resources.I18n;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -55,15 +56,15 @@ public class ItemCardGregTech extends ItemCardBase {
 		if (reader.hasField("speed"))
 			result.add(new PanelString("msg.ec.InfoPanelRotorSpeed", reader.getInt("speed"), showLabels));
 		if (reader.hasField("core"))
-			result.add(new PanelString("msg.ec.InfoPanelCoreHeat", reader.getLong("core"), "°C", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelCoreHeat", reader.getLong("core"), "ï¿½C", showLabels));
 		if (reader.hasField("hull"))
-			result.add(new PanelString("msg.ec.InfoPanelHullHeat", reader.getLong("hull"), "°C", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelHullHeat", reader.getLong("hull"), "ï¿½C", showLabels));
 		if (reader.hasField("level"))
 			result.add(new PanelString("msg.ec.InfoPanelOperatingLevel", reader.getString("level"), showLabels));*/
 		if (reader.hasField("heat"))
-			result.add(new PanelString("msg.ec.InfoPanelHeat", reader.getLong("heat"), "°C", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelHeat", reader.getLong("heat"), "ï¿½C", showLabels));
 		/*if (reader.hasField("heatD"))
-			result.add(new PanelString("msg.ec.InfoPanelHeat", reader.getDouble("heatD"), "°C", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelHeat", reader.getDouble("heatD"), "ï¿½C", showLabels));
 		if (reader.hasField("fuel"))
 			result.add(new PanelString("msg.ec.InfoPanelFuel", reader.getInt("fuel"), showLabels));
 		if (reader.hasField("fuelText"))
@@ -94,7 +95,7 @@ public class ItemCardGregTech extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelSetting> getSettingsList() {
+	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		List<PanelSetting> result = new ArrayList<>(2);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbStatus"), 1));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 2));

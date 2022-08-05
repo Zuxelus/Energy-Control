@@ -9,6 +9,7 @@ import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 
 import net.minecraft.client.resources.I18n;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -45,14 +46,14 @@ public class ItemCardTime extends ItemCardBase {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public List<PanelSetting> getSettingsList() {
+	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		List<PanelSetting> result = new ArrayList<>(1);
 		result.add(new PanelSetting(I18n.format("msg.ec.cb24h"), 1));
 		return result;
 	}
 
 	@Override
-	public boolean isRemoteCard() {
+	public boolean isRemoteCard(ItemStack stack) {
 		return false;
 	}
 }

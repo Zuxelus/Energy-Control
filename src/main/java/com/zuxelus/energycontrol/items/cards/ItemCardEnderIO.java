@@ -11,6 +11,7 @@ import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.utils.DataHelper;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -39,21 +40,21 @@ public class ItemCardEnderIO extends ItemCardBase {
 	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		if (reader.hasField(DataHelper.ENERGY) && (settings & 4) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelEnergy", reader.getDouble(DataHelper.ENERGY), "µI", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelEnergy", reader.getDouble(DataHelper.ENERGY), "ï¿½I", showLabels));
 		if (reader.hasField(DataHelper.CAPACITY) && (settings & 8) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getDouble(DataHelper.CAPACITY), "µI", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getDouble(DataHelper.CAPACITY), "ï¿½I", showLabels));
 		if (reader.hasField("leakage") && (settings & 32) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelLeakage", reader.getDouble("leakage"), "µI/t", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelLeakage", reader.getDouble("leakage"), "ï¿½I/t", showLabels));
 		if (reader.hasField(DataHelper.OUTPUT) && (settings & 32) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble(DataHelper.OUTPUT), "µI/t", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble(DataHelper.OUTPUT), "ï¿½I/t", showLabels));
 		if (reader.hasField("maxInput") && (settings & 32) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelMaxInput", reader.getDouble("maxInput"), "µI/t", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelMaxInput", reader.getDouble("maxInput"), "ï¿½I/t", showLabels));
 		if (reader.hasField("maxOutput") && (settings & 32) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelMaxOutput", reader.getDouble("maxOutput"), "µI/t", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelMaxOutput", reader.getDouble("maxOutput"), "ï¿½I/t", showLabels));
 		if (reader.hasField(DataHelper.DIFF) && (settings & 32) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelDifference", reader.getDouble(DataHelper.DIFF), "µI/t", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelDifference", reader.getDouble(DataHelper.DIFF), "ï¿½I/t", showLabels));
 		if (reader.hasField("usage") && (settings & 2) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelUsing", reader.getDouble("usage"), "µI/t", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelUsing", reader.getDouble("usage"), "ï¿½I/t", showLabels));
 		if (reader.hasField(DataHelper.EFFICIENCY) && (settings & 32) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelEfficiency", reader.getDouble(DataHelper.EFFICIENCY), "%", showLabels));
 		if (reader.hasField(DataHelper.TANK) && (settings & 16) > 0)
@@ -70,7 +71,7 @@ public class ItemCardEnderIO extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelSetting> getSettingsList() {
+	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		List<PanelSetting> result = new ArrayList<>(2);
 		return result;
 	}

@@ -73,7 +73,7 @@ public class ItemCardLiquid extends ItemCardBase implements IHasBars {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public List<PanelSetting> getSettingsList() {
+	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		List<PanelSetting> result = new ArrayList<>(5);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidName"), 1));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelLiquidAmount"), 2));

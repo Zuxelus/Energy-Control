@@ -12,6 +12,7 @@ import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.utils.DataHelper;
 
 import net.minecraft.client.resources.I18n;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -47,7 +48,7 @@ public class ItemCardIC2 extends ItemCardBase {
 		if (reader.hasField(DataHelper.MAXHEAT) && (settings & 1) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelMelting", reader.getInt(DataHelper.MAXHEAT) * 85 / 100, showLabels));
 		if (reader.hasField("heatD") && (settings & 1) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelTemp", reader.getDouble("heatD"), "°C", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelTemp", reader.getDouble("heatD"), "ï¿½C", showLabels));
 		if (reader.hasField("heatChange") && (settings & 1) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelHeatChange", reader.getInt("heatChange"), showLabels));
 		if (reader.hasField(DataHelper.ENERGY) && (settings & 2) > 0)
@@ -122,7 +123,7 @@ public class ItemCardIC2 extends ItemCardBase {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public List<PanelSetting> getSettingsList() {
+	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		List<PanelSetting> result = new ArrayList<PanelSetting>(7);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelHeat"), 1));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 2));

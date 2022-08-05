@@ -1,14 +1,15 @@
 package com.zuxelus.energycontrol.items.cards;
 
+import com.zuxelus.energycontrol.api.ICardReader;
+import com.zuxelus.energycontrol.api.IItemCard;
+import com.zuxelus.energycontrol.api.PanelString;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
+
 import java.util.List;
 
-import com.zuxelus.energycontrol.api.*;
-
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
-public abstract class ItemCardBase {
+public abstract class ItemCardBase implements IItemCard {
 	protected String name;
 	protected int damage;
 
@@ -29,15 +30,10 @@ public abstract class ItemCardBase {
 		return "item." + name;
 	}
 
-	public boolean isRemoteCard() {
+	@Override
+	public boolean isRemoteCard(ItemStack stack) {
 		return true;
 	}
-
-	public abstract CardState update(World world, ICardReader reader, int range, BlockPos pos);
-
-	public abstract List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels);
-
-	public abstract List<PanelSetting> getSettingsList();
 
 	protected BlockPos getCoordinates(ICardReader reader, int cardNumber) {
 		if (cardNumber >= reader.getCardCount())

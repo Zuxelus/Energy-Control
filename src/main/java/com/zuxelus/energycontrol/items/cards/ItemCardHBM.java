@@ -13,6 +13,7 @@ import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.utils.DataHelper;
 
 import net.minecraft.client.resources.I18n;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -58,15 +59,15 @@ public class ItemCardHBM extends ItemCardBase {
 		if (reader.hasField("speed"))
 			result.add(new PanelString("msg.ec.InfoPanelRotorSpeed", reader.getInt("speed"), showLabels));
 		if (reader.hasField("core"))
-			result.add(new PanelString("msg.ec.InfoPanelCoreHeat", reader.getLong("core"), "°C", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelCoreHeat", reader.getLong("core"), "ï¿½C", showLabels));
 		if (reader.hasField("hull"))
-			result.add(new PanelString("msg.ec.InfoPanelHullHeat", reader.getLong("hull"), "°C", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelHullHeat", reader.getLong("hull"), "ï¿½C", showLabels));
 		if (reader.hasField("level"))
 			result.add(new PanelString("msg.ec.InfoPanelOperatingLevel", reader.getString("level"), showLabels));
 		if (reader.hasField("heat"))
 			result.add(new PanelString("msg.ec.InfoPanelHeat", reader.getLong("heat"), showLabels));
 		if (reader.hasField("heatD"))
-			result.add(new PanelString("msg.ec.InfoPanelHeat", reader.getDouble("heatD"), "°C", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelHeat", reader.getDouble("heatD"), "ï¿½C", showLabels));
 		if (reader.hasField("fuel"))
 			result.add(new PanelString("msg.ec.InfoPanelFuel", reader.getInt("fuel"), showLabels));
 		if (reader.hasField("fuelText"))
@@ -82,11 +83,11 @@ public class ItemCardHBM extends ItemCardBase {
 		if (reader.hasField("xenon"))
 			result.add(new PanelString("rbmk.rod.xenon", reader.getDouble("xenon"), "%", showLabels));
 		if (reader.hasField("skin"))
-			result.add(new PanelString("trait.rbmk.skinTemp", reader.getDouble("skin"), "°C", showLabels));
+			result.add(new PanelString("trait.rbmk.skinTemp", reader.getDouble("skin"), "ï¿½C", showLabels));
 		if (reader.hasField("c_heat"))
-			result.add(new PanelString("trait.rbmk.coreTemp", reader.getDouble("c_heat"), "°C", showLabels));
+			result.add(new PanelString("trait.rbmk.coreTemp", reader.getDouble("c_heat"), "ï¿½C", showLabels));
 		if (reader.hasField("melt"))
-			result.add(new PanelString("trait.rbmk.melt", reader.getDouble("melt"), "°C", showLabels));
+			result.add(new PanelString("trait.rbmk.melt", reader.getDouble("melt"), "ï¿½C", showLabels));
 		if (reader.hasField("tank"))
 			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString("tank"), showLabels));
 		if (reader.hasField("tank2"))
@@ -109,7 +110,7 @@ public class ItemCardHBM extends ItemCardBase {
 	}
 
 	@Override
-	public List<PanelSetting> getSettingsList() {
+	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		List<PanelSetting> result = new ArrayList<>(2);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbStatus"), 1));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 2));

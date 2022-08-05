@@ -7,6 +7,7 @@ import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.utils.StringUtils;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -137,7 +138,7 @@ public class ItemCardEnergyArray extends ItemCardBase {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public List<PanelSetting> getSettingsList() {
+	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		List<PanelSetting> result = new ArrayList<>(6);
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEachCard"), 1));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 4));
@@ -149,7 +150,7 @@ public class ItemCardEnergyArray extends ItemCardBase {
 	}
 
 	@Override
-	public boolean isRemoteCard() {
+	public boolean isRemoteCard(ItemStack stack) {
 		return false;
 	}
 }
