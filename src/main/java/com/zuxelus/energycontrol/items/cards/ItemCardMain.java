@@ -233,8 +233,8 @@ public final class ItemCardMain extends Item implements IItemCard, ITouchAction,
 	@Override
 	public void renderBars(TextureManager manager, double displayWidth, double displayHeight, ICardReader reader) {
 		getCardById(reader.getCardType())
-				.filter(card -> card instanceof IHasBars)
-				.ifPresent(card -> ((IHasBars) card).renderBars(manager, displayWidth, displayHeight, reader));
+			.filter(card -> card instanceof IHasBars)
+			.ifPresent(card -> ((IHasBars) card).renderBars(manager, displayWidth, displayHeight, reader));
 	}
 
 	@Override

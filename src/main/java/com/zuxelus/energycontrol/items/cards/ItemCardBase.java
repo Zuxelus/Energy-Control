@@ -37,11 +37,11 @@ public abstract class ItemCardBase {
 		return "item." + name;
 	}
 
-	public void registerIcon(IIconRegister iconRegister) {
+	public void registerIcon(IIconRegister iconRegister) { // 1.7.10
 		icon = iconRegister.registerIcon(EnergyControl.MODID + ":" + name);
 	}
 
-	public IIcon getIcon() {
+	public IIcon getIcon() { // 1.7.10
 		return icon;
 	}
 

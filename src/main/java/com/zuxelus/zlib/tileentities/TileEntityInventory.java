@@ -72,7 +72,7 @@ public abstract class TileEntityInventory extends TileEntityFacing implements IS
 		return stack;
 	}
 
-	private static ItemStack getAndSplit(ItemStack[] stacks, int slot, int amount) {
+	private static ItemStack getAndSplit(ItemStack[] stacks, int slot, int amount) { // 1.7.10
 		if (slot >= 0 && slot < stacks.length && stacks[slot] != null && amount > 0) {
 			ItemStack stack = stacks[slot].splitStack(amount);
 			if (stacks[slot].stackSize == 0)

@@ -84,8 +84,4 @@ public class IC2ReactorHelper {
 	public static int euToSteam(int eu) {
 		return (int) Math.floor((eu) * STEAM_PER_EU);
 	}
-
-	/*public static boolean isSteam(IReactor reactor) {
-		return CrossModLoader.getCrossMod(ModIDs.IC2).isSteamReactor((TileEntity) reactor);
-	}*/
 }

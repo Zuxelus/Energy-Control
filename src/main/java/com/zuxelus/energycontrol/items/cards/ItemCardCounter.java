@@ -16,6 +16,7 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 
 public class ItemCardCounter extends ItemCardBase {
+
 	public ItemCardCounter() {
 		super(ItemCardType.CARD_COUNTER, "card_counter");
 	}

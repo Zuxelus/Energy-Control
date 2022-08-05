@@ -24,7 +24,7 @@ public class ClientTickHandler {
 	public void onClientTick(TickEvent.ClientTickEvent event) {
 		if (event.phase == TickEvent.Phase.END)
 			return;
-		boolean alt = Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184);
+		boolean alt = Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184); // 1.7.10
 		if (altPressed != alt) {
 			altPressed = alt;
 			if (Minecraft.getMinecraft().getNetHandler() != null)
