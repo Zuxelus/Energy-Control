@@ -4,6 +4,7 @@ public class ModIDs {
     public static final String IC2 = "ic2";
     public static final String TECH_REBORN = "techreborn";
     public static final String APPLIED_ENERGISTICS = "appliedenergistics2";
+    public static final String ADV_GENERATORS = "advgenerators";
     public static final String BIG_REACTORS = "bigreactors";
     public static final String BIGGER_REACTORS = "biggerreactors";
     public static final String BUILDCRAFT = "buildcraftcore";

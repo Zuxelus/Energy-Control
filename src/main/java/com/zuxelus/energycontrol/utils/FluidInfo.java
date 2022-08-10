@@ -4,6 +4,7 @@ import com.zuxelus.energycontrol.api.ICardReader;
 
 import net.minecraft.locale.Language;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.material.EmptyFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
@@ -48,7 +49,7 @@ public class FluidInfo {
 	}
 
 	public FluidInfo(Fluid fluid, long amount, long capacity) {
-		if (fluid != null) {
+		if (fluid != null && !(fluid instanceof EmptyFluid)) {
 			translationKey = fluid.getAttributes().getTranslationKey();
 			texture = fluid.getAttributes().getStillTexture().toString();
 			color = fluid.getAttributes().getColor();

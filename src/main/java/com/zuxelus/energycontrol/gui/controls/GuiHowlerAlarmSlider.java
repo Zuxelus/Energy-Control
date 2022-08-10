@@ -76,7 +76,7 @@ public class GuiHowlerAlarmSlider extends AbstractButton {
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		if (dragging)
 			setSliderPos(mouseX);
-		
+
 		blit(matrixStack, x + (int) (sliderValue * (width - 8)), y, 131, 0, 8, 16);
 		fontRenderer.draw(matrixStack, getMessage(), x, y - 12, 0x404040);
 	}

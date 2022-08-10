@@ -32,14 +32,15 @@ public class CrossModLoader {
 	private static final Map<String, CrossModBase> CROSS_MODS = new HashMap<>();
 
 	public static void init() {
-		//loadCrossMod(ModIDs.APPLIED_ENERGISTICS, CrossAppEng::new);
-		//loadCrossMod(ModIDs.BIG_REACTORS, CrossBigReactors::new);
-		//loadCrossMod(ModIDs.BIGGER_REACTORS, CrossBiggerReactors::new);
+		loadCrossMod(ModIDs.ADV_GENERATORS, CrossAdvGenerators::new);
+		loadCrossMod(ModIDs.APPLIED_ENERGISTICS, CrossAppEng::new);
+		loadCrossMod(ModIDs.BIG_REACTORS, CrossBigReactors::new);
+		loadCrossMod(ModIDs.BIGGER_REACTORS, CrossBiggerReactors::new);
 		//loadCrossModSafely(ModIDs.COMPUTER_CRAFT, () -> CrossComputerCraft::new);
-		/*loadCrossMod(ModIDs.MEKANISM, CrossMekanism::new);
+		loadCrossMod(ModIDs.MEKANISM, CrossMekanism::new);
 		loadCrossMod(ModIDs.MEKANISM_GENERATORS, CrossMekanismGenerators::new);
-		loadCrossMod(ModIDs.IMMERSIVE_ENGINEERING, CrossImmersiveEngineering::new);
-		loadCrossMod(ModIDs.THERMAL_EXPANSION, CrossThermalExpansion::new);*/
+		//loadCrossMod(ModIDs.IMMERSIVE_ENGINEERING, CrossImmersiveEngineering::new);
+		//loadCrossMod(ModIDs.THERMAL_EXPANSION, CrossThermalExpansion::new);
 	}
 
 	private static void loadCrossMod(String modid, Supplier<? extends CrossModBase> factory) {

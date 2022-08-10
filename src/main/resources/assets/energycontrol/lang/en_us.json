@@ -50,6 +50,8 @@
     "item.card_energy_draconic": "Draconic Energy Sensor Card",
     "item.card_reactor_draconic": "Draconic Reactor Sensor Card",
     "item.kit_draconic": "Draconic Sensor Kit",
+    "item.energycontrol.kit_adv_generators": "Advanced Generators Kit",
+    "item.energycontrol.card_adv_generators": "Advanced Generators Card",
     "item.energycontrol.kit_app_eng": "Applied Energistics Kit",
     "item.energycontrol.card_app_eng": "Applied Energistics Card",
     "item.energycontrol.card_app_eng_inv": "AE Inventory Sensor Card",

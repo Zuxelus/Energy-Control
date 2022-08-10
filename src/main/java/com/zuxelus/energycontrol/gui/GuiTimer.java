@@ -22,7 +22,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class GuiTimer extends GuiContainerBase<ContainerTimer> {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_timer.png");
 	private TileEntityTimer timer;
-	private EditBox textboxTimer = null;
+	private EditBox textboxTimer;
 	private boolean lastIsWorking;
 
 	public GuiTimer(ContainerTimer container, Inventory inventory, Component title) {

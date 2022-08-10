@@ -49,7 +49,7 @@ public class InfoPanel extends FacingBlockActive {
 			if (((TileEntityInfoPanel) te).runTouchAction(player.getItemInHand(hand), pos, hit.getLocation()))
 				return InteractionResult.SUCCESS;
 		if (!world.isClientSide)
-				NetworkHooks.openGui((ServerPlayer) player, (TileEntityInfoPanel) te, pos);
+			NetworkHooks.openGui((ServerPlayer) player, (TileEntityInfoPanel) te, pos);
 		return InteractionResult.SUCCESS;
 	}
 

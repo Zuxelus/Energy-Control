@@ -50,6 +50,8 @@
     "item.card_energy_draconic": "Карта расположения хранилища Draconic",
     "item.card_reactor_draconic": "Карта расположения реактора Draconic",
     "item.kit_draconic": "Набор для Draconic Evolution",
+    "item.energycontrol.kit_adv_generators": "Advanced Generators Kit",
+    "item.energycontrol.card_adv_generators": "Advanced Generators Card",
     "item.energycontrol.kit_app_eng": "Набор с датчиком для Applied Energistics",
     "item.energycontrol.card_app_eng": "Карта для Applied Energistics",
     "item.energycontrol.card_app_eng_inv": "AE Inventory Sensor Card",

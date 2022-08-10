@@ -113,7 +113,7 @@ public class Screen {
 					if (te instanceof IScreenPart)
 						((IScreenPart) te).updateTileEntity();
 				}
-	}	
+	}
 
 	public CompoundTag toTag() {
 		CompoundTag tag = new CompoundTag();

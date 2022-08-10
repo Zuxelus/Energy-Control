@@ -41,6 +41,7 @@ public class ModItems {
 	public static final RegistryObject<Item> kit_liquid_advanced = ITEMS.register("kit_liquid_advanced", () -> new ItemKitLiquidAdvanced());
 	public static final RegistryObject<Item> kit_redstone = ITEMS.register("kit_redstone", () -> new ItemKitRedstone());
 	public static final RegistryObject<Item> kit_toggle = ITEMS.register("kit_toggle", () -> new ItemKitToggle());
+	public static Item kit_adv_generators;
 	public static Item kit_app_eng;
 	public static Item kit_big_reactors;
 	public static Item kit_immersive_engineering;
@@ -57,6 +58,7 @@ public class ModItems {
 	public static final RegistryObject<Item> card_text = ITEMS.register("card_text", () -> new ItemCardText());
 	public static final RegistryObject<Item> card_time = ITEMS.register("card_time", () -> new ItemCardTime());
 	public static final RegistryObject<Item> card_toggle = ITEMS.register("card_toggle", () -> new ItemCardToggle());
+	public static Item card_adv_generators;
 	public static Item card_app_eng;
 	public static Item card_app_eng_inv;
 	public static Item card_big_reactors;

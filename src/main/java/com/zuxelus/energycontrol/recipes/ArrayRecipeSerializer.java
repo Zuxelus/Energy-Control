@@ -35,5 +35,4 @@ public class ArrayRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?
 			throw e;
 		}
 	}
-
 }

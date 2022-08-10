@@ -49,7 +49,7 @@ public class HoloPanel extends FacingHorizontalActive {
 		if (!(te instanceof TileEntityHoloPanel))
 			return InteractionResult.PASS;
 		if (!world.isClientSide)
-				NetworkHooks.openGui((ServerPlayer) player, (TileEntityHoloPanel) te, pos);
+			NetworkHooks.openGui((ServerPlayer) player, (TileEntityHoloPanel) te, pos);
 		return InteractionResult.SUCCESS;
 	}
 
