@@ -29,7 +29,7 @@ public class KitAssembler extends FacingHorizontalActive {
 		if (!(te instanceof TileEntityKitAssembler))
 			return InteractionResult.PASS;
 		if (!world.isClientSide)
-			NetworkHooks.openGui((ServerPlayer) player, (TileEntityKitAssembler) te, pos);
+			NetworkHooks.openScreen((ServerPlayer) player, (TileEntityKitAssembler) te, pos);
 		return InteractionResult.SUCCESS;
 	}
 }

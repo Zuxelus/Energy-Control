@@ -19,7 +19,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -46,7 +46,7 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 	private int dragDelta;
 
 	public GuiHowlerAlarmListBox(int left, int top, int width, int height, List<String> items, TileEntityHowlerAlarm alarm) {
-		super(left, top, width, height, TextComponent.EMPTY);
+		super(left, top, width, height, CommonComponents.EMPTY);
 		this.items = items;
 		this.alarm = alarm;
 		fontColor = 0x404040;

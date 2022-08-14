@@ -12,7 +12,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -58,7 +58,7 @@ public class GuiHorizontalSlider extends GuiBase {
 		private int maxValue = 128;
 
 		public HorizontalSlider(int x, int y) {
-			super(x, y, 132, 16, new TranslatableComponent("msg.ec.Ticks", Integer.toString(panel.getTickRate())));
+			super(x, y, 132, 16, Component.translatable("msg.ec.Ticks", Integer.toString(panel.getTickRate())));
 			dragging = false;
 			sliderValue = panel.getTickRate();
 		}
@@ -76,7 +76,7 @@ public class GuiHorizontalSlider extends GuiBase {
 				NetworkHelper.updateSeverTileEntity(panel.getBlockPos(), 5, sliderValue);
 				panel.setTickRate(sliderValue);
 			}
-			setMessage(new TranslatableComponent("msg.ec.Ticks", Integer.toString(sliderValue)));
+			setMessage(Component.translatable("msg.ec.Ticks", Integer.toString(sliderValue)));
 		}
 
 		@Override

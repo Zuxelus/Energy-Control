@@ -16,8 +16,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.RenderLevelLastEvent;
+import net.minecraftforge.client.event.ViewportEvent.ComputeCameraAngles;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -48,7 +48,7 @@ public class ClientTickHandler {
 		info.setup(client.level, client.getCameraEntity() == null ? client.player : client.getCameraEntity(),
 				!client.options.getCameraType().isFirstPerson(), client.options.getCameraType().isMirrored(),
 				event.getPartialTick());
-		EntityViewRenderEvent.CameraSetup cameraSetup = ForgeHooksClient.onCameraSetup(client.gameRenderer, info, event.getPartialTick());
+		ComputeCameraAngles cameraSetup = ForgeHooksClient.onCameraSetup(client.gameRenderer, info, event.getPartialTick());
 		info.setAnglesInternal(cameraSetup.getYaw(), cameraSetup.getPitch());
 		PoseStack matrixStack = event.getPoseStack();
 		Vec3 vector3d = info.getPosition();

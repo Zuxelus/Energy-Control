@@ -13,7 +13,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -41,12 +40,12 @@ public class GuiRangeTrigger extends GuiContainerBase<ContainerRangeTrigger> {
 		prevCard = card;
 		// ten digits, up to 10 billions
 		for (int i = 0; i < 10; i++) {
-			addRenderableWidget(new CompactButton(i * 10, leftPos + 30 + i * 12 + (i + 2) / 3 * 6, topPos + 20, 12, 12, new TextComponent("-"), (button) -> { actionPerformed(button); }));
-			addRenderableWidget(new CompactButton(i * 10 + 1, leftPos + 30 + i * 12 + (i + 2) / 3 * 6, topPos + 42, 12, 12, new TextComponent("+"), (button) -> { actionPerformed(button); }));
+			addRenderableWidget(new CompactButton(i * 10, leftPos + 30 + i * 12 + (i + 2) / 3 * 6, topPos + 20, 12, 12, Component.literal("-"), (button) -> { actionPerformed(button); }));
+			addRenderableWidget(new CompactButton(i * 10 + 1, leftPos + 30 + i * 12 + (i + 2) / 3 * 6, topPos + 42, 12, 12, Component.literal("+"), (button) -> { actionPerformed(button); }));
 		}
 		for (int i = 0; i < 10; i++) {
-			addRenderableWidget(new CompactButton(100 + i * 10, leftPos + 30 + i * 12 + (i + 2) / 3 * 6, topPos + 57, 12, 12, new TextComponent("-"), (button) -> { actionPerformed(button); }));
-			addRenderableWidget(new CompactButton(100 + i * 10 + 1, leftPos + 30 + i * 12 + (i + 2) / 3 * 6, topPos + 79, 12, 12, new TextComponent("+"), (button) -> { actionPerformed(button); }));
+			addRenderableWidget(new CompactButton(100 + i * 10, leftPos + 30 + i * 12 + (i + 2) / 3 * 6, topPos + 57, 12, 12, Component.literal("-"), (button) -> { actionPerformed(button); }));
+			addRenderableWidget(new CompactButton(100 + i * 10 + 1, leftPos + 30 + i * 12 + (i + 2) / 3 * 6, topPos + 79, 12, 12, Component.literal("+"), (button) -> { actionPerformed(button); }));
 		}
 		addRenderableWidget(new GuiRangeTriggerInvertRedstone(leftPos + 8, topPos + 62, container.te));
 	}

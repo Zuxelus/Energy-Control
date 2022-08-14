@@ -13,6 +13,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 
 public class ContainerTimer extends AbstractContainerMenu {
 	public TileEntityTimer te;
@@ -48,5 +49,10 @@ public class ContainerTimer extends AbstractContainerMenu {
 		}
 		lastTime = time;
 		lastIsWorking = isWorking;
+	}
+
+	@Override
+	public ItemStack quickMoveStack(Player player, int index) {
+		return null;
 	}
 }

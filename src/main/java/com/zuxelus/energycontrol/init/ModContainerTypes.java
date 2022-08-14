@@ -10,7 +10,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 public final class ModContainerTypes {
-	public static final DeferredRegister<MenuType<?>> CONTAINER_TYPES = DeferredRegister.create(ForgeRegistries.CONTAINERS, EnergyControl.MODID);
+	public static final DeferredRegister<MenuType<?>> CONTAINER_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES, EnergyControl.MODID);
 
 	public static final RegistryObject<MenuType<ContainerInfoPanel>> info_panel = CONTAINER_TYPES.register("info_panel", () -> IForgeMenuType.create(ContainerInfoPanel::new));
 	public static final RegistryObject<MenuType<ContainerAdvancedInfoPanel>> info_panel_advanced = CONTAINER_TYPES.register("info_panel_advanced", () -> IForgeMenuType.create(ContainerAdvancedInfoPanel::new));

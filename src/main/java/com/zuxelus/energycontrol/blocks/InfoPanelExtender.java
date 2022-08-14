@@ -46,7 +46,7 @@ public class InfoPanelExtender extends FacingBlockActive {
 		if (EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) panel).getFacing() == hit.getDirection())
 			if (((TileEntityInfoPanel) panel).runTouchAction(player.getItemInHand(hand), pos, hit.getLocation()))
 				return InteractionResult.SUCCESS;
-		NetworkHooks.openGui((ServerPlayer) player, (TileEntityInfoPanel) panel, pos);
+		NetworkHooks.openScreen((ServerPlayer) player, (TileEntityInfoPanel) panel, pos);
 		return InteractionResult.SUCCESS;
 	}
 

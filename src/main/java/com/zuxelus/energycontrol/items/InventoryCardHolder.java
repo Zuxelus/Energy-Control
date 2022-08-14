@@ -6,7 +6,6 @@ import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.zlib.items.ItemInventory;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -42,6 +41,6 @@ public class InventoryCardHolder extends ItemInventory implements MenuProvider {
 
 	@Override
 	public Component getDisplayName() {
-		return new TranslatableComponent(ModItems.card_holder.get().getDescriptionId());
+		return Component.translatable(ModItems.card_holder.get().getDescriptionId());
 	}
 }

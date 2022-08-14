@@ -12,7 +12,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -29,7 +29,7 @@ public class GuiTextArea extends AbstractWidget {
 	private final Font fontRenderer;
 
 	public GuiTextArea(Font fontRenderer, int xPos, int yPos, int width, int height, int lineCount) {
-		super(xPos, yPos, width, height, TextComponent.EMPTY);
+		super(xPos, yPos, width, height, CommonComponents.EMPTY);
 		this.fontRenderer = fontRenderer;
 		this.lineCount = lineCount;
 		text = new String[lineCount];

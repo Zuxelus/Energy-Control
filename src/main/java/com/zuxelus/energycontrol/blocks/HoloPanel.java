@@ -1,7 +1,5 @@
 package com.zuxelus.energycontrol.blocks;
 
-import java.util.Random;
-
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityHoloPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
@@ -12,6 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -49,7 +48,7 @@ public class HoloPanel extends FacingHorizontalActive {
 		if (!(te instanceof TileEntityHoloPanel))
 			return InteractionResult.PASS;
 		if (!world.isClientSide)
-			NetworkHooks.openGui((ServerPlayer) player, (TileEntityHoloPanel) te, pos);
+			NetworkHooks.openScreen((ServerPlayer) player, (TileEntityHoloPanel) te, pos);
 		return InteractionResult.SUCCESS;
 	}
 
@@ -76,7 +75,7 @@ public class HoloPanel extends FacingHorizontalActive {
 	}
 
 	@Override
-	public void tick(BlockState state, ServerLevel world, BlockPos pos, Random rand) {
+	public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource rand) {
 		if (state.getValue(ACTIVE) && !world.hasNeighborSignal(pos)) {
 			world.setBlock(pos, state.cycle(ACTIVE), 2);
 			updateExtenders(state, world, pos);

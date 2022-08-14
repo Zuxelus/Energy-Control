@@ -7,7 +7,6 @@ import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -63,6 +62,6 @@ public class TileEntityHoloPanel extends TileEntityInfoPanel {
 
 	@Override
 	public Component getDisplayName() {
-		return new TranslatableComponent(ModItems.holo_panel.get().getDescriptionId());
+		return Component.translatable(ModItems.holo_panel.get().getDescriptionId());
 	}
 }

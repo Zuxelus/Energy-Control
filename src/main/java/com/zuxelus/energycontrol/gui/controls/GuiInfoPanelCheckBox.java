@@ -13,7 +13,7 @@ import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -28,7 +28,7 @@ public class GuiInfoPanelCheckBox extends AbstractButton {
 	private int slot;
 
 	public GuiInfoPanelCheckBox(int x, int y, PanelSetting setting, TileEntityInfoPanel panel, int slot, Font renderer) {
-		super(x, y, renderer.width(setting.title) + 8, renderer.lineHeight + 1, new TextComponent(setting.title));
+		super(x, y, renderer.width(setting.title) + 8, renderer.lineHeight + 1, Component.literal(setting.title));
 		this.setting = setting;
 		this.slot = slot;
 		this.panel = panel;

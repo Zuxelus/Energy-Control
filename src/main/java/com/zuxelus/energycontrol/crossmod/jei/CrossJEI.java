@@ -16,7 +16,7 @@ import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -38,12 +38,12 @@ public class CrossJEI implements IModPlugin {
 
 	@Override
 	public void registerGuiHandlers(IGuiHandlerRegistration registry) {
-		registry.addRecipeClickArea(GuiKitAssembler.class, 87, 35, 22, 15, new ResourceLocation[] { KitAssemblerRecipeCategory.id });
+		registry.addRecipeClickArea(GuiKitAssembler.class, 87, 35, 22, 15, KitAssemblerRecipeCategory.recipeType);
 	}
 
 	@Override
 	public void registerRecipes(IRecipeRegistration registry) {
-		registry.addRecipes(KitAssemblerRecipeType.TYPE.getRecipes(Minecraft.getInstance().level), KitAssemblerRecipeCategory.id);
+		registry.addRecipes(KitAssemblerRecipeCategory.recipeType, KitAssemblerRecipeType.TYPE.getRecipes(Minecraft.getInstance().level));
 		registerItem(registry, ModItems.white_lamp.get(), "ec.jei.blockLightWhite");
 		registerItem(registry, ModItems.orange_lamp.get(), "ec.jei.blockLightOrange");
 		registerItem(registry, ModItems.howler_alarm.get(), "ec.jei.blockHowlerAlarm");
@@ -77,11 +77,11 @@ public class CrossJEI implements IModPlugin {
 
 	private void registerItem(IRecipeRegistration registry, ItemLike item, String name) {
 		if (item != null)
-			registry.addIngredientInfo(new ItemStack(item), VanillaTypes.ITEM, new TextComponent(I18n.get(name)));
+			registry.addIngredientInfo(new ItemStack(item), VanillaTypes.ITEM_STACK, Component.literal(I18n.get(name)));
 	}
 
 	@Override
 	public void registerRecipeCatalysts(IRecipeCatalystRegistration registry) {
-		registry.addRecipeCatalyst(new ItemStack(ModItems.kit_assembler.get()), KitAssemblerRecipeCategory.id);
+		registry.addRecipeCatalyst(new ItemStack(ModItems.kit_assembler.get()), KitAssemblerRecipeCategory.recipeType);
 	}
 }

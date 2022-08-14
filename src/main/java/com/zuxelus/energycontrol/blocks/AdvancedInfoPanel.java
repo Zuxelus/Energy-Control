@@ -78,7 +78,7 @@ public class AdvancedInfoPanel extends InfoPanel {
 			if (((TileEntityInfoPanel) te).runTouchAction(player.getItemInHand(hand), pos, hit.getLocation()))
 				return InteractionResult.SUCCESS;
 		if (!world.isClientSide)
-			NetworkHooks.openGui((ServerPlayer) player, (TileEntityAdvancedInfoPanel) te, pos);
+			NetworkHooks.openScreen((ServerPlayer) player, (TileEntityAdvancedInfoPanel) te, pos);
 		return InteractionResult.SUCCESS;
 	}
 }

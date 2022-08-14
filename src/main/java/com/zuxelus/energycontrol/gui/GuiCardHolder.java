@@ -37,7 +37,7 @@ public class GuiCardHolder extends AbstractContainerScreen<ContainerCardHolder> 
 	@Override
 	protected void renderLabels(PoseStack matrixStack, int x, int y) {
 		font.draw(matrixStack, name, 8, 6, 4210752);
-		font.draw(matrixStack, player.getInventory().getDisplayName().getContents(), 8, imageHeight - 96 + 2, 4210752);
+		font.draw(matrixStack, player.getInventory().getDisplayName(), 8, imageHeight - 96 + 2, 4210752);
 	}
 
 	@Override

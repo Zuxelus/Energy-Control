@@ -8,8 +8,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
@@ -89,7 +89,7 @@ public class GuiContainerBase<T extends AbstractContainerMenu> extends AbstractC
 	}
 
 	protected EditBox addTextFieldWidget(int left, int top, int width, int height, boolean isEnabled, String text) {
-		EditBox textBox = new EditBox(font, leftPos + left, topPos + top, width, height, null, TextComponent.EMPTY);
+		EditBox textBox = new EditBox(font, leftPos + left, topPos + top, width, height, null, CommonComponents.EMPTY);
 		textBox.setEditable(isEnabled);
 		textBox.changeFocus(isEnabled);
 		textBox.setValue(text);

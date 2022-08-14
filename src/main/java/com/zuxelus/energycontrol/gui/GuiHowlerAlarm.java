@@ -10,7 +10,7 @@ import com.zuxelus.energycontrol.gui.controls.GuiHowlerAlarmSlider;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 import com.zuxelus.zlib.gui.GuiBase;
 
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -41,6 +41,6 @@ public class GuiHowlerAlarm extends GuiBase {
 	@Override
 	protected void drawGuiContainerForegroundLayer(PoseStack matrixStack, int mouseX, int mouseY) {
 		drawTitle(matrixStack);
-		font.draw(matrixStack, new TranslatableComponent("msg.ec.HowlerAlarmSound"), 12, 53, 0x404040);
+		font.draw(matrixStack, Component.translatable("msg.ec.HowlerAlarmSound"), 12, 53, 0x404040);
 	}
 }

@@ -12,8 +12,8 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -31,7 +31,7 @@ public class GuiHowlerAlarmSlider extends AbstractButton {
 
 	@SuppressWarnings("resource")
 	public GuiHowlerAlarmSlider(int x, int y, TileEntityHowlerAlarm alarm) {
-		super(x, y, 107, 16, TextComponent.EMPTY);
+		super(x, y, 107, 16, CommonComponents.EMPTY);
 		this.alarm = alarm;
 		dragging = false;
 		if (alarm.getLevel().isClientSide)
@@ -40,7 +40,7 @@ public class GuiHowlerAlarmSlider extends AbstractButton {
 		if (alarm.getLevel().isClientSide && currentRange > maxValue)
 			currentRange = maxValue;
 		sliderValue = ((float) currentRange - minValue) / (maxValue - minValue);
-		setMessage(new TranslatableComponent("msg.ec.HowlerAlarmSoundRange", getNormalizedValue()));
+		setMessage(Component.translatable("msg.ec.HowlerAlarmSoundRange", getNormalizedValue()));
 	}
 
 	private int getNormalizedValue() {
@@ -62,7 +62,7 @@ public class GuiHowlerAlarmSlider extends AbstractButton {
 			NetworkHelper.updateSeverTileEntity(alarm.getBlockPos(), 2, newValue);
 			alarm.setRange(newValue);
 		}
-		setMessage(new TranslatableComponent("msg.ec.HowlerAlarmSoundRange", newValue));
+		setMessage(Component.translatable("msg.ec.HowlerAlarmSoundRange", newValue));
 	}
 
 	@Override

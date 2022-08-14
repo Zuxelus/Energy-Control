@@ -11,7 +11,6 @@ import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -116,6 +115,6 @@ public class TileEntityRemoteThermalMonitor extends TileEntityThermalMonitor imp
 
 	@Override
 	public Component getDisplayName() {
-		return new TranslatableComponent(ModItems.remote_thermo.get().getDescriptionId());
+		return Component.translatable(ModItems.remote_thermo.get().getDescriptionId());
 	}
 }

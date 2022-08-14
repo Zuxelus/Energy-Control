@@ -27,8 +27,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 
@@ -105,11 +108,14 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		float y = -0.5F + 1/ 16.0F;
 		float z = 0;
 
-		String texture = reader.getString("texture");
-		if (texture.isEmpty())
+		String fluidName = reader.getString("fluidName");
+		if (fluidName.isEmpty())
 			return;
 
-		TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(new ResourceLocation(texture));
+		Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(fluidName));
+		IClientFluidTypeExtensions fluidExt = IClientFluidTypeExtensions.of(fluid);
+
+		TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(fluidExt.getStillTexture());
 		if (sprite == null)
 			return;
 
@@ -118,7 +124,7 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		float width = 14 / 16.0F * reader.getInt("amount") / reader.getInt("capacity");
 		float height = 0.4375F;
 
-		int color = reader.getInt("color");
+		int color = fluidExt.getTintColor();
 		float f = (color >> 24 & 255) / 255.0F;
 		float f1 = (color >> 16 & 255) / 255.0F;
 		float f2 = (color >> 8 & 255) / 255.0F;
@@ -127,16 +133,17 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		matrixStack.scale(displayWidth / 0.875f, displayHeight / 0.875f, 1);
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
+		RenderSystem.setShaderColor(f1, f2, f3, f);
 		RenderSystem.enableDepthTest();
 		RenderSystem.disableBlend();
 		Tesselator tesselator = Tesselator.getInstance();
 		BufferBuilder bufferbuilder = tesselator.getBuilder();
-		bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+		bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 		Matrix4f matrix = matrixStack.last().pose();
-		bufferbuilder.vertex(matrix, x, y + 0.4375F / 2 + height, z).uv(textureX, sprite.getV1()).color(f1, f2, f3, f).endVertex();
-		bufferbuilder.vertex(matrix, x + 0.875F, y + 0.4375F / 2 + height, z).uv(sprite.getU1(), sprite.getV1()).color(f1, f2, f3, f).endVertex();
-		bufferbuilder.vertex(matrix, x + 0.875F, y + 0.4375F / 2, z).uv(sprite.getU1(), textureY).color(f1, f2, f3, f).endVertex();
-		bufferbuilder.vertex(matrix, x, y + 0.4375F / 2, z).uv(textureX, textureY).color(f1, f2, f3, f).endVertex();
+		bufferbuilder.vertex(matrix, x, y + 0.4375F / 2 + height, z).uv(textureX, sprite.getV1()).endVertex();
+		bufferbuilder.vertex(matrix, x + 0.875F, y + 0.4375F / 2 + height, z).uv(sprite.getU1(), sprite.getV1()).endVertex();
+		bufferbuilder.vertex(matrix, x + 0.875F, y + 0.4375F / 2, z).uv(sprite.getU1(), textureY).endVertex();
+		bufferbuilder.vertex(matrix, x, y + 0.4375F / 2, z).uv(textureX, textureY).endVertex();
 		tesselator.end();
 		RenderSystem.disableDepthTest();
 

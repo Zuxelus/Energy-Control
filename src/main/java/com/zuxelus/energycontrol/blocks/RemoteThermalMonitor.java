@@ -33,7 +33,7 @@ public class RemoteThermalMonitor extends FacingHorizontal {
 		if (!(te instanceof TileEntityRemoteThermalMonitor))
 			return InteractionResult.PASS;
 		if (!world.isClientSide)
-			NetworkHooks.openGui((ServerPlayer) player, (TileEntityRemoteThermalMonitor) te, pos);
+			NetworkHooks.openScreen((ServerPlayer) player, (TileEntityRemoteThermalMonitor) te, pos);
 		return InteractionResult.SUCCESS;
 	}
 

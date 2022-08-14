@@ -15,8 +15,8 @@ import com.zuxelus.zlib.gui.controls.GuiButtonGeneral;
 
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -38,7 +38,7 @@ public class GuiInfoPanel extends GuiPanelBase<ContainerInfoPanel> {
 		addRenderableWidget(new GuiButtonGeneral(leftPos + imageWidth - 24, topPos + 42, 16, 16, TEXTURE, 176, panel.getShowLabels() ? 15 : 31, (button) -> { actionPerformed(button, ID_LABELS); }).setGradient());
 		if (panel.isColoredEval())
 			addRenderableWidget(new GuiButtonGeneral(leftPos + imageWidth - 24, topPos + 42 + 17, 16, 16, TEXTURE, 192, 0, (button) -> { actionPerformed(button, ID_COLORS); }).setGradient().setScale(2));
-		addRenderableWidget(new GuiButtonGeneral(leftPos + imageWidth - 24, topPos + 42 + 17 * 3, 16, 16, new TextComponent(Integer.toString(panel.getTickRate())), (button) -> { actionPerformed(button, ID_TICKRATE); }).setGradient());
+		addRenderableWidget(new GuiButtonGeneral(leftPos + imageWidth - 24, topPos + 42 + 17 * 3, 16, 16, Component.literal(Integer.toString(panel.getTickRate())), (button) -> { actionPerformed(button, ID_TICKRATE); }).setGradient());
 	}
 
 	protected void initControls() {
@@ -53,7 +53,7 @@ public class GuiInfoPanel extends GuiPanelBase<ContainerInfoPanel> {
 		if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain) {
 			int slot = panel.getCardSlot(stack);
 			if (stack.getItem() instanceof ItemCardText)
-				addRenderableWidget(new GuiButtonGeneral(leftPos + imageWidth - 24, topPos + 42 + 17 * 2, 16, 16, new TextComponent("txt"), (button) -> { actionPerformed(button, ID_TEXT); }).setGradient());
+				addRenderableWidget(new GuiButtonGeneral(leftPos + imageWidth - 24, topPos + 42 + 17 * 2, 16, 16, Component.literal("txt"), (button) -> { actionPerformed(button, ID_TEXT); }).setGradient());
 			List<PanelSetting> settingsList = ((ItemCardMain) stack.getItem()).getSettingsList();
 
 			int hy = font.lineHeight + 1;
@@ -64,7 +64,7 @@ public class GuiInfoPanel extends GuiPanelBase<ContainerInfoPanel> {
 					y++;
 				}
 			if (!modified) {
-				textboxTitle = new EditBox(font, leftPos + 7, topPos + 16, 162, 18, null, TextComponent.EMPTY);
+				textboxTitle = new EditBox(font, leftPos + 7, topPos + 16, 162, 18, null, CommonComponents.EMPTY);
 				textboxTitle.changeFocus(true);
 				textboxTitle.setValue(new ItemCardReader(stack).getTitle());
 				addWidget(textboxTitle);

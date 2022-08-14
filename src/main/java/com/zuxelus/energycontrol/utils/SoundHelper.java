@@ -88,12 +88,12 @@ public class SoundHelper {
 		EnergyControl.INSTANCE.availableAlarms = new ArrayList<>();
 
 		try {
-			List<Resource> list = Minecraft.getInstance().getResourceManager().getResources(new ResourceLocation(EnergyControl.MODID, "sounds.json"));
+			List<Resource> list = Minecraft.getInstance().getResourceManager().getResourceStack(new ResourceLocation(EnergyControl.MODID, "sounds.json"));
 
 			for (int i = list.size() - 1; i >= 0; --i) {
 				Resource iresource = list.get(i);
 
-				Map<String, SoundEventRegistration> map = gson.fromJson(new InputStreamReader(iresource.getInputStream()), type);
+				Map<String, SoundEventRegistration> map = gson.fromJson(new InputStreamReader(iresource.open()), type);
 				map.forEach((str, soundList) -> EnergyControl.INSTANCE.availableAlarms.add(str.replace("alarm-", "")));
 			}
 		} catch (IOException ignored) {}

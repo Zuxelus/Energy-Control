@@ -13,7 +13,7 @@ import com.zuxelus.zlib.gui.controls.GuiTextNumeric;
 
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -44,16 +44,16 @@ public class GuiScreenColor extends GuiBase {
 	public void init() {
 		super.init();
 		fieldList.clear();
-		rText = new GuiTextNumeric(font, guiLeft + 10, guiTop + 18, 26, 12, TextComponent.EMPTY, 255);
+		rText = new GuiTextNumeric(font, guiLeft + 10, guiTop + 18, 26, 12, CommonComponents.EMPTY, 255);
 		rText.setMaxLength(3);
 		rText.setValue(Integer.toString((colorText & 0x00FF0000) >> 16));
 		//rText.setEnableBackgroundDrawing(false);
 		fieldList.add(rText);
-		gText = new GuiTextNumeric(font, guiLeft + 46, guiTop + 18, 26, 12, TextComponent.EMPTY, 255);
+		gText = new GuiTextNumeric(font, guiLeft + 46, guiTop + 18, 26, 12, CommonComponents.EMPTY, 255);
 		gText.setMaxLength(3);
 		gText.setValue(Integer.toString((colorText & 0x0000FF00) >> 8));
 		fieldList.add(gText);
-		bText = new GuiTextNumeric(font, guiLeft + 82, guiTop + 18, 26, 12, TextComponent.EMPTY, 255);
+		bText = new GuiTextNumeric(font, guiLeft + 82, guiTop + 18, 26, 12, CommonComponents.EMPTY, 255);
 		bText.setMaxLength(3);
 		bText.setValue(Integer.toString(colorText & 0x000000FF));
 		fieldList.add(bText);

@@ -14,7 +14,6 @@ import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -46,16 +45,16 @@ public abstract class ItemCardMain extends Item implements IItemCard {
 		ItemCardReader reader = new ItemCardReader(stack);
 		String title = reader.getTitle();
 		if (title != null && !title.isEmpty())
-			tooltip.add(new TranslatableComponent(title));
+			tooltip.add(Component.translatable(title));
 
 		addInformation(reader, tooltip);
 
 		BlockPos target = reader.getTarget();
 		if (target != null)
-			tooltip.add(new TranslatableComponent(String.format("x: %d, y: %d, z: %d", target.getX(), target.getY(), target.getZ())));
+			tooltip.add(Component.translatable(String.format("x: %d, y: %d, z: %d", target.getX(), target.getY(), target.getZ())));
 		int count = reader.getCardCount();
 		if (count > 0)
-			tooltip.add(new TranslatableComponent(I18n.get("msg.ec.cards", reader.getCardCount())));
+			tooltip.add(Component.translatable(I18n.get("msg.ec.cards", reader.getCardCount())));
 	}
 
 	public CardState updateCardNBT(Level world, BlockPos pos, ICardReader reader, ItemStack upgradeStack) {

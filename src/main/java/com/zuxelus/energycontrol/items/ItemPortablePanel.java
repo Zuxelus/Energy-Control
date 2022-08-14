@@ -22,7 +22,7 @@ public class ItemPortablePanel extends Item {
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (!player.isShiftKeyDown() && !level.isClientSide && stack.getCount() == 1)
-			NetworkHooks.openGui((ServerPlayer) player, new InventoryPortablePanel(stack), BlockPos.ZERO);
+			NetworkHooks.openScreen((ServerPlayer) player, new InventoryPortablePanel(stack), BlockPos.ZERO);
 		return InteractionResultHolder.success(stack);
 	}
 }

@@ -12,7 +12,6 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
@@ -38,18 +37,18 @@ public class GuiTimer extends GuiContainerBase<ContainerTimer> {
 		super.init();
 		lastIsWorking = timer.getIsWorking();
 
-		addRenderableWidget(new CompactButton(0, leftPos + 14, topPos + 50, 34, 12, new TextComponent("+1"), (button) -> { actionPerformed(button); }));
-		addRenderableWidget(new CompactButton(1, leftPos + 14, topPos + 64, 34, 12, new TextComponent("+10"), (button) -> { actionPerformed(button); }));
-		addRenderableWidget(new CompactButton(2, leftPos + 50, topPos + 50, 34, 12, new TextComponent("+100"), (button) -> { actionPerformed(button); }));
-		addRenderableWidget(new CompactButton(3, leftPos + 50, topPos + 64, 34, 12, new TextComponent("+1000"), (button) -> { actionPerformed(button); }));
-		addRenderableWidget(new CompactButton(4, leftPos + 14, topPos + 78, 70, 12, new TextComponent("+10000"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(0, leftPos + 14, topPos + 50, 34, 12, Component.literal("+1"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(1, leftPos + 14, topPos + 64, 34, 12, Component.literal("+10"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(2, leftPos + 50, topPos + 50, 34, 12, Component.literal("+100"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(3, leftPos + 50, topPos + 64, 34, 12, Component.literal("+1000"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(4, leftPos + 14, topPos + 78, 70, 12, Component.literal("+10000"), (button) -> { actionPerformed(button); }));
 
-		addRenderableWidget(new CompactButton(5, leftPos + 14, topPos + 36, 34, 12, new TextComponent("Reset"), (button) -> { actionPerformed(button); }));
-		addRenderableWidget(new CompactButton(6, leftPos + 50, topPos + 36, 34, 12, new TextComponent("Ticks"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(5, leftPos + 14, topPos + 36, 34, 12, Component.literal("Reset"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(6, leftPos + 50, topPos + 36, 34, 12, Component.literal("Ticks"), (button) -> { actionPerformed(button); }));
 		addRenderableWidget(new CompactButton(7, leftPos + 14, topPos + 92, 70, 12,
-				new TextComponent(timer.getInvertRedstone() ? "No Redstone" : "Redstone"), (button) -> { actionPerformed(button); }));
+				Component.translatable(timer.getInvertRedstone() ? "No Redstone" : "Redstone"), (button) -> { actionPerformed(button); }));
 		addRenderableWidget(new CompactButton(8, leftPos + 14, topPos + 106, 70, 12,
-				new TextComponent(lastIsWorking ? "Stop" : "Start"), (button) -> { actionPerformed(button); }));
+				Component.translatable(lastIsWorking ? "Stop" : "Start"), (button) -> { actionPerformed(button); }));
 
 		updateCaptions(timer.getIsTicks());
 
@@ -57,12 +56,12 @@ public class GuiTimer extends GuiContainerBase<ContainerTimer> {
 	}
 
 	private void updateCaptions(boolean isTicks) {
-		((AbstractWidget) renderables.get(0)).setMessage(new TextComponent(isTicks ? "+1" : "+1s"));
-		((AbstractWidget) renderables.get(1)).setMessage(new TextComponent(isTicks ? "+10" : "+30s"));
-		((AbstractWidget) renderables.get(2)).setMessage(new TextComponent(isTicks ? "+100" : "+1m"));
-		((AbstractWidget) renderables.get(3)).setMessage(new TextComponent(isTicks ? "+1000" : "+30m"));
-		((AbstractWidget) renderables.get(4)).setMessage(new TextComponent(isTicks ? "+10000" : "+1h"));
-		((AbstractWidget) renderables.get(6)).setMessage(new TextComponent(isTicks ? "Ticks" : "Time"));
+		((AbstractWidget) renderables.get(0)).setMessage(Component.literal(isTicks ? "+1" : "+1s"));
+		((AbstractWidget) renderables.get(1)).setMessage(Component.literal(isTicks ? "+10" : "+30s"));
+		((AbstractWidget) renderables.get(2)).setMessage(Component.literal(isTicks ? "+100" : "+1m"));
+		((AbstractWidget) renderables.get(3)).setMessage(Component.literal(isTicks ? "+1000" : "+30m"));
+		((AbstractWidget) renderables.get(4)).setMessage(Component.literal(isTicks ? "+10000" : "+1h"));
+		((AbstractWidget) renderables.get(6)).setMessage(Component.literal(isTicks ? "Ticks" : "Time"));
 	}
 
 	@Override
@@ -84,7 +83,7 @@ public class GuiTimer extends GuiContainerBase<ContainerTimer> {
 		if (isWorking != lastIsWorking) {
 			textboxTimer.setEditable(!isWorking);
 			textboxTimer.changeFocus(!isWorking);
-			((AbstractWidget) renderables.get(8)).setMessage(new TextComponent(isWorking ? "Stop" : "Start"));
+			((AbstractWidget) renderables.get(8)).setMessage(Component.literal(isWorking ? "Stop" : "Start"));
 			lastIsWorking = isWorking;
 		}
 		if (isWorking)
@@ -160,14 +159,14 @@ public class GuiTimer extends GuiContainerBase<ContainerTimer> {
 			boolean invertRedstone = timer.getInvertRedstone();
 			NetworkHelper.updateSeverTileEntity(timer.getBlockPos(), 2, invertRedstone ? 0 : 1);
 			timer.setInvertRedstone(!invertRedstone);
-			((AbstractWidget) renderables.get(7)).setMessage(new TextComponent(!invertRedstone ? "No Redstone" : "Redstone"));
+			((AbstractWidget) renderables.get(7)).setMessage(Component.literal(!invertRedstone ? "No Redstone" : "Redstone"));
 			break;
 		case 8:
 			updateTime(0);
 			boolean isWorking = timer.getIsWorking();
 			NetworkHelper.updateSeverTileEntity(timer.getBlockPos(), 3, isWorking ? 0 : 1);
 			timer.setIsWorking(!isWorking);
-			((AbstractWidget) renderables.get(8)).setMessage(new TextComponent(!isWorking ? "Stop" : "Start"));
+			((AbstractWidget) renderables.get(8)).setMessage(Component.literal(!isWorking ? "Stop" : "Start"));
 			textboxTimer.setEditable(isWorking);
 			textboxTimer.changeFocus(isWorking);
 			break;

@@ -11,7 +11,7 @@ import com.zuxelus.zlib.gui.controls.GuiTextArea;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -40,7 +40,7 @@ public class GuiCardText extends GuiBase {
 	public void init() {
 		super.init();
 		addRenderableWidget(new Button(guiLeft + xSize - 60 - 8, guiTop + 120, 60, 20, CommonComponents.GUI_DONE, (button) -> { actionPerformed(1); }));
-		addRenderableWidget(new Button(guiLeft + 8, guiTop + 120, 60, 20, new TextComponent("Style"), (button) -> { actionPerformed(2); }));
+		addRenderableWidget(new Button(guiLeft + 8, guiTop + 120, 60, 20, Component.literal("Style"), (button) -> { actionPerformed(2); }));
 		textArea = new GuiTextArea(font, guiLeft + 8, guiTop + 5, xSize - 16, ySize - 35, lineCount);
 		addWidget(textArea);
 		setInitialFocus(textArea);

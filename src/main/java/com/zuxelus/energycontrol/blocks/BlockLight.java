@@ -1,9 +1,8 @@
 package com.zuxelus.energycontrol.blocks;
 
-import java.util.Random;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -48,7 +47,7 @@ public class BlockLight extends Block {
 	}
 
 	@Override
-	public void tick(BlockState state, ServerLevel world, BlockPos pos, Random rand) {
+	public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource rand) {
 		if (state.getValue(LIT) && !world.hasNeighborSignal(pos))
 			world.setBlock(pos, state.cycle(LIT), 2);
 	}

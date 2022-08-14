@@ -6,8 +6,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraftforge.api.distmarker.Dist;
@@ -22,7 +22,7 @@ public abstract class GuiBase extends Screen {
 	protected int guiTop;
 
 	public GuiBase(String name, int xSize, int ySize, String texture) {
-		super(new TranslatableComponent(name));
+		super(Component.translatable(name));
 		this.xSize = xSize;
 		this.ySize = ySize;
 		this.texture = new ResourceLocation(texture);
@@ -67,7 +67,7 @@ public abstract class GuiBase extends Screen {
 	}
 
 	protected EditBox addTextFieldWidget(int left, int top, int width, int height, boolean isEnabled, String text) {
-		EditBox textBox = new EditBox(font, guiLeft + left, guiTop + top, width, height, null, TextComponent.EMPTY);
+		EditBox textBox = new EditBox(font, guiLeft + left, guiTop + top, width, height, null, CommonComponents.EMPTY);
 		textBox.setEditable(isEnabled);
 		textBox.changeFocus(isEnabled);
 		textBox.setValue(text);

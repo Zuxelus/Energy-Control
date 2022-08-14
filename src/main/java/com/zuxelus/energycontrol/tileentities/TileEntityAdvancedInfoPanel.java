@@ -9,7 +9,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -236,6 +235,6 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 
 	@Override
 	public Component getDisplayName() {
-		return new TranslatableComponent(ModItems.info_panel_advanced.get().getDescriptionId());
+		return Component.translatable(ModItems.info_panel_advanced.get().getDescriptionId());
 	}
 }

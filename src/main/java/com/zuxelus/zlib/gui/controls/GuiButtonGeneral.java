@@ -7,8 +7,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -24,11 +24,11 @@ public class GuiButtonGeneral extends Button {
 	private boolean hasGradient;
 
 	public GuiButtonGeneral(int left, int top, int width, int height, ResourceLocation texture, int textureLeft, int textureTop, Button.OnPress onPress) {
-		this(left, top, width, height, TextComponent.EMPTY, texture, textureLeft, textureTop, 0, "", onPress);
+		this(left, top, width, height, CommonComponents.EMPTY, texture, textureLeft, textureTop, 0, "", onPress);
 	}
 
 	public GuiButtonGeneral(int left, int top, int width, int height, ResourceLocation texture, int textureLeft, int textureTop, int textureTopOff, Button.OnPress onPress) {
-		this(left, top, width, height, TextComponent.EMPTY, texture, textureLeft, textureTop, textureTopOff, "", onPress);
+		this(left, top, width, height, CommonComponents.EMPTY, texture, textureLeft, textureTop, textureTopOff, "", onPress);
 	}
 
 	public GuiButtonGeneral(int left, int top, int width, int height, Component text, Button.OnPress onPress) {

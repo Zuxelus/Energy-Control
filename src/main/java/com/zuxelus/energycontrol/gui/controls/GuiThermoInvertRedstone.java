@@ -9,7 +9,7 @@ import com.zuxelus.energycontrol.tileentities.TileEntityThermalMonitor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -22,7 +22,7 @@ public class GuiThermoInvertRedstone extends AbstractButton {
 	private boolean checked;
 
 	public GuiThermoInvertRedstone(int x, int y, TileEntityThermalMonitor thermo) {
-		super(x, y, 0, 0, TextComponent.EMPTY);
+		super(x, y, 0, 0, CommonComponents.EMPTY);
 		height = 15;
 		width = 51;
 		this.thermo = thermo;

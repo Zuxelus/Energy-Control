@@ -35,7 +35,7 @@ public class CrossModLoader {
 		loadCrossMod(ModIDs.ADV_GENERATORS, CrossAdvGenerators::new);
 		loadCrossMod(ModIDs.APPLIED_ENERGISTICS, CrossAppEng::new);
 		loadCrossMod(ModIDs.BIG_REACTORS, CrossBigReactors::new);
-		loadCrossMod(ModIDs.BIGGER_REACTORS, CrossBiggerReactors::new);
+		//loadCrossMod(ModIDs.BIGGER_REACTORS, CrossBiggerReactors::new);
 		//loadCrossModSafely(ModIDs.COMPUTER_CRAFT, () -> CrossComputerCraft::new);
 		loadCrossMod(ModIDs.MEKANISM, CrossMekanism::new);
 		loadCrossMod(ModIDs.MEKANISM_GENERATORS, CrossMekanismGenerators::new);

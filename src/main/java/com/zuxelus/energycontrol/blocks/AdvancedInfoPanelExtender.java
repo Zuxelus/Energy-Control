@@ -44,7 +44,7 @@ public class AdvancedInfoPanelExtender extends InfoPanelExtender {
 		if (EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) panel).getFacing() == hit.getDirection())
 			if (((TileEntityInfoPanel) panel).runTouchAction(player.getItemInHand(hand), pos, hit.getLocation()))
 				return InteractionResult.SUCCESS;
-		NetworkHooks.openGui((ServerPlayer) player, (TileEntityAdvancedInfoPanel) panel, pos);
+		NetworkHooks.openScreen((ServerPlayer) player, (TileEntityAdvancedInfoPanel) panel, pos);
 		return InteractionResult.SUCCESS;
 	}
 

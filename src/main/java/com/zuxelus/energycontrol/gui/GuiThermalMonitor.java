@@ -10,7 +10,7 @@ import com.zuxelus.zlib.gui.GuiBase;
 
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -27,17 +27,17 @@ public class GuiThermalMonitor extends GuiBase {
 	@Override
 	public void init() {
 		super.init();
-		addRenderableWidget(new CompactButton(0, guiLeft + 47, guiTop + 20, 22, 12, new TextComponent("-1"), (button) -> { actionPerformed(button); }));
-		addRenderableWidget(new CompactButton(1, guiLeft + 47, guiTop + 31, 22, 12, new TextComponent("-10"), (button) -> { actionPerformed(button); }));
-		addRenderableWidget(new CompactButton(2, guiLeft + 12, guiTop + 20, 36, 12, new TextComponent("-100"), (button) -> { actionPerformed(button); }));
-		addRenderableWidget(new CompactButton(3, guiLeft + 12, guiTop + 31, 36, 12, new TextComponent("-1000"), (button) -> { actionPerformed(button); }));
-		addRenderableWidget(new CompactButton(4, guiLeft + 12, guiTop + 42, 57, 12, new TextComponent("-10000"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(0, guiLeft + 47, guiTop + 20, 22, 12, Component.literal("-1"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(1, guiLeft + 47, guiTop + 31, 22, 12, Component.literal("-10"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(2, guiLeft + 12, guiTop + 20, 36, 12, Component.literal("-100"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(3, guiLeft + 12, guiTop + 31, 36, 12, Component.literal("-1000"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(4, guiLeft + 12, guiTop + 42, 57, 12, Component.literal("-10000"), (button) -> { actionPerformed(button); }));
 
-		addRenderableWidget(new CompactButton(5, guiLeft + 122, guiTop + 20, 22, 12, new TextComponent("+1"), (button) -> { actionPerformed(button); }));
-		addRenderableWidget(new CompactButton(6, guiLeft + 122, guiTop + 31, 22, 12, new TextComponent("+10"), (button) -> { actionPerformed(button); }));
-		addRenderableWidget(new CompactButton(7, guiLeft + 143, guiTop + 20, 36, 12, new TextComponent("+100"), (button) -> { actionPerformed(button); }));
-		addRenderableWidget(new CompactButton(8, guiLeft + 143, guiTop + 31, 36, 12, new TextComponent("+1000"), (button) -> { actionPerformed(button); }));
-		addRenderableWidget(new CompactButton(9, guiLeft + 122, guiTop + 42, 57, 12, new TextComponent("+10000"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(5, guiLeft + 122, guiTop + 20, 22, 12, Component.literal("+1"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(6, guiLeft + 122, guiTop + 31, 22, 12, Component.literal("+10"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(7, guiLeft + 143, guiTop + 20, 36, 12, Component.literal("+100"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(8, guiLeft + 143, guiTop + 31, 36, 12, Component.literal("+1000"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(9, guiLeft + 122, guiTop + 42, 57, 12, Component.literal("+10000"), (button) -> { actionPerformed(button); }));
 
 		addRenderableWidget(new GuiThermoInvertRedstone(guiLeft + 70, guiTop + 38, thermo));
 

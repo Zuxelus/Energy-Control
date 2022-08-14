@@ -1,19 +1,10 @@
-buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
-        mavenCentral()
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-    }
-}
 plugins {
     id 'eclipse'
     id 'maven-publish'
+    id 'net.minecraftforge.gradle' version '5.1.+'
 }
-apply plugin: 'net.minecraftforge.gradle'
 
-version = '1.18.2-0.2.6a'
+version = '1.19.2-0.2.6'
 group = 'com.zuxelus.energycontrol'
 archivesBaseName = 'EnergyControl-forge'
 
@@ -21,13 +12,14 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
-    mappings channel: 'official', version: '1.18.2'
+    mappings channel: 'official', version: '1.19.2'
     runs {
         client {
             workingDirectory project.file('run')
             //property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
             property 'mixin.env.disableRefMap', 'true'
+            //property 'forge.enabledGameTestNamespaces', 'examplemod'
 
             mods {
                 EnergyControl {
@@ -40,6 +32,7 @@ minecraft {
             workingDirectory project.file('run')
             //property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
+            //property 'forge.enabledGameTestNamespaces', 'examplemod'
 
             mods {
                 EnergyControl {
@@ -87,22 +80,15 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.18.2-40.1.73'
-    compileOnly fg.deobf ("curse.maven:ae2-223794:3911833")
-    compileOnly fg.deobf ("curse.maven:cctweaked-282001:3904453")
-    compileOnly fg.deobf ("curse.maven:WTHIT-455982:3834228") //
-    compileOnly fg.deobf ("curse.maven:jei-238222:3904349")
-    compileOnly fg.deobf ("curse.maven:extremereactors-250277:3855572")
-    compileOnly fg.deobf ("curse.maven:zerocore-247921:3872364")
-    compileOnly fg.deobf ("curse.maven:biggerreactors-407780:3884291")
-    compileOnly fg.deobf ("curse.maven:quartz-552262:3809944")
-    compileOnly fg.deobf ("curse.maven:phosphophyllite-412551:3888252")
-    compileOnly fg.deobf ("curse.maven:badpackets-615134:3773642")
-    compileOnly fg.deobf ("curse.maven:advancedgenerators-223622:3873885")
-    compileOnly fg.deobf ("curse.maven:bdlib-70496:3734491")
-    compileOnly fg.deobf ("curse.maven:catsforce-320926:3759354")
-    compileOnly fg.deobf ("curse.maven:mekanism-268560:3875976")
-    compileOnly fg.deobf ("curse.maven:mekanismgenerators-268566:3875978")
+    minecraft 'net.minecraftforge:forge:1.19.2-43.0.8'
+    implementation 'io.netty:netty-codec-http:4.1.77.Final'
+    compileOnly fg.deobf ("curse.maven:ae2-223794:3922691")
+    compileOnly fg.deobf ("curse.maven:cctweaked-282001:3904454")
+    compileOnly fg.deobf ("curse.maven:jei-238222:3928388")
+    compileOnly fg.deobf ("curse.maven:extremereactors-250277:3927548")
+    compileOnly fg.deobf ("curse.maven:zerocore-247921:3927546")
+    compileOnly fg.deobf ("curse.maven:mekanism-268560:3922056")
+    compileOnly fg.deobf ("curse.maven:mekanismgenerators-268566:3922058")
 }
 
 jar {

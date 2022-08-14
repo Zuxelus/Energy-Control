@@ -14,7 +14,6 @@ import com.zuxelus.zlib.gui.GuiContainerBase;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
@@ -45,7 +44,7 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 		else
 			renderTooltip(matrixStack, mouseX, mouseY);
 		if (isHovering(165, 16, 4, 52, mouseX, mouseY))
-			renderTooltip(matrixStack, new TextComponent(String.format("%d FE/%d FE", (int) container.te.getEnergy(), TileEntityKitAssembler.CAPACITY)), mouseX, mouseY);
+			renderTooltip(matrixStack, Component.literal(String.format("%d FE/%d FE", (int) container.te.getEnergy(), TileEntityKitAssembler.CAPACITY)), mouseX, mouseY);
 	}
 
 	private void renderInfoToolTip(PoseStack matrixStack, Slot slot, int x, int y) {
@@ -60,7 +59,7 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 		if (data != null)
 			for (PanelString panelString : data) {
 				if (panelString.textLeft != null)
-					list.add(new TextComponent(ChatFormatting.GRAY + panelString.textLeft));
+					list.add(Component.literal(ChatFormatting.GRAY + panelString.textLeft));
 			}
 		renderTooltip(matrixStack, list, stack.getTooltipImage(), x, y);
 	}

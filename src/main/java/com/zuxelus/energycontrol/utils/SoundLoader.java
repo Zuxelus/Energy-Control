@@ -12,7 +12,7 @@ import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.server.packs.repository.RepositorySource;
 import net.minecraft.server.packs.repository.Pack.PackConstructor;
 import net.minecraftforge.event.AddPackFindersEvent;
-import net.minecraftforge.resource.PathResourcePack;
+import net.minecraftforge.resource.PathPackResources;
 
 public class SoundLoader implements RepositorySource {
 	private static final SoundLoader INSTANCE = new SoundLoader();
@@ -30,7 +30,7 @@ public class SoundLoader implements RepositorySource {
 		alarms = new File(Minecraft.getInstance().gameDirectory, "alarms");
 		if (!alarms.exists())
 			return;
-		Pack pack = Pack.create(EnergyControl.MODID + "_alarms", false, () -> new PathResourcePack(EnergyControl.NAME + " Alarms", alarms.toPath()), factory, Pack.Position.BOTTOM, PackSource.DEFAULT);
+		Pack pack = Pack.create(EnergyControl.MODID + "_alarms", false, () -> new PathPackResources(EnergyControl.NAME + " Alarms", alarms.toPath()), factory, Pack.Position.BOTTOM, PackSource.DEFAULT);
 		if (pack != null)
 			packs.accept(pack);
 	}

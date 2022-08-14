@@ -82,7 +82,7 @@ public class TimerBlock extends FacingBlockSmall {
 		BlockEntity te = world.getBlockEntity(pos);
 		if (!(te instanceof TileEntityTimer))
 			return InteractionResult.PASS;
-		NetworkHooks.openGui((ServerPlayer) player, (TileEntityTimer) te, pos);
+		NetworkHooks.openScreen((ServerPlayer) player, (TileEntityTimer) te, pos);
 		return InteractionResult.SUCCESS;
 	}
 

@@ -18,7 +18,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -264,6 +263,6 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements MenuP
 
 	@Override
 	public Component getDisplayName() {
-		return new TranslatableComponent(ModItems.range_trigger.get().getDescriptionId());
+		return Component.translatable(ModItems.range_trigger.get().getDescriptionId());
 	}
 }

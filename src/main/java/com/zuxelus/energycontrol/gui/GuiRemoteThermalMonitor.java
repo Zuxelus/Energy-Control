@@ -13,7 +13,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
@@ -36,17 +35,17 @@ public class GuiRemoteThermalMonitor extends GuiContainerBase<ContainerRemoteThe
 	@Override
 	public void init() {
 		super.init();
-		addRenderableWidget(new CompactButton(0, leftPos + 40, topPos - 5 + 20, 22, 12, new TextComponent("-1"), (button) -> { actionPerformed(button); }));
-		addRenderableWidget(new CompactButton(1, leftPos + 40, topPos - 5 + 31, 22, 12, new TextComponent("-10"), (button) -> { actionPerformed(button); }));
-		addRenderableWidget(new CompactButton(2, leftPos + 5, topPos - 5 + 20, 36, 12, new TextComponent("-100"), (button) -> { actionPerformed(button); }));
-		addRenderableWidget(new CompactButton(3, leftPos + 5, topPos - 5 + 31, 36, 12, new TextComponent("-1000"), (button) -> { actionPerformed(button); }));
-		addRenderableWidget(new CompactButton(4, leftPos + 5, topPos - 5 + 42, 57, 12, new TextComponent("-10000"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(0, leftPos + 40, topPos - 5 + 20, 22, 12, Component.literal("-1"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(1, leftPos + 40, topPos - 5 + 31, 22, 12, Component.literal("-10"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(2, leftPos + 5, topPos - 5 + 20, 36, 12, Component.literal("-100"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(3, leftPos + 5, topPos - 5 + 31, 36, 12, Component.literal("-1000"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(4, leftPos + 5, topPos - 5 + 42, 57, 12, Component.literal("-10000"), (button) -> { actionPerformed(button); }));
 
-		addRenderableWidget(new CompactButton(5, leftPos + 115, topPos - 5 + 20, 22, 12, new TextComponent("+1"), (button) -> { actionPerformed(button); }));
-		addRenderableWidget(new CompactButton(6, leftPos + 115, topPos - 5 + 31, 22, 12, new TextComponent("+10"), (button) -> { actionPerformed(button); }));
-		addRenderableWidget(new CompactButton(7, leftPos + 136, topPos - 5 + 20, 36, 12, new TextComponent("+100"), (button) -> { actionPerformed(button); }));
-		addRenderableWidget(new CompactButton(8, leftPos + 136, topPos - 5 + 31, 36, 12, new TextComponent("+1000"), (button) -> { actionPerformed(button); }));
-		addRenderableWidget(new CompactButton(9, leftPos + 115, topPos - 5 + 42, 57, 12, new TextComponent("+10000"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(5, leftPos + 115, topPos - 5 + 20, 22, 12, Component.literal("+1"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(6, leftPos + 115, topPos - 5 + 31, 22, 12, Component.literal("+10"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(7, leftPos + 136, topPos - 5 + 20, 36, 12, Component.literal("+100"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(8, leftPos + 136, topPos - 5 + 31, 36, 12, Component.literal("+1000"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(9, leftPos + 115, topPos - 5 + 42, 57, 12, Component.literal("+10000"), (button) -> { actionPerformed(button); }));
 
 		addRenderableWidget(new GuiThermoInvertRedstone(leftPos + 63, topPos + 33, te));
 

@@ -7,9 +7,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class ArrayRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<StorageArrayRecipe> {
+public class ArrayRecipeSerializer implements RecipeSerializer<StorageArrayRecipe> {
 
 	@Override
 	public StorageArrayRecipe fromJson(ResourceLocation recipeId, JsonObject json) {

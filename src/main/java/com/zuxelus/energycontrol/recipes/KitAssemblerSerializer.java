@@ -9,9 +9,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class KitAssemblerSerializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<KitAssemblerRecipe> {
+public class KitAssemblerSerializer implements RecipeSerializer<KitAssemblerRecipe> {
 
 	@Override
 	public KitAssemblerRecipe fromJson(ResourceLocation id, JsonObject json) {

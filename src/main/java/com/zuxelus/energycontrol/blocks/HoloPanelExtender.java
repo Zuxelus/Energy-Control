@@ -33,7 +33,7 @@ public class HoloPanelExtender extends HoloPanel {
 		TileEntityInfoPanel panel = ((TileEntityHoloPanelExtender) te).getCore();
 		if (panel == null)
 			return InteractionResult.PASS;
-		NetworkHooks.openGui((ServerPlayer) player, (TileEntityInfoPanel) panel, pos);
+		NetworkHooks.openScreen((ServerPlayer) player, (TileEntityInfoPanel) panel, pos);
 		return InteractionResult.SUCCESS;
 	}
 }
