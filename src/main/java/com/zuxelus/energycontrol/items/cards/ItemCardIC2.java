@@ -48,7 +48,7 @@ public class ItemCardIC2 extends ItemCardBase {
 		if (reader.hasField(DataHelper.MAXHEAT) && (settings & 1) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelMelting", reader.getInt(DataHelper.MAXHEAT) * 85 / 100, showLabels));
 		if (reader.hasField("heatD") && (settings & 1) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelTemp", reader.getDouble("heatD"), "�C", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelTemp", reader.getDouble("heatD"), "°C", showLabels));
 		if (reader.hasField("heatChange") && (settings & 1) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelHeatChange", reader.getInt("heatChange"), showLabels));
 		if (reader.hasField(DataHelper.ENERGY) && (settings & 2) > 0)

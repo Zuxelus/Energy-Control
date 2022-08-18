@@ -180,14 +180,14 @@ public final class ItemCardMain extends Item implements IItemCard, ITouchAction,
 	@Override
 	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		return getCardById(stack.getItemDamage())
-			.map(itemCardBase -> itemCardBase.getSettingsList(stack))
+			.map(card -> card.getSettingsList(stack))
 			.orElse(null);
 	}
 
 	@Override
 	public boolean isRemoteCard(ItemStack stack) {
 		return getCardById(stack.getItemDamage())
-			.map(itemCardBase -> itemCardBase.isRemoteCard(stack))
+			.map(card -> card.isRemoteCard(stack))
 			.orElse(false);
 	}
 

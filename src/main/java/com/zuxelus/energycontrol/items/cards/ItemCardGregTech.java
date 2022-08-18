@@ -56,15 +56,15 @@ public class ItemCardGregTech extends ItemCardBase {
 		if (reader.hasField("speed"))
 			result.add(new PanelString("msg.ec.InfoPanelRotorSpeed", reader.getInt("speed"), showLabels));
 		if (reader.hasField("core"))
-			result.add(new PanelString("msg.ec.InfoPanelCoreHeat", reader.getLong("core"), "�C", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelCoreHeat", reader.getLong("core"), "°C", showLabels));
 		if (reader.hasField("hull"))
-			result.add(new PanelString("msg.ec.InfoPanelHullHeat", reader.getLong("hull"), "�C", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelHullHeat", reader.getLong("hull"), "°C", showLabels));
 		if (reader.hasField("level"))
 			result.add(new PanelString("msg.ec.InfoPanelOperatingLevel", reader.getString("level"), showLabels));*/
 		if (reader.hasField("heat"))
-			result.add(new PanelString("msg.ec.InfoPanelHeat", reader.getLong("heat"), "�C", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelHeat", reader.getLong("heat"), "°C", showLabels));
 		/*if (reader.hasField("heatD"))
-			result.add(new PanelString("msg.ec.InfoPanelHeat", reader.getDouble("heatD"), "�C", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelHeat", reader.getDouble("heatD"), "°C", showLabels));
 		if (reader.hasField("fuel"))
 			result.add(new PanelString("msg.ec.InfoPanelFuel", reader.getInt("fuel"), showLabels));
 		if (reader.hasField("fuelText"))

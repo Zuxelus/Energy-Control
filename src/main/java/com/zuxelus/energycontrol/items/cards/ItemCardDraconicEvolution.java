@@ -62,7 +62,7 @@ public class ItemCardDraconicEvolution extends ItemCardBase {
 		if (reader.hasField("status") && (settings & 1) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelStatus", reader.getString("status"), showLabels));
 		if (reader.hasField("temp") && (settings & 8) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelCoreHeat", reader.getInt("temp"), "�C", showLabels));
+			result.add(new PanelString("msg.ec.InfoPanelCoreHeat", reader.getInt("temp"), "°C", showLabels));
 		if (reader.hasField(DataHelper.CONSUMPTION) && (settings & 4) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelConsumption", reader.getDouble(DataHelper.CONSUMPTION), "RF/t", showLabels));
 		if (reader.hasField(DataHelper.OUTPUT) && (settings & 4) > 0)

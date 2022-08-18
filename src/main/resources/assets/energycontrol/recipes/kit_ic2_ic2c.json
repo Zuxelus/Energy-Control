@@ -9,7 +9,7 @@
             "item": "minecraft:paper"
         },
         "C": {
-            "item": "ic2:upgrade",
+            "item": "ic2:ic2upgrades",
             "data": 2
         },
         "F": {
@@ -27,20 +27,8 @@
     },
     "conditions": [
         {
-            "type": "forge:and",
-            "values": [
-                {
-                    "type": "forge:mod_loaded",
-                    "modid": "ic2"
-                },
-                {
-                    "type": "forge:not",
-                    "value": {
-                        "type": "forge:mod_loaded",
-                        "modid": "ic2-classic-spmod"
-                    }
-                }
-            ]
+            "type": "forge:mod_loaded",
+            "modid": "ic2-classic-spmod"
         }
     ]
 }

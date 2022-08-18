@@ -1,13 +1,14 @@
 package com.zuxelus.energycontrol.items.cards;
 
+import java.util.List;
+
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.IItemCard;
 import com.zuxelus.energycontrol.api.PanelString;
+
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-
-import java.util.List;
 
 public abstract class ItemCardBase implements IItemCard {
 	protected String name;
