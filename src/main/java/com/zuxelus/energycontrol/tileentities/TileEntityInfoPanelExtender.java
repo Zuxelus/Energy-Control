@@ -3,6 +3,7 @@ package com.zuxelus.energycontrol.tileentities;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.zlib.blocks.FacingBlockActive;
+import com.zuxelus.zlib.blocks.FacingHorizontalActive;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.core.BlockPos;
@@ -13,6 +14,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -162,10 +164,12 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 				coreZ = core.getBlockPos().getZ();
 
 				BlockState stateCore = level.getBlockState(core.getBlockPos());
-				BlockState state = level.getBlockState(worldPosition);
-				if (state.getValue(FacingBlockActive.ACTIVE) != stateCore.getValue(FacingBlockActive.ACTIVE))
-					level.setBlock(worldPosition, state.cycle(FacingBlockActive.ACTIVE), 2);
-				return;
+				if (stateCore.getBlock() instanceof FacingBlockActive || stateCore.getBlock() instanceof FacingHorizontalActive) {
+					BlockState state = level.getBlockState(worldPosition);
+					if (state.getValue(FacingBlockActive.ACTIVE) != stateCore.getValue(FacingBlockActive.ACTIVE))
+						level.setBlock(worldPosition, state.cycle(FacingBlockActive.ACTIVE), 2);
+					return;
+				}
 			}
 		} else {
 			BlockState state = level.getBlockState(worldPosition);

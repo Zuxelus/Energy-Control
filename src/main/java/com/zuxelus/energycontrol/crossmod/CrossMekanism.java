@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import mekanism.api.chemical.IChemicalTank;
@@ -377,6 +378,11 @@ public class CrossMekanism extends CrossModBase {
 			CompoundTag tag = setStorage(matrix.getEnergyContainer());
 			tag.putDouble("input", MekanismUtils.convertToDisplay(matrix.getLastInput()).doubleValue());
 			tag.putDouble("output", MekanismUtils.convertToDisplay(matrix.getLastOutput()).doubleValue());
+			return tag;
+		}
+		if (te instanceof TileEntityFluidTank) {
+			CompoundTag tag = new CompoundTag();
+			addTank(DataHelper.TANK, tag, ((TileEntityFluidTank) te).fluidTank);
 			return tag;
 		}
 		return null;

@@ -45,9 +45,9 @@ public class ModEventHandler {
 
 		ModList list = ModList.get();
 		if (list.isLoaded(ModIDs.ADV_GENERATORS)) {
-			ModItems.kit_adv_generators = new ItemKitAppEng();
+			ModItems.kit_adv_generators = new ItemKitAdvGenerators();
 			event.register("kit_adv_generators", ModItems.kit_adv_generators);
-			ModItems.card_adv_generators = new ItemCardAppEng();
+			ModItems.card_adv_generators = new ItemCardAdvGenerators();
 			event.register("card_adv_generators", ModItems.card_adv_generators);
 		}
 		if (list.isLoaded(ModIDs.APPLIED_ENERGISTICS)) {

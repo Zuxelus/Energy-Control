@@ -82,6 +82,13 @@ public class FluidInfo {
 		if (stack == null)
 			tag.putString(name, "N/A");
 		else
-			tag.putString(name, String.format("%s: %s mB", stack.getTranslationKey(), tank.getFluidAmount()));
+			tag.putString(name, String.format("%s: %s mB", stack.getDisplayName().getString(), tank.getFluidAmount()));
+	}
+
+	public static void addTank(String name, CompoundTag tag, FluidStack stack, int amount) {
+		if (stack == null)
+			tag.putString(name, "N/A");
+		else
+			tag.putString(name, String.format("%s: %s mB", stack.getDisplayName().getString(), amount));
 	}
 }
