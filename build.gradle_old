@@ -9,7 +9,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.12.2-0.3.1c"
+version = "1.12.2-0.3.1e"
 group= "com.zuxelus.energycontrol"
 archivesBaseName = "EnergyControl"
 
@@ -45,7 +45,7 @@ dependencies {
         'libs_/Galacticraft-Planets-Dev-1.12.2-4.0.2.261.jar',
         'libs_/GalacticraftCore-Dev-1.12.2-4.0.2.261.jar',
         'libs_/gregtech-1.12.2-1.17.1.770.jar',
-        'libs_/hbm-1.6.8a.jar',
+        'libs_/hbm-1.6.9a-G.jar',
         'libs_/IC2Classic+1.12-1.5.4.5+Dev.jar',
         'libs_/industrialcraft-2-2.8.197-ex112-dev.jar',
         'libs_/jei_1.12.2-4.16.1.302.jar',

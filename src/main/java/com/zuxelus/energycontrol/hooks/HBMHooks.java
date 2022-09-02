@@ -49,7 +49,18 @@ public class HBMHooks {
 	}
 
 	@Hook
-	public static void update(TileEntityCondenser te) {
+	public static void update(TileEntityTowerLarge te) {
+		if (!map.containsKey(te) || te.getWorld().isRemote)
+			return;
+
+		int convert = Math.min(te.tanks[0].getFluidAmount(), te.tanks[1].getCapacity() - te.tanks[1].getFluidAmount());
+		ArrayList<Integer> values = new ArrayList<>();
+		values.add(convert);
+		map.put(te, values);
+	}
+
+	@Hook
+	public static void update(TileEntityTowerSmall te) {
 		if (!map.containsKey(te) || te.getWorld().isRemote)
 			return;
 

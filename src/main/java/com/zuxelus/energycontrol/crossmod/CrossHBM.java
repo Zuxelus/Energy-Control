@@ -71,165 +71,165 @@ public class CrossHBM extends CrossModBase {
 	@Override
 	public NBTTagCompound getEnergyData(TileEntity te) {
 		NBTTagCompound tag = new NBTTagCompound();
-		tag.setString("euType", "HE");
+		tag.setString(DataHelper.EUTYPE, "HE");
 		if (te instanceof TileEntityMachineBattery) {
-			tag.setDouble("storage", ((TileEntityMachineBattery) te).getSPower());
-			tag.setDouble("maxStorage", ((TileEntityMachineBattery) te).maxPower);
+			tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineBattery) te).getSPower());
+			tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineBattery) te).maxPower);
 			return tag;
 		}
 		if (te instanceof TileEntityMachineCoal) {
-			tag.setDouble("storage", ((TileEntityMachineCoal) te).getSPower());
-			tag.setDouble("maxStorage", ((TileEntityMachineCoal) te).maxPower);
+			tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineCoal) te).getSPower());
+			tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineCoal) te).maxPower);
 			return tag;
 		}
 		if (te instanceof TileEntityMachineDiesel) {
-			tag.setDouble("storage", ((TileEntityMachineDiesel) te).getSPower());
-			tag.setDouble("maxStorage", ((TileEntityMachineDiesel) te).maxPower);
+			tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineDiesel) te).getSPower());
+			tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineDiesel) te).maxPower);
 			return tag;
 		}
 		if (te instanceof TileEntityMachineSeleniumEngine) {
-			tag.setDouble("storage", ((TileEntityMachineSeleniumEngine) te).getSPower());
-			tag.setDouble("maxStorage", ((TileEntityMachineSeleniumEngine) te).maxPower);
+			tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineSeleniumEngine) te).getSPower());
+			tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineSeleniumEngine) te).maxPower);
 			return tag;
 		}
 		if (te instanceof TileEntityMachineRTG) {
-			tag.setDouble("storage", ((TileEntityMachineRTG) te).getSPower());
-			tag.setDouble("maxStorage", ((TileEntityMachineRTG) te).powerMax);
+			tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineRTG) te).getSPower());
+			tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineRTG) te).powerMax);
 			return tag;
 		}
 		if (te instanceof TileEntityMachineMiniRTG) {
-			tag.setDouble("storage", ((TileEntityMachineMiniRTG) te).getSPower());
-			tag.setDouble("maxStorage", ((TileEntityMachineMiniRTG) te).getBlockType() == ModBlocks.machine_powerrtg ? 50000 : 1400);
+			tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineMiniRTG) te).getSPower());
+			tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineMiniRTG) te).getBlockType() == ModBlocks.machine_powerrtg ? 50000 : 1400);
 			return tag;
 		}
 		if (te instanceof TileEntityMachineAmgen) {
-			tag.setDouble("storage", ((TileEntityMachineAmgen) te).getSPower());
-			tag.setDouble("maxStorage", ((TileEntityMachineAmgen) te).maxPower);
+			tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineAmgen) te).getSPower());
+			tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineAmgen) te).maxPower);
 			return tag;
 		}
 		if (te instanceof TileEntityMachineSPP) {
-			tag.setDouble("storage", ((TileEntityMachineSPP) te).getSPower());
-			tag.setDouble("maxStorage", ((TileEntityMachineSPP) te).maxPower);
+			tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineSPP) te).getSPower());
+			tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineSPP) te).maxPower);
 			return tag;
 		}
 		if (te instanceof TileEntityMachineTurbine) {
-			tag.setDouble("storage", ((TileEntityMachineTurbine) te).getSPower());
-			tag.setDouble("maxStorage", ((TileEntityMachineTurbine) te).maxPower);
+			tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineTurbine) te).getSPower());
+			tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineTurbine) te).maxPower);
 			return tag;
 		}
 		if (te instanceof TileEntityMachineShredder) {
-			tag.setDouble("storage", ((TileEntityMachineShredder) te).getPower());
-			tag.setDouble("maxStorage", ((TileEntityMachineShredder) te).maxPower);
+			tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineShredder) te).getPower());
+			tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineShredder) te).maxPower);
 			return tag;
 		}
 		if (te instanceof TileEntityMachineBoilerElectric) {
-			tag.setDouble("storage", ((TileEntityMachineBoilerElectric) te).getPower());
-			tag.setDouble("maxStorage", ((TileEntityMachineBoilerElectric) te).maxPower);
+			tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineBoilerElectric) te).getPower());
+			tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineBoilerElectric) te).maxPower);
 			return tag;
 		}
 		if (te instanceof TileEntityMachineArcFurnace) {
-			tag.setDouble("storage", ((TileEntityMachineArcFurnace) te).getPower());
-			tag.setDouble("maxStorage", ((TileEntityMachineArcFurnace) te).maxPower);
+			tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineArcFurnace) te).getPower());
+			tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineArcFurnace) te).maxPower);
 			return tag;
 		}
 		if (te instanceof TileEntityMachineCentrifuge) {
-			tag.setDouble("storage", ((TileEntityMachineCentrifuge) te).getPower());
-			tag.setDouble("maxStorage", ((TileEntityMachineCentrifuge) te).maxPower);
+			tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineCentrifuge) te).getPower());
+			tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineCentrifuge) te).maxPower);
 			return tag;
 		}
 		if (te instanceof TileEntityMachineGasCent) {
-			tag.setDouble("storage", ((TileEntityMachineGasCent) te).getPower());
-			tag.setDouble("maxStorage", ((TileEntityMachineGasCent) te).maxPower);
+			tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineGasCent) te).getPower());
+			tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineGasCent) te).maxPower);
 			return tag;
 		}
 		if (te instanceof TileEntityProxyCombo) {
 			TileEntity base = ((TileEntityProxyCombo) te).getTile();
 			if (base instanceof TileEntityMachineLargeTurbine) {
-				tag.setDouble("storage", ((TileEntityMachineLargeTurbine) base).getSPower());
-				tag.setDouble("maxStorage", ((TileEntityMachineLargeTurbine) base).maxPower);
+				tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineLargeTurbine) base).getSPower());
+				tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineLargeTurbine) base).maxPower);
 				return tag;
 			}
 			if (base instanceof TileEntityMachineIGenerator) {
-				tag.setDouble("storage", ((TileEntityMachineIGenerator) base).getSPower());
-				tag.setDouble("maxStorage", ((TileEntityMachineIGenerator) base).maxPower);
+				tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineIGenerator) base).getSPower());
+				tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineIGenerator) base).maxPower);
 				return tag;
 			}
 			if (base instanceof TileEntityITER) {
-				tag.setDouble("storage", ((TileEntityITER) base).getPower());
-				tag.setDouble("maxStorage", ((TileEntityITER) base).maxPower);
+				tag.setDouble(DataHelper.ENERGY, ((TileEntityITER) base).getPower());
+				tag.setDouble(DataHelper.CAPACITY, ((TileEntityITER) base).maxPower);
 				return tag;
 			}
 			if (base instanceof TileEntityMachinePlasmaHeater) {
-				tag.setDouble("storage", ((TileEntityMachinePlasmaHeater) base).getPower());
-				tag.setDouble("maxStorage", ((TileEntityMachinePlasmaHeater) base).maxPower);
+				tag.setDouble(DataHelper.ENERGY, ((TileEntityMachinePlasmaHeater) base).getPower());
+				tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachinePlasmaHeater) base).maxPower);
 				return tag;
 			}
 			if (base instanceof TileEntityMachineCrystallizer) {
-				tag.setDouble("storage", ((TileEntityMachineCrystallizer) base).getPower());
-				tag.setDouble("maxStorage", ((TileEntityMachineCrystallizer) base).maxPower);
+				tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineCrystallizer) base).getPower());
+				tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineCrystallizer) base).maxPower);
 				return tag;
 			}
 			if (base instanceof TileEntityChungus) {
-				tag.setDouble("storage", ((TileEntityChungus) base).getSPower());
-				tag.setDouble("maxStorage", ((TileEntityChungus) base).maxPower);
+				tag.setDouble(DataHelper.ENERGY, ((TileEntityChungus) base).getSPower());
+				tag.setDouble(DataHelper.CAPACITY, ((TileEntityChungus) base).maxPower);
 				return tag;
 			}
 		}
 		if (te instanceof TileEntityDummy) {
 			TileEntity base = te.getWorld().getTileEntity(((TileEntityDummy) te).target);
 			if (base instanceof TileEntityMachineChemplant) {
-				tag.setLong("storage", ((TileEntityMachineChemplant) base).getPower());
-				tag.setLong("maxStorage", ((TileEntityMachineChemplant) base).maxPower);
+				tag.setLong(DataHelper.ENERGY, ((TileEntityMachineChemplant) base).getPower());
+				tag.setLong(DataHelper.CAPACITY, ((TileEntityMachineChemplant) base).maxPower);
 				return tag;
 			}
 			if (base instanceof TileEntityMachineGasFlare) {
-				tag.setDouble("storage", ((TileEntityMachineGasFlare) base).getSPower());
-				tag.setDouble("maxStorage", ((TileEntityMachineGasFlare) base).maxPower);
+				tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineGasFlare) base).getSPower());
+				tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineGasFlare) base).maxPower);
 				return tag;
 			}
 			if (base instanceof TileEntityMachineTurbofan) {
-				tag.setDouble("storage", ((TileEntityMachineTurbofan) base).getSPower());
-				tag.setDouble("maxStorage", ((TileEntityMachineTurbofan) base).maxPower);
+				tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineTurbofan) base).getSPower());
+				tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineTurbofan) base).maxPower);
 				return tag;
 			}
 			if (base instanceof TileEntityMachineRadGen) {
-				tag.setDouble("storage", ((TileEntityMachineRadGen) base).getSPower());
-				tag.setDouble("maxStorage", ((TileEntityMachineRadGen) base).maxPower);
+				tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineRadGen) base).getSPower());
+				tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineRadGen) base).maxPower);
 				return tag;
 			}
 			if (base instanceof TileEntityAMSLimiter) {
-				tag.setDouble("storage", ((TileEntityAMSLimiter) base).getPower());
-				tag.setDouble("maxStorage", ((TileEntityAMSLimiter) base).maxPower);
+				tag.setDouble(DataHelper.ENERGY, ((TileEntityAMSLimiter) base).getPower());
+				tag.setDouble(DataHelper.CAPACITY, ((TileEntityAMSLimiter) base).maxPower);
 				return tag;
 			}
 			if (base instanceof TileEntityAMSBase) {
-				tag.setDouble("storage", ((TileEntityAMSBase) base).getSPower());
-				tag.setDouble("maxStorage", ((TileEntityAMSBase) base).maxPower);
+				tag.setDouble(DataHelper.ENERGY, ((TileEntityAMSBase) base).getSPower());
+				tag.setDouble(DataHelper.CAPACITY, ((TileEntityAMSBase) base).maxPower);
 				return tag;
 			}
 			if (base instanceof TileEntityAMSEmitter) {
-				tag.setDouble("storage", ((TileEntityAMSEmitter) base).getPower());
-				tag.setDouble("maxStorage", ((TileEntityAMSEmitter) base).maxPower);
+				tag.setDouble(DataHelper.ENERGY, ((TileEntityAMSEmitter) base).getPower());
+				tag.setDouble(DataHelper.CAPACITY, ((TileEntityAMSEmitter) base).maxPower);
 				return tag;
 			}
 			if (base instanceof TileEntityMachineOilWell) {
-				tag.setDouble("storage", ((TileEntityMachineOilWell) base).getPower());
-				tag.setDouble("maxStorage", ((TileEntityMachineOilWell) base).maxPower);
+				tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineOilWell) base).getPower());
+				tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineOilWell) base).maxPower);
 				return tag;
 			}
 			if (base instanceof TileEntityMachineAssembler) {
-				tag.setDouble("storage", ((TileEntityMachineAssembler) base).getPower());
-				tag.setDouble("maxStorage", ((TileEntityMachineAssembler) base).maxPower);
+				tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineAssembler) base).getPower());
+				tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineAssembler) base).maxPower);
 				return tag;
 			}
 			if (base instanceof TileEntityMachinePumpjack) {
-				tag.setDouble("storage", ((TileEntityMachinePumpjack) base).getPower());
-				tag.setDouble("maxStorage", ((TileEntityMachinePumpjack) base).maxPower);
+				tag.setDouble(DataHelper.ENERGY, ((TileEntityMachinePumpjack) base).getPower());
+				tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachinePumpjack) base).maxPower);
 				return tag;
 			}
 			if (base instanceof TileEntityMachineRefinery) {
-				tag.setDouble("storage", ((TileEntityMachineRefinery) base).getPower());
-				tag.setDouble("maxStorage", ((TileEntityMachineRefinery) base).maxPower);
+				tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineRefinery) base).getPower());
+				tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineRefinery) base).maxPower);
 				return tag;
 			}
 		}
@@ -237,8 +237,8 @@ public class CrossHBM extends CrossModBase {
 			for (EnumFacing side : EnumFacing.HORIZONTALS) {
 				TileEntity core = te.getWorld().getTileEntity(te.getPos().offset(side, 3));
 				if (core instanceof TileEntityWatzCore) {
-					tag.setDouble("storage", ((TileEntityWatzCore) core).getSPower());
-					tag.setDouble("maxStorage", ((TileEntityWatzCore) core).maxPower);
+					tag.setDouble(DataHelper.ENERGY, ((TileEntityWatzCore) core).getSPower());
+					tag.setDouble(DataHelper.CAPACITY, ((TileEntityWatzCore) core).maxPower);
 					return tag;
 				}
 			}
@@ -247,8 +247,8 @@ public class CrossHBM extends CrossModBase {
 			for (EnumFacing side : EnumFacing.HORIZONTALS) {
 				TileEntity core = te.getWorld().getTileEntity(te.getPos().offset(side, 8));
 				if (core instanceof TileEntityFusionMultiblock) {
-					tag.setDouble("storage", ((TileEntityFusionMultiblock) core).getSPower());
-					tag.setDouble("maxStorage", ((TileEntityFusionMultiblock) core).maxPower);
+					tag.setDouble(DataHelper.ENERGY, ((TileEntityFusionMultiblock) core).getSPower());
+					tag.setDouble(DataHelper.CAPACITY, ((TileEntityFusionMultiblock) core).maxPower);
 					return tag;
 				}
 			}
@@ -321,6 +321,10 @@ public class CrossHBM extends CrossModBase {
 		}
 		if (te instanceof TileEntityMachineGasCent) {
 			result.add(new FluidInfo(((TileEntityMachineGasCent) te).tank));
+			return result;
+		}
+		if (te instanceof TileEntityBarrel) {
+			result.add(new FluidInfo(((TileEntityBarrel) te).tank));
 			return result;
 		}
 		if (te instanceof TileEntityProxyCombo) {
@@ -643,6 +647,11 @@ public class CrossHBM extends CrossModBase {
 			FluidInfo.addTank("tank", tag, ((TileEntityMachineGasCent) te).tank);
 			return tag;
 		}
+		if (te instanceof TileEntityBarrel) {
+			NBTTagCompound tag = new NBTTagCompound();
+			FluidInfo.addTank("tank", tag, ((TileEntityBarrel) te).tank);
+			return tag;
+		}
 		if (te instanceof TileEntityProxyCombo) {
 			NBTTagCompound tag = new NBTTagCompound();
 			TileEntity base = ((TileEntityProxyCombo) te).getTile();
@@ -651,8 +660,8 @@ public class CrossHBM extends CrossModBase {
 				if (values != null) {
 					tag.setBoolean("active", (int) values.get(1) > 0);
 					tag.setDouble("consumption", (int) values.get(0));
-					tag.setDouble("output", (int) values.get(1));
-					tag.setDouble("outputmb", (int) values.get(2));
+					tag.setDouble("output", (int) values.get(2));
+					tag.setDouble("outputmb", (int) values.get(1));
 				}
 				tag.setLong("stored", ((TileEntityMachineLargeTurbine) base).getSPower());
 				tag.setLong("capacity", ((TileEntityMachineLargeTurbine) base).maxPower);
@@ -691,8 +700,8 @@ public class CrossHBM extends CrossModBase {
 				tag.setLong("stored", reactor.getPower());
 				tag.setLong("capacity", reactor.maxPower);
 				int output = FusionRecipes.getSteamProduction(reactor.plasmaType) * 20;
-				tag.setDouble("consumption", output * 10);
-				tag.setDouble("outputmb", output);
+				tag.setDouble("consumption", reactor.isOn ? output * 10 : 0);
+				tag.setDouble("outputmb", reactor.isOn ? output : 0);
 				FluidInfo.addTank("tank", tag, reactor.tanks[0]);
 				FluidInfo.addTank("tank2", tag, reactor.tanks[1]);
 				FluidInfo.addTank("tank3", tag, reactor.plasma);
@@ -733,6 +742,16 @@ public class CrossHBM extends CrossModBase {
 				}
 				FluidInfo.addTank("tank", tag, ((TileEntityTowerLarge) base).tanks[0]);
 				FluidInfo.addTank("tank2", tag, ((TileEntityTowerLarge) base).tanks[1]);
+				return tag;
+			}
+			if (base instanceof TileEntityTowerSmall) {
+				ArrayList values = getHookValues(base);
+				if (values != null) {
+					tag.setDouble("consumption", (int) values.get(0));
+					tag.setDouble("outputmb", (int) values.get(0));
+				}
+				FluidInfo.addTank("tank", tag, ((TileEntityTowerSmall) base).tanks[0]);
+				FluidInfo.addTank("tank2", tag, ((TileEntityTowerSmall) base).tanks[1]);
 				return tag;
 			}
 			if (base instanceof TileEntityChungus) {
@@ -882,6 +901,11 @@ public class CrossHBM extends CrossModBase {
 				FluidInfo.addTank("tank3", tag, ((TileEntityMachineRefinery) base).tanks[2]);
 				FluidInfo.addTank("tank4", tag, ((TileEntityMachineRefinery) base).tanks[3]);
 				FluidInfo.addTank("tank5", tag, ((TileEntityMachineRefinery) base).tanks[4]);
+				return tag;
+			}
+			if (base instanceof TileEntityMachineFluidTank) {
+				NBTTagCompound tag = new NBTTagCompound();
+				FluidInfo.addTank("tank", tag, ((TileEntityMachineFluidTank) base).tank);
 				return tag;
 			}
 		}

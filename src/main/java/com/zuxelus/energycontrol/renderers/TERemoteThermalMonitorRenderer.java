@@ -17,7 +17,7 @@ public class TERemoteThermalMonitorRenderer extends TileEntitySpecialRenderer<Ti
 	public void render(TileEntityRemoteThermalMonitor te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x, y, z);
-		CubeRenderer.rotateBlock(te.getFacing());
+		CubeRenderer.rotateBlock(te.getFacing(), te.getRotation());
 
 		if (destroyStage > -1) {
 			bindTexture(DESTROY_STAGES[destroyStage]);

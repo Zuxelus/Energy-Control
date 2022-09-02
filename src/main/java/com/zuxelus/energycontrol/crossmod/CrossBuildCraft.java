@@ -42,7 +42,7 @@ public class CrossBuildCraft extends CrossModBase {
 						amount += currStack.amount;
 					}
 					List<FluidInfo> result = new ArrayList<>();
-					result.add(new FluidInfo(stack.getFluid(), amount, ((PipeFlowFluids) flow).capacity));
+					result.add(new FluidInfo(stack.getFluid(), stack.getLocalizedName(), amount, ((PipeFlowFluids) flow).capacity));
 					return result;
 				}
 			}

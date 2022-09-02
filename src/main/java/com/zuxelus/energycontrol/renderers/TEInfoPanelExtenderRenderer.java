@@ -18,7 +18,7 @@ public class TEInfoPanelExtenderRenderer extends TileEntitySpecialRenderer<TileE
 			return;
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x, y, z);
-		CubeRenderer.rotateBlock(te.getFacing());
+		CubeRenderer.rotateBlock(te.getFacing(), te.getRotation());
 
 		int color = te.getColored() ? te.getColorBackground() : TileEntityInfoPanel.GREEN;
 		if (destroyStage > -1) {

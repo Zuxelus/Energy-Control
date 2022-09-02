@@ -30,14 +30,4 @@ public class TileEntityAdvancedInfoPanelExtender extends TileEntityInfoPanelExte
 			return 0;
 		return ((TileEntityAdvancedInfoPanel) core).rotateVert;
 	}
-
-	@Override
-	public EnumFacing getRotation() {
-		if (screen == null)
-			return EnumFacing.NORTH;
-		TileEntityInfoPanel core = screen.getCore(world);
-		if (!(core instanceof TileEntityAdvancedInfoPanel))
-			return EnumFacing.NORTH;
-		return core.getRotation();
-	}
 }

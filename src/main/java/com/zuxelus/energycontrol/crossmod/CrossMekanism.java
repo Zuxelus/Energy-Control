@@ -15,6 +15,8 @@ import mekanism.common.InfuseStorage;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.matrix.SynchronizedMatrixData;
+import mekanism.common.recipe.inputs.FluidInput;
+import mekanism.common.recipe.machines.ThermalEvaporationRecipe;
 import mekanism.common.tile.*;
 import mekanism.common.tile.prefab.*;
 import mekanism.common.util.MekanismUtils;
@@ -123,22 +125,26 @@ public class CrossMekanism extends CrossModBase {
 			result.add(toFluidInfo(((TileEntitySolarNeutronActivator) te).outputTank));
 			return result;
 		}
+		if (te instanceof TileEntityThermalEvaporationController) {
+			result.add(new FluidInfo(((TileEntityThermalEvaporationController) te).inputTank));
+			result.add(new FluidInfo(((TileEntityThermalEvaporationController) te).outputTank));
+		}
 		return null;
 	}
 
 	public static FluidInfo toFluidInfo(GasTank tank) {
 		GasStack stack = tank.getGas();
 		if (stack == null)
-			return new FluidInfo(null, null, 0, tank.getMaxGas());
+			return new FluidInfo("", null, 0, tank.getMaxGas());
 		Fluid fluid = stack.getGas().getFluid();
 		if (fluid != null)
-			return new FluidInfo(fluid, stack.amount, tank.getMaxGas());
-		return new FluidInfo(stack.getGas().getTranslationKey(), stack.getGas().getIcon().toString(), stack.amount, tank.getMaxGas());
+			return new FluidInfo(fluid, stack.getGas().getLocalizedName(), stack.amount, tank.getMaxGas());
+		return new FluidInfo(stack.getGas().getLocalizedName(), stack.getGas().getIcon().toString(), stack.amount, tank.getMaxGas());
 	}
 
 	public static FluidInfo toFluidInfo(InfuseStorage tank, int capacity) {
 		if (tank.getType() == null)
-			return new FluidInfo(null, null, tank.getAmount(), capacity);
+			return new FluidInfo("", null, tank.getAmount(), capacity);
 		return new FluidInfo(tank.getType().unlocalizedName, null, tank.getAmount(), capacity);
 	}
 
@@ -328,6 +334,19 @@ public class CrossMekanism extends CrossModBase {
 			FluidInfo.addTank(DataHelper.TANK, tag, ((TileEntityPRC) te).inputFluidTank);
 			addTank(DataHelper.TANK2, tag, ((TileEntityPRC) te).inputGasTank);
 			addTank(DataHelper.TANK3, tag, ((TileEntityPRC) te).outputGasTank);
+			return tag;
+		}
+		if (te instanceof TileEntityThermalEvaporationController) {
+			TileEntityThermalEvaporationController controller = (TileEntityThermalEvaporationController) te;
+			NBTTagCompound tag = new NBTTagCompound();
+			tag.setString("temp", CrossMekanism.getTempString(controller.temperature + 300));
+			tag.setInteger("height", controller.height);
+			ThermalEvaporationRecipe recipe = controller.getRecipe();
+			if (recipe != null)
+				tag.setDouble(DataHelper.CONSUMPTIONMB, controller.lastGain * ((FluidInput)recipe.recipeInput).ingredient.amount);
+			tag.setDouble(DataHelper.OUTPUTMB, controller.lastGain);
+			FluidInfo.addTank(DataHelper.TANK, tag, controller.inputTank);
+			FluidInfo.addTank(DataHelper.TANK2, tag, controller.outputTank);
 			return tag;
 		}
 		return null;

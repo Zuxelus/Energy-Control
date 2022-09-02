@@ -134,15 +134,53 @@ public class CubeRenderer {
 		}
 	}
 
-	public static void rotateBlock(EnumFacing facing) {
+	public static void rotateBlock(EnumFacing facing, EnumFacing rotation) {
 		switch (facing) {
 		case UP:
-			GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
-			GlStateManager.translate(0.0F, 0.0F, -1.0F);
+			switch( rotation) {
+			case NORTH:
+				GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
+				GlStateManager.translate(0.0F, 0.0F, -1.0F);
+				break;
+			case SOUTH:
+				GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
+				GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+				GlStateManager.translate(-1.0F, -1.0F, -1.0F);
+				break;
+			case WEST:
+				GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
+				GlStateManager.rotate(90.0F, 0.0F, 0.0F, -1.0F);
+				GlStateManager.translate(-1.0F, 0.0F, -1.0F);
+				break;
+			case EAST:
+				GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
+				GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
+				GlStateManager.translate(0.0F, -1.0F, -1.0F);
+				break;
+			}
 			break;
 		case DOWN:
-			GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
-			GlStateManager.translate(0.0F, -1.0F, 0.0F);
+			switch( rotation) {
+			case NORTH:
+				GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+				GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+				GlStateManager.translate(-1.0F, 0.0F, 0.0F);
+				break;
+			case SOUTH:
+				GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+				GlStateManager.translate(0.0F, -1.0F, 0.0F);
+				break;
+			case WEST:
+				GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+				GlStateManager.rotate(90.0F, 0.0F, 0.0F, -1.0F);
+				GlStateManager.translate(0.0F, 0.0F, 0.0F);
+				break;
+			case EAST:
+				GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+				GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
+				GlStateManager.translate(-1.0F, -1.0F, 0.0F);
+				break;
+			}
 			break;
 		case NORTH:
 			break;
@@ -161,15 +199,53 @@ public class CubeRenderer {
 		}
 	}
 
-	public static void rotateBlockText(EnumFacing facing) {
+	public static void rotateBlockText(EnumFacing facing, EnumFacing rotation) {
 		switch (facing) {
 		case UP:
-			GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
-			GlStateManager.translate(0.0F, -1.0F, 0.0F);
+			switch( rotation) {
+			case NORTH:
+				GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+				GlStateManager.translate(0.0F, -1.0F, 0.0F);
+				break;
+			case SOUTH:
+				GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+				GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+				GlStateManager.translate(-1.0F, -1.0F, -1.0F);
+				break;
+			case WEST:
+				GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+				GlStateManager.rotate(90.0F, 0.0F, -1.0F, 0.0F);
+				GlStateManager.translate(0.0F, -1.0F, -1.0F);
+				break;
+			case EAST:
+				GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+				GlStateManager.rotate(90.0F, 0.0F, 1.0F, 0.0F);
+				GlStateManager.translate(-1.0F, -1.0F, 0.0F);
+				break;
+			}
 			break;
 		case DOWN:
-			GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
-			GlStateManager.translate(0.0F, -1.0F, 0.0F);
+			switch( rotation) {
+			case NORTH:
+				GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+				GlStateManager.translate(0.0F, -1.0F, 0.0F);
+				break;
+			case SOUTH:
+				GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+				GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+				GlStateManager.translate(-1.0F, -1.0F, -1.0F);
+				break;
+			case WEST:
+				GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+				GlStateManager.rotate(90.0F, 0.0F, -1.0F, 0.0F);
+				GlStateManager.translate(0.0F, -1.0F, -1.0F);
+				break;
+			case EAST:
+				GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
+				GlStateManager.rotate(90.0F, 0.0F, 1.0F, 0.0F);
+				GlStateManager.translate(-1.0F, -1.0F, 0.0F);
+				break;
+			}
 			break;
 		case NORTH:
 			GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);

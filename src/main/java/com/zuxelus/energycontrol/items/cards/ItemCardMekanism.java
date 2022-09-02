@@ -57,8 +57,12 @@ public class ItemCardMekanism extends ItemCardBase {
 			result.add(new PanelString("msg.ec.InfoPanelInput", reader.getDouble("input"), euType + "/t", showLabels));
 		if (reader.hasField(DataHelper.OUTPUT) && (settings & 1) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble(DataHelper.OUTPUT), euType + "/t", showLabels));
+		if (reader.hasField(DataHelper.OUTPUTMB) && (settings & 1) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble(DataHelper.OUTPUTMB), "mB/t", showLabels));
 		if (reader.hasField("usage") && (settings & 2) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelUsing", reader.getDouble("usage"), euType + "/t", showLabels));
+		if (reader.hasField(DataHelper.CONSUMPTIONMB) && (settings & 2) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelConsumption", reader.getDouble(DataHelper.CONSUMPTIONMB), "mB/t", showLabels));
 		if (reader.hasField(DataHelper.ENERGY) && (settings & 4) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelEnergy", reader.getDouble(DataHelper.ENERGY), euType, showLabels));
 		if (reader.hasField(DataHelper.CAPACITY) && (settings & 8) > 0)
@@ -75,6 +79,8 @@ public class ItemCardMekanism extends ItemCardBase {
 			result.add(new PanelString("msg.ec.InfoPanelTemperature", reader.getString("temp"), showLabels));
 		if (reader.hasField("plasma") && (settings & 64) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelPlasma", reader.getString("plasma"), showLabels));
+		if (reader.hasField("height") && (settings & 64) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelHeight", reader.getInt("height"), showLabels));
 		if (reader.hasField(DataHelper.TANK) && (settings & 16) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString(DataHelper.TANK), showLabels));
 		if (reader.hasField(DataHelper.TANK2) && (settings & 16) > 0)

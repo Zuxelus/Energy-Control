@@ -16,7 +16,7 @@ public class TEAdvancedInfoPanelExtenderRenderer extends TileEntitySpecialRender
 	public void render(TileEntityAdvancedInfoPanelExtender te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x, y, z);
-		CubeRenderer.rotateBlock(te.getFacing());
+		CubeRenderer.rotateBlock(te.getFacing(), te.getRotation());
 
 		int color = te.getColored() ? te.getColorBackground() : TileEntityAdvancedInfoPanel.DEFAULT_BACKGROUND;
 		if (destroyStage > -1)

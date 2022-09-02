@@ -132,13 +132,13 @@ public class ItemCardLiquidArray extends ItemCardBase {
 		}
 		if (showSummary) {
 			if (showAmount)
-				result.add(new PanelString("msg.ec.InfoPanelLiquidAmount", totalAmount, showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelAmount", totalAmount, showLabels));
 			if (showFree)
-				result.add(new PanelString("msg.ec.InfoPanelLiquidFree", totalCapacity - totalAmount, showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelFree", totalCapacity - totalAmount, showLabels));
 			if (showName)
-				result.add(new PanelString("msg.ec.InfoPanelLiquidCapacity", totalCapacity, showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelCapacity", totalCapacity, showLabels));
 			if (showPercentage)
-				result.add(new PanelString("msg.ec.InfoPanelLiquidPercentage",
+				result.add(new PanelString("msg.ec.InfoPanelPercentage",
 						totalCapacity == 0 ? 100 : ((totalAmount / totalCapacity) * 100), showLabels));
 		}
 		return result;

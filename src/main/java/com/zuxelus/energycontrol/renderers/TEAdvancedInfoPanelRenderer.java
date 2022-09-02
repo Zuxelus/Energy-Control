@@ -44,7 +44,7 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 	public void render(TileEntityAdvancedInfoPanel te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x, y, z);
-		CubeRenderer.rotateBlock(te.getFacing());
+		CubeRenderer.rotateBlock(te.getFacing(), te.getRotation());
 
 		int color = te.getColored() ? te.getColorBackground() : TileEntityAdvancedInfoPanel.DEFAULT_BACKGROUND;
 		if (destroyStage > -1)
@@ -79,7 +79,7 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 				}
 			}
 
-			CubeRenderer.rotateBlockText(te.getFacing());
+			CubeRenderer.rotateBlockText(te.getFacing(), te.getRotation());
 
 			if (te.powered && destroyStage == -1) {
 				List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
@@ -129,14 +129,14 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 			case DOWN:
 				switch (panel.getRotation()) {
 				case NORTH:
-					dx = pos.getX() - screen.maxX;
-					dz = pos.getZ() - screen.maxZ;
+					dx = screen.minX - pos.getX();
+					dz = screen.minZ - pos.getZ();
 					displayWidth += screen.maxX - screen.minX;
 					displayHeight += screen.maxZ - screen.minZ;
 					break;
 				case SOUTH:
-					dx = screen.minX - pos.getX();
-					dz = screen.minZ - pos.getZ();
+					dx = pos.getX() - screen.maxX;
+					dz = pos.getZ() - screen.maxZ;
 					displayWidth += screen.maxX - screen.minX;
 					displayHeight += screen.maxZ - screen.minZ;
 					break;

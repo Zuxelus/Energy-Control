@@ -10,14 +10,14 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidTank;
 
 public class FluidInfo {
-	String translationKey;
+	String name;
 	String texture;
 	long amount;
 	long capacity;
 	int color;
 
-	public FluidInfo(String translationKey, String texture, long amount, long capacity) {
-		this.translationKey = translationKey;
+	public FluidInfo(String name, String texture, long amount, long capacity) {
+		this.name = name;
 		this.texture = texture;
 		this.amount = amount;
 		this.capacity = capacity;
@@ -27,7 +27,7 @@ public class FluidInfo {
 		if (tank.getFluid() != null) {
 			amount = tank.getFluidAmount();
 			if (amount > 0) {
-				translationKey = tank.getFluid().getUnlocalizedName();
+				name = tank.getFluid().getLocalizedName();
 				texture = tank.getFluid().getFluid().getStill().toString();
 				color = tank.getFluid().getFluid().getColor();
 			}
@@ -39,7 +39,7 @@ public class FluidInfo {
 		if (stack != null) {
 			amount = stack.amount;
 			if (amount > 0) {
-				translationKey = stack.getUnlocalizedName();
+				name = stack.getLocalizedName();
 				texture = stack.getFluid().getStill().toString();
 				color = stack.getFluid().getColor();
 			}
@@ -47,9 +47,9 @@ public class FluidInfo {
 		this.capacity = capacity;
 	}
 
-	public FluidInfo(Fluid fluid, long amount, long capacity) {
+	public FluidInfo(Fluid fluid, String name, long amount, long capacity) {
 		if (fluid != null) {
-			translationKey = fluid.getUnlocalizedName();
+			this.name = name;
 			texture = fluid.getStill().toString();
 			color = fluid.getColor();
 		}
@@ -58,8 +58,8 @@ public class FluidInfo {
 	}
 
 	public void write(ICardReader reader) {
-		if (translationKey != null)
-			reader.setString("name", I18n.translateToLocal(translationKey));
+		if (name != null)
+			reader.setString("name", name);
 		else
 			reader.setString("name", "");
 		if (texture != null)
@@ -72,8 +72,8 @@ public class FluidInfo {
 	}
 
 	public void write(ICardReader reader, int i) {
-		if (translationKey != null)
-			reader.setString(String.format("_%dname", i), I18n.translateToLocal(translationKey));
+		if (name != null)
+			reader.setString(String.format("_%dname", i), name);
 		else
 			reader.setString(String.format("_%dname", i), "");
 		reader.setLong(String.format("_%damount", i), amount);
