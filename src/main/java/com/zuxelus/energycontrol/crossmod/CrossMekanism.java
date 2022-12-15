@@ -216,7 +216,7 @@ public class CrossMekanism extends CrossModBase {
 		if (te instanceof TileEntityFactory) {
 			CompoundTag tag = setStorage(((TileEntityFactory<?>) te).getEnergyContainer());
 			tag.putDouble("usage", MekanismUtils.convertToDisplay(((TileEntityFactory<?>) te).getLastUsage()).doubleValue());
-			tag.putBoolean("active", (((TileEntityFactory<?>) te).getLastUsage()).doubleValue() > 0);
+			tag.putBoolean(DataHelper.ACTIVE, (((TileEntityFactory<?>) te).getLastUsage()).doubleValue() > 0);
 			if (te instanceof TileEntityItemStackGasToItemStackFactory)
 				addTank("tank", tag, ((TileEntityItemStackGasToItemStackFactory) te).getGasTank());
 			if (te instanceof TileEntityMetallurgicInfuserFactory)
@@ -243,7 +243,7 @@ public class CrossMekanism extends CrossModBase {
 			BlockEntity tile = te.getLevel().getBlockEntity(((TileEntityAdvancedBoundingBlock)te).getMainPos());
 			if (tile instanceof TileEntityDigitalMiner) {
 				CompoundTag tag = setStorage(((TileEntityDigitalMiner) tile).getEnergyContainer());
-				tag.putBoolean("active", ((TileEntityDigitalMiner) tile).getActive());
+				tag.putBoolean(DataHelper.ACTIVE, ((TileEntityDigitalMiner) tile).getActive());
 				return tag;
 			}
 		}*/
@@ -268,7 +268,7 @@ public class CrossMekanism extends CrossModBase {
 				field.setAccessible(true);
 				MachineEnergyContainer<TileEntityChargepad> energyContainer = (MachineEnergyContainer<TileEntityChargepad>) field.get(te);
 				CompoundTag tag = setStorage(energyContainer);
-				tag.putBoolean("active", ((TileEntityChargepad)te).getActive());
+				tag.putBoolean(DataHelper.ACTIVE, ((TileEntityChargepad)te).getActive());
 				return tag;
 			} catch (Throwable ignored) {
 			}
@@ -391,10 +391,10 @@ public class CrossMekanism extends CrossModBase {
 	private static void addUsage(CompoundTag tag, MachineEnergyContainer<?> energyContainer, Boolean active) {
 		if (active) {
 			tag.putDouble("usage", MekanismUtils.convertToDisplay(energyContainer.getEnergyPerTick()).doubleValue());
-			tag.putBoolean("active", true);
+			tag.putBoolean(DataHelper.ACTIVE, true);
 		} else {
 			tag.putDouble("usage", 0);
-			tag.putBoolean("active", false);
+			tag.putBoolean(DataHelper.ACTIVE, false);
 		}
 	}
 
@@ -436,9 +436,9 @@ public class CrossMekanism extends CrossModBase {
 	public static CompoundTag setStorage(IEnergyContainer container) {
 		CompoundTag tag = new CompoundTag();
 		EnergyUnit euType = MekanismConfig.common.energyUnit.get();
-		tag.putString("euType", Language.getInstance().getOrDefault(euType.getTranslationKey()));
-		tag.putDouble("storage", MekanismUtils.convertToDisplay(container.getEnergy()).doubleValue());
-		tag.putDouble("maxStorage", MekanismUtils.convertToDisplay(container.getMaxEnergy()).doubleValue());
+		tag.putString(DataHelper.EUTYPE, Language.getInstance().getOrDefault(euType.getTranslationKey()));
+		tag.putDouble(DataHelper.ENERGY, MekanismUtils.convertToDisplay(container.getEnergy()).doubleValue());
+		tag.putDouble(DataHelper.CAPACITY, MekanismUtils.convertToDisplay(container.getMaxEnergy()).doubleValue());
 		return tag;
 	}
 

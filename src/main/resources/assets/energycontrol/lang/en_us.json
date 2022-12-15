@@ -63,6 +63,8 @@
     "item.energycontrol.card_thermal_expansion": "Thermal Expansion Sensor Card",
     "item.energycontrol.kit_immersive_engineering": "Immersive Engineering Sensor Kit",
     "item.energycontrol.card_immersive_engineering": "Immersive Engineering Sensor Card",
+    "item.energycontrol.kit_industrial_reborn": "Industrial Reborn Sensor Kit",
+    "item.energycontrol.card_industrial_reborn": "Industrial Reborn Sensor Card",
 
     "_comment": "Internal Blocks",
     "block.energycontrol.thermal_monitor": "Thermal Monitor",
@@ -119,6 +121,7 @@
     "msg.ec.InfoPanelConsumptionCarbon": "Consumption Carbon: %s",
     "msg.ec.InfoPanelConsumptionSteam": "Consumption Steam: %s",
     "msg.ec.InfoPanelConsumptionWater": "Consumption Water: %s",
+    "msg.ec.InfoPanelDifference": "Difference: %s",
     "msg.ec.InfoPanelEnergy": "Energy: %s",
     "msg.ec.InfoPanelEnergyFE": "Energy: %s FE",
     "msg.ec.InfoPanelEnergyProd": "Energy Prod.: %s",

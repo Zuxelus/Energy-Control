@@ -19,7 +19,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
 //apply plugin: 'scala'
 
-version = '1.19.2-0.2.6a'
+version = '1.19.2-0.2.6b'
 group = 'com.zuxelus.energycontrol'
 archivesBaseName = 'EnergyControl-forge'
 
@@ -93,22 +93,27 @@ repositories {
         name 'CurseMaven'
         url "https://www.cursemaven.com"
     }
+    flatDir {
+       dirs 'libs_'
+   }
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19.2-43.0.8'
+    minecraft 'net.minecraftforge:forge:1.19.2-43.1.65'
     implementation 'io.netty:netty-codec-http:4.1.77.Final'
     implementation 'org.scala-lang:scala-library:2.13.8'
-    compileOnly fg.deobf ("curse.maven:ae2-223794:3922691")
-    compileOnly fg.deobf ("curse.maven:cctweaked-282001:3904454")
-    compileOnly fg.deobf ("curse.maven:jei-238222:3928388")
-    compileOnly fg.deobf ("curse.maven:extremereactors-250277:3927548")
-    compileOnly fg.deobf ("curse.maven:zerocore-247921:3927546")
-    compileOnly fg.deobf ("curse.maven:advancedgenerators-223622:3931464")
-    compileOnly fg.deobf ("curse.maven:bdlib-70496:3930764")
-    compileOnly fg.deobf ("curse.maven:catsforce-320926:3925967")
-    compileOnly fg.deobf ("curse.maven:mekanism-268560:3922056")
-    compileOnly fg.deobf ("curse.maven:mekanismgenerators-268566:3922058")
+    compileOnly fg.deobf ("curse.maven:ae2-223794:4136127")
+    compileOnly fg.deobf ("curse.maven:cctweaked-282001:4065685")
+    compileOnly fg.deobf ("curse.maven:jei-238222:4145222")
+    compileOnly fg.deobf ("curse.maven:extremereactors-250277:4016179")
+    compileOnly fg.deobf ("curse.maven:zerocore-247921:4016175")
+    compileOnly fg.deobf ("curse.maven:advancedgenerators-223622:4104739")
+    compileOnly fg.deobf ("curse.maven:bdlib-70496:4100704")
+    compileOnly fg.deobf ("curse.maven:catsforce-320926:4028119")
+    compileOnly fg.deobf ("curse.maven:mekanism-268560:4041164")
+    compileOnly fg.deobf ("curse.maven:mekanismgenerators-268566:4041168")
+    //compileOnly fg.deobf ("curse.maven:indreb-358877:4076608")
+    compileOnly fg.deobf ("com.maciej916.indreb:indreb:1.19.2-0.14.3-exp")
 
     //annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }

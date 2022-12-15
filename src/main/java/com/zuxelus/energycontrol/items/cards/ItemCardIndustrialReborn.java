@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemCardMekanism extends ItemCardMain {
+public class ItemCardIndustrialReborn extends ItemCardMain {
 
 	@Override
 	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
@@ -28,9 +28,7 @@ public class ItemCardMekanism extends ItemCardMain {
 			return CardState.NO_TARGET;
 
 		BlockEntity te = world.getBlockEntity(target);
-		CompoundTag tag = CrossModLoader.getCrossMod(ModIDs.MEKANISM).getCardData(te);
-		if (tag == null)
-			tag = CrossModLoader.getCrossMod(ModIDs.MEKANISM_GENERATORS).getCardData(te);
+		CompoundTag tag = CrossModLoader.getCrossMod(ModIDs.INDUSTRIAL_REBORN).getCardData(te);
 		if (tag == null)
 			return CardState.NO_TARGET;
 		reader.reset();
@@ -41,7 +39,11 @@ public class ItemCardMekanism extends ItemCardMain {
 	@Override
 	public List<PanelString> getStringData(Level world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
-		String euType = reader.getString(DataHelper.EUTYPE);
+		String euType = "IE"; //reader.getString(DataHelper.EUTYPE);
+		if (reader.hasField(DataHelper.HEAT) && (settings & 1) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelTemperature", reader.getInt(DataHelper.HEAT), showLabels));
+		if (reader.hasField(DataHelper.MAXHEAT) && (settings & 1) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelMaxHeat", reader.getInt(DataHelper.MAXHEAT), showLabels));
 		if (reader.hasField(DataHelper.STATUS) && (settings & 64) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelStatus", reader.getString(DataHelper.STATUS), showLabels));
 		if (reader.hasField("burn_rate") && (settings & 32) > 0)
@@ -52,14 +54,16 @@ public class ItemCardMekanism extends ItemCardMain {
 			result.add(new PanelString("msg.ec.InfoPanelRateLimit", reader.getDouble("rate_limit"), showLabels));
 		if (reader.hasField("boil_rate") && (settings & 32) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelBoilRate", reader.getDouble("boil_rate"), showLabels));
-		if (reader.hasField("production") && (settings & 1) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("production"), euType + "/t", showLabels));
-		if (reader.hasField("usage") && (settings & 2) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelUsing", reader.getDouble("usage"), euType, showLabels));
+		if (reader.hasField(DataHelper.OUTPUT) && (settings & 1) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble(DataHelper.OUTPUT), euType + "/t", showLabels));
+		if (reader.hasField(DataHelper.CONSUMPTION) && (settings & 2) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelUsing", reader.getDouble(DataHelper.CONSUMPTION), euType + "/t", showLabels));
 		if (reader.hasField(DataHelper.ENERGY) && (settings & 4) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelEnergy", reader.getDouble(DataHelper.ENERGY), euType, showLabels));
 		if (reader.hasField(DataHelper.CAPACITY) && (settings & 8) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getDouble(DataHelper.CAPACITY), euType, showLabels));
+		if (reader.hasField(DataHelper.DIFF) && (settings & 2) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelDifference", reader.getDouble(DataHelper.DIFF), euType + "/t", showLabels));
 		if (reader.hasField("flow_rate") && (settings & 32) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelFlowRate", reader.getDouble("flow_rate"), showLabels));
 		if (reader.hasField("injection_rate") && (settings & 32) > 0)
@@ -68,20 +72,18 @@ public class ItemCardMekanism extends ItemCardMain {
 			result.add(new PanelString("msg.ec.InfoPanelTemperature", reader.getString("temp"), showLabels));
 		if (reader.hasField("plasma") && (settings & 64) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelPlasma", reader.getString("plasma"), showLabels));
-		if (reader.hasField(DataHelper.TANK) && (settings & 16) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString(DataHelper.TANK), showLabels));
-		if (reader.hasField(DataHelper.TANK2) && (settings & 16) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString(DataHelper.TANK2), showLabels));
-		if (reader.hasField(DataHelper.TANK3) && (settings & 16) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString(DataHelper.TANK3), showLabels));
-		if (reader.hasField(DataHelper.TANK4) && (settings & 16) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString(DataHelper.TANK4), showLabels));
-		if (reader.hasField(DataHelper.TANK5) && (settings & 16) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString(DataHelper.TANK5), showLabels));
+		if (reader.hasField("tank") && (settings & 16) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString("tank"), showLabels));
+		if (reader.hasField("tank2") && (settings & 16) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString("tank2"), showLabels));
+		if (reader.hasField("tank3") && (settings & 16) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString("tank3"), showLabels));
+		if (reader.hasField("tank4") && (settings & 16) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString("tank4"), showLabels));
+		if (reader.hasField("tank5") && (settings & 16) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString("tank5"), showLabels));
 		if (reader.hasField("input") && (settings & 32) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelInput", reader.getDouble("input"), euType + "/t", showLabels));
-		if (reader.hasField(DataHelper.OUTPUT) && (settings & 32) > 0)
-			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble(DataHelper.OUTPUT), euType + "/t", showLabels));
 		if (reader.hasField(DataHelper.ACTIVE))
 			addOnOff(result, isServer, reader.getBoolean(DataHelper.ACTIVE));
 		return result;

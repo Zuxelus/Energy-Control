@@ -8,8 +8,9 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.zuxelus.energycontrol.api.ItemStackHelper;
-//import com.zuxelus.energycontrol.crossmod.computercraft.CrossComputerCraft;
+import com.zuxelus.energycontrol.crossmod.computercraft.CrossComputerCraft;
 import com.zuxelus.energycontrol.init.ModItems;
+import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import net.minecraft.core.BlockPos;
@@ -36,10 +37,11 @@ public class CrossModLoader {
 		loadCrossMod(ModIDs.APPLIED_ENERGISTICS, CrossAppEng::new);
 		loadCrossMod(ModIDs.BIG_REACTORS, CrossBigReactors::new);
 		//loadCrossMod(ModIDs.BIGGER_REACTORS, CrossBiggerReactors::new);
-		//loadCrossModSafely(ModIDs.COMPUTER_CRAFT, () -> CrossComputerCraft::new);
+		loadCrossModSafely(ModIDs.COMPUTER_CRAFT, () -> CrossComputerCraft::new);
 		loadCrossMod(ModIDs.MEKANISM, CrossMekanism::new);
 		loadCrossMod(ModIDs.MEKANISM_GENERATORS, CrossMekanismGenerators::new);
 		//loadCrossMod(ModIDs.IMMERSIVE_ENGINEERING, CrossImmersiveEngineering::new);
+		loadCrossMod(ModIDs.INDUSTRIAL_REBORN, CrossIndustrialReborn::new);
 		//loadCrossMod(ModIDs.THERMAL_EXPANSION, CrossThermalExpansion::new);
 	}
 
@@ -78,9 +80,9 @@ public class CrossModLoader {
 		if (cap.isPresent()) {
 			IEnergyStorage handler = cap.get();
 			CompoundTag tag = new CompoundTag();
-			tag.putString("euType", "FE");
-			tag.putDouble("storage", handler.getEnergyStored());
-			tag.putDouble("maxStorage", handler.getMaxEnergyStored());
+			tag.putString(DataHelper.EUTYPE, "FE");
+			tag.putDouble(DataHelper.ENERGY, handler.getEnergyStored());
+			tag.putDouble(DataHelper.CAPACITY, handler.getMaxEnergyStored());
 			return tag;
 		}
 		return null;

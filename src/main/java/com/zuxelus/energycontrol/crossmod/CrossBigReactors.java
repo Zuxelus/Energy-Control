@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.zuxelus.energycontrol.api.PanelString;
+import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import it.zerono.mods.extremereactors.gamecontent.multiblock.common.IFluidContainer;
@@ -36,9 +37,9 @@ public class CrossBigReactors extends CrossModBase {
 				return null;
 
 			CompoundTag tag = new CompoundTag();
-			tag.putString("euType", "FE");
-			tag.putDouble("storage", reactor.getEnergyStored(EnergySystem.REFERENCE, null));
-			tag.putDouble("maxStorage", reactor.getCapacity(EnergySystem.REFERENCE, null));
+			tag.putString(DataHelper.EUTYPE, "FE");
+			tag.putDouble(DataHelper.ENERGY, reactor.getEnergyStored(EnergySystem.REFERENCE, null));
+			tag.putDouble(DataHelper.CAPACITY, reactor.getCapacity(EnergySystem.REFERENCE, null));
 			return tag;
 		}
 		if (te instanceof AbstractTurbineEntity) {
@@ -50,9 +51,9 @@ public class CrossBigReactors extends CrossModBase {
 				return null;
 
 			CompoundTag tag = new CompoundTag();
-			tag.putString("euType", "FE");
-			tag.putDouble("storage", turbine.getEnergyStored(EnergySystem.REFERENCE, null));
-			tag.putDouble("maxStorage", turbine.getCapacity(EnergySystem.REFERENCE, null));
+			tag.putString(DataHelper.EUTYPE, "FE");
+			tag.putDouble(DataHelper.ENERGY, turbine.getEnergyStored(EnergySystem.REFERENCE, null));
+			tag.putDouble(DataHelper.CAPACITY, turbine.getCapacity(EnergySystem.REFERENCE, null));
 			return tag;
 		}
 		return null;
@@ -128,7 +129,7 @@ public class CrossBigReactors extends CrossModBase {
 			tag.putBoolean("cooling", reactor.getOperationalMode().isPassive());
 			tag.putDouble("heat", reactor.getFuelHeat().getAsDouble());
 			tag.putDouble("coreHeat", reactor.getReactorHeat().getAsDouble());
-			tag.putString("storage", String.format("%s / %s", PanelString.getFormatter().format(reactor.getEnergyStored(EnergySystem.REFERENCE, null)), PanelString.getFormatter().format(reactor.getCapacity(EnergySystem.REFERENCE, null))));
+			tag.putString(DataHelper.ENERGY, String.format("%s / %s", PanelString.getFormatter().format(reactor.getEnergyStored(EnergySystem.REFERENCE, null)), PanelString.getFormatter().format(reactor.getCapacity(EnergySystem.REFERENCE, null))));
 			tag.putDouble("output", reactor.getUiStats().getAmountGeneratedLastTick());
 			tag.putInt("rods", reactor.getFuelRodsCount());
 			tag.putString("fuel", String.format("%s / %s", reactor.getFuelAmount(), reactor.getCapacity()));
@@ -149,7 +150,7 @@ public class CrossBigReactors extends CrossModBase {
 			CompoundTag tag = new CompoundTag();
 			tag.putInt("type", 2);
 			tag.putBoolean("reactorPoweredB", turbine.isMachineActive());
-			tag.putString("storage", String.format("%s / %s", PanelString.getFormatter().format(turbine.getEnergyStored(EnergySystem.REFERENCE, null)), PanelString.getFormatter().format(turbine.getCapacity(EnergySystem.REFERENCE, null))));
+			tag.putString(DataHelper.ENERGY, String.format("%s / %s", PanelString.getFormatter().format(turbine.getEnergyStored(EnergySystem.REFERENCE, null)), PanelString.getFormatter().format(turbine.getCapacity(EnergySystem.REFERENCE, null))));
 			tag.putDouble("output", turbine.getEnergyGeneratedLastTick());
 			tag.putDouble("speed", turbine.getRotorSpeed());
 			//tag.putDouble("speedMax", turbine.getMaxRotorSpeed());

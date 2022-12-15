@@ -8,6 +8,7 @@ import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.energycontrol.utils.StringUtils;
 
 import net.minecraft.client.resources.language.I18n;
@@ -41,8 +42,8 @@ public class ItemCardEnergyArray extends ItemCardMain {
 				if (te != null) {
 					CompoundTag tag = CrossModLoader.getEnergyData(te);
 					if (tag != null) {
-						double stored = tag.getDouble("storage");
-						double capacity = tag.getDouble("maxStorage");
+						double stored = tag.getDouble(DataHelper.ENERGY);
+						double capacity = tag.getDouble(DataHelper.CAPACITY);
 						totalEnergy += stored;
 						reader.setInt(String.format("_%denergy", i), (int) stored);
 						reader.setInt(String.format("_%dmaxStorage", i), (int) capacity);

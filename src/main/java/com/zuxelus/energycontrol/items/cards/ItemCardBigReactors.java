@@ -10,6 +10,7 @@ import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
+import com.zuxelus.energycontrol.utils.DataHelper;
 
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
@@ -50,7 +51,7 @@ public class ItemCardBigReactors extends ItemCardMain {
 				result.add(new PanelString("msg.ec.InfoPanelPassiveCooling", reader.getBoolean("cooling").toString(), showLabels));
 			}
 			if ((settings & 4) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelEnergyFE", reader.getString("storage"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelEnergyFE", reader.getString(DataHelper.ENERGY), showLabels));
 			if ((settings & 16) > 0)
 				if (reader.getBoolean("cooling"))
 					result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("output"), "FE/t", showLabels));
@@ -72,7 +73,7 @@ public class ItemCardBigReactors extends ItemCardMain {
 				result.add(new PanelString("msg.ec.InfoPanelRotorEfficiency", reader.getDouble("efficiency"), "%", showLabels));
 			}
 			if ((settings & 4) > 0)
-				result.add(new PanelString("msg.ec.InfoPanelEnergyFE", reader.getString("storage"), showLabels));
+				result.add(new PanelString("msg.ec.InfoPanelEnergyFE", reader.getString(DataHelper.ENERGY), showLabels));
 			if ((settings & 16) > 0)
 				result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("output"), "FE/t", showLabels));
 			if ((settings & 32) > 0)

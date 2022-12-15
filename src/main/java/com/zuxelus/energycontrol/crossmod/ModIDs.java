@@ -12,6 +12,7 @@ public class ModIDs {
     public static final String GALACTICRAFT_CORE = "galacticraftcore";
     public static final String GALACTICRAFT_PLANETS = "galacticraftplanets";
     public static final String IMMERSIVE_ENGINEERING = "immersiveengineering";
+    public static final String INDUSTRIAL_REBORN = "indreb";
     public static final String MEKANISM = "mekanism";
     public static final String MEKANISM_GENERATORS = "mekanismgenerators";
     public static final String NUCLEAR_CRAFT = "nuclearcraft";

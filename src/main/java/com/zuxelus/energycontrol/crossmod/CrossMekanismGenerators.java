@@ -3,6 +3,7 @@ package com.zuxelus.energycontrol.crossmod;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import mekanism.api.math.FloatingLong;
@@ -74,26 +75,26 @@ public class CrossMekanismGenerators extends CrossModBase {
 			if (te instanceof TileEntityHeatGenerator) {
 				double production = ((TileEntityHeatGenerator) te).getProducingEnergy().doubleValue();
 				tag.putDouble("production", production);
-				tag.putBoolean("active", production > 0);
+				tag.putBoolean(DataHelper.ACTIVE, production > 0);
 				tag.putString("temp", CrossMekanism.getTempString(((TileEntityGenerator) te).getTotalTemperature()));
 			}
 			if (te instanceof TileEntityWindGenerator) {
 				double production = MekanismUtils.convertToDisplay(MekanismGeneratorsConfig.generators.windGenerationMin.get().multiply(((TileEntityWindGenerator)te).getCurrentMultiplier())).doubleValue();
 				tag.putDouble("production", production);
-				tag.putBoolean("active", production > 0);
+				tag.putBoolean(DataHelper.ACTIVE, production > 0);
 			}
 			if (te instanceof TileEntitySolarGenerator) {
 				double production = MekanismUtils.convertToDisplay(((TileEntitySolarGenerator)te).getLastProductionAmount()).doubleValue();
 				tag.putDouble("production", production);
-				tag.putBoolean("active", production > 0);
+				tag.putBoolean(DataHelper.ACTIVE, production > 0);
 			}
 			if (te instanceof TileEntityBioGenerator) {
 				if (((TileEntityBioGenerator)te).getActive()) {
 					tag.putDouble("production", MekanismUtils.convertToDisplay(MekanismGeneratorsConfig.generators.bioGeneration.get()).doubleValue());
-					tag.putBoolean("active", true);
+					tag.putBoolean(DataHelper.ACTIVE, true);
 				} else {
 					tag.putDouble("production", 0);
-					tag.putBoolean("active", false);
+					tag.putBoolean(DataHelper.ACTIVE, false);
 				}
 				CrossMekanism.addTank("tank", tag, ((TileEntityBioGenerator) te).bioFuelTank);
 			}
@@ -150,7 +151,7 @@ public class CrossMekanismGenerators extends CrossModBase {
 		FloatingLong energyMultiplier = ((FloatingLong) MekanismConfig.general.maxEnergyPerSteam.get()).divide(28L).multiply(Math.min(block.blades, block.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
 		tag.putDouble("production", MekanismUtils.convertToDisplay(energyMultiplier.multiply(block.clientFlow)).doubleValue());
 		tag.putDouble("flow_rate", block.clientFlow);
-		tag.putBoolean("active", block.clientRotation > 0);
+		tag.putBoolean(DataHelper.ACTIVE, block.clientRotation > 0);
 		CrossMekanism.addTank("tank", tag, block.gasTank);
 		CrossMekanism.addTank("tank2", tag,block.ventTank);
 		return tag;

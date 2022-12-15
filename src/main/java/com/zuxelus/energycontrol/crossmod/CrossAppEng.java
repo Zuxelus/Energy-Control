@@ -3,6 +3,7 @@ package com.zuxelus.energycontrol.crossmod;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
+import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.energycontrol.utils.StringUtils;
 
 import appeng.api.networking.IGridNode;
@@ -25,9 +26,9 @@ public class CrossAppEng extends CrossModBase {
 		if (te instanceof IAEPowerStorage) {
 			CompoundTag tag = new CompoundTag();
 			IAEPowerStorage storage = (IAEPowerStorage) te;
-			tag.putString("euType", "AE");
-			tag.putDouble("storage", storage.getAECurrentPower());
-			tag.putDouble("maxStorage", storage.getAEMaxPower());
+			tag.putString(DataHelper.EUTYPE, "AE");
+			tag.putDouble(DataHelper.ENERGY, storage.getAECurrentPower());
+			tag.putDouble(DataHelper.CAPACITY, storage.getAEMaxPower());
 			return tag;
 		}
 		return null;

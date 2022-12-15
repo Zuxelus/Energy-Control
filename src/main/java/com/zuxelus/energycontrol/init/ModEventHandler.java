@@ -70,6 +70,12 @@ public class ModEventHandler {
 			ModItems.card_immersive_engineering = new ItemCardImmersiveEngineering();
 			event.register("card_immersive_engineering", ModItems.card_immersive_engineering);
 		}*/
+		if (list.isLoaded(ModIDs.INDUSTRIAL_REBORN)) {
+			ModItems.kit_industrial_reborn = new ItemKitIndustrialReborn();
+			event.register("kit_industrial_reborn", ModItems.kit_industrial_reborn);
+			ModItems.card_industrial_reborn = new ItemCardIndustrialReborn();
+			event.register("card_industrial_reborn", ModItems.card_industrial_reborn);
+		}
 		if (list.isLoaded(ModIDs.MEKANISM)) {
 			ModItems.kit_mekanism = new ItemKitMekanism();
 			event.register("kit_mekanism", ModItems.kit_mekanism);

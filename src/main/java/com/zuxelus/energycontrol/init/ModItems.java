@@ -45,6 +45,7 @@ public class ModItems {
 	public static Item kit_app_eng;
 	public static Item kit_big_reactors;
 	public static Item kit_immersive_engineering;
+	public static Item kit_industrial_reborn;
 	public static Item kit_mekanism;
 	public static Item kit_thermal_expansion;
 	public static final RegistryObject<Item> card_holder = ITEMS.register("card_holder", () -> new ItemCardHolder());
@@ -63,6 +64,7 @@ public class ModItems {
 	public static Item card_app_eng_inv;
 	public static Item card_big_reactors;
 	public static Item card_immersive_engineering;
+	public static Item card_industrial_reborn;
 	public static Item card_mekanism;
 	public static Item card_thermal_expansion;
 	public static final RegistryObject<Item> upgrade_range = ITEMS.register("upgrade_range", () -> new Item(new Item.Properties().tab(EnergyControl.ITEM_GROUP)));

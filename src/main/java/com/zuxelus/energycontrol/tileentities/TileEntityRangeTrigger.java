@@ -10,6 +10,7 @@ import com.zuxelus.energycontrol.items.cards.ItemCardEnergy;
 import com.zuxelus.energycontrol.items.cards.ItemCardLiquid;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
+import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.zlib.blocks.FacingHorizontal;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
@@ -215,7 +216,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements MenuP
 				ItemCardReader reader = new ItemCardReader(card);
 				CardState state = ((ItemCardMain) item).updateCardNBT(level, worldPosition, reader, getItem(SLOT_UPGRADE));
 				if (state == CardState.OK) {
-					double cur = item instanceof ItemCardEnergy ? reader.getDouble("storage") : reader.getLong("amount");
+					double cur = item instanceof ItemCardEnergy ? reader.getDouble(DataHelper.ENERGY) : reader.getLong("amount");
 					status = cur > Math.max(levelStart, levelEnd) || cur < Math.min(levelStart, levelEnd) ? STATE_ACTIVE : STATE_PASSIVE;
 				} else
 					status = STATE_UNKNOWN;
