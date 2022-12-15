@@ -1,6 +1,6 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.zuxelus.energycontrol.api.CardState;
@@ -16,6 +16,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemCardInventory extends ItemCardBase {
 
@@ -40,26 +42,40 @@ public class ItemCardInventory extends ItemCardBase {
 
 	@Override
 	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
-		List<PanelString> result = new LinkedList<>();
+		List<PanelString> result = reader.getTitleList();
 		if (isServer) {
-			result.add(new PanelString("msg.ec.InfoPanelTotalItems", reader.getInt("items"), showLabels));
-			result.add(new PanelString("msg.ec.InfoPanelSlotsUsed", String.format("%s/%s", reader.getInt("used"), reader.getInt("size")), showLabels));
+			if ((settings & 2) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelTotalItems", reader.getInt("items"), showLabels));
+			if ((settings & 4) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelSlotsUsed", String.format("%s/%s", reader.getInt("used"), reader.getInt("size")), showLabels));
 		} else {
-			result.add(new PanelString("msg.ec.InfoPanelName", I18n.format(reader.getString("name")), showLabels));
-			result.add(new PanelString("msg.ec.InfoPanelTotalItems", reader.getInt("items"), showLabels));
-			result.add(new PanelString("msg.ec.InfoPanelSlotsUsed", String.format("%s/%s", reader.getInt("used"), reader.getInt("size")), showLabels));
-			result.add(new PanelString("msg.ec.InfoPanelSidedInventory", reader.getBoolean("sided").toString(), showLabels));
-			for (int i = 0; i < 6; i++)
-				if (reader.hasField("slot" + Integer.toString(i))) {
-					ItemStack stack = new ItemStack(reader.getTag("slot" + Integer.toString(i)));
-					result.add(new PanelString(String.format("msg.ec.InfoPanelSlot%d", i + 1), StringUtils.getItemName(stack) + " x" + Integer.toString(stack.getCount()), showLabels));
-				}
+			if ((settings & 1) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelName", I18n.format(reader.getString("name")), showLabels));
+			if ((settings & 2) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelTotalItems", reader.getInt("items"), showLabels));
+			if ((settings & 4) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelSlotsUsed", String.format("%s/%s", reader.getInt("used"), reader.getInt("size")), showLabels));
+			if ((settings & 8) > 0)
+				result.add(new PanelString("msg.ec.InfoPanelSidedInventory", reader.getBoolean("sided").toString(), showLabels));
+			if ((settings & 16) > 0)
+				for (int i = 0; i < 6; i++)
+					if (reader.hasField("slot" + Integer.toString(i))) {
+						ItemStack stack = new ItemStack(reader.getTag("slot" + Integer.toString(i)));
+						result.add(new PanelString(String.format("msg.ec.InfoPanelSlot%d", i + 1), StringUtils.getItemName(stack) + " x" + Integer.toString(stack.getCount()), showLabels));
+					}
 		}
 		return result;
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public List<PanelSetting> getSettingsList(ItemStack stack) {
-		return null;
+		List<PanelSetting> result = new ArrayList<>(2);
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelName"), 1));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelTotalItems"), 2));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelSlotsUsed"), 4));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOther"), 8));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelItems"), 16));
+		return result;
 	}
 }

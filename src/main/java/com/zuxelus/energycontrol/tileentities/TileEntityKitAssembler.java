@@ -426,8 +426,8 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements ITi
 	}
 
 	@Override
-	public void setPower(long arg0) {
-		// TODO Auto-generated method stub
+	public void setPower(long energyReceived) {
+		storage.setEnergy((int) energyReceived);
 	}
 
 	// IEnergyReceiver

@@ -1,0 +1,20 @@
+{
+    "type": "energycontrol:kit_assembler",
+    "input1": {
+        "type": "forge:ore_dict",
+        "ore": "dustRedstone",
+        "count": 1
+    },
+    "input2": {
+        "type": "forge:ore_dict",
+        "ore": "ingotIron"
+    },
+    "input3": {
+        "item": "energycontrol:item_component",
+        "data": 4
+    },
+    "result": {
+        "item": "energycontrol:panel_toolkit"
+    },
+    "time": 300
+}

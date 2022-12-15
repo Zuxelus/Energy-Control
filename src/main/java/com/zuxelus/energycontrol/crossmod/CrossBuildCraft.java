@@ -7,6 +7,8 @@ import java.util.List;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import buildcraft.api.transport.pipe.PipeFlow;
+import buildcraft.factory.tile.TileTank;
+import buildcraft.lib.fluid.Tank;
 import buildcraft.lib.fluid.TankManager;
 import buildcraft.lib.tile.TileBC_Neptune;
 import buildcraft.transport.pipe.Pipe;
@@ -14,7 +16,10 @@ import buildcraft.transport.pipe.flow.PipeFlowFluids;
 import buildcraft.transport.tile.TilePipeHolder;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 public class CrossBuildCraft extends CrossModBase {
@@ -43,6 +48,16 @@ public class CrossBuildCraft extends CrossModBase {
 					}
 					List<FluidInfo> result = new ArrayList<>();
 					result.add(new FluidInfo(stack.getFluid(), stack.getLocalizedName(), amount, ((PipeFlowFluids) flow).capacity));
+					return result;
+				}
+			}
+			if (te instanceof TileTank) {
+				IFluidHandler fluid = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+				if (fluid != null) {
+					IFluidTankProperties[] tanks = fluid.getTankProperties();
+					List<FluidInfo> result = new ArrayList<>();
+					for (IFluidTankProperties tank : tanks)
+						result.add(new FluidInfo(tank.getContents(), tank.getCapacity()));
 					return result;
 				}
 			}

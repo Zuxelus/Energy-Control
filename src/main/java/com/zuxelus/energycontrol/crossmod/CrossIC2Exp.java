@@ -438,6 +438,17 @@ public class CrossIC2Exp extends CrossModBase {
 				FluidInfo.addTank(DataHelper.TANK2, tag, ((TileEntityCondenser) te).getOutputTank());
 				return tag;
 			}
+			if (te instanceof TileEntityFluidRegulator) {
+				TileEntityFluidRegulator regulator = (TileEntityFluidRegulator) te;
+				int mode = DataHelper.getInt(TileEntityFluidRegulator.class, "mode", te);
+				tag.setBoolean(DataHelper.ACTIVE, true);
+				Energy energy = regulator.getComponent(Energy.class);
+				tag.setDouble(DataHelper.ENERGY, energy.getEnergy());
+				tag.setDouble(DataHelper.CAPACITY, energy.getCapacity());
+				tag.setDouble(DataHelper.OUTPUTMB, mode == 0 ? regulator.getoutputmb() / 20.0D : regulator.getoutputmb());
+				FluidInfo.addTank(DataHelper.TANK, tag, regulator.getFluidTank());
+				return tag;
+			}
 			if (te instanceof TileEntityReactorChamberElectric)
 				return getReactorData(((TileEntityReactorChamberElectric) te).getReactorInstance());
 			if (te instanceof TileEntityNuclearReactorElectric)
@@ -464,7 +475,7 @@ public class CrossIC2Exp extends CrossModBase {
 		tag.setInteger(DataHelper.MAXHEAT, reactor.getMaxHeat());
 		tag.setBoolean(DataHelper.ACTIVE, reactor.produceEnergy());
 		if (reactor.isFluidCooled())
-			tag.setDouble("outputmB", reactor.EmitHeat);
+			tag.setDouble(DataHelper.OUTPUTMB, reactor.EmitHeat / 20);
 		else
 			tag.setDouble(DataHelper.OUTPUT, reactor.getReactorEUEnergyOutput());
 

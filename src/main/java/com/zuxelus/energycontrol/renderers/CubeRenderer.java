@@ -135,9 +135,12 @@ public class CubeRenderer {
 	}
 
 	public static void rotateBlock(EnumFacing facing, EnumFacing rotation) {
+		if (rotation == null)
+			rotation = EnumFacing.NORTH;
+
 		switch (facing) {
 		case UP:
-			switch( rotation) {
+			switch(rotation) {
 			case NORTH:
 				GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
 				GlStateManager.translate(0.0F, 0.0F, -1.0F);
@@ -160,7 +163,7 @@ public class CubeRenderer {
 			}
 			break;
 		case DOWN:
-			switch( rotation) {
+			switch(rotation) {
 			case NORTH:
 				GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
 				GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
@@ -200,9 +203,12 @@ public class CubeRenderer {
 	}
 
 	public static void rotateBlockText(EnumFacing facing, EnumFacing rotation) {
+		if (rotation == null)
+			rotation = EnumFacing.NORTH;
+
 		switch (facing) {
 		case UP:
-			switch( rotation) {
+			switch(rotation) {
 			case NORTH:
 				GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
 				GlStateManager.translate(0.0F, -1.0F, 0.0F);
@@ -225,7 +231,7 @@ public class CubeRenderer {
 			}
 			break;
 		case DOWN:
-			switch( rotation) {
+			switch(rotation) {
 			case NORTH:
 				GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F);
 				GlStateManager.translate(0.0F, -1.0F, 0.0F);

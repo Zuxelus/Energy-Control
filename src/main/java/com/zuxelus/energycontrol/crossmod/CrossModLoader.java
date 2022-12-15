@@ -43,7 +43,7 @@ public class CrossModLoader {
 	public static void preInit() {
 		CROSS_MODS.put(ModIDs.IC2, Loader.isModLoaded("ic2-classic-spmod") ? new CrossIC2Classic() : Loader.isModLoaded(ModIDs.IC2) ? new CrossIC2Exp() : new CrossModBase());
 		loadCrossMod(ModIDs.TECH_REBORN, CrossTechReborn::new);
-		loadCrossMod(ModIDs.APPLIED_ENERGISTICS, CrossAppEng::new);
+		loadCrossModSafely(ModIDs.APPLIED_ENERGISTICS, () -> CrossAppEng::new);
 		loadCrossMod(ModIDs.EXTREME_REACTORS, CrossExtremeReactors::new);
 		loadCrossMod(ModIDs.BUILDCRAFT, CrossBuildCraft::new);
 		loadCrossModSafely(ModIDs.DRACONIC_EVOLUTION, () -> CrossDraconicEvolution::new);

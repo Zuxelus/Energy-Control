@@ -73,6 +73,9 @@ public class CubeSmallRenderer {
 
 	@SuppressWarnings("incomplete-switch")
 	public static void rotateBlock(EnumFacing facing, EnumFacing rotation) {
+		if (rotation == null)
+			rotation = EnumFacing.NORTH;
+
 		GlStateManager.rotate(90.0F, -1.0F, 0.0F, 0.0F); // x, y, z -> x, z, y
 
 		switch (facing) {

@@ -42,16 +42,16 @@ public class ItemCardHBM extends ItemCardBase {
 	@Override
 	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
-		if (reader.hasField("stored"))
-			result.add(new PanelString("msg.ec.InfoPanelEnergy", reader.getLong("stored"), "HE", showLabels));
-		if (reader.hasField("capacity"))
-			result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getLong("capacity"), "HE", showLabels));
-		if (reader.hasField("consumption"))
-			result.add(new PanelString("msg.ec.InfoPanelConsumption", reader.getDouble("consumption"), "mB/t", showLabels));
-		if (reader.hasField("output"))
-			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("output"), "HE/t", showLabels));
-		if (reader.hasField("outputmb"))
-			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble("outputmb"), "mB/t", showLabels));
+		if (reader.hasField(DataHelper.ENERGY))
+			result.add(new PanelString("msg.ec.InfoPanelEnergy", reader.getLong(DataHelper.ENERGY), "HE", showLabels));
+		if (reader.hasField(DataHelper.CAPACITY))
+			result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getLong(DataHelper.CAPACITY), "HE", showLabels));
+		if (reader.hasField(DataHelper.CONSUMPTION))
+			result.add(new PanelString("msg.ec.InfoPanelConsumption", reader.getDouble(DataHelper.CONSUMPTION), "mB/t", showLabels));
+		if (reader.hasField(DataHelper.OUTPUT))
+			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble(DataHelper.OUTPUT), "HE/t", showLabels));
+		if (reader.hasField(DataHelper.OUTPUTMB))
+			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble(DataHelper.OUTPUTMB), "mB/t", showLabels));
 		if (reader.hasField(DataHelper.DIFF))
 			result.add(new PanelString("msg.ec.InfoPanelDifference", reader.getLong(DataHelper.DIFF), "HE/t", showLabels));
 		if (reader.hasField("temp"))
@@ -88,16 +88,16 @@ public class ItemCardHBM extends ItemCardBase {
 			result.add(new PanelString("trait.rbmk.coreTemp", reader.getDouble("c_heat"), "°C", showLabels));
 		if (reader.hasField("melt"))
 			result.add(new PanelString("trait.rbmk.melt", reader.getDouble("melt"), "°C", showLabels));
-		if (reader.hasField("tank"))
-			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString("tank"), showLabels));
-		if (reader.hasField("tank2"))
-			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString("tank2"), showLabels));
-		if (reader.hasField("tank3"))
-			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString("tank3"), showLabels));
-		if (reader.hasField("tank4"))
-			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString("tank4"), showLabels));
-		if (reader.hasField("tank5"))
-			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString("tank5"), showLabels));
+		if (reader.hasField(DataHelper.TANK))
+			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString(DataHelper.TANK), showLabels));
+		if (reader.hasField(DataHelper.TANK2))
+			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString(DataHelper.TANK2), showLabels));
+		if (reader.hasField(DataHelper.TANK3))
+			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString(DataHelper.TANK3), showLabels));
+		if (reader.hasField(DataHelper.TANK4))
+			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString(DataHelper.TANK4), showLabels));
+		if (reader.hasField(DataHelper.TANK5))
+			result.add(new PanelString("msg.ec.InfoPanelTank", reader.getString(DataHelper.TANK5), showLabels));
 		if (reader.hasField("chunkRad"))
 			if (showLabels)
 				result.add(new PanelString(net.minecraft.util.text.translation.I18n.translateToLocalFormatted("geiger.chunkRad") +

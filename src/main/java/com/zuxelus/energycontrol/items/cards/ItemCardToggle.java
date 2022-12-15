@@ -98,7 +98,7 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 
 	@Override
 	public void renderImage(TextureManager manager, ICardReader reader) {
-		double x = -0.5D;
+		/*double x = -0.5D;
 		double y = -0.5D;
 		double z = 0.009;
 		double height = 1;
@@ -116,6 +116,6 @@ public class ItemCardToggle extends ItemCardBase implements ITouchAction {
 		bufferbuilder.pos(x + width, y + height, z).tex((float)(textureX + width), (float)(textureY + height)).endVertex();
 		bufferbuilder.pos(x + width, y + 0, z).tex((float)(textureX + width), (float)(textureY + 0)).endVertex();
 		bufferbuilder.pos(x + 0, y + 0, z).tex((float)(textureX + 0), (float)(textureY + 0)).endVertex();
-		tessellator.draw();
+		tessellator.draw();*/
 	}
 }

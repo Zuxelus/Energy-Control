@@ -58,6 +58,7 @@ public class ModItems {
 	public static Item itemComponent;
 	public static Item itemAFB;
 	public static Item itemAFSUUpgradeKit;
+	public static Item itemPanelToolkit;
 
 	@SubscribeEvent
 	public static void onBlockRegistry(Register<Block> event) {
@@ -107,6 +108,7 @@ public class ModItems {
 		itemUpgrade = register(event, new ItemUpgrade(), "item_upgrade");
 		itemThermometer = register(event, new ItemThermometer(), "thermometer");
 		itemPortablePanel = register(event, new ItemPortablePanel(), "portable_panel");
+		itemPanelToolkit = register(event, new ItemPanelToolkit(), "panel_toolkit");
 
 		itemKit = new ItemKitMain();
 		((ItemKitMain) itemKit).registerKits();
@@ -176,6 +178,7 @@ public class ModItems {
 		registerItemModel(itemThermometer, 0, "thermometer");
 		registerItemModel(itemPortablePanel, 0, "portable_panel");
 		registerItemModel(itemCardHolder, 0, "card_holder");
+		registerItemModel(itemPanelToolkit, 0, "panel_toolkit");
 		registerItemModel(itemComponent, ItemComponent.ADVANCED_CIRCUIT, "advanced_circuit");
 		registerItemModel(itemComponent, ItemComponent.BASIC_CIRCUIT, "basic_circuit");
 		registerItemModel(itemComponent, ItemComponent.MACHINE_CASING, "machine_casing");
