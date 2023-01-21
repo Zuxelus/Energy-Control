@@ -42,7 +42,7 @@ public class GuiInfoPanel extends GuiPanelBase {
 	@Override
 	protected void initControls() {
 		ItemStack stack = panel.getCards().get(activeTab);
-		if (ItemStack.areItemsEqual(stack, oldStack) && panel.isColoredEval() == isColored)
+		if (ItemStack.areItemStacksEqual(stack, oldStack) && panel.isColoredEval() == isColored)
 			return;
 		if (!oldStack.isEmpty() && stack.isEmpty())
 			updateTitle();

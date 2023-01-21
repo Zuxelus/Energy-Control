@@ -46,7 +46,7 @@ public class GuiAdvancedInfoPanel extends GuiPanelBase {
 	@Override
 	protected void initControls() {
 		ItemStack stack = panel.getCards().get(activeTab);
-		if (ItemStack.areItemsEqual(stack, oldStack))
+		if (ItemStack.areItemStacksEqual(stack, oldStack))
 			return;
 		if (!oldStack.isEmpty() && stack.isEmpty())
 			updateTitle();
