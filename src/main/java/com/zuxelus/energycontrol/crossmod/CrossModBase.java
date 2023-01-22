@@ -46,9 +46,11 @@ public class CrossModBase {
 		return false;
 	}
 
-	public double dischargeItem(ItemStack stack, double needed) {
+	public double dischargeItem(ItemStack stack, double needed, int tier) {
 		return 0;
 	}
+
+	public void addEuInfo(List<String> tooltip) { }
 
 	public NBTTagCompound getEnergyData(TileEntity te) {
 		return null;

@@ -205,10 +205,10 @@ public class CrossModLoader {
 		return false;
 	}
 
-	public static double dischargeItem(ItemStack stack, double amount) {
+	public static double dischargeItem(ItemStack stack, double amount, int tier) {
 		for (CrossModBase crossMod : CROSS_MODS.values())
 			if (crossMod.isElectricItem(stack)) {
-				double result = crossMod.dischargeItem(stack, amount);
+				double result = crossMod.dischargeItem(stack, amount, tier);
 				if (result > 0)
 					return result;
 			}

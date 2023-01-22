@@ -97,10 +97,10 @@ public class CrossIC2Exp extends CrossModBase {
 	}
 
 	@Override
-	public double dischargeItem(ItemStack stack, double needed) {
-		IElectricItem ielectricitem = (IElectricItem) stack.getItem();
-		if (ielectricitem.canProvideEnergy(stack))
-			return ElectricItem.manager.discharge(stack, needed, 1, false, false, false);
+	public double dischargeItem(ItemStack stack, double needed, int tier) {
+		IElectricItem item = (IElectricItem) stack.getItem();
+		if (item.canProvideEnergy(stack))
+			return ElectricItem.manager.discharge(stack, needed, tier, false, false, false);
 		return 0;
 	}
 

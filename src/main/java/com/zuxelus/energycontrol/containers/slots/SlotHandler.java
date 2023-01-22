@@ -22,6 +22,7 @@ public class SlotHandler {
 		registerTexture(event, "zlib:slots/slot_dischargeable_0");
 		registerTexture(event, "zlib:slots/slot_dischargeable_1");
 		registerTexture(event, "zlib:slots/slot_dischargeable_2");
+		registerTexture(event, "zlib:slots/slot_transformer");
 	}
 
 	private void registerTexture(TextureStitchEvent.Pre event, String texture) {

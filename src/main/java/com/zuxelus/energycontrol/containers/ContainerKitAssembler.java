@@ -4,8 +4,7 @@ import com.zuxelus.energycontrol.containers.slots.SlotCard;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
 import com.zuxelus.zlib.containers.ContainerBase;
-import com.zuxelus.zlib.containers.slots.SlotDischargeable;
-import com.zuxelus.zlib.containers.slots.SlotFilter;
+import com.zuxelus.zlib.containers.slots.*;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IContainerListener;
@@ -26,6 +25,7 @@ public class ContainerKitAssembler extends ContainerBase<TileEntityKitAssembler>
 		addSlotToContainer(new SlotFilter(te, 4, 121, 35));
 
 		addSlotToContainer(new SlotDischargeable(te, 5, 8, 17 + 18 * 2, 1));
+		addSlotToContainer(new SlotTransformer(te, 6, 8, 17 + 18));
 		// inventory
 		addPlayerInventorySlots(player, 166);
 	}

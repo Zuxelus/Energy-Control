@@ -18,6 +18,7 @@ import ic2.api.classic.tile.machine.IEUStorage;
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IC2Items;
 import ic2.api.item.ICustomDamageItem;
+import ic2.api.item.IElectricItem;
 import ic2.api.reactor.IReactor;
 import ic2.api.tile.IEnergyStorage;
 import ic2.core.IC2;
@@ -29,6 +30,7 @@ import ic2.core.item.reactor.ItemReactorUraniumRod;
 import ic2.core.item.reactor.base.ItemHeatVentBase;
 import ic2.core.item.reactor.base.ItemHeatVentBase.VentProperty;
 import ic2.core.item.tool.ItemToolWrench;
+import ic2.core.platform.lang.storage.Ic2InfoLang;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -61,6 +63,24 @@ public class CrossIC2Classic extends CrossModBase {
 	@Override
 	public boolean isWrench(ItemStack stack) {
 		return !stack.isEmpty() && stack.getItem() instanceof ItemToolWrench;
+	}
+
+	@Override
+	public boolean isElectricItem(ItemStack stack) {
+		return !stack.isEmpty() && stack.getItem() instanceof IElectricItem;
+	}
+
+	@Override
+	public double dischargeItem(ItemStack stack, double needed, int tier) {
+		IElectricItem item = (IElectricItem) stack.getItem();
+		if (item.canProvideEnergy(stack))
+			return ElectricItem.manager.discharge(stack, needed, tier, false, false, false);
+		return 0;
+	}
+
+	@Override
+	public void addEuInfo(List<String> tooltip) {
+		tooltip.add(Ic2InfoLang.euReaderSinkInfo.getLocalizedFormatted(32));
 	}
 
 	@Override

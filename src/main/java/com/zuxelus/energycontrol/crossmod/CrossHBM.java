@@ -61,7 +61,7 @@ public class CrossHBM extends CrossModBase {
 	}
 
 	@Override
-	public double dischargeItem(ItemStack stack, double needed) {
+	public double dischargeItem(ItemStack stack, double needed, int tier) {
 		ItemBattery item = (ItemBattery) stack.getItem();
 		long amount =  Math.min(Math.min((long) needed, item.getDischargeRate()), item.getCharge(stack));
 		item.dischargeBattery(stack, amount);
