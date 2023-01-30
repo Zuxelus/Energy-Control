@@ -98,7 +98,7 @@ public class ItemCardGalacticraft extends ItemCardBase {
 	@Override
 	public List<PanelSetting> getSettingsList(ItemStack stack) {
 		List<PanelSetting> result = new ArrayList<>(2);
-		result.add(new PanelSetting(I18n.format("msg.ec.cbStatus"), 1));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelStatus"), 1));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 2));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelOutput"), 4));
 		//result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelMultiplier"), 8));
