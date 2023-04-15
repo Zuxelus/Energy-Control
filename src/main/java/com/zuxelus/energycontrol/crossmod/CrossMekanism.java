@@ -4,6 +4,9 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.zuxelus.energycontrol.init.ModItems;
+import com.zuxelus.energycontrol.items.cards.ItemCardMekanism;
+import com.zuxelus.energycontrol.items.kits.ItemKitMekanism;
 import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
@@ -33,9 +36,11 @@ import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.locale.Language;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.registries.RegisterEvent.RegisterHelper;
 
 public class CrossMekanism extends CrossModBase {
 
@@ -466,4 +471,12 @@ public class CrossMekanism extends CrossModBase {
 			return ((TileEntityFluidTank) te).fluidTank;
 		return null;
 	}*/
+
+	@Override
+	public void registerItems(RegisterHelper<Item> event) {
+		ModItems.kit_mekanism = new ItemKitMekanism();
+		event.register("kit_mekanism", ModItems.kit_mekanism);
+		ModItems.card_mekanism = new ItemCardMekanism();
+		event.register("card_mekanism", ModItems.card_mekanism);
+	}
 }

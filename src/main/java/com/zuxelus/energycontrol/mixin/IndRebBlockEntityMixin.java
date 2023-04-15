@@ -7,14 +7,17 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.maciej916.indreb.common.api.blockentity.IndRebBlockEntity;
-import com.maciej916.indreb.common.block.impl.battery_box.BlockEntityBatteryBox;
-import com.zuxelus.energycontrol.crossmod.CrossIndustrialReborn;
+import net.minecraft.world.item.Item;
 
-@Mixin(IndRebBlockEntity.class)
+//import com.maciej916.indreb.common.api.blockentity.IndRebBlockEntity;
+//import com.maciej916.indreb.common.block.impl.battery_box.BlockEntityBatteryBox;
+//import com.zuxelus.energycontrol.crossmod.CrossIndustrialReborn;
+
+//@Mixin(IndRebBlockEntity.class)
+@Mixin(Item.class)
 public class IndRebBlockEntityMixin {
 
-	@Inject(at = @At("HEAD"), method = "tickServer")
+	/*@Inject(at = @At("HEAD"), method = "tickServer")
 	private void init(CallbackInfo info) {
 		IndRebBlockEntity te = (IndRebBlockEntity)(Object) this;
 		if (!CrossIndustrialReborn.map.containsKey(te) || te.getLevel().isClientSide)
@@ -33,5 +36,5 @@ public class IndRebBlockEntityMixin {
 				CrossIndustrialReborn.map.put(te, values);
 			}
 		}
-	}
+	}*/
 }

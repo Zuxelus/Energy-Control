@@ -6,8 +6,10 @@ import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.registries.RegisterEvent;
 
 public class CrossModBase {
 
@@ -30,4 +32,6 @@ public class CrossModBase {
 	public List<FluidInfo> getAllTanks(BlockEntity te) {
 		return null;
 	}
+
+	public void registerItems(RegisterEvent.RegisterHelper<Item> event) { }
 }

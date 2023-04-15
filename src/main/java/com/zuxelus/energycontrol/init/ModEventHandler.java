@@ -1,16 +1,13 @@
 package com.zuxelus.energycontrol.init;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.crossmod.ModIDs;
-import com.zuxelus.energycontrol.items.cards.*;
-import com.zuxelus.energycontrol.items.kits.*;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.recipes.KitAssemblerRecipeType;
 import com.zuxelus.energycontrol.tileentities.*;
 
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
@@ -43,50 +40,6 @@ public class ModEventHandler {
 		event.register("kit_assembler", new BlockItem(ModItems.kit_assembler.get(), new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
 		event.register("timer", new BlockItem(ModItems.timer.get(), new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
 
-		ModList list = ModList.get();
-		if (list.isLoaded(ModIDs.ADV_GENERATORS)) {
-			ModItems.kit_adv_generators = new ItemKitAdvGenerators();
-			event.register("kit_adv_generators", ModItems.kit_adv_generators);
-			ModItems.card_adv_generators = new ItemCardAdvGenerators();
-			event.register("card_adv_generators", ModItems.card_adv_generators);
-		}
-		if (list.isLoaded(ModIDs.APPLIED_ENERGISTICS)) {
-			ModItems.kit_app_eng = new ItemKitAppEng();
-			event.register("kit_app_eng", ModItems.kit_app_eng);
-			ModItems.card_app_eng = new ItemCardAppEng();
-			event.register("card_app_eng", ModItems.card_app_eng);
-			ModItems.card_app_eng_inv = new ItemCardAppEngInv();
-			event.register("card_app_eng_inv", ModItems.card_app_eng_inv);
-		}
-		if (list.isLoaded(ModIDs.BIG_REACTORS) || list.isLoaded(ModIDs.BIGGER_REACTORS)) {
-			ModItems.kit_big_reactors = new ItemKitBigReactors();
-			event.register("kit_big_reactors", ModItems.kit_big_reactors);
-			ModItems.card_big_reactors = new ItemCardBigReactors();
-			event.register("card_big_reactors", ModItems.card_big_reactors);
-		}
-		/*if (list.isLoaded(ModIDs.IMMERSIVE_ENGINEERING)) {
-			ModItems.kit_immersive_engineering = new ItemKitImmersiveEngineering();
-			event.register("kit_immersive_engineering", ModItems.kit_immersive_engineering);
-			ModItems.card_immersive_engineering = new ItemCardImmersiveEngineering();
-			event.register("card_immersive_engineering", ModItems.card_immersive_engineering);
-		}*/
-		if (list.isLoaded(ModIDs.INDUSTRIAL_REBORN)) {
-			ModItems.kit_industrial_reborn = new ItemKitIndustrialReborn();
-			event.register("kit_industrial_reborn", ModItems.kit_industrial_reborn);
-			ModItems.card_industrial_reborn = new ItemCardIndustrialReborn();
-			event.register("card_industrial_reborn", ModItems.card_industrial_reborn);
-		}
-		if (list.isLoaded(ModIDs.MEKANISM)) {
-			ModItems.kit_mekanism = new ItemKitMekanism();
-			event.register("kit_mekanism", ModItems.kit_mekanism);
-			ModItems.card_mekanism = new ItemCardMekanism();
-			event.register("card_mekanism", ModItems.card_mekanism);
-		}
-		/*if (list.isLoaded(ModIDs.THERMAL_EXPANSION)) {
-			ModItems.kit_thermal_expansion = new ItemKitThermalExpansion();
-			event.register("kit_thermal_expansion", ModItems.kit_thermal_expansion);
-			ModItems.card_thermal_expansion = new ItemCardThermalExpansion();
-			event.register("card_thermal_expansion", ModItems.card_thermal_expansion);
-		}*/
+		CrossModLoader.registerItems(event);
 	}
 }

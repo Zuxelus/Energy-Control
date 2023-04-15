@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Optional;
 
 import com.zuxelus.energycontrol.api.PanelString;
+import com.zuxelus.energycontrol.init.ModItems;
+import com.zuxelus.energycontrol.items.cards.ItemCardBigReactors;
+import com.zuxelus.energycontrol.items.kits.ItemKitBigReactors;
 import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
@@ -20,9 +23,11 @@ import it.zerono.mods.zerocore.lib.multiblock.AbstractMultiblockController;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.RegisterEvent.RegisterHelper;
 
 public class CrossBigReactors extends CrossModBase {
 
@@ -163,5 +168,13 @@ public class CrossBigReactors extends CrossModBase {
 			return tag;
 		}
 		return null;
+	}
+
+	@Override
+	public void registerItems(RegisterHelper<Item> event) {
+		ModItems.kit_big_reactors = new ItemKitBigReactors();
+		event.register("kit_big_reactors", ModItems.kit_big_reactors);
+		ModItems.card_big_reactors = new ItemCardBigReactors();
+		event.register("card_big_reactors", ModItems.card_big_reactors);
 	}
 }

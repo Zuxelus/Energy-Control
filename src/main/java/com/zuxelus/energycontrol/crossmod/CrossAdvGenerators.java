@@ -5,6 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.zuxelus.energycontrol.init.ModItems;
+import com.zuxelus.energycontrol.items.cards.ItemCardAdvGenerators;
+import com.zuxelus.energycontrol.items.cards.ItemCardAppEng;
+import com.zuxelus.energycontrol.items.cards.ItemCardAppEngInv;
+import com.zuxelus.energycontrol.items.kits.ItemKitAdvGenerators;
+import com.zuxelus.energycontrol.items.kits.ItemKitAppEng;
 import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
@@ -16,7 +22,9 @@ import net.bdew.generators.controllers.turbine.TileFuelTurbineController;
 import net.bdew.generators.recipes.ExchangerRecipe;
 import net.bdew.lib.resource.Resource;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.registries.RegisterEvent.RegisterHelper;
 import scala.Option;
 
 public class CrossAdvGenerators extends CrossModBase {
@@ -121,5 +129,13 @@ public class CrossAdvGenerators extends CrossModBase {
 		if (values == null)
 			map.put(te, null);
 		return values;
+	}
+
+	@Override
+	public void registerItems(RegisterHelper<Item> event) {
+		ModItems.kit_adv_generators = new ItemKitAdvGenerators();
+		event.register("kit_adv_generators", ModItems.kit_adv_generators);
+		ModItems.card_adv_generators = new ItemCardAdvGenerators();
+		event.register("card_adv_generators", ModItems.card_adv_generators);
 	}
 }

@@ -19,7 +19,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
 //apply plugin: 'scala'
 
-version = '1.19.2-0.2.6b'
+version = '1.19.2-0.2.7a'
 group = 'com.zuxelus.energycontrol'
 archivesBaseName = 'EnergyControl-forge'
 
@@ -99,22 +99,23 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19.2-43.1.65'
+    minecraft 'net.minecraftforge:forge:1.19.2-43.2.4'
     implementation 'io.netty:netty-codec-http:4.1.77.Final'
     implementation 'org.scala-lang:scala-library:2.13.8'
-    compileOnly fg.deobf ("curse.maven:ae2-223794:4136127")
-    compileOnly fg.deobf ("curse.maven:cctweaked-282001:4065685")
-    compileOnly fg.deobf ("curse.maven:jei-238222:4145222")
-    compileOnly fg.deobf ("curse.maven:extremereactors-250277:4016179")
-    compileOnly fg.deobf ("curse.maven:zerocore-247921:4016175")
+    compileOnly fg.deobf ("curse.maven:ae2-223794:4293558")
+    compileOnly fg.deobf ("curse.maven:cctweaked-282001:4395619")
+    compileOnly fg.deobf ("curse.maven:ic2c-242942:4348706")
+    compileOnly fg.deobf ("curse.maven:WTHIT-455982:4368864") //
+    compileOnly fg.deobf ("curse.maven:badpackets-615134:4073854") //
+    compileOnly fg.deobf ("curse.maven:jei-238222:4434397")
+    compileOnly fg.deobf ("curse.maven:extremereactors-250277:4417968")
+    compileOnly fg.deobf ("curse.maven:zerocore-247921:4485324")
     compileOnly fg.deobf ("curse.maven:advancedgenerators-223622:4104739")
     compileOnly fg.deobf ("curse.maven:bdlib-70496:4100704")
     compileOnly fg.deobf ("curse.maven:catsforce-320926:4028119")
-    compileOnly fg.deobf ("curse.maven:mekanism-268560:4041164")
-    compileOnly fg.deobf ("curse.maven:mekanismgenerators-268566:4041168")
-    //compileOnly fg.deobf ("curse.maven:indreb-358877:4076608")
-    compileOnly fg.deobf ("com.maciej916.indreb:indreb:1.19.2-0.14.3-exp")
-
+    compileOnly fg.deobf ("curse.maven:mekanism-268560:4385637")
+    compileOnly fg.deobf ("curse.maven:mekanismgenerators-268566:4385639")
+    compileOnly fg.deobf ("com.maciej916.indreb:indreb:1.19.2-0.14.3-exp-quantum-armor")
     //annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 

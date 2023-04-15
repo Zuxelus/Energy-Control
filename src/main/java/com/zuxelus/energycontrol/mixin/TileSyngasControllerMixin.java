@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.zuxelus.energycontrol.crossmod.CrossAdvGenerators;
+//import com.zuxelus.energycontrol.crossmod.CrossAdvGenerators;
 
 import net.bdew.generators.controllers.syngas.TileSyngasController;
 
@@ -17,8 +17,8 @@ public class TileSyngasControllerMixin {
 	@Inject(at = @At("HEAD"), method = "serverTick")
 	private void init(CallbackInfoReturnable info) {
 		TileSyngasController te = (TileSyngasController)(Object) this;
-		if (!CrossAdvGenerators.map.containsKey(te) || te.getLevel().isClientSide)
-			return;
+		/*if (!CrossAdvGenerators.map.containsKey(te) || te.getLevel().isClientSide)
+			return;*/
 
 		double heat = (Double) te.heat().value();
 		double steamBuffer = (Double) te.steamBuffer().value();
@@ -38,6 +38,6 @@ public class TileSyngasControllerMixin {
 		ArrayList<Double> values = new ArrayList<>();
 		values.add(addSteam);
 		values.add(Math.ceil(addSteam / waterSteamRatio));
-		CrossAdvGenerators.map.put(te, values);
+		//CrossAdvGenerators.map.put(te, values);
 	}
 }

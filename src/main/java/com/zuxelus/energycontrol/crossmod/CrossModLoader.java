@@ -17,6 +17,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
 import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
@@ -28,20 +29,22 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.registries.RegisterEvent;
 
 public class CrossModLoader {
 	private static final Map<String, CrossModBase> CROSS_MODS = new HashMap<>();
 
 	public static void init() {
-		loadCrossMod(ModIDs.ADV_GENERATORS, CrossAdvGenerators::new);
+		//loadCrossMod(ModIDs.ADV_GENERATORS, CrossAdvGenerators::new);
 		loadCrossMod(ModIDs.APPLIED_ENERGISTICS, CrossAppEng::new);
 		loadCrossMod(ModIDs.BIG_REACTORS, CrossBigReactors::new);
 		//loadCrossMod(ModIDs.BIGGER_REACTORS, CrossBiggerReactors::new);
 		loadCrossModSafely(ModIDs.COMPUTER_CRAFT, () -> CrossComputerCraft::new);
+		loadCrossMod(ModIDs.IC2, CrossIC2Classic::new);
 		loadCrossMod(ModIDs.MEKANISM, CrossMekanism::new);
 		loadCrossMod(ModIDs.MEKANISM_GENERATORS, CrossMekanismGenerators::new);
 		//loadCrossMod(ModIDs.IMMERSIVE_ENGINEERING, CrossImmersiveEngineering::new);
-		loadCrossMod(ModIDs.INDUSTRIAL_REBORN, CrossIndustrialReborn::new);
+		//loadCrossModSafely(ModIDs.INDUSTRIAL_REBORN, () -> CrossIndustrialReborn::new);
 		//loadCrossMod(ModIDs.THERMAL_EXPANSION, CrossThermalExpansion::new);
 	}
 
@@ -168,5 +171,10 @@ public class CrossModLoader {
 			}
 		}
 		return tag;
+	}
+
+	public static void registerItems(RegisterEvent.RegisterHelper<Item> event) {
+		for (CrossModBase crossMod : CROSS_MODS.values())
+			crossMod.registerItems(event);
 	}
 }

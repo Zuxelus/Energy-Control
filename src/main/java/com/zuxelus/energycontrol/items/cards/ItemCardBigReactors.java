@@ -31,8 +31,8 @@ public class ItemCardBigReactors extends ItemCardMain {
 
 		BlockEntity te = world.getBlockEntity(target);
 		CompoundTag tag = CrossModLoader.getCrossMod(ModIDs.BIG_REACTORS).getCardData(te);
-		if (tag == null)
-			tag = CrossModLoader.getCrossMod(ModIDs.BIGGER_REACTORS).getCardData(te);
+		/*if (tag == null)
+			tag = CrossModLoader.getCrossMod(ModIDs.BIGGER_REACTORS).getCardData(te);*/
 		if (tag == null)
 			return CardState.NO_TARGET;
 		reader.reset();

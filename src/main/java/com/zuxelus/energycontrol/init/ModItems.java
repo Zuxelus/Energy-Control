@@ -44,6 +44,7 @@ public class ModItems {
 	public static Item kit_adv_generators;
 	public static Item kit_app_eng;
 	public static Item kit_big_reactors;
+	public static Item kit_ic2;
 	public static Item kit_immersive_engineering;
 	public static Item kit_industrial_reborn;
 	public static Item kit_mekanism;
@@ -63,6 +64,7 @@ public class ModItems {
 	public static Item card_app_eng;
 	public static Item card_app_eng_inv;
 	public static Item card_big_reactors;
+	public static Item card_ic2;
 	public static Item card_immersive_engineering;
 	public static Item card_industrial_reborn;
 	public static Item card_mekanism;

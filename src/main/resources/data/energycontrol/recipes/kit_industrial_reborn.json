@@ -1,0 +1,35 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"IT",
+		"PD"
+	],
+	"key": {
+		"I": {
+			"item": "indreb:tin_plate"
+		},
+		"T": {
+			"item": "energycontrol:radio_transmitter"
+		},
+		"P": {
+			"item": "minecraft:paper"
+		},
+		"D": {
+			"tag": "forge:dyes/white"
+		}
+	},
+	"result": {
+		"item": "energycontrol:kit_industrial_reborn"
+	},
+	"conditions": [
+		{
+			"type": "forge:and",
+			"values": [
+				{
+					"type": "forge:mod_loaded",
+					"modid": "indreb"
+				}
+			]
+		}
+	]
+}

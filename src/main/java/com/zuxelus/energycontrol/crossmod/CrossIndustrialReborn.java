@@ -44,17 +44,22 @@ import com.maciej916.indreb.common.recipe.ModRecipeType;
 import com.maciej916.indreb.common.recipe.impl.*;
 import com.maciej916.indreb.common.tag.ModBlockTags;
 import com.maciej916.indreb.common.util.BlockStateHelper;
+import com.zuxelus.energycontrol.init.ModItems;
+import com.zuxelus.energycontrol.items.cards.ItemCardIndustrialReborn;
+import com.zuxelus.energycontrol.items.kits.ItemKitIndustrialReborn;
 import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.registries.RegisterEvent.RegisterHelper;
 
 public class CrossIndustrialReborn extends CrossModBase {
 	public static Map<BlockEntity, ArrayList<Double>> map = new HashMap<BlockEntity, ArrayList<Double>>();
@@ -347,5 +352,13 @@ public class CrossIndustrialReborn extends CrossModBase {
 				return level.getRecipeManager().getRecipeFor(ModRecipeType.EXTRUDING.get(), new SimpleContainer(new ItemStack[] { input }), level);
 			}
 		return Optional.empty();
+	}
+
+	@Override
+	public void registerItems(RegisterHelper<Item> event) {
+		ModItems.kit_industrial_reborn = new ItemKitIndustrialReborn();
+		event.register("kit_industrial_reborn", ModItems.kit_industrial_reborn);
+		ModItems.card_industrial_reborn = new ItemCardIndustrialReborn();
+		event.register("card_industrial_reborn", ModItems.card_industrial_reborn);
 	}
 }

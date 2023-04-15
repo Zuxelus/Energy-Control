@@ -3,6 +3,10 @@ package com.zuxelus.energycontrol.crossmod;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
+import com.zuxelus.energycontrol.init.ModItems;
+import com.zuxelus.energycontrol.items.cards.ItemCardAppEng;
+import com.zuxelus.energycontrol.items.cards.ItemCardAppEngInv;
+import com.zuxelus.energycontrol.items.kits.ItemKitAppEng;
 import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.energycontrol.utils.StringUtils;
 
@@ -16,8 +20,10 @@ import appeng.blockentity.storage.ChestBlockEntity;
 import appeng.blockentity.storage.DriveBlockEntity;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.registries.RegisterEvent.RegisterHelper;
 
 public class CrossAppEng extends CrossModBase {
 
@@ -125,5 +131,15 @@ public class CrossAppEng extends CrossModBase {
 			}
 		}*/
 		return cells;
+	}
+
+	@Override
+	public void registerItems(RegisterHelper<Item> event) {
+		ModItems.kit_app_eng = new ItemKitAppEng();
+		event.register("kit_app_eng", ModItems.kit_app_eng);
+		ModItems.card_app_eng = new ItemCardAppEng();
+		event.register("card_app_eng", ModItems.card_app_eng);
+		ModItems.card_app_eng_inv = new ItemCardAppEngInv();
+		event.register("card_app_eng_inv", ModItems.card_app_eng_inv);
 	}
 }
