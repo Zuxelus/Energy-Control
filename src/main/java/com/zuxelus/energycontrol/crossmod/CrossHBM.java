@@ -18,6 +18,7 @@ import com.hbm.items.special.ItemAMSCore;
 import com.hbm.saveddata.RadiationSavedData;
 import com.hbm.tileentity.TileEntityProxyCombo;
 import com.hbm.tileentity.machine.*;
+import com.hbm.tileentity.machine.oil.*;
 import com.hbm.tileentity.machine.rbmk.*;
 import com.hbm.util.ContaminationUtil;
 import com.hbm.world.generator.DungeonToolbox;
@@ -73,47 +74,47 @@ public class CrossHBM extends CrossModBase {
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setString(DataHelper.EUTYPE, "HE");
 		if (te instanceof TileEntityMachineBattery) {
-			tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineBattery) te).getSPower());
-			tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineBattery) te).maxPower);
+			tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineBattery) te).getPower());
+			tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineBattery) te).getMaxPower());
 			return tag;
 		}
 		if (te instanceof TileEntityMachineCoal) {
-			tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineCoal) te).getSPower());
+			tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineCoal) te).getPower());
 			tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineCoal) te).maxPower);
 			return tag;
 		}
 		if (te instanceof TileEntityMachineDiesel) {
-			tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineDiesel) te).getSPower());
+			tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineDiesel) te).getPower());
 			tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineDiesel) te).maxPower);
 			return tag;
 		}
 		if (te instanceof TileEntityMachineSeleniumEngine) {
-			tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineSeleniumEngine) te).getSPower());
+			tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineSeleniumEngine) te).getPower());
 			tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineSeleniumEngine) te).maxPower);
 			return tag;
 		}
 		if (te instanceof TileEntityMachineRTG) {
-			tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineRTG) te).getSPower());
-			tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineRTG) te).powerMax);
+			tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineRTG) te).getPower());
+			tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineRTG) te).maxPower);
 			return tag;
 		}
 		if (te instanceof TileEntityMachineMiniRTG) {
-			tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineMiniRTG) te).getSPower());
+			tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineMiniRTG) te).getPower());
 			tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineMiniRTG) te).getBlockType() == ModBlocks.machine_powerrtg ? 50000 : 1400);
 			return tag;
 		}
 		if (te instanceof TileEntityMachineAmgen) {
-			tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineAmgen) te).getSPower());
+			tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineAmgen) te).getPower());
 			tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineAmgen) te).maxPower);
 			return tag;
 		}
 		if (te instanceof TileEntityMachineSPP) {
-			tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineSPP) te).getSPower());
+			tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineSPP) te).getPower());
 			tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineSPP) te).maxPower);
 			return tag;
 		}
 		if (te instanceof TileEntityMachineTurbine) {
-			tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineTurbine) te).getSPower());
+			tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineTurbine) te).getPower());
 			tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineTurbine) te).maxPower);
 			return tag;
 		}
@@ -145,12 +146,12 @@ public class CrossHBM extends CrossModBase {
 		if (te instanceof TileEntityProxyCombo) {
 			TileEntity base = ((TileEntityProxyCombo) te).getTile();
 			if (base instanceof TileEntityMachineLargeTurbine) {
-				tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineLargeTurbine) base).getSPower());
+				tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineLargeTurbine) base).getPower());
 				tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineLargeTurbine) base).maxPower);
 				return tag;
 			}
 			if (base instanceof TileEntityMachineIGenerator) {
-				tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineIGenerator) base).getSPower());
+				tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineIGenerator) base).getPower());
 				tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineIGenerator) base).maxPower);
 				return tag;
 			}
@@ -170,7 +171,7 @@ public class CrossHBM extends CrossModBase {
 				return tag;
 			}
 			if (base instanceof TileEntityChungus) {
-				tag.setDouble(DataHelper.ENERGY, ((TileEntityChungus) base).getSPower());
+				tag.setDouble(DataHelper.ENERGY, ((TileEntityChungus) base).getPower());
 				tag.setDouble(DataHelper.CAPACITY, ((TileEntityChungus) base).maxPower);
 				return tag;
 			}
@@ -182,28 +183,28 @@ public class CrossHBM extends CrossModBase {
 				tag.setLong(DataHelper.CAPACITY, ((TileEntityMachineChemplant) base).maxPower);
 				return tag;
 			}
-			if (base instanceof TileEntityMachineGasFlare) {
-				tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineGasFlare) base).getSPower());
+			/*if (base instanceof TileEntityMachineGasFlare) {
+				tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineGasFlare) base).getPower());
 				tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineGasFlare) base).maxPower);
 				return tag;
-			}
+			}*/
 			if (base instanceof TileEntityMachineTurbofan) {
-				tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineTurbofan) base).getSPower());
+				tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineTurbofan) base).getPower());
 				tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineTurbofan) base).maxPower);
 				return tag;
 			}
 			if (base instanceof TileEntityMachineRadGen) {
-				tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineRadGen) base).getSPower());
+				tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineRadGen) base).getPower());
 				tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineRadGen) base).maxPower);
 				return tag;
 			}
-			if (base instanceof TileEntityAMSLimiter) {
+			/*if (base instanceof TileEntityAMSLimiter) {
 				tag.setDouble(DataHelper.ENERGY, ((TileEntityAMSLimiter) base).getPower());
 				tag.setDouble(DataHelper.CAPACITY, ((TileEntityAMSLimiter) base).maxPower);
 				return tag;
 			}
 			if (base instanceof TileEntityAMSBase) {
-				tag.setDouble(DataHelper.ENERGY, ((TileEntityAMSBase) base).getSPower());
+				tag.setDouble(DataHelper.ENERGY, ((TileEntityAMSBase) base).getPower());
 				tag.setDouble(DataHelper.CAPACITY, ((TileEntityAMSBase) base).maxPower);
 				return tag;
 			}
@@ -211,10 +212,10 @@ public class CrossHBM extends CrossModBase {
 				tag.setDouble(DataHelper.ENERGY, ((TileEntityAMSEmitter) base).getPower());
 				tag.setDouble(DataHelper.CAPACITY, ((TileEntityAMSEmitter) base).maxPower);
 				return tag;
-			}
+			}*/
 			if (base instanceof TileEntityMachineOilWell) {
 				tag.setDouble(DataHelper.ENERGY, ((TileEntityMachineOilWell) base).getPower());
-				tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineOilWell) base).maxPower);
+				tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachineOilWell) base).getMaxPower());
 				return tag;
 			}
 			if (base instanceof TileEntityMachineAssembler) {
@@ -224,7 +225,7 @@ public class CrossHBM extends CrossModBase {
 			}
 			if (base instanceof TileEntityMachinePumpjack) {
 				tag.setDouble(DataHelper.ENERGY, ((TileEntityMachinePumpjack) base).getPower());
-				tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachinePumpjack) base).maxPower);
+				tag.setDouble(DataHelper.CAPACITY, ((TileEntityMachinePumpjack) base).getMaxPower());
 				return tag;
 			}
 			if (base instanceof TileEntityMachineRefinery) {
@@ -237,22 +238,22 @@ public class CrossHBM extends CrossModBase {
 			for (EnumFacing side : EnumFacing.HORIZONTALS) {
 				TileEntity core = te.getWorld().getTileEntity(te.getPos().offset(side, 3));
 				if (core instanceof TileEntityWatzCore) {
-					tag.setDouble(DataHelper.ENERGY, ((TileEntityWatzCore) core).getSPower());
+					tag.setDouble(DataHelper.ENERGY, ((TileEntityWatzCore) core).getPower());
 					tag.setDouble(DataHelper.CAPACITY, ((TileEntityWatzCore) core).maxPower);
 					return tag;
 				}
 			}
 		}
-		if (te instanceof TileEntityFusionHatch) {
+		/*if (te instanceof TileEntityFusionHatch) {
 			for (EnumFacing side : EnumFacing.HORIZONTALS) {
 				TileEntity core = te.getWorld().getTileEntity(te.getPos().offset(side, 8));
 				if (core instanceof TileEntityFusionMultiblock) {
-					tag.setDouble(DataHelper.ENERGY, ((TileEntityFusionMultiblock) core).getSPower());
+					tag.setDouble(DataHelper.ENERGY, ((TileEntityFusionMultiblock) core).getPower());
 					tag.setDouble(DataHelper.CAPACITY, ((TileEntityFusionMultiblock) core).maxPower);
 					return tag;
 				}
 			}
-		}
+		}*/
 		return null;
 	}
 
@@ -454,7 +455,7 @@ public class CrossHBM extends CrossModBase {
 				}
 			}
 		}
-		if (te instanceof TileEntityFusionHatch) {
+		/*if (te instanceof TileEntityFusionHatch) {
 			for (EnumFacing side : EnumFacing.HORIZONTALS) {
 				TileEntity core = te.getWorld().getTileEntity(te.getPos().offset(side, 8));
 				if (core instanceof TileEntityFusionMultiblock) {
@@ -464,7 +465,7 @@ public class CrossHBM extends CrossModBase {
 					return result;
 				}
 			}
-		}
+		}*/
 		return null;
 	}
 
@@ -482,8 +483,8 @@ public class CrossHBM extends CrossModBase {
 		}
 		if (te instanceof TileEntityMachineBattery) {
 			NBTTagCompound tag = new NBTTagCompound();
-			tag.setLong(DataHelper.ENERGY, ((TileEntityMachineBattery) te).getSPower());
-			tag.setLong(DataHelper.CAPACITY, ((TileEntityMachineBattery) te).maxPower);
+			tag.setLong(DataHelper.ENERGY, ((TileEntityMachineBattery) te).getPower());
+			tag.setLong(DataHelper.CAPACITY, ((TileEntityMachineBattery) te).getMaxPower());
 			ArrayList values = getHookValues(te);
 			if (values != null)
 				tag.setLong(DataHelper.DIFF, ((Long) values.get(0) - (Long) values.get(20)) / 20);
@@ -492,7 +493,7 @@ public class CrossHBM extends CrossModBase {
 		if (te instanceof TileEntityMachineCoal) {
 			NBTTagCompound tag = new NBTTagCompound();
 			tag.setBoolean(DataHelper.ACTIVE, ((TileEntityMachineCoal) te).burnTime > 0);
-			tag.setLong(DataHelper.ENERGY, ((TileEntityMachineCoal) te).getSPower());
+			tag.setLong(DataHelper.ENERGY, ((TileEntityMachineCoal) te).getPower());
 			tag.setLong(DataHelper.CAPACITY, ((TileEntityMachineCoal) te).maxPower);
 			if (((TileEntityMachineCoal) te).burnTime > 0)
 				tag.setDouble(DataHelper.OUTPUT, 25);
@@ -511,7 +512,7 @@ public class CrossHBM extends CrossModBase {
 				tag.setBoolean(DataHelper.ACTIVE, false);
 				tag.setDouble(DataHelper.OUTPUT, 0);
 			}
-			tag.setLong(DataHelper.ENERGY, ((TileEntityMachineDiesel) te).getSPower());
+			tag.setLong(DataHelper.ENERGY, ((TileEntityMachineDiesel) te).getPower());
 			tag.setLong(DataHelper.CAPACITY, ((TileEntityMachineDiesel) te).maxPower);
 			FluidInfo.addTank(DataHelper.TANK, tag, ((TileEntityMachineDiesel) te).tank);
 			return tag;
@@ -526,7 +527,7 @@ public class CrossHBM extends CrossModBase {
 				tag.setBoolean(DataHelper.ACTIVE, false);
 				tag.setDouble(DataHelper.OUTPUT, 0);
 			}
-			tag.setLong(DataHelper.ENERGY, ((TileEntityMachineSeleniumEngine) te).getSPower());
+			tag.setLong(DataHelper.ENERGY, ((TileEntityMachineSeleniumEngine) te).getPower());
 			tag.setLong(DataHelper.CAPACITY, ((TileEntityMachineSeleniumEngine) te).maxPower);
 			FluidInfo.addTank(DataHelper.TANK, tag, ((TileEntityMachineSeleniumEngine) te).tank);
 			return tag;
@@ -541,15 +542,15 @@ public class CrossHBM extends CrossModBase {
 				tag.setBoolean(DataHelper.ACTIVE, false);
 				tag.setDouble(DataHelper.OUTPUT, 0);
 			}
-			tag.setLong(DataHelper.ENERGY, ((TileEntityMachineRTG) te).getSPower());
-			tag.setLong(DataHelper.CAPACITY, ((TileEntityMachineRTG) te).powerMax);
+			tag.setLong(DataHelper.ENERGY, ((TileEntityMachineRTG) te).getPower());
+			tag.setLong(DataHelper.CAPACITY, ((TileEntityMachineRTG) te).getMaxPower());
 			return tag;
 		}
 		if (te instanceof TileEntityMachineMiniRTG) {
 			NBTTagCompound tag = new NBTTagCompound();
 			tag.setBoolean(DataHelper.ACTIVE, true);
 			tag.setDouble(DataHelper.OUTPUT, ((TileEntityMachineMiniRTG) te).getBlockType() == ModBlocks.machine_powerrtg ? 2500 : 70);
-			tag.setLong(DataHelper.ENERGY, ((TileEntityMachineMiniRTG) te).getSPower());
+			tag.setLong(DataHelper.ENERGY, ((TileEntityMachineMiniRTG) te).getPower());
 			tag.setLong(DataHelper.CAPACITY, ((TileEntityMachineMiniRTG) te).getBlockType() == ModBlocks.machine_powerrtg ? 50000 : 1400);
 			return tag;
 		}
@@ -558,7 +559,7 @@ public class CrossHBM extends CrossModBase {
 			double output = calcAmgenOutput(te.getWorld(), te.getBlockType(), te.getPos());
 			tag.setBoolean(DataHelper.ACTIVE, output > 0);
 			tag.setDouble(DataHelper.OUTPUT, output);
-			tag.setLong(DataHelper.ENERGY, ((TileEntityMachineAmgen) te).getSPower());
+			tag.setLong(DataHelper.ENERGY, ((TileEntityMachineAmgen) te).getPower());
 			tag.setLong(DataHelper.CAPACITY, ((TileEntityMachineAmgen) te).maxPower);
 			return tag;
 		}
@@ -567,7 +568,7 @@ public class CrossHBM extends CrossModBase {
 			double output = Math.max(((TileEntityMachineSPP) te).checkStructure() * 15, 0);
 			tag.setBoolean(DataHelper.ACTIVE, output > 0);
 			tag.setDouble(DataHelper.OUTPUT, output);
-			tag.setLong(DataHelper.ENERGY, ((TileEntityMachineSPP) te).getSPower());
+			tag.setLong(DataHelper.ENERGY, ((TileEntityMachineSPP) te).getPower());
 			tag.setLong(DataHelper.CAPACITY, ((TileEntityMachineSPP) te).maxPower);
 			return tag;
 		}
@@ -593,7 +594,7 @@ public class CrossHBM extends CrossModBase {
 					tag.setDouble(DataHelper.OUTPUTMB, 0);
 				}
 			}
-			tag.setLong(DataHelper.ENERGY, ((TileEntityMachineTurbine) te).getSPower());
+			tag.setLong(DataHelper.ENERGY, ((TileEntityMachineTurbine) te).getPower());
 			tag.setLong(DataHelper.CAPACITY, ((TileEntityMachineTurbine) te).maxPower);
 			FluidInfo.addTank(DataHelper.TANK, tag, ((TileEntityMachineTurbine) te).tanks[0]);
 			FluidInfo.addTank(DataHelper.TANK2, tag, ((TileEntityMachineTurbine) te).tanks[1]);
@@ -661,7 +662,7 @@ public class CrossHBM extends CrossModBase {
 					tag.setDouble(DataHelper.OUTPUT, (int) values.get(2));
 					tag.setDouble(DataHelper.OUTPUTMB, (int) values.get(1));
 				}
-				tag.setLong(DataHelper.ENERGY, ((TileEntityMachineLargeTurbine) base).getSPower());
+				tag.setLong(DataHelper.ENERGY, ((TileEntityMachineLargeTurbine) base).getPower());
 				tag.setLong(DataHelper.CAPACITY, ((TileEntityMachineLargeTurbine) base).maxPower);
 				FluidInfo.addTank(DataHelper.TANK, tag, ((TileEntityMachineLargeTurbine) base).tanks[0]);
 				FluidInfo.addTank(DataHelper.TANK2, tag, ((TileEntityMachineLargeTurbine) base).tanks[1]);
@@ -684,7 +685,7 @@ public class CrossHBM extends CrossModBase {
 				double output = calcIGeneratorOutput(generator);
 				tag.setBoolean(DataHelper.ACTIVE, output > 0);
 				tag.setDouble(DataHelper.OUTPUT, output);
-				tag.setLong(DataHelper.ENERGY, generator.getSPower());
+				tag.setLong(DataHelper.ENERGY, generator.getPower());
 				tag.setLong(DataHelper.CAPACITY, generator.maxPower);
 				tag.setInteger("temp", generator.temperature + 300);
 				tag.setInteger("speed", generator.torque);
@@ -761,7 +762,7 @@ public class CrossHBM extends CrossModBase {
 					tag.setDouble(DataHelper.OUTPUT, (int) values.get(1));
 					tag.setDouble(DataHelper.OUTPUTMB, (int) values.get(2));
 				}
-				tag.setLong(DataHelper.ENERGY, engine.getSPower());
+				tag.setLong(DataHelper.ENERGY, engine.getPower());
 				tag.setLong(DataHelper.CAPACITY, engine.maxPower);
 				FluidInfo.addTank(DataHelper.TANK, tag, engine.tanks[0]);
 				FluidInfo.addTank(DataHelper.TANK2, tag, engine.tanks[1]);
@@ -791,7 +792,7 @@ public class CrossHBM extends CrossModBase {
 					tag.setDouble(DataHelper.CONSUMPTION, 0);
 					tag.setDouble(DataHelper.OUTPUT, 0);
 				}
-				tag.setLong(DataHelper.ENERGY, ((TileEntityMachineGasFlare) te).getSPower());
+				tag.setLong(DataHelper.ENERGY, ((TileEntityMachineGasFlare) te).getPower());
 				tag.setLong(DataHelper.CAPACITY, ((TileEntityMachineGasFlare) te).maxPower);
 				FluidInfo.addTank(DataHelper.TANK, tag, ((TileEntityMachineGasFlare) te).tank);
 				return tag;
@@ -823,7 +824,7 @@ public class CrossHBM extends CrossModBase {
 					tag.setDouble(DataHelper.CONSUMPTION, 0);
 					tag.setDouble(DataHelper.OUTPUT, 0);
 				}
-				tag.setLong(DataHelper.ENERGY, ((TileEntityMachineTurbofan) base).getSPower());
+				tag.setLong(DataHelper.ENERGY, ((TileEntityMachineTurbofan) base).getPower());
 				tag.setLong(DataHelper.CAPACITY, ((TileEntityMachineTurbofan) base).maxPower);
 				FluidInfo.addTank(DataHelper.TANK, tag, ((TileEntityMachineTurbofan) base).tank);
 				return tag;
@@ -832,15 +833,15 @@ public class CrossHBM extends CrossModBase {
 				NBTTagCompound tag = new NBTTagCompound();
 				tag.setBoolean(DataHelper.ACTIVE, ((TileEntityMachineRadGen) base).strength > 0);
 				tag.setDouble(DataHelper.OUTPUT, ((TileEntityMachineRadGen) base).strength);
-				tag.setLong(DataHelper.ENERGY, ((TileEntityMachineRadGen) base).getSPower());
+				tag.setLong(DataHelper.ENERGY, ((TileEntityMachineRadGen) base).getPower());
 				tag.setLong(DataHelper.CAPACITY, ((TileEntityMachineRadGen) base).maxPower);
 				tag.setInteger("fuel", ((TileEntityMachineRadGen) base).fuel);
 				return tag;
 			}
 			if (base instanceof TileEntityAMSLimiter) {
 				NBTTagCompound tag = new NBTTagCompound();
-				tag.setLong(DataHelper.ENERGY, ((TileEntityAMSLimiter) base).getPower());
-				tag.setLong(DataHelper.CAPACITY, ((TileEntityAMSLimiter) base).maxPower);
+				/*tag.setLong(DataHelper.ENERGY, ((TileEntityAMSLimiter) base).getPower());
+				tag.setLong(DataHelper.CAPACITY, ((TileEntityAMSLimiter) base).maxPower);*/
 				tag.setLong("heat", ((TileEntityAMSLimiter) base).heat);
 				FluidInfo.addTank(DataHelper.TANK, tag, ((TileEntityAMSLimiter) base).tank);
 				return tag;
@@ -851,8 +852,8 @@ public class CrossHBM extends CrossModBase {
 				double output = calcASMBaseOutput(reactor);
 				tag.setBoolean(DataHelper.ACTIVE, output > 0);
 				tag.setDouble(DataHelper.OUTPUT, output);
-				tag.setLong(DataHelper.ENERGY, reactor.getSPower());
-				tag.setLong(DataHelper.CAPACITY, reactor.maxPower);
+				/*tag.setLong(DataHelper.ENERGY, reactor.getPower());
+				tag.setLong(DataHelper.CAPACITY, reactor.maxPower);*/
 				tag.setLong("heat", reactor.heat);
 				FluidInfo.addTank(DataHelper.TANK, tag, reactor.tanks[0]);
 				FluidInfo.addTank(DataHelper.TANK2, tag, reactor.tanks[1]);
@@ -862,8 +863,8 @@ public class CrossHBM extends CrossModBase {
 			}
 			if (base instanceof TileEntityAMSEmitter) {
 				NBTTagCompound tag = new NBTTagCompound();
-				tag.setLong(DataHelper.ENERGY, ((TileEntityAMSEmitter) base).getPower());
-				tag.setLong(DataHelper.CAPACITY, ((TileEntityAMSEmitter) base).maxPower);
+				/*tag.setLong(DataHelper.ENERGY, ((TileEntityAMSEmitter) base).getPower());
+				tag.setLong(DataHelper.CAPACITY, ((TileEntityAMSEmitter) base).maxPower);*/
 				tag.setLong("heat", ((TileEntityAMSEmitter) base).heat);
 				FluidInfo.addTank(DataHelper.TANK, tag, ((TileEntityAMSEmitter) base).tank);
 				return tag;
@@ -871,7 +872,7 @@ public class CrossHBM extends CrossModBase {
 			if (base instanceof TileEntityMachineOilWell) {
 				NBTTagCompound tag = new NBTTagCompound();
 				tag.setLong(DataHelper.ENERGY, ((TileEntityMachineOilWell) base).getPower());
-				tag.setLong(DataHelper.CAPACITY, ((TileEntityMachineOilWell) base).maxPower);
+				tag.setLong(DataHelper.CAPACITY, ((TileEntityMachineOilWell) base).getMaxPower());
 				FluidInfo.addTank(DataHelper.TANK, tag, ((TileEntityMachineOilWell) base).tanks[0]);
 				FluidInfo.addTank(DataHelper.TANK2, tag, ((TileEntityMachineOilWell) base).tanks[1]);
 				return tag;
@@ -885,7 +886,7 @@ public class CrossHBM extends CrossModBase {
 			if (base instanceof TileEntityMachinePumpjack) {
 				NBTTagCompound tag = new NBTTagCompound();
 				tag.setLong(DataHelper.ENERGY, ((TileEntityMachinePumpjack) base).getPower());
-				tag.setLong(DataHelper.CAPACITY, ((TileEntityMachinePumpjack) base).maxPower);
+				tag.setLong(DataHelper.CAPACITY, ((TileEntityMachinePumpjack) base).getMaxPower());
 				FluidInfo.addTank(DataHelper.TANK, tag, ((TileEntityMachinePumpjack) base).tanks[0]);
 				FluidInfo.addTank(DataHelper.TANK2, tag, ((TileEntityMachinePumpjack) base).tanks[1]);
 				return tag;
@@ -981,7 +982,7 @@ public class CrossHBM extends CrossModBase {
 					NBTTagCompound tag = new NBTTagCompound();
 					TileEntityWatzCore reactor = (TileEntityWatzCore) core;
 					tag.setBoolean(DataHelper.ACTIVE, reactor.powerList > 0);
-					tag.setLong(DataHelper.ENERGY, reactor.getSPower());
+					tag.setLong(DataHelper.ENERGY, reactor.getPower());
 					tag.setLong(DataHelper.CAPACITY, reactor.maxPower);
 					tag.setDouble(DataHelper.OUTPUT, reactor.powerList);
 					tag.setLong("heat", reactor.heatList);
@@ -990,7 +991,7 @@ public class CrossHBM extends CrossModBase {
 				}
 			}
 		}
-		if (te instanceof TileEntityFusionHatch) {
+		/*if (te instanceof TileEntityFusionHatch) {
 			for (EnumFacing side : EnumFacing.HORIZONTALS) {
 				TileEntity core = te.getWorld().getTileEntity(te.getPos().offset(side, 8));
 				if (core instanceof TileEntityFusionMultiblock) {
@@ -998,7 +999,7 @@ public class CrossHBM extends CrossModBase {
 					TileEntityFusionMultiblock reactor = (TileEntityFusionMultiblock) core;
 					boolean active = reactor.isRunning();
 					tag.setBoolean(DataHelper.ACTIVE, active);
-					tag.setLong(DataHelper.ENERGY, reactor.getSPower());
+					tag.setLong(DataHelper.ENERGY, reactor.getPower());
 					tag.setLong(DataHelper.CAPACITY, reactor.maxPower);
 					tag.setDouble(DataHelper.CONSUMPTION, active ? 20 : 0);
 					tag.setDouble(DataHelper.OUTPUT, active ? reactor.isCoatingValid(te.getWorld()) ? 200000 : 100000 : 0);
@@ -1008,7 +1009,7 @@ public class CrossHBM extends CrossModBase {
 					return tag;
 				}
 			}
-		}
+		}*/
 		if (te instanceof TileEntityRBMKBase) {
 			NBTTagCompound tag = new NBTTagCompound();
 			tag.setDouble("heatD", ((TileEntityRBMKBase) te).heat);

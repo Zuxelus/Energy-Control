@@ -1,6 +1,6 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import com.hbm.interfaces.IConsumer;
+//import com.hbm.interfaces.IConsumer;
 import com.zuxelus.energycontrol.blocks.KitAssembler;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
@@ -37,10 +37,10 @@ import net.minecraftforge.fml.common.Optional;
 
 @Optional.InterfaceList({
 	@Optional.Interface(modid = ModIDs.IC2, iface = "ic2.api.energy.tile.IEnergySink"),
-	@Optional.Interface(modid = ModIDs.HBM, iface = "com.hbm.interfaces.IConsumer"),
+	//@Optional.Interface(modid = ModIDs.HBM, iface = "com.hbm.interfaces.IConsumer"),
 	@Optional.Interface(modid = ModIDs.THERMAL_EXPANSION, iface = "cofh.redstoneflux.api.IEnergyReceiver"),
 })
-public class TileEntityKitAssembler extends TileEntityItemHandler implements ITickable, ITilePacketHandler, ISlotItemFilter, IEnergySink, IEnergyStorage, IConsumer, IEnergyReceiver {
+public class TileEntityKitAssembler extends TileEntityItemHandler implements ITickable, ITilePacketHandler, ISlotItemFilter, IEnergySink, IEnergyStorage, /*IConsumer,*/ IEnergyReceiver {
 	public static final byte SLOT_INFO = 0;
 	public static final byte SLOT_CARD1 = 1;
 	public static final byte SLOT_ITEM = 2;
@@ -425,7 +425,7 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements ITi
 	}
 
 	// IConsumer
-	@Override
+	/*@Override
 	public long getMaxPower() {
 		return storage.getMaxEnergyStored();
 	}
@@ -438,7 +438,7 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements ITi
 	@Override
 	public void setPower(long energyReceived) {
 		storage.setEnergy((int) energyReceived);
-	}
+	}*/
 
 	// IEnergyReceiver
 	@Override

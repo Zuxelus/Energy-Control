@@ -8,6 +8,7 @@ import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.machine.MachineBoiler;
 import com.hbm.forgefluid.FFUtils;
 import com.hbm.forgefluid.ModForgeFluids;
+import com.hbm.inventory.HeatRecipes;
 import com.hbm.inventory.MachineRecipes;
 import com.hbm.tileentity.machine.*;
 import com.hbm.tileentity.machine.rbmk.RBMKDials;
@@ -188,7 +189,7 @@ public class HBMHooks {
 		if (!map.containsKey(te) || te.getWorld().isRemote)
 			return;
 
-		Object[] outs = te.tanks[0].getFluid() != null ? MachineRecipes.getBoilerOutput(te.tanks[0].getFluid().getFluid()) : null;
+		Object[] outs = te.tanks[0].getFluid() != null ? HeatRecipes.getBoilerOutput(te.tanks[0].getFluid().getFluid()) : null;
 		int heat = te.heat;
 
 		if(heat > 2000)
