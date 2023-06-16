@@ -17,7 +17,7 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.7.10-0.3.4b"
+version = "1.7.10-0.3.4e"
 group= "com.zuxelus.energycontrol"
 archivesBaseName = "EnergyControl"
 
@@ -46,7 +46,7 @@ dependencies {
         'libs_/gregtech_1.7.10-6.15.01.jar',
         'libs_/GalacticraftCore-1.7-3.0.12.504.jar',
         'libs_/Galacticraft-Planets-1.7-3.0.12.504.jar',
-        'libs_/HBM-NTM-[1.0.27_X4228H1].jar',
+        'libs_/HBM-NTM-[1.0.27_X4627].jar',
         'libs_/industrialcraft-2-2.2.827-experimental-dev.jar',
         'libs_/Mekanism-1.7.10-9.1.1.1031.jar',
         'libs_/NotEnoughItems-1.7.10-1.0.5.120-universal.jar',

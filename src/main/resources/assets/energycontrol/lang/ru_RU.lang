@@ -243,6 +243,7 @@ msg.ec.InfoPanelTier=Tier: %s
 msg.ec.InfoPanelTime=Время: %s
 msg.ec.InfoPanelTimeRemaining=Осталось: %s
 msg.ec.InfoPanelTrue=True
+msg.ec.InfoPanelTurbine=Turbine: %s
 msg.ec.InfoPanelTotalNodes=Total Nodes: %s
 msg.ec.InfoPanelRotorHealth=RotorHealth: %s
 msg.ec.InfoPanelUsing=Using: %s

@@ -66,6 +66,8 @@ public class ItemCardHBM extends ItemCardBase {
 			result.add(new PanelString("msg.ec.InfoPanelDifference", reader.getLong(DataHelper.DIFF), "HE/t", showLabels));
 		if (reader.hasField("temp"))
 			result.add(new PanelString("msg.ec.InfoPanelTemperature", reader.getInt("temp"), "K", showLabels));
+		if (reader.hasField("turbine"))
+			result.add(new PanelString("msg.ec.InfoPanelTurbine", reader.getDouble("turbine"), "%", showLabels));
 		if (reader.hasField("speed"))
 			result.add(new PanelString("msg.ec.InfoPanelRotorSpeed", reader.getInt("speed"), showLabels));
 		if (reader.hasField("core"))
@@ -130,7 +132,7 @@ public class ItemCardHBM extends ItemCardBase {
 	@Override
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(2);
-		result.add(new PanelSetting(I18n.format("msg.ec.cbStatus"), 1));
+		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelStatus"), 1));
 		result.add(new PanelSetting(I18n.format("msg.ec.cbInfoPanelEnergy"), 2));
 		return result;
 	}
