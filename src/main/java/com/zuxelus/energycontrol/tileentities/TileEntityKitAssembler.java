@@ -2,6 +2,7 @@ package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.blocks.KitAssembler;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.IC2ReactorHelper;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
@@ -16,10 +17,7 @@ import api.hbm.energy.IEnergyUser;
 import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Optional;
-import ic2.api.energy.event.EnergyTileLoadEvent;
-import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergySink;
-import ic2.api.info.Info;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -172,8 +170,8 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITile
 
 	@Optional.Method(modid = ModIDs.IC2)
 	public void onLoad() {
-		if (!addedToEnet && !worldObj.isRemote && Info.isIc2Available()) {
-			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
+		if (!addedToEnet && !worldObj.isRemote && Loader.isModLoaded(ModIDs.IC2)) {
+			IC2ReactorHelper.energyLoadEvent(this, true);
 			addedToEnet = true;
 			updateActive();
 		}
@@ -188,8 +186,8 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITile
 	@Override
 	@Optional.Method(modid = ModIDs.IC2)
 	public void onChunkUnload() {
-		if (addedToEnet && !worldObj.isRemote && Info.isIc2Available()) {
-			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
+		if (addedToEnet && !worldObj.isRemote && Loader.isModLoaded(ModIDs.IC2)) {
+			IC2ReactorHelper.energyLoadEvent(this, false);
 			addedToEnet = false;
 		}
 		isLoaded = false; // HBM only

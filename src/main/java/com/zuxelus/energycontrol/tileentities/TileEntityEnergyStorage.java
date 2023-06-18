@@ -1,25 +1,20 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import com.zuxelus.energycontrol.crossmod.IC2ReactorHelper;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Optional;
-import ic2.api.energy.event.EnergyTileLoadEvent;
-import ic2.api.energy.event.EnergyTileUnloadEvent;
-import ic2.api.energy.tile.IEnergyAcceptor;
-import ic2.api.energy.tile.IEnergyEmitter;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergySource;
-import ic2.api.info.Info;
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 
 @Optional.InterfaceList({
@@ -77,8 +72,8 @@ public abstract class TileEntityEnergyStorage extends TileEntityInventory implem
 	}
 
 	public void onLoad() {
-		if (!addedToEnet && worldObj != null && !worldObj.isRemote && Info.isIc2Available()) {
-			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
+		if (!addedToEnet && worldObj != null && !worldObj.isRemote && Loader.isModLoaded(ModIDs.IC2)) {
+			IC2ReactorHelper.energyLoadEvent(this, true);
 			addedToEnet = true;
 		}
 	}
@@ -91,8 +86,8 @@ public abstract class TileEntityEnergyStorage extends TileEntityInventory implem
 
 	@Override
 	public void onChunkUnload() {
-		if (addedToEnet && worldObj != null && !worldObj.isRemote && Info.isIc2Available()) {
-			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
+		if (addedToEnet && worldObj != null && !worldObj.isRemote && Loader.isModLoaded(ModIDs.IC2)) {
+			IC2ReactorHelper.energyLoadEvent(this, false);
 			addedToEnet = false;
 		}
 	}

@@ -1,5 +1,8 @@
 package com.zuxelus.energycontrol.crossmod;
 
+import ic2.api.energy.event.EnergyTileLoadEvent;
+import ic2.api.energy.event.EnergyTileUnloadEvent;
+import ic2.api.energy.tile.IEnergyTile;
 import ic2.api.item.ICustomDamageItem;
 import ic2.api.reactor.IReactor;
 import ic2.api.reactor.IReactorChamber;
@@ -11,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class IC2ReactorHelper {
@@ -83,5 +87,12 @@ public class IC2ReactorHelper {
 
 	public static int euToSteam(int eu) {
 		return (int) Math.floor((eu) * STEAM_PER_EU);
+	}
+
+	public static void energyLoadEvent(TileEntity te, boolean isLoad) {
+		if (isLoad)
+			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent((IEnergyTile) te));
+		else
+			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent((IEnergyTile) te));
 	}
 }

@@ -1,12 +1,11 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.IC2ReactorHelper;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.init.ModItems;
 
-import ic2.api.energy.event.EnergyTileLoadEvent;
-import ic2.api.energy.event.EnergyTileUnloadEvent;
-import ic2.api.info.Info;
+import cpw.mods.fml.common.Loader;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -185,14 +184,12 @@ public class TileEntityAverageCounter extends TileEntityEnergyStorage {
 			capacity = output * 2;
 			tier = upgradeCountTransormer + 1;
 
-			if (Info.isIc2Available()) {
+			if (Loader.isModLoaded(ModIDs.IC2)) {
 				if (addedToEnet) {
-					EnergyTileUnloadEvent event = new EnergyTileUnloadEvent(this);
-					MinecraftForge.EVENT_BUS.post(event);
+					IC2ReactorHelper.energyLoadEvent(this, false);
 				}
 				addedToEnet = false;
-				EnergyTileLoadEvent event = new EnergyTileLoadEvent(this);
-				MinecraftForge.EVENT_BUS.post(event);
+				IC2ReactorHelper.energyLoadEvent(this, true);
 				addedToEnet = true;
 			}
 		}
