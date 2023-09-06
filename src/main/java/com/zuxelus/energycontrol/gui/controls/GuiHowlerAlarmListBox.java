@@ -2,6 +2,7 @@ package com.zuxelus.energycontrol.gui.controls;
 
 import java.util.List;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import com.zuxelus.energycontrol.EnergyControl;
@@ -59,19 +60,15 @@ public class GuiHowlerAlarmListBox extends GuiButton {
 		scrollTop = pos;
 		if (scrollTop < 0)
 			scrollTop = 0;
-		
 		int max = lineHeight * items.size() + BASIC_Y_OFFSET - height;
-		
 		if (max < 0)
 			max = 0;
-		
 		if (scrollTop > max)
 			scrollTop = max;
 	}
 
 	public void scrollUp() {
 		scrollTop -= 8;
-		
 		if (scrollTop < 0)
 			scrollTop = 0;
 	}
@@ -79,10 +76,8 @@ public class GuiHowlerAlarmListBox extends GuiButton {
 	public void scrollDown() {
 		scrollTop += 8;
 		int max = lineHeight * items.size() + BASIC_Y_OFFSET - height;
-		
 		if (max < 0)
 			max = 0;
-		
 		if (scrollTop > max)
 			scrollTop = max;
 	}
@@ -107,16 +102,13 @@ public class GuiHowlerAlarmListBox extends GuiButton {
 					scrollTop = (currentIndex + 1) * lineHeight + BASIC_Y_OFFSET - height;
 			}
 			float scale = height / ((float) lineHeight * items.size() + BASIC_Y_OFFSET);
-			
 			if (scale > 1)
 				scale = 1;
-			
 			sliderHeight = Math.round(scale * (height - 2 * SCROLL_BUTTON_HEIGHT));
-			
 			if (sliderHeight < 4)
 				sliderHeight = 4;
 		}
-		
+
 		int rowTop = BASIC_Y_OFFSET;
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
 		ScaledResolution scaler = new ScaledResolution(mc);
@@ -172,6 +164,14 @@ public class GuiHowlerAlarmListBox extends GuiButton {
 		}
 	}
 
+	public void keyPressed(char typedChar, int keyCode) {
+		if (keyCode == Keyboard.KEY_DOWN) { 
+			scrollDown();
+		} else if (keyCode == Keyboard.KEY_UP) {
+			scrollUp();
+		}
+	}
+
 	@Override
 	public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
 		if (super.mousePressed(mc, mouseX, mouseY)) {
@@ -190,6 +190,17 @@ public class GuiHowlerAlarmListBox extends GuiButton {
 			}
 		}
 		return false;
+	}
+
+	public void mouseScrolled(double mouseX, double mouseY, double wheel) {
+		if (mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height) {
+			if (wheel > 0) {
+				scrollUp();
+			}
+			if (wheel < 0) {
+				scrollDown();
+			}
+		}
 	}
 
 	@Override

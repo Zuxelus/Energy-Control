@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.proxy;
 
 import com.zuxelus.energycontrol.ClientTickHandler;
+import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.ServerTickHandler;
 import com.zuxelus.energycontrol.blocks.BlockDamages;
 import com.zuxelus.energycontrol.containers.*;
@@ -28,6 +29,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ClientProxy implements IProxy {
@@ -61,8 +63,11 @@ public class ClientProxy implements IProxy {
 				return new GuiThermalMonitor((TileEntityThermalMonitor) te);
 			break;
 		case BlockDamages.DAMAGE_HOWLER_ALARM:
-			if (te instanceof TileEntityHowlerAlarm)
-				return new GuiHowlerAlarm((TileEntityHowlerAlarm) te);
+			if (te instanceof TileEntityHowlerAlarm) {
+				List<String> items = new ArrayList<String>(EnergyControl.instance.availableAlarms);
+				items.retainAll(EnergyControl.instance.serverAllowedAlarms);
+				return new GuiHowlerAlarm((TileEntityHowlerAlarm) te, items.size() > 10);
+			}
 		case BlockDamages.DAMAGE_INDUSTRIAL_ALARM:
 			if (te instanceof TileEntityIndustrialAlarm)
 				return new GuiIndustrialAlarm((TileEntityIndustrialAlarm) te);
