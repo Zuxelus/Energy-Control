@@ -162,6 +162,16 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 	}
 
 	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		if (keyCode == 264) {
+			scrollDown();
+		} else if (keyCode == 265) {
+			scrollUp();
+		}
+		return super.keyPressed(keyCode, scanCode, modifiers);
+	}
+
+	@Override
 	public void onPress() { }
 
 	@Override
@@ -182,5 +192,18 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 	@Override
 	public void onRelease(double mouseX, double mouseY) {
 		dragging = false;
+	}
+
+	@Override
+	public boolean mouseScrolled(double mouseX, double mouseY, double p_94736_) {
+		if (isMouseOver(mouseX, mouseY)) {
+			if (p_94736_ > 0) {
+				scrollUp();
+			}
+			if (p_94736_ < 0) {
+				scrollDown();
+			}
+		}
+		return super.mouseScrolled(mouseX, mouseY, p_94736_);
 	}
 }
