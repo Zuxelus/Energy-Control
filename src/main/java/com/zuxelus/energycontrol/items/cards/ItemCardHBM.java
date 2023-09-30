@@ -46,10 +46,14 @@ public class ItemCardHBM extends ItemCardBase {
 		List<PanelString> result = reader.getTitleList();
 		if (reader.hasField(DataHelper.ENERGY))
 			result.add(new PanelString("msg.ec.InfoPanelEnergy", reader.getLong(DataHelper.ENERGY), "HE", showLabels));
+		if (reader.hasField(DataHelper.ENERGYTU))
+			result.add(new PanelString("msg.ec.InfoPanelEnergy", reader.getLong(DataHelper.ENERGYTU), "TU", showLabels));
 		if (reader.hasField("energy_"))
 			result.add(new PanelString("msg.ec.InfoPanelEnergy", reader.getLong("energy_"), showLabels));
 		if (reader.hasField(DataHelper.CAPACITY))
 			result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getLong(DataHelper.CAPACITY), "HE", showLabels));
+		if (reader.hasField(DataHelper.CAPACITYTU))
+			result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getLong(DataHelper.CAPACITYTU), "TU", showLabels));
 		if (reader.hasField("capacity_"))
 			result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getLong("capacity_"), showLabels));
 		if (reader.hasField("consumptionHE"))
@@ -62,6 +66,8 @@ public class ItemCardHBM extends ItemCardBase {
 			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble(DataHelper.OUTPUT), "HE/t", showLabels));
 		if (reader.hasField(DataHelper.OUTPUTMB))
 			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble(DataHelper.OUTPUTMB), "mB/t", showLabels));
+		if (reader.hasField(DataHelper.OUTPUTTU))
+			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble(DataHelper.OUTPUTTU), "TU/t", showLabels));
 		if (reader.hasField(DataHelper.DIFF))
 			result.add(new PanelString("msg.ec.InfoPanelDifference", reader.getLong(DataHelper.DIFF), "HE/t", showLabels));
 		if (reader.hasField("temp"))

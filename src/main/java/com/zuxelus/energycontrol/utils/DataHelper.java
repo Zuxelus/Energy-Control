@@ -11,11 +11,15 @@ public class DataHelper {
 	public static final String CAPACITY = "capacity";
 	public static final String CAPACITYHU = "capacityHU";
 	public static final String CAPACITYKU = "capacityKU";
+	public static final String CAPACITYTU = "capacityTU";
 	public static final String CONSUMPTION = "consumption";
+	public static final String CONSUMPTIONHE = "consumptionHE";
+	public static final String CONSUMPTIONTU = "consumptionTU";
 	public static final String DIFF = "diff";
 	public static final String ENERGY = "energy";
 	public static final String ENERGYHU = "energyHU";
 	public static final String ENERGYKU = "energyKU";
+	public static final String ENERGYTU = "energyTU";
 	public static final String EUTYPE = "euType";
 	public static final String FUEL = "fuel";
 	public static final String HEAT = "heat";
@@ -24,6 +28,7 @@ public class DataHelper {
 	public static final String OUTPUT = "output";
 	public static final String OUTPUTHU = "outputHU";
 	public static final String OUTPUTKU = "outputKU";
+	public static final String OUTPUTTU = "outputTU";
 	public static final String OUTPUTMB = "outputmb";
 	public static final String PRESSURE = "pressure";
 	public static final String TANK = "tank";

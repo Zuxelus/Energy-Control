@@ -32,16 +32,19 @@ public class KitAssemblerRecipe {
 	}
 
 	public boolean isSuitable(TileEntityKitAssembler te) {
-		ItemStack stack1 = te.getStackInSlot(TileEntityKitAssembler.SLOT_CARD1);
+		return isSuitable(te.getStackInSlot(TileEntityKitAssembler.SLOT_CARD1),
+				te.getStackInSlot(TileEntityKitAssembler.SLOT_ITEM),
+				te.getStackInSlot(TileEntityKitAssembler.SLOT_CARD2),
+				te.getStackInSlot(TileEntityKitAssembler.SLOT_RESULT));
+	}
+
+	public boolean isSuitable(ItemStack stack1, ItemStack stack2, ItemStack stack3, ItemStack result) {
 		if (stack1 == null || stack1.stackSize < input1.stackSize || !input1.isItemEqual(stack1))
 			return false;
-		ItemStack stack2 = te.getStackInSlot(TileEntityKitAssembler.SLOT_ITEM);
 		if (stack2 == null || stack2.stackSize < input2.stackSize || !input2.isItemEqual(stack2))
 			return false;
-		ItemStack stack3 = te.getStackInSlot(TileEntityKitAssembler.SLOT_CARD2);
 		if (stack3 == null || stack3.stackSize < input3.stackSize || !input3.isItemEqual(stack3))
 			return false;
-		ItemStack result = te.getStackInSlot(TileEntityKitAssembler.SLOT_RESULT);
 		if (result != null) {
 			if (!result.isItemEqual(output))
 				return false;
@@ -99,15 +102,22 @@ public class KitAssemblerRecipe {
 				}
 	}
 
+	public static void removeRecipe(ItemStack stack1, ItemStack stack2, ItemStack stack3, ItemStack result) {
+		for(KitAssemblerRecipe recipe : recipes)
+			if (recipe.isSuitable(stack1, stack2, stack3, result)) {
+				recipes.remove(recipe);
+				return;
+			}
+	}
+
 	public static List<KitAssemblerRecipe> getRecipes() {
 		return recipes;
 	}
 
 	public static KitAssemblerRecipe findRecipe(TileEntityKitAssembler te) {
-		for(KitAssemblerRecipe recipe : recipes) {
+		for(KitAssemblerRecipe recipe : recipes)
 			if (recipe.isSuitable(te))
 				return recipe; 
-		}
 		return null;
 	}
 }

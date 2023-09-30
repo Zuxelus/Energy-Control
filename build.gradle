@@ -17,7 +17,7 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.7.10-0.3.4f"
+version = "1.7.10-0.3.5"
 group= "com.zuxelus.energycontrol"
 archivesBaseName = "EnergyControl"
 
@@ -40,13 +40,14 @@ dependencies {
         'libs_/BigReactors-0.4.3A.jar',
         'libs_/CodeChickenLib-1.7.10-1.1.3.138-dev.jar',
         'libs_/ComputerCraft1.75.jar',
+        'libs_/CraftTweaker-1.7.10-3.1.0-legacy.jar',
         'libs_/Draconic-Evolution-1.7.10-1.0.2h.jar',
-        'libs_/EnderCore-1.7.10-0.2.0.39_beta.jar',
-        'libs_/EnderIO-1.7.10-2.3.0.429_beta.jar',
+        'libs_/EnderCore-1.7.10-0.2.0.40_beta.jar',
+        'libs_/EnderIO-1.7.10-2.3.0.430_beta.jar',
         'libs_/gregtech_1.7.10-6.15.01.jar',
         'libs_/GalacticraftCore-1.7-3.0.12.504.jar',
         'libs_/Galacticraft-Planets-1.7-3.0.12.504.jar',
-        'libs_/HBM-NTM-[1.0.27_X4627].jar',
+        'libs_/HBM-NTM-.1.0.27_X4724.jar',
         'libs_/industrialcraft-2-2.2.827-experimental-dev.jar',
         'libs_/Mekanism-1.7.10-9.1.1.1031.jar',
         'libs_/NotEnoughItems-1.7.10-1.0.5.120-universal.jar',

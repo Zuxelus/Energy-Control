@@ -50,6 +50,10 @@ public class CrossModBase {
 		return null;
 	}
 
+	public TileEntity findTileEntity(World world, int x, int y, int z) {
+		return null;
+	}
+
 	public ArrayList getHookValues(TileEntity te) {
 		return null;
 	}

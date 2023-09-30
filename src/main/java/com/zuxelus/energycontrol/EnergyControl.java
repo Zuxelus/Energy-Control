@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.logging.log4j.Logger;
 
 import com.zuxelus.energycontrol.config.ConfigHandler;
+import com.zuxelus.energycontrol.crossmod.CraftTweakerIntegration;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.network.ChannelHandler;
@@ -14,6 +15,7 @@ import com.zuxelus.energycontrol.proxy.IProxy;
 import com.zuxelus.energycontrol.recipes.Recipes;
 import com.zuxelus.energycontrol.tileentities.ScreenManager;
 
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -78,5 +80,8 @@ public class EnergyControl {
 	@EventHandler
 	public static void postInit(FMLPostInitializationEvent event) {
 		Recipes.addRecipes();
+		if (Loader.isModLoaded("MineTweaker3") || Loader.isModLoaded("MineTweaker3".toLowerCase())) {
+			CraftTweakerIntegration.init();
+		}
 	}
 }

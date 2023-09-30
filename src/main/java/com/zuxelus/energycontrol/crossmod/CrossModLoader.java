@@ -91,12 +91,15 @@ public class CrossModLoader {
 
 	public static List<FluidInfo> getAllTanks(World world, int x, int y, int z) {
 		TileEntity te = world.getTileEntity(x, y, z);
-		if (te == null)
-			return null;
 		for (CrossModBase crossMod : CROSS_MODS.values()) {
-			List<FluidInfo> list = crossMod.getAllTanks(te);
-			if (list != null)
-				return list;
+			if (te == null) {
+				te = crossMod.findTileEntity(world, x, y, z);
+			}
+			if (te != null) {
+				List<FluidInfo> list = crossMod.getAllTanks(te);
+				if (list != null)
+					return list;
+			}
 		}
 		return null;
 	}
