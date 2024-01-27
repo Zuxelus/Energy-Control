@@ -61,6 +61,7 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 		RotationOffset offset = new RotationOffset(thickness * 2, rotateHor, rotateVert);
 		Screen screen = te.getScreen();
 		if (screen != null) {
+			RotationOffset offsetScreen = offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation());
 			if (thickness == 16 && rotateHor == 0 && rotateVert == 0) {
 				if (destroyStage > -1)
 					CubeRenderer.DESTROY.render(0.03125F);
@@ -71,11 +72,11 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer<TileE
 				}
 			} else {
 				if (destroyStage > -1)
-					new CubeRenderer(0, 0, 0, 32, 32, 32, 32, 32, 0, 0, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation()), false).render(0.03125F);
+					new CubeRenderer(0, 0, 0, 32, 32, 32, 32, 32, 0, 0, offsetScreen, false).render(0.03125F);
 				else {
-					new CubeRenderer(0, 0, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation()), false).render(0.03125F);
+					CubeRenderer.getModel(offsetScreen).render(0.03125F);
 					bindTexture(TileEntityInfoPanelRenderer.SCREEN);
-					new CubeRenderer(textureId / 4 * 32, textureId % 4 * 32, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation()), true).render(0.03125F, color);
+					CubeRenderer.getFaceModel(offsetScreen, textureId).render(0.03125F, color);
 				}
 			}
 

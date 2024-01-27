@@ -1,5 +1,8 @@
 package com.zuxelus.energycontrol.renderers;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.minecraft.client.model.PositionTextureVertex;
 import net.minecraft.client.model.TexturedQuad;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -15,6 +18,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class CubeRenderer {
 	public static final CubeRenderer MODEL = new CubeRenderer(0, 0, 0, 32, 32, 32, 128, 128, 0, 0, false);
 	public static final CubeRenderer DESTROY = new CubeRenderer(0, 0, 0, 32, 32, 32, 32, 32, 0, 0, false);
+	public static Map<Long, CubeRenderer> LIBRARY = new HashMap<Long, CubeRenderer>();
+	public static Map<Long, CubeRenderer> LIBRARY_FACE = new HashMap<Long, CubeRenderer>();
 
 	private boolean compiled;
 	private int displayList;
@@ -273,5 +278,23 @@ public class CubeRenderer {
 			GlStateManager.translate(-1.0F, -1.0F, 0.0F);
 			break;
 		}
+	}
+
+	public static CubeRenderer getModel(RotationOffset offset) {
+		long hash = (long) (offset.leftTop * 1000000 + offset.leftBottom * 10000 + offset.rightTop * 100 + offset.rightBottom);
+		if (LIBRARY.containsKey(hash))
+			return LIBRARY.get(hash);
+		CubeRenderer model = new CubeRenderer(0, 0, offset, false);
+		LIBRARY.put(hash, model);
+		return model;
+	}
+
+	public static CubeRenderer getFaceModel(RotationOffset offset, int textureId) {
+		long hash = (long) (textureId * 100000000 + offset.leftTop * 1000000 + offset.leftBottom * 10000 + offset.rightTop * 100 + offset.rightBottom);
+		if (LIBRARY_FACE.containsKey(hash))
+			return LIBRARY_FACE.get(hash);
+		CubeRenderer model = new CubeRenderer(textureId / 4 * 32, textureId % 4 * 32, offset, true);
+		LIBRARY_FACE.put(hash, model);
+		return model;
 	}
 }
