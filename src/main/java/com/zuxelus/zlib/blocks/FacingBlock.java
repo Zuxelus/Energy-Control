@@ -62,6 +62,8 @@ public abstract class FacingBlock extends BaseEntityBlock {
 			return createTickerHelper(type, type, TileEntityHowlerAlarm::tickStatic);
 		if (type == ModTileEntityTypes.industrial_alarm.get())
 			return createTickerHelper(type, type, TileEntityIndustrialAlarm::tickStatic);
+		if (type == ModTileEntityTypes.thermal_monitor.get())
+			return createTickerHelper(type, type, TileEntityThermalMonitor::tickStatic);
 		if (type == ModTileEntityTypes.timer.get())
 			return createTickerHelper(type, type, TileEntityTimer::tickStatic);
 		return null;
@@ -75,13 +77,15 @@ public abstract class FacingBlock extends BaseEntityBlock {
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context) {
 		Player placer = context.getPlayer();
-		rotation = placer.getDirection().getOpposite();
-		if (placer.getXRot() >= 65)
+		if (placer.getXRot() >= 65) {
+			rotation = placer.getDirection().getOpposite();
 			return defaultBlockState().setValue(FACING, Direction.UP);
+		}
 		if (placer.getXRot() <= -65) {
 			rotation = placer.getDirection();
 			return defaultBlockState().setValue(FACING, Direction.DOWN);
 		}
+		rotation = Direction.DOWN; 
 		switch (Mth.floor(placer.getYRot() * 4.0F / 360.0F + 0.5D) & 3) {
 		case 0:
 			return defaultBlockState().setValue(FACING, Direction.NORTH);

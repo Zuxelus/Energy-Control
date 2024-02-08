@@ -4,9 +4,13 @@ import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelString;
+import com.zuxelus.energycontrol.renderers.CubeRenderer.PositionTextureVertex;
+import com.zuxelus.energycontrol.renderers.CubeRenderer.TexturedQuad;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
@@ -22,27 +26,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 
 public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEntityInfoPanel> {
-	private static int[][] sides = new int[][] { { 3, 2, 1, 0, 5, 4 }, { 2, 3, 1, 0, 4, 5 }, { 4, 5, 1, 0, 3, 2 },
-		{ 5 ,4, 1, 0, 2, 3 }, { 1, 0, 3, 2, 4, 5 }, { 0, 1, 2, 3, 4, 5 } };
-	private static final ResourceLocation[] TEXTUREOFF;
-	private static final ResourceLocation[] TEXTUREON;
-	private static final CubeRenderer[] model;
+	private static int[][] sides = new int[][] { { 4, 5, 2, 3, 1, 0 }, { 4, 5, 3, 2, 1, 0 }, { 2, 3, 1, 0, 4, 5 },
+		{ 2 ,3 , 0, 1, 5, 4 }, { 2, 3, 4, 5, 0, 1 }, { 2, 3, 5, 4, 1, 0 } };
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID + ":textures/block/info_panel/panel_all_.png");
+	public static final ResourceLocation SCREEN = new ResourceLocation(EnergyControl.MODID + ":textures/block/info_panel/panel_screen.png");
 	private final Font font;
-
-	static {
-		TEXTUREOFF = new ResourceLocation[16];
-		TEXTUREON = new ResourceLocation[16];
-		for (int i = 0; i < 16; i++) {
-			TEXTUREOFF[i] = new ResourceLocation(
-					EnergyControl.MODID + String.format(":textures/block/info_panel/off/all%d.png", i));
-			TEXTUREON[i] = new ResourceLocation(
-					EnergyControl.MODID + String.format(":textures/block/info_panel/on/all%d.png", i));
-		}
-		model = new CubeRenderer[16];
-		for (int i = 0; i < 4; i++)
-			for (int j = 0; j < 4; j++)
-				model[i * 4 + j] = new CubeRenderer(i * 32 + 64, j * 32 + 64);
-	}
 
 	private static String implodeArray(String[] inputArray, String glueString) {
 		String output = "";
@@ -79,49 +67,42 @@ public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 	@Override
 	public void render(TileEntityInfoPanel te, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
 		matrixStack.pushPose();
+		CubeRenderer.rotateBlock(matrixStack, te.getFacing(), te.getRotation());
 		int[] light = getBlockLight(te);
-		switch (te.getFacing()) {
-		case UP:
-			break;
-		case NORTH:
-			matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
-			matrixStack.translate(0.0F, -1.0F, 0.0F);
-			break;
-		case SOUTH:
-			matrixStack.mulPose(Vector3f.XP.rotationDegrees(90));
-			matrixStack.translate(0.0F, 0.0F, -1.0F);
-			break;
-		case DOWN:
-			matrixStack.mulPose(Vector3f.XP.rotationDegrees(180));
-			matrixStack.translate(0.0F, -1.0F, -1.0F);
-			break;
-		case WEST:
-			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(90));
-			matrixStack.translate(0.0F, -1.0F, 0.0F);
-			break;
-		case EAST:
-			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-90));
-			matrixStack.translate(-1.0F, 0.0F, 0.0F);
-			break;
-		}
 
-		int color = 2;
-		if (te.getColored()) {
-			color = te.getColorBackground();
-			if (color > 15 || color < 0)
-				color = 2;
-		}
-		VertexConsumer vertexBuilder;
-		if (te.getPowered())
-			vertexBuilder = buffer.getBuffer(RenderType.entitySolid(TEXTUREON[color]));
-		else
-			vertexBuilder = buffer.getBuffer(RenderType.entitySolid(TEXTUREOFF[color]));
-		model[te.findTexture()].render(matrixStack, vertexBuilder, light, combinedOverlay);
+		int color = te.getColored() ? te.getColorBackground() : TileEntityInfoPanel.GREEN;
+		VertexConsumer vertexBuilder = buffer.getBuffer(RenderType.entitySolid(TEXTURE));
+		CubeRenderer.MODEL.render(matrixStack, vertexBuilder, light, combinedOverlay);
+		VertexConsumer vertexScreen = buffer.getBuffer(RenderType.entitySolid(SCREEN));
+		drawFace(matrixStack.last(), vertexScreen, te.findTexture(), color, te.getPowered(), combinedLight, combinedOverlay);
+		CubeRenderer.rotateBlockText(matrixStack, te.getFacing(), te.getRotation());
 		if (te.getPowered()) {
 			List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
 			drawText(te, joinedData, matrixStack, buffer, combinedLight);
 		}
 		matrixStack.popPose();
+	}
+
+	public static void drawFace(PoseStack.Pose matrixEntry, VertexConsumer buffer, int texture, int color, boolean isPowered, int combinedLight, int combinedOverlay) {
+		/*if (isPowered)
+			GlStateManager.disableLighting();
+		if (isPowered)
+			GlStateManager.enableLighting();*/
+		Matrix3f matrix3f = matrixEntry.normal();
+		Matrix4f matrix4f = matrixEntry.pose();
+		float f = (color >> 24 & 255) / 255.0F;
+		float f1 = (color >> 16 & 255) / 255.0F;
+		float f2 = (color >> 8 & 255) / 255.0F;
+		float f3 = (color & 255) / 255.0F;
+
+		float x = (texture / 4) * 0.25F;
+		float y = (texture % 4) * 0.25F;
+		PositionTextureVertex v = new PositionTextureVertex(0, 16, 0, 0.0F, 0.0F);
+		PositionTextureVertex v1 = new PositionTextureVertex(16, 16, 0, 0.0F, 8.0F);
+		PositionTextureVertex v2 = new PositionTextureVertex(16, 0, 0, 8.0F, 8.0F);
+		PositionTextureVertex v3 = new PositionTextureVertex(0, 0, 0, 8.0F, 0.0F);
+		TexturedQuad quad = new TexturedQuad(new PositionTextureVertex[] { v, v1, v2, v3 }, x, y, x + 0.25F , y + 0.25F, 1.0F, 1.0F, Direction.NORTH);
+		quad.draw(matrix3f, matrix4f, buffer, 15728640, combinedOverlay, f1, f2, f3, f);
 	}
 
 	private void drawText(TileEntityInfoPanel panel, List<PanelString> joinedData, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight) {
@@ -165,8 +146,8 @@ public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 				}
 				break;
 			case NORTH:
-				dz = (pos.getY() - screen.maxY - screen.minY + pos.getY());
-				dy = pos.getX() - screen.maxX - screen.minX + pos.getX();
+				dz = - (pos.getY() - screen.maxY - screen.minY + pos.getY());
+				dy = - (pos.getX() - screen.maxX - screen.minX + pos.getX());
 				displayWidth += screen.maxX - screen.minX;
 				displayHeight += screen.maxY - screen.minY;
 				break;
@@ -179,21 +160,21 @@ public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 			case DOWN:
  				break;
 			case WEST:
-				dz = pos.getZ() - screen.maxZ + pos.getZ() - screen.minZ;
-				dy = (pos.getY() - screen.maxY - screen.minY + pos.getY());
+				dy = pos.getZ() - screen.maxZ + pos.getZ() - screen.minZ;
+				dz = - (pos.getY() - screen.maxY - screen.minY + pos.getY());
 				displayWidth += screen.maxZ - screen.minZ;
 				displayHeight += screen.maxY - screen.minY;
 				break;
 			case EAST:
-				dz = pos.getZ() - screen.maxZ + pos.getZ() - screen.minZ;
-				dy = - (pos.getY() - screen.maxY - screen.minY + pos.getY());
+				dy = - (pos.getZ() - screen.maxZ + pos.getZ() - screen.minZ);
+				dz = - (pos.getY() - screen.maxY - screen.minY + pos.getY());
 				displayWidth += screen.maxZ - screen.minZ;
 				displayHeight += screen.maxY - screen.minY;
 				break;
 			}
 		}
 
-		matrixStack.translate(0.5F - dy / 2, 1.01F - dx / 2 , 0.5F - dz / 2);
+		matrixStack.translate(0.5F - dy / 2, 1.01F - dx / 2 , -0.5F - dz / 2);
 		matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
 		switch(panel.getRotation())
 		{
@@ -236,7 +217,7 @@ public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 		}
 		maxWidth += 4;
 
-		int lineHeight = fontRenderer.lineHeight + 2;
+		int lineHeight = fontRenderer.lineHeight + 3;
 		int requiredHeight = lineHeight * joinedData.size();
 		float scaleX = displayWidth / maxWidth;
 		float scaleY = displayHeight / requiredHeight;
@@ -251,7 +232,7 @@ public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 			offsetY = (realHeight - requiredHeight) / 2;
 		} else {
 			offsetX = (realWidth - maxWidth) / 2 + 2;
-			offsetY = 0;
+			offsetY = 3;
 		}
 
 		int row = 0;

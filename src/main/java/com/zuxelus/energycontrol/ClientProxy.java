@@ -36,7 +36,7 @@ public class ClientProxy {
 	@SubscribeEvent
 	public static void registerRenders(RegisterRenderers event) {
 		event.registerBlockEntityRenderer(ModTileEntityTypes.thermal_monitor.get(), TEThermalMonitorRenderer::new);
-		event.registerBlockEntityRenderer(ModTileEntityTypes.remote_thermo.get(), TERemoteThermoRenderer::new);
+		event.registerBlockEntityRenderer(ModTileEntityTypes.remote_thermo.get(), TERemoteThermalMonitorRenderer::new);
 		event.registerBlockEntityRenderer(ModTileEntityTypes.info_panel.get(), TileEntityInfoPanelRenderer::new);
 		event.registerBlockEntityRenderer(ModTileEntityTypes.info_panel_extender.get(), TEInfoPanelExtenderRenderer::new);
 		event.registerBlockEntityRenderer(ModTileEntityTypes.info_panel_advanced.get(), TEAdvancedInfoPanelRenderer::new);

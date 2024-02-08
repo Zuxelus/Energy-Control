@@ -26,6 +26,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GuiInfoPanel extends GuiPanelBase<ContainerInfoPanel> { 
 	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_info_panel.png");
+	private boolean isColored;
 
 	public GuiInfoPanel(ContainerInfoPanel container, Inventory inventory, Component title) {
 		super(container, inventory, title, TEXTURE);
@@ -36,14 +37,15 @@ public class GuiInfoPanel extends GuiPanelBase<ContainerInfoPanel> {
 
 	protected void initButtons() {
 		addRenderableWidget(new GuiButtonGeneral(leftPos + imageWidth - 24, topPos + 42, 16, 16, TEXTURE, 176, panel.getShowLabels() ? 15 : 31, (button) -> { actionPerformed(button, ID_LABELS); }).setGradient());
-		if (panel.isColoredEval())
+		isColored = panel.isColoredEval();
+		if (isColored)
 			addRenderableWidget(new GuiButtonGeneral(leftPos + imageWidth - 24, topPos + 42 + 17, 16, 16, TEXTURE, 192, 0, (button) -> { actionPerformed(button, ID_COLORS); }).setGradient().setScale(2));
 		addRenderableWidget(new GuiButtonGeneral(leftPos + imageWidth - 24, topPos + 42 + 17 * 3, 16, 16, Component.literal(Integer.toString(panel.getTickRate())), (button) -> { actionPerformed(button, ID_TICKRATE); }).setGradient());
 	}
 
 	protected void initControls() {
 		ItemStack stack = panel.getCards().get(activeTab);
-		if (ItemStack.isSame(stack, oldStack))
+		if (ItemStack.isSame(stack, oldStack) && panel.isColoredEval() == isColored)
 			return;
 		if (!oldStack.isEmpty() && stack.isEmpty())
 			updateTitle();

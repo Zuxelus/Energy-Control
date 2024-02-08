@@ -78,7 +78,7 @@ public class SoundHelper {
 		writer.name("pack");
 		writer.beginObject();
 		writer.name("description").value("Energy Control custom alarms");
-		writer.name("pack_format").value(8); // for 1.18
+		writer.name("pack_format").value(9); // for 1.19
 		writer.endObject();
 		writer.endObject();
 		writer.close();

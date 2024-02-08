@@ -41,8 +41,8 @@ public class CrossModLoader {
 		//loadCrossMod(ModIDs.BIGGER_REACTORS, CrossBiggerReactors::new);
 		loadCrossModSafely(ModIDs.COMPUTER_CRAFT, () -> CrossComputerCraft::new);
 		loadCrossMod(ModIDs.IC2, CrossIC2Classic::new);
-		loadCrossMod(ModIDs.MEKANISM, CrossMekanism::new);
-		loadCrossMod(ModIDs.MEKANISM_GENERATORS, CrossMekanismGenerators::new);
+		loadCrossModSafely(ModIDs.MEKANISM, () -> CrossMekanism::new);
+		loadCrossModSafely(ModIDs.MEKANISM_GENERATORS, () -> CrossMekanismGenerators::new);
 		//loadCrossMod(ModIDs.IMMERSIVE_ENGINEERING, CrossImmersiveEngineering::new);
 		//loadCrossModSafely(ModIDs.INDUSTRIAL_REBORN, () -> CrossIndustrialReborn::new);
 		//loadCrossMod(ModIDs.THERMAL_EXPANSION, CrossThermalExpansion::new);

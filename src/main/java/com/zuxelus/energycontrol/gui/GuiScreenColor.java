@@ -27,10 +27,16 @@ public class GuiScreenColor extends GuiBase {
 	private int colorBack;
 	private TileEntityInfoPanel panel;
 	private ArrayList<GuiTextNumeric> fieldList = new ArrayList<>();
+	private ArrayList<GuiTextNumeric> fieldList2 = new ArrayList<>();
 	protected GuiTextNumeric rText;
 	protected GuiTextNumeric gText;
 	protected GuiTextNumeric bText;
-	private boolean isDarkPicker; 
+	private boolean isDarkPicker;
+	protected GuiTextNumeric rText2;
+	protected GuiTextNumeric gText2;
+	protected GuiTextNumeric bText2;
+	private boolean isDarkPicker2;
+	int offset;
 
 	public GuiScreenColor(GuiPanelBase<?> parentGui, TileEntityInfoPanel panel) {
 		super("", 234, 120, EnergyControl.MODID + ":textures/gui/gui_colors.png");
@@ -38,6 +44,7 @@ public class GuiScreenColor extends GuiBase {
 		this.panel = panel;
 		colorBack = panel.getColorBackground();
 		colorText = panel.getColorText();
+		offset = 116;
 	}
 
 	@Override
@@ -57,14 +64,28 @@ public class GuiScreenColor extends GuiBase {
 		bText.setMaxLength(3);
 		bText.setValue(Integer.toString(colorText & 0x000000FF));
 		fieldList.add(bText);
+		fieldList2.clear();
+		rText2 = new GuiTextNumeric(font, guiLeft + 10 + offset, guiTop + 18, 26, 12, CommonComponents.EMPTY, 255);
+		rText2.setMaxLength(3);
+		rText2.setValue(Integer.toString((colorBack & 0x00FF0000) >> 16));
+		//rText.setEnableBackgroundDrawing(false);
+		fieldList2.add(rText2);
+		gText2 = new GuiTextNumeric(font, guiLeft + 46 + offset, guiTop + 18, 26, 12, CommonComponents.EMPTY, 255);
+		gText2.setMaxLength(3);
+		gText2.setValue(Integer.toString((colorBack & 0x0000FF00) >> 8));
+		fieldList2.add(gText2);
+		bText2 = new GuiTextNumeric(font, guiLeft + 82 + offset, guiTop + 18, 26, 12, CommonComponents.EMPTY, 255);
+		bText2.setMaxLength(3);
+		bText2.setValue(Integer.toString(colorBack & 0x000000FF));
+		fieldList2.add(bText2);
 	}
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(PoseStack matrixStack, int mouseX, int mouseY) {
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderTexture(0, texture);
-		blit(matrixStack, 158 + (colorBack % 4) * 14, 21 + (colorBack / 4) * 14, 234, 0, 14, 14);
-		font.draw(matrixStack, I18n.get("msg.ec.ScreenColor"), 152, 6, 0x404040);
+		//blit(matrixStack, 158 + (colorBack % 4) * 14, 21 + (colorBack / 4) * 14, 234, 0, 14, 14);
+		font.draw(matrixStack, I18n.get("msg.ec.ScreenColor"), 152, 6, colorBack);
 		font.draw(matrixStack, I18n.get("msg.ec.TextColor"), 8, 6, colorText);
 	}
 
@@ -74,9 +95,12 @@ public class GuiScreenColor extends GuiBase {
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderTexture(0, PICKER);;
 		blit(matrixStack, guiLeft + 20, guiTop + 34, isDarkPicker ? 80 : 0, 0, 80, 80, 160, 80);
+		blit(matrixStack, guiLeft + 20 + offset, guiTop + 34, isDarkPicker2 ? 80 : 0, 0, 80, 80, 160, 80);
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderTexture(0, texture);
 		for (GuiTextNumeric text : fieldList)
+			text.renderButton(matrixStack, mouseX, mouseY, partialTicks);
+		for (GuiTextNumeric text : fieldList2)
 			text.renderButton(matrixStack, mouseX, mouseY, partialTicks);
 	}
 
@@ -85,13 +109,10 @@ public class GuiScreenColor extends GuiBase {
 		if (mouseButton == 0) {
 			for (GuiTextNumeric text : fieldList)
 				text.mouseClicked(mouseX, mouseY, mouseButton);
+			for (GuiTextNumeric text : fieldList2)
+				text.mouseClicked(mouseX, mouseY, mouseButton);
 			checkColorPicker(mouseX - guiLeft, mouseY - guiTop);
-		}
-		int screenColor = getScreenColor(mouseX - guiLeft, mouseY - guiTop);
-		if (screenColor > -1) {
-			colorBack = screenColor;
-			NetworkHelper.updateSeverTileEntity(panel.getBlockPos(), 6, colorBack);
-			panel.setColorText(colorBack);
+			checkColorPicker2(mouseX - guiLeft, mouseY - guiTop);
 		}
 		return true;
 	}
@@ -128,6 +149,38 @@ public class GuiScreenColor extends GuiBase {
 		}
 	}
 
+	private void checkColorPicker2(double mouseX, double mouseY) {
+		if (isInside(mouseX, mouseY, 10 + offset, 40, 8, 8)) {
+			isDarkPicker2 = false;
+			return;
+		}
+		if (isInside(mouseX, mouseY, 100 + offset, 40, 8, 8)) {
+			isDarkPicker2 = true;
+			return;
+		}
+		if (isInside(mouseX, mouseY, 20 + offset, 34, 80, 80)) {
+			double x = mouseX - 20 - 40 - offset;
+			double y = mouseY - 34 - 40;
+			float saturation = (float) Math.sqrt(x * x + y * y) / 36.0F;
+			if (saturation > 1)
+				return;
+			int hue = (int) (x == 0 ? 0 : Math.round(Math.toDegrees(Math.atan(Math.abs(y / x)))));
+			if (x <= 0 && y >= 0)
+				hue = 180 - hue;
+			else if (x <= 0 && y <= 0)
+				hue = 180 + hue;
+			else if (x >= 0 && y <= 0)
+				hue = 360 - hue;
+			if (hue > 360)
+				hue = 359;
+			Color c = isDarkPicker2 ? getColorFromHSV(hue, 1.0F, saturation) : getColorFromHSV(hue, saturation, 1.0F);
+			setColorBackground(c);
+			fieldList2.get(0).setValue(Integer.toString(c.getRed()));
+			fieldList2.get(1).setValue(Integer.toString(c.getGreen()));
+			fieldList2.get(2).setValue(Integer.toString(c.getBlue()));
+		}
+	}
+
 	private Color getColorFromHSV(int hue, float saturation, float value) {
 		float c = saturation * value;
 		float x = c * (1 - Math.abs((hue / 60.0F) % 2 - 1));
@@ -151,14 +204,10 @@ public class GuiScreenColor extends GuiBase {
 		panel.setColorText(colorText);
 	}
 
-	private int getScreenColor(double mouseX, double mouseY) {
-		if (!isInside(mouseX, mouseY, 160, 23, 52, 46))
-			return - 1;
-		for (int i = 0; i < 5; i++)
-			for (int j = 0; j < 5; j++)
-				if (isInside(mouseX, mouseY, 160 + j * 14, 23 + i * 14, 8, 8))
-					return i * 4 + j;
-		return -1;
+	private void setColorBackground(Color c) {
+		colorBack = c.getRGB();
+		NetworkHelper.updateSeverTileEntity(panel.getBlockPos(), 6, colorBack);
+		panel.setColorBackground(colorBack);
 	}
 
 	private boolean isInside(double mouseX, double mouseY, int x, int y, int width, int height) {
@@ -169,6 +218,8 @@ public class GuiScreenColor extends GuiBase {
 	public void tick() {
 		super.tick();
 		for (GuiTextNumeric text : fieldList)
+			text.tick();
+		for (GuiTextNumeric text : fieldList2)
 			text.tick();
 	}
 
@@ -187,10 +238,19 @@ public class GuiScreenColor extends GuiBase {
 				fieldList.get(2).setFocus(true);
 			} else if (fieldList.get(2).isFocused()) {
 				fieldList.get(2).setFocus(false);
+				fieldList2.get(0).setFocus(true);
+			} else if (fieldList2.get(0).isFocused()) {
+				fieldList2.get(0).setFocus(false);
+				fieldList2.get(1).setFocus(true);
+			} else if (fieldList2.get(1).isFocused()) {
+				fieldList2.get(1).setFocus(false);
+				fieldList2.get(2).setFocus(true);
+			} else if (fieldList2.get(2).isFocused()) {
+				fieldList2.get(2).setFocus(false);
 				fieldList.get(0).setFocus(true);
 			}
 			return true;
-		} else
+		} else {
 			for (GuiTextNumeric text : fieldList) {
 				String value = text.getValue();
 				if (text.keyPressed(keyCode, scanCode, modifiers)) {
@@ -199,6 +259,15 @@ public class GuiScreenColor extends GuiBase {
 					return true;
 				}
 			}
+			for (GuiTextNumeric text : fieldList2) {
+				String value = text.getValue();
+				if (text.keyPressed(keyCode, scanCode, modifiers)) {
+					if (!value.equals(text.getValue()))
+						setColorBackground(new Color(getColotInt2(0), getColotInt2(1), getColotInt2(2)));
+					return true;
+				}
+			}
+		}
 		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 
@@ -212,11 +281,26 @@ public class GuiScreenColor extends GuiBase {
 				return true;
 			}
 		}
+		for (GuiTextNumeric text : fieldList2) {
+			String value = text.getValue();
+			if (text.charTyped(typedChar, keyCode)) {
+				if (!value.equals(text.getValue()))
+					setColorBackground(new Color(getColotInt2(0), getColotInt2(1), getColotInt2(2)));
+				return true;
+			}
+		}
 		return super.charTyped(typedChar, keyCode);
 	}
 
 	private int getColotInt(int id) {
 		String text = fieldList.get(id).getValue();
+		if (text == null || text.isEmpty())
+			return 0;
+		return Integer.parseInt(text);
+	}
+
+	private int getColotInt2(int id) {
+		String text = fieldList2.get(id).getValue();
 		if (text == null || text.isEmpty())
 			return 0;
 		return Integer.parseInt(text);

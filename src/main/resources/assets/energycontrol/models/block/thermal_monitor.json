@@ -1,9 +1,8 @@
 {
     "parent": "energycontrol:block/medium_box",
     "textures": {
-        "particle": "energycontrol:block/thermal_monitor/back",
-        "side": "energycontrol:block/thermal_monitor/side",
-        "face": "energycontrol:block/thermal_monitor/face_green",
-        "back": "energycontrol:block/thermal_monitor/back"
+        "particle": "energycontrol:block/thermal_monitor/face_green",
+        "all": "energycontrol:block/thermal_monitor/all0",
+        "face": "energycontrol:block/thermal_monitor/face_green"
     }
 }

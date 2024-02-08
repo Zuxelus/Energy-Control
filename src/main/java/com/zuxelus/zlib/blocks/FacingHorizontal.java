@@ -55,6 +55,10 @@ public abstract class FacingHorizontal extends BaseEntityBlock {
 			return createTickerHelper(type, type, TileEntityHoloPanelExtender::tickStatic);
 		if (type == ModTileEntityTypes.kit_assembler.get())
 			return createTickerHelper(type, type, TileEntityKitAssembler::tickStatic);
+		if (type == ModTileEntityTypes.range_trigger.get())
+			return createTickerHelper(type, type, TileEntityRangeTrigger::tickStatic);
+		if (type == ModTileEntityTypes.remote_thermo.get())
+			return createTickerHelper(type, type, TileEntityRemoteThermalMonitor::tickStatic);
 		return null;
 	}
 

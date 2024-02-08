@@ -184,6 +184,7 @@
     "msg.ec.InfoPanelStorage": "Storage: %s",
     "msg.ec.InfoPanelStorageCells": "Storage Cells: %s",
     "msg.ec.InfoPanelTank": "Tank: %s",
+    "msg.ec.InfoPanelTemp" : "Temp: %s",
     "msg.ec.InfoPanelTemperature" : "Temperature: %s",
     "msg.ec.InfoPanelTime": "Time: %s",
     "msg.ec.InfoPanelTimeRemaining": "Remaining: %s",

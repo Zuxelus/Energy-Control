@@ -39,8 +39,8 @@ public class ItemCardIC2 extends ItemCardMain {
 	@Override
 	public List<PanelString> getStringData(Level world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
-		/*if (reader.hasField(DataHelper.HEAT) && (settings & 1) > 0)
-			addHeat(result, "msg.ec.InfoPanelTemp", reader.getInt(DataHelper.HEAT), reader.getInt(DataHelper.MAXHEAT), showLabels);*/
+		if (reader.hasField(DataHelper.HEAT) && (settings & 1) > 0)
+			addHeat(result, "msg.ec.InfoPanelTemp", reader.getInt(DataHelper.HEAT), reader.getInt(DataHelper.MAXHEAT), showLabels);
 		if (reader.hasField(DataHelper.MAXHEAT) && (settings & 1) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelMaxHeat", reader.getInt(DataHelper.MAXHEAT), showLabels));
 		if (reader.hasField(DataHelper.MAXHEAT) && (settings & 1) > 0)
@@ -119,6 +119,13 @@ public class ItemCardIC2 extends ItemCardMain {
 		if (reader.hasField(DataHelper.ACTIVE) && (settings & 32) > 0)
 			addOnOff(result, isServer, reader.getBoolean(DataHelper.ACTIVE));
 		return result;
+	}
+
+	protected void addHeat(List<PanelString> result, String name, int heat, int maxHeat, boolean showLabels) {
+		PanelString line = new PanelString(name, heat, showLabels);
+		int rate = maxHeat == 0? 0 : 10 * heat / maxHeat;
+		line.colorLeft = rate < 4 ? 0x00ff00 : rate < 8 ? 0xffff00 : 0xff0000;
+		result.add(line);
 	}
 
 	@Override

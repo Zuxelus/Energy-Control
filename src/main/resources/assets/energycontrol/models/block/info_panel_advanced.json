@@ -1,12 +1,8 @@
 {
-    "parent": "block/cube",
+    "parent": "energycontrol:block/full_box",
     "textures": {
-        "particle": "energycontrol:block/info_panel/panel_advanced_side",
-        "down": "energycontrol:block/info_panel/panel_advanced_side",
-        "up": "energycontrol:block/info_panel/panel_advanced_face",
-        "north": "energycontrol:block/info_panel/panel_advanced_side",
-        "east": "energycontrol:block/info_panel/panel_advanced_side",
-        "south": "energycontrol:block/info_panel/panel_advanced_side",
-        "west": "energycontrol:block/info_panel/panel_advanced_side"
+        "particle": "energycontrol:block/info_panel/panel_advanced_face",
+        "face": "energycontrol:block/info_panel/panel_advanced_face",
+        "all": "energycontrol:block/info_panel/panel_advanced_all"
     }
 }
