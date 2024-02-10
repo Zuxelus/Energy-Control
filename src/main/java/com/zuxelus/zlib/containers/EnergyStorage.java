@@ -9,4 +9,9 @@ public class EnergyStorage extends net.minecraftforge.energy.EnergyStorage {
 	public void setEnergy(int value) {
 		energy = Math.min(value, capacity);
 	}
+
+	public void setMax(int value) {
+		maxReceive = value;
+		maxExtract = value;
+	}
 }

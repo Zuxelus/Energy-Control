@@ -1,11 +1,14 @@
 package com.zuxelus.energycontrol.crossmod;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardIC2;
 import com.zuxelus.energycontrol.items.kits.ItemKitIC2;
+import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
 import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 import com.zuxelus.zlib.blocks.FacingBlock;
@@ -15,8 +18,11 @@ import ic2.api.blocks.IWrenchable;
 import ic2.api.blocks.IWrenchable.WrenchRegistry;
 import ic2.api.blocks.wrench.BaseWrenchHandler;
 import ic2.api.blocks.wrench.HorizontalWrenchHandler;
-import ic2.api.blocks.wrench.ObserverBlockWrenchHandler;
-import ic2.api.reactor.IChamberReactor;
+import ic2.api.energy.EnergyNet;
+import ic2.api.energy.tile.IEnergyEmitter;
+import ic2.api.energy.tile.IEnergySink;
+import ic2.api.items.electric.ElectricItem;
+import ic2.api.items.electric.IElectricItem;
 import ic2.api.reactor.IReactor;
 import ic2.api.tiles.readers.IEUProducer;
 import ic2.api.tiles.readers.IEUStorage;
@@ -44,13 +50,26 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.ObserverBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.registries.RegisterEvent.RegisterHelper;
 
 public class CrossIC2Classic extends CrossModBase {
+	public static Map<BlockEntity, IEnergySink> map = new HashMap<BlockEntity, IEnergySink>();
+
+	@Override
+	public boolean isElectricItem(ItemStack stack) {
+		return !stack.isEmpty() && stack.getItem() instanceof IElectricItem;
+	}
+
+	@Override
+	public double dischargeItem(ItemStack stack, int needed, int tier) {
+		IElectricItem item = (IElectricItem) stack.getItem();
+		if (item.canProvideEnergy(stack))
+			return ElectricItem.MANAGER.discharge(stack, needed, tier, false, false, false);
+		return 0;
+	}
 
 	@Override
 	public CompoundTag getEnergyData(BlockEntity te) {
@@ -188,6 +207,23 @@ public class CrossIC2Classic extends CrossModBase {
 				ModItems.info_panel.get(), ModItems.info_panel_extender.get(), ModItems.info_panel_advanced.get(), ModItems.info_panel_advanced_extender.get() });
 	}
 
+	@Override
+	public void updateEnergyNet(BlockEntity te, boolean isAdd) {
+		if (isAdd) {
+			if (!map.containsKey(te)) {
+				IEnergySink be = new KitAssemblerSink((TileEntityKitAssembler) te);
+				map.put(te, be);
+				EnergyNet.INSTANCE.addTile(be);
+			} else
+				EnergyNet.INSTANCE.addTile(map.get(te));
+		} else {
+			if (map.containsKey(te)) {
+				EnergyNet.INSTANCE.removeTile(map.get(te));
+				map.remove(te);
+			}
+		}
+	}
+
 	public static class HorizontalHandler extends HorizontalWrenchHandler {
 		public static final IWrenchable INSTANCE = new HorizontalHandler();
 
@@ -235,6 +271,44 @@ public class CrossIC2Classic extends CrossModBase {
 		@Override
 		public double getDropRate(BlockState state, Level world, BlockPos pos, Player player) {
 			return 1.0D;
+		}
+	}
+
+	public static class KitAssemblerSink implements IEnergySink {
+		private TileEntityKitAssembler be;
+
+		public KitAssemblerSink(TileEntityKitAssembler be) {
+			this.be = be;
+		}
+		
+		@Override
+		public boolean canAcceptEnergy(IEnergyEmitter emitter, Direction side) {
+			return be.canAcceptEnergy(side);
+		}
+
+		@Override
+		public int getSinkTier() {
+			return be.getSinkTier();
+		}
+
+		@Override
+		public int getRequestedEnergy() {
+			return be.getRequestedEnergy();
+		}
+
+		@Override
+		public int acceptEnergy(Direction directionFrom, int amount, int voltage) {
+			return be.acceptEnergy(directionFrom, amount, voltage);
+		}
+
+		@Override
+		public Level getWorldObj() {
+			return be.getLevel();
+		}
+
+		@Override
+		public BlockPos getPosition() {
+			return be.getBlockPos();
 		}
 	}
 }

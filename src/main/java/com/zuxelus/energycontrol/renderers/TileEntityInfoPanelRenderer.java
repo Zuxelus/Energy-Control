@@ -28,7 +28,7 @@ import net.minecraft.resources.ResourceLocation;
 public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEntityInfoPanel> {
 	private static int[][] sides = new int[][] { { 4, 5, 2, 3, 1, 0 }, { 4, 5, 3, 2, 1, 0 }, { 2, 3, 1, 0, 4, 5 },
 		{ 2 ,3 , 0, 1, 5, 4 }, { 2, 3, 4, 5, 0, 1 }, { 2, 3, 5, 4, 1, 0 } };
-	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID + ":textures/block/info_panel/panel_all_.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID + ":textures/block/info_panel/panel_all.png");
 	public static final ResourceLocation SCREEN = new ResourceLocation(EnergyControl.MODID + ":textures/block/info_panel/panel_screen.png");
 	private final Font font;
 

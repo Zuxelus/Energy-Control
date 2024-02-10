@@ -4,6 +4,8 @@ import javax.annotation.Nonnull;
 
 import com.zuxelus.energycontrol.blocks.KitAssembler;
 import com.zuxelus.energycontrol.containers.ContainerKitAssembler;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
@@ -45,18 +47,23 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 	public static final byte SLOT_CARD2 = 3;
 	public static final byte SLOT_RESULT = 4;
 	public static final byte SLOT_DISCHARGER = 5;
+	public static final byte SLOT_TRANSFORMER = 6;
 	private EnergyStorage storage;
 	private int buffer;
 	private static final int CONSUMPTION = 5;
+	private int upgrades;
 	private KitAssemblerRecipe recipe;
 	private int recipeTime; // client Only
-	public static final int CAPACITY = 2000;
+	public static final int CAPACITY = 5000;
+	public static final int OUTPUT = 32;
 	private double production;
+	private boolean addedToEnet;
 	private boolean active;
 
 	public TileEntityKitAssembler(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
-		storage = new EnergyStorage(CAPACITY, 32, 32, 0);
+		storage = new EnergyStorage(CAPACITY, OUTPUT, OUTPUT, 0);
+		addedToEnet = false;
 		active = false;
 		production = 0;
 	}
@@ -175,6 +182,15 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 		writeProperties(tag);
 	}
 
+	@Override
+	public void setRemoved() {
+		if (!level.isClientSide && addedToEnet) {
+			addedToEnet = false;
+			CrossModLoader.getCrossMod(ModIDs.IC2).updateEnergyNet(this, false);
+		}
+		super.setRemoved();
+	}
+
 	public static void tickStatic(Level level, BlockPos pos, BlockState state, BlockEntity be) {
 		if (!(be instanceof TileEntityKitAssembler))
 			return;
@@ -185,12 +201,17 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 	protected void tick() {
 		if (level.isClientSide)
 			return;
+		if (!addedToEnet) {
+			addedToEnet = true;
+			CrossModLoader.getCrossMod(ModIDs.IC2).updateEnergyNet(this, true);
+		}
 		handleDischarger(SLOT_DISCHARGER);
 		if (!active)
 			return;
-		if (storage.getEnergyStored() >= CONSUMPTION) {
-			storage.extractEnergy(CONSUMPTION, false);
-			production += 1;
+		int energyNeeded = CONSUMPTION * (int) Math.pow(2, upgrades);
+		if (storage.getEnergyStored() >= energyNeeded) {
+			storage.extractEnergy(energyNeeded, false);
+			production += Math.pow(2, upgrades);
 			if (recipe != null && production >= recipe.time) {
 				ItemStack stack1 = getItem(SLOT_CARD1);
 				ItemStack stack2 = getItem(SLOT_ITEM);
@@ -216,12 +237,12 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 	}
 
 	private void handleDischarger(int slot) {
-		int needed = Math.min(32, storage.getMaxEnergyStored() - storage.getEnergyStored());
+		int needed = Math.min(OUTPUT * (int) Math.pow(4, upgrades), storage.getMaxEnergyStored() - storage.getEnergyStored());
 		if (needed <= 0)
 			return;
 		if (buffer > 0)
 			buffer -= storage.receiveEnergy(buffer, false);
-		needed = Math.min(32, storage.getMaxEnergyStored() - storage.getEnergyStored());
+		needed = Math.min(OUTPUT * (int) Math.pow(4, upgrades), storage.getMaxEnergyStored() - storage.getEnergyStored());
 		ItemStack stack = getItem(slot);
 		if (!stack.isEmpty() && needed > 0) {
 			if (stack.getItem().equals(Items.LAVA_BUCKET)) {
@@ -231,16 +252,22 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 				return;
 			}
 			IEnergyStorage stackStorage = getStackEnergyStorage(stack);
-			if (stackStorage != null)
+			if (stackStorage != null) {
 				if (storage.receiveEnergy(stackStorage.extractEnergy(needed, false), false) > 0)
 					active = true;
+			} else if (CrossModLoader.isElectricItem(stack)) {
+				double old = storage.getEnergyStored();
+				storage.receiveEnergy((int) CrossModLoader.dischargeItem(stack, needed, getSinkTier()), false);
+				if (!active && storage.getEnergyStored() > old)
+					setChanged();
+			}
 		}
 	}
 
 	private IEnergyStorage getStackEnergyStorage(ItemStack stack) {
 		LazyOptional<IEnergyStorage> cap = stack.getCapability(CapabilityEnergy.ENERGY);
 		if(cap.isPresent())
-			return cap.orElseThrow( NullPointerException::new );
+			return cap.orElseThrow(NullPointerException::new);
 		return null;
 	}
 
@@ -259,7 +286,11 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 
 	private void updateActive() {
 		active = false;
-		if (storage.getEnergyStored() < CONSUMPTION)
+		ItemStack stack = getItem(SLOT_TRANSFORMER);
+		upgrades = stack.getCount();
+		storage.setMax(OUTPUT * (int) Math.pow(4, upgrades));
+		int energyNeeded = CONSUMPTION * (int) Math.pow(2, upgrades);
+		if (storage.getEnergyStored() < energyNeeded)
 			return;
 		KitAssemblerRecipe newRecipe;
 		if (recipe == null) {
@@ -299,7 +330,7 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 	// ------- Inventory -------
 	@Override
 	public int getContainerSize() {
-		return 6;
+		return 7;
 	}
 
 	@Override
@@ -317,11 +348,37 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 		case SLOT_INFO:
 			return stack.getItem() instanceof ItemCardMain;
 		case SLOT_DISCHARGER:
-			return getStackEnergyStorage(stack) != null || stack.getItem().equals(Items.LAVA_BUCKET);
+			return getStackEnergyStorage(stack) != null || CrossModLoader.isElectricItem(stack) || stack.getItem().equals(Items.LAVA_BUCKET);
+		case SLOT_TRANSFORMER:
+			return stack.getDescriptionId().equals("item.ic2.upgrade_transformer");
 		case SLOT_RESULT:
 		default:
 			return false;
 		}
+	}
+
+	// IEnergySink
+	public boolean canAcceptEnergy(Direction side) {
+		return side != getFacing();
+	}
+
+	public int getRequestedEnergy() {
+		return Math.max(0, storage.getMaxEnergyStored() - storage.getEnergyStored());
+	}
+
+	public int getSinkTier() {
+		return 1 + upgrades;
+	}
+
+	public int acceptEnergy(Direction directionFrom, int amount, int voltage) {
+		int left = 0;
+		int input = OUTPUT * (int) Math.pow(4, upgrades);
+		if (amount > input) {
+			left = amount - input;
+			amount = input;
+		}
+		left += amount - storage.receiveEnergy((int) amount, false);
+		return left;
 	}
 
 	@Override

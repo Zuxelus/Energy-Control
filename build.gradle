@@ -19,7 +19,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
 //apply plugin: 'scala'
 
-version = '1.19.2-0.3.0a'
+version = '1.19.2-0.3.0c'
 group = 'com.zuxelus.energycontrol'
 archivesBaseName = 'EnergyControl-forge'
 

@@ -35,12 +35,12 @@ public class CrossModLoader {
 	private static final Map<String, CrossModBase> CROSS_MODS = new HashMap<>();
 
 	public static void init() {
-		//loadCrossMod(ModIDs.ADV_GENERATORS, CrossAdvGenerators::new);
+		loadCrossMod(ModIDs.ADV_GENERATORS, CrossAdvGenerators::new);
 		loadCrossMod(ModIDs.APPLIED_ENERGISTICS, CrossAppEng::new);
 		loadCrossMod(ModIDs.BIG_REACTORS, CrossBigReactors::new);
 		//loadCrossMod(ModIDs.BIGGER_REACTORS, CrossBiggerReactors::new);
 		loadCrossModSafely(ModIDs.COMPUTER_CRAFT, () -> CrossComputerCraft::new);
-		loadCrossMod(ModIDs.IC2, CrossIC2Classic::new);
+		loadCrossModSafely(ModIDs.IC2, () -> CrossIC2Classic::new);
 		loadCrossModSafely(ModIDs.MEKANISM, () -> CrossMekanism::new);
 		loadCrossModSafely(ModIDs.MEKANISM_GENERATORS, () -> CrossMekanismGenerators::new);
 		//loadCrossMod(ModIDs.IMMERSIVE_ENGINEERING, CrossImmersiveEngineering::new);
@@ -171,6 +171,26 @@ public class CrossModLoader {
 			}
 		}
 		return tag;
+	}
+
+	public static boolean isElectricItem(ItemStack stack) {
+		if (stack.isEmpty())
+			return false;
+
+		for (CrossModBase crossMod : CROSS_MODS.values())
+			if (crossMod.isElectricItem(stack))
+				return true;
+		return false;
+	}
+
+	public static double dischargeItem(ItemStack stack, int amount, int tier) {
+		for (CrossModBase crossMod : CROSS_MODS.values())
+			if (crossMod.isElectricItem(stack)) {
+				double result = crossMod.dischargeItem(stack, amount, tier);
+				if (result > 0)
+					return result;
+			}
+		return 0;
 	}
 
 	public static void registerItems(RegisterEvent.RegisterHelper<Item> event) {

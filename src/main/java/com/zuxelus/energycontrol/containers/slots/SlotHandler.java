@@ -24,6 +24,7 @@ public class SlotHandler {
 		registerTexture(event, EnergyControl.MODID + ":slots/slot_power");
 		//registerTexture(event, "zlib:slots/slot_chargeable");
 		registerTexture(event, "zlib:slots/slot_dischargeable");
+		registerTexture(event, "zlib:slots/slot_transformer");
 	}
 
 	private static void registerTexture(TextureStitchEvent.Pre event, String texture) {
