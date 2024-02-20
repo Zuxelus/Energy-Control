@@ -2,13 +2,14 @@ package com.zuxelus.energycontrol.items.cards;
 
 import java.util.List;
 
+import org.joml.Matrix4f;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Matrix4f;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
@@ -25,7 +26,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ButtonBlock;
-import net.minecraft.world.level.block.WoodButtonBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -101,7 +101,7 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 			world.setBlock(pos, state.setValue(POWERED, Boolean.valueOf(true)), 3);
 			world.updateNeighborsAt(pos, block);
 			world.updateNeighborsAt(pos.relative(getFacing(state).getOpposite()), block);
-			world.scheduleTick(pos, block, block instanceof WoodButtonBlock ? 30 : 20);
+			world.scheduleTick(pos, block, block.equals(Blocks.STONE_BUTTON) ? 20 : 30);
 		}
 		return false;
 	}

@@ -90,7 +90,7 @@ public abstract class ContainerBase<T extends Container> extends AbstractContain
 	public static BlockEntity getBlockEntity(Inventory player, FriendlyByteBuf data) {
 		Objects.requireNonNull(player, "Player cannot be null!");
 		Objects.requireNonNull(data, "Data cannot be null!");
-		BlockEntity te = player.player.level.getBlockEntity(data.readBlockPos());
+		BlockEntity te = player.player.level().getBlockEntity(data.readBlockPos());
 		if (te instanceof TileEntityInfoPanelExtender)
 			te = ((TileEntityInfoPanelExtender) te).getCore();
 		if (te instanceof TileEntityAdvancedInfoPanelExtender)

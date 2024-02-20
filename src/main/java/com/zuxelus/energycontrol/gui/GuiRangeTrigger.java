@@ -9,6 +9,7 @@ import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityRangeTrigger;
 import com.zuxelus.zlib.gui.GuiContainerBase;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
@@ -57,18 +58,18 @@ public class GuiRangeTrigger extends GuiContainerBase<ContainerRangeTrigger> {
 	}
 
 	@Override
-	public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
 		renderBackground(matrixStack);
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
 		renderTooltip(matrixStack, mouseX, mouseY);
 	}
 
-	private void renderValue(PoseStack matrixStack, double value, int x, int y) {
+	private void renderValue(GuiGraphics matrixStack, double value, int x, int y) {
 		x += 114;
 		for (int i = 0; i < 10; i++) {
 			byte digit = (byte) (value % 10);
 			String str = Byte.toString(digit);
-			font.draw(matrixStack, str, x - 12 * i - font.width("0") / 2 + (9 - i + 2) / 3 * 6, y, 0x404040);
+			matrixStack.drawString(font, str, x - 12 * i - font.width("0") / 2 + (9 - i + 2) / 3 * 6, y, 0x404040, false);
 			value /= 10;
 		}
 	}
@@ -108,7 +109,7 @@ public class GuiRangeTrigger extends GuiContainerBase<ContainerRangeTrigger> {
 	}
 
 	@Override
-	protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+	protected void renderLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
 		drawCenteredText(matrixStack, title, imageWidth, 6);
 		drawLeftAlignedText(matrixStack, I18n.get("container.inventory"), 8, (imageHeight - 96) + 2);
 

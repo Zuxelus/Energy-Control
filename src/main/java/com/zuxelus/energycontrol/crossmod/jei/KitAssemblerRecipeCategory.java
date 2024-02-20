@@ -3,7 +3,6 @@ package com.zuxelus.energycontrol.crossmod.jei;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.recipes.KitAssemblerRecipe;
@@ -19,6 +18,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -91,7 +91,7 @@ public class KitAssemblerRecipeCategory implements IRecipeCategory<KitAssemblerR
 	}
 
 	@Override
-	public void draw(KitAssemblerRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack matrixStack, double mouseX, double mouseY) {
+	public void draw(KitAssemblerRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics matrixStack, double mouseX, double mouseY) {
 		animatedarrow.draw(matrixStack, 57, 19);
 	}
 }

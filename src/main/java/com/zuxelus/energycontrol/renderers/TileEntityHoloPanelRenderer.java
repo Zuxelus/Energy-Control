@@ -3,7 +3,7 @@ package com.zuxelus.energycontrol.renderers;
 import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.zuxelus.energycontrol.ClientTickHandler;
 import com.zuxelus.energycontrol.api.IHasBars;
 import com.zuxelus.energycontrol.api.PanelString;
@@ -34,23 +34,23 @@ public class TileEntityHoloPanelRenderer implements BlockEntityRenderer<TileEnti
 		case UP:
 			break;
 		case NORTH:
-			matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
+			matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
 			matrixStack.translate(0.0F, -1.5F, 0.0F);
 			break;
 		case SOUTH:
-			matrixStack.mulPose(Vector3f.XP.rotationDegrees(90));
+			matrixStack.mulPose(Axis.XP.rotationDegrees(90));
 			matrixStack.translate(0.0F, -0.5F, -1.0F);
 			break;
 		case DOWN:
-			matrixStack.mulPose(Vector3f.XP.rotationDegrees(180));
+			matrixStack.mulPose(Axis.XP.rotationDegrees(180));
 			matrixStack.translate(0.0F, -1.0F, -1.0F);
 			break;
 		case WEST:
-			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(90));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(90));
 			matrixStack.translate(0.0F, -1.5F, 0.0F);
 			break;
 		case EAST:
-			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-90));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(-90));
 			matrixStack.translate(-1.0F, -0.5F, 0.0F);
 			break;
 		}
@@ -106,28 +106,28 @@ public class TileEntityHoloPanelRenderer implements BlockEntityRenderer<TileEnti
 		}
 
 		matrixStack.translate(0.5F - dy / 2, 1.01F - dx / 2 , 0.5F - dz / 2);
-		matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
+		matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
 		switch(panel.getFacing())
 		{
 		case NORTH:
-			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(180));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(180));
 			break;
 		case SOUTH:
 			break;
 		case WEST:
-			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-90));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(-90));
 			break;
 		case EAST:
-			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(90));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(90));
 			break;
 		}
 		float imageWidth = 0.475F + (displayWidth - 0.875F) / 2F;
 		float imageHeight = 0.5F + (power - 1) / 2F;
 		if (partialTicks == -1) {
 			IHasBars.drawTransparentRect(matrixStack, imageWidth, imageHeight, -imageWidth, -imageHeight, -0.0001F, 0x40AADDDD);
-			matrixStack.mulPose(Vector3f.YP.rotationDegrees(180));
+			matrixStack.mulPose(Axis.YP.rotationDegrees(180));
 			IHasBars.drawTransparentRect(matrixStack, imageWidth, imageHeight, -imageWidth, -imageHeight, -0.0001F, 0x40AADDDD);
-			matrixStack.mulPose(Vector3f.YP.rotationDegrees(180));
+			matrixStack.mulPose(Axis.YP.rotationDegrees(180));
 		} else if (joinedData != null) {
 			matrixStack.translate(0, 0, 0.0002F * (power + 1) / 2);
 			int colorHex = 0x000000;

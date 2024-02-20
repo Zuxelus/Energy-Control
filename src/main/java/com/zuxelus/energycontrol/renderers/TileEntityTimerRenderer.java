@@ -2,7 +2,7 @@ package com.zuxelus.energycontrol.renderers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.tileentities.TileEntityTimer;
 
@@ -32,10 +32,10 @@ public class TileEntityTimerRenderer implements BlockEntityRenderer<TileEntityTi
 		VertexConsumer vertexBuilder = te.getIsWorking() ? buffer.getBuffer(RenderType.entitySolid(TEXTURE_ACTIVE)) : buffer.getBuffer(RenderType.entitySolid(TEXTURE));
 		CubeRenderer.MODEL.render(matrixStack, vertexBuilder, TileEntityInfoPanelRenderer.getBlockLight(te), combinedOverlay);
 		String time = te.getTimeString();
-		matrixStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
+		matrixStack.mulPose(Axis.XP.rotationDegrees(90.0F));
 		matrixStack.translate(0.5F, 0.575F, -0.4376F);
 		matrixStack.scale(0.015625F, 0.015625F, 0.015625F);
-		font.drawInBatch(time, -font.width(time) / 2, -font.lineHeight, 0x000000, false, matrixStack.last().pose(), buffer, false, 0, combinedLight);
+		//font.drawInBatch(time, -font.width(time) / 2, -font.lineHeight, 0x000000, false, matrixStack.last().pose(), buffer, false, 0, combinedLight);
 		matrixStack.popPose();
 	}
 

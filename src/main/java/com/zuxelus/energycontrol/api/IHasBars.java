@@ -6,7 +6,6 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Matrix4f;
 
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.world.item.ItemStack;
@@ -22,7 +21,7 @@ public interface IHasBars {
 
 	// copy from GuiComponent.fillGradient()
 	static void drawTransparentRect(PoseStack matrixStack, float left, float top, float right, float bottom, float zLevel, int color) {
-		RenderSystem.disableTexture();
+		/*RenderSystem.disableTexture();
 		RenderSystem.enableBlend();
 		RenderSystem.enableDepthTest();
 		RenderSystem.defaultBlendFunc();
@@ -34,10 +33,10 @@ public interface IHasBars {
 		tesselator.end();
 		RenderSystem.disableBlend();
 		RenderSystem.disableDepthTest();
-		RenderSystem.enableTexture();
+		RenderSystem.enableTexture();*/
 	}
 
-	static void drawPositionColor(Matrix4f matrix, BufferBuilder builder, float left, float top, float right, float bottom, float zLevel, int color) {
+	/*static void drawPositionColor(Matrix4f matrix, BufferBuilder builder, float left, float top, float right, float bottom, float zLevel, int color) {
 		float f = (color >> 24 & 255) / 255.0F;
 		float f1 = (color >> 16 & 255) / 255.0F;
 		float f2 = (color >> 8 & 255) / 255.0F;
@@ -46,5 +45,5 @@ public interface IHasBars {
 		builder.vertex(matrix, left, top, zLevel).color(f1, f2, f3, f).endVertex();
 		builder.vertex(matrix, left, bottom, zLevel).color(f1, f2, f3, f).endVertex();
 		builder.vertex(matrix, right, bottom, zLevel).color(f1, f2, f3, f).endVertex();
-	}
+	}*/
 }

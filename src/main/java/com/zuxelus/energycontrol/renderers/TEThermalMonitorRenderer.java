@@ -2,7 +2,7 @@ package com.zuxelus.energycontrol.renderers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.tileentities.TileEntityThermalMonitor;
 
@@ -44,13 +44,13 @@ public class TEThermalMonitorRenderer implements BlockEntityRenderer<TileEntityT
 		}
 		CubeSmallRenderer.MODEL.render(matrixStack, vertexBuilder, CubeSmallRenderer.getBlockLight(te), combinedOverlay);
 
-		matrixStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
-		matrixStack.mulPose(Vector3f.ZP.rotationDegrees(180.0F));
+		matrixStack.mulPose(Axis.XP.rotationDegrees(90.0F));
+		matrixStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
 		matrixStack.translate(-0.5F, -0.55F, -0.4376F);
 		matrixStack.scale(0.015625F, 0.015625F, 0.015625F);
 
 		int value = te.getHeatLevel();
-		font.drawInBatch(String.valueOf(value), -font.width(String.valueOf(value)) / 2, -font.lineHeight, 0x000000, false, matrixStack.last().pose(), buffer, false, 0, combinedLight);
+		//font.drawInBatch(String.valueOf(value), -font.width(String.valueOf(value)) / 2, -font.lineHeight, 0x000000, false, matrixStack.last().pose(), buffer, false, 0, combinedLight);
 		matrixStack.popPose();
 	}
 

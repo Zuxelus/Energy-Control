@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.tileentities.Screen;
@@ -153,14 +153,14 @@ public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 		}
 
 		matrixStack.translate(dy, dx, dz);
-		matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
+		matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
 		switch (panel.getFacing()) {
 		case UP:
 			switch(panel.getRotation()) {
 			case UP:
 				break;
 			case NORTH:
-				matrixStack.mulPose(Vector3f.ZP.rotationDegrees(180));
+				matrixStack.mulPose(Axis.ZP.rotationDegrees(180));
 				matrixStack.translate(-1.0F, -1.0F, 0.0F);
 				break;
 			case SOUTH:
@@ -169,11 +169,11 @@ public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 			case DOWN:
 				break;
 			case WEST:
-				matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.ZP.rotationDegrees(-90));
 				matrixStack.translate(-1.0F, 0.0F, 0.0F);
 				break;
 			case EAST:
-				matrixStack.mulPose(Vector3f.ZP.rotationDegrees(90));
+				matrixStack.mulPose(Axis.ZP.rotationDegrees(90));
 				matrixStack.translate(0.0F, -1.0F, 0.0F);
 				break;
 			}
@@ -186,10 +186,10 @@ public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 		int i = offset.rotateVert == 0 ? 0 : offset.rotateVert > 0 ? -1 : 1;
 		int j = offset.rotateHor == 0 ? 0 : offset.rotateHor > 0 ? -1 : 1;
 		matrixStack.translate(displayWidth / 2, displayHeight / 2, 1 + (32 * h - offset.leftTop - offset.leftBottom) / 64);
-		matrixStack.mulPose(Vector3f.YN.rotationDegrees((float) Math.toDegrees(b)));
-		matrixStack.mulPose(Vector3f.XN.rotationDegrees((float) Math.toDegrees(a)));
-		matrixStack.mulPose(new Vector3f(0.0F, 0.0F, i * j).rotationDegrees(90.0F - (float) Math.toDegrees( // Law of cosines
-			Math.acos((h * h + v * v) / 2 / Math.sqrt(displayWidth * displayWidth + h * h) / Math.sqrt(displayHeight * displayHeight + v * v)))));
+		matrixStack.mulPose(Axis.YN.rotationDegrees((float) Math.toDegrees(b)));
+		matrixStack.mulPose(Axis.XN.rotationDegrees((float) Math.toDegrees(a)));
+		/*matrixStack.mulPose(new Vector3f(0.0F, 0.0F, i * j).rotationDegrees(90.0F - (float) Math.toDegrees( // Law of cosines
+			Math.acos((h * h + v * v) / 2 / Math.sqrt(displayWidth * displayWidth + h * h) / Math.sqrt(displayHeight * displayHeight + v * v)))));*/
 		matrixStack.translate(0.0F, 0.001F * i, 0.001F);
 		displayHeight = (float) ((displayHeight - 0.125F) / Math.cos(a));
 		displayWidth = (float) ((displayWidth - 0.125F) / Math.cos(b));
@@ -220,14 +220,12 @@ public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 			offsetY = 3;
 		}
 
-		//matrixStack.disableLighting();
-
 		int row = 0;
 		int colorHex = 0x000000;
 		if (panel.getColored())
 			colorHex = panel.getColorText();
 		for (PanelString panelString : joinedData) {
-			if (panelString.textLeft != null) {
+			/*if (panelString.textLeft != null) {
 				font.drawInBatch(panelString.textLeft, offsetX - realWidth / 2,
 						1 + offsetY - realHeight / 2 + row * lineHeight,
 						panelString.colorLeft != 0 ? panelString.colorLeft : colorHex, false, matrixStack.last().pose(), buffer, false, 0, combinedLight);
@@ -243,12 +241,9 @@ public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 						realWidth / 2 - font.width(panelString.textRight),
 						offsetY - realHeight / 2 + row * lineHeight,
 						panelString.colorRight != 0 ? panelString.colorRight : colorHex, false, matrixStack.last().pose(), buffer, false, 0, combinedLight);
-			}
+			}*/
 			row++;
 		}
-
-		//matrixStack.enableLighting();
-		//matrixStack.color(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 
 	@Override

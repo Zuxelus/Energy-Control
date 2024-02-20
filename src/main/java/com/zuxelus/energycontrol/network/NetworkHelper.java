@@ -43,7 +43,7 @@ public class NetworkHelper {
 	}
 
 	public static <MSG> void sendToPlayer(ServerPlayer player, MSG message) {
-		network.sendTo(message, player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
+		network.sendTo(message, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
 	}
 
 	// server

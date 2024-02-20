@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[43,)"
+loaderVersion="[47,)"
 license="GNU General Public License v3.0"
 issueTrackerURL="https://github.com/Zuxelus/Energy-Control/issues"
 
@@ -18,13 +18,13 @@ Energy Control is a remastered version of original Nuclear Control, an Industria
 [[dependencies.energycontrol]]
     modId="forge"
     mandatory=true
-    versionRange="[43,)"
+    versionRange="[47,)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.energycontrol]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.19.2,1.20)"
+    versionRange="[1.20.1,1.21)"
     ordering="NONE"
     side="BOTH"

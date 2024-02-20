@@ -73,9 +73,9 @@ public class CrossMekanismGenerators extends CrossModBase {
 		if (te instanceof TileEntityGenerator) {
 			CompoundTag tag = CrossMekanism.setStorage(((TileEntityGenerator) te).getEnergyContainer());
 			if (te instanceof TileEntityHeatGenerator) {
-				double production = ((TileEntityHeatGenerator) te).getProducingEnergy().doubleValue();
+				/*double production = ((TileEntityHeatGenerator) te).getProducingEnergy().doubleValue();
 				tag.putDouble("production", production);
-				tag.putBoolean(DataHelper.ACTIVE, production > 0);
+				tag.putBoolean(DataHelper.ACTIVE, production > 0);*/
 				tag.putString("temp", CrossMekanism.getTempString(((TileEntityGenerator) te).getTotalTemperature()));
 			}
 			if (te instanceof TileEntityWindGenerator) {
@@ -84,9 +84,9 @@ public class CrossMekanismGenerators extends CrossModBase {
 				tag.putBoolean(DataHelper.ACTIVE, production > 0);
 			}
 			if (te instanceof TileEntitySolarGenerator) {
-				double production = MekanismUtils.convertToDisplay(((TileEntitySolarGenerator)te).getLastProductionAmount()).doubleValue();
+				/*double production = MekanismUtils.convertToDisplay(((TileEntitySolarGenerator)te).getLastProductionAmount()).doubleValue();
 				tag.putDouble("production", production);
-				tag.putBoolean(DataHelper.ACTIVE, production > 0);
+				tag.putBoolean(DataHelper.ACTIVE, production > 0);*/
 			}
 			if (te instanceof TileEntityBioGenerator) {
 				if (((TileEntityBioGenerator)te).getActive()) {

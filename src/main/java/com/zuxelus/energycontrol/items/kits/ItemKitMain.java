@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.items.kits;
 
-import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.IItemKit;
 
 import net.minecraft.server.level.ServerPlayer;
@@ -14,7 +13,7 @@ import net.minecraft.world.item.context.UseOnContext;
 public abstract class ItemKitMain extends Item implements IItemKit {
 
 	public ItemKitMain() {
-		super(new Item.Properties().tab(EnergyControl.ITEM_GROUP).stacksTo(16).setNoRepair());
+		super(new Item.Properties().stacksTo(16).setNoRepair());
 	}
 
 	@Override

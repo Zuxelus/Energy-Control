@@ -16,8 +16,6 @@ import com.zuxelus.energycontrol.tileentities.ScreenManager;
 import com.zuxelus.energycontrol.utils.SoundLoader;
 
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -43,14 +41,6 @@ public class EnergyControl {
 	public List<String> serverAllowedAlarms; // will be loaded from server
 	public static Map<Player, Boolean> altPressed = new HashMap<Player, Boolean>();
 
-	public static final CreativeModeTab ITEM_GROUP = new CreativeModeTab(MODID) {
-		@Override
-		@OnlyIn(Dist.CLIENT)
-		public ItemStack makeIcon() {
-			return new ItemStack(ModItems.kit_energy.get());
-		}
-	};
-
 	public EnergyControl() {
 		INSTANCE = this;
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -58,6 +48,7 @@ public class EnergyControl {
 		modEventBus.addListener(SoundLoader::locatePacks);
 		ModItems.BLOCKS.register(modEventBus);
 		ModItems.ITEMS.register(modEventBus);
+		ECCreativeTab.CREATIVE_TABS.register(modEventBus);
 		ModContainerTypes.CONTAINER_TYPES.register(modEventBus);
 		ModTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
 		ModItems.RECIPE_SERIALIZERS.register(modEventBus);

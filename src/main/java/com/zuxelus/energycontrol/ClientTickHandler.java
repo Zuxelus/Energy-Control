@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.event.RenderLevelLastEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.ViewportEvent.ComputeCameraAngles;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -41,7 +41,7 @@ public class ClientTickHandler {
 	}
 
 	@SubscribeEvent
-	public static void render(RenderLevelLastEvent event) {
+	public static void render(RenderLevelStageEvent event) {
 		Minecraft client = Minecraft.getInstance();
 		BlockEntityRenderDispatcher dispatcher = client.getBlockEntityRenderDispatcher();
 		Camera info = client.gameRenderer.getMainCamera();

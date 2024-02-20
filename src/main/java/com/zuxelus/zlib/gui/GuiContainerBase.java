@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -30,7 +31,7 @@ public class GuiContainerBase<T extends AbstractContainerMenu> extends AbstractC
 	protected static final int REDGLOW = multiplyColorComponents(RED, 0.16F);
 	protected DecimalFormat fraction = new DecimalFormat("##0.00");
 
-	private final ResourceLocation texture;
+	protected final ResourceLocation texture;
 
 	public GuiContainerBase(T container, Inventory inv, Component name, ResourceLocation texture) {
 		super(container, inv, name);
@@ -38,49 +39,46 @@ public class GuiContainerBase<T extends AbstractContainerMenu> extends AbstractC
 	}
 
 	@Override
-	protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderTexture(0, texture);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		blit(matrixStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+	protected void renderBg(GuiGraphics matrixStack, float partialTicks, int mouseX, int mouseY) {
+		matrixStack.blit(texture, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 	}
 
-	public void drawCenteredText(PoseStack matrixStack, Component text, int x, int y) {
+	public void drawCenteredText(GuiGraphics matrixStack, Component text, int x, int y) {
 		drawCenteredText(matrixStack, text, x, y, 0x404040);
 	}
 
-	public void drawRightAlignedText(PoseStack matrixStack, String text, int x, int y) {
+	public void drawRightAlignedText(GuiGraphics matrixStack, String text, int x, int y) {
 		drawRightAlignedText(matrixStack, text, x, y, 0x404040);
 	}
 
-	public void drawLeftAlignedText(PoseStack matrixStack, String text, int x, int y) {
+	public void drawLeftAlignedText(GuiGraphics matrixStack, String text, int x, int y) {
 		drawLeftAlignedText(matrixStack, text, x, y, 0x404040);
 	}
 
-	public void drawCenteredText(PoseStack matrixStack, Component text, int x, int y, int color) {
+	public void drawCenteredText(GuiGraphics matrixStack, Component text, int x, int y, int color) {
 		FormattedCharSequence ireorderingprocessor = text.getVisualOrderText();
-		font.draw(matrixStack, ireorderingprocessor, (x - font.width(ireorderingprocessor)) / 2, y, color);
+		matrixStack.drawString(font, ireorderingprocessor, (x - font.width(ireorderingprocessor)) / 2, y, color, false);
 	}
 
-	public void drawRightAlignedText(PoseStack matrixStack, String text, int x, int y, int color) {
-		font.draw(matrixStack, text, x - font.width(text), y, color);
+	public void drawRightAlignedText(GuiGraphics matrixStack, String text, int x, int y, int color) {
+		matrixStack.drawString(font, text, x - font.width(text), y, color, false);
 	}
 
-	public void drawLeftAlignedText(PoseStack matrixStack, String text, int x, int y, int color) {
-		font.draw(matrixStack, text, x, y, color);
+	public void drawLeftAlignedText(GuiGraphics matrixStack, String text, int x, int y, int color) {
+		matrixStack.drawString(font, text, x, y, color, false);
 	}
 
-	public void drawRightAlignedGlowingText(PoseStack matrixStack, String text, int x, int y, int color, int glowColor) {
+	public void drawRightAlignedGlowingText(GuiGraphics matrixStack, String text, int x, int y, int color, int glowColor) {
 		drawGlowingText(matrixStack, text, x - font.width(text), y, color, glowColor);
 	}
 
-	public void drawGlowingText(PoseStack matrixStack, String text, int x, int y, int color, int glowColor) {
+	public void drawGlowingText(GuiGraphics matrixStack, String text, int x, int y, int color, int glowColor) {
 		for (int i = 0; i < 4; i++)
-			font.draw(matrixStack, text, x + oX[i], y + oY[i], glowColor);
-		font.draw(matrixStack, text, x, y, color);
+			matrixStack.drawString(font, text, x + oX[i], y + oY[i], glowColor, false);
+		matrixStack.drawString(font, text, x, y, color, false);
 	}
 
-	public void drawCenteredGlowingText(PoseStack matrixStack, String text, int x, int y, int color, int glowColor) {
+	public void drawCenteredGlowingText(GuiGraphics matrixStack, String text, int x, int y, int color, int glowColor) {
 		drawGlowingText(matrixStack, text, x - font.width(text) / 2, y, color, glowColor);
 	}
 
@@ -91,7 +89,7 @@ public class GuiContainerBase<T extends AbstractContainerMenu> extends AbstractC
 	protected EditBox addTextFieldWidget(int left, int top, int width, int height, boolean isEnabled, String text) {
 		EditBox textBox = new EditBox(font, leftPos + left, topPos + top, width, height, null, CommonComponents.EMPTY);
 		textBox.setEditable(isEnabled);
-		textBox.changeFocus(isEnabled);
+		//textBox.changeFocus(isEnabled);
 		textBox.setValue(text);
 		addWidget(textBox);
 		setInitialFocus(textBox);

@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardText;
@@ -9,6 +8,7 @@ import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.gui.GuiContainerBase;
 import com.zuxelus.zlib.gui.controls.GuiButtonGeneral;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
@@ -58,14 +58,14 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 	}
 
 	@Override
-	public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
 		renderBackground(matrixStack);
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
 		renderTooltip(matrixStack, mouseX, mouseY);
 	}
 
 	@Override
-	protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+	protected void renderLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
 		drawCenteredText(matrixStack, title, imageWidth, 6);
 	}
 

@@ -8,6 +8,7 @@ import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityThermalMonitor;
 import com.zuxelus.zlib.gui.GuiBase;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
@@ -45,13 +46,13 @@ public class GuiThermalMonitor extends GuiBase {
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+	protected void drawGuiContainerBackgroundLayer(GuiGraphics matrixStack, float partialTicks, int mouseX, int mouseY) {
 		super.drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
-		textboxHeat.renderButton(matrixStack, mouseX, mouseY, partialTicks);
+		textboxHeat.renderWidget(matrixStack, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(PoseStack matrixStack, int mouseX, int mouseY) {
+	protected void drawGuiContainerForegroundLayer(GuiGraphics matrixStack, int mouseX, int mouseY) {
 		drawTitle(matrixStack);
 	}
 

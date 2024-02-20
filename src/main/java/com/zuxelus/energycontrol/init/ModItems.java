@@ -69,16 +69,16 @@ public class ModItems {
 	public static Item card_industrial_reborn;
 	public static Item card_mekanism;
 	public static Item card_thermal_expansion;
-	public static final RegistryObject<Item> upgrade_range = ITEMS.register("upgrade_range", () -> new Item(new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
-	public static final RegistryObject<Item> upgrade_color = ITEMS.register("upgrade_color", () -> new Item(new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
-	public static final RegistryObject<Item> upgrade_touch = ITEMS.register("upgrade_touch", () -> new Item(new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
-	public static final RegistryObject<Item> upgrade_web = ITEMS.register("upgrade_web", () -> new Item(new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
+	public static final RegistryObject<Item> upgrade_range = ITEMS.register("upgrade_range", () -> new Item(new Item.Properties()));
+	public static final RegistryObject<Item> upgrade_color = ITEMS.register("upgrade_color", () -> new Item(new Item.Properties()));
+	public static final RegistryObject<Item> upgrade_touch = ITEMS.register("upgrade_touch", () -> new Item(new Item.Properties()));
+	public static final RegistryObject<Item> upgrade_web = ITEMS.register("upgrade_web", () -> new Item(new Item.Properties()));
 	public static final RegistryObject<Item> portable_panel = ITEMS.register("portable_panel", () -> new ItemPortablePanel());
-	public static final RegistryObject<Item> machine_casing = ITEMS.register("machine_casing", () -> new Item(new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
-	public static final RegistryObject<Item> basic_circuit = ITEMS.register("basic_circuit", () -> new Item(new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
-	public static final RegistryObject<Item> advanced_circuit = ITEMS.register("advanced_circuit", () -> new Item(new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
-	public static final RegistryObject<Item> radio_transmitter = ITEMS.register("radio_transmitter", () -> new Item(new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
-	public static final RegistryObject<Item> strong_string = ITEMS.register("strong_string", () -> new Item(new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
+	public static final RegistryObject<Item> machine_casing = ITEMS.register("machine_casing", () -> new Item(new Item.Properties()));
+	public static final RegistryObject<Item> basic_circuit = ITEMS.register("basic_circuit", () -> new Item(new Item.Properties()));
+	public static final RegistryObject<Item> advanced_circuit = ITEMS.register("advanced_circuit", () -> new Item(new Item.Properties()));
+	public static final RegistryObject<Item> radio_transmitter = ITEMS.register("radio_transmitter", () -> new Item(new Item.Properties()));
+	public static final RegistryObject<Item> strong_string = ITEMS.register("strong_string", () -> new Item(new Item.Properties()));
 
 	public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, EnergyControl.MODID);
 	public static final RegistryObject<ArrayRecipeSerializer> ARRAY_SERIALIZER = RECIPE_SERIALIZERS.register("array", () -> new ArrayRecipeSerializer());

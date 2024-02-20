@@ -36,11 +36,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
-public class TileEntityKitAssembler extends TileEntityItemHandler implements MenuProvider, ITilePacketHandler, ISlotItemFilter {
+public class TileEntityKitAssembler extends TileEntityItemHandler implements MenuProvider, ITilePacketHandler, ISlotItemFilter, IEnergyBlockEntity {
 	public static final byte SLOT_INFO = 0;
 	public static final byte SLOT_CARD1 = 1;
 	public static final byte SLOT_ITEM = 2;
@@ -265,7 +265,7 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 	}
 
 	private IEnergyStorage getStackEnergyStorage(ItemStack stack) {
-		LazyOptional<IEnergyStorage> cap = stack.getCapability(CapabilityEnergy.ENERGY);
+		LazyOptional<IEnergyStorage> cap = stack.getCapability(ForgeCapabilities.ENERGY);
 		if(cap.isPresent())
 			return cap.orElseThrow(NullPointerException::new);
 		return null;
@@ -357,7 +357,7 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 		}
 	}
 
-	// IEnergySink
+	// IEnergyBlockEntity
 	public boolean canAcceptEnergy(Direction side) {
 		return side != getFacing();
 	}
@@ -382,9 +382,32 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 	}
 
 	@Override
+	public boolean canEmitEnergy(Direction side) {
+		return false;
+	}
+
+	@Override
+	public void consumeEnergy(int amount) { }
+
+	@Override
+	public int getMaxEnergyOutput() {
+		return 0;
+	}
+
+	@Override
+	public int getProvidedEnergy() {
+		return 0;
+	}
+
+	@Override
+	public int getSourceTier() {
+		return 0;
+	}
+
+	@Override
 	@Nonnull
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-		if (cap == CapabilityEnergy.ENERGY)
+		if (cap == ForgeCapabilities.ENERGY)
 			return LazyOptional.of(() -> this.storage).cast();
 		return super.getCapability(cap, side);
 	}

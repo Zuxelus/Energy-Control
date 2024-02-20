@@ -1,5 +1,7 @@
 package com.zuxelus.energycontrol.renderers;
 
+import org.joml.Matrix4f;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -7,8 +9,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.tileentities.TileEntityRemoteThermalMonitor;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
@@ -54,8 +55,8 @@ public class TERemoteThermalMonitorRenderer implements BlockEntityRenderer<TileE
 
 		VertexConsumer vertexBuilder = buffer.getBuffer(RenderType.entitySolid(TEXTURE));
 		CubeRenderer.MODEL.render(matrixStack, vertexBuilder, TileEntityInfoPanelRenderer.getBlockLight(te), combinedOverlay);
-		matrixStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
-		matrixStack.mulPose(Vector3f.ZP.rotationDegrees(180.0F));
+		matrixStack.mulPose(Axis.YP.rotationDegrees(180.0F));
+		matrixStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
 		matrixStack.translate(0.0F, -0.5F, 0.001F);
 
 		int status = te.getStatus();
@@ -81,13 +82,13 @@ public class TERemoteThermalMonitorRenderer implements BlockEntityRenderer<TileE
 			tessellator.end();
 		}
 
-		matrixStack.mulPose(Vector3f.XP.rotationDegrees(180.0F));
-		matrixStack.mulPose(Vector3f.ZP.rotationDegrees(180.0F));
+		matrixStack.mulPose(Axis.XP.rotationDegrees(180.0F));
+		matrixStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
 		matrixStack.translate(-0.5F, -0.125F, 0.0F);
 		matrixStack.scale(0.015625F, 0.015625F, 0.015625F);
 
 		String text = Integer.toString(level);
-		font.drawInBatch(text, -font.width(text) / 2, -font.lineHeight, 0x000000, false, matrixStack.last().pose(), buffer, false, 0, combinedLight);
+		//font.drawInBatch(text, -font.width(text) / 2, -font.lineHeight, 0x000000, false, matrixStack.last().pose(), buffer, false, 0, combinedLight);
 		matrixStack.popPose();
 	}
 

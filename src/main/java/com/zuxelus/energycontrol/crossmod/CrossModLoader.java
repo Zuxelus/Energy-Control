@@ -22,12 +22,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.RegisterEvent;
 
@@ -35,12 +33,12 @@ public class CrossModLoader {
 	private static final Map<String, CrossModBase> CROSS_MODS = new HashMap<>();
 
 	public static void init() {
-		loadCrossMod(ModIDs.ADV_GENERATORS, CrossAdvGenerators::new);
-		loadCrossMod(ModIDs.APPLIED_ENERGISTICS, CrossAppEng::new);
+		//loadCrossMod(ModIDs.ADV_GENERATORS, CrossAdvGenerators::new);
+		//loadCrossMod(ModIDs.APPLIED_ENERGISTICS, CrossAppEng::new);
 		loadCrossMod(ModIDs.BIG_REACTORS, CrossBigReactors::new);
 		//loadCrossMod(ModIDs.BIGGER_REACTORS, CrossBiggerReactors::new);
 		loadCrossModSafely(ModIDs.COMPUTER_CRAFT, () -> CrossComputerCraft::new);
-		loadCrossModSafely(ModIDs.IC2, () -> CrossIC2Classic::new);
+		//loadCrossModSafely(ModIDs.IC2, () -> CrossIC2Classic::new);
 		loadCrossModSafely(ModIDs.MEKANISM, () -> CrossMekanism::new);
 		loadCrossModSafely(ModIDs.MEKANISM_GENERATORS, () -> CrossMekanismGenerators::new);
 		//loadCrossMod(ModIDs.IMMERSIVE_ENGINEERING, CrossImmersiveEngineering::new);
@@ -79,7 +77,7 @@ public class CrossModLoader {
 			if (tag != null)
 				return tag;
 		}
-		Optional<IEnergyStorage> cap = te.getCapability(CapabilityEnergy.ENERGY).resolve();
+		Optional<IEnergyStorage> cap = te.getCapability(ForgeCapabilities.ENERGY).resolve();
 		if (cap.isPresent()) {
 			IEnergyStorage handler = cap.get();
 			CompoundTag tag = new CompoundTag();
@@ -100,7 +98,7 @@ public class CrossModLoader {
 			if (list != null)
 				return list;
 		}
-		Optional<IFluidHandler> fluid = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null).resolve();
+		Optional<IFluidHandler> fluid = te.getCapability(ForgeCapabilities.FLUID_HANDLER, null).resolve();
 		if (fluid.isPresent()) {
 			IFluidHandler handler = fluid.get();
 			List<FluidInfo> result = new ArrayList<>();
@@ -131,7 +129,7 @@ public class CrossModLoader {
 			if (tag != null)
 				return tag;
 		}
-		Optional<IItemHandler> handler = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).resolve();
+		Optional<IItemHandler> handler = te.getCapability(ForgeCapabilities.ITEM_HANDLER, null).resolve();
 		if (!handler.isPresent() && !(te instanceof Container))
 			return null;
 		CompoundTag tag = new CompoundTag();

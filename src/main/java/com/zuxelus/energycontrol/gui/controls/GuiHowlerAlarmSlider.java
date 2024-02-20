@@ -1,7 +1,5 @@
 package com.zuxelus.energycontrol.gui.controls;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.network.NetworkHelper;
@@ -9,9 +7,9 @@ import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -49,7 +47,7 @@ public class GuiHowlerAlarmSlider extends AbstractButton {
 
 	@SuppressWarnings("resource")
 	private void setSliderPos(double targetX) {
-		sliderValue = (float) (targetX - (x + 4)) / (float) (width - 8);
+		sliderValue = (float) (targetX - (getX() + 4)) / (float) (width - 8);
 		
 		if (sliderValue < 0.0F)
 			sliderValue = 0.0F;
@@ -66,19 +64,16 @@ public class GuiHowlerAlarmSlider extends AbstractButton {
 	}
 
 	@Override
-	public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void renderWidget(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (!visible)
 			return;
-		Minecraft minecraft = Minecraft.getInstance();
-		Font fontRenderer = minecraft.font;
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderTexture(0, TEXTURE);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		if (dragging)
 			setSliderPos(mouseX);
 
-		blit(matrixStack, x + (int) (sliderValue * (width - 8)), y, 131, 0, 8, 16);
-		fontRenderer.draw(matrixStack, getMessage(), x, y - 12, 0x404040);
+		matrixStack.blit(TEXTURE, getX() + (int) (sliderValue * (width - 8)), getY(), 131, 0, 8, 16);
+		Minecraft minecraft = Minecraft.getInstance();
+		Font fontRenderer = minecraft.font;
+		matrixStack.drawString(fontRenderer, getMessage(), getX(), getY() - 12, 0x404040, false);
 	}
 
 	@Override
@@ -96,7 +91,7 @@ public class GuiHowlerAlarmSlider extends AbstractButton {
 	}
 
 	@Override
-	public void updateNarration(NarrationElementOutput output) {
+	protected void updateWidgetNarration(NarrationElementOutput output) {
 		// TODO Auto-generated method stub
 	}
 }

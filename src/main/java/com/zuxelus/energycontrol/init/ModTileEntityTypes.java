@@ -33,10 +33,10 @@ public class ModTileEntityTypes {
 		BlockEntityType.Builder.of(TileEntityHoloPanel::new, ModItems.holo_panel.get()).build(null));
 	public static final RegistryObject<BlockEntityType<TileEntityHoloPanelExtender>> holo_panel_extender = TILE_ENTITY_TYPES.register("holo_panel_extender", () ->
 		BlockEntityType.Builder.of(TileEntityHoloPanelExtender::new, ModItems.holo_panel_extender.get()).build(null));
-	//public static final RegistryObject<BlockEntityType<TileEntityAverageCounter>> average_counter = TILE_ENTITY_TYPES.register("average_counter", () ->
-	//	BlockEntityType.Builder.of(TileEntityAverageCounter::new, ModItems.average_counter.get()).build(null));
-	//public static final RegistryObject<BlockEntityType<TileEntityEnergyCounter>> energy_counter = TILE_ENTITY_TYPES.register("energy_counter", () ->
-	//	BlockEntityType.Builder.of(TileEntityEnergyCounter::new, ModItems.energy_counter.get()).build(null));
+	/*public static final RegistryObject<BlockEntityType<TileEntityAverageCounter>> average_counter = TILE_ENTITY_TYPES.register("average_counter", () ->
+		BlockEntityType.Builder.of(TileEntityAverageCounter::new, ModItems.average_counter.get()).build(null));
+	public static final RegistryObject<BlockEntityType<TileEntityEnergyCounter>> energy_counter = TILE_ENTITY_TYPES.register("energy_counter", () ->
+		BlockEntityType.Builder.of(TileEntityEnergyCounter::new, ModItems.energy_counter.get()).build(null));*/
 	public static final RegistryObject<BlockEntityType<TileEntityKitAssembler>> kit_assembler = TILE_ENTITY_TYPES.register("kit_assembler", () ->
 		BlockEntityType.Builder.of(TileEntityKitAssembler::new, ModItems.kit_assembler.get()).build(null));
 	public static final RegistryObject<BlockEntityType<TileEntityTimer>> timer = TILE_ENTITY_TYPES.register("timer", () ->

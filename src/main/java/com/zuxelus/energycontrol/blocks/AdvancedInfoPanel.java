@@ -19,7 +19,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -28,7 +27,7 @@ import net.minecraftforge.network.NetworkHooks;
 public class AdvancedInfoPanel extends InfoPanel {
 
 	public AdvancedInfoPanel() {
-		super(Block.Properties.of(Material.METAL).strength(1.0F, 3.0F).sound(SoundType.METAL).dynamicShape().noOcclusion());
+		super(Block.Properties.of().strength(1.0F, 3.0F).sound(SoundType.METAL).dynamicShape().noOcclusion());
 	}
 
 	@Override

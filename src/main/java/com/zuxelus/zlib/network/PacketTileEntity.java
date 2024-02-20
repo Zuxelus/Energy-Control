@@ -28,9 +28,9 @@ public class PacketTileEntity {
 		ctx.enqueueWork(() -> {
 			if (ctx.getDirection().getReceptionSide() == LogicalSide.SERVER) {
 				ServerPlayer player = ctx.getSender();
-				if (player == null || player.level == null)
+				if (player == null || player.level() == null)
 					return;
-				BlockEntity te = player.level.getBlockEntity(message.pos);
+				BlockEntity te = player.level().getBlockEntity(message.pos);
 				if (!(te instanceof ITilePacketHandler))
 					return;
 				((ITilePacketHandler) te).onServerMessageReceived(message.tag);

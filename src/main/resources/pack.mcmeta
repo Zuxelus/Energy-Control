@@ -1,8 +1,8 @@
 {
-    "pack": {
-        "description": "Resources used for Energy Control",
-        "pack_format": 9,
-        "forge:resource_pack_format": 9,
-        "forge:data_pack_format": 10
-    }
+  "pack": {
+    "description": {
+      "text": "Energy Control resources"
+    },
+    "pack_format": 15
+  }
 }

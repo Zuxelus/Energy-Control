@@ -13,6 +13,7 @@ import com.zuxelus.energycontrol.items.cards.ItemCardText;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.gui.controls.GuiButtonGeneral;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.CommonComponents;
@@ -45,7 +46,7 @@ public class GuiInfoPanel extends GuiPanelBase<ContainerInfoPanel> {
 
 	protected void initControls() {
 		ItemStack stack = panel.getCards().get(activeTab);
-		if (ItemStack.isSame(stack, oldStack) && panel.isColoredEval() == isColored)
+		if (ItemStack.isSameItem(stack, oldStack) && panel.isColoredEval() == isColored)
 			return;
 		if (!oldStack.isEmpty() && stack.isEmpty())
 			updateTitle();
@@ -67,7 +68,7 @@ public class GuiInfoPanel extends GuiPanelBase<ContainerInfoPanel> {
 				}
 			if (!modified) {
 				textboxTitle = new EditBox(font, leftPos + 7, topPos + 16, 162, 18, null, CommonComponents.EMPTY);
-				textboxTitle.changeFocus(true);
+				//textboxTitle.changeFocus(true);
 				textboxTitle.setValue(new ItemCardReader(stack).getTitle());
 				addWidget(textboxTitle);
 				setInitialFocus(textboxTitle);
@@ -79,9 +80,9 @@ public class GuiInfoPanel extends GuiPanelBase<ContainerInfoPanel> {
 	}
 
 	@Override
-	protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+	protected void renderBg(GuiGraphics matrixStack, float partialTicks, int mouseX, int mouseY) {
 		super.renderBg(matrixStack, partialTicks, mouseX, mouseY);
 		if (textboxTitle != null)
-			textboxTitle.renderButton(matrixStack, mouseX, mouseY, partialTicks);
+			textboxTitle.renderWidget(matrixStack, mouseX, mouseY, partialTicks);
 	}
 }

@@ -136,7 +136,7 @@ public class ItemCardAppEngInv extends ItemCardMain implements ITouchAction {
 		}
 		ArrayList<ItemStack> stacks = reader.getItemStackList(true);
 		for (ItemStack stack : stacks)
-			if (stack.sameItem(current))
+			if (ItemStack.isSameItem(stack, current))
 				return false;
 		ItemStack item = current.copy();
 		item.setCount(1);

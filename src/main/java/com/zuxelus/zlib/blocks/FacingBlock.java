@@ -22,14 +22,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.material.Material;
 
 public abstract class FacingBlock extends BaseEntityBlock {
 	public static final DirectionProperty FACING = BlockStateProperties.FACING;
 	protected Direction rotation;
 
 	public FacingBlock() {
-		super(Block.Properties.of(Material.METAL).strength(1.0F, 3.0F).sound(SoundType.METAL));
+		super(Block.Properties.of().strength(1.0F, 3.0F).sound(SoundType.METAL));
 		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
 	}
 

@@ -4,13 +4,13 @@ import java.awt.Color;
 import java.util.ArrayList;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.gui.GuiBase;
 import com.zuxelus.zlib.gui.controls.GuiTextNumeric;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.CommonComponents;
@@ -81,27 +81,25 @@ public class GuiScreenColor extends GuiBase {
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(PoseStack matrixStack, int mouseX, int mouseY) {
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderTexture(0, texture);
+	protected void drawGuiContainerForegroundLayer(GuiGraphics matrixStack, int mouseX, int mouseY) {
+		//RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		//RenderSystem.setShaderTexture(0, texture);
 		//blit(matrixStack, 158 + (colorBack % 4) * 14, 21 + (colorBack / 4) * 14, 234, 0, 14, 14);
-		font.draw(matrixStack, I18n.get("msg.ec.ScreenColor"), 152, 6, colorBack);
-		font.draw(matrixStack, I18n.get("msg.ec.TextColor"), 8, 6, colorText);
+		matrixStack.drawString(font, I18n.get("msg.ec.ScreenColor"), 152, 6, colorBack, false);
+		matrixStack.drawString(font, I18n.get("msg.ec.TextColor"), 8, 6, colorText, false);
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+	protected void drawGuiContainerBackgroundLayer(GuiGraphics matrixStack, float partialTicks, int mouseX, int mouseY) {
 		super.drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderTexture(0, PICKER);;
-		blit(matrixStack, guiLeft + 20, guiTop + 34, isDarkPicker ? 80 : 0, 0, 80, 80, 160, 80);
-		blit(matrixStack, guiLeft + 20 + offset, guiTop + 34, isDarkPicker2 ? 80 : 0, 0, 80, 80, 160, 80);
+		matrixStack.blit(PICKER, guiLeft + 20, guiTop + 34, isDarkPicker ? 80 : 0, 0, 80, 80, 160, 80);
+		matrixStack.blit(PICKER, guiLeft + 20 + offset, guiTop + 34, isDarkPicker2 ? 80 : 0, 0, 80, 80, 160, 80);
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderTexture(0, texture);
 		for (GuiTextNumeric text : fieldList)
-			text.renderButton(matrixStack, mouseX, mouseY, partialTicks);
+			text.renderWidget(matrixStack, mouseX, mouseY, partialTicks);
 		for (GuiTextNumeric text : fieldList2)
-			text.renderButton(matrixStack, mouseX, mouseY, partialTicks);
+			text.renderWidget(matrixStack, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
@@ -231,23 +229,23 @@ public class GuiScreenColor extends GuiBase {
 		}
 		if (keyCode == 258) {
 			if (fieldList.get(0).isFocused()) {
-				fieldList.get(0).setFocus(false);
-				fieldList.get(1).setFocus(true);
+				fieldList.get(0).setFocused(false);
+				fieldList.get(1).setFocused(true);
 			} else if (fieldList.get(1).isFocused()) {
-				fieldList.get(1).setFocus(false);
-				fieldList.get(2).setFocus(true);
+				fieldList.get(1).setFocused(false);
+				fieldList.get(2).setFocused(true);
 			} else if (fieldList.get(2).isFocused()) {
-				fieldList.get(2).setFocus(false);
-				fieldList2.get(0).setFocus(true);
+				fieldList.get(2).setFocused(false);
+				fieldList2.get(0).setFocused(true);
 			} else if (fieldList2.get(0).isFocused()) {
-				fieldList2.get(0).setFocus(false);
-				fieldList2.get(1).setFocus(true);
+				fieldList2.get(0).setFocused(false);
+				fieldList2.get(1).setFocused(true);
 			} else if (fieldList2.get(1).isFocused()) {
-				fieldList2.get(1).setFocus(false);
-				fieldList2.get(2).setFocus(true);
+				fieldList2.get(1).setFocused(false);
+				fieldList2.get(2).setFocused(true);
 			} else if (fieldList2.get(2).isFocused()) {
-				fieldList2.get(2).setFocus(false);
-				fieldList.get(0).setFocus(true);
+				fieldList2.get(2).setFocused(false);
+				fieldList.get(0).setFocused(true);
 			}
 			return true;
 		} else {

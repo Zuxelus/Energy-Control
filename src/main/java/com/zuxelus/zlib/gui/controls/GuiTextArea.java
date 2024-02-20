@@ -1,17 +1,11 @@
 package com.zuxelus.zlib.gui.controls;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
-
 import net.minecraft.SharedConstants;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
@@ -42,25 +36,24 @@ public class GuiTextArea extends AbstractWidget {
 	}
 
 	@Override
-	public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-		fill(matrixStack, x - 1, y - 1, x + width + 1, y + height + 1, 0xFFA0A0A0);
-		fill(matrixStack, x, y, x + width, y + height, 0xFF000000);
+	public void renderWidget(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
+		matrixStack.fill(getX() - 1, getY() - 1, getX() + width + 1, getY() + height + 1, 0xFFA0A0A0);
+		matrixStack.fill(getX(), getY(), getX() + width, getY() + height, 0xFF000000);
 		int textColor = 0xE0E0E0;
 
-		int textLeft = x + 4;
-		int textTop = y + (height - lineCount * (fontRenderer.lineHeight + 1)) / 2;
+		int textLeft = getX() + 4;
+		int textTop = getY() + (height - lineCount * (fontRenderer.lineHeight + 1)) / 2;
 
 		for (int i = 0; i < lineCount; i++)
-			fontRenderer.drawShadow(matrixStack, text[i], textLeft, textTop + (fontRenderer.lineHeight + 1) * i, textColor);
-		textTop += (fontRenderer.lineHeight + 1) * cursorLine;
+			matrixStack.drawString(fontRenderer, text[i], textLeft, textTop + (fontRenderer.lineHeight + 1) * i, textColor);
 		int cursorPositionX = textLeft + fontRenderer.width(text[cursorLine].substring(0, Math.min(text[cursorLine].length(), cursorPosition))) - 1;
 		boolean drawCursor = isFocused() && cursorCounter / 6 % 2 == 0;
 		if (drawCursor)
-			drawCursorVertical(cursorPositionX, textTop - 1, cursorPositionX + 1, textTop + 1 + fontRenderer.lineHeight);
+			drawCursorVertical(matrixStack, cursorPositionX, textTop - 1, cursorPositionX + 1, textTop + 1 + fontRenderer.lineHeight);
 	}
 
-	// Copy of TextFieldWidget.renderHighlight
-	private void drawCursorVertical(int left, int top, int right, int bottom) {
+	// Copy of EditBox.renderHighlight
+	private void drawCursorVertical(GuiGraphics matrixStack, int left, int top, int right, int bottom) {
 		if (left < right) {
 			int i = left;
 			left = right;
@@ -73,20 +66,7 @@ public class GuiTextArea extends AbstractWidget {
 			bottom = j;
 		}
 
-		Tesselator tesselator = Tesselator.getInstance();
-		BufferBuilder bufferbuilder = tesselator.getBuilder();
-		RenderSystem.setShaderColor(0.0F, 0.0F, 255.0F, 255.0F);
-		RenderSystem.disableTexture();
-		RenderSystem.enableColorLogicOp();
-		RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-		bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
-		bufferbuilder.vertex(left, bottom, 0.0D).endVertex();
-		bufferbuilder.vertex(right, bottom, 0.0D).endVertex();
-		bufferbuilder.vertex(right, top, 0.0D).endVertex();
-		bufferbuilder.vertex(left, top, 0.0D).endVertex();
-		tesselator.end();
-		RenderSystem.disableColorLogicOp();
-		RenderSystem.enableTexture();
+		matrixStack.fill(RenderType.guiTextHighlight(), left, top, right, bottom, -16776961); // TODO color
 	}
 
 	public void updateCursorCounter() {
@@ -160,10 +140,10 @@ public class GuiTextArea extends AbstractWidget {
 
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
-		boolean flag = mouseX >= x && mouseX < (x + width) && mouseY >= y && mouseY < (y + height);
+		boolean flag = mouseX >= getX() && mouseX < (getX() + width) && mouseY >= getY() && mouseY < (getY() + height);
 		if (isFocused() && flag && mouseButton == 0) {
-			int xi = Mth.floor(mouseX) - x;
-			int yi = Mth.floor(mouseY) - y;
+			int xi = Mth.floor(mouseX) - getX();
+			int yi = Mth.floor(mouseY) - getY();
 			setCursorPosition(fontRenderer.plainSubstrByWidth(text[(yi - 4) / 10], xi).length(), (yi - 4) / 10);
 			return true;
 		}
@@ -220,8 +200,5 @@ public class GuiTextArea extends AbstractWidget {
 	}
 
 	@Override
-	public void updateNarration(NarrationElementOutput p_169152_) {
-		// TODO Auto-generated method stub
-		
-	}
+	protected void updateWidgetNarration(NarrationElementOutput output) { }
 }

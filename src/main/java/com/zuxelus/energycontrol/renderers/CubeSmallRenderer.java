@@ -1,10 +1,12 @@
 package com.zuxelus.energycontrol.renderers;
 
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.zuxelus.energycontrol.renderers.CubeRenderer.PositionTextureVertex;
 import com.zuxelus.energycontrol.renderers.CubeRenderer.TexturedQuad;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
@@ -71,44 +73,44 @@ public class CubeSmallRenderer {
 		if (rotation == null)
 			rotation = Direction.NORTH;
 
-		matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90)); // x, y, z -> x, z, y
+		matrixStack.mulPose(Axis.XP.rotationDegrees(-90)); // x, y, z -> x, z, y
 
 		switch (facing) {
 		case UP:
-			matrixStack.mulPose(Vector3f.XP.rotationDegrees(90));
+			matrixStack.mulPose(Axis.XP.rotationDegrees(90));
 			switch (rotation) {
 			case NORTH:
 				break;
 			case SOUTH:
-				matrixStack.mulPose(Vector3f.YP.rotationDegrees(180));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(180));
 				matrixStack.translate(-1.0F, 0.0F, -1.0F);
 				break;
 			case WEST:
-				matrixStack.mulPose(Vector3f.YP.rotationDegrees(90));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(90));
 				matrixStack.translate(-1.0F, 0.0F, 0.0F);
 				break;
 			case EAST:
-				matrixStack.mulPose(Vector3f.YP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(-90));
 				matrixStack.translate(0.0F, 0.0F, -1.0F);
 				break;
 			}
 			break;
 		case DOWN:
-			matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
+			matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
 			switch (rotation) {
 			case NORTH:
-				matrixStack.mulPose(Vector3f.YP.rotationDegrees(180));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(180));
 				matrixStack.translate(-1.0F, -1.0F, 0.0F);
 				break;
 			case SOUTH:
 				matrixStack.translate(0.0F, -1.0F, -1.0F);
 				break;
 			case WEST:
-				matrixStack.mulPose(Vector3f.YP.rotationDegrees(90));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(90));
 				matrixStack.translate(0.0F, -1.0F, 0.0F);
 				break;
 			case EAST:
-				matrixStack.mulPose(Vector3f.YP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(-90));
 				matrixStack.translate(-1.0F, -1.0F, -1.0F);
 				break;
 			}
@@ -117,15 +119,15 @@ public class CubeSmallRenderer {
 			matrixStack.translate(0.0F, -1.0F, 0.0F);
 			break;
 		case SOUTH:
-			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(180)); // x, z, y
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(180)); // x, z, y
 			matrixStack.translate(-1.0F, 0.0F, 0.0F);
 			break;
 		case WEST:
-			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(90)); // x, z, y
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(90)); // x, z, y
 			matrixStack.translate(-1.0F, -1.0F, 0.0F);
 			break;
 		case EAST:
-			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-90)); // x, z, y
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(-90)); // x, z, y
 			break;
 		}
 	}

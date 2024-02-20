@@ -5,6 +5,7 @@ import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
 import com.zuxelus.zlib.recipes.EmptyInventory;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -48,7 +49,7 @@ public class KitAssemblerRecipe implements Recipe<EmptyInventory>{
 			return false;
 		ItemStack result = te.getItem(TileEntityKitAssembler.SLOT_RESULT);
 		if (!result.isEmpty()) {
-			if (!result.sameItem(output))
+			if (!ItemStack.isSameItem(result, output))
 				return false;
 			if (result.getCount() + output.getCount() > result.getMaxStackSize())
 				return false;
@@ -67,7 +68,7 @@ public class KitAssemblerRecipe implements Recipe<EmptyInventory>{
 	}
 
 	@Override
-	public ItemStack assemble(EmptyInventory inv) {
+	public ItemStack assemble(EmptyInventory inv, RegistryAccess registryAccess) {
 		return output;
 	}
 
@@ -77,7 +78,7 @@ public class KitAssemblerRecipe implements Recipe<EmptyInventory>{
 	}
 
 	@Override
-	public ItemStack getResultItem() {
+	public ItemStack getResultItem(RegistryAccess registryAccess) {
 		return ItemStack.EMPTY;
 	}
 

@@ -3,12 +3,14 @@ package com.zuxelus.energycontrol.renderers;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
-import com.mojang.math.Vector4f;
+import com.mojang.math.Axis;
 
 import net.minecraft.core.Direction;
 import net.minecraftforge.api.distmarker.Dist;
@@ -85,16 +87,15 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 		}
 
 		public void draw(Matrix3f matrix3f, Matrix4f matrix4f, VertexConsumer buffer, int light, int combinedOverlay, float red, float green, float blue, float alpha) {
-			Vector3f vector3f = normal.copy();
-			vector3f.transform(matrix3f);
+			Vector3f vector3f = matrix3f.transform(new Vector3f(normal));
+
 			float f = vector3f.x();
 			float g = vector3f.y();
 			float h = vector3f.z();
 
 			for (int i = 0; i < 4; ++i) {
 				PositionTextureVertex vertex = vertexPositions[i];
-				Vector4f vector4f = new Vector4f(vertex.position.x() / 16.0F, vertex.position.y() / 16.0F, vertex.position.z() / 16.0F, 1.0F);
-				vector4f.transform(matrix4f);
+				Vector4f vector4f = matrix4f.transform(new Vector4f(vertex.position.x() / 16.0F, vertex.position.y() / 16.0F, vertex.position.z() / 16.0F, 1.0F));
 				buffer.vertex(vector4f.x(), vector4f.y(), vector4f.z(), red, green, blue, alpha, vertex.textureU, vertex.textureV, combinedOverlay, light, f, g, h);
 			}
 		}
@@ -176,22 +177,22 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 		case UP:
 			switch(rotation) {
 			case NORTH:
-				matrixStack.mulPose(Vector3f.XP.rotationDegrees(90));
+				matrixStack.mulPose(Axis.XP.rotationDegrees(90));
 				matrixStack.translate(0.0F, 0.0F, -1.0F);
 				break;
 			case SOUTH:
-				matrixStack.mulPose(Vector3f.XP.rotationDegrees(90));
-				matrixStack.mulPose(Vector3f.ZP.rotationDegrees(180));
+				matrixStack.mulPose(Axis.XP.rotationDegrees(90));
+				matrixStack.mulPose(Axis.ZP.rotationDegrees(180));
 				matrixStack.translate(-1.0F, -1.0F, -1.0F);
 				break;
 			case WEST:
-				matrixStack.mulPose(Vector3f.XP.rotationDegrees(90));
-				matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.XP.rotationDegrees(90));
+				matrixStack.mulPose(Axis.ZP.rotationDegrees(-90));
 				matrixStack.translate(-1.0F, 0.0F, -1.0F);
 				break;
 			case EAST:
-				matrixStack.mulPose(Vector3f.XP.rotationDegrees(90));
-				matrixStack.mulPose(Vector3f.ZP.rotationDegrees(90));
+				matrixStack.mulPose(Axis.XP.rotationDegrees(90));
+				matrixStack.mulPose(Axis.ZP.rotationDegrees(90));
 				matrixStack.translate(0.0F, -1.0F, -1.0F);
 				break;
 			}
@@ -199,22 +200,22 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 		case DOWN:
 			switch(rotation) {
 			case NORTH:
-				matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
-				matrixStack.mulPose(Vector3f.ZP.rotationDegrees(180));
+				matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.ZP.rotationDegrees(180));
 				matrixStack.translate(-1.0F, 0.0F, 0.0F);
 				break;
 			case SOUTH:
-				matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
 				matrixStack.translate(0.0F, -1.0F, 0.0F);
 				break;
 			case WEST:
-				matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
-				matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.ZP.rotationDegrees(-90));
 				matrixStack.translate(0.0F, 0.0F, 0.0F);
 				break;
 			case EAST:
-				matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
-				matrixStack.mulPose(Vector3f.ZP.rotationDegrees(90));
+				matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.ZP.rotationDegrees(90));
 				matrixStack.translate(-1.0F, -1.0F, 0.0F);
 				break;
 			}
@@ -222,15 +223,15 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 		case NORTH:
 			break;
 		case SOUTH:
-			matrixStack.mulPose(Vector3f.YP.rotationDegrees(180)); // 180 by Y
+			matrixStack.mulPose(Axis.YP.rotationDegrees(180)); // 180 by Y
 			matrixStack.translate(-1.0F, 0.0F, -1.0F);
 			break;
 		case WEST:
-			matrixStack.mulPose(Vector3f.YP.rotationDegrees(90));
+			matrixStack.mulPose(Axis.YP.rotationDegrees(90));
 			matrixStack.translate(-1.0F, 0.0F, 0.0F);
 			break;
 		case EAST:
-			matrixStack.mulPose(Vector3f.YP.rotationDegrees(-90));
+			matrixStack.mulPose(Axis.YP.rotationDegrees(-90));
 			matrixStack.translate(0.0F, 0.0F, -1.0F);
 			break;
 		}
@@ -244,22 +245,22 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 		case UP:
 			switch(rotation) {
 			case NORTH:
-				matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
 				matrixStack.translate(0.0F, -1.0F, 1.0F);
 				break;
 			case SOUTH:
-				matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
-				matrixStack.mulPose(Vector3f.YP.rotationDegrees(180));
+				matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(180));
 				matrixStack.translate(-1.0F, -1.0F, 0.0F);
 				break;
 			case WEST:
-				matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
-				matrixStack.mulPose(Vector3f.YP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(-90));
 				matrixStack.translate(0.0F, -1.0F, 0.0F);
 				break;
 			case EAST:
-				matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
-				matrixStack.mulPose(Vector3f.YP.rotationDegrees(90));
+				matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(90));
 				matrixStack.translate(-1.0F, -1.0F, 1.0F);
 				break;
 			}
@@ -267,44 +268,44 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 		case DOWN:
 			switch(rotation) {
 			case NORTH:
-				matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
 				matrixStack.translate(0.0F, -1.0F, 0.0F);
 				break;
 			case SOUTH:
-				matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
-				matrixStack.mulPose(Vector3f.YP.rotationDegrees(180));
+				matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(180));
 				matrixStack.translate(-1.0F, -1.0F, -1.0F);
 				break;
 			case WEST:
-				matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
-				matrixStack.mulPose(Vector3f.YP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(-90));
 				matrixStack.translate(0.0F, -1.0F, -1.0F);
 				break;
 			case EAST:
-				matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
-				matrixStack.mulPose(Vector3f.YP.rotationDegrees(90));
+				matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(90));
 				matrixStack.translate(-1.0F, -1.0F, 0.0F);
 				break;
 			}
 			break;
 		case NORTH:
-			matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
-			matrixStack.mulPose(Vector3f.YP.rotationDegrees(180));
+			matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
+			matrixStack.mulPose(Axis.YP.rotationDegrees(180));
 			matrixStack.translate(-1.0F, -1.0F, 0.0F);
 			break;
 		case SOUTH:
-			matrixStack.mulPose(Vector3f.XP.rotationDegrees(90));
-			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(180));
+			matrixStack.mulPose(Axis.XP.rotationDegrees(90));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(180));
 			matrixStack.translate(-1.0F, -1.0F, 0.0F);
 			break;
 		case WEST:
-			matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
-			matrixStack.mulPose(Vector3f.YP.rotationDegrees(180));
+			matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
+			matrixStack.mulPose(Axis.YP.rotationDegrees(180));
 			matrixStack.translate(-1.0F, -1.0F, 0.0F);
 			break;
 		case EAST:
-			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(180));
-			matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(180));
+			matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
 			matrixStack.translate(-1.0F, -1.0F, 0.0F);
 			break;
 		}

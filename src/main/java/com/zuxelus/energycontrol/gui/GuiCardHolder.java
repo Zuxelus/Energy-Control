@@ -1,11 +1,9 @@
 package com.zuxelus.energycontrol.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.containers.ContainerCardHolder;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -28,24 +26,21 @@ public class GuiCardHolder extends AbstractContainerScreen<ContainerCardHolder> 
 	}
 
 	@Override
-	public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
 		renderBackground(matrixStack);
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
 		renderTooltip(matrixStack, mouseX, mouseY);
 	}
 
 	@Override
-	protected void renderLabels(PoseStack matrixStack, int x, int y) {
-		font.draw(matrixStack, name, 8, 6, 4210752);
-		font.draw(matrixStack, player.getInventory().getDisplayName(), 8, imageHeight - 96 + 2, 4210752);
+	protected void renderLabels(GuiGraphics matrixStack, int x, int y) {
+		matrixStack.drawString(font, name, 8, 6, 4210752, false);
+		matrixStack.drawString(font, player.getInventory().getDisplayName(), 8, imageHeight - 96 + 2, 4210752, false);
 	}
 
 	@Override
-	protected void renderBg(PoseStack matrixStack, float partialTicks, int x, int y) {
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderTexture(0, TEXTURE);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		blit(matrixStack, leftPos, topPos, 0, 0, imageWidth, inventoryRows * 18 + 17);
-		blit(matrixStack, leftPos, topPos + inventoryRows * 18 + 17, 0, 126, imageWidth, 96);
+	protected void renderBg(GuiGraphics matrixStack, float partialTicks, int x, int y) {
+		matrixStack.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, inventoryRows * 18 + 17);
+		matrixStack.blit(TEXTURE, leftPos, topPos + inventoryRows * 18 + 17, 0, 126, imageWidth, 96);
 	}
 }

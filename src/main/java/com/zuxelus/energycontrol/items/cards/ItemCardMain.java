@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.ServerTickHandler;
 import com.zuxelus.energycontrol.api.*;
 import com.zuxelus.energycontrol.config.ConfigHandler;
@@ -25,7 +24,7 @@ public abstract class ItemCardMain extends Item implements IItemCard {
 	public static final int LOCATION_RANGE = 8;
 
 	public ItemCardMain() {
-		super(new Item.Properties().tab(EnergyControl.ITEM_GROUP).stacksTo(1).setNoRepair());
+		super(new Item.Properties().stacksTo(1).setNoRepair());
 	}
 
 	public static boolean isCard(ItemStack stack) {

@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 public class SlotHandler {
 	private static final String BLOCK_ATLAS = "minecraft:textures/atlas/blocks.png";
 
-	@SubscribeEvent
+	/*@SubscribeEvent
 	public static void loadTextures(TextureStitchEvent.Pre event) {
 		if (!event.getAtlas().location().toString().equals(BLOCK_ATLAS)) {
 			return;
@@ -29,5 +29,5 @@ public class SlotHandler {
 
 	private static void registerTexture(TextureStitchEvent.Pre event, String texture) {
 		event.addSprite(new ResourceLocation(texture));
-	}
+	}*/
 }

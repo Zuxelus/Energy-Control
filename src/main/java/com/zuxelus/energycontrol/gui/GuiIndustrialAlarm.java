@@ -1,11 +1,11 @@
 package com.zuxelus.energycontrol.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.gui.controls.GuiHowlerAlarmSlider;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 import com.zuxelus.zlib.gui.GuiBase;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -27,7 +27,7 @@ public class GuiIndustrialAlarm extends GuiBase {
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(PoseStack matrixStack, int mouseX, int mouseY) {
+	protected void drawGuiContainerForegroundLayer(GuiGraphics matrixStack, int mouseX, int mouseY) {
 		drawTitle(matrixStack);
 	}
 }

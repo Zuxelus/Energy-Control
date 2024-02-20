@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
@@ -8,6 +7,7 @@ import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.gui.GuiBase;
 import com.zuxelus.zlib.gui.controls.GuiTextArea;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.CommonComponents;
@@ -39,8 +39,8 @@ public class GuiCardText extends GuiBase {
 	@Override
 	public void init() {
 		super.init();
-		addRenderableWidget(new Button(guiLeft + xSize - 60 - 8, guiTop + 120, 60, 20, CommonComponents.GUI_DONE, (button) -> { actionPerformed(1); }));
-		addRenderableWidget(new Button(guiLeft + 8, guiTop + 120, 60, 20, Component.literal("Style"), (button) -> { actionPerformed(2); }));
+		addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, (button) -> { actionPerformed(1); }).bounds(guiLeft + xSize - 60 - 8, guiTop + 120, 60, 20).build());
+		addRenderableWidget(Button.builder(Component.literal("Style"), (button) -> { actionPerformed(2); }).bounds(guiLeft + 8, guiTop + 120, 60, 20).build());
 		textArea = new GuiTextArea(font, guiLeft + 8, guiTop + 5, xSize - 16, ySize - 35, lineCount);
 		addWidget(textArea);
 		setInitialFocus(textArea);
@@ -50,7 +50,7 @@ public class GuiCardText extends GuiBase {
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+	protected void drawGuiContainerBackgroundLayer(GuiGraphics matrixStack, float partialTicks, int mouseX, int mouseY) {
 		super.drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
 		textArea.render(matrixStack, mouseY, mouseY, partialTicks);
 	}

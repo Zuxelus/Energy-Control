@@ -1,7 +1,5 @@
 package com.zuxelus.energycontrol.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
@@ -9,9 +7,9 @@ import com.zuxelus.zlib.gui.GuiBase;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraftforge.api.distmarker.Dist;
@@ -38,7 +36,7 @@ public class GuiHorizontalSlider extends GuiBase {
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(PoseStack matrixStack, int mouseX, int mouseY) {
+	protected void drawGuiContainerForegroundLayer(GuiGraphics matrixStack, int mouseX, int mouseY) {
 		drawTitle(matrixStack);
 	}
 
@@ -65,7 +63,7 @@ public class GuiHorizontalSlider extends GuiBase {
 
 		@SuppressWarnings("resource")
 		private void setSliderPos(int targetX) {
-			sliderValue = targetX - x + 2;
+			sliderValue = targetX - getX() + 2;
 
 			if (sliderValue < minValue)
 				sliderValue = minValue;
@@ -80,20 +78,17 @@ public class GuiHorizontalSlider extends GuiBase {
 		}
 
 		@Override
-		public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+		protected void renderWidget(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
 			if (!visible)
 				return;
-			Minecraft minecraft = Minecraft.getInstance();
-			Font fontRenderer = minecraft.font;
-			RenderSystem.setShader(GameRenderer::getPositionTexShader);
-			RenderSystem.setShaderTexture(0, texture);
-			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 			if (dragging)
 				setSliderPos(mouseX);
 
-			blit(matrixStack, x - 2 + sliderValue, y, 152, 0, 8, 16);
+			matrixStack.blit(texture, getX() - 2 + sliderValue, getY(), 152, 0, 8, 16);
 			FormattedCharSequence ireorderingprocessor = getMessage().getVisualOrderText();
-			fontRenderer.draw(matrixStack, ireorderingprocessor, x - 10 + (width - fontRenderer.width(ireorderingprocessor)) / 2, y - 12, 0x404040);
+			Minecraft minecraft = Minecraft.getInstance();
+			Font fontRenderer = minecraft.font;
+			matrixStack.drawString(fontRenderer, ireorderingprocessor, getX() - 10 + (width - fontRenderer.width(ireorderingprocessor)) / 2, getY() - 12, 0x404040, false);
 		}
 
 		@Override
@@ -110,8 +105,9 @@ public class GuiHorizontalSlider extends GuiBase {
 		}
 
 		@Override
-		public void updateNarration(NarrationElementOutput output) {
+		protected void updateWidgetNarration(NarrationElementOutput output) {
 			// TODO Auto-generated method stub
+			
 		}
 	}
 }

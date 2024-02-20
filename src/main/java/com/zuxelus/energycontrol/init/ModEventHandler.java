@@ -24,21 +24,21 @@ public class ModEventHandler {
 	}
 
 	public static void onItemRegistry(RegisterEvent.RegisterHelper<Item> event) {
-		event.register("white_lamp", new BlockItem(ModItems.white_lamp.get(), new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
-		event.register("orange_lamp", new BlockItem(ModItems.orange_lamp.get(), new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
-		event.register("howler_alarm", new BlockItem(ModItems.howler_alarm.get(), new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
-		event.register("industrial_alarm", new BlockItem(ModItems.industrial_alarm.get(), new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
-		event.register("thermal_monitor", new BlockItem(ModItems.thermal_monitor.get(), new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
-		event.register(TileEntityInfoPanel.NAME, new BlockItem(ModItems.info_panel.get(), new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
-		event.register("info_panel_extender", new BlockItem(ModItems.info_panel_extender.get(), new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
-		event.register(TileEntityAdvancedInfoPanel.NAME, new BlockItem(ModItems.info_panel_advanced.get(), new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
-		event.register("info_panel_advanced_extender", new BlockItem(ModItems.info_panel_advanced_extender.get(), new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
-		event.register("holo_panel", new BlockItem(ModItems.holo_panel.get(), new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
-		event.register("holo_panel_extender", new BlockItem(ModItems.holo_panel_extender.get(), new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
-		event.register("range_trigger", new BlockItem(ModItems.range_trigger.get(), new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
-		event.register("remote_thermo", new BlockItem(ModItems.remote_thermo.get(), new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
-		event.register("kit_assembler", new BlockItem(ModItems.kit_assembler.get(), new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
-		event.register("timer", new BlockItem(ModItems.timer.get(), new Item.Properties().tab(EnergyControl.ITEM_GROUP)));
+		event.register("white_lamp", new BlockItem(ModItems.white_lamp.get(), new Item.Properties()));
+		event.register("orange_lamp", new BlockItem(ModItems.orange_lamp.get(), new Item.Properties()));
+		event.register("howler_alarm", new BlockItem(ModItems.howler_alarm.get(), new Item.Properties()));
+		event.register("industrial_alarm", new BlockItem(ModItems.industrial_alarm.get(), new Item.Properties()));
+		event.register("thermal_monitor", new BlockItem(ModItems.thermal_monitor.get(), new Item.Properties()));
+		event.register(TileEntityInfoPanel.NAME, new BlockItem(ModItems.info_panel.get(), new Item.Properties()));
+		event.register("info_panel_extender", new BlockItem(ModItems.info_panel_extender.get(), new Item.Properties()));
+		event.register(TileEntityAdvancedInfoPanel.NAME, new BlockItem(ModItems.info_panel_advanced.get(), new Item.Properties()));
+		event.register("info_panel_advanced_extender", new BlockItem(ModItems.info_panel_advanced_extender.get(), new Item.Properties()));
+		event.register("holo_panel", new BlockItem(ModItems.holo_panel.get(), new Item.Properties()));
+		event.register("holo_panel_extender", new BlockItem(ModItems.holo_panel_extender.get(), new Item.Properties()));
+		event.register("range_trigger", new BlockItem(ModItems.range_trigger.get(), new Item.Properties()));
+		event.register("remote_thermo", new BlockItem(ModItems.remote_thermo.get(), new Item.Properties()));
+		event.register("kit_assembler", new BlockItem(ModItems.kit_assembler.get(), new Item.Properties()));
+		event.register("timer", new BlockItem(ModItems.timer.get(), new Item.Properties()));
 
 		CrossModLoader.registerItems(event);
 	}

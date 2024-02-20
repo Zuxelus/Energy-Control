@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.containers.ContainerRemoteThermalMonitor;
 import com.zuxelus.energycontrol.gui.controls.CompactButton;
@@ -9,6 +8,7 @@ import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityRemoteThermalMonitor;
 import com.zuxelus.zlib.gui.GuiContainerBase;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.resources.language.I18n;
@@ -53,10 +53,10 @@ public class GuiRemoteThermalMonitor extends GuiContainerBase<ContainerRemoteThe
 	}
 
 	@Override
-	public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
 		renderBackground(matrixStack);
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
-		textboxHeat.renderButton(matrixStack, mouseX, mouseY, partialTicks);
+		textboxHeat.renderWidget(matrixStack, mouseX, mouseY, partialTicks);
 		renderTooltip(matrixStack, mouseX, mouseY);
 	}
 
@@ -89,7 +89,7 @@ public class GuiRemoteThermalMonitor extends GuiContainerBase<ContainerRemoteThe
 	}
 
 	@Override
-	protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+	protected void renderLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
 		drawCenteredText(matrixStack, title, imageWidth, 6);
 		drawLeftAlignedText(matrixStack, I18n.get("container.inventory"), 8, (imageHeight - 96) + 2);
 	}

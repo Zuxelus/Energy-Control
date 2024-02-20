@@ -18,14 +18,13 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 
 public class InfoPanelExtender extends FacingBlockActive {
 
 	public InfoPanelExtender() {
-		super(Block.Properties.of(Material.METAL).strength(1.0F, 3.0F).sound(SoundType.METAL).lightLevel(state -> state.getValue(ACTIVE) ? 10 : 0));
+		super(Block.Properties.of().strength(1.0F, 3.0F).sound(SoundType.METAL).lightLevel(state -> state.getValue(ACTIVE) ? 10 : 0));
 	}
 
 	@Override

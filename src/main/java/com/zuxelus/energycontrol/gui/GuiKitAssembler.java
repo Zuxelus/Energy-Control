@@ -13,6 +13,7 @@ import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
 import com.zuxelus.zlib.gui.GuiContainerBase;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -35,7 +36,7 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 	}
 
 	@Override
-	public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
 		renderBackground(matrixStack);
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
 		Slot slot = container.getSlot(TileEntityKitAssembler.SLOT_INFO);
@@ -43,11 +44,11 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 			renderInfoToolTip(matrixStack, slot, mouseX, mouseY);
 		else
 			renderTooltip(matrixStack, mouseX, mouseY);
-		if (isHovering(165, 16, 4, 52, mouseX, mouseY))
-			renderTooltip(matrixStack, Component.literal(String.format("%d FE/%d FE", (int) container.te.getEnergy(), TileEntityKitAssembler.CAPACITY)), mouseX, mouseY);
+		/*if (isHovering(165, 16, 4, 52, mouseX, mouseY))
+			renderTooltip(matrixStack, Component.literal(String.format("%d FE/%d FE", (int) container.te.getEnergy(), TileEntityKitAssembler.CAPACITY)), mouseX, mouseY);*/
 	}
 
-	private void renderInfoToolTip(PoseStack matrixStack, Slot slot, int x, int y) {
+	private void renderInfoToolTip(GuiGraphics matrixStack, Slot slot, int x, int y) {
 		ItemStack stack = slot.getItem();
 		if (stack.isEmpty() || !(stack.getItem() instanceof ItemCardMain))
 			return;
@@ -61,23 +62,23 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 				if (panelString.textLeft != null)
 					list.add(Component.literal(ChatFormatting.GRAY + panelString.textLeft));
 			}
-		renderTooltip(matrixStack, list, stack.getTooltipImage(), x, y);
+		//renderTooltip(matrixStack, list, stack.getTooltipImage(), x, y);
 	}
 
 	@Override
-	protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+	protected void renderBg(GuiGraphics matrixStack, float partialTicks, int mouseX, int mouseY) {
 		super.renderBg(matrixStack, partialTicks, mouseX, mouseY);
 
 		int energyHeight = container.te.getEnergyFactor();
 		if (energyHeight > 0)
-			blit(matrixStack, leftPos + 165, topPos + 16 + (52 - energyHeight), 176, 17 + 52 - energyHeight, 4, energyHeight);
+			matrixStack.blit(texture, leftPos + 165, topPos + 16 + (52 - energyHeight), 176, 17 + 52 - energyHeight, 4, energyHeight);
 		int productionWidth = container.te.getProductionFactor();
 		if (productionWidth > 0)
-			blit(matrixStack, leftPos + 86, topPos + 35, 176, 0, productionWidth, 17);
+			matrixStack.blit(texture, leftPos + 86, topPos + 35, 176, 0, productionWidth, 17);
 	}
 
 	@Override
-	protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+	protected void renderLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
 		drawCenteredText(matrixStack, title, imageWidth, 6);
 	}
 }

@@ -1,13 +1,12 @@
 package com.zuxelus.energycontrol.gui.controls;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityRangeTrigger;
+
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -29,14 +28,11 @@ public class GuiRangeTriggerInvertRedstone extends AbstractButton {
 	}
 
 	@Override
-	public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void renderWidget(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (!visible)
 			return;
 
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderTexture(0, TEXTURE);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		blit(matrixStack, x, y + 1, 176, checked ? 15 : 0, 18, 15);
+		matrixStack.blit(TEXTURE, getX(), getY() + 1, 176, checked ? 15 : 0, 18, 15);
 	}
 
 	@Override
@@ -50,7 +46,7 @@ public class GuiRangeTriggerInvertRedstone extends AbstractButton {
 	}
 
 	@Override
-	public void updateNarration(NarrationElementOutput output) {
+	protected void updateWidgetNarration(NarrationElementOutput output) {
 		// TODO Auto-generated method stub
 	}
 }

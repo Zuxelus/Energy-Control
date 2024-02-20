@@ -57,9 +57,9 @@ public class PacketCard {
 			BlockEntity te = null;
 			if (ctx.getDirection().getReceptionSide() == LogicalSide.SERVER) {
 				ServerPlayer player = ctx.getSender();
-				if (player == null || player.level == null)
+				if (player == null || player.level() == null)
 					return;
-				te = player.level.getBlockEntity(message.pos);
+				te = player.level().getBlockEntity(message.pos);
 			} else {
 				@SuppressWarnings("resource")
 				ClientLevel world = Minecraft.getInstance().level;

@@ -1,7 +1,5 @@
 package com.zuxelus.energycontrol.items;
 
-import com.zuxelus.energycontrol.EnergyControl;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -15,7 +13,7 @@ import net.minecraftforge.network.NetworkHooks;
 public class ItemPortablePanel extends Item {
 
 	public ItemPortablePanel() {
-		super(new Item.Properties().stacksTo(1).tab(EnergyControl.ITEM_GROUP));
+		super(new Item.Properties().stacksTo(1));
 	}
 
 	@Override

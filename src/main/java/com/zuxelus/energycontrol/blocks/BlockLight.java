@@ -11,13 +11,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.material.Material;
 
 public class BlockLight extends Block {
 	public static final BooleanProperty LIT = BlockStateProperties.LIT;
 
 	public BlockLight() {
-		super(Block.Properties.of(Material.BUILDABLE_GLASS).lightLevel(state -> state.getValue(LIT) ? 15 : 0).strength(0.3F).sound(SoundType.GLASS));
+		super(Block.Properties.of().lightLevel(state -> state.getValue(LIT) ? 15 : 0).strength(0.3F).sound(SoundType.GLASS));
 		registerDefaultState(defaultBlockState().setValue(LIT, Boolean.valueOf(false)));
 	}
 

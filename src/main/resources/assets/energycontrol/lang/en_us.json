@@ -1,6 +1,7 @@
 {
     "_comment": "Tab Name",
     "itemGroup.energycontrol": "Energy Control",
+    "resourcePack.energycontrol": "Energy Control custom sound pack",
 
     "_comment": "Internal Items",
     "item.energycontrol.kit_energy": "Energy Sensor Kit",

@@ -15,6 +15,7 @@ import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 import com.zuxelus.zlib.gui.controls.GuiButtonGeneral;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.GameRenderer;
@@ -50,7 +51,7 @@ public class GuiAdvancedInfoPanel extends GuiPanelBase<ContainerAdvancedInfoPane
 	@Override
 	protected void initControls() {
 		ItemStack stack = panel.getCards().get(activeTab);
-		if (ItemStack.isSame(stack, oldStack))
+		if (ItemStack.isSameItem(stack, oldStack))
 			return;
 		if (!oldStack.isEmpty() && stack.isEmpty())
 			updateTitle();
@@ -72,7 +73,7 @@ public class GuiAdvancedInfoPanel extends GuiPanelBase<ContainerAdvancedInfoPane
 				}
 			if (!modified) {
 				textboxTitle = new EditBox(font, leftPos + 7, topPos + 16, 162, 18, null, CommonComponents.EMPTY);
-				textboxTitle.changeFocus(true);
+				//textboxTitle.changeFocus(true);
 				textboxTitle.setValue(new ItemCardReader(stack).getTitle());
 				addWidget(textboxTitle);
 				setInitialFocus(textboxTitle);
@@ -98,14 +99,11 @@ public class GuiAdvancedInfoPanel extends GuiPanelBase<ContainerAdvancedInfoPane
 	}
 
 	@Override
-	protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderTexture(0, TEXTURE);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		blit(matrixStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
-		blit(matrixStack, leftPos + 24, topPos + 62 + activeTab * 14, 182, 0, 1, 15);
+	protected void renderBg(GuiGraphics matrixStack, float partialTicks, int mouseX, int mouseY) {
+		matrixStack.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+		matrixStack.blit(TEXTURE, leftPos + 24, topPos + 62 + activeTab * 14, 182, 0, 1, 15);
 		if (textboxTitle != null)
-			textboxTitle.renderButton(matrixStack, mouseX, mouseY, partialTicks);
+			textboxTitle.renderWidget(matrixStack, mouseX, mouseY, partialTicks);
 	}
 
 	@Override

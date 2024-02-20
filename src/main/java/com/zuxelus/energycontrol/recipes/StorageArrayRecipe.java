@@ -6,10 +6,12 @@ import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.*;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
@@ -28,11 +30,11 @@ public class StorageArrayRecipe implements CraftingRecipe {
 
 	@Override
 	public boolean matches(CraftingContainer inv, Level level) {
-		return !assemble(inv).isEmpty();
+		return !assemble(inv, null).isEmpty();
 	}
 
 	@Override
-	public ItemStack assemble(CraftingContainer inv) {
+	public ItemStack assemble(CraftingContainer inv, RegistryAccess registryAccess) {
 		int inventoryLength = inv.getContainerSize();
 		int cardCount = 0;
 		int arrayCount = 0;
@@ -123,7 +125,7 @@ public class StorageArrayRecipe implements CraftingRecipe {
 	}
 
 	@Override
-	public ItemStack getResultItem() {
+	public ItemStack getResultItem(RegistryAccess registryAccess) {
 		return ItemStack.EMPTY;
 	}
 
@@ -135,5 +137,10 @@ public class StorageArrayRecipe implements CraftingRecipe {
 	@Override
 	public RecipeSerializer<?> getSerializer() {
 		return ModItems.ARRAY_SERIALIZER.get();
+	}
+
+	@Override
+	public CraftingBookCategory category() {
+		return CraftingBookCategory.MISC;
 	}
 }

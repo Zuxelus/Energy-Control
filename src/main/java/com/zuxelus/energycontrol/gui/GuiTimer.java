@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.containers.ContainerTimer;
 import com.zuxelus.energycontrol.gui.controls.CompactButton;
@@ -8,6 +7,7 @@ import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityTimer;
 import com.zuxelus.zlib.gui.GuiContainerBase;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -65,13 +65,13 @@ public class GuiTimer extends GuiContainerBase<ContainerTimer> {
 	}
 
 	@Override
-	protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+	protected void renderBg(GuiGraphics matrixStack, float partialTicks, int mouseX, int mouseY) {
 		super.renderBg(matrixStack, partialTicks, mouseX, mouseY);
-		textboxTimer.renderButton(matrixStack, mouseX, mouseY, partialTicks);
+		textboxTimer.renderWidget(matrixStack, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
-	protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+	protected void renderLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
 		drawCenteredText(matrixStack, title, imageWidth, 6);
 	}
 
@@ -82,7 +82,7 @@ public class GuiTimer extends GuiContainerBase<ContainerTimer> {
 		boolean isWorking = timer.getIsWorking();
 		if (isWorking != lastIsWorking) {
 			textboxTimer.setEditable(!isWorking);
-			textboxTimer.changeFocus(!isWorking);
+			//textboxTimer.changeFocus(!isWorking);
 			((AbstractWidget) renderables.get(8)).setMessage(Component.literal(isWorking ? "Stop" : "Start"));
 			lastIsWorking = isWorking;
 		}
@@ -168,7 +168,7 @@ public class GuiTimer extends GuiContainerBase<ContainerTimer> {
 			timer.setIsWorking(!isWorking);
 			((AbstractWidget) renderables.get(8)).setMessage(Component.literal(!isWorking ? "Stop" : "Start"));
 			textboxTimer.setEditable(isWorking);
-			textboxTimer.changeFocus(isWorking);
+			//textboxTimer.changeFocus(isWorking);
 			break;
 		}
 	}

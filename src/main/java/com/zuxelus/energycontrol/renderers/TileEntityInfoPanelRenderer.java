@@ -2,11 +2,12 @@ package com.zuxelus.energycontrol.renderers;
 
 import java.util.List;
 
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.renderers.CubeRenderer.PositionTextureVertex;
@@ -175,30 +176,30 @@ public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 		}
 
 		matrixStack.translate(0.5F - dy / 2, 1.01F - dx / 2 , -0.5F - dz / 2);
-		matrixStack.mulPose(Vector3f.XP.rotationDegrees(-90));
+		matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
 		switch(panel.getRotation())
 		{
 		case UP:
 			break;
 		case NORTH:
-			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(180));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(180));
 			break;
 		case SOUTH:
 			break;
 		case DOWN:
 			break;
 		case WEST:
-			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-90));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(-90));
 			break;
 		case EAST:
-			matrixStack.mulPose(Vector3f.ZP.rotationDegrees(90));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(90));
 			break;
 		}
 
 		if (panel.isTouchCard() || panel.hasBars()) {
-			matrixStack.mulPose(Vector3f.YP.rotationDegrees(180));
+			matrixStack.mulPose(Axis.YP.rotationDegrees(180));
 			panel.renderImage(displayWidth, displayHeight, matrixStack);
-			matrixStack.mulPose(Vector3f.YP.rotationDegrees(180));
+			matrixStack.mulPose(Axis.YP.rotationDegrees(180));
 		}
 		if (joinedData != null) {
 			matrixStack.translate(0, 0, 0.0002F);
@@ -237,7 +238,7 @@ public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 
 		int row = 0;
 		for (PanelString panelString : joinedData) {
-			if (panelString.textLeft != null)
+			/*if (panelString.textLeft != null)
 				fontRenderer.draw(matrixStack, panelString.textLeft, offsetX - realWidth / 2,
 					offsetY - realHeight / 2 + row * lineHeight, panelString.colorLeft != 0 ? panelString.colorLeft : colorHex);
 			if (panelString.textCenter != null)
@@ -245,7 +246,7 @@ public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 					offsetY - realHeight / 2 + row * lineHeight, panelString.colorCenter != 0 ? panelString.colorCenter : colorHex);
 			if (panelString.textRight != null)
 				fontRenderer.draw(matrixStack, panelString.textRight, realWidth / 2 - fontRenderer.width(panelString.textRight),
-					offsetY - realHeight / 2 + row * lineHeight, panelString.colorRight != 0 ? panelString.colorRight : colorHex);
+					offsetY - realHeight / 2 + row * lineHeight, panelString.colorRight != 0 ? panelString.colorRight : colorHex);*/
 			row++;
 		}
 	}

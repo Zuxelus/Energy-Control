@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.items.InventoryCardHolder;
 
 import net.minecraft.core.BlockPos;
@@ -16,7 +15,7 @@ import net.minecraftforge.network.NetworkHooks;
 public class ItemCardHolder extends Item {
 
 	public ItemCardHolder() {
-		super(new Item.Properties().tab(EnergyControl.ITEM_GROUP).stacksTo(1));
+		super(new Item.Properties().stacksTo(1));
 	}
 
 	@Override
