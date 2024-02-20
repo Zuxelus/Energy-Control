@@ -203,16 +203,6 @@ public class GuiScreenColor extends GuiBase {
 		panel.setColorBackground(colorBack);
 	}
 
-	private int getScreenColor(int mouseX, int mouseY) {
-		if (!isInside(mouseX, mouseY, 160, 23, 52, 46))
-			return - 1;
-		for (int i = 0; i < 5; i++)
-			for (int j = 0; j < 5; j++)
-				if (isInside(mouseX, mouseY, 160 + j * 14, 23 + i * 14, 8, 8))
-					return i * 4 + j;
-		return -1;
-	}
-
 	private boolean isInside(int mouseX, int mouseY, int x, int y, int width, int height) {
 		return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
 	}

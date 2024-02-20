@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.renderers;
 
 import com.zuxelus.energycontrol.tileentities.Screen;
+
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 
