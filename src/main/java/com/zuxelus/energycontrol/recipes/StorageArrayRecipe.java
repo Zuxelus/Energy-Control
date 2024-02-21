@@ -1,7 +1,5 @@
 package com.zuxelus.energycontrol.recipes;
 
-import ic2.api.item.IC2Items;
-
 import java.util.Vector;
 
 import com.zuxelus.energycontrol.init.ModItems;

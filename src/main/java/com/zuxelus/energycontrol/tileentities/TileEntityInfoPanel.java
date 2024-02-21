@@ -15,6 +15,7 @@ import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.blocks.BlockDamages;
 import com.zuxelus.energycontrol.blocks.HoloPanelExtender;
 import com.zuxelus.energycontrol.blocks.InfoPanelExtender;
+import com.zuxelus.energycontrol.hooks.ECHookLoader;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
@@ -36,7 +37,9 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -162,6 +165,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITilePac
 
 	public void setPowered(boolean value) {
 		powered = value;
+		if (!powered)
+			removeTileEntityFromList();
 	}
 
 	public void setScreenData(NBTTagCompound nbtTagCompound) {
@@ -334,6 +339,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITilePac
 	public void updateEntity() {
 		if (!init)
 			initData();
+	}
+
+	public void updateEntityEnd() {
 		if (!powered)
 			return;
 		dataTicker--;
@@ -580,7 +588,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITilePac
 	public void updateBlockState() {
 		int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
 		boolean flag = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
-		powered = flag;
+		setPowered(flag);
 		if (flag == (meta > 5))
 			return;
 
@@ -590,6 +598,16 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITilePac
 			worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, meta > 5 ? meta - 6 : meta + 6, 2);
 			updateExtenders(true);
 		}
+	}
+
+	public void removeTileEntityFromList() {
+		for (ItemStack card : getCards())
+			if (card != null) {
+				ItemCardReader reader = new ItemCardReader(card);
+				ChunkCoordinates target = reader.getTarget();
+				TileEntity te = getWorldObj().getTileEntity(target.posX, target.posY, target.posZ);
+				ECHookLoader.removeTileEntity(te);
+			}
 	}
 
 	public void updateExtenders(Boolean active) {

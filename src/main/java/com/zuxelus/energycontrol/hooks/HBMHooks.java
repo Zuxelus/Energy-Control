@@ -70,7 +70,7 @@ public class HBMHooks {
 		map.put(te, values);
 	}
 
-	@Hook
+	/*@Hook
 	public static void updateEntity(TileEntityRBMKBoiler te) {
 		if (!map.containsKey(te) || te.getWorldObj().isRemote)
 			return;
@@ -89,7 +89,7 @@ public class HBMHooks {
 		values.add(consumption);
 		values.add(output);
 		map.put(te, values);
-	}
+	}*/
 
 	@Hook
 	public static void updateEntity(TileEntityMachineTurbine te) {
@@ -191,7 +191,7 @@ public class HBMHooks {
 		}
 	}
 
-	@Hook
+	/*@Hook
 	public static void updateEntity(TileEntityMachineIGenerator te) {
 		if (!map.containsKey(te) || te.getWorldObj().isRemote)
 			return;
@@ -222,7 +222,7 @@ public class HBMHooks {
 		ArrayList<Long> values = new ArrayList<>();
 		values.add(powerGen);
 		map.put(te, values);
-	}
+	}*/
 
 	@Hook
 	public static void burn(TileEntityCore te, long joules) {

@@ -209,7 +209,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 			break;
 		}
 
-		powered = flag;
+		setPowered(flag);
 		if (flag == (meta > 5))
 			return;
 

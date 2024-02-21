@@ -20,6 +20,7 @@ public class ConfigHandler {
 	public boolean useCustomSounds;
 	public int alarmPause;
 	public boolean disableRangeCheck;
+	public boolean disableCircuitRecipe;
 
 	public void init(File configFile) {
 		if (config == null)
@@ -38,6 +39,7 @@ public class ConfigHandler {
 			useCustomSounds = config.getBoolean("useCustomSounds", Configuration.CATEGORY_GENERAL, false, "Update file config\\alarms\\assets\\energycontrol\\sounds.json to see your sounds in game", "ec.config.useCustomSounds");
 			alarmPause = config.getInt("alarmPause", Configuration.CATEGORY_GENERAL, 60, 0, 2000, "", "ec.config.alarmPause");
 			disableRangeCheck = config.getBoolean("disableRangeCheck", Configuration.CATEGORY_GENERAL, false, "", "ec.config.disableRangeCheck");
+			disableCircuitRecipe = config.getBoolean("disableCircuitRecipe", Configuration.CATEGORY_GENERAL, false, "", "ec.config.disableCircuitRecipe");
 		} catch (Exception e) {
 			EnergyControl.logger.error("Mod has a problem loading it's configuration", e);
 		} finally {

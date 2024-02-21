@@ -130,8 +130,8 @@ public class ItemCardHBM extends ItemCardBase {
 						" " + reader.getString("chunkRad")));
 			else
 				result.add(new PanelString(reader.getString("chunkRad")));
-		if (reader.hasField("active"))
-			addOnOff(result, isServer, reader.getBoolean("active"));
+		if (reader.hasField(DataHelper.ACTIVE))
+			addOnOff(result, isServer, reader.getBoolean(DataHelper.ACTIVE));
 		return result;
 	}
 
