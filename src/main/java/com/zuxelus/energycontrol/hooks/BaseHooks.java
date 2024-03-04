@@ -1,5 +1,8 @@
 package com.zuxelus.energycontrol.hooks;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import org.apache.logging.log4j.Level;
 
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
@@ -20,9 +23,14 @@ public class BaseHooks {
 
 	@Hook(at = @At(point = InjectionPoint.RETURN), returnCondition = ReturnCondition.ALWAYS)
 	public static void updateEntities(World world) {
+		ArrayList<TileEntityInfoPanel> list = new ArrayList<TileEntityInfoPanel>();
 		for (Object obj : world.loadedTileEntityList)
-			if (obj instanceof TileEntityInfoPanel) {
-				TileEntityInfoPanel te = (TileEntityInfoPanel) obj;
+			if (obj instanceof TileEntityInfoPanel)
+				list.add((TileEntityInfoPanel) obj);
+
+		for(int i = 0; i < list.size(); i++) {
+			TileEntityInfoPanel te = list.get(i);
+			if (!te.isInvalid() && te.hasWorldObj() && te.getWorldObj().blockExists(te.xCoord, te.yCoord, te.zCoord)) {
 				try {
 					((TileEntityInfoPanel) te).updateEntityEnd();
 				} catch (Throwable throwable) {
@@ -38,5 +46,6 @@ public class BaseHooks {
 					}
 				}
 			}
+		}
 	}
 }

@@ -605,8 +605,10 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITilePac
 			if (card != null) {
 				ItemCardReader reader = new ItemCardReader(card);
 				ChunkCoordinates target = reader.getTarget();
-				TileEntity te = getWorldObj().getTileEntity(target.posX, target.posY, target.posZ);
-				ECHookLoader.removeTileEntity(te);
+				if (target != null) { // check Text Card
+					TileEntity te = getWorldObj().getTileEntity(target.posX, target.posY, target.posZ);
+					ECHookLoader.removeTileEntity(te);
+				}
 			}
 	}
 

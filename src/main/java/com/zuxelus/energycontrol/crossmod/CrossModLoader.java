@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.crossmod.computercraft.CrossComputerCraft;
@@ -46,7 +48,15 @@ public class CrossModLoader {
 		}
 		loadCrossMod(ModIDs.ENDER_IO, CrossEnderIO::new);
 		loadCrossMod(ModIDs.GALACTICRAFT_PLANETS, CrossGalacticraft::new);
-		loadCrossModSafely(ModIDs.HBM, () -> CrossHBM::new);
+		if (Loader.isModLoaded(ModIDs.HBM)) {
+			ModContainer container = Loader.instance().getIndexedModList().get(ModIDs.HBM);
+			Matcher matcher = Pattern.compile("\\d\\d\\d\\d").matcher(container.getVersion());
+			if (matcher.find()) {
+				int version = Integer.parseInt(container.getVersion().substring(matcher.start(), matcher.end()));
+				if (version >= 4880)
+					loadCrossModSafely(ModIDs.HBM, () -> CrossHBM::new);
+			}
+		}
 		loadCrossMod(ModIDs.NUCLEAR_CRAFT, CrossNuclearCraft::new);
 		loadCrossModSafely(ModIDs.RAILCRAFT, () -> CrossRailcraft::new);
 	}

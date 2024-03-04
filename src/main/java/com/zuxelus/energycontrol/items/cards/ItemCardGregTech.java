@@ -13,7 +13,6 @@ import com.zuxelus.energycontrol.utils.StringUtils;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import gregtech.tileentity.energy.reactors.MultiTileEntityReactorCore2x2;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
