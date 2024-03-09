@@ -1,7 +1,6 @@
 package com.zuxelus.energycontrol.hooks;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.apache.logging.log4j.Level;
 
@@ -14,7 +13,6 @@ import com.zuxelus.hooklib.asm.ReturnCondition;
 import cpw.mods.fml.common.FMLLog;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ReportedException;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeModContainer;

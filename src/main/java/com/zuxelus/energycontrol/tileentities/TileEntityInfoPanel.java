@@ -12,10 +12,9 @@ import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.IHasBars;
 import com.zuxelus.energycontrol.api.ITouchAction;
 import com.zuxelus.energycontrol.api.PanelString;
-import com.zuxelus.energycontrol.blocks.BlockDamages;
 import com.zuxelus.energycontrol.blocks.HoloPanelExtender;
 import com.zuxelus.energycontrol.blocks.InfoPanelExtender;
-import com.zuxelus.energycontrol.hooks.ECHookLoader;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.ItemUpgrade;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
@@ -40,7 +39,6 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -607,7 +605,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements ITilePac
 				ChunkCoordinates target = reader.getTarget();
 				if (target != null) { // check Text Card
 					TileEntity te = getWorldObj().getTileEntity(target.posX, target.posY, target.posZ);
-					ECHookLoader.removeTileEntity(te);
+					CrossModLoader.removeTileEntity(te);
 				}
 			}
 	}

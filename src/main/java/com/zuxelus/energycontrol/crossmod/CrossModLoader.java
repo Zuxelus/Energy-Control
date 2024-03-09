@@ -190,4 +190,11 @@ public class CrossModLoader {
 		for (CrossModBase crossMod : CROSS_MODS.values())
 			crossMod.loadRecipes();
 	}
+
+	public static void removeTileEntity(TileEntity te) {
+		if (te == null)
+			return;
+		for (CrossModBase crossMod : CROSS_MODS.values())
+			crossMod.removeTileEntity(te);
+	}
 }

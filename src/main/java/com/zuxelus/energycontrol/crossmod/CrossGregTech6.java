@@ -1,7 +1,5 @@
 package com.zuxelus.energycontrol.crossmod;
 
-import static gregapi.data.CS.F;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +18,6 @@ import com.zuxelus.energycontrol.recipes.Recipes;
 import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
-import gregapi.data.TD.Energy;
 import gregapi.item.IItemEnergy;
 import gregapi.oredict.OreDictMaterialStack;
 import gregapi.tileentity.base.TileEntityBase05Inventories;
@@ -29,18 +26,9 @@ import gregapi.tileentity.connectors.MultiTileEntityPipeFluid;
 import gregapi.tileentity.connectors.MultiTileEntityWireElectric;
 import gregapi.tileentity.machines.MultiTileEntityBasicMachineElectric;
 import gregapi.util.ST;
-import gregapi.util.UT;
-import gregtech.tileentity.energy.converters.MultiTileEntityBoilerTank;
-import gregtech.tileentity.energy.converters.MultiTileEntityDynamoElectric;
-import gregtech.tileentity.energy.converters.MultiTileEntityMotorElectric;
-import gregtech.tileentity.energy.converters.MultiTileEntityTurbineSteam;
-import gregtech.tileentity.energy.generators.MultiTileEntityGeneratorGas;
-import gregtech.tileentity.energy.generators.MultiTileEntityGeneratorMetal;
-import gregtech.tileentity.energy.generators.MultiTileEntityGeneratorSolid;
-import gregtech.tileentity.energy.generators.MultiTileEntityMotorLiquid;
-import gregtech.tileentity.energy.generators.MultiTileEntitySolarPanelElectric;
+import gregtech.tileentity.energy.converters.*;
+import gregtech.tileentity.energy.generators.*;
 import gregtech.tileentity.energy.reactors.MultiTileEntityReactorCore2x2;
-import gregtech.tileentity.energy.reactors.MultiTileEntityReactorRodNuclear;
 import gregtech.tileentity.energy.storage.MultiTileEntityBatteryBox;
 import gregtech.tileentity.energy.transformers.MultiTileEntityTransformerElectric;
 import gregtech.tileentity.tanks.MultiTileEntityBarrelMetal;
@@ -325,5 +313,10 @@ public class CrossGregTech6 extends CrossModBase {
 					'F', new ItemStack(ModItems.itemComponent, 1, ItemComponent.RADIO_TRANSMITTER), 'B', "ingotBronze" });
 
 		Recipes.addKitRecipe(ItemCardType.KIT_GREGTECH, ItemCardType.CARD_GREGTECH);
+	}
+
+	@Override
+	public void removeTileEntity(TileEntity te) {
+		GregTechHooks.map.remove(te);
 	}
 }

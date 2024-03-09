@@ -67,4 +67,6 @@ public class CrossModBase {
 	public ResourceLocation getFluidTexture(String fluidName) {
 		return null;
 	}
+
+	public void removeTileEntity(TileEntity te) {}
 }
