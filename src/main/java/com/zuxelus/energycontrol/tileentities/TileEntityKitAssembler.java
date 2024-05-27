@@ -13,7 +13,7 @@ import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
-import api.hbm.energy.IEnergyUser;
+import api.hbm.energymk2.IEnergyReceiverMK2;
 import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Optional;
@@ -32,10 +32,10 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 @Optional.InterfaceList({
 	@Optional.Interface(modid = ModIDs.IC2, iface = "ic2.api.energy.tile.IEnergySink"),
-	@Optional.Interface(modid = ModIDs.HBM, iface = "api.hbm.energy.IEnergyUser"),
+	@Optional.Interface(modid = ModIDs.HBM, iface = "api.hbm.energymk2.IEnergyReceiverMK2"),
 	@Optional.Interface(modid = ModIDs.THERMAL_EXPANSION, iface = "cofh.redstoneflux.api.IEnergyReceiver"),
 })
-public class TileEntityKitAssembler extends TileEntityInventory implements ITilePacketHandler, ISlotItemFilter, IEnergySink, IEnergyUser, IEnergyReceiver {
+public class TileEntityKitAssembler extends TileEntityInventory implements ITilePacketHandler, ISlotItemFilter, IEnergySink, IEnergyReceiverMK2, IEnergyReceiver {
 	public static final byte SLOT_INFO = 0;
 	public static final byte SLOT_CARD1 = 1;
 	public static final byte SLOT_ITEM = 2;
@@ -201,7 +201,8 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITile
 			return;
 		handleDischarger(SLOT_DISCHARGER);
 		if (Loader.isModLoaded(ModIDs.HBM))
-			updateStandardConnections(worldObj, xCoord, yCoord, zCoord);
+			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+				trySubscribe(worldObj, xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ, dir); 
 		if (!active)
 			return;
 		if (storage.getEnergyStored() >= CONSUMPTION) {
