@@ -8,6 +8,7 @@ import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
+import com.zuxelus.energycontrol.utils.DataHelper;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -37,15 +38,24 @@ public class ItemCardThermalExpansion extends ItemCardBase {
 	@Override
 	public List<PanelString> getStringData(int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
-		result.add(new PanelString("msg.ec.InfoPanelPowerUsage", reader.getInt("usage"), showLabels));
-		result.add(new PanelString("msg.ec.InfoPanelPower", reader.getString("power"), showLabels));
-		result.add(new PanelString("msg.ec.InfoPanelEnergy", String.format("%s / %s RF",reader.getInt("storage"), reader.getInt("maxStorage")), showLabels));
-		result.add(new PanelString("msg.ec.InfoPanelRedstoneMode", reader.getString("rsmode"), showLabels));
-		result.add(new PanelString("msg.ec.InfoPanelAugmentation", "", showLabels));
-		String[] augmentation = reader.getString("augmentation").split(",");
-		for (int i = 0; i < augmentation.length; i++)
-			result.add(new PanelString(" " + augmentation[i]));
-		addOnOff(result, isServer, reader.getBoolean("active"));
+		if (reader.hasField("usage"))
+			result.add(new PanelString("msg.ec.InfoPanelPowerUsage", reader.getInt("usage"), showLabels));
+		if (reader.hasField("power"))
+			result.add(new PanelString("msg.ec.InfoPanelPower", reader.getString("power"), showLabels));
+		if (reader.hasField("storage"))
+			result.add(new PanelString("msg.ec.InfoPanelEnergy", String.format("%s / %s RF",reader.getInt("storage"), reader.getInt("maxStorage")), showLabels));
+		if (reader.hasField(DataHelper.DIFF) && (settings & 64) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelDifference", reader.getLong(DataHelper.DIFF), "RF/t", showLabels));
+		if (reader.hasField("rsmode"))
+			result.add(new PanelString("msg.ec.InfoPanelRedstoneMode", reader.getString("rsmode"), showLabels));
+		if (reader.hasField("augmentation")) {
+			result.add(new PanelString("msg.ec.InfoPanelAugmentation", "", showLabels));
+			String[] augmentation = reader.getString("augmentation").split(",");
+			for (int i = 0; i < augmentation.length; i++)
+				result.add(new PanelString(" " + augmentation[i]));
+		}
+		if (reader.hasField("active"))
+			addOnOff(result, isServer, reader.getBoolean("active"));
 		switch (reader.getInt("type")) {
 		case 2:
 			result.add(new PanelString(reader.getString("lock")));

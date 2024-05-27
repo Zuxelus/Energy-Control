@@ -6,12 +6,14 @@ import java.util.List;
 
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
+import com.zuxelus.energycontrol.hooks.ThermalExpansionHooks;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardThermalExpansion;
 import com.zuxelus.energycontrol.items.cards.ItemCardType;
 import com.zuxelus.energycontrol.items.kits.ItemKitMain;
 import com.zuxelus.energycontrol.items.kits.ItemKitThermalExpansion;
+import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import cofh.core.block.TileNameable;
@@ -29,6 +31,7 @@ import cofh.thermalexpansion.block.machine.TileInsolator;
 import cofh.thermalexpansion.block.machine.TileMachineBase;
 import cofh.thermalexpansion.block.machine.TileRefinery;
 import cofh.thermalexpansion.block.machine.TileSmelter;
+import cofh.thermalexpansion.block.storage.TileCell;
 import cofh.thermalexpansion.item.ItemAugment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -47,9 +50,9 @@ public class CrossThermalExpansion extends CrossModBase {
 			NBTTagCompound tag = new NBTTagCompound();
 			IEnergyStorage storage = ((TilePowered) te).getEnergyStorage();
 			if (storage != null) {
-				tag.setString("euType", "RF");
-				tag.setDouble("storage", storage.getEnergyStored());
-				tag.setDouble("maxStorage", storage.getMaxEnergyStored());
+				tag.setString(DataHelper.EUTYPE, "RF");
+				tag.setDouble(DataHelper.ENERGY, storage.getEnergyStored());
+				tag.setDouble(DataHelper.CAPACITY, storage.getMaxEnergyStored());
 				return tag;
 			}
 		}
@@ -155,6 +158,18 @@ public class CrossThermalExpansion extends CrossModBase {
 	@Override
 	public NBTTagCompound getCardData(World world, BlockPos pos) {
 		TileEntity te = world.getTileEntity(pos);
+		if (te instanceof TileCell) {
+			IEnergyStorage storage = ((TileCell) te).getEnergyStorage();
+			if (storage != null) {
+				NBTTagCompound tag = new NBTTagCompound();
+				tag.setInteger("storage", storage.getEnergyStored());
+				tag.setInteger("maxStorage", storage.getMaxEnergyStored());
+				ArrayList values = getHookValues(te);
+				if (values != null)
+					tag.setLong(DataHelper.DIFF, ((Long) values.get(0) - (Long) values.get(20)) / 20);
+				return tag;
+			}
+		}
 		try {
 			if (te instanceof TileMachineBase) {
 				NBTTagCompound tag = new NBTTagCompound();
@@ -207,6 +222,14 @@ public class CrossThermalExpansion extends CrossModBase {
 			}
 		} catch (Throwable t) {}
 		return null;
+	}
+
+	@Override
+	public ArrayList getHookValues(TileEntity te) {
+		ArrayList values = ThermalExpansionHooks.map.get(te);
+		if (values == null)
+			ThermalExpansionHooks.map.put(te, null);
+		return values;
 	}
 
 	@Override
