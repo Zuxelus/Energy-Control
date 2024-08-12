@@ -108,6 +108,9 @@ repositories {
             includeGroup "curse.maven"
         }
     }
+
+    maven { url "https://maven.shedaniel.me" }
+    maven { url "https://maven.architectury.dev" }
 }
 
 dependencies {
@@ -120,6 +123,7 @@ dependencies {
     compileOnly fg.deobf ("curse.maven:WTHIT-455982:5073514") //
     compileOnly fg.deobf ("curse.maven:badpackets-615134:4784364") //
     compileOnly fg.deobf ("curse.maven:jei-238222:4712866")
+    runtimeOnly fg.deobf ("curse.maven:jei-238222:4712866")
     compileOnly fg.deobf ("curse.maven:extremereactors-250277:4715935")
     compileOnly fg.deobf ("curse.maven:zerocore-247921:4702621")
     compileOnly fg.deobf ("curse.maven:advancedgenerators-223622:4104739")
@@ -127,6 +131,13 @@ dependencies {
     compileOnly fg.deobf ("curse.maven:catsforce-320926:4028119")
     compileOnly fg.deobf ("curse.maven:mekanism-268560:4644795")
     compileOnly fg.deobf ("curse.maven:mekanismgenerators-268566:4644798")
+
+    compileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:8.3.103")
+    runtimeOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:8.3.103")
+    compileOnly fg.deobf("dev.architectury:architectury-forge:6.5.85")
+    runtimeOnly fg.deobf("dev.architectury:architectury-forge:6.5.85")
+    compileOnly fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:9.2.738")
+    runtimeOnly fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:9.2.738")
 }
 
 mixin {
