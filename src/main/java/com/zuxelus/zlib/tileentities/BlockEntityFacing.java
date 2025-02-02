@@ -65,7 +65,9 @@ public abstract class BlockEntityFacing extends BlockEntity {
 	}
 
 	protected void notifyBlockUpdate() {
-		BlockState state = level.getBlockState(worldPosition);
-		level.sendBlockUpdated(worldPosition, state, state, 2);
+		if (!level.isClientSide) {
+			BlockState state = level.getBlockState(worldPosition);
+			level.sendBlockUpdated(worldPosition, state, state, 2);
+		}
 	}
 }

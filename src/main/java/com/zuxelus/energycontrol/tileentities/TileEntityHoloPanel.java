@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityHoloPanel extends TileEntityInfoPanel {
 	private static final byte SLOT_CARD = 0;
@@ -56,12 +57,12 @@ public class TileEntityHoloPanel extends TileEntityInfoPanel {
 
 	// MenuProvider
 	@Override
-	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
+	public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory inventory, @NotNull Player player) {
 		return new ContainerHoloPanel(windowId, inventory, this);
 	}
 
 	@Override
-	public Component getDisplayName() {
+	public @NotNull Component getDisplayName() {
 		return Component.translatable(ModItems.holo_panel.get().getDescriptionId());
 	}
 }

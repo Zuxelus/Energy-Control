@@ -40,6 +40,14 @@ public class ThermalMonitor extends FacingBlockSmall {
 	}
 
 	@Override
+	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+		if (!isMoving && !state.is(newState.getBlock())) {
+			level.updateNeighborsAt(pos, this);
+			super.onRemove(state, level, pos, newState, isMoving);
+		}
+	}
+
+	@Override
 	public int getSignal(BlockState state, BlockGetter blockAccess, BlockPos pos, Direction side) {
 		BlockEntity te = blockAccess.getBlockEntity(pos);
 		if (!(te instanceof TileEntityThermalMonitor))

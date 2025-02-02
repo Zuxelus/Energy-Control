@@ -6,6 +6,7 @@ import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -43,6 +44,10 @@ public class CrossModBase {
 	}
 
 	public void registerItems(RegisterEvent.RegisterHelper<Item> event) { }
+
+	public void addKitsToCreativeTab(CreativeModeTab.Output output) { }
+
+	public void addCardsToCreativeTab(CreativeModeTab.Output output) { }
 
 	public void updateEnergyNet(BlockEntity te, boolean isAdd) { }
 }

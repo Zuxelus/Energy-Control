@@ -30,7 +30,7 @@ public class InfoPanelPeripheral implements IPeripheral {
 
 	@LuaFunction
 	public final boolean isActive() {
-		return te.powered;
+		return te.getPowered();
 	}
 
 	@LuaFunction

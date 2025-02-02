@@ -1,67 +1,52 @@
-buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
-        maven { url = 'https://maven.parchmentmc.org' }
-		maven { url = 'https://repo.spongepowered.org/maven' }
-        mavenCentral()
-    }
-
-    dependencies {
-		classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '[6.0,6.2)', changing: true
-		classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7.+'
-        classpath 'org.parchmentmc:librarian:1.+'
-    }
+plugins {
+    id 'eclipse'
+    id 'idea'
+    id 'maven-publish'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
 }
 
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'org.spongepowered.mixin'
-apply plugin: 'org.parchmentmc.librarian.forgegradle'
-apply plugin: 'eclipse'
-
-version = '1.20.1-0.3.0'
-group = 'com.zuxelus.energycontrol'
-
+version = mod_version
+group = mod_group_id
 
 base {
-    archivesName = 'EnergyControl-forge'
+    archivesName = mod_id
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
-    mappings channel: 'official', version: '1.20.1'
+    mappings channel: mapping_channel, version: mapping_version
+    copyIdeResources = true
     runs {
         configureEach {
             workingDirectory project.file('run')
-            //property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                "energycontrol" {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
         }
 
         client {
-            arg '-mixin.config=energycontrol.mixins.json'
-            property 'mixin.env.disableRefMap', 'true'
-            property 'forge.enabledGameTestNamespaces', 'energycontrol'
+            property 'forge.enabledGameTestNamespaces', mod_id
         }
 
         server {
-            property 'forge.enabledGameTestNamespaces', 'energycontrol'
+            property 'forge.enabledGameTestNamespaces', mod_id
             args '--nogui'
         }
 
         gameTestServer {
-            property 'forge.enabledGameTestNamespaces', 'energycontrol'
+            property 'forge.enabledGameTestNamespaces', mod_id
         }
 
         data {
             workingDirectory project.file('run-data')
-            args '--mod', 'energycontrol', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
         }
     }
 }
@@ -91,35 +76,45 @@ repositories {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:1.20.1-47.2.20"
-    implementation 'io.netty:netty-codec-http:4.1.82.Final'
-    //compileOnly fg.deobf ("curse.maven:ae2-223794:5117032")
-    compileOnly fg.deobf ("curse.maven:cctweaked-282001:5118388")
-    compileOnly fg.deobf ("curse.maven:WTHIT-455982:5109481") //
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    compileOnly fg.deobf ("curse.maven:ae2-223794:5641282")
+    compileOnly fg.deobf ("curse.maven:cctweaked-282001:5714507")
+    compileOnly fg.deobf ("curse.maven:WTHIT-455982:5721801") //
     compileOnly fg.deobf ("curse.maven:badpackets-615134:4784395") //
-    compileOnly fg.deobf ("curse.maven:jei-238222:5101366")
-    compileOnly fg.deobf ("curse.maven:extremereactors-250277:4940344")
-    compileOnly fg.deobf ("curse.maven:zerocore-247921:4940340")
-    //compileOnly fg.deobf ("curse.maven:advancedgenerators-223622:4670654")
-    compileOnly fg.deobf ("curse.maven:mekanism-268560:4866575")
-    compileOnly fg.deobf ("curse.maven:mekanismgenerators-268566:4866578")
+    compileOnly fg.deobf ("curse.maven:jei-238222:5772967")
+    compileOnly fg.deobf ("curse.maven:extremereactors-250277:5628515")
+    compileOnly fg.deobf ("curse.maven:zerocore-247921:5628510")
+    compileOnly fg.deobf ("curse.maven:advancedgenerators-223622:4670654")
+    compileOnly fg.deobf ("curse.maven:bdlib-70496:4670650")
+    compileOnly fg.deobf ("curse.maven:catsforce-320926:4810184")
+    compileOnly fg.deobf ("curse.maven:mekanism-268560:5662583")
+    compileOnly fg.deobf ("curse.maven:mekanismgenerators-268566:5662587")
 }
 
-mixin {
-    add sourceSets.main, "energycontrol.mixins.refmap.json"
-    config "energycontrol.mixins.json"
-}
+tasks.named('processResources', ProcessResources).configure {
+    var replaceProperties = [
+            minecraft_version: minecraft_version, minecraft_version_range: minecraft_version_range,
+            forge_version: forge_version, forge_version_range: forge_version_range,
+            loader_version_range: loader_version_range,
+            mod_id: mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
+            mod_authors: mod_authors, mod_description: mod_description,
+    ]
+    inputs.properties replaceProperties
 
+    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
+        expand replaceProperties + [project: project]
+    }
+}
 
 tasks.named('jar', Jar).configure {
     manifest {
         attributes([
-                'Specification-Title'     : 'energycontrol',
-                'Specification-Vendor'    : 'Zuxelus',
+                'Specification-Title'     : mod_id,
+                'Specification-Vendor'    : mod_authors,
                 'Specification-Version'   : '1', // We are version 1 of ourselves
                 'Implementation-Title'    : project.name,
                 'Implementation-Version'  : project.jar.archiveVersion,
-                'Implementation-Vendor'   : 'Zuxelus',
+                'Implementation-Vendor'   : mod_authors,
                 'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }

@@ -36,6 +36,7 @@ import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.locale.Language;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -478,5 +479,15 @@ public class CrossMekanism extends CrossModBase {
 		event.register("kit_mekanism", ModItems.kit_mekanism);
 		ModItems.card_mekanism = new ItemCardMekanism();
 		event.register("card_mekanism", ModItems.card_mekanism);
+	}
+
+	@Override
+	public void addKitsToCreativeTab(CreativeModeTab.Output output) {
+		output.accept(ModItems.kit_mekanism);
+	}
+
+	@Override
+	public void addCardsToCreativeTab(CreativeModeTab.Output output) {
+		output.accept(ModItems.card_mekanism);
 	}
 }

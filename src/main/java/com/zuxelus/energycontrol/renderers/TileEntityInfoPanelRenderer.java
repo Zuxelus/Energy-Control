@@ -18,6 +18,7 @@ import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -206,11 +207,12 @@ public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 			int colorHex = 0x000000;
 			if (panel.getColored())
 				colorHex = panel.getColorText();
-			renderText(joinedData, displayWidth, displayHeight, colorHex, matrixStack, font);
+			renderText(joinedData, displayWidth, displayHeight, colorHex, matrixStack, font, buffer, combinedLight);
 		}
 	}
 
-	public static void renderText(List<PanelString> joinedData, float displayWidth, float displayHeight, int colorHex, PoseStack matrixStack, Font fontRenderer) {
+	public static void renderText(List<PanelString> joinedData, float displayWidth, float displayHeight, int colorHex,
+								  PoseStack matrixStack, Font fontRenderer, MultiBufferSource buffer, int combinedLight) {
 		int maxWidth = 1;
 		for (PanelString panelString : joinedData) {
 			String currentString = implodeArray(new String[] { panelString.textLeft, panelString.textCenter, panelString.textRight }, " ");
@@ -238,14 +240,23 @@ public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 
 		int row = 0;
 		for (PanelString panelString : joinedData) {
-			/*if (panelString.textLeft != null)
-				fontRenderer.draw(matrixStack, panelString.textLeft, offsetX - realWidth / 2,
-					offsetY - realHeight / 2 + row * lineHeight, panelString.colorLeft != 0 ? panelString.colorLeft : colorHex);
+			if (panelString.textLeft != null)
+				fontRenderer.drawInBatch(panelString.textLeft, offsetX - realWidth / 2,
+						offsetY - realHeight / 2 + row * lineHeight, panelString.colorLeft != 0 ? panelString.colorLeft : colorHex,
+						false, matrixStack.last().pose(), buffer, Font.DisplayMode.POLYGON_OFFSET, 0, LightTexture.FULL_BRIGHT);
+				/*fontRenderer.draw(matrixStack, panelString.textLeft, offsetX - realWidth / 2,
+					offsetY - realHeight / 2 + row * lineHeight, panelString.colorLeft != 0 ? panelString.colorLeft : colorHex);*/
 			if (panelString.textCenter != null)
-				fontRenderer.draw(matrixStack, panelString.textCenter, -fontRenderer.width(panelString.textCenter) / 2,
-					offsetY - realHeight / 2 + row * lineHeight, panelString.colorCenter != 0 ? panelString.colorCenter : colorHex);
+				fontRenderer.drawInBatch(panelString.textCenter, -fontRenderer.width(panelString.textCenter) / 2,
+						offsetY - realHeight / 2 + row * lineHeight, panelString.colorCenter != 0 ? panelString.colorCenter : colorHex,
+						false, matrixStack.last().pose(), buffer, Font.DisplayMode.POLYGON_OFFSET, 0, LightTexture.FULL_BRIGHT);
+				/*fontRenderer.draw(matrixStack, panelString.textCenter, -fontRenderer.width(panelString.textCenter) / 2,
+					offsetY - realHeight / 2 + row * lineHeight, panelString.colorCenter != 0 ? panelString.colorCenter : colorHex);*/
 			if (panelString.textRight != null)
-				fontRenderer.draw(matrixStack, panelString.textRight, realWidth / 2 - fontRenderer.width(panelString.textRight),
+				fontRenderer.drawInBatch(panelString.textRight, realWidth / 2 - fontRenderer.width(panelString.textRight),
+						offsetY - realHeight / 2 + row * lineHeight, panelString.colorRight != 0 ? panelString.colorRight : colorHex,
+						false, matrixStack.last().pose(), buffer, Font.DisplayMode.POLYGON_OFFSET, 0, LightTexture.FULL_BRIGHT);
+				/*fontRenderer.draw(matrixStack, panelString.textRight, realWidth / 2 - fontRenderer.width(panelString.textRight),
 					offsetY - realHeight / 2 + row * lineHeight, panelString.colorRight != 0 ? panelString.colorRight : colorHex);*/
 			row++;
 		}

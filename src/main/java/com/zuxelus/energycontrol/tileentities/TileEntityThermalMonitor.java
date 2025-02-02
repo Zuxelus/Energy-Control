@@ -147,12 +147,6 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 		writeProperties(tag);
 	}
 
-	@Override
-	public void setRemoved() {
-		level.updateNeighborsAt(worldPosition, level.getBlockState(worldPosition).getBlock());
-		super.setRemoved();
-	}
-
 	public static void tickStatic(Level level, BlockPos pos, BlockState state, BlockEntity be) {
 		if (!(be instanceof TileEntityThermalMonitor))
 			return;

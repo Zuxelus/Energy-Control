@@ -17,6 +17,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
 import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -194,5 +195,15 @@ public class CrossModLoader {
 	public static void registerItems(RegisterEvent.RegisterHelper<Item> event) {
 		for (CrossModBase crossMod : CROSS_MODS.values())
 			crossMod.registerItems(event);
+	}
+
+	public static void addKitsToCreativeTab(CreativeModeTab.Output output) {
+		for (CrossModBase crossMod : CROSS_MODS.values())
+			crossMod.addKitsToCreativeTab(output);
+	}
+
+	public static void addCardsToCreativeTab(CreativeModeTab.Output output) {
+		for (CrossModBase crossMod : CROSS_MODS.values())
+			crossMod.addCardsToCreativeTab(output);
 	}
 }

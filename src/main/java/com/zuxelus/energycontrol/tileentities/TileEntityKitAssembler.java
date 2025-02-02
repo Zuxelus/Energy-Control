@@ -39,6 +39,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityKitAssembler extends TileEntityItemHandler implements MenuProvider, ITilePacketHandler, ISlotItemFilter, IEnergyBlockEntity {
 	public static final byte SLOT_INFO = 0;
@@ -57,13 +58,13 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 	public static final int CAPACITY = 5000;
 	public static final int OUTPUT = 32;
 	private double production;
-	private boolean addedToEnet;
+	//private boolean addedToEnet;
 	private boolean active;
 
 	public TileEntityKitAssembler(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
 		storage = new EnergyStorage(CAPACITY, OUTPUT, OUTPUT, 0);
-		addedToEnet = false;
+		//addedToEnet = false;
 		active = false;
 		production = 0;
 	}
@@ -182,14 +183,14 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 		writeProperties(tag);
 	}
 
-	@Override
+	/*@Override
 	public void setRemoved() {
 		if (!level.isClientSide && addedToEnet) {
 			addedToEnet = false;
 			CrossModLoader.getCrossMod(ModIDs.IC2).updateEnergyNet(this, false);
 		}
 		super.setRemoved();
-	}
+	}*/
 
 	public static void tickStatic(Level level, BlockPos pos, BlockState state, BlockEntity be) {
 		if (!(be instanceof TileEntityKitAssembler))
@@ -201,10 +202,10 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 	protected void tick() {
 		if (level.isClientSide)
 			return;
-		if (!addedToEnet) {
+		/*if (!addedToEnet) {
 			addedToEnet = true;
 			CrossModLoader.getCrossMod(ModIDs.IC2).updateEnergyNet(this, true);
-		}
+		}*/
 		handleDischarger(SLOT_DISCHARGER);
 		if (!active)
 			return;
@@ -406,7 +407,7 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 
 	@Override
 	@Nonnull
-	public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
+	public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, Direction side) {
 		if (cap == ForgeCapabilities.ENERGY)
 			return LazyOptional.of(() -> this.storage).cast();
 		return super.getCapability(cap, side);
@@ -414,7 +415,7 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 
 	// ISidedInventory
 	@Override
-	public int[] getSlotsForFace(Direction side) {
+	public int @NotNull [] getSlotsForFace(@NotNull Direction side) {
 		if (side == Direction.UP)
 			return new int[] { SLOT_CARD1, SLOT_ITEM, SLOT_CARD2 };
 		if (side == Direction.DOWN)
@@ -423,12 +424,12 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 	}
 
 	@Override
-	public boolean canPlaceItemThroughFace(int slot, ItemStack stack, Direction side) {
+	public boolean canPlaceItemThroughFace(int slot, @NotNull ItemStack stack, Direction side) {
 		return side == Direction.UP && (slot == SLOT_CARD1 || slot == SLOT_ITEM || slot == SLOT_CARD2);
 	}
 
 	@Override
-	public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) {
+	public boolean canTakeItemThroughFace(int slot, @NotNull ItemStack stack, @NotNull Direction side) {
 		return side == Direction.DOWN && slot == SLOT_RESULT;
 	}
 

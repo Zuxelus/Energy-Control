@@ -71,8 +71,8 @@ public class Screen {
 					if (te == null || !(te instanceof IScreenPart))
 						continue;
 					((IScreenPart) te).setScreen(this);
-					if (coreTile.getPowered() || force)
-						((IScreenPart) te).updateTileEntity();
+					/*if (coreTile.getPowered() || force)
+						((IScreenPart) te).updateTileEntity();*/
 				}
 			}
 		}
@@ -91,28 +91,11 @@ public class Screen {
 						part.setScreen(null);
 						part.updateData();
 					}
-					if (coreTile.getPowered() || force)
-						part.updateTileEntity();
+					/*if (coreTile.getPowered() || force)
+						part.updateTileEntity();*/
 				}
 			}
 		}
-	}
-
-	public void turnPower(boolean on, Level world) {
-		/*if (powered == on)
-			return;
-		powered = on;*/
-		markUpdate(world);
-	}
-
-	private void markUpdate(Level world) {
-		for (int x = minX; x <= maxX; x++)
-			for (int y = minY; y <= maxY; y++)
-				for (int z = minZ; z <= maxZ; z++) {
-					BlockEntity te = world.getBlockEntity(new BlockPos(x, y, z));
-					if (te instanceof IScreenPart)
-						((IScreenPart) te).updateTileEntity();
-				}
 	}
 
 	public CompoundTag toTag() {

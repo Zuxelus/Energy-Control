@@ -21,6 +21,7 @@ import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiContainerBase<T> implements ContainerListener {
@@ -58,14 +59,14 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 	}
 
 	@Override
-	public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void render(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
 		renderBackground(matrixStack);
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
 		renderTooltip(matrixStack, mouseX, mouseY);
 	}
 
 	@Override
-	protected void renderLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
+	protected void renderLabels(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY) {
 		drawCenteredText(matrixStack, title, imageWidth, 6);
 	}
 
@@ -74,7 +75,7 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 		if (textboxTitle != null) {
 			textboxTitle.mouseReleased(mouseX - leftPos, mouseY - topPos, mouseButton);
 			if (textboxTitle.isFocused())
-				return true;
+				return super.mouseReleased(mouseX, mouseY, mouseButton);
 			magicalSpecialHackyFocus(null);
 			updateTitle();
 		}
@@ -88,7 +89,6 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 			textboxTitle.tick();
 	}
 
-	@SuppressWarnings("resource")
 	protected void updateTitle() {
 		if (textboxTitle == null)
 			return;
@@ -148,10 +148,10 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 	}
 
 	@Override
-	public void slotChanged(AbstractContainerMenu container, int slot, ItemStack stack) {
+	public void slotChanged(@NotNull AbstractContainerMenu container, int slot, @NotNull ItemStack stack) {
 		initControls();
 	}
 
 	@Override
-	public void dataChanged(AbstractContainerMenu container, int varToUpdate, int newValue) {}
+	public void dataChanged(@NotNull AbstractContainerMenu container, int varToUpdate, int newValue) {}
 }

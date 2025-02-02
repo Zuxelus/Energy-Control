@@ -1,30 +1,27 @@
 modLoader="javafml"
-loaderVersion="[47,)"
-license="GNU General Public License v3.0"
+loaderVersion="${loader_version_range}"
+license="${mod_license}"
 issueTrackerURL="https://github.com/Zuxelus/Energy-Control/issues"
 
 [[mods]]
-modId="energycontrol"
-version="${file.jarVersion}"
-displayName="Energy Control"
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/energy-control"
 logoFile="logo.png"
 credits="Remastered by Zuxelus, originally created by Shedar, based on an original idea by Nargon and Noosius"
-authors="Zuxelus"
-description='''
-Energy Control is a remastered version of original Nuclear Control, an Industrial Craft 2 addon that allows you to build efficient monitoring and notification system for your energy flow.
-'''
-
-[[dependencies.energycontrol]]
+authors="${mod_authors}"
+description='''${mod_description}'''
+[[dependencies.${mod_id}]]
     modId="forge"
     mandatory=true
-    versionRange="[47,)"
+    versionRange="${forge_version_range}"
     ordering="NONE"
     side="BOTH"
 
-[[dependencies.energycontrol]]
+[[dependencies.${mod_id}]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.20.1,1.21)"
+    versionRange="${minecraft_version_range}"
     ordering="NONE"
     side="BOTH"

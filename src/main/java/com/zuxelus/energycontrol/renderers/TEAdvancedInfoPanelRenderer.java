@@ -11,6 +11,7 @@ import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -74,7 +75,7 @@ public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 
 			CubeRenderer.rotateBlockText(matrixStack, te.getFacing(), te.getRotation());
 
-			if (te.powered) {
+			if (te.getPowered()) {
 				List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
 				if (joinedData != null)
 					drawText(te, joinedData, matrixStack, buffer, combinedLight, thickness, offset);
@@ -225,23 +226,24 @@ public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 		if (panel.getColored())
 			colorHex = panel.getColorText();
 		for (PanelString panelString : joinedData) {
-			/*if (panelString.textLeft != null) {
+			if (panelString.textLeft != null) {
 				font.drawInBatch(panelString.textLeft, offsetX - realWidth / 2,
 						1 + offsetY - realHeight / 2 + row * lineHeight,
-						panelString.colorLeft != 0 ? panelString.colorLeft : colorHex, false, matrixStack.last().pose(), buffer, false, 0, combinedLight);
+						panelString.colorLeft != 0 ? panelString.colorLeft : colorHex, false, matrixStack.last().pose(),
+						buffer, Font.DisplayMode.POLYGON_OFFSET, 0, LightTexture.FULL_BRIGHT);
 			}
 			if (panelString.textCenter != null) {
 				font.drawInBatch(panelString.textCenter,
-						-font.width(panelString.textCenter) / 2,
-						offsetY - realHeight / 2 + row * lineHeight,
-						panelString.colorCenter != 0 ? panelString.colorCenter : colorHex, false, matrixStack.last().pose(), buffer, false, 0, combinedLight);
+						-font.width(panelString.textCenter) / 2, offsetY - realHeight / 2 + row * lineHeight,
+						panelString.colorCenter != 0 ? panelString.colorCenter : colorHex, false, matrixStack.last().pose(),
+						buffer, Font.DisplayMode.POLYGON_OFFSET, 0, LightTexture.FULL_BRIGHT);
 			}
 			if (panelString.textRight != null) {
 				font.drawInBatch(panelString.textRight,
-						realWidth / 2 - font.width(panelString.textRight),
-						offsetY - realHeight / 2 + row * lineHeight,
-						panelString.colorRight != 0 ? panelString.colorRight : colorHex, false, matrixStack.last().pose(), buffer, false, 0, combinedLight);
-			}*/
+						realWidth / 2 - font.width(panelString.textRight), offsetY - realHeight / 2 + row * lineHeight,
+						panelString.colorRight != 0 ? panelString.colorRight : colorHex, false, matrixStack.last().pose(),
+						buffer, Font.DisplayMode.POLYGON_OFFSET, 0, LightTexture.FULL_BRIGHT);
+			}
 			row++;
 		}
 	}

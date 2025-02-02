@@ -133,7 +133,7 @@ public class TileEntityHoloPanelRenderer implements BlockEntityRenderer<TileEnti
 			int colorHex = 0x000000;
 			if (panel.getColored())
 				colorHex = panel.getColorText();
-			TileEntityInfoPanelRenderer.renderText(joinedData, displayWidth, displayHeight, colorHex, matrixStack, font);
+			TileEntityInfoPanelRenderer.renderText(joinedData, displayWidth, displayHeight, colorHex, matrixStack, font, buffer, combinedLight);
 		}
 	}
 

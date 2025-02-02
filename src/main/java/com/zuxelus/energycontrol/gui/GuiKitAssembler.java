@@ -44,8 +44,8 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 			renderInfoToolTip(matrixStack, slot, mouseX, mouseY);
 		else
 			renderTooltip(matrixStack, mouseX, mouseY);
-		/*if (isHovering(165, 16, 4, 52, mouseX, mouseY))
-			renderTooltip(matrixStack, Component.literal(String.format("%d FE/%d FE", (int) container.te.getEnergy(), TileEntityKitAssembler.CAPACITY)), mouseX, mouseY);*/
+		if (isHovering(165, 16, 4, 52, mouseX, mouseY))
+			matrixStack.renderTooltip(this.font, Component.literal(String.format("%d FE/%d FE", (int) container.te.getEnergy(), TileEntityKitAssembler.CAPACITY)), mouseX, mouseY);
 	}
 
 	private void renderInfoToolTip(GuiGraphics matrixStack, Slot slot, int x, int y) {
@@ -62,7 +62,7 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 				if (panelString.textLeft != null)
 					list.add(Component.literal(ChatFormatting.GRAY + panelString.textLeft));
 			}
-		//renderTooltip(matrixStack, list, stack.getTooltipImage(), x, y);
+		matrixStack.renderTooltip(this.font, list, stack.getTooltipImage(), x, y);
 	}
 
 	@Override

@@ -31,7 +31,7 @@ public class GuiHoloPanel extends GuiPanelBase<ContainerHoloPanel> {
 	public GuiHoloPanel(ContainerHoloPanel container, Inventory inventory, Component title) {
 		super(container, inventory, title, TEXTURE);
 		imageHeight = 201;
-		panel = (TileEntityInfoPanel) container.te;
+		panel = container.te;
 		name = I18n.get("block.energycontrol.holo_panel");
 	}
 

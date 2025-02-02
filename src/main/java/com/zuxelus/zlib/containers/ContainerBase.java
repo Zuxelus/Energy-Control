@@ -19,6 +19,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class ContainerBase<T extends Container> extends AbstractContainerMenu {
 	public final T te;
@@ -56,16 +57,16 @@ public abstract class ContainerBase<T extends Container> extends AbstractContain
 	}
 
 	@Override
-	public boolean stillValid(Player player) {
+	public boolean stillValid(@NotNull Player player) {
 		if (posCallable == null || block == null)
 			return true;
 		return stillValid(posCallable, player, block);
 	}
 
 	@Override
-	public ItemStack quickMoveStack(Player player, int index) {
+	public @NotNull ItemStack quickMoveStack(@NotNull Player player, int index) {
 		Slot slot = slots.get(index);
-		if (slot == null || !slot.hasItem())
+		if (!slot.hasItem())
 			return ItemStack.EMPTY;
 
 		ItemStack stack = slot.getItem();

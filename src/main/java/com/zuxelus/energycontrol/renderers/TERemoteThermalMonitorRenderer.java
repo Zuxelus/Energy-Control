@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.renderers;
 
+import net.minecraft.client.renderer.*;
 import org.joml.Matrix4f;
 
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -15,10 +16,6 @@ import com.zuxelus.energycontrol.tileentities.TileEntityRemoteThermalMonitor;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
 import net.minecraft.core.Direction;
@@ -88,7 +85,7 @@ public class TERemoteThermalMonitorRenderer implements BlockEntityRenderer<TileE
 		matrixStack.scale(0.015625F, 0.015625F, 0.015625F);
 
 		String text = Integer.toString(level);
-		//font.drawInBatch(text, -font.width(text) / 2, -font.lineHeight, 0x000000, false, matrixStack.last().pose(), buffer, false, 0, combinedLight);
+		font.drawInBatch(text, -font.width(text) / 2, -font.lineHeight, 0x000000, false, matrixStack.last().pose(), buffer, Font.DisplayMode.POLYGON_OFFSET, 0, LightTexture.FULL_BRIGHT);
 		matrixStack.popPose();
 	}
 

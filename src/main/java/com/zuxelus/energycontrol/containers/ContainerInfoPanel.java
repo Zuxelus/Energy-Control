@@ -22,7 +22,6 @@ public class ContainerInfoPanel extends ContainerBase<TileEntityInfoPanel> {
 	public ContainerInfoPanel(int windowId, Inventory inventory, TileEntityInfoPanel panel) {
 		super(panel, ModContainerTypes.info_panel.get(), windowId, ModItems.info_panel.get(), ContainerLevelAccess.create(panel.getLevel(), panel.getBlockPos()));
 		addSlot(new SlotCard(panel, 0, 8, 24 + 18) {
-			@SuppressWarnings("resource")
 			@Override
 			public void setChanged() {
 				if (panel.getLevel().isClientSide)
@@ -31,7 +30,6 @@ public class ContainerInfoPanel extends ContainerBase<TileEntityInfoPanel> {
 		});
 		addSlot(new SlotRange(panel, 1, 8, 24 + 18 * 2));
 		addSlot(new SlotColor(panel, 2, 8, 24 + 18 * 3) {
-			@SuppressWarnings("resource")
 			@Override
 			public void setChanged() {
 				if (panel.getLevel().isClientSide)

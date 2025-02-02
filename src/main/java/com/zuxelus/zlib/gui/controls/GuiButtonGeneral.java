@@ -12,7 +12,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiButtonGeneral extends Button {
-	private ResourceLocation texture;
+	private final ResourceLocation texture;
 	public int textureLeft;
 	protected int textureTop;
 	public int textureTopOff;
@@ -33,7 +33,7 @@ public class GuiButtonGeneral extends Button {
 	}
 
 	public GuiButtonGeneral(int left, int top, int width, int height, Component text, ResourceLocation texture, int textureLeft, int textureTop, int textureTopOff, String tooltip, Button.OnPress onPress) {
-		super(left, top, width, height, text, onPress, null);
+		super(left, top, width, height, text, onPress, Button.DEFAULT_NARRATION);
 		this.texture = texture;
 		this.textureLeft = textureLeft;
 		this.textureTop = textureTop;

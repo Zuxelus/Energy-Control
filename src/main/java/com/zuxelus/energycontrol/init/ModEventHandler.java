@@ -1,12 +1,15 @@
 package com.zuxelus.energycontrol.init;
 
 import com.zuxelus.energycontrol.EnergyControl;
+//import com.zuxelus.energycontrol.containers.slots.SlotHandler;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.recipes.KitAssemblerRecipeType;
 import com.zuxelus.energycontrol.tileentities.*;
 
+//import net.minecraft.data.DataGenerator;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+//import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -42,4 +45,10 @@ public class ModEventHandler {
 
 		CrossModLoader.registerItems(event);
 	}
+
+	/*@SubscribeEvent
+	public static void onGatherData(GatherDataEvent event) {
+		DataGenerator generator = event.getGenerator();
+		generator.addProvider(event.includeClient(), new SlotHandler(generator.getPackOutput(), event.getExistingFileHelper()));
+	}*/
 }

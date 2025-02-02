@@ -171,7 +171,7 @@ public class ScreenManager {
 	}
 
 	@SuppressWarnings("resource")
-	public void registerInfoPanelExtender(TileEntityInfoPanelExtender extender) {
+	public void registerInfoPanelExtender(TileEntityInfoPanelExtender extender) { // server
 		if (extender.getLevel().isClientSide)
 			return;
 		if (!screens.containsKey(getWorldKey(extender.getLevel())))

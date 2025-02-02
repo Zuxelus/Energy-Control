@@ -20,6 +20,7 @@ import appeng.blockentity.storage.ChestBlockEntity;
 import appeng.blockentity.storage.DriveBlockEntity;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -141,5 +142,16 @@ public class CrossAppEng extends CrossModBase {
 		event.register("card_app_eng", ModItems.card_app_eng);
 		ModItems.card_app_eng_inv = new ItemCardAppEngInv();
 		event.register("card_app_eng_inv", ModItems.card_app_eng_inv);
+	}
+
+	@Override
+	public void addKitsToCreativeTab(CreativeModeTab.Output output) {
+		output.accept(ModItems.kit_app_eng);
+	}
+
+	@Override
+	public void addCardsToCreativeTab(CreativeModeTab.Output output) {
+		output.accept(ModItems.card_app_eng);
+		output.accept(ModItems.card_app_eng_inv);
 	}
 }

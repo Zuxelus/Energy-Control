@@ -23,6 +23,7 @@ import it.zerono.mods.zerocore.lib.multiblock.AbstractMultiblockController;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -176,5 +177,15 @@ public class CrossBigReactors extends CrossModBase {
 		event.register("kit_big_reactors", ModItems.kit_big_reactors);
 		ModItems.card_big_reactors = new ItemCardBigReactors();
 		event.register("card_big_reactors", ModItems.card_big_reactors);
+	}
+
+	@Override
+	public void addKitsToCreativeTab(CreativeModeTab.Output output) {
+		output.accept(ModItems.kit_big_reactors);
+	}
+
+	@Override
+	public void addCardsToCreativeTab(CreativeModeTab.Output output) {
+		output.accept(ModItems.card_big_reactors);
 	}
 }

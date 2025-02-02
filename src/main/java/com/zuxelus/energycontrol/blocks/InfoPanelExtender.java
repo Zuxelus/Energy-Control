@@ -42,10 +42,10 @@ public class InfoPanelExtender extends FacingBlockActive {
 		TileEntityInfoPanel panel = ((TileEntityInfoPanelExtender) te).getCore();
 		if (panel == null)
 			return InteractionResult.PASS;
-		if (EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) panel).getFacing() == hit.getDirection())
-			if (((TileEntityInfoPanel) panel).runTouchAction(player.getItemInHand(hand), pos, hit.getLocation()))
+		if (EnergyControl.altPressed.get(player) && panel.getFacing() == hit.getDirection())
+			if (panel.runTouchAction(player.getItemInHand(hand), pos, hit.getLocation()))
 				return InteractionResult.SUCCESS;
-		NetworkHooks.openScreen((ServerPlayer) player, (TileEntityInfoPanel) panel, pos);
+		NetworkHooks.openScreen((ServerPlayer) player, panel, pos);
 		return InteractionResult.SUCCESS;
 	}
 

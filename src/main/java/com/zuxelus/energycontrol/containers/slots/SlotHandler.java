@@ -1,33 +1,43 @@
-package com.zuxelus.energycontrol.containers.slots;
+/*package com.zuxelus.energycontrol.containers.slots;
 
 import com.zuxelus.energycontrol.EnergyControl;
-
+import net.minecraft.client.renderer.texture.atlas.sources.SingleFile;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.common.data.SpriteSourceProvider;
 
-@EventBusSubscriber(modid = EnergyControl.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-public class SlotHandler {
-	private static final String BLOCK_ATLAS = "minecraft:textures/atlas/blocks.png";
+import java.util.Optional;
 
-	/*@SubscribeEvent
-	public static void loadTextures(TextureStitchEvent.Pre event) {
-		if (!event.getAtlas().location().toString().equals(BLOCK_ATLAS)) {
-			return;
-		}
-		registerTexture(event, EnergyControl.MODID + ":slots/slot_card");
-		registerTexture(event, EnergyControl.MODID + ":slots/slot_color");
-		registerTexture(event, EnergyControl.MODID + ":slots/slot_range");
-		registerTexture(event, EnergyControl.MODID + ":slots/slot_touch");
-		registerTexture(event, EnergyControl.MODID + ":slots/slot_power");
-		//registerTexture(event, "zlib:slots/slot_chargeable");
-		registerTexture(event, "zlib:slots/slot_dischargeable");
-		registerTexture(event, "zlib:slots/slot_transformer");
-	}
+public class SlotHandler extends SpriteSourceProvider {
+    public SlotHandler(PackOutput output, ExistingFileHelper fileHelper) {
+        super(output, fileHelper, EnergyControl.MODID);
+    }
 
-	private static void registerTexture(TextureStitchEvent.Pre event, String texture) {
-		event.addSprite(new ResourceLocation(texture));
-	}*/
-}
+    @Override
+    protected void addSources() {
+        SourceList blocks = atlas(InventoryMenu.BLOCK_ATLAS);
+        blocks.addSource(new SingleFile(
+                new ResourceLocation(EnergyControl.MODID + ":slots/slot_card"), Optional.empty()
+        ));
+        blocks.addSource(new SingleFile(
+                new ResourceLocation(EnergyControl.MODID + ":slots/slot_color"), Optional.empty()
+        ));
+        blocks.addSource(new SingleFile(
+                new ResourceLocation(EnergyControl.MODID + ":slots/slot_range"), Optional.empty()
+        ));
+        blocks.addSource(new SingleFile(
+                new ResourceLocation(EnergyControl.MODID + ":slots/slot_touch"), Optional.empty()
+        ));
+        blocks.addSource(new SingleFile(
+                new ResourceLocation(EnergyControl.MODID + ":slots/slot_power"), Optional.empty()
+        ));
+        blocks.addSource(new SingleFile(
+                new ResourceLocation("zlib:slots/slot_dischargeable"), Optional.empty()
+        ));
+        blocks.addSource(new SingleFile(
+                new ResourceLocation("zlib:slots/slot_transformer"), Optional.empty()
+        ));
+    }
+}*/

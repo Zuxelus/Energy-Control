@@ -9,7 +9,7 @@ import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.containers.ContainerTimer;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.network.PacketAlarm;
-import com.zuxelus.energycontrol.websockets.SocketClient;
+//import com.zuxelus.energycontrol.websockets.SocketClient;
 import com.zuxelus.zlib.containers.ContainerBase;
 
 import net.minecraft.server.level.ServerPlayer;
@@ -56,7 +56,7 @@ public class ServerTickHandler {
 
 	@SubscribeEvent
 	public void onServerTick(ServerTickEvent event) {
-		if (event.phase == Phase.END && ConfigHandler.WS_ENABLED.get())
+		/*if (event.phase == Phase.END && ConfigHandler.WS_ENABLED.get())
 			if (updateTicker-- < 0) {
 				updateTicker = ConfigHandler.WS_REFRESH_RATE.get() - 1;
 				if (!cards.isEmpty()) {
@@ -69,10 +69,10 @@ public class ServerTickHandler {
 					SocketClient.sendMessage(json.toString());
 					cards.clear();
 				}
-			}
+			}*/
 	}
 
-	@SubscribeEvent
+	/*@SubscribeEvent
 	public void onServerStarting(ServerStartingEvent event) {
 		if (ConfigHandler.WS_ENABLED.get() && !ConfigHandler.WS_HOST.get().isEmpty())
 			SocketClient.connect(ConfigHandler.WS_HOST.get(), ConfigHandler.WS_PORT.get());
@@ -82,5 +82,5 @@ public class ServerTickHandler {
 	public void onServerStopping(ServerStoppingEvent event) {
 		if (ConfigHandler.WS_ENABLED.get())
 			SocketClient.close();
-	}
+	}*/
 }

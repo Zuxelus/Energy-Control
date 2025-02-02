@@ -1,10 +1,13 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import com.zuxelus.energycontrol.blocks.HoloPanelExtender;
+import com.zuxelus.energycontrol.blocks.InfoPanelExtender;
 import com.zuxelus.energycontrol.containers.ContainerAdvancedInfoPanel;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 
+import com.zuxelus.zlib.blocks.FacingBlockActive;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -16,6 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	public static final String NAME = "info_panel_advanced";
@@ -94,9 +98,11 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 			break;
 		}
 		if (newPowered != powered) {
-			powered = newPowered;
-			if (screen != null)
-				screen.turnPower(powered, level);
+			powered = newPowered; // update powered on server side
+			BlockPos pos = getBlockPos();
+			BlockState state = level.getBlockState(pos);
+			level.setBlock(pos, state.setValue(FacingBlockActive.ACTIVE, newPowered), 2);
+			updateExtenders(level, newPowered);
 		}
 	}
 
@@ -233,12 +239,12 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 
 	// MenuProvider
 	@Override
-	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
+	public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory inventory, @NotNull Player player) {
 		return new ContainerAdvancedInfoPanel(windowId, inventory, this);
 	}
 
 	@Override
-	public Component getDisplayName() {
+	public @NotNull Component getDisplayName() {
 		return Component.translatable(ModItems.info_panel_advanced.get().getDescriptionId());
 	}
 }

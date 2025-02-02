@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol;
 
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.init.ModItems;
 
 import net.minecraft.core.registries.Registries;
@@ -42,6 +43,7 @@ public class ECCreativeTab {
 						addItem(output, ModItems.kit_liquid_advanced);
 						addItem(output, ModItems.kit_redstone);
 						addItem(output, ModItems.kit_toggle);
+						CrossModLoader.addKitsToCreativeTab(output);
 						addItem(output, ModItems.card_holder);
 						addItem(output, ModItems.card_energy);
 						addItem(output, ModItems.card_energy_array);
@@ -53,6 +55,7 @@ public class ECCreativeTab {
 						addItem(output, ModItems.card_text);
 						addItem(output, ModItems.card_time);
 						addItem(output, ModItems.card_toggle);
+						CrossModLoader.addCardsToCreativeTab(output);
 						addItem(output, ModItems.upgrade_range);
 						addItem(output, ModItems.upgrade_color);
 						addItem(output, ModItems.upgrade_touch);
