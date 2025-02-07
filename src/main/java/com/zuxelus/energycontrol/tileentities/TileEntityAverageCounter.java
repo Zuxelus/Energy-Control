@@ -179,8 +179,8 @@ public class TileEntityAverageCounter extends TileEntityEnergyStorage {
 		if (stack != null && stack.isItemEqual(CrossModLoader.getCrossMod(ModIDs.IC2).getItemStack("transformer")))
 			upgradeCountTransormer = stack.stackSize;
 		upgradeCountTransormer = Math.min(upgradeCountTransormer, 4);
+		output = BASE_PACKET_SIZE * (int) Math.pow(4D, upgradeCountTransormer);
 		if (worldObj != null && !worldObj.isRemote) {
-			output = BASE_PACKET_SIZE * (int) Math.pow(4D, upgradeCountTransormer);
 			capacity = output * 2;
 			tier = upgradeCountTransormer + 1;
 

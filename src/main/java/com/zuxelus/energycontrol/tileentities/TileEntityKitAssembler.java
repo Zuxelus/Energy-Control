@@ -33,7 +33,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 @Optional.InterfaceList({
 	@Optional.Interface(modid = ModIDs.IC2, iface = "ic2.api.energy.tile.IEnergySink"),
 	@Optional.Interface(modid = ModIDs.HBM, iface = "api.hbm.energymk2.IEnergyReceiverMK2"),
-	@Optional.Interface(modid = ModIDs.THERMAL_EXPANSION, iface = "cofh.redstoneflux.api.IEnergyReceiver"),
+	@Optional.Interface(modid = ModIDs.THERMAL_EXPANSION, iface = "cofh.api.energy.IEnergyReceiver"),
 })
 public class TileEntityKitAssembler extends TileEntityInventory implements ITilePacketHandler, ISlotItemFilter, IEnergySink, IEnergyReceiverMK2, IEnergyReceiver {
 	public static final byte SLOT_INFO = 0;

@@ -39,10 +39,14 @@ public class GuiAverageCounter extends GuiContainerBase {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+		double average = container.te.getClientAverage();
 		drawCenteredText(name, xSize, 6);
 		drawLeftAlignedText(I18n.format("container.inventory"), 8, (ySize - 96) + 2);
-		drawCenteredText(I18n.format("msg.ec.InfoPanelOutput", PanelString.getFormatter().format(container.te.getClientAverage())), xSize, 22);
+		drawCenteredText(I18n.format("msg.ec.InfoPanelOutput", PanelString.getFormatter().format(average)), xSize, 22);
 		drawCenteredText(I18n.format("msg.ec.AverageCounterPeriod", container.te.period), xSize, 32);
+		if (average >= container.te.getOutput()) {
+			drawCenteredText(I18n.format("msg.ec.CounterWarning"), xSize, 64, 0xFF0000);
+		}
 	}
 
 	@Override

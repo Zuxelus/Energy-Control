@@ -320,6 +320,7 @@ msg.ec.cbInfoPanelUsing=Using
 msg.ec.EnergyCardQuantity=Cards quantity: %d
 msg.ec.AverageCounterPeriod=Period: %ssec
 msg.ec.LiquidCardQuantity=Cards quantity: %d
+msg.ec.CounterWarning=Use Transformer Upgrade!
 
 msg.ec.Reset=Reset
 msg.ec.ScreenColor=Screen Color
