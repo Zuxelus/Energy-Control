@@ -25,7 +25,7 @@ import com.zuxelus.energycontrol.recipes.Recipes;
 import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
-import api.hbm.fluid.IFluidUser;
+import api.hbm.fluidmk2.IFluidUserMK2;
 import api.hbm.tile.IInfoProviderEC;
 import net.minecraft.block.Block;
 import net.minecraft.init.Items;
@@ -108,8 +108,8 @@ public class CrossHBM extends CrossModBase {
 			te = te.getWorldObj().getTileEntity(((TileEntityDummy) te).targetX, ((TileEntityDummy) te).targetY, ((TileEntityDummy) te).targetZ);
 		}
 		List<FluidInfo> result = new ArrayList<>();
-		if (te instanceof IFluidUser) {
-			FluidTank[] list = ((IFluidUser) te).getAllTanks();
+		if (te instanceof IFluidUserMK2) {
+			FluidTank[] list = ((IFluidUserMK2) te).getAllTanks();
 			if (list.length == 0)
 				return null;
 			for (FluidTank tank : list)

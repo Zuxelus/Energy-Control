@@ -53,7 +53,7 @@ public class CrossModLoader {
 			Matcher matcher = Pattern.compile("\\d\\d\\d\\d").matcher(container.getVersion());
 			if (matcher.find()) {
 				int version = Integer.parseInt(container.getVersion().substring(matcher.start(), matcher.end()));
-				if (version >= 4977)
+				if (version >= 5336)
 					loadCrossModSafely(ModIDs.HBM, () -> CrossHBM::new);
 			}
 		}
