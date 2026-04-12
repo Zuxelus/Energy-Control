@@ -14,6 +14,10 @@ public class CubeRenderer {
 	private int displayList;
 	private CubeBox cube;
 	
+	public int getDisplayList() {
+		return displayList;
+	}
+	
 	public CubeRenderer(int faceOffsetX, int faceOffsetY) {
 		this(0.0F, 0.0F, 0.0F, 32, 32, 32, 128, 192, faceOffsetX, faceOffsetY);
 	}

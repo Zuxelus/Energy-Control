@@ -10,6 +10,7 @@ import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -97,20 +98,27 @@ public class TEAdvancedInfoPanelRenderer extends TileEntitySpecialRenderer {
 		int rotateHor = te.rotateHor / 7;
 		int rotateVert = te.rotateVert / 7;
 		RotationOffset offset = new RotationOffset(thickness * 2, rotateHor, rotateVert);
-		Screen screen = te.getScreen();
-		if (screen != null) {
-			if (thickness == 16 && rotateHor == 0 && rotateVert == 0)
-				model[textureId].render(0.03125F);
-			else
-				new CubeRenderer(textureId / 4 * 32 + 64, textureId % 4 * 32 + 64, offset.addOffset(screen, te.xCoord, te.yCoord, te.zCoord, te.getFacingForge(), te.getRotation())).render(0.03125F);
-			if (te.powered) {
-				List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
-				if (joinedData != null)
-					drawText(te, joinedData, thickness, offset);
-			}
+	Screen screen = te.getScreen();
+	CubeRenderer dynamicRenderer = null;
+	if (screen != null) {
+		if (thickness == 16 && rotateHor == 0 && rotateVert == 0)
+			model[textureId].render(0.03125F);
+		else {
+			dynamicRenderer = new CubeRenderer(textureId / 4 * 32 + 64, textureId % 4 * 32 + 64, offset.addOffset(screen, te.xCoord, te.yCoord, te.zCoord, te.getFacingForge(), te.getRotation()));
+			dynamicRenderer.render(0.03125F);
 		}
-		GL11.glPopMatrix();
+		if (te.powered) {
+			List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
+			if (joinedData != null)
+				drawText(te, joinedData, thickness, offset);
+		}
+		
+		if (dynamicRenderer != null) {
+			GLAllocation.deleteDisplayLists(dynamicRenderer.getDisplayList());
+		}
 	}
+	GL11.glPopMatrix();
+}
 
 	@SuppressWarnings("incomplete-switch")
 	private void drawText(TileEntityAdvancedInfoPanel panel, List<PanelString> joinedData, byte thickness, RotationOffset offset) {
