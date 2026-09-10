@@ -35,14 +35,18 @@ public class CrossModLoader {
 		loadCrossModSafely(ModIDs.COMPUTER_CRAFT, () -> CrossComputerCraft::new);
 		loadCrossModSafely(ModIDs.DRACONIC_EVOLUTION, () -> CrossDraconicEvolution::new);
 		if (Loader.isModLoaded(ModIDs.GREGTECH)) {
-			ModContainer container = Loader.instance().getIndexedModList().get(ModIDs.GREGTECH);
-			if (container != null) {
-				Object mod = container.getMod();
-				if (mod != null) {
-					if (mod.getClass().getName().equals("gregtech.GT6_Main"))
-						loadCrossMod(ModIDs.GREGTECH, CrossGregTech6::new);
-					if (mod.getClass().getName().equals("gregtech.GT_Mod"))
-						loadCrossMod(ModIDs.GREGTECH, CrossGregTech5u::new);
+			if (Loader.isModLoaded("gregtech_nh")) {
+				loadCrossMod(ModIDs.GREGTECH, CrossGregTechGTNH::new);
+			} else {
+				ModContainer container = Loader.instance().getIndexedModList().get(ModIDs.GREGTECH);
+				if (container != null) {
+					Object mod = container.getMod();
+					if (mod != null) {
+						if (mod.getClass().getName().equals("gregtech.GT6_Main"))
+							loadCrossMod(ModIDs.GREGTECH, CrossGregTech6::new);
+						if (mod.getClass().getName().equals("gregtech.GT_Mod"))
+							loadCrossMod(ModIDs.GREGTECH, CrossGregTech5u::new);
+					}
 				}
 			}
 		}
@@ -53,7 +57,7 @@ public class CrossModLoader {
 			Matcher matcher = Pattern.compile("\\d\\d\\d\\d").matcher(container.getVersion());
 			if (matcher.find()) {
 				int version = Integer.parseInt(container.getVersion().substring(matcher.start(), matcher.end()));
-				if (version >= 5336)
+				if (version >= 5687)
 					loadCrossModSafely(ModIDs.HBM, () -> CrossHBM::new);
 			}
 		}

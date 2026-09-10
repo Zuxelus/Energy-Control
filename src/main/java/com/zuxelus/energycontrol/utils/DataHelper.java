@@ -11,6 +11,7 @@ public class DataHelper {
 	public static final String AMOUNTL = "amountL";
 	public static final String CAPACITY = "capacity";
 	public static final String CAPACITYL = "capacityL";
+	public static final String CAPACITYMB = "capacitymb";
 	public static final String CAPACITYHU = "capacityHU";
 	public static final String CAPACITYKU = "capacityKU";
 	public static final String CAPACITYTU = "capacityTU";

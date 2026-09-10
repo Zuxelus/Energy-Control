@@ -74,6 +74,8 @@ public class ItemCardGregTech extends ItemCardBase {
 			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble(DataHelper.OUTPUTRU), "RU/t", showLabels));
 		if (reader.hasField(DataHelper.OUTPUTST) && (settings & 2) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble(DataHelper.OUTPUTST), "Steam/t", showLabels));
+		if (reader.hasField(DataHelper.OUTPUTMB) && (settings & 2) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelOutput", reader.getDouble(DataHelper.OUTPUTST), "mB/t", showLabels));
 		if (reader.hasField(DataHelper.CONSUMPTION) && (settings & 2) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelConsumption", reader.getDouble(DataHelper.CONSUMPTION), "EU/t", showLabels));
 		if (reader.hasField(DataHelper.CONSUMPTIONHU) && (settings & 2) > 0)
@@ -96,6 +98,8 @@ public class ItemCardGregTech extends ItemCardBase {
 			result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getDouble(DataHelper.CAPACITY), "EU", showLabels));
 		if (reader.hasField(DataHelper.CAPACITYL) && (settings & 2) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getDouble(DataHelper.CAPACITYL), "L", showLabels));
+		if (reader.hasField(DataHelper.CAPACITYMB) && (settings & 2) > 0)
+			result.add(new PanelString("msg.ec.InfoPanelCapacity", reader.getDouble(DataHelper.CAPACITYMB), "mB", showLabels));
 		if (reader.hasField("limit0") && (settings & 2) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelLimitDischarge", reader.getDouble("limit0"), "EU", showLabels));
 		if (reader.hasField("limit1") && (settings & 2) > 0)
