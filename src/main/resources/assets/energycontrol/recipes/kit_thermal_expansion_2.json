@@ -14,8 +14,8 @@
         "data": 29
     },
 	"result": {
-		"item": "energycontrol:item_kit",
-		"data": 17
+		"item": "energycontrol:kit_thermal_expansion",
+		"count": 17
 	},
 	"time": 1000,
 	"conditions": [

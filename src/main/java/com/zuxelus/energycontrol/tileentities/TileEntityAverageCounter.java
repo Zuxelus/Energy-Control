@@ -145,15 +145,6 @@ public class TileEntityAverageCounter extends TileEntityEnergyStorage implements
 	}
 
 	@Override
-	public void onLoad() {
-		super.onLoad();
-		if (!init) {
-			init = true;
-			refreshData();
-		}
-	}
-
-	@Override
 	public void drawEnergy(double amount) {
 		super.drawEnergy(amount);
 		data[index] += amount;
@@ -163,6 +154,11 @@ public class TileEntityAverageCounter extends TileEntityEnergyStorage implements
 	public void update() {
 		if (world.isRemote)
 			return;
+
+		if (!init) {
+			init = true;
+			refreshData();
+		}
 
 		index = (index + 1) % DATA_POINTS;
 		data[index] = 0;

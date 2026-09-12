@@ -50,7 +50,13 @@ public class CrossModLoader {
 		loadCrossModSafely(ModIDs.ENDER_IO, () -> CrossEnderIO::new);
 		loadCrossMod(ModIDs.GALACTICRAFT_PLANETS, CrossGalacticraft::new);
 		loadCrossMod(ModIDs.GREGTECH, CrossGregTech::new);
-		loadCrossModSafely(ModIDs.HBM, () -> CrossHBM::new);
+		ModContainer hbm = Loader.instance().getIndexedModList().get(ModIDs.HBM);
+		if (hbm != null) {
+			if (hbm.getName().equals("HBM's Nuclear Tech - Community Edition"))
+				loadCrossModSafely(ModIDs.HBM, () -> CrossHBMCE::new);
+			//else
+			//	loadCrossModSafely(ModIDs.HBM, () -> CrossHBM::new);
+		}
 		loadCrossMod(ModIDs.MEKANISM, CrossMekanism::new);
 		loadCrossMod(ModIDs.MEKANISM_GENERATORS, CrossMekanismGenerators::new);
 		ModContainer nc = Loader.instance().getIndexedModList().get(ModIDs.NUCLEAR_CRAFT);

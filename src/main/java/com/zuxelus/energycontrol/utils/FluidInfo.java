@@ -80,7 +80,7 @@ public class FluidInfo {
 		reader.setLong(String.format("_%dcapacity", i), capacity);
 	}
 
-	public static void addTank(String name, NBTTagCompound tag, FluidTank tank) {
+	public static void addTank(String name, NBTTagCompound tag, IFluidTank tank) {
 		FluidStack stack = tank.getFluid();
 		if (stack == null)
 			tag.setString(name, "N/A");
