@@ -204,11 +204,6 @@ public class CrossHBM extends CrossModBase {
 			tag.setLong(DataHelper.ENERGY, m.power);
 			tag.setLong(DataHelper.CAPACITY, m.getMaxPower());
 			found = true;
-		} else if (te instanceof TileEntityMachineMiniRTG) {
-			TileEntityMachineMiniRTG m = (TileEntityMachineMiniRTG) te;
-			tag.setLong(DataHelper.ENERGY, m.power);
-			tag.setLong(DataHelper.CAPACITY, m.getMaxPower());
-			found = true;
 		} else if (te instanceof TileEntityMachineRadGen) {
 			TileEntityMachineRadGen m = (TileEntityMachineRadGen) te;
 			tag.setLong(DataHelper.ENERGY, m.power);
@@ -657,6 +652,15 @@ public class CrossHBM extends CrossModBase {
 			found = true;
 		} else if (te instanceof TileEntityFurnaceCombination) {
 			TileEntityFurnaceCombination m = (TileEntityFurnaceCombination) te;
+			addTank(DataHelper.TANK, tag, m.tank);
+			found = true;
+		} else if (te instanceof TileEntityMachineBlastFurnace) {
+			TileEntityMachineBlastFurnace m = (TileEntityMachineBlastFurnace) te;
+			addTank(DataHelper.TANK, tag, m.tanks[0]);
+			addTank(DataHelper.TANK2, tag, m.tanks[1]);
+			found = true;
+		} else if (te instanceof TileEntityMachineThresher) {
+			TileEntityMachineThresher m = (TileEntityMachineThresher) te;
 			addTank(DataHelper.TANK, tag, m.tank);
 			found = true;
 		} else if (te instanceof TileEntityHeatBoiler) {
