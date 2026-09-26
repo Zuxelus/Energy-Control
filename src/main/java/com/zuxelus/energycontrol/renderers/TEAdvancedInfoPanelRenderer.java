@@ -17,10 +17,11 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 
 public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEntityAdvancedInfoPanel> {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID + ":textures/block/info_panel/panel_advanced_all.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.parse(EnergyControl.MODID + ":textures/block/info_panel/panel_advanced_all.png");
 	private final Font font;
 
 	private static String implodeArray(String[] inputArray, String glueString) {
@@ -47,11 +48,11 @@ public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 	@Override
 	public void render(TileEntityAdvancedInfoPanel te, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
 		matrixStack.pushPose();
-		int[] light = TileEntityInfoPanelRenderer.getBlockLight(te);
+		int[] light = CubeRenderer.getBlockLight(te);
 		CubeRenderer.rotateBlock(matrixStack, te.getFacing(), te.getRotation());
 
 		int color = te.getColored() ? te.getColorBackground() : TileEntityAdvancedInfoPanel.DEFAULT_BACKGROUND;
-		VertexConsumer vertexBuilder = buffer.getBuffer(RenderType.entitySolid(TEXTURE));
+		VertexConsumer vertexBuilder = buffer.getBuffer(RenderType.entityCutout(TEXTURE));
 
 		int textureId = te.findTexture();
 		byte thickness = te.thickness;
@@ -61,18 +62,19 @@ public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 		int rotateVert = te.rotateVert / 7;
 		RotationOffset offset = new RotationOffset(thickness * 2, rotateHor, rotateVert);
 		Screen screen = te.getScreen();
-		if (screen != null) {
+		// the plain cube doesn't depend on the screen, so draw it even before the screen is known
+		if (screen == null || (thickness == 16 && rotateHor == 0 && rotateVert == 0)) {
+			CubeRenderer.MODEL.render(matrixStack, vertexBuilder, light, combinedOverlay);
+			VertexConsumer vertexScreen = buffer.getBuffer(RenderType.entitySolid(TileEntityInfoPanelRenderer.SCREEN));
+			TileEntityInfoPanelRenderer.drawFace(matrixStack.last(), vertexScreen, textureId, color, te.getPowered(), light[CubeRenderer.FACE], combinedOverlay);
+		} else {
 			RotationOffset offsetScreen = offset.addOffset(screen, te.getBlockPos(), te.getFacing(), te.getRotation());
-			if (thickness == 16 && rotateHor == 0 && rotateVert == 0) {
-				CubeRenderer.MODEL.render(matrixStack, vertexBuilder, light, combinedOverlay);
-				VertexConsumer vertexScreen = buffer.getBuffer(RenderType.entitySolid(TileEntityInfoPanelRenderer.SCREEN));
-				TileEntityInfoPanelRenderer.drawFace(matrixStack.last(), vertexScreen, te.findTexture(), color, te.getPowered(), combinedLight, combinedOverlay);
-			} else {
-				CubeRenderer.getModel(offsetScreen).render(matrixStack, vertexBuilder, light, combinedOverlay);
-				VertexConsumer vertexScreen = buffer.getBuffer(RenderType.entitySolid(TileEntityInfoPanelRenderer.SCREEN));
-				CubeRenderer.getFaceModel(offsetScreen, textureId).render(matrixStack, vertexBuilder, light, combinedOverlay, color);
-			}
+			CubeRenderer.getModel(offsetScreen).render(matrixStack, vertexBuilder, light, combinedOverlay);
+			VertexConsumer vertexScreen = buffer.getBuffer(RenderType.entitySolid(TileEntityInfoPanelRenderer.SCREEN));
+			CubeRenderer.getFaceModel(offsetScreen, textureId).render(matrixStack, vertexScreen, new int[] { TileEntityInfoPanelRenderer.getScreenLight(te.getPowered(), light[CubeRenderer.FACE]) }, combinedOverlay, color);
+		}
 
+		if (screen != null) {
 			CubeRenderer.rotateBlockText(matrixStack, te.getFacing(), te.getRotation());
 
 			if (te.getPowered()) {
@@ -155,8 +157,7 @@ public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 
 		matrixStack.translate(dy, dx, dz);
 		matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
-		switch (panel.getFacing()) {
-		case UP:
+		if (panel.getFacing() == Direction.UP) {
 			switch(panel.getRotation()) {
 			case UP:
 				break;

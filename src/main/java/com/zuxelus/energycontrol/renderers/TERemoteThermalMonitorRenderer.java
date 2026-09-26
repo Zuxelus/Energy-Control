@@ -1,44 +1,24 @@
 package com.zuxelus.energycontrol.renderers;
 
-import net.minecraft.client.renderer.*;
 import org.joml.Matrix4f;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Axis;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.tileentities.TileEntityRemoteThermalMonitor;
-import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 
 public class TERemoteThermalMonitorRenderer implements BlockEntityRenderer<TileEntityRemoteThermalMonitor> {
-	private static int[][] sides = new int[][] { { 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0 }, { 4, 5, 1, 0, 3, 2 },
-		{ 4, 5, 0, 1, 2, 3 }, { 4, 0, 3, 2, 1, 5 }, { 4, 1, 2, 3, 0, 5 } };
-	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/block/remote_thermal_monitor/all.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/block/remote_thermal_monitor/all.png");
 	private final Font font;
-
-	public static int[] getBlockLight(BlockEntityFacing te) {
-		int[] light = new int[6];
-		int[][] sides = new int[][] { { 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0 }, { 4, 5, 1, 0, 3, 2 },
-			{ 4, 5, 0, 1, 2, 3 }, { 4, 0, 3, 2, 1, 5 }, { 2, 3, 5, 4, 1, 0 } };
-		light[sides[te.getFacing().get3DDataValue()][0]] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.DOWN));
-		light[sides[te.getFacing().get3DDataValue()][1]] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.UP));
-		light[sides[te.getFacing().get3DDataValue()][2]] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.WEST));
-		light[sides[te.getFacing().get3DDataValue()][3]] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.EAST));
-		light[sides[te.getFacing().get3DDataValue()][4]] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.NORTH));
-		light[sides[te.getFacing().get3DDataValue()][5]] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.SOUTH));
-		return light;
-	}
 
 	public TERemoteThermalMonitorRenderer(Context ctx) {
 		font = ctx.getFont();
@@ -51,7 +31,7 @@ public class TERemoteThermalMonitorRenderer implements BlockEntityRenderer<TileE
 		CubeRenderer.rotateBlock(matrixStack, te.getFacing(), te.getRotation());
 
 		VertexConsumer vertexBuilder = buffer.getBuffer(RenderType.entitySolid(TEXTURE));
-		CubeRenderer.MODEL.render(matrixStack, vertexBuilder, TileEntityInfoPanelRenderer.getBlockLight(te), combinedOverlay);
+		CubeRenderer.MODEL.render(matrixStack, vertexBuilder, CubeRenderer.getBlockLight(te), combinedOverlay);
 		matrixStack.mulPose(Axis.YP.rotationDegrees(180.0F));
 		matrixStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
 		matrixStack.translate(0.0F, -0.5F, 0.001F);
@@ -64,19 +44,12 @@ public class TERemoteThermalMonitorRenderer implements BlockEntityRenderer<TileE
 			if (status > -1)
 				rate = Math.round((1 - Math.min((float) heat / level, 1)) * 16) / (float) 16;
 			
-			RenderSystem.enableDepthTest();
-			RenderSystem.setShader(GameRenderer::getPositionTexShader);
-			RenderSystem.setShaderTexture(0, TEXTURE);
-			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-			Tesselator tessellator = Tesselator.getInstance();
-			BufferBuilder bufferbuilder = tessellator.getBuilder();
-			bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+			VertexConsumer bar = buffer.getBuffer(ModRenderTypes.screenImage(TEXTURE));
 			Matrix4f matrix = matrixStack.last().pose();
-			bufferbuilder.vertex(matrix, rate, 0, 0).uv(rate * 0.25F, 0).endVertex();
-			bufferbuilder.vertex(matrix, 1, 0, 0).uv(0.25F, 0).endVertex();
-			bufferbuilder.vertex(matrix, 1.0F, 0.75F, 0).uv(0.25F, 0.1875F).endVertex();
-			bufferbuilder.vertex(matrix, rate, 0.75F, 0).uv(rate * 0.25F, 0.1875F).endVertex();
-			tessellator.end();
+			bar.vertex(matrix, rate, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).uv(rate * 0.25F, 0).uv2(LightTexture.FULL_BRIGHT).endVertex();
+			bar.vertex(matrix, 1, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).uv(0.25F, 0).uv2(LightTexture.FULL_BRIGHT).endVertex();
+			bar.vertex(matrix, 1.0F, 0.75F, 0).color(1.0F, 1.0F, 1.0F, 1.0F).uv(0.25F, 0.1875F).uv2(LightTexture.FULL_BRIGHT).endVertex();
+			bar.vertex(matrix, rate, 0.75F, 0).color(1.0F, 1.0F, 1.0F, 1.0F).uv(rate * 0.25F, 0.1875F).uv2(LightTexture.FULL_BRIGHT).endVertex();
 		}
 
 		matrixStack.mulPose(Axis.XP.rotationDegrees(180.0F));

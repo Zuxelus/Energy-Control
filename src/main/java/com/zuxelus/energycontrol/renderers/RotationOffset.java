@@ -164,6 +164,9 @@ public class RotationOffset {
 					updateOffset(offset, -lengthZ, pos.getZ() - screen.minZ, 5);
 				if (rotateHor < 0)
 					updateOffset(offset, lengthZ, screen.maxZ - pos.getZ(), 10);
+				break;
+			default:
+				break;
 			}
 			break;
 		case DOWN:
@@ -207,6 +210,9 @@ public class RotationOffset {
 					updateOffset(offset, -lengthZ, pos.getZ() - screen.minZ, 5);
 				if (rotateHor < 0)
 					updateOffset(offset, lengthZ, screen.maxZ - pos.getZ(), 10);
+				break;
+			default:
+				break;
 			}
 			break;
 		default:

@@ -26,8 +26,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
 public class KitAssemblerRecipeCategory implements IRecipeCategory<KitAssemblerRecipe> {
-	public static final ResourceLocation id = new ResourceLocation(EnergyControl.MODID, "kit_assembler");
-	public static final ResourceLocation texture = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_kit_assembler.png");
+	public static final ResourceLocation id = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "kit_assembler");
+	public static final ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/gui_kit_assembler.png");
 	public static final RecipeType<KitAssemblerRecipe> recipeType = RecipeType.create(EnergyControl.MODID, "kit_assembler", KitAssemblerRecipe.class);
 	private static final Component title = Component.literal(I18n.get(ModItems.kit_assembler.get().getDescriptionId()));
 	private final IDrawable background;
@@ -43,8 +43,13 @@ public class KitAssemblerRecipeCategory implements IRecipeCategory<KitAssemblerR
 	}
 
 	@Override
-	public IDrawable getBackground() {
-		return background;
+	public int getWidth() {
+		return background.getWidth();
+	}
+
+	@Override
+	public int getHeight() {
+		return background.getHeight();
 	}
 
 	@Override
@@ -92,6 +97,7 @@ public class KitAssemblerRecipeCategory implements IRecipeCategory<KitAssemblerR
 
 	@Override
 	public void draw(KitAssemblerRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics matrixStack, double mouseX, double mouseY) {
+		background.draw(matrixStack);
 		animatedarrow.draw(matrixStack, 57, 19);
 	}
 }

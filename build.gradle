@@ -32,6 +32,8 @@ minecraft {
         }
 
         client {
+            arg '-mixin.config=energycontrol.mixins.json'
+            property 'mixin.env.disableRefMap', 'true'
             property 'forge.enabledGameTestNamespaces', mod_id
         }
 
@@ -77,18 +79,22 @@ repositories {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    compileOnly fg.deobf ("curse.maven:ae2-223794:5641282")
+    implementation 'io.netty:netty-codec-http:4.1.82.Final'
+    compileOnly fg.deobf ("curse.maven:ae2-223794:7148487")
     compileOnly fg.deobf ("curse.maven:cctweaked-282001:5714507")
-    compileOnly fg.deobf ("curse.maven:WTHIT-455982:5721801") //
+    compileOnly fg.deobf ("curse.maven:WTHIT-455982:7803622") //
     compileOnly fg.deobf ("curse.maven:badpackets-615134:4784395") //
-    compileOnly fg.deobf ("curse.maven:jei-238222:5772967")
-    compileOnly fg.deobf ("curse.maven:extremereactors-250277:5628515")
-    compileOnly fg.deobf ("curse.maven:zerocore-247921:5628510")
+    compileOnly fg.deobf ("curse.maven:biggerreactors-407780:6085277")
+    compileOnly fg.deobf ("curse.maven:phosphophyllite-412551:6085275")
+    compileOnly fg.deobf ("curse.maven:quartz-552262:5122746")
+    compileOnly fg.deobf ("curse.maven:jei-238222:8964933")
+    compileOnly fg.deobf ("curse.maven:extremereactors-250277:7344727")
+    compileOnly fg.deobf ("curse.maven:zerocore-247921:7344725")
     compileOnly fg.deobf ("curse.maven:advancedgenerators-223622:4670654")
     compileOnly fg.deobf ("curse.maven:bdlib-70496:4670650")
     compileOnly fg.deobf ("curse.maven:catsforce-320926:4810184")
-    compileOnly fg.deobf ("curse.maven:mekanism-268560:5662583")
-    compileOnly fg.deobf ("curse.maven:mekanismgenerators-268566:5662587")
+    compileOnly fg.deobf ("curse.maven:mekanism-268560:6552911")
+    compileOnly fg.deobf ("curse.maven:mekanismgenerators-268566:6552914")
 }
 
 tasks.named('processResources', ProcessResources).configure {

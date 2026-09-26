@@ -13,7 +13,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiCardHolder extends AbstractContainerScreen<ContainerCardHolder> {
-	private static final ResourceLocation TEXTURE = new ResourceLocation("textures/gui/container/generic_54.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.parse("textures/gui/container/generic_54.png");
 	private final int inventoryRows;
 	private Player player;
 	private String name;

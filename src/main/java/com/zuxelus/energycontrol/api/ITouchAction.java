@@ -2,6 +2,7 @@ package com.zuxelus.energycontrol.api;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -23,5 +24,5 @@ public interface ITouchAction {
 	/**
 	 * Used to draw objects onto Info Panel displays
 	 */
-	void renderImage(ICardReader reader, PoseStack matrixStack);
+	void renderImage(ICardReader reader, PoseStack matrixStack, MultiBufferSource buffer);
 }

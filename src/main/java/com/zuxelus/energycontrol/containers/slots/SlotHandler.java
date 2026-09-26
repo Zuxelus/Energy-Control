@@ -19,25 +19,25 @@ public class SlotHandler extends SpriteSourceProvider {
     protected void addSources() {
         SourceList blocks = atlas(InventoryMenu.BLOCK_ATLAS);
         blocks.addSource(new SingleFile(
-                new ResourceLocation(EnergyControl.MODID + ":slots/slot_card"), Optional.empty()
+                ResourceLocation.parse(EnergyControl.MODID + ":slots/slot_card"), Optional.empty()
         ));
         blocks.addSource(new SingleFile(
-                new ResourceLocation(EnergyControl.MODID + ":slots/slot_color"), Optional.empty()
+                ResourceLocation.parse(EnergyControl.MODID + ":slots/slot_color"), Optional.empty()
         ));
         blocks.addSource(new SingleFile(
-                new ResourceLocation(EnergyControl.MODID + ":slots/slot_range"), Optional.empty()
+                ResourceLocation.parse(EnergyControl.MODID + ":slots/slot_range"), Optional.empty()
         ));
         blocks.addSource(new SingleFile(
-                new ResourceLocation(EnergyControl.MODID + ":slots/slot_touch"), Optional.empty()
+                ResourceLocation.parse(EnergyControl.MODID + ":slots/slot_touch"), Optional.empty()
         ));
         blocks.addSource(new SingleFile(
-                new ResourceLocation(EnergyControl.MODID + ":slots/slot_power"), Optional.empty()
+                ResourceLocation.parse(EnergyControl.MODID + ":slots/slot_power"), Optional.empty()
         ));
         blocks.addSource(new SingleFile(
-                new ResourceLocation("zlib:slots/slot_dischargeable"), Optional.empty()
+                ResourceLocation.parse("zlib:slots/slot_dischargeable"), Optional.empty()
         ));
         blocks.addSource(new SingleFile(
-                new ResourceLocation("zlib:slots/slot_transformer"), Optional.empty()
+                ResourceLocation.parse("zlib:slots/slot_transformer"), Optional.empty()
         ));
     }
 }*/

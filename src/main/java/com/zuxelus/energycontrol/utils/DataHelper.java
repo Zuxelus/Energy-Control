@@ -34,7 +34,7 @@ public class DataHelper {
 	public static final String TANK4 = "tank4";
 	public static final String TANK5 = "tank5";
 
-	public static double getDouble(Class obj, String name, BlockEntity te) {
+	public static double getDouble(Class<?> obj, String name, BlockEntity te) {
 		try {
 			Field field = obj.getDeclaredField(name);
 			field.setAccessible(true);
@@ -43,7 +43,7 @@ public class DataHelper {
 		return 0.0D;
 	}
 
-	public static float getFloat(Class obj, String name, BlockEntity te) {
+	public static float getFloat(Class<?> obj, String name, BlockEntity te) {
 		try {
 			Field field = obj.getDeclaredField(name);
 			field.setAccessible(true);
@@ -52,7 +52,7 @@ public class DataHelper {
 		return 0.0F;
 	}
 
-	public static int getInt(Class obj, String name, BlockEntity te) {
+	public static int getInt(Class<?> obj, String name, BlockEntity te) {
 		try {
 			Field field = obj.getDeclaredField(name);
 			field.setAccessible(true);
@@ -61,7 +61,7 @@ public class DataHelper {
 		return 0;
 	}
 
-	public static short getShort(Class obj, String name, BlockEntity te) {
+	public static short getShort(Class<?> obj, String name, BlockEntity te) {
 		try {
 			Field field = obj.getDeclaredField(name);
 			field.setAccessible(true);

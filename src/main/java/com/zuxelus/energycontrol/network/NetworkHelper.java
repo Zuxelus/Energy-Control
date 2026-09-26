@@ -25,7 +25,7 @@ public class NetworkHelper {
 	public static SimpleChannel network;
 
 	public static void createChannel(String name, String version) {
-		network = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(name, "main"))
+		network = NetworkRegistry.ChannelBuilder.named(ResourceLocation.fromNamespaceAndPath(name, "main"))
 				.clientAcceptedVersions(version::equals).serverAcceptedVersions(version::equals)
 				.networkProtocolVersion(() -> version).simpleChannel();
 	}

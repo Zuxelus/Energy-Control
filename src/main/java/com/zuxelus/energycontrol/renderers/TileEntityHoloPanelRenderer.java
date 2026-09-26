@@ -102,6 +102,8 @@ public class TileEntityHoloPanelRenderer implements BlockEntityRenderer<TileEnti
 				dy = dy + power - 1F;
 				displayWidth += screen.maxZ - screen.minZ;
 				break;
+			default:
+				break;
 			}
 		}
 
@@ -120,20 +122,20 @@ public class TileEntityHoloPanelRenderer implements BlockEntityRenderer<TileEnti
 		case EAST:
 			matrixStack.mulPose(Axis.ZP.rotationDegrees(90));
 			break;
+		default:
+			break;
 		}
 		float imageWidth = 0.475F + (displayWidth - 0.875F) / 2F;
 		float imageHeight = 0.5F + (power - 1) / 2F;
 		if (partialTicks == -1) {
-			IHasBars.drawTransparentRect(matrixStack, imageWidth, imageHeight, -imageWidth, -imageHeight, -0.0001F, 0x40AADDDD);
-			matrixStack.mulPose(Axis.YP.rotationDegrees(180));
-			IHasBars.drawTransparentRect(matrixStack, imageWidth, imageHeight, -imageWidth, -imageHeight, -0.0001F, 0x40AADDDD);
-			matrixStack.mulPose(Axis.YP.rotationDegrees(180));
+			// not culled, so visible from both sides
+			IHasBars.drawTransparentRect(matrixStack, buffer, imageWidth, imageHeight, -imageWidth, -imageHeight, -0.0001F, 0x40AADDDD);
 		} else if (joinedData != null) {
 			matrixStack.translate(0, 0, 0.0002F * (power + 1) / 2);
 			int colorHex = 0x000000;
 			if (panel.getColored())
 				colorHex = panel.getColorText();
-			TileEntityInfoPanelRenderer.renderText(joinedData, displayWidth, displayHeight, colorHex, matrixStack, font, buffer, combinedLight);
+			TileEntityInfoPanelRenderer.renderText(joinedData, displayWidth, displayHeight, colorHex, matrixStack, buffer, font);
 		}
 	}
 

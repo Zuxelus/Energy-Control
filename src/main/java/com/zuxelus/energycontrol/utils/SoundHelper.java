@@ -88,7 +88,7 @@ public class SoundHelper {
 		EnergyControl.INSTANCE.availableAlarms = new ArrayList<>();
 
 		try {
-			List<Resource> list = Minecraft.getInstance().getResourceManager().getResourceStack(new ResourceLocation(EnergyControl.MODID, "sounds.json"));
+			List<Resource> list = Minecraft.getInstance().getResourceManager().getResourceStack(ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "sounds.json"));
 
 			for (int i = list.size() - 1; i >= 0; --i) {
 				Resource iresource = list.get(i);

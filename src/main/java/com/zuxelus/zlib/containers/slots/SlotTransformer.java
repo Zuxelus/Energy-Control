@@ -17,7 +17,7 @@ public class SlotTransformer extends SlotFilter {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
-		return Pair.of(InventoryMenu.BLOCK_ATLAS, new ResourceLocation("zlib:slots/slot_transformer"));
+		return Pair.of(InventoryMenu.BLOCK_ATLAS, ResourceLocation.parse("zlib:slots/slot_transformer"));
 	}
 
 	@Override

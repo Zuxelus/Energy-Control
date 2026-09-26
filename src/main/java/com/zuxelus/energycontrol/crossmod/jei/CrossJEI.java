@@ -23,7 +23,7 @@ import net.minecraft.world.level.ItemLike;
 
 @JeiPlugin
 public class CrossJEI implements IModPlugin {
-	private static final ResourceLocation id = new ResourceLocation(EnergyControl.MODID,"jei_plugin");
+	private static final ResourceLocation id = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "jei_plugin");
 
 	@Override
 	public ResourceLocation getPluginUid() {
@@ -61,7 +61,7 @@ public class CrossJEI implements IModPlugin {
 		registerItem(registry, ModItems.upgrade_touch.get(), "ec.jei.upgradeTouch");
 
 		registerItem(registry, ModItems.kit_app_eng, "ec.jei.kitAppEng");
-		registerItem(registry, ModItems.kit_big_reactors, "ec.jei.kitBigReactors");
+		registerItem(registry, ModItems.kit_big_reactors.get(), "ec.jei.kitBigReactors");
 		registerItem(registry, ModItems.kit_energy.get(), "ec.jei.kitEnergy");
 		registerItem(registry, ModItems.kit_liquid.get(), "ec.jei.kitLiquid");
 		registerItem(registry, ModItems.kit_liquid_advanced.get(), "ec.jei.kitLiquidAdv");

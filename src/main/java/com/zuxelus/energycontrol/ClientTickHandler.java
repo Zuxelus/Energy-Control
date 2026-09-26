@@ -15,9 +15,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
-import net.minecraftforge.client.event.ViewportEvent.ComputeCameraAngles;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -42,21 +40,21 @@ public class ClientTickHandler {
 
 	@SubscribeEvent
 	public static void render(RenderLevelStageEvent event) {
+		// the event fires once per stage; draw the translucent holo background after the world is done so it blends over it
+		if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES)
+			return;
+		if (holo_panels.isEmpty())
+			return;
 		Minecraft client = Minecraft.getInstance();
 		BlockEntityRenderDispatcher dispatcher = client.getBlockEntityRenderDispatcher();
-		Camera info = client.gameRenderer.getMainCamera();
-		info.setup(client.level, client.getCameraEntity() == null ? client.player : client.getCameraEntity(),
-				!client.options.getCameraType().isFirstPerson(), client.options.getCameraType().isMirrored(),
-				event.getPartialTick());
-		ComputeCameraAngles cameraSetup = ForgeHooksClient.onCameraSetup(client.gameRenderer, info, event.getPartialTick());
-		info.setAnglesInternal(cameraSetup.getYaw(), cameraSetup.getPitch());
+		Camera info = event.getCamera();
 		PoseStack matrixStack = event.getPoseStack();
 		Vec3 vector3d = info.getPosition();
 		double d0 = vector3d.x();
 		double d1 = vector3d.y();
 		double d2 = vector3d.z();
 
-		MultiBufferSource buffers = Minecraft.getInstance().renderBuffers().bufferSource();
+		MultiBufferSource.BufferSource buffers = client.renderBuffers().bufferSource();
 		for (BlockEntity te : holo_panels) {
 			matrixStack.pushPose();
 			BlockPos pos = te.getBlockPos();
@@ -64,6 +62,7 @@ public class ClientTickHandler {
 			dispatcher.render(te, -1, matrixStack, buffers);
 			matrixStack.popPose();
 		}
+		buffers.endBatch();
 		holo_panels.clear();
 	}
 }

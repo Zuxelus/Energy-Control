@@ -19,7 +19,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiTimer extends GuiContainerBase<ContainerTimer> {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_timer.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/gui_timer.png");
 	private TileEntityTimer timer;
 	private EditBox textboxTimer;
 	private boolean lastIsWorking;

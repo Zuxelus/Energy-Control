@@ -14,9 +14,9 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Con
 import net.minecraft.resources.ResourceLocation;
 
 public class TEThermalMonitorRenderer implements BlockEntityRenderer<TileEntityThermalMonitor> {
-	private static final ResourceLocation TEXTURE0 = new ResourceLocation(EnergyControl.MODID, "textures/block/thermal_monitor/all0.png");
-	private static final ResourceLocation TEXTURE1 = new ResourceLocation(EnergyControl.MODID, "textures/block/thermal_monitor/all1.png");
-	private static final ResourceLocation TEXTURE2 = new ResourceLocation(EnergyControl.MODID, "textures/block/thermal_monitor/all2.png");
+	private static final ResourceLocation TEXTURE0 = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/block/thermal_monitor/all0.png");
+	private static final ResourceLocation TEXTURE1 = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/block/thermal_monitor/all1.png");
+	private static final ResourceLocation TEXTURE2 = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/block/thermal_monitor/all2.png");
 	private final Font font;
 
 	public TEThermalMonitorRenderer(Context ctx) {
@@ -50,7 +50,7 @@ public class TEThermalMonitorRenderer implements BlockEntityRenderer<TileEntityT
 		matrixStack.scale(0.015625F, 0.015625F, 0.015625F);
 
 		int value = te.getHeatLevel();
-		//font.drawInBatch(String.valueOf(value), -font.width(String.valueOf(value)) / 2, -font.lineHeight, 0x000000, false, matrixStack.last().pose(), buffer, false, 0, combinedLight);
+		font.drawInBatch(String.valueOf(value), -font.width(String.valueOf(value)) / 2, -font.lineHeight, 0x000000, false, matrixStack.last().pose(), buffer, Font.DisplayMode.POLYGON_OFFSET, 0, combinedLight);
 		matrixStack.popPose();
 	}
 

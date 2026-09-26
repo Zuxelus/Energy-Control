@@ -11,15 +11,21 @@ import org.joml.Vector4f;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.core.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 	public static final CubeRenderer MODEL = new CubeRenderer(0, 0, 0, 32, 32, 32, 128, 128, 0, 0, false);
-	public static Map<Long, CubeRenderer> LIBRARY = new HashMap<Long, CubeRenderer>();
-	public static Map<Long, CubeRenderer> LIBRARY_FACE = new HashMap<Long, CubeRenderer>();
+	private static final Map<ModelKey, CubeRenderer> LIBRARY = new HashMap<>();
+	private static final Map<ModelKey, CubeRenderer> LIBRARY_FACE = new HashMap<>();
+	// side of each ModelBox quad before rotation (see ModelBox constructor); index 4 is the screen face
+	private static final Direction[] QUAD_SIDES = { Direction.EAST, Direction.WEST, Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH };
+	private static final Direction[][][] WORLD_SIDES = new Direction[6][6][];
+	public static final int FACE = 4;
 
 	private ModelBox cube;
 
@@ -137,8 +143,8 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 				quads[0] = new TexturedQuad(new PositionTextureVertex[] { v2, v1, v, v7 }, texOffX, texOffY, texOffX + dx , texOffY + dx, texWidth, texHeight, Direction.NORTH);
 				return;
 			}
-			quads[0] = new TexturedQuad(new PositionTextureVertex[] { v1, v5, v4, v }, 0, dz, dz, dz + dy, texWidth, texHeight, Direction.WEST); // left
-			quads[1] = new TexturedQuad(new PositionTextureVertex[] { v6, v2, v7, v3 }, dz + dx, dz, dz + dx + dz, dz + dy, texWidth, texHeight, Direction.EAST); // right
+			quads[0] = new TexturedQuad(new PositionTextureVertex[] { v1, v5, v4, v }, 0, dz, dz, dz + dy, texWidth, texHeight, Direction.EAST); // left
+			quads[1] = new TexturedQuad(new PositionTextureVertex[] { v6, v2, v7, v3 }, dz + dx, dz, dz + dx + dz, dz + dy, texWidth, texHeight, Direction.WEST); // right
 			quads[2] = new TexturedQuad(new PositionTextureVertex[] { v7, v, v4, v3 }, dz, dz + dz, dz + dx, dz + dz + dz, texWidth, texHeight, Direction.DOWN); // bottom
 			quads[3] = new TexturedQuad(new PositionTextureVertex[] { v6, v5, v1, v2 }, dz, 0, dz + dx, dz, texWidth, texHeight, Direction.UP); // top
 			quads[4] = new TexturedQuad(new PositionTextureVertex[] { v2, v1, v, v7 }, dz, dz, dz + dx, dz + dy, texWidth, texHeight, Direction.NORTH); // face
@@ -195,6 +201,8 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 				matrixStack.mulPose(Axis.ZP.rotationDegrees(90));
 				matrixStack.translate(0.0F, -1.0F, -1.0F);
 				break;
+			default:
+				break;
 			}
 			break;
 		case DOWN:
@@ -217,6 +225,8 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 				matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
 				matrixStack.mulPose(Axis.ZP.rotationDegrees(90));
 				matrixStack.translate(-1.0F, -1.0F, 0.0F);
+				break;
+			default:
 				break;
 			}
 			break;
@@ -263,6 +273,8 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 				matrixStack.mulPose(Axis.YP.rotationDegrees(90));
 				matrixStack.translate(-1.0F, -1.0F, 1.0F);
 				break;
+			default:
+				break;
 			}
 			break;
 		case DOWN:
@@ -285,6 +297,8 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 				matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
 				matrixStack.mulPose(Axis.YP.rotationDegrees(90));
 				matrixStack.translate(-1.0F, -1.0F, 0.0F);
+				break;
+			default:
 				break;
 			}
 			break;
@@ -312,20 +326,39 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 	}
 
 	public static CubeRenderer getModel(RotationOffset offset) {
-		long hash = (long) (offset.leftTop * 1000000 + offset.leftBottom * 10000 + offset.rightTop * 100 + offset.rightBottom);
-		if (LIBRARY.containsKey(hash))
-			return LIBRARY.get(hash);
-		CubeRenderer model = new CubeRenderer(0, 0, offset, false);
-		LIBRARY.put(hash, model);
-		return model;
+		return LIBRARY.computeIfAbsent(new ModelKey(0, offset), key -> new CubeRenderer(0, 0, offset, false));
 	}
 
 	public static CubeRenderer getFaceModel(RotationOffset offset, int textureId) {
-		long hash = (long) (textureId * 100000000 + offset.leftTop * 1000000 + offset.leftBottom * 10000 + offset.rightTop * 100 + offset.rightBottom);
-		if (LIBRARY_FACE.containsKey(hash))
-			return LIBRARY_FACE.get(hash);
-		CubeRenderer model = new CubeRenderer(textureId / 4 * 32, textureId % 4 * 32, offset, true);
-		LIBRARY_FACE.put(hash, model);
-		return model;
+		return LIBRARY_FACE.computeIfAbsent(new ModelKey(textureId, offset), key -> new CubeRenderer(textureId / 4 * 32, textureId % 4 * 32, offset, true));
+	}
+
+	// offsets are fractional, so they can't be packed into a number without collisions
+	private record ModelKey(int textureId, float leftTop, float leftBottom, float rightTop, float rightBottom) {
+		ModelKey(int textureId, RotationOffset offset) {
+			this(textureId, offset.leftTop, offset.leftBottom, offset.rightTop, offset.rightBottom);
+		}
+	}
+
+	// Light of the neighbour block each quad of the full model faces, in quad order
+	public static int[] getBlockLight(BlockEntityFacing te) {
+		Direction facing = te.getFacing();
+		Direction rotation = te.getRotation() == null ? Direction.NORTH : te.getRotation();
+		Direction[] sides = WORLD_SIDES[facing.get3DDataValue()][rotation.get3DDataValue()];
+		if (sides == null) {
+			PoseStack matrixStack = new PoseStack();
+			rotateBlock(matrixStack, facing, rotation);
+			Matrix3f normal = matrixStack.last().normal();
+			sides = new Direction[QUAD_SIDES.length];
+			for (int i = 0; i < QUAD_SIDES.length; i++) {
+				Vector3f v = normal.transform(new Vector3f(QUAD_SIDES[i].step()));
+				sides[i] = Direction.getNearest(v.x(), v.y(), v.z());
+			}
+			WORLD_SIDES[facing.get3DDataValue()][rotation.get3DDataValue()] = sides;
+		}
+		int[] light = new int[sides.length];
+		for (int i = 0; i < sides.length; i++)
+			light[i] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(sides[i]));
+		return light;
 	}
 }

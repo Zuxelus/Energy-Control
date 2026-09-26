@@ -7,10 +7,7 @@ import java.util.Map;
 
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardAdvGenerators;
-import com.zuxelus.energycontrol.items.cards.ItemCardAppEng;
-import com.zuxelus.energycontrol.items.cards.ItemCardAppEngInv;
 import com.zuxelus.energycontrol.items.kits.ItemKitAdvGenerators;
-import com.zuxelus.energycontrol.items.kits.ItemKitAppEng;
 import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 

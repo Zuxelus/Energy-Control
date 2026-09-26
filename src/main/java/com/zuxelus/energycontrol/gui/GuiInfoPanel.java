@@ -2,7 +2,6 @@ package com.zuxelus.energycontrol.gui;
 
 import java.util.List;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.containers.ContainerInfoPanel;
@@ -26,7 +25,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiInfoPanel extends GuiPanelBase<ContainerInfoPanel> { 
-	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_info_panel.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/gui_info_panel.png");
 	private boolean isColored;
 
 	public GuiInfoPanel(ContainerInfoPanel container, Inventory inventory, Component title) {

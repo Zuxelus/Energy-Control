@@ -21,6 +21,7 @@ import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -653,6 +654,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 					return 8 * boolToInt(pos.getX() == scr.minX) + 4 * boolToInt(pos.getX() == scr.maxX) + 2 * boolToInt(pos.getZ() == scr.minZ) + 1 * boolToInt(pos.getZ() == scr.maxZ);
 				case EAST:
 					return 4 * boolToInt(pos.getX() == scr.minX) + 8 * boolToInt(pos.getX() == scr.maxX) + 1 * boolToInt(pos.getZ() == scr.minZ) + 2 * boolToInt(pos.getZ() == scr.maxZ);
+				default:
+					break;
 				}
 				break;
 			case DOWN:
@@ -665,6 +668,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 					return 8 * boolToInt(pos.getX() == scr.minX) + 4 * boolToInt(pos.getX() == scr.maxX) + 1 * boolToInt(pos.getZ() == scr.minZ) + 2 * boolToInt(pos.getZ() == scr.maxZ);
 				case EAST:
 					return 4 * boolToInt(pos.getX() == scr.minX) + 8 * boolToInt(pos.getX() == scr.maxX) + 2 * boolToInt(pos.getZ() == scr.minZ) + 1 * boolToInt(pos.getZ() == scr.maxZ);
+				default:
+					break;
 				}
 				break;
 			case NORTH:
@@ -710,13 +715,13 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 		return !stack.isEmpty() && item instanceof IHasBars && ((IHasBars) item).enableBars(stack) && (getDisplaySettingsForCardInSlot(SLOT_CARD) & 1024) > 0;
 	}
 
-	public void renderImage(float displayWidth, float displayHeight, PoseStack matrixStack) {
+	public void renderImage(float displayWidth, float displayHeight, PoseStack matrixStack, MultiBufferSource buffer) {
 		ItemStack stack = getItem(SLOT_CARD);
 		Item card = stack.getItem();
 		if (isTouchCard())
-			((ITouchAction) card).renderImage(new ItemCardReader(stack), matrixStack);
+			((ITouchAction) card).renderImage(new ItemCardReader(stack), matrixStack, buffer);
 		if (hasBars())
-			((IHasBars) card).renderBars(displayWidth, displayHeight, new ItemCardReader(stack), matrixStack);
+			((IHasBars) card).renderBars(displayWidth, displayHeight, new ItemCardReader(stack), matrixStack, buffer);
 	}
 
 	protected void runTouchAction(TileEntityInfoPanel panel, ItemStack cardStack, ItemStack stack, int slot, boolean needsTouchUpgrade) {

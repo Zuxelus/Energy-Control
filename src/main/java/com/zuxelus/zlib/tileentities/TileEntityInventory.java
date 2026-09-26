@@ -57,7 +57,7 @@ public abstract class TileEntityInventory extends BlockEntityFacing implements W
 
 	@Override
 	public @NotNull ItemStack removeItem(int index, int count) {
-        return ContainerHelper.removeItem(inventory, index, count);
+		return ContainerHelper.removeItem(inventory, index, count);
 	}
 
 	@Override

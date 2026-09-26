@@ -5,12 +5,6 @@ import java.util.List;
 import org.lwjgl.opengl.GL11;
 
 import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 
@@ -19,7 +13,6 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -27,7 +20,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiHowlerAlarmListBox extends AbstractButton {
-	private static final ResourceLocation TEXTURE = new ResourceLocation("energycontrol:textures/gui/gui_howler_alarm.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.parse("energycontrol:textures/gui/gui_howler_alarm.png");
 
 	private static final int BASIC_X_OFFSET = 2;
 	private static final int BASIC_Y_OFFSET = 2;

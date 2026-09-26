@@ -19,7 +19,6 @@ import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.boiler.BoilerMultiblockData;
 import mekanism.common.content.matrix.MatrixMultiblockData;
-import mekanism.common.content.network.transmitter.MechanicalPipe;
 import mekanism.common.tile.*;
 import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.factory.TileEntityItemStackGasToItemStackFactory;
@@ -30,7 +29,6 @@ import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
 import mekanism.common.tile.multiblock.TileEntityInductionCasing;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
-import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
@@ -39,8 +37,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.registries.RegisterEvent.RegisterHelper;
 
 public class CrossMekanism extends CrossModBase {

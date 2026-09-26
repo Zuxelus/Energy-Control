@@ -2,7 +2,6 @@ package com.zuxelus.energycontrol.gui;
 
 import java.util.List;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.containers.ContainerHoloPanel;
@@ -10,7 +9,6 @@ import com.zuxelus.energycontrol.gui.controls.GuiInfoPanelCheckBox;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardText;
-import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.gui.controls.GuiButtonGeneral;
 
 import net.minecraft.client.gui.GuiGraphics;
@@ -26,7 +24,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiHoloPanel extends GuiPanelBase<ContainerHoloPanel> { 
-	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_holo_panel.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/gui_holo_panel.png");
 
 	public GuiHoloPanel(ContainerHoloPanel container, Inventory inventory, Component title) {
 		super(container, inventory, title, TEXTURE);

@@ -2,7 +2,6 @@ package com.zuxelus.energycontrol.renderers;
 
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -46,12 +45,12 @@ public class CubeSmallRenderer {
 			PositionTextureVertex v4 = new PositionTextureVertex(f, y, f2, 0.0F, 8.0F);
 			PositionTextureVertex v5 = new PositionTextureVertex(f, f1, f2, 8.0F, 8.0F);
 			PositionTextureVertex v6 = new PositionTextureVertex(x, f1, f2, 8.0F, 0.0F);
-			quads[0] = new TexturedQuad(new PositionTextureVertex[] { v5, v4, v, v1 }, 0, dy, dy, dy + dx, textureWidth, textureHeight, Direction.WEST); // left
-			quads[1] = new TexturedQuad(new PositionTextureVertex[] { v3, v6, v2, v7 }, dy + dx, dy, dy + dx + dy, dy + dx, textureWidth, textureHeight, Direction.EAST); // right
-			quads[2] = new TexturedQuad(new PositionTextureVertex[] { v4, v3, v7, v }, dy + dx + dy, dy, dy + dx + dy + dx, dy + dz, textureWidth, textureHeight, Direction.SOUTH); // back
-			quads[3] = new TexturedQuad(new PositionTextureVertex[] { v1, v2, v6, v5 }, dy, dy, dy + dx, dy + dz, textureWidth, textureHeight, Direction.NORTH); // face
-			quads[4] = new TexturedQuad(new PositionTextureVertex[] { v2, v1, v, v7 }, dy, dy + dx, dy + dx, dy + dx + dy, textureWidth, textureHeight, Direction.DOWN); // bottom
-			quads[5] = new TexturedQuad(new PositionTextureVertex[] { v3, v4, v5, v6 }, dy, 0, dy + dx, dy, textureWidth, textureHeight, Direction.UP); // top
+			quads[0] = new TexturedQuad(new PositionTextureVertex[] { v5, v4, v, v1 }, 0, dy, dy, dy + dx, textureWidth, textureHeight, Direction.EAST); // left
+			quads[1] = new TexturedQuad(new PositionTextureVertex[] { v3, v6, v2, v7 }, dy + dx, dy, dy + dx + dy, dy + dx, textureWidth, textureHeight, Direction.WEST); // right
+			quads[2] = new TexturedQuad(new PositionTextureVertex[] { v4, v3, v7, v }, dy + dx + dy, dy, dy + dx + dy + dx, dy + dz, textureWidth, textureHeight, Direction.DOWN); // back
+			quads[3] = new TexturedQuad(new PositionTextureVertex[] { v1, v2, v6, v5 }, dy, dy, dy + dx, dy + dz, textureWidth, textureHeight, Direction.UP); // face
+			quads[4] = new TexturedQuad(new PositionTextureVertex[] { v2, v1, v, v7 }, dy, dy + dx, dy + dx, dy + dx + dy, textureWidth, textureHeight, Direction.NORTH); // bottom
+			quads[5] = new TexturedQuad(new PositionTextureVertex[] { v3, v4, v5, v6 }, dy, 0, dy + dx, dy, textureWidth, textureHeight, Direction.SOUTH); // top
 		}
 
 		public void render(PoseStack matrixStack, VertexConsumer buffer, int[] light, int combinedOverlay) {
@@ -93,6 +92,8 @@ public class CubeSmallRenderer {
 				matrixStack.mulPose(Axis.YP.rotationDegrees(-90));
 				matrixStack.translate(0.0F, 0.0F, -1.0F);
 				break;
+			default:
+				break;
 			}
 			break;
 		case DOWN:
@@ -112,6 +113,8 @@ public class CubeSmallRenderer {
 			case EAST:
 				matrixStack.mulPose(Axis.YP.rotationDegrees(-90));
 				matrixStack.translate(-1.0F, -1.0F, -1.0F);
+				break;
+			default:
 				break;
 			}
 			break;

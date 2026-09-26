@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.crossmod;
 
-import java.lang.reflect.Method;
 import java.util.Collection;
 
 import com.zuxelus.energycontrol.init.ModItems;
@@ -8,12 +7,10 @@ import com.zuxelus.energycontrol.items.cards.ItemCardAppEng;
 import com.zuxelus.energycontrol.items.cards.ItemCardAppEngInv;
 import com.zuxelus.energycontrol.items.kits.ItemKitAppEng;
 import com.zuxelus.energycontrol.utils.DataHelper;
-import com.zuxelus.energycontrol.utils.StringUtils;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.storage.StorageCells;
-import appeng.api.storage.cells.ICellHandler;
 import appeng.api.storage.cells.StorageCell;
 import appeng.blockentity.crafting.CraftingMonitorBlockEntity;
 import appeng.blockentity.storage.ChestBlockEntity;

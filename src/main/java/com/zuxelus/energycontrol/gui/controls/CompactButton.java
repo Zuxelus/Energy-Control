@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 @OnlyIn(Dist.CLIENT)
 public class CompactButton extends Button {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID, "textures/gui/gui_thermal_monitor.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/gui_thermal_monitor.png");
 	private int id;
 
 	public CompactButton(int id, int x, int y, int widthIn, int heightIn, Component buttonText, Button.OnPress onPress) {

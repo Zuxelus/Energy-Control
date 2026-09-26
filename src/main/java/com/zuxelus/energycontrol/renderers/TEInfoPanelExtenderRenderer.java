@@ -13,21 +13,21 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Con
 import net.minecraft.resources.ResourceLocation;
 
 public class TEInfoPanelExtenderRenderer implements BlockEntityRenderer<TileEntityInfoPanelExtender> {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID + ":textures/block/info_panel/extender_all.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.parse(EnergyControl.MODID + ":textures/block/info_panel/extender_all.png");
 
 	public TEInfoPanelExtenderRenderer(Context ctx) {}
 
 	@Override
 	public void render(TileEntityInfoPanelExtender te, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
 		matrixStack.pushPose();
-		int[] light = TileEntityInfoPanelRenderer.getBlockLight(te);
+		int[] light = CubeRenderer.getBlockLight(te);
 		CubeRenderer.rotateBlock(matrixStack, te.getFacing(), te.getRotation());
 
 		int color = te.getColored() ? te.getColorBackground() : TileEntityInfoPanel.GREEN;
-		VertexConsumer vertexBuilder = buffer.getBuffer(RenderType.entitySolid(TEXTURE));
+		VertexConsumer vertexBuilder = buffer.getBuffer(RenderType.entityCutout(TEXTURE));
 		CubeRenderer.MODEL.render(matrixStack, vertexBuilder, light, combinedOverlay);
 		VertexConsumer vertexScreen = buffer.getBuffer(RenderType.entitySolid(TileEntityInfoPanelRenderer.SCREEN));
-		TileEntityInfoPanelRenderer.drawFace(matrixStack.last(), vertexScreen, te.findTexture(), color, te.getPowered(), combinedLight, combinedOverlay);
+		TileEntityInfoPanelRenderer.drawFace(matrixStack.last(), vertexScreen, te.findTexture(), color, te.getPowered(), light[CubeRenderer.FACE], combinedOverlay);
 		matrixStack.popPose();
 	}
 

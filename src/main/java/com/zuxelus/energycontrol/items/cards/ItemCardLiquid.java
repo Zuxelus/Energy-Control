@@ -5,22 +5,20 @@ import java.util.List;
 
 import org.joml.Matrix4f;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.IHasBars;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
+import com.zuxelus.energycontrol.renderers.ModRenderTypes;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.language.I18n;
@@ -104,7 +102,7 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void renderBars(float displayWidth, float displayHeight, ICardReader reader, PoseStack matrixStack) {
+	public void renderBars(float displayWidth, float displayHeight, ICardReader reader, PoseStack matrixStack, MultiBufferSource buffer) {
 		float x = -0.5F + 1 / 16.0F;
 		float y = -0.5F + 1/ 16.0F;
 		float z = 0;
@@ -113,7 +111,7 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		if (fluidName.isEmpty())
 			return;
 
-		Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(fluidName));
+		Fluid fluid = ForgeRegistries.FLUIDS.getValue(ResourceLocation.parse(fluidName));
 		IClientFluidTypeExtensions fluidExt = IClientFluidTypeExtensions.of(fluid);
 
 		TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(fluidExt.getStillTexture());
@@ -132,23 +130,14 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		float f3 = (color & 255) / 255.0F;
 
 		matrixStack.scale(displayWidth / 0.875f, displayHeight / 0.875f, 1);
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
-		RenderSystem.setShaderColor(f1, f2, f3, f);
-		RenderSystem.enableDepthTest();
-		RenderSystem.disableBlend();
-		Tesselator tesselator = Tesselator.getInstance();
-		BufferBuilder bufferbuilder = tesselator.getBuilder();
-		bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+		VertexConsumer builder = buffer.getBuffer(ModRenderTypes.screenImage(TextureAtlas.LOCATION_BLOCKS));
 		Matrix4f matrix = matrixStack.last().pose();
-		bufferbuilder.vertex(matrix, x, y + 0.4375F / 2 + height, z).uv(textureX, sprite.getV1()).endVertex();
-		bufferbuilder.vertex(matrix, x + 0.875F, y + 0.4375F / 2 + height, z).uv(sprite.getU1(), sprite.getV1()).endVertex();
-		bufferbuilder.vertex(matrix, x + 0.875F, y + 0.4375F / 2, z).uv(sprite.getU1(), textureY).endVertex();
-		bufferbuilder.vertex(matrix, x, y + 0.4375F / 2, z).uv(textureX, textureY).endVertex();
-		tesselator.end();
-		RenderSystem.disableDepthTest();
+		builder.vertex(matrix, x, y + 0.4375F / 2 + height, z).color(f1, f2, f3, f).uv(textureX, sprite.getV1()).uv2(LightTexture.FULL_BRIGHT).endVertex();
+		builder.vertex(matrix, x + 0.875F, y + 0.4375F / 2 + height, z).color(f1, f2, f3, f).uv(sprite.getU1(), sprite.getV1()).uv2(LightTexture.FULL_BRIGHT).endVertex();
+		builder.vertex(matrix, x + 0.875F, y + 0.4375F / 2, z).color(f1, f2, f3, f).uv(sprite.getU1(), textureY).uv2(LightTexture.FULL_BRIGHT).endVertex();
+		builder.vertex(matrix, x, y + 0.4375F / 2, z).color(f1, f2, f3, f).uv(textureX, textureY).uv2(LightTexture.FULL_BRIGHT).endVertex();
 
-		IHasBars.drawTransparentRect(matrixStack, x + 0.875F - width, y + height + 0.4375F / 2, x, y + 0.4375F / 2, -0.0001F, 0xB0000000);
+		IHasBars.drawTransparentRect(matrixStack, buffer, x + 0.875F - width, y + height + 0.4375F / 2, x, y + 0.4375F / 2, -0.0001F, 0xB0000000);
 		matrixStack.scale(0.875F / displayWidth, 0.875F / displayHeight, 1);
 	}
 }

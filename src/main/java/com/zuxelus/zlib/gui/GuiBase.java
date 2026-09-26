@@ -6,7 +6,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -26,7 +25,7 @@ public abstract class GuiBase extends Screen {
 		super(Component.translatable(name));
 		this.xSize = xSize;
 		this.ySize = ySize;
-		this.texture = new ResourceLocation(texture);
+		this.texture = ResourceLocation.parse(texture);
 	}
 
 	@Override

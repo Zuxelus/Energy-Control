@@ -14,19 +14,19 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Con
 import net.minecraft.resources.ResourceLocation;
 
 public class TEAdvancedInfoPanelExtenderRenderer implements BlockEntityRenderer<TileEntityAdvancedInfoPanelExtender> {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(EnergyControl.MODID + ":textures/block/info_panel/extender_advanced_all.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.parse(EnergyControl.MODID + ":textures/block/info_panel/extender_advanced_all.png");
 
 	public TEAdvancedInfoPanelExtenderRenderer(Context ctx) {}
 
 	@Override
 	public void render(TileEntityAdvancedInfoPanelExtender te, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
 		matrixStack.pushPose();
-		int[] light = TileEntityInfoPanelRenderer.getBlockLight(te);
+		int[] light = CubeRenderer.getBlockLight(te);
 
 		CubeRenderer.rotateBlock(matrixStack, te.getFacing(), te.getRotation());
 
 		int color = te.getColored() ? te.getColorBackground() : TileEntityAdvancedInfoPanel.DEFAULT_BACKGROUND;
-		VertexConsumer vertexBuilder = buffer.getBuffer(RenderType.entitySolid(TEXTURE));
+		VertexConsumer vertexBuilder = buffer.getBuffer(RenderType.entityCutout(TEXTURE));
 
 		int textureId = te.findTexture();
 		byte thickness = te.getThickness();
@@ -35,18 +35,17 @@ public class TEAdvancedInfoPanelExtenderRenderer implements BlockEntityRenderer<
 		int rotateHor = te.getRotateHor() / 7;
 		int rotateVert = te.getRotateVert() / 7;
 
-		if (thickness == 16 && rotateHor == 0 && rotateVert == 0) {
+		Screen screen = te.getScreen();
+		// the plain cube doesn't depend on the screen, so draw it even before the screen is known
+		if (screen == null || (thickness == 16 && rotateHor == 0 && rotateVert == 0)) {
 			CubeRenderer.MODEL.render(matrixStack, vertexBuilder, light, combinedOverlay);
 			VertexConsumer vertexScreen = buffer.getBuffer(RenderType.entitySolid(TileEntityInfoPanelRenderer.SCREEN));
-			TileEntityInfoPanelRenderer.drawFace(matrixStack.last(), vertexScreen, te.findTexture(), color, te.getPowered(), combinedLight, combinedOverlay);
+			TileEntityInfoPanelRenderer.drawFace(matrixStack.last(), vertexScreen, textureId, color, te.getPowered(), light[CubeRenderer.FACE], combinedOverlay);
 		} else {
-			Screen screen = te.getScreen();
-			if (screen != null) {
-				RotationOffset offset = new RotationOffset(thickness * 2, rotateHor, rotateVert).addOffset(screen, te.getBlockPos(), te.getFacing(), te.getRotation());
-				CubeRenderer.getModel(offset).render(matrixStack, vertexBuilder, light, combinedOverlay);
-				VertexConsumer vertexScreen = buffer.getBuffer(RenderType.entitySolid(TileEntityInfoPanelRenderer.SCREEN));
-				CubeRenderer.getFaceModel(offset, textureId).render(matrixStack, vertexBuilder, light, combinedOverlay, color);
-			}
+			RotationOffset offset = new RotationOffset(thickness * 2, rotateHor, rotateVert).addOffset(screen, te.getBlockPos(), te.getFacing(), te.getRotation());
+			CubeRenderer.getModel(offset).render(matrixStack, vertexBuilder, light, combinedOverlay);
+			VertexConsumer vertexScreen = buffer.getBuffer(RenderType.entitySolid(TileEntityInfoPanelRenderer.SCREEN));
+			CubeRenderer.getFaceModel(offset, textureId).render(matrixStack, vertexScreen, new int[] { TileEntityInfoPanelRenderer.getScreenLight(te.getPowered(), light[CubeRenderer.FACE]) }, combinedOverlay, color);
 		}
 		matrixStack.popPose();
 	}

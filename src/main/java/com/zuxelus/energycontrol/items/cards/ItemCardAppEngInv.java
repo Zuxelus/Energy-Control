@@ -22,6 +22,7 @@ import appeng.blockentity.storage.ChestBlockEntity;
 import appeng.blockentity.storage.DriveBlockEntity;
 import appeng.parts.CableBusContainer;
 import appeng.parts.reporting.StorageMonitorPart;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -146,5 +147,5 @@ public class ItemCardAppEngInv extends ItemCardMain implements ITouchAction {
 	}
 
 	@Override
-	public void renderImage(ICardReader reader, PoseStack matrixStack) { }
+	public void renderImage(ICardReader reader, PoseStack matrixStack, MultiBufferSource buffer) { }
 }

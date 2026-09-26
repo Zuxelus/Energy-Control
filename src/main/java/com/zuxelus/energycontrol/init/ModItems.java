@@ -43,7 +43,7 @@ public class ModItems {
 	public static final RegistryObject<Item> kit_toggle = ITEMS.register("kit_toggle", () -> new ItemKitToggle());
 	public static Item kit_adv_generators;
 	public static Item kit_app_eng;
-	public static Item kit_big_reactors;
+	public static final RegistryObject<Item> kit_big_reactors = ITEMS.register("kit_big_reactors", () -> new ItemKitBigReactors());
 	public static Item kit_ic2;
 	public static Item kit_immersive_engineering;
 	public static Item kit_industrial_reborn;
@@ -63,7 +63,7 @@ public class ModItems {
 	public static Item card_adv_generators;
 	public static Item card_app_eng;
 	public static Item card_app_eng_inv;
-	public static Item card_big_reactors;
+	public static final RegistryObject<Item> card_big_reactors = ITEMS.register("card_big_reactors", () -> new ItemCardBigReactors());
 	public static Item card_ic2;
 	public static Item card_immersive_engineering;
 	public static Item card_industrial_reborn;

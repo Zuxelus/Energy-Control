@@ -4,20 +4,18 @@ import java.util.List;
 
 import org.joml.Matrix4f;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.ITouchAction;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
+import com.zuxelus.energycontrol.renderers.ModRenderTypes;
 
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -39,8 +37,8 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 	private static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 	private static final EnumProperty<AttachFace> FACE = BlockStateProperties.ATTACH_FACE;
 	private static final DirectionProperty HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
-	private static final ResourceLocation TEXTURE_ON = new ResourceLocation(EnergyControl.MODID, "textures/gui/green.png");
-	private static final ResourceLocation TEXTURE_OFF = new ResourceLocation(EnergyControl.MODID, "textures/gui/grey.png");
+	private static final ResourceLocation TEXTURE_ON = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/green.png");
+	private static final ResourceLocation TEXTURE_OFF = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/grey.png");
 
 	@Override
 	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
@@ -118,7 +116,7 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 	}
 
 	@Override
-	public void renderImage(ICardReader reader, PoseStack matrixStack) {
+	public void renderImage(ICardReader reader, PoseStack matrixStack, MultiBufferSource buffer) {
 		float x = -0.5F;
 		float y = -0.5F;
 		float z = 0.009F;
@@ -126,21 +124,11 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 		float width = 1;
 		float textureX = 0;
 		float textureY = 0;
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		if (reader.getBoolean("value"))
-			RenderSystem.setShaderTexture(0, TEXTURE_ON);
-		else
-			RenderSystem.setShaderTexture(0, TEXTURE_OFF);
-		RenderSystem.enableDepthTest();
-		Tesselator tesselator = Tesselator.getInstance();
-		BufferBuilder bufferbuilder = tesselator.getBuilder();
-		bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+		VertexConsumer builder = buffer.getBuffer(ModRenderTypes.screenImage(reader.getBoolean("value") ? TEXTURE_ON : TEXTURE_OFF));
 		Matrix4f matrix = matrixStack.last().pose();
-		bufferbuilder.vertex(matrix, x + 0, y + height, z).uv(textureX + 0, textureY + height).endVertex();
-		bufferbuilder.vertex(matrix, x + width, y + height, z).uv(textureX + width, textureY + height).endVertex();
-		bufferbuilder.vertex(matrix, x + width, y + 0, z).uv(textureX + width, textureY + 0).endVertex();
-		bufferbuilder.vertex(matrix, x + 0, y + 0, z).uv(textureX + 0, textureY + 0).endVertex();
-		tesselator.end();
-		RenderSystem.disableDepthTest();
+		builder.vertex(matrix, x + 0, y + height, z).color(1.0F, 1.0F, 1.0F, 1.0F).uv(textureX + 0, textureY + height).uv2(LightTexture.FULL_BRIGHT).endVertex();
+		builder.vertex(matrix, x + width, y + height, z).color(1.0F, 1.0F, 1.0F, 1.0F).uv(textureX + width, textureY + height).uv2(LightTexture.FULL_BRIGHT).endVertex();
+		builder.vertex(matrix, x + width, y + 0, z).color(1.0F, 1.0F, 1.0F, 1.0F).uv(textureX + width, textureY + 0).uv2(LightTexture.FULL_BRIGHT).endVertex();
+		builder.vertex(matrix, x + 0, y + 0, z).color(1.0F, 1.0F, 1.0F, 1.0F).uv(textureX + 0, textureY + 0).uv2(LightTexture.FULL_BRIGHT).endVertex();
 	}
 }

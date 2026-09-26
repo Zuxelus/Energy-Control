@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol;
 
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.init.ModItems;
 
 import net.minecraft.core.registries.Registries;
@@ -10,6 +11,7 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -66,6 +68,10 @@ public class ECCreativeTab {
 						addItem(output, ModItems.advanced_circuit);
 						addItem(output, ModItems.radio_transmitter);
 						addItem(output, ModItems.strong_string);
+						if (ModList.get().isLoaded(ModIDs.BIG_REACTORS) || ModList.get().isLoaded(ModIDs.BIGGER_REACTORS)) {
+							addItem(output, ModItems.kit_big_reactors);
+							addItem(output, ModItems.card_big_reactors);
+						}
 					}).build());
 
 	private static void addItem(CreativeModeTab.Output output, RegistryObject<Item> item) {
