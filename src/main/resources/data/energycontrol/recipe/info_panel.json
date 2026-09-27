@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PPP",
+    "CMC",
+    "IRI"
+  ],
+  "key": {
+    "P": "minecraft:lime_stained_glass_pane",
+    "C": "#c:circuits/basic",
+    "I": "#c:dyes/black",
+    "R": "#c:dusts/redstone",
+    "M": "energycontrol:machine_casing"
+  },
+  "result": {
+    "id": "energycontrol:info_panel"
+  }
+}

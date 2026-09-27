@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.items.cards;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -16,44 +17,37 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public abstract class ItemCardMain extends Item implements IItemCard {
 	public static final int LOCATION_RANGE = 8;
 
-	public ItemCardMain() {
-		super(new Item.Properties().stacksTo(1).setNoRepair());
+	public ItemCardMain(Item.Properties properties) {
+		super(properties.stacksTo(1).setNoCombineRepair());
 	}
 
 	public static boolean isCard(ItemStack stack) {
 		return !stack.isEmpty() && stack.getItem() instanceof IItemCard;
 	}
 
-	@Override
-	public boolean isEnchantable(ItemStack stack) {
-		return false;
-	}
-
-	protected void addInformation(ItemCardReader reader, List<Component> tooltip) { }
+	protected void addInformation(ItemCardReader reader, Consumer<Component> tooltip) { }
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
 		ItemCardReader reader = new ItemCardReader(stack);
 		String title = reader.getTitle();
 		if (title != null && !title.isEmpty())
-			tooltip.add(Component.translatable(title));
+			tooltip.accept(Component.literal(title));
 
 		addInformation(reader, tooltip);
 
 		BlockPos target = reader.getTarget();
 		if (target != null)
-			tooltip.add(Component.translatable(String.format("x: %d, y: %d, z: %d", target.getX(), target.getY(), target.getZ())));
+			tooltip.accept(Component.literal(String.format("x: %d, y: %d, z: %d", target.getX(), target.getY(), target.getZ())));
 		int count = reader.getCardCount();
 		if (count > 0)
-			tooltip.add(Component.translatable(I18n.get("msg.ec.cards", reader.getCardCount())));
+			tooltip.accept(Component.translatable("msg.ec.cards", reader.getCardCount()));
 	}
 
 	public CardState updateCardNBT(Level world, BlockPos pos, ICardReader reader, ItemStack upgradeStack) {

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CCC",
+    "SFS"
+  ],
+  "key": {
+    "S": "energycontrol:strong_string",
+    "F": "energycontrol:radio_transmitter",
+    "C": "#c:ingots/iron"
+  },
+  "result": {
+    "id": "energycontrol:upgrade_range"
+  }
+}

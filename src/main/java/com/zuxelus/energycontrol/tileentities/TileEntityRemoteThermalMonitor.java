@@ -9,6 +9,8 @@ import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
@@ -39,17 +41,15 @@ public class TileEntityRemoteThermalMonitor extends TileEntityThermalMonitor imp
 	}
 
 	@Override
-	protected void readProperties(CompoundTag tag) {
+	protected void readProperties(ValueInput tag) {
 		super.readProperties(tag);
-		if (tag.contains("heat"))
-			heat = tag.getInt("heat");
+		heat = tag.getIntOr("heat", heat);
 	}
 
 	@Override
-	protected CompoundTag writeProperties(CompoundTag tag) {
-		tag = super.writeProperties(tag);
+	protected void writeProperties(ValueOutput tag) {
+		super.writeProperties(tag);
 		tag.putInt("heat", heat);
-		return tag;
 	}
 
 	@Override

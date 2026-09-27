@@ -1,61 +1,53 @@
 package com.zuxelus.energycontrol.renderers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.tileentities.TileEntityThermalMonitor;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.resources.Identifier;
 
-public class TEThermalMonitorRenderer implements BlockEntityRenderer<TileEntityThermalMonitor> {
-	private static final ResourceLocation TEXTURE0 = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/block/thermal_monitor/all0.png");
-	private static final ResourceLocation TEXTURE1 = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/block/thermal_monitor/all1.png");
-	private static final ResourceLocation TEXTURE2 = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/block/thermal_monitor/all2.png");
+public class TEThermalMonitorRenderer extends TileRenderer<TileEntityThermalMonitor> {
+	private static final Identifier TEXTURE0 = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "textures/block/thermal_monitor/all0.png");
+	private static final Identifier TEXTURE1 = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "textures/block/thermal_monitor/all1.png");
+	private static final Identifier TEXTURE2 = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "textures/block/thermal_monitor/all2.png");
 	private final Font font;
 
 	public TEThermalMonitorRenderer(Context ctx) {
-		font = ctx.getFont();
+		font = ctx.font();
 	}
 
-	@SuppressWarnings("incomplete-switch")
 	@Override
-	public void render(TileEntityThermalMonitor te, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
+	protected void render(TileEntityThermalMonitor te, PoseStack matrixStack, SubmitNodeCollector buffer, int combinedLight, int combinedOverlay) {
 		matrixStack.pushPose();
 
 		CubeSmallRenderer.rotateBlock(matrixStack, te.getFacing(), te.getRotation());
 
-		VertexConsumer vertexBuilder;
+		Identifier texture;
 		switch (te.getStatus()) {
 		case 0:
-			vertexBuilder = buffer.getBuffer(RenderType.entitySolid(TEXTURE1));
+			texture = TEXTURE1;
 			break;
 		case 1:
-			vertexBuilder = buffer.getBuffer(RenderType.entitySolid(TEXTURE2));
+			texture = TEXTURE2;
 			break;
 		default:
-			vertexBuilder = buffer.getBuffer(RenderType.entitySolid(TEXTURE0));
+			texture = TEXTURE0;
 			break;
 		}
-		CubeSmallRenderer.MODEL.render(matrixStack, vertexBuilder, CubeSmallRenderer.getBlockLight(te), combinedOverlay);
+		CubeSmallRenderer.MODEL.render(matrixStack, buffer, RenderTypes.entitySolid(texture), CubeSmallRenderer.getBlockLight(te), combinedOverlay);
 
-		matrixStack.mulPose(Axis.XP.rotationDegrees(90.0F));
-		matrixStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
+		matrixStack.rotate(Axis.XP.rotationDegrees(90.0F));
+		matrixStack.rotate(Axis.ZP.rotationDegrees(180.0F));
 		matrixStack.translate(-0.5F, -0.55F, -0.4376F);
 		matrixStack.scale(0.015625F, 0.015625F, 0.015625F);
 
-		int value = te.getHeatLevel();
-		font.drawInBatch(String.valueOf(value), -font.width(String.valueOf(value)) / 2, -font.lineHeight, 0x000000, false, matrixStack.last().pose(), buffer, Font.DisplayMode.POLYGON_OFFSET, 0, combinedLight);
+		String value = String.valueOf(te.getHeatLevel());
+		drawString(buffer, matrixStack, value, -font.width(value) / 2, -font.lineHeight, 0x000000, combinedLight);
 		matrixStack.popPose();
-	}
-
-	@Override
-	public int getViewDistance() {
-		return 65536;
 	}
 }

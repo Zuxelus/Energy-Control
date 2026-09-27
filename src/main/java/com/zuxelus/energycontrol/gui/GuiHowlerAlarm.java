@@ -9,12 +9,10 @@ import com.zuxelus.energycontrol.gui.controls.GuiHowlerAlarmSlider;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 import com.zuxelus.zlib.gui.GuiBase;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.util.ARGB;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiHowlerAlarm extends GuiBase {
 	private TileEntityHowlerAlarm alarm;
 	private GuiHowlerAlarmSlider slider;
@@ -34,8 +32,7 @@ public class GuiHowlerAlarm extends GuiBase {
 		super.init();
 		slider = new GuiHowlerAlarmSlider(guiLeft + 12, guiTop + 33, alarm);
 
-		List<String> items = new ArrayList<String>(EnergyControl.INSTANCE.availableAlarms);
-		items.retainAll(EnergyControl.INSTANCE.serverAllowedAlarms);
+		List<String> items = ScreenHandler.getAlarms();
 
 		listBox = new GuiHowlerAlarmListBox(guiLeft + 13, guiTop + 63, 105, isBig? 165 : 65, items, alarm);
 		addRenderableWidget(slider);
@@ -43,8 +40,8 @@ public class GuiHowlerAlarm extends GuiBase {
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(GuiGraphics matrixStack, int mouseX, int mouseY) {
+	protected void drawGuiContainerForegroundLayer(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY) {
 		drawTitle(matrixStack);
-		matrixStack.drawString(font, Component.translatable("msg.ec.HowlerAlarmSound"), 12, 53, 0x404040, false);
+		matrixStack.text(font, Component.translatable("msg.ec.HowlerAlarmSound"), 12, 53, ARGB.opaque(0x404040), false);
 	}
 }

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " L ",
+    "LCL",
+    " L "
+  ],
+  "key": {
+    "C": "minecraft:chest",
+    "L": "#c:leathers"
+  },
+  "result": {
+    "id": "energycontrol:card_holder"
+  }
+}

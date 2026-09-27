@@ -15,6 +15,10 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class ItemKitToggle extends ItemKitMain {
 
+	public ItemKitToggle(Properties properties) {
+		super(properties);
+	}
+
 	@Override
 	public ItemStack getSensorCard(ItemStack stack, Player player, Level world, BlockPos pos, Direction side) {
 		BlockState state = world.getBlockState(pos);

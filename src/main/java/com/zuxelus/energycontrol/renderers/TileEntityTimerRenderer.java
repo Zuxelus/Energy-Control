@@ -1,46 +1,37 @@
 package com.zuxelus.energycontrol.renderers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.tileentities.TileEntityTimer;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.resources.Identifier;
 
-public class TileEntityTimerRenderer implements BlockEntityRenderer<TileEntityTimer> {
-	private static final ResourceLocation TEXTURE = ResourceLocation.parse(EnergyControl.MODID + ":textures/block/timer/all.png");
-	private static final ResourceLocation TEXTURE_ACTIVE = ResourceLocation.parse(EnergyControl.MODID + ":textures/block/timer/active.png");
+public class TileEntityTimerRenderer extends TileRenderer<TileEntityTimer> {
+	private static final Identifier TEXTURE = Identifier.parse(EnergyControl.MODID + ":textures/block/timer/all.png");
+	private static final Identifier TEXTURE_ACTIVE = Identifier.parse(EnergyControl.MODID + ":textures/block/timer/active.png");
 	private final Font font;
 
 	public TileEntityTimerRenderer(Context ctx) {
-		font = ctx.getFont();
+		font = ctx.font();
 	}
 
-	@SuppressWarnings("incomplete-switch")
 	@Override
-	public void render(TileEntityTimer te, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
+	protected void render(TileEntityTimer te, PoseStack matrixStack, SubmitNodeCollector buffer, int combinedLight, int combinedOverlay) {
 		matrixStack.pushPose();
 
 		CubeSmallRenderer.rotateBlock(matrixStack, te.getFacing(), te.getRotation());
 
-		VertexConsumer vertexBuilder = te.getIsWorking() ? buffer.getBuffer(RenderType.entitySolid(TEXTURE_ACTIVE)) : buffer.getBuffer(RenderType.entitySolid(TEXTURE));
-		CubeSmallRenderer.MODEL.render(matrixStack, vertexBuilder, CubeSmallRenderer.getBlockLight(te), combinedOverlay);
+		CubeSmallRenderer.MODEL.render(matrixStack, buffer, RenderTypes.entitySolid(te.getIsWorking() ? TEXTURE_ACTIVE : TEXTURE), CubeSmallRenderer.getBlockLight(te), combinedOverlay);
 		String time = te.getTimeString();
-		matrixStack.mulPose(Axis.XP.rotationDegrees(90.0F));
+		matrixStack.rotate(Axis.XP.rotationDegrees(90.0F));
 		matrixStack.translate(0.5F, 0.575F, -0.4376F);
 		matrixStack.scale(0.015625F, 0.015625F, 0.015625F);
-		font.drawInBatch(time, -font.width(time) / 2, -font.lineHeight, 0x000000, false, matrixStack.last().pose(), buffer, Font.DisplayMode.POLYGON_OFFSET, 0, combinedLight);
+		drawString(buffer, matrixStack, time, -font.width(time) / 2, -font.lineHeight, 0x000000, combinedLight);
 		matrixStack.popPose();
-	}
-
-	@Override
-	public int getViewDistance() {
-		return 65536;
 	}
 }

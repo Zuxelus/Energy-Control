@@ -13,9 +13,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.NotNull;
 
 public class TileEntityHoloPanel extends TileEntityInfoPanel {
 	private static final byte SLOT_CARD = 0;
@@ -47,22 +44,20 @@ public class TileEntityHoloPanel extends TileEntityInfoPanel {
 		}
 	}
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
 	public AABB getRenderBoundingBox() {
 		if (screen == null)
-			return new AABB(worldPosition.offset(0, 0, 0), worldPosition.offset(1, 1, 1));
-		return new AABB(new BlockPos(screen.minX, screen.minY, screen.minZ), new BlockPos(screen.maxX + 1, screen.maxY + getPower(), screen.maxZ + 1));
+			return new AABB(worldPosition);
+		return new AABB(screen.minX, screen.minY, screen.minZ, screen.maxX + 1, screen.maxY + getPower(), screen.maxZ + 1);
 	}
 
 	// MenuProvider
 	@Override
-	public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory inventory, @NotNull Player player) {
+	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerHoloPanel(windowId, inventory, this);
 	}
 
 	@Override
-	public @NotNull Component getDisplayName() {
+	public Component getDisplayName() {
 		return Component.translatable(ModItems.holo_panel.get().getDescriptionId());
 	}
 }

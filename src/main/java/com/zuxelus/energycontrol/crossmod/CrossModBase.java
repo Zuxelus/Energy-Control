@@ -11,7 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.registries.RegisterEvent;
+import net.neoforged.neoforge.registries.RegisterEvent;
 
 public class CrossModBase {
 

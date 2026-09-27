@@ -1,34 +1,27 @@
 package com.zuxelus.energycontrol.network;
 
-import java.util.function.Supplier;
-
 import com.zuxelus.energycontrol.EnergyControl;
 
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent.Context;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public class PacketKeys {
-	private boolean altPressed;
+public record PacketKeys(boolean altPressed) implements CustomPacketPayload {
+	public static final CustomPacketPayload.Type<PacketKeys> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(EnergyControl.MODID, "keys"));
+	public static final StreamCodec<RegistryFriendlyByteBuf, PacketKeys> STREAM_CODEC = StreamCodec.composite(
+			ByteBufCodecs.BOOL, PacketKeys::altPressed,
+			PacketKeys::new);
 
-	public PacketKeys() { }
-
-	public PacketKeys(boolean altPressed) {
-		this.altPressed = altPressed;
+	@Override
+	public Type<? extends CustomPacketPayload> type() {
+		return TYPE;
 	}
 
-	public static PacketKeys decode(FriendlyByteBuf buf) {
-		return new PacketKeys(buf.readBoolean());
-	}
-
-	public static void encode(PacketKeys pkt, FriendlyByteBuf buf) {
-		buf.writeBoolean(pkt.altPressed);
-	}
-
-	public static void handle(PacketKeys message, Supplier<Context> context) {
-		Context ctx = context.get();
-		ctx.enqueueWork(() -> {
-			EnergyControl.altPressed.put(ctx.getSender(), message.altPressed);
-		});
-		ctx.setPacketHandled(true);
+	// server
+	public static void handle(PacketKeys message, IPayloadContext ctx) {
+		EnergyControl.altPressed.put(ctx.player(), message.altPressed);
 	}
 }

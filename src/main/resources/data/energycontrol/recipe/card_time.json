@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " S ",
+    "PCP",
+    " S "
+  ],
+  "key": {
+    "C": "minecraft:clock",
+    "P": "minecraft:paper",
+    "S": "energycontrol:strong_string"
+  },
+  "result": {
+    "id": "energycontrol:card_time"
+  }
+}

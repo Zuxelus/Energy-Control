@@ -1,20 +1,21 @@
 package com.zuxelus.energycontrol.network;
 
-import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.network.PacketTileEntity;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public class ChannelHandler {
 
-	public static void init() {
-		NetworkHelper.createChannel(EnergyControl.MODID, EnergyControl.VERSION);
-		NetworkHelper.registerBoth(1, PacketCard.class, PacketCard::encode, PacketCard::decode, PacketCard::handle);
-		NetworkHelper.registerBoth(2, PacketTileEntity.class, PacketTileEntity::encode, PacketTileEntity::decode, PacketTileEntity::handle);
-		NetworkHelper.registerServerToClient(3, PacketAlarm.class, PacketAlarm::encode, PacketAlarm::decode, PacketAlarm::handle);
-		NetworkHelper.registerClientToServer(4, PacketKeys.class, PacketKeys::encode, PacketKeys::decode, PacketKeys::handle);
+	public static void register(RegisterPayloadHandlersEvent event) {
+		PayloadRegistrar registrar = event.registrar("1");
+		registrar.playBidirectional(PacketCard.TYPE, PacketCard.STREAM_CODEC, PacketCard::handleServer, null);
+		registrar.playBidirectional(PacketTileEntity.TYPE, PacketTileEntity.STREAM_CODEC, PacketTileEntity::handleServer, null);
+		registrar.playToClient(PacketAlarm.TYPE, PacketAlarm.STREAM_CODEC);
+		registrar.playToServer(PacketKeys.TYPE, PacketKeys.STREAM_CODEC, PacketKeys::handle);
 	}
 
 	// server
@@ -23,7 +24,7 @@ public class ChannelHandler {
 			return;
 
 		Level world = panel.getLevel();
-		if (world == null || world.isClientSide)
+		if (world == null || world.isClientSide())
 			return;
 
 		NetworkHelper.sendPacketToAllAround(panel.getLevel(), panel.getBlockPos(), new PacketCard(card, panel.getBlockPos(), slot));
@@ -35,13 +36,13 @@ public class ChannelHandler {
 			return;
 
 		Level world = panel.getLevel();
-		if (world == null || !world.isClientSide)
+		if (world == null || !world.isClientSide())
 			return;
 
-		NetworkHelper.network.sendToServer(new PacketCard(card, panel.getBlockPos(), slot));
+		NetworkHelper.sendToServer(new PacketCard(card, panel.getBlockPos(), slot));
 	}
 
 	public static void updateSeverKeys(boolean altPressed) {
-		NetworkHelper.network.sendToServer(new PacketKeys(altPressed));
+		NetworkHelper.sendToServer(new PacketKeys(altPressed));
 	}
 }

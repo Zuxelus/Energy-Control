@@ -4,17 +4,16 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityRangeTrigger;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.resources.Identifier;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiRangeTriggerInvertRedstone extends AbstractButton {
-	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/gui_range_trigger.png");
+	private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/gui_range_trigger.png");
 
 	TileEntityRangeTrigger trigger;
 	private boolean checked;
@@ -28,18 +27,18 @@ public class GuiRangeTriggerInvertRedstone extends AbstractButton {
 	}
 
 	@Override
-	public void renderWidget(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
+	protected void extractContents(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (!visible)
 			return;
 
-		matrixStack.blit(TEXTURE, getX(), getY() + 1, 176, checked ? 15 : 0, 18, 15);
+		matrixStack.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, getX(), getY() + 1, 176, checked ? 15 : 0, 18, 15, 256, 256);
 	}
 
 	@Override
-	public void onPress() {
+	public void onPress(InputWithModifiers input) {
 		checked = !checked;
 
-		if (trigger.getLevel().isClientSide && trigger.getInvertRedstone() != checked) {
+		if (trigger.getLevel().isClientSide() && trigger.getInvertRedstone() != checked) {
 			NetworkHelper.updateSeverTileEntity(trigger.getBlockPos(), 2, checked ? 1 : 0);
 			trigger.setInvertRedstone(checked);
 		}

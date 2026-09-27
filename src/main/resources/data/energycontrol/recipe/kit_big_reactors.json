@@ -1,0 +1,32 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:or",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "bigreactors"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "biggerreactors"
+        }
+      ]
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "RF",
+    "PB"
+  ],
+  "key": {
+    "P": "minecraft:paper",
+    "R": "#c:dusts/redstone",
+    "F": "energycontrol:radio_transmitter",
+    "B": "#c:dyes/green"
+  },
+  "result": {
+    "id": "energycontrol:kit_big_reactors"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "energycontrol:kit_assembler",
+  "input1": {
+    "ingredient": "energycontrol:card_liquid_advanced"
+  },
+  "input2": {
+    "ingredient": "energycontrol:strong_string",
+    "count": 2
+  },
+  "input3": {
+    "ingredient": "energycontrol:card_liquid_advanced"
+  },
+  "result": {
+    "id": "energycontrol:kit_liquid_advanced",
+    "count": 2
+  },
+  "time": 1000
+}

@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.gui;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
@@ -7,16 +8,15 @@ import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.gui.GuiBase;
 import com.zuxelus.zlib.gui.controls.GuiTextArea;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiCardText extends GuiBase {
 	private ICardReader reader;
 	private ItemStack stack;
@@ -50,9 +50,9 @@ public class GuiCardText extends GuiBase {
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(GuiGraphics matrixStack, float partialTicks, int mouseX, int mouseY) {
+	protected void drawGuiContainerBackgroundLayer(GuiGraphicsExtractor matrixStack, float partialTicks, int mouseX, int mouseY) {
 		super.drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
-		textArea.render(matrixStack, mouseY, mouseY, partialTicks);
+		textArea.extractRenderState(matrixStack, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public class GuiCardText extends GuiBase {
 						reader.setString("line_" + i, lines[i]);
 			}
 			reader.updateServer(stack, panel, slot);
-			minecraft.setScreen(parentGui);
+			minecraft.gui.setScreen(parentGui);
 			break;
 		case 2:
 			textArea.writeText("@");
@@ -80,23 +80,23 @@ public class GuiCardText extends GuiBase {
 	}
 
 	@Override
-	public boolean mouseClicked(double x, double y, int p_94697_) {
+	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
 		GuiEventListener control = getFocused();
 		if (control instanceof GuiTextArea) {
-			boolean result = super.mouseClicked(x, y, p_94697_);
+			boolean result = super.mouseClicked(event, doubleClick);
 			setFocused(control);
 			return result;
 		}
-		return super.mouseClicked(x, y, p_94697_);
+		return super.mouseClicked(event, doubleClick);
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (keyCode == 256) {
+	public boolean keyPressed(KeyEvent event) {
+		if (event.key() == InputConstants.KEY_ESCAPE) {
 			actionPerformed(1);
 			return true;
 		}
-		return super.keyPressed(keyCode, scanCode, modifiers);
+		return super.keyPressed(event);
 	}
 
 	@Override

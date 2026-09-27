@@ -7,8 +7,9 @@ import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.redstone.Orientation;
+import org.jspecify.annotations.Nullable;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -21,16 +22,11 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
 
 public class InfoPanel extends FacingBlockActive {
 
-	public InfoPanel() {
-		super(Block.Properties.of().strength(1.0F, 3.0F).lightLevel(state -> state.getValue(ACTIVE) ? 10 : 0).sound(SoundType.METAL));
-	}
-
 	public InfoPanel(Block.Properties builder) {
-		super(builder.lightLevel(state -> state.getValue(ACTIVE) ? 10 : 0));
+		super(metal(builder).lightLevel(state -> state.getValue(ACTIVE) ? 10 : 0));
 	}
 
 	@Override
@@ -39,15 +35,15 @@ public class InfoPanel extends FacingBlockActive {
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		BlockEntity te = world.getBlockEntity(pos);
 		if (!(te instanceof TileEntityInfoPanel))
 			return InteractionResult.PASS;
-		if (!world.isClientSide && EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) te).getFacing() == hit.getDirection())
+		if (!world.isClientSide() && EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) te).getFacing() == hit.getDirection())
 			if (((TileEntityInfoPanel) te).runTouchAction(player.getItemInHand(hand), pos, hit.getLocation()))
 				return InteractionResult.SUCCESS;
-		if (!world.isClientSide)
-			NetworkHooks.openScreen((ServerPlayer) player, (TileEntityInfoPanel) te, pos);
+		if (!world.isClientSide())
+			player.openMenu((TileEntityInfoPanel) te, buf -> buf.writeBlockPos(pos));
 		return InteractionResult.SUCCESS;
 	}
 
@@ -57,8 +53,8 @@ public class InfoPanel extends FacingBlockActive {
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
-		if (world.isClientSide)
+	protected void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, @Nullable Orientation orientation, boolean isMoving) {
+		if (world.isClientSide())
 			return;
 
 		boolean flag = state.getValue(ACTIVE);
@@ -74,7 +70,7 @@ public class InfoPanel extends FacingBlockActive {
 	}
 
 	@Override
-	public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource rand) {
+	protected void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource rand) {
 		if (state.getValue(ACTIVE) && !world.hasNeighborSignal(pos)) {
 			world.setBlock(pos, state.cycle(ACTIVE), 2);
 			updateExtenders(state, world, pos);
@@ -96,7 +92,7 @@ public class InfoPanel extends FacingBlockActive {
 	}*/
 
 	@Override
-	public RenderShape getRenderShape(BlockState state) {
-		return RenderShape.ENTITYBLOCK_ANIMATED;
+	protected RenderShape getRenderShape(BlockState state) {
+		return RenderShape.INVISIBLE;
 	}
 }

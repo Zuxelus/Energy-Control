@@ -1,17 +1,18 @@
 package com.zuxelus.zlib.gui.controls;
 
-import net.minecraft.SharedConstants;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.util.StringUtil;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.util.ARGB;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.util.Mth;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiTextArea extends AbstractWidget {
 	private final int lineCount;
 	private int maxStringLength = 32;
@@ -36,7 +37,7 @@ public class GuiTextArea extends AbstractWidget {
 	}
 
 	@Override
-	public void renderWidget(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
+	protected void extractWidgetRenderState(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY, float partialTicks) {
 		matrixStack.fill(getX() - 1, getY() - 1, getX() + width + 1, getY() + height + 1, 0xFFA0A0A0);
 		matrixStack.fill(getX(), getY(), getX() + width, getY() + height, 0xFF000000);
 		int textColor = 0xE0E0E0;
@@ -45,7 +46,7 @@ public class GuiTextArea extends AbstractWidget {
 		int textTop = getY() + (height - lineCount * (fontRenderer.lineHeight + 1)) / 2;
 
 		for (int i = 0; i < lineCount; i++)
-			matrixStack.drawString(fontRenderer, text[i], textLeft, textTop + (fontRenderer.lineHeight + 1) * i, textColor);
+			matrixStack.text(fontRenderer, text[i], textLeft, textTop + (fontRenderer.lineHeight + 1) * i, ARGB.opaque(textColor));
 		int cursorPositionX = textLeft + fontRenderer.width(text[cursorLine].substring(0, Math.min(text[cursorLine].length(), cursorPosition))) - 1;
 		boolean drawCursor = isFocused() && cursorCounter / 6 % 2 == 0;
 		if (drawCursor)
@@ -53,7 +54,7 @@ public class GuiTextArea extends AbstractWidget {
 	}
 
 	// Copy of EditBox.renderHighlight
-	private void drawCursorVertical(GuiGraphics matrixStack, int left, int top, int right, int bottom) {
+	private void drawCursorVertical(GuiGraphicsExtractor matrixStack, int left, int top, int right, int bottom) {
 		if (left < right) {
 			int i = left;
 			left = right;
@@ -66,7 +67,7 @@ public class GuiTextArea extends AbstractWidget {
 			bottom = j;
 		}
 
-		matrixStack.fill(RenderType.guiTextHighlight(), left, top, right, bottom, -16776961); // TODO color
+		matrixStack.textHighlight(left, top, right, bottom, false);
 	}
 
 	public void updateCursorCounter() {
@@ -110,7 +111,7 @@ public class GuiTextArea extends AbstractWidget {
 
 	public void writeText(String additionalText) {
 		String newLine = "";
-		String filteredText = SharedConstants.filterText(additionalText);
+		String filteredText = StringUtil.filterText(additionalText);
 		int freeCharCount = this.maxStringLength - text[cursorLine].length();
 
 		if (text[cursorLine].length() > 0)
@@ -139,9 +140,12 @@ public class GuiTextArea extends AbstractWidget {
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
+	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+		double mouseX = event.x();
+		double mouseY = event.y();
+		int mouseButton = event.button();
 		boolean flag = mouseX >= getX() && mouseX < (getX() + width) && mouseY >= getY() && mouseY < (getY() + height);
-		if (isFocused() && flag && mouseButton == 0) {
+		if (isFocused() && flag && mouseButton == InputConstants.MOUSE_BUTTON_LEFT) {
 			int xi = Mth.floor(mouseX) - getX();
 			int yi = Mth.floor(mouseY) - getY();
 			setCursorPosition(fontRenderer.plainSubstrByWidth(text[(yi - 4) / 10], xi).length(), (yi - 4) / 10);
@@ -151,39 +155,40 @@ public class GuiTextArea extends AbstractWidget {
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+	public boolean keyPressed(KeyEvent event) {
+		int keyCode = event.key();
 		if (!isFocused())
 			return false;
 		switch (keyCode) {
 		/*case 1:
 			setCursorPosition(text[cursorLine].length(), cursorLine);
 			return true;*/
-		case 257: // enter
-		case 335:
+		case InputConstants.KEY_RETURN: // enter
+		case InputConstants.KEY_NUMPADENTER:
 			setCursorLine(1);
 			return true;
-		case 259: // backspace
+		case InputConstants.KEY_BACKSPACE: // backspace
 			deleteFromCursor(-1);
 			return true;
-		case 268: //home
+		case InputConstants.KEY_HOME: //home
 			setCursorPosition(0, cursorLine);
 			return true;
-		case 263: // left
+		case InputConstants.KEY_LEFT: // left
 			setCursorPosition(cursorPosition - 1, cursorLine);
 			return true;
-		case 262: // right
+		case InputConstants.KEY_RIGHT: // right
 			setCursorPosition(cursorPosition + 1, cursorLine);
 			return true;
-		case 265: // up
+		case InputConstants.KEY_UP: // up
 			setCursorLine(-1);
 			return true;
-		case 264: // down
+		case InputConstants.KEY_DOWN: // down
 			setCursorLine(1);
 			return true;
-		case 269: // end
+		case InputConstants.KEY_END: // end
 			setCursorPosition(text[cursorLine].length(), cursorLine);
 			return true;
-		case 261: // delete
+		case InputConstants.KEY_DELETE: // delete
 			deleteFromCursor(1);
 			return true;
 		}
@@ -191,9 +196,9 @@ public class GuiTextArea extends AbstractWidget {
 	}
 
 	@Override
-	public boolean charTyped(char typedChar, int keyCode) {
-		if (isFocused() && SharedConstants.isAllowedChatCharacter(typedChar)) {
-			writeText(Character.toString(typedChar));
+	public boolean charTyped(CharacterEvent event) {
+		if (isFocused() && event.isAllowedChatCharacter()) {
+			writeText(event.codepointAsString());
 			return true;
 		}
 		return false;

@@ -7,13 +7,13 @@ import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.containers.ContainerBase;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 
 public class ContainerAdvancedInfoPanel extends ContainerBase<TileEntityInfoPanel> {
 
-	public ContainerAdvancedInfoPanel(int windowId, Inventory inventory, FriendlyByteBuf data) {
+	public ContainerAdvancedInfoPanel(int windowId, Inventory inventory, RegistryFriendlyByteBuf data) {
 		this(windowId, inventory, (TileEntityInfoPanel) getBlockEntity(inventory, data));
 	}
 
@@ -23,7 +23,7 @@ public class ContainerAdvancedInfoPanel extends ContainerBase<TileEntityInfoPane
 			@SuppressWarnings("resource")
 			@Override
 			public void setChanged() {
-				if (panel.getLevel().isClientSide)
+				if (panel.getLevel().isClientSide())
 					ContainerAdvancedInfoPanel.this.broadcastChanges();
 			};
 		});
@@ -31,7 +31,7 @@ public class ContainerAdvancedInfoPanel extends ContainerBase<TileEntityInfoPane
 			@SuppressWarnings("resource")
 			@Override
 			public void setChanged() {
-				if (panel.getLevel().isClientSide)
+				if (panel.getLevel().isClientSide())
 					ContainerAdvancedInfoPanel.this.broadcastChanges();
 			};
 		});
@@ -39,7 +39,7 @@ public class ContainerAdvancedInfoPanel extends ContainerBase<TileEntityInfoPane
 			@SuppressWarnings("resource")
 			@Override
 			public void setChanged() {
-				if (panel.getLevel().isClientSide)
+				if (panel.getLevel().isClientSide())
 					ContainerAdvancedInfoPanel.this.broadcastChanges();
 			};
 		});

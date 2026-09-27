@@ -9,13 +9,13 @@ import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.containers.ContainerBase;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 
 public class ContainerInfoPanel extends ContainerBase<TileEntityInfoPanel> {
 
-	public ContainerInfoPanel(int windowId, Inventory inventory, FriendlyByteBuf data) {
+	public ContainerInfoPanel(int windowId, Inventory inventory, RegistryFriendlyByteBuf data) {
 		this(windowId, inventory, (TileEntityInfoPanel) getBlockEntity(inventory, data));
 	}
 
@@ -24,7 +24,7 @@ public class ContainerInfoPanel extends ContainerBase<TileEntityInfoPanel> {
 		addSlot(new SlotCard(panel, 0, 8, 24 + 18) {
 			@Override
 			public void setChanged() {
-				if (panel.getLevel().isClientSide)
+				if (panel.getLevel().isClientSide())
 					ContainerInfoPanel.this.broadcastChanges();
 			};
 		});
@@ -32,7 +32,7 @@ public class ContainerInfoPanel extends ContainerBase<TileEntityInfoPanel> {
 		addSlot(new SlotColor(panel, 2, 8, 24 + 18 * 3) {
 			@Override
 			public void setChanged() {
-				if (panel.getLevel().isClientSide)
+				if (panel.getLevel().isClientSide())
 					ContainerInfoPanel.this.broadcastChanges();
 			};
 		});

@@ -3,11 +3,11 @@ package com.zuxelus.energycontrol.blocks;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityRangeTrigger;
 import com.zuxelus.zlib.blocks.FacingHorizontal;
+import com.zuxelus.zlib.blocks.FacingBlock;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -21,9 +21,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
 
 public class RangeTrigger extends FacingHorizontal {
+
+	public RangeTrigger(Block.Properties properties) {
+		super(FacingBlock.metal(properties));
+	}
 	public static final EnumProperty<EnumState> STATE = EnumProperty.create("state", EnumState.class);
 
 	@Override
@@ -43,17 +46,17 @@ public class RangeTrigger extends FacingHorizontal {
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		BlockEntity te = world.getBlockEntity(pos);
 		if (!(te instanceof TileEntityRangeTrigger))
 			return InteractionResult.PASS;
-		if (!world.isClientSide)
-			NetworkHooks.openScreen((ServerPlayer) player, (TileEntityRangeTrigger) te, pos);
+		if (!world.isClientSide())
+			player.openMenu((TileEntityRangeTrigger) te, buf -> buf.writeBlockPos(pos));
 		return InteractionResult.SUCCESS;
 	}
 
 	@Override
-	public int getSignal(BlockState blockState, BlockGetter blockAccess, BlockPos pos, Direction side) {
+	protected int getSignal(BlockState blockState, BlockGetter blockAccess, BlockPos pos, Direction side) {
 		BlockEntity te = blockAccess.getBlockEntity(pos);
 		if (!(te instanceof TileEntityRangeTrigger))
 			return 0;
@@ -61,7 +64,7 @@ public class RangeTrigger extends FacingHorizontal {
 	}
 
 	@Override
-	public boolean isSignalSource(BlockState state) {
+	protected boolean isSignalSource(BlockState state) {
 		return true;
 	}
 

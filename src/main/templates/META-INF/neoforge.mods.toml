@@ -1,0 +1,33 @@
+license="${mod_license}"
+issueTrackerURL="https://github.com/Zuxelus/Energy-Control/issues"
+
+[[mods]]
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
+displayURL="https://www.curseforge.com/minecraft/mc-mods/energy-control"
+iconFile="logo.png"
+credits="Remastered by Zuxelus, originally created by Shedar, based on an original idea by Nargon and Noosius"
+authors="${mod_authors}"
+description='''${mod_description}'''
+
+[[dependencies.${mod_id}]]
+    modId="neoforge"
+    type="required"
+    versionRange="[${neo_version},)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="minecraft"
+    type="required"
+    versionRange="${minecraft_version_range}"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="jei"
+    type="optional"
+    versionRange="*"
+    ordering="NONE"
+    side="CLIENT"

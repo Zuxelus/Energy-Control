@@ -7,7 +7,7 @@ import com.google.common.collect.Lists;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanelExtender;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanelExtender;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -19,7 +19,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class ContainerBase<T extends Container> extends AbstractContainerMenu {
 	public final T te;
@@ -57,14 +56,14 @@ public abstract class ContainerBase<T extends Container> extends AbstractContain
 	}
 
 	@Override
-	public boolean stillValid(@NotNull Player player) {
+	public boolean stillValid(Player player) {
 		if (posCallable == null || block == null)
 			return true;
 		return stillValid(posCallable, player, block);
 	}
 
 	@Override
-	public @NotNull ItemStack quickMoveStack(@NotNull Player player, int index) {
+	public ItemStack quickMoveStack(Player player, int index) {
 		Slot slot = slots.get(index);
 		if (!slot.hasItem())
 			return ItemStack.EMPTY;
@@ -72,7 +71,7 @@ public abstract class ContainerBase<T extends Container> extends AbstractContain
 		ItemStack stack = slot.getItem();
 		ItemStack result = stack.copy();
 
-		int containerSlots = slots.size() - player.getInventory().items.size();
+		int containerSlots = slots.size() - player.getInventory().getNonEquipmentItems().size();
 		if (index < containerSlots) {
 			if (!moveItemStackTo(stack, containerSlots, slots.size(), true))
 				return ItemStack.EMPTY;
@@ -88,7 +87,7 @@ public abstract class ContainerBase<T extends Container> extends AbstractContain
 		return result;
 	}
 
-	public static BlockEntity getBlockEntity(Inventory player, FriendlyByteBuf data) {
+	public static BlockEntity getBlockEntity(Inventory player, RegistryFriendlyByteBuf data) {
 		Objects.requireNonNull(player, "Player cannot be null!");
 		Objects.requireNonNull(data, "Data cannot be null!");
 		BlockEntity te = player.player.level().getBlockEntity(data.readBlockPos());

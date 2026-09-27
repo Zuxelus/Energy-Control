@@ -7,13 +7,13 @@ import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.tileentities.TileEntityRangeTrigger;
 import com.zuxelus.zlib.containers.ContainerBase;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 
 public class ContainerRangeTrigger extends ContainerBase<TileEntityRangeTrigger> {
 
-	public ContainerRangeTrigger(int windowId, Inventory inventory, FriendlyByteBuf data) {
+	public ContainerRangeTrigger(int windowId, Inventory inventory, RegistryFriendlyByteBuf data) {
 		this(windowId, inventory, (TileEntityRangeTrigger) getBlockEntity(inventory, data));
 	}
 

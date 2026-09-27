@@ -12,8 +12,8 @@ import net.minecraft.world.item.context.UseOnContext;
 
 public abstract class ItemKitMain extends Item implements IItemKit {
 
-	public ItemKitMain() {
-		super(new Item.Properties().stacksTo(16).setNoRepair());
+	public ItemKitMain(Item.Properties properties) {
+		super(properties.stacksTo(16).setNoCombineRepair());
 	}
 
 	@Override

@@ -17,16 +17,16 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
 @JeiPlugin
 public class CrossJEI implements IModPlugin {
-	private static final ResourceLocation id = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "jei_plugin");
+	private static final Identifier id = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "jei_plugin");
 
 	@Override
-	public ResourceLocation getPluginUid() {
+	public Identifier getPluginUid() {
 		return id;
 	}
 
@@ -43,7 +43,7 @@ public class CrossJEI implements IModPlugin {
 
 	@Override
 	public void registerRecipes(IRecipeRegistration registry) {
-		registry.addRecipes(KitAssemblerRecipeCategory.recipeType, KitAssemblerRecipeType.TYPE.getRecipes(Minecraft.getInstance().level));
+		registry.addRecipes(KitAssemblerRecipeCategory.recipeType, KitAssemblerRecipeType.getRecipes(Minecraft.getInstance().level));
 		registerItem(registry, ModItems.white_lamp.get(), "ec.jei.blockLightWhite");
 		registerItem(registry, ModItems.orange_lamp.get(), "ec.jei.blockLightOrange");
 		registerItem(registry, ModItems.howler_alarm.get(), "ec.jei.blockHowlerAlarm");
@@ -82,6 +82,6 @@ public class CrossJEI implements IModPlugin {
 
 	@Override
 	public void registerRecipeCatalysts(IRecipeCatalystRegistration registry) {
-		registry.addRecipeCatalyst(new ItemStack(ModItems.kit_assembler.get()), KitAssemblerRecipeCategory.recipeType);
+		registry.addCraftingStation(KitAssemblerRecipeCategory.recipeType, ModItems.kit_assembler.get());
 	}
 }

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "ICI",
+    "IBI",
+    " R "
+  ],
+  "key": {
+    "I": "#c:ingots/iron",
+    "R": "#c:dusts/redstone",
+    "C": "minecraft:clock",
+    "B": "#c:circuits/basic"
+  },
+  "result": {
+    "id": "energycontrol:timer"
+  }
+}

@@ -4,8 +4,6 @@ import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public interface IItemCard {
 	/**
@@ -25,7 +23,6 @@ public interface IItemCard {
 	 * @return A list of card settings
 	 * @see PanelSetting
 	 */
-	@OnlyIn(Dist.CLIENT)
 	List<PanelSetting> getSettingsList();
 
 	/**

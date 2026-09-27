@@ -9,19 +9,20 @@ import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.containers.ContainerTimer;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.network.PacketAlarm;
+import com.zuxelus.energycontrol.recipes.KitAssemblerRecipeType;
 import com.zuxelus.energycontrol.websockets.SocketClient;
 import com.zuxelus.zlib.containers.ContainerBase;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraftforge.event.TickEvent.Phase;
-import net.minecraftforge.event.TickEvent.ServerTickEvent;
-import net.minecraftforge.event.entity.player.PlayerContainerEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.event.level.LevelEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.event.server.ServerStoppingEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
+import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 public class ServerTickHandler {
 	public final static ServerTickHandler instance = new ServerTickHandler();
@@ -55,8 +56,8 @@ public class ServerTickHandler {
 	}
 
 	@SubscribeEvent
-	public void onServerTick(ServerTickEvent event) {
-		if (event.phase == Phase.END && ConfigHandler.WS_ENABLED.get())
+	public void onServerTick(ServerTickEvent.Post event) {
+		if (ConfigHandler.WS_ENABLED.get())
 			if (updateTicker-- < 0) {
 				updateTicker = ConfigHandler.WS_REFRESH_RATE.get() - 1;
 				if (!cards.isEmpty()) {
@@ -70,6 +71,11 @@ public class ServerTickHandler {
 					cards.clear();
 				}
 			}
+	}
+
+	@SubscribeEvent
+	public void onDatapackSync(OnDatapackSyncEvent event) {
+		event.sendRecipes(KitAssemblerRecipeType.TYPE);
 	}
 
 	@SubscribeEvent

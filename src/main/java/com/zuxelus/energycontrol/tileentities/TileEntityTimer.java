@@ -7,12 +7,10 @@ import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -58,7 +56,7 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 	public void setTime(int value) {
 		int old = time;
 		time = value;
-		if (!level.isClientSide && time != old)
+		if (!level.isClientSide() && time != old)
 			notifyBlockUpdate();
 	}
 
@@ -69,7 +67,7 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 	public void setInvertRedstone(boolean value) {
 		boolean old = invertRedstone;
 		invertRedstone = value;
-		if (!level.isClientSide && invertRedstone != old)
+		if (!level.isClientSide() && invertRedstone != old)
 			notifyBlockUpdate();
 	}
 
@@ -82,7 +80,7 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 		isWorking = value;
 		if (isWorking)
 			startingTime = time;
-		if (!level.isClientSide && isWorking != old)
+		if (!level.isClientSide() && isWorking != old)
 			notifyBlockUpdate();
 	}
 
@@ -93,7 +91,7 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 	public void setIsTicks(boolean value) {
 		boolean old = isTicks;
 		isTicks = value;
-		if (!level.isClientSide && isTicks != old)
+		if (!level.isClientSide() && isTicks != old)
 			notifyBlockUpdate();
 	}
 
@@ -101,7 +99,7 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 		return sendSignal;
 	}
 
-	public void onNeighborChange(Block fromBlock, BlockPos fromPos) { // server
+	public void onNeighborChange(Block fromBlock) { // server
 		boolean newPowered = level.getSignal(worldPosition.relative(rotation), rotation) > 0;
 		if (newPowered != isPowered) {
 			if (!isPowered && newPowered) {
@@ -116,22 +114,22 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 	public void onServerMessageReceived(CompoundTag tag) {
 		if (!tag.contains("type"))
 			return;
-		switch (tag.getInt("type")) {
+		switch (tag.getIntOr("type", 0)) {
 		case 1:
 			if (tag.contains("value"))
-				setTime(tag.getInt("value"));
+				setTime(tag.getIntOr("value", 0));
 			break;
 		case 2:
 			if (tag.contains("value"))
-				setInvertRedstone(tag.getInt("value") == 1);
+				setInvertRedstone(tag.getIntOr("value", 0) == 1);
 			break;
 		case 3:
 			if (tag.contains("value"))
-				setIsWorking(tag.getInt("value") == 1);
+				setIsWorking(tag.getIntOr("value", 0) == 1);
 			break;
 		case 4:
 			if (tag.contains("value"))
-				setIsTicks(tag.getInt("value") == 1);
+				setIsTicks(tag.getIntOr("value", 0) == 1);
 			break;
 		}
 	}
@@ -140,78 +138,45 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 	public void onClientMessageReceived(CompoundTag tag) {
 		if (!tag.contains("type"))
 			return;
-		switch (tag.getInt("type")) {
+		switch (tag.getIntOr("type", 0)) {
 		case 1:
 			if (tag.contains("value"))
-				time = tag.getInt("value");
+				time = tag.getIntOr("value", 0);
 			break;
 		case 2:
 			if (tag.contains("value"))
-				isWorking = tag.getInt("value") == 1;
+				isWorking = tag.getIntOr("value", 0) == 1;
 			break;
 		}
 	}
 
 	@Override
-	public Packet<ClientGamePacketListener> getUpdatePacket() {
-		return ClientboundBlockEntityDataPacket.create(this);
-	}
-
-	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-		readProperties(pkt.getTag());
-	}
-
-	@Override
-	public CompoundTag getUpdateTag() {
-		CompoundTag tag = super.getUpdateTag();
-		tag = writeProperties(tag);
+	protected void writeUpdateData(ValueOutput tag) {
 		tag.putBoolean("isTicks", isTicks);
 		tag.putBoolean("poweredBlock", sendSignal);
-		return tag;
 	}
 
 	@Override
-	protected void readProperties(CompoundTag tag) {
+	protected void readProperties(ValueInput tag) {
 		super.readProperties(tag);
-		if (tag.contains("timer"))
-			time = tag.getInt("timer");
-		if (tag.contains("startingTime"))
-			startingTime = tag.getInt("startingTime");
-		if (tag.contains("invert"))
-			invertRedstone = tag.getBoolean("invert");
-		if (tag.contains("isWorking"))
-			isWorking = tag.getBoolean("isWorking");
-		if (tag.contains("isTicks"))
-			isTicks = tag.getBoolean("isTicks");
-		if (tag.contains("poweredBlock"))
-			sendSignal = tag.getBoolean("poweredBlock");
-		if (tag.contains("isPowered"))
-			isPowered = tag.getBoolean("isPowered");
+		time = tag.getIntOr("timer", time);
+		startingTime = tag.getIntOr("startingTime", startingTime);
+		invertRedstone = tag.getBooleanOr("invert", invertRedstone);
+		isWorking = tag.getBooleanOr("isWorking", isWorking);
+		isTicks = tag.getBooleanOr("isTicks", isTicks);
+		sendSignal = tag.getBooleanOr("poweredBlock", sendSignal);
+		isPowered = tag.getBooleanOr("isPowered", isPowered);
 	}
 
 	@Override
-	public void load(CompoundTag tag) {
-		super.load(tag);
-		readProperties(tag);
-	}
-
-	@Override
-	protected CompoundTag writeProperties(CompoundTag tag) {
-		tag = super.writeProperties(tag);
+	protected void writeProperties(ValueOutput tag) {
+		super.writeProperties(tag);
 		tag.putInt("timer", time);
 		tag.putInt("startingTime", startingTime);
 		tag.putBoolean("invert", invertRedstone);
 		tag.putBoolean("isWorking", isWorking);
 		tag.putBoolean("isTicks", isTicks);
 		tag.putBoolean("isPowered", isPowered);
-		return tag;
-	}
-
-	@Override
-	protected void saveAdditional(CompoundTag tag) {
-		super.saveAdditional(tag);
-		writeProperties(tag);
 	}
 
 	public static void tickStatic(Level level, BlockPos pos, BlockState state, BlockEntity be) {
@@ -222,7 +187,7 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 	}
 
 	protected void tick() {
-		if (level.isClientSide)
+		if (level.isClientSide())
 			return;
 		if (!isWorking)
 			return;

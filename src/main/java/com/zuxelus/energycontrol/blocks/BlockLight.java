@@ -1,6 +1,8 @@
 package com.zuxelus.energycontrol.blocks;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.redstone.Orientation;
+import org.jspecify.annotations.Nullable;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -15,8 +17,8 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 public class BlockLight extends Block {
 	public static final BooleanProperty LIT = BlockStateProperties.LIT;
 
-	public BlockLight() {
-		super(Block.Properties.of().lightLevel(state -> state.getValue(LIT) ? 15 : 0).strength(0.3F).sound(SoundType.GLASS));
+	public BlockLight(Block.Properties properties) {
+		super(properties.lightLevel(state -> state.getValue(LIT) ? 15 : 0).strength(0.3F).sound(SoundType.GLASS));
 		registerDefaultState(defaultBlockState().setValue(LIT, Boolean.valueOf(false)));
 	}
 
@@ -31,8 +33,8 @@ public class BlockLight extends Block {
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
-		if (world.isClientSide)
+	protected void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, @Nullable Orientation orientation, boolean isMoving) {
+		if (world.isClientSide())
 			return;
 
 		boolean flag = state.getValue(LIT);
@@ -46,7 +48,7 @@ public class BlockLight extends Block {
 	}
 
 	@Override
-	public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource rand) {
+	protected void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource rand) {
 		if (state.getValue(LIT) && !world.hasNeighborSignal(pos))
 			world.setBlock(pos, state.cycle(LIT), 2);
 	}

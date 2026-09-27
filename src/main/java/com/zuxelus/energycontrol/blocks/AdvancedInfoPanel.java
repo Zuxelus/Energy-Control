@@ -9,7 +9,6 @@ import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -22,12 +21,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.network.NetworkHooks;
 
 public class AdvancedInfoPanel extends InfoPanel {
 
-	public AdvancedInfoPanel() {
-		super(Block.Properties.of().strength(1.0F, 3.0F).sound(SoundType.METAL).dynamicShape().noOcclusion());
+	public AdvancedInfoPanel(Block.Properties properties) {
+		super(properties.dynamicShape().noOcclusion());
 	}
 
 	@Override
@@ -35,9 +33,8 @@ public class AdvancedInfoPanel extends InfoPanel {
 		return ModTileEntityTypes.info_panel_advanced.get().create(pos, state);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
-	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+	protected VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
 		BlockEntity tile = world.getBlockEntity(pos);
 		if (!(tile instanceof TileEntityAdvancedInfoPanel))
 			return super.getShape(state, world, pos, context);
@@ -69,15 +66,15 @@ public class AdvancedInfoPanel extends InfoPanel {
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		BlockEntity te = world.getBlockEntity(pos);
 		if (!(te instanceof TileEntityInfoPanel))
 			return InteractionResult.PASS;
-		if (!world.isClientSide && EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) te).getFacing() == hit.getDirection())
+		if (!world.isClientSide() && EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) te).getFacing() == hit.getDirection())
 			if (((TileEntityInfoPanel) te).runTouchAction(player.getItemInHand(hand), pos, hit.getLocation()))
 				return InteractionResult.SUCCESS;
-		if (!world.isClientSide)
-			NetworkHooks.openScreen((ServerPlayer) player, (TileEntityAdvancedInfoPanel) te, pos);
+		if (!world.isClientSide())
+			player.openMenu((TileEntityAdvancedInfoPanel) te, buf -> buf.writeBlockPos(pos));
 		return InteractionResult.SUCCESS;
 	}
 }

@@ -2,10 +2,19 @@ package com.zuxelus.zlib.tileentities;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public abstract class BlockEntityFacing extends BlockEntity {
 
@@ -44,28 +53,64 @@ public abstract class BlockEntityFacing extends BlockEntity {
 		rotation = meta;
 	}
 
-	protected void readProperties(CompoundTag tag) {
-		if (tag.contains("facing"))
-			facing = Direction.from3DDataValue(tag.getInt("facing"));
-		else
-			facing = Direction.NORTH;
-		if (hasRotation()) {
-			if (tag.contains("rotation"))
-				rotation = Direction.from3DDataValue(tag.getInt("rotation"));
-			else
-				rotation = Direction.NORTH;
-		}
+	protected void readProperties(ValueInput tag) {
+		facing = Direction.from3DDataValue(tag.getIntOr("facing", Direction.NORTH.get3DDataValue()));
+		if (hasRotation())
+			rotation = Direction.from3DDataValue(tag.getIntOr("rotation", Direction.NORTH.get3DDataValue()));
 	}
 
-	protected CompoundTag writeProperties(CompoundTag tag) {
-		tag.putInt("facing", facing.get3DDataValue());
+	protected void writeProperties(ValueOutput tag) {
+		tag.putInt("facing", facing == null ? Direction.NORTH.get3DDataValue() : facing.get3DDataValue());
 		if (hasRotation() && rotation != null)
 			tag.putInt("rotation", rotation.get3DDataValue());
-		return tag;
+	}
+
+	/**
+	 * Extra data sent to the client only (update tag / data packet).
+	 */
+	protected void writeUpdateData(ValueOutput tag) { }
+
+	@Override
+	protected void loadAdditional(ValueInput input) {
+		super.loadAdditional(input);
+		readProperties(input);
+	}
+
+	@Override
+	protected void saveAdditional(ValueOutput output) {
+		super.saveAdditional(output);
+		writeProperties(output);
+	}
+
+	protected boolean sendUpdatePacket() {
+		return true;
+	}
+
+	@Override
+	public Packet<ClientGamePacketListener> getUpdatePacket() {
+		return sendUpdatePacket() ? ClientboundBlockEntityDataPacket.create(this) : null;
+	}
+
+	@Override
+	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+		TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, registries);
+		writeProperties(output);
+		writeUpdateData(output);
+		return output.buildResult();
+	}
+
+	@Override
+	public void onDataPacket(Connection net, ValueInput input) {
+		readProperties(input);
+	}
+
+	@Override
+	public void handleUpdateTag(ValueInput input) {
+		readProperties(input);
 	}
 
 	protected void notifyBlockUpdate() {
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			BlockState state = level.getBlockState(worldPosition);
 			level.sendBlockUpdated(worldPosition, state, state, 2);
 		}

@@ -7,27 +7,22 @@ import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityTimer;
 import com.zuxelus.zlib.gui.GuiContainerBase;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiTimer extends GuiContainerBase<ContainerTimer> {
-	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/gui_timer.png");
+	private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/gui_timer.png");
 	private TileEntityTimer timer;
 	private EditBox textboxTimer;
 	private boolean lastIsWorking;
 
 	public GuiTimer(ContainerTimer container, Inventory inventory, Component title) {
-		super(container, inventory, title, TEXTURE);
-		imageWidth = 100;
-		imageHeight = 136;
+		super(container, inventory, title, TEXTURE, 100, 136);
 		this.timer = container.te;
 		lastIsWorking = timer.getIsWorking();
 	}
@@ -65,20 +60,19 @@ public class GuiTimer extends GuiContainerBase<ContainerTimer> {
 	}
 
 	@Override
-	protected void renderBg(GuiGraphics matrixStack, float partialTicks, int mouseX, int mouseY) {
-		super.renderBg(matrixStack, partialTicks, mouseX, mouseY);
-		textboxTimer.renderWidget(matrixStack, mouseX, mouseY, partialTicks);
+	public void extractBackground(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY, float partialTicks) {
+		super.extractBackground(matrixStack, mouseX, mouseY, partialTicks);
+		textboxTimer.extractRenderState(matrixStack, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
-	protected void renderLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
+	protected void extractLabels(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY) {
 		drawCenteredText(matrixStack, title, imageWidth, 6);
 	}
 
 	@Override
 	public void containerTick() {
 		super.containerTick();
-		textboxTimer.tick();
 		boolean isWorking = timer.getIsWorking();
 		if (isWorking != lastIsWorking) {
 			textboxTimer.setEditable(!isWorking);

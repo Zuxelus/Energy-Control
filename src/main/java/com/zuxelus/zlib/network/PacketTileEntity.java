@@ -1,59 +1,46 @@
 package com.zuxelus.zlib.network;
 
-import java.util.function.Supplier;
-
+import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.tileentities.ITilePacketHandler;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.network.NetworkEvent.Context;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public class PacketTileEntity {
-	private BlockPos pos;
-	private CompoundTag tag;
+public record PacketTileEntity(BlockPos pos, CompoundTag tag) implements CustomPacketPayload {
+	public static final CustomPacketPayload.Type<PacketTileEntity> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(EnergyControl.MODID, "tile_entity"));
+	public static final StreamCodec<RegistryFriendlyByteBuf, PacketTileEntity> STREAM_CODEC = StreamCodec.composite(
+			BlockPos.STREAM_CODEC, PacketTileEntity::pos,
+			ByteBufCodecs.COMPOUND_TAG, PacketTileEntity::tag,
+			PacketTileEntity::new);
 
-	public PacketTileEntity(BlockPos pos, CompoundTag tag) {
-		this.pos = pos;
-		this.tag = tag;
+	@Override
+	public Type<? extends CustomPacketPayload> type() {
+		return TYPE;
 	}
 
-	public static void handle(PacketTileEntity message, Supplier<Context> context) {
-		Context ctx = context.get();
-		ctx.enqueueWork(() -> {
-			if (ctx.getDirection().getReceptionSide() == LogicalSide.SERVER) {
-				ServerPlayer player = ctx.getSender();
-				if (player == null || player.level() == null)
-					return;
-				BlockEntity te = player.level().getBlockEntity(message.pos);
-				if (!(te instanceof ITilePacketHandler))
-					return;
-				((ITilePacketHandler) te).onServerMessageReceived(message.tag);
-			} else {
-				@SuppressWarnings("resource")
-				ClientLevel world = Minecraft.getInstance().level;
-				if (world != null) {
-					BlockEntity te = world.getBlockEntity(message.pos);
-					if (!(te instanceof ITilePacketHandler))
-						return;
-					((ITilePacketHandler) te).onClientMessageReceived(message.tag);
-				}
-			}
-		});
-		ctx.setPacketHandled(true);
+	// server
+	public static void handleServer(PacketTileEntity message, IPayloadContext ctx) {
+		Level level = ctx.player().level();
+		if (!level.isLoaded(message.pos))
+			return;
+		BlockEntity te = level.getBlockEntity(message.pos);
+		if (te instanceof ITilePacketHandler handler)
+			handler.onServerMessageReceived(message.tag);
 	}
 
-	public static void encode(PacketTileEntity pkt, FriendlyByteBuf buf) {
-		buf.writeBlockPos(pkt.pos);
-		buf.writeNbt(pkt.tag);
-	}
-
-	public static PacketTileEntity decode(FriendlyByteBuf buf) {
-		return new PacketTileEntity(buf.readBlockPos(), buf.readNbt());
+	// client
+	public static void handleClient(PacketTileEntity message, IPayloadContext ctx) {
+		Level level = ctx.player().level();
+		BlockEntity te = level.getBlockEntity(message.pos);
+		if (te instanceof ITilePacketHandler handler)
+			handler.onClientMessageReceived(message.tag);
 	}
 }

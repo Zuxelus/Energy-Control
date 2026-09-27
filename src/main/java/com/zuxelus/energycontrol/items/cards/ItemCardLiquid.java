@@ -3,10 +3,7 @@ package com.zuxelus.energycontrol.items.cards;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joml.Matrix4f;
-
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.IHasBars;
@@ -17,22 +14,24 @@ import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.util.LightCoordsUtil;
 
 public class ItemCardLiquid extends ItemCardMain implements IHasBars {
+
+	public ItemCardLiquid(Properties properties) {
+		super(properties);
+	}
 
 	@Override
 	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
@@ -77,7 +76,6 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(5);
 		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidName"), 1));
@@ -100,9 +98,8 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		return true;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
-	public void renderBars(float displayWidth, float displayHeight, ICardReader reader, PoseStack matrixStack, MultiBufferSource buffer) {
+	public void renderBars(float displayWidth, float displayHeight, ICardReader reader, PoseStack matrixStack, SubmitNodeCollector buffer) {
 		float x = -0.5F + 1 / 16.0F;
 		float y = -0.5F + 1/ 16.0F;
 		float z = 0;
@@ -111,33 +108,43 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		if (fluidName.isEmpty())
 			return;
 
-		Fluid fluid = ForgeRegistries.FLUIDS.getValue(ResourceLocation.parse(fluidName));
-		IClientFluidTypeExtensions fluidExt = IClientFluidTypeExtensions.of(fluid);
-
-		TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(fluidExt.getStillTexture());
-		if (sprite == null)
+		Identifier id = Identifier.tryParse(fluidName);
+		if (id == null)
+			return;
+		Fluid fluid = BuiltInRegistries.FLUID.getValue(id);
+		FluidState state = fluid.defaultFluidState();
+		FluidModel model = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(state);
+		if (model == null)
 			return;
 
+		TextureAtlasSprite sprite = model.stillMaterial().sprite();
 		float textureX = sprite.getU0();
 		float textureY = sprite.getV0();
-		float width = 14 / 16.0F * reader.getInt("amount") / reader.getInt("capacity");
+		float u1 = sprite.getU1();
+		float v1 = sprite.getV1();
+		long capacity = reader.getLong("capacity");
+		float width = capacity <= 0 ? 0 : 14 / 16.0F * reader.getLong("amount") / capacity;
 		float height = 0.4375F;
 
-		int color = fluidExt.getTintColor();
+		int color = model.fluidTintSource() != null ? model.fluidTintSource().color(state) : -1;
 		float f = (color >> 24 & 255) / 255.0F;
 		float f1 = (color >> 16 & 255) / 255.0F;
 		float f2 = (color >> 8 & 255) / 255.0F;
 		float f3 = (color & 255) / 255.0F;
+		if (f == 0)
+			f = 1.0F;
+		float alpha = f;
 
+		matrixStack.pushPose();
 		matrixStack.scale(displayWidth / 0.875f, displayHeight / 0.875f, 1);
-		VertexConsumer builder = buffer.getBuffer(ModRenderTypes.screenImage(TextureAtlas.LOCATION_BLOCKS));
-		Matrix4f matrix = matrixStack.last().pose();
-		builder.vertex(matrix, x, y + 0.4375F / 2 + height, z).color(f1, f2, f3, f).uv(textureX, sprite.getV1()).uv2(LightTexture.FULL_BRIGHT).endVertex();
-		builder.vertex(matrix, x + 0.875F, y + 0.4375F / 2 + height, z).color(f1, f2, f3, f).uv(sprite.getU1(), sprite.getV1()).uv2(LightTexture.FULL_BRIGHT).endVertex();
-		builder.vertex(matrix, x + 0.875F, y + 0.4375F / 2, z).color(f1, f2, f3, f).uv(sprite.getU1(), textureY).uv2(LightTexture.FULL_BRIGHT).endVertex();
-		builder.vertex(matrix, x, y + 0.4375F / 2, z).color(f1, f2, f3, f).uv(textureX, textureY).uv2(LightTexture.FULL_BRIGHT).endVertex();
+		buffer.submitCustomGeometry(matrixStack, ModRenderTypes.screenImage(sprite.atlasLocation()), (pose, builder) -> {
+			builder.addVertex(pose, x, y + 0.4375F / 2 + height, z).setColor(f1, f2, f3, alpha).setUv(textureX, v1).setLight(LightCoordsUtil.FULL_BRIGHT);
+			builder.addVertex(pose, x + 0.875F, y + 0.4375F / 2 + height, z).setColor(f1, f2, f3, alpha).setUv(u1, v1).setLight(LightCoordsUtil.FULL_BRIGHT);
+			builder.addVertex(pose, x + 0.875F, y + 0.4375F / 2, z).setColor(f1, f2, f3, alpha).setUv(u1, textureY).setLight(LightCoordsUtil.FULL_BRIGHT);
+			builder.addVertex(pose, x, y + 0.4375F / 2, z).setColor(f1, f2, f3, alpha).setUv(textureX, textureY).setLight(LightCoordsUtil.FULL_BRIGHT);
+		});
 
 		IHasBars.drawTransparentRect(matrixStack, buffer, x + 0.875F - width, y + height + 0.4375F / 2, x, y + 0.4375F / 2, -0.0001F, 0xB0000000);
-		matrixStack.scale(0.875F / displayWidth, 0.875F / displayHeight, 1);
+		matrixStack.popPose();
 	}
 }

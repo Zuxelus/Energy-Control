@@ -17,6 +17,10 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class ItemCardRedstone extends ItemCardMain {
 
+	public ItemCardRedstone(Properties properties) {
+		super(properties);
+	}
+
 	@Override
 	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
 		BlockPos target = reader.getTarget();

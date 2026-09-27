@@ -24,8 +24,8 @@ public class IndustrialAlarm extends HowlerAlarm {
 	public static final IntegerProperty LIGHT = IntegerProperty.create("light", 0, 3);
 	private static final int[] lightSteps = { 0, 7, 14, 7};
 
-	public IndustrialAlarm() {
-		super(Block.Properties.of().strength(1.0F, 3.0F).lightLevel(state -> lightSteps[state.getValue(LIGHT)]).sound(SoundType.METAL));
+	public IndustrialAlarm(Block.Properties properties) {
+		super(properties.lightLevel(state -> lightSteps[state.getValue(LIGHT)]));
 	}
 
 	@Override
@@ -45,8 +45,8 @@ public class IndustrialAlarm extends HowlerAlarm {
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		if (world.isClientSide) {
+	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		if (world.isClientSide()) {
 			BlockEntity te = world.getBlockEntity(pos);
 			if (te instanceof TileEntityHowlerAlarm)
 				ScreenHandler.openIndustrialAlarmScreen((TileEntityIndustrialAlarm) te);

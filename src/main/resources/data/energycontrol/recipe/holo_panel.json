@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " # ",
+    "RPR",
+    " # "
+  ],
+  "key": {
+    "P": "energycontrol:info_panel",
+    "R": "#c:dusts/redstone",
+    "#": "energycontrol:strong_string"
+  },
+  "result": {
+    "id": "energycontrol:holo_panel"
+  }
+}

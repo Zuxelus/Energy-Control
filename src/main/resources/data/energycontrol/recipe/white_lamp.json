@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GGG",
+    "GWG",
+    "GLG"
+  ],
+  "key": {
+    "G": "#c:glass_panes",
+    "W": "#c:dyes/white",
+    "L": "minecraft:redstone_lamp"
+  },
+  "result": {
+    "id": "energycontrol:white_lamp"
+  }
+}

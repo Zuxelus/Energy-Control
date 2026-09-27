@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "NNN",
+    "ICI",
+    "III"
+  ],
+  "key": {
+    "I": "#c:ingots/iron",
+    "N": "minecraft:note_block",
+    "C": "#c:circuits/basic"
+  },
+  "result": {
+    "id": "energycontrol:howler_alarm"
+  }
+}

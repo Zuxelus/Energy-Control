@@ -8,28 +8,25 @@ import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityRangeTrigger;
 import com.zuxelus.zlib.gui.GuiContainerBase;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.util.ARGB;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiRangeTrigger extends GuiContainerBase<ContainerRangeTrigger> {
-	private static final ResourceLocation TEXTURE = ResourceLocation.parse(EnergyControl.MODID + ":textures/gui/gui_range_trigger.png");
+	private static final Identifier TEXTURE = Identifier.parse(EnergyControl.MODID + ":textures/gui/gui_range_trigger.png");
 
 	private ContainerRangeTrigger container;
 	private ItemStack prevCard;
 
 	public GuiRangeTrigger(ContainerRangeTrigger container, Inventory inventory, Component title) {
-		super(container, inventory, title, TEXTURE);
+		super(container, inventory, title, TEXTURE, 176, 190);
 		this.container = container;
-		imageHeight = 190;
 	}
 
 	private void initControls() {
@@ -56,19 +53,13 @@ public class GuiRangeTrigger extends GuiContainerBase<ContainerRangeTrigger> {
 		initControls();
 	}
 
-	@Override
-	public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(matrixStack);
-		super.render(matrixStack, mouseX, mouseY, partialTicks);
-		renderTooltip(matrixStack, mouseX, mouseY);
-	}
 
-	private void renderValue(GuiGraphics matrixStack, double value, int x, int y) {
+	private void renderValue(GuiGraphicsExtractor matrixStack, double value, int x, int y) {
 		x += 114;
 		for (int i = 0; i < 10; i++) {
 			byte digit = (byte) (value % 10);
 			String str = Byte.toString(digit);
-			matrixStack.drawString(font, str, x - 12 * i - font.width("0") / 2 + (9 - i + 2) / 3 * 6, y, 0x404040, false);
+			matrixStack.text(font, str, x - 12 * i - font.width("0") / 2 + (9 - i + 2) / 3 * 6, y, ARGB.opaque(0x404040), false);
 			value /= 10;
 		}
 	}
@@ -108,7 +99,7 @@ public class GuiRangeTrigger extends GuiContainerBase<ContainerRangeTrigger> {
 	}
 
 	@Override
-	protected void renderLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
+	protected void extractLabels(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY) {
 		drawCenteredText(matrixStack, title, imageWidth, 6);
 		drawLeftAlignedText(matrixStack, I18n.get("container.inventory"), 8, (imageHeight - 96) + 2);
 

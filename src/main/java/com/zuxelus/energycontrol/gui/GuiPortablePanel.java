@@ -10,47 +10,39 @@ import com.zuxelus.energycontrol.items.InventoryPortablePanel;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.util.ARGB;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiPortablePanel extends AbstractContainerScreen<ContainerPortablePanel> {
-	private static final ResourceLocation TEXTURE = ResourceLocation.parse(EnergyControl.MODID + ":textures/gui/gui_portable_panel.png");
+	private static final Identifier TEXTURE = Identifier.parse(EnergyControl.MODID + ":textures/gui/gui_portable_panel.png");
 	private Player player;
 
 	private InventoryPortablePanel te;
 
 	public GuiPortablePanel(ContainerPortablePanel container, Inventory inventory, Component title) {
-		super(container, inventory, title);
+		super(container, inventory, title, 226, 226);
 		this.te = container.te;
 		this.player = inventory.player;
-		this.imageWidth = 226;
-		this.imageHeight = 226;
 	}
 
-	@Override
-	public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(matrixStack);
-		super.render(matrixStack, mouseX, mouseY, partialTicks);
-		renderTooltip(matrixStack, mouseX, mouseY);
-	}
 
 	@Override
-	protected void renderBg(GuiGraphics matrixStack, float partialTicks, int x, int y) {
+	public void extractBackground(GuiGraphicsExtractor matrixStack, int x, int y, float partialTicks) {
+		super.extractBackground(matrixStack, x, y, partialTicks);
 		int left = (width - imageWidth) / 2;
 		int top = (height - imageHeight) / 2;
-		matrixStack.blit(TEXTURE, left, top, 0, 0, imageWidth, imageHeight);
+		matrixStack.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, left, top, 0, 0, imageWidth, imageHeight, 256, 256);
 	}
 
 	@Override
-	protected void renderLabels(GuiGraphics matrixStack, int x, int y) {
+	protected void extractLabels(GuiGraphicsExtractor matrixStack, int x, int y) {
 		ItemStack stack = te.getItem(InventoryPortablePanel.SLOT_CARD);
 		if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain) {
 			ItemCardReader reader = new ItemCardReader(stack);
@@ -66,13 +58,13 @@ public class GuiPortablePanel extends AbstractContainerScreen<ContainerPortableP
 			for (PanelString panelString : joinedData) {
 				if (row < 14) {
 					if (panelString.textLeft != null)
-						matrixStack.drawString(font, panelString.textLeft, 9, row * 10 + 10, 0x06aee4, false);
+						matrixStack.text(font, panelString.textLeft, 9, row * 10 + 10, ARGB.opaque(0x06aee4), false);
 					if (panelString.textCenter != null)
-						matrixStack.drawString(font, panelString.textCenter, (168 - font.width(panelString.textCenter)) / 2, row * 10 + 10, 0x06aee4, false);
+						matrixStack.text(font, panelString.textCenter, (168 - font.width(panelString.textCenter)) / 2, row * 10 + 10, ARGB.opaque(0x06aee4), false);
 					if (panelString.textRight != null)
-						matrixStack.drawString(font, panelString.textRight, 168 - font.width(panelString.textRight), row * 10 + 10, 0x06aee4, false);
+						matrixStack.text(font, panelString.textRight, 168 - font.width(panelString.textRight), row * 10 + 10, ARGB.opaque(0x06aee4), false);
 				} else if (row == 14)
-					matrixStack.drawString(font, "...", 9, row * 10 + 10, 0x06aee4, false);
+					matrixStack.text(font, "...", 9, row * 10 + 10, ARGB.opaque(0x06aee4), false);
 				row++;
 			}
 		}

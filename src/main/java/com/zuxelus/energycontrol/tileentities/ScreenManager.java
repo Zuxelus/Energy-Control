@@ -53,7 +53,7 @@ public class ScreenManager {
 	@SuppressWarnings("resource")
 	public void registerInfoPanel(TileEntityInfoPanel panel) {
 		Level world = panel.getLevel();
-		if (world.isClientSide)
+		if (world.isClientSide())
 			return;
 		checkWorldLists(getWorldKey(world));
 
@@ -161,7 +161,7 @@ public class ScreenManager {
 			return null;
 		
 		Screen screen = new Screen(panel, panel.screenData);
-		if (!panel.getLevel().isClientSide) {
+		if (!panel.getLevel().isClientSide()) {
 			String key = getWorldKey(panel.getLevel());
 			checkWorldLists(key);
 			if (!screens.get(key).contains(screen))
@@ -172,7 +172,7 @@ public class ScreenManager {
 
 	@SuppressWarnings("resource")
 	public void registerInfoPanelExtender(TileEntityInfoPanelExtender extender) { // server
-		if (extender.getLevel().isClientSide)
+		if (extender.getLevel().isClientSide())
 			return;
 		if (!screens.containsKey(getWorldKey(extender.getLevel())))
 			screens.put(getWorldKey(extender.getLevel()), new ArrayList<>());
@@ -219,7 +219,7 @@ public class ScreenManager {
 
 	@SuppressWarnings("resource")
 	public void unregisterScreenPart(BlockEntity part) {
-		if (part.getLevel().isClientSide)
+		if (part.getLevel().isClientSide())
 			return;
 		if (!screens.containsKey(getWorldKey(part.getLevel())))
 			return;

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PPP",
+    "WRW",
+    "WWW"
+  ],
+  "key": {
+    "P": "minecraft:lime_stained_glass_pane",
+    "R": "#c:dusts/redstone",
+    "W": "#minecraft:planks"
+  },
+  "result": {
+    "id": "energycontrol:info_panel_extender"
+  }
+}

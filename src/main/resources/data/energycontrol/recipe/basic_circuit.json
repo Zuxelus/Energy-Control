@@ -1,0 +1,17 @@
+{
+  "type": "energycontrol:kit_assembler",
+  "input1": {
+    "ingredient": "#c:dusts/redstone",
+    "count": 2
+  },
+  "input2": {
+    "ingredient": "#c:ingots/iron"
+  },
+  "input3": {
+    "ingredient": "minecraft:flint"
+  },
+  "result": {
+    "id": "energycontrol:basic_circuit"
+  },
+  "time": 300
+}

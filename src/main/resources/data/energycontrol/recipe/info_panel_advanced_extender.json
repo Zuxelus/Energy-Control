@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PPP",
+    "CEC",
+    "CCC"
+  ],
+  "key": {
+    "P": "minecraft:cyan_stained_glass_pane",
+    "E": "energycontrol:info_panel_extender",
+    "C": "minecraft:charcoal"
+  },
+  "result": {
+    "id": "energycontrol:info_panel_advanced_extender"
+  }
+}

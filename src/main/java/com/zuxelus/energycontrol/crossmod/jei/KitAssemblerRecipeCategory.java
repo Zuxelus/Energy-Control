@@ -16,19 +16,19 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.types.IRecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
 public class KitAssemblerRecipeCategory implements IRecipeCategory<KitAssemblerRecipe> {
-	public static final ResourceLocation id = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "kit_assembler");
-	public static final ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/gui_kit_assembler.png");
-	public static final RecipeType<KitAssemblerRecipe> recipeType = RecipeType.create(EnergyControl.MODID, "kit_assembler", KitAssemblerRecipe.class);
+	public static final Identifier id = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "kit_assembler");
+	public static final Identifier texture = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/gui_kit_assembler.png");
+	public static final IRecipeType<KitAssemblerRecipe> recipeType = IRecipeType.create(EnergyControl.MODID, "kit_assembler", KitAssemblerRecipe.class);
 	private static final Component title = Component.literal(I18n.get(ModItems.kit_assembler.get().getDescriptionId()));
 	private final IDrawable background;
 	private final IDrawable icon;
@@ -63,14 +63,14 @@ public class KitAssemblerRecipeCategory implements IRecipeCategory<KitAssemblerR
 	}
 
 	@Override
-	public RecipeType<KitAssemblerRecipe> getRecipeType() {
+	public IRecipeType<KitAssemblerRecipe> getRecipeType() {
 		return recipeType;
 	}
 
 	/*@Override
 	public void setIngredients(KitAssemblerRecipe recipe, IIngredients ingredients) {
 		ingredients.setInputIngredients(recipe.getIngredients());
-		ingredients.setOutput(VanillaTypes.ITEM, recipe.output);
+		ingredients.setOutput(VanillaTypes.ITEM, recipe.getOutput());
 	}*/
 
 	@Override
@@ -78,25 +78,17 @@ public class KitAssemblerRecipeCategory implements IRecipeCategory<KitAssemblerR
 		builder.addSlot(RecipeIngredientRole.INPUT, 34, 1).addItemStacks(getStackList(recipe.input1, recipe.count1));
 		builder.addSlot(RecipeIngredientRole.INPUT, 34, 19).addItemStacks(getStackList(recipe.input2, recipe.count2));
 		builder.addSlot(RecipeIngredientRole.INPUT, 34, 37).addItemStacks(getStackList(recipe.input3, recipe.count3));
-		builder.addSlot(RecipeIngredientRole.OUTPUT, 93, 19).addItemStack(recipe.output);
+		builder.addSlot(RecipeIngredientRole.OUTPUT, 93, 19).add(recipe.result);
 	}
 
 	private static List<ItemStack> getStackList(Ingredient ingredient, int count) {
 		List<ItemStack> list = new ArrayList<>();
-		for (ItemStack stack : ingredient.getItems()) {
-			if (count == 1)
-				list.add(stack);
-			else {
-				ItemStack copy = stack.copy();
-				copy.setCount(count);
-				list.add(copy);
-			}
-		}
+		ingredient.items().forEach(item -> list.add(new ItemStack(item, count)));
 		return list;
 	}
 
 	@Override
-	public void draw(KitAssemblerRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics matrixStack, double mouseX, double mouseY) {
+	public void draw(KitAssemblerRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor matrixStack, double mouseX, double mouseY) {
 		background.draw(matrixStack);
 		animatedarrow.draw(matrixStack, 57, 19);
 	}

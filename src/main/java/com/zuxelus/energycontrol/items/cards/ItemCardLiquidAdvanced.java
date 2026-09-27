@@ -13,10 +13,12 @@ import com.zuxelus.energycontrol.utils.FluidInfo;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemCardLiquidAdvanced extends ItemCardMain {
+
+	public ItemCardLiquidAdvanced(Properties properties) {
+		super(properties);
+	}
 
 	@Override
 	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
@@ -69,7 +71,6 @@ public class ItemCardLiquidAdvanced extends ItemCardMain {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(5);
 		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidName"), 1));

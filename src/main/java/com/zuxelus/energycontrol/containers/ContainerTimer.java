@@ -8,7 +8,7 @@ import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityTimer;
 import com.zuxelus.zlib.containers.ContainerBase;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -21,7 +21,7 @@ public class ContainerTimer extends AbstractContainerMenu {
 	private boolean lastIsWorking;
 	public List<ServerPlayer> listeners = Lists.newArrayList();
 
-	public ContainerTimer(int windowId, Inventory inventory, FriendlyByteBuf data) {
+	public ContainerTimer(int windowId, Inventory inventory, RegistryFriendlyByteBuf data) {
 		this(windowId, inventory, (TileEntityTimer) ContainerBase.getBlockEntity(inventory, data));
 	}
 

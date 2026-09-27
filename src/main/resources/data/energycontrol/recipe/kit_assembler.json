@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "iCi",
+    "RHR",
+    "iFi"
+  ],
+  "key": {
+    "i": "#c:ingots/iron",
+    "C": "minecraft:crafting_table",
+    "R": "#c:dusts/redstone",
+    "H": "minecraft:chest",
+    "F": "minecraft:furnace"
+  },
+  "result": {
+    "id": "energycontrol:kit_assembler"
+  }
+}

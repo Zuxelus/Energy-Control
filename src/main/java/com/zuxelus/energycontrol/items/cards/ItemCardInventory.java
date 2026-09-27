@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
+import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
@@ -17,6 +18,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class ItemCardInventory extends ItemCardMain {
+
+	public ItemCardInventory(Properties properties) {
+		super(properties);
+	}
 
 	@Override
 	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
@@ -46,7 +51,7 @@ public class ItemCardInventory extends ItemCardMain {
 			result.add(new PanelString("msg.ec.InfoPanelSidedInventory", reader.getBoolean("sided").toString(), showLabels));
 			for (int i = 0; i < 6; i++)
 				if (reader.hasField("slot" + Integer.toString(i))) {
-					ItemStack stack = ItemStack.of(reader.getTag("slot" + Integer.toString(i)));
+					ItemStack stack = ItemStackHelper.loadStack(reader.getTag("slot" + Integer.toString(i)));
 					result.add(new PanelString(String.format("msg.ec.InfoPanelSlot%d", i + 1), StringUtils.getItemName(stack) + " x" + Integer.toString(stack.getCount()), showLabels));
 				}
 		}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PFP",
+    "AMA",
+    " R "
+  ],
+  "key": {
+    "P": "#c:ingots/iron",
+    "F": "energycontrol:radio_transmitter",
+    "A": "#c:circuits/advanced",
+    "M": "energycontrol:machine_casing",
+    "R": "#c:dusts/redstone"
+  },
+  "result": {
+    "id": "energycontrol:range_trigger"
+  }
+}

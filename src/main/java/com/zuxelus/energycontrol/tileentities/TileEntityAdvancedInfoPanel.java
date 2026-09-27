@@ -17,7 +17,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	public static final String NAME = "info_panel_advanced";
@@ -61,7 +62,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 
 	public void setPowerMode(byte mode) {
 		powerMode = mode;
-		if (level != null && !level.isClientSide)
+		if (level != null && !level.isClientSide())
 			calcPowered();
 	}
 
@@ -131,56 +132,51 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	public void onServerMessageReceived(CompoundTag tag) {
 		if (!tag.contains("type"))
 			return;
-		int type = tag.getInt("type");
+		int type = tag.getIntOr("type", 0);
 		if (type < 10) {
 			super.onServerMessageReceived(tag);
 			return;
 		}
 		switch (type) {
 		case 10:
-			setValues(tag.getInt("value"));
+			setValues(tag.getIntOr("value", 0));
 			break;
 		case 11:
-			setPowerMode((byte) tag.getInt("value"));
+			setPowerMode((byte) tag.getIntOr("value", 0));
 			break;
 		}
 	}
 
 	@Override
-	protected void deserializeDisplaySettings(CompoundTag tag) {
+	protected void deserializeDisplaySettings(ValueInput tag) {
 		deserializeSlotSettings(tag, "dSettings1", SLOT_CARD1);
 		deserializeSlotSettings(tag, "dSettings2", SLOT_CARD2);
 		deserializeSlotSettings(tag, "dSettings3", SLOT_CARD3);
 	}
 
 	@Override
-	protected void readProperties(CompoundTag tag) {
+	protected void readProperties(ValueInput tag) {
 		super.readProperties(tag);
-		if (tag.contains("powerMode"))
-			setPowerMode(tag.getByte("powerMode"));
-		if (tag.contains("thickness"))
-			thickness = tag.getByte("thickness");
-		if (tag.contains("rotateHor"))
-			rotateHor = tag.getByte("rotateHor");
-		if (tag.contains("rotateVert"))
-			rotateVert = tag.getByte("rotateVert");
+		setPowerMode(tag.getByteOr("powerMode", powerMode));
+		thickness = tag.getByteOr("thickness", thickness);
+		rotateHor = tag.getByteOr("rotateHor", rotateHor);
+		rotateVert = tag.getByteOr("rotateVert", rotateVert);
 	}
 
 	@Override
-	protected void serializeDisplaySettings(CompoundTag tag) {
-		tag.put("dSettings1", serializeSlotSettings(SLOT_CARD1));
-		tag.put("dSettings2", serializeSlotSettings(SLOT_CARD2));
-		tag.put("dSettings3", serializeSlotSettings(SLOT_CARD3));
+	protected void serializeDisplaySettings(ValueOutput tag) {
+		serializeSlotSettings(tag, "dSettings1", SLOT_CARD1);
+		serializeSlotSettings(tag, "dSettings2", SLOT_CARD2);
+		serializeSlotSettings(tag, "dSettings3", SLOT_CARD3);
 	}
 
 	@Override
-	protected CompoundTag writeProperties(CompoundTag tag) {
-		tag = super.writeProperties(tag);
+	protected void writeProperties(ValueOutput tag) {
+		super.writeProperties(tag);
 		tag.putByte("powerMode", powerMode);
 		tag.putByte("thickness", thickness);
 		tag.putByte("rotateHor", rotateHor);
 		tag.putByte("rotateVert", rotateVert);
-		return tag;
 	}
 
 	@Override
@@ -228,7 +224,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 
 	@Override
 	public boolean runTouchAction(ItemStack stack, BlockPos pos, Vec3 hit) {
-		if (level.isClientSide)
+		if (level.isClientSide())
 			return false;
 		ItemStack card = getItem(SLOT_CARD1);
 		runTouchAction(this, card, stack, SLOT_CARD1, false);
@@ -237,12 +233,12 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 
 	// MenuProvider
 	@Override
-	public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory inventory, @NotNull Player player) {
+	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerAdvancedInfoPanel(windowId, inventory, this);
 	}
 
 	@Override
-	public @NotNull Component getDisplayName() {
+	public Component getDisplayName() {
 		return Component.translatable(ModItems.info_panel_advanced.get().getDescriptionId());
 	}
 }

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "BKB"
+  ],
+  "key": {
+    "B": "minecraft:bucket",
+    "K": "energycontrol:kit_liquid"
+  },
+  "result": {
+    "id": "energycontrol:kit_liquid_advanced"
+  }
+}

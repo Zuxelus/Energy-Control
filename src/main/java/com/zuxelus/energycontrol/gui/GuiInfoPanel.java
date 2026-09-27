@@ -12,25 +12,21 @@ import com.zuxelus.energycontrol.items.cards.ItemCardText;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.gui.controls.GuiButtonGeneral;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiInfoPanel extends GuiPanelBase<ContainerInfoPanel> { 
-	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/gui_info_panel.png");
+	private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/gui_info_panel.png");
 	private boolean isColored;
 
 	public GuiInfoPanel(ContainerInfoPanel container, Inventory inventory, Component title) {
-		super(container, inventory, title, TEXTURE);
-		imageHeight = 201;
+		super(container, inventory, title, TEXTURE, 201);
 		panel = (TileEntityInfoPanel) container.te;
 		name = I18n.get("block.energycontrol.info_panel");
 	}
@@ -79,9 +75,9 @@ public class GuiInfoPanel extends GuiPanelBase<ContainerInfoPanel> {
 	}
 
 	@Override
-	protected void renderBg(GuiGraphics matrixStack, float partialTicks, int mouseX, int mouseY) {
-		super.renderBg(matrixStack, partialTicks, mouseX, mouseY);
+	public void extractBackground(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY, float partialTicks) {
+		super.extractBackground(matrixStack, mouseX, mouseY, partialTicks);
 		if (textboxTitle != null)
-			textboxTitle.renderWidget(matrixStack, mouseX, mouseY, partialTicks);
+			textboxTitle.extractRenderState(matrixStack, mouseX, mouseY, partialTicks);
 	}
 }

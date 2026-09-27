@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "DF",
+    "PW"
+  ],
+  "key": {
+    "D": "minecraft:lever",
+    "P": "minecraft:paper",
+    "F": "energycontrol:radio_transmitter",
+    "W": "#c:dyes/gray"
+  },
+  "result": {
+    "id": "energycontrol:kit_toggle"
+  }
+}

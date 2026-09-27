@@ -40,7 +40,7 @@ public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm {
 
 	@Override
 	protected void checkStatus() {
-		if (level.isClientSide)
+		if (level.isClientSide())
 			return;
 		int light = lightLevel;
 		if (!powered)

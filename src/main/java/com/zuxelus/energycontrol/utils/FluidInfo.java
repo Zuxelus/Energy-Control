@@ -2,13 +2,13 @@ package com.zuxelus.energycontrol.utils;
 
 import com.zuxelus.energycontrol.api.ICardReader;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.locale.Language;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.material.EmptyFluid;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 public class FluidInfo {
 	String translationKey;
@@ -23,24 +23,22 @@ public class FluidInfo {
 		this.capacity = capacity;
 	}
 
-	public FluidInfo(IFluidTank tank) {
-		if (tank.getFluid() != null) {
-			amount = tank.getFluidAmount();
-			if (amount > 0) {
-				translationKey = tank.getFluid().getTranslationKey();
-				fluidName = ForgeRegistries.FLUIDS.getKey(tank.getFluid().getFluid()).toString();
-			}
-		}
-		capacity = tank.getCapacity();
-	}
-
 	public FluidInfo(FluidStack stack, long capacity) {
 		if (stack != null) {
 			amount = stack.getAmount();
 			if (amount > 0) {
-				translationKey = stack.getTranslationKey();
-				fluidName = ForgeRegistries.FLUIDS.getKey(stack.getFluid()).toString();
+				translationKey = stack.getDescriptionId();
+				fluidName = BuiltInRegistries.FLUID.getKey(stack.getFluid()).toString();
 			}
+		}
+		this.capacity = capacity;
+	}
+
+	public FluidInfo(FluidResource resource, long amount, long capacity) {
+		this.amount = amount;
+		if (resource != null && !resource.isEmpty() && amount > 0) {
+			translationKey = resource.getFluidType().getDescriptionId();
+			fluidName = BuiltInRegistries.FLUID.getKey(resource.getFluid()).toString();
 		}
 		this.capacity = capacity;
 	}
@@ -48,7 +46,7 @@ public class FluidInfo {
 	public FluidInfo(Fluid fluid, long amount, long capacity) {
 		if (fluid != null && !(fluid instanceof EmptyFluid)) {
 			translationKey = fluid.getFluidType().getDescriptionId();
-			fluidName = ForgeRegistries.FLUIDS.getKey(fluid).toString();
+			fluidName = BuiltInRegistries.FLUID.getKey(fluid).toString();
 		}
 		this.amount = amount;
 		this.capacity = capacity;
@@ -76,18 +74,10 @@ public class FluidInfo {
 		reader.setLong(String.format("_%dcapacity", i), capacity);
 	}
 
-	public static void addTank(String name, CompoundTag tag, IFluidTank tank) {
-		FluidStack stack = tank.getFluid();
-		if (stack == null)
-			tag.putString(name, "N/A");
-		else
-			tag.putString(name, String.format("%s: %s mB", stack.getDisplayName().getString(), tank.getFluidAmount()));
-	}
-
 	public static void addTank(String name, CompoundTag tag, FluidStack stack, int amount) {
-		if (stack == null)
+		if (stack == null || stack.isEmpty())
 			tag.putString(name, "N/A");
 		else
-			tag.putString(name, String.format("%s: %s mB", stack.getDisplayName().getString(), amount));
+			tag.putString(name, String.format("%s: %s mB", stack.getHoverName().getString(), amount));
 	}
 }

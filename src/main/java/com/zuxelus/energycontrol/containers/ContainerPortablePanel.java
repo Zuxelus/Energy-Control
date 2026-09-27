@@ -8,7 +8,7 @@ import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.zlib.containers.ContainerBase;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -17,7 +17,7 @@ import net.minecraft.world.item.ItemStack;
 public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel> {
 	private Player player;
 
-	public ContainerPortablePanel(int windowId, Inventory inventory, FriendlyByteBuf data) {
+	public ContainerPortablePanel(int windowId, Inventory inventory, RegistryFriendlyByteBuf data) {
 		this(windowId, inventory);
 	}
 	public ContainerPortablePanel(int windowId, Inventory inventory) {

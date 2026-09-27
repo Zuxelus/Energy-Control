@@ -2,17 +2,16 @@ package com.zuxelus.zlib.gui.controls;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiButtonGeneral extends Button {
-	private final ResourceLocation texture;
+	private final Identifier texture;
 	public int textureLeft;
 	protected int textureTop;
 	public int textureTopOff;
@@ -20,11 +19,11 @@ public class GuiButtonGeneral extends Button {
 	public String tooltip;
 	private boolean hasGradient;
 
-	public GuiButtonGeneral(int left, int top, int width, int height, ResourceLocation texture, int textureLeft, int textureTop, Button.OnPress onPress) {
+	public GuiButtonGeneral(int left, int top, int width, int height, Identifier texture, int textureLeft, int textureTop, Button.OnPress onPress) {
 		this(left, top, width, height, CommonComponents.EMPTY, texture, textureLeft, textureTop, 0, "", onPress);
 	}
 
-	public GuiButtonGeneral(int left, int top, int width, int height, ResourceLocation texture, int textureLeft, int textureTop, int textureTopOff, Button.OnPress onPress) {
+	public GuiButtonGeneral(int left, int top, int width, int height, Identifier texture, int textureLeft, int textureTop, int textureTopOff, Button.OnPress onPress) {
 		this(left, top, width, height, CommonComponents.EMPTY, texture, textureLeft, textureTop, textureTopOff, "", onPress);
 	}
 
@@ -32,7 +31,7 @@ public class GuiButtonGeneral extends Button {
 		this(left, top, width, height, text, null, 0, 0, 0, "", onPress);
 	}
 
-	public GuiButtonGeneral(int left, int top, int width, int height, Component text, ResourceLocation texture, int textureLeft, int textureTop, int textureTopOff, String tooltip, Button.OnPress onPress) {
+	public GuiButtonGeneral(int left, int top, int width, int height, Component text, Identifier texture, int textureLeft, int textureTop, int textureTopOff, String tooltip, Button.OnPress onPress) {
 		super(left, top, width, height, text, onPress, Button.DEFAULT_NARRATION);
 		this.texture = texture;
 		this.textureLeft = textureLeft;
@@ -43,20 +42,16 @@ public class GuiButtonGeneral extends Button {
 	}
 
 	@Override
-	public void renderWidget(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
-		if (!visible)
-			return;
-
+	protected void extractContents(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY, float partialTicks) {
 		Minecraft minecraft = Minecraft.getInstance();
 		Font fontRenderer = minecraft.font;
-		//RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		if (isHovered && hasGradient)
+		if (isHovered() && hasGradient)
 			matrixStack.fillGradient(getX(), getY(), getX() + width, getY() + height, 0x80FFFFFF, 0x80FFFFFF);
 		if (texture != null)
-			matrixStack.blit(texture, getX(), getY(), textureLeft / scale, isHovered ? (textureTop + textureTopOff) / scale : textureTop / scale, width, height, 256 / scale, 256 / scale);
+			matrixStack.blit(RenderPipelines.GUI_TEXTURED, texture, getX(), getY(), textureLeft / scale, isHovered() ? (textureTop + textureTopOff) / scale : textureTop / scale, width, height, 256 / scale, 256 / scale);
 		String displayString = getMessage().getString();
 		if (!displayString.equals(""))
-			matrixStack.drawString(fontRenderer, displayString, getX() + (width - fontRenderer.width(displayString)) / 2, getY() - 3 + height / 2, 0x404040, false);
+			matrixStack.text(fontRenderer, displayString, getX() + (width - fontRenderer.width(displayString)) / 2, getY() - 3 + height / 2, ARGB.opaque(0x404040), false);
 	}
 
 	public GuiButtonGeneral setGradient() {

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "IFI",
+    "IMI",
+    "ITI"
+  ],
+  "key": {
+    "T": "energycontrol:thermal_monitor",
+    "M": "energycontrol:machine_casing",
+    "F": "energycontrol:radio_transmitter",
+    "I": "#c:ingots/iron"
+  },
+  "result": {
+    "id": "energycontrol:remote_thermo"
+  }
+}

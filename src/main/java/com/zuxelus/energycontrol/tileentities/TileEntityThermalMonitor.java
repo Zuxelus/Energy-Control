@@ -8,11 +8,9 @@ import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -49,7 +47,7 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 	public void setHeatLevel(int value) {
 		int old = heatLevel;
 		heatLevel = value;
-		if (!level.isClientSide && heatLevel != old)
+		if (!level.isClientSide() && heatLevel != old)
 			notifyBlockUpdate();
 	}
 
@@ -60,7 +58,7 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 	public void setInvertRedstone(boolean value) {
 		boolean old = invertRedstone;
 		invertRedstone = value;
-		if (!level.isClientSide && invertRedstone != old)
+		if (!level.isClientSide() && invertRedstone != old)
 			notifyBlockUpdate();
 	}
 
@@ -80,14 +78,14 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 	public void onServerMessageReceived(CompoundTag tag) {
 		if (!tag.contains("type"))
 			return;
-		switch (tag.getInt("type")) {
+		switch (tag.getIntOr("type", 0)) {
 		case 1:
 			if (tag.contains("value"))
-				setHeatLevel(tag.getInt("value"));
+				setHeatLevel(tag.getIntOr("value", 0));
 			break;
 		case 2:
 			if (tag.contains("value"))
-				setInvertRedstone(tag.getInt("value") == 1);
+				setInvertRedstone(tag.getIntOr("value", 0) == 1);
 			break;
 		}
 	}
@@ -96,55 +94,25 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 	public void onClientMessageReceived(CompoundTag tag) { }
 
 	@Override
-	public Packet<ClientGamePacketListener> getUpdatePacket() {
-		return ClientboundBlockEntityDataPacket.create(this);
-	}
-
-	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-		readProperties(pkt.getTag());
-	}
-
-	@Override
-	public CompoundTag getUpdateTag() {
-		CompoundTag tag = super.getUpdateTag();
-		tag = writeProperties(tag);
+	protected void writeUpdateData(ValueOutput tag) {
 		tag.putInt("status", status);
 		tag.putBoolean("poweredBlock", poweredBlock);
-		return tag;
 	}
 
 	@Override
-	protected void readProperties(CompoundTag tag) {
+	protected void readProperties(ValueInput tag) {
 		super.readProperties(tag);
-		if (tag.contains("heatLevel"))
-			heatLevel = tag.getInt("heatLevel");
-		if (tag.contains("invert"))
-			invertRedstone = tag.getBoolean("invert");
-		if (tag.contains("status"))
-			setStatus(tag.getInt("status"));
-		if (tag.contains("poweredBlock"))
-			poweredBlock = tag.getBoolean("poweredBlock");
+		heatLevel = tag.getIntOr("heatLevel", heatLevel);
+		invertRedstone = tag.getBooleanOr("invert", invertRedstone);
+		tag.getInt("status").ifPresent(this::setStatus);
+		poweredBlock = tag.getBooleanOr("poweredBlock", poweredBlock);
 	}
 
 	@Override
-	public void load(CompoundTag tag) {
-		super.load(tag);
-		readProperties(tag);
-	}
-
-	@Override
-	protected CompoundTag writeProperties(CompoundTag tag) {
-		tag = super.writeProperties(tag);
+	protected void writeProperties(ValueOutput tag) {
+		super.writeProperties(tag);
 		tag.putInt("heatLevel", heatLevel);
 		tag.putBoolean("invert", invertRedstone);
-		return tag;
-	}
-
-	@Override
-	protected void saveAdditional(CompoundTag tag) {
-		super.saveAdditional(tag);
-		writeProperties(tag);
 	}
 
 	public static void tickStatic(Level level, BlockPos pos, BlockState state, BlockEntity be) {
@@ -155,7 +123,7 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 	}
 
 	protected void tick() {
-		if (level.isClientSide)
+		if (level.isClientSide())
 			return;
 	
 		if (updateTicker-- > 0)

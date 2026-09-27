@@ -6,12 +6,12 @@ import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.utils.TileEntitySound;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
+import com.mojang.serialization.Codec;
+
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -49,7 +49,7 @@ public class TileEntityHowlerAlarm extends BlockEntityFacing implements ITilePac
 	}
 
 	public void setRange(int r) {
-		if (!level.isClientSide && range != r)
+		if (!level.isClientSide() && range != r)
 			notifyBlockUpdate();
 		range = r;
 	}
@@ -60,9 +60,9 @@ public class TileEntityHowlerAlarm extends BlockEntityFacing implements ITilePac
 
 	public void setSoundName(String name) {
 		soundName = name;
-		if (!level.isClientSide && !prevSoundName.equals(soundName))
+		if (!level.isClientSide() && !prevSoundName.equals(soundName))
 			notifyBlockUpdate();
-		if (level.isClientSide) {
+		if (level.isClientSide()) {
 			if (EnergyControl.INSTANCE.availableAlarms != null && !EnergyControl.INSTANCE.availableAlarms.contains(soundName)) {
 				EnergyControl.LOGGER.info(String.format("Can't set sound '%s' at %d,%d,%d, using default", soundName, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ()));
 				soundName = DEFAULT_SOUND_NAME;
@@ -76,7 +76,7 @@ public class TileEntityHowlerAlarm extends BlockEntityFacing implements ITilePac
 	}
 
 	public void updatePowered(boolean isPowered) {
-		if (level.isClientSide && isPowered != powered) {
+		if (level != null && level.isClientSide() && isPowered != powered) {
 			powered = isPowered;
 			checkStatus();
 		}
@@ -86,14 +86,14 @@ public class TileEntityHowlerAlarm extends BlockEntityFacing implements ITilePac
 	public void onServerMessageReceived(CompoundTag tag) {
 		if (!tag.contains("type"))
 			return;
-		switch (tag.getInt("type")) {
+		switch (tag.getIntOr("type", 0)) {
 		case 1:
 			if (tag.contains("string"))
-				setSoundName(tag.getString("string"));
+				setSoundName(tag.getStringOr("string", ""));
 			break;
 		case 2:
 			if (tag.contains("value"))
-				setRange(tag.getInt("value"));
+				setRange(tag.getIntOr("value", 0));
 			break;
 		}
 	}
@@ -102,58 +102,29 @@ public class TileEntityHowlerAlarm extends BlockEntityFacing implements ITilePac
 	public void onClientMessageReceived(CompoundTag tag) { }
 
 	@Override
-	public Packet<ClientGamePacketListener> getUpdatePacket() {
-		return ClientboundBlockEntityDataPacket.create(this);
-	}
-
-	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-		readProperties(pkt.getTag());
-	}
-
-	@Override
-	public CompoundTag getUpdateTag() {
-		CompoundTag tag = super.getUpdateTag();
-		tag = writeProperties(tag);
+	protected void writeUpdateData(ValueOutput tag) {
 		powered = level.hasNeighborSignal(worldPosition);
 		tag.putBoolean("powered", powered);
-		return tag;
 	}
 
 	@Override
-	protected void readProperties(CompoundTag tag) {
+	protected void readProperties(ValueInput tag) {
 		super.readProperties(tag);
-		if (tag.contains("soundName"))
-			soundName = prevSoundName = tag.getString("soundName");
-		if (tag.contains("range"))
-			range = tag.getInt("range");
-		if (tag.contains("powered"))
-			updatePowered(tag.getBoolean("powered"));
+		tag.getString("soundName").ifPresent(v -> soundName = prevSoundName = v);
+		range = tag.getIntOr("range", range);
+		tag.read("powered", Codec.BOOL).ifPresent(this::updatePowered);
 	}
 
 	@Override
-	public void load(CompoundTag tag) {
-		super.load(tag);
-		readProperties(tag);
-	}
-
-	@Override
-	protected CompoundTag writeProperties(CompoundTag tag) {
-		tag = super.writeProperties(tag);
+	protected void writeProperties(ValueOutput tag) {
+		super.writeProperties(tag);
 		tag.putString("soundName", soundName);
 		tag.putInt("range", range);
-		return tag;
-	}
-
-	@Override
-	protected void saveAdditional(CompoundTag tag) {
-		super.saveAdditional(tag);
-		writeProperties(tag);
 	}
 
 	@Override
 	public void setRemoved() {
-		if (level.isClientSide && sound != null)
+		if (level.isClientSide() && sound != null)
 			sound.stopAlarm();
 		super.setRemoved();
 	}
@@ -170,7 +141,7 @@ public class TileEntityHowlerAlarm extends BlockEntityFacing implements ITilePac
 	}
 
 	protected void checkStatus() {
-		if (!level.isClientSide)
+		if (!level.isClientSide())
 			return;
 		if (sound == null)
 			sound = new TileEntitySound();
