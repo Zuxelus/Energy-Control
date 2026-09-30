@@ -1,0 +1,52 @@
+Downloading https://services.gradle.org/distributions/gradle-8.10.2-bin.zip
+.............10%.............20%.............30%.............40%.............50%.............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 8.10.2!
+
+Here are the highlights of this release:
+ - Support for Java 23
+ - Faster configuration cache
+ - Better configuration cache reports
+
+For more details see https://docs.gradle.org/8.10.2/release-notes.html
+
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.10.2/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+
+> Configure project :
+Architect Plugin: 3.4.164
+Architectury Loom: 1.7.435
+You are using an outdated version of Architectury Loom! This version will not receive any support, please consider updating!
+
+> Configure project :common
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Using of the official minecraft mappings is at your own risk!
+Please make sure to read and understand the following license:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# (c) 2020 Microsoft Corporation. These mappings are provided "as-is" and you bear the risk of using them. You may copy and use the mappings for development purposes, but you may not redistribute the mappings complete and unmodified. Microsoft makes no warranties, express or implied, with respect to the mappings provided here.  Use and modification of this document or the source code (in any form) of Minecraft: Java Edition is governed by the Minecraft End User License Agreement available at https://account.mojang.com/documents/minecraft_eula.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:remapping 1 mods from modApi (java-api)
+:remapped 1 mods (intermediary -> named) in 519.7 ms
+:remapping sources (Mercury, intermediary -> named)
+
+> Configure project :fabric
+:remapping 51 mods from modImplementation (java-api)
+:remapped 51 mods (intermediary -> named) in 3.773 s
+:remapping sources (Mercury, intermediary -> named)
+
+FAILURE: Build failed with an exception.
+
+* Where:
+Build file 'C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\neoforge\build.gradle' line: 11
+
+* What went wrong:
+A problem occurred evaluating project ':neoforge'.
+> Could not find method neoForge() for arguments [net.neoforged:neoforge:21.1.209] on object of type org.gradle.api.internal.artifacts.dsl.dependencies.DefaultDependencyHandler.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 4m 26s

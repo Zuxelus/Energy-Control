@@ -1,0 +1,97 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.10.2/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+
+> Configure project :
+Architect Plugin: 3.4.164
+Architectury Loom: 1.7.435
+You are using an outdated version of Architectury Loom! This version will not receive any support, please consider updating!
+
+> Task :common:compileJava
+繝弱・繝・ 荳驛ｨ縺ｮ蜈･蜉帙ヵ繧｡繧､繝ｫ縺ｯ謗ｨ螂ｨ縺輔ｌ縺ｪ縺БPI繧剃ｽｿ逕ｨ縺ｾ縺溘・繧ｪ繝ｼ繝舌・繝ｩ繧､繝峨＠縺ｦ縺・∪縺吶・
+繝弱・繝・ 隧ｳ邏ｰ縺ｯ縲・Xlint:deprecation繧ｪ繝励す繝ｧ繝ｳ繧呈欠螳壹＠縺ｦ蜀阪さ繝ｳ繝代う繝ｫ縺励※縺上□縺輔＞縲・
+
+> Task :common:processResources
+> Task :common:classes
+> Task :common:jar
+
+> Task :common:compileTestJava
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\test\java\com\zuxelus\energycontrol\port\core\TargetPolicyTest.java:7: 繧ｨ繝ｩ繝ｼ: 繝代ャ繧ｱ繝ｼ繧ｸTargetPolicy縺ｯ蟄伜惠縺励∪縺帙ｓ
+        assertEquals(TargetPolicy.Result.READY,TargetPolicy.check(true,"overworld","overworld",64,0,0,()->true));
+                                 ^
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\test\java\com\zuxelus\energycontrol\port\core\TargetPolicyTest.java:7: 繧ｨ繝ｩ繝ｼ: 繧ｷ繝ｳ繝懊Ν繧定ｦ九▽縺代ｉ繧後∪縺帙ｓ
+        assertEquals(TargetPolicy.Result.READY,TargetPolicy.check(true,"overworld","overworld",64,0,0,()->true));
+                                               ^
+  繧ｷ繝ｳ繝懊Ν:   螟画焚 TargetPolicy
+  蝣ｴ謇: 繧ｯ繝ｩ繧ｹ TargetPolicyTest
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\test\java\com\zuxelus\energycontrol\port\core\TargetPolicyTest.java:8: 繧ｨ繝ｩ繝ｼ: 繝代ャ繧ｱ繝ｼ繧ｸTargetPolicy縺ｯ蟄伜惠縺励∪縺帙ｓ
+        assertEquals(TargetPolicy.Result.OUT_OF_RANGE,TargetPolicy.check(true,"overworld","overworld",64,1,0,()->{fail("Out-of-range target queried");return false;}));
+                                 ^
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\test\java\com\zuxelus\energycontrol\port\core\TargetPolicyTest.java:8: 繧ｨ繝ｩ繝ｼ: 繧ｷ繝ｳ繝懊Ν繧定ｦ九▽縺代ｉ繧後∪縺帙ｓ
+        assertEquals(TargetPolicy.Result.OUT_OF_RANGE,TargetPolicy.check(true,"overworld","overworld",64,1,0,()->{fail("Out-of-range target queried");return false;}));
+                                                      ^
+  繧ｷ繝ｳ繝懊Ν:   螟画焚 TargetPolicy
+  蝣ｴ謇: 繧ｯ繝ｩ繧ｹ TargetPolicyTest
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\test\java\com\zuxelus\energycontrol\port\core\TargetPolicyTest.java:11: 繧ｨ繝ｩ繝ｼ: 繝代ャ繧ｱ繝ｼ繧ｸTargetPolicy縺ｯ蟄伜惠縺励∪縺帙ｓ
+        assertEquals(TargetPolicy.Result.OUT_OF_RANGE,TargetPolicy.check(true,"overworld","nether",0,0,0,()->{fail("Other dimension queried");return false;}));
+                                 ^
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\test\java\com\zuxelus\energycontrol\port\core\TargetPolicyTest.java:11: 繧ｨ繝ｩ繝ｼ: 繧ｷ繝ｳ繝懊Ν繧定ｦ九▽縺代ｉ繧後∪縺帙ｓ
+        assertEquals(TargetPolicy.Result.OUT_OF_RANGE,TargetPolicy.check(true,"overworld","nether",0,0,0,()->{fail("Other dimension queried");return false;}));
+                                                      ^
+  繧ｷ繝ｳ繝懊Ν:   螟画焚 TargetPolicy
+  蝣ｴ謇: 繧ｯ繝ｩ繧ｹ TargetPolicyTest
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\test\java\com\zuxelus\energycontrol\port\core\TargetPolicyTest.java:14: 繧ｨ繝ｩ繝ｼ: 繝代ャ繧ｱ繝ｼ繧ｸTargetPolicy縺ｯ蟄伜惠縺励∪縺帙ｓ
+        assertEquals(TargetPolicy.Result.UNBOUND,TargetPolicy.check(false,"overworld","overworld",0,0,0,()->{fail("Unbound target queried");return false;}));
+                                 ^
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\test\java\com\zuxelus\energycontrol\port\core\TargetPolicyTest.java:14: 繧ｨ繝ｩ繝ｼ: 繧ｷ繝ｳ繝懊Ν繧定ｦ九▽縺代ｉ繧後∪縺帙ｓ
+        assertEquals(TargetPolicy.Result.UNBOUND,TargetPolicy.check(false,"overworld","overworld",0,0,0,()->{fail("Unbound target queried");return false;}));
+                                                 ^
+  繧ｷ繝ｳ繝懊Ν:   螟画焚 TargetPolicy
+  蝣ｴ謇: 繧ｯ繝ｩ繧ｹ TargetPolicyTest
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\test\java\com\zuxelus\energycontrol\port\core\TargetPolicyTest.java:15: 繧ｨ繝ｩ繝ｼ: 繝代ャ繧ｱ繝ｼ繧ｸTargetPolicy縺ｯ蟄伜惠縺励∪縺帙ｓ
+        assertEquals(TargetPolicy.Result.READY,TargetPolicy.check(true,"overworld","overworld",0,0,0,()->true));
+                                 ^
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\test\java\com\zuxelus\energycontrol\port\core\TargetPolicyTest.java:15: 繧ｨ繝ｩ繝ｼ: 繧ｷ繝ｳ繝懊Ν繧定ｦ九▽縺代ｉ繧後∪縺帙ｓ
+        assertEquals(TargetPolicy.Result.READY,TargetPolicy.check(true,"overworld","overworld",0,0,0,()->true));
+                                               ^
+  繧ｷ繝ｳ繝懊Ν:   螟画焚 TargetPolicy
+  蝣ｴ謇: 繧ｯ繝ｩ繧ｹ TargetPolicyTest
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\test\java\com\zuxelus\energycontrol\port\core\TargetPolicyTest.java:18: 繧ｨ繝ｩ繝ｼ: 繝代ャ繧ｱ繝ｼ繧ｸTargetPolicy縺ｯ蟄伜惠縺励∪縺帙ｓ
+        assertEquals(TargetPolicy.Result.UNLOADED,TargetPolicy.check(true,"overworld","overworld",1,2,3,()->false));
+                                 ^
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\test\java\com\zuxelus\energycontrol\port\core\TargetPolicyTest.java:18: 繧ｨ繝ｩ繝ｼ: 繧ｷ繝ｳ繝懊Ν繧定ｦ九▽縺代ｉ繧後∪縺帙ｓ
+        assertEquals(TargetPolicy.Result.UNLOADED,TargetPolicy.check(true,"overworld","overworld",1,2,3,()->false));
+                                                  ^
+  繧ｷ繝ｳ繝懊Ν:   螟画焚 TargetPolicy
+  蝣ｴ謇: 繧ｯ繝ｩ繧ｹ TargetPolicyTest
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\test\java\com\zuxelus\energycontrol\port\core\TargetPolicyTest.java:21: 繧ｨ繝ｩ繝ｼ: 繝代ャ繧ｱ繝ｼ繧ｸTargetPolicy縺ｯ蟄伜惠縺励∪縺帙ｓ
+        assertEquals(TargetPolicy.Result.OUT_OF_RANGE,TargetPolicy.check(true,"overworld","overworld",Long.MAX_VALUE,0,0,()->{fail("Overflow allowed lookup");return false;}));
+                                 ^
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\test\java\com\zuxelus\energycontrol\port\core\TargetPolicyTest.java:21: 繧ｨ繝ｩ繝ｼ: 繧ｷ繝ｳ繝懊Ν繧定ｦ九▽縺代ｉ繧後∪縺帙ｓ
+        assertEquals(TargetPolicy.Result.OUT_OF_RANGE,TargetPolicy.check(true,"overworld","overworld",Long.MAX_VALUE,0,0,()->{fail("Overflow allowed lookup");return false;}));
+                                                      ^
+  繧ｷ繝ｳ繝懊Ν:   螟画焚 TargetPolicy
+  蝣ｴ謇: 繧ｯ繝ｩ繧ｹ TargetPolicyTest
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\test\java\com\zuxelus\energycontrol\port\core\TargetPolicyTest.java:22: 繧ｨ繝ｩ繝ｼ: 繝代ャ繧ｱ繝ｼ繧ｸTargetPolicy縺ｯ蟄伜惠縺励∪縺帙ｓ
+        assertEquals(TargetPolicy.Result.OUT_OF_RANGE,TargetPolicy.check(true,"overworld","overworld",Long.MIN_VALUE,0,0,()->true));
+                                 ^
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\test\java\com\zuxelus\energycontrol\port\core\TargetPolicyTest.java:22: 繧ｨ繝ｩ繝ｼ: 繧ｷ繝ｳ繝懊Ν繧定ｦ九▽縺代ｉ繧後∪縺帙ｓ
+        assertEquals(TargetPolicy.Result.OUT_OF_RANGE,TargetPolicy.check(true,"overworld","overworld",Long.MIN_VALUE,0,0,()->true));
+                                                      ^
+  繧ｷ繝ｳ繝懊Ν:   螟画焚 TargetPolicy
+  蝣ｴ謇: 繧ｯ繝ｩ繧ｹ TargetPolicyTest
+
+繧ｨ繝ｩ繝ｼ16蛟・
+> Task :common:compileTestJava FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':common:compileTestJava'.
+> Compilation failed; see the compiler error output for details.
+
+* Try:
+> Run with --info option to get more log output.
+> Run with --scan to get full insights.
+
+BUILD FAILED in 49s
+4 actionable tasks: 4 executed

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.zuxelus.energycontrol.port.core.EnergySnapshotTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-09-30T23:23:13" hostname="LAPTOP-K7K1OTIE" time="0.005">
+  <properties/>
+  <testcase name="zeroCapacityAndOverfullReadingsCannotBreakRenderer()" classname="com.zuxelus.energycontrol.port.core.EnergySnapshotTest" time="0.002"/>
+  <testcase name="preservesLongEnergyWithoutIntTruncation()" classname="com.zuxelus.energycontrol.port.core.EnergySnapshotTest" time="0.001"/>
+  <testcase name="rejectsNegativeProviderValues()" classname="com.zuxelus.energycontrol.port.core.EnergySnapshotTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

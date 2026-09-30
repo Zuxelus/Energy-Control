@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GQG",
+    "QPQ",
+    "GQG"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "Q": {
+      "item": "minecraft:quartz"
+    },
+    "P": {
+      "item": "energycontrol:info_panel_extender"
+    }
+  },
+  "result": {
+    "id": "energycontrol:info_panel_advanced_extender",
+    "count": 1
+  }
+}

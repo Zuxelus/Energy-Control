@@ -1,0 +1,20 @@
+{
+  "block.energycontrol.info_panel": "信息面板",
+  "block.energycontrol.info_panel_advanced": "高级信息面板",
+  "block.energycontrol.info_panel_extender": "面板扩展器",
+  "block.energycontrol.info_panel_advanced_extender": "高级面板扩展器",
+  "item.energycontrol.card_text": "文字卡",
+  "item.energycontrol.card_energy": "能源传感卡",
+  "item.energycontrol.card_time": "时间卡",
+  "item.energycontrol.card_redstone": "红石传感卡",
+  "tooltip.energycontrol.card.text": "插入面板，在面板界面中编辑。",
+  "tooltip.energycontrol.card.energy": "潜行右键储能方块以绑定；范围 64 格。",
+  "tooltip.energycontrol.card.redstone": "潜行右键目标方块以绑定；范围 64 格。",
+  "tooltip.energycontrol.card.time": "显示当前世界时间。",
+  "message.energycontrol.bound": "卡片已绑定到 %s",
+  "gui.energycontrol.text": "卡片文字",
+  "gui.energycontrol.save": "保存",
+  "gui.energycontrol.slot": "卡槽",
+  "gui.energycontrol.color": "颜色",
+  "gui.energycontrol.power": "开关"
+}

@@ -1,0 +1,21 @@
+apply plugin: 'com.github.johnrengelman.shadow'
+architectury { platformSetupLoomIde(); fabric() }
+configurations {
+    common
+    shadowBundle
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentFabric.extendsFrom common
+}
+dependencies {
+    modImplementation 'teamreborn:energy:4.1.0'
+    include 'teamreborn:energy:4.1.0'
+    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+    modImplementation "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
+    common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
+    shadowBundle(project(path: ':common', configuration: 'transformProductionFabric')) { transitive = false }
+}
+shadowJar { configurations = [project.configurations.shadowBundle]; archiveClassifier = 'dev-shadow' }
+remapJar { inputFile.set shadowJar.archiveFile; dependsOn shadowJar }
+sourcesJar { from project(':common').sourceSets.main.allSource }

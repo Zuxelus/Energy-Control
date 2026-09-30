@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.zuxelus.energycontrol.port.core.TargetPolicyTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-09-30T23:23:13" hostname="LAPTOP-K7K1OTIE" time="0.008">
+  <properties/>
+  <testcase name="extremeCoordinatesCannotOverflowIntoRange()" classname="com.zuxelus.energycontrol.port.core.TargetPolicyTest" time="0.004"/>
+  <testcase name="unloadedChunkIsExplicitlyUnavailable()" classname="com.zuxelus.energycontrol.port.core.TargetPolicyTest" time="0.001"/>
+  <testcase name="acceptsExactlySixtyFourBlocksButNotBeyond()" classname="com.zuxelus.energycontrol.port.core.TargetPolicyTest" time="0.001"/>
+  <testcase name="doesNotConfuseUnboundWithOrigin()" classname="com.zuxelus.energycontrol.port.core.TargetPolicyTest" time="0.001"/>
+  <testcase name="rejectsOtherDimensionsBeforeQueryingChunks()" classname="com.zuxelus.energycontrol.port.core.TargetPolicyTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

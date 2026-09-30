@@ -1,0 +1,27 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+license="GPL-3.0-only"
+[[mods]]
+modId="energycontrol"
+version="${version}"
+displayName="Energy Control (port preview)"
+authors="Zuxelus, Energy Control contributors, independent port contributors"
+description='''Independent, incomplete Architectury port for Minecraft 1.21.1.'''
+[[dependencies.energycontrol]]
+modId="neoforge"
+type="required"
+versionRange="[21.1.209,)"
+ordering="NONE"
+side="BOTH"
+[[dependencies.energycontrol]]
+modId="minecraft"
+type="required"
+versionRange="[1.21.1,1.21.2)"
+ordering="NONE"
+side="BOTH"
+[[dependencies.energycontrol]]
+modId="architectury"
+type="required"
+versionRange="[13.0.8,)"
+ordering="AFTER"
+side="BOTH"

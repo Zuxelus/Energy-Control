@@ -1,0 +1,31 @@
+
+Thanks for using JUnit! Support its development at https://junit.org/sponsoring
+
+笊ｷ
+笏懌楳 JUnit Platform Suite 笨・
+笏懌楳 JUnit Jupiter 笨・
+笏・ 笏懌楳 EnergySnapshotTest 笨・
+笏・ 笏・ 笏懌楳 zeroCapacityAndOverfullReadingsCannotBreakRenderer() 笨・
+笏・ 笏・ 笏懌楳 preservesLongEnergyWithoutIntTruncation() 笨・
+笏・ 笏・ 笏披楳 rejectsNegativeProviderValues() 笨・
+笏・ 笏披楳 ScreenLayoutTest 笨・
+笏・    笏懌楳 growsNegativeCoordinatesAndStopsAtTwentyPerDirection() 笨・
+笏・    笏懌楳 emptyWorldIsSinglePanel() 笨・
+笏・    笏懌楳 fillsCompleteRectangleAndRebuildsAfterRemoval() 笨・
+笏・    笏披楳 extendsOnlyAcrossCompleteRows() 笨・
+笏披楳 JUnit Vintage 笨・
+
+Test run finished after 78 ms
+[         5 containers found      ]
+[         0 containers skipped    ]
+[         5 containers started    ]
+[         0 containers aborted    ]
+[         5 containers successful ]
+[         0 containers failed     ]
+[         7 tests found           ]
+[         0 tests skipped         ]
+[         7 tests started         ]
+[         0 tests aborted         ]
+[         7 tests successful      ]
+[         0 tests failed          ]
+

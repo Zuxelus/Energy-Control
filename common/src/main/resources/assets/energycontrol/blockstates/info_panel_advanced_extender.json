@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "energycontrol:block/info_panel_advanced_extender"
+    },
+    "facing=south": {
+      "model": "energycontrol:block/info_panel_advanced_extender",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "energycontrol:block/info_panel_advanced_extender",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "energycontrol:block/info_panel_advanced_extender",
+      "y": 270
+    },
+    "facing=up": {
+      "model": "energycontrol:block/info_panel_advanced_extender",
+      "x": 270
+    },
+    "facing=down": {
+      "model": "energycontrol:block/info_panel_advanced_extender",
+      "x": 90
+    }
+  }
+}

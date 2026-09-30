@@ -1,0 +1,20 @@
+{
+  "block.energycontrol.info_panel": "Information Panel",
+  "block.energycontrol.info_panel_advanced": "Advanced Information Panel",
+  "block.energycontrol.info_panel_extender": "Panel Extender",
+  "block.energycontrol.info_panel_advanced_extender": "Advanced Panel Extender",
+  "item.energycontrol.card_text": "Text Card",
+  "item.energycontrol.card_energy": "Energy Sensor Card",
+  "item.energycontrol.card_time": "Time Card",
+  "item.energycontrol.card_redstone": "Redstone Sensor Card",
+  "tooltip.energycontrol.card.text": "Insert in a panel; edit using its menu.",
+  "tooltip.energycontrol.card.energy": "Sneak-use on energy storage to bind; range: 64 blocks.",
+  "tooltip.energycontrol.card.redstone": "Sneak-use on a block to bind; range: 64 blocks.",
+  "tooltip.energycontrol.card.time": "Shows the current world time.",
+  "message.energycontrol.bound": "Card bound to %s",
+  "gui.energycontrol.text": "Card text",
+  "gui.energycontrol.save": "Save",
+  "gui.energycontrol.slot": "Slot",
+  "gui.energycontrol.color": "Color",
+  "gui.energycontrol.power": "Power"
+}

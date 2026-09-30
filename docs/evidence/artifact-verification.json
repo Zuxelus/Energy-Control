@@ -1,0 +1,58 @@
+{
+  "version": "1.21.1-0.1.0-port-preview",
+  "runtime_tested": false,
+  "artifacts": [
+    {
+      "path": "fabric/build/libs/energycontrol-fabric-1.21.1-0.1.0-port-preview.jar",
+      "bytes": 106409,
+      "sha256": "58030be068f2190fc8f5cc068e933b01da979d35fea589f7e20ec9b9ffadfe58"
+    },
+    {
+      "path": "fabric/build/libs/energycontrol-fabric-1.21.1-0.1.0-port-preview-sources.jar",
+      "bytes": 56787,
+      "sha256": "2f1a7252a82b4397bf5e411d51dec88ee79734cf68bb0634f0789d35bab882ed"
+    },
+    {
+      "path": "neoforge/build/libs/energycontrol-neoforge-1.21.1-0.1.0-port-preview.jar",
+      "bytes": 85865,
+      "sha256": "4546af316986878360d7b399482cdc825c11c5339ed195d02e15a2f9fe279688"
+    },
+    {
+      "path": "neoforge/build/libs/energycontrol-neoforge-1.21.1-0.1.0-port-preview-sources.jar",
+      "bytes": 57336,
+      "sha256": "9d08c832157e879f3bb4a93ed8bb1d5779e0a3807d1b97c097a861bb58d68bf0"
+    }
+  ],
+  "tests": [
+    {
+      "name": "com.zuxelus.energycontrol.port.CardComponentTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0"
+    },
+    {
+      "name": "com.zuxelus.energycontrol.port.core.EnergySnapshotTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0"
+    },
+    {
+      "name": "com.zuxelus.energycontrol.port.core.ScreenLayoutTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0"
+    },
+    {
+      "name": "com.zuxelus.energycontrol.port.core.TargetPolicyTest",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0"
+    },
+    {
+      "name": "com.zuxelus.energycontrol.port.PanelEditPayloadTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0"
+    }
+  ]
+}

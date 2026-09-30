@@ -1,0 +1,55 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.10.2/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+
+> Configure project :
+Architect Plugin: 3.4.164
+Architectury Loom: 1.7.435
+You are using an outdated version of Architectury Loom! This version will not receive any support, please consider updating!
+
+> Task :common:compileJava UP-TO-DATE
+> Task :common:processResources UP-TO-DATE
+> Task :common:classes UP-TO-DATE
+> Task :common:jar UP-TO-DATE
+> Task :common:compileTestJava
+> Task :common:processTestResources NO-SOURCE
+> Task :common:testClasses
+> Task :common:test
+> Task :fabric:compileJava UP-TO-DATE
+> Task :fabric:processResources UP-TO-DATE
+> Task :fabric:classes UP-TO-DATE
+> Task :fabric:jar UP-TO-DATE
+> Task :fabric:processIncludeJars UP-TO-DATE
+> Task :common:transformProductionFabric UP-TO-DATE
+> Task :fabric:shadowJar UP-TO-DATE
+> Task :fabric:remapJar UP-TO-DATE
+> Task :fabric:sourcesJar
+> Task :fabric:compileTestJava NO-SOURCE
+> Task :fabric:processTestResources NO-SOURCE
+> Task :fabric:testClasses UP-TO-DATE
+> Task :fabric:test NO-SOURCE
+> Task :fabric:validateAccessWidener NO-SOURCE
+> Task :fabric:check UP-TO-DATE
+> Task :neoforge:compileJava UP-TO-DATE
+> Task :neoforge:processResources UP-TO-DATE
+> Task :neoforge:classes UP-TO-DATE
+> Task :neoforge:jar UP-TO-DATE
+> Task :neoforge:processIncludeJars UP-TO-DATE
+> Task :common:transformProductionNeoForge UP-TO-DATE
+> Task :neoforge:shadowJar UP-TO-DATE
+> Task :neoforge:remapJar UP-TO-DATE
+> Task :neoforge:sourcesJar
+> Task :neoforge:compileTestJava NO-SOURCE
+> Task :neoforge:processTestResources NO-SOURCE
+> Task :neoforge:testClasses UP-TO-DATE
+> Task :neoforge:test NO-SOURCE
+> Task :neoforge:validateAccessWidener NO-SOURCE
+> Task :neoforge:check UP-TO-DATE
+> Task :neoforge:remapSourcesJar
+> Task :neoforge:assemble
+> Task :neoforge:build
+> Task :fabric:remapSourcesJar
+> Task :fabric:assemble
+> Task :fabric:build
+
+BUILD SUCCESSFUL in 43s
+23 actionable tasks: 6 executed, 17 up-to-date

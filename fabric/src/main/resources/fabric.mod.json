@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "energycontrol",
+  "version": "${version}",
+  "name": "Energy Control (port preview)",
+  "description": "Independent, incomplete Architectury port for Minecraft 1.21.1.",
+  "authors": ["Zuxelus", "Energy Control contributors", "Independent port contributors"],
+  "license": "GPL-3.0-only",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.zuxelus.energycontrol.port.fabric.EnergyControlFabric"],
+    "client": ["com.zuxelus.energycontrol.port.fabric.EnergyControlFabricClient"]
+  },
+  "depends": {"fabricloader": ">=0.16.14", "minecraft": "1.21.1", "java": ">=21", "fabric-api": "*", "architectury": ">=13.0.8", "team_reborn_energy": ">=4.1.0"}
+}

@@ -1,0 +1,69 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.10.2/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+
+> Configure project :
+Architect Plugin: 3.4.164
+Architectury Loom: 1.7.435
+You are using an outdated version of Architectury Loom! This version will not receive any support, please consider updating!
+
+> Configure project :fabric
+:remapping 1 mods from modImplementation (java-api)
+:remapped 1 mods (intermediary -> named) in 1.411 s
+:remapping sources (Mercury, intermediary -> named)
+
+> Configure project :neoforge
+:executing 10 MCP steps
+:step 1/10 - downloadClient
+:downloadClient done in 537.6 ﾎｼs
+:step 2/10 - downloadServer
+:downloadServer done in 13.40 ﾎｼs
+:step 3/10 - extractServer with net.neoforged.installertools:installertools:2.1.2:fatjar
+:extractServer done in 4.204 s
+:step 4/10 - downloadClientMappings
+:downloadClientMappings done in 1.047 s
+:step 5/10 - mergeMappings with net.neoforged.installertools:installertools:2.1.2:fatjar
+:mergeMappings done in 1.202 s
+:step 6/10 - stripClient
+:stripClient done in 755.6 ms
+:step 7/10 - stripServer
+:stripServer done in 528.4 ms
+:step 8/10 - merge with net.neoforged:mergetool:2.0.3:fatjar
+:merge done in 4.824 s
+:step 9/10 - listLibraries
+:downloading minecraft libraries, this may take a while...
+:listLibraries done in 1.602 s
+:step 10/10 - rename with net.neoforged:AutoRenamingTool:2.0.3:all
+:rename done in 6.734 s
+:patching jars
+:patched jars in 28.39 s
+:access transforming minecraft
+:access transformed minecraft in 24.03 s
+:remapping minecraft (TinyRemapper, srg -> official)
+:remapping 1 mods from modImplementation (java-api)
+
+[ERROR] [MIXIN] Cannot resolve class net/neoforged/bus/api/IEventBus
+
+> Configure project :neoforge
+:remapped 1 mods (mojang -> named) in 4.174 s
+:remapping sources (Mercury, mojang -> named)
+:found 1 forge source jars
+:extracted 951 forge source classes
+
+> Task :help
+
+Welcome to Gradle 8.10.2.
+
+To run a build, run gradlew <task> ...
+
+To see a list of available tasks, run gradlew tasks
+
+To see more detail about a task, run gradlew help --task <task>
+
+To see a list of command-line options, run gradlew --help
+
+For more detail on using Gradle, see https://docs.gradle.org/8.10.2/userguide/command_line_interface.html
+
+For troubleshooting, visit https://help.gradle.org
+
+BUILD SUCCESSFUL in 4m 30s
+1 actionable task: 1 executed

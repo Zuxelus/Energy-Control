@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:paper"
+    },
+    {
+      "item": "minecraft:clock"
+    }
+  ],
+  "result": {
+    "id": "energycontrol:card_time",
+    "count": 1
+  }
+}

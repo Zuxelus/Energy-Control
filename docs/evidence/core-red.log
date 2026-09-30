@@ -1,0 +1,92 @@
+
+Thanks for using JUnit! Support its development at https://junit.org/sponsoring
+
+笊ｷ
+笏懌楳 JUnit Platform Suite 笨・
+笏懌楳 JUnit Jupiter 笨・
+笏・ 笏懌楳 EnergySnapshotTest 笨・
+笏・ 笏・ 笏懌楳 zeroCapacityAndOverfullReadingsCannotBreakRenderer() 笨・Energy normalization not implemented yet
+笏・ 笏・ 笏懌楳 preservesLongEnergyWithoutIntTruncation() 笨・Energy normalization not implemented yet
+笏・ 笏・ 笏披楳 rejectsNegativeProviderValues() 笨・Expected java.lang.IllegalArgumentException to be thrown, but nothing was thrown.
+笏・ 笏披楳 ScreenLayoutTest 笨・
+笏・    笏懌楳 growsNegativeCoordinatesAndStopsAtTwentyPerDirection() 笨・Rectangular screen growth not ported yet
+笏・    笏懌楳 emptyWorldIsSinglePanel() 笨・Rectangular screen growth not ported yet
+笏・    笏懌楳 fillsCompleteRectangleAndRebuildsAfterRemoval() 笨・Rectangular screen growth not ported yet
+笏・    笏披楳 extendsOnlyAcrossCompleteRows() 笨・Rectangular screen growth not ported yet
+笏披楳 JUnit Vintage 笨・
+
+Failures (7):
+  JUnit Jupiter:EnergySnapshotTest:zeroCapacityAndOverfullReadingsCannotBreakRenderer()
+    MethodSource [className = 'com.zuxelus.energycontrol.port.core.EnergySnapshotTest', methodName = 'zeroCapacityAndOverfullReadingsCannotBreakRenderer', methodParameterTypes = '']
+    => java.lang.UnsupportedOperationException: Energy normalization not implemented yet
+       com.zuxelus.energycontrol.port.core.EnergySnapshot.fraction(EnergySnapshot.java:6)
+       com.zuxelus.energycontrol.port.core.EnergySnapshotTest.zeroCapacityAndOverfullReadingsCannotBreakRenderer(EnergySnapshotTest.java:13)
+       java.base/java.lang.reflect.Method.invoke(Method.java:580)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+  JUnit Jupiter:EnergySnapshotTest:preservesLongEnergyWithoutIntTruncation()
+    MethodSource [className = 'com.zuxelus.energycontrol.port.core.EnergySnapshotTest', methodName = 'preservesLongEnergyWithoutIntTruncation', methodParameterTypes = '']
+    => java.lang.UnsupportedOperationException: Energy normalization not implemented yet
+       com.zuxelus.energycontrol.port.core.EnergySnapshot.fraction(EnergySnapshot.java:6)
+       com.zuxelus.energycontrol.port.core.EnergySnapshotTest.preservesLongEnergyWithoutIntTruncation(EnergySnapshotTest.java:9)
+       java.base/java.lang.reflect.Method.invoke(Method.java:580)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+  JUnit Jupiter:EnergySnapshotTest:rejectsNegativeProviderValues()
+    MethodSource [className = 'com.zuxelus.energycontrol.port.core.EnergySnapshotTest', methodName = 'rejectsNegativeProviderValues', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: Expected java.lang.IllegalArgumentException to be thrown, but nothing was thrown.
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+       org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:73)
+       org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+       org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3128)
+       com.zuxelus.energycontrol.port.core.EnergySnapshotTest.rejectsNegativeProviderValues(EnergySnapshotTest.java:17)
+       java.base/java.lang.reflect.Method.invoke(Method.java:580)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+  JUnit Jupiter:ScreenLayoutTest:growsNegativeCoordinatesAndStopsAtTwentyPerDirection()
+    MethodSource [className = 'com.zuxelus.energycontrol.port.core.ScreenLayoutTest', methodName = 'growsNegativeCoordinatesAndStopsAtTwentyPerDirection', methodParameterTypes = '']
+    => java.lang.UnsupportedOperationException: Rectangular screen growth not ported yet
+       com.zuxelus.energycontrol.port.core.ScreenLayout.grow(ScreenLayout.java:14)
+       com.zuxelus.energycontrol.port.core.ScreenLayoutTest.growsNegativeCoordinatesAndStopsAtTwentyPerDirection(ScreenLayoutTest.java:16)
+       java.base/java.lang.reflect.Method.invoke(Method.java:580)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+  JUnit Jupiter:ScreenLayoutTest:emptyWorldIsSinglePanel()
+    MethodSource [className = 'com.zuxelus.energycontrol.port.core.ScreenLayoutTest', methodName = 'emptyWorldIsSinglePanel', methodParameterTypes = '']
+    => java.lang.UnsupportedOperationException: Rectangular screen growth not ported yet
+       com.zuxelus.energycontrol.port.core.ScreenLayout.grow(ScreenLayout.java:14)
+       com.zuxelus.energycontrol.port.core.ScreenLayoutTest.emptyWorldIsSinglePanel(ScreenLayoutTest.java:25)
+       java.base/java.lang.reflect.Method.invoke(Method.java:580)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+  JUnit Jupiter:ScreenLayoutTest:fillsCompleteRectangleAndRebuildsAfterRemoval()
+    MethodSource [className = 'com.zuxelus.energycontrol.port.core.ScreenLayoutTest', methodName = 'fillsCompleteRectangleAndRebuildsAfterRemoval', methodParameterTypes = '']
+    => java.lang.UnsupportedOperationException: Rectangular screen growth not ported yet
+       com.zuxelus.energycontrol.port.core.ScreenLayout.grow(ScreenLayout.java:14)
+       com.zuxelus.energycontrol.port.core.ScreenLayoutTest.fillsCompleteRectangleAndRebuildsAfterRemoval(ScreenLayoutTest.java:20)
+       java.base/java.lang.reflect.Method.invoke(Method.java:580)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+  JUnit Jupiter:ScreenLayoutTest:extendsOnlyAcrossCompleteRows()
+    MethodSource [className = 'com.zuxelus.energycontrol.port.core.ScreenLayoutTest', methodName = 'extendsOnlyAcrossCompleteRows', methodParameterTypes = '']
+    => java.lang.UnsupportedOperationException: Rectangular screen growth not ported yet
+       com.zuxelus.energycontrol.port.core.ScreenLayout.grow(ScreenLayout.java:14)
+       com.zuxelus.energycontrol.port.core.ScreenLayoutTest.extendsOnlyAcrossCompleteRows(ScreenLayoutTest.java:13)
+       java.base/java.lang.reflect.Method.invoke(Method.java:580)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+Test run finished after 76 ms
+[         5 containers found      ]
+[         0 containers skipped    ]
+[         5 containers started    ]
+[         0 containers aborted    ]
+[         5 containers successful ]
+[         0 containers failed     ]
+[         7 tests found           ]
+[         0 tests skipped         ]
+[         7 tests started         ]
+[         0 tests aborted         ]
+[         0 tests successful      ]
+[         7 tests failed          ]
+

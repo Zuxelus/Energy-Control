@@ -1,0 +1,79 @@
+
+Thanks for using JUnit! Support its development at https://junit.org/sponsoring
+
+笊ｷ
+笏懌楳 JUnit Platform Suite 笨・
+笏懌楳 JUnit Jupiter 笨・
+笏・ 笏懌楳 EnergySnapshotTest 笨・
+笏・ 笏・ 笏懌楳 zeroCapacityAndOverfullReadingsCannotBreakRenderer() 笨・
+笏・ 笏・ 笏懌楳 preservesLongEnergyWithoutIntTruncation() 笨・
+笏・ 笏・ 笏披楳 rejectsNegativeProviderValues() 笨・
+笏・ 笏懌楳 TargetPolicyTest 笨・
+笏・ 笏・ 笏懌楳 extremeCoordinatesCannotOverflowIntoRange() 笨・Target validation not extracted yet
+笏・ 笏・ 笏懌楳 unloadedChunkIsExplicitlyUnavailable() 笨・Target validation not extracted yet
+笏・ 笏・ 笏懌楳 acceptsExactlySixtyFourBlocksButNotBeyond() 笨・Target validation not extracted yet
+笏・ 笏・ 笏懌楳 doesNotConfuseUnboundWithOrigin() 笨・Target validation not extracted yet
+笏・ 笏・ 笏披楳 rejectsOtherDimensionsBeforeQueryingChunks() 笨・Target validation not extracted yet
+笏・ 笏披楳 ScreenLayoutTest 笨・
+笏・    笏懌楳 growsNegativeCoordinatesAndStopsAtTwentyPerDirection() 笨・
+笏・    笏懌楳 emptyWorldIsSinglePanel() 笨・
+笏・    笏懌楳 fillsCompleteRectangleAndRebuildsAfterRemoval() 笨・
+笏・    笏披楳 extendsOnlyAcrossCompleteRows() 笨・
+笏披楳 JUnit Vintage 笨・
+
+Failures (5):
+  JUnit Jupiter:TargetPolicyTest:extremeCoordinatesCannotOverflowIntoRange()
+    MethodSource [className = 'com.zuxelus.energycontrol.port.core.TargetPolicyTest', methodName = 'extremeCoordinatesCannotOverflowIntoRange', methodParameterTypes = '']
+    => java.lang.UnsupportedOperationException: Target validation not extracted yet
+       com.zuxelus.energycontrol.port.core.TargetPolicy.check(TargetPolicy.java:10)
+       com.zuxelus.energycontrol.port.core.TargetPolicyTest.extremeCoordinatesCannotOverflowIntoRange(TargetPolicyTest.java:21)
+       java.base/java.lang.reflect.Method.invoke(Method.java:580)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+  JUnit Jupiter:TargetPolicyTest:unloadedChunkIsExplicitlyUnavailable()
+    MethodSource [className = 'com.zuxelus.energycontrol.port.core.TargetPolicyTest', methodName = 'unloadedChunkIsExplicitlyUnavailable', methodParameterTypes = '']
+    => java.lang.UnsupportedOperationException: Target validation not extracted yet
+       com.zuxelus.energycontrol.port.core.TargetPolicy.check(TargetPolicy.java:10)
+       com.zuxelus.energycontrol.port.core.TargetPolicyTest.unloadedChunkIsExplicitlyUnavailable(TargetPolicyTest.java:18)
+       java.base/java.lang.reflect.Method.invoke(Method.java:580)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+  JUnit Jupiter:TargetPolicyTest:acceptsExactlySixtyFourBlocksButNotBeyond()
+    MethodSource [className = 'com.zuxelus.energycontrol.port.core.TargetPolicyTest', methodName = 'acceptsExactlySixtyFourBlocksButNotBeyond', methodParameterTypes = '']
+    => java.lang.UnsupportedOperationException: Target validation not extracted yet
+       com.zuxelus.energycontrol.port.core.TargetPolicy.check(TargetPolicy.java:10)
+       com.zuxelus.energycontrol.port.core.TargetPolicyTest.acceptsExactlySixtyFourBlocksButNotBeyond(TargetPolicyTest.java:7)
+       java.base/java.lang.reflect.Method.invoke(Method.java:580)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+  JUnit Jupiter:TargetPolicyTest:doesNotConfuseUnboundWithOrigin()
+    MethodSource [className = 'com.zuxelus.energycontrol.port.core.TargetPolicyTest', methodName = 'doesNotConfuseUnboundWithOrigin', methodParameterTypes = '']
+    => java.lang.UnsupportedOperationException: Target validation not extracted yet
+       com.zuxelus.energycontrol.port.core.TargetPolicy.check(TargetPolicy.java:10)
+       com.zuxelus.energycontrol.port.core.TargetPolicyTest.doesNotConfuseUnboundWithOrigin(TargetPolicyTest.java:14)
+       java.base/java.lang.reflect.Method.invoke(Method.java:580)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+  JUnit Jupiter:TargetPolicyTest:rejectsOtherDimensionsBeforeQueryingChunks()
+    MethodSource [className = 'com.zuxelus.energycontrol.port.core.TargetPolicyTest', methodName = 'rejectsOtherDimensionsBeforeQueryingChunks', methodParameterTypes = '']
+    => java.lang.UnsupportedOperationException: Target validation not extracted yet
+       com.zuxelus.energycontrol.port.core.TargetPolicy.check(TargetPolicy.java:10)
+       com.zuxelus.energycontrol.port.core.TargetPolicyTest.rejectsOtherDimensionsBeforeQueryingChunks(TargetPolicyTest.java:11)
+       java.base/java.lang.reflect.Method.invoke(Method.java:580)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+Test run finished after 118 ms
+[         6 containers found      ]
+[         0 containers skipped    ]
+[         6 containers started    ]
+[         0 containers aborted    ]
+[         6 containers successful ]
+[         0 containers failed     ]
+[        12 tests found           ]
+[         0 tests skipped         ]
+[        12 tests started         ]
+[         0 tests aborted         ]
+[         7 tests successful      ]
+[         5 tests failed          ]
+
