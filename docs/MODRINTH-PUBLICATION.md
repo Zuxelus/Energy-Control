@@ -2,8 +2,10 @@
 
 User authorized publication of an enhanced independent fork after current step2
 (inventory cards, sensor kits, card holder, solid slopes) passes both loaders.
-The earlier prohibition on public publication is superseded for Modrinth only;
-no public GitHub destination/account has been chosen and no repository was created.
+The user subsequently authorized GitHub publication through the connected GitHub app.
+The app and official CLI both identify sdy623. A public fork has been created at
+https://github.com/sdy623/Energy-Control-Enhanced with parent Zuxelus/Energy-Control.
+GitHub source/release publication is separate from Modrinth submission.
 
 Proposed name: Energy Control Enhanced. Independent fork of Zuxelus/Energy-Control,
 GPL-3.0-only, Minecraft1.21.1 Fabric and NeoForge. Keep mod ID energycontrol for save
@@ -39,5 +41,6 @@ executions/58 original game frames; inventories, kits, holder, solid slopes,
 main/offhand, multiplayer and normal-server reload. The buildable package is
 1.21.1-0.6.0-port-beta (Energy Control Enhanced), not full upstream parity.
 Modrinth submission remains unperformed; no approval outcome or project URL exists.
-Public corresponding-source hosting is also still required before binary release;
-complete local source/history is prepared but the upstream URL is not its substitute.
+The authorized corresponding-source destination is the GitHub fork above. Release
+assets include complete source/history archives split below20MB; verify the release
+page and its checksums for upload completion. Modrinth remains unsubmitted.

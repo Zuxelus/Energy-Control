@@ -26,7 +26,7 @@ This is an incomplete beta. Kit assembler, original recipe balancing, alarms/the
 
 ## Source and credit
 
-All original GPLv3 licensing and copyright notices are retained. Complete upstream commit history and corresponding buildable source are preserved in the local delivery. A public source/history download must be attached or linked before distributing binaries; the upstream link alone is not the fork's corresponding source.
+All original GPLv3 licensing and copyright notices are retained. Complete upstream commit history and corresponding buildable source are preserved at [the independent fork](https://github.com/sdy623/Energy-Control-Enhanced). Source and history archives accompany the GitHub beta release; the original upstream URL is attribution, not a substitute for this fork's source.
 
 ## AI authorship disclosure and publication status
 
