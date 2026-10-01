@@ -1,0 +1,30 @@
+RUN_START client 2026-10-01T00:27:18.599604500Z
+CONNECT_FROM AccessibilityOnboardingScreen
+PASS sneak-use binds card through actual client interaction
+PASS client receives multiblock bounds
+PASS client receives live energy lines
+PASS client receives changing energy packets
+SCREENSHOT Saved screenshot as 01-live-multiblock.png
+PASS real right-click opens network menu
+PASS C2S edit updates S2C render data
+SCREENSHOT Saved screenshot as 02-card-menu.png
+CLIENT_QA_DONE
+SCREENSHOT Saved screenshot as 03-edited-multiblock.png
+PASS display settings synchronized
+SCREENSHOT Saved screenshot as 04-display-settings.png
+SCREENSHOT Saved screenshot as 05-styled-live-panel.png
+PASS sensor card title and field mask synchronize
+PASS stale menu packet rejected
+FACE_DATA down [DOWN, 2 x 2 BASIC, 123 ABC]
+SCREENSHOT Saved screenshot as face-DOWN.png
+FACE_DATA up [UP, 2 x 2 BASIC, 123 ABC]
+SCREENSHOT Saved screenshot as face-UP.png
+FACE_DATA north [NORTH, 2 x 2 BASIC, 123 ABC]
+SCREENSHOT Saved screenshot as face-NORTH.png
+FACE_DATA south [SOUTH, 2 x 2 BASIC, 123 ABC]
+SCREENSHOT Saved screenshot as face-SOUTH.png
+FACE_DATA west [WEST, 2 x 2 BASIC, 123 ABC]
+SCREENSHOT Saved screenshot as face-WEST.png
+FACE_DATA east [EAST, 2 x 2 BASIC, 123 ABC]
+SCREENSHOT Saved screenshot as face-EAST.png
+ALL_CLIENT_SCENARIOS_DONE

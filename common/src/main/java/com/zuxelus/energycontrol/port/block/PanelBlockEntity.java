@@ -27,6 +27,14 @@ public final class PanelBlockEntity extends BaseContainerBlockEntity {
     private List<String> lines = List.of();
     private int color = 0x55ff55;
     private boolean powered = true;
+    private int background = 0x080b0c, scalePercent = 100, alignment, powerMode = 2, refreshTicks = 20;
+    private boolean uniformFont;
+    public int background() { return background; }
+    public int scalePercent() { return scalePercent; }
+    public int alignment() { return alignment; }
+    public int powerMode() { return powerMode; }
+    public int refreshTicks() { return refreshTicks; }
+    public boolean uniformFont() { return uniformFont; }
     public PanelBlockEntity(BlockPos pos, BlockState state) { super(EnergyControlPort.PANEL_ENTITY.get(),pos,state); }
     public boolean advanced() { return ((PanelBlock)getBlockState().getBlock()).advanced(); }
     public boolean isExtender() { return ((PanelBlock)getBlockState().getBlock()).extender(); }
@@ -44,7 +52,7 @@ public final class PanelBlockEntity extends BaseContainerBlockEntity {
     @Override public boolean canPlaceItem(int slot, ItemStack stack) { return slot < getContainerSize() && stack.getItem() instanceof CardItem; }
 
     public Direction right() {
-        return switch(facing()) { case NORTH, UP, DOWN -> Direction.EAST; case SOUTH -> Direction.WEST; case EAST -> Direction.SOUTH; case WEST -> Direction.NORTH; };
+        return switch(facing()) { case SOUTH -> Direction.EAST; case NORTH, UP, DOWN -> Direction.WEST; case EAST -> Direction.NORTH; case WEST -> Direction.SOUTH; };
     }
     public Direction up() { return switch(facing()) { case UP -> Direction.SOUTH; case DOWN -> Direction.NORTH; default -> Direction.UP; }; }
     public BlockPos at(int x, int y) { return worldPosition.relative(right(),x).relative(up(),y); }
@@ -87,9 +95,13 @@ public final class PanelBlockEntity extends BaseContainerBlockEntity {
         });
     }
     public static void tick(Level level, BlockPos pos, BlockState state, PanelBlockEntity panel) {
-        if (level.isClientSide || level.getGameTime() % 20 != 0 || panel.isExtender()) return;
-        panel.regroup();
-        panel.refreshCards();
+        if (level.isClientSide || panel.isExtender()) return;
+        if (level.getGameTime() % 20 == 0) panel.regroup();
+        boolean power = switch(panel.powerMode) {
+            case 0 -> level.hasNeighborSignal(pos); case 1 -> !level.hasNeighborSignal(pos); case 3 -> false; default -> true;
+        };
+        if (panel.powered != power) { panel.powered = power; panel.sync(); }
+        if (level.getGameTime() % panel.refreshTicks == 0) panel.refreshCards();
     }
     private void refreshCards() {
         List<String> next = new ArrayList<>();
@@ -97,11 +109,13 @@ public final class PanelBlockEntity extends BaseContainerBlockEntity {
             ItemStack stack = items.get(slot);
             if (!(stack.getItem() instanceof CardItem card)) continue;
             CompoundTag data = CardItem.data(stack);
+            String title=data.getString("title");
+            if(!title.isBlank()) next.add(title.substring(0,Math.min(128,title.length())));
             switch(card.kind()) {
-                case TEXT -> Arrays.stream(data.getString("text").split("\n", -1)).limit(8).map(s -> s.substring(0,Math.min(s.length(),128))).forEach(next::add);
+                case TEXT -> next.addAll(com.zuxelus.energycontrol.port.core.DisplayText.lines(data.getString("text")));
                 case TIME -> {
                     long minutes = Math.floorMod(level.getDayTime()+6000,24000)*60/1000;
-                    next.add(String.format(Locale.ROOT,"Time: %02d:%02d",minutes/60,minutes%60));
+                    next.add(String.format(Locale.ROOT,(data.getBoolean("hideLabels")?"":"Time: ")+"%02d:%02d",minutes/60,minutes%60));
                 }
                 case ENERGY, REDSTONE -> readTarget(card.kind(), data, next);
             }
@@ -117,23 +131,42 @@ public final class PanelBlockEntity extends BaseContainerBlockEntity {
             output.add(switch(status) { case UNBOUND -> "Unbound card"; case OUT_OF_RANGE -> "Out of range (64 blocks)"; default -> "Target chunk unloaded"; });
             return;
         }
-        if (kind == CardItem.Kind.REDSTONE) { output.add("Redstone: " + level.getBestNeighborSignal(target)); return; }
+        if (kind == CardItem.Kind.REDSTONE) { output.add((data.getBoolean("hideLabels")?"":"Redstone: ") + level.getBestNeighborSignal(target)); return; }
         var reading = EnergyControlPort.energyProbe.read(level,target,Direction.from3DDataValue(data.getInt("side")));
         reading.ifPresentOrElse(value -> {
-            output.add("Energy: " + value.stored() + " / " + value.capacity() + " " + value.unit());
-            output.add(String.format(Locale.ROOT,"Stored: %.1f%%",100*value.fraction()));
+            output.add((data.getBoolean("hideLabels")?"":"Energy: ") + value.stored() + " / " + value.capacity() + " " + value.unit());
+            if(!data.getBoolean("hidePercent")) output.add(String.format(Locale.ROOT,(data.getBoolean("hideLabels")?"":"Stored: ")+"%.1f%%",100*value.fraction()));
         }, () -> output.add("No compatible energy storage"));
     }
     public void setText(int slot, String text) {
         if (slot < 0 || slot >= getContainerSize() || text.length() > 512) return;
         ItemStack stack = items.get(slot);
-        if (!(stack.getItem() instanceof CardItem card) || card.kind() != CardItem.Kind.TEXT) return;
+        if (!(stack.getItem() instanceof CardItem card)) return;
         var data = CardItem.data(stack);
-        data.putString("text", text.replace("\r", "")); CardItem.update(stack,data);
+        if(card.kind()==CardItem.Kind.TEXT) data.putString("text", text.replace("\r", ""));
+        else data.putString("title",text.replace("\r", "").replace("\n", " ").substring(0,Math.min(128,text.replace("\r", "").replace("\n", " ").length())));
+        CardItem.update(stack,data);
         setChanged(); refreshCards();
     }
     public void cycleColor() { color = switch(color) { case 0x55ff55 -> 0xffffff; case 0xffffff -> 0xffaa00; default -> 0x55ff55; }; sync(); }
-    public void togglePower() { powered = !powered; sync(); }
+    public void togglePower() { powerMode = (powerMode + 1) % 4; sync(); }
+    public boolean configure(int id) {
+        if(id>=100 && id<100+getContainerSize()*2) {
+            var stack=items.get((id-100)/2);
+            if(!(stack.getItem() instanceof CardItem)) return false;
+            var data=CardItem.data(stack);String key=id%2==0?"hideLabels":"hidePercent";
+            data.putBoolean(key,!data.getBoolean(key));CardItem.update(stack,data);refreshCards();sync();return true;
+        }
+        switch(id) {
+            case 2 -> scalePercent = scalePercent >= 200 ? 50 : scalePercent + 25;
+            case 3 -> alignment = (alignment + 1) % 3;
+            case 4 -> uniformFont = !uniformFont;
+            case 5 -> refreshTicks = switch(refreshTicks) { case 5 -> 10; case 10 -> 20; case 20 -> 40; default -> 5; };
+            case 6 -> background = background == 0x080b0c ? 0x303840 : 0x080b0c;
+            default -> { return false; }
+        }
+        sync(); return true;
+    }
     private void sync() {
         setChanged();
         if (level != null && !level.isClientSide) level.sendBlockUpdated(worldPosition,getBlockState(),getBlockState(),3);
@@ -144,6 +177,8 @@ public final class PanelBlockEntity extends BaseContainerBlockEntity {
         tag.putIntArray("bounds",new int[]{bounds.minX(),bounds.minY(),bounds.maxX(),bounds.maxY()});
         if(owner != null) tag.putLong("owner",owner.asLong());
         tag.putInt("color",color); tag.putBoolean("powered",powered);
+        tag.putInt("background",background); tag.putInt("scalePercent",scalePercent); tag.putInt("alignment",alignment);
+        tag.putInt("powerMode",powerMode); tag.putInt("refreshTicks",refreshTicks); tag.putBoolean("uniformFont",uniformFont);
         ListTag list = new ListTag(); lines.forEach(line -> list.add(StringTag.valueOf(line))); tag.put("lines",list);
     }
     @Override protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
@@ -155,6 +190,12 @@ public final class PanelBlockEntity extends BaseContainerBlockEntity {
         owner = tag.contains("owner") ? BlockPos.of(tag.getLong("owner")) : null;
         color = tag.contains("color") ? tag.getInt("color") & 0xffffff : 0x55ff55;
         powered = !tag.contains("powered") || tag.getBoolean("powered");
+        background = tag.contains("background") ? tag.getInt("background") & 0xffffff : 0x080b0c;
+        scalePercent = tag.contains("scalePercent") ? Math.clamp(tag.getInt("scalePercent"),50,200) : 100;
+        alignment = Math.clamp(tag.getInt("alignment"),0,2);
+        powerMode = tag.contains("powerMode") ? Math.clamp(tag.getInt("powerMode"),0,3) : powered ? 2 : 3;
+        refreshTicks = tag.contains("refreshTicks") ? Math.clamp(tag.getInt("refreshTicks"),5,100) : 20;
+        uniformFont = tag.getBoolean("uniformFont");
         var list = tag.getList("lines",Tag.TAG_STRING); var result = new ArrayList<String>();
         for(int i=0;i<Math.min(32,list.size());i++) { String s=list.getString(i); result.add(s.substring(0,Math.min(s.length(),256))); }
         lines = List.copyOf(result);

@@ -1,3 +1,8 @@
+# Current gameplay continuation
+
+See QA.md for authorized isolated runServer/runClient commands and final runtime evidence.
+The stage-1 results below are preserved as history; current artifact verification uses 20 JVM tests.
+
 # Reproducible local build
 
 Use an existing 64-bit Java 21 JDK; no global Gradle installation is needed.
@@ -42,17 +47,12 @@ Java deprecation warnings remain. One earlier daemon shutdown log reported a
 file-contention-handler closure after BUILD SUCCESSFUL. Final exit status and
 artifacts are verified separately. No compatibility with Gradle 9 is claimed.
 
-## Runtime checklist — not executed
+## Runtime acceptance
 
-After authorization to launch an isolated disposable instance, for each loader:
-place all panels in six orientations; insert/remove/shift-click all cards; edit
-text; bind a real energy provider; test range, dimension and chunk boundaries;
-add/remove extenders; save/reload; join a second client; test dedicated-server
-startup. Check front-face/depth behavior, scaling, panel overlap and menu-open
-timing. Record exact dependencies, logs and screenshots before claiming usable.
-Existing user instances must remain untouched.
+The formerly blocked game checks were authorized and executed in this continuation.
+See QA.md and FEATURE-MATRIX.md for passed cases and remaining gaps.
 
-## Final stage result
+## Historical stage-1 result (0.1.0)
 
 The final build and a subsequent **offline clean rebuild** both succeeded.
 17 tests ran with zero failures/errors: 4 geometry, 3 energy, 5 target-policy,
@@ -65,3 +65,30 @@ in `reproducibility.json`. This verifies repeatability in this workspace with
 the populated dependency cache; cross-machine byte identity is not claimed.
 `artifact-verification.json` contains SHA-256 values and test suite counts.
 Copied JUnit XML reports are retained alongside those logs.
+
+## Core gameplay stage (0.2.0)
+
+Java: existing Azul Zulu 21.0.12.1+1-LTS. No Java/Gradle system installation.
+Minecraft 1.21.1; Architectury 13.0.8; Fabric Loader 0.16.14 and Fabric API
+0.116.6+1.21.1; NeoForge 21.1.209; Fabric Energy API 4.1.0 nested (MIT).
+
+Final release build command (without -Pqa):
+
+```powershell
+.\gradlew.bat clean :common:test :fabric:build :neoforge:build --offline --console=plain
+py -3 tools/verify_artifacts.py
+```
+
+`build-core-gameplay.log` and `build-core-reproducible.log` record two clean
+builds. `reproducibility-core.json` compares both loader jars and both source
+jars. `artifact-verification.json` identifies the current artifacts and all
+20 passing JVM tests (the prior 17 plus three text normalization/bounds tests).
+The original stage-1 logs and reproducibility.json are historical evidence.
+
+`runtime/summary.json` records 21 server and 9 client assertions per loader,
+with 11 unedited PNGs per loader, zero final assertion failures. Final runtime
+runs use the same production Java source; their metadata still says 0.1.0
+because the 0.2.0 version bump followed acceptance. QA-only sources/entrypoints
+are present solely under -Pqa. Release jars and source jars are inspected to
+reject any QA leakage. Development game evidence does not substitute for a
+separate production-launcher installation test.

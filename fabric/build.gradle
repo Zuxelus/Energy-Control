@@ -19,3 +19,7 @@ dependencies {
 shadowJar { configurations = [project.configurations.shadowBundle]; archiveClassifier = 'dev-shadow' }
 remapJar { inputFile.set shadowJar.archiveFile; dependsOn shadowJar }
 sourcesJar { from project(':common').sourceSets.main.allSource }
+loom.runs {
+    client { runDir 'run/client'; vmArg '-Xmx2G'; programArg '--width'; programArg '1280'; programArg '--height'; programArg '720' }
+    server { runDir 'run/server'; vmArg '-Xmx2G'; programArg '--nogui' }
+}

@@ -1,0 +1,42 @@
+[08:59:12] [main/INFO] (Launcher) ModLauncher running: args [--launchTarget, forgeserverdev, --gameDir, ., --fml.fmlVersion, 4.0.41, --fml.mcVersion, 1.21.1, --fml.neoForgeVersion, 21.1.209, --fml.neoFormVersion, 20240808.144430, nogui, --nogui]
+[08:59:12] [main/INFO] (Launcher) JVM identified as Azul Systems, Inc. OpenJDK 64-Bit Server VM 21.0.12.1+1-LTS
+[08:59:12] [main/INFO] (Launcher) ModLauncher 11.0.5+main.901c6ea8 starting: java version 21.0.12.1 by Azul Systems, Inc.; OS Windows 11 arch amd64 version 10.0
+[08:59:12] [main/INFO] (ImmediateWindowHandler) ImmediateWindowProvider not loading because launch target is forgeserverdev
+[08:59:12] [main/INFO] (mixin) SpongePowered MIXIN Subsystem Version=0.8.7 Source=union:/C:/Users/Makoto/Documents/Codex/2026-10-01/task-2/Energy-Control/.gradle-user-home/caches/modules-2/files-2.1/net.fabricmc/sponge-mixin/0.15.2+mixin.0.8.7/2af2f021d8e02a0220dc27a7a72b4666d66d44ca/sponge-mixin-0.15.2+mixin.0.8.7.jar%23125!/ Service=ModLauncher Env=SERVER
+[08:59:12] [main/INFO] (ModDiscoverer) Found mod file "neoforge-21.1.209-minecraft-merged-1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209.jar" [locator: neoforge devenv provider ([C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\.gradle-user-home\caches\fabric-loom\minecraftMaven\net\minecraft\neoforge-21.1.209-minecraft-merged\1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209\neoforge-21.1.209-minecraft-merged-1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209.jar])]
+[08:59:12] [main/INFO] (ModDiscoverer) Found mod file "neoforge-21.1.209-minecraft-merged-1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209.jar" [locator: neoforge devenv provider ([C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\.gradle-user-home\caches\fabric-loom\minecraftMaven\net\minecraft\neoforge-21.1.209-minecraft-merged\1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209\neoforge-21.1.209-minecraft-merged-1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209.jar])]
+[08:59:12] [main/INFO] (ModDiscoverer) Found mod file "main" [locator: userdev mods and services, reader: mod manifest]
+[08:59:12] [main/INFO] (ModDiscoverer) Found mod file "neoforge-21.1.209-minecraft-merged-1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209.jar" [locator: userdev mods and services, reader: mod manifest]
+[08:59:12] [main/INFO] (ModDiscoverer) Found mod file "architectury-neoforge-13.0.8.jar" [locator: userdev mods and services, reader: mod manifest]
+[08:59:12] [main/INFO] (ModDiscoverer) Found mod file "2571217331988441604.jar" [locator: userdev mods and services, reader: mod manifest]
+[08:59:12] [main/INFO] (ModDiscoverer) Found gamelibrary file "mixinextras-neoforge-0.5.0.jar" [locator: userdev mods and services, reader: mod manifest]
+[08:59:12] [main/WARN] (JarSelector) Attempted to select a dependency jar for JarJar which was passed in as source: library:mixinextras.neoforge. Using Mod File: C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\.gradle-user-home\caches\modules-2\files-2.1\io.github.llamalad7\mixinextras-neoforge\0.5.0\d734b83ce6542bb70ea31755c1595b88992dbe65\mixinextras-neoforge-0.5.0.jar
+[08:59:12] [main/INFO] (JarInJarDependencyLocator) Found 1 dependencies adding them to mods collection
+[08:59:12] [main/INFO] (ModDiscoverer) Found library file "net.neoforged.neoforge-coremods-21.1.209.jar" [parent: neoforge-21.1.209-minecraft-merged-1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209.jar, locator: jarinjar, reader: mod manifest]
+[08:59:12] [main/INFO] (ModDiscoverer) 
+     Mod List:
+		Name Version (Mod Id)
+
+		Architectury 13.0.8 (architectury)
+		Energy Control (port preview) 1.21.1-0.1.0-port-preview (energycontrol)
+		generated_fc444f7 1 (generated_fc444f7)
+		Minecraft 1.21.1 (minecraft)
+		NeoForge 21.1.209 (neoforge)
+[08:59:13] [main/ERROR] (ModuleLayerHandler) Error while resolving modules.
+java.lang.module.ResolutionException: Modules energycontrol and generated_fc444f7 export package com.zuxelus.energycontrol.qa to module architectury
+	at java.base/java.lang.module.Resolver.resolveFail(Resolver.java:900) ~[?:?]
+	at java.base/java.lang.module.Resolver.failTwoSuppliers(Resolver.java:814) ~[?:?]
+	at java.base/java.lang.module.Resolver.checkExportSuppliers(Resolver.java:735) ~[?:?]
+	at java.base/java.lang.module.Resolver.finish(Resolver.java:380) ~[?:?]
+	at java.base/java.lang.module.Configuration.<init>(Configuration.java:139) ~[?:?]
+	at java.base/java.lang.module.Configuration.resolveAndBind(Configuration.java:493) ~[?:?]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.ModuleLayerHandler.buildLayer(ModuleLayerHandler.java:81) [modlauncher-11.0.5.jar%23116!/:?]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.TransformationServicesHandler.buildTransformingClassLoader(TransformationServicesHandler.java:54) [modlauncher-11.0.5.jar%23116!/:?]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.Launcher.run(Launcher.java:101) [modlauncher-11.0.5.jar%23116!/:?]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.Launcher.main(Launcher.java:74) [modlauncher-11.0.5.jar%23116!/:?]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.BootstrapLaunchConsumer.accept(BootstrapLaunchConsumer.java:26) [modlauncher-11.0.5.jar%23116!/:?]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.BootstrapLaunchConsumer.accept(BootstrapLaunchConsumer.java:23) [modlauncher-11.0.5.jar%23116!/:?]
+	at cpw.mods.bootstraplauncher.BootstrapLauncher.run(BootstrapLauncher.java:210) [bootstraplauncher-2.0.2.jar:?]
+	at cpw.mods.bootstraplauncher.BootstrapLauncher.main(BootstrapLauncher.java:69) [bootstraplauncher-2.0.2.jar:?]
+	at net.fabricmc.devlaunchinjector.Main.main(Main.java:86) [dev-launch-injector-0.2.1+build.8.jar:?]
+	at dev.architectury.transformer.TransformerRuntime.main(TransformerRuntime.java:220) [architectury-transformer-5.2.91-runtime.jar:5.2.91]

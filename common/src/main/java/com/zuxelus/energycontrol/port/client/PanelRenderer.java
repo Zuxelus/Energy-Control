@@ -20,27 +20,31 @@ public final class PanelRenderer implements BlockEntityRenderer<PanelBlockEntity
         var bounds=panel.bounds();
         pose.pushPose(); pose.translate(.5,.5,.5);
         switch(panel.facing()) {
-            case SOUTH -> pose.mulPose(Axis.YP.rotationDegrees(180));
-            case WEST -> pose.mulPose(Axis.YP.rotationDegrees(90));
-            case EAST -> pose.mulPose(Axis.YP.rotationDegrees(-90));
-            case UP -> pose.mulPose(Axis.XP.rotationDegrees(90));
-            case DOWN -> pose.mulPose(Axis.XP.rotationDegrees(-90));
+            case NORTH -> pose.mulPose(Axis.YP.rotationDegrees(180));
+            case EAST -> pose.mulPose(Axis.YP.rotationDegrees(90));
+            case WEST -> pose.mulPose(Axis.YP.rotationDegrees(-90));
+            case UP -> pose.mulPose(Axis.XP.rotationDegrees(-90));
+            case DOWN -> pose.mulPose(Axis.XP.rotationDegrees(90));
             default -> { }
         }
-        pose.translate(bounds.minX()-.5,bounds.maxY()+.5,-.502);
-        pose.scale(1/128f,-1/128f,-1/128f);
+        if(panel.facing().getAxis()==net.minecraft.core.Direction.Axis.Y) pose.mulPose(Axis.ZP.rotationDegrees(180));
+        pose.translate(bounds.minX()-.5,bounds.maxY()+.5,.505);
+        pose.scale(1/128f,-1/128f,1/128f);
         float width=bounds.width()*128-8, height=bounds.height()*128-8;
-        var quad=buffers.getBuffer(RenderType.gui()); var matrix=pose.last().pose();
-        quad.addVertex(matrix,4,4,0).setColor(0xff080b0c);
-        quad.addVertex(matrix,4,height+4,0).setColor(0xff080b0c);
-        quad.addVertex(matrix,width+4,height+4,0).setColor(0xff080b0c);
-        quad.addVertex(matrix,width+4,4,0).setColor(0xff080b0c);
+        var quad=buffers.getBuffer(RenderType.textBackground()); var matrix=pose.last().pose();
+        quad.addVertex(matrix,4,4,0).setColor(0xff000000|panel.background()).setLight(0xf000f0);
+        quad.addVertex(matrix,4,height+4,0).setColor(0xff000000|panel.background()).setLight(0xf000f0);
+        quad.addVertex(matrix,width+4,height+4,0).setColor(0xff000000|panel.background()).setLight(0xf000f0);
+        quad.addVertex(matrix,width+4,4,0).setColor(0xff000000|panel.background()).setLight(0xf000f0);
         if(panel.powered()) {
-            int maxWidth=1; for(String line:panel.lines()) maxWidth=Math.max(maxWidth,font.width(line));
-            float scale=Math.min(2f,Math.min((width-12)/maxWidth,(height-12)/Math.max(10,panel.lines().size()*10)));
-            pose.translate(10,10,.1); pose.scale(scale,scale,scale);
-            int y=0; for(String line:panel.lines()) {
-                font.drawInBatch(line,0,y,0xff000000|panel.color(),false,pose.last().pose(),buffers,Font.DisplayMode.NORMAL,0,0xf000f0);
+            var style=net.minecraft.network.chat.Style.EMPTY.withFont(net.minecraft.resources.ResourceLocation.withDefaultNamespace(panel.uniformFont()?"uniform":"default"));
+            var rendered=panel.lines().stream().map(line->net.minecraft.network.chat.Component.literal(line).withStyle(style)).toList();
+            int maxWidth=1; for(var line:rendered) maxWidth=Math.max(maxWidth,font.width(line));
+            float scale=Math.min(2f*panel.scalePercent()/100f,Math.min((width-12)/maxWidth,(height-12)/Math.max(10,rendered.size()*10)));
+            pose.translate(10,10,.5); pose.scale(scale,scale,scale);
+            int y=0; for(var line:rendered) {
+                float x=panel.alignment()*(Math.max(0,(width-12)/scale-font.width(line)))/2;
+                font.drawInBatch(line,x,y,0xff000000|panel.color(),false,pose.last().pose(),buffers,Font.DisplayMode.POLYGON_OFFSET,0,0xf000f0);
                 y+=10;
             }
         }

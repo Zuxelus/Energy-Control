@@ -24,13 +24,13 @@ public final class PanelMenu extends AbstractContainerMenu {
             @Override public boolean mayPlace(ItemStack stack) { return stack.getItem() instanceof CardItem; }
             @Override public int getMaxStackSize() { return 1; }
         });
-        for(int row=0;row<3;row++) for(int col=0;col<9;col++) addSlot(new Slot(inventory,col+row*9+9,8+col*18,112+row*18));
-        for(int col=0;col<9;col++) addSlot(new Slot(inventory,col,8+col*18,170));
+        for(int row=0;row<3;row++) for(int col=0;col<9;col++) addSlot(new Slot(inventory,col+row*9+9,8+col*18,142+row*18));
+        for(int col=0;col<9;col++) addSlot(new Slot(inventory,col,8+col*18,200));
     }
     @Override public boolean stillValid(Player player) { return !panel.isRemoved() && panel.stillValid(player); }
     @Override public boolean clickMenuButton(Player player, int id) {
         if (!stillValid(player) || player.isSpectator()) return false;
-        if(id==0) panel.cycleColor(); else if(id==1) panel.togglePower(); else return false;
+        if(id==0) panel.cycleColor(); else if(id==1) panel.togglePower(); else return panel.configure(id);
         return true;
     }
     public void editText(Player player, int slot, String text) {

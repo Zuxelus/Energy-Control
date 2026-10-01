@@ -1,0 +1,26 @@
+{
+  "offline_clean_rebuild": true,
+  "byte_identical": true,
+  "artifacts": [
+    {
+      "path": "fabric/build/libs/energycontrol-fabric-1.21.1-0.2.0-port-preview.jar",
+      "bytes": 111144,
+      "sha256": "8f5073146e76c9bdf454b1882b7eb6a40e637287f0c1adc2879b6e13fa0d8b91"
+    },
+    {
+      "path": "fabric/build/libs/energycontrol-fabric-1.21.1-0.2.0-port-preview-sources.jar",
+      "bytes": 59028,
+      "sha256": "8bb5190364a2ba50afe83ea9db77d2179fdbba3ee6b0538ec8def1bc96e2df91"
+    },
+    {
+      "path": "neoforge/build/libs/energycontrol-neoforge-1.21.1-0.2.0-port-preview.jar",
+      "bytes": 91169,
+      "sha256": "57b489b8cb8e2ce20baece6982072ab62b7cc3bb34bec2f210ef03d5d343999a"
+    },
+    {
+      "path": "neoforge/build/libs/energycontrol-neoforge-1.21.1-0.2.0-port-preview-sources.jar",
+      "bytes": 59731,
+      "sha256": "f09db7c66d00187db2d3c030bfd4257018f26c490e5bd7474e3c2173f20c5db0"
+    }
+  ]
+}

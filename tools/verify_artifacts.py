@@ -7,8 +7,8 @@ import zipfile
 import xml.etree.ElementTree as ET
 
 root=Path(__file__).resolve().parents[1]
-version='1.21.1-0.1.0-port-preview'
-result={'version':version,'runtime_tested':False,'artifacts':[],'tests':[]}
+version=next(line.split('=',1)[1] for line in (root/'gradle.properties').read_text().splitlines() if line.startswith('mod_version='))
+result={'version':version,'runtime_evidence':'docs/evidence/runtime (development gameplay; see QA.md)','artifacts':[],'tests':[]}
 for platform in ('fabric','neoforge'):
     jar=root/platform/'build/libs'/f'energycontrol-{platform}-{version}.jar'
     source=jar.with_name(jar.stem+'-sources.jar')
@@ -16,6 +16,7 @@ for platform in ('fabric','neoforge'):
         names=set(archive.namelist())
         assert archive.testzip() is None
         assert 'LICENSE' in names
+        assert not any('/qa/' in n or 'QaNeoForge' in n for n in names), 'QA classes leaked into release'
         assert 'com/zuxelus/energycontrol/port/block/PanelBlockEntity.class' in names
         assert 'com/zuxelus/energycontrol/port/client/PanelRenderer.class' in names
         assert 'com/zuxelus/energycontrol/port/network/PanelEditPayload.class' in names
@@ -39,6 +40,7 @@ for platform in ('fabric','neoforge'):
         if platform=='fabric':
             metadata=json.loads(archive.read('fabric.mod.json'))
             assert metadata['version']==version
+            assert 'QaFabric' not in str(metadata)
             assert metadata['depends']['minecraft']=='1.21.1'
             for classes in metadata['entrypoints'].values():
                 for entry in classes: assert entry.replace('.','/')+'.class' in names
@@ -52,10 +54,12 @@ for platform in ('fabric','neoforge'):
         else:
             metadata=archive.read('META-INF/neoforge.mods.toml').decode()
             assert version in metadata and '${version}' not in metadata
+            assert 'energycontrolqa' not in metadata
             assert 'com/zuxelus/energycontrol/port/neoforge/EnergyControlNeoForge.class' in names
     with zipfile.ZipFile(source) as archive:
         assert archive.testzip() is None
         names=set(archive.namelist())
+        assert not any('/qa/' in n for n in names), 'QA sources leaked into release source jar'
         assert 'com/zuxelus/energycontrol/port/block/PanelBlockEntity.java' in names
         assert any(n.endswith('.java') and f'/port/{platform}/' in n for n in names)
     for file in (jar,source):
@@ -64,7 +68,7 @@ for file in sorted((root/'common/build/test-results/test').glob('TEST-*.xml')):
     suite=ET.parse(file).getroot()
     assert int(suite.attrib['failures'])==0 and int(suite.attrib['errors'])==0
     result['tests'].append({key:suite.attrib[key] for key in ('name','tests','failures','errors')})
-assert sum(int(s['tests']) for s in result['tests'])==17
+assert sum(int(s['tests']) for s in result['tests'])==20
 output=root/'docs/evidence/artifact-verification.json'
 output.write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8')
 print(json.dumps(result,indent=2))

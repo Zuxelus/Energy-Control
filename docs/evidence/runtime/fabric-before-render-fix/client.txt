@@ -1,0 +1,10 @@
+CONNECT_FROM AccessibilityOnboardingScreen
+PASS client receives multiblock bounds
+PASS client receives live energy lines
+PASS client receives changing energy packets
+SCREENSHOT Saved screenshot as 01-live-multiblock.png
+PASS real right-click opens network menu
+PASS C2S edit updates S2C render data
+SCREENSHOT Saved screenshot as 02-card-menu.png
+CLIENT_QA_DONE
+SCREENSHOT Saved screenshot as 03-edited-multiblock.png

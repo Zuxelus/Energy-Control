@@ -12,6 +12,7 @@ subprojects {
     apply plugin: 'dev.architectury.loom'
     apply plugin: 'architectury-plugin'
     apply plugin: 'java-library'
+    if (rootProject.hasProperty('qa')) sourceSets.main.java.srcDir 'src/qa/java'
     base { archivesName = "energycontrol-${project.name}" }
     repositories {
         mavenCentral()
@@ -37,9 +38,23 @@ subprojects {
     }
     tasks.withType(Jar).configureEach { from(rootProject.file('LICENSE')) }
     processResources {
+        inputs.property 'qa', rootProject.hasProperty('qa')
         inputs.property 'version', project.version
         filesMatching(['fabric.mod.json', 'META-INF/neoforge.mods.toml']) {
             expand version: project.version
+        }
+        doLast {
+            if (rootProject.hasProperty('qa')) {
+                def fabric = file("$destinationDir/fabric.mod.json")
+                if (fabric.exists()) {
+                    def json = new groovy.json.JsonSlurper().parse(fabric)
+                    json.entrypoints.main.add('com.zuxelus.energycontrol.qa.QaFabric')
+                    json.entrypoints.client.add('com.zuxelus.energycontrol.qa.QaFabricClient')
+                    fabric.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(json))
+                }
+                def neo = file("$destinationDir/META-INF/neoforge.mods.toml")
+                if (neo.exists()) neo.append('\n[[mods]]\nmodId="energycontrolqa"\nversion="1.0"\ndisplayName="Energy Control isolated QA"\n')
+            }
         }
     }
 }

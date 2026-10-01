@@ -1,57 +1,52 @@
-# Stage status — incomplete port, not a usable release
+# Core gameplay milestone; incomplete port preview
 
-This preview is a real but limited vertical slice, not feature parity with
-Energy Control 1.20.1 or 1.12.2. The untouched 200-file 1.20.1 source baseline
-remains in `src/` for further migration; it is not silently included in jars.
+This is an independent GPLv3 migration, not an upstream release or complete
+Energy Control 1.12.2/1.20 feature replacement. The original 200 Java files in
+src/ are retained for further migration and are outside active source sets.
+The detailed, prioritized inventory is FEATURE-MATRIX.md; real game evidence
+and its limitations are documented in QA.md.
 
-## Implemented in the new source sets
+Implemented in common/fabric/neoforge:
 
-- Common Architectury registration of basic/advanced panels and both extenders,
-  preserving original registry IDs and reusing upstream models/textures.
-- One basic / eight advanced card slots, shift-click transfer, persistence using
-  1.21.1 item components, menu open and inventory synchronization.
-- Text, world-time, bound energy and redstone cards. Sneak-use binds a target
-  dimension, position and face. Energy lookup is read-only and range-limited.
-- Text editor with selected slot, save, three text colors and display on/off.
-  This is a simplified interface, not the upstream full configuration GUI.
-- Common rectangular screen growth, limited to 20 extenders per direction,
-  same facing and tier, exclusive ownership, periodic rebuild and no forced
-  target chunk loading. Rebuild runs every 20 ticks.
-- Block entity update packets for display lines and geometry; renderer spans
-  the group rectangle on all six faces, with text fitted to available area.
-- Typed, bounded text payload; server requires the sender's currently open
-  menu, matching container ID, valid distance and non-spectator player.
-- Separate NeoForge FE and Fabric Team Reborn Energy readers.
-- Eight vanilla-material preview recipes, loot tables, English/Chinese UI.
+- Basic and advanced panels, both matching extender tiers, rectangular ownership
+  up to 20 parts in each direction, six block facings, removal/rebuild.
+- One basic / eight preview advanced card slots, inventory transfer, component
+  persistence, menu validation and block entity update packets. Eight advanced
+  slots are a preview design: upstream's three cards plus upgrades are not yet
+  restored. Do not assume legacy inventory or world compatibility.
+- Ten-line text card with bounded text, original @ formatting escape convention,
+  real multiline editor and Save button. Text can include Unicode. Current new
+  settings buttons are English; original registered item/block names have Chinese.
+- Energy, world-time and redstone cards; sensor target dimension, position and
+  face bound with sneak-use. Energy reads actual per-loader E/FE capabilities.
+  Target range is 64 blocks without forced target chunk loading.
+- Per-card sensor titles, label visibility and energy percentage visibility.
+- Panel font (default/uniform), 50-200% scale with fitting, left/center/right
+  alignment, three text colors, two backgrounds, refresh interval (5/10/20/40
+  ticks), redstone/inverted/always-on/off power. Settings persist and synchronize.
+- World renderer uses proper front-facing text, six-face geometry and the same
+  polygon-offset text mode used by vanilla signs. Full-cube models are retained;
+  upstream slopes, thickness and arbitrary rotation controls are NOT implemented.
+- NeoForge registers menu/renderers at their dedicated client events. All common
+  state/menus/networking are shared; only loader adapters and event hooks differ.
+- Eight simplified preview recipes, loot tables and original GPL assets.
 
-## Required work that remains
+Not implemented: upstream advanced pages/layout, bars, upgrades, range upgrades,
+fluid/inventory/array cards, holographic or portable panels, card holder, kit
+assembler, alarms, thermal/remote monitors, timers/counters, lamps, touch actions,
+websocket/web upgrade, specialized machine/reactor/computer/overlay integrations,
+legacy data migration and upstream recipe balance. No placeholder registrations
+pretend these features exist. COMPATIBILITY.md distinguishes missing original
+projects from available-but-unported integrations.
 
-- **Runtime validation:** neither loader has been started. Visual correctness,
-  menu interaction, dedicated server class isolation, multi-player synchronization,
-  chunk save/reload and real provider compatibility remain unverified.
-- Advanced panel page/layout settings, labels, bars, alignment, slopes, upgrades,
-  range upgrades, touch actions and the complete upstream GUI are not ported.
-- Holographic and portable panels, card holder, arrays, fluid/inventory cards,
-  kit assembler, alarms, thermal monitors, timers, counters and websocket/web
-  integration are not ported. No placeholder registry entries claim otherwise.
-- Specialized mod integrations are listed separately in COMPATIBILITY.md.
-- Original recipe balance, legacy card/world migration and redstone-controlled
-  panel power semantics are not preserved by this preview. Use only a future
-  disposable test world; do not load an existing Energy Control world with it.
-- The GUI currently edits one line at a time. Stored card data and renderer can
-  carry line breaks; a full multiline editor remains to be migrated.
-- Screen rebuild performance/overlap arbitration on large walls needs runtime
-  testing. Client block-entity availability during menu-open is also a test gate.
-- No Maven/CurseForge/GitHub publication or public fork was created.
+Verification boundaries:
 
-## Verification boundary
-
-Compile success is distinct from a working mod. The current user instruction
-forbids starting/stopping games or touching existing instances; only compilation,
-pure JVM tests, vanilla-registry/component tests and artifact inspection are run.
-This is the remaining gate before any claim of usability, along with missing
-feature work above. See BUILD.md and evidence logs for exact commands/results.
-
-Verified stage result: both loader builds pass; 17 JVM tests pass; both mod jars
-and source jars pass structural/resource/license checks and are byte-identical
-after an offline clean rebuild in this workspace. No gameplay validation occurred.
+- Gameplay runs are isolated development builds with self-compiled QA fixtures.
+  They validate actual Minecraft clients and dedicated servers, real network
+  messages, menus, rendering and loader energy APIs. No extra content mod is used.
+- The fixture is not evidence for compatibility with a specific external machine.
+- Concurrent two-player editing, large wall performance and world upgrades are
+  not game-tested. Target boundary cases have JVM tests.
+- Release jars exclude QA entrypoints/classes and are separately built/inspected.
+  They are not a full feature-complete release and were not installed into the
+  user's launcher or existing saves. No public repository was created or pushed.

@@ -1,0 +1,41 @@
+
+Thanks for using JUnit! Support its development at https://junit.org/sponsoring
+
+笊ｷ
+笏懌楳 JUnit Platform Suite 笨・
+笏懌楳 JUnit Jupiter 笨・
+笏・ 笏懌楳 EnergySnapshotTest 笨・
+笏・ 笏・ 笏懌楳 zeroCapacityAndOverfullReadingsCannotBreakRenderer() 笨・
+笏・ 笏・ 笏懌楳 preservesLongEnergyWithoutIntTruncation() 笨・
+笏・ 笏・ 笏披楳 rejectsNegativeProviderValues() 笨・
+笏・ 笏懌楳 TargetPolicyTest 笨・
+笏・ 笏・ 笏懌楳 extremeCoordinatesCannotOverflowIntoRange() 笨・
+笏・ 笏・ 笏懌楳 unloadedChunkIsExplicitlyUnavailable() 笨・
+笏・ 笏・ 笏懌楳 acceptsExactlySixtyFourBlocksButNotBeyond() 笨・
+笏・ 笏・ 笏懌楳 doesNotConfuseUnboundWithOrigin() 笨・
+笏・ 笏・ 笏披楳 rejectsOtherDimensionsBeforeQueryingChunks() 笨・
+笏・ 笏懌楳 ScreenLayoutTest 笨・
+笏・ 笏・ 笏懌楳 growsNegativeCoordinatesAndStopsAtTwentyPerDirection() 笨・
+笏・ 笏・ 笏懌楳 emptyWorldIsSinglePanel() 笨・
+笏・ 笏・ 笏懌楳 fillsCompleteRectangleAndRebuildsAfterRemoval() 笨・
+笏・ 笏・ 笏披楳 extendsOnlyAcrossCompleteRows() 笨・
+笏・ 笏披楳 DisplayTextTest 笨・
+笏・    笏懌楳 preservesTenLinesAndRemovesOnlyTrailingBlanks() 笨・
+笏・    笏懌楳 limitsMalformedImportedCardData() 笨・
+笏・    笏披楳 portsUpstreamFormattingEscapes() 笨・
+笏披楳 JUnit Vintage 笨・
+
+Test run finished after 61 ms
+[         7 containers found      ]
+[         0 containers skipped    ]
+[         7 containers started    ]
+[         0 containers aborted    ]
+[         7 containers successful ]
+[         0 containers failed     ]
+[        15 tests found           ]
+[         0 tests skipped         ]
+[        15 tests started         ]
+[         0 tests aborted         ]
+[        15 tests successful      ]
+[         0 tests failed          ]
+

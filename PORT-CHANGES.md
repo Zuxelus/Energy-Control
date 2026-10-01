@@ -17,3 +17,21 @@ with implementation assistance from Codex. This is not an upstream Zuxelus relea
 
 All original history, authorship and license notices remain. New code is distributed
 under GPL-3.0-only. No remote publication or user game modification was performed.
+
+## 2026-10-01 core gameplay continuation
+
+- Added actual development client/dedicated-server acceptance for both loaders,
+  real energy capability fixtures and unedited framebuffer screenshots. QA is
+  compiled only with -Pqa and is excluded from release jars.
+- Fixed invisible/inverted panel text, horizontal-facing convention and font
+  depth; changed NeoForge client registration to dedicated loader events after
+  a real right-click test exposed its late menu registration.
+- Added multiline text editing, original ten-line/@ format behavior, sensor
+  titles/field visibility, font/scale/alignment/background/refresh settings and
+  four power modes. Initial slot sync no longer overwrites unsaved typing.
+- Tested live energy packets, actual Save button, card binding, reload and screen
+  rebuild; retained failures and regression evidence. User creative-mode
+  interaction interrupted one test; QA-only protection now prevents accidental
+  panel breaking during automation. Production mining behavior is unchanged.
+- Expanded the precise missing-feature inventory; full upstream parity is still
+  not claimed. Preserved all original history, copyrights, licenses and sources.

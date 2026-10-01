@@ -1,0 +1,16 @@
+{
+  "fabric": {
+    "server": 21,
+    "client": 9,
+    "screenshots": 11,
+    "all_client_scenarios_done": true,
+    "failures": 0
+  },
+  "neoforge": {
+    "server": 21,
+    "client": 9,
+    "screenshots": 11,
+    "all_client_scenarios_done": true,
+    "failures": 0
+  }
+}

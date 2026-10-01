@@ -1,0 +1,53 @@
+CONNECT_FROM AccessibilityOnboardingScreen
+PASS client receives multiblock bounds
+PASS client receives live energy lines
+PASS client receives changing energy packets
+SCREENSHOT Saved screenshot as 01-live-multiblock.png
+FAIL real right-click opens network menu
+CONNECT_FROM AccessibilityOnboardingScreen
+PASS client receives multiblock bounds
+PASS client receives live energy lines
+PASS client receives changing energy packets
+SCREENSHOT Saved screenshot as 01-live-multiblock.png
+PASS real right-click opens network menu
+PASS C2S edit updates S2C render data
+SCREENSHOT Saved screenshot as 02-card-menu.png
+CLIENT_QA_DONE
+SCREENSHOT Saved screenshot as 03-edited-multiblock.png
+PASS display settings synchronized
+SCREENSHOT Saved screenshot as 04-display-settings.png
+SCREENSHOT Saved screenshot as 05-styled-live-panel.png
+PASS sensor card title and field mask synchronize
+SCREENSHOT Saved screenshot as face-DOWN.png
+SCREENSHOT Saved screenshot as face-UP.png
+SCREENSHOT Saved screenshot as face-NORTH.png
+SCREENSHOT Saved screenshot as face-SOUTH.png
+SCREENSHOT Saved screenshot as face-WEST.png
+SCREENSHOT Saved screenshot as face-EAST.png
+ALL_CLIENT_SCENARIOS_DONE
+RUN_START client 2026-10-01T00:14:15.024752Z
+CONNECT_FROM AccessibilityOnboardingScreen
+RUN_START client 2026-10-01T00:17:42.299584200Z
+CONNECT_FROM TitleScreen
+PASS sneak-use binds card through actual client interaction
+PASS client receives multiblock bounds
+PASS client receives live energy lines
+PASS client receives changing energy packets
+SCREENSHOT Saved screenshot as 01-live-multiblock.png
+PASS real right-click opens network menu
+PASS C2S edit updates S2C render data
+SCREENSHOT Saved screenshot as 02-card-menu.png
+CLIENT_QA_DONE
+SCREENSHOT Saved screenshot as 03-edited-multiblock.png
+PASS display settings synchronized
+SCREENSHOT Saved screenshot as 04-display-settings.png
+SCREENSHOT Saved screenshot as 05-styled-live-panel.png
+PASS sensor card title and field mask synchronize
+PASS stale menu packet rejected
+SCREENSHOT Saved screenshot as face-DOWN.png
+SCREENSHOT Saved screenshot as face-UP.png
+SCREENSHOT Saved screenshot as face-NORTH.png
+SCREENSHOT Saved screenshot as face-SOUTH.png
+SCREENSHOT Saved screenshot as face-WEST.png
+SCREENSHOT Saved screenshot as face-EAST.png
+ALL_CLIENT_SCENARIOS_DONE

@@ -1,0 +1,34 @@
+RUN_START server 2026-10-01T00:27:14.621955400Z
+PASS disk reload retains client-edited text
+PASS disk reload retains 3x2 bounds
+RELOAD {Items:[{Slot:0b,components:{"minecraft:custom_data":{text:"PERSISTED
+Energy Control 1.21.1
+LIVE NETWORK EDIT"}},count:1,id:"energycontrol:card_text"},{Slot:1b,components:{"minecraft:custom_data":{dimension:"minecraft:overworld",hidePercent:1b,side:2,target:1099511627776L,title:"Capacitor A"}},count:1,id:"energycontrol:card_energy"},{Slot:2b,count:1,id:"energycontrol:card_time"}],alignment:1,background:3160128,bounds:[I;-2,0,0,1],color:5635925,lines:["PERSISTED","Energy Control 1.21.1","LIVE NETWORK EDIT","Capacitor A","Energy: 96000 / 100000 E","Time: 14:11"],powerMode:2,powered:1b,refreshTicks:40,scalePercent:125,uniformFont:1b}
+PASS disk reload retains display settings
+PASS disk reload retains sensor title and fields
+PASS 3x2 advanced screen ownership
+PASS far extender owner
+PASS real platform energy lookup
+SAMPLE_A Energy: 4000 / 100000 E
+SAMPLE_B [PERSISTED, Energy Control 1.21.1, LIVE NETWORK EDIT, Capacitor A, Energy: 8000 / 100000 E, Time: 12:07]
+PASS live readings change on server tick
+PASS removed corner shrinks rectangle without holes
+CLIENT_CONNECTED Player864
+PASS replaced extender rebuilds rectangle
+PASS basic 2x2 grouping down
+PASS basic 2x2 grouping up
+PASS basic 2x2 grouping north
+PASS basic 2x2 grouping south
+PASS basic 2x2 grouping west
+PASS basic 2x2 grouping east
+PASS power mode off
+PASS redstone mode without signal
+PASS redstone mode with signal
+PASS inverted mode with signal
+PASS inverted mode without signal
+VIEW down
+VIEW up
+VIEW north
+VIEW south
+VIEW west
+VIEW east

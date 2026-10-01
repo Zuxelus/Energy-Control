@@ -1,0 +1,6 @@
+CONNECT_FROM AccessibilityOnboardingScreen
+PASS client receives multiblock bounds
+PASS client receives live energy lines
+PASS client receives changing energy packets
+SCREENSHOT Saved screenshot as 01-live-multiblock.png
+FAIL real right-click opens network menu
