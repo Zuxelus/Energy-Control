@@ -25,6 +25,25 @@ public final class PanelBlockEntity extends BaseContainerBlockEntity {
     private ScreenLayout.Bounds bounds = new ScreenLayout.Bounds(0,0,0,0);
     private BlockPos owner;
     private List<com.zuxelus.energycontrol.port.core.DisplayRow> rows = List.of();
+    private int slopeHorizontal,slopeVertical;
+    private com.zuxelus.energycontrol.port.core.CaseSurface caseSurface=new com.zuxelus.energycontrol.port.core.CaseSurface(1,0,0);
+    private net.minecraft.world.phys.shapes.VoxelShape cachedShape;
+    private Direction cachedShapeFacing;
+    public int slopeHorizontal(){return slopeHorizontal;} public int slopeVertical(){return slopeVertical;}
+    public com.zuxelus.energycontrol.port.core.PanelSlope slope(){return new com.zuxelus.energycontrol.port.core.PanelSlope(thickness(),slopeHorizontal,slopeVertical,bounds);}
+    public com.zuxelus.energycontrol.port.core.CaseSurface caseSurface(){return getBlockState().getValue(PanelBlock.SLOPED)?caseSurface:new com.zuxelus.energycontrol.port.core.CaseSurface(thickness()/16.0,0,0);}
+    public net.minecraft.world.phys.shapes.VoxelShape caseShape(){if(cachedShape==null||cachedShapeFacing!=facing()){cachedShape=caseSurface().shape(facing());cachedShapeFacing=facing();}return cachedShape;}
+    private void setSurface(com.zuxelus.energycontrol.port.core.CaseSurface surface,boolean sloped){
+        boolean changed=!caseSurface.equals(surface);caseSurface=surface;if(changed)cachedShape=null;
+        if(level!=null && getBlockState().getValue(PanelBlock.SLOPED)!=sloped){level.setBlockAndUpdate(worldPosition,getBlockState().setValue(PanelBlock.SLOPED,sloped));changed=true;cachedShape=null;}
+        if(changed)sync();
+    }
+    private void updateSurface(PanelBlockEntity part){
+        var delta=part.worldPosition.subtract(worldPosition);
+        double x=delta.getX()*right().getStepX()+delta.getY()*right().getStepY()+delta.getZ()*right().getStepZ();
+        double y=delta.getX()*up().getStepX()+delta.getY()*up().getStepY()+delta.getZ()*up().getStepZ();
+        var plane=slope();part.setSurface(new com.zuxelus.energycontrol.port.core.CaseSurface(plane.depth(x,y),plane.dx(),plane.dy()),plane.sloped());
+    }
     private int color = 0x55ff55;
     private boolean powered = true;
     private int background = 0x080b0c, scalePercent = 100, alignment, powerMode = 2, refreshTicks = 20;
@@ -86,7 +105,7 @@ public final class PanelBlockEntity extends BaseContainerBlockEntity {
         if (level == null || isExtender()) return;
         each(bounds, (pos) -> {
             if (level.hasChunkAt(pos) && level.getBlockEntity(pos) instanceof PanelBlockEntity other && worldPosition.equals(other.owner)) {
-                other.owner = null; other.sync();
+                other.owner = null; other.setSurface(new com.zuxelus.energycontrol.port.core.CaseSurface(other.thickness()/16.0,0,0),false); other.sync();
             }
         });
     }
@@ -98,6 +117,7 @@ public final class PanelBlockEntity extends BaseContainerBlockEntity {
     private void regroup() {
         var next = ScreenLayout.grow(this::validExtender);
         if (!bounds.equals(next)) { releaseExtenders(); bounds = next; sync(); }
+        if(advanced()&&!holographic())updateSurface(this);
         each(next, pos -> {
             if (level.hasChunkAt(pos) && level.getBlockEntity(pos) instanceof PanelBlockEntity other && !worldPosition.equals(other.owner)) {
                 other.owner = worldPosition.immutable(); other.sync();
@@ -105,6 +125,7 @@ public final class PanelBlockEntity extends BaseContainerBlockEntity {
             if (level.getBlockEntity(pos) instanceof PanelBlockEntity other && advanced() && !holographic()
                     && other.getBlockState().getValue(PanelBlock.THICKNESS) != thickness())
                 level.setBlockAndUpdate(pos, other.getBlockState().setValue(PanelBlock.THICKNESS, thickness()));
+            if(level.getBlockEntity(pos) instanceof PanelBlockEntity other && advanced()&&!holographic())updateSurface(other);
         });
     }
     private void setThickness(int value) {
@@ -151,9 +172,17 @@ public final class PanelBlockEntity extends BaseContainerBlockEntity {
             var data=CardItem.data(stack);String key=id%2==0?"hideLabels":"hidePercent";
             data.putBoolean(key,!data.getBoolean(key));CardItem.update(stack,data);refreshCards();sync();return true;
         }
+        if(id>=400&&id<400+cardSlots()*5){if(!CardItem.toggleInventoryField(items.get((id-400)/5),(id-400)%5))return false;refreshCards();sync();return true;}
         if(id>=300 && id<300+cardSlots()) {
             var stack=items.get(id-300); if(!(stack.getItem() instanceof CardItem))return false;
             var data=CardItem.data(stack);data.putBoolean("showBars",!data.getBoolean("showBars"));CardItem.update(stack,data);refreshCards();sync();return true;
+        }
+        if(id>=18&&id<=20){
+            if(!advanced()||holographic()||isExtender())return false;
+            if(id==18)slopeHorizontal=com.zuxelus.energycontrol.port.core.PanelSlope.next(slopeHorizontal);
+            if(id==19)slopeVertical=com.zuxelus.energycontrol.port.core.PanelSlope.next(slopeVertical);
+            if(id==20)slopeHorizontal=slopeVertical=0;
+            regroup();sync();return true;
         }
         if(id>=15 && id<=17) {
             if(!advanced() || holographic())return false;
@@ -187,6 +216,8 @@ public final class PanelBlockEntity extends BaseContainerBlockEntity {
         ContainerHelper.saveAllItems(tag,items,registries);
         tag.putIntArray("bounds",new int[]{bounds.minX(),bounds.minY(),bounds.maxX(),bounds.maxY()});
         if(owner != null) tag.putLong("owner",owner.asLong());
+        tag.putInt("slopeHorizontal",slopeHorizontal);tag.putInt("slopeVertical",slopeVertical);
+        tag.putDouble("caseCenter",caseSurface.center());tag.putDouble("caseDx",caseSurface.dx());tag.putDouble("caseDy",caseSurface.dy());
         tag.putInt("color",color); tag.putBoolean("powered",powered);
         tag.putInt("background",background); tag.putInt("scalePercent",scalePercent); tag.putInt("alignment",alignment);
         tag.putInt("page",page);tag.putInt("pageSize",pageSize);tag.putInt("pageCount",pageCount);tag.putInt("pageTicks",pageTicks);projection.save(tag);
@@ -200,6 +231,8 @@ public final class PanelBlockEntity extends BaseContainerBlockEntity {
         bounds = b.length == 4 && b[0]>=-20 && b[1]>=-20 && b[2]<=20 && b[3]<=20 && b[0]<=0 && b[1]<=0 && b[2]>=0 && b[3]>=0
                 ? new ScreenLayout.Bounds(b[0],b[1],b[2],b[3]) : new ScreenLayout.Bounds(0,0,0,0);
         owner = tag.contains("owner") ? BlockPos.of(tag.getLong("owner")) : null;
+        slopeHorizontal=Math.clamp(tag.getInt("slopeHorizontal"),-8,8);slopeVertical=Math.clamp(tag.getInt("slopeVertical"),-8,8);
+        caseSurface=tag.contains("caseCenter")?new com.zuxelus.energycontrol.port.core.CaseSurface(tag.getDouble("caseCenter"),tag.getDouble("caseDx"),tag.getDouble("caseDy")):new com.zuxelus.energycontrol.port.core.CaseSurface(thickness()/16.0,0,0);cachedShape=null;
         color = tag.contains("color") ? tag.getInt("color") & 0xffffff : 0x55ff55;
         powered = !tag.contains("powered") || tag.getBoolean("powered");
         background = tag.contains("background") ? tag.getInt("background") & 0xffffff : 0x080b0c;

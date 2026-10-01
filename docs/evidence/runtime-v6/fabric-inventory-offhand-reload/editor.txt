@@ -1,0 +1,16 @@
+RUN_START inventory-client observer=false reload=true 2026-10-01T04:47:29.846915200Z
+PASS reloaded field settings and dynamic inventory reach client
+PASS actual holder menu restores persisted card after server restart
+SCREENSHOT Saved screenshot as inventory-reload-holder.png
+PASS actual portable inventory data and fields survive restart
+SCREENSHOT Saved screenshot as inventory-reload-portable.png
+SCREENSHOT Saved screenshot as inventory-reload-world.png
+PASS offhand holder opens with persisted card
+PASS offhand holder swap cannot move parent or contents
+SCREENSHOT Saved screenshot as inventory-offhand-holder.png
+PASS holder returns from offhand without duplicate or loss
+PASS offhand portable shows live inventory rows
+PASS offhand portable swap cannot move parent or card
+SCREENSHOT Saved screenshot as inventory-offhand-portable.png
+PASS portable returns from offhand without duplicate or loss
+ALL_INVENTORY_OFFHAND_RELOAD_CLIENT_DONE

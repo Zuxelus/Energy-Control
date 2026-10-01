@@ -32,6 +32,10 @@ public final class EnergyControlPort {
     public static final RegistrySupplier<PanelBlock> ADVANCED_EXTENDER = panel("info_panel_advanced_extender", true, true);
     public static final RegistrySupplier<PanelBlock> HOLO=panel("holo_panel",true,false,true);
     public static final RegistrySupplier<PanelBlock> HOLO_EXTENDER=panel("holo_panel_extender",true,true,true);
+    public static final RegistrySupplier<Item> INVENTORY=ITEMS.register("card_inventory",()->new CardItem(CardItem.Kind.INVENTORY));
+    public static final RegistrySupplier<Item> HOLDER=ITEMS.register("card_holder",com.zuxelus.energycontrol.port.card.CardHolderItem::new);
+    public static final RegistrySupplier<Item> KIT_ENERGY=kit("kit_energy",com.zuxelus.energycontrol.port.card.SensorKitItem.Kind.ENERGY),KIT_FLUID=kit("kit_liquid",com.zuxelus.energycontrol.port.card.SensorKitItem.Kind.FLUID),KIT_INVENTORY=kit("kit_inventory",com.zuxelus.energycontrol.port.card.SensorKitItem.Kind.INVENTORY),KIT_REDSTONE=kit("kit_redstone",com.zuxelus.energycontrol.port.card.SensorKitItem.Kind.REDSTONE),KIT_MACHINE=kit("kit_machine",com.zuxelus.energycontrol.port.card.SensorKitItem.Kind.MACHINE);
+    private static RegistrySupplier<Item> kit(String name,com.zuxelus.energycontrol.port.card.SensorKitItem.Kind kind){return ITEMS.register(name,()->new com.zuxelus.energycontrol.port.card.SensorKitItem(kind));}
     public static final RegistrySupplier<Item> TEXT = ITEMS.register("card_text", () -> new CardItem(CardItem.Kind.TEXT));
     public static final RegistrySupplier<Item> ENERGY = ITEMS.register("card_energy", () -> new CardItem(CardItem.Kind.ENERGY));
     public static final RegistrySupplier<Item> MACHINE = ITEMS.register("card_machine", () -> new CardItem(CardItem.Kind.MACHINE));
@@ -48,14 +52,16 @@ public final class EnergyControlPort {
             () -> BlockEntityType.Builder.of(PanelBlockEntity::new, BASIC.get(), ADVANCED.get(), EXTENDER.get(), ADVANCED_EXTENDER.get(),HOLO.get(),HOLO_EXTENDER.get()).build(null));
     public static final RegistrySupplier<MenuType<PanelMenu>> PANEL_MENU = MENUS.register("info_panel", () -> MenuRegistry.ofExtended(PanelMenu::fromNetwork));
     public static final RegistrySupplier<MenuType<com.zuxelus.energycontrol.port.menu.PortableMenu>> PORTABLE_MENU = MENUS.register("portable_panel",()->MenuRegistry.ofExtended(com.zuxelus.energycontrol.port.menu.PortableMenu::fromNetwork));
+    public static final RegistrySupplier<MenuType<com.zuxelus.energycontrol.port.menu.CardHolderMenu>> HOLDER_MENU=MENUS.register("card_holder",()->MenuRegistry.ofExtended(com.zuxelus.energycontrol.port.menu.CardHolderMenu::fromNetwork));
     public static final RegistrySupplier<CreativeModeTab> TAB = TABS.register("panels", () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
             .title(Component.literal("Energy Control — port preview")).icon(() -> new ItemStack(BASIC.get()))
             .displayItems((parameters, output) -> {
                 for (var block : List.of(BASIC, ADVANCED, EXTENDER, ADVANCED_EXTENDER,HOLO,HOLO_EXTENDER)) output.accept(block.get());
-                for (var item : List.of(TEXT, ENERGY, TIME, REDSTONE, FLUID, ENERGY_ARRAY, FLUID_ARRAY, MACHINE, RANGE, CAPACITY, PRECISION, PORTABLE)) output.accept(item.get());
+                for (var item : List.of(TEXT, ENERGY, TIME, REDSTONE, FLUID, ENERGY_ARRAY, FLUID_ARRAY, MACHINE, INVENTORY, HOLDER, KIT_ENERGY, KIT_FLUID, KIT_INVENTORY, KIT_REDSTONE, KIT_MACHINE, RANGE, CAPACITY, PRECISION, PORTABLE)) output.accept(item.get());
             }).build());
     public static com.zuxelus.energycontrol.port.fluid.FluidProbe fluidProbe = (level,pos,side) -> java.util.Optional.empty();
     public static com.zuxelus.energycontrol.port.energy.MachineProbe machineProbe = (level,pos,side) -> java.util.Optional.empty();
+    public static com.zuxelus.energycontrol.port.inventory.InventoryProbe inventoryProbe=com.zuxelus.energycontrol.port.inventory.InventoryProbe::vanilla;
     public static EnergyProbe energyProbe = (level, pos, side) -> java.util.Optional.empty();
 
     private static RegistrySupplier<PanelBlock> panel(String name, boolean advanced, boolean extender) {

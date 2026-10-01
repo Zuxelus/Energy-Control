@@ -80,3 +80,24 @@ under GPL-3.0-only. No remote publication or user game modification was performe
   real IE copper-circuit testing. See QA-V5 for exact limits and final counts.
 - No normal break behavior changed. Own QA windows are hidden from the desktop;
   this helper is absent from release jars. Complete upstream history retained.
+
+##2026-10-01 inventory, kits, holder and slopes (0.6)
+
+- Added real Fabric ItemStorage/NeoForge ItemHandler reads and vanilla sided
+  fallback. Count all visible slots, correcting modern upstream's first-six-only
+  total; details remain limited to six and scans above4096 explicitly say partial.
+- Added original five inventory field toggles to panel/portable menus, saved card
+  data and live rows; fixed immediate portable Fields widget visibility.
+- Added five supported-target sensor kits with server-only consumption/card drop
+  and early container interception; no unsupported-target consumption.
+- Added54-slot card holder, card-only insertion, parent locking in either hand,
+  normal shift-click and item component persistence.
+- Implemented upstream grouped wedge semantics for solid advanced panels:
+ 16 thicknesses, two17-position controls, exact body/text plane, cached conservative
+  collision, independently saved extender geometry and normal regroup/detach.
+- Added actual survival, main/offhand, multiplayer, six-face and ordinary no-QA
+  server restart tests. Preserved failed fixture runs separately from acceptance.
+- Named the independent beta Energy Control Enhanced while retaining energycontrol
+  IDs and GPLv3 notices. Original source/history/license are unchanged. Substantial
+  new port code was authored with Codex assistance; Modrinth publication has an
+  unresolved platform-eligibility requirement and no authenticated upload path.

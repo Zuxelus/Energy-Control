@@ -1,4 +1,4 @@
-# Feature acceptance matrix — 0.5 bars, case and IE power continuation
+# Feature acceptance matrix — 0.6 inventory, kits, holder and grouped slopes
 
 Both loaders are Minecraft 1.21.1. Implemented does not mean full upstream parity.
 The source-by-source inventory has 126 rows across upstream 1.12.2, 1.20 Forge,
@@ -9,7 +9,7 @@ S = production source, U = JVM tests, G = actual isolated game acceptance.
 |---|---|---|---|---|
 | P0 | Client + dedicated server separation | S/G pass | S/G pass | Both boot/join; portable S2C registration now separates server codec from client receiver |
 | P0 | Basic/advanced/extender screens | S/U/G partial | S/U/G partial | 0.2 six-face 2x2/3x2; 0.3 normal creative detach/place/rebuild. Survival drops not independently tested |
-| P0 | Dynamic glyphs, font, facing, scale | S/G partial | S/G partial | Real changing text; six faces; default/uniform font; 50–200% fit; physical thickness 1..16 implemented; slopes pending |
+| P0 | Dynamic glyphs, font, facing, scale | S/G partial | S/G partial | Real changing text; six faces; default/uniform font; 50–200% fit; physical thickness1..16 plus grouped planar slopes implemented; six-face2x2 game coverage |
 | P0 | Card component data and editor | S/U/G pass | S/U/G pass | Actual GUI Save, copied component isolation, bounded packets, title/percent settings |
 | P0 | Concurrent players | S/G pass | S/G pass | Two clients simultaneously viewing; edit updates other player's menu item and world text; break/place updates both |
 | P0 | No-protection normal gameplay | S/G pass | S/G pass | Server starts WITHOUT -Pqa; no break hook remains even in QA source; actual creative break and sneak-place accepted |
@@ -21,19 +21,19 @@ S = production source, U = JVM tests, G = actual isolated game acceptance.
 | P1 | Range upgrade | S/U/G pass | S/U/G pass | 0..3 -> 64/128/256/512 blocks; no cross-dimension access or chunk forcing. Gameplay exercises64->128; all tiers unit-tested |
 | P1 | Capacity upgrade | S/U/G pass | S/U/G pass | New port feature, 0..3 ->4/8/12/16 active array targets. Inactive targets retained and reported |
 | P1 | Precision upgrade | S/U/G pass | S/U/G pass | New port feature,0..3 decimal places; mB conversion/rounding unit-tested; game exercises2 decimals |
-| P1 | Portable screen | S/U/G pass | S/U/G pass | One card + three upgrade slots, actual held-item open/edit/live update, locked parent item, close/reopen and disk reload |
+| P1 | Portable screen | S/U/G pass | S/U/G pass | One card + three upgrade slots, actual held-item open/edit/live update, locked parent item, close/reopen and disk reload; main/offhand normal swap and open accepted in0.6 |
 | P1 | Holographic panel/extender | S/G partial | S/G partial | Transparent 2x2; six face directions with pitch/yaw and visual depth controls; GUI/network/disk reload accepted in 0.4. Original circuit projection height pending; solid thickness has separate 0.5 acceptance |
 | P1 | Card labels/percent/each-target | S partial | S partial | Stored and server-evaluated; title/percent game-tested; Each button not independently accepted in game |
 | P1 | Text/time/redstone | S/G partial | S/G partial | Text ten lines/512chars, @ formatting; time displayed. Dedicated changing-redstone scenario pending |
 | P1 | Refresh/redstone power modes | S/G pass0.2 | S/G pass0.2 | Always-on/signal/inverted/off,40ticks and persisted settings |
-| P1 | Inventory card | Pending | Pending | Vanilla/container inventory totals and filters |
+| P1 | Inventory card | S/U/G pass | S/U/G pass | Actual sided chest/furnace probes, complete-slot totals, first6 details, five saved field switches, multiplayer/portable/reload;4096-view bound explicitly labeled |
 | P1 | Upstream advanced liquid selectors | Partial | Partial | Generic fluid card enumerates tanks; original advanced-field selectors not ported |
 | P1 | Bars/pages/field layout | Partial | Partial | Manual/automatic paging (4/8/16/32 lines; up to256 source lines) and disk reload accepted in 0.4 on both loaders. Typed horizontal energy/fluid bars implemented, GUI/multiplayer/portable/reload accepted in 0.5; arbitrary field layout and other bar styles pending |
 | P1 | Color/touch/web upgrades | Pending | Pending | Current fixed GUI colors are not upstream upgrade parity |
 | P1 | Modern industrial targets | External machines pending | IE partial accepted | IE12.4.2-194 LV capacitor + formed tank accepted (36 actual assertions). No Fabric IE claim; 0.5 current-transformer average FE/t and thermoelectric potential accepted (36 more actual assertions); other machines/tiers/mods pending |
-| P1 | Solid case thickness | S/U/G partial | S/U/G partial | Advanced core/extenders 1..16 with matching rendering/collision; six actual 4/16 facings, 8/16 GUI/sync/break/place/restart. Slopes/rotation pending |
-| P2 | Card holder | Pending | Pending | Internal inventory and nesting rules |
-| P2 | Kits/assembler | Pending | Pending | Conversion recipes, machine GUI, inventory, balancing |
+| P1 | Solid case thickness | S/U/G partial | S/U/G partial | Advanced core/extenders 1..16 with matching rendering/collision; six actual 4/16 facings, 8/16 GUI/sync/break/place/restart. Grouped solid slopes(-8..8 controls) implemented with body/text on one plane; conservative16-step collision per active axis; six facings, dual-axis GUI, multiplayer, detach/rebuild and ordinary no-QA server reload accepted in0.6 |
+| P2 | Card holder | S/U/G pass | S/U/G pass |54 card-only slots; normal shift-click, reject ordinary/nested items, main/offhand parent locks, close/reopen/player disk reload |
+| P2 | Kits/assembler | Kits S/G partial | Kits S/G partial | Generic energy/fluid/inventory/redstone/machine kits; survival consume/drop and unsupported PASS; energy/fluid success used capability fixtures. NeoForge real IE meter machine-kit survival consume/drop and card value accepted in0.6; Fabric machine-specific targets unsupported. Assembler and original recipe balancing remain pending |
 | P2 | Howlers/alarms/thermal monitors | Pending | Pending | Sound/temperature/limits/redstone |
 | P2 | Timers/triggers/counters/lamps | Pending | Pending | Stateful block behavior and persistence |
 | P2 | Touch/toggle actions | Pending | Pending | Server-authorized target control |
@@ -42,6 +42,6 @@ S = production source, U = JVM tests, G = actual isolated game acceptance.
 | P3 | JEI/REI/WTHIT | Pending | Pending | Optional class isolation and target compatibility |
 | P3 | Old world/card migration | Pending | Pending | No user worlds touched; no migration claim |
 
-Evidence: [QA-V5.md](QA-V5.md), [QA-V4.md](QA-V4.md) and [QA-V3.md](QA-V3.md), unedited PNGs and run logs under
-`evidence/runtime-v5`, `evidence/runtime-v4` and `evidence/runtime-v3`. New source has no dependency on QA providers.
-This remains an incomplete port; no public repository/release was created.
+Evidence: [QA-V6.md](QA-V6.md), [QA-V5.md](QA-V5.md), [QA-V4.md](QA-V4.md) and [QA-V3.md](QA-V3.md), unedited PNGs and run logs under
+`evidence/runtime-v6`, `evidence/runtime-v5`, `evidence/runtime-v4` and `evidence/runtime-v3`. New source has no dependency on QA providers.
+This remains an incomplete beta. User authorized Modrinth publication after step2; platform eligibility/authentication blockers are recorded in MODRINTH-PUBLICATION.md. No public repository or release has been created.

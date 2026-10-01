@@ -14,8 +14,10 @@ public final class PanelScreen extends AbstractContainerScreen<PanelMenu> {
     private int selectedSlot;
     private String loadedText="";
     private boolean dirty,loading;
-    private boolean layout;private int group;
+    private boolean layout,fieldsMode;private int group;
+    private Button fieldsToggle;private final java.util.List<Button> fieldButtons=new java.util.ArrayList<>();
     private final java.util.List<Button> styleButtons=new java.util.ArrayList<>(),layoutButtons=new java.util.ArrayList<>();
+    private Button slopeHButton,slopeVButton,resetSlopeButton;
     private Button thicknessButton,thickerButton,resetCaseButton,resetProjectionButton;
     private Button layoutToggle,nextPageButton,pageSizeButton,autoPageButton,pitchButton,yawButton,depthButton;
     private Button slotButton,powerButton,scaleButton,alignButton,fontButton,rateButton;
@@ -24,15 +26,16 @@ public final class PanelScreen extends AbstractContainerScreen<PanelMenu> {
     }
     private Button button(String label,int x,int y,int w,Runnable action) {
         var b=addRenderableWidget(Button.builder(Component.literal(label),ignored->action.run()).bounds(leftPos+x,topPos+y,w,20).build());
-        if(group==1)styleButtons.add(b);if(group==2)layoutButtons.add(b);return b;
+        if(group==3)fieldButtons.add(b);if(group==1)styleButtons.add(b);if(group==2)layoutButtons.add(b);return b;
     }
     @Override protected void init() {
-        super.init();styleButtons.clear();layoutButtons.clear();group=0;
+        super.init();styleButtons.clear();layoutButtons.clear();fieldButtons.clear();group=0;
         text=new MultiLineEditBox(font,leftPos+8,topPos+51,160,45,Component.literal("Ten lines; @a color, @@ literal @"),Component.translatable("gui.energycontrol.text"));
         text.setCharacterLimit(512);text.setValueListener(v->{if(!loading)dirty=true;});addRenderableWidget(text);loadText();
-        button("Save text",180,25,140,()->{NetworkManager.sendToServer(new PanelEditPayload(menu.containerId,selectedSlot,text.getValue()));dirty=false;loadedText=text.getValue();});
+        button("Save text",180,25,94,()->{NetworkManager.sendToServer(new PanelEditPayload(menu.containerId,selectedSlot,text.getValue()));dirty=false;loadedText=text.getValue();});
+        fieldsToggle=button("Fields",278,25,42,()->{fieldsMode=!fieldsMode;layout=false;updateGroups();});
         slotButton=button("Card",180,48,94,()->{selectedSlot=(selectedSlot+1)%menu.cardSlots;loadText();});
-        layoutToggle=button("Layout",278,48,42,()->{layout=!layout;updateGroups();});group=1;
+        layoutToggle=button("Layout",278,48,42,()->{layout=!layout;fieldsMode=false;updateGroups();});group=1;
         button("Text color",180,71,68,()->send(0));button("Background",252,71,68,()->send(6));
         powerButton=button("Power",180,94,140,()->send(1));scaleButton=button("Scale",180,117,140,()->send(2));
         alignButton=button("Align",180,140,140,()->send(3));fontButton=button("Font",180,163,140,()->send(4));rateButton=button("Refresh",180,186,140,()->send(5));
@@ -41,12 +44,14 @@ public final class PanelScreen extends AbstractContainerScreen<PanelMenu> {
         pageSizeButton=button("Lines",180,94,140,()->send(9));autoPageButton=button("Auto",180,117,140,()->send(10));
         pitchButton=button("Pitch",180,140,140,()->send(11));yawButton=button("Yaw",180,163,140,()->send(12));depthButton=button("Depth",180,186,140,()->send(13));
         resetProjectionButton=button("Reset projection",180,209,140,()->send(14));
-        thicknessButton=button("Thickness",180,140,140,()->send(15));thickerButton=button("Thicker +1",180,163,140,()->send(17));resetCaseButton=button("Full thickness",180,186,140,()->send(16));
-        thicknessButton.active=thickerButton.active=resetCaseButton.active=menu.panel.advanced();group=0;updateGroups();
+        thicknessButton=button("Thickness",180,140,140,()->send(15));thickerButton=button("Thicker +1",180,163,68,()->send(17));resetCaseButton=button("Full thickness",252,163,68,()->send(16));
+        slopeHButton=button("Slope H",180,186,68,()->send(18));slopeVButton=button("Slope V",252,186,68,()->send(19));resetSlopeButton=button("Reset slopes",180,209,140,()->send(20));
+        slopeHButton.active=slopeVButton.active=resetSlopeButton.active=thicknessButton.active=thickerButton.active=resetCaseButton.active=menu.panel.advanced();group=3;
+        for(int k=0;k<5;k++){final int field=k;button("Field",180,71+k*28,140,()->send(400+selectedSlot*5+field));}group=0;updateGroups();
     }
-    private void updateGroups(){for(var b:styleButtons)b.visible=!layout;for(var b:layoutButtons)b.visible=layout;layoutToggle.setMessage(Component.literal(layout?"Style":"Layout"));
+    private void updateGroups(){for(var b:styleButtons)b.visible=!layout&&!fieldsMode;for(var b:layoutButtons)b.visible=layout&&!fieldsMode;for(var b:fieldButtons)b.visible=fieldsMode;layoutToggle.setMessage(Component.literal(layout?"Style":"Layout"));
         boolean holo=menu.panel.holographic();pitchButton.visible=yawButton.visible=depthButton.visible=resetProjectionButton.visible=layout&&holo;
-        thicknessButton.visible=thickerButton.visible=resetCaseButton.visible=layout&&!holo;
+        slopeHButton.visible=slopeVButton.visible=resetSlopeButton.visible=thicknessButton.visible=thickerButton.visible=resetCaseButton.visible=layout&&!holo;
     }
     private void send(int id){minecraft.gameMode.handleInventoryButtonClick(menu.containerId,id);}
     private String cardText(){var stack=menu.getSlot(selectedSlot).getItem();return CardItem.data(stack).getString(stack.getItem() instanceof CardItem c && c.kind()==CardItem.Kind.TEXT?"text":"title");}
@@ -56,6 +61,8 @@ public final class PanelScreen extends AbstractContainerScreen<PanelMenu> {
         // Initial slot data can arrive after opening the menu. Preserve unsaved typing.
         String server=cardText();
         if(!dirty && !server.equals(loadedText))loadText();
+        var selected=menu.getSlot(selectedSlot).getItem();fieldsToggle.active=selected.getItem() instanceof CardItem c&&c.kind()==CardItem.Kind.INVENTORY;if(!fieldsToggle.active)fieldsMode=false;updateGroups();
+        int mask=com.zuxelus.energycontrol.port.inventory.InventorySnapshot.fields(CardItem.data(selected));for(int k=0;k<5;k++)fieldButtons.get(k).setMessage(Component.literal(new String[]{"Name","Total items","Slots used","Sided","Item details"}[k]+": "+((mask&(1<<k))!=0?"On":"Off")));
         var p=menu.panel;
         slotButton.setMessage(Component.literal("Card "+(selectedSlot+1)+" / "+menu.cardSlots));
         powerButton.setMessage(Component.literal("Power: "+new String[]{"Redstone","Inverted","Always on","Off"}[p.powerMode()]));
@@ -67,6 +74,7 @@ public final class PanelScreen extends AbstractContainerScreen<PanelMenu> {
         pageSizeButton.setMessage(Component.literal("Lines per page: "+p.pageSize()));autoPageButton.setMessage(Component.literal(p.pageTicks()==0?"Auto page: Off":"Auto page: "+p.pageTicks()+" ticks"));
         pitchButton.setMessage(Component.literal("Pitch: "+p.projection().pitch()+" deg"));yawButton.setMessage(Component.literal("Yaw: "+p.projection().yaw()+" deg"));depthButton.setMessage(Component.literal("Depth: "+p.projection().depth()+" / 16"));
         pitchButton.active=yawButton.active=depthButton.active=p.holographic();
+        slopeHButton.setMessage(Component.literal("Slope H: "+p.slopeHorizontal()*7));slopeVButton.setMessage(Component.literal("Slope V: "+p.slopeVertical()*7));
         thicknessButton.setMessage(Component.literal("Thickness -1: "+p.thickness()+" / 16"));thicknessButton.active=p.advanced()&&p.thickness()>1;thickerButton.active=p.advanced()&&p.thickness()<16;
     }
     @Override protected void renderBg(GuiGraphics g,float tick,int mx,int my) {

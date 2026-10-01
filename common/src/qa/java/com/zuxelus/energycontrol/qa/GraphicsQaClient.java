@@ -19,7 +19,7 @@ public final class GraphicsQaClient {
  private static void open(Minecraft mc){var pos=GraphicsQaServer.CORE;mc.gameMode.useItemOn(mc.player,InteractionHand.MAIN_HAND,new BlockHitResult(Vec3.atCenterOf(pos),Direction.NORTH,pos,false));}
  private static void click(Minecraft mc,String prefix){for(var w:mc.screen.children())if(w instanceof Button b&&b.visible&&b.active&&b.getMessage().getString().startsWith(prefix)){b.onPress();return;}throw new AssertionError("Missing button "+prefix);}
  public static void init(int port){QaServer.log("RUN_START graphics-client observer="+observer+" reload="+reload+" "+java.time.Instant.now());ClientTickEvent.CLIENT_POST.register(mc->{
-  mc.options.pauseOnLostFocus=false;org.lwjgl.glfw.GLFW.glfwHideWindow(mc.getWindow().getWindow());if(!connecting&&mc.getOverlay()==null&&mc.screen!=null){connecting=true;ConnectScreen.startConnecting(mc.screen,mc,ServerAddress.parseString("127.0.0.1:"+port),new ServerData("Graphics QA","127.0.0.1:"+port,ServerData.Type.OTHER),false,null);}
+  mc.options.pauseOnLostFocus=false;mc.options.getSoundSourceOptionInstance(net.minecraft.sounds.SoundSource.MASTER).set(0.0);org.lwjgl.glfw.GLFW.glfwHideWindow(mc.getWindow().getWindow());if(!connecting&&mc.getOverlay()==null&&mc.screen!=null){connecting=true;ConnectScreen.startConnecting(mc.screen,mc,ServerAddress.parseString("127.0.0.1:"+port),new ServerData("Graphics QA","127.0.0.1:"+port,ServerData.Type.OTHER),false,null);}
   if(mc.level==null||mc.player==null||!(mc.level.getBlockEntity(GraphicsQaServer.CORE) instanceof PanelBlockEntity p))return;
   if(!reload&&ticks==0&&mc.player.connection.getOnlinePlayers().size()<2)return;ticks++;mc.getToasts().clear();
   String role=observer?"observer":"editor";

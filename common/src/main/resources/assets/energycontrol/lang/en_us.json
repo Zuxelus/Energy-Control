@@ -33,5 +33,13 @@
   "tooltip.energycontrol.upgrade.capacity": "0/1/2/3 upgrades: 4/8/12/16 active array targets.",
   "tooltip.energycontrol.upgrade.precision": "0/1/2/3 upgrades: 0/1/2/3 decimal places.",
   "item.energycontrol.card_machine": "Machine Data Card",
-  "tooltip.energycontrol.card.machine": "Sneak-use on a supported machine; specialized read-only data."
+  "tooltip.energycontrol.card.machine": "Sneak-use on a supported machine; specialized read-only data.",
+  "item.energycontrol.card_inventory": "Inventory Sensor Card",
+  "item.energycontrol.card_holder": "Card Holder",
+  "item.energycontrol.kit_inventory": "Inventory Sensor Kit",
+  "item.energycontrol.kit_energy": "Energy Sensor Kit",
+  "item.energycontrol.kit_liquid": "Fluid Sensor Kit",
+  "item.energycontrol.kit_redstone": "Redstone Sensor Kit",
+  "item.energycontrol.kit_machine": "Machine Data Kit",
+  "tooltip.energycontrol.card.inventory": "Sneak-use an inventory face to bind; Fields selects displayed information."
 }

@@ -9,6 +9,20 @@ import java.util.Optional;
 
 public final class EnergyControlFabric implements ModInitializer {
     @Override public void onInitialize() {
+        net.fabricmc.fabric.api.event.player.UseBlockCallback.EVENT.register((player,level,hand,hit)->{
+            var stack=player.getItemInHand(hand);return stack.getItem() instanceof com.zuxelus.energycontrol.port.card.SensorKitItem kit?kit.useOn(new net.minecraft.world.item.context.UseOnContext(player,hand,hit)):net.minecraft.world.InteractionResult.PASS;
+        });
+        EnergyControlPort.inventoryProbe=(level,pos,side)->{
+            if(level.isClientSide||!level.hasChunkAt(pos))return Optional.empty();
+            var storage=net.fabricmc.fabric.api.transfer.v1.item.ItemStorage.SIDED.find(level,pos,side);
+            if(storage==null)return com.zuxelus.energycontrol.port.inventory.InventoryProbe.vanilla(level,pos,side);
+            boolean indexed=storage instanceof net.fabricmc.fabric.api.transfer.v1.storage.SlottedStorage<?>;
+            int size=indexed?((net.fabricmc.fabric.api.transfer.v1.storage.SlottedStorage<?>)storage).getSlotCount():-1;
+            var c=new com.zuxelus.energycontrol.port.inventory.InventorySnapshot.Collector(com.zuxelus.energycontrol.port.inventory.InventoryProbe.name(level,pos),level.getBlockEntity(pos) instanceof net.minecraft.world.WorldlyContainer,indexed,size);
+            boolean more=false;
+            for(var view:storage){var v=view.getResource();if(!c.add(v.isBlank()?"Empty":v.toStack().getHoverName().getString(),view.getAmount(),v.isBlank())){more=true;break;}}
+            return Optional.of(c.finish(more));
+        };
         EnergyControlPort.fluidProbe=(level,pos,side)->{
             if(!level.hasChunkAt(pos))return Optional.empty();
             var storage=net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage.SIDED.find(level,pos,side);

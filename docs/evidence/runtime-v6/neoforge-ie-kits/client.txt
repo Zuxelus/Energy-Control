@@ -1,0 +1,7 @@
+RUN_START IE-kit client 2026-10-01T05:31:51.153609300Z
+PASS actual IE machine rows reach client before kit interaction
+PASS real IE meter kit consumes exactly1 in survival
+PASS dropped machine card retains actual IE target face
+PASS successful kit use does not open machine GUI
+SCREENSHOT Saved screenshot as ie-machine-kit-survival.png
+ALL_IE_KIT_CLIENT_DONE

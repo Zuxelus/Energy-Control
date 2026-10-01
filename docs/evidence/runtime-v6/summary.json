@@ -1,0 +1,513 @@
+{
+  "accepted_runs": [
+    {
+      "name": "fabric-inventory",
+      "assertions": {
+        "server": 11,
+        "editor": 18,
+        "observer": 4
+      },
+      "screenshots": [
+        {
+          "name": "inventory-editor-fields.png",
+          "bytes": 133209,
+          "sha256": "8027f485d6aedc7f75488d94a605a9992f3ee3a3d33eeb7e659ad8ba7661a75d",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "inventory-editor-final.png",
+          "bytes": 156819,
+          "sha256": "59be59a796bb3afa1407f97defc2e416ddd0fa5d79332c1ffe4f7b0dcd50af2f",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "inventory-editor-live.png",
+          "bytes": 264465,
+          "sha256": "9778e82a58224170667faf16f529f1d3a6a482d2e8b2e42538be68e34eddc5fb",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "inventory-holder.png",
+          "bytes": 110048,
+          "sha256": "11e351db5056c5318ca1539cb3a7e6c21fc5d10eb9b054c9ee91506aebdee6e8",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "inventory-observer-fields.png",
+          "bytes": 129770,
+          "sha256": "6c898dfe1510fd217cc8416a6c70a84d17cbff4f72823cc00d0490cfb41a3acb",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "inventory-observer-final.png",
+          "bytes": 142539,
+          "sha256": "97ab5cbbe1132133dccf6ee1282bb29914afb90e3961058b6abfccfe5ada4064",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "inventory-observer-live.png",
+          "bytes": 144952,
+          "sha256": "1df4cac3e3dc1bef42514787e234970792ae187979109684cb9128d305961523",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "inventory-portable-fields.png",
+          "bytes": 118326,
+          "sha256": "48fbc06a688e5f08446dc866af5734c59bf1d457a2b3d2035c5a4bc7f55fb7b4",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "inventory-portable-live.png",
+          "bytes": 99809,
+          "sha256": "cf852c1ed4edb401a633fbea029201ba102479e3c1bccd93f9ef248e1e33993b",
+          "width": 1280,
+          "height": 720
+        }
+      ]
+    },
+    {
+      "name": "fabric-inventory-reload",
+      "assertions": {
+        "server": 10,
+        "client": 3
+      },
+      "screenshots": [
+        {
+          "name": "inventory-reload-holder.png",
+          "bytes": 163234,
+          "sha256": "d46b954fb765e554fd209588f93ea6f24863104d3920ecb9caaea0a59b69125f",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "inventory-reload-portable.png",
+          "bytes": 132742,
+          "sha256": "2acf2302d49d56306133e8e83dec8a9b1c3761d4e13631b9147a4e87b5bc7834",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "inventory-reload-world.png",
+          "bytes": 246945,
+          "sha256": "030d8dc9cda2456d07fd8f58b1c014fab267110064a396cac01e13a8b766145a",
+          "width": 1280,
+          "height": 720
+        }
+      ]
+    },
+    {
+      "name": "fabric-inventory-offhand-reload",
+      "assertions": {
+        "server": 10,
+        "editor": 9
+      },
+      "screenshots": [
+        {
+          "name": "inventory-offhand-holder.png",
+          "bytes": 109172,
+          "sha256": "b1be3a568617e1dc528c8c77d0a448e408c53e30ca4fed0fb988a0dee2bc0835",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "inventory-offhand-portable.png",
+          "bytes": 101028,
+          "sha256": "037ddb995c872209c84066d0e3df487c32c9fed84468cfb9fc7daadd088b647c",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "inventory-reload-holder.png",
+          "bytes": 110798,
+          "sha256": "bcfd9f0cdad7984319c2356ef86c363d88a22ff8a369704cac376a3655dee555",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "inventory-reload-portable.png",
+          "bytes": 99874,
+          "sha256": "f7dd236eadd614562a00b745c1e321ba88657ff1d692324bcd9f0bbf87d94532",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "inventory-reload-world.png",
+          "bytes": 163237,
+          "sha256": "609d5681b26da5b8954dcfd9e715455dfaafaff607a788f525c8646b979684ca",
+          "width": 1280,
+          "height": 720
+        }
+      ]
+    },
+    {
+      "name": "neoforge-inventory",
+      "assertions": {
+        "server": 11,
+        "editor": 18,
+        "observer": 4
+      },
+      "screenshots": [
+        {
+          "name": "inventory-editor-fields.png",
+          "bytes": 143934,
+          "sha256": "ed3b5445cab8590ce40f5a763ff3ee51ea01c1f4a566ebce3fcf17a55ddece22",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "inventory-editor-final.png",
+          "bytes": 156415,
+          "sha256": "65973160f6e86e533d0812862d57d67f442d7cdb093a41fe945095ae20d4750e",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "inventory-editor-live.png",
+          "bytes": 283483,
+          "sha256": "000ba61744d6af06cbce0b8552a0eb195197359c11d74594e5a622cf0fd1d484",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "inventory-holder.png",
+          "bytes": 109794,
+          "sha256": "fc6cd3b463dd8383ce4959af2d686c2f6b16ce3176439225dc1f5d733be2ce50",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "inventory-observer-fields.png",
+          "bytes": 129986,
+          "sha256": "3093308919fcc57937c4362f94a50411af146db60bc3ff5c702544629279f3f7",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "inventory-observer-final.png",
+          "bytes": 142716,
+          "sha256": "ccc582a8f606d26905d3775f00dc75c860e32846f9704c39fd808cb088d8c0d8",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "inventory-observer-live.png",
+          "bytes": 145074,
+          "sha256": "a8fcda690b50ff5b00c94a4d238b6da4863af03d53ce40a495529fe80749be86",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "inventory-portable-fields.png",
+          "bytes": 117663,
+          "sha256": "54fe180ac6ed8f78fcddf26f040ed40d598b1412f26f3958b4b641349f048ca2",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "inventory-portable-live.png",
+          "bytes": 99045,
+          "sha256": "2be3dd517ea92f9901bd14e864e74f693f1adcef56ffdb979e3936ab573df901",
+          "width": 1280,
+          "height": 720
+        }
+      ]
+    },
+    {
+      "name": "neoforge-inventory-offhand-reload",
+      "assertions": {
+        "server": 10,
+        "editor": 9
+      },
+      "screenshots": [
+        {
+          "name": "inventory-offhand-holder.png",
+          "bytes": 109210,
+          "sha256": "a616d0668642778fe1b24218bac46773efd2b09430e50a3795e3c2db77b39a9a",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "inventory-offhand-portable.png",
+          "bytes": 101089,
+          "sha256": "728e3fa6c912c198d982f2f4606b8e51acf111d47a96d63b768b197a0865413c",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "inventory-reload-holder.png",
+          "bytes": 111010,
+          "sha256": "ed66b3c7dffe9c025eae9e7b78dad1c13c03aa0dc628ad1377a1ad3c39fcc930",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "inventory-reload-portable.png",
+          "bytes": 100015,
+          "sha256": "e3d240293abf3022976b3bce1ad2b5a09a0f44bc978de16f2397d5127414d9a1",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "inventory-reload-world.png",
+          "bytes": 163491,
+          "sha256": "7d826a14855c2af08489c79f1b4e25cea022c96449be0e5e89480099c8f45391",
+          "width": 1280,
+          "height": 720
+        }
+      ]
+    },
+    {
+      "name": "fabric-slopes",
+      "assertions": {
+        "server": 14,
+        "editor": 12,
+        "observer": 6
+      },
+      "screenshots": [
+        {
+          "name": "slopes-editor-menu.png",
+          "bytes": 106717,
+          "sha256": "7d8fb9e277eb1539cc37fc11c71fb20bf49b23883b63c4be062976fdf78870ef",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "slopes-editor-rebuilt.png",
+          "bytes": 164054,
+          "sha256": "e6ce2c19898dc97be79d25095566b0385d0d34e182b2f820874ef9915b31a125",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "slopes-editor-world.png",
+          "bytes": 214666,
+          "sha256": "d71ddce0f9401df84d890c6601237f0c23ab8e5b317b31bc627d078b9ade9b3b",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "slopes-face-down.png",
+          "bytes": 133198,
+          "sha256": "fee1ecda7de36de47deeac4b749ee96e3459c868e807cba1c595c82a98ae2664",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "slopes-face-east.png",
+          "bytes": 172812,
+          "sha256": "99c42de426ea414d5b3b4c267a7b3e4938777b7ea2579996f0adf6f3b123b9b5",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "slopes-face-north.png",
+          "bytes": 166574,
+          "sha256": "a9ba9918abab0bfb82340579d7d08ad2f6e7e63865232018dc84e6f704263a63",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "slopes-face-south.png",
+          "bytes": 209131,
+          "sha256": "240a757d9aa688f72ab72f2f3b19ce06c12dc53a392ca689062c2e5b75fd0ea8",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "slopes-face-up.png",
+          "bytes": 848408,
+          "sha256": "dcaf724dc4f61ebcebfad0d5d6a9dc1b30466b1e8337ed87a01f123734fe2ea7",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "slopes-face-west.png",
+          "bytes": 159665,
+          "sha256": "4d7a7ecb8dc441eb777d64c9cae3acfd9cacd503a168c70ab1272db29e36224e",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "slopes-observer-menu.png",
+          "bytes": 95244,
+          "sha256": "4199a5fc80fb8e4205c7c1d49467c3503b07431424a4c284123ab1a7d0788f02",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "slopes-observer-rebuilt.png",
+          "bytes": 143525,
+          "sha256": "d978f4639cdacad5435fa654152660ac5fcfa027cb7c9ba95e1e7c961c816a98",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "slopes-observer-world.png",
+          "bytes": 144942,
+          "sha256": "3a947b7fd0fd3251559317386d76c9304fad8ccbac471b9f23c0ffe487c0f223",
+          "width": 1280,
+          "height": 720
+        }
+      ]
+    },
+    {
+      "name": "neoforge-slopes",
+      "assertions": {
+        "server": 14,
+        "editor": 12,
+        "observer": 6
+      },
+      "screenshots": [
+        {
+          "name": "slopes-editor-menu.png",
+          "bytes": 106800,
+          "sha256": "ebc6ce13c45dfa7b019e3260d3ef5c95e98a9e4b9bc9121043fca4dd03f54505",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "slopes-editor-rebuilt.png",
+          "bytes": 164148,
+          "sha256": "e639773110b1abc58972dab0144a254698de8e55b7724931ac9b496cf42e3293",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "slopes-editor-world.png",
+          "bytes": 214598,
+          "sha256": "b03f8f24e324ffcff4a4da0e752c11f679ad75cd91815a57dbf2e547064169b9",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "slopes-face-down.png",
+          "bytes": 133112,
+          "sha256": "5c3e54cd633e775f20ff211a12715aa0e285038c858c92334c6f3687db8216b8",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "slopes-face-east.png",
+          "bytes": 172748,
+          "sha256": "7275ba004f0c6bc5e8df0168610430d10f8e85adb11193c18b1f08f2b8091262",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "slopes-face-north.png",
+          "bytes": 166543,
+          "sha256": "a358152ca01944e8263784221676b2569e13bd68a18a62af626b95b5d47a6b3d",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "slopes-face-south.png",
+          "bytes": 208991,
+          "sha256": "b9dcdeffae90cd2baef349af890b091a0512d5124a3313102b61bb5b8be0793d",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "slopes-face-up.png",
+          "bytes": 848528,
+          "sha256": "bac379db866c1b29af62e5c78b36105b30f402556bbb1525a6d9be6fe8f08252",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "slopes-face-west.png",
+          "bytes": 159731,
+          "sha256": "b31ee75c0a8bafb46fe655b813f006deed546bdef3e211b21cc897f0fdc795df",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "slopes-observer-menu.png",
+          "bytes": 95206,
+          "sha256": "c81b4a4ae7d5387d1d3a4b8a3a4322a29987a4ba902759041547649a66d42f15",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "slopes-observer-rebuilt.png",
+          "bytes": 143328,
+          "sha256": "b60478bcb3327378a8060b49c1be58a0a6ad59ec0d7fdcf4478a1b25a212c2ad",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "name": "slopes-observer-world.png",
+          "bytes": 144599,
+          "sha256": "b2e7e1693d728fef93251fa02b00c1667ab20001b32e77023382e53b3b992060",
+          "width": 1280,
+          "height": 720
+        }
+      ]
+    },
+    {
+      "name": "fabric-slopes-normal-reload",
+      "assertions": {
+        "editor": 4
+      },
+      "screenshots": [
+        {
+          "name": "slopes-reload-world.png",
+          "bytes": 335834,
+          "sha256": "db1c4f838bc61ffbde3840158be1120c216144f81d8c59a693037980b69535bf",
+          "width": 1280,
+          "height": 720
+        }
+      ]
+    },
+    {
+      "name": "neoforge-slopes-normal-reload",
+      "assertions": {
+        "editor": 4
+      },
+      "screenshots": [
+        {
+          "name": "slopes-reload-world.png",
+          "bytes": 333125,
+          "sha256": "3350d08cb2070d7922ca2a34c25c60fe4ed71ff59ac9644a0e74f821f72769e2",
+          "width": 1280,
+          "height": 720
+        }
+      ]
+    },
+    {
+      "name": "neoforge-ie-kits",
+      "assertions": {
+        "server": 8,
+        "client": 4
+      },
+      "screenshots": [
+        {
+          "name": "ie-machine-kit-survival.png",
+          "bytes": 323442,
+          "sha256": "27710a8f9369f108142c0f917287b7b77aa0f7bd9ef57ee9893b270ec1d4eafa",
+          "width": 1280,
+          "height": 720
+        }
+      ]
+    }
+  ],
+  "excluded_attempts": [
+    "fabric-inventory-first-kit-failure",
+    "fabric-inventory-portable-field-timing",
+    "neoforge-ie-client-timing-failure",
+    "neoforge-ie-kit-coordinate-failure",
+    "neoforge-ie-kit-loading-screen",
+    "neoforge-ie-reused-fixture-failure",
+    "neoforge-inventory-unsynced-selected-slot"
+  ],
+  "assertion_executions": 201,
+  "original_pngs": 58
+}

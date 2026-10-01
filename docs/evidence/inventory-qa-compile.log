@@ -1,0 +1,23 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.10.2/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+
+> Configure project :
+Architect Plugin: 3.4.164
+Architectury Loom: 1.7.435
+You are using an outdated version of Architectury Loom! This version will not receive any support, please consider updating!
+
+> Task :common:compileJava
+> Task :common:processResources
+> Task :common:classes
+> Task :common:jar
+> Task :fabric:compileJava
+
+> Task :neoforge:compileJava
+
+BUILD SUCCESSFUL in 13s
+5 actionable tasks: 5 executed
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\neoforge\src\qa\java\com\zuxelus\energycontrol\qa\neoforge\QaNeoForgeClient.java:8: 隴ｦ蜻・ [removal] EventBusSubscriber縺ｮbus()縺ｯ謗ｨ螂ｨ縺輔ｌ縺ｦ縺翫ｉ縺壹∝炎髯､逕ｨ縺ｫ繝槭・繧ｯ縺輔ｌ縺ｦ縺・∪縺・@EventBusSubscriber(modid="energycontrolqa",value=Dist.CLIENT,bus=EventBusSubscriber.Bus.MOD)
+                                                              ^
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\neoforge\src\qa\java\com\zuxelus\energycontrol\qa\neoforge\QaNeoForgeClient.java:8: 隴ｦ蜻・ [removal] EventBusSubscriber縺ｮBus縺ｯ謗ｨ螂ｨ縺輔ｌ縺ｦ縺翫ｉ縺壹∝炎髯､逕ｨ縺ｫ繝槭・繧ｯ縺輔ｌ縺ｦ縺・∪縺・@EventBusSubscriber(modid="energycontrolqa",value=Dist.CLIENT,bus=EventBusSubscriber.Bus.MOD)
+                                                                                    ^
+隴ｦ蜻・蛟・

@@ -1,0 +1,11 @@
+RUN_START inventory-client observer=false reload=false 2026-10-01T04:36:56.633799200Z
+PASS both clients receive full actual inventory summary
+PASS both clients receive changing real chest contents
+SCREENSHOT Saved screenshot as inventory-editor-live.png
+INTERACTION slot=0 held=2 energycontrol:kit_inventory target=BlockPos{x=0, y=1, z=0}
+PASS inventory configuration opens on both clients
+PASS inventory field toggle synchronizes menu card and world on both clients
+SCREENSHOT Saved screenshot as inventory-editor-fields.png
+INTERACTION slot=0 held=2 energycontrol:kit_inventory target=BlockPos{x=4, y=0, z=0}
+KIT_RESULT slot=0 stack0=2 energycontrol:kit_inventory menu=ChestMenu
+FAIL inventory kit consumes one before chest GUI opens

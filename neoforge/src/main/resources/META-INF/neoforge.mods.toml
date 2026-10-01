@@ -4,9 +4,9 @@ license="GPL-3.0-only"
 [[mods]]
 modId="energycontrol"
 version="${version}"
-displayName="Energy Control (port preview)"
+displayName="Energy Control Enhanced"
 authors="Zuxelus, Energy Control contributors, independent port contributors"
-description='''Independent, incomplete Architectury port for Minecraft 1.21.1.'''
+description='''Independent GPLv3 fork of Energy Control for Minecraft 1.21.1. Incomplete beta; see feature matrix.'''
 [[dependencies.energycontrol]]
 modId="neoforge"
 type="required"

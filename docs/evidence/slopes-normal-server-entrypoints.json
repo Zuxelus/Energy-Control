@@ -1,0 +1,13 @@
+{
+  "fabric": {
+    "qa_class_count": 0,
+    "metadata": "{\n  \"schemaVersion\": 1,\n  \"id\": \"energycontrol\",\n  \"version\": \"1.21.1-0.5.0-port-preview\",\n  \"name\": \"Energy Control (port preview)\",\n  \"description\": \"Independent, incomplete Architectury port for Minecraft 1.21.1.\",\n  \"authors\": [\"Zuxelus\", \"Energy Control contributors\", \"Independent port contributors\"],\n  \"license\": \"GPL-3.0-only\",\n  \"environment\": \"*\",\n  \"entrypoints\": {\n    \"main\": [\"com.zuxelus.energycontrol.port.fabric.EnergyControlFabric\"],\n    \"client\": [\"com.zuxelus.energycontrol.port.fabric.EnergyControlFabricClient\"]\n  },\n  \"depends\": {\"fabricloader\": \">=0.16.14\", \"minecraft\": \"1.21.1\", \"java\": \">=21\", \"fabric-api\": \"*\", \"architectury\": \">=13.0.8\", \"team_reborn_energy\": \">=4.1.0\"}\n}\n"
+  },
+  "neoforge": {
+    "qa_class_count": 0,
+    "metadata": "modLoader=\"javafml\"\nloaderVersion=\"[4,)\"\nlicense=\"GPL-3.0-only\"\n[[mods]]\nmodId=\"energycontrol\"\nversion=\"1.21.1-0.5.0-port-preview\"\ndisplayName=\"Energy Control (port preview)\"\nauthors=\"Zuxelus, Energy Control contributors, independent port contributors\"\ndescription='''Independent, incomplete Architectury port for Minecraft 1.21.1.'''\n[[dependencies.energycontrol]]\nmodId=\"neoforge\"\ntype=\"required\"\nversionRange=\"[21.1.209,)\"\nordering=\"NONE\"\nside=\"BOTH\"\n[[dependencies.energycontrol]]\nmodId=\"minecraft\"\ntype=\"required\"\nversionRange=\"[1.21.1,1.21.2)\"\nordering=\"NONE\"\nside=\"BOTH\"\n[[dependencies.energycontrol]]\nmodId=\"architectury\"\ntype=\"required\"\nversionRange=\"[13.0.8,)\"\nordering=\"AFTER\"\nside=\"BOTH\"\n"
+  },
+  "common": {
+    "qa_class_count": 0
+  }
+}

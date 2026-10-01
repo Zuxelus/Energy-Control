@@ -10,6 +10,7 @@ public final class PortClient {
     public static void init() {
         MenuRegistry.registerScreenFactory(EnergyControlPort.PANEL_MENU.get(),PanelScreen::new);
         MenuRegistry.registerScreenFactory(EnergyControlPort.PORTABLE_MENU.get(),PortableScreen::new);
+        MenuRegistry.registerScreenFactory(EnergyControlPort.HOLDER_MENU.get(),CardHolderScreen::new);
         BlockEntityRendererRegistry.register(EnergyControlPort.PANEL_ENTITY.get(),PanelRenderer::new);
     }
 }

@@ -33,5 +33,13 @@
   "tooltip.energycontrol.upgrade.capacity": "0/1/2/3个升级：4/8/12/16个生效阵列目标。",
   "tooltip.energycontrol.upgrade.precision": "0/1/2/3个升级：显示0/1/2/3位小数。",
   "item.energycontrol.card_machine": "机器数据卡",
-  "tooltip.energycontrol.card.machine": "潜行右键绑定受支持机器；读取专用数据。"
+  "tooltip.energycontrol.card.machine": "潜行右键绑定受支持机器；读取专用数据。",
+  "item.energycontrol.card_inventory": "物品库存卡",
+  "item.energycontrol.card_holder": "卡片收纳夹",
+  "item.energycontrol.kit_inventory": "物品监测套件",
+  "item.energycontrol.kit_energy": "能源监测套件",
+  "item.energycontrol.kit_liquid": "流体监测套件",
+  "item.energycontrol.kit_redstone": "红石监测套件",
+  "item.energycontrol.kit_machine": "机器数据套件",
+  "tooltip.energycontrol.card.inventory": "潜行右键库存表面绑定；在字段设置中选择显示信息。"
 }

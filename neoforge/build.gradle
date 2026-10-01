@@ -63,3 +63,27 @@ if(rootProject.hasProperty('qaStage') && rootProject.qaStage.toString().startsWi
 if(rootProject.hasProperty('qaStage') && rootProject.qaStage.toString().startsWith('ie-special')) {
     loom.runs { client { runDir rootProject.hasProperty('qaObserver')?'run/client-ie-special-v5-observer':'run/client-ie-special-v5' }; server { runDir 'run/server-ie-special-v5' } }
 }
+
+if(rootProject.hasProperty('qaStage') && rootProject.qaStage.toString().startsWith('inventory')) {
+    loom.runs { client { runDir rootProject.hasProperty('qaObserver')?'run/client-inventory-observer':'run/client-inventory' }; server { runDir 'run/server-inventory' } }
+}
+
+if(rootProject.hasProperty('qaStage') && rootProject.qaStage.toString().startsWith('slopes')) {
+    loom.runs { client { runDir rootProject.hasProperty('qaObserver')?'run/client-slopes-observer':'run/client-slopes' }; server { runDir 'run/server-slopes' } }
+}
+
+if(rootProject.hasProperty('qaStage') && rootProject.qaStage.toString().startsWith('ie-special-v6')) {
+    loom.runs { client { runDir rootProject.hasProperty('qaObserver')?'run/client-ie-special-v6-observer':'run/client-ie-special-v6' }; server { runDir 'run/server-ie-special-v6' } }
+}
+
+if(rootProject.hasProperty('qaStage') && rootProject.qaStage.toString().startsWith('ie-special-kit')) {
+    loom.runs { client { runDir 'run/client-ie-kit-v6' }; server { runDir 'run/server-ie-kit-v6' } }
+}
+
+if(rootProject.hasProperty('qaStage') && rootProject.qaStage.toString()=='ie-special-kit-muted') {
+    loom.runs { client { runDir 'run/client-ie-kit-muted' }; server { runDir 'run/server-ie-kit-muted' } }
+}
+
+if(rootProject.hasProperty('qaStage') && rootProject.qaStage.toString()=='ie-special-kit-final') {
+    loom.runs { client { runDir 'run/client-ie-kit-final' }; server { runDir 'run/server-ie-kit-final' } }
+}

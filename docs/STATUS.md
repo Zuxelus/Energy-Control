@@ -1,4 +1,4 @@
-# Bars, solid case and real IE power - incomplete 0.5 port
+# Energy Control Enhanced - incomplete0.6 beta
 
 This independent GPLv3 port continues the full-history branch from263f6ae via
 19d8dac. Original200 Java sources, README files and LICENSE remain intact outside
@@ -49,16 +49,28 @@ Remaining work by value:
    Machine Data Card implements IE current-transformer average FE/t and thermal
    generation potential; the exact specialized acceptance is in QA-V5.md.
    External artifacts beyond the approved IE distribution require specific scope.
-2. Per-field layout, vertical/color/threshold bars, advanced fluid selectors and inventory cards;
+2. Per-field layout, vertical/color/threshold bars, advanced fluid selectors ;
    complete localization and original color/touch upgrades.
-3. Solid advanced-case slopes/rotation and original holo circuit height.
-4. Card holder, kits/assembler, original recipe balance; alarms/thermal monitors,
+3. Original holo circuit height and complete field layout. Solid grouped slopes are implemented and game-accepted in0.6.
+4. Kit assembler, original recipe balance; alarms/thermal monitors,
    timers/triggers/counters/lamps and specialized integrations.
 5. Authorized touch/control, web upgrade/protocol, overlays, legacy save migration.
 
-Eighteen simplified recipes. Survival drops, large walls/long uptime, offhand
-portable use, conflicting simultaneous edits and every machine are not accepted.
+Twenty-five simplified recipes. Survival panel drops, large walls/long uptime,
+conflicting simultaneous edits and every machine are not accepted. Main/offhand
+portable and holder behavior are accepted in0.6.
 QA.md/QA-V3.md/QA-V4.md/QA-V5.md distinguish historical and current actual results.
 Old APIs are unavailable only where COMPATIBILITY.md cites official release checks.
 Known toolchain warnings remain: Loom1.7 unsupported notice, Gradle9 deprecations,
 NeoForge deprecated event-bus annotation. No public publication was performed.
+
+0.6 adds complete-slot sided inventory readings, five field switches,54-slot card
+holder, generic sensor kits and advanced grouped solid slopes. Existing text,
+menus, network and persistence work on both loaders. Inventory/holder/kits have
+117 accepted assertion executions; slopes/main+normal-reload add72 and the final
+NeoForge actual IE kit adds12, totaling201. See QA-V6 for the deliberately excluded
+failed IE replay attempts and the exact acceptance boundary. These counts describe scenarios, not proof
+of every possible machine/state. Full original feature parity remains unfinished.
+Modrinth publication was requested after this step2; unresolved current rules on
+primarily AI-generated projects, missing authenticated upload capability and
+public corresponding-source delivery are recorded in MODRINTH-PUBLICATION.md.

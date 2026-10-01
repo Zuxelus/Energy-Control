@@ -1,0 +1,15 @@
+RUN_START inventory-server reload=false 2026-10-01T04:30:16.313493700Z
+PASS inventory actual chest exposes27 slots with3 used
+PASS inventory complete real total includes slots6 and26 beyond preview
+PASS inventory only first six slots form detail preview
+PASS inventory real furnace top reads input slot only
+PASS inventory real furnace side reads fuel slot only
+PASS inventory ordinary stone has no inventory
+KIT_SERVER ECObserver slot=7 kit=2 energycontrol:kit_inventory menu=InventoryMenu
+KIT_SERVER ECEditor slot=0 kit=1 energycontrol:kit_inventory menu=InventoryMenu
+PASS inventory successful inventory kit consumes exactly one in survival
+PASS inventory generic supported kit counts synchronize
+PASS inventory unsupported machine kit never consumes
+PASS inventory holder transfer persists on server
+PASS inventory inventory field edit reaches server
+ALL_INVENTORY_SERVER_DONE

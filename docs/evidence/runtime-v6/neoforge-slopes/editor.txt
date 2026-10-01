@@ -1,0 +1,23 @@
+RUN_START slopes-client observer=false reload=false 2026-10-01T05:01:31.239481300Z
+PASS both players open normal slope configuration menu
+PASS both clients receive normal GUI slopes and thickness
+PASS both clients receive continuous grouped plane
+SCREENSHOT Saved screenshot as slopes-editor-menu.png
+PASS sloped screen text updates with real synchronized world time
+SCREENSHOT Saved screenshot as slopes-editor-world.png
+PASS ordinary unprotected break detaches sloped extender on both clients
+PASS normal replacement inherits continuous solid slope
+SCREENSHOT Saved screenshot as slopes-editor-rebuilt.png
+PASS solid body text plane and collision synchronized facing down
+SCREENSHOT Saved screenshot as slopes-face-down.png
+PASS solid body text plane and collision synchronized facing up
+SCREENSHOT Saved screenshot as slopes-face-up.png
+PASS solid body text plane and collision synchronized facing north
+SCREENSHOT Saved screenshot as slopes-face-north.png
+PASS solid body text plane and collision synchronized facing south
+SCREENSHOT Saved screenshot as slopes-face-south.png
+PASS solid body text plane and collision synchronized facing west
+SCREENSHOT Saved screenshot as slopes-face-west.png
+PASS solid body text plane and collision synchronized facing east
+SCREENSHOT Saved screenshot as slopes-face-east.png
+ALL_SLOPES_CLIENT_DONE editor

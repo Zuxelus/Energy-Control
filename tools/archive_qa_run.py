@@ -1,8 +1,8 @@
 """Archive one task-owned actual QA run without editing screenshots or game logs."""
 from pathlib import Path
 import argparse,shutil,re
-parser=argparse.ArgumentParser();parser.add_argument('loader');parser.add_argument('name');parser.add_argument('runs',nargs='+');args=parser.parse_args()
-root=Path(__file__).resolve().parents[1];out=root/'docs/evidence/runtime-v5'/args.name;out.mkdir(parents=True,exist_ok=True)
+parser=argparse.ArgumentParser();parser.add_argument('--stage',default='runtime-v5',choices=['runtime-v5','runtime-v6']);parser.add_argument('loader');parser.add_argument('name');parser.add_argument('runs',nargs='+');args=parser.parse_args()
+root=Path(__file__).resolve().parents[1];out=root/'docs/evidence'/args.stage/args.name;out.mkdir(parents=True,exist_ok=True)
 for spec in args.runs:
  role,folder=spec.split(':',1)
  assert role in ('server','editor','observer','client') and '/' not in folder and chr(92) not in folder

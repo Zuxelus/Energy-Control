@@ -1,0 +1,1 @@
+All protocol assertions passed, but the screenshot was captured while Loading terrain was still displayed. Retained and excluded from final visual acceptance. QA now waits for the normal game view before interacting and captures after the returned card is visible. No production changes.

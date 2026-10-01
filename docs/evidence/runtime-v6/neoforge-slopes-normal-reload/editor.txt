@@ -1,0 +1,7 @@
+RUN_START slopes-client observer=false reload=true 2026-10-01T05:06:35.647065200Z
+PASS reconnected client gets persisted slopes and thickness
+PASS reconnected client gets continuous core and extender plane
+PASS reloaded collision remains sloped
+SCREENSHOT Saved screenshot as slopes-reload-world.png
+PASS reloaded sloped screen resumes real world time updates
+ALL_SLOPES_RELOAD_CLIENT_DONE

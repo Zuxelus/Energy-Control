@@ -1,0 +1,11 @@
+RUN_START slopes-client observer=true reload=false 2026-10-01T04:57:22.585703500Z
+PASS both players open normal slope configuration menu
+PASS both clients receive normal GUI slopes and thickness
+PASS both clients receive continuous grouped plane
+SCREENSHOT Saved screenshot as slopes-observer-menu.png
+PASS sloped screen text updates with real synchronized world time
+SCREENSHOT Saved screenshot as slopes-observer-world.png
+PASS ordinary unprotected break detaches sloped extender on both clients
+PASS normal replacement inherits continuous solid slope
+SCREENSHOT Saved screenshot as slopes-observer-rebuilt.png
+ALL_SLOPES_CLIENT_DONE observer

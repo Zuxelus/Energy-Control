@@ -22,7 +22,7 @@ public final class NormalQaClient {
  public static void init(int port){
   QaServer.log("RUN_START normal-client "+(observer?"observer":"editor")+" reload="+reload+" "+java.time.Instant.now());
   ClientTickEvent.CLIENT_POST.register(mc->{
-   mc.options.pauseOnLostFocus=false;
+   mc.options.pauseOnLostFocus=false;mc.options.getSoundSourceOptionInstance(net.minecraft.sounds.SoundSource.MASTER).set(0.0);
    if(!connecting&&mc.getOverlay()==null&&mc.screen!=null){connecting=true;ConnectScreen.startConnecting(mc.screen,mc,ServerAddress.parseString("127.0.0.1:"+port),new ServerData("Normal gameplay","127.0.0.1:"+port,ServerData.Type.OTHER),false,null);}
    if(mc.level==null||mc.player==null)return;
    if(!positioned || mc.player.position().distanceToSqr(new Vec3(2,.5,-4))>4){positioned=true;if(positioningTicks++%40==0)mc.player.connection.sendCommand("tp @s 2 0.5 -4 0 0");return;}

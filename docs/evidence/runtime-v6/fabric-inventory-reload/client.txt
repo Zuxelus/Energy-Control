@@ -1,0 +1,8 @@
+RUN_START inventory-client observer=false reload=true 2026-10-01T04:35:28.294788400Z
+PASS reloaded field settings and dynamic inventory reach client
+PASS actual holder menu restores persisted card after server restart
+SCREENSHOT Saved screenshot as inventory-reload-holder.png
+PASS actual portable inventory data and fields survive restart
+SCREENSHOT Saved screenshot as inventory-reload-portable.png
+ALL_INVENTORY_RELOAD_CLIENT_DONE
+SCREENSHOT Saved screenshot as inventory-reload-world.png

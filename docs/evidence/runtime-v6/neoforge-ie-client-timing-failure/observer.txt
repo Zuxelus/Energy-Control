@@ -1,0 +1,4 @@
+RUN_START IE-special client observer=true reload=false 2026-10-01T05:15:29.461607100Z
+PASS both players see actual wire power and thermal potential
+SCREENSHOT Saved screenshot as ie-special-observer-live.png
+FAIL real capacitor bar toggle synchronizes to both players

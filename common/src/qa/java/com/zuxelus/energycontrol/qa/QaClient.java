@@ -15,8 +15,11 @@ import net.minecraft.world.phys.*;
 public final class QaClient {
     private static boolean connecting; private static int ticks; private static String sample;
     public static void init(int port) {
+        if(System.getProperty("ec.qa.stage","").startsWith("slopes")){SlopesQaClient.init(port+13);return;}
+        if(System.getProperty("ec.qa.stage","").startsWith("inventory")){InventoryQaClient.init(port+11);return;}
         if(System.getProperty("ec.qa.stage","").startsWith("graphics")){GraphicsQaClient.init(port+8);return;}
         if(System.getProperty("ec.qa.stage","").startsWith("pages")){DisplayQaClient.init(port+6);return;}
+        if(System.getProperty("ec.qa.stage","").startsWith("ie-special-kit")){IeKitQaClient.init();return;}
         if(System.getProperty("ec.qa.stage","").startsWith("ie-special")){IeSpecialQaClient.init();return;}
         if(System.getProperty("ec.qa.stage","").startsWith("ie")){IeQaClient.init(25576);return;}
         if(java.util.Set.of("normal","reload").contains(System.getProperty("ec.qa.stage",""))){NormalQaClient.init(port+2);return;}
@@ -25,7 +28,7 @@ public final class QaClient {
         ClientTickEvent.CLIENT_POST.register(mc -> {
             // The user can keep working in other windows while these task-owned
             // runs capture frames; losing focus must not cover them with PauseScreen.
-            mc.options.pauseOnLostFocus=false;
+            mc.options.pauseOnLostFocus=false;mc.options.getSoundSourceOptionInstance(net.minecraft.sounds.SoundSource.MASTER).set(0.0);
             if(!connecting && mc.getOverlay()==null && mc.screen!=null) {
                 QaServer.log("CONNECT_FROM "+mc.screen.getClass().getSimpleName());
                 connecting=true;

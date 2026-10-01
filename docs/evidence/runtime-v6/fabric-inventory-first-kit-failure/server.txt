@@ -1,0 +1,7 @@
+RUN_START inventory-server reload=false 2026-10-01T04:21:04.900161600Z
+PASS inventory actual chest exposes27 slots with3 used
+PASS inventory complete real total includes slots6 and26 beyond preview
+PASS inventory only first six slots form detail preview
+PASS inventory real furnace top reads input slot only
+PASS inventory real furnace side reads fuel slot only
+PASS inventory ordinary stone has no inventory

@@ -114,3 +114,21 @@ for lang,name,tooltip in [('en_us','Machine Data Card','Sneak-use on a supported
     data['item.energycontrol.card_machine']=name;data['tooltip.energycontrol.card.machine']=tooltip;write(path,data)
 
 print('0.5 resources: 18 recipes, 32 case models and 192 thickness/facing variants; machine card registered on both loaders.')
+
+# Inventory/holder/generic kits: all assets are original upstream GPL resources.
+for name,original,en_name,zh_name,ingredients in [
+ ('card_inventory','card_inventory','Inventory Sensor Card','物品库存卡',['minecraft:paper','minecraft:chest']),
+ ('card_holder','card_holder','Card Holder','卡片收纳夹',['minecraft:leather','minecraft:paper']),
+ ('kit_inventory','kit_inventory','Inventory Sensor Kit','物品监测套件',['minecraft:iron_ingot','minecraft:chest']),
+ ('kit_energy','kit_energy','Energy Sensor Kit','能源监测套件',['minecraft:iron_ingot','minecraft:redstone']),
+ ('kit_liquid','kit_liquid','Fluid Sensor Kit','流体监测套件',['minecraft:iron_ingot','minecraft:glass_bottle']),
+ ('kit_redstone','kit_redstone','Redstone Sensor Kit','红石监测套件',['minecraft:iron_ingot','minecraft:redstone_torch']),
+ ('kit_machine','kit_energy','Machine Data Kit','机器数据套件',['minecraft:iron_ingot','minecraft:quartz'])]:
+    copy(Path(f'textures/item/{original}.png'))
+    write(assets/f'models/item/{name}.json',{'parent':'minecraft:item/generated','textures':{'layer0':f'energycontrol:item/{original}'}})
+    write(target/f'data/energycontrol/recipe/{name}.json',{'type':'minecraft:crafting_shapeless','ingredients':[{'item':i} for i in ingredients],'result':{'id':f'energycontrol:{name}','count':1}})
+    for lang,label in [('en_us',en_name),('zh_cn',zh_name)]:
+        path=assets/f'lang/{lang}.json';data=json.loads(path.read_text(encoding='utf-8'));data['item.energycontrol.'+name]=label;write(path,data)
+for lang,tooltip in [('en_us','Sneak-use an inventory face to bind; Fields selects displayed information.'),('zh_cn','潜行右键库存表面绑定；在字段设置中选择显示信息。')]:
+    path=assets/f'lang/{lang}.json';data=json.loads(path.read_text(encoding='utf-8'));data['tooltip.energycontrol.card.inventory']=tooltip;write(path,data)
+print('Inventory/holder and five kits:25 recipes total.')

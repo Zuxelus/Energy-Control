@@ -1,0 +1,10 @@
+RUN_START IE-special server reload=false 2026-10-01T05:31:46.376453600Z
+PASS IE specialized actual LV connectors initialized
+PASS IE specialized actual current transformer initialized
+PASS IE specialized real copper connections include meter shunt
+PASS IE specialized fresh real IE wire circuit reports positive power
+PASS IE specialized card equals real meter getAveragePower
+PASS IE specialized card equals real thermal generation potential
+PASS IE specialized actual kit consumes1 in survival
+PASS IE specialized kit-created card reads actual IE master meter
+ALL_IE_KIT_SERVER_DONE

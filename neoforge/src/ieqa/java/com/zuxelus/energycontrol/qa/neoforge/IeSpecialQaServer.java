@@ -20,7 +20,8 @@ import java.util.*;
 /** Drives real IE wire transfer. Never writes the meter's sample buffer. */
 public final class IeSpecialQaServer {
  public static final BlockPos PANEL=new BlockPos(0,1,0),METER=new BlockPos(0,0,5),INPUT=new BlockPos(-6,1,5),OUTPUT=new BlockPos(6,1,5),CAP=new BlockPos(6,0,5),THERMO=new BlockPos(5,0,1),HOT=THERMO.south();
- private static int ticks;private static boolean connected;private static final Set<UUID> joined=new HashSet<>();
+ private static final boolean kitOnly=System.getProperty("ec.qa.stage","").contains("-kit");
+ private static boolean kitChecked,liveChecked;private static int ticks;private static boolean connected;private static final Set<UUID> joined=new HashSet<>();
  private static final boolean reload=System.getProperty("ec.qa.stage","").equals("ie-special-reload");
  private static net.minecraft.world.level.block.Block block(String id){return BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath("immersiveengineering",id));}
  private static PanelBlockEntity panel(ServerLevel l){return (PanelBlockEntity)l.getBlockEntity(PANEL);}
@@ -42,15 +43,23 @@ public final class IeSpecialQaServer {
  }
  private static void wire(ServerLevel l){var net=GlobalWireNetwork.getNetwork(l);net.addConnection(new Connection(WireType.COPPER,new ConnectionPoint(INPUT,0),new ConnectionPoint(METER,0),net));net.addConnection(new Connection(WireType.COPPER,new ConnectionPoint(METER,1),new ConnectionPoint(OUTPUT,0),net));connected=true;var connections=new HashSet<Connection>();for(int point=0;point<2;point++)connections.addAll(net.getLocalNet(METER).getConnections(new ConnectionPoint(METER,point)));check(connections.size()==3&&connections.stream().filter(Connection::isInternal).count()==1,"real copper connections include meter shunt");}
  private static void equality(ServerLevel l){int actual=((EnergyMeterBlockEntity)l.getBlockEntity(METER)).getAveragePower();var rows=CardDisplay.read(l,PANEL,panel(l).getItem(0),64,4,0);check(rows.contains(actual+" FE/t"),"card equals real meter getAveragePower");int potential=Math.max(0,l.getBlockEntity(THERMO).saveWithoutMetadata(l.registryAccess()).getInt("enegyOutput"));check(CardDisplay.read(l,PANEL,panel(l).getItem(1),64,4,0).contains(potential+" FE/t"),"card equals real thermal generation potential");}
- private static void tick(MinecraftServer server){var l=server.overworld();for(var player:server.getPlayerList().getPlayers())if(joined.add(player.getUUID())){server.getPlayerList().op(player.getGameProfile());player.teleportTo(l,player.getGameProfile().getName().equals("ECObserver")?-.5:1.5,.5,-4,0,0);player.getInventory().setItem(0,ItemStack.EMPTY);player.getInventory().setItem(1,new ItemStack(EnergyControlPort.MACHINE.get()));player.getInventory().selected=0;}
-  if(server.getPlayerCount()<(reload?1:2))return;ticks++;
+ private static void tick(MinecraftServer server){var l=server.overworld();for(var player:server.getPlayerList().getPlayers())if(joined.add(player.getUUID())){server.getPlayerList().op(player.getGameProfile());player.teleportTo(l,player.getGameProfile().getName().equals("ECObserver")?-.5:1.5,.5,-4,0,0);player.getInventory().setItem(0,ItemStack.EMPTY);player.getInventory().setItem(1,new ItemStack(EnergyControlPort.MACHINE.get()));player.getInventory().setItem(2,new ItemStack(EnergyControlPort.KIT_MACHINE.get(),2));player.getInventory().selected=0;player.connection.send(new net.minecraft.network.protocol.game.ClientboundSetCarriedItemPacket(0));}
+  if(server.getPlayerCount()<((reload||kitOnly)?1:2))return;ticks++;
   if(!reload&&ticks==20)wire(l);
   if(reload||connected){int amount=reload?128:ticks<200?256:ticks<320?0:128;var cap=l.getCapability(Capabilities.EnergyStorage.BLOCK,INPUT,Direction.DOWN);if(cap!=null)cap.receiveEnergy(amount,false);}
+  if(kitOnly){
+   if(!liveChecked&&((EnergyMeterBlockEntity)l.getBlockEntity(METER)).getAveragePower()>0){liveChecked=true;check(true,"fresh real IE wire circuit reports positive power");equality(l);}
+   for(var player:server.getPlayerList().getPlayers())if(!kitChecked&&player.getInventory().getItem(2).getCount()==1){
+    var cards=player.getInventory().items.stream().filter(stack->stack.is(EnergyControlPort.MACHINE.get())&&CardTargets.read(CardItem.data(stack)).stream().anyMatch(t->t.position()==METER.above().asLong())).toList();
+    if(cards.size()==1){kitChecked=true;check(player.gameMode.getGameModeForPlayer()==net.minecraft.world.level.GameType.SURVIVAL,"actual kit consumes1 in survival");check(CardDisplay.read(l,PANEL,cards.getFirst(),64,4,0).contains(((EnergyMeterBlockEntity)l.getBlockEntity(METER)).getAveragePower()+" FE/t"),"kit-created card reads actual IE master meter");QaServer.log("ALL_IE_KIT_SERVER_DONE");}
+   }return;
+  }
   if(reload){if(ticks==80){check(((EnergyMeterBlockEntity)l.getBlockEntity(METER)).getAveragePower()>0,"saved real copper network resumes actual transfer");equality(l);check(panel(l).rows().stream().anyMatch(r->r.isBar()),"real capacitor bar resumes after restart");QaServer.log("ALL_IE_SPECIAL_RELOAD_SERVER_DONE");}return;}
   if(ticks==100){check(((EnergyMeterBlockEntity)l.getBlockEntity(METER)).getAveragePower()>0,"wire circuit carries real positive power");check(l.getBlockEntity(THERMO).saveWithoutMetadata(l.registryAccess()).getInt("enegyOutput")>0,"lava and blue ice create real thermal potential");equality(l);check(l.getCapability(Capabilities.EnergyStorage.BLOCK,CAP,Direction.UP).getEnergyStored()>0,"real sink capacitor receives wire-delivered energy");check(CardDisplay.read(l,PANEL,card(EnergyControlPort.MACHINE.get(),METER.above(),Direction.NORTH),64,4,0).contains(((EnergyMeterBlockEntity)l.getBlockEntity(METER)).getAveragePower()+" FE/t"),"upper dummy resolves real master meter reading");}
   if(ticks==200)l.setBlockAndUpdate(HOT,Blocks.AIR.defaultBlockState());
   if(ticks==280){check(((EnergyMeterBlockEntity)l.getBlockEntity(METER)).getAveragePower()==0,"meter average decays to zero after input stops");check(l.getBlockEntity(THERMO).saveWithoutMetadata(l.registryAccess()).getInt("enegyOutput")<=0,"removing real heat source removes potential");equality(l);}
   if(ticks==320)l.setBlockAndUpdate(HOT,Blocks.LAVA.defaultBlockState());
+  if(ticks==580){for(var player:server.getPlayerList().getPlayers())if(player.getGameProfile().getName().equals("ECEditor"))check(player.getInventory().getItem(2).getCount()==1,"survival IE machine kit consumption confirmed on server");}
   if(ticks==400){check(((EnergyMeterBlockEntity)l.getBlockEntity(METER)).getAveragePower()>0,"restored FE input resumes real wire power");equality(l);check(panel(l).thickness()==8,"real client geometry edit reaches dedicated server");QaServer.log("ALL_IE_SPECIAL_SERVER_DONE");}
  }
 }

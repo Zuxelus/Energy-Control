@@ -1,0 +1,2 @@
+RUN_START IE-kit client 2026-10-01T05:21:45.650709400Z
+PASS actual IE machine rows reach client before kit interaction

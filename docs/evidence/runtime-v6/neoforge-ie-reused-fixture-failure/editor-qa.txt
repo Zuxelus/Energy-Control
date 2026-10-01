@@ -1,0 +1,3 @@
+RUN_START IE-special client observer=false reload=false 2026-10-01T05:11:30.403988400Z
+PASS both players see actual wire power and thermal potential
+SCREENSHOT Saved screenshot as ie-special-editor-live.png

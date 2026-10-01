@@ -1,0 +1,34 @@
+RUN_START inventory-client observer=false reload=false 2026-10-01T04:41:48.702422Z
+PASS both clients receive full actual inventory summary
+PASS both clients receive changing real chest contents
+SCREENSHOT Saved screenshot as inventory-editor-live.png
+INTERACTION slot=7 held=0 minecraft:air target=BlockPos{x=0, y=1, z=0}
+PASS inventory configuration opens on both clients
+PASS inventory field toggle synchronizes menu card and world on both clients
+SCREENSHOT Saved screenshot as inventory-editor-fields.png
+INTERACTION slot=0 held=2 energycontrol:kit_inventory target=BlockPos{x=4, y=0, z=0}
+KIT_RESULT slot=0 stack0=1 energycontrol:kit_inventory menu=InventoryMenu
+PASS inventory kit consumes one before chest GUI opens
+PASS dropped inventory kit card is picked up with real bound face
+INTERACTION slot=3 held=2 energycontrol:kit_energy target=BlockPos{x=4, y=0, z=1}
+PASS unsupported energy target does not consume kit
+INTERACTION slot=3 held=2 energycontrol:kit_energy target=BlockPos{x=4, y=0, z=0}
+PASS energy kit recognizes actual platform fixture capability
+INTERACTION slot=4 held=2 energycontrol:kit_liquid target=BlockPos{x=4, y=0, z=0}
+PASS fluid kit recognizes actual platform fixture capability
+INTERACTION slot=5 held=2 energycontrol:kit_redstone target=BlockPos{x=4, y=0, z=1}
+PASS redstone kit binds actual vanilla block
+INTERACTION slot=6 held=2 energycontrol:kit_machine target=BlockPos{x=4, y=0, z=1}
+PASS unsupported machine kit does not consume
+PASS real held54-slot card holder opens
+PASS normal shift-click inserts card into holder
+PASS holder rejects ordinary items and nested holder
+PASS holder hotbar swap cannot move held parent
+SCREENSHOT Saved screenshot as inventory-holder.png
+PASS holder close-reopen retains card
+PASS portable displays real live inventory data
+PASS portable field controls update actual server rows
+SCREENSHOT Saved screenshot as inventory-portable-fields.png
+SCREENSHOT Saved screenshot as inventory-portable-live.png
+ALL_INVENTORY_CLIENT_DONE editor
+SCREENSHOT Saved screenshot as inventory-editor-final.png

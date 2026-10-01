@@ -149,3 +149,23 @@ Both 0.5 clean offline release builds succeeded (27s each); all four jar/source
 artifacts were byte-identical, and 49 JVM tests passed. See evidence/
 reproducibility-0.5.json and artifact-verification.json. The packaging audit
 checks Java21, licenses, 18 recipes, assets, entrypoints and absence of QA/IE.
+
+## Inventory, kits, holder and solid slopes (0.6)
+
+Same pinned dependencies; no new third-party binary. Java21 remains the existing
+Zulu installation. Run clean build WITHOUT -Pqa or -PieQa, then
+`py -3 -X utf8 tools/verify_artifacts.py`. Expected65 JVM tests/19 suites and25
+recipes. Repeat clean build and compare both loader jars and source jars.
+Recorded outputs: build-0.6-first.log, build-0.6-second.log,
+reproducibility-0.6.json, artifact-verification.json and junit-0.6/.
+Inventory/slopes gameplay preceded the metadata rename/version change and uses
+0.5 metadata with0.6 production source. Final IE regression uses0.6 metadata.
+See QA-V6 for actual protocol, fixture and production-server limits. No ordinary
+user instance or external launcher installation was performed.
+
+Final verification: both clean offline production builds completed successfully;
+all65 JVM tests passed and both remapped jars plus both source jars were byte-identical.
+The artifact audit confirms25 recipes, GPL/change notices, Java21 classes, required
+assets/entrypoints and no QA/IE/Minecraft class leakage. SHA256 values are in
+artifact-verification.json and reproducibility-0.6.json. All task game processes
+were verified absent after normal accepted-server shutdown; user games untouched.

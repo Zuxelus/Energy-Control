@@ -16,7 +16,7 @@ public final class IeQaClient {
  private static final BlockPos PANEL=new BlockPos(0,1,0),CAP=new BlockPos(4,0,0);
  private static final boolean reload=System.getProperty("ec.qa.stage","").equals("ie-reload");
  public static void init(int port){QaServer.log("RUN_START IE client reload="+reload+" "+java.time.Instant.now());ClientTickEvent.CLIENT_POST.register(mc->{
-  mc.options.pauseOnLostFocus=false;if(!connecting&&mc.getOverlay()==null&&mc.screen!=null){connecting=true;ConnectScreen.startConnecting(mc.screen,mc,ServerAddress.parseString("127.0.0.1:"+port),new ServerData("Real IE acceptance","127.0.0.1:"+port,ServerData.Type.OTHER),false,null);}
+  mc.options.pauseOnLostFocus=false;mc.options.getSoundSourceOptionInstance(net.minecraft.sounds.SoundSource.MASTER).set(0.0);if(!connecting&&mc.getOverlay()==null&&mc.screen!=null){connecting=true;ConnectScreen.startConnecting(mc.screen,mc,ServerAddress.parseString("127.0.0.1:"+port),new ServerData("Real IE acceptance","127.0.0.1:"+port,ServerData.Type.OTHER),false,null);}
   if(mc.level==null||mc.player==null||!(mc.level.getBlockEntity(PANEL) instanceof PanelBlockEntity p))return;ticks++;mc.getToasts().clear();
   if(reload){if(ticks==80){QaServer.check(p.lines().contains("IE_QA_DONE")&&p.lines().stream().anyMatch(s->s.contains("1024000 mB")),"IE client sees persisted real tanks and array after server restart");StorageQaClient.shot(mc,"ie-reload.png");}if(ticks==110){QaServer.log("ALL_IE_RELOAD_CLIENT_DONE");mc.stop();}return;}
   if(ticks==50){QaServer.check(p.lines().stream().anyMatch(s->s.contains("FE"))&&p.lines().stream().anyMatch(s->s.contains("512000 mB")),"IE real capacitor and multiblock readings reach client");before=p.lines().toString();StorageQaClient.shot(mc,"ie-01-real-machines.png");}

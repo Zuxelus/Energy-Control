@@ -29,6 +29,9 @@ public final class CardDisplay {
    if(status!=TargetPolicy.Result.READY){output.add(DisplayRow.text(prefix+(status==TargetPolicy.Result.OUT_OF_RANGE?"Out of range ("+range+" blocks / dimension)":"Target chunk unloaded")));continue;}
    if(card.kind()==CardItem.Kind.REDSTONE){output.add(DisplayRow.text((labels?"Redstone: ":"")+level.getBestNeighborSignal(pos)));continue;}
    var side=Direction.from3DDataValue(t.side());
+   if(card.kind()==CardItem.Kind.INVENTORY){
+    output.addAll(EnergyControlPort.inventoryProbe.read(level,pos,side).map(v->v.rows(com.zuxelus.energycontrol.port.inventory.InventorySnapshot.fields(data),labels,data.getBoolean("showBars"))).orElse(List.of(DisplayRow.text("No compatible inventory"))));continue;
+   }
    if(card.kind()==CardItem.Kind.MACHINE){
     output.addAll(EnergyControlPort.machineProbe.read(level,pos,side).orElse(List.of(DisplayRow.text("No supported machine data"))));continue;
    }

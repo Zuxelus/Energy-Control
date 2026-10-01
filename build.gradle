@@ -36,7 +36,7 @@ subprojects {
         preserveFileTimestamps = false
         reproducibleFileOrder = true
     }
-    tasks.withType(Jar).configureEach { from(rootProject.file('LICENSE')) }
+    tasks.withType(Jar).configureEach { from(rootProject.file('LICENSE')); from(rootProject.file('PORT-CHANGES.md')); from(rootProject.file('PORT-README.md')) }
     processResources {
         inputs.property 'qa', rootProject.hasProperty('qa')
         inputs.property 'version', project.version

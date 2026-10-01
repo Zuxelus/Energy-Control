@@ -1,0 +1,73 @@
+[13:48:12] [main/INFO] (Launcher) ModLauncher running: args [--launchTarget, forgeserverdev, --gameDir, ., --fml.fmlVersion, 4.0.41, --fml.mcVersion, 1.21.1, --fml.neoForgeVersion, 21.1.209, --fml.neoFormVersion, 20240808.144430, nogui, --nogui]
+[13:48:12] [main/INFO] (Launcher) JVM identified as Azul Systems, Inc. OpenJDK 64-Bit Server VM 21.0.12.1+1-LTS
+[13:48:12] [main/INFO] (Launcher) ModLauncher 11.0.5+main.901c6ea8 starting: java version 21.0.12.1 by Azul Systems, Inc.; OS Windows 11 arch amd64 version 10.0
+[13:48:12] [main/INFO] (ImmediateWindowHandler) ImmediateWindowProvider not loading because launch target is forgeserverdev
+[13:48:12] [main/INFO] (mixin) SpongePowered MIXIN Subsystem Version=0.8.7 Source=union:/C:/Users/Makoto/Documents/Codex/2026-10-01/task-2/Energy-Control/.gradle-user-home/caches/modules-2/files-2.1/net.fabricmc/sponge-mixin/0.15.2+mixin.0.8.7/2af2f021d8e02a0220dc27a7a72b4666d66d44ca/sponge-mixin-0.15.2+mixin.0.8.7.jar%23125!/ Service=ModLauncher Env=SERVER
+[13:48:12] [main/INFO] (ModDiscoverer) Found mod file "neoforge-21.1.209-minecraft-merged-1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209.jar" [locator: neoforge devenv provider ([C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\.gradle-user-home\caches\fabric-loom\minecraftMaven\net\minecraft\neoforge-21.1.209-minecraft-merged\1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209\neoforge-21.1.209-minecraft-merged-1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209.jar])]
+[13:48:13] [main/INFO] (ModDiscoverer) Found mod file "neoforge-21.1.209-minecraft-merged-1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209.jar" [locator: neoforge devenv provider ([C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\.gradle-user-home\caches\fabric-loom\minecraftMaven\net\minecraft\neoforge-21.1.209-minecraft-merged\1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209\neoforge-21.1.209-minecraft-merged-1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209.jar])]
+[13:48:13] [main/INFO] (ModDiscoverer) Found mod file "main" [locator: userdev mods and services, reader: mod manifest]
+[13:48:13] [main/INFO] (ModDiscoverer) Found mod file "neoforge-21.1.209-minecraft-merged-1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209.jar" [locator: userdev mods and services, reader: mod manifest]
+[13:48:13] [main/INFO] (ModDiscoverer) Found mod file "architectury-neoforge-13.0.8.jar" [locator: userdev mods and services, reader: mod manifest]
+[13:48:13] [main/INFO] (ModDiscoverer) Found mod file "10724552428059383365.jar" [locator: userdev mods and services, reader: mod manifest]
+[13:48:13] [main/INFO] (ModDiscoverer) Found gamelibrary file "mixinextras-neoforge-0.5.0.jar" [locator: userdev mods and services, reader: mod manifest]
+[13:48:13] [main/WARN] (JarSelector) Attempted to select a dependency jar for JarJar which was passed in as source: library:mixinextras.neoforge. Using Mod File: C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\.gradle-user-home\caches\modules-2\files-2.1\io.github.llamalad7\mixinextras-neoforge\0.5.0\d734b83ce6542bb70ea31755c1595b88992dbe65\mixinextras-neoforge-0.5.0.jar
+[13:48:13] [main/INFO] (JarInJarDependencyLocator) Found 1 dependencies adding them to mods collection
+[13:48:13] [main/INFO] (ModDiscoverer) Found library file "net.neoforged.neoforge-coremods-21.1.209.jar" [parent: neoforge-21.1.209-minecraft-merged-1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209.jar, locator: jarinjar, reader: mod manifest]
+[13:48:13] [main/INFO] (ModDiscoverer) 
+     Mod List:
+		Name Version (Mod Id)
+
+		Architectury 13.0.8 (architectury)
+		Energy Control (port preview) 1.21.1-0.5.0-port-preview (energycontrol)
+		generated_7866d13 1 (generated_7866d13)
+		Minecraft 1.21.1 (minecraft)
+		NeoForge 21.1.209 (neoforge)
+[13:48:13] [main/INFO] (LaunchServiceHandler) Launching target 'forgeserverdev' with arguments [--gameDir, ., nogui, --nogui]
+[13:48:13] [main/INFO] (unprotect) Found 8254 Minecraft classes
+[0110月2026 13:48:14.937] [main/INFO] [MixinExtras|Service/]: Initializing MixinExtras via com.llamalad7.mixinextras.service.MixinExtrasServiceImpl(version=0.5.0).
+[0110月2026 13:48:18.759] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
+[0110月2026 13:48:18.760] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, targets] with inputs: [0.1 -0.5 .9, 0 0 0]
+[0110月2026 13:48:18.762] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, destination] and [teleport, targets] with inputs: [Player, 0123, @e, dd12be42-52a9-4a91-a8a1-11c01849e498]
+[0110月2026 13:48:18.762] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, targets] and [teleport, destination] with inputs: [Player, 0123, dd12be42-52a9-4a91-a8a1-11c01849e498]
+[0110月2026 13:48:18.763] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, targets, location] and [teleport, targets, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
+[0110月2026 13:48:18.814] [modloading-worker-0/INFO] [net.neoforged.neoforge.common.NeoForgeMod/NEOFORGE-MOD]: NeoForge mod loading, version 21.1.209, for MC 1.21.1
+[0110月2026 13:48:19.526] [main/INFO] [com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService/]: Environment: Environment[sessionHost=https://sessionserver.mojang.com, servicesHost=https://api.minecraftservices.com, name=PROD]
+[0110月2026 13:48:19.627] [main/WARN] [net.neoforged.neoforge.common.CommonHooks/WP]: The following mods have version differences that were not resolved:
+generated_5354596 (version 1 -> MISSING)
+Things may not work well.
+[0110月2026 13:48:19.639] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/C:/Users/Makoto/Documents/Codex/2026-10-01/task-2/Energy-Control/.gradle-user-home/caches/fabric-loom/minecraftMaven/net/minecraft/neoforge-21.1.209-minecraft-merged/1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209/neoforge-21.1.209-minecraft-merged-1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209.jar%23198!/assets/.mcassetsroot' uses unexpected schema
+[0110月2026 13:48:19.639] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/C:/Users/Makoto/Documents/Codex/2026-10-01/task-2/Energy-Control/.gradle-user-home/caches/fabric-loom/minecraftMaven/net/minecraft/neoforge-21.1.209-minecraft-merged/1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209/neoforge-21.1.209-minecraft-merged-1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209.jar%23198!/data/.mcassetsroot' uses unexpected schema
+[0110月2026 13:48:20.295] [main/INFO] [net.minecraft.world.item.crafting.RecipeManager/]: Loaded 1315 recipes
+[0110月2026 13:48:20.432] [main/INFO] [net.minecraft.advancements.AdvancementTree/]: Loaded 1399 advancements
+[0110月2026 13:48:20.655] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Starting minecraft server version 1.21.1
+[0110月2026 13:48:20.655] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Loading properties
+[0110月2026 13:48:20.656] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Default game type: CREATIVE
+[0110月2026 13:48:20.656] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Generating keypair
+[0110月2026 13:48:20.696] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Starting Minecraft server on 127.0.0.1:25583
+[0110月2026 13:48:20.768] [Server thread/INFO] [net.minecraft.server.network.ServerConnectionListener/]: Using default channel type
+[0110月2026 13:48:20.794] [Server thread/WARN] [net.minecraft.server.dedicated.DedicatedServer/]: **** SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
+[0110月2026 13:48:20.795] [Server thread/WARN] [net.minecraft.server.dedicated.DedicatedServer/]: The server will make no attempt to authenticate usernames. Beware.
+[0110月2026 13:48:20.795] [Server thread/WARN] [net.minecraft.server.dedicated.DedicatedServer/]: While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.
+[0110月2026 13:48:20.795] [Server thread/WARN] [net.minecraft.server.dedicated.DedicatedServer/]: To change this, set "online-mode" to "true" in the server.properties file.
+[0110月2026 13:48:20.824] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Preparing level "world"
+[0110月2026 13:48:20.918] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Preparing start region for dimension minecraft:overworld
+[0110月2026 13:48:21.098] [worldgen/INFO] [net.minecraft.server.level.progress.LoggerChunkProgressListener/]: Preparing spawn area: 0%
+[0110月2026 13:48:21.179] [Server thread/INFO] [net.minecraft.server.level.progress.LoggerChunkProgressListener/]: Time elapsed: 260 ms
+[0110月2026 13:48:21.179] [Server thread/INFO] [net.minecraft.server.dedicated.DedicatedServer/]: Done (0.375s)! For help, type "help"
+[0110月2026 13:48:21.209] [Server thread/INFO] [net.neoforged.neoforge.gametest.GameTestHooks/]: Enabled Gametest Namespaces: []
+[0110月2026 13:48:21.214] [Server thread/INFO] [net.neoforged.neoforge.server.permission.PermissionAPI/]: Successfully initialized permission handler neoforge:default_handler
+[0110月2026 13:49:19.872] [Server thread/INFO] [net.minecraft.server.players.PlayerList/]: ECEditor[/127.0.0.1:11682] logged in with entity id 1 at (1.5, 0.0, -3.5)
+[0110月2026 13:49:19.952] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: ECEditor joined the game
+[0110月2026 13:49:37.876] [Server thread/INFO] [net.minecraft.server.network.ServerGamePacketListenerImpl/]: ECEditor lost connection: Disconnected
+[0110月2026 13:49:37.876] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: ECEditor left the game
+[0110月2026 13:52:48.732] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Stopping the server
+[0110月2026 13:52:48.775] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Stopping server
+[0110月2026 13:52:48.776] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving players
+[0110月2026 13:52:48.776] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving worlds
+[0110月2026 13:52:48.876] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'ServerLevel[world]'/minecraft:overworld
+[0110月2026 13:52:48.918] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'ServerLevel[world]'/minecraft:the_nether
+[0110月2026 13:52:48.938] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: Saving chunks for level 'ServerLevel[world]'/minecraft:the_end
+[0110月2026 13:52:48.971] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: ThreadedAnvilChunkStorage (world): All chunks are saved
+[0110月2026 13:52:48.971] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: ThreadedAnvilChunkStorage (DIM-1): All chunks are saved
+[0110月2026 13:52:48.971] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: ThreadedAnvilChunkStorage (DIM1): All chunks are saved
+[0110月2026 13:52:48.971] [Server thread/INFO] [net.minecraft.server.MinecraftServer/]: ThreadedAnvilChunkStorage: All dimensions are saved

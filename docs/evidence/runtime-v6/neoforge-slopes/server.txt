@@ -1,0 +1,16 @@
+RUN_START slopes-server reload=false 2026-10-01T04:59:51.041932100Z
+PASS grouped wedge plane continuous across parts facing down
+PASS actual solid collision slopes facing down
+PASS grouped wedge plane continuous across parts facing up
+PASS actual solid collision slopes facing up
+PASS grouped wedge plane continuous across parts facing north
+PASS actual solid collision slopes facing north
+PASS grouped wedge plane continuous across parts facing south
+PASS actual solid collision slopes facing south
+PASS grouped wedge plane continuous across parts facing west
+PASS actual solid collision slopes facing west
+PASS grouped wedge plane continuous across parts facing east
+PASS actual solid collision slopes facing east
+PASS normal GUI slope edits persist on server
+PASS normal break replacement restores continuous plane
+ALL_SLOPES_SERVER_DONE

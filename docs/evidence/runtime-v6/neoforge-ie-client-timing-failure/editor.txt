@@ -1,0 +1,8 @@
+RUN_START IE-special client observer=false reload=false 2026-10-01T05:16:34.899992500Z
+PASS both players see actual wire power and thermal potential
+SCREENSHOT Saved screenshot as ie-special-editor-live.png
+PASS IE special panel normal menu opens
+PASS real capacitor bar toggle synchronizes to both players
+PASS restored real storage bar and thickness synchronize to both players
+SCREENSHOT Saved screenshot as ie-special-editor-controls.png
+FAIL both clients see actual wire stop and removed heat source as zero

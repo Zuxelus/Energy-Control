@@ -41,7 +41,9 @@ public final class PortableMenu extends AbstractContainerMenu {
  }
  public void editText(Player p,int slot,String text){if(p.containerMenu!=this||!stillValid(p)||p.isSpectator()||slot!=0)return;CardDisplay.edit(contents.getItem(0),text);contents.setChanged();broadcastChanges();}
  @Override public boolean clickMenuButton(Player p,int id){
-  if(!stillValid(p)||p.isSpectator()||id<100||id>103)return false;
+  if(!stillValid(p)||p.isSpectator())return false;
+  if(id>=110&&id<115){boolean changed=CardItem.toggleInventoryField(contents.getItem(0),id-110);if(changed)contents.setChanged();return changed;}
+  if(id<100||id>103)return false;
   var stack=contents.getItem(0);if(!(stack.getItem() instanceof CardItem))return false;
   var data=CardItem.data(stack);String key=id==100?"hideLabels":id==101?"hidePercent":id==102?"showEach":"showBars";data.putBoolean(key,!data.getBoolean(key));CardItem.update(stack,data);contents.setChanged();return true;
  }

@@ -1,0 +1,9 @@
+RUN_START inventory-client observer=true reload=false 2026-10-01T04:21:38.929259700Z
+PASS both clients receive full actual inventory summary
+PASS both clients receive changing real chest contents
+SCREENSHOT Saved screenshot as inventory-observer-live.png
+PASS inventory configuration opens on both clients
+PASS inventory field toggle synchronizes menu card and world on both clients
+SCREENSHOT Saved screenshot as inventory-observer-fields.png
+ALL_INVENTORY_CLIENT_DONE observer
+SCREENSHOT Saved screenshot as inventory-observer-final.png

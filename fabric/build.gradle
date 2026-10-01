@@ -39,3 +39,11 @@ if(rootProject.hasProperty('qaStage') && rootProject.qaStage.toString().startsWi
 if(rootProject.hasProperty('qaStage') && rootProject.qaStage.toString().startsWith('graphics')) {
     loom.runs { client { runDir rootProject.hasProperty('qaObserver')?'run/client-graphics-v5-observer':'run/client-graphics-v5' }; server { runDir 'run/server-graphics-v5' } }
 }
+
+if(rootProject.hasProperty('qaStage') && rootProject.qaStage.toString().startsWith('inventory')) {
+    loom.runs { client { runDir rootProject.hasProperty('qaObserver')?'run/client-inventory-observer':'run/client-inventory' }; server { runDir 'run/server-inventory' } }
+}
+
+if(rootProject.hasProperty('qaStage') && rootProject.qaStage.toString().startsWith('slopes')) {
+    loom.runs { client { runDir rootProject.hasProperty('qaObserver')?'run/client-slopes-observer':'run/client-slopes' }; server { runDir 'run/server-slopes' } }
+}

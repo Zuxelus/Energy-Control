@@ -21,8 +21,23 @@ public final class PanelRenderer implements BlockEntityRenderer<PanelBlockEntity
         quad.addVertex(matrix,right,bottom,depth).setColor(color).setLight(0xf000f0);
         quad.addVertex(matrix,right,top,depth).setColor(color).setLight(0xf000f0);
     }
+    private static void renderCase(PanelBlockEntity panel,PoseStack pose,MultiBufferSource buffers,int light,int overlay){
+        var surface=panel.caseSurface();var facing=panel.facing();
+        var points=new net.minecraft.world.phys.Vec3[8];
+        double[][] uv={{0,0},{1,0},{1,1},{0,1}};
+        for(int i=0;i<4;i++){points[i]=com.zuxelus.energycontrol.port.core.CaseSurface.point(facing,uv[i][0],uv[i][1],surface.depth(uv[i][0],uv[i][1]));points[i+4]=com.zuxelus.energycontrol.port.core.CaseSurface.point(facing,uv[i][0],uv[i][1],0);}
+        // Local right/up/front basis is right-handed for all six orientations.
+        int[][] faces={{0,1,2,3},{7,6,5,4},{4,5,1,0},{1,5,6,2},{3,2,6,7},{4,0,3,7}};
+        for(int f=0;f<faces.length;f++){
+            String texture=f==0?(panel.isExtender()?"extender_advanced_face":"panel_advanced_face"):(panel.isExtender()?"extender_advanced_all":"panel_advanced_all");
+            var consumer=buffers.getBuffer(RenderType.entitySolid(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath("energycontrol","textures/block/info_panel/"+texture+".png")));
+            var ids=faces[f];var normal=points[ids[1]].subtract(points[ids[0]]).cross(points[ids[2]].subtract(points[ids[0]])).normalize();
+            for(int i=0;i<4;i++){var p=points[ids[i]];consumer.addVertex(pose.last().pose(),(float)p.x,(float)p.y,(float)p.z).setColor(255,255,255,255).setUv((float)uv[i][0],1-(float)uv[i][1]).setOverlay(overlay).setLight(light).setNormal(pose.last(),(float)normal.x,(float)normal.y,(float)normal.z);}
+        }
+    }
     @Override public int getViewDistance() { return 96; }
     @Override public void render(PanelBlockEntity panel,float tick,PoseStack pose,MultiBufferSource buffers,int light,int overlay) {
+        if(panel.advanced()&&!panel.holographic()&&panel.getBlockState().getValue(com.zuxelus.energycontrol.port.block.PanelBlock.SLOPED))renderCase(panel,pose,buffers,light,overlay);
         if(panel.isExtender()) return;
         var bounds=panel.bounds();
         pose.pushPose(); pose.translate(.5,.5,.5);
@@ -36,7 +51,10 @@ public final class PanelRenderer implements BlockEntityRenderer<PanelBlockEntity
         }
         if(panel.facing().getAxis()==net.minecraft.core.Direction.Axis.Y) pose.mulPose(Axis.ZP.rotationDegrees(180));
         var projection=panel.holographic()?panel.projection():com.zuxelus.energycontrol.port.core.ProjectionSettings.DEFAULT;
-        pose.translate((bounds.minX()+bounds.maxX())/2.0,(bounds.minY()+bounds.maxY())/2.0,panel.holographic()?projection.frontDepth():com.zuxelus.energycontrol.port.core.PanelCase.frontDepth(panel.thickness()));
+        double cx=(bounds.minX()+bounds.maxX())/2.0,cy=(bounds.minY()+bounds.maxY())/2.0;
+        var slope=panel.slope();
+        pose.translate(cx,cy,panel.holographic()?projection.frontDepth():slope.depth(cx,cy)-.5+.005);
+        if(!panel.holographic()&&panel.advanced())pose.mulPose(new org.joml.Matrix4f().m02((float)slope.dx()).m12((float)slope.dy()));
         pose.mulPose(Axis.YP.rotationDegrees(projection.yaw()));pose.mulPose(Axis.XP.rotationDegrees(projection.pitch()));
         pose.translate(-bounds.width()/2.0,bounds.height()/2.0,0);
         pose.scale(1/128f,-1/128f,1/128f);

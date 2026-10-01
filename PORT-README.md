@@ -1,4 +1,4 @@
-# Energy Control 1.21.1 — Architectury preview
+# Energy Control Enhanced — Minecraft1.21.1 beta
 
 **Incomplete independent GPLv3 port. Core gameplay verified in isolated Fabric
 and NeoForge development clients/servers; not a full upstream replacement.** Original upstream: https://github.com/Zuxelus/Energy-Control.
@@ -51,3 +51,11 @@ The 0.5 Machine Data Card supports IE12.4.2-194 current-transformer average FE/t
 and thermoelectric generation potential on NeoForge. Sneak-use it on the machine,
 then insert it into a panel. These are separately accepted actual-machine reads;
 Fabric shows unsupported machine data until an appropriate adapter exists.
+
+0.6 adds real sided inventory cards with five field switches,54-slot card holders,
+five target-detecting sensor kits, main/offhand item locking and grouped solid
+slopes. Layout controls adjust the solid plane independently from holograms.
+Both loaders have normal interaction/multiplayer/save acceptance; see QA-V6.md.
+This is still incomplete beta software. Modrinth publication is authorized but
+has not occurred; actual blockers and a truthful page draft are in docs/
+MODRINTH-PUBLICATION.md and MODRINTH-DESCRIPTION.md.
