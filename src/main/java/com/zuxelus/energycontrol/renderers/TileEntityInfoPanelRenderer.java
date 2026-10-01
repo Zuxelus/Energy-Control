@@ -24,20 +24,11 @@ import net.minecraft.util.math.Vec3f;
 public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEntityInfoPanel> {
 	private static int[][] sides = new int[][] { { 3, 2, 1, 0, 5, 4 }, { 2, 3, 1, 0, 4, 5 }, { 4, 5, 1, 0, 3, 2 },
 		{ 5 ,4, 1, 0, 2, 3 }, { 1, 0, 3, 2, 4, 5 }, { 0, 1, 2, 3, 4, 5 } };
-	private static final Identifier TEXTUREOFF[];
-	private static final Identifier TEXTUREON[];
+	private static final Identifier TEXTURE = new Identifier(EnergyControl.MODID + ":textures/block/info_panel/all.png");
 	private static final CubeRenderer model[];
 	private final TextRenderer font;
 
 	static {
-		TEXTUREOFF = new Identifier[16];
-		TEXTUREON = new Identifier[16];
-		for (int i = 0; i < 16; i++) {
-			TEXTUREOFF[i] = new Identifier(
-					EnergyControl.MODID + String.format(":textures/block/info_panel/off/all%d.png", i));
-			TEXTUREON[i] = new Identifier(
-					EnergyControl.MODID + String.format(":textures/block/info_panel/on/all%d.png", i));
-		}
 		model = new CubeRenderer[16];
 		for (int i = 0; i < 4; i++)
 			for (int j = 0; j < 4; j++)
@@ -70,6 +61,16 @@ public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 		light[sides[te.getFacing().getId()][4]] = WorldRenderer.getLightmapCoordinates(te.getWorld(), te.getPos().offset(Direction.NORTH));
 		light[sides[te.getFacing().getId()][5]] = WorldRenderer.getLightmapCoordinates(te.getWorld(), te.getPos().offset(Direction.SOUTH));
 		return light;
+	}
+
+	// an unpowered screen is drawn at 60% brightness, like the old "off" textures
+	public static int getFaceColor(int color, boolean isPowered) {
+		if (isPowered)
+			return color;
+		int r = (color >> 16 & 255) * 3 / 5;
+		int g = (color >> 8 & 255) * 3 / 5;
+		int b = (color & 255) * 3 / 5;
+		return 0xFF000000 | r << 16 | g << 8 | b;
 	}
 
 	public TileEntityInfoPanelRenderer(Context ctx) {
@@ -105,18 +106,9 @@ public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 			break;
 		}
 
-		int color = 2;
-		if (te.getColored()) {
-			color = te.getColorBackground();
-			if (color > 15 || color < 0)
-				color = 2;
-		}
-		VertexConsumer vertexBuilder;
-		if (te.getPowered())
-			vertexBuilder = buffer.getBuffer(RenderLayer.getEntitySolid(TEXTUREON[color]));
-		else
-			vertexBuilder = buffer.getBuffer(RenderLayer.getEntitySolid(TEXTUREOFF[color]));
-		model[te.findTexture()].render(matrixStack, vertexBuilder, light, combinedOverlay);
+		int color = TileEntityInfoPanelRenderer.getFaceColor(te.getColored() ? te.getColorBackground() : TileEntityInfoPanel.GREEN, te.getPowered());
+		VertexConsumer vertexBuilder = buffer.getBuffer(RenderLayer.getEntitySolid(TEXTURE));
+		model[te.findTexture()].render(matrixStack, vertexBuilder, light, combinedOverlay, color);
 		if (te.getPowered()) {
 			List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
 			drawText(te, joinedData, matrixStack, buffer, combinedLight);

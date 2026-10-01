@@ -9,6 +9,7 @@
   "client": [
   	"AbstractBlockStateMixin",
     "ClientPlayNetworkHandlerMixin",
+    "ReloadableResourceManagerImplMixin",
     "SpriteAtlasTextureMixin",
     "WorldRendererMixin"
   ],

@@ -21,8 +21,6 @@ import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.sound.SoundEntry;
 import net.minecraft.client.sound.SoundEntryDeserializer;
-import net.minecraft.resource.DirectoryResourcePack;
-import net.minecraft.resource.ReloadableResourceManagerImpl;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.SinglePreparationResourceReloader;
@@ -77,6 +75,11 @@ public class SoundHelper extends SinglePreparationResourceReloader<Map<String, S
 		writer.close();
 	}
 
+	// Added to the client resource packs by ReloadableResourceManagerImplMixin
+	public static File getAlarmsFolder() {
+		return alarms;
+	}
+
 	@Override
 	public Identifier getFabricId() {
 		return ID;
@@ -84,10 +87,6 @@ public class SoundHelper extends SinglePreparationResourceReloader<Map<String, S
 
 	@Override
 	protected Map<String, SoundEntry> prepare(ResourceManager manager, Profiler profiler) {
-		if (alarms != null) {
-			DirectoryResourcePack pack = new DirectoryResourcePack(alarms);
-			((ReloadableResourceManagerImpl) manager).addPack(pack);
-		}
 		EnergyControl.INSTANCE.availableAlarms = new ArrayList<String>();
 
 		try {

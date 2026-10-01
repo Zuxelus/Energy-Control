@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.renderers;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanelExtender;
 
 import net.minecraft.client.render.RenderLayer;
@@ -13,19 +14,10 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3f;
 
 public class TEInfoPanelExtenderRenderer implements BlockEntityRenderer<TileEntityInfoPanelExtender> {
-	private static final Identifier TEXTUREOFF[];
-	private static final Identifier TEXTUREON[];
+	private static final Identifier TEXTURE = new Identifier(EnergyControl.MODID + ":textures/block/info_panel/alle.png");
 	private static final CubeRenderer model[];
 
 	static {
-		TEXTUREOFF = new Identifier[16];
-		TEXTUREON = new Identifier[16];
-		for (int i = 0; i < 16; i++) {
-			TEXTUREOFF[i] = new Identifier(
-					EnergyControl.MODID + String.format(":textures/block/info_panel/off/all%de.png", i));
-			TEXTUREON[i] = new Identifier(
-					EnergyControl.MODID + String.format(":textures/block/info_panel/on/all%de.png", i));
-		}
 		model = new CubeRenderer[16];
 		for (int i = 0; i < 4; i++)
 			for (int j = 0; j < 4; j++)
@@ -63,18 +55,9 @@ public class TEInfoPanelExtenderRenderer implements BlockEntityRenderer<TileEnti
 			break;
 		}
 
-		int color = 2;
-		if (te.getColored()) {
-			color = te.getColorBackground();
-			if (color > 15 || color < 0)
-				color = 2;
-		}
-		VertexConsumer vertexBuilder;
-		if (te.getPowered())
-			vertexBuilder = buffer.getBuffer(RenderLayer.getEntitySolid(TEXTUREON[color]));
-		else
-			vertexBuilder = buffer.getBuffer(RenderLayer.getEntitySolid(TEXTUREOFF[color]));
-		model[te.findTexture()].render(matrixStack, vertexBuilder, light, combinedOverlay);
+		int color = TileEntityInfoPanelRenderer.getFaceColor(te.getColored() ? te.getColorBackground() : TileEntityInfoPanel.GREEN, te.getPowered());
+		VertexConsumer vertexBuilder = buffer.getBuffer(RenderLayer.getEntitySolid(TEXTURE));
+		model[te.findTexture()].render(matrixStack, vertexBuilder, light, combinedOverlay, color);
 		matrixStack.pop();
 	}
 

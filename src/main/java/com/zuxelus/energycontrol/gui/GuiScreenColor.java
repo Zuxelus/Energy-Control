@@ -1,58 +1,220 @@
 package com.zuxelus.energycontrol.gui;
 
+import java.awt.Color;
+import java.util.ArrayList;
+
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.gui.GuiBase;
+import com.zuxelus.zlib.gui.controls.GuiTextNumeric;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.LiteralText;
+import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
 public class GuiScreenColor extends GuiBase {
+	private final static Identifier PICKER = new Identifier(EnergyControl.MODID + ":textures/gui/gui_color_picker.png");
 
 	private GuiPanelBase<?> parentGui;
 	private int colorText;
 	private int colorBack;
 	private TileEntityInfoPanel panel;
+	private ArrayList<GuiTextNumeric> fieldList = new ArrayList<>();
+	private ArrayList<GuiTextNumeric> fieldList2 = new ArrayList<>();
+	protected GuiTextNumeric rText;
+	protected GuiTextNumeric gText;
+	protected GuiTextNumeric bText;
+	private boolean isDarkPicker;
+	protected GuiTextNumeric rText2;
+	protected GuiTextNumeric gText2;
+	protected GuiTextNumeric bText2;
+	private boolean isDarkPicker2;
+	int offset;
 
 	public GuiScreenColor(GuiPanelBase<?> parentGui, TileEntityInfoPanel panel) {
-		super("", 234, 94, EnergyControl.MODID + ":textures/gui/gui_colors.png");
+		super("", 234, 120, EnergyControl.MODID + ":textures/gui/gui_colors.png");
 		this.parentGui = parentGui;
 		this.panel = panel;
 		colorBack = panel.getColorBackground();
 		colorText = panel.getColorText();
+		offset = 116;
+	}
+
+	@Override
+	public void init() {
+		super.init();
+		fieldList.clear();
+		rText = new GuiTextNumeric(textRenderer, guiLeft + 10, guiTop + 18, 26, 12, LiteralText.EMPTY, 255);
+		rText.setMaxLength(3);
+		rText.setText(Integer.toString((colorText & 0x00FF0000) >> 16));
+		fieldList.add(rText);
+		gText = new GuiTextNumeric(textRenderer, guiLeft + 46, guiTop + 18, 26, 12, LiteralText.EMPTY, 255);
+		gText.setMaxLength(3);
+		gText.setText(Integer.toString((colorText & 0x0000FF00) >> 8));
+		fieldList.add(gText);
+		bText = new GuiTextNumeric(textRenderer, guiLeft + 82, guiTop + 18, 26, 12, LiteralText.EMPTY, 255);
+		bText.setMaxLength(3);
+		bText.setText(Integer.toString(colorText & 0x000000FF));
+		fieldList.add(bText);
+		fieldList2.clear();
+		rText2 = new GuiTextNumeric(textRenderer, guiLeft + 10 + offset, guiTop + 18, 26, 12, LiteralText.EMPTY, 255);
+		rText2.setMaxLength(3);
+		rText2.setText(Integer.toString((colorBack & 0x00FF0000) >> 16));
+		fieldList2.add(rText2);
+		gText2 = new GuiTextNumeric(textRenderer, guiLeft + 46 + offset, guiTop + 18, 26, 12, LiteralText.EMPTY, 255);
+		gText2.setMaxLength(3);
+		gText2.setText(Integer.toString((colorBack & 0x0000FF00) >> 8));
+		fieldList2.add(gText2);
+		bText2 = new GuiTextNumeric(textRenderer, guiLeft + 82 + offset, guiTop + 18, 26, 12, LiteralText.EMPTY, 255);
+		bText2.setMaxLength(3);
+		bText2.setText(Integer.toString(colorBack & 0x000000FF));
+		fieldList2.add(bText2);
 	}
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
-		drawTexture(matrixStack, 5 + colorBack * 14, 30, 234, 0, 14, 14);
-		drawTexture(matrixStack, 5 + colorText * 14, 61, 234, 0, 14, 14);
-		textRenderer.draw(matrixStack, new TranslatableText("msg.ec.ScreenColor"), 8, 20, 0x404040);
-		textRenderer.draw(matrixStack, new TranslatableText("msg.ec.TextColor"), 8, 52, 0x404040);
+		textRenderer.draw(matrixStack, I18n.translate("msg.ec.ScreenColor"), 152, 6, colorBack);
+		textRenderer.draw(matrixStack, I18n.translate("msg.ec.TextColor"), 8, 6, colorText);
+	}
+
+	@Override
+	protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+		super.drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
+		RenderSystem.setShaderTexture(0, PICKER);
+		drawTexture(matrixStack, guiLeft + 20, guiTop + 34, isDarkPicker ? 80 : 0, 0, 80, 80, 160, 80);
+		drawTexture(matrixStack, guiLeft + 20 + offset, guiTop + 34, isDarkPicker2 ? 80 : 0, 0, 80, 80, 160, 80);
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShaderTexture(0, texture);
+		for (GuiTextNumeric text : fieldList)
+			text.render(matrixStack, mouseX, mouseY, partialTicks);
+		for (GuiTextNumeric text : fieldList2)
+			text.render(matrixStack, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
-		mouseX -= guiLeft;
-		mouseY -= guiTop;
-		if (mouseX >= 7 && mouseX <= 226) {
-			int index = ((int) mouseX - 7) / 14;
-			int shift = ((int) mouseX - 7) % 14;
-			if (mouseY >= 32 && mouseY <= 41 && shift <= 9) {// back
-				colorBack = index;
-				NetworkHelper.updateSeverTileEntity(panel.getPos(), 2, (colorBack << 4) | colorText);
-				panel.setColorBackground(colorBack);
-			} else if (mouseY >= 63 && mouseY <= 72 && shift <= 9) {// /text
-				colorText = index;
-				NetworkHelper.updateSeverTileEntity(panel.getPos(), 2, (colorBack << 4) | colorText);
-				panel.setColorText(colorText);
-			}
-			return true;
+		if (mouseButton == 0) {
+			for (GuiTextNumeric text : fieldList)
+				text.mouseClicked(mouseX, mouseY, mouseButton);
+			for (GuiTextNumeric text : fieldList2)
+				text.mouseClicked(mouseX, mouseY, mouseButton);
+			checkColorPicker(mouseX - guiLeft, mouseY - guiTop);
+			checkColorPicker2(mouseX - guiLeft, mouseY - guiTop);
 		}
-		return super.mouseClicked(mouseX, mouseY, mouseButton);
+		return true;
+	}
+
+	private void checkColorPicker(double mouseX, double mouseY) {
+		if (isInside(mouseX, mouseY, 10, 40, 8, 8)) {
+			isDarkPicker = false;
+			return;
+		}
+		if (isInside(mouseX, mouseY, 100, 40, 8, 8)) {
+			isDarkPicker = true;
+			return;
+		}
+		if (isInside(mouseX, mouseY, 20, 34, 80, 80)) {
+			double x = mouseX - 20 - 40;
+			double y = mouseY - 34 - 40;
+			float saturation = (float) Math.sqrt(x * x + y * y) / 36.0F;
+			if (saturation > 1)
+				return;
+			int hue = (int) (x == 0 ? 0 : Math.round(Math.toDegrees(Math.atan(Math.abs(y / x)))));
+			if (x <= 0 && y >= 0)
+				hue = 180 - hue;
+			else if (x <= 0 && y <= 0)
+				hue = 180 + hue;
+			else if (x >= 0 && y <= 0)
+				hue = 360 - hue;
+			if (hue > 360)
+				hue = 359;
+			Color c = isDarkPicker ? getColorFromHSV(hue, 1.0F, saturation) : getColorFromHSV(hue, saturation, 1.0F);
+			setColorText(c);
+			fieldList.get(0).setText(Integer.toString(c.getRed()));
+			fieldList.get(1).setText(Integer.toString(c.getGreen()));
+			fieldList.get(2).setText(Integer.toString(c.getBlue()));
+		}
+	}
+
+	private void checkColorPicker2(double mouseX, double mouseY) {
+		if (isInside(mouseX, mouseY, 10 + offset, 40, 8, 8)) {
+			isDarkPicker2 = false;
+			return;
+		}
+		if (isInside(mouseX, mouseY, 100 + offset, 40, 8, 8)) {
+			isDarkPicker2 = true;
+			return;
+		}
+		if (isInside(mouseX, mouseY, 20 + offset, 34, 80, 80)) {
+			double x = mouseX - 20 - 40 - offset;
+			double y = mouseY - 34 - 40;
+			float saturation = (float) Math.sqrt(x * x + y * y) / 36.0F;
+			if (saturation > 1)
+				return;
+			int hue = (int) (x == 0 ? 0 : Math.round(Math.toDegrees(Math.atan(Math.abs(y / x)))));
+			if (x <= 0 && y >= 0)
+				hue = 180 - hue;
+			else if (x <= 0 && y <= 0)
+				hue = 180 + hue;
+			else if (x >= 0 && y <= 0)
+				hue = 360 - hue;
+			if (hue > 360)
+				hue = 359;
+			Color c = isDarkPicker2 ? getColorFromHSV(hue, 1.0F, saturation) : getColorFromHSV(hue, saturation, 1.0F);
+			setColorBackground(c);
+			fieldList2.get(0).setText(Integer.toString(c.getRed()));
+			fieldList2.get(1).setText(Integer.toString(c.getGreen()));
+			fieldList2.get(2).setText(Integer.toString(c.getBlue()));
+		}
+	}
+
+	private Color getColorFromHSV(int hue, float saturation, float value) {
+		float c = saturation * value;
+		float x = c * (1 - Math.abs((hue / 60.0F) % 2 - 1));
+		float m = value - c;
+		if (hue < 60)
+			return new Color(c + m, x + m, m);
+		if (hue < 120)
+			return new Color(x + m, c + m, m);
+		if (hue < 180)
+			return new Color(m, c + m, x + m);
+		if (hue < 240)
+			return new Color(m, x + m, c + m);
+		if (hue < 300)
+			return new Color(x + m, m, c + m);
+		return new Color(c + m, m, x + m);
+	}
+
+	private void setColorText(Color c) {
+		colorText = c.getRGB();
+		NetworkHelper.updateSeverTileEntity(panel.getPos(), 7, colorText);
+		panel.setColorText(colorText);
+	}
+
+	private void setColorBackground(Color c) {
+		colorBack = c.getRGB();
+		NetworkHelper.updateSeverTileEntity(panel.getPos(), 6, colorBack);
+		panel.setColorBackground(colorBack);
+	}
+
+	private boolean isInside(double mouseX, double mouseY, int x, int y, int width, int height) {
+		return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
+	}
+
+	@Override
+	public void tick() {
+		super.tick();
+		for (GuiTextNumeric text : fieldList)
+			text.tick();
+		for (GuiTextNumeric text : fieldList2)
+			text.tick();
 	}
 
 	@Override
@@ -61,6 +223,80 @@ public class GuiScreenColor extends GuiBase {
 			client.setScreen(parentGui);
 			return true;
 		}
+		if (keyCode == 258) {
+			if (fieldList.get(0).isFocused()) {
+				fieldList.get(0).setTextFieldFocused(false);
+				fieldList.get(1).setTextFieldFocused(true);
+			} else if (fieldList.get(1).isFocused()) {
+				fieldList.get(1).setTextFieldFocused(false);
+				fieldList.get(2).setTextFieldFocused(true);
+			} else if (fieldList.get(2).isFocused()) {
+				fieldList.get(2).setTextFieldFocused(false);
+				fieldList2.get(0).setTextFieldFocused(true);
+			} else if (fieldList2.get(0).isFocused()) {
+				fieldList2.get(0).setTextFieldFocused(false);
+				fieldList2.get(1).setTextFieldFocused(true);
+			} else if (fieldList2.get(1).isFocused()) {
+				fieldList2.get(1).setTextFieldFocused(false);
+				fieldList2.get(2).setTextFieldFocused(true);
+			} else if (fieldList2.get(2).isFocused()) {
+				fieldList2.get(2).setTextFieldFocused(false);
+				fieldList.get(0).setTextFieldFocused(true);
+			}
+			return true;
+		} else {
+			for (GuiTextNumeric text : fieldList) {
+				String value = text.getText();
+				if (text.keyPressed(keyCode, scanCode, modifiers)) {
+					if (!value.equals(text.getText()))
+						setColorText(new Color(getColotInt(0), getColotInt(1), getColotInt(2)));
+					return true;
+				}
+			}
+			for (GuiTextNumeric text : fieldList2) {
+				String value = text.getText();
+				if (text.keyPressed(keyCode, scanCode, modifiers)) {
+					if (!value.equals(text.getText()))
+						setColorBackground(new Color(getColotInt2(0), getColotInt2(1), getColotInt2(2)));
+					return true;
+				}
+			}
+		}
 		return super.keyPressed(keyCode, scanCode, modifiers);
+	}
+
+	@Override
+	public boolean charTyped(char typedChar, int keyCode) {
+		for (GuiTextNumeric text : fieldList) {
+			String value = text.getText();
+			if (text.charTyped(typedChar, keyCode)) {
+				if (!value.equals(text.getText()))
+					setColorText(new Color(getColotInt(0), getColotInt(1), getColotInt(2)));
+				return true;
+			}
+		}
+		for (GuiTextNumeric text : fieldList2) {
+			String value = text.getText();
+			if (text.charTyped(typedChar, keyCode)) {
+				if (!value.equals(text.getText()))
+					setColorBackground(new Color(getColotInt2(0), getColotInt2(1), getColotInt2(2)));
+				return true;
+			}
+		}
+		return super.charTyped(typedChar, keyCode);
+	}
+
+	private int getColotInt(int id) {
+		String text = fieldList.get(id).getText();
+		if (text == null || text.isEmpty())
+			return 0;
+		return Integer.parseInt(text);
+	}
+
+	private int getColotInt2(int id) {
+		String text = fieldList2.get(id).getText();
+		if (text == null || text.isEmpty())
+			return 0;
+		return Integer.parseInt(text);
 	}
 }

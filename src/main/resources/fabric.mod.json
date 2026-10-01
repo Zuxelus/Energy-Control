@@ -36,10 +36,11 @@
 		"modid.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.11.3",
-		"fabric": "*",
-		"minecraft": "1.18.x",
-		"java": ">=17"
+		"fabricloader": ">=0.19.5",
+		"minecraft": "~1.18.2",
+		"java": ">=17",
+		"fabric-api": "*"
+
 	},
 	"suggests": {
 	}

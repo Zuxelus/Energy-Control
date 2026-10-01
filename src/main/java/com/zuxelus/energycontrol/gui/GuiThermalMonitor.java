@@ -61,9 +61,9 @@ public class GuiThermalMonitor extends GuiBase {
 	}
 
 	@Override
-	public void onClose() {
+	public void close() {
 		updateHeat(0);
-		super.onClose();
+		super.close();
 	}
 
 	@SuppressWarnings("resource")

@@ -100,8 +100,8 @@ public class GuiCardText extends GuiBase {
 	}
 
 	@Override
-	public void onClose() {
+	public void close() {
 		actionPerformed(1);
-		super.onClose();
+		super.close();
 	}
 }

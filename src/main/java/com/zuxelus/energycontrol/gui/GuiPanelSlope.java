@@ -58,7 +58,7 @@ public class GuiPanelSlope extends GuiBase {
 	}
 
 	@Override
-	public void onClose() {
+	public void close() {
 		client.setScreen(parentGui);
 	}
 }

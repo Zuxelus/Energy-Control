@@ -2,6 +2,7 @@ package com.zuxelus.energycontrol.renderers;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.tileentities.Screen;
+import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanelExtender;
 
 import net.minecraft.client.render.RenderLayer;
@@ -14,19 +15,10 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3f;
 
 public class TEAdvancedInfoPanelExtenderRenderer implements BlockEntityRenderer<TileEntityAdvancedInfoPanelExtender> {
-	private static final Identifier TEXTUREOFF[];
-	private static final Identifier TEXTUREON[];
+	private static final Identifier TEXTURE = new Identifier(EnergyControl.MODID + ":textures/block/info_panel/alladve.png");
 	private static final CubeRenderer model[];
 
 	static {
-		TEXTUREOFF = new Identifier[16];
-		TEXTUREON = new Identifier[16];
-		for (int i = 0; i < 16; i++) {
-			TEXTUREOFF[i] = new Identifier(
-					EnergyControl.MODID + String.format(":textures/block/info_panel/off/alladv%de.png", i));
-			TEXTUREON[i] = new Identifier(
-					EnergyControl.MODID + String.format(":textures/block/info_panel/on/alladv%de.png", i));
-		}
 		model = new CubeRenderer[16];
 		for (int i = 0; i < 4; i++)
 			for (int j = 0; j < 4; j++)
@@ -64,17 +56,8 @@ public class TEAdvancedInfoPanelExtenderRenderer implements BlockEntityRenderer<
 			break;
 		}
 
-		int color = 6;
-		if (te.getColored()) {
-			color = te.getColorBackground();
-			if (color > 15 || color < 0)
-				color = 6;
-		}
-		VertexConsumer vertexBuilder;
-		if (te.getPowered())
-			vertexBuilder = buffer.getBuffer(RenderLayer.getEntitySolid(TEXTUREON[color]));
-		else
-			vertexBuilder = buffer.getBuffer(RenderLayer.getEntitySolid(TEXTUREOFF[color]));
+		int color = TileEntityInfoPanelRenderer.getFaceColor(te.getColored() ? te.getColorBackground() : TileEntityAdvancedInfoPanel.DEFAULT_BACKGROUND, te.getPowered());
+		VertexConsumer vertexBuilder = buffer.getBuffer(RenderLayer.getEntitySolid(TEXTURE));
 
 		int textureId = te.findTexture();
 		byte thickness = te.getThickness();
@@ -85,13 +68,13 @@ public class TEAdvancedInfoPanelExtenderRenderer implements BlockEntityRenderer<
 		Screen screen = te.getScreen();
 		if (screen == null) {
 			if (thickness == 16 && rotateHor == 0 && rotateVert == 0)
-				model[textureId].render(matrixStack, vertexBuilder, light, combinedOverlay);
+				model[textureId].render(matrixStack, vertexBuilder, light, combinedOverlay, color);
 		} else {
 			if (thickness == 16 && rotateHor == 0 && rotateVert == 0)
-				model[textureId].render(matrixStack, vertexBuilder, light, combinedOverlay);
+				model[textureId].render(matrixStack, vertexBuilder, light, combinedOverlay, color);
 			else {
 				RotationOffset offset = new RotationOffset(thickness * 2, rotateHor, rotateVert);
-				new CubeRenderer(textureId / 4 * 32 + 64, textureId % 4 * 32 + 64, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation())).render(matrixStack, vertexBuilder, light, combinedOverlay);;
+				new CubeRenderer(textureId / 4 * 32 + 64, textureId % 4 * 32 + 64, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation())).render(matrixStack, vertexBuilder, light, combinedOverlay, color);;
 			}
 		}
 		matrixStack.pop();

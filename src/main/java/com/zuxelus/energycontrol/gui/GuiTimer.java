@@ -97,9 +97,9 @@ public class GuiTimer extends GuiContainerBase<ContainerTimer> {
 	}
 
 	@Override
-	public void onClose() {
+	public void close() {
 		updateTime(0);
-		super.onClose();
+		super.close();
 	}
 
 	private void updateTime(int delta) {

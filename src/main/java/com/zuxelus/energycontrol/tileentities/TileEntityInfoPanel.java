@@ -50,8 +50,13 @@ import net.minecraft.world.World;
 public class TileEntityInfoPanel extends TileEntityInventory implements ExtendedScreenHandlerFactory, ITilePacketHandler, IScreenPart, ISlotItemFilter {
 	public static final String NAME = "info_panel";
 	public static final int DISPLAY_DEFAULT = Integer.MAX_VALUE - 1024;
-	private static final int[] COLORS_HEX = { 0x000000, 0xe93535, 0x82e306, 0x702b14, 0x1f3ce7, 0x8f1fea, 0x1fd7e9,
+	public static final int GREEN = 0xFF14E300;
+	public static final int BLACK = 0xFF000000;
+	// palette indexes (0-15) used before RGB colors, kept to convert old worlds
+	private static final int[] LEGACY_TEXT = { 0x000000, 0xe93535, 0x82e306, 0x702b14, 0x1f3ce7, 0x8f1fea, 0x1fd7e9,
 			0xcbcbcb, 0x222222, 0xe60675, 0x1fe723, 0xe9cc1f, 0x06aee4, 0xb006e3, 0xe7761f, 0xffffff };
+	private static final int[] LEGACY_BACKGROUND = { 0x090909, 0xff4141, 0x14e300, 0x842c01, 0x0037e2, 0xa600e6, 0x00d4dc,
+			0xb3b3b3, 0x1a1a1a, 0xff117e, 0x00f500, 0xe9cf00, 0x00aef1, 0xd100ef, 0xff7b00, 0xffffff };
 
 	private static final byte SLOT_CARD = 0;
 	private static final byte SLOT_UPGRADE_RANGE = 1;
@@ -83,7 +88,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 		updateTicker = tickRate - 1;
 		dataTicker = 4;
 		showLabels = true;
-		colorBackground = 2;
+		colorBackground = GREEN;
+		colorText = BLACK;
 		colored = false;
 	}
 
@@ -163,7 +169,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	}
 
 	public int getColorTextHex() {
-		return COLORS_HEX[colorText];
+		return colorText & 0xFFFFFF;
 	}
 
 	public void setColorText(int c) {
@@ -208,13 +214,6 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 			if (tag.contains("slot") && tag.contains("value"))
 				setDisplaySettings(tag.getInt("slot"), tag.getInt("value"));
 			break;
-		case 2:
-			if (tag.contains("value")) {
-				int value = tag.getInt("value");
-				setColorBackground(value >> 4);
-				setColorText(value & 0xf);
-			}
-			break;
 		case 3:
 			if (tag.contains("value"))
 				setShowLabels(tag.getInt("value") == 1);
@@ -230,6 +229,14 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 		case 5:
 			if (tag.contains("value"))
 				setTickRate(tag.getInt("value"));
+			break;
+		case 6:
+			if (tag.contains("value"))
+				setColorBackground(tag.getInt("value"));
+			break;
+		case 7:
+			if (tag.contains("value"))
+				setColorText(tag.getInt("value"));
 			break;
 		}
 	}
@@ -282,8 +289,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 			showLabels = tag.getBoolean("showLabels");
 
 		if (tag.contains("colorBackground")) {
-			colorText = tag.getInt("colorText");
-			colorBackground = tag.getInt("colorBackground");
+			colorText = fromLegacyColor(tag.getInt("colorText"), LEGACY_TEXT);
+			colorBackground = fromLegacyColor(tag.getInt("colorBackground"), LEGACY_BACKGROUND);
 		}
 
 		if (tag.contains("colored"))
@@ -304,6 +311,13 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 				world.getChunkManager().getLightingProvider().checkBlock(pos);
 			}
 		}
+	}
+
+	// RGB colors always have alpha bits set, so 0-15 can only be an old palette index
+	private static int fromLegacyColor(int color, int[] palette) {
+		if (color >= 0 && color < palette.length)
+			return 0xFF000000 | palette[color];
+		return color;
 	}
 
 	@Override
