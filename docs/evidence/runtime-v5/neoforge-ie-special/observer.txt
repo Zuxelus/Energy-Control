@@ -1,0 +1,11 @@
+RUN_START IE-special client observer=true reload=false 2026-10-01T03:52:47.766790900Z
+PASS both players see actual wire power and thermal potential
+SCREENSHOT Saved screenshot as ie-special-observer-live.png
+PASS real capacitor bar toggle synchronizes to both players
+PASS restored real storage bar and thickness synchronize to both players
+SCREENSHOT Saved screenshot as ie-special-observer-controls.png
+PASS both clients see actual wire stop and removed heat source as zero
+SCREENSHOT Saved screenshot as ie-special-observer-stopped.png
+PASS both clients see restored actual power transfer
+SCREENSHOT Saved screenshot as ie-special-observer-restored.png
+ALL_IE_SPECIAL_CLIENT_DONE observer

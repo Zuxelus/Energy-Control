@@ -31,5 +31,7 @@
   "tooltip.energycontrol.card.fluid_array": "最多绑定16个储罐，不同流体分别汇总。",
   "tooltip.energycontrol.upgrade.range": "0/1/2/3个升级：距离64/128/256/512格。",
   "tooltip.energycontrol.upgrade.capacity": "0/1/2/3个升级：4/8/12/16个生效阵列目标。",
-  "tooltip.energycontrol.upgrade.precision": "0/1/2/3个升级：显示0/1/2/3位小数。"
+  "tooltip.energycontrol.upgrade.precision": "0/1/2/3个升级：显示0/1/2/3位小数。",
+  "item.energycontrol.card_machine": "机器数据卡",
+  "tooltip.energycontrol.card.machine": "潜行右键绑定受支持机器；读取专用数据。"
 }

@@ -66,3 +66,17 @@ under GPL-3.0-only. No remote publication or user game modification was performe
 - Fixed optional IE development classpath discovery of its approved nested
   DualCodecs/BlockModelSplitter; retained dependency verification and exact hashes.
 - No IE source/assets/binaries redistributed. All upstream history/license remain.
+
+## 2026-10-01 bars, solid cases and IE power (0.5)
+
+- Added typed numeric rows, per-card horizontal energy/fluid bars, portable bar
+  packets and matching GUI controls. Numeric fractions stay separate from text.
+- Added advanced core/extender thickness 1..16, back-anchored six-face models,
+  selection/collision, renderer depth and inherited thickness on regroup/place.
+- Added optional read-only Machine Data Card for IE current-transformer average
+  FE/t and thermoelectric generation potential. No IE code/assets are bundled.
+- Fixed real screenshot-detected coplanar bar z-fighting; prior evidence retained.
+- Added ten meaningful JVM tests (49 total), two-player graphics acceptance and
+  real IE copper-circuit testing. See QA-V5 for exact limits and final counts.
+- No normal break behavior changed. Own QA windows are hidden from the desktop;
+  this helper is absent from release jars. Complete upstream history retained.

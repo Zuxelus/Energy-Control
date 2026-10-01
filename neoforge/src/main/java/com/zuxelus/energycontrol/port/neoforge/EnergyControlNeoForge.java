@@ -11,6 +11,7 @@ import java.util.Optional;
 @Mod(EnergyControlPort.ID)
 public final class EnergyControlNeoForge {
     public EnergyControlNeoForge(IEventBus bus) {
+        EnergyControlPort.machineProbe=IeMachineProbe::read;
         EnergyControlPort.fluidProbe=(level,pos,side)->{
             if(!level.hasChunkAt(pos))return Optional.empty();
             var storage=level.getCapability(Capabilities.FluidHandler.BLOCK,pos,side);

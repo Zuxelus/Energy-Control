@@ -12,7 +12,7 @@ import java.util.List;
 
 /** Component-based replacement for the old mutable ItemStack tag contract. */
 public final class CardItem extends Item {
-    public enum Kind { TEXT, ENERGY, TIME, REDSTONE, FLUID, ENERGY_ARRAY, FLUID_ARRAY }
+    public enum Kind { TEXT, ENERGY, TIME, REDSTONE, FLUID, ENERGY_ARRAY, FLUID_ARRAY, MACHINE }
     private final Kind kind;
     public CardItem(Kind kind) { super(new Properties().stacksTo(1)); this.kind = kind; }
     public boolean array(){return kind==Kind.ENERGY_ARRAY || kind==Kind.FLUID_ARRAY;}

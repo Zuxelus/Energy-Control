@@ -1,0 +1,19 @@
+RUN_START IE-special server reload=false 2026-10-01T03:51:45.385517500Z
+PASS IE specialized actual LV connectors initialized
+PASS IE specialized actual current transformer initialized
+PASS IE specialized real copper connections include meter shunt
+PASS IE specialized wire circuit carries real positive power
+PASS IE specialized lava and blue ice create real thermal potential
+PASS IE specialized card equals real meter getAveragePower
+PASS IE specialized card equals real thermal generation potential
+PASS IE specialized real sink capacitor receives wire-delivered energy
+PASS IE specialized upper dummy resolves real master meter reading
+PASS IE specialized meter average decays to zero after input stops
+PASS IE specialized removing real heat source removes potential
+PASS IE specialized card equals real meter getAveragePower
+PASS IE specialized card equals real thermal generation potential
+PASS IE specialized restored FE input resumes real wire power
+PASS IE specialized card equals real meter getAveragePower
+PASS IE specialized card equals real thermal generation potential
+PASS IE specialized real client geometry edit reaches dedicated server
+ALL_IE_SPECIAL_SERVER_DONE

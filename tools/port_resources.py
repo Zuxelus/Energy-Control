@@ -94,3 +94,23 @@ for key,english,chinese in [
  ('tooltip.energycontrol.upgrade.range','0/1/2/3 upgrades: range 64/128/256/512 blocks.','0/1/2/3个升级：距离64/128/256/512格。'),('tooltip.energycontrol.upgrade.capacity','0/1/2/3 upgrades: 4/8/12/16 active array targets.','0/1/2/3个升级：4/8/12/16个生效阵列目标。'),('tooltip.energycontrol.upgrade.precision','0/1/2/3 upgrades: 0/1/2/3 decimal places.','0/1/2/3个升级：显示0/1/2/3位小数。')]:en[key]=english;zh[key]=chinese
 write(assets/'lang/en_us.json',en);write(assets/'lang/zh_cn.json',zh)
 print('Storage/portable/holographic resources: 6 blocks, 11 items, 17 recipes.')
+
+# 0.5: state-backed case thickness. Original GPL texture coordinates are retained.
+for block in ('info_panel_advanced','info_panel_advanced_extender'):
+    original=json.loads((assets/f'models/block/{block}.json').read_text(encoding='utf-8'))
+    full=json.loads((assets/'models/block/full_box.json').read_text(encoding='utf-8'))
+    for thickness in range(1,17):
+        model=json.loads(json.dumps(full))
+        model['textures']=original['textures']
+        model['elements'][0]['from'][2]=16-thickness
+        write(assets/f'models/block/{block}_thickness_{thickness}.json',model)
+    write(assets/f'blockstates/{block}.json',{'variants':{
+        f'facing={face},thickness={thickness}':{'model':f'energycontrol:block/{block}_thickness_{thickness}',**rot}
+        for face,rot in rotations.items() for thickness in range(1,17)}})
+write(assets/'models/item/card_machine.json',{'parent':'minecraft:item/generated','textures':{'layer0':'energycontrol:item/card_energy'}})
+write(target/'data/energycontrol/recipe/card_machine.json',{'type':'minecraft:crafting_shapeless','ingredients':[{'item':'energycontrol:card_energy'},{'item':'minecraft:quartz'}],'result':{'id':'energycontrol:card_machine','count':1}})
+for lang,name,tooltip in [('en_us','Machine Data Card','Sneak-use on a supported machine; specialized read-only data.'),('zh_cn','机器数据卡','潜行右键绑定受支持机器；读取专用数据。')]:
+    path=assets/f'lang/{lang}.json';data=json.loads(path.read_text(encoding='utf-8'))
+    data['item.energycontrol.card_machine']=name;data['tooltip.energycontrol.card.machine']=tooltip;write(path,data)
+
+print('0.5 resources: 18 recipes, 32 case models and 192 thickness/facing variants; machine card registered on both loaders.')

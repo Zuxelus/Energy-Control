@@ -1,0 +1,7 @@
+RUN_START graphics-client observer=false reload=true 2026-10-01T03:36:05.237242400Z
+PASS reconnected client receives live bars and saved case
+PASS reconnected client gets saved extender block state
+SCREENSHOT Saved screenshot as graphics-reload-world.png
+PASS portable component bar setting and numeric payload survive disk reload
+SCREENSHOT Saved screenshot as graphics-reload-portable.png
+ALL_GRAPHICS_RELOAD_DONE

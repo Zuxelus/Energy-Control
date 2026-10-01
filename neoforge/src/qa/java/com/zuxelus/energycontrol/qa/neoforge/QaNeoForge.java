@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 public final class QaNeoForge {
     public QaNeoForge(IEventBus bus) {
         if(System.getProperty("ec.qa.stage","").startsWith("ie")) {
-            try { Class.forName("com.zuxelus.energycontrol.qa.neoforge.IeQaServer").getMethod("init").invoke(null); }
+            try { Class.forName(System.getProperty("ec.qa.stage","").startsWith("ie-special")?"com.zuxelus.energycontrol.qa.neoforge.IeSpecialQaServer":"com.zuxelus.energycontrol.qa.neoforge.IeQaServer").getMethod("init").invoke(null); }
             catch(ReflectiveOperationException e){throw new IllegalStateException(e);}
             return; // No chest/mock capability registration in IE acceptance.
         }

@@ -128,3 +128,24 @@ in reload acceptance. New display runs load neither IE nor mock storage provider
 Optional -PieQa requires -Pqa and private exact-hash artifacts; it never affects
 release dependency declarations. QA/IE classes and sources must be absent from
 both release jars and source jars. No IE jar/source/assets are redistributed.
+
+## Graphics and specialized machine stage (0.5)
+
+Same pinned Java21/Gradle8.10.2/toolchain. No new runtime dependency. Normal
+release builds use `./gradlew clean build --offline --console=plain` with neither
+-Pqa nor -PieQa, followed by tools/verify_artifacts.py.49 JVM tests and18 recipes
+are required; two clean builds compare both loader jars and source jars. New
+resource generation emits32 textured case models and192 facing/thickness variants.
+
+Runtime procedures and boundaries are in QA-V5.md. Optional IE QA uses the same
+previously approved exact-hash distribution and two embedded libraries. The
+production IeMachineProbe does not link those classes or require their jars.
+Actual graphical acceptance metadata remains0.4 until the final0.5 version bump.
+Portable display payloads now include typed fractions; clients and servers must
+use matching0.5 artifacts. All test fixtures and window-hiding code are excluded
+from release jars and source jars. No user instance has been installed into.
+
+Both 0.5 clean offline release builds succeeded (27s each); all four jar/source
+artifacts were byte-identical, and 49 JVM tests passed. See evidence/
+reproducibility-0.5.json and artifact-verification.json. The packaging audit
+checks Java21, licenses, 18 recipes, assets, entrypoints and absence of QA/IE.

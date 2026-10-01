@@ -35,3 +35,7 @@ loom.runs {
 if(rootProject.hasProperty('qaStage') && rootProject.qaStage.toString().startsWith('pages')) {
     loom.runs { client { runDir 'run/client-pages-v4' }; server { runDir 'run/server-pages-v4' } }
 }
+
+if(rootProject.hasProperty('qaStage') && rootProject.qaStage.toString().startsWith('graphics')) {
+    loom.runs { client { runDir rootProject.hasProperty('qaObserver')?'run/client-graphics-v5-observer':'run/client-graphics-v5' }; server { runDir 'run/server-graphics-v5' } }
+}

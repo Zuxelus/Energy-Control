@@ -15,7 +15,7 @@ public final class PortableScreen extends AbstractContainerScreen<PortableMenu> 
  @Override protected void init(){
   super.init();editor=new MultiLineEditBox(font,leftPos+8,topPos+51,162,67,Component.literal("Card text / sensor title"),Component.literal("Card text"));editor.setCharacterLimit(512);editor.setValueListener(v->{if(!loading)dirty=true;});addRenderableWidget(editor);
   addRenderableWidget(Button.builder(Component.literal("Save text"),b->{NetworkManager.sendToServer(new PanelEditPayload(menu.containerId,0,editor.getValue()));dirty=false;loaded=editor.getValue();}).bounds(leftPos+8,topPos+121,78,20).build());
-  for(int k=0;k<3;k++){final int id=100+k;addRenderableWidget(Button.builder(Component.literal(new String[]{"Labels","Percent","Each"}[k]),b->minecraft.gameMode.handleInventoryButtonClick(menu.containerId,id)).bounds(leftPos+180+k*50,topPos+218,48,20).build());}
+  for(int k=0;k<4;k++){final int id=100+k;addRenderableWidget(Button.builder(Component.literal(new String[]{"Label","Pct","Each","Bars"}[k]),b->minecraft.gameMode.handleInventoryButtonClick(menu.containerId,id)).bounds(leftPos+180+k*38,topPos+218,36,20).build());}
  }
  @Override protected void containerTick(){super.containerTick();var s=menu.contents.getItem(0);String value=CardItem.data(s).getString(s.getItem() instanceof CardItem c&&c.kind()==CardItem.Kind.TEXT?"text":"title");if(!dirty&&!value.equals(loaded)){loaded=value;loading=true;editor.setValue(value);loading=false;}}
  @Override protected void renderBg(GuiGraphics g,float tick,int x,int y){
@@ -25,7 +25,11 @@ public final class PortableScreen extends AbstractContainerScreen<PortableMenu> 
   int maxWidth=1;for(var value:menu.lines)maxWidth=Math.max(maxWidth,font.width(value));
   float fit=Math.min(.75f,Math.min(147f/maxWidth,178f/Math.max(10,menu.lines.size()*10)));
   g.pose().pushPose();g.pose().translate(leftPos+182,topPos+30,0);g.pose().scale(fit,fit,1);
-  int line=0;for(var value:menu.lines)g.drawString(font,value,0,line++*10,0xff55ff55,false);g.pose().popPose();
+  int line=0;for(var value:menu.lines){
+   int fill=line<menu.barFills.size()?menu.barFills.get(line):-1;
+   if(fill>=0){int width=(int)(147/fit);g.fill(0,line*10,width,line*10+9,0xff283c48);g.fill(0,line*10,Math.round(width*fill/10000f),line*10+9,0xff207c48);}
+   g.drawString(font,value,0,line++*10,0xff55ff55,false);
+  }g.pose().popPose();
  }
  @Override public void render(GuiGraphics g,int x,int y,float tick){super.render(g,x,y,tick);renderTooltip(g,x,y);}
  @Override public boolean keyPressed(int key,int scan,int mods){if(editor.isFocused()&&key!=256){editor.keyPressed(key,scan,mods);return true;}return super.keyPressed(key,scan,mods);}

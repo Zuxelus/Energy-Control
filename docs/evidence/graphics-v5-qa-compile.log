@@ -1,0 +1,47 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.10.2/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+
+> Configure project :
+Architect Plugin: 3.4.164
+Architectury Loom: 1.7.435
+You are using an outdated version of Architectury Loom! This version will not receive any support, please consider updating!
+
+> Task :common:compileJava FAILED
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\qa\java\com\zuxelus\energycontrol\qa\GraphicsQaServer.java:28: 繧ｨ繝ｩ繝ｼ: 譁・ｭ怜・繝ｪ繝・Λ繝ｫ縺碁哩縺倥ｉ繧後※縺・∪縺帙ｓ
+  var p=make(l,CORE,Direction.NORTH);p.setItem(0,bound(EnergyControlPort.ENERGY.get(),BATTERY,false));p.setItem(1,bound(EnergyControlPort.FLUID.get(),TANK,false));p.setItem(2,bound(EnergyControlPort.MACHINE.get(),BATTERY,false));p.setItem(3,new ItemStack(EnergyControlPort.TEXT.get()));p.setText(3,"CASE + BARS
+                                                                                                                                                                                                                                                                                                          ^
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\qa\java\com\zuxelus\energycontrol\qa\GraphicsQaServer.java:29: 繧ｨ繝ｩ繝ｼ: ';'縺後≠繧翫∪縺帙ｓ
+Live typed measurements");
+          ^
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\qa\java\com\zuxelus\energycontrol\qa\GraphicsQaServer.java:29: 繧ｨ繝ｩ繝ｼ: 譁・ｭ怜・繝ｪ繝・Λ繝ｫ縺碁哩縺倥ｉ繧後※縺・∪縺帙ｓ
+Live typed measurements");
+                       ^
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\qa\java\com\zuxelus\energycontrol\qa\GraphicsQaServer.java:29: 繧ｨ繝ｩ繝ｼ: 譁・〒縺ｯ縺ゅｊ縺ｾ縺帙ｓ
+Live typed measurements");
+           ^
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\qa\java\com\zuxelus\energycontrol\qa\GraphicsQaServer.java:33: 繧ｨ繝ｩ繝ｼ: 譁・ｭ怜・繝ｪ繝・Λ繝ｫ縺碁哩縺倥ｉ繧後※縺・∪縺帙ｓ
+   var f=make(l,face(i),Direction.values()[i]);f.setItem(0,new ItemStack(EnergyControlPort.TEXT.get()));f.setText(0,"CASE "+Direction.values()[i]+"
+                                                                                                                                                  ^
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\qa\java\com\zuxelus\energycontrol\qa\GraphicsQaServer.java:34: 繧ｨ繝ｩ繝ｼ: 譁・〒縺ｯ縺ゅｊ縺ｾ縺帙ｓ
+Thickness 4 / 16");f.setItem(1,bound(EnergyControlPort.ENERGY.get(),BATTERY,true));for(int n=0;n<12;n++)f.configure(15);
+^
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\qa\java\com\zuxelus\energycontrol\qa\GraphicsQaServer.java:34: 繧ｨ繝ｩ繝ｼ: ';'縺後≠繧翫∪縺帙ｓ
+Thickness 4 / 16");f.setItem(1,bound(EnergyControlPort.ENERGY.get(),BATTERY,true));for(int n=0;n<12;n++)f.configure(15);
+         ^
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\qa\java\com\zuxelus\energycontrol\qa\GraphicsQaServer.java:34: 繧ｨ繝ｩ繝ｼ: 譁・ｭ怜・繝ｪ繝・Λ繝ｫ縺碁哩縺倥ｉ繧後※縺・∪縺帙ｓ
+Thickness 4 / 16");f.setItem(1,bound(EnergyControlPort.ENERGY.get(),BATTERY,true));for(int n=0;n<12;n++)f.configure(15);
+                ^
+繧ｨ繝ｩ繝ｼ8蛟・
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':common:compileJava'.
+> Compilation failed; see the compiler error output for details.
+
+* Try:
+> Run with --info option to get more log output.
+> Run with --scan to get full insights.
+
+BUILD FAILED in 10s
+1 actionable task: 1 executed

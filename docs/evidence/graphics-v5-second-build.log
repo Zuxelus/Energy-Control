@@ -1,0 +1,32 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.10.2/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+
+> Configure project :
+Architect Plugin: 3.4.164
+Architectury Loom: 1.7.435
+You are using an outdated version of Architectury Loom! This version will not receive any support, please consider updating!
+
+> Task :common:compileJava UP-TO-DATE
+> Task :common:processResources UP-TO-DATE
+> Task :common:classes UP-TO-DATE
+> Task :common:jar UP-TO-DATE
+> Task :common:compileTestJava
+> Task :common:processTestResources NO-SOURCE
+> Task :common:testClasses
+> Task :common:test
+
+> Task :fabric:compileJava
+繝弱・繝・ C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\fabric\src\main\java\com\zuxelus\energycontrol\port\fabric\EnergyControlFabric.java縺ｯ謗ｨ螂ｨ縺輔ｌ縺ｪ縺БPI繧剃ｽｿ逕ｨ縺ｾ縺溘・繧ｪ繝ｼ繝舌・繝ｩ繧､繝峨＠縺ｦ縺・∪縺吶・
+繝弱・繝・ 隧ｳ邏ｰ縺ｯ縲・Xlint:deprecation繧ｪ繝励す繝ｧ繝ｳ繧呈欠螳壹＠縺ｦ蜀阪さ繝ｳ繝代う繝ｫ縺励※縺上□縺輔＞縲・
+
+> Task :neoforge:compileJava
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\neoforge\src\main\java\com\zuxelus\energycontrol\port\neoforge\NeoForgeClient.java:13: 隴ｦ蜻・ [removal] EventBusSubscriber縺ｮbus()縺ｯ謗ｨ螂ｨ縺輔ｌ縺ｦ縺翫ｉ縺壹∝炎髯､逕ｨ縺ｫ繝槭・繧ｯ縺輔ｌ縺ｦ縺・∪縺・@EventBusSubscriber(modid=EnergyControlPort.ID, bus=EventBusSubscriber.Bus.MOD, value=Dist.CLIENT)
+                                                ^
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\neoforge\src\main\java\com\zuxelus\energycontrol\port\neoforge\NeoForgeClient.java:13: 隴ｦ蜻・ [removal] EventBusSubscriber縺ｮBus縺ｯ謗ｨ螂ｨ縺輔ｌ縺ｦ縺翫ｉ縺壹∝炎髯､逕ｨ縺ｫ繝槭・繧ｯ縺輔ｌ縺ｦ縺・∪縺・@EventBusSubscriber(modid=EnergyControlPort.ID, bus=EventBusSubscriber.Bus.MOD, value=Dist.CLIENT)
+                                                                      ^
+繝弱・繝・ 荳驛ｨ縺ｮ蜈･蜉帙ヵ繧｡繧､繝ｫ縺ｯ謗ｨ螂ｨ縺輔ｌ縺ｪ縺БPI繧剃ｽｿ逕ｨ縺ｾ縺溘・繧ｪ繝ｼ繝舌・繝ｩ繧､繝峨＠縺ｦ縺・∪縺吶・
+繝弱・繝・ 隧ｳ邏ｰ縺ｯ縲・Xlint:deprecation繧ｪ繝励す繝ｧ繝ｳ繧呈欠螳壹＠縺ｦ蜀阪さ繝ｳ繝代う繝ｫ縺励※縺上□縺輔＞縲・
+
+BUILD SUCCESSFUL in 16s
+7 actionable tasks: 4 executed, 3 up-to-date
+隴ｦ蜻・蛟・

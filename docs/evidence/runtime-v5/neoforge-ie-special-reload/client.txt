@@ -1,0 +1,4 @@
+RUN_START IE-special client observer=false reload=true 2026-10-01T03:56:23.805060400Z
+PASS IE-special resumed actual power and stored bar/case state reach client
+SCREENSHOT Saved screenshot as ie-special-reload.png
+ALL_IE_SPECIAL_RELOAD_CLIENT_DONE

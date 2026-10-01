@@ -24,5 +24,14 @@
     "capacitor_lv",
     "formed sheetmetal tank"
   ],
-  "fabric_ie_claim": false
+  "fabric_ie_claim": false,
+  "specialized_0_5": {
+    "assertions": 36,
+    "machines": [
+      "current_transformer",
+      "thermoelectric_generator"
+    ],
+    "wire_circuit": "two actual LV connectors, copper, meter shunt and LV capacitor",
+    "evidence": "docs/evidence/runtime-v5/summary.json"
+  }
 }

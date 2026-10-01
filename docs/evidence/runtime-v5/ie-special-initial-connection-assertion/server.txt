@@ -1,0 +1,4 @@
+RUN_START IE-special server reload=false 2026-10-01T03:44:12.045284300Z
+PASS IE specialized actual LV connectors initialized
+PASS IE specialized actual current transformer initialized
+FAIL IE specialized real copper connections include meter shunt

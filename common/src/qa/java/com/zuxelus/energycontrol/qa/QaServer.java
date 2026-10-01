@@ -28,6 +28,7 @@ public final class QaServer {
     }
     public static void check(boolean ok, String name) { log((ok?"PASS ":"FAIL ")+name); if(!ok) throw new AssertionError(name); }
     public static void init() {
+        if(System.getProperty("ec.qa.stage","").startsWith("graphics")){GraphicsQaServer.init();return;}
         if(System.getProperty("ec.qa.stage","").startsWith("pages")){DisplayQaServer.init();return;}
         if(System.getProperty("ec.qa.stage","").equals("storage")){StorageQaServer.init();return;}
         LifecycleEvent.SERVER_STARTED.register(QaServer::setup);

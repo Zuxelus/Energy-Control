@@ -1,0 +1,6 @@
+RUN_START graphics-server reload=true 2026-10-01T03:35:30.440420600Z
+PASS case thickness survives actual server restart
+PASS both card bar settings survive actual server restart
+PASS rebuilt extender thickness survives restart
+PASS solid group remains2x2 after state shape initialization
+PASS saved bars resume live evaluation after restart

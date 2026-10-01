@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.zuxelus.energycontrol.port.PortableDataPayloadTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-10-01T04:00:53" hostname="LAPTOP-K7K1OTIE" time="0.003">
+  <properties/>
+  <testcase name="refusesOversizedIncomingRowsBeforeAllocation()" classname="com.zuxelus.energycontrol.port.PortableDataPayloadTest" time="0.001"/>
+  <testcase name="typedRowsRoundTripWithoutReinterpretingText()" classname="com.zuxelus.energycontrol.port.PortableDataPayloadTest" time="0.001"/>
+  <testcase name="refusesInconsistentOrOutOfRangeFractions()" classname="com.zuxelus.energycontrol.port.PortableDataPayloadTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

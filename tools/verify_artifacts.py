@@ -8,7 +8,7 @@ import xml.etree.ElementTree as ET
 
 root=Path(__file__).resolve().parents[1]
 version=next(line.split('=',1)[1] for line in (root/'gradle.properties').read_text().splitlines() if line.startswith('mod_version='))
-result={'version':version,'runtime_evidence':'docs/evidence/runtime-v4 (real IE and display gameplay; see QA-V4.md)','artifacts':[],'tests':[]}
+result={'version':version,'runtime_evidence':'docs/evidence/runtime-v5 (bars, case geometry and actual IE power; see QA-V5.md)','artifacts':[],'tests':[]}
 for platform in ('fabric','neoforge'):
     jar=root/platform/'build/libs'/f'energycontrol-{platform}-{version}.jar'
     source=jar.with_name(jar.stem+'-sources.jar')
@@ -23,6 +23,8 @@ for platform in ('fabric','neoforge'):
         assert 'com/zuxelus/energycontrol/port/network/PortableDataPayload.class' in names
         assert 'com/zuxelus/energycontrol/port/fluid/FluidProbe.class' in names
         assert 'com/zuxelus/energycontrol/port/menu/PortableMenu.class' in names
+        assert 'com/zuxelus/energycontrol/port/core/DisplayRow.class' in names
+        assert 'com/zuxelus/energycontrol/port/core/PanelCase.class' in names
         assert 'com/zuxelus/energycontrol/port/core/DisplayPages.class' in names
         assert 'com/zuxelus/energycontrol/port/core/ProjectionSettings.class' in names
         assert not any(n.startswith(('blusunrize/', 'malte0811/')) for n in names), 'External IE classes must not be distributed'
@@ -40,7 +42,7 @@ for platform in ('fabric','neoforge'):
                         if texture.startswith('energycontrol:'):
                             assert 'assets/energycontrol/textures/'+texture.split(':')[1]+'.png' in names,(name,texture)
         recipes=[n for n in names if n.startswith('data/energycontrol/recipe/') and n.endswith('.json')]
-        assert len(recipes)==17
+        assert len(recipes)==18
         for name in recipes:
             assert json.loads(archive.read(name))['result']['id'].startswith('energycontrol:')
         if platform=='fabric':
@@ -74,7 +76,7 @@ for file in sorted((root/'common/build/test-results/test').glob('TEST-*.xml')):
     suite=ET.parse(file).getroot()
     assert int(suite.attrib['failures'])==0 and int(suite.attrib['errors'])==0
     result['tests'].append({key:suite.attrib[key] for key in ('name','tests','failures','errors')})
-assert sum(int(s['tests']) for s in result['tests'])==39
+assert sum(int(s['tests']) for s in result['tests'])==49
 output=root/'docs/evidence/artifact-verification.json'
 output.write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8')
 print(json.dumps(result,indent=2))

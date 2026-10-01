@@ -1,0 +1,463 @@
+{
+  "stage": "0.5",
+  "actual_game_assertions": 110,
+  "accepted_run_failures": 0,
+  "screenshots": 40,
+  "runs": [
+    {
+      "run": "fabric-graphics",
+      "assertions": {
+        "editor": 14,
+        "observer": 6,
+        "server": 9
+      },
+      "server_clean_save": true,
+      "client_gradle_exit_codes": {
+        "editor": 0,
+        "observer": 0
+      },
+      "screenshots": 13
+    },
+    {
+      "run": "fabric-graphics-reload",
+      "assertions": {
+        "client": 3,
+        "server": 5
+      },
+      "server_clean_save": true,
+      "client_gradle_exit_codes": {
+        "client": 0
+      },
+      "screenshots": 2
+    },
+    {
+      "run": "neoforge-graphics",
+      "assertions": {
+        "editor": 14,
+        "observer": 6,
+        "server": 9
+      },
+      "server_clean_save": true,
+      "client_gradle_exit_codes": {
+        "editor": 0,
+        "observer": 0
+      },
+      "screenshots": 13
+    },
+    {
+      "run": "neoforge-graphics-reload",
+      "assertions": {
+        "client": 3,
+        "server": 5
+      },
+      "server_clean_save": true,
+      "client_gradle_exit_codes": {
+        "client": 0
+      },
+      "screenshots": 2
+    },
+    {
+      "run": "neoforge-ie-special",
+      "assertions": {
+        "editor": 7,
+        "observer": 5,
+        "server": 17
+      },
+      "server_clean_save": true,
+      "client_gradle_exit_codes": {
+        "editor": 0,
+        "observer": 0
+      },
+      "screenshots": 9
+    },
+    {
+      "run": "neoforge-ie-special-reload",
+      "assertions": {
+        "client": 1,
+        "server": 6
+      },
+      "server_clean_save": true,
+      "client_gradle_exit_codes": {
+        "client": 0
+      },
+      "screenshots": 1
+    }
+  ],
+  "images": [
+    {
+      "path": "fabric-graphics/graphics-editor-menu.png",
+      "bytes": 140435,
+      "sha256": "25afcbdc2ede85c2a565e940be11f5806a25570bf8a91f9dfdd218a02d5a4c12",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "fabric-graphics/graphics-editor-rebuilt.png",
+      "bytes": 156445,
+      "sha256": "987ddb22700d2360ec3740b735854c0dfb7b5c72d3824123f7e3ff6a9f0dee5d",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "fabric-graphics/graphics-editor-world.png",
+      "bytes": 206208,
+      "sha256": "30eb6ea63de3edf1488aa60cfd498b2cef903f51e31b2c4d011fa1c67892217c",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "fabric-graphics/graphics-face-down.png",
+      "bytes": 130301,
+      "sha256": "a6db782a8170a2abbc9b3f1beda7d36812c7e6b8c2c2d6b8c4b2ad6f1035d2f6",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "fabric-graphics/graphics-face-east.png",
+      "bytes": 191109,
+      "sha256": "6a0c2ea2f88b5f5363cc345d581ac86e6e207d2095fcae39e54360944c6c0020",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "fabric-graphics/graphics-face-north.png",
+      "bytes": 186635,
+      "sha256": "58e915bb44d7fca4c7787390741824fc743e437313743ffe557c45c51f0c065b",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "fabric-graphics/graphics-face-south.png",
+      "bytes": 229696,
+      "sha256": "11cda599e9c4660056227f51f0b64f16e69d60248a3e317f92a55e3db7761c32",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "fabric-graphics/graphics-face-up.png",
+      "bytes": 891986,
+      "sha256": "c379398dda7ef01d5c840a87d0ec65c1224214d5b19bad8faced0457cf17664e",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "fabric-graphics/graphics-face-west.png",
+      "bytes": 193691,
+      "sha256": "e36672b79cf554aa144ac8578659649784571207ef38a047e1ea1f8e02ef2eed",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "fabric-graphics/graphics-observer-menu.png",
+      "bytes": 118323,
+      "sha256": "64ce2bb91aca12ffc377d794c5653b37893c47896718313f3e79cb712352c0f7",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "fabric-graphics/graphics-observer-rebuilt.png",
+      "bytes": 140258,
+      "sha256": "20e2e2157a1bc6e0d069b7cbc171ec034e8f4d21d1083f0a7f605c98b4cc0468",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "fabric-graphics/graphics-observer-world.png",
+      "bytes": 141820,
+      "sha256": "525790779fec4cf2347f3e499adcb373e87ca55b27116cc64c48d6a59ffa9565",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "fabric-graphics/graphics-portable-bars.png",
+      "bytes": 89532,
+      "sha256": "f10ed786fcb8fd9bb32887d2f64d8af4d418efd0ddeef2b08ccdeebc3c1ea493",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "fabric-graphics-reload/graphics-reload-portable.png",
+      "bytes": 119551,
+      "sha256": "6963d2200d62f095bfbcf1ce4249633c1eb2c539c62f53f970fb5198ba673619",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "fabric-graphics-reload/graphics-reload-world.png",
+      "bytes": 293940,
+      "sha256": "a7fbd34c64ada706fb1d8a8d6599571d0f65b9f71c188d7346b169f107bdf75f",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "neoforge-graphics/graphics-editor-menu.png",
+      "bytes": 140449,
+      "sha256": "cce07edd6668ca7139ae17c950e1d5b630ac1330bd52af80665011336a3dc972",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "neoforge-graphics/graphics-editor-rebuilt.png",
+      "bytes": 156260,
+      "sha256": "1606052e59ecc24fb0d54e89eaf9b505d75e49af73af6c0dff60c958195864ed",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "neoforge-graphics/graphics-editor-world.png",
+      "bytes": 207092,
+      "sha256": "fcef32151b5e9d356c9f63707c6d744a0b9e3fdaa3ab8fdbf79500e772488faa",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "neoforge-graphics/graphics-face-down.png",
+      "bytes": 127019,
+      "sha256": "20c6f88ed26fa9a8516d2474d4a7e4d69a26203f3403270de917fa878a538fb0",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "neoforge-graphics/graphics-face-east.png",
+      "bytes": 190802,
+      "sha256": "ce1452a02efb9f676d1e662f5dddbfdba21df6a5faec4585cabc697b64c115d7",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "neoforge-graphics/graphics-face-north.png",
+      "bytes": 186608,
+      "sha256": "3afcb2c44871d4663ae42eb31c67d22a78cc2f25fb8c9a620e20bf656cc9b49b",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "neoforge-graphics/graphics-face-south.png",
+      "bytes": 229293,
+      "sha256": "7ae2d6e6fb58234776b33bcc41ca7e7997d90336ada8e94542b794e2a3704b36",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "neoforge-graphics/graphics-face-up.png",
+      "bytes": 827771,
+      "sha256": "694d3fc22bd5d600a9803f1d586daa8b5e76b87a61469b2b00fed06895b91989",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "neoforge-graphics/graphics-face-west.png",
+      "bytes": 182026,
+      "sha256": "2bc01febf778ec2caa38669a742e68afd4ca7c4a7abb4990b05764bdcc388fcc",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "neoforge-graphics/graphics-observer-menu.png",
+      "bytes": 118260,
+      "sha256": "317d89582122e49e15cebb618326251d4ddfe51ad7b529ea365a4f6a7f6076da",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "neoforge-graphics/graphics-observer-rebuilt.png",
+      "bytes": 140216,
+      "sha256": "e85e8b09195467800f81c0ec0f27190eacf792f8a1df2d02626bda521ddc4530",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "neoforge-graphics/graphics-observer-world.png",
+      "bytes": 141818,
+      "sha256": "38ef677117b3471e4a809daaee4035bc8fe95c4e4f5c96641f86b29c66272f3d",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "neoforge-graphics/graphics-portable-bars.png",
+      "bytes": 89401,
+      "sha256": "6e9571cdf354a4cbd96594afbc793b9222f5793efbd6ca316302da3d3d6468da",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "neoforge-graphics-reload/graphics-reload-portable.png",
+      "bytes": 127492,
+      "sha256": "51034acc5f642dcc80113119a777c5c006125e1e92dfc3c761e145a76fb1edec",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "neoforge-graphics-reload/graphics-reload-world.png",
+      "bytes": 323025,
+      "sha256": "82d84ba650e0d552e7d071034f8e4637362f3e1e6561fb8ee8aa591513f6865a",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "neoforge-ie-special/ie-special-editor-controls.png",
+      "bytes": 158042,
+      "sha256": "327ea07f407b0914277888a3622a167d92ebd22496b09f87d88ed151cdec0e12",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "neoforge-ie-special/ie-special-editor-live.png",
+      "bytes": 375404,
+      "sha256": "ba7c8685ae723e3f758797540835dbcf77d677bb1050fa65eaff505917563430",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "neoforge-ie-special/ie-special-editor-restored.png",
+      "bytes": 212165,
+      "sha256": "9277301a04bb7c6123056b950b2aa0fddb0ae686323c9b25ad37cd684f3f9327",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "neoforge-ie-special/ie-special-editor-stopped.png",
+      "bytes": 188460,
+      "sha256": "08ac968e91415ed182693c875c0b3ea5b40aa2c1d64ac70a01851bec1b76c06a",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "neoforge-ie-special/ie-special-observer-controls.png",
+      "bytes": 201133,
+      "sha256": "ef73723407f2746db96eba03580bec48020b78321bc208cea346bc09869726ba",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "neoforge-ie-special/ie-special-observer-live.png",
+      "bytes": 197831,
+      "sha256": "6c2736b2912af57bed09a1f5f04126e8c9d62366f65318cedc663e15f97a76b6",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "neoforge-ie-special/ie-special-observer-restored.png",
+      "bytes": 199353,
+      "sha256": "d5ec5e98a33626783d99a6781d8aac71bcfe28a601508383982a2b216d83b08a",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "neoforge-ie-special/ie-special-observer-stopped.png",
+      "bytes": 157900,
+      "sha256": "de88ac8f67710d7c2411495d6a16889b843cb76a87b47ed82efc380a44687634",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "neoforge-ie-special/ie-special-wire-circuit.png",
+      "bytes": 158871,
+      "sha256": "faa1552e8ec8a7c00775d27eff54ab6f1b7bfe351088f8bbad3cbdf7f2c6bc39",
+      "dimensions": [
+        1280,
+        720
+      ]
+    },
+    {
+      "path": "neoforge-ie-special-reload/ie-special-reload.png",
+      "bytes": 295877,
+      "sha256": "e65b2d236b4c524ca679730a67c14f0d94fb08e71886c3ee3a14c02a505421f6",
+      "dimensions": [
+        1280,
+        720
+      ]
+    }
+  ],
+  "excluded_attempts": [
+    "fabric-graphics-before-bar-depth-fix",
+    "fabric-pairing-interrupted",
+    "ie-special-initial-connection-assertion"
+  ],
+  "limits": [
+    "Dedicated developer launches, not installation into user launcher",
+    "Creative interaction; survival untested",
+    "Fabric uses self-compiled providers, no external industrial compatibility claim",
+    "IE12.4.2-194 LV copper circuit and thermal potential only",
+    "Array/holographic bars implemented but no separate new bar-specific gameplay scenario",
+    "All 16 thickness levels unit/source checked; game six faces at 4/16 and group at 8/16",
+    "QA hides only own GLFW window; production excludes QA",
+    "IE rerun reused first saved circuit; duplicate-add log preserved, exact real connection topology asserted"
+  ]
+}

@@ -1,0 +1,10 @@
+RUN_START graphics-server reload=false 2026-10-01T03:36:48.106266400Z
+PASS bar display defaults off for existing cards
+PASS unsupported machine is explicit with no external mod
+PASS actual block collision quarter thickness facing down
+PASS actual block collision quarter thickness facing up
+PASS actual block collision quarter thickness facing north
+PASS actual block collision quarter thickness facing south
+PASS actual block collision quarter thickness facing west
+PASS actual block collision quarter thickness facing east
+PASS solid group remains2x2 after state shape initialization

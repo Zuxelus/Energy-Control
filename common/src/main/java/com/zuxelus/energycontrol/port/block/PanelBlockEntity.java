@@ -24,7 +24,7 @@ public final class PanelBlockEntity extends BaseContainerBlockEntity {
     private NonNullList<ItemStack> items = NonNullList.withSize(11, ItemStack.EMPTY);
     private ScreenLayout.Bounds bounds = new ScreenLayout.Bounds(0,0,0,0);
     private BlockPos owner;
-    private List<String> lines = List.of();
+    private List<com.zuxelus.energycontrol.port.core.DisplayRow> rows = List.of();
     private int color = 0x55ff55;
     private boolean powered = true;
     private int background = 0x080b0c, scalePercent = 100, alignment, powerMode = 2, refreshTicks = 20;
@@ -46,7 +46,9 @@ public final class PanelBlockEntity extends BaseContainerBlockEntity {
     public Direction facing() { return getBlockState().getValue(PanelBlock.FACING); }
     public BlockPos owner() { return owner; }
     public ScreenLayout.Bounds bounds() { return bounds; }
-    public List<String> lines() { return lines; }
+    public List<String> lines() { return rows.stream().map(com.zuxelus.energycontrol.port.core.DisplayRow::text).toList(); }
+    public List<com.zuxelus.energycontrol.port.core.DisplayRow> rows() { return rows; }
+    public int thickness() { return advanced() && !holographic() ? getBlockState().getValue(PanelBlock.THICKNESS) : 16; }
     public int color() { return color; }
     public boolean powered() { return powered; }
     public int cardSlots(){return isExtender()?0:advanced()?8:1;}
@@ -100,7 +102,16 @@ public final class PanelBlockEntity extends BaseContainerBlockEntity {
             if (level.hasChunkAt(pos) && level.getBlockEntity(pos) instanceof PanelBlockEntity other && !worldPosition.equals(other.owner)) {
                 other.owner = worldPosition.immutable(); other.sync();
             }
+            if (level.getBlockEntity(pos) instanceof PanelBlockEntity other && advanced() && !holographic()
+                    && other.getBlockState().getValue(PanelBlock.THICKNESS) != thickness())
+                level.setBlockAndUpdate(pos, other.getBlockState().setValue(PanelBlock.THICKNESS, thickness()));
         });
+    }
+    private void setThickness(int value) {
+        if(level == null || !advanced() || holographic() || isExtender()) return;
+        int bounded = com.zuxelus.energycontrol.port.core.PanelCase.clamp(value);
+        level.setBlockAndUpdate(worldPosition, getBlockState().setValue(PanelBlock.THICKNESS, bounded));
+        regroup(); sync();
     }
     public static void tick(Level level, BlockPos pos, BlockState state, PanelBlockEntity panel) {
         if (level.isClientSide || panel.isExtender()) return;
@@ -114,14 +125,14 @@ public final class PanelBlockEntity extends BaseContainerBlockEntity {
         if(nextPage!=panel.page){panel.page=nextPage;panel.refreshCards();panel.sync();}
     }
     private void refreshCards() {
-        List<String> next=new ArrayList<>();
+        List<com.zuxelus.energycontrol.port.core.DisplayRow> next=new ArrayList<>();
         int capacity=com.zuxelus.energycontrol.port.core.UpgradePolicy.targets(upgrades(com.zuxelus.energycontrol.port.card.UpgradeItem.Kind.CAPACITY));
         int precision=com.zuxelus.energycontrol.port.core.UpgradePolicy.decimals(upgrades(com.zuxelus.energycontrol.port.card.UpgradeItem.Kind.PRECISION));
-        for(int i=0;i<cardSlots();i++)next.addAll(com.zuxelus.energycontrol.port.card.CardDisplay.read(level,worldPosition,items.get(i),range(),capacity,precision));
-        if(next.size()>256){int omitted=next.size()-255;next=new ArrayList<>(next.subList(0,255));next.add(omitted+" more lines (display limit)");}
+        for(int i=0;i<cardSlots();i++)next.addAll(com.zuxelus.energycontrol.port.card.CardDisplay.rows(level,worldPosition,items.get(i),range(),capacity,precision));
+        if(next.size()>256){int omitted=next.size()-255;next=new ArrayList<>(next.subList(0,255));next.add(com.zuxelus.energycontrol.port.core.DisplayRow.text(omitted+" more lines (display limit)"));}
         int oldCount=pageCount,oldPage=page;pageCount=com.zuxelus.energycontrol.port.core.DisplayPages.count(next.size(),pageSize);page=Math.clamp(page,0,pageCount-1);
-        var visible=com.zuxelus.energycontrol.port.core.DisplayPages.slice(next,page,pageSize).stream().map(line->line.substring(0,Math.min(256,line.length()))).toList();
-        if(!visible.equals(lines)||oldCount!=pageCount||oldPage!=page){lines=visible;sync();}
+        var visible=com.zuxelus.energycontrol.port.core.DisplayPages.slice(next,page,pageSize);
+        if(!visible.equals(rows)||oldCount!=pageCount||oldPage!=page){rows=visible;sync();}
     }
     public void setText(int slot,String text){
         if(slot<0||slot>=cardSlots()||text.length()>512)return;
@@ -139,6 +150,14 @@ public final class PanelBlockEntity extends BaseContainerBlockEntity {
             if(!(stack.getItem() instanceof CardItem)) return false;
             var data=CardItem.data(stack);String key=id%2==0?"hideLabels":"hidePercent";
             data.putBoolean(key,!data.getBoolean(key));CardItem.update(stack,data);refreshCards();sync();return true;
+        }
+        if(id>=300 && id<300+cardSlots()) {
+            var stack=items.get(id-300); if(!(stack.getItem() instanceof CardItem))return false;
+            var data=CardItem.data(stack);data.putBoolean("showBars",!data.getBoolean("showBars"));CardItem.update(stack,data);refreshCards();sync();return true;
+        }
+        if(id>=15 && id<=17) {
+            if(!advanced() || holographic())return false;
+            setThickness(id==16?16:id==17?thickness()+1:thickness()-1);return true;
         }
         if(id>=11 && id<=14 && !holographic())return false;
         switch(id) {
@@ -172,7 +191,7 @@ public final class PanelBlockEntity extends BaseContainerBlockEntity {
         tag.putInt("background",background); tag.putInt("scalePercent",scalePercent); tag.putInt("alignment",alignment);
         tag.putInt("page",page);tag.putInt("pageSize",pageSize);tag.putInt("pageCount",pageCount);tag.putInt("pageTicks",pageTicks);projection.save(tag);
         tag.putInt("powerMode",powerMode); tag.putInt("refreshTicks",refreshTicks); tag.putBoolean("uniformFont",uniformFont);
-        ListTag list = new ListTag(); lines.forEach(line -> list.add(StringTag.valueOf(line))); tag.put("lines",list);
+        ListTag list = new ListTag(); rows.forEach(row -> list.add(row.save())); tag.put("displayRows",list);
     }
     @Override protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag,registries);
@@ -193,9 +212,15 @@ public final class PanelBlockEntity extends BaseContainerBlockEntity {
         pageCount=Math.clamp(tag.getInt("pageCount"),1,64);page=Math.clamp(tag.getInt("page"),0,pageCount-1);
         pageTicks=tag.getInt("pageTicks");if(pageTicks!=40&&pageTicks!=100&&pageTicks!=200)pageTicks=0;
         projection=com.zuxelus.energycontrol.port.core.ProjectionSettings.load(tag);
-        var list = tag.getList("lines",Tag.TAG_STRING); var result = new ArrayList<String>();
-        for(int i=0;i<Math.min(32,list.size());i++) { String s=list.getString(i); result.add(s.substring(0,Math.min(s.length(),256))); }
-        lines = List.copyOf(result);
+        var result = new ArrayList<com.zuxelus.energycontrol.port.core.DisplayRow>();
+        if(tag.contains("displayRows",Tag.TAG_LIST)) {
+            var list=tag.getList("displayRows",Tag.TAG_COMPOUND);
+            for(int i=0;i<Math.min(32,list.size());i++)result.add(com.zuxelus.energycontrol.port.core.DisplayRow.load(list.getCompound(i)));
+        } else {
+            var list=tag.getList("lines",Tag.TAG_STRING);
+            for(int i=0;i<Math.min(32,list.size());i++)result.add(com.zuxelus.energycontrol.port.core.DisplayRow.text(list.getString(i)));
+        }
+        rows = List.copyOf(result);
     }
     @Override public CompoundTag getUpdateTag(HolderLookup.Provider registries) { return saveWithoutMetadata(registries); }
     @Override public ClientboundBlockEntityDataPacket getUpdatePacket() { return ClientboundBlockEntityDataPacket.create(this); }

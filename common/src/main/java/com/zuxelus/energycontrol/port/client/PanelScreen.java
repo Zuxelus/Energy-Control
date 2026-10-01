@@ -16,6 +16,7 @@ public final class PanelScreen extends AbstractContainerScreen<PanelMenu> {
     private boolean dirty,loading;
     private boolean layout;private int group;
     private final java.util.List<Button> styleButtons=new java.util.ArrayList<>(),layoutButtons=new java.util.ArrayList<>();
+    private Button thicknessButton,thickerButton,resetCaseButton,resetProjectionButton;
     private Button layoutToggle,nextPageButton,pageSizeButton,autoPageButton,pitchButton,yawButton,depthButton;
     private Button slotButton,powerButton,scaleButton,alignButton,fontButton,rateButton;
     public PanelScreen(PanelMenu menu,Inventory inventory,Component title) {
@@ -35,13 +36,18 @@ public final class PanelScreen extends AbstractContainerScreen<PanelMenu> {
         button("Text color",180,71,68,()->send(0));button("Background",252,71,68,()->send(6));
         powerButton=button("Power",180,94,140,()->send(1));scaleButton=button("Scale",180,117,140,()->send(2));
         alignButton=button("Align",180,140,140,()->send(3));fontButton=button("Font",180,163,140,()->send(4));rateButton=button("Refresh",180,186,140,()->send(5));
-        button("Labels",180,209,44,()->send(100+selectedSlot*2));button("Percent",228,209,44,()->send(101+selectedSlot*2));button("Each",276,209,44,()->send(200+selectedSlot));
+        button("Label",180,209,33,()->send(100+selectedSlot*2));button("Pct",216,209,33,()->send(101+selectedSlot*2));button("Each",252,209,33,()->send(200+selectedSlot));button("Bars",288,209,32,()->send(300+selectedSlot));
         group=2;button("Prev",180,71,68,()->send(8));nextPageButton=button("Next",252,71,68,()->send(7));
         pageSizeButton=button("Lines",180,94,140,()->send(9));autoPageButton=button("Auto",180,117,140,()->send(10));
         pitchButton=button("Pitch",180,140,140,()->send(11));yawButton=button("Yaw",180,163,140,()->send(12));depthButton=button("Depth",180,186,140,()->send(13));
-        var reset=button("Reset projection",180,209,140,()->send(14));reset.active=menu.panel.holographic();group=0;updateGroups();
+        resetProjectionButton=button("Reset projection",180,209,140,()->send(14));
+        thicknessButton=button("Thickness",180,140,140,()->send(15));thickerButton=button("Thicker +1",180,163,140,()->send(17));resetCaseButton=button("Full thickness",180,186,140,()->send(16));
+        thicknessButton.active=thickerButton.active=resetCaseButton.active=menu.panel.advanced();group=0;updateGroups();
     }
-    private void updateGroups(){for(var b:styleButtons)b.visible=!layout;for(var b:layoutButtons)b.visible=layout;layoutToggle.setMessage(Component.literal(layout?"Style":"Layout"));}
+    private void updateGroups(){for(var b:styleButtons)b.visible=!layout;for(var b:layoutButtons)b.visible=layout;layoutToggle.setMessage(Component.literal(layout?"Style":"Layout"));
+        boolean holo=menu.panel.holographic();pitchButton.visible=yawButton.visible=depthButton.visible=resetProjectionButton.visible=layout&&holo;
+        thicknessButton.visible=thickerButton.visible=resetCaseButton.visible=layout&&!holo;
+    }
     private void send(int id){minecraft.gameMode.handleInventoryButtonClick(menu.containerId,id);}
     private String cardText(){var stack=menu.getSlot(selectedSlot).getItem();return CardItem.data(stack).getString(stack.getItem() instanceof CardItem c && c.kind()==CardItem.Kind.TEXT?"text":"title");}
     private void loadText(){loading=true;loadedText=cardText();text.setValue(loadedText);loading=false;dirty=false;}
@@ -61,6 +67,7 @@ public final class PanelScreen extends AbstractContainerScreen<PanelMenu> {
         pageSizeButton.setMessage(Component.literal("Lines per page: "+p.pageSize()));autoPageButton.setMessage(Component.literal(p.pageTicks()==0?"Auto page: Off":"Auto page: "+p.pageTicks()+" ticks"));
         pitchButton.setMessage(Component.literal("Pitch: "+p.projection().pitch()+" deg"));yawButton.setMessage(Component.literal("Yaw: "+p.projection().yaw()+" deg"));depthButton.setMessage(Component.literal("Depth: "+p.projection().depth()+" / 16"));
         pitchButton.active=yawButton.active=depthButton.active=p.holographic();
+        thicknessButton.setMessage(Component.literal("Thickness -1: "+p.thickness()+" / 16"));thicknessButton.active=p.advanced()&&p.thickness()>1;thickerButton.active=p.advanced()&&p.thickness()<16;
     }
     @Override protected void renderBg(GuiGraphics g,float tick,int mx,int my) {
         g.fill(leftPos,topPos,leftPos+imageWidth,topPos+imageHeight,0xffc6c6c6);g.fill(leftPos+6,topPos+22,leftPos+170,topPos+48,0xff282c30);

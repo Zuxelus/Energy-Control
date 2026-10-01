@@ -1,0 +1,8 @@
+RUN_START IE-special server reload=true 2026-10-01T03:55:22.027199300Z
+PASS IE specialized actual machines restored from disk
+PASS IE specialized machine card and physical thickness restored from disk
+PASS IE specialized saved real copper network resumes actual transfer
+PASS IE specialized card equals real meter getAveragePower
+PASS IE specialized card equals real thermal generation potential
+PASS IE specialized real capacitor bar resumes after restart
+ALL_IE_SPECIAL_RELOAD_SERVER_DONE

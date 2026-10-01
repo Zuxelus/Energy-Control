@@ -1,0 +1,26 @@
+RUN_START graphics-client observer=false reload=false 2026-10-01T03:33:18.414568500Z
+PASS both players open actual normal panel menu
+PASS both clients receive energy and fluid numeric bars
+PASS both clients receive core and extender physical thickness
+SCREENSHOT Saved screenshot as graphics-editor-menu.png
+PASS bar fill changes with real synchronized capability reading
+SCREENSHOT Saved screenshot as graphics-editor-world.png
+PASS ordinary creative break detaches thin extender on both clients
+PASS normal replacement joins group and inherits physical thickness
+SCREENSHOT Saved screenshot as graphics-editor-rebuilt.png
+PASS portable screen opens normally
+PASS portable receives matching typed bar and text rows
+SCREENSHOT Saved screenshot as graphics-portable-bars.png
+PASS thin solid model and collision synchronized facing down
+SCREENSHOT Saved screenshot as graphics-face-down.png
+PASS thin solid model and collision synchronized facing up
+SCREENSHOT Saved screenshot as graphics-face-up.png
+PASS thin solid model and collision synchronized facing north
+SCREENSHOT Saved screenshot as graphics-face-north.png
+PASS thin solid model and collision synchronized facing south
+SCREENSHOT Saved screenshot as graphics-face-south.png
+PASS thin solid model and collision synchronized facing west
+SCREENSHOT Saved screenshot as graphics-face-west.png
+PASS thin solid model and collision synchronized facing east
+SCREENSHOT Saved screenshot as graphics-face-east.png
+ALL_GRAPHICS_CLIENT_DONE editor

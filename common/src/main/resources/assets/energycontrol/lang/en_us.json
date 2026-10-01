@@ -31,5 +31,7 @@
   "tooltip.energycontrol.card.fluid_array": "Bind up to 16 tanks. Fluids stay separate.",
   "tooltip.energycontrol.upgrade.range": "0/1/2/3 upgrades: range 64/128/256/512 blocks.",
   "tooltip.energycontrol.upgrade.capacity": "0/1/2/3 upgrades: 4/8/12/16 active array targets.",
-  "tooltip.energycontrol.upgrade.precision": "0/1/2/3 upgrades: 0/1/2/3 decimal places."
+  "tooltip.energycontrol.upgrade.precision": "0/1/2/3 upgrades: 0/1/2/3 decimal places.",
+  "item.energycontrol.card_machine": "Machine Data Card",
+  "tooltip.energycontrol.card.machine": "Sneak-use on a supported machine; specialized read-only data."
 }

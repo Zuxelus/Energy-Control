@@ -1,0 +1,82 @@
+[12:53:29] [main/INFO] (Launcher) ModLauncher running: args [--launchTarget, forgeclientdev, --version, 21.1.209, --assetIndex, 1.21.1-17, --assetsDir, C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\.gradle-user-home\caches\fabric-loom\assets, --gameDir, ., --fml.fmlVersion, 4.0.41, --fml.mcVersion, 1.21.1, --fml.neoForgeVersion, 21.1.209, --fml.neoFormVersion, 20240808.144430, --width, 1280, --height, 720, --username, ECEditor]
+[12:53:29] [main/INFO] (Launcher) JVM identified as Azul Systems, Inc. OpenJDK 64-Bit Server VM 21.0.12.1+1-LTS
+[12:53:29] [main/INFO] (Launcher) ModLauncher 11.0.5+main.901c6ea8 starting: java version 21.0.12.1 by Azul Systems, Inc.; OS Windows 11 arch amd64 version 10.0
+[12:53:29] [main/INFO] (ImmediateWindowHandler) Loading ImmediateWindowProvider fmlearlywindow
+[12:53:29] [main/INFO] (EARLYDISPLAY) Trying GL version 4.6
+[12:53:29] [main/INFO] (EARLYDISPLAY) Requested GL version 4.6 got version 4.6
+[12:53:29] [main/INFO] (mixin) SpongePowered MIXIN Subsystem Version=0.8.7 Source=union:/C:/Users/Makoto/Documents/Codex/2026-10-01/task-2/Energy-Control/.gradle-user-home/caches/modules-2/files-2.1/net.fabricmc/sponge-mixin/0.15.2+mixin.0.8.7/2af2f021d8e02a0220dc27a7a72b4666d66d44ca/sponge-mixin-0.15.2+mixin.0.8.7.jar%23125!/ Service=ModLauncher Env=CLIENT
+[12:53:29] [pool-5-thread-1/INFO] (EARLYDISPLAY) GL info: NVIDIA GeForce RTX 5060 Laptop GPU/PCIe/SSE2 GL version 4.6.0 NVIDIA 591.97, NVIDIA Corporation
+[12:53:29] [main/INFO] (ModDiscoverer) Found mod file "neoforge-21.1.209-minecraft-merged-1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209.jar" [locator: neoforge devenv provider ([C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\.gradle-user-home\caches\fabric-loom\minecraftMaven\net\minecraft\neoforge-21.1.209-minecraft-merged\1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209\neoforge-21.1.209-minecraft-merged-1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209.jar])]
+[12:53:29] [main/INFO] (ModDiscoverer) Found mod file "neoforge-21.1.209-minecraft-merged-1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209.jar" [locator: neoforge devenv provider ([C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\.gradle-user-home\caches\fabric-loom\minecraftMaven\net\minecraft\neoforge-21.1.209-minecraft-merged\1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209\neoforge-21.1.209-minecraft-merged-1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209.jar])]
+[12:53:29] [main/INFO] (ModDiscoverer) Found mod file "main" [locator: userdev mods and services, reader: mod manifest]
+[12:53:29] [main/INFO] (ModDiscoverer) Found mod file "neoforge-21.1.209-minecraft-merged-1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209.jar" [locator: userdev mods and services, reader: mod manifest]
+[12:53:29] [main/INFO] (ModDiscoverer) Found mod file "architectury-neoforge-13.0.8.jar" [locator: userdev mods and services, reader: mod manifest]
+[12:53:29] [main/INFO] (ModDiscoverer) Found mod file "ImmersiveEngineering-1.21.1-12.4.2-194-816685b898ee.jar" [locator: userdev mods and services, reader: mod manifest]
+[12:53:29] [main/INFO] (ModDiscoverer) Found mod file "18083279829509204176.jar" [locator: userdev mods and services, reader: mod manifest]
+[12:53:29] [main/INFO] (ModDiscoverer) Found gamelibrary file "mixinextras-neoforge-0.5.0.jar" [locator: userdev mods and services, reader: mod manifest]
+[12:53:30] [main/INFO] (ModDiscoverer) Found library file "BlockModelSplitter-2.0.1-ab752fbe975e.jar" [locator: userdev mods and services, reader: mod manifest]
+[12:53:30] [main/INFO] (ModDiscoverer) Found gamelibrary file "DualCodecs-0.1.2-0bddfcac4d40.jar" [locator: userdev mods and services, reader: mod manifest]
+[12:53:30] [main/WARN] (JarSelector) Attempted to select a dependency jar for JarJar which was passed in as source: library:mixinextras.neoforge. Using Mod File: C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\.gradle-user-home\caches\modules-2\files-2.1\io.github.llamalad7\mixinextras-neoforge\0.5.0\d734b83ce6542bb70ea31755c1595b88992dbe65\mixinextras-neoforge-0.5.0.jar
+[12:53:30] [main/INFO] (JarInJarDependencyLocator) Found 1 dependencies adding them to mods collection
+[12:53:30] [main/INFO] (ModDiscoverer) Found library file "net.neoforged.neoforge-coremods-21.1.209.jar" [parent: neoforge-21.1.209-minecraft-merged-1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209.jar, locator: jarinjar, reader: mod manifest]
+[12:53:30] [main/INFO] (ModDiscoverer) 
+     Mod List:
+		Name Version (Mod Id)
+
+		Architectury 13.0.8 (architectury)
+		Energy Control (port preview) 1.21.1-0.4.0-port-preview (energycontrol)
+		generated_81505fe 1 (generated_81505fe)
+		Immersive Engineering 12.4.2-194 (immersiveengineering)
+		Minecraft 1.21.1 (minecraft)
+		NeoForge 21.1.209 (neoforge)
+[12:53:30] [main/INFO] (mixin) Compatibility level set to JAVA_17
+[12:53:30] [main/INFO] (LaunchServiceHandler) Launching target 'forgeclientdev' with arguments [--version, 21.1.209, --gameDir, ., --assetsDir, C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\.gradle-user-home\caches\fabric-loom\assets, --assetIndex, 1.21.1-17, --width, 1280, --height, 720, --username, ECEditor]
+[12:53:30] [main/INFO] (unprotect) Found 8254 Minecraft classes
+[12:53:31] [main/INFO] (MixinExtras|Service) Initializing MixinExtras via com.llamalad7.mixinextras.service.MixinExtrasServiceImpl(version=0.5.0).
+[0110月2026 12:53:32.369] [Datafixer Bootstrap/INFO] [com.mojang.datafixers.DataFixerBuilder/]: 229 Datafixer optimizations took 202 milliseconds
+[0110月2026 12:53:36.264] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
+[0110月2026 12:53:36.266] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, targets] with inputs: [0.1 -0.5 .9, 0 0 0]
+[0110月2026 12:53:36.269] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, destination] and [teleport, targets] with inputs: [Player, 0123, @e, dd12be42-52a9-4a91-a8a1-11c01849e498]
+[0110月2026 12:53:36.270] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, targets] and [teleport, destination] with inputs: [Player, 0123, dd12be42-52a9-4a91-a8a1-11c01849e498]
+[0110月2026 12:53:36.270] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, targets, location] and [teleport, targets, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
+[0110月2026 12:53:36.375] [Render thread/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/C:/Users/Makoto/Documents/Codex/2026-10-01/task-2/Energy-Control/.gradle-user-home/caches/fabric-loom/minecraftMaven/net/minecraft/neoforge-21.1.209-minecraft-merged/1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209/neoforge-21.1.209-minecraft-merged-1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209.jar%23198!/assets/.mcassetsroot' uses unexpected schema
+[0110月2026 12:53:36.377] [Render thread/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/C:/Users/Makoto/Documents/Codex/2026-10-01/task-2/Energy-Control/.gradle-user-home/caches/fabric-loom/minecraftMaven/net/minecraft/neoforge-21.1.209-minecraft-merged/1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209/neoforge-21.1.209-minecraft-merged-1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209.jar%23198!/data/.mcassetsroot' uses unexpected schema
+[0110月2026 12:53:36.406] [Render thread/INFO] [com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService/]: Environment: Environment[sessionHost=https://sessionserver.mojang.com, servicesHost=https://api.minecraftservices.com, name=PROD]
+[0110月2026 12:53:36.414] [Render thread/INFO] [net.minecraft.client.Minecraft/]: Setting user: ECEditor
+[0110月2026 12:53:36.495] [Render thread/INFO] [net.minecraft.client.Minecraft/]: Backend library: LWJGL version 3.3.3+5
+[0110月2026 12:53:36.679] [modloading-worker-0/INFO] [net.neoforged.neoforge.common.NeoForgeMod/NEOFORGE-MOD]: NeoForge mod loading, version 21.1.209, for MC 1.21.1
+[0110月2026 12:53:38.532] [Render thread/INFO] [net.neoforged.neoforge.gametest.GameTestHooks/]: Enabled Gametest Namespaces: []
+[0110月2026 12:53:38.764] [Render thread/INFO] [net.minecraft.server.packs.resources.ReloadableResourceManager/]: Reloading ResourceManager: vanilla, mod_resources, mod/energycontrol,energycontrolqa, mod/generated_81505fe, mod/immersiveengineering, mod/architectury, mod/neoforge
+[0110月2026 12:53:38.781] [Immersive Engineering Contributors Thread/INFO] [immersiveengineering/]: Attempting to download special revolvers from GitHub
+[0110月2026 12:53:38.848] [NeoForge Version Check/INFO] [net.neoforged.fml.VersionChecker/]: [immersiveengineering] Starting version check at https://raw.githubusercontent.com/BluSunrize/ImmersiveEngineering/1.21.1/changelog.json
+[0110月2026 12:53:38.871] [Worker-Main-14/INFO] [net.minecraft.client.gui.font.providers.UnihexProvider/]: Found unifont_all_no_pua-15.1.05.hex, loading
+[0110月2026 12:53:38.871] [Worker-Main-21/INFO] [net.minecraft.client.gui.font.providers.UnihexProvider/]: Found unifont_jp_patch-15.1.05.hex, loading
+[0110月2026 12:53:39.108] [Worker-Main-17/WARN] [net.minecraft.client.renderer.texture.SpriteLoader/]: Texture immersiveengineering:block/connector/redstone_switchboard with size 24x24 limits mip level from 4 to 3
+[0110月2026 12:53:39.255] [NeoForge Version Check/INFO] [net.neoforged.fml.VersionChecker/]: [immersiveengineering] Found status: AHEAD Current: 12.4.2-194 Target: null
+[0110月2026 12:53:40.767] [Render thread/ERROR] [net.minecraft.client.sounds.SoundManager/]: Missing subtitle translation{key='subtitles.immersiveengineering.alert', args=[]} for sound event: immersiveengineering:alert
+[0110月2026 12:53:40.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:item.goat_horn.play
+[0110月2026 12:53:40.768] [Render thread/WARN] [net.minecraft.client.sounds.SoundEngine/]: Missing sound for event: minecraft:entity.goat.screaming.horn_break
+[0110月2026 12:53:40.817] [Render thread/INFO] [com.mojang.blaze3d.audio.Library/]: OpenAL initialized on device OpenAL Soft on Main 1/2 (3- Minifuse 2)
+[0110月2026 12:53:40.819] [Render thread/INFO] [net.minecraft.client.sounds.SoundEngine/SOUNDS]: Sound engine started
+[0110月2026 12:53:40.899] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 2048x1024x4 minecraft:textures/atlas/blocks.png-atlas
+[0110月2026 12:53:40.907] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 256x256x4 minecraft:textures/atlas/signs.png-atlas
+[0110月2026 12:53:40.908] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 1024x512x4 minecraft:textures/atlas/banner_patterns.png-atlas
+[0110月2026 12:53:40.908] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 1024x512x4 minecraft:textures/atlas/shield_patterns.png-atlas
+[0110月2026 12:53:40.908] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 1024x1024x4 minecraft:textures/atlas/armor_trims.png-atlas
+[0110月2026 12:53:40.910] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 256x256x4 minecraft:textures/atlas/chest.png-atlas
+[0110月2026 12:53:40.910] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 128x64x4 minecraft:textures/atlas/decorated_pot.png-atlas
+[0110月2026 12:53:40.910] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 512x256x4 minecraft:textures/atlas/beds.png-atlas
+[0110月2026 12:53:40.910] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 512x256x4 minecraft:textures/atlas/shulker_boxes.png-atlas
+[0110月2026 12:53:40.953] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 512x256x0 minecraft:textures/atlas/particles.png-atlas
+[0110月2026 12:53:40.954] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 512x256x0 minecraft:textures/atlas/paintings.png-atlas
+[0110月2026 12:53:40.954] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 256x128x0 minecraft:textures/atlas/mob_effects.png-atlas
+[0110月2026 12:53:40.954] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 64x64x0 minecraft:textures/atlas/map_decorations.png-atlas
+[0110月2026 12:53:40.954] [Render thread/INFO] [net.minecraft.client.renderer.texture.TextureAtlas/]: Created: 1024x1024x0 minecraft:textures/atlas/gui.png-atlas
+[0110月2026 12:53:40.973] [Render thread/WARN] [net.minecraft.client.renderer.ShaderInstance/]: Shader rendertype_entity_translucent_emissive could not find sampler named Sampler2 in the specified shader program.
+[0110月2026 12:53:41.033] [Render thread/INFO] [net.neoforged.neoforge.client.entity.animation.json.AnimationLoader/]: Loaded 0 entity animations
+[0110月2026 12:53:43.089] [Render thread/INFO] [net.minecraft.client.gui.screens.ConnectScreen/]: Connecting to 127.0.0.1, 25581
+[0110月2026 12:53:44.339] [Render thread/INFO] [net.minecraft.advancements.AdvancementTree/]: Loaded 2 advancements
+[0110月2026 12:53:45.092] [Render thread/ERROR] [immersiveengineering-wires/]: Tried to add a duplicate connection from ConnectionPoint[position=BlockPos{x=-6, y=1, z=5}, index=0] (blusunrize.immersiveengineering.common.blocks.metal.EnergyConnectorBlockEntity@141dd31c) to ConnectionPoint[position=BlockPos{x=0, y=0, z=5}, index=0] (blusunrize.immersiveengineering.common.blocks.metal.EnergyMeterBlockEntity@23b046a8)
+[0110月2026 12:53:45.093] [Render thread/ERROR] [immersiveengineering-wires/]: Tried to add a duplicate connection from ConnectionPoint[position=BlockPos{x=6, y=1, z=5}, index=0] (blusunrize.immersiveengineering.common.blocks.metal.EnergyConnectorBlockEntity@50b9fe7b) to ConnectionPoint[position=BlockPos{x=0, y=0, z=5}, index=1] (blusunrize.immersiveengineering.common.blocks.metal.EnergyMeterBlockEntity@23b046a8)
+[0110月2026 12:54:04.637] [Render thread/INFO] [net.minecraft.client.gui.components.ChatComponent/]: [System] [CHAT] Teleported ECEditor to 0.500000, 0.500000, 2.500000
+[0110月2026 12:54:10.098] [Render thread/INFO] [net.minecraft.client.Minecraft/]: Stopping!

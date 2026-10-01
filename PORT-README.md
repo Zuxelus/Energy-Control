@@ -41,3 +41,13 @@ under the Layout button; settings survive server restart on both loaders.
 Real IE LV capacitor/tank acceptance is NeoForge-only. See [QA-V4](docs/QA-V4.md)
 for36 actual IE checks and19 display checks per loader; broader integrations and
 full upstream parity remain pending. This port never bundles IE.
+
+0.5 adds per-card horizontal storage bars and physical advanced-case thickness
+1..16 in Layout, with matching extender geometry and collision. Portable bars use
+typed server rows; matching 0.5 clients and servers are required. Both loaders
+have real two-client edit/break/place/restart acceptance. See docs/QA-V5.md.
+
+The 0.5 Machine Data Card supports IE12.4.2-194 current-transformer average FE/t
+and thermoelectric generation potential on NeoForge. Sneak-use it on the machine,
+then insert it into a panel. These are separately accepted actual-machine reads;
+Fabric shows unsupported machine data until an appropriate adapter exists.

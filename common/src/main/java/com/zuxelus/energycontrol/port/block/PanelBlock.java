@@ -19,20 +19,25 @@ import net.minecraft.world.level.block.state.properties.*;
 import net.minecraft.world.phys.BlockHitResult;
 
 public final class PanelBlock extends BaseEntityBlock {
+    public static final IntegerProperty THICKNESS = IntegerProperty.create("thickness", 1, 16);
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     private final boolean advanced, extender, holographic;
     public PanelBlock(boolean advanced, boolean extender) {this(advanced,extender,false);}
     public PanelBlock(boolean advanced,boolean extender,boolean holographic) {
-        super(holographic?Properties.of().strength(1.0F,3.0F).sound(SoundType.METAL).noOcclusion().noCollission():Properties.of().strength(1.0F,3.0F).sound(SoundType.METAL));
+        super(holographic?Properties.of().strength(1.0F,3.0F).sound(SoundType.METAL).noOcclusion().noCollission():Properties.of().strength(1.0F,3.0F).sound(SoundType.METAL).noOcclusion());
         this.advanced=advanced;this.extender=extender;this.holographic=holographic;
-        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH));
+        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(THICKNESS, 16));
     }
     @Override protected MapCodec<? extends BaseEntityBlock> codec() { return MapCodec.unit(this); }
     public boolean holographic(){return holographic;}
     public boolean advanced() { return advanced; }
     public boolean extender() { return extender; }
-    @Override protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder) { builder.add(FACING); }
+    @Override protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder) { builder.add(FACING, THICKNESS); }
     @Override public BlockState getStateForPlacement(BlockPlaceContext context) { return defaultBlockState().setValue(FACING, context.getNearestLookingDirection().getOpposite()); }
+    @Override protected net.minecraft.world.phys.shapes.VoxelShape getShape(BlockState state, net.minecraft.world.level.BlockGetter world, BlockPos pos, net.minecraft.world.phys.shapes.CollisionContext context) {
+        if (!advanced || holographic) return super.getShape(state, world, pos, context);
+        return net.minecraft.world.phys.shapes.Shapes.create(com.zuxelus.energycontrol.port.core.PanelCase.box(state.getValue(FACING), state.getValue(THICKNESS)));
+    }
     @Override protected RenderShape getRenderShape(BlockState state) { return RenderShape.MODEL; }
     @Override public BlockEntity newBlockEntity(BlockPos pos, BlockState state) { return new PanelBlockEntity(pos,state); }
     @Override public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {

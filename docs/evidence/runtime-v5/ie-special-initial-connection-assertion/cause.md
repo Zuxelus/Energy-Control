@@ -1,0 +1,1 @@
+The harness incorrectly used getConnections(BlockPos), which returns connection point 0 only. The corrected assertion unions both public meter connection points and requires exactly two external wires plus one internal shunt. No production reading or meter sample was changed. Failed run is excluded from acceptance.

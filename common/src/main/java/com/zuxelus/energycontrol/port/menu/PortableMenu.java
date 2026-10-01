@@ -14,7 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.*;
 public final class PortableMenu extends AbstractContainerMenu {
  public final PortableInventory contents;private final ItemStack parent;private final Player owner;private final InteractionHand hand;private final int lockedSlot;
- public List<String> lines=List.of();private long lastUpdate=-1;
+ public List<String> lines=List.of();public List<Integer> barFills=List.of();private long lastUpdate=-1;
  public static PortableMenu fromNetwork(int id,Inventory inv,FriendlyByteBuf b){return new PortableMenu(id,inv,b.readEnum(InteractionHand.class));}
  public PortableMenu(int id,Inventory inv,InteractionHand hand){
   super(EnergyControlPort.PORTABLE_MENU.get(),id);owner=inv.player;this.hand=hand;lockedSlot=hand==InteractionHand.MAIN_HAND?inv.selected:40;parent=owner.getItemInHand(hand);contents=new PortableInventory(parent);
@@ -35,15 +35,15 @@ public final class PortableMenu extends AbstractContainerMenu {
  @Override public void broadcastChanges(){
   super.broadcastChanges();if(!(owner instanceof ServerPlayer sp)||!stillValid(owner))return;
   long now=owner.level().getGameTime();if(now==lastUpdate||now%5!=0)return;lastUpdate=now;
-  var next=CardDisplay.read(owner.level(),owner.blockPosition(),contents.getItem(0),UpgradePolicy.range(upgrade(UpgradeItem.Kind.RANGE)),UpgradePolicy.targets(upgrade(UpgradeItem.Kind.CAPACITY)),UpgradePolicy.decimals(upgrade(UpgradeItem.Kind.PRECISION))).stream().limit(32).map(s->s.substring(0,Math.min(256,s.length()))).toList();
+  var next=CardDisplay.rows(owner.level(),owner.blockPosition(),contents.getItem(0),UpgradePolicy.range(upgrade(UpgradeItem.Kind.RANGE)),UpgradePolicy.targets(upgrade(UpgradeItem.Kind.CAPACITY)),UpgradePolicy.decimals(upgrade(UpgradeItem.Kind.PRECISION))).stream().limit(32).toList();
   // Send periodically, including empty data, to initialize newly opened clients.
-  lines=next;NetworkManager.sendToPlayer(sp,new PortableDataPayload(containerId,next));owner.getInventory().setChanged();
+  lines=next.stream().map(com.zuxelus.energycontrol.port.core.DisplayRow::text).toList();barFills=next.stream().map(com.zuxelus.energycontrol.port.core.DisplayRow::fill).toList();NetworkManager.sendToPlayer(sp,new PortableDataPayload(containerId,lines,barFills));owner.getInventory().setChanged();
  }
  public void editText(Player p,int slot,String text){if(p.containerMenu!=this||!stillValid(p)||p.isSpectator()||slot!=0)return;CardDisplay.edit(contents.getItem(0),text);contents.setChanged();broadcastChanges();}
  @Override public boolean clickMenuButton(Player p,int id){
-  if(!stillValid(p)||p.isSpectator()||id<100||id>102)return false;
+  if(!stillValid(p)||p.isSpectator()||id<100||id>103)return false;
   var stack=contents.getItem(0);if(!(stack.getItem() instanceof CardItem))return false;
-  var data=CardItem.data(stack);String key=id==100?"hideLabels":id==101?"hidePercent":"showEach";data.putBoolean(key,!data.getBoolean(key));CardItem.update(stack,data);contents.setChanged();return true;
+  var data=CardItem.data(stack);String key=id==100?"hideLabels":id==101?"hidePercent":id==102?"showEach":"showBars";data.putBoolean(key,!data.getBoolean(key));CardItem.update(stack,data);contents.setChanged();return true;
  }
  @Override public ItemStack quickMoveStack(Player p,int index){
   if(index<0||index>=slots.size()||!slots.get(index).mayPickup(p))return ItemStack.EMPTY;

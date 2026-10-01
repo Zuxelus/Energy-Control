@@ -1,0 +1,11 @@
+RUN_START graphics-client observer=true reload=false 2026-10-01T03:32:41.694059Z
+PASS both players open actual normal panel menu
+PASS both clients receive energy and fluid numeric bars
+PASS both clients receive core and extender physical thickness
+SCREENSHOT Saved screenshot as graphics-observer-menu.png
+PASS bar fill changes with real synchronized capability reading
+SCREENSHOT Saved screenshot as graphics-observer-world.png
+PASS ordinary creative break detaches thin extender on both clients
+PASS normal replacement joins group and inherits physical thickness
+SCREENSHOT Saved screenshot as graphics-observer-rebuilt.png
+ALL_GRAPHICS_CLIENT_DONE observer

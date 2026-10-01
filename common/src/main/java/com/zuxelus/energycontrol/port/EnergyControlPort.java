@@ -34,6 +34,7 @@ public final class EnergyControlPort {
     public static final RegistrySupplier<PanelBlock> HOLO_EXTENDER=panel("holo_panel_extender",true,true,true);
     public static final RegistrySupplier<Item> TEXT = ITEMS.register("card_text", () -> new CardItem(CardItem.Kind.TEXT));
     public static final RegistrySupplier<Item> ENERGY = ITEMS.register("card_energy", () -> new CardItem(CardItem.Kind.ENERGY));
+    public static final RegistrySupplier<Item> MACHINE = ITEMS.register("card_machine", () -> new CardItem(CardItem.Kind.MACHINE));
     public static final RegistrySupplier<Item> TIME = ITEMS.register("card_time", () -> new CardItem(CardItem.Kind.TIME));
     public static final RegistrySupplier<Item> REDSTONE = ITEMS.register("card_redstone", () -> new CardItem(CardItem.Kind.REDSTONE));
     public static final RegistrySupplier<Item> FLUID = ITEMS.register("card_liquid", () -> new CardItem(CardItem.Kind.FLUID));
@@ -51,9 +52,10 @@ public final class EnergyControlPort {
             .title(Component.literal("Energy Control — port preview")).icon(() -> new ItemStack(BASIC.get()))
             .displayItems((parameters, output) -> {
                 for (var block : List.of(BASIC, ADVANCED, EXTENDER, ADVANCED_EXTENDER,HOLO,HOLO_EXTENDER)) output.accept(block.get());
-                for (var item : List.of(TEXT, ENERGY, TIME, REDSTONE, FLUID, ENERGY_ARRAY, FLUID_ARRAY, RANGE, CAPACITY, PRECISION, PORTABLE)) output.accept(item.get());
+                for (var item : List.of(TEXT, ENERGY, TIME, REDSTONE, FLUID, ENERGY_ARRAY, FLUID_ARRAY, MACHINE, RANGE, CAPACITY, PRECISION, PORTABLE)) output.accept(item.get());
             }).build());
     public static com.zuxelus.energycontrol.port.fluid.FluidProbe fluidProbe = (level,pos,side) -> java.util.Optional.empty();
+    public static com.zuxelus.energycontrol.port.energy.MachineProbe machineProbe = (level,pos,side) -> java.util.Optional.empty();
     public static EnergyProbe energyProbe = (level, pos, side) -> java.util.Optional.empty();
 
     private static RegistrySupplier<PanelBlock> panel(String name, boolean advanced, boolean extender) {
