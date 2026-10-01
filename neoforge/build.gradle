@@ -17,6 +17,14 @@ shadowJar { configurations = [project.configurations.shadowBundle]; archiveClass
 remapJar { inputFile.set shadowJar.archiveFile; dependsOn shadowJar }
 sourcesJar { from project(':common').sourceSets.main.allSource }
 loom.runs {
-    client { runDir 'run/client'; vmArg '-Xmx2G'; programArg '--width'; programArg '1280'; programArg '--height'; programArg '720' }
-    server { runDir 'run/server'; vmArg '-Xmx2G'; programArg '--nogui' }
+    client {
+        runDir rootProject.hasProperty('qaStage') ? (rootProject.hasProperty('qaObserver')?'run/client-v3-observer':'run/client-v3') : 'run/client'
+        vmArg '-Xmx2G'; programArg '--width'; programArg '1280'; programArg '--height'; programArg '720'
+        if(rootProject.hasProperty('qaStage')) { vmArg "-Dec.qa.stage=${rootProject.qaStage}"; programArg '--username'; programArg rootProject.hasProperty('qaObserver')?'ECObserver':'ECEditor' }
+        if(rootProject.hasProperty('qaObserver'))vmArg '-Dec.qa.observer=true'
+    }
+    server {
+        runDir rootProject.hasProperty('qaStage')?'run/server-v3':'run/server';vmArg '-Xmx2G';programArg '--nogui'
+        if(rootProject.hasProperty('qaStage'))vmArg "-Dec.qa.stage=${rootProject.qaStage}"
+    }
 }

@@ -26,11 +26,11 @@ unrelated rewrites are not binary-compatible substitutes. No content mods instal
 | [Extreme Reactors](https://www.curseforge.com/minecraft/mc-mods/extreme-reactors) | NeoForge 2.4.28 | Exposed FE only; specialized reactor/turbine cards not ported |
 | [AE2](https://www.curseforge.com/minecraft/mc-mods/applied-energistics-2) | NeoForge 19.2.18 | Network/inventory/crafting adapters not ported; Fabric 1.21.1 not verified |
 | [CC: Tweaked](https://www.curseforge.com/minecraft/mc-mods/cc-tweaked) | Both loaders listed | Peripheral integration not ported |
-| [Immersive Engineering](https://www.curseforge.com/minecraft/mc-mods/immersive-engineering) | NeoForge 12.4.2-194 | Exposed FE only; special machine data not ported |
+| [Immersive Engineering](https://www.curseforge.com/minecraft/mc-mods/immersive-engineering) | NeoForge 12.4.2-194 | Generic FE + FluidHandler source implemented; real IE12.4.2-194 acceptance pending. See integration-research/IE-PLAN.md |
 | [Draconic Evolution](https://www.curseforge.com/minecraft/mc-mods/draconic-evolution) | NeoForge 3.1.4.633 beta | Exposed FE only; large native-energy API needs adapter |
 | [Tech Reborn](https://www.curseforge.com/minecraft/mc-mods/techreborn/files/all?page=1&pageSize=20&version=1.21.1) | Fabric 5.11.19 for 1.21.1 listed | Team Reborn Energy protocol implemented; actual Tech Reborn compatibility not tested |
 
 Generic FE/E support does not prove compatibility with every block. The provider
 must expose storage on the bound face. FE integer capacity limits remain at the
-provider boundary; common measurements use long. E and FE are labeled separately,
+provider boundary; common energy inputs use long and aggregated measurements use BigDecimal. E and FE are labeled separately,
 never converted. JEI/REI/WTHIT overlays are not ported in this preview.

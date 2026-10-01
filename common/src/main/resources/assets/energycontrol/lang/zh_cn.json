@@ -16,5 +16,20 @@
   "gui.energycontrol.save": "保存",
   "gui.energycontrol.slot": "卡槽",
   "gui.energycontrol.color": "颜色",
-  "gui.energycontrol.power": "开关"
+  "gui.energycontrol.power": "开关",
+  "item.energycontrol.card_liquid": "流体传感卡",
+  "item.energycontrol.card_energy_array": "能源阵列卡",
+  "item.energycontrol.card_liquid_array": "流体阵列卡",
+  "item.energycontrol.upgrade_range": "距离升级",
+  "item.energycontrol.upgrade_capacity": "阵列容量升级",
+  "item.energycontrol.upgrade_precision": "精度升级",
+  "item.energycontrol.portable_panel": "便携信息面板",
+  "block.energycontrol.holo_panel": "全息信息面板",
+  "block.energycontrol.holo_panel_extender": "全息扩展块",
+  "tooltip.energycontrol.card.fluid": "潜行右键储罐表面绑定，只读。",
+  "tooltip.energycontrol.card.energy_array": "最多绑定16个目标，再次点击同一面移除。",
+  "tooltip.energycontrol.card.fluid_array": "最多绑定16个储罐，不同流体分别汇总。",
+  "tooltip.energycontrol.upgrade.range": "0/1/2/3个升级：距离64/128/256/512格。",
+  "tooltip.energycontrol.upgrade.capacity": "0/1/2/3个升级：4/8/12/16个生效阵列目标。",
+  "tooltip.energycontrol.upgrade.precision": "0/1/2/3个升级：显示0/1/2/3位小数。"
 }

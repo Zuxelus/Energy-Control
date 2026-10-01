@@ -1,0 +1,18 @@
+RUN_START storage-client 2026-10-01T01:28:52.762243400Z
+PASS client sees actual fluid array
+SCREENSHOT Saved screenshot as v3-01-arrays.png
+PASS client receives changing fluid array packets
+PASS two actual sneak-use interactions build array
+PASS upgraded panel menu opens
+PASS normal shift-click inserts array card
+SCREENSHOT Saved screenshot as v3-02-upgrade-slots.png
+PASS actual held-item interaction opens portable menu
+PASS portable title and live fluid data arrive over network
+SCREENSHOT Saved screenshot as v3-03-portable.png
+PASS portable live fluid refresh
+PASS open portable cannot move into its own inventory
+PASS portable close and reopen retains data
+SCREENSHOT Saved screenshot as v3-04-portable-reopened.png
+PASS client receives holographic group
+SCREENSHOT Saved screenshot as v3-05-holographic.png
+ALL_STORAGE_CLIENT_SCENARIOS_DONE

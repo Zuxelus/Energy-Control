@@ -20,13 +20,15 @@ import net.minecraft.world.phys.BlockHitResult;
 
 public final class PanelBlock extends BaseEntityBlock {
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
-    private final boolean advanced, extender;
-    public PanelBlock(boolean advanced, boolean extender) {
-        super(Properties.of().strength(1.0F,3.0F).sound(SoundType.METAL));
-        this.advanced = advanced; this.extender = extender;
+    private final boolean advanced, extender, holographic;
+    public PanelBlock(boolean advanced, boolean extender) {this(advanced,extender,false);}
+    public PanelBlock(boolean advanced,boolean extender,boolean holographic) {
+        super(holographic?Properties.of().strength(1.0F,3.0F).sound(SoundType.METAL).noOcclusion().noCollission():Properties.of().strength(1.0F,3.0F).sound(SoundType.METAL));
+        this.advanced=advanced;this.extender=extender;this.holographic=holographic;
         registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
     @Override protected MapCodec<? extends BaseEntityBlock> codec() { return MapCodec.unit(this); }
+    public boolean holographic(){return holographic;}
     public boolean advanced() { return advanced; }
     public boolean extender() { return extender; }
     @Override protected void createBlockStateDefinition(StateDefinition.Builder<Block,BlockState> builder) { builder.add(FACING); }

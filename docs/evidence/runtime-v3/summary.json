@@ -1,0 +1,251 @@
+{
+  "date": "2026-10-01",
+  "production_server_qa_entrypoints": false,
+  "external_machine_acceptance": false,
+  "results": [
+    {
+      "loader": "fabric",
+      "assertions": 35,
+      "cases": [
+        {
+          "stage": "storage-final",
+          "role": "server",
+          "passes": 10,
+          "file": "fabric-storage-final/server.txt"
+        },
+        {
+          "stage": "storage-final",
+          "role": "client",
+          "passes": 11,
+          "file": "fabric-storage-final/client.txt"
+        },
+        {
+          "stage": "normal-final",
+          "role": "editor",
+          "passes": 7,
+          "file": "fabric-normal-final/editor.log"
+        },
+        {
+          "stage": "normal-final",
+          "role": "observer",
+          "passes": 4,
+          "file": "fabric-normal-final/observer.log"
+        },
+        {
+          "stage": "normal-reload",
+          "role": "client",
+          "passes": 3,
+          "file": "fabric-normal-reload/client.log"
+        }
+      ],
+      "screenshots": [
+        {
+          "path": "fabric-storage-final/v3-01-arrays.png",
+          "bytes": 295273,
+          "width": 1280,
+          "height": 720,
+          "sha256": "08894ac5ca8a2c5d9640c99466418e863cca5d62f62c5e6b02fbda504f465ac2"
+        },
+        {
+          "path": "fabric-storage-final/v3-02-upgrade-slots.png",
+          "bytes": 107985,
+          "width": 1280,
+          "height": 720,
+          "sha256": "41e637e0808b74dd22e58ae92277cf390f001ba65faf5ae0dc3add69813cfd1d"
+        },
+        {
+          "path": "fabric-storage-final/v3-03-portable.png",
+          "bytes": 65578,
+          "width": 1280,
+          "height": 720,
+          "sha256": "b713a5495cfd662d8856896ba083ae67e48da28bf136f60fabe7f16bb2e4aaa0"
+        },
+        {
+          "path": "fabric-storage-final/v3-04-portable-reopened.png",
+          "bytes": 64071,
+          "width": 1280,
+          "height": 720,
+          "sha256": "2878796e40391c839bc7245469275a4ab6b7bb94a4551b2cc2a7297eb1e55a80"
+        },
+        {
+          "path": "fabric-storage-final/v3-05-holographic.png",
+          "bytes": 163591,
+          "width": 1280,
+          "height": 720,
+          "sha256": "3c6c46b1dcdb2e76e7511732a79792c0d064408082971f8e265144985e01ae39"
+        },
+        {
+          "path": "fabric-normal-final/normal-editor-menu.png",
+          "bytes": 99392,
+          "width": 1280,
+          "height": 720,
+          "sha256": "167f178064b297c72cbfb853b0ef5d6a51fac554418d886476e83e992b1f00d1"
+        },
+        {
+          "path": "fabric-normal-final/normal-editor-world.png",
+          "bytes": 127388,
+          "width": 1280,
+          "height": 720,
+          "sha256": "f213012ef67966e51c0e2b9290fa4d9719ddd94009c4ff6ea0eb3733238d1c49"
+        },
+        {
+          "path": "fabric-normal-final/normal-observer-menu.png",
+          "bytes": 81460,
+          "width": 1280,
+          "height": 720,
+          "sha256": "8f25665aee5d796004c5c6815cfba52d974466b938cdf3f2f27aababda260c34"
+        },
+        {
+          "path": "fabric-normal-final/normal-observer-world.png",
+          "bytes": 59707,
+          "width": 1280,
+          "height": 720,
+          "sha256": "49987a4cc659f61957e4dd64586a9b779e5bd71a3cb9f329f948b8ae9060ed0c"
+        },
+        {
+          "path": "fabric-normal-final/normal-portable.png",
+          "bytes": 62703,
+          "width": 1280,
+          "height": 720,
+          "sha256": "e94122cdb73c51dcdd9b9ed3e414ab47cba76bd8ca575c578ac1bf7258bdf465"
+        },
+        {
+          "path": "fabric-normal-reload/normal-reload-portable.png",
+          "bytes": 64660,
+          "width": 1280,
+          "height": 720,
+          "sha256": "c89aee8371edb48f46043823caa388a0e4132c1792cbd720132d2ebe35e76d9f"
+        },
+        {
+          "path": "fabric-normal-reload/normal-reload-world.png",
+          "bytes": 157691,
+          "width": 1280,
+          "height": 720,
+          "sha256": "d5f9d8c93255de49d02d1df22f15c9e74a1e9a82c81de170d4907c9c447a2b8d"
+        }
+      ]
+    },
+    {
+      "loader": "neoforge",
+      "assertions": 35,
+      "cases": [
+        {
+          "stage": "storage-final",
+          "role": "server",
+          "passes": 10,
+          "file": "neoforge-storage-final/server.txt"
+        },
+        {
+          "stage": "storage-final",
+          "role": "client",
+          "passes": 11,
+          "file": "neoforge-storage-final/client.txt"
+        },
+        {
+          "stage": "normal-final",
+          "role": "editor",
+          "passes": 7,
+          "file": "neoforge-normal-final/editor.txt"
+        },
+        {
+          "stage": "normal-final",
+          "role": "observer",
+          "passes": 4,
+          "file": "neoforge-normal-final/observer.txt"
+        },
+        {
+          "stage": "normal-reload",
+          "role": "client",
+          "passes": 3,
+          "file": "neoforge-normal-reload/client.txt"
+        }
+      ],
+      "screenshots": [
+        {
+          "path": "neoforge-storage-final/v3-01-arrays.png",
+          "bytes": 294895,
+          "width": 1280,
+          "height": 720,
+          "sha256": "df6af62df4c3f01f2dd0aac89e6249e99f31075a37e1ad624d503f3ebd897ecc"
+        },
+        {
+          "path": "neoforge-storage-final/v3-02-upgrade-slots.png",
+          "bytes": 108000,
+          "width": 1280,
+          "height": 720,
+          "sha256": "d7324ea1f578e4479971b203ce68c2764f7cfba2cd4e2bd2a9fd306ddc08e975"
+        },
+        {
+          "path": "neoforge-storage-final/v3-03-portable.png",
+          "bytes": 65598,
+          "width": 1280,
+          "height": 720,
+          "sha256": "08730300c1697d319557554ceeea19cf74b6cb7d243cc90161ca2030aab782f2"
+        },
+        {
+          "path": "neoforge-storage-final/v3-04-portable-reopened.png",
+          "bytes": 64063,
+          "width": 1280,
+          "height": 720,
+          "sha256": "0e29e762bc46e2d50948d6bc5a1eb21c83c536a382a3a5198d0aef893b93ce69"
+        },
+        {
+          "path": "neoforge-storage-final/v3-05-holographic.png",
+          "bytes": 163965,
+          "width": 1280,
+          "height": 720,
+          "sha256": "dc50d6414eb9f5ef3a98faaee50b2d59fe5b5debbe8f5f73f675c845fd58418c"
+        },
+        {
+          "path": "neoforge-normal-final/normal-editor-menu.png",
+          "bytes": 96071,
+          "width": 1280,
+          "height": 720,
+          "sha256": "be523be581b4c1795f1b0caaf364f09db14ffa2ddce36c5e4cb1c5d932851575"
+        },
+        {
+          "path": "neoforge-normal-final/normal-editor-world.png",
+          "bytes": 150677,
+          "width": 1280,
+          "height": 720,
+          "sha256": "cbfc4ab49dd6514eba5b602482f15a4691ef6959e1e3981bc14fd9d868f02d46"
+        },
+        {
+          "path": "neoforge-normal-final/normal-observer-menu.png",
+          "bytes": 81721,
+          "width": 1280,
+          "height": 720,
+          "sha256": "f2bc3213acb5fd14e4dc9f58bb07f5e1d28ef814be7bb84b705187b709dbf89d"
+        },
+        {
+          "path": "neoforge-normal-final/normal-observer-world.png",
+          "bytes": 61292,
+          "width": 1280,
+          "height": 720,
+          "sha256": "f10e34a9958f363af2ea4763835b7736b3f451f2402c0162ae8cd00b098f66fc"
+        },
+        {
+          "path": "neoforge-normal-final/normal-portable.png",
+          "bytes": 65130,
+          "width": 1280,
+          "height": 720,
+          "sha256": "e4ff10ff791a9aad1b4ca042935251ee6aae5b03f509fac90b6788c9c43c7427"
+        },
+        {
+          "path": "neoforge-normal-reload/normal-reload-portable.png",
+          "bytes": 69224,
+          "width": 1280,
+          "height": 720,
+          "sha256": "c7baa0735af306b1a87aec1d77b913623c09eb5685dc58291ebc4830a6b97ce5"
+        },
+        {
+          "path": "neoforge-normal-reload/normal-reload-world.png",
+          "bytes": 197136,
+          "width": 1280,
+          "height": 720,
+          "sha256": "73fc595e5141dc58d529927ef84670719215e359e7187ae3b2aef01842cc3f7c"
+        }
+      ]
+    }
+  ]
+}

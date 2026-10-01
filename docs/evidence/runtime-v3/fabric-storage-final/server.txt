@@ -1,0 +1,14 @@
+RUN_START storage-server 2026-10-01T01:23:51.719849500Z
+NORMAL_BLOCK_BREAK no protection event registered
+PASS storage upgrades persist on disk
+PASS array targets persist on disk
+PASS capacity baseline limits active array targets
+PASS real platform fluid lookup
+PASS capacity upgrade enables far target but range still enforced
+PASS range upgrade enables 100-block provider
+PASS precision upgrade changes actual fluid formatting
+PASS live arrays refresh
+PASS holographic 2x2 owns matching extenders
+STORAGE_SERVER_DONE [STORAGE STAGE, Live arrays + upgrades, Total minecraft:water: 7100.00 / 20000.00 mB, Total minecraft:lava: 1420.00 / 4000.00 mB, Total Energy: 252000.00 / 600000.00 E, Total Energy: 84000.00 / 200000.00 E, Stored: 42.00%]
+PASS portable data survives player disk reload
+STORAGE_PLAYER ECEditor

@@ -31,11 +31,13 @@ public final class PanelRenderer implements BlockEntityRenderer<PanelBlockEntity
         pose.translate(bounds.minX()-.5,bounds.maxY()+.5,.505);
         pose.scale(1/128f,-1/128f,1/128f);
         float width=bounds.width()*128-8, height=bounds.height()*128-8;
+        if(!panel.holographic()){
         var quad=buffers.getBuffer(RenderType.textBackground()); var matrix=pose.last().pose();
         quad.addVertex(matrix,4,4,0).setColor(0xff000000|panel.background()).setLight(0xf000f0);
         quad.addVertex(matrix,4,height+4,0).setColor(0xff000000|panel.background()).setLight(0xf000f0);
         quad.addVertex(matrix,width+4,height+4,0).setColor(0xff000000|panel.background()).setLight(0xf000f0);
         quad.addVertex(matrix,width+4,4,0).setColor(0xff000000|panel.background()).setLight(0xf000f0);
+        }
         if(panel.powered()) {
             var style=net.minecraft.network.chat.Style.EMPTY.withFont(net.minecraft.resources.ResourceLocation.withDefaultNamespace(panel.uniformFont()?"uniform":"default"));
             var rendered=panel.lines().stream().map(line->net.minecraft.network.chat.Component.literal(line).withStyle(style)).toList();

@@ -16,5 +16,20 @@
   "gui.energycontrol.save": "Save",
   "gui.energycontrol.slot": "Slot",
   "gui.energycontrol.color": "Color",
-  "gui.energycontrol.power": "Power"
+  "gui.energycontrol.power": "Power",
+  "item.energycontrol.card_liquid": "Fluid Sensor Card",
+  "item.energycontrol.card_energy_array": "Energy Array Card",
+  "item.energycontrol.card_liquid_array": "Fluid Array Card",
+  "item.energycontrol.upgrade_range": "Range Upgrade",
+  "item.energycontrol.upgrade_capacity": "Array Capacity Upgrade",
+  "item.energycontrol.upgrade_precision": "Precision Upgrade",
+  "item.energycontrol.portable_panel": "Portable Information Panel",
+  "block.energycontrol.holo_panel": "Holographic Panel",
+  "block.energycontrol.holo_panel_extender": "Holographic Extender",
+  "tooltip.energycontrol.card.fluid": "Sneak-use a tank face to bind. Read-only.",
+  "tooltip.energycontrol.card.energy_array": "Bind up to 16 targets. Repeat a face to remove.",
+  "tooltip.energycontrol.card.fluid_array": "Bind up to 16 tanks. Fluids stay separate.",
+  "tooltip.energycontrol.upgrade.range": "0/1/2/3 upgrades: range 64/128/256/512 blocks.",
+  "tooltip.energycontrol.upgrade.capacity": "0/1/2/3 upgrades: 4/8/12/16 active array targets.",
+  "tooltip.energycontrol.upgrade.precision": "0/1/2/3 upgrades: 0/1/2/3 decimal places."
 }

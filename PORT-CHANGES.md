@@ -35,3 +35,19 @@ under GPL-3.0-only. No remote publication or user game modification was performe
   panel breaking during automation. Production mining behavior is unchanged.
 - Expanded the precise missing-feature inventory; full upstream parity is still
   not claimed. Preserved all original history, copyrights, licenses and sources.
+
+## 2026-10-01 storage and portable continuation (0.3)
+
+- Added bounded variant-aware fluid probes, arrays, three effective upgrade
+  types, component-backed portable inventory and transparent grouped panels.
+- Kept shared evaluation/state/menus/networking in common; platform capabilities
+  remain in each loader. No test readings or machine-specific constants enter
+  production. No external industrial mod is bundled.
+- Fixed dedicated-server S2C registration and two real GUI layout/clipping
+  defects. Added meaningful red/green tests for measurements, target binding
+  and portable component persistence.
+- Removed the previous QA-only break prevention hook completely. Accepted
+  ordinary creative breaking/sneak-placement, concurrent observers and actual
+  disk reload on both loaders with production server initialization.
+- Added126 upstream source rows and exact new acceptance evidence. Existing
+  original source/history/license are retained. Full parity remains unfinished.

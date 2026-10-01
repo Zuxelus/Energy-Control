@@ -1,0 +1,38 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.10.2/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+
+> Configure project :
+Architect Plugin: 3.4.164
+Architectury Loom: 1.7.435
+You are using an outdated version of Architectury Loom! This version will not receive any support, please consider updating!
+
+> Task :common:compileJava UP-TO-DATE
+> Task :common:processResources UP-TO-DATE
+> Task :common:classes UP-TO-DATE
+> Task :common:compileTestJava
+> Task :common:processTestResources NO-SOURCE
+> Task :common:testClasses
+
+> Task :common:test
+
+PortableInventoryTest > removingCardPersistsEmptySlot() FAILED
+    org.opentest4j.AssertionFailedError at PortableInventoryTest.java:20
+
+PortableInventoryTest > changedSlotPersistsAndCopiedPortableHasIndependentContents() FAILED
+    org.opentest4j.AssertionFailedError at PortableInventoryTest.java:13
+
+2 tests completed, 2 failed
+
+> Task :common:test FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':common:test'.
+> There were failing tests. See the report at: file:///C:/Users/Makoto/Documents/Codex/2026-10-01/task-2/Energy-Control/common/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to get full insights.
+
+BUILD FAILED in 14s
+4 actionable tasks: 2 executed, 2 up-to-date

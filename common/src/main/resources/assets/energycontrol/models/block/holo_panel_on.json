@@ -1,0 +1,9 @@
+{
+    "parent": "energycontrol:block/plate_box",
+    "textures": {
+        "particle": "energycontrol:block/holo_panel/panel_back",
+        "back": "energycontrol:block/holo_panel/panel_back",
+        "top": "energycontrol:block/holo_panel/panel_top_on",
+        "side": "energycontrol:block/holo_panel/panel_side"
+    }
+}

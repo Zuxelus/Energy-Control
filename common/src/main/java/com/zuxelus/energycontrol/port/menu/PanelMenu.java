@@ -19,13 +19,17 @@ public final class PanelMenu extends AbstractContainerMenu {
     }
     public PanelMenu(int id, Inventory inventory, PanelBlockEntity panel) {
         super(EnergyControlPort.PANEL_MENU.get(),id);
-        this.panel = panel; cardSlots = panel.getContainerSize();
+        this.panel = panel; cardSlots = panel.cardSlots();
         for(int i=0;i<cardSlots;i++) addSlot(new Slot(panel,i,16+i*18,29) {
             @Override public boolean mayPlace(ItemStack stack) { return stack.getItem() instanceof CardItem; }
             @Override public int getMaxStackSize() { return 1; }
         });
-        for(int row=0;row<3;row++) for(int col=0;col<9;col++) addSlot(new Slot(inventory,col+row*9+9,8+col*18,142+row*18));
-        for(int col=0;col<9;col++) addSlot(new Slot(inventory,col,8+col*18,200));
+        for(int i=0;i<3;i++)addSlot(new Slot(panel,cardSlots+i,16+i*54,121){
+            @Override public boolean mayPlace(ItemStack stack){return panel.canPlaceItem(getContainerSlot(),stack);}
+            @Override public int getMaxStackSize(){return 3;}
+        });
+        for(int row=0;row<3;row++) for(int col=0;col<9;col++) addSlot(new Slot(inventory,col+row*9+9,8+col*18,150+row*18));
+        for(int col=0;col<9;col++) addSlot(new Slot(inventory,col,8+col*18,208));
     }
     @Override public boolean stillValid(Player player) { return !panel.isRemoved() && panel.stillValid(player); }
     @Override public boolean clickMenuButton(Player player, int id) {
@@ -41,8 +45,9 @@ public final class PanelMenu extends AbstractContainerMenu {
         if(index<0 || index>=slots.size()) return ItemStack.EMPTY;
         Slot slot = slots.get(index); if(!slot.hasItem()) return ItemStack.EMPTY;
         ItemStack stack = slot.getItem(), copy = stack.copy();
-        if(index<cardSlots) { if(!moveItemStackTo(stack,cardSlots,slots.size(),true)) return ItemStack.EMPTY; }
-        else if(!(stack.getItem() instanceof CardItem) || !moveItemStackTo(stack,0,cardSlots,false)) return ItemStack.EMPTY;
+        if(index<cardSlots+3) { if(!moveItemStackTo(stack,cardSlots+3,slots.size(),true)) return ItemStack.EMPTY; }
+        else if(stack.getItem() instanceof com.zuxelus.energycontrol.port.card.UpgradeItem u){int target=cardSlots+u.kind().ordinal();if(!moveItemStackTo(stack,target,target+1,false))return ItemStack.EMPTY;}
+        else if(!(stack.getItem() instanceof CardItem)||!moveItemStackTo(stack,0,cardSlots,false))return ItemStack.EMPTY;
         if(stack.isEmpty()) slot.setByPlayer(ItemStack.EMPTY); else slot.setChanged();
         slot.onTake(player,stack); return copy;
     }

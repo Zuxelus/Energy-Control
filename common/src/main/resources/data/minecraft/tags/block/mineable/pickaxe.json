@@ -4,6 +4,8 @@
     "energycontrol:info_panel",
     "energycontrol:info_panel_advanced",
     "energycontrol:info_panel_extender",
-    "energycontrol:info_panel_advanced_extender"
+    "energycontrol:info_panel_advanced_extender",
+    "energycontrol:holo_panel",
+    "energycontrol:holo_panel_extender"
   ]
 }

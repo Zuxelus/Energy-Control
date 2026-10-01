@@ -28,14 +28,7 @@ public final class QaServer {
     }
     public static void check(boolean ok, String name) { log((ok?"PASS ":"FAIL ")+name); if(!ok) throw new AssertionError(name); }
     public static void init() {
-        BlockEvent.BREAK.register((level,pos,state,player,xp)-> {
-            if(state.getBlock() instanceof PanelBlock) {
-                log("QA_PROTECTED player break at "+pos);
-                player.displayClientMessage(net.minecraft.network.chat.Component.literal("Automated QA: panels protected. Right-click to configure."),true);
-                return dev.architectury.event.EventResult.interruptFalse();
-            }
-            return dev.architectury.event.EventResult.pass();
-        });
+        if(System.getProperty("ec.qa.stage","").equals("storage")){StorageQaServer.init();return;}
         LifecycleEvent.SERVER_STARTED.register(QaServer::setup);
         TickEvent.SERVER_POST.register(QaServer::tick);
     }

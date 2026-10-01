@@ -9,6 +9,8 @@ LICENSE and `src/` remain intact. New modules: `common`, `fabric`, `neoforge`.
 
 - [Implementation and missing features](docs/STATUS.md)
 - [Prioritized feature acceptance matrix](docs/FEATURE-MATRIX.md)
+- [New storage/portable and normal multiplayer acceptance](docs/QA-V3.md)
+- [Upstream source-by-source inventory](docs/UPSTREAM-FEATURE-MATRIX.md)
 - [Real gameplay evidence and repeatable scenarios](docs/QA.md)
 - [Source comparison and architecture](docs/PORTING.md)
 - [Build and verification record](docs/BUILD.md)
@@ -24,3 +26,11 @@ for the exact fixture scope and untested cases.
 
 Only task-owned isolated development games were started/stopped; no existing user game was started/stopped, no existing instance was changed, and no public
 repository or release was created. See STATUS.md before considering installation.
+
+0.3 continuation adds fluid and energy arrays, range/capacity/precision upgrades,
+portable screens and basic grouped holographic screens. Sneak-use a card on a
+target face; array cards add targets, repeat the same face to remove, or use a
+different face to update. Place extenders by sneaking when clicking a panel.
+Left-click in creative breaks blocks normally; right-click opens configuration.
+Installed upgrade counts0..3 give range64/128/256/512, targets4/8/12/16 and
+precision0/1/2/3. Portable panels have one card slot and the same three upgrades.

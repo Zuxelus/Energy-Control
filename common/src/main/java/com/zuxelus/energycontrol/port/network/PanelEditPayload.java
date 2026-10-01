@@ -20,6 +20,7 @@ public record PanelEditPayload(int menuId, int slot, String text) implements Cus
             var player = context.getPlayer();
             if(player.containerMenu instanceof PanelMenu menu && menu.containerId == payload.menuId)
                 menu.editText(player,payload.slot,payload.text);
+            else if(player.containerMenu instanceof com.zuxelus.energycontrol.port.menu.PortableMenu menu && menu.containerId==payload.menuId)menu.editText(player,payload.slot,payload.text);
         }));
     }
 }

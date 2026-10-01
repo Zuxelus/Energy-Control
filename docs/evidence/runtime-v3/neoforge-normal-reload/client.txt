@@ -1,0 +1,7 @@
+RUN_START normal-client editor reload=true 2026-10-01T01:47:42.432050700Z
+PASS production server disk reload retains multiplayer edit
+PASS production reload retains rebuilt group and upgrades
+PASS production player disk reload retains portable card title
+SCREENSHOT Saved screenshot as normal-reload-portable.png
+ALL_NORMAL_RELOAD_DONE
+SCREENSHOT Saved screenshot as normal-reload-world.png

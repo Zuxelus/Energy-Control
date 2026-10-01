@@ -15,6 +15,8 @@ import net.minecraft.world.phys.*;
 public final class QaClient {
     private static boolean connecting; private static int ticks; private static String sample;
     public static void init(int port) {
+        if(java.util.Set.of("normal","reload").contains(System.getProperty("ec.qa.stage",""))){NormalQaClient.init(port+2);return;}
+        if(System.getProperty("ec.qa.stage","").equals("storage")){StorageQaClient.init(port+2);return;}
         QaServer.log("RUN_START client "+java.time.Instant.now());
         ClientTickEvent.CLIENT_POST.register(mc -> {
             // The user can keep working in other windows while these task-owned
@@ -82,7 +84,7 @@ public final class QaClient {
             if(ticks==970) {QaServer.log("ALL_CLIENT_SCENARIOS_DONE");mc.stop();}
         });
     }
-    private static void editUsingWidgets(Minecraft mc,String value) {
+    public static void editUsingWidgets(Minecraft mc,String value) {
         for(var child:mc.screen.children()) if(child instanceof net.minecraft.client.gui.components.MultiLineEditBox edit) edit.setValue(value);
         for(var child:mc.screen.children()) if(child instanceof net.minecraft.client.gui.components.Button button && button.getMessage().getString().equals("Save text")) button.onPress();
     }

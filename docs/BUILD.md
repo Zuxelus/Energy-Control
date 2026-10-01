@@ -92,3 +92,22 @@ because the 0.2.0 version bump followed acceptance. QA-only sources/entrypoints
 are present solely under -Pqa. Release jars and source jars are inspected to
 reject any QA leakage. Development game evidence does not substitute for a
 separate production-launcher installation test.
+
+## Storage stage (0.3)
+
+Same pinned official dependencies/toolchain; no additional runtime dependency.
+Command: `./gradlew clean build --offline --console=plain` WITHOUT -Pqa, then
+`py -3 -X utf8 tools/verify_artifacts.py`. Repeated clean build checks the two
+remapped jars and two source jars byte-for-byte on this cached workspace.
+Records: build-0.3-first.log, build-0.3-second.log, reproducibility-0.3.json,
+artifact-verification.json and junit-0.3/ under docs/evidence.
+31 JVM tests are expected. New tests cover measurement conversion/overflow/
+variant separation, all upgrade tiers, target array mutations and portable
+component persistence. Red-phase evidence is retained separately.
+
+Runtime records under runtime-v3 use0.2.0 metadata because only the version was
+bumped after gameplay acceptance. Production Java/resources tested are the
+0.3 implementation. Each loader has35 final game assertions across storage,
+normal multiplayer and normal disk restart. See QA-V3.md for boundaries.
+Final jar verification requires Java21 classes,17 recipes, metadata, textures,
+licenses, nested MIT Fabric Energy API and absence of every /qa/ class/source.

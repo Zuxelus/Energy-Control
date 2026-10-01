@@ -1,0 +1,8 @@
+RUN_START normal-client observer reload=false 2026-10-01T01:43:50.209385300Z
+PASS simultaneous players open normal panel menu
+PASS simultaneous player receives real menu item and world text update
+SCREENSHOT Saved screenshot as normal-observer-menu.png
+PASS normal creative break succeeds and synchronizes without protection
+PASS normal block placement rebuilds group on both clients
+SCREENSHOT Saved screenshot as normal-observer-world.png
+ALL_NORMAL_MULTIPLAYER_DONE observer

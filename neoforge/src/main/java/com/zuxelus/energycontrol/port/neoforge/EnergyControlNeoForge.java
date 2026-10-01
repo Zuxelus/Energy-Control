@@ -11,6 +11,17 @@ import java.util.Optional;
 @Mod(EnergyControlPort.ID)
 public final class EnergyControlNeoForge {
     public EnergyControlNeoForge(IEventBus bus) {
+        EnergyControlPort.fluidProbe=(level,pos,side)->{
+            if(!level.hasChunkAt(pos))return Optional.empty();
+            var storage=level.getCapability(Capabilities.FluidHandler.BLOCK,pos,side);
+            if(storage==null)return Optional.empty();
+            var values=new java.util.ArrayList<com.zuxelus.energycontrol.port.core.Measurement>();
+            for(int i=0;i<Math.min(256,storage.getTanks());i++){
+                var fluid=storage.getFluidInTank(i);var id=net.minecraft.core.registries.BuiltInRegistries.FLUID.getKey(fluid.getFluid()).toString();
+                values.add(com.zuxelus.energycontrol.port.core.Measurement.fluid(id+fluid.getComponentsPatch(),fluid.isEmpty()?"Empty tank":id,fluid.getAmount(),storage.getTankCapacity(i),1000));
+            }
+            return Optional.of(java.util.List.copyOf(values));
+        };
         EnergyControlPort.init((level,pos,side) -> {
             if(!level.hasChunkAt(pos)) return Optional.empty();
             var storage=level.getCapability(Capabilities.EnergyStorage.BLOCK,pos,side);

@@ -1,0 +1,12 @@
+RUN_START normal-client editor reload=false 2026-10-01T01:43:38.230447800Z
+PASS simultaneous players open normal panel menu
+PASS simultaneous player receives real menu item and world text update
+SCREENSHOT Saved screenshot as normal-editor-menu.png
+PASS normal creative break succeeds and synchronizes without protection
+PASS normal block placement rebuilds group on both clients
+SCREENSHOT Saved screenshot as normal-editor-world.png
+PASS portable opens on server without QA entrypoints
+PASS normal portable edit synchronizes
+PASS normal portable close-reopen retains card
+SCREENSHOT Saved screenshot as normal-portable.png
+ALL_NORMAL_MULTIPLAYER_DONE editor

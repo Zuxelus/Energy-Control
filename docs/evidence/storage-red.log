@@ -1,0 +1,124 @@
+
+Thanks for using JUnit! Support its development at https://junit.org/sponsoring
+
+笊ｷ
+笏懌楳 JUnit Platform Suite 笨・
+笏懌楳 JUnit Jupiter 笨・
+笏・ 笏懌楳 EnergySnapshotTest 笨・
+笏・ 笏・ 笏懌楳 zeroCapacityAndOverfullReadingsCannotBreakRenderer() 笨・
+笏・ 笏・ 笏懌楳 preservesLongEnergyWithoutIntTruncation() 笨・
+笏・ 笏・ 笏披楳 rejectsNegativeProviderValues() 笨・
+笏・ 笏懌楳 TargetPolicyTest 笨・
+笏・ 笏・ 笏懌楳 extremeCoordinatesCannotOverflowIntoRange() 笨・
+笏・ 笏・ 笏懌楳 unloadedChunkIsExplicitlyUnavailable() 笨・
+笏・ 笏・ 笏懌楳 acceptsExactlySixtyFourBlocksButNotBeyond() 笨・
+笏・ 笏・ 笏懌楳 doesNotConfuseUnboundWithOrigin() 笨・
+笏・ 笏・ 笏披楳 rejectsOtherDimensionsBeforeQueryingChunks() 笨・
+笏・ 笏懌楳 ScreenLayoutTest 笨・
+笏・ 笏・ 笏懌楳 growsNegativeCoordinatesAndStopsAtTwentyPerDirection() 笨・
+笏・ 笏・ 笏懌楳 emptyWorldIsSinglePanel() 笨・
+笏・ 笏・ 笏懌楳 fillsCompleteRectangleAndRebuildsAfterRemoval() 笨・
+笏・ 笏・ 笏披楳 extendsOnlyAcrossCompleteRows() 笨・
+笏・ 笏懌楳 UpgradePolicyTest 笨・
+笏・ 笏・ 笏懌楳 distanceUpgradeEnablesDistantTargetBeforeChunkLookup() 笨・expected: <READY> but was: <OUT_OF_RANGE>
+笏・ 笏・ 笏披楳 capacityAndPrecisionAreBoundedEvenForMalformedCounts() 笨・expected: <16> but was: <4>
+笏・ 笏懌楳 DisplayTextTest 笨・
+笏・ 笏・ 笏懌楳 preservesTenLinesAndRemovesOnlyTrailingBlanks() 笨・
+笏・ 笏・ 笏懌楳 limitsMalformedImportedCardData() 笨・
+笏・ 笏・ 笏披楳 portsUpstreamFormattingEscapes() 笨・
+笏・ 笏披楳 MeasurementTest 笨・
+笏・    笏懌楳 totalsKeepDifferentFluidsAndUnitsSeparate() 笨・expected: <2> but was: <0>
+笏・    笏懌楳 badProviderAmountsClampAndZeroCapacityDoesNotDivide() 笨・expected: <0.0> but was: <>
+笏・    笏懌楳 fabricDropletsBecomeMillibucketsWithoutTruncatingSmallVolumes() 笨・expected: <1000.000> but was: <>
+笏・    笏披楳 energyArrayCannotOverflowSignedLong() 笨・java.util.NoSuchElementException
+笏披楳 JUnit Vintage 笨・
+
+Failures (6):
+  JUnit Jupiter:UpgradePolicyTest:distanceUpgradeEnablesDistantTargetBeforeChunkLookup()
+    MethodSource [className = 'com.zuxelus.energycontrol.port.core.UpgradePolicyTest', methodName = 'distanceUpgradeEnablesDistantTargetBeforeChunkLookup', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: expected: <READY> but was: <OUT_OF_RANGE>
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+       org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:177)
+       org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1145)
+       com.zuxelus.energycontrol.port.core.UpgradePolicyTest.distanceUpgradeEnablesDistantTargetBeforeChunkLookup(UpgradePolicyTest.java:7)
+       java.base/java.lang.reflect.Method.invoke(Method.java:580)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+  JUnit Jupiter:UpgradePolicyTest:capacityAndPrecisionAreBoundedEvenForMalformedCounts()
+    MethodSource [className = 'com.zuxelus.energycontrol.port.core.UpgradePolicyTest', methodName = 'capacityAndPrecisionAreBoundedEvenForMalformedCounts', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: expected: <16> but was: <4>
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+       org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:150)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:145)
+       org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:531)
+       com.zuxelus.energycontrol.port.core.UpgradePolicyTest.capacityAndPrecisionAreBoundedEvenForMalformedCounts(UpgradePolicyTest.java:10)
+       java.base/java.lang.reflect.Method.invoke(Method.java:580)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+  JUnit Jupiter:MeasurementTest:totalsKeepDifferentFluidsAndUnitsSeparate()
+    MethodSource [className = 'com.zuxelus.energycontrol.port.core.MeasurementTest', methodName = 'totalsKeepDifferentFluidsAndUnitsSeparate', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: expected: <2> but was: <0>
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+       org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:150)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:145)
+       org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:531)
+       com.zuxelus.energycontrol.port.core.MeasurementTest.totalsKeepDifferentFluidsAndUnitsSeparate(MeasurementTest.java:13)
+       java.base/java.lang.reflect.Method.invoke(Method.java:580)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+  JUnit Jupiter:MeasurementTest:badProviderAmountsClampAndZeroCapacityDoesNotDivide()
+    MethodSource [className = 'com.zuxelus.energycontrol.port.core.MeasurementTest', methodName = 'badProviderAmountsClampAndZeroCapacityDoesNotDivide', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: expected: <0.0> but was: <>
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+       org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:177)
+       org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1145)
+       com.zuxelus.energycontrol.port.core.MeasurementTest.badProviderAmountsClampAndZeroCapacityDoesNotDivide(MeasurementTest.java:20)
+       java.base/java.lang.reflect.Method.invoke(Method.java:580)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+  JUnit Jupiter:MeasurementTest:fabricDropletsBecomeMillibucketsWithoutTruncatingSmallVolumes()
+    MethodSource [className = 'com.zuxelus.energycontrol.port.core.MeasurementTest', methodName = 'fabricDropletsBecomeMillibucketsWithoutTruncatingSmallVolumes', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: expected: <1000.000> but was: <>
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+       org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)
+       org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:177)
+       org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1145)
+       com.zuxelus.energycontrol.port.core.MeasurementTest.fabricDropletsBecomeMillibucketsWithoutTruncatingSmallVolumes(MeasurementTest.java:8)
+       java.base/java.lang.reflect.Method.invoke(Method.java:580)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+  JUnit Jupiter:MeasurementTest:energyArrayCannotOverflowSignedLong()
+    MethodSource [className = 'com.zuxelus.energycontrol.port.core.MeasurementTest', methodName = 'energyArrayCannotOverflowSignedLong', methodParameterTypes = '']
+    => java.util.NoSuchElementException
+       java.base/java.util.List.getFirst(List.java:825)
+       com.zuxelus.energycontrol.port.core.MeasurementTest.energyArrayCannotOverflowSignedLong(MeasurementTest.java:17)
+       java.base/java.lang.reflect.Method.invoke(Method.java:580)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+       java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+Test run finished after 63 ms
+[         9 containers found      ]
+[         0 containers skipped    ]
+[         9 containers started    ]
+[         0 containers aborted    ]
+[         9 containers successful ]
+[         0 containers failed     ]
+[        21 tests found           ]
+[         0 tests skipped         ]
+[        21 tests started         ]
+[         0 tests aborted         ]
+[        15 tests successful      ]
+[         6 tests failed          ]
+

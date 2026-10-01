@@ -62,3 +62,35 @@ zh={
 write(assets/'lang/en_us.json',en)
 write(assets/'lang/zh_cn.json',zh)
 print('Ported 4 panel models, 4 card textures, 8 recipes, 4 loot tables, English and Chinese UI.')
+
+# Additional implemented storage, upgrade, portable and holographic resources.
+for name,original in {'card_liquid':'card_liquid','card_energy_array':'card_energy_array','card_liquid_array':'card_liquid_array','upgrade_range':'upgrade_range','upgrade_capacity':'upgrade_color','upgrade_precision':'upgrade_touch','portable_panel':'portable_panel'}.items():
+    copy(Path(f'textures/item/{original}.png'))
+    write(assets/f'models/item/{name}.json',{'parent':'minecraft:item/generated','textures':{'layer0':f'energycontrol:item/{original}'}})
+for file in (source/'textures/block/holo_panel').glob('*.png'):copy(file.relative_to(source))
+copy(Path('models/block/plate_box.json'))
+for block in ('holo_panel','holo_panel_extender'):
+    for mode in ('off','on'):copy(Path(f'models/block/{block}_{mode}.json'))
+    copy(Path(f'models/item/{block}.json'))
+    write(assets/f'blockstates/{block}.json',{'variants':{f'facing={face}':{'model':f'energycontrol:block/{block}_on',**rot} for face,rot in rotations.items()}})
+    write(target/f'data/energycontrol/loot_table/blocks/{block}.json',{'type':'minecraft:block','pools':[{'rolls':1,'entries':[{'type':'minecraft:item','name':f'energycontrol:{block}'}],'conditions':[{'condition':'minecraft:survives_explosion'}]}]})
+    blocks.append(block)
+extra_recipes={
+ 'card_liquid':['minecraft:paper','minecraft:glass_bottle'],
+ 'card_energy_array':['energycontrol:card_energy','minecraft:comparator'],
+ 'card_liquid_array':['energycontrol:card_liquid','minecraft:comparator'],
+ 'upgrade_range':['minecraft:ender_pearl','minecraft:copper_ingot'],
+ 'upgrade_capacity':['minecraft:chest','minecraft:gold_ingot'],
+ 'upgrade_precision':['minecraft:quartz','minecraft:gold_ingot'],
+ 'portable_panel':['energycontrol:info_panel','minecraft:leather'],
+ 'holo_panel':['energycontrol:info_panel_advanced','minecraft:amethyst_shard'],
+ 'holo_panel_extender':['energycontrol:info_panel_advanced_extender','minecraft:amethyst_shard']}
+for name,ingredients in extra_recipes.items():write(target/f'data/energycontrol/recipe/{name}.json',{'type':'minecraft:crafting_shapeless','ingredients':[{'item':i} for i in ingredients],'result':{'id':f'energycontrol:{name}','count':1}})
+write(target/'data/minecraft/tags/block/mineable/pickaxe.json',{'replace':False,'values':[f'energycontrol:{b}' for b in blocks]})
+for key,english,chinese in [
+ ('item.energycontrol.card_liquid','Fluid Sensor Card','流体传感卡'),('item.energycontrol.card_energy_array','Energy Array Card','能源阵列卡'),('item.energycontrol.card_liquid_array','Fluid Array Card','流体阵列卡'),
+ ('item.energycontrol.upgrade_range','Range Upgrade','距离升级'),('item.energycontrol.upgrade_capacity','Array Capacity Upgrade','阵列容量升级'),('item.energycontrol.upgrade_precision','Precision Upgrade','精度升级'),('item.energycontrol.portable_panel','Portable Information Panel','便携信息面板'),('block.energycontrol.holo_panel','Holographic Panel','全息信息面板'),('block.energycontrol.holo_panel_extender','Holographic Extender','全息扩展块'),
+ ('tooltip.energycontrol.card.fluid','Sneak-use a tank face to bind. Read-only.','潜行右键储罐表面绑定，只读。'),('tooltip.energycontrol.card.energy_array','Bind up to 16 targets. Repeat a face to remove.','最多绑定16个目标，再次点击同一面移除。'),('tooltip.energycontrol.card.fluid_array','Bind up to 16 tanks. Fluids stay separate.','最多绑定16个储罐，不同流体分别汇总。'),
+ ('tooltip.energycontrol.upgrade.range','0/1/2/3 upgrades: range 64/128/256/512 blocks.','0/1/2/3个升级：距离64/128/256/512格。'),('tooltip.energycontrol.upgrade.capacity','0/1/2/3 upgrades: 4/8/12/16 active array targets.','0/1/2/3个升级：4/8/12/16个生效阵列目标。'),('tooltip.energycontrol.upgrade.precision','0/1/2/3 upgrades: 0/1/2/3 decimal places.','0/1/2/3个升级：显示0/1/2/3位小数。')]:en[key]=english;zh[key]=chinese
+write(assets/'lang/en_us.json',en);write(assets/'lang/zh_cn.json',zh)
+print('Storage/portable/holographic resources: 6 blocks, 11 items, 17 recipes.')

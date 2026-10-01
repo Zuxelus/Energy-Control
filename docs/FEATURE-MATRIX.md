@@ -1,45 +1,46 @@
-# 1.21.1 migration acceptance matrix
+# Feature acceptance matrix — 0.3 storage continuation
 
-Baseline: upstream 1.20-forge 76a533b; original 1.12.2 history retained. This is a
-feature-level audit, not a claim that retained legacy files run in the new build.
-S = source implemented, U = JVM test, G = real game acceptance, P = pending.
+Both loaders are Minecraft 1.21.1. Implemented does not mean full upstream parity.
+The source-by-source inventory has 126 rows across upstream 1.12.2, 1.20 Forge,
+and 26.3 NeoForge: [UPSTREAM-FEATURE-MATRIX.md](UPSTREAM-FEATURE-MATRIX.md).
+S = production source, U = JVM tests, G = actual isolated game acceptance.
 
-| Priority | Feature / source reference | Current status (both loaders unless qualified) | Required acceptance |
-|---|---|---|---|
-| P0 | Fabric client + dedicated server | S/U/G PASS | Real isolated client joins dedicated server; client classes do not prevent server boot |
-| P0 | NeoForge client + dedicated server | S/U/G PASS | NeoForge menu registration failure fixed and independently rerun |
-| P0 | Basic panel, original InfoPanel | S/G partial | Six basic 2x2 surfaces render; advanced right-click GUI tested. Manual survival drops/shift-click not independently accepted |
-| P0 | Advanced panel + both extender tiers, ScreenManager | S/U/G PASS for fixtures | Advanced 3x2 and basic 2x2 in six facings, detach/rebuild; tier/ownership logic has JVM tests, no large-wall stress run |
-| P0 | Dynamic renderer, TileEntityInfoPanelRenderer | S/G PASS | Actual glyphs and changing energy packets, six-face PNGs, default/uniform font screenshots |
-| P0 | Card component data, ItemStackHelper | S/U/G PASS | GUI Save packet, disk reload; component copy isolation JVM-tested |
-| P0 | Energy card and per-face providers | S/U/G protocol PASS | Actual platform API on self-compiled chest fixture; E/FE changing; boundary JVM tests. External machines untested |
-| P0 | Text card: original ten lines, title/format codes | S/U/G partial | Ten displayed lines, 512 total chars, multiline Save, @ formatting normalization; Unicode/font support implemented but multilingual game rendering not exhaustively tested |
-| P0 | Card GUI/settings, GuiPanelBase/GuiAdvancedInfoPanel | S/G partial | Sensor title + percentage mask tested; labels implemented. Full upstream pages/layout/field selector still P |
-| P0 | World persistence and network update | S/G PASS for sequential clients | Both worlds restarted; text/bounds/style/fields retained; edit/settings packets and stale-menu rejection. Concurrent two-player edits P |
-| P1 | Font, alignment, text/background color | S/G partial | Default/uniform, 50-200% fit, left/center/right, 3 colors/2 backgrounds; 125% centered uniform persisted and captured |
-| P1 | Tick rate and power modes | S/G PASS | Signal/no-signal and inverted/off assertions; always-on live frames; 40-tick setting synchronized and reloaded |
-| P1 | Screen thickness/slopes/rotation | P | Original geometric controls or clearly documented migration boundary |
-| P1 | Display labels, bars and per-card field masks | Partial S/G | Title, labels and percent flags stored; title/percent game-tested. Bars and arbitrary field layouts P |
-| P1 | Time and redstone cards | S/G partial | Time in live screen/logs; redstone card source implemented but its changing reading has no separate game acceptance |
-| P1 | Inventory card | P | Real vanilla container totals, empty/full, reload |
-| P1 | Fluid/basic/advanced/array cards | P | Loader-neutral fluid adapter, real providers |
-| P1 | Energy array cards | P | Multiple bound targets, aggregate, range/error policy |
-| P1 | Range/color/touch upgrades | P | Slot semantics, bounded range, configured controls |
-| P2 | Card holder | P | Inventory persistence and nested card rules |
-| P2 | Portable panel | P | Held-item menu, rendering and sync |
-| P2 | Holographic panel/extender | P | Transparent surface, grouping and scale |
-| P2 | Kit assembler and sensor kits | P | Recipes, actual conversion, GUI, inventory |
-| P2 | Howler/industrial alarms | P | Redstone trigger, sound lifecycle, GUI/config |
-| P2 | Thermal/remote monitors | P | Provider temperature contract, limits, redstone |
-| P2 | Range trigger/timer/counters | P | Tick-accurate behavior and persistence |
-| P2 | Lamps and miscellaneous components | P | Registration/recipe/state behavior |
-| P2 | Touch/toggle actions | P | Authorized server-side target actions |
-| P3 | Websocket/web upgrade | P | Separate protocol/security scope before execution |
-| P3 | Specialized reactor/machine/network integrations | P | See COMPATIBILITY.md; no absent API impersonation |
-| P3 | JEI/REI/WTHIT | P | Target versions and optional-class isolation |
-| P3 | Legacy world/card migration | P | Explicit data migration fixtures; never test user worlds |
+| Priority | Feature | Fabric | NeoForge | Exact scope / remaining work |
+|---|---|---|---|---|
+| P0 | Client + dedicated server separation | S/G pass | S/G pass | Both boot/join; portable S2C registration now separates server codec from client receiver |
+| P0 | Basic/advanced/extender screens | S/U/G partial | S/U/G partial | 0.2 six-face 2x2/3x2; 0.3 normal creative detach/place/rebuild. Survival drops not independently tested |
+| P0 | Dynamic glyphs, font, facing, scale | S/G partial | S/G partial | Real changing text; six faces; default/uniform font; 50–200% fit; full geometry/slopes pending |
+| P0 | Card component data and editor | S/U/G pass | S/U/G pass | Actual GUI Save, copied component isolation, bounded packets, title/percent settings |
+| P0 | Concurrent players | S/G pass | S/G pass | Two clients simultaneously viewing; edit updates other player's menu item and world text; break/place updates both |
+| P0 | No-protection normal gameplay | S/G pass | S/G pass | Server starts WITHOUT -Pqa; no break hook remains even in QA source; actual creative break and sneak-place accepted |
+| P0 | Save/quit/reopen | S/G pass | S/G pass | 0.2 world/style; 0.3 target/upgrade/portable storage reload; normal-server multiplayer edit and player-item disk reload recorded separately |
+| P1 | Per-face energy | S/U/G protocol pass | S/U/G protocol pass | Fabric Team Reborn E; NeoForge FE. Dynamic self-compiled providers; real external machines pending |
+| P1 | Per-face fluid | S/U/G protocol pass | S/U/G protocol pass | Fabric SIDED StorageView 81,000 units/bucket -> mB; NeoForge IFluidHandler 1,000 mB/bucket. All visible tanks (bounded 256); variant components separated |
+| P1 | Energy array | S/U/G pass | S/U/G pass | Sneak-bind/remove/update side, dedup by dimension/position, max16; overflow-safe totals; no E/FE mixing |
+| P1 | Fluid array | S/U/G pass | S/U/G pass | Water/lava never combined; totals per variant; actual dynamic network readings; unavailable targets reported |
+| P1 | Range upgrade | S/U/G pass | S/U/G pass | 0..3 -> 64/128/256/512 blocks; no cross-dimension access or chunk forcing. Gameplay exercises64->128; all tiers unit-tested |
+| P1 | Capacity upgrade | S/U/G pass | S/U/G pass | New port feature, 0..3 ->4/8/12/16 active array targets. Inactive targets retained and reported |
+| P1 | Precision upgrade | S/U/G pass | S/U/G pass | New port feature,0..3 decimal places; mB conversion/rounding unit-tested; game exercises2 decimals |
+| P1 | Portable screen | S/U/G pass | S/U/G pass | One card + three upgrade slots, actual held-item open/edit/live update, locked parent item, close/reopen and disk reload |
+| P1 | Holographic panel/extender | S/G partial | S/G partial | Transparent grouped2x2, live glyphs, same-type matching; no collision. Arbitrary projection thickness/angles pending |
+| P1 | Card labels/percent/each-target | S partial | S partial | Stored and server-evaluated; title/percent game-tested; Each button not independently accepted in game |
+| P1 | Text/time/redstone | S/G partial | S/G partial | Text ten lines/512chars, @ formatting; time displayed. Dedicated changing-redstone scenario pending |
+| P1 | Refresh/redstone power modes | S/G pass0.2 | S/G pass0.2 | Always-on/signal/inverted/off,40ticks and persisted settings |
+| P1 | Inventory card | Pending | Pending | Vanilla/container inventory totals and filters |
+| P1 | Upstream advanced liquid selectors | Partial | Partial | Generic fluid card enumerates tanks; original advanced-field selectors not ported |
+| P1 | Bars/pages/field layout | Partial | Partial | Basic title/masks exist; bars, paging and arbitrary field layout pending |
+| P1 | Color/touch/web upgrades | Pending | Pending | Current fixed GUI colors are not upstream upgrade parity |
+| P1 | Modern industrial targets | Pending | Pending | Exact artifact/platform acceptance required; IE is NeoForge target; generic interface is not machine compatibility proof |
+| P2 | Card holder | Pending | Pending | Internal inventory and nesting rules |
+| P2 | Kits/assembler | Pending | Pending | Conversion recipes, machine GUI, inventory, balancing |
+| P2 | Howlers/alarms/thermal monitors | Pending | Pending | Sound/temperature/limits/redstone |
+| P2 | Timers/triggers/counters/lamps | Pending | Pending | Stateful block behavior and persistence |
+| P2 | Touch/toggle actions | Pending | Pending | Server-authorized target control |
+| P3 | Websocket | Pending | Pending | New protocol requires separate scope approval |
+| P3 | Specialized reactor/network APIs | Pending or original API unavailable | Pending or original API unavailable | COMPATIBILITY.md lists only officially checked absent targets; other entries remain unknown, not N/A |
+| P3 | JEI/REI/WTHIT | Pending | Pending | Optional class isolation and target compatibility |
+| P3 | Old world/card migration | Pending | Pending | No user worlds touched; no migration claim |
 
-This continuation authorizes isolated task-owned development processes and the
-official Minecraft EULA. The previous no-launch acceptance blocker is removed.
-No existing instance or process may be modified or stopped. QA-only blocks/code
-must be excluded from normal release builds. Final per-case results and unedited screenshots: `docs/evidence/runtime/{fabric,neoforge}-final/`. See QA.md for exact limitations. No claim of complete upstream parity.
+Evidence: [QA-V3.md](QA-V3.md), unedited PNGs and run logs under
+`evidence/runtime-v3`. New source has no dependency on QA providers.
+This remains an incomplete port; no public repository/release was created.

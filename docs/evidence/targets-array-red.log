@@ -1,0 +1,44 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.10.2/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+
+> Configure project :
+Architect Plugin: 3.4.164
+Architectury Loom: 1.7.435
+You are using an outdated version of Architectury Loom! This version will not receive any support, please consider updating!
+
+> Task :common:compileJava
+繝弱・繝・ C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\main\java\com\zuxelus\energycontrol\port\block\PanelBlockEntity.java縺ｯ謗ｨ螂ｨ縺輔ｌ縺ｪ縺БPI繧剃ｽｿ逕ｨ縺ｾ縺溘・繧ｪ繝ｼ繝舌・繝ｩ繧､繝峨＠縺ｦ縺・∪縺吶・
+繝弱・繝・ 隧ｳ邏ｰ縺ｯ縲・Xlint:deprecation繧ｪ繝励す繝ｧ繝ｳ繧呈欠螳壹＠縺ｦ蜀阪さ繝ｳ繝代う繝ｫ縺励※縺上□縺輔＞縲・
+
+> Task :common:processResources UP-TO-DATE
+> Task :common:classes
+> Task :common:compileTestJava
+> Task :common:processTestResources NO-SOURCE
+> Task :common:testClasses
+
+> Task :common:test
+
+CardTargetsTest > repeatedFaceTogglesButAnotherFaceUpdatesWithoutDoubleCounting() FAILED
+    org.opentest4j.AssertionFailedError at CardTargetsTest.java:9
+
+CardTargetsTest > legacySingleTargetStillReadsAndRebindingDoesNotKeepOldArray() FAILED
+    java.util.NoSuchElementException at CardTargetsTest.java:20
+
+CardTargetsTest > bindingCapacityCannotDiscardPriorTargets() FAILED
+    org.opentest4j.AssertionFailedError at CardTargetsTest.java:15
+
+29 tests completed, 3 failed
+
+
+> Task :common:test FAILED
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':common:test'.
+> There were failing tests. See the report at: file:///C:/Users/Makoto/Documents/Codex/2026-10-01/task-2/Energy-Control/common/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to get full insights.
+
+BUILD FAILED in 15s
+4 actionable tasks: 3 executed, 1 up-to-date
