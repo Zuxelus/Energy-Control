@@ -1,0 +1,13 @@
+RUN_START IE client reload=false 2026-10-01T02:20:58.302059600Z
+PASS IE real capacitor and multiblock readings reach client
+SCREENSHOT Saved screenshot as ie-01-real-machines.png
+PASS IE actual storage mutations synchronize to rendered text
+PASS IE real sneak-use binds capacitor face
+PASS IE sensor panel opens actual configuration menu
+SCREENSHOT Saved screenshot as ie-02-card-menu.png
+PASS IE normal creative capacitor break reaches client
+PASS IE normal capacitor replacement reaches client
+SCREENSHOT Saved screenshot as ie-03-replaced-capacitor.png
+PASS IE tank reformation and chunk restoration synchronized
+SCREENSHOT Saved screenshot as ie-04-restored-world.png
+ALL_IE_CLIENT_SCENARIOS_DONE

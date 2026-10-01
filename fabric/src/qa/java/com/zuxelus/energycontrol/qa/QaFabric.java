@@ -6,6 +6,7 @@ import team.reborn.energy.api.EnergyStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 public final class QaFabric implements ModInitializer {
     public void onInitialize() {
+        if(System.getProperty("ec.qa.stage","").startsWith("pages")){QaServer.init();return;}
         EnergyStorage.SIDED.registerForBlockEntity((be,side)->new EnergyStorage() {
             public long getAmount(){ return be.getLevel().getGameTime()%1000*100; }
             public long getCapacity(){ return 100000; }

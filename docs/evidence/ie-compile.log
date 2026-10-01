@@ -1,0 +1,38 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.10.2/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+
+> Configure project :
+Architect Plugin: 3.4.164
+Architectury Loom: 1.7.435
+You are using an outdated version of Architectury Loom! This version will not receive any support, please consider updating!
+
+> Configure project :neoforge
+:remapping 1 mods from modImplementation (java-api)
+:remapped 1 mods (mojang -> named) in 3.409 s
+
+> Task :common:compileJava
+> Task :common:processResources
+> Task :common:classes
+> Task :common:jar
+> Task :neoforge:compileJava FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':neoforge:compileJava'.
+> Dependency verification failed for configuration ':neoforge:compileClasspath'
+  2 artifacts failed verification:
+    - ImmersiveEngineering-1.21.1-12.4.2-194-816685b898ee.jar (loom_mappings_1_21_1_layered_hash_40545_v2_neoforge_21_1_209_forge.unspecified:ImmersiveEngineering-1.21.1-12.4.2-194:816685b898ee) from repository LoomLocalRemappedMods
+    - ImmersiveEngineering-1.21.1-12.4.2-194-816685b898ee.pom (loom_mappings_1_21_1_layered_hash_40545_v2_neoforge_21_1_209_forge.unspecified:ImmersiveEngineering-1.21.1-12.4.2-194:816685b898ee) from repository LoomLocalRemappedMods
+  If the artifacts are trustworthy, you will need to update the gradle/verification-metadata.xml file. For more on how to do this, please refer to https://docs.gradle.org/8.10.2/userguide/dependency_verification.html#sec:troubleshooting-verification in the Gradle documentation.
+  
+  Open this report for more details: file:///C:/Users/Makoto/Documents/Codex/2026-10-01/task-2/Energy-Control/build/reports/dependency-verification/at-1790820742601/dependency-verification-report.html
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+4 actionable tasks: 4 executed
+BUILD FAILED in 15s

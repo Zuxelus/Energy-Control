@@ -29,8 +29,15 @@ Official Gradle 8.10.2 wrapper SHA-256:
 
 The baseline wrapper was initially used for bootstrap, then replaced with the
 verified official 8.10.2 wrapper. Original files remain in Git history.
-No third-party machine/content mods were installed or executed. No remote shell
-script, global installer or user instance modification was used. Declared Gradle
+For0.4, only the explicitly approved official Immersive Engineering12.4.2-194
+and its embedded BlockModelSplitter2.0.1/DualCodecs0.1.2 were loaded in the task
+NeoForge QA instance. IE uses a custom license and is not redistributed;
+source, artifact hashes and permission scope are recorded in
+[integration-research/IE-PLAN.md](integration-research/IE-PLAN.md) and
+[IE-artifact.json](integration-research/IE-artifact.json). The embedded libraries
+are extracted verbatim only for the optional dev classpath. No external IE
+source/assets or binaries enter Git, bundles, release jars or source jars.
+No remote shell script, global installer or user instance modification was used. Declared Gradle
 plugins and normal transitive build tools execute inside the build. All Gradle
 caches are task-local. Dependency verification metadata records fetched checksums;
 it is an integrity record, not an independent audit of every transitive dependency.

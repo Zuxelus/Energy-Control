@@ -1,0 +1,3 @@
+RUN_START display-server reload=false 2026-10-01T02:37:30.670913600Z
+PASS display forty source lines produce two pages without discarding tail
+PASS solid panel rejects hologram-only projection changes

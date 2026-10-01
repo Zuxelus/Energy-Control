@@ -1,0 +1,5 @@
+RUN_START display-client reload=true 2026-10-01T02:46:02.685074700Z
+PASS display client receives persisted page and projection settings
+SCREENSHOT Saved screenshot as display-reload-world.png
+SCREENSHOT Saved screenshot as display-reload-menu.png
+ALL_DISPLAY_RELOAD_DONE

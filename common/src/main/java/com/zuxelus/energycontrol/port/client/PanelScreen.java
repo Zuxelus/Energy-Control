@@ -14,24 +14,34 @@ public final class PanelScreen extends AbstractContainerScreen<PanelMenu> {
     private int selectedSlot;
     private String loadedText="";
     private boolean dirty,loading;
+    private boolean layout;private int group;
+    private final java.util.List<Button> styleButtons=new java.util.ArrayList<>(),layoutButtons=new java.util.ArrayList<>();
+    private Button layoutToggle,nextPageButton,pageSizeButton,autoPageButton,pitchButton,yawButton,depthButton;
     private Button slotButton,powerButton,scaleButton,alignButton,fontButton,rateButton;
     public PanelScreen(PanelMenu menu,Inventory inventory,Component title) {
         super(menu,inventory,title);imageWidth=330;imageHeight=242;inventoryLabelY=139;
     }
     private Button button(String label,int x,int y,int w,Runnable action) {
-        return addRenderableWidget(Button.builder(Component.literal(label),b->action.run()).bounds(leftPos+x,topPos+y,w,20).build());
+        var b=addRenderableWidget(Button.builder(Component.literal(label),ignored->action.run()).bounds(leftPos+x,topPos+y,w,20).build());
+        if(group==1)styleButtons.add(b);if(group==2)layoutButtons.add(b);return b;
     }
     @Override protected void init() {
-        super.init();
+        super.init();styleButtons.clear();layoutButtons.clear();group=0;
         text=new MultiLineEditBox(font,leftPos+8,topPos+51,160,45,Component.literal("Ten lines; @a color, @@ literal @"),Component.translatable("gui.energycontrol.text"));
         text.setCharacterLimit(512);text.setValueListener(v->{if(!loading)dirty=true;});addRenderableWidget(text);loadText();
         button("Save text",180,25,140,()->{NetworkManager.sendToServer(new PanelEditPayload(menu.containerId,selectedSlot,text.getValue()));dirty=false;loadedText=text.getValue();});
-        slotButton=button("Card",180,48,140,()->{selectedSlot=(selectedSlot+1)%menu.cardSlots;loadText();});
+        slotButton=button("Card",180,48,94,()->{selectedSlot=(selectedSlot+1)%menu.cardSlots;loadText();});
+        layoutToggle=button("Layout",278,48,42,()->{layout=!layout;updateGroups();});group=1;
         button("Text color",180,71,68,()->send(0));button("Background",252,71,68,()->send(6));
         powerButton=button("Power",180,94,140,()->send(1));scaleButton=button("Scale",180,117,140,()->send(2));
         alignButton=button("Align",180,140,140,()->send(3));fontButton=button("Font",180,163,140,()->send(4));rateButton=button("Refresh",180,186,140,()->send(5));
         button("Labels",180,209,44,()->send(100+selectedSlot*2));button("Percent",228,209,44,()->send(101+selectedSlot*2));button("Each",276,209,44,()->send(200+selectedSlot));
+        group=2;button("Prev",180,71,68,()->send(8));nextPageButton=button("Next",252,71,68,()->send(7));
+        pageSizeButton=button("Lines",180,94,140,()->send(9));autoPageButton=button("Auto",180,117,140,()->send(10));
+        pitchButton=button("Pitch",180,140,140,()->send(11));yawButton=button("Yaw",180,163,140,()->send(12));depthButton=button("Depth",180,186,140,()->send(13));
+        var reset=button("Reset projection",180,209,140,()->send(14));reset.active=menu.panel.holographic();group=0;updateGroups();
     }
+    private void updateGroups(){for(var b:styleButtons)b.visible=!layout;for(var b:layoutButtons)b.visible=layout;layoutToggle.setMessage(Component.literal(layout?"Style":"Layout"));}
     private void send(int id){minecraft.gameMode.handleInventoryButtonClick(menu.containerId,id);}
     private String cardText(){var stack=menu.getSlot(selectedSlot).getItem();return CardItem.data(stack).getString(stack.getItem() instanceof CardItem c && c.kind()==CardItem.Kind.TEXT?"text":"title");}
     private void loadText(){loading=true;loadedText=cardText();text.setValue(loadedText);loading=false;dirty=false;}
@@ -47,6 +57,10 @@ public final class PanelScreen extends AbstractContainerScreen<PanelMenu> {
         alignButton.setMessage(Component.literal("Align: "+new String[]{"Left","Center","Right"}[p.alignment()]));
         fontButton.setMessage(Component.literal("Font: "+(p.uniformFont()?"Uniform":"Default")));
         rateButton.setMessage(Component.literal("Refresh: "+p.refreshTicks()+" ticks"));
+        nextPageButton.setMessage(Component.literal("Next "+(p.page()+1)+"/"+p.pageCount()));
+        pageSizeButton.setMessage(Component.literal("Lines per page: "+p.pageSize()));autoPageButton.setMessage(Component.literal(p.pageTicks()==0?"Auto page: Off":"Auto page: "+p.pageTicks()+" ticks"));
+        pitchButton.setMessage(Component.literal("Pitch: "+p.projection().pitch()+" deg"));yawButton.setMessage(Component.literal("Yaw: "+p.projection().yaw()+" deg"));depthButton.setMessage(Component.literal("Depth: "+p.projection().depth()+" / 16"));
+        pitchButton.active=yawButton.active=depthButton.active=p.holographic();
     }
     @Override protected void renderBg(GuiGraphics g,float tick,int mx,int my) {
         g.fill(leftPos,topPos,leftPos+imageWidth,topPos+imageHeight,0xffc6c6c6);g.fill(leftPos+6,topPos+22,leftPos+170,topPos+48,0xff282c30);

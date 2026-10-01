@@ -21,9 +21,13 @@ implementation code are copied into the port. Requested scope: only this
 project's isolated NeoForge instance, capacitor FE and tank fluid capability
 acceptance first, then additional public machine APIs if needed. Runtime
 permission for the external distribution was requested separately in chat;
-not yet granted at the time of this record. No IE code has been executed.
+granted explicitly by the user on2026-10-01 for this exact artifact and its two embedded dependencies. The0.4 continuation executed only this approved scope.
 
-Generic FE/FluidHandler implementation is present, but real IE compatibility
-must remain UNVERIFIED until the external-mod gameplay run passes. Fabric is
+Real IE capacitor_lv and formed sheetmetal tank acceptance passed on2026-10-01.
+The36 assertions cover real API equality, arrays, dynamic client rendering,
+normal capacitor break/place, tank disassembly/reformation, actual target chunk
+unload/reload without sensor force-loading, and clean server disk restart.
+Evidence: ../evidence/runtime-v4/neoforge-ie-first-pass and neoforge-ie-reload.
+No other IE machine or native wire-network statistics are claimed. Fabric is
 not claimed to load this NeoForge distribution. Other modern industrial mods
 require their own exact artifact/platform/permission and actual acceptance.

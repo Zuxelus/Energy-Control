@@ -1,0 +1,27 @@
+RUN_START IE server reload=false 2026-10-01T02:20:00.807847200Z
+PASS IE real IE capacitor block entity 4, 0, 0
+PASS IE real IE capacitor block entity 6, 0, 0
+PASS IE real IE capacitor block entity 196, 0, 4
+PASS IE official multiblock recognition/forms 5, 0, 4
+PASS IE formed tank exposes real512000mB capacity
+PASS IE official multiblock recognition/forms 10, 0, 4
+PASS IE formed tank exposes real512000mB capacity
+PASS IE official multiblock recognition/forms 200, 0, 4
+PASS IE formed tank exposes real512000mB capacity
+PASS IE non-port tank face correctly reports no capability
+PASS IE energy card equals real IE capability
+PASS IE fluid card equals real IE multiblock
+PASS IE array totals two real capacitors
+PASS IE array totals two real tank structures
+PASS IE actual creative removal invalidates sensor
+PASS IE actual placement restores fresh IE capability
+PASS IE client removed and replaced actual capacitor
+PASS IE tank disassembly invalidates real fluid capability
+PASS IE official multiblock recognition/forms 10, 0, 4
+PASS IE formed tank exposes real512000mB capacity
+PASS IE tank reformation restores array capacity
+IE released remote chunk ticket
+PASS IE unloaded real machine chunk is reported without force loading
+PASS IE sensor evaluation did not load target chunk
+PASS IE chunk reload retains real IE machine contents
+ALL_IE_SERVER_SCENARIOS_DONE

@@ -1,0 +1,99 @@
+[11:15:21] [main/INFO] (Launcher) ModLauncher running: args [--launchTarget, forgeserverdev, --gameDir, ., --fml.fmlVersion, 4.0.41, --fml.mcVersion, 1.21.1, --fml.neoForgeVersion, 21.1.209, --fml.neoFormVersion, 20240808.144430, nogui, --nogui]
+[11:15:21] [main/INFO] (Launcher) JVM identified as Azul Systems, Inc. OpenJDK 64-Bit Server VM 21.0.12.1+1-LTS
+[11:15:21] [main/INFO] (Launcher) ModLauncher 11.0.5+main.901c6ea8 starting: java version 21.0.12.1 by Azul Systems, Inc.; OS Windows 11 arch amd64 version 10.0
+[11:15:21] [main/INFO] (ImmediateWindowHandler) ImmediateWindowProvider not loading because launch target is forgeserverdev
+[11:15:21] [main/INFO] (mixin) SpongePowered MIXIN Subsystem Version=0.8.7 Source=union:/C:/Users/Makoto/Documents/Codex/2026-10-01/task-2/Energy-Control/.gradle-user-home/caches/modules-2/files-2.1/net.fabricmc/sponge-mixin/0.15.2+mixin.0.8.7/2af2f021d8e02a0220dc27a7a72b4666d66d44ca/sponge-mixin-0.15.2+mixin.0.8.7.jar%23125!/ Service=ModLauncher Env=SERVER
+[11:15:21] [main/INFO] (ModDiscoverer) Found mod file "neoforge-21.1.209-minecraft-merged-1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209.jar" [locator: neoforge devenv provider ([C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\.gradle-user-home\caches\fabric-loom\minecraftMaven\net\minecraft\neoforge-21.1.209-minecraft-merged\1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209\neoforge-21.1.209-minecraft-merged-1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209.jar])]
+[11:15:21] [main/INFO] (ModDiscoverer) Found mod file "neoforge-21.1.209-minecraft-merged-1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209.jar" [locator: neoforge devenv provider ([C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\.gradle-user-home\caches\fabric-loom\minecraftMaven\net\minecraft\neoforge-21.1.209-minecraft-merged\1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209\neoforge-21.1.209-minecraft-merged-1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209.jar])]
+[11:15:21] [main/INFO] (ModDiscoverer) Found mod file "main" [locator: userdev mods and services, reader: mod manifest]
+[11:15:21] [main/INFO] (ModDiscoverer) Found mod file "neoforge-21.1.209-minecraft-merged-1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209.jar" [locator: userdev mods and services, reader: mod manifest]
+[11:15:21] [main/INFO] (ModDiscoverer) Found mod file "architectury-neoforge-13.0.8.jar" [locator: userdev mods and services, reader: mod manifest]
+[11:15:21] [main/INFO] (ModDiscoverer) Found mod file "ImmersiveEngineering-1.21.1-12.4.2-194-816685b898ee.jar" [locator: userdev mods and services, reader: mod manifest]
+[11:15:21] [main/INFO] (ModDiscoverer) Found mod file "13862870192199082097.jar" [locator: userdev mods and services, reader: mod manifest]
+[11:15:21] [main/INFO] (ModDiscoverer) Found gamelibrary file "mixinextras-neoforge-0.5.0.jar" [locator: userdev mods and services, reader: mod manifest]
+[11:15:21] [main/WARN] (JarSelector) Attempted to select a dependency jar for JarJar which was passed in as source: library:mixinextras.neoforge. Using Mod File: C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\.gradle-user-home\caches\modules-2\files-2.1\io.github.llamalad7\mixinextras-neoforge\0.5.0\d734b83ce6542bb70ea31755c1595b88992dbe65\mixinextras-neoforge-0.5.0.jar
+[11:15:21] [main/INFO] (JarInJarDependencyLocator) Found 1 dependencies adding them to mods collection
+[11:15:21] [main/INFO] (ModDiscoverer) Found library file "net.neoforged.neoforge-coremods-21.1.209.jar" [parent: neoforge-21.1.209-minecraft-merged-1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209.jar, locator: jarinjar, reader: mod manifest]
+[11:15:21] [main/INFO] (ModDiscoverer) 
+     Mod List:
+		Name Version (Mod Id)
+
+		Architectury 13.0.8 (architectury)
+		Energy Control (port preview) 1.21.1-0.3.0-port-preview (energycontrol)
+		generated_fa573db 1 (generated_fa573db)
+		Immersive Engineering 12.4.2-194 (immersiveengineering)
+		Minecraft 1.21.1 (minecraft)
+		NeoForge 21.1.209 (neoforge)
+[11:15:22] [main/INFO] (mixin) Compatibility level set to JAVA_17
+[11:15:22] [main/INFO] (LaunchServiceHandler) Launching target 'forgeserverdev' with arguments [--gameDir, ., nogui, --nogui]
+[11:15:22] [main/INFO] (unprotect) Found 8254 Minecraft classes
+[0110月2026 11:15:23.587] [main/INFO] [MixinExtras|Service/]: Initializing MixinExtras via com.llamalad7.mixinextras.service.MixinExtrasServiceImpl(version=0.5.0).
+[0110月2026 11:15:27.354] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
+[0110月2026 11:15:27.355] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, location] and [teleport, targets] with inputs: [0.1 -0.5 .9, 0 0 0]
+[0110月2026 11:15:27.358] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, destination] and [teleport, targets] with inputs: [Player, 0123, @e, dd12be42-52a9-4a91-a8a1-11c01849e498]
+[0110月2026 11:15:27.358] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, targets] and [teleport, destination] with inputs: [Player, 0123, dd12be42-52a9-4a91-a8a1-11c01849e498]
+[0110月2026 11:15:27.360] [main/WARN] [net.minecraft.commands.Commands/]: Ambiguity between arguments [teleport, targets, location] and [teleport, targets, destination] with inputs: [0.1 -0.5 .9, 0 0 0]
+[0110月2026 11:15:27.411] [modloading-worker-0/INFO] [net.neoforged.neoforge.common.NeoForgeMod/NEOFORGE-MOD]: NeoForge mod loading, version 21.1.209, for MC 1.21.1
+[0110月2026 11:15:27.492] [modloading-worker-0/ERROR] [net.neoforged.fml.javafmlmod.FMLModContainer/LOADING]: Failed to create mod instance. ModID: immersiveengineering, class blusunrize.immersiveengineering.ImmersiveEngineering
+java.lang.NoClassDefFoundError: malte0811/dualcodecs/DualCodecs
+	at TRANSFORMER/immersiveengineering@12.4.2-194/blusunrize.immersiveengineering.api.tool.BulletHandler$CodecsAndDefault.<clinit>(BulletHandler.java:280) ~[ImmersiveEngineering-1.21.1-12.4.2-194-816685b898ee.jar%23203!/:?]
+	at TRANSFORMER/immersiveengineering@12.4.2-194/blusunrize.immersiveengineering.common.items.bullets.FlareBullet.<clinit>(FlareBullet.java:34) ~[ImmersiveEngineering-1.21.1-12.4.2-194-816685b898ee.jar%23203!/:?]
+	at TRANSFORMER/immersiveengineering@12.4.2-194/blusunrize.immersiveengineering.common.items.bullets.IEBullets.<clinit>(IEBullets.java:52) ~[ImmersiveEngineering-1.21.1-12.4.2-194-816685b898ee.jar%23203!/:?]
+	at TRANSFORMER/immersiveengineering@12.4.2-194/blusunrize.immersiveengineering.common.IEContent.modConstruction(IEContent.java:107) ~[ImmersiveEngineering-1.21.1-12.4.2-194-816685b898ee.jar%23203!/:?]
+	at TRANSFORMER/immersiveengineering@12.4.2-194/blusunrize.immersiveengineering.ImmersiveEngineering.<init>(ImmersiveEngineering.java:109) ~[ImmersiveEngineering-1.21.1-12.4.2-194-816685b898ee.jar%23203!/:?]
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62) ~[?:?]
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502) ~[?:?]
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:486) ~[?:?]
+	at MC-BOOTSTRAP/fml_loader@4.0.41/net.neoforged.fml.javafmlmod.FMLModContainer.constructMod(FMLModContainer.java:115) ~[loader-4.0.41.jar%23111!/:4.0]
+	at MC-BOOTSTRAP/fml_loader@4.0.41/net.neoforged.fml.ModLoader.lambda$constructMods$3(ModLoader.java:153) ~[loader-4.0.41.jar%23111!/:4.0]
+	at MC-BOOTSTRAP/fml_loader@4.0.41/net.neoforged.fml.ModLoader.lambda$dispatchParallelTask$7(ModLoader.java:231) ~[loader-4.0.41.jar%23111!/:4.0]
+	at java.base/java.util.concurrent.CompletableFuture.uniHandle(CompletableFuture.java:934) [?:?]
+	at java.base/java.util.concurrent.CompletableFuture$UniHandle.tryFire(CompletableFuture.java:911) [?:?]
+	at java.base/java.util.concurrent.CompletableFuture$Completion.exec(CompletableFuture.java:483) [?:?]
+	at java.base/java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:387) [?:?]
+	at java.base/java.util.concurrent.ForkJoinPool$WorkQueue.topLevelExec(ForkJoinPool.java:1312) [?:?]
+	at java.base/java.util.concurrent.ForkJoinPool.scan(ForkJoinPool.java:1843) [?:?]
+	at java.base/java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1808) [?:?]
+	at java.base/java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:188) [?:?]
+Caused by: java.lang.ClassNotFoundException: malte0811.dualcodecs.DualCodecs
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:641) ~[?:?]
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:526) ~[?:?]
+	at cpw.mods.securejarhandler/cpw.mods.cl.ModuleClassLoader.loadClass(ModuleClassLoader.java:216) ~[securejarhandler-3.0.8.jar:?]
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:526) ~[?:?]
+	at cpw.mods.securejarhandler/cpw.mods.cl.ModuleClassLoader.loadClass(ModuleClassLoader.java:216) ~[securejarhandler-3.0.8.jar:?]
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:526) ~[?:?]
+	... 19 more
+[0110月2026 11:15:27.587] [main/FATAL] [net.neoforged.fml.ModLoader/LOADING]: Failed to wait for future Mod Construction, 1 errors found
+[0110月2026 11:15:27.696] [main/ERROR] [net.minecraft.CrashReport/]: Negative index in crash report handler (0/20)
+[0110月2026 11:15:27.713] [main/FATAL] [net.neoforged.neoforge.common.NeoForgeMod/]: Preparing crash report with UUID 9f6bcb0c-7777-4bd5-9369-5c7245652623
+[0110月2026 11:15:27.714] [main/FATAL] [net.neoforged.neoforge.server.loading.ServerModLoader/]: Crash report saved to .\crash-reports\crash-2026-10-01_11.15.27-fml.txt
+[0110月2026 11:15:27.714] [main/FATAL] [net.neoforged.neoforge.common.NeoForgeMod/]: Preparing crash report with UUID b0ec6d04-6021-4682-b49d-05293a7e4360
+[0110月2026 11:15:27.715] [main/ERROR] [net.minecraft.server.Main/FATAL]: Failed to start the minecraft server
+net.neoforged.fml.ModLoadingException: Loading errors encountered:
+	- Immersive Engineering (immersiveengineering) has failed to load correctly
+	  java.lang.NoClassDefFoundError: malte0811/dualcodecs/DualCodecs
+
+	at MC-BOOTSTRAP/fml_loader@4.0.41/net.neoforged.fml.ModLoader.waitForFuture(ModLoader.java:281) ~[loader-4.0.41.jar%23111!/:4.0]
+	at MC-BOOTSTRAP/fml_loader@4.0.41/net.neoforged.fml.ModLoader.dispatchParallelTask(ModLoader.java:244) ~[loader-4.0.41.jar%23111!/:4.0]
+	at MC-BOOTSTRAP/fml_loader@4.0.41/net.neoforged.fml.ModLoader.constructMods(ModLoader.java:152) ~[loader-4.0.41.jar%23111!/:4.0]
+	at MC-BOOTSTRAP/fml_loader@4.0.41/net.neoforged.fml.ModLoader.gatherAndInitializeMods(ModLoader.java:142) ~[loader-4.0.41.jar%23111!/:4.0]
+	at TRANSFORMER/neoforge@21.1.209/net.neoforged.neoforge.internal.CommonModLoader.begin(CommonModLoader.java:49) ~[neoforge-21.1.209-minecraft-merged-1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209.jar%23199!/:?]
+	at TRANSFORMER/neoforge@21.1.209/net.neoforged.neoforge.server.loading.ServerModLoader.load(ServerModLoader.java:34) ~[neoforge-21.1.209-minecraft-merged-1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209.jar%23199!/:?]
+	at TRANSFORMER/minecraft@1.21.1/net.minecraft.server.Main.main(Main.java:124) ~[neoforge-21.1.209-minecraft-merged-1.21.1-loom.mappings.1_21_1.layered+hash.40545-v2-neoforge-21.1.209.jar%23198!/:?]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[?:?]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[?:?]
+	at MC-BOOTSTRAP/fml_loader@4.0.41/net.neoforged.fml.loading.targets.CommonLaunchHandler.runTarget(CommonLaunchHandler.java:136) ~[loader-4.0.41.jar%23111!/:4.0]
+	at MC-BOOTSTRAP/fml_loader@4.0.41/net.neoforged.fml.loading.targets.CommonLaunchHandler.serverService(CommonLaunchHandler.java:128) ~[loader-4.0.41.jar%23111!/:4.0]
+	at MC-BOOTSTRAP/fml_loader@4.0.41/net.neoforged.fml.loading.targets.NeoForgeServerDevLaunchHandler.runService(NeoForgeServerDevLaunchHandler.java:23) ~[loader-4.0.41.jar%23111!/:4.0]
+	at MC-BOOTSTRAP/fml_loader@4.0.41/net.neoforged.fml.loading.targets.CommonLaunchHandler.lambda$launchService$4(CommonLaunchHandler.java:118) ~[loader-4.0.41.jar%23111!/:4.0]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.LaunchServiceHandlerDecorator.launch(LaunchServiceHandlerDecorator.java:30) [modlauncher-11.0.5.jar%23116!/:?]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:53) [modlauncher-11.0.5.jar%23116!/:?]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.LaunchServiceHandler.launch(LaunchServiceHandler.java:71) [modlauncher-11.0.5.jar%23116!/:?]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.Launcher.run(Launcher.java:103) [modlauncher-11.0.5.jar%23116!/:?]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.Launcher.main(Launcher.java:74) [modlauncher-11.0.5.jar%23116!/:?]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.BootstrapLaunchConsumer.accept(BootstrapLaunchConsumer.java:26) [modlauncher-11.0.5.jar%23116!/:?]
+	at MC-BOOTSTRAP/cpw.mods.modlauncher@11.0.5/cpw.mods.modlauncher.BootstrapLaunchConsumer.accept(BootstrapLaunchConsumer.java:23) [modlauncher-11.0.5.jar%23116!/:?]
+	at cpw.mods.bootstraplauncher.BootstrapLauncher.run(BootstrapLauncher.java:210) [bootstraplauncher-2.0.2.jar:?]
+	at cpw.mods.bootstraplauncher.BootstrapLauncher.main(BootstrapLauncher.java:69) [bootstraplauncher-2.0.2.jar:?]
+	at net.fabricmc.devlaunchinjector.Main.main(Main.java:86) [dev-launch-injector-0.2.1+build.8.jar:?]
+	at dev.architectury.transformer.TransformerRuntime.main(TransformerRuntime.java:220) [architectury-transformer-5.2.91-runtime.jar:5.2.91]

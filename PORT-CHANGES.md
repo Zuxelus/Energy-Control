@@ -51,3 +51,18 @@ under GPL-3.0-only. No remote publication or user game modification was performe
   disk reload on both loaders with production server initialization.
 - Added126 upstream source rows and exact new acceptance evidence. Existing
   original source/history/license are retained. Full parity remains unfinished.
+
+
+## 2026-10-01 real IE and display continuation (0.4)
+
+- Added bounded manual/automatic pages, preserving lines beyond the old32-line
+  display limit; synchronized page metadata and saved settings.
+- Added grouped hologram pitch/yaw and visual plane depth, GUI controls and
+  persistence. Solid case geometry and upstream circuit height remain pending.
+- Accepted six tilted facings and disk restart on both loaders. Fixed hologram
+  menu title. No normal breaking behavior changed.
+- Accepted actual IE LV capacitor/formed tank reads, arrays, detach/reform,
+  unloaded targets without force-loading and real-machine disk restart.
+- Fixed optional IE development classpath discovery of its approved nested
+  DualCodecs/BlockModelSplitter; retained dependency verification and exact hashes.
+- No IE source/assets/binaries redistributed. All upstream history/license remain.

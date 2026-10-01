@@ -28,7 +28,10 @@ public final class PanelRenderer implements BlockEntityRenderer<PanelBlockEntity
             default -> { }
         }
         if(panel.facing().getAxis()==net.minecraft.core.Direction.Axis.Y) pose.mulPose(Axis.ZP.rotationDegrees(180));
-        pose.translate(bounds.minX()-.5,bounds.maxY()+.5,.505);
+        var projection=panel.holographic()?panel.projection():com.zuxelus.energycontrol.port.core.ProjectionSettings.DEFAULT;
+        pose.translate((bounds.minX()+bounds.maxX())/2.0,(bounds.minY()+bounds.maxY())/2.0,projection.frontDepth());
+        pose.mulPose(Axis.YP.rotationDegrees(projection.yaw()));pose.mulPose(Axis.XP.rotationDegrees(projection.pitch()));
+        pose.translate(-bounds.width()/2.0,bounds.height()/2.0,0);
         pose.scale(1/128f,-1/128f,1/128f);
         float width=bounds.width()*128-8, height=bounds.height()*128-8;
         if(!panel.holographic()){

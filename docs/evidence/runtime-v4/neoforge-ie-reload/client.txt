@@ -1,0 +1,4 @@
+RUN_START IE client reload=true 2026-10-01T02:26:37.182059100Z
+PASS IE client sees persisted real tanks and array after server restart
+SCREENSHOT Saved screenshot as ie-reload.png
+ALL_IE_RELOAD_CLIENT_DONE

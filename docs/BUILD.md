@@ -1,7 +1,7 @@
 # Current gameplay continuation
 
 See QA.md for authorized isolated runServer/runClient commands and final runtime evidence.
-The stage-1 results below are preserved as history; current artifact verification uses 20 JVM tests.
+The stage-1 results below are preserved as history; current artifact verification uses 39 JVM tests.
 
 # Reproducible local build
 
@@ -111,3 +111,20 @@ bumped after gameplay acceptance. Production Java/resources tested are the
 normal multiplayer and normal disk restart. See QA-V3.md for boundaries.
 Final jar verification requires Java21 classes,17 recipes, metadata, textures,
 licenses, nested MIT Fabric Energy API and absence of every /qa/ class/source.
+
+## Real IE and display stage (0.4)
+
+Release command: `./gradlew clean build --offline --console=plain` with neither
+-Pqa nor -PieQa; then `py -3 -X utf8 tools/verify_artifacts.py`. Repeat clean build
+and compare two remapped jars plus two source jars. Records: build-0.4-first.log,
+build-0.4-second.log, reproducibility-0.4.json, artifact-verification.json,
+junit-0.4/.39 JVM cases comprise31 prior and8 new paging/projection cases.
+
+QA-V4.md describes actual isolated game runs:36 IE assertions and19 display
+assertions per loader, including disk restart. Runtime metadata says0.3.0 because
+the0.4 version bump follows acceptance. The final production difference from
+initial display acceptance is a holographic menu title correction, itself seen
+in reload acceptance. New display runs load neither IE nor mock storage providers.
+Optional -PieQa requires -Pqa and private exact-hash artifacts; it never affects
+release dependency declarations. QA/IE classes and sources must be absent from
+both release jars and source jars. No IE jar/source/assets are redistributed.

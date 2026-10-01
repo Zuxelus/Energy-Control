@@ -2,6 +2,27 @@
   "source": "https://maven.blamejared.com/blusunrize/immersiveengineering/ImmersiveEngineering/1.21.1-12.4.2-194/ImmersiveEngineering-1.21.1-12.4.2-194.jar",
   "bytes": 14180259,
   "sha256": "816685b898eed52080d08a4009042c511560ecc185601f21fe744936b63b5127",
-  "inspection_only": true,
-  "executed": false
+  "inspection_only": false,
+  "executed": true,
+  "runtime_authorized": true,
+  "authorization_scope": "Official IE12.4.2-194 and embedded BlockModelSplitter2.0.1/DualCodecs0.1.2, task-owned NeoForge instance only",
+  "embedded": [
+    {
+      "name": "BlockModelSplitter-2.0.1.jar",
+      "bytes": 37351,
+      "sha256": "ab752fbe975e4c6af2679d0f8b85dfb7ebe3da3aa04a73951e3b5bfbc3f40537"
+    },
+    {
+      "name": "DualCodecs-0.1.2.jar",
+      "bytes": 75598,
+      "sha256": "0bddfcac4d409803a35cbbd5c7b74828f436357ad7b8980fcfbd5a1834c05feb"
+    }
+  ],
+  "acceptance": "PASS:24 server +7 client +4 restart server +1 restart client assertions",
+  "accepted_platform": "NeoForge1.21.1 /21.1.209",
+  "accepted_machines": [
+    "capacitor_lv",
+    "formed sheetmetal tank"
+  ],
+  "fabric_ie_claim": false
 }

@@ -9,6 +9,12 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 @Mod("energycontrolqa")
 public final class QaNeoForge {
     public QaNeoForge(IEventBus bus) {
+        if(System.getProperty("ec.qa.stage","").startsWith("ie")) {
+            try { Class.forName("com.zuxelus.energycontrol.qa.neoforge.IeQaServer").getMethod("init").invoke(null); }
+            catch(ReflectiveOperationException e){throw new IllegalStateException(e);}
+            return; // No chest/mock capability registration in IE acceptance.
+        }
+        if(System.getProperty("ec.qa.stage","").startsWith("pages")){QaServer.init();return;}
         QaServer.init();
         bus.addListener((RegisterCapabilitiesEvent event)->event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,BlockEntityType.CHEST,(be,side)->new net.neoforged.neoforge.fluids.capability.IFluidHandler(){
             public int getTanks(){return 1;}

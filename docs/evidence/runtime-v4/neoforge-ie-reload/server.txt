@@ -1,0 +1,6 @@
+RUN_START IE server reload=true 2026-10-01T02:25:20.574296900Z
+PASS IE server restart retains actual capacitor energy
+PASS IE server restart retains real multiblock fluid
+PASS IE server restart retains remote machines
+PASS IE server restart retains array bindings and upgrade
+ALL_IE_RELOAD_SERVER_DONE

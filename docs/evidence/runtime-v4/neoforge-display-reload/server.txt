@@ -1,0 +1,3 @@
+RUN_START display-server reload=true 2026-10-01T02:45:01.941051900Z
+PASS display page size and manual mode survive server restart
+PASS display projection and holographic page size survive server restart

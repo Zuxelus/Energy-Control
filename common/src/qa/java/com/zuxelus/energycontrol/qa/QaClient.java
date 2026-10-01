@@ -15,6 +15,8 @@ import net.minecraft.world.phys.*;
 public final class QaClient {
     private static boolean connecting; private static int ticks; private static String sample;
     public static void init(int port) {
+        if(System.getProperty("ec.qa.stage","").startsWith("pages")){DisplayQaClient.init(port+6);return;}
+        if(System.getProperty("ec.qa.stage","").startsWith("ie")){IeQaClient.init(25576);return;}
         if(java.util.Set.of("normal","reload").contains(System.getProperty("ec.qa.stage",""))){NormalQaClient.init(port+2);return;}
         if(System.getProperty("ec.qa.stage","").equals("storage")){StorageQaClient.init(port+2);return;}
         QaServer.log("RUN_START client "+java.time.Instant.now());

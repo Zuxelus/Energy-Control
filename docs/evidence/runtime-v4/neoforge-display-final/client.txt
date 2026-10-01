@@ -1,0 +1,25 @@
+RUN_START display-client reload=false 2026-10-01T02:37:39.623062200Z
+PASS display initial page metadata and32 lines reach client
+PASS display normal configuration menu opens
+PASS display next page reveals previously truncated source lines
+SCREENSHOT Saved screenshot as display-01-page-two.png
+PASS display configurable page size recomputes page count
+PASS display server-driven auto paging changes client page
+PASS display auto paging can stop with manual eight-line pages
+PASS display real holographic menu opens
+PASS display GUI changes actual synchronized holographic projection
+SCREENSHOT Saved screenshot as display-02-projection-menu.png
+SCREENSHOT Saved screenshot as display-03-tilted-group.png
+PASS display tilted two-by-two projection facing down
+SCREENSHOT Saved screenshot as display-face-down.png
+PASS display tilted two-by-two projection facing up
+SCREENSHOT Saved screenshot as display-face-up.png
+PASS display tilted two-by-two projection facing north
+SCREENSHOT Saved screenshot as display-face-north.png
+PASS display tilted two-by-two projection facing south
+SCREENSHOT Saved screenshot as display-face-south.png
+PASS display tilted two-by-two projection facing west
+SCREENSHOT Saved screenshot as display-face-west.png
+PASS display tilted two-by-two projection facing east
+SCREENSHOT Saved screenshot as display-face-east.png
+ALL_DISPLAY_CLIENT_DONE

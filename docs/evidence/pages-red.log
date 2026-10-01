@@ -1,0 +1,82 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.10.2/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+
+> Configure project :
+Architect Plugin: 3.4.164
+Architectury Loom: 1.7.435
+You are using an outdated version of Architectury Loom! This version will not receive any support, please consider updating!
+
+> Task :common:compileJava UP-TO-DATE
+> Task :common:processResources UP-TO-DATE
+> Task :common:classes UP-TO-DATE
+
+> Task :common:compileTestJava FAILED
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\test\java\com\zuxelus\energycontrol\port\core\DisplayPagesTest.java:8: 繧ｨ繝ｩ繝ｼ: 繧ｷ繝ｳ繝懊Ν繧定ｦ九▽縺代ｉ繧後∪縺帙ｓ
+ @Test void everyLineRemainsReachableAcrossPages(){var input=IntStream.range(0,70).mapToObj(i->"line"+i).toList();var output=new ArrayList<String>();for(int page=0;page<DisplayPages.count(input.size(),8);page++)output.addAll(DisplayPages.slice(input,page,8));assertEquals(input,output);}
+                                                                                                                                                                         ^
+  繧ｷ繝ｳ繝懊Ν:   螟画焚 DisplayPages
+  蝣ｴ謇: 繧ｯ繝ｩ繧ｹ DisplayPagesTest
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\test\java\com\zuxelus\energycontrol\port\core\DisplayPagesTest.java:8: 繧ｨ繝ｩ繝ｼ: 繧ｷ繝ｳ繝懊Ν繧定ｦ九▽縺代ｉ繧後∪縺帙ｓ
+ @Test void everyLineRemainsReachableAcrossPages(){var input=IntStream.range(0,70).mapToObj(i->"line"+i).toList();var output=new ArrayList<String>();for(int page=0;page<DisplayPages.count(input.size(),8);page++)output.addAll(DisplayPages.slice(input,page,8));assertEquals(input,output);}
+                                                                                                                                                                                                                                 ^
+  繧ｷ繝ｳ繝懊Ν:   螟画焚 DisplayPages
+  蝣ｴ謇: 繧ｯ繝ｩ繧ｹ DisplayPagesTest
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\test\java\com\zuxelus\energycontrol\port\core\DisplayPagesTest.java:9: 繧ｨ繝ｩ繝ｼ: 繧ｷ繝ｳ繝懊Ν繧定ｦ九▽縺代ｉ繧後∪縺帙ｓ
+ @Test void shortenedInputClampsStalePageAndEmptyIsSafe(){assertEquals(List.of("a","b"),DisplayPages.slice(List.of("a","b"),999,4));assertEquals(List.of(),DisplayPages.slice(List.of(),-20,8));assertEquals(1,DisplayPages.count(0,8));}
+                                                                                        ^
+  繧ｷ繝ｳ繝懊Ν:   螟画焚 DisplayPages
+  蝣ｴ謇: 繧ｯ繝ｩ繧ｹ DisplayPagesTest
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\test\java\com\zuxelus\energycontrol\port\core\DisplayPagesTest.java:9: 繧ｨ繝ｩ繝ｼ: 繧ｷ繝ｳ繝懊Ν繧定ｦ九▽縺代ｉ繧後∪縺帙ｓ
+ @Test void shortenedInputClampsStalePageAndEmptyIsSafe(){assertEquals(List.of("a","b"),DisplayPages.slice(List.of("a","b"),999,4));assertEquals(List.of(),DisplayPages.slice(List.of(),-20,8));assertEquals(1,DisplayPages.count(0,8));}
+                                                                                                                                                           ^
+  繧ｷ繝ｳ繝懊Ν:   螟画焚 DisplayPages
+  蝣ｴ謇: 繧ｯ繝ｩ繧ｹ DisplayPagesTest
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\test\java\com\zuxelus\energycontrol\port\core\DisplayPagesTest.java:9: 繧ｨ繝ｩ繝ｼ: 繧ｷ繝ｳ繝懊Ν繧定ｦ九▽縺代ｉ繧後∪縺帙ｓ
+ @Test void shortenedInputClampsStalePageAndEmptyIsSafe(){assertEquals(List.of("a","b"),DisplayPages.slice(List.of("a","b"),999,4));assertEquals(List.of(),DisplayPages.slice(List.of(),-20,8));assertEquals(1,DisplayPages.count(0,8));}
+                                                                                                                                                                                                               ^
+  繧ｷ繝ｳ繝懊Ν:   螟画焚 DisplayPages
+  蝣ｴ謇: 繧ｯ繝ｩ繧ｹ DisplayPagesTest
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\test\java\com\zuxelus\energycontrol\port\core\DisplayPagesTest.java:10: 繧ｨ繝ｩ繝ｼ: 繧ｷ繝ｳ繝懊Ν繧定ｦ九▽縺代ｉ繧後∪縺帙ｓ
+ @Test void autoCycleUsesServerTickAndManualModeStaysPut(){assertEquals(1,DisplayPages.next(0,3,40,40));assertEquals(0,DisplayPages.next(2,3,80,40));assertEquals(2,DisplayPages.next(2,3,81,40));assertEquals(2,DisplayPages.next(2,3,80,0));}
+                                                                          ^
+  繧ｷ繝ｳ繝懊Ν:   螟画焚 DisplayPages
+  蝣ｴ謇: 繧ｯ繝ｩ繧ｹ DisplayPagesTest
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\test\java\com\zuxelus\energycontrol\port\core\DisplayPagesTest.java:10: 繧ｨ繝ｩ繝ｼ: 繧ｷ繝ｳ繝懊Ν繧定ｦ九▽縺代ｉ繧後∪縺帙ｓ
+ @Test void autoCycleUsesServerTickAndManualModeStaysPut(){assertEquals(1,DisplayPages.next(0,3,40,40));assertEquals(0,DisplayPages.next(2,3,80,40));assertEquals(2,DisplayPages.next(2,3,81,40));assertEquals(2,DisplayPages.next(2,3,80,0));}
+                                                                                                                       ^
+  繧ｷ繝ｳ繝懊Ν:   螟画焚 DisplayPages
+  蝣ｴ謇: 繧ｯ繝ｩ繧ｹ DisplayPagesTest
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\test\java\com\zuxelus\energycontrol\port\core\DisplayPagesTest.java:10: 繧ｨ繝ｩ繝ｼ: 繧ｷ繝ｳ繝懊Ν繧定ｦ九▽縺代ｉ繧後∪縺帙ｓ
+ @Test void autoCycleUsesServerTickAndManualModeStaysPut(){assertEquals(1,DisplayPages.next(0,3,40,40));assertEquals(0,DisplayPages.next(2,3,80,40));assertEquals(2,DisplayPages.next(2,3,81,40));assertEquals(2,DisplayPages.next(2,3,80,0));}
+                                                                                                                                                                    ^
+  繧ｷ繝ｳ繝懊Ν:   螟画焚 DisplayPages
+  蝣ｴ謇: 繧ｯ繝ｩ繧ｹ DisplayPagesTest
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\test\java\com\zuxelus\energycontrol\port\core\DisplayPagesTest.java:10: 繧ｨ繝ｩ繝ｼ: 繧ｷ繝ｳ繝懊Ν繧定ｦ九▽縺代ｉ繧後∪縺帙ｓ
+ @Test void autoCycleUsesServerTickAndManualModeStaysPut(){assertEquals(1,DisplayPages.next(0,3,40,40));assertEquals(0,DisplayPages.next(2,3,80,40));assertEquals(2,DisplayPages.next(2,3,81,40));assertEquals(2,DisplayPages.next(2,3,80,0));}
+                                                                                                                                                                                                                 ^
+  繧ｷ繝ｳ繝懊Ν:   螟画焚 DisplayPages
+  蝣ｴ謇: 繧ｯ繝ｩ繧ｹ DisplayPagesTest
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\test\java\com\zuxelus\energycontrol\port\core\DisplayPagesTest.java:11: 繧ｨ繝ｩ繝ｼ: 繧ｷ繝ｳ繝懊Ν繧定ｦ九▽縺代ｉ繧後∪縺帙ｓ
+ @Test void limitsRejectImpossiblePageSizes(){assertEquals(18,DisplayPages.count(70,-1));assertEquals(3,DisplayPages.count(70,999));}
+                                                              ^
+  繧ｷ繝ｳ繝懊Ν:   螟画焚 DisplayPages
+  蝣ｴ謇: 繧ｯ繝ｩ繧ｹ DisplayPagesTest
+C:\Users\Makoto\Documents\Codex\2026-10-01\task-2\Energy-Control\common\src\test\java\com\zuxelus\energycontrol\port\core\DisplayPagesTest.java:11: 繧ｨ繝ｩ繝ｼ: 繧ｷ繝ｳ繝懊Ν繧定ｦ九▽縺代ｉ繧後∪縺帙ｓ
+ @Test void limitsRejectImpossiblePageSizes(){assertEquals(18,DisplayPages.count(70,-1));assertEquals(3,DisplayPages.count(70,999));}
+                                                                                                        ^
+  繧ｷ繝ｳ繝懊Ν:   螟画焚 DisplayPages
+  蝣ｴ謇: 繧ｯ繝ｩ繧ｹ DisplayPagesTest
+繧ｨ繝ｩ繝ｼ11蛟・
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':common:compileTestJava'.
+> Compilation failed; see the compiler error output for details.
+
+* Try:
+> Run with --info option to get more log output.
+> Run with --scan to get full insights.
+
+BUILD FAILED in 8s
+3 actionable tasks: 1 executed, 2 up-to-date

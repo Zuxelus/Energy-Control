@@ -8,7 +8,7 @@ import xml.etree.ElementTree as ET
 
 root=Path(__file__).resolve().parents[1]
 version=next(line.split('=',1)[1] for line in (root/'gradle.properties').read_text().splitlines() if line.startswith('mod_version='))
-result={'version':version,'runtime_evidence':'docs/evidence/runtime-v3 (isolated gameplay; see QA-V3.md)','artifacts':[],'tests':[]}
+result={'version':version,'runtime_evidence':'docs/evidence/runtime-v4 (real IE and display gameplay; see QA-V4.md)','artifacts':[],'tests':[]}
 for platform in ('fabric','neoforge'):
     jar=root/platform/'build/libs'/f'energycontrol-{platform}-{version}.jar'
     source=jar.with_name(jar.stem+'-sources.jar')
@@ -23,6 +23,9 @@ for platform in ('fabric','neoforge'):
         assert 'com/zuxelus/energycontrol/port/network/PortableDataPayload.class' in names
         assert 'com/zuxelus/energycontrol/port/fluid/FluidProbe.class' in names
         assert 'com/zuxelus/energycontrol/port/menu/PortableMenu.class' in names
+        assert 'com/zuxelus/energycontrol/port/core/DisplayPages.class' in names
+        assert 'com/zuxelus/energycontrol/port/core/ProjectionSettings.class' in names
+        assert not any(n.startswith(('blusunrize/', 'malte0811/')) for n in names), 'External IE classes must not be distributed'
         assert not any(n.startswith(('net/minecraft/','dev/architectury/')) for n in names), 'Do not redistribute Minecraft or shade Architectury'
         for name in names:
             if name.endswith('.class') and name.startswith('com/zuxelus/energycontrol/port/'):
@@ -71,7 +74,7 @@ for file in sorted((root/'common/build/test-results/test').glob('TEST-*.xml')):
     suite=ET.parse(file).getroot()
     assert int(suite.attrib['failures'])==0 and int(suite.attrib['errors'])==0
     result['tests'].append({key:suite.attrib[key] for key in ('name','tests','failures','errors')})
-assert sum(int(s['tests']) for s in result['tests'])==31
+assert sum(int(s['tests']) for s in result['tests'])==39
 output=root/'docs/evidence/artifact-verification.json'
 output.write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8')
 print(json.dumps(result,indent=2))

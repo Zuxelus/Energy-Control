@@ -34,3 +34,10 @@ different face to update. Place extenders by sneaking when clicking a panel.
 Left-click in creative breaks blocks normally; right-click opens configuration.
 Installed upgrade counts0..3 give range64/128/256/512, targets4/8/12/16 and
 precision0/1/2/3. Portable panels have one card slot and the same three upgrades.
+
+
+0.4 adds manual/automatic pages and holographic pitch/yaw/plane-depth controls
+under the Layout button; settings survive server restart on both loaders.
+Real IE LV capacitor/tank acceptance is NeoForge-only. See [QA-V4](docs/QA-V4.md)
+for36 actual IE checks and19 display checks per loader; broader integrations and
+full upstream parity remain pending. This port never bundles IE.

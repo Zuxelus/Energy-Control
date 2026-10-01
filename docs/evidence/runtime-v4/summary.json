@@ -1,0 +1,249 @@
+{
+  "stage": "0.4",
+  "actual_game_assertions": 74,
+  "failures": 0,
+  "screenshots": 27,
+  "runs": [
+    {
+      "run": "neoforge-ie-first-pass",
+      "server_assertions": 24,
+      "client_assertions": 7,
+      "screenshots": 4,
+      "server_clean_save": true
+    },
+    {
+      "run": "neoforge-ie-reload",
+      "server_assertions": 4,
+      "client_assertions": 1,
+      "screenshots": 1,
+      "server_clean_save": true
+    },
+    {
+      "run": "fabric-display-final",
+      "server_assertions": 2,
+      "client_assertions": 14,
+      "screenshots": 9,
+      "server_clean_save": true
+    },
+    {
+      "run": "fabric-display-reload",
+      "server_assertions": 2,
+      "client_assertions": 1,
+      "screenshots": 2,
+      "server_clean_save": true
+    },
+    {
+      "run": "neoforge-display-final",
+      "server_assertions": 2,
+      "client_assertions": 14,
+      "screenshots": 9,
+      "server_clean_save": true
+    },
+    {
+      "run": "neoforge-display-reload",
+      "server_assertions": 2,
+      "client_assertions": 1,
+      "screenshots": 2,
+      "server_clean_save": true
+    }
+  ],
+  "original_pngs": [
+    {
+      "path": "neoforge-ie-first-pass/ie-01-real-machines.png",
+      "width": 1280,
+      "height": 720,
+      "bytes": 327253,
+      "sha256": "b9697f4dceb22d33db9a0afe3249ce8554cf3eff111c774c87afbc4432ca4321"
+    },
+    {
+      "path": "neoforge-ie-first-pass/ie-02-card-menu.png",
+      "width": 1280,
+      "height": 720,
+      "bytes": 108707,
+      "sha256": "44cdcc6d0f4879f95b209b06008519b3401799fdf73d2aa65f4ea71c32f6c1d0"
+    },
+    {
+      "path": "neoforge-ie-first-pass/ie-03-replaced-capacitor.png",
+      "width": 1280,
+      "height": 720,
+      "bytes": 204566,
+      "sha256": "dfc9716f87ca2547508600e12d589c0e7e3fadbdeb324e1cd4c2ae7402022584"
+    },
+    {
+      "path": "neoforge-ie-first-pass/ie-04-restored-world.png",
+      "width": 1280,
+      "height": 720,
+      "bytes": 182439,
+      "sha256": "beadb4d74fa66af3fc0f191e49691ec1bf35f6173871dd19ab001787aa41497f"
+    },
+    {
+      "path": "neoforge-ie-reload/ie-reload.png",
+      "width": 1280,
+      "height": 720,
+      "bytes": 298294,
+      "sha256": "4061164a108cda7bc0090ed8cea90f9d9d405832646466c42c43f3d7183a8013"
+    },
+    {
+      "path": "fabric-display-final/display-01-page-two.png",
+      "width": 1280,
+      "height": 720,
+      "bytes": 105255,
+      "sha256": "d965bd075fa94830747d5a30f86a3a6413fe5235b804741cc3025bb55ca2ac1c"
+    },
+    {
+      "path": "fabric-display-final/display-02-projection-menu.png",
+      "width": 1280,
+      "height": 720,
+      "bytes": 96704,
+      "sha256": "c34d3ae2b4ce21526c168628db860de36b7951d273b74a575538cecf6c62904a"
+    },
+    {
+      "path": "fabric-display-final/display-03-tilted-group.png",
+      "width": 1280,
+      "height": 720,
+      "bytes": 148786,
+      "sha256": "9aa8439313747333ea0193284384324dff38dde3d6e24c96f80efac39e847766"
+    },
+    {
+      "path": "fabric-display-final/display-face-down.png",
+      "width": 1280,
+      "height": 720,
+      "bytes": 116693,
+      "sha256": "c1fed491e0e8ef6fff6f8bd6368c11ac0a730096d2d48a1fef9441a8ba0b3377"
+    },
+    {
+      "path": "fabric-display-final/display-face-east.png",
+      "width": 1280,
+      "height": 720,
+      "bytes": 98496,
+      "sha256": "08b2d1516ce82a099d0db87a79bad76b6976250a53e22fbc0b91b17e89bcfd7f"
+    },
+    {
+      "path": "fabric-display-final/display-face-north.png",
+      "width": 1280,
+      "height": 720,
+      "bytes": 111328,
+      "sha256": "069352231e0598a1e464ac6f450966a4325920feb09c086aeb88b33fe5c76363"
+    },
+    {
+      "path": "fabric-display-final/display-face-south.png",
+      "width": 1280,
+      "height": 720,
+      "bytes": 105029,
+      "sha256": "8fac90502a7a376a42968862d9c539dcda79267b597a0e7dbc7a4f24fced9388"
+    },
+    {
+      "path": "fabric-display-final/display-face-up.png",
+      "width": 1280,
+      "height": 720,
+      "bytes": 941022,
+      "sha256": "d207b0e15b414246af29b0fa775178c15191df69f81109b6a53206767ecc079d"
+    },
+    {
+      "path": "fabric-display-final/display-face-west.png",
+      "width": 1280,
+      "height": 720,
+      "bytes": 94675,
+      "sha256": "790017440c8d3a93bbf2046e2e9a7e99d0d466d4c9bcdcd7ee17b0d740f1f19a"
+    },
+    {
+      "path": "fabric-display-reload/display-reload-menu.png",
+      "width": 1280,
+      "height": 720,
+      "bytes": 111559,
+      "sha256": "e85d1d4e35c5318c114e9fc6720394ec6805094ac4f95e2fe12736985add9b41"
+    },
+    {
+      "path": "fabric-display-reload/display-reload-world.png",
+      "width": 1280,
+      "height": 720,
+      "bytes": 312321,
+      "sha256": "453e3bcef5e42d4840235d3acb63a6623700855f810d63e547e27f28f2416e4c"
+    },
+    {
+      "path": "neoforge-display-final/display-01-page-two.png",
+      "width": 1280,
+      "height": 720,
+      "bytes": 109397,
+      "sha256": "93b67cb880ca36eef5834f9233cfbd7889ad0c969c6d849a9e00ffb4a9f52808"
+    },
+    {
+      "path": "neoforge-display-final/display-02-projection-menu.png",
+      "width": 1280,
+      "height": 720,
+      "bytes": 97366,
+      "sha256": "9e9521ecf8d4ab221e6787906af6b38c5b5693e75353c7d4a4d9f2059a5badd6"
+    },
+    {
+      "path": "neoforge-display-final/display-03-tilted-group.png",
+      "width": 1280,
+      "height": 720,
+      "bytes": 148971,
+      "sha256": "fd70cb9c3ce903531a7566539766276d3bec44facba6f28eb912ab557cfa15ac"
+    },
+    {
+      "path": "neoforge-display-final/display-face-down.png",
+      "width": 1280,
+      "height": 720,
+      "bytes": 113803,
+      "sha256": "81085138127f0d6680b5888e36c5495963b3bec3a11b1d95fc6d6241167c8886"
+    },
+    {
+      "path": "neoforge-display-final/display-face-east.png",
+      "width": 1280,
+      "height": 720,
+      "bytes": 100844,
+      "sha256": "ddbb22c6e9e7d736e22edd7f9dabcb34f69a8d95496916b8f41045f5b5fd512b"
+    },
+    {
+      "path": "neoforge-display-final/display-face-north.png",
+      "width": 1280,
+      "height": 720,
+      "bytes": 111299,
+      "sha256": "4b9a9fc55963749ff0e121fb527f0f8bd5533739cc10e45e56901caf92913c91"
+    },
+    {
+      "path": "neoforge-display-final/display-face-south.png",
+      "width": 1280,
+      "height": 720,
+      "bytes": 104946,
+      "sha256": "eb998ea3adf444267add57cdedb74fc0ab2c6d6cd1b513e1d0da1fd331d4db2f"
+    },
+    {
+      "path": "neoforge-display-final/display-face-up.png",
+      "width": 1280,
+      "height": 720,
+      "bytes": 941022,
+      "sha256": "d207b0e15b414246af29b0fa775178c15191df69f81109b6a53206767ecc079d"
+    },
+    {
+      "path": "neoforge-display-final/display-face-west.png",
+      "width": 1280,
+      "height": 720,
+      "bytes": 97587,
+      "sha256": "aa6cfedd653b6ff7cf954a8d59dea5aca2cbfb4d5cba5a6c8bf06d51af1060db"
+    },
+    {
+      "path": "neoforge-display-reload/display-reload-menu.png",
+      "width": 1280,
+      "height": 720,
+      "bytes": 111501,
+      "sha256": "5b95f82a50c7fec15a1a88732ada3efc7c9d5918e0a58ff46e819b0ea4c2313a"
+    },
+    {
+      "path": "neoforge-display-reload/display-reload-world.png",
+      "width": 1280,
+      "height": 720,
+      "bytes": 312146,
+      "sha256": "32daf94aa0af815ca4bf961fe50a82a34a7d88ef592f2897fa054e7c6505b705"
+    }
+  ],
+  "scope": "Actual task-owned development clients and dedicated servers; IE NeoForge LV capacitor and formed tank only; both loaders display controls and disk reload. Historical 0.3 multiplayer separate.",
+  "process_results": {
+    "clients_normal_exit_code": 0,
+    "clients_confirmed": 6,
+    "servers_all_dimensions_saved": 6,
+    "development_watchers_stopped_after_save": true,
+    "user_game_processes_touched": false
+  }
+}

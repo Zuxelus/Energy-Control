@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.zuxelus.energycontrol.port.CardTargetsTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-10-01T02:51:10" hostname="LAPTOP-K7K1OTIE" time="0.01">
+  <properties/>
+  <testcase name="repeatedFaceTogglesButAnotherFaceUpdatesWithoutDoubleCounting()" classname="com.zuxelus.energycontrol.port.CardTargetsTest" time="0.006"/>
+  <testcase name="legacySingleTargetStillReadsAndRebindingDoesNotKeepOldArray()" classname="com.zuxelus.energycontrol.port.CardTargetsTest" time="0.0"/>
+  <testcase name="bindingCapacityCannotDiscardPriorTargets()" classname="com.zuxelus.energycontrol.port.CardTargetsTest" time="0.003"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

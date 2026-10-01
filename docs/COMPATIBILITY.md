@@ -2,7 +2,7 @@
 
 Checked 2026-09-30 UTC against official release pages linked below. "Unavailable"
 means the named original project has no listed 1.21.1 Fabric/NeoForge release;
-unrelated rewrites are not binary-compatible substitutes. No content mods installed.
+unrelated rewrites are not binary-compatible substitutes. Only the explicitly approved IE package and its two embedded libraries were loaded in the task-owned NeoForge QA instance. No external content mod is bundled with this port.
 
 ## No matching original-project release listed
 
@@ -26,7 +26,7 @@ unrelated rewrites are not binary-compatible substitutes. No content mods instal
 | [Extreme Reactors](https://www.curseforge.com/minecraft/mc-mods/extreme-reactors) | NeoForge 2.4.28 | Exposed FE only; specialized reactor/turbine cards not ported |
 | [AE2](https://www.curseforge.com/minecraft/mc-mods/applied-energistics-2) | NeoForge 19.2.18 | Network/inventory/crafting adapters not ported; Fabric 1.21.1 not verified |
 | [CC: Tweaked](https://www.curseforge.com/minecraft/mc-mods/cc-tweaked) | Both loaders listed | Peripheral integration not ported |
-| [Immersive Engineering](https://www.curseforge.com/minecraft/mc-mods/immersive-engineering) | NeoForge 12.4.2-194 | Generic FE + FluidHandler source implemented; real IE12.4.2-194 acceptance pending. See integration-research/IE-PLAN.md |
+| [Immersive Engineering](https://www.curseforge.com/minecraft/mc-mods/immersive-engineering) | NeoForge 12.4.2-194 | Real LV capacitor + formed sheetmetal tank accepted: live FE/mB, arrays, detach/rebuild, chunk unload/reload and disk restart (36 assertions). Other machines/native wire statistics pending. See QA-V4.md |
 | [Draconic Evolution](https://www.curseforge.com/minecraft/mc-mods/draconic-evolution) | NeoForge 3.1.4.633 beta | Exposed FE only; large native-energy API needs adapter |
 | [Tech Reborn](https://www.curseforge.com/minecraft/mc-mods/techreborn/files/all?page=1&pageSize=20&version=1.21.1) | Fabric 5.11.19 for 1.21.1 listed | Team Reborn Energy protocol implemented; actual Tech Reborn compatibility not tested |
 

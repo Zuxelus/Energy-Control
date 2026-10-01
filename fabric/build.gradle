@@ -31,3 +31,7 @@ loom.runs {
         if(rootProject.hasProperty('qaStage'))vmArg "-Dec.qa.stage=${rootProject.qaStage}"
     }
 }
+
+if(rootProject.hasProperty('qaStage') && rootProject.qaStage.toString().startsWith('pages')) {
+    loom.runs { client { runDir 'run/client-pages-v4' }; server { runDir 'run/server-pages-v4' } }
+}

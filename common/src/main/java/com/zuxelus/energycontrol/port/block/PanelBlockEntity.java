@@ -29,6 +29,10 @@ public final class PanelBlockEntity extends BaseContainerBlockEntity {
     private boolean powered = true;
     private int background = 0x080b0c, scalePercent = 100, alignment, powerMode = 2, refreshTicks = 20;
     private boolean uniformFont;
+    private int page,pageSize=32,pageCount=1,pageTicks;
+    private com.zuxelus.energycontrol.port.core.ProjectionSettings projection=com.zuxelus.energycontrol.port.core.ProjectionSettings.DEFAULT;
+    public int page(){return page;} public int pageSize(){return pageSize;} public int pageCount(){return pageCount;} public int pageTicks(){return pageTicks;}
+    public com.zuxelus.energycontrol.port.core.ProjectionSettings projection(){return projection;}
     public int background() { return background; }
     public int scalePercent() { return scalePercent; }
     public int alignment() { return alignment; }
@@ -51,7 +55,7 @@ public final class PanelBlockEntity extends BaseContainerBlockEntity {
     public int range(){return com.zuxelus.energycontrol.port.core.UpgradePolicy.range(upgrades(com.zuxelus.energycontrol.port.card.UpgradeItem.Kind.RANGE));}
     @Override protected NonNullList<ItemStack> getItems() { return items; }
     @Override protected void setItems(NonNullList<ItemStack> items) { this.items = items; }
-    @Override protected Component getDefaultName() { return Component.translatable(advanced() ? "block.energycontrol.info_panel_advanced" : "block.energycontrol.info_panel"); }
+    @Override protected Component getDefaultName() { return Component.translatable(holographic()?"block.energycontrol.holo_panel":advanced() ? "block.energycontrol.info_panel_advanced" : "block.energycontrol.info_panel"); }
     @Override protected AbstractContainerMenu createMenu(int id, Inventory inventory) { return new PanelMenu(id,inventory,this); }
     @Override public boolean canPlaceItem(int slot, ItemStack stack) { return slot>=0 && (slot<cardSlots()?stack.getItem() instanceof CardItem:slot<getContainerSize() && stack.getItem() instanceof com.zuxelus.energycontrol.port.card.UpgradeItem u && u.kind().ordinal()==slot-cardSlots()); }
 
@@ -106,14 +110,18 @@ public final class PanelBlockEntity extends BaseContainerBlockEntity {
         };
         if (panel.powered != power) { panel.powered = power; panel.sync(); }
         if (level.getGameTime() % panel.refreshTicks == 0) panel.refreshCards();
+        int nextPage=com.zuxelus.energycontrol.port.core.DisplayPages.next(panel.page,panel.pageCount,level.getGameTime(),panel.pageTicks);
+        if(nextPage!=panel.page){panel.page=nextPage;panel.refreshCards();panel.sync();}
     }
     private void refreshCards() {
         List<String> next=new ArrayList<>();
         int capacity=com.zuxelus.energycontrol.port.core.UpgradePolicy.targets(upgrades(com.zuxelus.energycontrol.port.card.UpgradeItem.Kind.CAPACITY));
         int precision=com.zuxelus.energycontrol.port.core.UpgradePolicy.decimals(upgrades(com.zuxelus.energycontrol.port.card.UpgradeItem.Kind.PRECISION));
         for(int i=0;i<cardSlots();i++)next.addAll(com.zuxelus.energycontrol.port.card.CardDisplay.read(level,worldPosition,items.get(i),range(),capacity,precision));
-        if(next.size()>32)next=new ArrayList<>(next.subList(0,32));
-        if(!next.equals(lines)){lines=List.copyOf(next);sync();}
+        if(next.size()>256){int omitted=next.size()-255;next=new ArrayList<>(next.subList(0,255));next.add(omitted+" more lines (display limit)");}
+        int oldCount=pageCount,oldPage=page;pageCount=com.zuxelus.energycontrol.port.core.DisplayPages.count(next.size(),pageSize);page=Math.clamp(page,0,pageCount-1);
+        var visible=com.zuxelus.energycontrol.port.core.DisplayPages.slice(next,page,pageSize).stream().map(line->line.substring(0,Math.min(256,line.length()))).toList();
+        if(!visible.equals(lines)||oldCount!=pageCount||oldPage!=page){lines=visible;sync();}
     }
     public void setText(int slot,String text){
         if(slot<0||slot>=cardSlots()||text.length()>512)return;
@@ -132,7 +140,16 @@ public final class PanelBlockEntity extends BaseContainerBlockEntity {
             var data=CardItem.data(stack);String key=id%2==0?"hideLabels":"hidePercent";
             data.putBoolean(key,!data.getBoolean(key));CardItem.update(stack,data);refreshCards();sync();return true;
         }
+        if(id>=11 && id<=14 && !holographic())return false;
         switch(id) {
+            case 7 -> page=(page+1)%pageCount;
+            case 8 -> page=Math.floorMod(page-1,pageCount);
+            case 9 -> {pageSize=switch(pageSize){case 4->8;case 8->16;case 16->32;default->4;};page=0;}
+            case 10 -> pageTicks=switch(pageTicks){case 0->40;case 40->100;case 100->200;default->0;};
+            case 11 -> projection=projection.nextPitch();
+            case 12 -> projection=projection.nextYaw();
+            case 13 -> projection=projection.nextDepth();
+            case 14 -> projection=com.zuxelus.energycontrol.port.core.ProjectionSettings.DEFAULT;
             case 2 -> scalePercent = scalePercent >= 200 ? 50 : scalePercent + 25;
             case 3 -> alignment = (alignment + 1) % 3;
             case 4 -> uniformFont = !uniformFont;
@@ -140,7 +157,7 @@ public final class PanelBlockEntity extends BaseContainerBlockEntity {
             case 6 -> background = background == 0x080b0c ? 0x303840 : 0x080b0c;
             default -> { return false; }
         }
-        sync(); return true;
+        refreshCards();sync(); return true;
     }
     private void sync() {
         setChanged();
@@ -153,6 +170,7 @@ public final class PanelBlockEntity extends BaseContainerBlockEntity {
         if(owner != null) tag.putLong("owner",owner.asLong());
         tag.putInt("color",color); tag.putBoolean("powered",powered);
         tag.putInt("background",background); tag.putInt("scalePercent",scalePercent); tag.putInt("alignment",alignment);
+        tag.putInt("page",page);tag.putInt("pageSize",pageSize);tag.putInt("pageCount",pageCount);tag.putInt("pageTicks",pageTicks);projection.save(tag);
         tag.putInt("powerMode",powerMode); tag.putInt("refreshTicks",refreshTicks); tag.putBoolean("uniformFont",uniformFont);
         ListTag list = new ListTag(); lines.forEach(line -> list.add(StringTag.valueOf(line))); tag.put("lines",list);
     }
@@ -171,6 +189,10 @@ public final class PanelBlockEntity extends BaseContainerBlockEntity {
         powerMode = tag.contains("powerMode") ? Math.clamp(tag.getInt("powerMode"),0,3) : powered ? 2 : 3;
         refreshTicks = tag.contains("refreshTicks") ? Math.clamp(tag.getInt("refreshTicks"),5,100) : 20;
         uniformFont = tag.getBoolean("uniformFont");
+        pageSize=tag.contains("pageSize")?com.zuxelus.energycontrol.port.core.DisplayPages.size(tag.getInt("pageSize")):32;
+        pageCount=Math.clamp(tag.getInt("pageCount"),1,64);page=Math.clamp(tag.getInt("page"),0,pageCount-1);
+        pageTicks=tag.getInt("pageTicks");if(pageTicks!=40&&pageTicks!=100&&pageTicks!=200)pageTicks=0;
+        projection=com.zuxelus.energycontrol.port.core.ProjectionSettings.load(tag);
         var list = tag.getList("lines",Tag.TAG_STRING); var result = new ArrayList<String>();
         for(int i=0;i<Math.min(32,list.size());i++) { String s=list.getString(i); result.add(s.substring(0,Math.min(s.length(),256))); }
         lines = List.copyOf(result);

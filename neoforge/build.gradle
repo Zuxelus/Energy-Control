@@ -28,3 +28,30 @@ loom.runs {
         if(rootProject.hasProperty('qaStage'))vmArg "-Dec.qa.stage=${rootProject.qaStage}"
     }
 }
+
+// Explicitly authorized optional integration QA; never a production dependency.
+if(rootProject.hasProperty('ieQa')) {
+    if(!rootProject.hasProperty('qa')) throw new GradleException('ieQa requires qa')
+    def ieJar=rootProject.file('.tools/integrations/ie/ImmersiveEngineering-1.21.1-12.4.2-194.jar')
+    if(!ieJar.isFile()) throw new GradleException('Approved IE artifact missing; see docs/integration-research')
+    def digest=java.security.MessageDigest.getInstance('SHA-256').digest(ieJar.bytes).encodeHex().toString()
+    if(digest!='816685b898eed52080d08a4009042c511560ecc185601f21fe744936b63b5127') throw new GradleException('IE artifact hash mismatch')
+    def embedded = [
+        'BlockModelSplitter-2.0.1.jar':'ab752fbe975e4c6af2679d0f8b85dfb7ebe3da3aa04a73951e3b5bfbc3f40537',
+        'DualCodecs-0.1.2.jar':'0bddfcac4d409803a35cbbd5c7b74828f436357ad7b8980fcfbd5a1834c05feb'
+    ].collect { name, expected ->
+        def f=rootProject.file('.tools/integrations/ie/embedded/'+name)
+        if(!f.isFile() || java.security.MessageDigest.getInstance('SHA-256').digest(f.bytes).encodeHex().toString()!=expected) throw new GradleException('Approved IE embedded library missing/hash mismatch: '+name)
+        f
+    }
+    dependencies { modImplementation files(ieJar); modImplementation files(embedded) }
+    sourceSets.main.java.srcDir 'src/ieqa/java'
+    loom.runs {
+        client { runDir 'run/client-ie-v4' }
+        server { runDir 'run/server-ie-v4' }
+    }
+}
+
+if(rootProject.hasProperty('qaStage') && rootProject.qaStage.toString().startsWith('pages')) {
+    loom.runs { client { runDir 'run/client-pages-v4' }; server { runDir 'run/server-pages-v4' } }
+}
