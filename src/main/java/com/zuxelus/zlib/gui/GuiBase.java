@@ -40,7 +40,9 @@ public abstract class GuiBase extends Screen {
 		renderBackground(matrixStack, mouseX, mouseY, partialTicks);
 		drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
 		RenderSystem.disableDepthTest();
-		super.render(matrixStack, mouseX, mouseY, partialTicks);
+		// Screen.render in 1.21.1 would blur the background again over our content.
+		for (var widget : renderables)
+			widget.render(matrixStack, mouseX, mouseY, partialTicks);
 		PoseStack posestack = matrixStack.pose();
 		posestack.pushPose();
 		posestack.translate((float) guiLeft, (float) guiTop, 0.0F);
