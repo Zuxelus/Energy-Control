@@ -130,8 +130,10 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 					BlockState state = level.getBlockState(worldPosition);
 					if (state.getValue(FacingBlockActive.ACTIVE) != stateCore.getValue(FacingBlockActive.ACTIVE))
 						level.setBlock(worldPosition, state.cycle(FacingBlockActive.ACTIVE), 2);
-					return;
 				}
+				// During client chunk loading the core's block state may not be visible yet.
+				// Its valid screen membership must not fall through to the detach path.
+				return;
 			}
 		} else {
 			BlockState state = level.getBlockState(worldPosition);
