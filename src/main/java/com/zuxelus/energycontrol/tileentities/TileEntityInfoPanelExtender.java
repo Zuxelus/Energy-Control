@@ -90,9 +90,21 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 		tag.putInt("coreZ", coreZ);
 	}
 
+	private boolean chunkUnloaded;
+
+	@Override
+	public void onChunkUnloaded() {
+		// Unloading preserves the saved screen. Rebuilding it here would reload chunks
+		// while ChunkMap is trying to unload them, including during server shutdown.
+		chunkUnloaded = true;
+		if (level != null && !level.isClientSide)
+			EnergyControl.INSTANCE.screenManager.unloadScreenPart(this);
+		super.onChunkUnloaded();
+	}
+
 	@Override
 	public void setRemoved() {
-		if (!level.isClientSide)
+		if (!chunkUnloaded && level != null && !level.isClientSide)
 			EnergyControl.INSTANCE.screenManager.unregisterScreenPart(this);
 		super.setRemoved();
 	}

@@ -217,6 +217,17 @@ public class ScreenManager {
 		}
 	}
 
+	public void unloadScreenPart(BlockEntity part) {
+		// Only drop runtime references; never read or mutate blocks on chunk unload.
+		String key = getWorldKey(part.getLevel());
+		List<Screen> worldScreens = screens.get(key);
+		if (worldScreens != null)
+			worldScreens.removeIf(screen -> screen.isBlockPartOf(part));
+		List<TileEntityInfoPanel> panels = unusedPanels.get(key);
+		if (panels != null)
+			panels.remove(part);
+	}
+
 	@SuppressWarnings("resource")
 	public void unregisterScreenPart(BlockEntity part) {
 		if (part.getLevel().isClientSide)
