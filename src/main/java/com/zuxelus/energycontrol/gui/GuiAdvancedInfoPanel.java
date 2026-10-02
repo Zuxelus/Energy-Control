@@ -131,6 +131,7 @@ public class GuiAdvancedInfoPanel extends GuiPanelBase<ContainerAdvancedInfoPane
 			((TileEntityAdvancedInfoPanel) panel).powerMode = mode;
 			return;
 		case ID_SLOPE:
+			updateTitle();
 			minecraft.setScreen(new GuiPanelSlope(this, ((TileEntityAdvancedInfoPanel) panel)));
 			return;
 		}

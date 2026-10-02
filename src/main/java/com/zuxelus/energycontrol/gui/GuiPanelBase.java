@@ -112,14 +112,17 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 			panel.setShowLabels(checked);
 			break;
 		case ID_COLORS:
+			updateTitle(); // The child screen receives the mouse release after this click.
 			Screen colorGui = new GuiScreenColor(this, panel);
 			minecraft.setScreen(colorGui);
 			break;
 		case ID_TEXT:
+			updateTitle();
 			oldStack = ItemStack.EMPTY;
 			openTextGui();
 			break;
 		case ID_TICKRATE:
+			updateTitle();
 			GuiHorizontalSlider slider = new GuiHorizontalSlider(this, panel);
 			minecraft.setScreen(slider);
 			break;
