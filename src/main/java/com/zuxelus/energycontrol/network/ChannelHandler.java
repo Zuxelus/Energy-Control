@@ -12,9 +12,9 @@ public class ChannelHandler {
 
 	public static void register(RegisterPayloadHandlersEvent event) {
 		PayloadRegistrar registrar = event.registrar("1");
-		registrar.playBidirectional(PacketCard.TYPE, PacketCard.STREAM_CODEC, PacketCard::handleServer, null);
-		registrar.playBidirectional(PacketTileEntity.TYPE, PacketTileEntity.STREAM_CODEC, PacketTileEntity::handleServer, null);
-		registrar.playToClient(PacketAlarm.TYPE, PacketAlarm.STREAM_CODEC);
+		registrar.playBidirectional(PacketCard.TYPE, PacketCard.STREAM_CODEC, (packet, context) -> { if (context.flow().isClientbound()) PacketCard.handleClient(packet, context); else PacketCard.handleServer(packet, context); });
+		registrar.playBidirectional(PacketTileEntity.TYPE, PacketTileEntity.STREAM_CODEC, (packet, context) -> { if (context.flow().isClientbound()) PacketTileEntity.handleClient(packet, context); else PacketTileEntity.handleServer(packet, context); });
+		registrar.playToClient(PacketAlarm.TYPE, PacketAlarm.STREAM_CODEC, PacketAlarm::handle);
 		registrar.playToServer(PacketKeys.TYPE, PacketKeys.STREAM_CODEC, PacketKeys::handle);
 	}
 
@@ -24,7 +24,7 @@ public class ChannelHandler {
 			return;
 
 		Level world = panel.getLevel();
-		if (world == null || world.isClientSide())
+		if (world == null || world.isClientSide)
 			return;
 
 		NetworkHelper.sendPacketToAllAround(panel.getLevel(), panel.getBlockPos(), new PacketCard(card, panel.getBlockPos(), slot));
@@ -36,7 +36,7 @@ public class ChannelHandler {
 			return;
 
 		Level world = panel.getLevel();
-		if (world == null || !world.isClientSide())
+		if (world == null || !world.isClientSide)
 			return;
 
 		NetworkHelper.sendToServer(new PacketCard(card, panel.getBlockPos(), slot));

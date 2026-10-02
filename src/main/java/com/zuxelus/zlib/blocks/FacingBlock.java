@@ -54,9 +54,15 @@ public abstract class FacingBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	protected net.minecraft.world.ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		InteractionResult result = onUse(state, world, pos, player, hand, hit);
-		return result == InteractionResult.PASS ? InteractionResult.TRY_WITH_EMPTY_HAND : result;
+		return switch (result) {
+            case SUCCESS -> net.minecraft.world.ItemInteractionResult.SUCCESS;
+            case CONSUME -> net.minecraft.world.ItemInteractionResult.CONSUME;
+            case CONSUME_PARTIAL -> net.minecraft.world.ItemInteractionResult.CONSUME_PARTIAL;
+            case FAIL -> net.minecraft.world.ItemInteractionResult.FAIL;
+            default -> net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        };
 	}
 
 	@Override
@@ -116,4 +122,14 @@ public abstract class FacingBlock extends BaseEntityBlock {
 		}
 		return defaultBlockState().setValue(FACING, placer.getDirection().getOpposite());
 	}
+    @Override
+    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState nextState, boolean moving) {
+        if (!state.is(nextState.getBlock())) {
+            if (level.getBlockEntity(pos) instanceof com.zuxelus.zlib.tileentities.TileEntityInventory inventory) {
+                net.minecraft.world.Containers.dropContents(level, pos, inventory);
+                level.updateNeighbourForOutputSignal(pos, this);
+            }
+            super.onRemove(state, level, pos, nextState, moving);
+        }
+    }
 }

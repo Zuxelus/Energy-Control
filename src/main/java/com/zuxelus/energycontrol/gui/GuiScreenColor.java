@@ -1,10 +1,10 @@
 package com.zuxelus.energycontrol.gui;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import java.awt.Color;
 import java.util.ArrayList;
 
 import com.mojang.blaze3d.platform.NativeImage;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
@@ -12,19 +12,18 @@ import com.zuxelus.zlib.gui.GuiBase;
 import com.zuxelus.zlib.gui.controls.GuiTextNumeric;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.input.CharacterEvent;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.util.ARGB;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class GuiScreenColor extends GuiBase {
-	private final static Identifier PICKER = Identifier.parse(EnergyControl.MODID + ":dynamic/color_picker");
+	private final static ResourceLocation PICKER = ResourceLocation.parse(EnergyControl.MODID + ":dynamic/color_picker");
 	// Picker layout: a center disc (white / black) surrounded by rings split into hue sectors.
 	// Light picker: value = 1, ring = saturation. Dark picker: saturation = 1, ring = value.
 	private static final int HUE_SECTORS = 16;
@@ -95,38 +94,34 @@ public class GuiScreenColor extends GuiBase {
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY) {
+	protected void drawGuiContainerForegroundLayer(GuiGraphics matrixStack, int mouseX, int mouseY) {
 		//RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		//RenderSystem.setShaderTexture(0, texture);
 		//blit(matrixStack, 158 + (colorBack % 4) * 14, 21 + (colorBack / 4) * 14, 234, 0, 14, 14);
-		matrixStack.text(font, I18n.get("msg.ec.ScreenColor"), 152, 6, ARGB.opaque(colorBack), false);
-		matrixStack.text(font, I18n.get("msg.ec.TextColor"), 8, 6, ARGB.opaque(colorText), false);
+		matrixStack.drawString(font, I18n.get("msg.ec.ScreenColor"), 152, 6, colorBack, false);
+		matrixStack.drawString(font, I18n.get("msg.ec.TextColor"), 8, 6, colorText, false);
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(GuiGraphicsExtractor matrixStack, float partialTicks, int mouseX, int mouseY) {
+	protected void drawGuiContainerBackgroundLayer(GuiGraphics matrixStack, float partialTicks, int mouseX, int mouseY) {
 		super.drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
-		matrixStack.blit(RenderPipelines.GUI_TEXTURED, PICKER, guiLeft + 20, guiTop + 34, isDarkPicker ? 80 : 0, 0, 80, 80, 160, 80);
-		matrixStack.blit(RenderPipelines.GUI_TEXTURED, PICKER, guiLeft + 20 + offset, guiTop + 34, isDarkPicker2 ? 80 : 0, 0, 80, 80, 160, 80);
+		matrixStack.blit(PICKER, guiLeft + 20, guiTop + 34, isDarkPicker ? 80 : 0, 0, 80, 80, 160, 80);
+		matrixStack.blit(PICKER, guiLeft + 20 + offset, guiTop + 34, isDarkPicker2 ? 80 : 0, 0, 80, 80, 160, 80);
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShaderTexture(0, texture);
 		for (GuiTextNumeric text : fieldList)
-			text.extractRenderState(matrixStack, mouseX, mouseY, partialTicks);
+			text.renderWidget(matrixStack, mouseX, mouseY, partialTicks);
 		for (GuiTextNumeric text : fieldList2)
-			text.extractRenderState(matrixStack, mouseX, mouseY, partialTicks);
+			text.renderWidget(matrixStack, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
-	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-		double mouseX = event.x();
-		double mouseY = event.y();
-		if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
-			for (GuiTextNumeric text : fieldList) {
-				text.setFocused(text.isMouseOver(mouseX, mouseY));
-				text.mouseClicked(event, doubleClick);
-			}
-			for (GuiTextNumeric text : fieldList2) {
-				text.setFocused(text.isMouseOver(mouseX, mouseY));
-				text.mouseClicked(event, doubleClick);
-			}
+	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
+		if (mouseButton == 0) {
+			for (GuiTextNumeric text : fieldList)
+				text.mouseClicked(mouseX, mouseY, mouseButton);
+			for (GuiTextNumeric text : fieldList2)
+				text.mouseClicked(mouseX, mouseY, mouseButton);
 			checkColorPicker(mouseX - guiLeft, mouseY - guiTop);
 			checkColorPicker2(mouseX - guiLeft, mouseY - guiTop);
 		}
@@ -207,9 +202,9 @@ public class GuiScreenColor extends GuiBase {
 						float k = border ? 0.6F : 1.0F;
 						abgr = 0xFF000000 | ((int) (c.getBlue() * k) << 16) | ((int) (c.getGreen() * k) << 8) | (int) (c.getRed() * k);
 					}
-					image.setPixelABGR(px + mode * SIZE, py, abgr);
+					image.setPixelRGBA(px + mode * SIZE, py, abgr);
 				}
-		Minecraft.getInstance().getTextureManager().register(PICKER, new DynamicTexture(() -> "energycontrol color picker", image));
+		Minecraft.getInstance().getTextureManager().register(PICKER, new DynamicTexture(image));
 		pickerRegistered = true;
 	}
 
@@ -246,15 +241,18 @@ public class GuiScreenColor extends GuiBase {
 		return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
 	}
 
+	@Override
+	public void tick() {
+		super.tick();
+	}
 
 	@Override
-	public boolean keyPressed(KeyEvent event) {
-		int keyCode = event.key();
-		if (keyCode == InputConstants.KEY_ESCAPE) {
-			minecraft.gui.setScreen(parentGui);
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		if (keyCode == 256) {
+			minecraft.setScreen(parentGui);
 			return true;
 		}
-		if (keyCode == InputConstants.KEY_TAB) {
+		if (keyCode == 258) {
 			if (fieldList.get(0).isFocused()) {
 				fieldList.get(0).setFocused(false);
 				fieldList.get(1).setFocused(true);
@@ -278,7 +276,7 @@ public class GuiScreenColor extends GuiBase {
 		} else {
 			for (GuiTextNumeric text : fieldList) {
 				String value = text.getValue();
-				if (text.keyPressed(event)) {
+				if (text.keyPressed(keyCode, scanCode, modifiers)) {
 					if (!value.equals(text.getValue()))
 						setColorText(new Color(getColotInt(0), getColotInt(1), getColotInt(2)));
 					return true;
@@ -286,21 +284,21 @@ public class GuiScreenColor extends GuiBase {
 			}
 			for (GuiTextNumeric text : fieldList2) {
 				String value = text.getValue();
-				if (text.keyPressed(event)) {
+				if (text.keyPressed(keyCode, scanCode, modifiers)) {
 					if (!value.equals(text.getValue()))
 						setColorBackground(new Color(getColotInt2(0), getColotInt2(1), getColotInt2(2)));
 					return true;
 				}
 			}
 		}
-		return super.keyPressed(event);
+		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 
 	@Override
-	public boolean charTyped(CharacterEvent event) {
+	public boolean charTyped(char typedChar, int keyCode) {
 		for (GuiTextNumeric text : fieldList) {
 			String value = text.getValue();
-			if (text.charTyped(event)) {
+			if (text.charTyped(typedChar, keyCode)) {
 				if (!value.equals(text.getValue()))
 					setColorText(new Color(getColotInt(0), getColotInt(1), getColotInt(2)));
 				return true;
@@ -308,13 +306,13 @@ public class GuiScreenColor extends GuiBase {
 		}
 		for (GuiTextNumeric text : fieldList2) {
 			String value = text.getValue();
-			if (text.charTyped(event)) {
+			if (text.charTyped(typedChar, keyCode)) {
 				if (!value.equals(text.getValue()))
 					setColorBackground(new Color(getColotInt2(0), getColotInt2(1), getColotInt2(2)));
 				return true;
 			}
 		}
-		return super.charTyped(event);
+		return super.charTyped(typedChar, keyCode);
 	}
 
 	private int getColotInt(int id) {

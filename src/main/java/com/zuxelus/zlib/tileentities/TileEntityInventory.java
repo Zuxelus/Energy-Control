@@ -1,5 +1,6 @@
 package com.zuxelus.zlib.tileentities;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -9,12 +10,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.item.VanillaContainerWrapper;
-import net.neoforged.neoforge.transfer.item.WorldlyContainerWrapper;
+import net.minecraft.nbt.CompoundTag;
+
+
+
+
+
 
 public abstract class TileEntityInventory extends BlockEntityFacing implements WorldlyContainer {
 	protected NonNullList<ItemStack> inventory;
@@ -25,16 +26,16 @@ public abstract class TileEntityInventory extends BlockEntityFacing implements W
 	}
 
 	@Override
-	protected void readProperties(ValueInput tag) {
-		super.readProperties(tag);
+	protected void readProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.readProperties(tag, registries);
 		inventory = NonNullList.<ItemStack>withSize(getContainerSize(), ItemStack.EMPTY);
-		ContainerHelper.loadAllItems(tag, inventory);
+		ContainerHelper.loadAllItems(tag, inventory, registries);
 	}
 
 	@Override
-	protected void writeProperties(ValueOutput tag) {
-		super.writeProperties(tag);
-		ContainerHelper.saveAllItems(tag, inventory);
+	protected void writeProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.writeProperties(tag, registries);
+		ContainerHelper.saveAllItems(tag, inventory, registries);
 	}
 
 	@Override
@@ -85,14 +86,13 @@ public abstract class TileEntityInventory extends BlockEntityFacing implements W
 		inventory.clear();
 	}
 
-	@Override
 	public void preRemoveSideEffects(BlockPos pos, BlockState state) {
 		if (level != null)
 			net.minecraft.world.Containers.dropContents(level, pos, this);
 	}
 
-	public ResourceHandler<ItemResource> getItemHandler(Direction side) {
-		return side == null ? VanillaContainerWrapper.of(this) : new WorldlyContainerWrapper(this, side);
+	public net.neoforged.neoforge.items.IItemHandler getItemHandler(Direction side) {
+		return side == null ? new net.neoforged.neoforge.items.wrapper.InvWrapper(this) : new net.neoforged.neoforge.items.wrapper.SidedInvWrapper(this, side);
 	}
 
 	// ISidedInventory

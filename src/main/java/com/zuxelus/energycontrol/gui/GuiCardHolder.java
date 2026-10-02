@@ -2,39 +2,44 @@ package com.zuxelus.energycontrol.gui;
 
 import com.zuxelus.energycontrol.containers.ContainerCardHolder;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.util.ARGB;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class GuiCardHolder extends AbstractContainerScreen<ContainerCardHolder> {
-	private static final Identifier TEXTURE = Identifier.parse("textures/gui/container/generic_54.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.parse("textures/gui/container/generic_54.png");
 	private final int inventoryRows;
 	private Player player;
 	private String name;
 
 	public GuiCardHolder(ContainerCardHolder container, Inventory inventory, Component title) {
-		super(container, inventory, title, 176, 114 + 6 * 18);
+		super(container, inventory, title);
 		this.player = inventory.player;
 		inventoryRows = 6;
-		name = title.getString();
-	}
-
-
-	@Override
-	protected void extractLabels(GuiGraphicsExtractor matrixStack, int x, int y) {
-		matrixStack.text(font, name, 8, 6, ARGB.opaque(4210752), false);
-		matrixStack.text(font, player.getInventory().getDisplayName(), 8, imageHeight - 96 + 2, ARGB.opaque(4210752), false);
+		imageHeight = 114 + inventoryRows * 18;
 	}
 
 	@Override
-	public void extractBackground(GuiGraphicsExtractor matrixStack, int x, int y, float partialTicks) {
-		super.extractBackground(matrixStack, x, y, partialTicks);
-		matrixStack.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, leftPos, topPos, 0, 0, imageWidth, inventoryRows * 18 + 17, 256, 256);
-		matrixStack.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, leftPos, topPos + inventoryRows * 18 + 17, 0, 126, imageWidth, 96, 256, 256);
+	public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
+		super.render(matrixStack, mouseX, mouseY, partialTicks);
+		renderTooltip(matrixStack, mouseX, mouseY);
+	}
+
+	@Override
+	protected void renderLabels(GuiGraphics matrixStack, int x, int y) {
+		matrixStack.drawString(font, name, 8, 6, 4210752, false);
+		matrixStack.drawString(font, player.getInventory().getDisplayName(), 8, imageHeight - 96 + 2, 4210752, false);
+	}
+
+	@Override
+	protected void renderBg(GuiGraphics matrixStack, float partialTicks, int x, int y) {
+		matrixStack.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, inventoryRows * 18 + 17);
+		matrixStack.blit(TEXTURE, leftPos, topPos + inventoryRows * 18 + 17, 0, 126, imageWidth, 96);
 	}
 }

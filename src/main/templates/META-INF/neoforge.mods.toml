@@ -1,3 +1,5 @@
+modLoader="javafml"
+loaderVersion="[4,)"
 license="${mod_license}"
 issueTrackerURL="https://github.com/Zuxelus/Energy-Control/issues"
 

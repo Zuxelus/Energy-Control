@@ -6,10 +6,18 @@
     "PW"
   ],
   "key": {
-    "R": "minecraft:chest",
-    "P": "minecraft:paper",
-    "F": "energycontrol:radio_transmitter",
-    "W": "#c:dyes/gray"
+    "R": {
+      "item": "minecraft:chest"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "F": {
+      "item": "energycontrol:radio_transmitter"
+    },
+    "W": {
+      "tag": "c:dyes/gray"
+    }
   },
   "result": {
     "id": "energycontrol:kit_inventory"

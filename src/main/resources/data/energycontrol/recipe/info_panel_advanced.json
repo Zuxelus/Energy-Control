@@ -7,12 +7,24 @@
     "CAC"
   ],
   "key": {
-    "P": "minecraft:cyan_stained_glass_pane",
-    "I": "energycontrol:info_panel",
-    "1": "energycontrol:upgrade_range",
-    "2": "energycontrol:upgrade_color",
-    "A": "#c:circuits/advanced",
-    "C": "minecraft:charcoal"
+    "P": {
+      "item": "minecraft:cyan_stained_glass_pane"
+    },
+    "I": {
+      "item": "energycontrol:info_panel"
+    },
+    "1": {
+      "item": "energycontrol:upgrade_range"
+    },
+    "2": {
+      "item": "energycontrol:upgrade_color"
+    },
+    "A": {
+      "tag": "c:circuits/advanced"
+    },
+    "C": {
+      "item": "minecraft:charcoal"
+    }
   },
   "result": {
     "id": "energycontrol:info_panel_advanced"

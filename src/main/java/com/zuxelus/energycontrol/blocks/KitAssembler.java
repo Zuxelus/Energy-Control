@@ -17,6 +17,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class KitAssembler extends FacingHorizontalActive {
+    @Override protected com.mojang.serialization.MapCodec<? extends KitAssembler> codec() { return simpleCodec(KitAssembler::new); }
+
 
 	public KitAssembler(Block.Properties properties) {
 		super(FacingBlock.metal(properties));
@@ -32,7 +34,7 @@ public class KitAssembler extends FacingHorizontalActive {
 		BlockEntity te = world.getBlockEntity(pos);
 		if (!(te instanceof TileEntityKitAssembler))
 			return InteractionResult.PASS;
-		if (!world.isClientSide())
+		if (!world.isClientSide)
 			player.openMenu((TileEntityKitAssembler) te, buf -> buf.writeBlockPos(pos));
 		return InteractionResult.SUCCESS;
 	}

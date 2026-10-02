@@ -21,6 +21,8 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class IndustrialAlarm extends HowlerAlarm {
+    @Override protected com.mojang.serialization.MapCodec<? extends IndustrialAlarm> codec() { return simpleCodec(IndustrialAlarm::new); }
+
 	public static final IntegerProperty LIGHT = IntegerProperty.create("light", 0, 3);
 	private static final int[] lightSteps = { 0, 7, 14, 7};
 
@@ -46,7 +48,7 @@ public class IndustrialAlarm extends HowlerAlarm {
 
 	@Override
 	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		if (world.isClientSide()) {
+		if (world.isClientSide) {
 			BlockEntity te = world.getBlockEntity(pos);
 			if (te instanceof TileEntityHowlerAlarm)
 				ScreenHandler.openIndustrialAlarmScreen((TileEntityIndustrialAlarm) te);

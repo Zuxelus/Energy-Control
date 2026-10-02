@@ -7,11 +7,14 @@ import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityThermalMonitor;
 import com.zuxelus.zlib.gui.GuiBase;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class GuiThermalMonitor extends GuiBase {
 	private TileEntityThermalMonitor thermo;
 	private EditBox textboxHeat;
@@ -42,16 +45,20 @@ public class GuiThermalMonitor extends GuiBase {
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(GuiGraphicsExtractor matrixStack, float partialTicks, int mouseX, int mouseY) {
+	protected void drawGuiContainerBackgroundLayer(GuiGraphics matrixStack, float partialTicks, int mouseX, int mouseY) {
 		super.drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
-		textboxHeat.extractRenderState(matrixStack, mouseX, mouseY, partialTicks);
+		textboxHeat.renderWidget(matrixStack, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY) {
+	protected void drawGuiContainerForegroundLayer(GuiGraphics matrixStack, int mouseX, int mouseY) {
 		drawTitle(matrixStack);
 	}
 
+	@Override
+	public void tick() {
+		super.tick();
+	}
 
 	@Override
 	public void onClose() {
@@ -74,7 +81,7 @@ public class GuiThermalMonitor extends GuiBase {
 			heat = 0;
 		if (heat >= 1000000)
 			heat = 1000000;
-		if (thermo.getLevel().isClientSide() && thermo.getHeatLevel() != heat) {
+		if (thermo.getLevel().isClientSide && thermo.getHeatLevel() != heat) {
 			NetworkHelper.updateSeverTileEntity(thermo.getBlockPos(), 1, heat);
 			thermo.setHeatLevel(heat);
 		}

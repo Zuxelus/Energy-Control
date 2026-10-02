@@ -6,10 +6,18 @@
     "PW"
   ],
   "key": {
-    "R": "#c:dusts/redstone",
-    "P": "minecraft:paper",
-    "F": "energycontrol:radio_transmitter",
-    "W": "#c:dyes/gray"
+    "R": {
+      "tag": "c:dusts/redstone"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "F": {
+      "item": "energycontrol:radio_transmitter"
+    },
+    "W": {
+      "tag": "c:dyes/gray"
+    }
   },
   "result": {
     "id": "energycontrol:kit_redstone"

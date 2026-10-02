@@ -17,10 +17,10 @@ public class ItemCardHolder extends Item {
 	}
 
 	@Override
-	public InteractionResult use(Level level, Player player, InteractionHand hand) {
+	public net.minecraft.world.InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		if (!player.isShiftKeyDown() && !level.isClientSide() && stack.getCount() == 1)
+		if (!player.isShiftKeyDown() && !level.isClientSide && stack.getCount() == 1)
 			player.openMenu(new InventoryCardHolder(stack), buf -> buf.writeBlockPos(BlockPos.ZERO));
-		return InteractionResult.SUCCESS;
+		return net.minecraft.world.InteractionResultHolder.success(stack);
 	}
 }

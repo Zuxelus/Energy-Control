@@ -13,12 +13,13 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.PlacementInfo;
+
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeBookCategories;
-import net.minecraft.world.item.crafting.RecipeBookCategory;
+
+
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -39,17 +40,20 @@ public class KitAssemblerRecipe implements Recipe<EmptyInventory> {
 			CountedIngredient.CODEC.fieldOf("input1").forGetter(o -> new CountedIngredient(o.input1, o.count1)),
 			CountedIngredient.CODEC.fieldOf("input2").forGetter(o -> new CountedIngredient(o.input2, o.count2)),
 			CountedIngredient.CODEC.fieldOf("input3").forGetter(o -> new CountedIngredient(o.input3, o.count3)),
-			ItemStackTemplate.CODEC.fieldOf("result").forGetter(o -> o.result),
+			ItemStack.CODEC.fieldOf("result").forGetter(o -> o.result),
 			Codec.INT.optionalFieldOf("time", 300).forGetter(o -> o.time)
 		).apply(i, KitAssemblerRecipe::new));
 	public static final StreamCodec<RegistryFriendlyByteBuf, KitAssemblerRecipe> STREAM_CODEC = StreamCodec.composite(
 			CountedIngredient.STREAM_CODEC, o -> new CountedIngredient(o.input1, o.count1),
 			CountedIngredient.STREAM_CODEC, o -> new CountedIngredient(o.input2, o.count2),
 			CountedIngredient.STREAM_CODEC, o -> new CountedIngredient(o.input3, o.count3),
-			ItemStackTemplate.STREAM_CODEC, o -> o.result,
+			ItemStack.STREAM_CODEC, o -> o.result,
 			ByteBufCodecs.INT, o -> o.time,
 			KitAssemblerRecipe::new);
-	public static final RecipeSerializer<KitAssemblerRecipe> SERIALIZER = new RecipeSerializer<>(MAP_CODEC, STREAM_CODEC);
+	public static final RecipeSerializer<KitAssemblerRecipe> SERIALIZER = new RecipeSerializer<KitAssemblerRecipe>() {
+        public MapCodec<KitAssemblerRecipe> codec() { return MAP_CODEC; }
+        public StreamCodec<RegistryFriendlyByteBuf, KitAssemblerRecipe> streamCodec() { return STREAM_CODEC; }
+    };
 
 	public final Ingredient input1;
 	public final Ingredient input2;
@@ -57,10 +61,10 @@ public class KitAssemblerRecipe implements Recipe<EmptyInventory> {
 	public final int count1;
 	public final int count2;
 	public final int count3;
-	public final ItemStackTemplate result;
+	public final ItemStack result;
 	public final int time;
 
-	public KitAssemblerRecipe(CountedIngredient input1, CountedIngredient input2, CountedIngredient input3, ItemStackTemplate result, int time) {
+	public KitAssemblerRecipe(CountedIngredient input1, CountedIngredient input2, CountedIngredient input3, ItemStack result, int time) {
 		this.input1 = input1.ingredient();
 		this.count1 = input1.count();
 		this.input2 = input2.ingredient();
@@ -72,7 +76,7 @@ public class KitAssemblerRecipe implements Recipe<EmptyInventory> {
 	}
 
 	public ItemStack getOutput() {
-		return result.create();
+		return result.copy();
 	}
 
 	public boolean isSuitable(TileEntityKitAssembler te) {
@@ -87,16 +91,16 @@ public class KitAssemblerRecipe implements Recipe<EmptyInventory> {
 			return false;
 		ItemStack result = te.getItem(TileEntityKitAssembler.SLOT_RESULT);
 		if (!result.isEmpty()) {
-			if (!result.is(this.result.item()))
+			if (!result.is(this.result.getItem()))
 				return false;
-			if (result.getCount() + this.result.count() > result.getMaxStackSize())
+			if (result.getCount() + this.result.getCount() > result.getMaxStackSize())
 				return false;
 		}
 		return true;
 	}
 
-	public List<Ingredient> getIngredients() {
-		return List.of(input1, input2, input3);
+	public NonNullList<Ingredient> getIngredients() {
+		return NonNullList.of(Ingredient.EMPTY, input1, input2, input3);
 	}
 
 	@Override
@@ -115,25 +119,19 @@ public class KitAssemblerRecipe implements Recipe<EmptyInventory> {
 	}
 
 	@Override
-	public String group() {
+	public String getGroup() {
 		return "";
 	}
 
 	@Override
-	public ItemStack assemble(EmptyInventory inv) {
+	public ItemStack assemble(EmptyInventory inv, HolderLookup.Provider registries) {
 		return getOutput();
 	}
 
-	@Override
-	public PlacementInfo placementInfo() {
-		return PlacementInfo.NOT_PLACEABLE;
-	}
 
-	@Override
-	public RecipeBookCategory recipeBookCategory() {
-		return RecipeBookCategories.CRAFTING_MISC;
-	}
 
+    @Override public boolean canCraftInDimensions(int width, int height) { return false; }
+    @Override public ItemStack getResultItem(HolderLookup.Provider registries) { return getOutput(); }
 	@Override
 	public RecipeSerializer<KitAssemblerRecipe> getSerializer() {
 		return ModItems.KIT_ASSEMBLER_SERIALIZER.get();

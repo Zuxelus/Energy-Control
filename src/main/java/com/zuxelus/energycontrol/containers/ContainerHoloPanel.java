@@ -24,7 +24,7 @@ public class ContainerHoloPanel extends ContainerBase<TileEntityInfoPanel> {
 			@SuppressWarnings("resource")
 			@Override
 			public void setChanged() {
-				if (panel.getLevel().isClientSide())
+				if (panel.getLevel().isClientSide)
 					ContainerHoloPanel.this.broadcastChanges();
 			};
 		});

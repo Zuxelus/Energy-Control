@@ -19,18 +19,23 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
 public class StorageArrayRecipe extends CustomRecipe {
+    public StorageArrayRecipe() { super(net.minecraft.world.item.crafting.CraftingBookCategory.MISC); }
+    @Override public boolean canCraftInDimensions(int width, int height) { return width * height >= 1; }
 	public static final StorageArrayRecipe INSTANCE = new StorageArrayRecipe();
 	public static final MapCodec<StorageArrayRecipe> MAP_CODEC = MapCodec.unit(INSTANCE);
 	public static final StreamCodec<RegistryFriendlyByteBuf, StorageArrayRecipe> STREAM_CODEC = StreamCodec.unit(INSTANCE);
-	public static final RecipeSerializer<StorageArrayRecipe> SERIALIZER = new RecipeSerializer<>(MAP_CODEC, STREAM_CODEC);
+	public static final RecipeSerializer<StorageArrayRecipe> SERIALIZER = new RecipeSerializer<StorageArrayRecipe>() {
+        public MapCodec<StorageArrayRecipe> codec() { return MAP_CODEC; }
+        public StreamCodec<RegistryFriendlyByteBuf, StorageArrayRecipe> streamCodec() { return STREAM_CODEC; }
+    };
 
 	@Override
 	public boolean matches(CraftingInput inv, Level level) {
-		return !assemble(inv).isEmpty();
+		return !assemble(inv, level.registryAccess()).isEmpty();
 	}
 
 	@Override
-	public ItemStack assemble(CraftingInput inv) {
+	public ItemStack assemble(CraftingInput inv, net.minecraft.core.HolderLookup.Provider registries) {
 		int inventoryLength = inv.size();
 		int cardCount = 0;
 		int arrayCount = 0;

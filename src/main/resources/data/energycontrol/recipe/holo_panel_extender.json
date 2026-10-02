@@ -7,9 +7,15 @@
     " # "
   ],
   "key": {
-    "P": "energycontrol:info_panel_extender",
-    "R": "#c:dusts/redstone",
-    "#": "energycontrol:strong_string"
+    "P": {
+      "item": "energycontrol:info_panel_extender"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    },
+    "#": {
+      "item": "energycontrol:strong_string"
+    }
   },
   "result": {
     "id": "energycontrol:holo_panel_extender"

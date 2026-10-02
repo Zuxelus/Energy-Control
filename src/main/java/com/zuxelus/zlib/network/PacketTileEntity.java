@@ -9,13 +9,13 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record PacketTileEntity(BlockPos pos, CompoundTag tag) implements CustomPacketPayload {
-	public static final CustomPacketPayload.Type<PacketTileEntity> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(EnergyControl.MODID, "tile_entity"));
+	public static final CustomPacketPayload.Type<PacketTileEntity> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "tile_entity"));
 	public static final StreamCodec<RegistryFriendlyByteBuf, PacketTileEntity> STREAM_CODEC = StreamCodec.composite(
 			BlockPos.STREAM_CODEC, PacketTileEntity::pos,
 			ByteBufCodecs.COMPOUND_TAG, PacketTileEntity::tag,

@@ -1,8 +1,8 @@
 package com.zuxelus.energycontrol.blocks;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.redstone.Orientation;
-import org.jspecify.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -15,6 +15,8 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 public class BlockLight extends Block {
+    @Override protected com.mojang.serialization.MapCodec<? extends BlockLight> codec() { return simpleCodec(BlockLight::new); }
+
 	public static final BooleanProperty LIT = BlockStateProperties.LIT;
 
 	public BlockLight(Block.Properties properties) {
@@ -33,8 +35,8 @@ public class BlockLight extends Block {
 	}
 
 	@Override
-	protected void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, @Nullable Orientation orientation, boolean isMoving) {
-		if (world.isClientSide())
+	protected void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos neighborPos, boolean isMoving) {
+		if (world.isClientSide)
 			return;
 
 		boolean flag = state.getValue(LIT);

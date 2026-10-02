@@ -1,5 +1,8 @@
 package com.zuxelus.energycontrol.renderers;
 
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -7,10 +10,10 @@ import com.zuxelus.energycontrol.renderers.CubeRenderer.PositionTextureVertex;
 import com.zuxelus.energycontrol.renderers.CubeRenderer.TexturedQuad;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.core.Direction;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class CubeSmallRenderer {
 	public static final CubeSmallRenderer MODEL = new CubeSmallRenderer(2, 0, 2, 28, 14, 28, 128, 128);
@@ -20,11 +23,9 @@ public class CubeSmallRenderer {
 		cube = new CubeSmallBox(x, y, z, dx, dy, dz, textureWidth, textureHeight);
 	}
 
-	public void render(PoseStack matrixStack, SubmitNodeCollector collector, RenderType type, int[] light, int combinedOverlay) {
-		matrixStack.pushPose();
-		matrixStack.scale(0.5F, 0.5F, 0.5F);
-		collector.submitCustomGeometry(matrixStack, type, (pose, buffer) -> cube.render(pose, buffer, light, combinedOverlay));
-		matrixStack.popPose();
+	@OnlyIn(Dist.CLIENT)
+	public void render(PoseStack matrixStack, VertexConsumer buffer, int[] light, int combinedOverlay) {
+		cube.render(matrixStack, buffer, light, combinedOverlay);
 	}
 
 	private static class CubeSmallBox {
@@ -52,9 +53,17 @@ public class CubeSmallRenderer {
 			quads[5] = new TexturedQuad(new PositionTextureVertex[] { v3, v4, v5, v6 }, dy, 0, dy + dx, dy, textureWidth, textureHeight, Direction.SOUTH); // top
 		}
 
-		public void render(PoseStack.Pose pose, VertexConsumer buffer, int[] light, int combinedOverlay) {
+		public void render(PoseStack matrixStack, VertexConsumer buffer, int[] light, int combinedOverlay) {
+			matrixStack.scale(0.5F, 0.5F, 0.5F);
+			render(matrixStack.last(), buffer, light, combinedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
+			matrixStack.scale(2.0F, 2.0F, 2.0F);
+		}
+
+		public void render(PoseStack.Pose matrixEntry, VertexConsumer buffer, int[] light, int combinedOverlay, float red, float green, float blue, float alpha) {
+			Matrix4f matrix4f = matrixEntry.pose();
+			Matrix3f matrix3f = matrixEntry.normal();
 			for (int n = 0; n < quads.length; ++n)
-				quads[n].draw(pose, buffer, light[n], combinedOverlay, 0xFFFFFFFF);
+				quads[n].draw(matrix3f, matrix4f, buffer, light[n], combinedOverlay, red, green, blue, alpha);
 		}
 	}
 
@@ -63,24 +72,24 @@ public class CubeSmallRenderer {
 		if (rotation == null)
 			rotation = Direction.NORTH;
 
-		matrixStack.rotate(Axis.XP.rotationDegrees(-90)); // x, y, z -> x, z, y
+		matrixStack.mulPose(Axis.XP.rotationDegrees(-90)); // x, y, z -> x, z, y
 
 		switch (facing) {
 		case UP:
-			matrixStack.rotate(Axis.XP.rotationDegrees(90));
+			matrixStack.mulPose(Axis.XP.rotationDegrees(90));
 			switch (rotation) {
 			case NORTH:
 				break;
 			case SOUTH:
-				matrixStack.rotate(Axis.YP.rotationDegrees(180));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(180));
 				matrixStack.translate(-1.0F, 0.0F, -1.0F);
 				break;
 			case WEST:
-				matrixStack.rotate(Axis.YP.rotationDegrees(90));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(90));
 				matrixStack.translate(-1.0F, 0.0F, 0.0F);
 				break;
 			case EAST:
-				matrixStack.rotate(Axis.YP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(-90));
 				matrixStack.translate(0.0F, 0.0F, -1.0F);
 				break;
 			default:
@@ -88,21 +97,21 @@ public class CubeSmallRenderer {
 			}
 			break;
 		case DOWN:
-			matrixStack.rotate(Axis.XP.rotationDegrees(-90));
+			matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
 			switch (rotation) {
 			case NORTH:
-				matrixStack.rotate(Axis.YP.rotationDegrees(180));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(180));
 				matrixStack.translate(-1.0F, -1.0F, 0.0F);
 				break;
 			case SOUTH:
 				matrixStack.translate(0.0F, -1.0F, -1.0F);
 				break;
 			case WEST:
-				matrixStack.rotate(Axis.YP.rotationDegrees(90));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(90));
 				matrixStack.translate(0.0F, -1.0F, 0.0F);
 				break;
 			case EAST:
-				matrixStack.rotate(Axis.YP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(-90));
 				matrixStack.translate(-1.0F, -1.0F, -1.0F);
 				break;
 			default:
@@ -113,15 +122,15 @@ public class CubeSmallRenderer {
 			matrixStack.translate(0.0F, -1.0F, 0.0F);
 			break;
 		case SOUTH:
-			matrixStack.rotate(Axis.ZP.rotationDegrees(180)); // x, z, y
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(180)); // x, z, y
 			matrixStack.translate(-1.0F, 0.0F, 0.0F);
 			break;
 		case WEST:
-			matrixStack.rotate(Axis.ZP.rotationDegrees(90)); // x, z, y
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(90)); // x, z, y
 			matrixStack.translate(-1.0F, -1.0F, 0.0F);
 			break;
 		case EAST:
-			matrixStack.rotate(Axis.ZP.rotationDegrees(-90)); // x, z, y
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(-90)); // x, z, y
 			break;
 		}
 	}
@@ -132,29 +141,29 @@ public class CubeSmallRenderer {
 			{ 4 ,5, 0, 1, 2, 3 }, { 4, 5, 3, 2, 0, 1 }, { 4, 5, 2, 3, 1, 0 } };
 		int side = te.getFacing().get3DDataValue();
 		if (side == 0)
-			light[sides[side][0]] = LightCoordsUtil.getLightCoords(te.getLevel(), te.getBlockPos());
+			light[sides[side][0]] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos());
 		else
-			light[sides[side][0]] = LightCoordsUtil.getLightCoords(te.getLevel(), te.getBlockPos().relative(Direction.DOWN));
+			light[sides[side][0]] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.DOWN));
 		if (side == 1)
-			light[sides[side][1]] = LightCoordsUtil.getLightCoords(te.getLevel(), te.getBlockPos());
+			light[sides[side][1]] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos());
 		else
-			light[sides[side][1]] = LightCoordsUtil.getLightCoords(te.getLevel(), te.getBlockPos().relative(Direction.UP));
+			light[sides[side][1]] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.UP));
 		if (side == 4)
-			light[sides[side][2]] = LightCoordsUtil.getLightCoords(te.getLevel(), te.getBlockPos());
+			light[sides[side][2]] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos());
 		else
-			light[sides[side][2]] = LightCoordsUtil.getLightCoords(te.getLevel(), te.getBlockPos().relative(Direction.WEST));
+			light[sides[side][2]] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.WEST));
 		if (side == 5)
-			light[sides[side][3]] = LightCoordsUtil.getLightCoords(te.getLevel(), te.getBlockPos());
+			light[sides[side][3]] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos());
 		else
-			light[sides[side][3]] = LightCoordsUtil.getLightCoords(te.getLevel(), te.getBlockPos().relative(Direction.EAST));
+			light[sides[side][3]] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.EAST));
 		if (side == 2)
-			light[sides[side][4]] = LightCoordsUtil.getLightCoords(te.getLevel(), te.getBlockPos());
+			light[sides[side][4]] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos());
 		else
-			light[sides[side][4]] = LightCoordsUtil.getLightCoords(te.getLevel(), te.getBlockPos().relative(Direction.NORTH));
+			light[sides[side][4]] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.NORTH));
 		if (side == 3)
-			light[sides[side][5]] = LightCoordsUtil.getLightCoords(te.getLevel(), te.getBlockPos());
+			light[sides[side][5]] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos());
 		else
-			light[sides[side][5]] = LightCoordsUtil.getLightCoords(te.getLevel(), te.getBlockPos().relative(Direction.SOUTH));
+			light[sides[side][5]] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(Direction.SOUTH));
 		return light;
 	}
 }

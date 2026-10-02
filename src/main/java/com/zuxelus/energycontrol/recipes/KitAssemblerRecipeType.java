@@ -10,7 +10,7 @@ import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeMap;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
@@ -25,12 +25,12 @@ public class KitAssemblerRecipeType implements RecipeType<KitAssemblerRecipe> {
 
 	public static List<KitAssemblerRecipe> getRecipes(Level level) {
 		if (level instanceof ServerLevel serverLevel)
-			return toList(serverLevel.recipeAccess().recipeMap().byType(TYPE));
+			return toList(serverLevel.getRecipeManager().getAllRecipesFor(TYPE));
 		return clientRecipes;
 	}
 
-	public static void setClientRecipes(RecipeMap recipeMap) {
-		clientRecipes = toList(recipeMap.byType(TYPE));
+	public static void setClientRecipes(RecipeManager recipeMap) {
+		clientRecipes = toList(recipeMap.getAllRecipesFor(TYPE));
 	}
 
 	private static List<KitAssemblerRecipe> toList(Collection<RecipeHolder<KitAssemblerRecipe>> holders) {

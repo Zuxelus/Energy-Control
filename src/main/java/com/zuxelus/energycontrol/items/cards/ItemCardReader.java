@@ -45,7 +45,7 @@ public class ItemCardReader implements ICardReader {
 		CompoundTag tag = tag();
 		if (!tag.contains("x") || !tag.contains("y") || !tag.contains("z"))
 			return null;
-		return new BlockPos(tag.getIntOr("x", 0), tag.getIntOr("y", 0), tag.getIntOr("z", 0));
+		return new BlockPos(tag.getInt("x"), tag.getInt("y"), tag.getInt("z"));
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public Integer getInt(String name) {
-		return tag().getIntOr(name, 0);
+		return tag().getInt(name);
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public Long getLong(String name) {
-		return tag().getLongOr(name, 0L);
+		return tag().getLong(name);
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public Double getDouble(String name) {
-		return tag().getDoubleOr(name, 0.0);
+		return tag().getDouble(name);
 	}
 
 	@Override
@@ -87,7 +87,7 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public String getString(String name) {
-		return tag().getStringOr(name, "");
+		return tag().getString(name);
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public Byte getByte(String name) {
-		return tag().getByteOr(name, (byte) 0);
+		return tag().getByte(name);
 	}
 
 	@Override
@@ -107,7 +107,7 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public Boolean getBoolean(String name) {
-		return tag().getBooleanOr(name, false);
+		return tag().getBoolean(name);
 	}
 
 	@Override
@@ -177,12 +177,12 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public CompoundTag getTag(String name) {
-		return tag().getCompound(name).orElse(null);
+		return (tag().contains(name, 10) ? tag().getCompound(name) : null);
 	}
 
 	@Override
 	public ListTag getTagList(String name, int type) {
-		return tag().getListOrEmpty(name);
+		return tag().getList(name, 10);
 	}
 
 	@Override
@@ -190,7 +190,7 @@ public class ItemCardReader implements ICardReader {
 		ListTag list = getTagList("Items", Tag.TAG_COMPOUND);
 		ArrayList<ItemStack> result = new ArrayList<ItemStack> ();
 		for (int i = 0; i < list.size(); i++) {
-			CompoundTag stackTag = list.getCompoundOrEmpty(i);
+			CompoundTag stackTag = list.getCompound(i);
 			ItemStack stack = ItemStackHelper.loadStack(stackTag);
 			if (reset)
 				stack.setCount(1);
@@ -233,7 +233,7 @@ public class ItemCardReader implements ICardReader {
 	@Override
 	public void copyFrom(CompoundTag nbt) {
 		ItemStackHelper.update(card, dest -> {
-			for (String name : nbt.keySet()) {
+			for (String name : nbt.getAllKeys()) {
 				Tag tag = nbt.get(name);
 				if (tag instanceof StringTag || tag instanceof IntTag || tag instanceof DoubleTag || tag instanceof LongTag || tag instanceof ByteTag || tag instanceof CompoundTag)
 					dest.put(name, tag.copy());
@@ -289,32 +289,32 @@ public class ItemCardReader implements ICardReader {
 		List<PanelString> result = new LinkedList<PanelString>();
 
 		if (nbt.get("title") instanceof StringTag) {
-			String title = nbt.getStringOr("title", "");
+			String title = nbt.getString("title");
 			if (!title.equals(""))
 				result.add(new PanelString(String.format("title : %s", title)));
 			nbt.remove("title");
 		}
 		if (nbt.get("x") instanceof IntTag && nbt.get("y") instanceof IntTag && nbt.get("z") instanceof IntTag) {
-			result.add(new PanelString(String.format("xyz : %s %s %s", nbt.getIntOr("x", 0), nbt.getIntOr("y", 0), nbt.getIntOr("z", 0))));
+			result.add(new PanelString(String.format("xyz : %s %s %s", nbt.getInt("x"), nbt.getInt("y"), nbt.getInt("z"))));
 			nbt.remove("x");
 			nbt.remove("y");
 			nbt.remove("z");
 		}
 		if (nbt.get("cardCount") instanceof IntTag) {
-			int count = nbt.getIntOr("cardCount", 0);
+			int count = nbt.getInt("cardCount");
 			result.add(new PanelString(String.format("cardCount : %s", count)));
 			nbt.remove("cardCount");
 			for (int i = 0; i < count; i++) {
 				String[] value = { String.format("_%dx", i), String.format("_%dy", i), String.format("_%dz", i) };
 				if (nbt.get(value[0]) instanceof IntTag && nbt.get(value[1]) instanceof IntTag && nbt.get(value[2]) instanceof IntTag) {
-					result.add(new PanelString(String.format("_%dxyz : %s %s %s", i, nbt.getIntOr(value[0], 0), nbt.getIntOr(value[1], 0), nbt.getIntOr(value[2], 0))));
+					result.add(new PanelString(String.format("_%dxyz : %s %s %s", i, nbt.getInt(value[0]), nbt.getInt(value[1]), nbt.getInt(value[2]))));
 					nbt.remove(value[0]);
 					nbt.remove(value[1]);
 					nbt.remove(value[2]);
 				}
 			}
 		}
-		for (String name : nbt.keySet()) {
+		for (String name : nbt.getAllKeys()) {
 			Tag tag = nbt.get(name);
 			result.add(new PanelString(String.format("%s : %s", name, tag.toString())));
 		}

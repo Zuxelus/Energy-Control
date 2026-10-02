@@ -9,11 +9,11 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record PacketAlarm(int maxAlarmRange, String allowedAlarms) implements CustomPacketPayload {
-	public static final CustomPacketPayload.Type<PacketAlarm> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(EnergyControl.MODID, "alarm"));
+	public static final CustomPacketPayload.Type<PacketAlarm> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "alarm"));
 	public static final StreamCodec<RegistryFriendlyByteBuf, PacketAlarm> STREAM_CODEC = StreamCodec.composite(
 			ByteBufCodecs.INT, PacketAlarm::maxAlarmRange,
 			ByteBufCodecs.STRING_UTF8, PacketAlarm::allowedAlarms,

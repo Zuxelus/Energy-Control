@@ -23,7 +23,7 @@ public class ContainerAdvancedInfoPanel extends ContainerBase<TileEntityInfoPane
 			@SuppressWarnings("resource")
 			@Override
 			public void setChanged() {
-				if (panel.getLevel().isClientSide())
+				if (panel.getLevel().isClientSide)
 					ContainerAdvancedInfoPanel.this.broadcastChanges();
 			};
 		});
@@ -31,7 +31,7 @@ public class ContainerAdvancedInfoPanel extends ContainerBase<TileEntityInfoPane
 			@SuppressWarnings("resource")
 			@Override
 			public void setChanged() {
-				if (panel.getLevel().isClientSide())
+				if (panel.getLevel().isClientSide)
 					ContainerAdvancedInfoPanel.this.broadcastChanges();
 			};
 		});
@@ -39,7 +39,7 @@ public class ContainerAdvancedInfoPanel extends ContainerBase<TileEntityInfoPane
 			@SuppressWarnings("resource")
 			@Override
 			public void setChanged() {
-				if (panel.getLevel().isClientSide())
+				if (panel.getLevel().isClientSide)
 					ContainerAdvancedInfoPanel.this.broadcastChanges();
 			};
 		});

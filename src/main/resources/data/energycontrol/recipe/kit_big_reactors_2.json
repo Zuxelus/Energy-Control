@@ -16,14 +16,20 @@
   ],
   "type": "energycontrol:kit_assembler",
   "input1": {
-    "ingredient": "energycontrol:card_big_reactors"
+    "ingredient": {
+      "item": "energycontrol:card_big_reactors"
+    }
   },
   "input2": {
-    "ingredient": "energycontrol:strong_string",
+    "ingredient": {
+      "item": "energycontrol:strong_string"
+    },
     "count": 2
   },
   "input3": {
-    "ingredient": "energycontrol:card_big_reactors"
+    "ingredient": {
+      "item": "energycontrol:card_big_reactors"
+    }
   },
   "result": {
     "id": "energycontrol:kit_big_reactors",

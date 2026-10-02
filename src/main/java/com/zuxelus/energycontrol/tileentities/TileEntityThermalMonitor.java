@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import net.minecraft.core.HolderLookup;
 import com.zuxelus.energycontrol.blocks.RemoteThermalMonitor;
 import com.zuxelus.energycontrol.blocks.ThermalMonitor;
 import com.zuxelus.energycontrol.config.ConfigHandler;
@@ -8,8 +9,8 @@ import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.nbt.CompoundTag;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -47,7 +48,7 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 	public void setHeatLevel(int value) {
 		int old = heatLevel;
 		heatLevel = value;
-		if (!level.isClientSide() && heatLevel != old)
+		if (!level.isClientSide && heatLevel != old)
 			notifyBlockUpdate();
 	}
 
@@ -58,7 +59,7 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 	public void setInvertRedstone(boolean value) {
 		boolean old = invertRedstone;
 		invertRedstone = value;
-		if (!level.isClientSide() && invertRedstone != old)
+		if (!level.isClientSide && invertRedstone != old)
 			notifyBlockUpdate();
 	}
 
@@ -78,14 +79,14 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 	public void onServerMessageReceived(CompoundTag tag) {
 		if (!tag.contains("type"))
 			return;
-		switch (tag.getIntOr("type", 0)) {
+		switch (tag.getInt("type")) {
 		case 1:
 			if (tag.contains("value"))
-				setHeatLevel(tag.getIntOr("value", 0));
+				setHeatLevel(tag.getInt("value"));
 			break;
 		case 2:
 			if (tag.contains("value"))
-				setInvertRedstone(tag.getIntOr("value", 0) == 1);
+				setInvertRedstone(tag.getInt("value") == 1);
 			break;
 		}
 	}
@@ -94,23 +95,23 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 	public void onClientMessageReceived(CompoundTag tag) { }
 
 	@Override
-	protected void writeUpdateData(ValueOutput tag) {
+	protected void writeUpdateData(CompoundTag tag) {
 		tag.putInt("status", status);
 		tag.putBoolean("poweredBlock", poweredBlock);
 	}
 
 	@Override
-	protected void readProperties(ValueInput tag) {
-		super.readProperties(tag);
-		heatLevel = tag.getIntOr("heatLevel", heatLevel);
-		invertRedstone = tag.getBooleanOr("invert", invertRedstone);
-		tag.getInt("status").ifPresent(this::setStatus);
-		poweredBlock = tag.getBooleanOr("poweredBlock", poweredBlock);
+	protected void readProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.readProperties(tag, registries);
+		heatLevel = (tag.contains("heatLevel") ? tag.getInt("heatLevel") : heatLevel);
+		invertRedstone = (tag.contains("invert") ? tag.getBoolean("invert") : invertRedstone);
+		if (tag.contains("status")) setStatus(tag.getInt("status"));
+		poweredBlock = (tag.contains("poweredBlock") ? tag.getBoolean("poweredBlock") : poweredBlock);
 	}
 
 	@Override
-	protected void writeProperties(ValueOutput tag) {
-		super.writeProperties(tag);
+	protected void writeProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.writeProperties(tag, registries);
 		tag.putInt("heatLevel", heatLevel);
 		tag.putBoolean("invert", invertRedstone);
 	}
@@ -123,7 +124,7 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 	}
 
 	protected void tick() {
-		if (level.isClientSide())
+		if (level.isClientSide)
 			return;
 	
 		if (updateTicker-- > 0)

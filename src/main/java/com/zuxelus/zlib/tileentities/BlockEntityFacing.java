@@ -12,9 +12,9 @@ import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.TagValueOutput;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.nbt.CompoundTag;
+
 
 public abstract class BlockEntityFacing extends BlockEntity {
 
@@ -53,13 +53,13 @@ public abstract class BlockEntityFacing extends BlockEntity {
 		rotation = meta;
 	}
 
-	protected void readProperties(ValueInput tag) {
-		facing = Direction.from3DDataValue(tag.getIntOr("facing", Direction.NORTH.get3DDataValue()));
+	protected void readProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		facing = Direction.from3DDataValue((tag.contains("facing") ? tag.getInt("facing") : Direction.NORTH.get3DDataValue()));
 		if (hasRotation())
-			rotation = Direction.from3DDataValue(tag.getIntOr("rotation", Direction.NORTH.get3DDataValue()));
+			rotation = Direction.from3DDataValue((tag.contains("rotation") ? tag.getInt("rotation") : Direction.NORTH.get3DDataValue()));
 	}
 
-	protected void writeProperties(ValueOutput tag) {
+	protected void writeProperties(CompoundTag tag, HolderLookup.Provider registries) {
 		tag.putInt("facing", facing == null ? Direction.NORTH.get3DDataValue() : facing.get3DDataValue());
 		if (hasRotation() && rotation != null)
 			tag.putInt("rotation", rotation.get3DDataValue());
@@ -68,18 +68,18 @@ public abstract class BlockEntityFacing extends BlockEntity {
 	/**
 	 * Extra data sent to the client only (update tag / data packet).
 	 */
-	protected void writeUpdateData(ValueOutput tag) { }
+	protected void writeUpdateData(CompoundTag tag) { }
 
 	@Override
-	protected void loadAdditional(ValueInput input) {
-		super.loadAdditional(input);
-		readProperties(input);
+	protected void loadAdditional(CompoundTag input, HolderLookup.Provider registries) {
+		super.loadAdditional(input, registries);
+		readProperties(input, registries);
 	}
 
 	@Override
-	protected void saveAdditional(ValueOutput output) {
-		super.saveAdditional(output);
-		writeProperties(output);
+	protected void saveAdditional(CompoundTag output, HolderLookup.Provider registries) {
+		super.saveAdditional(output, registries);
+		writeProperties(output, registries);
 	}
 
 	protected boolean sendUpdatePacket() {
@@ -93,24 +93,24 @@ public abstract class BlockEntityFacing extends BlockEntity {
 
 	@Override
 	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-		TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, registries);
-		writeProperties(output);
+		CompoundTag output = new CompoundTag();
+		writeProperties(output, registries);
 		writeUpdateData(output);
-		return output.buildResult();
+		return output;
 	}
 
 	@Override
-	public void onDataPacket(Connection net, ValueInput input) {
-		readProperties(input);
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider registries) {
+		readProperties(packet.getTag(), registries);
 	}
 
 	@Override
-	public void handleUpdateTag(ValueInput input) {
-		readProperties(input);
+	public void handleUpdateTag(CompoundTag input, HolderLookup.Provider registries) {
+		readProperties(input, registries);
 	}
 
 	protected void notifyBlockUpdate() {
-		if (!level.isClientSide()) {
+		if (!level.isClientSide) {
 			BlockState state = level.getBlockState(worldPosition);
 			level.sendBlockUpdated(worldPosition, state, state, 2);
 		}

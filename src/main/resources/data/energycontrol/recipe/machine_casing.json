@@ -1,15 +1,21 @@
 {
   "type": "energycontrol:kit_assembler",
   "input1": {
-    "ingredient": "#c:ingots/iron",
+    "ingredient": {
+      "tag": "c:ingots/iron"
+    },
     "count": 3
   },
   "input2": {
-    "ingredient": "#c:ingots/iron",
+    "ingredient": {
+      "tag": "c:ingots/iron"
+    },
     "count": 3
   },
   "input3": {
-    "ingredient": "energycontrol:strong_string",
+    "ingredient": {
+      "item": "energycontrol:strong_string"
+    },
     "count": 3
   },
   "result": {

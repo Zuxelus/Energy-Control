@@ -8,23 +8,28 @@ import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityRemoteThermalMonitor;
 import com.zuxelus.zlib.gui.GuiContainerBase;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class GuiRemoteThermalMonitor extends GuiContainerBase<ContainerRemoteThermalMonitor> {
-	private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/gui_remote_thermo.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/gui_remote_thermo.png");
 
 	private TileEntityRemoteThermalMonitor te;
 	private EditBox textboxHeat;
 
 	public GuiRemoteThermalMonitor(ContainerRemoteThermalMonitor container, Inventory inventory, Component title) {
-		super(container, inventory, title, TEXTURE, 178, 166);
+		super(container, inventory, title, TEXTURE);
 		this.te = container.te;
+		imageWidth = 178;
+		imageHeight = 166;
 	}
 
 	@Override
@@ -48,9 +53,10 @@ public class GuiRemoteThermalMonitor extends GuiContainerBase<ContainerRemoteThe
 	}
 
 	@Override
-	public void extractRenderState(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY, float partialTicks) {
-		super.extractRenderState(matrixStack, mouseX, mouseY, partialTicks);
-		textboxHeat.extractRenderState(matrixStack, mouseX, mouseY, partialTicks);
+	public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
+		super.render(matrixStack, mouseX, mouseY, partialTicks);
+		textboxHeat.renderWidget(matrixStack, mouseX, mouseY, partialTicks);
+		renderTooltip(matrixStack, mouseX, mouseY);
 	}
 
 	@SuppressWarnings("resource")
@@ -68,16 +74,20 @@ public class GuiRemoteThermalMonitor extends GuiContainerBase<ContainerRemoteThe
 			heat = 0;
 		if (heat >= 1000000)
 			heat = 1000000;
-		if (te.getLevel().isClientSide() && te.getHeatLevel() != heat) {
+		if (te.getLevel().isClientSide && te.getHeatLevel() != heat) {
 			NetworkHelper.updateSeverTileEntity(te.getBlockPos(), 1, heat);
 			te.setHeatLevel(heat);
 		}
 		textboxHeat.setValue(Integer.toString(heat));
 	}
 
+	@Override
+	public void containerTick() {
+		super.containerTick();
+	}
 
 	@Override
-	protected void extractLabels(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY) {
+	protected void renderLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
 		drawCenteredText(matrixStack, title, imageWidth, 6);
 		drawLeftAlignedText(matrixStack, I18n.get("container.inventory"), 8, (imageHeight - 96) + 2);
 	}

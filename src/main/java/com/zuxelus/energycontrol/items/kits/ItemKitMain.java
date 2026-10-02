@@ -13,7 +13,7 @@ import net.minecraft.world.item.context.UseOnContext;
 public abstract class ItemKitMain extends Item implements IItemKit {
 
 	public ItemKitMain(Item.Properties properties) {
-		super(properties.stacksTo(16).setNoCombineRepair());
+		super(properties.stacksTo(16));
 	}
 
 	@Override

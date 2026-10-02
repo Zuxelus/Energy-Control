@@ -24,7 +24,7 @@ public class ContainerInfoPanel extends ContainerBase<TileEntityInfoPanel> {
 		addSlot(new SlotCard(panel, 0, 8, 24 + 18) {
 			@Override
 			public void setChanged() {
-				if (panel.getLevel().isClientSide())
+				if (panel.getLevel().isClientSide)
 					ContainerInfoPanel.this.broadcastChanges();
 			};
 		});
@@ -32,7 +32,7 @@ public class ContainerInfoPanel extends ContainerBase<TileEntityInfoPanel> {
 		addSlot(new SlotColor(panel, 2, 8, 24 + 18 * 3) {
 			@Override
 			public void setChanged() {
-				if (panel.getLevel().isClientSide())
+				if (panel.getLevel().isClientSide)
 					ContainerInfoPanel.this.broadcastChanges();
 			};
 		});

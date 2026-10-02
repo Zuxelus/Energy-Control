@@ -22,6 +22,7 @@ sourceSets.main.resources {
 }
 
 repositories {
+    maven { url = "https://maven.blamejared.com" }
     maven {
         name = "CurseMaven"
         url = "https://www.cursemaven.com"
@@ -35,7 +36,7 @@ base {
     archivesName = mod_id
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(25)
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 neoForge {
     version = project.neo_version
@@ -93,8 +94,13 @@ configurations {
 }
 
 dependencies {
-    compileOnly "curse.maven:jei-238222:8990341"
-    localRuntime "curse.maven:jei-238222:8990341"
+    implementation "io.netty:netty-codec-http:4.1.97.Final"
+    jarJar("io.netty:netty-codec-http:4.1.97.Final") {
+        transitive = false
+        version { strictly "[4.1.97.Final,4.2)"; prefer "4.1.97.Final" }
+    }
+    compileOnly "mezz.jei:jei-1.21.1-neoforge-api:19.57.0.450"
+    // JEI is compile-only during base compatibility validation.
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
@@ -144,3 +150,5 @@ idea {
         downloadJavadoc = true
     }
 }
+
+tasks.withType(JavaCompile).configureEach { options.compilerArgs.addAll(["-Xmaxerrs", "1000"]) }

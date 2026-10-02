@@ -21,6 +21,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class RemoteThermalMonitor extends FacingHorizontal {
+    @Override protected com.mojang.serialization.MapCodec<? extends RemoteThermalMonitor> codec() { return simpleCodec(RemoteThermalMonitor::new); }
+
 
 	public RemoteThermalMonitor(Block.Properties properties) {
 		super(FacingBlock.metal(properties));
@@ -36,7 +38,7 @@ public class RemoteThermalMonitor extends FacingHorizontal {
 		BlockEntity te = world.getBlockEntity(pos);
 		if (!(te instanceof TileEntityRemoteThermalMonitor))
 			return InteractionResult.PASS;
-		if (!world.isClientSide())
+		if (!world.isClientSide)
 			player.openMenu((TileEntityRemoteThermalMonitor) te, buf -> buf.writeBlockPos(pos));
 		return InteractionResult.SUCCESS;
 	}

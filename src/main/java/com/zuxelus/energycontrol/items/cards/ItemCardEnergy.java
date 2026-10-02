@@ -34,9 +34,9 @@ public class ItemCardEnergy extends ItemCardMain {
 
 		CompoundTag tag = CrossModLoader.getEnergyData(te);
 		if (tag != null) {
-			reader.setDouble(DataHelper.ENERGY, tag.getDoubleOr(DataHelper.ENERGY, 0.0));
-			reader.setDouble(DataHelper.CAPACITY, tag.getDoubleOr(DataHelper.CAPACITY, 0.0));
-			reader.setString(DataHelper.EUTYPE, tag.getStringOr(DataHelper.EUTYPE, ""));
+			reader.setDouble(DataHelper.ENERGY, (tag.contains(DataHelper.ENERGY) ? tag.getDouble(DataHelper.ENERGY) : 0.0));
+			reader.setDouble(DataHelper.CAPACITY, (tag.contains(DataHelper.CAPACITY) ? tag.getDouble(DataHelper.CAPACITY) : 0.0));
+			reader.setString(DataHelper.EUTYPE, tag.getString(DataHelper.EUTYPE));
 			return CardState.OK;
 		}
 		return CardState.NO_TARGET;

@@ -21,10 +21,18 @@
     "PB"
   ],
   "key": {
-    "P": "minecraft:paper",
-    "R": "#c:dusts/redstone",
-    "F": "energycontrol:radio_transmitter",
-    "B": "#c:dyes/green"
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    },
+    "F": {
+      "item": "energycontrol:radio_transmitter"
+    },
+    "B": {
+      "tag": "c:dyes/green"
+    }
   },
   "result": {
     "id": "energycontrol:kit_big_reactors"

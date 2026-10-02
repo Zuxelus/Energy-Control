@@ -71,7 +71,7 @@ public abstract class ContainerBase<T extends Container> extends AbstractContain
 		ItemStack stack = slot.getItem();
 		ItemStack result = stack.copy();
 
-		int containerSlots = slots.size() - player.getInventory().getNonEquipmentItems().size();
+		int containerSlots = slots.size() - player.getInventory().items.size();
 		if (index < containerSlots) {
 			if (!moveItemStackTo(stack, containerSlots, slots.size(), true))
 				return ItemStack.EMPTY;

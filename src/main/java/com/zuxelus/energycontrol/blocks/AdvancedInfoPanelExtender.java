@@ -23,6 +23,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class AdvancedInfoPanelExtender extends InfoPanelExtender {
+    @Override protected com.mojang.serialization.MapCodec<? extends AdvancedInfoPanelExtender> codec() { return simpleCodec(AdvancedInfoPanelExtender::new); }
+
 
 	public AdvancedInfoPanelExtender(Block.Properties properties) {
 		super(properties);
@@ -35,7 +37,7 @@ public class AdvancedInfoPanelExtender extends InfoPanelExtender {
 
 	@Override
 	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		if (world.isClientSide())
+		if (world.isClientSide)
 			return InteractionResult.PASS;
 		BlockEntity te = world.getBlockEntity(pos);
 		if (!(te instanceof TileEntityInfoPanelExtender))

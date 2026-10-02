@@ -8,19 +8,22 @@ import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.gui.GuiContainerBase;
 import com.zuxelus.zlib.gui.controls.GuiButtonGeneral;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 
+@OnlyIn(Dist.CLIENT)
 public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiContainerBase<T> implements ContainerListener {
 	protected static final int ID_LABELS = 1;
 	protected static final int ID_SLOPE = 2;
@@ -36,8 +39,8 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 	protected boolean modified;
 	protected ItemStack oldStack = ItemStack.EMPTY;
 
-	public GuiPanelBase(T container, Inventory inv, Component name, Identifier texture, int imageHeight) {
-		super(container, inv, name, texture, 176, imageHeight);
+	public GuiPanelBase(T container, Inventory inv, Component name, ResourceLocation texture) {
+		super(container, inv, name, texture);
 		activeTab = 0;
 		modified = false;
 	}
@@ -55,29 +58,38 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 		menu.addSlotListener(this);
 	}
 
+	@Override
+	public void render(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
+		super.render(matrixStack, mouseX, mouseY, partialTicks);
+		renderTooltip(matrixStack, mouseX, mouseY);
+	}
 
 	@Override
-	protected void extractLabels(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY) {
+	protected void renderLabels(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY) {
 		drawCenteredText(matrixStack, title, imageWidth, 6);
 	}
 
 	@Override
-	public boolean mouseReleased(MouseButtonEvent event) {
+	public boolean mouseReleased(double mouseX, double mouseY, int mouseButton) {
 		if (textboxTitle != null) {
-			textboxTitle.mouseReleased(event);
+			textboxTitle.mouseReleased(mouseX - leftPos, mouseY - topPos, mouseButton);
 			if (textboxTitle.isFocused())
-				return super.mouseReleased(event);
+				return super.mouseReleased(mouseX, mouseY, mouseButton);
 			setFocused(null);
 			updateTitle();
 		}
-		return super.mouseReleased(event);
+		return super.mouseReleased(mouseX, mouseY, mouseButton);
 	}
 
+	@Override
+	public void containerTick() {
+		super.containerTick();
+	}
 
 	protected void updateTitle() {
 		if (textboxTitle == null)
 			return;
-		if (panel.getLevel().isClientSide()) {
+		if (panel.getLevel().isClientSide) {
 			CompoundTag tag = new CompoundTag();
 			tag.putInt("type", 4);
 			tag.putInt("slot", activeTab);
@@ -106,7 +118,7 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 			break;
 		case ID_COLORS:
 			Screen colorGui = new GuiScreenColor(this, panel);
-			minecraft.gui.setScreen(colorGui);
+			minecraft.setScreen(colorGui);
 			break;
 		case ID_TEXT:
 			oldStack = ItemStack.EMPTY;
@@ -114,7 +126,7 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 			break;
 		case ID_TICKRATE:
 			GuiHorizontalSlider slider = new GuiHorizontalSlider(this, panel);
-			minecraft.gui.setScreen(slider);
+			minecraft.setScreen(slider);
 			break;
 		}
 	}
@@ -122,14 +134,21 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 	protected void openTextGui() {
 		ItemStack card = panel.getCards().get(activeTab);
 		if (!card.isEmpty() && card.getItem() instanceof ItemCardText)
-			minecraft.gui.setScreen(new GuiCardText(card, panel, this, activeTab));
+			minecraft.setScreen(new GuiCardText(card, panel, this, activeTab));
 	}
 
 	@Override
-	public void slotChanged(AbstractContainerMenu container, int slot, ItemStack stack) {
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		if (keyCode == 69)
+			return true;
+		return super.keyPressed(keyCode, scanCode, modifiers);
+	}
+
+	@Override
+	public void slotChanged(@NotNull AbstractContainerMenu container, int slot, @NotNull ItemStack stack) {
 		initControls();
 	}
 
 	@Override
-	public void dataChanged(AbstractContainerMenu container, int varToUpdate, int newValue) {}
+	public void dataChanged(@NotNull AbstractContainerMenu container, int varToUpdate, int newValue) {}
 }

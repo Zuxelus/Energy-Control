@@ -6,9 +6,15 @@
     "SFS"
   ],
   "key": {
-    "S": "energycontrol:strong_string",
-    "F": "energycontrol:radio_transmitter",
-    "C": "#c:ingots/iron"
+    "S": {
+      "item": "energycontrol:strong_string"
+    },
+    "F": {
+      "item": "energycontrol:radio_transmitter"
+    },
+    "C": {
+      "tag": "c:ingots/iron"
+    }
   },
   "result": {
     "id": "energycontrol:upgrade_range"

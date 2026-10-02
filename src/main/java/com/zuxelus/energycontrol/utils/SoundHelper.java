@@ -14,7 +14,7 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 
@@ -69,7 +69,7 @@ public class SoundHelper {
 	public static void importSound(ResourceManager manager) {
 		List<String> alarms = new ArrayList<>();
 
-		List<Resource> list = manager.getResourceStack(Identifier.fromNamespaceAndPath(EnergyControl.MODID, "sounds.json"));
+		List<Resource> list = manager.getResourceStack(ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "sounds.json"));
 		for (int i = list.size() - 1; i >= 0; --i) {
 			try (Reader reader = list.get(i).openAsReader()) {
 				JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();

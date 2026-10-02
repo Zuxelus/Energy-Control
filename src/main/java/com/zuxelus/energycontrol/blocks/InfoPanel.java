@@ -7,8 +7,8 @@ import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.redstone.Orientation;
-import org.jspecify.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -24,6 +24,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class InfoPanel extends FacingBlockActive {
+    @Override protected com.mojang.serialization.MapCodec<? extends InfoPanel> codec() { return simpleCodec(InfoPanel::new); }
+
 
 	public InfoPanel(Block.Properties builder) {
 		super(metal(builder).lightLevel(state -> state.getValue(ACTIVE) ? 10 : 0));
@@ -39,10 +41,10 @@ public class InfoPanel extends FacingBlockActive {
 		BlockEntity te = world.getBlockEntity(pos);
 		if (!(te instanceof TileEntityInfoPanel))
 			return InteractionResult.PASS;
-		if (!world.isClientSide() && EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) te).getFacing() == hit.getDirection())
+		if (!world.isClientSide && EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) te).getFacing() == hit.getDirection())
 			if (((TileEntityInfoPanel) te).runTouchAction(player.getItemInHand(hand), pos, hit.getLocation()))
 				return InteractionResult.SUCCESS;
-		if (!world.isClientSide())
+		if (!world.isClientSide)
 			player.openMenu((TileEntityInfoPanel) te, buf -> buf.writeBlockPos(pos));
 		return InteractionResult.SUCCESS;
 	}
@@ -53,8 +55,8 @@ public class InfoPanel extends FacingBlockActive {
 	}
 
 	@Override
-	protected void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, @Nullable Orientation orientation, boolean isMoving) {
-		if (world.isClientSide())
+	protected void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos neighborPos, boolean isMoving) {
+		if (world.isClientSide)
 			return;
 
 		boolean flag = state.getValue(ACTIVE);

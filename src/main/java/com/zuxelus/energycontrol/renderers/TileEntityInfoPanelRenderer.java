@@ -2,7 +2,11 @@ package com.zuxelus.energycontrol.renderers;
 
 import java.util.List;
 
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelString;
@@ -12,18 +16,18 @@ import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.util.LightCoordsUtil;
-import net.minecraft.world.phys.AABB;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
-public class TileEntityInfoPanelRenderer extends TileRenderer<TileEntityInfoPanel> {
-	private static final Identifier TEXTURE = Identifier.parse(EnergyControl.MODID + ":textures/block/info_panel/panel_all.png");
-	public static final Identifier SCREEN = Identifier.parse(EnergyControl.MODID + ":textures/block/info_panel/panel_screen.png");
+public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEntityInfoPanel> {
+	private static final ResourceLocation TEXTURE = ResourceLocation.parse(EnergyControl.MODID + ":textures/block/info_panel/panel_all.png");
+	public static final ResourceLocation SCREEN = ResourceLocation.parse(EnergyControl.MODID + ":textures/block/info_panel/panel_screen.png");
 	private final Font font;
 
 	private static String implodeArray(String[] inputArray, String glueString) {
@@ -44,24 +48,21 @@ public class TileEntityInfoPanelRenderer extends TileRenderer<TileEntityInfoPane
 	}
 
 	public TileEntityInfoPanelRenderer(Context ctx) {
-		font = ctx.font();
+		font = ctx.getFont();
 	}
 
 	@Override
-	public AABB getRenderBoundingBox(TileEntityInfoPanel te) {
-		return te.getRenderBoundingBox();
-	}
-
-	@Override
-	protected void render(TileEntityInfoPanel te, PoseStack matrixStack, SubmitNodeCollector buffer, int combinedLight, int combinedOverlay) {
+	public void render(TileEntityInfoPanel te, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
 		matrixStack.pushPose();
 		CubeRenderer.rotateBlock(matrixStack, te.getFacing(), te.getRotation());
 		int[] light = CubeRenderer.getBlockLight(te);
 
 		int color = te.getColored() ? te.getColorBackground() : TileEntityInfoPanel.GREEN;
 		// cutout: the face area of the texture is transparent and must not fight with the screen drawn at the same depth
-		CubeRenderer.MODEL.render(matrixStack, buffer, RenderTypes.entityCutout(TEXTURE), light, combinedOverlay);
-		drawFace(matrixStack, buffer, te.findTexture(), color, te.getPowered(), light[CubeRenderer.FACE], combinedOverlay);
+		VertexConsumer vertexBuilder = buffer.getBuffer(RenderType.entityCutout(TEXTURE));
+		CubeRenderer.MODEL.render(matrixStack, vertexBuilder, light, combinedOverlay);
+		VertexConsumer vertexScreen = buffer.getBuffer(RenderType.entitySolid(SCREEN));
+		drawFace(matrixStack.last(), vertexScreen, te.findTexture(), color, te.getPowered(), light[CubeRenderer.FACE], combinedOverlay);
 		CubeRenderer.rotateBlockText(matrixStack, te.getFacing(), te.getRotation());
 		if (te.getPowered()) {
 			List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
@@ -70,7 +71,13 @@ public class TileEntityInfoPanelRenderer extends TileRenderer<TileEntityInfoPane
 		matrixStack.popPose();
 	}
 
-	public static void drawFace(PoseStack matrixStack, SubmitNodeCollector collector, int texture, int color, boolean isPowered, int faceLight, int combinedOverlay) {
+	public static void drawFace(PoseStack.Pose matrixEntry, VertexConsumer buffer, int texture, int color, boolean isPowered, int faceLight, int combinedOverlay) {
+		Matrix3f matrix3f = matrixEntry.normal();
+		Matrix4f matrix4f = matrixEntry.pose();
+		float f = (color >> 24 & 255) / 255.0F;
+		float f1 = (color >> 16 & 255) / 255.0F;
+		float f2 = (color >> 8 & 255) / 255.0F;
+		float f3 = (color & 255) / 255.0F;
 
 		float x = (texture / 4) * 0.25F;
 		float y = (texture % 4) * 0.25F;
@@ -79,16 +86,15 @@ public class TileEntityInfoPanelRenderer extends TileRenderer<TileEntityInfoPane
 		PositionTextureVertex v2 = new PositionTextureVertex(16, 0, 0, 8.0F, 8.0F);
 		PositionTextureVertex v3 = new PositionTextureVertex(0, 0, 0, 8.0F, 0.0F);
 		TexturedQuad quad = new TexturedQuad(new PositionTextureVertex[] { v, v1, v2, v3 }, x, y, x + 0.25F , y + 0.25F, 1.0F, 1.0F, Direction.NORTH);
-		int light = getScreenLight(isPowered, faceLight);
-		collector.submitCustomGeometry(matrixStack, RenderTypes.entitySolid(SCREEN), (pose, buffer) -> quad.draw(pose, buffer, light, combinedOverlay, color));
+		quad.draw(matrix3f, matrix4f, buffer, getScreenLight(isPowered, faceLight), combinedOverlay, f1, f2, f3, f);
 	}
 
 	// a powered screen glows
 	public static int getScreenLight(boolean isPowered, int faceLight) {
-		return isPowered ? LightCoordsUtil.FULL_BRIGHT : faceLight;
+		return isPowered ? LightTexture.FULL_BRIGHT : faceLight;
 	}
 
-	private void drawText(TileEntityInfoPanel panel, List<PanelString> joinedData, PoseStack matrixStack, SubmitNodeCollector buffer, int combinedLight) {
+	private void drawText(TileEntityInfoPanel panel, List<PanelString> joinedData, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight) {
 		Screen screen = panel.getScreen();
 		BlockPos pos = panel.getBlockPos();
 		float displayWidth = 1 - 2F / 16;
@@ -158,30 +164,30 @@ public class TileEntityInfoPanelRenderer extends TileRenderer<TileEntityInfoPane
 		}
 
 		matrixStack.translate(0.5F - dy / 2, 1.01F - dx / 2 , -0.5F - dz / 2);
-		matrixStack.rotate(Axis.XP.rotationDegrees(-90));
+		matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
 		switch(panel.getRotation())
 		{
 		case UP:
 			break;
 		case NORTH:
-			matrixStack.rotate(Axis.ZP.rotationDegrees(180));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(180));
 			break;
 		case SOUTH:
 			break;
 		case DOWN:
 			break;
 		case WEST:
-			matrixStack.rotate(Axis.ZP.rotationDegrees(-90));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(-90));
 			break;
 		case EAST:
-			matrixStack.rotate(Axis.ZP.rotationDegrees(90));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(90));
 			break;
 		}
 
 		if (panel.isTouchCard() || panel.hasBars()) {
-			matrixStack.rotate(Axis.YP.rotationDegrees(180));
+			matrixStack.mulPose(Axis.YP.rotationDegrees(180));
 			panel.renderImage(displayWidth, displayHeight, matrixStack, buffer);
-			matrixStack.rotate(Axis.YP.rotationDegrees(180));
+			matrixStack.mulPose(Axis.YP.rotationDegrees(180));
 		}
 		if (joinedData != null) {
 			matrixStack.translate(0, 0, 0.0002F);
@@ -192,7 +198,7 @@ public class TileEntityInfoPanelRenderer extends TileRenderer<TileEntityInfoPane
 		}
 	}
 
-	public static void renderText(List<PanelString> joinedData, float displayWidth, float displayHeight, int colorHex, PoseStack matrixStack, SubmitNodeCollector buffer, Font fontRenderer) {
+	public static void renderText(List<PanelString> joinedData, float displayWidth, float displayHeight, int colorHex, PoseStack matrixStack, MultiBufferSource buffer, Font fontRenderer) {
 		int maxWidth = 1;
 		for (PanelString panelString : joinedData) {
 			String currentString = implodeArray(new String[] { panelString.textLeft, panelString.textCenter, panelString.textRight }, " ");
@@ -219,18 +225,26 @@ public class TileEntityInfoPanelRenderer extends TileRenderer<TileEntityInfoPane
 		}
 
 		int row = 0;
+		Matrix4f matrix = matrixStack.last().pose();
 		for (PanelString panelString : joinedData) {
 			if (panelString.textLeft != null)
-				drawString(buffer, matrixStack, panelString.textLeft, offsetX - realWidth / 2,
-					offsetY - realHeight / 2 + row * lineHeight, panelString.colorLeft != 0 ? panelString.colorLeft : colorHex, LightCoordsUtil.FULL_BRIGHT);
+				fontRenderer.drawInBatch(panelString.textLeft, offsetX - realWidth / 2,
+					offsetY - realHeight / 2 + row * lineHeight, panelString.colorLeft != 0 ? panelString.colorLeft : colorHex,
+					false, matrix, buffer, Font.DisplayMode.POLYGON_OFFSET, 0, LightTexture.FULL_BRIGHT);
 			if (panelString.textCenter != null)
-				drawString(buffer, matrixStack, panelString.textCenter, -fontRenderer.width(panelString.textCenter) / 2,
-					offsetY - realHeight / 2 + row * lineHeight, panelString.colorCenter != 0 ? panelString.colorCenter : colorHex, LightCoordsUtil.FULL_BRIGHT);
+				fontRenderer.drawInBatch(panelString.textCenter, -fontRenderer.width(panelString.textCenter) / 2,
+					offsetY - realHeight / 2 + row * lineHeight, panelString.colorCenter != 0 ? panelString.colorCenter : colorHex,
+					false, matrix, buffer, Font.DisplayMode.POLYGON_OFFSET, 0, LightTexture.FULL_BRIGHT);
 			if (panelString.textRight != null)
-				drawString(buffer, matrixStack, panelString.textRight, realWidth / 2 - fontRenderer.width(panelString.textRight),
-					offsetY - realHeight / 2 + row * lineHeight, panelString.colorRight != 0 ? panelString.colorRight : colorHex, LightCoordsUtil.FULL_BRIGHT);
+				fontRenderer.drawInBatch(panelString.textRight, realWidth / 2 - fontRenderer.width(panelString.textRight),
+					offsetY - realHeight / 2 + row * lineHeight, panelString.colorRight != 0 ? panelString.colorRight : colorHex,
+					false, matrix, buffer, Font.DisplayMode.POLYGON_OFFSET, 0, LightTexture.FULL_BRIGHT);
 			row++;
 		}
 	}
 
+	@Override
+	public int getViewDistance() {
+		return 65536;
+	}
 }

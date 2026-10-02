@@ -9,7 +9,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public class NetworkHelper {
@@ -20,13 +20,13 @@ public class NetworkHelper {
 
 	// client
 	public static void sendToServer(CustomPacketPayload message) {
-		ClientPacketDistributor.sendToServer(message);
+		PacketDistributor.sendToServer(message);
 	}
 
 	// server
 	public static void sendPacketToAllAround(Level world, BlockPos pos, CustomPacketPayload message) {
 		if (world instanceof ServerLevel level)
-			PacketDistributor.sendToPlayersTrackingChunk(level, ChunkPos.containing(pos), message);
+			PacketDistributor.sendToPlayersTrackingChunk(level, new ChunkPos(pos), message);
 	}
 
 	// server

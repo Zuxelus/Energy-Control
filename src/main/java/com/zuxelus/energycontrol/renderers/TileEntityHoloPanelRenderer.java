@@ -4,65 +4,68 @@ import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import com.zuxelus.energycontrol.ClientTickHandler;
 import com.zuxelus.energycontrol.api.IHasBars;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityHoloPanel;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.AABB;
 
-public class TileEntityHoloPanelRenderer extends TileRenderer<TileEntityHoloPanel> {
+public class TileEntityHoloPanelRenderer implements BlockEntityRenderer<TileEntityHoloPanel> {
 	private final Font font;
 
 	public TileEntityHoloPanelRenderer(Context ctx) {
-		font = ctx.font();
+		font = ctx.getFont();
 	}
 
 	@Override
-	public AABB getRenderBoundingBox(TileEntityHoloPanel te) {
-		return te.getRenderBoundingBox();
-	}
-
-	@Override
-	protected void render(TileEntityHoloPanel te, PoseStack matrixStack, SubmitNodeCollector buffer, int combinedLight, int combinedOverlay) {
+	public void render(TileEntityHoloPanel te, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
 		matrixStack.pushPose();
 		switch (te.getFacing()) {
 		case UP:
 			break;
 		case NORTH:
-			matrixStack.rotate(Axis.XP.rotationDegrees(-90));
+			matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
 			matrixStack.translate(0.0F, -1.5F, 0.0F);
 			break;
 		case SOUTH:
-			matrixStack.rotate(Axis.XP.rotationDegrees(90));
+			matrixStack.mulPose(Axis.XP.rotationDegrees(90));
 			matrixStack.translate(0.0F, -0.5F, -1.0F);
 			break;
 		case DOWN:
-			matrixStack.rotate(Axis.XP.rotationDegrees(180));
+			matrixStack.mulPose(Axis.XP.rotationDegrees(180));
 			matrixStack.translate(0.0F, -1.0F, -1.0F);
 			break;
 		case WEST:
-			matrixStack.rotate(Axis.ZP.rotationDegrees(90));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(90));
 			matrixStack.translate(0.0F, -1.5F, 0.0F);
 			break;
 		case EAST:
-			matrixStack.rotate(Axis.ZP.rotationDegrees(-90));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(-90));
 			matrixStack.translate(-1.0F, -0.5F, 0.0F);
 			break;
 		}
 
+		/*int color = 2;
+		if (te.getColored()) {
+			color = te.getColorBackground();
+			if (color > 15 || color < 0)
+				color = 2;
+		}*/
 		if (te.getPowered()) {
 			List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
-			drawText(te, joinedData, matrixStack, buffer, combinedLight);
+			drawText(te, partialTicks, joinedData, matrixStack, buffer, combinedLight);
 		}
 		matrixStack.popPose();
 	}
 
-	private void drawText(TileEntityHoloPanel panel, List<PanelString> joinedData, PoseStack matrixStack, SubmitNodeCollector buffer, int combinedLight) {
+	@SuppressWarnings("incomplete-switch")
+	private void drawText(TileEntityHoloPanel panel, float partialTicks, List<PanelString> joinedData, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight) {
 		Screen screen = panel.getScreen();
 		BlockPos pos = panel.getBlockPos();
 		int power = panel.getPower();
@@ -101,33 +104,39 @@ public class TileEntityHoloPanelRenderer extends TileRenderer<TileEntityHoloPane
 		}
 
 		matrixStack.translate(0.5F - dy / 2, 1.01F - dx / 2 , 0.5F - dz / 2);
-		matrixStack.rotate(Axis.XP.rotationDegrees(-90));
+		matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
 		switch(panel.getFacing())
 		{
 		case NORTH:
-			matrixStack.rotate(Axis.ZP.rotationDegrees(180));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(180));
 			break;
 		case SOUTH:
 			break;
 		case WEST:
-			matrixStack.rotate(Axis.ZP.rotationDegrees(-90));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(-90));
 			break;
 		case EAST:
-			matrixStack.rotate(Axis.ZP.rotationDegrees(90));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(90));
 			break;
 		default:
 			break;
 		}
 		float imageWidth = 0.475F + (displayWidth - 0.875F) / 2F;
 		float imageHeight = 0.5F + (power - 1) / 2F;
-		// not culled, so visible from both sides
-		IHasBars.drawTransparentRect(matrixStack, buffer, imageWidth, imageHeight, -imageWidth, -imageHeight, -0.0001F, 0x40AADDDD);
-		if (joinedData != null) {
+		if (partialTicks == -1) {
+			// not culled, so visible from both sides
+			IHasBars.drawTransparentRect(matrixStack, buffer, imageWidth, imageHeight, -imageWidth, -imageHeight, -0.0001F, 0x40AADDDD);
+		} else if (joinedData != null) {
 			matrixStack.translate(0, 0, 0.0002F * (power + 1) / 2);
 			int colorHex = 0x000000;
 			if (panel.getColored())
 				colorHex = panel.getColorText();
 			TileEntityInfoPanelRenderer.renderText(joinedData, displayWidth, displayHeight, colorHex, matrixStack, buffer, font);
 		}
+	}
+
+	@Override
+	public int getViewDistance() {
+		return 65536;
 	}
 }

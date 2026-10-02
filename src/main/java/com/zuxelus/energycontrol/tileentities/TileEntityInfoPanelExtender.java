@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import net.minecraft.core.HolderLookup;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.zlib.blocks.FacingBlockActive;
@@ -7,8 +8,8 @@ import com.zuxelus.zlib.blocks.FacingHorizontalActive;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.nbt.CompoundTag;
+
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
@@ -62,27 +63,27 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 					screen.init(true, level);
 			}
 		}
-		if (level.isClientSide() && !partOfScreen && screen != null)
+		if (level.isClientSide && !partOfScreen && screen != null)
 			setScreen(null);
 	}
 
 	@Override
-	protected void readProperties(ValueInput tag) {
-		super.readProperties(tag);
-		partOfScreen = tag.getBooleanOr("partOfScreen", partOfScreen);
-		coreX = tag.getIntOr("coreX", coreX);
-		coreY = tag.getIntOr("coreY", coreY);
-		coreZ = tag.getIntOr("coreZ", coreZ);
+	protected void readProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.readProperties(tag, registries);
+		partOfScreen = (tag.contains("partOfScreen") ? tag.getBoolean("partOfScreen") : partOfScreen);
+		coreX = (tag.contains("coreX") ? tag.getInt("coreX") : coreX);
+		coreY = (tag.contains("coreY") ? tag.getInt("coreY") : coreY);
+		coreZ = (tag.contains("coreZ") ? tag.getInt("coreZ") : coreZ);
 		if (level != null) {
 			updateScreen();
-			if (level.isClientSide())
+			if (level.isClientSide)
 				level.getChunkSource().getLightEngine().checkBlock(worldPosition);
 		}
 	}
 
 	@Override
-	protected void writeProperties(ValueOutput tag) {
-		super.writeProperties(tag);
+	protected void writeProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.writeProperties(tag, registries);
 		tag.putBoolean("partOfScreen", partOfScreen);
 		tag.putInt("coreX", coreX);
 		tag.putInt("coreY", coreY);
@@ -91,7 +92,7 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 
 	@Override
 	public void setRemoved() {
-		if (!level.isClientSide())
+		if (!level.isClientSide)
 			EnergyControl.INSTANCE.screenManager.unregisterScreenPart(this);
 		super.setRemoved();
 	}
@@ -107,7 +108,7 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 		if (init)
 			return;
 
-		if (!level.isClientSide() && !partOfScreen)
+		if (!level.isClientSide && !partOfScreen)
 			EnergyControl.INSTANCE.screenManager.registerInfoPanelExtender(this);
 
 		updateScreen();

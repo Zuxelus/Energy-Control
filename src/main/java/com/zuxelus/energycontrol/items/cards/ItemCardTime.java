@@ -21,7 +21,7 @@ public class ItemCardTime extends ItemCardMain {
 		List<PanelString> result = reader.getTitleList();
 		int time = 0;
 		if (world != null)
-			time = (int) ((world.getOverworldClockTime() + 6000) % 24000);
+			time = (int) ((world.getDayTime() + 6000) % 24000);
 		int hours = time / 1000;
 		int minutes = (time % 1000) * 6 / 100;
 		String suffix = "";

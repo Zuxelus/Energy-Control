@@ -3,6 +3,7 @@ package com.zuxelus.energycontrol.renderers;
 import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelString;
@@ -10,18 +11,17 @@ import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.util.LightCoordsUtil;
-import net.minecraft.world.phys.AABB;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
-public class TEAdvancedInfoPanelRenderer extends TileRenderer<TileEntityAdvancedInfoPanel> {
-	private static final Identifier TEXTURE = Identifier.parse(EnergyControl.MODID + ":textures/block/info_panel/panel_advanced_all.png");
+public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEntityAdvancedInfoPanel> {
+	private static final ResourceLocation TEXTURE = ResourceLocation.parse(EnergyControl.MODID + ":textures/block/info_panel/panel_advanced_all.png");
 	private final Font font;
 
 	private static String implodeArray(String[] inputArray, String glueString) {
@@ -42,22 +42,17 @@ public class TEAdvancedInfoPanelRenderer extends TileRenderer<TileEntityAdvanced
 	}
 
 	public TEAdvancedInfoPanelRenderer(Context ctx) {
-		font = ctx.font();
+		font = ctx.getFont();
 	}
 
 	@Override
-	public AABB getRenderBoundingBox(TileEntityAdvancedInfoPanel te) {
-		return te.getRenderBoundingBox();
-	}
-
-	@Override
-	protected void render(TileEntityAdvancedInfoPanel te, PoseStack matrixStack, SubmitNodeCollector buffer, int combinedLight, int combinedOverlay) {
+	public void render(TileEntityAdvancedInfoPanel te, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
 		matrixStack.pushPose();
 		int[] light = CubeRenderer.getBlockLight(te);
 		CubeRenderer.rotateBlock(matrixStack, te.getFacing(), te.getRotation());
 
 		int color = te.getColored() ? te.getColorBackground() : TileEntityAdvancedInfoPanel.DEFAULT_BACKGROUND;
-		RenderType vertexBuilder = RenderTypes.entityCutout(TEXTURE);
+		VertexConsumer vertexBuilder = buffer.getBuffer(RenderType.entityCutout(TEXTURE));
 
 		int textureId = te.findTexture();
 		byte thickness = te.thickness;
@@ -69,12 +64,14 @@ public class TEAdvancedInfoPanelRenderer extends TileRenderer<TileEntityAdvanced
 		Screen screen = te.getScreen();
 		// the plain cube doesn't depend on the screen, so draw it even before the screen is known
 		if (screen == null || (thickness == 16 && rotateHor == 0 && rotateVert == 0)) {
-			CubeRenderer.MODEL.render(matrixStack, buffer, vertexBuilder, light, combinedOverlay);
-			TileEntityInfoPanelRenderer.drawFace(matrixStack, buffer, textureId, color, te.getPowered(), light[CubeRenderer.FACE], combinedOverlay);
+			CubeRenderer.MODEL.render(matrixStack, vertexBuilder, light, combinedOverlay);
+			VertexConsumer vertexScreen = buffer.getBuffer(RenderType.entitySolid(TileEntityInfoPanelRenderer.SCREEN));
+			TileEntityInfoPanelRenderer.drawFace(matrixStack.last(), vertexScreen, textureId, color, te.getPowered(), light[CubeRenderer.FACE], combinedOverlay);
 		} else {
 			RotationOffset offsetScreen = offset.addOffset(screen, te.getBlockPos(), te.getFacing(), te.getRotation());
-			CubeRenderer.getModel(offsetScreen).render(matrixStack, buffer, vertexBuilder, light, combinedOverlay);
-			CubeRenderer.getFaceModel(offsetScreen, textureId).render(matrixStack, buffer, RenderTypes.entitySolid(TileEntityInfoPanelRenderer.SCREEN), new int[] { TileEntityInfoPanelRenderer.getScreenLight(te.getPowered(), light[CubeRenderer.FACE]) }, combinedOverlay, color);
+			CubeRenderer.getModel(offsetScreen).render(matrixStack, vertexBuilder, light, combinedOverlay);
+			VertexConsumer vertexScreen = buffer.getBuffer(RenderType.entitySolid(TileEntityInfoPanelRenderer.SCREEN));
+			CubeRenderer.getFaceModel(offsetScreen, textureId).render(matrixStack, vertexScreen, new int[] { TileEntityInfoPanelRenderer.getScreenLight(te.getPowered(), light[CubeRenderer.FACE]) }, combinedOverlay, color);
 		}
 
 		if (screen != null) {
@@ -89,7 +86,7 @@ public class TEAdvancedInfoPanelRenderer extends TileRenderer<TileEntityAdvanced
 		matrixStack.popPose();
 	}
 
-	private void drawText(TileEntityAdvancedInfoPanel panel, List<PanelString> joinedData, PoseStack matrixStack, SubmitNodeCollector buffer, int combinedLight, byte thickness, RotationOffset offset) {
+	private void drawText(TileEntityAdvancedInfoPanel panel, List<PanelString> joinedData, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, byte thickness, RotationOffset offset) {
 		Screen screen = panel.getScreen();
 		BlockPos pos = panel.getBlockPos();
 		float displayWidth = 1.0F;
@@ -159,13 +156,13 @@ public class TEAdvancedInfoPanelRenderer extends TileRenderer<TileEntityAdvanced
 		}
 
 		matrixStack.translate(dy, dx, dz);
-		matrixStack.rotate(Axis.XP.rotationDegrees(-90));
+		matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
 		if (panel.getFacing() == Direction.UP) {
 			switch(panel.getRotation()) {
 			case UP:
 				break;
 			case NORTH:
-				matrixStack.rotate(Axis.ZP.rotationDegrees(180));
+				matrixStack.mulPose(Axis.ZP.rotationDegrees(180));
 				matrixStack.translate(-1.0F, -1.0F, 0.0F);
 				break;
 			case SOUTH:
@@ -174,11 +171,11 @@ public class TEAdvancedInfoPanelRenderer extends TileRenderer<TileEntityAdvanced
 			case DOWN:
 				break;
 			case WEST:
-				matrixStack.rotate(Axis.ZP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.ZP.rotationDegrees(-90));
 				matrixStack.translate(-1.0F, 0.0F, 0.0F);
 				break;
 			case EAST:
-				matrixStack.rotate(Axis.ZP.rotationDegrees(90));
+				matrixStack.mulPose(Axis.ZP.rotationDegrees(90));
 				matrixStack.translate(0.0F, -1.0F, 0.0F);
 				break;
 			}
@@ -191,8 +188,8 @@ public class TEAdvancedInfoPanelRenderer extends TileRenderer<TileEntityAdvanced
 		int i = offset.rotateVert == 0 ? 0 : offset.rotateVert > 0 ? -1 : 1;
 		int j = offset.rotateHor == 0 ? 0 : offset.rotateHor > 0 ? -1 : 1;
 		matrixStack.translate(displayWidth / 2, displayHeight / 2, 1 + (32 * h - offset.leftTop - offset.leftBottom) / 64);
-		matrixStack.rotate(Axis.YN.rotationDegrees((float) Math.toDegrees(b)));
-		matrixStack.rotate(Axis.XN.rotationDegrees((float) Math.toDegrees(a)));
+		matrixStack.mulPose(Axis.YN.rotationDegrees((float) Math.toDegrees(b)));
+		matrixStack.mulPose(Axis.XN.rotationDegrees((float) Math.toDegrees(a)));
 		/*matrixStack.mulPose(new Vector3f(0.0F, 0.0F, i * j).rotationDegrees(90.0F - (float) Math.toDegrees( // Law of cosines
 			Math.acos((h * h + v * v) / 2 / Math.sqrt(displayWidth * displayWidth + h * h) / Math.sqrt(displayHeight * displayHeight + v * v)))));*/
 		matrixStack.translate(0.0F, 0.001F * i, 0.001F);
@@ -231,16 +228,29 @@ public class TEAdvancedInfoPanelRenderer extends TileRenderer<TileEntityAdvanced
 			colorHex = panel.getColorText();
 		for (PanelString panelString : joinedData) {
 			if (panelString.textLeft != null) {
-				drawString(buffer, matrixStack, panelString.textLeft, offsetX - realWidth / 2, 1 + offsetY - realHeight / 2 + row * lineHeight, panelString.colorLeft != 0 ? panelString.colorLeft : colorHex, LightCoordsUtil.FULL_BRIGHT);
+				font.drawInBatch(panelString.textLeft, offsetX - realWidth / 2,
+						1 + offsetY - realHeight / 2 + row * lineHeight,
+						panelString.colorLeft != 0 ? panelString.colorLeft : colorHex, false, matrixStack.last().pose(),
+						buffer, Font.DisplayMode.POLYGON_OFFSET, 0, LightTexture.FULL_BRIGHT);
 			}
 			if (panelString.textCenter != null) {
-				drawString(buffer, matrixStack, panelString.textCenter, -font.width(panelString.textCenter) / 2, offsetY - realHeight / 2 + row * lineHeight, panelString.colorCenter != 0 ? panelString.colorCenter : colorHex, LightCoordsUtil.FULL_BRIGHT);
+				font.drawInBatch(panelString.textCenter,
+						-font.width(panelString.textCenter) / 2, offsetY - realHeight / 2 + row * lineHeight,
+						panelString.colorCenter != 0 ? panelString.colorCenter : colorHex, false, matrixStack.last().pose(),
+						buffer, Font.DisplayMode.POLYGON_OFFSET, 0, LightTexture.FULL_BRIGHT);
 			}
 			if (panelString.textRight != null) {
-				drawString(buffer, matrixStack, panelString.textRight, realWidth / 2 - font.width(panelString.textRight), offsetY - realHeight / 2 + row * lineHeight, panelString.colorRight != 0 ? panelString.colorRight : colorHex, LightCoordsUtil.FULL_BRIGHT);
+				font.drawInBatch(panelString.textRight,
+						realWidth / 2 - font.width(panelString.textRight), offsetY - realHeight / 2 + row * lineHeight,
+						panelString.colorRight != 0 ? panelString.colorRight : colorHex, false, matrixStack.last().pose(),
+						buffer, Font.DisplayMode.POLYGON_OFFSET, 0, LightTexture.FULL_BRIGHT);
 			}
 			row++;
 		}
 	}
 
+	@Override
+	public int getViewDistance() {
+		return 65536;
+	}
 }

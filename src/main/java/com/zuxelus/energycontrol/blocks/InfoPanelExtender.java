@@ -20,6 +20,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class InfoPanelExtender extends FacingBlockActive {
+    @Override protected com.mojang.serialization.MapCodec<? extends InfoPanelExtender> codec() { return simpleCodec(InfoPanelExtender::new); }
+
 
 	public InfoPanelExtender(Block.Properties properties) {
 		super(metal(properties).lightLevel(state -> state.getValue(ACTIVE) ? 10 : 0));
@@ -32,7 +34,7 @@ public class InfoPanelExtender extends FacingBlockActive {
 
 	@Override
 	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		if (world.isClientSide())
+		if (world.isClientSide)
 			return InteractionResult.PASS;
 		BlockEntity te = world.getBlockEntity(pos);
 		if (!(te instanceof TileEntityInfoPanelExtender))

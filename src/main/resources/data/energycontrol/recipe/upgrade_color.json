@@ -7,15 +7,33 @@
     "IAB"
   ],
   "key": {
-    "R": "#c:dyes/red",
-    "Y": "#c:dyes/yellow",
-    "G": "#c:dyes/green",
-    "W": "#c:dyes/white",
-    "C": "#c:circuits/basic",
-    "M": "#c:dyes/magenta",
-    "I": "#c:dyes/black",
-    "A": "#c:dyes/cyan",
-    "B": "#c:dyes/blue"
+    "R": {
+      "tag": "c:dyes/red"
+    },
+    "Y": {
+      "tag": "c:dyes/yellow"
+    },
+    "G": {
+      "tag": "c:dyes/green"
+    },
+    "W": {
+      "tag": "c:dyes/white"
+    },
+    "C": {
+      "tag": "c:circuits/basic"
+    },
+    "M": {
+      "tag": "c:dyes/magenta"
+    },
+    "I": {
+      "tag": "c:dyes/black"
+    },
+    "A": {
+      "tag": "c:dyes/cyan"
+    },
+    "B": {
+      "tag": "c:dyes/blue"
+    }
   },
   "result": {
     "id": "energycontrol:upgrade_color"

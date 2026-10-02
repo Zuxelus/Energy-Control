@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.gui;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
@@ -8,17 +7,15 @@ import com.zuxelus.zlib.gui.GuiBase;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.input.InputWithModifiers;
-import net.minecraft.util.ARGB;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class GuiHorizontalSlider extends GuiBase {
 
 	private GuiPanelBase<?> parentGui;
@@ -39,17 +36,17 @@ public class GuiHorizontalSlider extends GuiBase {
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY) {
+	protected void drawGuiContainerForegroundLayer(GuiGraphics matrixStack, int mouseX, int mouseY) {
 		drawTitle(matrixStack);
 	}
 
 	@Override
-	public boolean keyPressed(KeyEvent event) {
-		if (event.key() == InputConstants.KEY_ESCAPE) {
-			minecraft.gui.setScreen(parentGui);
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		if (keyCode == 256) {
+			minecraft.setScreen(parentGui);
 			return true;
 		}
-		return super.keyPressed(event);
+		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 
 	public class HorizontalSlider extends AbstractButton {
@@ -73,7 +70,7 @@ public class GuiHorizontalSlider extends GuiBase {
 			if (sliderValue > maxValue)
 				sliderValue = maxValue;
 
-			if (panel.getLevel().isClientSide() && panel.getTickRate() != sliderValue) {
+			if (panel.getLevel().isClientSide && panel.getTickRate() != sliderValue) {
 				NetworkHelper.updateSeverTileEntity(panel.getBlockPos(), 5, sliderValue);
 				panel.setTickRate(sliderValue);
 			}
@@ -81,29 +78,29 @@ public class GuiHorizontalSlider extends GuiBase {
 		}
 
 		@Override
-		protected void extractContents(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY, float partialTicks) {
+		protected void renderWidget(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
 			if (!visible)
 				return;
 			if (dragging)
 				setSliderPos(mouseX);
 
-			matrixStack.blit(RenderPipelines.GUI_TEXTURED, texture, getX() - 2 + sliderValue, getY(), 152, 0, 8, 16, 256, 256);
+			matrixStack.blit(texture, getX() - 2 + sliderValue, getY(), 152, 0, 8, 16);
 			FormattedCharSequence ireorderingprocessor = getMessage().getVisualOrderText();
 			Minecraft minecraft = Minecraft.getInstance();
 			Font fontRenderer = minecraft.font;
-			matrixStack.text(fontRenderer, ireorderingprocessor, getX() - 10 + (width - fontRenderer.width(ireorderingprocessor)) / 2, getY() - 12, ARGB.opaque(0x404040), false);
+			matrixStack.drawString(fontRenderer, ireorderingprocessor, getX() - 10 + (width - fontRenderer.width(ireorderingprocessor)) / 2, getY() - 12, 0x404040, false);
 		}
 
 		@Override
-		public void onPress(InputWithModifiers input) { }
+		public void onPress() { }
 
 		@Override
-		public void onClick(MouseButtonEvent event, boolean doubleClick) {
+		public void onClick(double mouseX, double mouseY) {
 			dragging = true;
 		}
 
 		@Override
-		public void onRelease(MouseButtonEvent event) {
+		public void onRelease(double mouseX, double mouseY) {
 			dragging = false;
 		}
 

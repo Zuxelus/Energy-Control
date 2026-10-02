@@ -23,6 +23,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class AdvancedInfoPanel extends InfoPanel {
+    @Override protected com.mojang.serialization.MapCodec<? extends AdvancedInfoPanel> codec() { return simpleCodec(AdvancedInfoPanel::new); }
+
 
 	public AdvancedInfoPanel(Block.Properties properties) {
 		super(properties.dynamicShape().noOcclusion());
@@ -70,10 +72,10 @@ public class AdvancedInfoPanel extends InfoPanel {
 		BlockEntity te = world.getBlockEntity(pos);
 		if (!(te instanceof TileEntityInfoPanel))
 			return InteractionResult.PASS;
-		if (!world.isClientSide() && EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) te).getFacing() == hit.getDirection())
+		if (!world.isClientSide && EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) te).getFacing() == hit.getDirection())
 			if (((TileEntityInfoPanel) te).runTouchAction(player.getItemInHand(hand), pos, hit.getLocation()))
 				return InteractionResult.SUCCESS;
-		if (!world.isClientSide())
+		if (!world.isClientSide)
 			player.openMenu((TileEntityAdvancedInfoPanel) te, buf -> buf.writeBlockPos(pos));
 		return InteractionResult.SUCCESS;
 	}

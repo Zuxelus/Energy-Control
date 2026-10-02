@@ -1,17 +1,21 @@
 package com.zuxelus.zlib.gui;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.ARGB;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public abstract class GuiBase extends Screen {
-	protected Identifier texture;
+	protected ResourceLocation texture;
 	protected int xSize = 131;
 	protected int ySize = 136;
 	protected int guiLeft;
@@ -21,7 +25,7 @@ public abstract class GuiBase extends Screen {
 		super(Component.translatable(name));
 		this.xSize = xSize;
 		this.ySize = ySize;
-		this.texture = Identifier.parse(texture);
+		this.texture = ResourceLocation.parse(texture);
 	}
 
 	@Override
@@ -32,24 +36,24 @@ public abstract class GuiBase extends Screen {
 	}
 
 	@Override
-	public void extractBackground(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY, float partialTicks) {
-		super.extractBackground(matrixStack, mouseX, mouseY, partialTicks);
+	public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
+		renderBackground(matrixStack, mouseX, mouseY, partialTicks);
 		drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
-	}
-
-	@Override
-	public void extractRenderState(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY, float partialTicks) {
-		super.extractRenderState(matrixStack, mouseX, mouseY, partialTicks);
-		matrixStack.pose().pushMatrix();
-		matrixStack.pose().translate(guiLeft, guiTop);
+		RenderSystem.disableDepthTest();
+		super.render(matrixStack, mouseX, mouseY, partialTicks);
+		PoseStack posestack = matrixStack.pose();
+		posestack.pushPose();
+		posestack.translate((float) guiLeft, (float) guiTop, 0.0F);
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		drawGuiContainerForegroundLayer(matrixStack, mouseX, mouseY);
-		matrixStack.pose().popMatrix();
+		posestack.popPose();
+		RenderSystem.enableDepthTest();
 	}
 
-	protected void drawGuiContainerForegroundLayer(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY) {}
+	protected void drawGuiContainerForegroundLayer(GuiGraphics matrixStack, int mouseX, int mouseY) {}
 
-	protected void drawGuiContainerBackgroundLayer(GuiGraphicsExtractor matrixStack, float partialTicks, int mouseX, int mouseY) {
-		matrixStack.blit(RenderPipelines.GUI_TEXTURED, texture, guiLeft, guiTop, 0, 0, xSize, ySize, 256, 256);
+	protected void drawGuiContainerBackgroundLayer(GuiGraphics matrixStack, float partialTicks, int mouseX, int mouseY) {
+		matrixStack.blit(texture, guiLeft, guiTop, 0, 0, xSize, ySize);
 	}
 
 	@Override
@@ -60,14 +64,15 @@ public abstract class GuiBase extends Screen {
 	protected EditBox addTextFieldWidget(int left, int top, int width, int height, boolean isEnabled, String text) {
 		EditBox textBox = new EditBox(font, guiLeft + left, guiTop + top, width, height, null, CommonComponents.EMPTY);
 		textBox.setEditable(isEnabled);
+		//textBox.changeFocus(isEnabled);
 		textBox.setValue(text);
 		addWidget(textBox);
 		setInitialFocus(textBox);
 		return textBox;
 	}
 
-	protected void drawTitle(GuiGraphicsExtractor matrixStack) {
+	protected void drawTitle(GuiGraphics matrixStack) {
 		FormattedCharSequence ireorderingprocessor = title.getVisualOrderText();
-		matrixStack.text(font, ireorderingprocessor, (xSize - font.width(ireorderingprocessor)) / 2, 6, ARGB.opaque(0x404040), false);
+		matrixStack.drawString(font, ireorderingprocessor, (xSize - font.width(ireorderingprocessor)) / 2, 6, 0x404040, false);
 	}
 }

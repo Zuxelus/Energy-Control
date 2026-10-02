@@ -11,16 +11,16 @@ import com.zuxelus.energycontrol.utils.SoundLoader;
 import com.zuxelus.zlib.network.PacketTileEntity;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
+import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent;
+
 
 @Mod(value = EnergyControl.MODID, dist = Dist.CLIENT)
 public class ClientProxy {
@@ -29,7 +29,7 @@ public class ClientProxy {
 		modEventBus.addListener(ClientProxy::onClientSetup);
 		modEventBus.addListener(ClientProxy::registerScreens);
 		modEventBus.addListener(ClientProxy::registerRenders);
-		modEventBus.addListener(ClientProxy::registerPayloadHandlers);
+
 		modEventBus.addListener(SoundLoader::locatePacks);
 		modEventBus.addListener(ClientProxy::registerReloadListeners);
 	}
@@ -38,8 +38,8 @@ public class ClientProxy {
 		event.enqueueWork(() -> SoundHelper.initSoundPack(Minecraft.getInstance().gameDirectory));
 	}
 
-	private static void registerReloadListeners(AddClientReloadListenersEvent event) {
-		event.addListener(Identifier.fromNamespaceAndPath(EnergyControl.MODID, "alarms"), (ResourceManagerReloadListener) SoundHelper::importSound);
+	private static void registerReloadListeners(RegisterClientReloadListenersEvent event) {
+		event.registerReloadListener( (ResourceManagerReloadListener) SoundHelper::importSound);
 	}
 
 	private static void registerScreens(RegisterMenuScreensEvent event) {
@@ -65,9 +65,4 @@ public class ClientProxy {
 		event.registerBlockEntityRenderer(ModTileEntityTypes.timer.get(), TileEntityTimerRenderer::new);
 	}
 
-	private static void registerPayloadHandlers(RegisterClientPayloadHandlersEvent event) {
-		event.register(PacketCard.TYPE, PacketCard::handleClient);
-		event.register(PacketTileEntity.TYPE, PacketTileEntity::handleClient);
-		event.register(PacketAlarm.TYPE, PacketAlarm::handle);
-	}
 }

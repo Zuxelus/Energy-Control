@@ -13,23 +13,25 @@ import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 import com.zuxelus.zlib.gui.controls.GuiButtonGeneral;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class GuiAdvancedInfoPanel extends GuiPanelBase<ContainerAdvancedInfoPanel> {
-	private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/gui_advanced_info_panel.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/gui_advanced_info_panel.png");
 
 	public GuiAdvancedInfoPanel(ContainerAdvancedInfoPanel container, Inventory inventory, Component title) {
-		super(container, inventory, title, TEXTURE, 223);
+		super(container, inventory, title, TEXTURE);
+		imageHeight = 223;
 		panel = (TileEntityAdvancedInfoPanel) container.te;
 		name = I18n.get("block.energycontrol.info_panel_advanced");
 	}
@@ -94,17 +96,15 @@ public class GuiAdvancedInfoPanel extends GuiPanelBase<ContainerAdvancedInfoPane
 	}
 
 	@Override
-	public void extractBackground(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY, float partialTicks) {
-		super.extractBackground(matrixStack, mouseX, mouseY, partialTicks);
-		matrixStack.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, leftPos + 24, topPos + 62 + activeTab * 14, 182, 0, 1, 15, 256, 256);
+	protected void renderBg(GuiGraphics matrixStack, float partialTicks, int mouseX, int mouseY) {
+		matrixStack.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+		matrixStack.blit(TEXTURE, leftPos + 24, topPos + 62 + activeTab * 14, 182, 0, 1, 15);
 		if (textboxTitle != null)
-			textboxTitle.extractRenderState(matrixStack, mouseX, mouseY, partialTicks);
+			textboxTitle.renderWidget(matrixStack, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
-	public boolean mouseReleased(MouseButtonEvent event) {
-		double mouseX = event.x();
-		double mouseY = event.y();
+	public boolean mouseReleased(double mouseX, double mouseY, int mouseButton) {
 		if (mouseX >= leftPos + 7 && mouseX <= leftPos + 24 && mouseY >= topPos + 62 && mouseY <= topPos + 104) {
 			byte newTab = (byte) ((mouseY - topPos - 62) / 14);
 			if (newTab > 2)
@@ -118,7 +118,7 @@ public class GuiAdvancedInfoPanel extends GuiPanelBase<ContainerAdvancedInfoPane
 				initControls();
 			}
 		}
-		return super.mouseReleased(event);
+		return super.mouseReleased(mouseX, mouseY, mouseButton);
 	}
 
 	@Override
@@ -131,7 +131,7 @@ public class GuiAdvancedInfoPanel extends GuiPanelBase<ContainerAdvancedInfoPane
 			((TileEntityAdvancedInfoPanel) panel).powerMode = mode;
 			return;
 		case ID_SLOPE:
-			minecraft.gui.setScreen(new GuiPanelSlope(this, ((TileEntityAdvancedInfoPanel) panel)));
+			minecraft.setScreen(new GuiPanelSlope(this, ((TileEntityAdvancedInfoPanel) panel)));
 			return;
 		}
 		super.actionPerformed(button, id);

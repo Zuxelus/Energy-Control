@@ -6,9 +6,15 @@
     "BHB"
   ],
   "key": {
-    "B": "energycontrol:strong_string",
-    "L": "energycontrol:orange_lamp",
-    "H": "energycontrol:howler_alarm"
+    "B": {
+      "item": "energycontrol:strong_string"
+    },
+    "L": {
+      "item": "energycontrol:orange_lamp"
+    },
+    "H": {
+      "item": "energycontrol:howler_alarm"
+    }
   },
   "result": {
     "id": "energycontrol:industrial_alarm"

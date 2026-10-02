@@ -7,8 +7,8 @@ import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.redstone.Orientation;
-import org.jspecify.annotations.Nullable;
+
+import javax.annotation.Nullable;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -25,6 +25,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class TimerBlock extends FacingBlockSmall {
+    @Override protected com.mojang.serialization.MapCodec<? extends TimerBlock> codec() { return simpleCodec(TimerBlock::new); }
+
 	protected static final VoxelShape AABB_DOWN = Block.box(1.0F, 9.0F, 1.0F, 15.0F, 15.0F, 15.0F);
 	protected static final VoxelShape AABB_UP = Block.box(1.0F, 0.0F, 1.0F, 15.0F, 7.0F, 15.0F);
 	protected static final VoxelShape AABB_NORTH = Block.box(1.0F, 1.0F, 9.0F, 15.0F, 15.0F, 15.0F);
@@ -42,7 +44,8 @@ public class TimerBlock extends FacingBlockSmall {
 	}
 
 	@Override
-	protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+	protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState nextState, boolean movedByPiston) {
+        super.onRemove(state, level, pos, nextState, movedByPiston);
 		if (!movedByPiston)
 			level.updateNeighborsAt(pos, this);
 	}
@@ -83,7 +86,7 @@ public class TimerBlock extends FacingBlockSmall {
 
 	@Override
 	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		if (world.isClientSide())
+		if (world.isClientSide)
 			return InteractionResult.PASS;
 		BlockEntity te = world.getBlockEntity(pos);
 		if (!(te instanceof TileEntityTimer))
@@ -93,8 +96,8 @@ public class TimerBlock extends FacingBlockSmall {
 	}
 
 	@Override
-	protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block fromBlock, @Nullable Orientation orientation, boolean isMoving) {
-		if (!level.isClientSide()) {
+	protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block fromBlock, BlockPos neighborPos, boolean isMoving) {
+		if (!level.isClientSide) {
 			BlockEntity be = level.getBlockEntity(pos);
 			if (be instanceof TileEntityTimer)
 				((TileEntityTimer) be).onNeighborChange(fromBlock);

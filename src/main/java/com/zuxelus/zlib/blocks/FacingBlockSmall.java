@@ -6,7 +6,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ScheduledTickAccess;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
@@ -43,10 +43,10 @@ public abstract class FacingBlockSmall extends FacingBlock {
 	}
 
 	@Override
-	protected BlockState updateShape(BlockState state, LevelReader world, ScheduledTickAccess ticks, BlockPos currentPos, Direction facing, BlockPos facingPos, BlockState facingState, RandomSource random) {
+	protected BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor world, BlockPos currentPos, BlockPos facingPos) {
 		return state.getValue(FACING).getOpposite() == facing && !state.canSurvive(world, currentPos)
 				? Blocks.AIR.defaultBlockState()
-				: super.updateShape(state, world, ticks, currentPos, facing, facingPos, facingState, random);
+				: super.updateShape(state, facing, facingState, world, currentPos, facingPos);
 	}
 
 	@Override

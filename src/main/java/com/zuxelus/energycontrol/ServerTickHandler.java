@@ -73,10 +73,7 @@ public class ServerTickHandler {
 			}
 	}
 
-	@SubscribeEvent
-	public void onDatapackSync(OnDatapackSyncEvent event) {
-		event.sendRecipes(KitAssemblerRecipeType.TYPE);
-	}
+    // Minecraft 1.21.1 synchronizes all RecipeManager entries using the vanilla recipe packet.
 
 	@SubscribeEvent
 	public void onServerStarting(ServerStartingEvent event) {

@@ -26,13 +26,13 @@ public class Screen {
 	}
 
 	public Screen(TileEntityInfoPanel panel, CompoundTag tag) {
-		minX = tag.getIntOr("minX", 0);
-		minY = tag.getIntOr("minY", 0);
-		minZ = tag.getIntOr("minZ", 0);
+		minX = tag.getInt("minX");
+		minY = tag.getInt("minY");
+		minZ = tag.getInt("minZ");
 
-		maxX = tag.getIntOr("maxX", 0);
-		maxY = tag.getIntOr("maxY", 0);
-		maxZ = tag.getIntOr("maxZ", 0);
+		maxX = tag.getInt("maxX");
+		maxY = tag.getInt("maxY");
+		maxZ = tag.getInt("maxZ");
 
 		coreTile = panel;
 		corePos = panel.getBlockPos();

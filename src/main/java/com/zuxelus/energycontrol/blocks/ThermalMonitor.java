@@ -24,6 +24,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class ThermalMonitor extends FacingBlockSmall {
+    @Override protected com.mojang.serialization.MapCodec<? extends ThermalMonitor> codec() { return simpleCodec(ThermalMonitor::new); }
+
 	protected static final VoxelShape AABB_DOWN = Block.box(1.0F, 9.0F, 1.0F, 15.0F, 15.0F, 15.0F);
 	protected static final VoxelShape AABB_UP = Block.box(1.0F, 0.0F, 1.0F, 15.0F, 7.0F, 15.0F);
 	protected static final VoxelShape AABB_NORTH = Block.box(1.0F, 1.0F, 9.0F, 15.0F, 15.0F, 15.0F);
@@ -41,7 +43,8 @@ public class ThermalMonitor extends FacingBlockSmall {
 	}
 
 	@Override
-	protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+	protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState nextState, boolean movedByPiston) {
+        super.onRemove(state, level, pos, nextState, movedByPiston);
 		if (!movedByPiston)
 			level.updateNeighborsAt(pos, this);
 	}
@@ -80,7 +83,7 @@ public class ThermalMonitor extends FacingBlockSmall {
 
 	@Override
 	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		if (world.isClientSide()) {
+		if (world.isClientSide) {
 			BlockEntity te = world.getBlockEntity(pos);
 			if (te instanceof TileEntityThermalMonitor)
 				ScreenHandler.openThermalMonitorScreen((TileEntityThermalMonitor) te);

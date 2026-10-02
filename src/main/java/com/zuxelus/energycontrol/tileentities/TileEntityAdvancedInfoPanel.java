@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import net.minecraft.core.HolderLookup;
 import com.zuxelus.energycontrol.containers.ContainerAdvancedInfoPanel;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
@@ -17,8 +18,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.nbt.CompoundTag;
+
 
 public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	public static final String NAME = "info_panel_advanced";
@@ -62,7 +63,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 
 	public void setPowerMode(byte mode) {
 		powerMode = mode;
-		if (level != null && !level.isClientSide())
+		if (level != null && !level.isClientSide)
 			calcPowered();
 	}
 
@@ -132,47 +133,47 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	public void onServerMessageReceived(CompoundTag tag) {
 		if (!tag.contains("type"))
 			return;
-		int type = tag.getIntOr("type", 0);
+		int type = tag.getInt("type");
 		if (type < 10) {
 			super.onServerMessageReceived(tag);
 			return;
 		}
 		switch (type) {
 		case 10:
-			setValues(tag.getIntOr("value", 0));
+			setValues(tag.getInt("value"));
 			break;
 		case 11:
-			setPowerMode((byte) tag.getIntOr("value", 0));
+			setPowerMode((byte) tag.getInt("value"));
 			break;
 		}
 	}
 
 	@Override
-	protected void deserializeDisplaySettings(ValueInput tag) {
+	protected void deserializeDisplaySettings(CompoundTag tag) {
 		deserializeSlotSettings(tag, "dSettings1", SLOT_CARD1);
 		deserializeSlotSettings(tag, "dSettings2", SLOT_CARD2);
 		deserializeSlotSettings(tag, "dSettings3", SLOT_CARD3);
 	}
 
 	@Override
-	protected void readProperties(ValueInput tag) {
-		super.readProperties(tag);
-		setPowerMode(tag.getByteOr("powerMode", powerMode));
-		thickness = tag.getByteOr("thickness", thickness);
-		rotateHor = tag.getByteOr("rotateHor", rotateHor);
-		rotateVert = tag.getByteOr("rotateVert", rotateVert);
+	protected void readProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.readProperties(tag, registries);
+		setPowerMode((tag.contains("powerMode") ? tag.getByte("powerMode") : powerMode));
+		thickness = (tag.contains("thickness") ? tag.getByte("thickness") : thickness);
+		rotateHor = (tag.contains("rotateHor") ? tag.getByte("rotateHor") : rotateHor);
+		rotateVert = (tag.contains("rotateVert") ? tag.getByte("rotateVert") : rotateVert);
 	}
 
 	@Override
-	protected void serializeDisplaySettings(ValueOutput tag) {
+	protected void serializeDisplaySettings(CompoundTag tag) {
 		serializeSlotSettings(tag, "dSettings1", SLOT_CARD1);
 		serializeSlotSettings(tag, "dSettings2", SLOT_CARD2);
 		serializeSlotSettings(tag, "dSettings3", SLOT_CARD3);
 	}
 
 	@Override
-	protected void writeProperties(ValueOutput tag) {
-		super.writeProperties(tag);
+	protected void writeProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.writeProperties(tag, registries);
 		tag.putByte("powerMode", powerMode);
 		tag.putByte("thickness", thickness);
 		tag.putByte("rotateHor", rotateHor);
@@ -224,7 +225,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 
 	@Override
 	public boolean runTouchAction(ItemStack stack, BlockPos pos, Vec3 hit) {
-		if (level.isClientSide())
+		if (level.isClientSide)
 			return false;
 		ItemStack card = getItem(SLOT_CARD1);
 		runTouchAction(this, card, stack, SLOT_CARD1, false);

@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import net.minecraft.core.HolderLookup;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.blocks.RangeTrigger;
 import com.zuxelus.energycontrol.config.ConfigHandler;
@@ -16,8 +17,8 @@ import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.nbt.CompoundTag;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
@@ -72,14 +73,14 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements MenuP
 	public void setInvertRedstone(boolean value) {
 		boolean old = invertRedstone;
 		invertRedstone = value;
-		if (!level.isClientSide() && invertRedstone != old)
+		if (!level.isClientSide && invertRedstone != old)
 			notifyBlockUpdate();
 	}
 
 	public void setStatus(int value) {
 		int old = status;
 		status = value;
-		if (!level.isClientSide() && status != old) {
+		if (!level.isClientSide && status != old) {
 			BlockState iblockstate = level.getBlockState(worldPosition);
 			Block block = iblockstate.getBlock();
 			if (block instanceof RangeTrigger) {
@@ -93,13 +94,13 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements MenuP
 	}
 
 	public void setLevelStart(double start) {
-		if (!level.isClientSide() && levelStart != start)
+		if (!level.isClientSide && levelStart != start)
 			notifyBlockUpdate();
 		levelStart = start;
 	}
 
 	public void setLevelEnd(double end) {
-		if (!level.isClientSide() && levelEnd != end)
+		if (!level.isClientSide && levelEnd != end)
 			notifyBlockUpdate();
 		levelEnd = end;
 	}
@@ -120,7 +121,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements MenuP
 	}
 
 	protected void tick() {
-		if (!level.isClientSide()) {
+		if (!level.isClientSide) {
 			if (updateTicker-- > 0)
 				return;
 			updateTicker = tickRate;
@@ -132,18 +133,18 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements MenuP
 	public void onServerMessageReceived(CompoundTag tag) {
 		if (!tag.contains("type"))
 			return;
-		switch (tag.getIntOr("type", 0)) {
+		switch (tag.getInt("type")) {
 		case 1:
 			if (tag.contains("value"))
-				setLevelStart(tag.getDoubleOr("value", 0.0));
+				setLevelStart((tag.contains("value") ? tag.getDouble("value") : 0.0));
 			break;
 		case 2:
 			if (tag.contains("value"))
-				setInvertRedstone(tag.getIntOr("value", 0) == 1);
+				setInvertRedstone(tag.getInt("value") == 1);
 			break;
 		case 3:
 			if (tag.contains("value"))
-				setLevelEnd(tag.getDoubleOr("value", 0.0));
+				setLevelEnd((tag.contains("value") ? tag.getDouble("value") : 0.0));
 			break;
 		}
 	}
@@ -152,22 +153,22 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements MenuP
 	public void onClientMessageReceived(CompoundTag tag) { }
 
 	@Override
-	protected void writeUpdateData(ValueOutput tag) {
+	protected void writeUpdateData(CompoundTag tag) {
 		tag.putBoolean("poweredBlock", poweredBlock);
 	}
 
 	@Override
-	protected void readProperties(ValueInput tag) {
-		super.readProperties(tag);
-		invertRedstone = tag.getBooleanOr("invert", false);
-		levelStart = tag.getDoubleOr("levelStart", 0.0);
-		levelEnd = tag.getDoubleOr("levelEnd", 0.0);
-		poweredBlock = tag.getBooleanOr("poweredBlock", poweredBlock);
+	protected void readProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.readProperties(tag, registries);
+		invertRedstone = tag.getBoolean("invert");
+		levelStart = (tag.contains("levelStart") ? tag.getDouble("levelStart") : 0.0);
+		levelEnd = (tag.contains("levelEnd") ? tag.getDouble("levelEnd") : 0.0);
+		poweredBlock = (tag.contains("poweredBlock") ? tag.getBoolean("poweredBlock") : poweredBlock);
 	}
 
 	@Override
-	protected void writeProperties(ValueOutput tag) {
-		super.writeProperties(tag);
+	protected void writeProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.writeProperties(tag, registries);
 		tag.putBoolean("invert", invertRedstone);
 		tag.putDouble("levelStart", levelStart);
 		tag.putDouble("levelEnd", levelEnd);
@@ -176,7 +177,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements MenuP
 	@Override
 	public void setChanged() {
 		super.setChanged();
-		if (level == null || level.isClientSide())
+		if (level == null || level.isClientSide)
 			return;
 
 		int status = STATE_UNKNOWN;

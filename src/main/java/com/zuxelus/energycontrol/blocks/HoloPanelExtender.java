@@ -16,6 +16,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class HoloPanelExtender extends HoloPanel {
+    @Override protected com.mojang.serialization.MapCodec<? extends HoloPanelExtender> codec() { return simpleCodec(HoloPanelExtender::new); }
+
 
 	public HoloPanelExtender(Block.Properties properties) {
 		super(properties);
@@ -28,7 +30,7 @@ public class HoloPanelExtender extends HoloPanel {
 
 	@Override
 	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		if (world.isClientSide())
+		if (world.isClientSide)
 			return InteractionResult.PASS;
 		BlockEntity te = world.getBlockEntity(pos);
 		if (!(te instanceof TileEntityHoloPanelExtender))

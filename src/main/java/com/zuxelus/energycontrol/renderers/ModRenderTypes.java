@@ -2,32 +2,29 @@ package com.zuxelus.energycontrol.renderers;
 
 import java.util.function.Function;
 
-import com.zuxelus.energycontrol.EnergyControl;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
 
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.rendertype.RenderSetup;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 
 // Render types for things drawn on top of a screen (images, bars, holo background).
-// They use the world text pipeline with polygon offset, so they are drawn over the screen face without z-fighting
-public final class ModRenderTypes {
-	public static final Identifier WHITE = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "textures/misc/white.png");
+// They go through MultiBufferSource like everything else, so they are sorted and flushed together with the rest of the world
+public abstract class ModRenderTypes extends RenderType {
+	public static final RenderType SCREEN_COLOR = create("energycontrol_screen_color", DefaultVertexFormat.POSITION_COLOR_LIGHTMAP, VertexFormat.Mode.QUADS, 256, false, true,
+			CompositeState.builder().setShaderState(RENDERTYPE_TEXT_BACKGROUND_SHADER).setTextureState(NO_TEXTURE)
+			.setTransparencyState(TRANSLUCENT_TRANSPARENCY).setCullState(NO_CULL).setLightmapState(LIGHTMAP).setLayeringState(POLYGON_OFFSET_LAYERING).createCompositeState(false));
 
-	private static final Function<Identifier, RenderType> SCREEN_IMAGE = Util.memoize(texture -> RenderType.create("energycontrol_screen_image",
-			RenderSetup.builder(RenderPipelines.TEXT_POLYGON_OFFSET).setOitPipelines(RenderPipelines.OIT_TEXT_POLYGON_OFFSET)
-			.withTexture("Sampler0", texture).useLightmap().sortOnUpload().createRenderSetup()));
+	private static final Function<ResourceLocation, RenderType> SCREEN_IMAGE = Util.memoize(texture -> create("energycontrol_screen_image", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, false, true,
+			CompositeState.builder().setShaderState(RENDERTYPE_TEXT_SHADER).setTextureState(new TextureStateShard(texture, false, false))
+			.setTransparencyState(TRANSLUCENT_TRANSPARENCY).setCullState(NO_CULL).setLightmapState(LIGHTMAP).setLayeringState(POLYGON_OFFSET_LAYERING).createCompositeState(false)));
 
-	private ModRenderTypes() { }
-
-	// POSITION_COLOR_TEX_LIGHTMAP
-	public static RenderType screenImage(Identifier texture) {
-		return SCREEN_IMAGE.apply(texture);
+	private ModRenderTypes(String name, VertexFormat format, VertexFormat.Mode mode, int bufferSize, boolean affectsCrumbling, boolean sortOnUpload, Runnable setupState, Runnable clearState) {
+		super(name, format, mode, bufferSize, affectsCrumbling, sortOnUpload, setupState, clearState);
 	}
 
-	// POSITION_COLOR_TEX_LIGHTMAP, use uv inside 0..1
-	public static RenderType screenColor() {
-		return SCREEN_IMAGE.apply(WHITE);
+	public static RenderType screenImage(ResourceLocation texture) {
+		return SCREEN_IMAGE.apply(texture);
 	}
 }

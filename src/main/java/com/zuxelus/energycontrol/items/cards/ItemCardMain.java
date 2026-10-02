@@ -17,14 +17,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
+
 import net.minecraft.world.level.Level;
 
 public abstract class ItemCardMain extends Item implements IItemCard {
 	public static final int LOCATION_RANGE = 8;
 
 	public ItemCardMain(Item.Properties properties) {
-		super(properties.stacksTo(1).setNoCombineRepair());
+		super(properties.stacksTo(1));
 	}
 
 	public static boolean isCard(ItemStack stack) {
@@ -34,20 +34,20 @@ public abstract class ItemCardMain extends Item implements IItemCard {
 	protected void addInformation(ItemCardReader reader, Consumer<Component> tooltip) { }
 
 	@Override
-	public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, java.util.List<Component> tooltip, TooltipFlag flag) {
 		ItemCardReader reader = new ItemCardReader(stack);
 		String title = reader.getTitle();
 		if (title != null && !title.isEmpty())
-			tooltip.accept(Component.literal(title));
+			tooltip.add(Component.literal(title));
 
-		addInformation(reader, tooltip);
+		addInformation(reader, tooltip::add);
 
 		BlockPos target = reader.getTarget();
 		if (target != null)
-			tooltip.accept(Component.literal(String.format("x: %d, y: %d, z: %d", target.getX(), target.getY(), target.getZ())));
+			tooltip.add(Component.literal(String.format("x: %d, y: %d, z: %d", target.getX(), target.getY(), target.getZ())));
 		int count = reader.getCardCount();
 		if (count > 0)
-			tooltip.accept(Component.translatable("msg.ec.cards", reader.getCardCount()));
+			tooltip.add(Component.translatable("msg.ec.cards", reader.getCardCount()));
 	}
 
 	public CardState updateCardNBT(Level world, BlockPos pos, ICardReader reader, ItemStack upgradeStack) {

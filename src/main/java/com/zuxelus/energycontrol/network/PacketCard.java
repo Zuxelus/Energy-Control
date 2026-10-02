@@ -11,14 +11,14 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record PacketCard(CompoundTag tag, BlockPos pos, int slot, String className) implements CustomPacketPayload {
-	public static final CustomPacketPayload.Type<PacketCard> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(EnergyControl.MODID, "card"));
+	public static final CustomPacketPayload.Type<PacketCard> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "card"));
 	public static final StreamCodec<RegistryFriendlyByteBuf, PacketCard> STREAM_CODEC = StreamCodec.composite(
 			ByteBufCodecs.COMPOUND_TAG, PacketCard::tag,
 			BlockPos.STREAM_CODEC, PacketCard::pos,

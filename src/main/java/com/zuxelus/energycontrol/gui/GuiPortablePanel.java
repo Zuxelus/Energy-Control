@@ -10,39 +10,61 @@ import com.zuxelus.energycontrol.items.InventoryPortablePanel;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.util.ARGB;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class GuiPortablePanel extends AbstractContainerScreen<ContainerPortablePanel> {
-	private static final Identifier TEXTURE = Identifier.parse(EnergyControl.MODID + ":textures/gui/gui_portable_panel.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.parse(EnergyControl.MODID + ":textures/gui/gui_portable_panel.png");
+	private static final int ROWS_PER_PAGE = 14;
+	private int page;
+	private Button previousPage;
+	private Button nextPage;
 	private Player player;
 
 	private InventoryPortablePanel te;
 
 	public GuiPortablePanel(ContainerPortablePanel container, Inventory inventory, Component title) {
-		super(container, inventory, title, 226, 226);
+		super(container, inventory, title);
 		this.te = container.te;
 		this.player = inventory.player;
+		this.imageWidth = 226;
+		this.imageHeight = 226;
 	}
 
+	@Override
+	protected void init() {
+		super.init();
+		previousPage = addRenderableWidget(Button.builder(Component.literal("<"), button -> page--)
+				.bounds(leftPos + 174, topPos + 60, 18, 18).build());
+		nextPage = addRenderableWidget(Button.builder(Component.literal(">"), button -> page++)
+				.bounds(leftPos + 174, topPos + 82, 18, 18).build());
+		previousPage.visible = nextPage.visible = false;
+	}
 
 	@Override
-	public void extractBackground(GuiGraphicsExtractor matrixStack, int x, int y, float partialTicks) {
-		super.extractBackground(matrixStack, x, y, partialTicks);
+	public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
+		super.render(matrixStack, mouseX, mouseY, partialTicks);
+		renderTooltip(matrixStack, mouseX, mouseY);
+	}
+
+	@Override
+	protected void renderBg(GuiGraphics matrixStack, float partialTicks, int x, int y) {
 		int left = (width - imageWidth) / 2;
 		int top = (height - imageHeight) / 2;
-		matrixStack.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, left, top, 0, 0, imageWidth, imageHeight, 256, 256);
+		matrixStack.blit(TEXTURE, left, top, 0, 0, imageWidth, imageHeight);
 	}
 
 	@Override
-	protected void extractLabels(GuiGraphicsExtractor matrixStack, int x, int y) {
+	protected void renderLabels(GuiGraphics matrixStack, int x, int y) {
 		ItemStack stack = te.getItem(InventoryPortablePanel.SLOT_CARD);
 		if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain) {
 			ItemCardReader reader = new ItemCardReader(stack);
@@ -54,19 +76,29 @@ public class GuiPortablePanel extends AbstractContainerScreen<ContainerPortableP
 			else
 				joinedData = ((ItemCardMain) stack.getItem()).getStringData(player.level(), Integer.MAX_VALUE, reader, false, true);
 
-			int row = 0;
-			for (PanelString panelString : joinedData) {
-				if (row < 14) {
-					if (panelString.textLeft != null)
-						matrixStack.text(font, panelString.textLeft, 9, row * 10 + 10, ARGB.opaque(0x06aee4), false);
-					if (panelString.textCenter != null)
-						matrixStack.text(font, panelString.textCenter, (168 - font.width(panelString.textCenter)) / 2, row * 10 + 10, ARGB.opaque(0x06aee4), false);
-					if (panelString.textRight != null)
-						matrixStack.text(font, panelString.textRight, 168 - font.width(panelString.textRight), row * 10 + 10, ARGB.opaque(0x06aee4), false);
-				} else if (row == 14)
-					matrixStack.text(font, "...", 9, row * 10 + 10, ARGB.opaque(0x06aee4), false);
-				row++;
+			int pageCount = joinedData.isEmpty() ? 1 : (joinedData.size() - 1) / ROWS_PER_PAGE + 1;
+			page = Math.max(0, Math.min(page, pageCount - 1));
+			previousPage.visible = nextPage.visible = pageCount > 1;
+			previousPage.active = page > 0;
+			nextPage.active = page < pageCount - 1;
+
+			int firstRow = page * ROWS_PER_PAGE;
+			int lastRow = Math.min(firstRow + ROWS_PER_PAGE, joinedData.size());
+			for (int index = firstRow; index < lastRow; index++) {
+				PanelString panelString = joinedData.get(index);
+				int row = index - firstRow;
+				if (panelString.textLeft != null)
+					matrixStack.drawString(font, panelString.textLeft, 9, row * 10 + 10, 0x06aee4, false);
+				if (panelString.textCenter != null)
+					matrixStack.drawString(font, panelString.textCenter, (168 - font.width(panelString.textCenter)) / 2, row * 10 + 10, 0x06aee4, false);
+				if (panelString.textRight != null)
+					matrixStack.drawString(font, panelString.textRight, 168 - font.width(panelString.textRight), row * 10 + 10, 0x06aee4, false);
 			}
+			if (pageCount > 1)
+				matrixStack.drawString(font, (page + 1) + " / " + pageCount, 9, 150, 0x06aee4, false);
+		} else {
+			page = 0;
+			previousPage.visible = nextPage.visible = false;
 		}
 	}
 }

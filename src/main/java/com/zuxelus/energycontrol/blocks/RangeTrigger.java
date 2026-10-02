@@ -23,6 +23,8 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class RangeTrigger extends FacingHorizontal {
+    @Override protected com.mojang.serialization.MapCodec<? extends RangeTrigger> codec() { return simpleCodec(RangeTrigger::new); }
+
 
 	public RangeTrigger(Block.Properties properties) {
 		super(FacingBlock.metal(properties));
@@ -50,7 +52,7 @@ public class RangeTrigger extends FacingHorizontal {
 		BlockEntity te = world.getBlockEntity(pos);
 		if (!(te instanceof TileEntityRangeTrigger))
 			return InteractionResult.PASS;
-		if (!world.isClientSide())
+		if (!world.isClientSide)
 			player.openMenu((TileEntityRangeTrigger) te, buf -> buf.writeBlockPos(pos));
 		return InteractionResult.SUCCESS;
 	}
