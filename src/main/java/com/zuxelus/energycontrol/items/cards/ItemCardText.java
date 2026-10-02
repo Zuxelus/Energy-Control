@@ -10,10 +10,12 @@ import com.zuxelus.energycontrol.api.PanelString;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemCardText extends ItemCardMain {
+
+	public ItemCardText(Properties properties) {
+		super(properties);
+	}
 
 	@Override
 	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
@@ -41,7 +43,6 @@ public class ItemCardText extends ItemCardMain {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		return null;
 	}

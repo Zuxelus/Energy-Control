@@ -13,8 +13,8 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiCardText extends GuiBase {
@@ -52,7 +52,7 @@ public class GuiCardText extends GuiBase {
 	@Override
 	protected void drawGuiContainerBackgroundLayer(GuiGraphics matrixStack, float partialTicks, int mouseX, int mouseY) {
 		super.drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
-		textArea.render(matrixStack, mouseY, mouseY, partialTicks);
+		textArea.render(matrixStack, mouseX, mouseY, partialTicks);
 	}
 
 	@Override

@@ -4,12 +4,14 @@ import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityHoloPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.blocks.FacingHorizontalActive;
+import com.zuxelus.zlib.blocks.FacingBlock;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.core.BlockPos;
+
+import javax.annotation.Nullable;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -26,9 +28,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.network.NetworkHooks;
 
 public class HoloPanel extends FacingHorizontalActive {
+    @Override protected com.mojang.serialization.MapCodec<? extends HoloPanel> codec() { return simpleCodec(HoloPanel::new); }
+
+
+	public HoloPanel(Block.Properties properties) {
+		super(FacingBlock.metal(properties));
+	}
 	protected static final VoxelShape AABB_NORTH = Block.box(0.0D, 0.0D, 4.0D, 16.0D, 1.0D, 12.0D);
 	protected static final VoxelShape AABB_WEST = Block.box(4.0D, 0.0D, 0.0D, 12.0D, 1.0D, 16.0D);
 
@@ -38,17 +45,17 @@ public class HoloPanel extends FacingHorizontalActive {
 	}
 
 	@Override
-	public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
+	protected boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
 		return world.getBlockState(pos.below()).isFaceSturdy(world, pos.below(), Direction.UP);
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		BlockEntity te = world.getBlockEntity(pos);
 		if (!(te instanceof TileEntityHoloPanel))
 			return InteractionResult.PASS;
 		if (!world.isClientSide)
-			NetworkHooks.openScreen((ServerPlayer) player, (TileEntityHoloPanel) te, pos);
+			player.openMenu((TileEntityHoloPanel) te, buf -> buf.writeBlockPos(pos));
 		return InteractionResult.SUCCESS;
 	}
 
@@ -58,7 +65,7 @@ public class HoloPanel extends FacingHorizontalActive {
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+	protected void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos neighborPos, boolean isMoving) {
 		if (world.isClientSide)
 			return;
 
@@ -75,7 +82,7 @@ public class HoloPanel extends FacingHorizontalActive {
 	}
 
 	@Override
-	public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource rand) {
+	protected void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource rand) {
 		if (state.getValue(ACTIVE) && !world.hasNeighborSignal(pos)) {
 			world.setBlock(pos, state.cycle(ACTIVE), 2);
 			updateExtenders(state, world, pos);
@@ -89,7 +96,7 @@ public class HoloPanel extends FacingHorizontalActive {
 	}
 
 	@Override
-	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+	protected VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
 		switch (state.getValue(FACING)) {
 		case WEST:
 		case EAST:
@@ -101,9 +108,8 @@ public class HoloPanel extends FacingHorizontalActive {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
-	public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor world, BlockPos currentPos, BlockPos facingPos) {
+	protected BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor world, BlockPos currentPos, BlockPos facingPos) {
 		return canSurvive(state, world, currentPos) ? super.updateShape(state, facing, facingState, world, currentPos, facingPos) : Blocks.AIR.defaultBlockState();
 	}
 }

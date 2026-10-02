@@ -8,17 +8,17 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraft.world.level.ItemLike;
+import java.util.function.Supplier;
 
 public class ECCreativeTab {
 	public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS = DeferredRegister
 			.create(Registries.CREATIVE_MODE_TAB, EnergyControl.MODID);
-	public static final RegistryObject<CreativeModeTab> MAIN = CREATIVE_TABS.register("main",
+	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> MAIN = CREATIVE_TABS.register("main",
 			() -> CreativeModeTab.builder().title(Component.translatable("itemGroup.energycontrol"))
 					.withTabsBefore(CreativeModeTabs.COMBAT).icon(() -> new ItemStack(ModItems.kit_energy.get()))
 					.displayItems((parameters, output) -> {
@@ -74,11 +74,11 @@ public class ECCreativeTab {
 						}
 					}).build());
 
-	private static void addItem(CreativeModeTab.Output output, RegistryObject<Item> item) {
+	private static void addItem(CreativeModeTab.Output output, Supplier<? extends ItemLike> item) {
 		output.accept(item.get());
 	}
 
-	private static void addBlock(CreativeModeTab.Output output, RegistryObject<Block> block) {
+	private static void addBlock(CreativeModeTab.Output output, Supplier<? extends ItemLike> block) {
 		output.accept(block.get());
 	}
 }

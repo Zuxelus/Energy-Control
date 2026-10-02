@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import net.minecraft.core.HolderLookup;
 import com.zuxelus.energycontrol.blocks.TimerBlock;
 import com.zuxelus.energycontrol.containers.ContainerTimer;
 import com.zuxelus.energycontrol.init.ModItems;
@@ -8,11 +9,9 @@ import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
+
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -101,7 +100,7 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 		return sendSignal;
 	}
 
-	public void onNeighborChange(Block fromBlock, BlockPos fromPos) { // server
+	public void onNeighborChange(Block fromBlock) { // server
 		boolean newPowered = level.getSignal(worldPosition.relative(rotation), rotation) > 0;
 		if (newPowered != isPowered) {
 			if (!isPowered && newPowered) {
@@ -153,65 +152,32 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 	}
 
 	@Override
-	public Packet<ClientGamePacketListener> getUpdatePacket() {
-		return ClientboundBlockEntityDataPacket.create(this);
-	}
-
-	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-		readProperties(pkt.getTag());
-	}
-
-	@Override
-	public CompoundTag getUpdateTag() {
-		CompoundTag tag = super.getUpdateTag();
-		tag = writeProperties(tag);
+	protected void writeUpdateData(CompoundTag tag) {
 		tag.putBoolean("isTicks", isTicks);
 		tag.putBoolean("poweredBlock", sendSignal);
-		return tag;
 	}
 
 	@Override
-	protected void readProperties(CompoundTag tag) {
-		super.readProperties(tag);
-		if (tag.contains("timer"))
-			time = tag.getInt("timer");
-		if (tag.contains("startingTime"))
-			startingTime = tag.getInt("startingTime");
-		if (tag.contains("invert"))
-			invertRedstone = tag.getBoolean("invert");
-		if (tag.contains("isWorking"))
-			isWorking = tag.getBoolean("isWorking");
-		if (tag.contains("isTicks"))
-			isTicks = tag.getBoolean("isTicks");
-		if (tag.contains("poweredBlock"))
-			sendSignal = tag.getBoolean("poweredBlock");
-		if (tag.contains("isPowered"))
-			isPowered = tag.getBoolean("isPowered");
+	protected void readProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.readProperties(tag, registries);
+		time = (tag.contains("timer") ? tag.getInt("timer") : time);
+		startingTime = (tag.contains("startingTime") ? tag.getInt("startingTime") : startingTime);
+		invertRedstone = (tag.contains("invert") ? tag.getBoolean("invert") : invertRedstone);
+		isWorking = (tag.contains("isWorking") ? tag.getBoolean("isWorking") : isWorking);
+		isTicks = (tag.contains("isTicks") ? tag.getBoolean("isTicks") : isTicks);
+		sendSignal = (tag.contains("poweredBlock") ? tag.getBoolean("poweredBlock") : sendSignal);
+		isPowered = (tag.contains("isPowered") ? tag.getBoolean("isPowered") : isPowered);
 	}
 
 	@Override
-	public void load(CompoundTag tag) {
-		super.load(tag);
-		readProperties(tag);
-	}
-
-	@Override
-	protected CompoundTag writeProperties(CompoundTag tag) {
-		tag = super.writeProperties(tag);
+	protected void writeProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.writeProperties(tag, registries);
 		tag.putInt("timer", time);
 		tag.putInt("startingTime", startingTime);
 		tag.putBoolean("invert", invertRedstone);
 		tag.putBoolean("isWorking", isWorking);
 		tag.putBoolean("isTicks", isTicks);
 		tag.putBoolean("isPowered", isPowered);
-		return tag;
-	}
-
-	@Override
-	protected void saveAdditional(CompoundTag tag) {
-		super.saveAdditional(tag);
-		writeProperties(tag);
 	}
 
 	public static void tickStatic(Level level, BlockPos pos, BlockState state, BlockEntity be) {

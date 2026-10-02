@@ -9,10 +9,12 @@ import com.zuxelus.energycontrol.api.PanelString;
 
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemCardTime extends ItemCardMain {
+
+	public ItemCardTime(Properties properties) {
+		super(properties);
+	}
 
 	@Override
 	public List<PanelString> getStringData(Level world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
@@ -34,7 +36,6 @@ public class ItemCardTime extends ItemCardMain {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(1);
 		result.add(new PanelSetting(I18n.get("msg.ec.cb24h"), 1));

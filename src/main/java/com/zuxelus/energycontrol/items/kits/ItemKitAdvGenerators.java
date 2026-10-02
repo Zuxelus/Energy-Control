@@ -15,6 +15,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class ItemKitAdvGenerators extends ItemKitMain {
 
+	public ItemKitAdvGenerators(Properties properties) {
+		super(properties);
+	}
+
 	@Override
 	public ItemStack getSensorCard(ItemStack stack, Player player, Level world, BlockPos pos, Direction side) {
 		BlockEntity te = world.getBlockEntity(pos);

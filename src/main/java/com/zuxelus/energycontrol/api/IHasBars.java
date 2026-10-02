@@ -27,9 +27,9 @@ public interface IHasBars {
 		float f3 = (color & 255) / 255.0F;
 		Matrix4f matrix = matrixStack.last().pose();
 		VertexConsumer builder = buffer.getBuffer(ModRenderTypes.SCREEN_COLOR);
-		builder.vertex(matrix, right, top, zLevel).color(f1, f2, f3, f).uv2(LightTexture.FULL_BRIGHT).endVertex();
-		builder.vertex(matrix, left, top, zLevel).color(f1, f2, f3, f).uv2(LightTexture.FULL_BRIGHT).endVertex();
-		builder.vertex(matrix, left, bottom, zLevel).color(f1, f2, f3, f).uv2(LightTexture.FULL_BRIGHT).endVertex();
-		builder.vertex(matrix, right, bottom, zLevel).color(f1, f2, f3, f).uv2(LightTexture.FULL_BRIGHT).endVertex();
+		builder.addVertex(matrix, right, top, zLevel).setColor(f1, f2, f3, f).setLight(LightTexture.FULL_BRIGHT);
+		builder.addVertex(matrix, left, top, zLevel).setColor(f1, f2, f3, f).setLight(LightTexture.FULL_BRIGHT);
+		builder.addVertex(matrix, left, bottom, zLevel).setColor(f1, f2, f3, f).setLight(LightTexture.FULL_BRIGHT);
+		builder.addVertex(matrix, right, bottom, zLevel).setColor(f1, f2, f3, f).setLight(LightTexture.FULL_BRIGHT);
 	}
 }

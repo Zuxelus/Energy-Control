@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "RF",
+    "PW"
+  ],
+  "key": {
+    "R": {
+      "tag": "c:dusts/redstone"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "F": {
+      "item": "energycontrol:radio_transmitter"
+    },
+    "W": {
+      "tag": "c:dyes/gray"
+    }
+  },
+  "result": {
+    "id": "energycontrol:kit_redstone"
+  }
+}

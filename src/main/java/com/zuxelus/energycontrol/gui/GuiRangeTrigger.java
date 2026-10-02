@@ -16,8 +16,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiRangeTrigger extends GuiContainerBase<ContainerRangeTrigger> {
@@ -58,7 +58,6 @@ public class GuiRangeTrigger extends GuiContainerBase<ContainerRangeTrigger> {
 
 	@Override
 	public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(matrixStack);
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
 		renderTooltip(matrixStack, mouseX, mouseY);
 	}

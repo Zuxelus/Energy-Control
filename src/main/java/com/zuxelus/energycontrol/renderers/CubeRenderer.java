@@ -15,8 +15,8 @@ import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.core.Direction;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 	public static final CubeRenderer MODEL = new CubeRenderer(0, 0, 0, 32, 32, 32, 128, 128, 0, 0, false);
@@ -102,7 +102,7 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 			for (int i = 0; i < 4; ++i) {
 				PositionTextureVertex vertex = vertexPositions[i];
 				Vector4f vector4f = matrix4f.transform(new Vector4f(vertex.position.x() / 16.0F, vertex.position.y() / 16.0F, vertex.position.z() / 16.0F, 1.0F));
-				buffer.vertex(vector4f.x(), vector4f.y(), vector4f.z(), red, green, blue, alpha, vertex.textureU, vertex.textureV, combinedOverlay, light, f, g, h);
+				buffer.addVertex(vector4f.x(), vector4f.y(), vector4f.z()).setColor(red, green, blue, alpha).setUv(vertex.textureU, vertex.textureV).setOverlay(combinedOverlay).setLight(light).setNormal(f, g, h);
 			}
 		}
 	}

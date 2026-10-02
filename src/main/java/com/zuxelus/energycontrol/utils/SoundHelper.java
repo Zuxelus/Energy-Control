@@ -3,56 +3,32 @@ package com.zuxelus.energycontrol.utils;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonWriter;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.sounds.SoundEventRegistration;
-import net.minecraft.client.resources.sounds.SoundEventRegistrationSerializer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
 
 public class SoundHelper {
-	private static final Gson gson = (new GsonBuilder()).registerTypeAdapter(SoundEventRegistration.class, new SoundEventRegistrationSerializer()).create();
-	private static final ParameterizedType type = new ParameterizedType() {
-
-		@Override
-		public Type[] getActualTypeArguments() {
-			return new Type[] { String.class, SoundEventRegistration.class };
-		}
-
-		@Override
-		public Type getRawType() {
-			return Map.class;
-		}
-
-		@Override
-		public Type getOwnerType() {
-			return null;
-		}
-	};
-
+	// available alarms are read by the client reload listener (see ClientProxy), here only the custom pack folder is created
 	public static void initSoundPack(File configFolder) {
-		if (configFolder == null || !ConfigHandler.USE_CUSTOM_SOUNDS.get()) {
-			importSound();
+		if (configFolder == null || !ConfigHandler.USE_CUSTOM_SOUNDS.get())
 			return;
-		}
 
+		if (SoundLoader.alarms == null)
+			SoundLoader.alarms = new File(configFolder, "alarms");
 		File audioLoc = new File(SoundLoader.alarms, "assets" + File.separator + EnergyControl.MODID + File.separator + "sounds");
 
-		if (SoundLoader.alarms.exists())
-			importSound();
-		else {
+		if (!SoundLoader.alarms.exists()) {
 			try {
 				SoundLoader.alarms.mkdir();
 				audioLoc.mkdirs();
@@ -78,24 +54,30 @@ public class SoundHelper {
 		writer.name("pack");
 		writer.beginObject();
 		writer.name("description").value("Energy Control custom alarms");
-		writer.name("pack_format").value(9); // for 1.19
+		writer.name("min_format").value(97); // for 26.3
+		writer.name("max_format").value(97);
 		writer.endObject();
 		writer.endObject();
 		writer.close();
 	}
 
 	public static void importSound() {
-		EnergyControl.INSTANCE.availableAlarms = new ArrayList<>();
+		importSound(Minecraft.getInstance().getResourceManager());
+	}
 
-		try {
-			List<Resource> list = Minecraft.getInstance().getResourceManager().getResourceStack(ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "sounds.json"));
+	// called on every client resource reload, so alarms from resource packs are picked up
+	public static void importSound(ResourceManager manager) {
+		List<String> alarms = new ArrayList<>();
 
-			for (int i = list.size() - 1; i >= 0; --i) {
-				Resource iresource = list.get(i);
-
-				Map<String, SoundEventRegistration> map = gson.fromJson(new InputStreamReader(iresource.open()), type);
-				map.forEach((str, soundList) -> EnergyControl.INSTANCE.availableAlarms.add(str.replace("alarm-", "")));
-			}
-		} catch (IOException ignored) {}
+		List<Resource> list = manager.getResourceStack(ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "sounds.json"));
+		for (int i = list.size() - 1; i >= 0; --i) {
+			try (Reader reader = list.get(i).openAsReader()) {
+				JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
+				for (String name : json.keySet())
+					if (name.startsWith("alarm-"))
+						alarms.add(name.replace("alarm-", ""));
+			} catch (Exception ignored) {}
+		}
+		EnergyControl.INSTANCE.availableAlarms = alarms;
 	}
 }

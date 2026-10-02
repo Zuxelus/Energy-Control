@@ -8,8 +8,8 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.util.Mth;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiTextArea extends AbstractWidget {
@@ -110,7 +110,7 @@ public class GuiTextArea extends AbstractWidget {
 
 	public void writeText(String additionalText) {
 		String newLine = "";
-		String filteredText = SharedConstants.filterText(additionalText);
+		String filteredText = net.minecraft.util.StringUtil.filterText(additionalText);
 		int freeCharCount = this.maxStringLength - text[cursorLine].length();
 
 		if (text[cursorLine].length() > 0)
@@ -192,7 +192,7 @@ public class GuiTextArea extends AbstractWidget {
 
 	@Override
 	public boolean charTyped(char typedChar, int keyCode) {
-		if (isFocused() && SharedConstants.isAllowedChatCharacter(typedChar)) {
+		if (isFocused() && net.minecraft.util.StringUtil.isAllowedChatCharacter(typedChar)) {
 			writeText(Character.toString(typedChar));
 			return true;
 		}

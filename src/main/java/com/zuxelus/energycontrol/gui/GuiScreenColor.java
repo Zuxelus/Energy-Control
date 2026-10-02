@@ -18,8 +18,8 @@ import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiScreenColor extends GuiBase {
@@ -118,10 +118,14 @@ public class GuiScreenColor extends GuiBase {
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
 		if (mouseButton == 0) {
-			for (GuiTextNumeric text : fieldList)
+			for (GuiTextNumeric text : fieldList) {
+				text.setFocused(text.isMouseOver(mouseX, mouseY));
 				text.mouseClicked(mouseX, mouseY, mouseButton);
-			for (GuiTextNumeric text : fieldList2)
+			}
+			for (GuiTextNumeric text : fieldList2) {
+				text.setFocused(text.isMouseOver(mouseX, mouseY));
 				text.mouseClicked(mouseX, mouseY, mouseButton);
+			}
 			checkColorPicker(mouseX - guiLeft, mouseY - guiTop);
 			checkColorPicker2(mouseX - guiLeft, mouseY - guiTop);
 		}
@@ -239,15 +243,6 @@ public class GuiScreenColor extends GuiBase {
 
 	private boolean isInside(double mouseX, double mouseY, int x, int y, int width, int height) {
 		return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
-	}
-
-	@Override
-	public void tick() {
-		super.tick();
-		for (GuiTextNumeric text : fieldList)
-			text.tick();
-		for (GuiTextNumeric text : fieldList2)
-			text.tick();
 	}
 
 	@Override

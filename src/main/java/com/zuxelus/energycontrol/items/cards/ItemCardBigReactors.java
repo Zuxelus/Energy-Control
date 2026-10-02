@@ -17,10 +17,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemCardBigReactors extends ItemCardMain {
+
+	public ItemCardBigReactors(Properties properties) {
+		super(properties);
+	}
 	private static final DecimalFormat df = new DecimalFormat("0.0");
 
 	@Override
@@ -91,7 +93,6 @@ public class ItemCardBigReactors extends ItemCardMain {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(6);
 		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelOnOff"), 1));

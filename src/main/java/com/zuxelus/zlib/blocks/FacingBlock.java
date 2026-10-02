@@ -7,10 +7,13 @@ import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import net.minecraft.world.Container;
-import net.minecraft.world.Containers;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.BlockHitResult;
+
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -21,20 +24,19 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 
 public abstract class FacingBlock extends BaseEntityBlock {
-	public static final DirectionProperty FACING = BlockStateProperties.FACING;
+	public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
 	protected Direction rotation;
-
-	public FacingBlock() {
-		super(Block.Properties.of().strength(1.0F, 3.0F).sound(SoundType.METAL));
-		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
-	}
 
 	public FacingBlock(Block.Properties builder) {
 		super(builder);
 		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
+	}
+
+	public static Block.Properties metal(Block.Properties builder) {
+		return builder.strength(1.0F, 3.0F).sound(SoundType.METAL);
 	}
 
 	protected abstract BlockEntityFacing createBlockEntity(BlockPos pos, BlockState state);
@@ -45,6 +47,27 @@ public abstract class FacingBlock extends BaseEntityBlock {
 		be.setFacing(state.getValue(FACING).get3DDataValue());
 		be.setRotation(rotation);
 		return be;
+	}
+
+	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		return InteractionResult.PASS;
+	}
+
+	@Override
+	protected net.minecraft.world.ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		InteractionResult result = onUse(state, world, pos, player, hand, hit);
+		return switch (result) {
+            case SUCCESS -> net.minecraft.world.ItemInteractionResult.SUCCESS;
+            case CONSUME -> net.minecraft.world.ItemInteractionResult.CONSUME;
+            case CONSUME_PARTIAL -> net.minecraft.world.ItemInteractionResult.CONSUME_PARTIAL;
+            case FAIL -> net.minecraft.world.ItemInteractionResult.FAIL;
+            default -> net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        };
+	}
+
+	@Override
+	protected InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
+		return onUse(state, world, pos, player, InteractionHand.MAIN_HAND, hit);
 	}
 
 	@Override
@@ -76,6 +99,8 @@ public abstract class FacingBlock extends BaseEntityBlock {
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context) {
 		Player placer = context.getPlayer();
+		if (placer == null)
+			return defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
 		if (placer.getXRot() >= 65) {
 			rotation = placer.getDirection().getOpposite();
 			return defaultBlockState().setValue(FACING, Direction.UP);
@@ -84,7 +109,7 @@ public abstract class FacingBlock extends BaseEntityBlock {
 			rotation = placer.getDirection();
 			return defaultBlockState().setValue(FACING, Direction.DOWN);
 		}
-		rotation = Direction.DOWN; 
+		rotation = Direction.DOWN;
 		switch (Mth.floor(placer.getYRot() * 4.0F / 360.0F + 0.5D) & 3) {
 		case 0:
 			return defaultBlockState().setValue(FACING, Direction.NORTH);
@@ -97,17 +122,14 @@ public abstract class FacingBlock extends BaseEntityBlock {
 		}
 		return defaultBlockState().setValue(FACING, placer.getDirection().getOpposite());
 	}
-
-	@SuppressWarnings("deprecation")
-	@Override
-	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
-		if (state.getBlock() != newState.getBlock()) {
-			BlockEntity te = world.getBlockEntity(pos);
-			if (te instanceof Container) {
-				Containers.dropContents(world, pos, (Container) te);
-				world.updateNeighbourForOutputSignal(pos, this);
-			}
-			super.onRemove(state, world, pos, newState, isMoving);
-		}
-	}
+    @Override
+    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState nextState, boolean moving) {
+        if (!state.is(nextState.getBlock())) {
+            if (level.getBlockEntity(pos) instanceof com.zuxelus.zlib.tileentities.TileEntityInventory inventory) {
+                net.minecraft.world.Containers.dropContents(level, pos, inventory);
+                level.updateNeighbourForOutputSignal(pos, this);
+            }
+            super.onRemove(state, level, pos, nextState, moving);
+        }
+    }
 }

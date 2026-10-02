@@ -6,8 +6,10 @@ import com.zuxelus.zlib.blocks.FacingBlockSmall;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+
+import javax.annotation.Nullable;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -21,9 +23,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.network.NetworkHooks;
 
 public class TimerBlock extends FacingBlockSmall {
+    @Override protected com.mojang.serialization.MapCodec<? extends TimerBlock> codec() { return simpleCodec(TimerBlock::new); }
+
 	protected static final VoxelShape AABB_DOWN = Block.box(1.0F, 9.0F, 1.0F, 15.0F, 15.0F, 15.0F);
 	protected static final VoxelShape AABB_UP = Block.box(1.0F, 0.0F, 1.0F, 15.0F, 7.0F, 15.0F);
 	protected static final VoxelShape AABB_NORTH = Block.box(1.0F, 1.0F, 9.0F, 15.0F, 15.0F, 15.0F);
@@ -31,8 +34,8 @@ public class TimerBlock extends FacingBlockSmall {
 	protected static final VoxelShape AABB_WEST = Block.box(9.0F, 1.0F, 1.0F, 15.0F, 15.0F, 15.0F);
 	protected static final VoxelShape AABB_EAST = Block.box(0.0F, 1.0F, 1.0F, 7.0F, 15.0F, 15.0F);
 
-	public TimerBlock() {
-		super(Block.Properties.of().strength(1.0F, 3.0F).sound(SoundType.METAL));
+	public TimerBlock(Block.Properties properties) {
+		super(metal(properties));
 	}
 
 	@Override
@@ -41,15 +44,14 @@ public class TimerBlock extends FacingBlockSmall {
 	}
 
 	@Override
-	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-		if (!isMoving && !state.is(newState.getBlock())) {
+	protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState nextState, boolean movedByPiston) {
+        super.onRemove(state, level, pos, nextState, movedByPiston);
+		if (!movedByPiston)
 			level.updateNeighborsAt(pos, this);
-			super.onRemove(state, level, pos, newState, isMoving);
-		}
 	}
 
 	@Override
-	public int getSignal(BlockState state, BlockGetter blockAccess, BlockPos pos, Direction side) {
+	protected int getSignal(BlockState state, BlockGetter blockAccess, BlockPos pos, Direction side) {
 		BlockEntity te = blockAccess.getBlockEntity(pos);
 		if (!(te instanceof TileEntityTimer))
 			return 0;
@@ -59,7 +61,7 @@ public class TimerBlock extends FacingBlockSmall {
 	}
 
 	@Override
-	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+	protected VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
 		switch (state.getValue(FACING)) {
 		case EAST:
 			return AABB_EAST;
@@ -78,27 +80,27 @@ public class TimerBlock extends FacingBlockSmall {
 	}
 
 	@Override
-	public RenderShape getRenderShape(BlockState state) {
+	protected RenderShape getRenderShape(BlockState state) {
 		return RenderShape.INVISIBLE;
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		if (world.isClientSide)
 			return InteractionResult.PASS;
 		BlockEntity te = world.getBlockEntity(pos);
 		if (!(te instanceof TileEntityTimer))
 			return InteractionResult.PASS;
-		NetworkHooks.openScreen((ServerPlayer) player, (TileEntityTimer) te, pos);
+		player.openMenu((TileEntityTimer) te, buf -> buf.writeBlockPos(pos));
 		return InteractionResult.SUCCESS;
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block fromBlock, BlockPos fromPos, boolean isMoving) {
+	protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block fromBlock, BlockPos neighborPos, boolean isMoving) {
 		if (!level.isClientSide) {
 			BlockEntity be = level.getBlockEntity(pos);
 			if (be instanceof TileEntityTimer)
-				((TileEntityTimer) be).onNeighborChange(fromBlock, fromPos);
+				((TileEntityTimer) be).onNeighborChange(fromBlock);
 		}
 	}
 }

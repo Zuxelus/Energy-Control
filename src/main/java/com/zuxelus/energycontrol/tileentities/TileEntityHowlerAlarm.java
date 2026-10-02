@@ -1,17 +1,18 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import net.minecraft.core.HolderLookup;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.utils.TileEntitySound;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
+import com.mojang.serialization.Codec;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -76,7 +77,7 @@ public class TileEntityHowlerAlarm extends BlockEntityFacing implements ITilePac
 	}
 
 	public void updatePowered(boolean isPowered) {
-		if (level.isClientSide && isPowered != powered) {
+		if (level != null && level.isClientSide && isPowered != powered) {
 			powered = isPowered;
 			checkStatus();
 		}
@@ -102,53 +103,24 @@ public class TileEntityHowlerAlarm extends BlockEntityFacing implements ITilePac
 	public void onClientMessageReceived(CompoundTag tag) { }
 
 	@Override
-	public Packet<ClientGamePacketListener> getUpdatePacket() {
-		return ClientboundBlockEntityDataPacket.create(this);
-	}
-
-	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-		readProperties(pkt.getTag());
-	}
-
-	@Override
-	public CompoundTag getUpdateTag() {
-		CompoundTag tag = super.getUpdateTag();
-		tag = writeProperties(tag);
+	protected void writeUpdateData(CompoundTag tag) {
 		powered = level.hasNeighborSignal(worldPosition);
 		tag.putBoolean("powered", powered);
-		return tag;
 	}
 
 	@Override
-	protected void readProperties(CompoundTag tag) {
-		super.readProperties(tag);
-		if (tag.contains("soundName"))
-			soundName = prevSoundName = tag.getString("soundName");
-		if (tag.contains("range"))
-			range = tag.getInt("range");
-		if (tag.contains("powered"))
-			updatePowered(tag.getBoolean("powered"));
+	protected void readProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.readProperties(tag, registries);
+		if (tag.contains("soundName")) soundName = prevSoundName = tag.getString("soundName");
+		range = (tag.contains("range") ? tag.getInt("range") : range);
+		if (tag.contains("powered")) updatePowered(tag.getBoolean("powered"));
 	}
 
 	@Override
-	public void load(CompoundTag tag) {
-		super.load(tag);
-		readProperties(tag);
-	}
-
-	@Override
-	protected CompoundTag writeProperties(CompoundTag tag) {
-		tag = super.writeProperties(tag);
+	protected void writeProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.writeProperties(tag, registries);
 		tag.putString("soundName", soundName);
 		tag.putInt("range", range);
-		return tag;
-	}
-
-	@Override
-	protected void saveAdditional(CompoundTag tag) {
-		super.saveAdditional(tag);
-		writeProperties(tag);
 	}
 
 	@Override

@@ -19,8 +19,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
@@ -36,7 +36,6 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 
 	@Override
 	public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(matrixStack);
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
 		Slot slot = container.getSlot(TileEntityKitAssembler.SLOT_INFO);
 		if (isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY) && slot.isActive())
@@ -51,7 +50,7 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 		ItemStack stack = slot.getItem();
 		if (stack.isEmpty() || !(stack.getItem() instanceof ItemCardMain))
 			return;
-		List<Component> stackList = stack.getTooltipLines(minecraft.player, minecraft.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
+		List<Component> stackList = stack.getTooltipLines(net.minecraft.world.item.Item.TooltipContext.of(minecraft.level), minecraft.player, minecraft.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
 		List<Component> list = Lists.<Component>newArrayList();
 		if (stackList.size() > 0)
 			list.add(stackList.get(0));

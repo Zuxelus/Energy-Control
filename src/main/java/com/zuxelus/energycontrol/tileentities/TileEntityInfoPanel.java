@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import net.minecraft.core.HolderLookup;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,13 +27,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -45,9 +40,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.nbt.CompoundTag;
+
 
 public class TileEntityInfoPanel extends TileEntityInventory implements MenuProvider, ITilePacketHandler, IScreenPart, ISlotItemFilter {
 	public static final String NAME = "info_panel";
@@ -199,9 +193,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 			case 1:
 				if (tag.contains("screenData")) {
 					if (level != null)
-						setScreenData((CompoundTag) tag.get("screenData"));
+						setScreenData(tag.getCompound("screenData"));
 					else
-						screenData = (CompoundTag) tag.get("screenData");
+						screenData = tag.getCompound("screenData");
 				} else
 					screenData = null;
 				break;
@@ -245,24 +239,11 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	}
 
 	@Override
-	public Packet<ClientGamePacketListener> getUpdatePacket() {
-		return ClientboundBlockEntityDataPacket.create(this);
-	}
-
-	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-		readProperties(pkt.getTag());
-	}
-
-	@Override
-	public @NotNull CompoundTag getUpdateTag() {
-		CompoundTag tag = super.getUpdateTag();
-		tag = writeProperties(tag);
+	protected void writeUpdateData(CompoundTag tag) {
 		calcPowered();
 		tag.putBoolean("powered", powered);
 		colored = isColoredEval();
 		tag.putBoolean("colored", colored);
-		return tag;
 	}
 
 	protected void deserializeDisplaySettings(CompoundTag tag) {
@@ -270,11 +251,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	}
 
 	protected void deserializeSlotSettings(CompoundTag tag, String tagName, int slot) {
-		if (!(tag.contains(tagName)))
-			return;
-		ListTag settingsList = tag.getList(tagName, Tag.TAG_COMPOUND);
-		for (int i = 0; i < settingsList.size(); i++) {
-			CompoundTag compound = settingsList.getCompound(i);
+		for (net.minecraft.nbt.Tag entry : tag.getList(tagName, 10)) {
+            CompoundTag compound = (CompoundTag) entry;
 			try {
 				getDisplaySettingsForSlot(slot).put(compound.getString("key"), compound.getInt("value"));
 			} catch (IllegalArgumentException e) {
@@ -284,28 +262,24 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	}
 
 	@Override
-	protected void readProperties(CompoundTag tag) {
-		super.readProperties(tag);
-		if (tag.contains("tickRate"))
-			tickRate = tag.getInt("tickRate");
-		if (tag.contains("showLabels"))
-			showLabels = tag.getBoolean("showLabels");
-		if (tag.contains("colorText"))
-			colorText = tag.getInt("colorText");
-		if (tag.contains("colorBackground"))
-			colorBackground = tag.getInt("colorBackground");
-		if (tag.contains("colored"))
-			setColored(tag.getBoolean("colored"));
-		if (tag.contains("screenData")) {
+	protected void readProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.readProperties(tag, registries);
+		tickRate = (tag.contains("tickRate") ? tag.getInt("tickRate") : tickRate);
+		showLabels = (tag.contains("showLabels") ? tag.getBoolean("showLabels") : showLabels);
+		colorText = (tag.contains("colorText") ? tag.getInt("colorText") : colorText);
+		colorBackground = (tag.contains("colorBackground") ? tag.getInt("colorBackground") : colorBackground);
+		setColored((tag.contains("colored") ? tag.getBoolean("colored") : colored));
+		CompoundTag newScreenData = (tag.contains("screenData", 10) ? tag.getCompound("screenData") : null);
+		if (newScreenData != null) {
 			if (level != null)
-				setScreenData((CompoundTag) tag.get("screenData"));
+				setScreenData(newScreenData);
 			else
-				screenData = (CompoundTag) tag.get("screenData");
+				screenData = newScreenData;
 		} else
 			screenData = null;
 		deserializeDisplaySettings(tag);
-		if (tag.contains("powered") && level.isClientSide) {
-			boolean newPowered = tag.getBoolean("powered");
+		if (level != null && level.isClientSide) {
+			boolean newPowered = (tag.contains("powered") ? tag.getBoolean("powered") : powered);
 			if (newPowered != powered) {
 				setPowered(newPowered); // update power on client
 				level.getChunkSource().getLightEngine().checkBlock(worldPosition);
@@ -313,30 +287,24 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 		}
 	}
 
-	@Override
-	public void load(CompoundTag tag) {
-		super.load(tag);
-		readProperties(tag);
-	}
-
 	protected void serializeDisplaySettings(CompoundTag tag) {
-		tag.put("dSettings", serializeSlotSettings(SLOT_CARD));
+		serializeSlotSettings(tag, "dSettings", SLOT_CARD);
 	}
 
-	protected ListTag serializeSlotSettings(int slot) {
-		ListTag settingsList = new ListTag();
+	protected void serializeSlotSettings(CompoundTag tag, String tagName, int slot) {
+		net.minecraft.nbt.ListTag settingsList = new net.minecraft.nbt.ListTag();
+        tag.put(tagName, settingsList);
 		for (Map.Entry<String, Integer> item : getDisplaySettingsForSlot(slot).entrySet()) {
-			CompoundTag tag = new CompoundTag();
-			tag.putString("key", item.getKey());
-			tag.putInt("value", item.getValue());
-			settingsList.add(tag);
+			CompoundTag child = new CompoundTag();
+            settingsList.add(child);
+			child.putString("key", item.getKey());
+			child.putInt("value", item.getValue());
 		}
-		return settingsList;
 	}
 
 	@Override
-	protected CompoundTag writeProperties(CompoundTag tag) {
-		tag = super.writeProperties(tag);
+	protected void writeProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.writeProperties(tag, registries);
 		tag.putInt("tickRate",tickRate);
 		tag.putBoolean("showLabels", getShowLabels());
 		tag.putInt("colorBackground", colorBackground);
@@ -347,18 +315,23 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 			screenData = screen.toTag();
 			tag.put("screenData", screenData);
 		}
-		return tag;
 	}
 
+	private boolean chunkUnloaded;
+
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag) {
-		super.saveAdditional(tag);
-		writeProperties(tag);
+	public void onChunkUnloaded() {
+		// Unloading preserves the saved screen. Rebuilding it here would reload chunks
+		// while ChunkMap is trying to unload them, including during server shutdown.
+		chunkUnloaded = true;
+		if (level != null && !level.isClientSide)
+			EnergyControl.INSTANCE.screenManager.unloadScreenPart(this);
+		super.onChunkUnloaded();
 	}
 
 	@Override
 	public void setRemoved() {
-		if (!level.isClientSide)
+		if (!chunkUnloaded && level != null && !level.isClientSide)
 			EnergyControl.INSTANCE.screenManager.unregisterScreenPart(this);
 		super.setRemoved();
 	}
@@ -545,7 +518,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 
 		if (displaySettings.containsKey(slot)) {
 			for (Map.Entry<String, Integer> entry : displaySettings.get(slot).entrySet()) {
-				if (card.getDescriptionId().equals(entry.getKey()))
+				if (card.getItem().getDescriptionId().equals(entry.getKey()))
 					return entry.getValue();
 			}
 		}
@@ -562,7 +535,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 
 		if (!displaySettings.containsKey(slot))
 			displaySettings.put(slot, new HashMap<>());
-		displaySettings.get(slot).put(stack.getDescriptionId(), settings);
+		displaySettings.get(slot).put(stack.getItem().getDescriptionId(), settings);
 		if (!level.isClientSide)
 			notifyBlockUpdate();
 	}
@@ -574,7 +547,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	}
 
 	@Override
-	public boolean canPlaceItem(int index, @NotNull ItemStack stack) {
+	public boolean canPlaceItem(int index, ItemStack stack) {
 		return isItemValid(index, stack);
 	}
 
@@ -630,15 +603,12 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 				}
 	}
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
 	public AABB getRenderBoundingBox() {
 		if (screen == null)
-			return new AABB(worldPosition.offset(0, 0, 0), worldPosition.offset(1, 1, 1));
-		return new AABB(new BlockPos(screen.minX, screen.minY, screen.minZ), new BlockPos(screen.maxX + 1, screen.maxY + 1, screen.maxZ + 1));
+			return new AABB(worldPosition);
+		return new AABB(screen.minX, screen.minY, screen.minZ, screen.maxX + 1, screen.maxY + 1, screen.maxZ + 1);
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public int findTexture() {
 		Screen scr = getScreen();
 		if (scr != null) {
@@ -734,12 +704,12 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 
 	// MenuProvider
 	@Override
-	public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory inventory, @NotNull Player player) {
+	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerInfoPanel(windowId, inventory, this);
 	}
 
 	@Override
-	public @NotNull Component getDisplayName() {
+	public Component getDisplayName() {
 		return Component.translatable(ModItems.info_panel.get().getDescriptionId());
 	}
 }

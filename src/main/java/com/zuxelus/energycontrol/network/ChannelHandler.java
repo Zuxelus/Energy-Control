@@ -1,20 +1,21 @@
 package com.zuxelus.energycontrol.network;
 
-import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.network.PacketTileEntity;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public class ChannelHandler {
 
-	public static void init() {
-		NetworkHelper.createChannel(EnergyControl.MODID, EnergyControl.VERSION);
-		NetworkHelper.registerBoth(1, PacketCard.class, PacketCard::encode, PacketCard::decode, PacketCard::handle);
-		NetworkHelper.registerBoth(2, PacketTileEntity.class, PacketTileEntity::encode, PacketTileEntity::decode, PacketTileEntity::handle);
-		NetworkHelper.registerServerToClient(3, PacketAlarm.class, PacketAlarm::encode, PacketAlarm::decode, PacketAlarm::handle);
-		NetworkHelper.registerClientToServer(4, PacketKeys.class, PacketKeys::encode, PacketKeys::decode, PacketKeys::handle);
+	public static void register(RegisterPayloadHandlersEvent event) {
+		PayloadRegistrar registrar = event.registrar("1");
+		registrar.playBidirectional(PacketCard.TYPE, PacketCard.STREAM_CODEC, (packet, context) -> { if (context.flow().isClientbound()) PacketCard.handleClient(packet, context); else PacketCard.handleServer(packet, context); });
+		registrar.playBidirectional(PacketTileEntity.TYPE, PacketTileEntity.STREAM_CODEC, (packet, context) -> { if (context.flow().isClientbound()) PacketTileEntity.handleClient(packet, context); else PacketTileEntity.handleServer(packet, context); });
+		registrar.playToClient(PacketAlarm.TYPE, PacketAlarm.STREAM_CODEC, PacketAlarm::handle);
+		registrar.playToServer(PacketKeys.TYPE, PacketKeys.STREAM_CODEC, PacketKeys::handle);
 	}
 
 	// server
@@ -38,10 +39,10 @@ public class ChannelHandler {
 		if (world == null || !world.isClientSide)
 			return;
 
-		NetworkHelper.network.sendToServer(new PacketCard(card, panel.getBlockPos(), slot));
+		NetworkHelper.sendToServer(new PacketCard(card, panel.getBlockPos(), slot));
 	}
 
 	public static void updateSeverKeys(boolean altPressed) {
-		NetworkHelper.network.sendToServer(new PacketKeys(altPressed));
+		NetworkHelper.sendToServer(new PacketKeys(altPressed));
 	}
 }

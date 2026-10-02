@@ -8,13 +8,13 @@ import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.containers.ContainerBase;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 
 public class ContainerHoloPanel extends ContainerBase<TileEntityInfoPanel> {
 
-	public ContainerHoloPanel(int windowId, Inventory inventory, FriendlyByteBuf data) {
+	public ContainerHoloPanel(int windowId, Inventory inventory, RegistryFriendlyByteBuf data) {
 		this(windowId, inventory, (TileEntityInfoPanel) getBlockEntity(inventory, data));
 	}
 

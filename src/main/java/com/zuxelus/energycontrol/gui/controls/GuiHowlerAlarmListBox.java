@@ -2,9 +2,6 @@ package com.zuxelus.energycontrol.gui.controls;
 
 import java.util.List;
 
-import org.lwjgl.opengl.GL11;
-
-import com.mojang.blaze3d.platform.Window;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 
@@ -15,8 +12,8 @@ import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiHowlerAlarmListBox extends AbstractButton {
@@ -108,9 +105,7 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 		}
 
 		int rowTop = BASIC_Y_OFFSET;
-		GL11.glEnable(GL11.GL_SCISSOR_TEST);
-		Window scaler = minecraft.getWindow();
-		GL11.glScissor((int) (getX() * scaler.getGuiScale()), (int) (scaler.getHeight() - (getY() + height) * scaler.getGuiScale()), (int) ((width - SCROLL_WIDTH) * scaler.getGuiScale()), (int) (height * scaler.getGuiScale()));
+		matrixStack.enableScissor(getX(), getY(), getX() + width - SCROLL_WIDTH, getY() + height);
 
 		for (String row : items) {
 			if(row.equals(currentItem)) {
@@ -122,7 +117,7 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 			rowTop += lineHeight;
 		}
 		
-		GL11.glDisable(GL11.GL_SCISSOR_TEST);
+		matrixStack.disableScissor();
 
 		// Slider
 		int sliderX = getX() + width - SCROLL_WIDTH + 1;
@@ -132,10 +127,10 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 		/*Tesselator tesselator = Tesselator.getInstance();
 		BufferBuilder bufferbuilder = tesselator.getBuilder();
 		bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-		bufferbuilder.vertex((sliderX), sliderY + sliderHeight - 1, getBlitOffset()).uv(131 / 256F, (18) / 256F).endVertex();
-		bufferbuilder.vertex(sliderX + SCROLL_WIDTH - 1, sliderY + sliderHeight - 1, getBlitOffset()).uv((131 + SCROLL_WIDTH - 1) / 256F, (18) / 256F).endVertex();
-		bufferbuilder.vertex(sliderX + SCROLL_WIDTH - 1, sliderY + 1, getBlitOffset()).uv((131 + SCROLL_WIDTH - 1) / 256F, (17) / 256F).endVertex();
-		bufferbuilder.vertex((sliderX), sliderY + 1, getBlitOffset()).uv(131 / 256F, (17) / 256F).endVertex();
+		bufferbuilder.addVertex((sliderX), sliderY + sliderHeight - 1, getBlitOffset()).setUv(131 / 256F, (18) / 256F);
+		bufferbuilder.addVertex(sliderX + SCROLL_WIDTH - 1, sliderY + sliderHeight - 1, getBlitOffset()).setUv((131 + SCROLL_WIDTH - 1) / 256F, (18) / 256F);
+		bufferbuilder.addVertex(sliderX + SCROLL_WIDTH - 1, sliderY + 1, getBlitOffset()).setUv((131 + SCROLL_WIDTH - 1) / 256F, (17) / 256F);
+		bufferbuilder.addVertex((sliderX), sliderY + 1, getBlitOffset()).setUv(131 / 256F, (17) / 256F);
 		tesselator.end();*/
 
 		matrixStack.blit(TEXTURE, sliderX, sliderY + sliderHeight - 1, 131, 19, SCROLL_WIDTH - 1, 1);
@@ -190,7 +185,7 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 	}
 
 	@Override
-	public boolean mouseScrolled(double mouseX, double mouseY, double p_94736_) {
+	public boolean mouseScrolled(double mouseX, double mouseY, double horizontal, double p_94736_) {
 		if (isMouseOver(mouseX, mouseY)) {
 			if (p_94736_ > 0) {
 				scrollUp();
@@ -199,7 +194,7 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 				scrollDown();
 			}
 		}
-		return super.mouseScrolled(mouseX, mouseY, p_94736_);
+		return super.mouseScrolled(mouseX, mouseY, horizontal, p_94736_);
 	}
 
 	@Override

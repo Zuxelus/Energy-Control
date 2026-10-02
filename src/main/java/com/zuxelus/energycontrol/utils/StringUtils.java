@@ -7,10 +7,9 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class StringUtils {
 	private static DecimalFormat formatter;
@@ -40,9 +39,8 @@ public class StringUtils {
 		return I18n.get(resourceName, arguments);
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public static String getItemName(ItemStack stack) {
-		List<Component> list = stack.getTooltipLines(Minecraft.getInstance().player, TooltipFlag.Default.NORMAL);
+		List<Component> list = stack.getTooltipLines(Item.TooltipContext.of(Minecraft.getInstance().level), Minecraft.getInstance().player, TooltipFlag.Default.NORMAL);
 		if (list.size() == 0)
 			return stack.getItem().getDescriptionId();
 		return list.get(0).getString();// .getFormattedText();

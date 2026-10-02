@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import net.minecraft.core.HolderLookup;
 import com.zuxelus.energycontrol.blocks.RemoteThermalMonitor;
 import com.zuxelus.energycontrol.blocks.ThermalMonitor;
 import com.zuxelus.energycontrol.config.ConfigHandler;
@@ -9,10 +10,8 @@ import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -96,55 +95,25 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 	public void onClientMessageReceived(CompoundTag tag) { }
 
 	@Override
-	public Packet<ClientGamePacketListener> getUpdatePacket() {
-		return ClientboundBlockEntityDataPacket.create(this);
-	}
-
-	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-		readProperties(pkt.getTag());
-	}
-
-	@Override
-	public CompoundTag getUpdateTag() {
-		CompoundTag tag = super.getUpdateTag();
-		tag = writeProperties(tag);
+	protected void writeUpdateData(CompoundTag tag) {
 		tag.putInt("status", status);
 		tag.putBoolean("poweredBlock", poweredBlock);
-		return tag;
 	}
 
 	@Override
-	protected void readProperties(CompoundTag tag) {
-		super.readProperties(tag);
-		if (tag.contains("heatLevel"))
-			heatLevel = tag.getInt("heatLevel");
-		if (tag.contains("invert"))
-			invertRedstone = tag.getBoolean("invert");
-		if (tag.contains("status"))
-			setStatus(tag.getInt("status"));
-		if (tag.contains("poweredBlock"))
-			poweredBlock = tag.getBoolean("poweredBlock");
+	protected void readProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.readProperties(tag, registries);
+		heatLevel = (tag.contains("heatLevel") ? tag.getInt("heatLevel") : heatLevel);
+		invertRedstone = (tag.contains("invert") ? tag.getBoolean("invert") : invertRedstone);
+		if (tag.contains("status")) setStatus(tag.getInt("status"));
+		poweredBlock = (tag.contains("poweredBlock") ? tag.getBoolean("poweredBlock") : poweredBlock);
 	}
 
 	@Override
-	public void load(CompoundTag tag) {
-		super.load(tag);
-		readProperties(tag);
-	}
-
-	@Override
-	protected CompoundTag writeProperties(CompoundTag tag) {
-		tag = super.writeProperties(tag);
+	protected void writeProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.writeProperties(tag, registries);
 		tag.putInt("heatLevel", heatLevel);
 		tag.putBoolean("invert", invertRedstone);
-		return tag;
-	}
-
-	@Override
-	protected void saveAdditional(CompoundTag tag) {
-		super.saveAdditional(tag);
-		writeProperties(tag);
 	}
 
 	public static void tickStatic(Level level, BlockPos pos, BlockState state, BlockEntity be) {

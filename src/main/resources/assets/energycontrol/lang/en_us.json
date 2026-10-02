@@ -299,5 +299,7 @@
     "ec.jei.kitEnergy": "Used to get info from energy storages. Should work with blocks from many different mods.",
     "ec.jei.kitLiquid": "Used to get info from first block tank. Should work with blocks from many different mods.",
     "ec.jei.kitLiquidAdv": "Used to get info from all block tanks. Should work with blocks from many different mods.",
-    "ec.jei.kitToggle": "Used to remotely switch levers. Put card in information panel, add touch screen upgrade. Click on panel's screen with Alt key pressed."
+    "ec.jei.kitToggle": "Used to remotely switch levers. Put card in information panel, add touch screen upgrade. Click on panel's screen with Alt key pressed.",
+  "gui.ec.portableBarsOn": "Bars: On",
+  "gui.ec.portableBarsOff": "Bars: Off"
 }

@@ -1,7 +1,6 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import javax.annotation.Nonnull;
-
+import net.minecraft.core.HolderLookup;
 import com.zuxelus.energycontrol.blocks.KitAssembler;
 import com.zuxelus.energycontrol.containers.ContainerKitAssembler;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
@@ -16,13 +15,11 @@ import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.TileEntityItemHandler;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -34,11 +31,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.capabilities.Capabilities;
+
+
+
 
 public class TileEntityKitAssembler extends TileEntityItemHandler implements MenuProvider, ITilePacketHandler, ISlotItemFilter, IEnergyBlockEntity {
 	public static final byte SLOT_INFO = 0;
@@ -119,7 +115,7 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 		case 1:
 			if (tag.contains("energy") && tag.contains("production")) {
 				storage.setEnergy(tag.getInt("energy"));
-				production = tag.getDouble("production");
+				production = (tag.contains("production") ? tag.getDouble("production") : 0.0);
 			}
 			if (tag.contains("time"))
 				recipeTime = tag.getInt("time");
@@ -130,56 +126,26 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 	}
 
 	@Override
-	public Packet<ClientGamePacketListener> getUpdatePacket() {
-		return ClientboundBlockEntityDataPacket.create(this);
-	}
-
-	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-		readProperties(pkt.getTag());
-	}
-
-	@Override
-	public CompoundTag getUpdateTag() {
-		CompoundTag tag = super.getUpdateTag();
-		tag = writeProperties(tag);
+	protected void writeUpdateData(CompoundTag tag) {
 		updateActive();
 		tag.putBoolean("active", active);
-		return tag;
 	}
 
 	@Override
-	protected void readProperties(CompoundTag tag) {
-		super.readProperties(tag);
-		if (tag.contains("energy"))
-			storage.setEnergy(tag.getInt("energy"));
-		if (tag.contains("buffer"))
-			buffer = tag.getInt("buffer");
-		if (tag.contains("production"))
-			production = tag.getDouble("production");
-		if (tag.contains("active"))
-			active = tag.getBoolean("active");
+	protected void readProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.readProperties(tag, registries);
+		if (tag.contains("energy")) storage.setEnergy(tag.getInt("energy"));
+		buffer = (tag.contains("buffer") ? tag.getInt("buffer") : buffer);
+		production = (tag.contains("production") ? tag.getDouble("production") : production);
+		active = (tag.contains("active") ? tag.getBoolean("active") : active);
 	}
 
 	@Override
-	public void load(CompoundTag tag) {
-		super.load(tag);
-		readProperties(tag);
-	}
-
-	@Override
-	protected CompoundTag writeProperties(CompoundTag tag) {
-		tag = super.writeProperties(tag);
+	protected void writeProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.writeProperties(tag, registries);
 		tag.putInt("energy", storage.getEnergyStored());
 		tag.putInt("buffer", buffer);
 		tag.putDouble("production", production);
-		return tag;
-	}
-
-	@Override
-	protected void saveAdditional(CompoundTag tag) {
-		super.saveAdditional(tag);
-		writeProperties(tag);
 	}
 
 	/*@Override
@@ -223,9 +189,9 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 				stack2.shrink(recipe.count2);
 				stack3.shrink(recipe.count3);
 				if (result.isEmpty())
-					setItem(SLOT_RESULT, recipe.output.copy());
+					setItem(SLOT_RESULT, recipe.getOutput());
 				else
-					result.grow(recipe.output.getCount());
+					result.grow(recipe.result.getCount());
 				production = 0;
 				updateState();
 			}
@@ -251,9 +217,11 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 				setItem(slot, new ItemStack(Items.BUCKET));
 				return;
 			}
-			IEnergyStorage stackStorage = getStackEnergyStorage(stack);
+			net.neoforged.neoforge.energy.IEnergyStorage stackStorage = getStackEnergyStorage(stack);
 			if (stackStorage != null) {
-				if (storage.receiveEnergy(stackStorage.extractEnergy(needed, false), false) > 0)
+				int extracted;
+				extracted = stackStorage.extractEnergy(needed, false);
+				if (storage.receiveEnergy(extracted, false) > 0)
 					active = true;
 			} else if (CrossModLoader.isElectricItem(stack)) {
 				double old = storage.getEnergyStored();
@@ -264,11 +232,10 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 		}
 	}
 
-	private IEnergyStorage getStackEnergyStorage(ItemStack stack) {
-		LazyOptional<IEnergyStorage> cap = stack.getCapability(ForgeCapabilities.ENERGY);
-		if(cap.isPresent())
-			return cap.orElseThrow(NullPointerException::new);
-		return null;
+	private net.neoforged.neoforge.energy.IEnergyStorage getStackEnergyStorage(ItemStack stack) {
+		if (stack.isEmpty())
+			return null;
+		return stack.getCapability(Capabilities.EnergyStorage.ITEM);
 	}
 
 	public void notifyBlockUpdate() {
@@ -294,12 +261,12 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 			return;
 		KitAssemblerRecipe newRecipe;
 		if (recipe == null) {
-			newRecipe = KitAssemblerRecipeType.TYPE.findRecipe(this);
+			newRecipe = KitAssemblerRecipeType.findRecipe(level, this);
 			if (newRecipe == null)
 				return;
 			recipe = newRecipe;
 		} else if (!recipe.isSuitable(this)) {
-			newRecipe = KitAssemblerRecipeType.TYPE.findRecipe(this);
+			newRecipe = KitAssemblerRecipeType.findRecipe(level, this);
 			if (newRecipe == null) {
 				recipe = null;
 				return;
@@ -350,7 +317,7 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 		case SLOT_DISCHARGER:
 			return getStackEnergyStorage(stack) != null || CrossModLoader.isElectricItem(stack) || stack.getItem().equals(Items.LAVA_BUCKET);
 		case SLOT_TRANSFORMER:
-			return stack.getDescriptionId().equals("item.ic2.upgrade_transformer");
+			return stack.getItem().getDescriptionId().equals("item.ic2.upgrade_transformer");
 		case SLOT_RESULT:
 		default:
 			return false;
@@ -404,17 +371,13 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 		return 0;
 	}
 
-	@Override
-	@Nonnull
-	public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, Direction side) {
-		if (cap == ForgeCapabilities.ENERGY)
-			return LazyOptional.of(() -> this.storage).cast();
-		return super.getCapability(cap, side);
+	public net.neoforged.neoforge.energy.IEnergyStorage getEnergyHandler(Direction side) {
+		return storage;
 	}
 
 	// ISidedInventory
 	@Override
-	public int @NotNull [] getSlotsForFace(@NotNull Direction side) {
+	public int [] getSlotsForFace(Direction side) {
 		if (side == Direction.UP)
 			return new int[] { SLOT_CARD1, SLOT_ITEM, SLOT_CARD2 };
 		if (side == Direction.DOWN)
@@ -423,12 +386,12 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 	}
 
 	@Override
-	public boolean canPlaceItemThroughFace(int slot, @NotNull ItemStack stack, Direction side) {
+	public boolean canPlaceItemThroughFace(int slot, ItemStack stack, Direction side) {
 		return side == Direction.UP && (slot == SLOT_CARD1 || slot == SLOT_ITEM || slot == SLOT_CARD2);
 	}
 
 	@Override
-	public boolean canTakeItemThroughFace(int slot, @NotNull ItemStack stack, @NotNull Direction side) {
+	public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) {
 		return side == Direction.DOWN && slot == SLOT_RESULT;
 	}
 

@@ -6,7 +6,7 @@ import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -14,9 +14,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
 
 public class HoloPanelExtender extends HoloPanel {
+    @Override protected com.mojang.serialization.MapCodec<? extends HoloPanelExtender> codec() { return simpleCodec(HoloPanelExtender::new); }
+
+
+	public HoloPanelExtender(Block.Properties properties) {
+		super(properties);
+	}
 
 	@Override
 	protected BlockEntityFacing createBlockEntity(BlockPos pos, BlockState state) {
@@ -24,7 +29,7 @@ public class HoloPanelExtender extends HoloPanel {
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		if (world.isClientSide)
 			return InteractionResult.PASS;
 		BlockEntity te = world.getBlockEntity(pos);
@@ -33,7 +38,7 @@ public class HoloPanelExtender extends HoloPanel {
 		TileEntityInfoPanel panel = ((TileEntityHoloPanelExtender) te).getCore();
 		if (panel == null)
 			return InteractionResult.PASS;
-		NetworkHooks.openScreen((ServerPlayer) player, (TileEntityInfoPanel) panel, pos);
+		player.openMenu((TileEntityInfoPanel) panel, buf -> buf.writeBlockPos(pos));
 		return InteractionResult.SUCCESS;
 	}
 }

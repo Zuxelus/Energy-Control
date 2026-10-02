@@ -4,59 +4,63 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.zuxelus.energycontrol.api.ItemStackHelper;
-import com.zuxelus.energycontrol.crossmod.computercraft.CrossComputerCraft;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.registries.RegisterEvent;
+import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.registries.RegisterEvent;
+
+
+
+
+
 
 public class CrossModLoader {
 	private static final Map<String, CrossModBase> CROSS_MODS = new HashMap<>();
+	private static final CrossModBase EMPTY = new CrossModBase();
 
 	public static void init() {
+		// Integrations with other mods are not ported to 26.3 yet
 		//loadCrossMod(ModIDs.ADV_GENERATORS, CrossAdvGenerators::new);
 		//loadCrossMod(ModIDs.APPLIED_ENERGISTICS, CrossAppEng::new);
-		loadCrossMod(ModIDs.BIG_REACTORS, CrossBigReactors::new);
-		loadCrossMod(ModIDs.BIGGER_REACTORS, CrossBiggerReactors::new);
-		loadCrossModSafely(ModIDs.COMPUTER_CRAFT, () -> CrossComputerCraft::new);
+		//loadCrossMod(ModIDs.BIG_REACTORS, CrossBigReactors::new);
+		//loadCrossMod(ModIDs.BIGGER_REACTORS, CrossBiggerReactors::new);
+		//loadCrossModSafely(ModIDs.COMPUTER_CRAFT, () -> CrossComputerCraft::new);
 		//loadCrossModSafely(ModIDs.IC2, () -> CrossIC2Classic::new);
-		loadCrossModSafely(ModIDs.MEKANISM, () -> CrossMekanism::new);
-		loadCrossModSafely(ModIDs.MEKANISM_GENERATORS, () -> CrossMekanismGenerators::new);
+		//loadCrossModSafely(ModIDs.MEKANISM, () -> CrossMekanism::new);
+		//loadCrossModSafely(ModIDs.MEKANISM_GENERATORS, () -> CrossMekanismGenerators::new);
 		//loadCrossMod(ModIDs.IMMERSIVE_ENGINEERING, CrossImmersiveEngineering::new);
 		//loadCrossModSafely(ModIDs.INDUSTRIAL_REBORN, () -> CrossIndustrialReborn::new);
 		//loadCrossMod(ModIDs.THERMAL_EXPANSION, CrossThermalExpansion::new);
 	}
 
+	@SuppressWarnings("unused")
 	private static void loadCrossMod(String modid, Supplier<? extends CrossModBase> factory) {
 		CROSS_MODS.put(modid, ModList.get().isLoaded(modid) ? factory.get() : new CrossModBase());
 	}
 
+	@SuppressWarnings("unused")
 	private static void loadCrossModSafely(String modid, Supplier<Supplier<? extends CrossModBase>> factory) {
 		CROSS_MODS.put(modid, ModList.get().isLoaded(modid) ? factory.get().get() : new CrossModBase());
 	}
 
 	public static CrossModBase getCrossMod(String modid) {
-		return CROSS_MODS.get(modid);
+		return CROSS_MODS.getOrDefault(modid, EMPTY);
 	}
 
 	public static ItemStack getEnergyCard(Level world, BlockPos pos) {
@@ -73,14 +77,15 @@ public class CrossModLoader {
 	}
 
 	public static CompoundTag getEnergyData(BlockEntity te) {
+		if (te == null)
+			return null;
 		for (CrossModBase crossMod : CROSS_MODS.values()) {
 			CompoundTag tag = crossMod.getEnergyData(te);
 			if (tag != null)
 				return tag;
 		}
-		Optional<IEnergyStorage> cap = te.getCapability(ForgeCapabilities.ENERGY).resolve();
-		if (cap.isPresent()) {
-			IEnergyStorage handler = cap.get();
+		net.neoforged.neoforge.energy.IEnergyStorage handler = te.getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, te.getBlockPos(), te.getBlockState(), te, null);
+		if (handler != null) {
 			CompoundTag tag = new CompoundTag();
 			tag.putString(DataHelper.EUTYPE, "FE");
 			tag.putDouble(DataHelper.ENERGY, handler.getEnergyStored());
@@ -99,12 +104,13 @@ public class CrossModLoader {
 			if (list != null)
 				return list;
 		}
-		Optional<IFluidHandler> fluid = te.getCapability(ForgeCapabilities.FLUID_HANDLER, null).resolve();
-		if (fluid.isPresent()) {
-			IFluidHandler handler = fluid.get();
+		net.neoforged.neoforge.fluids.capability.IFluidHandler handler = world.getCapability(Capabilities.FluidHandler.BLOCK, pos, te.getBlockState(), te, null);
+		if (handler != null) {
 			List<FluidInfo> result = new ArrayList<>();
-			for (int i = 0; i < handler.getTanks(); i++)
-				result.add(new FluidInfo(handler.getFluidInTank(i), handler.getTankCapacity(i)));
+			for (int i = 0; i < handler.getTanks(); i++) {
+				net.neoforged.neoforge.fluids.FluidStack resource = handler.getFluidInTank(i);
+				result.add(new FluidInfo(resource, handler.getTankCapacity(i)));
+			}
 			return result;
 		}
 		return null;
@@ -125,26 +131,28 @@ public class CrossModLoader {
 	}
 
 	public static CompoundTag getInventoryData(BlockEntity te) {
+		if (te == null)
+			return null;
 		for (CrossModBase crossMod : CROSS_MODS.values()) {
 			CompoundTag tag = crossMod.getInventoryData(te);
 			if (tag != null)
 				return tag;
 		}
-		Optional<IItemHandler> handler = te.getCapability(ForgeCapabilities.ITEM_HANDLER, null).resolve();
-		if (!handler.isPresent() && !(te instanceof Container))
+		net.neoforged.neoforge.items.IItemHandler handler = te.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, te.getBlockPos(), te.getBlockState(), te, null);
+		if (handler == null && !(te instanceof Container))
 			return null;
 		CompoundTag tag = new CompoundTag();
-		if (handler.isPresent()) {
-			IItemHandler storage = handler.get();
+		if (handler != null) {
 			int inUse = 0;
 			int items = 0;
-			tag.putInt("size", storage.getSlots());
-			for (int i = 0; i < Math.min(6, storage.getSlots()); i++) {
-				if (storage.getStackInSlot(i) != ItemStack.EMPTY) {
+			tag.putInt("size", handler.getSlots());
+			for (int i = 0; i < Math.min(6, handler.getSlots()); i++) {
+				ItemStack stack = handler.getStackInSlot(i);
+				if (!stack.isEmpty()) {
 					inUse++;
-					items += storage.getStackInSlot(i).getCount();
+					items += stack.getCount();
 				}
-				tag.put("slot" + Integer.toString(i), storage.getStackInSlot(i).save(new CompoundTag()));
+				tag.put("slot" + Integer.toString(i), ItemStackHelper.saveStack(stack));
 			}
 			tag.putInt("used", inUse);
 			tag.putInt("items", items);
@@ -154,16 +162,16 @@ public class CrossModLoader {
 			if (te instanceof BaseContainerBlockEntity)
 				tag.putString("name", ((BaseContainerBlockEntity) te).getDisplayName().getString());
 			tag.putBoolean("sided", inv instanceof WorldlyContainer);
-			if (!handler.isPresent()) {
+			if (handler == null) {
 				int inUse = 0;
 				int items = 0;
 				tag.putInt("size", inv.getContainerSize());
 				for (int i = 0; i < Math.min(6, inv.getContainerSize()); i++) {
-					if (inv.getItem(i) != ItemStack.EMPTY) {
+					if (!inv.getItem(i).isEmpty()) {
 						inUse++;
 						items += inv.getItem(i).getCount();
 					}
-					tag.put("slot" + Integer.toString(i), inv.getItem(i).save(new CompoundTag()));
+					tag.put("slot" + Integer.toString(i), ItemStackHelper.saveStack(inv.getItem(i)));
 				}
 				tag.putInt("used", inUse);
 				tag.putInt("items", items);
@@ -192,9 +200,11 @@ public class CrossModLoader {
 		return 0;
 	}
 
-	public static void registerItems(RegisterEvent.RegisterHelper<Item> event) {
-		for (CrossModBase crossMod : CROSS_MODS.values())
-			crossMod.registerItems(event);
+	public static void onRegister(RegisterEvent event) {
+		event.register(Registries.ITEM, helper -> {
+			for (CrossModBase crossMod : CROSS_MODS.values())
+				crossMod.registerItems(helper);
+		});
 	}
 
 	public static void addKitsToCreativeTab(CreativeModeTab.Output output) {

@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import net.minecraft.core.HolderLookup;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.zlib.blocks.FacingBlockActive;
@@ -7,19 +8,15 @@ import com.zuxelus.zlib.blocks.FacingHorizontalActive;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IScreenPart {
 	protected boolean init;
@@ -71,32 +68,12 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	}
 
 	@Override
-	public Packet<ClientGamePacketListener> getUpdatePacket() {
-		return ClientboundBlockEntityDataPacket.create(this);
-	}
-
-	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-		readProperties(pkt.getTag());
-	}
-
-	@Override
-	public CompoundTag getUpdateTag() {
-		CompoundTag tag = super.getUpdateTag();
-		tag = writeProperties(tag);
-		return tag;
-	}
-
-	@Override
-	protected void readProperties(CompoundTag tag) {
-		super.readProperties(tag);
-		if (tag.contains("partOfScreen"))
-			partOfScreen = tag.getBoolean("partOfScreen");
-		if (tag.contains("coreX")) {
-			coreX = tag.getInt("coreX");
-			coreY = tag.getInt("coreY");
-			coreZ = tag.getInt("coreZ");
-		}
+	protected void readProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.readProperties(tag, registries);
+		partOfScreen = (tag.contains("partOfScreen") ? tag.getBoolean("partOfScreen") : partOfScreen);
+		coreX = (tag.contains("coreX") ? tag.getInt("coreX") : coreX);
+		coreY = (tag.contains("coreY") ? tag.getInt("coreY") : coreY);
+		coreZ = (tag.contains("coreZ") ? tag.getInt("coreZ") : coreZ);
 		if (level != null) {
 			updateScreen();
 			if (level.isClientSide)
@@ -105,30 +82,29 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	}
 
 	@Override
-	public void load(CompoundTag tag) {
-		super.load(tag);
-		readProperties(tag);
-	}
-
-	@Override
-	protected CompoundTag writeProperties(CompoundTag tag) {
-		tag = super.writeProperties(tag);
+	protected void writeProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.writeProperties(tag, registries);
 		tag.putBoolean("partOfScreen", partOfScreen);
 		tag.putInt("coreX", coreX);
 		tag.putInt("coreY", coreY);
 		tag.putInt("coreZ", coreZ);
-		return tag;
 	}
 
+	private boolean chunkUnloaded;
+
 	@Override
-	protected void saveAdditional(CompoundTag tag) {
-		super.saveAdditional(tag);
-		writeProperties(tag);
+	public void onChunkUnloaded() {
+		// Unloading preserves the saved screen. Rebuilding it here would reload chunks
+		// while ChunkMap is trying to unload them, including during server shutdown.
+		chunkUnloaded = true;
+		if (level != null && !level.isClientSide)
+			EnergyControl.INSTANCE.screenManager.unloadScreenPart(this);
+		super.onChunkUnloaded();
 	}
 
 	@Override
 	public void setRemoved() {
-		if (!level.isClientSide)
+		if (!chunkUnloaded && level != null && !level.isClientSide)
 			EnergyControl.INSTANCE.screenManager.unregisterScreenPart(this);
 		super.setRemoved();
 	}
@@ -167,8 +143,10 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 					BlockState state = level.getBlockState(worldPosition);
 					if (state.getValue(FacingBlockActive.ACTIVE) != stateCore.getValue(FacingBlockActive.ACTIVE))
 						level.setBlock(worldPosition, state.cycle(FacingBlockActive.ACTIVE), 2);
-					return;
 				}
+				// During client chunk loading the core's block state may not be visible yet.
+				// Its valid screen membership must not fall through to the detach path.
+				return;
 			}
 		} else {
 			BlockState state = level.getBlockState(worldPosition);
@@ -227,13 +205,10 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 		return core.getColorBackground();
 	}
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
 	public AABB getRenderBoundingBox() {
-		return new AABB(worldPosition.offset(0, 0, 0), worldPosition.offset(1, 1, 1));
+		return new AABB(worldPosition);
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public int findTexture() {
 		Screen scr = getScreen();
 		if (scr != null) {

@@ -46,10 +46,10 @@ public class TERemoteThermalMonitorRenderer implements BlockEntityRenderer<TileE
 			
 			VertexConsumer bar = buffer.getBuffer(ModRenderTypes.screenImage(TEXTURE));
 			Matrix4f matrix = matrixStack.last().pose();
-			bar.vertex(matrix, rate, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).uv(rate * 0.25F, 0).uv2(LightTexture.FULL_BRIGHT).endVertex();
-			bar.vertex(matrix, 1, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).uv(0.25F, 0).uv2(LightTexture.FULL_BRIGHT).endVertex();
-			bar.vertex(matrix, 1.0F, 0.75F, 0).color(1.0F, 1.0F, 1.0F, 1.0F).uv(0.25F, 0.1875F).uv2(LightTexture.FULL_BRIGHT).endVertex();
-			bar.vertex(matrix, rate, 0.75F, 0).color(1.0F, 1.0F, 1.0F, 1.0F).uv(rate * 0.25F, 0.1875F).uv2(LightTexture.FULL_BRIGHT).endVertex();
+			bar.addVertex(matrix, rate, 0, 0).setColor(1.0F, 1.0F, 1.0F, 1.0F).setUv(rate * 0.25F, 0).setLight(LightTexture.FULL_BRIGHT);
+			bar.addVertex(matrix, 1, 0, 0).setColor(1.0F, 1.0F, 1.0F, 1.0F).setUv(0.25F, 0).setLight(LightTexture.FULL_BRIGHT);
+			bar.addVertex(matrix, 1.0F, 0.75F, 0).setColor(1.0F, 1.0F, 1.0F, 1.0F).setUv(0.25F, 0.1875F).setLight(LightTexture.FULL_BRIGHT);
+			bar.addVertex(matrix, rate, 0.75F, 0).setColor(1.0F, 1.0F, 1.0F, 1.0F).setUv(rate * 0.25F, 0.1875F).setLight(LightTexture.FULL_BRIGHT);
 		}
 
 		matrixStack.mulPose(Axis.XP.rotationDegrees(180.0F));

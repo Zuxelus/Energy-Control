@@ -2,31 +2,28 @@
   "sources": [
     {
       "type": "minecraft:single",
-      "resource": "energycontrol:slots/slot_card"
+      "resource": "energycontrol:gui/sprites/slots/slot_card",
+      "sprite": "energycontrol:slots/slot_card"
     },
     {
       "type": "minecraft:single",
-      "resource": "energycontrol:slots/slot_color"
+      "resource": "energycontrol:gui/sprites/slots/slot_color",
+      "sprite": "energycontrol:slots/slot_color"
     },
     {
       "type": "minecraft:single",
-      "resource": "energycontrol:slots/slot_range"
+      "resource": "energycontrol:gui/sprites/slots/slot_power",
+      "sprite": "energycontrol:slots/slot_power"
     },
     {
       "type": "minecraft:single",
-      "resource": "energycontrol:slots/slot_touch"
+      "resource": "energycontrol:gui/sprites/slots/slot_range",
+      "sprite": "energycontrol:slots/slot_range"
     },
     {
       "type": "minecraft:single",
-      "resource": "energycontrol:slots/slot_power"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "zlib:slots/slot_dischargeable"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "zlib:slots/slot_transformer"
+      "resource": "energycontrol:gui/sprites/slots/slot_touch",
+      "sprite": "energycontrol:slots/slot_touch"
     }
   ]
 }

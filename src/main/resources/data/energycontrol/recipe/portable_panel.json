@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "A  ",
+    "CMC",
+    "RPP"
+  ],
+  "key": {
+    "A": {
+      "item": "energycontrol:strong_string"
+    },
+    "C": {
+      "item": "energycontrol:radio_transmitter"
+    },
+    "M": {
+      "item": "energycontrol:info_panel_extender"
+    },
+    "R": {
+      "item": "energycontrol:upgrade_range"
+    },
+    "P": {
+      "item": "minecraft:charcoal"
+    }
+  },
+  "result": {
+    "id": "energycontrol:portable_panel"
+  }
+}

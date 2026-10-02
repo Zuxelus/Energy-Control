@@ -16,10 +16,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemCardIndustrialReborn extends ItemCardMain {
+
+	public ItemCardIndustrialReborn(Properties properties) {
+		super(properties);
+	}
 
 	@Override
 	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
@@ -90,7 +92,6 @@ public class ItemCardIndustrialReborn extends ItemCardMain {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(4);
 		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelOutput"), 1));

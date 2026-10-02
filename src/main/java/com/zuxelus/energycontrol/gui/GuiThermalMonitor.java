@@ -11,8 +11,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiThermalMonitor extends GuiBase {
@@ -53,12 +53,6 @@ public class GuiThermalMonitor extends GuiBase {
 	@Override
 	protected void drawGuiContainerForegroundLayer(GuiGraphics matrixStack, int mouseX, int mouseY) {
 		drawTitle(matrixStack);
-	}
-
-	@Override
-	public void tick() {
-		super.tick();
-		textboxHeat.tick();
 	}
 
 	@Override

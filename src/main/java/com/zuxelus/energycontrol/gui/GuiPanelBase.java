@@ -19,8 +19,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 @OnlyIn(Dist.CLIENT)
@@ -60,7 +60,6 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 
 	@Override
 	public void render(@NotNull GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(matrixStack);
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
 		renderTooltip(matrixStack, mouseX, mouseY);
 	}
@@ -73,20 +72,13 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int mouseButton) {
 		if (textboxTitle != null) {
-			textboxTitle.mouseReleased(mouseX - leftPos, mouseY - topPos, mouseButton);
+			textboxTitle.mouseReleased(mouseX, mouseY, mouseButton);
 			if (textboxTitle.isFocused())
 				return super.mouseReleased(mouseX, mouseY, mouseButton);
-			magicalSpecialHackyFocus(null);
+			setFocused(null);
 			updateTitle();
 		}
 		return super.mouseReleased(mouseX, mouseY, mouseButton);
-	}
-
-	@Override
-	public void containerTick() {
-		super.containerTick();
-		if (textboxTitle != null)
-			textboxTitle.tick();
 	}
 
 	protected void updateTitle() {
@@ -120,14 +112,17 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 			panel.setShowLabels(checked);
 			break;
 		case ID_COLORS:
+			updateTitle(); // The child screen receives the mouse release after this click.
 			Screen colorGui = new GuiScreenColor(this, panel);
 			minecraft.setScreen(colorGui);
 			break;
 		case ID_TEXT:
+			updateTitle();
 			oldStack = ItemStack.EMPTY;
 			openTextGui();
 			break;
 		case ID_TICKRATE:
+			updateTitle();
 			GuiHorizontalSlider slider = new GuiHorizontalSlider(this, panel);
 			minecraft.setScreen(slider);
 			break;
@@ -138,13 +133,6 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 		ItemStack card = panel.getCards().get(activeTab);
 		if (!card.isEmpty() && card.getItem() instanceof ItemCardText)
 			minecraft.setScreen(new GuiCardText(card, panel, this, activeTab));
-	}
-
-	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (keyCode == 69)
-			return true;
-		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 
 	@Override

@@ -12,8 +12,8 @@ import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.core.Direction;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class CubeSmallRenderer {
 	public static final CubeSmallRenderer MODEL = new CubeSmallRenderer(2, 0, 2, 28, 14, 28, 128, 128);

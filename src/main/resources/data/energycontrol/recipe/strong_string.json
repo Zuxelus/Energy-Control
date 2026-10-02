@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "#S ",
+    "S#S",
+    " S#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:cactus"
+    },
+    "S": {
+      "item": "minecraft:sugar_cane"
+    }
+  },
+  "result": {
+    "id": "energycontrol:strong_string",
+    "count": 6
+  }
+}

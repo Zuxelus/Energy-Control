@@ -14,8 +14,8 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiTimer extends GuiContainerBase<ContainerTimer> {
@@ -78,7 +78,6 @@ public class GuiTimer extends GuiContainerBase<ContainerTimer> {
 	@Override
 	public void containerTick() {
 		super.containerTick();
-		textboxTimer.tick();
 		boolean isWorking = timer.getIsWorking();
 		if (isWorking != lastIsWorking) {
 			textboxTimer.setEditable(!isWorking);

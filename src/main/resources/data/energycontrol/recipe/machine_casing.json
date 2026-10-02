@@ -1,0 +1,25 @@
+{
+  "type": "energycontrol:kit_assembler",
+  "input1": {
+    "ingredient": {
+      "tag": "c:ingots/iron"
+    },
+    "count": 3
+  },
+  "input2": {
+    "ingredient": {
+      "tag": "c:ingots/iron"
+    },
+    "count": 3
+  },
+  "input3": {
+    "ingredient": {
+      "item": "energycontrol:strong_string"
+    },
+    "count": 3
+  },
+  "result": {
+    "id": "energycontrol:machine_casing"
+  },
+  "time": 400
+}

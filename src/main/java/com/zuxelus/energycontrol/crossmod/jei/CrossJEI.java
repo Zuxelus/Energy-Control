@@ -43,7 +43,7 @@ public class CrossJEI implements IModPlugin {
 
 	@Override
 	public void registerRecipes(IRecipeRegistration registry) {
-		registry.addRecipes(KitAssemblerRecipeCategory.recipeType, KitAssemblerRecipeType.TYPE.getRecipes(Minecraft.getInstance().level));
+		registry.addRecipes(KitAssemblerRecipeCategory.recipeType, KitAssemblerRecipeType.getRecipes(Minecraft.getInstance().level));
 		registerItem(registry, ModItems.white_lamp.get(), "ec.jei.blockLightWhite");
 		registerItem(registry, ModItems.orange_lamp.get(), "ec.jei.blockLightOrange");
 		registerItem(registry, ModItems.howler_alarm.get(), "ec.jei.blockHowlerAlarm");

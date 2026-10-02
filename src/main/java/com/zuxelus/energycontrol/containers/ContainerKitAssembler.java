@@ -11,7 +11,7 @@ import com.zuxelus.zlib.containers.slots.SlotFilter;
 import com.zuxelus.zlib.containers.slots.SlotTransformer;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerLevelAccess;
@@ -20,7 +20,7 @@ public class ContainerKitAssembler extends ContainerBase<TileEntityKitAssembler>
 	private double lastEnergy = -1;
 	private double lastProduction = -1;
 
-	public ContainerKitAssembler(int windowId, Inventory inventory, FriendlyByteBuf data) {
+	public ContainerKitAssembler(int windowId, Inventory inventory, RegistryFriendlyByteBuf data) {
 		this(windowId, inventory, (TileEntityKitAssembler) getBlockEntity(inventory, data));
 	}
 

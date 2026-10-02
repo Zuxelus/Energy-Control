@@ -8,8 +8,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiCardHolder extends AbstractContainerScreen<ContainerCardHolder> {
@@ -22,12 +22,12 @@ public class GuiCardHolder extends AbstractContainerScreen<ContainerCardHolder> 
 		super(container, inventory, title);
 		this.player = inventory.player;
 		inventoryRows = 6;
+		name = title.getString();
 		imageHeight = 114 + inventoryRows * 18;
 	}
 
 	@Override
 	public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(matrixStack);
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
 		renderTooltip(matrixStack, mouseX, mouseY);
 	}

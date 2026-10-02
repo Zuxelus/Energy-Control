@@ -5,37 +5,38 @@ import java.util.Vector;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.*;
 
+import com.mojang.serialization.MapCodec;
+import com.zuxelus.energycontrol.api.ItemStackHelper;
+
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.Level;
 
-public class StorageArrayRecipe implements CraftingRecipe {
-	private final ShapelessRecipe recipe;
+public class StorageArrayRecipe extends CustomRecipe {
+    public StorageArrayRecipe() { super(net.minecraft.world.item.crafting.CraftingBookCategory.MISC); }
+    @Override public boolean canCraftInDimensions(int width, int height) { return width * height >= 1; }
+	public static final StorageArrayRecipe INSTANCE = new StorageArrayRecipe();
+	public static final MapCodec<StorageArrayRecipe> MAP_CODEC = MapCodec.unit(INSTANCE);
+	public static final StreamCodec<RegistryFriendlyByteBuf, StorageArrayRecipe> STREAM_CODEC = StreamCodec.unit(INSTANCE);
+	public static final RecipeSerializer<StorageArrayRecipe> SERIALIZER = new RecipeSerializer<StorageArrayRecipe>() {
+        public MapCodec<StorageArrayRecipe> codec() { return MAP_CODEC; }
+        public StreamCodec<RegistryFriendlyByteBuf, StorageArrayRecipe> streamCodec() { return STREAM_CODEC; }
+    };
 
-	public StorageArrayRecipe(ShapelessRecipe internal) {
-		this.recipe = internal;
-	}
-
-	public ShapelessRecipe getRecipe() {
-		return recipe;
+	@Override
+	public boolean matches(CraftingInput inv, Level level) {
+		return !assemble(inv, level.registryAccess()).isEmpty();
 	}
 
 	@Override
-	public boolean matches(CraftingContainer inv, Level level) {
-		return !assemble(inv, null).isEmpty();
-	}
-
-	@Override
-	public ItemStack assemble(CraftingContainer inv, RegistryAccess registryAccess) {
-		int inventoryLength = inv.getContainerSize();
+	public ItemStack assemble(CraftingInput inv, net.minecraft.core.HolderLookup.Provider registries) {
+		int inventoryLength = inv.size();
 		int cardCount = 0;
 		int arrayCount = 0;
 		int cardCountLiquid = 0;
@@ -86,7 +87,7 @@ public class StorageArrayRecipe implements CraftingRecipe {
 			int cnt = new ItemCardReader(array).getInt("cardCount");
 			if (cnt + cardCount <= 16) {
 				ItemStack itemStack = createCard(type);
-				itemStack.setTag(array.getTag().copy());
+				ItemStackHelper.setTag(itemStack, ItemStackHelper.getTag(array));
 				initArray(itemStack, cards);
 				return itemStack;
 			}
@@ -120,27 +121,7 @@ public class StorageArrayRecipe implements CraftingRecipe {
 	}
 
 	@Override
-	public boolean canCraftInDimensions(int width, int height) {
-		return width * height >= 2;
-	}
-
-	@Override
-	public ItemStack getResultItem(RegistryAccess registryAccess) {
-		return ItemStack.EMPTY;
-	}
-
-	@Override
-	public ResourceLocation getId() {
-		return recipe.getId();
-	}
-
-	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<StorageArrayRecipe> getSerializer() {
 		return ModItems.ARRAY_SERIALIZER.get();
-	}
-
-	@Override
-	public CraftingBookCategory category() {
-		return CraftingBookCategory.MISC;
 	}
 }

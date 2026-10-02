@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import net.minecraft.core.HolderLookup;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.blocks.RangeTrigger;
 import com.zuxelus.energycontrol.config.ConfigHandler;
@@ -17,11 +18,9 @@ import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
+
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -137,7 +136,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements MenuP
 		switch (tag.getInt("type")) {
 		case 1:
 			if (tag.contains("value"))
-				setLevelStart(tag.getDouble("value"));
+				setLevelStart((tag.contains("value") ? tag.getDouble("value") : 0.0));
 			break;
 		case 2:
 			if (tag.contains("value"))
@@ -145,7 +144,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements MenuP
 			break;
 		case 3:
 			if (tag.contains("value"))
-				setLevelEnd(tag.getDouble("value"));
+				setLevelEnd((tag.contains("value") ? tag.getDouble("value") : 0.0));
 			break;
 		}
 	}
@@ -154,52 +153,25 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements MenuP
 	public void onClientMessageReceived(CompoundTag tag) { }
 
 	@Override
-	public Packet<ClientGamePacketListener> getUpdatePacket() {
-		return ClientboundBlockEntityDataPacket.create(this);
-	}
-
-	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-		readProperties(pkt.getTag());
-	}
-
-	@Override
-	public CompoundTag getUpdateTag() {
-		CompoundTag tag = super.getUpdateTag();
-		tag = writeProperties(tag);
+	protected void writeUpdateData(CompoundTag tag) {
 		tag.putBoolean("poweredBlock", poweredBlock);
-		return tag;
 	}
 
 	@Override
-	protected void readProperties(CompoundTag tag) {
-		super.readProperties(tag);
+	protected void readProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.readProperties(tag, registries);
 		invertRedstone = tag.getBoolean("invert");
-		levelStart = tag.getDouble("levelStart");
-		levelEnd = tag.getDouble("levelEnd");
-		if (tag.contains("poweredBlock"))
-			poweredBlock = tag.getBoolean("poweredBlock");
+		levelStart = (tag.contains("levelStart") ? tag.getDouble("levelStart") : 0.0);
+		levelEnd = (tag.contains("levelEnd") ? tag.getDouble("levelEnd") : 0.0);
+		poweredBlock = (tag.contains("poweredBlock") ? tag.getBoolean("poweredBlock") : poweredBlock);
 	}
 
 	@Override
-	public void load(CompoundTag tag) {
-		super.load(tag);
-		readProperties(tag);
-	}
-
-	@Override
-	protected CompoundTag writeProperties(CompoundTag tag) {
-		tag = super.writeProperties(tag);
+	protected void writeProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.writeProperties(tag, registries);
 		tag.putBoolean("invert", invertRedstone);
 		tag.putDouble("levelStart", levelStart);
 		tag.putDouble("levelEnd", levelEnd);
-		return tag;
-	}
-
-	@Override
-	protected void saveAdditional(CompoundTag tag) {
-		super.saveAdditional(tag);
-		writeProperties(tag);
 	}
 
 	@Override

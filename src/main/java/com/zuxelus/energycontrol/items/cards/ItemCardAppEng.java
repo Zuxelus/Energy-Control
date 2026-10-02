@@ -17,6 +17,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class ItemCardAppEng extends ItemCardMain {
 
+	public ItemCardAppEng(Properties properties) {
+		super(properties);
+	}
+
 	@Override
 	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
 		BlockPos target = reader.getTarget();

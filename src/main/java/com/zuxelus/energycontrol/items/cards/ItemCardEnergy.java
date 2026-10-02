@@ -15,10 +15,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemCardEnergy extends ItemCardMain {
+
+	public ItemCardEnergy(Properties properties) {
+		super(properties);
+	}
 
 	@Override
 	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
@@ -32,8 +34,8 @@ public class ItemCardEnergy extends ItemCardMain {
 
 		CompoundTag tag = CrossModLoader.getEnergyData(te);
 		if (tag != null) {
-			reader.setDouble(DataHelper.ENERGY, tag.getDouble(DataHelper.ENERGY));
-			reader.setDouble(DataHelper.CAPACITY, tag.getDouble(DataHelper.CAPACITY));
+			reader.setDouble(DataHelper.ENERGY, (tag.contains(DataHelper.ENERGY) ? tag.getDouble(DataHelper.ENERGY) : 0.0));
+			reader.setDouble(DataHelper.CAPACITY, (tag.contains(DataHelper.CAPACITY) ? tag.getDouble(DataHelper.CAPACITY) : 0.0));
 			reader.setString(DataHelper.EUTYPE, tag.getString(DataHelper.EUTYPE));
 			return CardState.OK;
 		}
@@ -60,7 +62,6 @@ public class ItemCardEnergy extends ItemCardMain {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(4);
 		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelEnergy"), 1));

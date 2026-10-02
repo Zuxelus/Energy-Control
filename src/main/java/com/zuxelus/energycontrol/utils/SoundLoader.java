@@ -1,18 +1,21 @@
 package com.zuxelus.energycontrol.utils;
 
 import java.io.File;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import com.zuxelus.energycontrol.EnergyControl;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.packs.PackLocationInfo;
+import net.minecraft.server.packs.PackSelectionConfig;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.PathPackResources;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.server.packs.repository.RepositorySource;
-import net.minecraftforge.event.AddPackFindersEvent;
-import net.minecraftforge.resource.PathPackResources;
+import net.neoforged.neoforge.event.AddPackFindersEvent;
 
 public class SoundLoader implements RepositorySource {
 	private static final SoundLoader INSTANCE = new SoundLoader();
@@ -30,7 +33,8 @@ public class SoundLoader implements RepositorySource {
 		alarms = new File(Minecraft.getInstance().gameDirectory, "alarms");
 		if (!alarms.exists())
 			return;
-		Pack pack = Pack.readMetaAndCreate(EnergyControl.MODID + "_alarms", Component.translatable("resourcePack.energycontrol"), false, (value) -> new PathPackResources(EnergyControl.NAME + " Alarms", true, alarms.toPath()), PackType.CLIENT_RESOURCES, Pack.Position.BOTTOM, PackSource.DEFAULT);
+		PackLocationInfo location = new PackLocationInfo(EnergyControl.MODID + "_alarms", Component.translatable("resourcePack.energycontrol"), PackSource.DEFAULT, Optional.empty());
+		Pack pack = Pack.readMetaAndCreate(location, new PathPackResources.PathResourcesSupplier(alarms.toPath()), PackType.CLIENT_RESOURCES, new PackSelectionConfig(false, Pack.Position.BOTTOM, false));
 		if (pack != null)
 			packs.accept(pack);
 	}

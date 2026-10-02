@@ -2,6 +2,8 @@ package com.zuxelus.zlib.gui;
 
 import java.text.DecimalFormat;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -11,8 +13,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiContainerBase<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
@@ -80,6 +82,16 @@ public class GuiContainerBase<T extends AbstractContainerMenu> extends AbstractC
 
 	public static int multiplyColorComponents(int color, float brightnessFactor) {
 		return ((int) (brightnessFactor * (color & MASKR)) & MASKR) | ((int) (brightnessFactor * (color & MASKG)) & MASKG) | ((int) (brightnessFactor * (color & MASKB)) & MASKB);
+	}
+
+	// 1.21.1 equivalent of the upstream text-input capture guard.
+	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		if (keyCode != InputConstants.KEY_ESCAPE && getFocused() instanceof EditBox textBox && textBox.canConsumeInput()) {
+			textBox.keyPressed(keyCode, scanCode, modifiers);
+			return true;
+		}
+		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 
 	protected EditBox addTextFieldWidget(int left, int top, int width, int height, boolean isEnabled, String text) {

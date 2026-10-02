@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import net.minecraft.core.HolderLookup;
 import com.zuxelus.energycontrol.containers.ContainerAdvancedInfoPanel;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
@@ -17,7 +18,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.nbt.CompoundTag;
+
 
 public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	public static final String NAME = "info_panel_advanced";
@@ -80,7 +82,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	}
 
 	@Override
-	protected void calcPowered() { //server
+	public void calcPowered() { //server
 		boolean newPowered = level.hasNeighborSignal(worldPosition);
 		switch (powerMode) {
 		case POWER_ON:
@@ -154,33 +156,28 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	}
 
 	@Override
-	protected void readProperties(CompoundTag tag) {
-		super.readProperties(tag);
-		if (tag.contains("powerMode"))
-			setPowerMode(tag.getByte("powerMode"));
-		if (tag.contains("thickness"))
-			thickness = tag.getByte("thickness");
-		if (tag.contains("rotateHor"))
-			rotateHor = tag.getByte("rotateHor");
-		if (tag.contains("rotateVert"))
-			rotateVert = tag.getByte("rotateVert");
+	protected void readProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.readProperties(tag, registries);
+		setPowerMode((tag.contains("powerMode") ? tag.getByte("powerMode") : powerMode));
+		thickness = (tag.contains("thickness") ? tag.getByte("thickness") : thickness);
+		rotateHor = (tag.contains("rotateHor") ? tag.getByte("rotateHor") : rotateHor);
+		rotateVert = (tag.contains("rotateVert") ? tag.getByte("rotateVert") : rotateVert);
 	}
 
 	@Override
 	protected void serializeDisplaySettings(CompoundTag tag) {
-		tag.put("dSettings1", serializeSlotSettings(SLOT_CARD1));
-		tag.put("dSettings2", serializeSlotSettings(SLOT_CARD2));
-		tag.put("dSettings3", serializeSlotSettings(SLOT_CARD3));
+		serializeSlotSettings(tag, "dSettings1", SLOT_CARD1);
+		serializeSlotSettings(tag, "dSettings2", SLOT_CARD2);
+		serializeSlotSettings(tag, "dSettings3", SLOT_CARD3);
 	}
 
 	@Override
-	protected CompoundTag writeProperties(CompoundTag tag) {
-		tag = super.writeProperties(tag);
+	protected void writeProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.writeProperties(tag, registries);
 		tag.putByte("powerMode", powerMode);
 		tag.putByte("thickness", thickness);
 		tag.putByte("rotateHor", rotateHor);
 		tag.putByte("rotateVert", rotateVert);
-		return tag;
 	}
 
 	@Override
@@ -237,12 +234,12 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 
 	// MenuProvider
 	@Override
-	public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory inventory, @NotNull Player player) {
+	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerAdvancedInfoPanel(windowId, inventory, this);
 	}
 
 	@Override
-	public @NotNull Component getDisplayName() {
+	public Component getDisplayName() {
 		return Component.translatable(ModItems.info_panel_advanced.get().getDescriptionId());
 	}
 }

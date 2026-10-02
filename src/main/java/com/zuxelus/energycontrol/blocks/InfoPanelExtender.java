@@ -8,7 +8,6 @@ import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -19,12 +18,13 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
 
 public class InfoPanelExtender extends FacingBlockActive {
+    @Override protected com.mojang.serialization.MapCodec<? extends InfoPanelExtender> codec() { return simpleCodec(InfoPanelExtender::new); }
 
-	public InfoPanelExtender() {
-		super(Block.Properties.of().strength(1.0F, 3.0F).sound(SoundType.METAL).lightLevel(state -> state.getValue(ACTIVE) ? 10 : 0));
+
+	public InfoPanelExtender(Block.Properties properties) {
+		super(metal(properties).lightLevel(state -> state.getValue(ACTIVE) ? 10 : 0));
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class InfoPanelExtender extends FacingBlockActive {
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		if (world.isClientSide)
 			return InteractionResult.PASS;
 		BlockEntity te = world.getBlockEntity(pos);
@@ -45,12 +45,12 @@ public class InfoPanelExtender extends FacingBlockActive {
 		if (EnergyControl.altPressed.get(player) && panel.getFacing() == hit.getDirection())
 			if (panel.runTouchAction(player.getItemInHand(hand), pos, hit.getLocation()))
 				return InteractionResult.SUCCESS;
-		NetworkHooks.openScreen((ServerPlayer) player, panel, pos);
+		player.openMenu(panel, buf -> buf.writeBlockPos(pos));
 		return InteractionResult.SUCCESS;
 	}
 
 	@Override
-	public RenderShape getRenderShape(BlockState state) {
-		return RenderShape.ENTITYBLOCK_ANIMATED;
+	protected RenderShape getRenderShape(BlockState state) {
+		return RenderShape.INVISIBLE;
 	}
 }

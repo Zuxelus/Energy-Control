@@ -3,13 +3,12 @@ package com.zuxelus.zlib.items;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 
 public abstract class ItemInventory implements Container, ISlotItemFilter {
 
@@ -19,41 +18,17 @@ public abstract class ItemInventory implements Container, ISlotItemFilter {
 	public ItemInventory(ItemStack parent) {
 		this.parent = parent;
 		inventory = NonNullList.<ItemStack>withSize(getContainerSize(), ItemStack.EMPTY);
-		readFromParentNBT();
+		readFromParent();
 	}
 
-	private void readFromParentNBT() {
-		CompoundTag tag = parent.getTag();
-		if (tag == null) {
-			tag = new CompoundTag();
-			parent.setTag(tag);
-		}
-
-		ListTag list = tag.getList("Items", Tag.TAG_COMPOUND);
-		for (int i = 0; i < list.size(); i++) {
-			CompoundTag stackTag = list.getCompound(i);
-			setItem(stackTag.getByte("Slot"), ItemStack.of(stackTag));
-		}
+	private void readFromParent() {
+		ItemContainerContents contents = parent.get(DataComponents.CONTAINER);
+		if (contents != null)
+			contents.copyInto(inventory);
 	}
 
-	private void writeToParentNBT() {
-		CompoundTag tag = parent.getTag();
-		if (tag == null) {
-			tag = new CompoundTag();
-			parent.setTag(tag);
-		}
-
-		ListTag list = new ListTag();
-		for (byte i = 0; i < getContainerSize(); i++) {
-			ItemStack stack = getItem(i);
-			if (!stack.isEmpty()) {
-				CompoundTag stackTag = new CompoundTag();
-				stackTag.putByte("Slot", i);
-				stack.save(stackTag);
-				list.add(stackTag);
-			}
-		}
-		tag.put("Items", list);
+	private void writeToParent() {
+		parent.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(inventory));
 	}
 
 	@Override
@@ -72,6 +47,8 @@ public abstract class ItemInventory implements Container, ISlotItemFilter {
 	@Override
 	public ItemStack removeItem(int index, int count) {
 		ItemStack stack = ContainerHelper.removeItem(inventory, index, count);
+		if (!stack.isEmpty())
+			setChanged();
 		return stack;
 	}
 
@@ -81,6 +58,7 @@ public abstract class ItemInventory implements Container, ISlotItemFilter {
 		if (stack.isEmpty())
 			return ItemStack.EMPTY;
 		inventory.set(slot, ItemStack.EMPTY);
+		setChanged();
 		return stack;
 	}
 
@@ -99,7 +77,7 @@ public abstract class ItemInventory implements Container, ISlotItemFilter {
 
 	@Override
 	public void setChanged() {
-		writeToParentNBT();
+		writeToParent();
 	}
 
 	@Override
@@ -115,5 +93,6 @@ public abstract class ItemInventory implements Container, ISlotItemFilter {
 	@Override
 	public void clearContent() {
 		inventory.clear();
+		setChanged();
 	}
 }

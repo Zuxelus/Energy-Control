@@ -14,10 +14,12 @@ import com.zuxelus.energycontrol.utils.StringUtils;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemCardLiquidArray extends ItemCardMain {
+
+	public ItemCardLiquidArray(Properties properties) {
+		super(properties);
+	}
 	private static final long STATUS_NOT_FOUND = Integer.MIN_VALUE;
 	private static final long STATUS_OUT_OF_RANGE = Integer.MIN_VALUE + 1;
 
@@ -140,7 +142,6 @@ public class ItemCardLiquidArray extends ItemCardMain {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(6);
 		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidName"), 1));

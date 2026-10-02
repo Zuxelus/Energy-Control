@@ -2,10 +2,19 @@ package com.zuxelus.zlib.tileentities;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+
+import net.minecraft.nbt.CompoundTag;
+
 
 public abstract class BlockEntityFacing extends BlockEntity {
 
@@ -44,24 +53,60 @@ public abstract class BlockEntityFacing extends BlockEntity {
 		rotation = meta;
 	}
 
-	protected void readProperties(CompoundTag tag) {
-		if (tag.contains("facing"))
-			facing = Direction.from3DDataValue(tag.getInt("facing"));
-		else
-			facing = Direction.NORTH;
-		if (hasRotation()) {
-			if (tag.contains("rotation"))
-				rotation = Direction.from3DDataValue(tag.getInt("rotation"));
-			else
-				rotation = Direction.NORTH;
-		}
+	protected void readProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		facing = Direction.from3DDataValue((tag.contains("facing") ? tag.getInt("facing") : Direction.NORTH.get3DDataValue()));
+		if (hasRotation())
+			rotation = Direction.from3DDataValue((tag.contains("rotation") ? tag.getInt("rotation") : Direction.NORTH.get3DDataValue()));
 	}
 
-	protected CompoundTag writeProperties(CompoundTag tag) {
-		tag.putInt("facing", facing.get3DDataValue());
+	protected void writeProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		tag.putInt("facing", facing == null ? Direction.NORTH.get3DDataValue() : facing.get3DDataValue());
 		if (hasRotation() && rotation != null)
 			tag.putInt("rotation", rotation.get3DDataValue());
-		return tag;
+	}
+
+	/**
+	 * Extra data sent to the client only (update tag / data packet).
+	 */
+	protected void writeUpdateData(CompoundTag tag) { }
+
+	@Override
+	protected void loadAdditional(CompoundTag input, HolderLookup.Provider registries) {
+		super.loadAdditional(input, registries);
+		readProperties(input, registries);
+	}
+
+	@Override
+	protected void saveAdditional(CompoundTag output, HolderLookup.Provider registries) {
+		super.saveAdditional(output, registries);
+		writeProperties(output, registries);
+	}
+
+	protected boolean sendUpdatePacket() {
+		return true;
+	}
+
+	@Override
+	public Packet<ClientGamePacketListener> getUpdatePacket() {
+		return sendUpdatePacket() ? ClientboundBlockEntityDataPacket.create(this) : null;
+	}
+
+	@Override
+	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+		CompoundTag output = new CompoundTag();
+		writeProperties(output, registries);
+		writeUpdateData(output);
+		return output;
+	}
+
+	@Override
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider registries) {
+		readProperties(packet.getTag(), registries);
+	}
+
+	@Override
+	public void handleUpdateTag(CompoundTag input, HolderLookup.Provider registries) {
+		readProperties(input, registries);
 	}
 
 	protected void notifyBlockUpdate() {

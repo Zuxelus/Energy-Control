@@ -70,7 +70,7 @@ public class KitAssemblerRecipeCategory implements IRecipeCategory<KitAssemblerR
 	/*@Override
 	public void setIngredients(KitAssemblerRecipe recipe, IIngredients ingredients) {
 		ingredients.setInputIngredients(recipe.getIngredients());
-		ingredients.setOutput(VanillaTypes.ITEM, recipe.output);
+		ingredients.setOutput(VanillaTypes.ITEM, recipe.getOutput());
 	}*/
 
 	@Override
@@ -78,20 +78,12 @@ public class KitAssemblerRecipeCategory implements IRecipeCategory<KitAssemblerR
 		builder.addSlot(RecipeIngredientRole.INPUT, 34, 1).addItemStacks(getStackList(recipe.input1, recipe.count1));
 		builder.addSlot(RecipeIngredientRole.INPUT, 34, 19).addItemStacks(getStackList(recipe.input2, recipe.count2));
 		builder.addSlot(RecipeIngredientRole.INPUT, 34, 37).addItemStacks(getStackList(recipe.input3, recipe.count3));
-		builder.addSlot(RecipeIngredientRole.OUTPUT, 93, 19).addItemStack(recipe.output);
+		builder.addSlot(RecipeIngredientRole.OUTPUT, 93, 19).addItemStack(recipe.result);
 	}
 
 	private static List<ItemStack> getStackList(Ingredient ingredient, int count) {
 		List<ItemStack> list = new ArrayList<>();
-		for (ItemStack stack : ingredient.getItems()) {
-			if (count == 1)
-				list.add(stack);
-			else {
-				ItemStack copy = stack.copy();
-				copy.setCount(count);
-				list.add(copy);
-			}
-		}
+		for (ItemStack item : ingredient.getItems()) list.add(item.copyWithCount(count));
 		return list;
 	}
 

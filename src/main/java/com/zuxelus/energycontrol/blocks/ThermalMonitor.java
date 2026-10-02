@@ -7,6 +7,7 @@ import com.zuxelus.zlib.blocks.FacingBlockSmall;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -23,6 +24,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class ThermalMonitor extends FacingBlockSmall {
+    @Override protected com.mojang.serialization.MapCodec<? extends ThermalMonitor> codec() { return simpleCodec(ThermalMonitor::new); }
+
 	protected static final VoxelShape AABB_DOWN = Block.box(1.0F, 9.0F, 1.0F, 15.0F, 15.0F, 15.0F);
 	protected static final VoxelShape AABB_UP = Block.box(1.0F, 0.0F, 1.0F, 15.0F, 7.0F, 15.0F);
 	protected static final VoxelShape AABB_NORTH = Block.box(1.0F, 1.0F, 9.0F, 15.0F, 15.0F, 15.0F);
@@ -30,8 +33,8 @@ public class ThermalMonitor extends FacingBlockSmall {
 	protected static final VoxelShape AABB_WEST = Block.box(9.0F, 1.0F, 1.0F, 15.0F, 15.0F, 15.0F);
 	protected static final VoxelShape AABB_EAST = Block.box(0.0F, 1.0F, 1.0F, 7.0F, 15.0F, 15.0F);
 
-	public ThermalMonitor() {
-		super(Block.Properties.of().strength(1.0F, 3.0F).sound(SoundType.METAL));
+	public ThermalMonitor(Block.Properties properties) {
+		super(metal(properties));
 	}
 
 	@Override
@@ -40,15 +43,14 @@ public class ThermalMonitor extends FacingBlockSmall {
 	}
 
 	@Override
-	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-		if (!isMoving && !state.is(newState.getBlock())) {
+	protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState nextState, boolean movedByPiston) {
+        super.onRemove(state, level, pos, nextState, movedByPiston);
+		if (!movedByPiston)
 			level.updateNeighborsAt(pos, this);
-			super.onRemove(state, level, pos, newState, isMoving);
-		}
 	}
 
 	@Override
-	public int getSignal(BlockState state, BlockGetter blockAccess, BlockPos pos, Direction side) {
+	protected int getSignal(BlockState state, BlockGetter blockAccess, BlockPos pos, Direction side) {
 		BlockEntity te = blockAccess.getBlockEntity(pos);
 		if (!(te instanceof TileEntityThermalMonitor))
 			return 0;
@@ -56,12 +58,12 @@ public class ThermalMonitor extends FacingBlockSmall {
 	}
 
 	@Override
-	public boolean isSignalSource(BlockState state) {
+	protected boolean isSignalSource(BlockState state) {
 		return true;
 	}
 
 	@Override
-	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+	protected VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
 		switch (state.getValue(FACING)) {
 		case EAST:
 			return AABB_EAST;
@@ -80,7 +82,7 @@ public class ThermalMonitor extends FacingBlockSmall {
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		if (world.isClientSide) {
 			BlockEntity te = world.getBlockEntity(pos);
 			if (te instanceof TileEntityThermalMonitor)
@@ -90,7 +92,7 @@ public class ThermalMonitor extends FacingBlockSmall {
 	}
 
 	@Override
-	public RenderShape getRenderShape(BlockState state) {
+	protected RenderShape getRenderShape(BlockState state) {
 		return RenderShape.INVISIBLE;
 	}
 }

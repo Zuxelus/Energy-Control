@@ -30,10 +30,11 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class ItemCardToggle extends ItemCardMain implements ITouchAction {
+    public ItemCardToggle(Properties properties) { super(properties); }
 	private static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 	private static final EnumProperty<AttachFace> FACE = BlockStateProperties.ATTACH_FACE;
 	private static final DirectionProperty HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
@@ -126,9 +127,9 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 		float textureY = 0;
 		VertexConsumer builder = buffer.getBuffer(ModRenderTypes.screenImage(reader.getBoolean("value") ? TEXTURE_ON : TEXTURE_OFF));
 		Matrix4f matrix = matrixStack.last().pose();
-		builder.vertex(matrix, x + 0, y + height, z).color(1.0F, 1.0F, 1.0F, 1.0F).uv(textureX + 0, textureY + height).uv2(LightTexture.FULL_BRIGHT).endVertex();
-		builder.vertex(matrix, x + width, y + height, z).color(1.0F, 1.0F, 1.0F, 1.0F).uv(textureX + width, textureY + height).uv2(LightTexture.FULL_BRIGHT).endVertex();
-		builder.vertex(matrix, x + width, y + 0, z).color(1.0F, 1.0F, 1.0F, 1.0F).uv(textureX + width, textureY + 0).uv2(LightTexture.FULL_BRIGHT).endVertex();
-		builder.vertex(matrix, x + 0, y + 0, z).color(1.0F, 1.0F, 1.0F, 1.0F).uv(textureX + 0, textureY + 0).uv2(LightTexture.FULL_BRIGHT).endVertex();
+		builder.addVertex(matrix, x + 0, y + height, z).setColor(1.0F, 1.0F, 1.0F, 1.0F).setUv(textureX + 0, textureY + height).setLight(LightTexture.FULL_BRIGHT);
+		builder.addVertex(matrix, x + width, y + height, z).setColor(1.0F, 1.0F, 1.0F, 1.0F).setUv(textureX + width, textureY + height).setLight(LightTexture.FULL_BRIGHT);
+		builder.addVertex(matrix, x + width, y + 0, z).setColor(1.0F, 1.0F, 1.0F, 1.0F).setUv(textureX + width, textureY + 0).setLight(LightTexture.FULL_BRIGHT);
+		builder.addVertex(matrix, x + 0, y + 0, z).setColor(1.0F, 1.0F, 1.0F, 1.0F).setUv(textureX + 0, textureY + 0).setLight(LightTexture.FULL_BRIGHT);
 	}
 }

@@ -1,27 +1,24 @@
 package com.zuxelus.zlib.tileentities;
 
-import java.util.HashMap;
-
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.SidedInvWrapper;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.nbt.CompoundTag;
+
+
+
+
+
 
 public abstract class TileEntityInventory extends BlockEntityFacing implements WorldlyContainer {
 	protected NonNullList<ItemStack> inventory;
-	private HashMap<Direction, IItemHandler> itemHandlers = new HashMap<>();
 
 	public TileEntityInventory(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -29,17 +26,16 @@ public abstract class TileEntityInventory extends BlockEntityFacing implements W
 	}
 
 	@Override
-	protected void readProperties(CompoundTag tag) {
-		super.readProperties(tag);
+	protected void readProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.readProperties(tag, registries);
 		inventory = NonNullList.<ItemStack>withSize(getContainerSize(), ItemStack.EMPTY);
-		ContainerHelper.loadAllItems(tag, inventory);
+		ContainerHelper.loadAllItems(tag, inventory, registries);
 	}
 
 	@Override
-	protected CompoundTag writeProperties(CompoundTag tag) {
-		tag = super.writeProperties(tag);
-		ContainerHelper.saveAllItems(tag, inventory);
-		return tag;
+	protected void writeProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.writeProperties(tag, registries);
+		ContainerHelper.saveAllItems(tag, inventory, registries);
 	}
 
 	@Override
@@ -51,17 +47,20 @@ public abstract class TileEntityInventory extends BlockEntityFacing implements W
 	}
 
 	@Override
-	public @NotNull ItemStack getItem(int slot) {
+	public ItemStack getItem(int slot) {
 		return slot >= 0 && slot < getContainerSize() ? inventory.get(slot) : ItemStack.EMPTY;
 	}
 
 	@Override
-	public @NotNull ItemStack removeItem(int index, int count) {
-		return ContainerHelper.removeItem(inventory, index, count);
+	public ItemStack removeItem(int index, int count) {
+		ItemStack stack = ContainerHelper.removeItem(inventory, index, count);
+		if (!stack.isEmpty())
+			setChanged();
+		return stack;
 	}
 
 	@Override
-	public @NotNull ItemStack removeItemNoUpdate(int slot) {
+	public ItemStack removeItemNoUpdate(int slot) {
 		ItemStack stack = getItem(slot);
 		if (stack.isEmpty())
 			return ItemStack.EMPTY;
@@ -70,7 +69,7 @@ public abstract class TileEntityInventory extends BlockEntityFacing implements W
 	}
 
 	@Override
-	public void setItem(int slot, @NotNull ItemStack stack) {
+	public void setItem(int slot, ItemStack stack) {
 		inventory.set(slot, stack);
 		if (!stack.isEmpty() && stack.getCount() > getMaxStackSize())
 			stack.setCount(getMaxStackSize());
@@ -78,7 +77,7 @@ public abstract class TileEntityInventory extends BlockEntityFacing implements W
 	}
 
 	@Override
-	public boolean stillValid(@NotNull Player player) {
+	public boolean stillValid(Player player) {
 		return level.getBlockEntity(worldPosition) != this ? false : player.distanceToSqr(worldPosition.getX() + 0.5D, worldPosition.getY() + 0.5D, worldPosition.getZ() + 0.5D) <= 64.0D;
 	}
 
@@ -87,33 +86,28 @@ public abstract class TileEntityInventory extends BlockEntityFacing implements W
 		inventory.clear();
 	}
 
-	@Override
-	public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, Direction side) {
-		if (cap == ForgeCapabilities.ITEM_HANDLER) {
-			IItemHandler handler = itemHandlers.get(side);
-			if (handler == null) {
-				handler = new SidedInvWrapper(this, side);
-				itemHandlers.put(side, handler);
-			}
-			return LazyOptional.of(() -> itemHandlers.get(side)).cast();
-		}
+	public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+		if (level != null)
+			net.minecraft.world.Containers.dropContents(level, pos, this);
+	}
 
-		return super.getCapability(cap, side);
+	public net.neoforged.neoforge.items.IItemHandler getItemHandler(Direction side) {
+		return side == null ? new net.neoforged.neoforge.items.wrapper.InvWrapper(this) : new net.neoforged.neoforge.items.wrapper.SidedInvWrapper(this, side);
 	}
 
 	// ISidedInventory
 	@Override
-	public int @NotNull [] getSlotsForFace(@NotNull Direction side) {
+	public int[] getSlotsForFace(Direction side) {
 		return new int[0];
 	}
 
 	@Override
-	public boolean canPlaceItemThroughFace(int slot, @NotNull ItemStack stack, Direction side) {
+	public boolean canPlaceItemThroughFace(int slot, ItemStack stack, Direction side) {
 		return false;
 	}
 
 	@Override
-	public boolean canTakeItemThroughFace(int slot, @NotNull ItemStack stack, @NotNull Direction side) {
+	public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) {
 		return false;
 	}
 }

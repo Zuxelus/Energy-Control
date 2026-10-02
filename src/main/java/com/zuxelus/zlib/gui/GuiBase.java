@@ -10,8 +10,8 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class GuiBase extends Screen {
@@ -37,18 +37,18 @@ public abstract class GuiBase extends Screen {
 
 	@Override
 	public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(matrixStack);
+		renderBackground(matrixStack, mouseX, mouseY, partialTicks);
 		drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
 		RenderSystem.disableDepthTest();
-		super.render(matrixStack, mouseX, mouseY, partialTicks);
-		PoseStack posestack = RenderSystem.getModelViewStack();
+		// Screen.render in 1.21.1 would blur the background again over our content.
+		for (var widget : renderables)
+			widget.render(matrixStack, mouseX, mouseY, partialTicks);
+		PoseStack posestack = matrixStack.pose();
 		posestack.pushPose();
 		posestack.translate((float) guiLeft, (float) guiTop, 0.0F);
-		RenderSystem.applyModelViewMatrix();
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		drawGuiContainerForegroundLayer(matrixStack, mouseX, mouseY);
 		posestack.popPose();
-		RenderSystem.applyModelViewMatrix();
 		RenderSystem.enableDepthTest();
 	}
 

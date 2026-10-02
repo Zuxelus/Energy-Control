@@ -15,8 +15,8 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiRemoteThermalMonitor extends GuiContainerBase<ContainerRemoteThermalMonitor> {
@@ -54,7 +54,6 @@ public class GuiRemoteThermalMonitor extends GuiContainerBase<ContainerRemoteThe
 
 	@Override
 	public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(matrixStack);
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
 		textboxHeat.renderWidget(matrixStack, mouseX, mouseY, partialTicks);
 		renderTooltip(matrixStack, mouseX, mouseY);
@@ -80,12 +79,6 @@ public class GuiRemoteThermalMonitor extends GuiContainerBase<ContainerRemoteThe
 			te.setHeatLevel(heat);
 		}
 		textboxHeat.setValue(Integer.toString(heat));
-	}
-
-	@Override
-	public void containerTick() {
-		super.containerTick();
-		textboxHeat.tick();
 	}
 
 	@Override

@@ -16,10 +16,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemCardEnergyArray extends ItemCardMain {
+
+	public ItemCardEnergyArray(Properties properties) {
+		super(properties);
+	}
 	private static final int STATUS_NOT_FOUND = Integer.MIN_VALUE;
 	private static final int STATUS_OUT_OF_RANGE = Integer.MIN_VALUE + 1;
 
@@ -42,8 +44,8 @@ public class ItemCardEnergyArray extends ItemCardMain {
 				if (te != null) {
 					CompoundTag tag = CrossModLoader.getEnergyData(te);
 					if (tag != null) {
-						double stored = tag.getDouble(DataHelper.ENERGY);
-						double capacity = tag.getDouble(DataHelper.CAPACITY);
+						double stored = (tag.contains(DataHelper.ENERGY) ? tag.getDouble(DataHelper.ENERGY) : 0.0);
+						double capacity = (tag.contains(DataHelper.CAPACITY) ? tag.getDouble(DataHelper.CAPACITY) : 0.0);
 						totalEnergy += stored;
 						reader.setInt(String.format("_%denergy", i), (int) stored);
 						reader.setInt(String.format("_%dmaxStorage", i), (int) capacity);
@@ -134,7 +136,6 @@ public class ItemCardEnergyArray extends ItemCardMain {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(6);
 		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelEachCard"), 1));

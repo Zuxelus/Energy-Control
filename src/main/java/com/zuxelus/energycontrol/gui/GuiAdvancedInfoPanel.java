@@ -22,8 +22,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiAdvancedInfoPanel extends GuiPanelBase<ContainerAdvancedInfoPanel> {
@@ -131,6 +131,7 @@ public class GuiAdvancedInfoPanel extends GuiPanelBase<ContainerAdvancedInfoPane
 			((TileEntityAdvancedInfoPanel) panel).powerMode = mode;
 			return;
 		case ID_SLOPE:
+			updateTitle();
 			minecraft.setScreen(new GuiPanelSlope(this, ((TileEntityAdvancedInfoPanel) panel)));
 			return;
 		}
