@@ -82,7 +82,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	}
 
 	@Override
-	protected void calcPowered() { //server
+	public void calcPowered() { //server
 		boolean newPowered = level.hasNeighborSignal(worldPosition);
 		switch (powerMode) {
 		case POWER_ON:

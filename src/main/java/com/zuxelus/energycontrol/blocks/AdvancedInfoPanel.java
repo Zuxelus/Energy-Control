@@ -36,6 +36,21 @@ public class AdvancedInfoPanel extends InfoPanel {
 	}
 
 	@Override
+	protected void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos neighborPos, boolean isMoving) {
+		refreshPower(world, pos);
+	}
+
+	@Override
+	protected void tick(BlockState state, net.minecraft.server.level.ServerLevel world, BlockPos pos, net.minecraft.util.RandomSource random) {
+		refreshPower(world, pos);
+	}
+
+	private void refreshPower(Level world, BlockPos pos) {
+		if (!world.isClientSide && world.getBlockEntity(pos) instanceof TileEntityAdvancedInfoPanel panel)
+			panel.calcPowered();
+	}
+
+	@Override
 	protected VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
 		BlockEntity tile = world.getBlockEntity(pos);
 		if (!(tile instanceof TileEntityAdvancedInfoPanel))
