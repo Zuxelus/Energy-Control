@@ -53,7 +53,7 @@ public class GuiPortablePanel extends AbstractContainerScreen<ContainerPortableP
 		toggleBars = addRenderableWidget(Button.builder(barButtonTitle(), button -> {
 			showBars = !showBars;
 			button.setMessage(barButtonTitle());
-		}).bounds(leftPos + 174, topPos + 106, 44, 18).build());
+		}).bounds(leftPos + 174, topPos + 106, 52, 18).build());
 		toggleBars.visible = false;
 	}
 
