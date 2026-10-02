@@ -10,9 +10,16 @@ import net.minecraft.client.Minecraft;
 
 public class ScreenHandler {
 
+	// alarms present on the client and allowed by the server
+	public static List<String> getAlarms() {
+		List<String> items = EnergyControl.INSTANCE.availableAlarms == null ? new ArrayList<>() : new ArrayList<>(EnergyControl.INSTANCE.availableAlarms);
+		if (EnergyControl.INSTANCE.serverAllowedAlarms != null)
+			items.retainAll(EnergyControl.INSTANCE.serverAllowedAlarms);
+		return items;
+	}
+
 	public static void openHowlerAlarmScreen(TileEntityHowlerAlarm be) {
-		List<String> items = new ArrayList<String>(EnergyControl.INSTANCE.availableAlarms);
-		items.retainAll(EnergyControl.INSTANCE.serverAllowedAlarms);
+		List<String> items = getAlarms();
 		Minecraft.getInstance().setScreen(new GuiHowlerAlarm(be, items.size() > 10));
 	}
 

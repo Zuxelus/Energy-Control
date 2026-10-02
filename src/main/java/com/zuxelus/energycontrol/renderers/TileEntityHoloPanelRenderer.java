@@ -59,13 +59,13 @@ public class TileEntityHoloPanelRenderer implements BlockEntityRenderer<TileEnti
 		}*/
 		if (te.getPowered()) {
 			List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
-			drawText(te, partialTicks, joinedData, matrixStack, buffer, combinedLight);
+			drawText(te, joinedData, matrixStack, buffer, combinedLight);
 		}
 		matrixStack.popPose();
 	}
 
 	@SuppressWarnings("incomplete-switch")
-	private void drawText(TileEntityHoloPanel panel, float partialTicks, List<PanelString> joinedData, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight) {
+	private void drawText(TileEntityHoloPanel panel, List<PanelString> joinedData, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight) {
 		Screen screen = panel.getScreen();
 		BlockPos pos = panel.getBlockPos();
 		int power = panel.getPower();
@@ -123,10 +123,9 @@ public class TileEntityHoloPanelRenderer implements BlockEntityRenderer<TileEnti
 		}
 		float imageWidth = 0.475F + (displayWidth - 0.875F) / 2F;
 		float imageHeight = 0.5F + (power - 1) / 2F;
-		if (partialTicks == -1) {
-			// not culled, so visible from both sides
-			IHasBars.drawTransparentRect(matrixStack, buffer, imageWidth, imageHeight, -imageWidth, -imageHeight, -0.0001F, 0x40AADDDD);
-		} else if (joinedData != null) {
+		// not culled, so visible from both sides
+		IHasBars.drawTransparentRect(matrixStack, buffer, imageWidth, imageHeight, -imageWidth, -imageHeight, -0.0001F, 0x40AADDDD);
+		if (joinedData != null) {
 			matrixStack.translate(0, 0, 0.0002F * (power + 1) / 2);
 			int colorHex = 0x000000;
 			if (panel.getColored())

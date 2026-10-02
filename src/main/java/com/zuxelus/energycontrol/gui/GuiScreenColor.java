@@ -118,10 +118,14 @@ public class GuiScreenColor extends GuiBase {
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
 		if (mouseButton == 0) {
-			for (GuiTextNumeric text : fieldList)
+			for (GuiTextNumeric text : fieldList) {
+				text.setFocused(text.isMouseOver(mouseX, mouseY));
 				text.mouseClicked(mouseX, mouseY, mouseButton);
-			for (GuiTextNumeric text : fieldList2)
+			}
+			for (GuiTextNumeric text : fieldList2) {
+				text.setFocused(text.isMouseOver(mouseX, mouseY));
 				text.mouseClicked(mouseX, mouseY, mouseButton);
+			}
 			checkColorPicker(mouseX - guiLeft, mouseY - guiTop);
 			checkColorPicker2(mouseX - guiLeft, mouseY - guiTop);
 		}
@@ -239,11 +243,6 @@ public class GuiScreenColor extends GuiBase {
 
 	private boolean isInside(double mouseX, double mouseY, int x, int y, int width, int height) {
 		return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
-	}
-
-	@Override
-	public void tick() {
-		super.tick();
 	}
 
 	@Override

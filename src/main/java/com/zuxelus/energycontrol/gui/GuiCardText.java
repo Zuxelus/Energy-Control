@@ -52,7 +52,7 @@ public class GuiCardText extends GuiBase {
 	@Override
 	protected void drawGuiContainerBackgroundLayer(GuiGraphics matrixStack, float partialTicks, int mouseX, int mouseY) {
 		super.drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
-		textArea.render(matrixStack, mouseY, mouseY, partialTicks);
+		textArea.render(matrixStack, mouseX, mouseY, partialTicks);
 	}
 
 	@Override

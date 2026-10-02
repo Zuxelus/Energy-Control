@@ -22,20 +22,20 @@ public class GuiPanelSlope extends GuiBase {
 
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
-		mouseX -= guiLeft;
-		mouseY -= guiTop;
-		if (mouseY >= 23 && mouseY <= 89) {
-			int amount = (int) ((87 - mouseY + 2) / 4);
+		double localX = mouseX - guiLeft;
+		double localY = mouseY - guiTop;
+		if (localY >= 23 && localY <= 89) {
+			int amount = (int) ((87 - localY + 2) / 4);
 			int offset = 0;
-			if (mouseX >= 21 && mouseX <= 34) {
+			if (localX >= 21 && localX <= 34) {
 				offset = TileEntityAdvancedInfoPanel.OFFSET_THICKNESS;
 				if (amount < 1)
 					amount = 1;
-			} else if (mouseX >= 79 && mouseX <= 92) {
+			} else if (localX >= 79 && localX <= 92) {
 				offset = TileEntityAdvancedInfoPanel.OFFSET_ROTATE_HOR;
 				if (amount < 0)
 					amount = 0;
-			} else if (mouseX >= 137 && mouseX <= 150) {
+			} else if (localX >= 137 && localX <= 150) {
 				offset = TileEntityAdvancedInfoPanel.OFFSET_ROTATE_VERT;
 				if (amount < 0)
 					amount = 0;

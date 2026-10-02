@@ -7,7 +7,7 @@ public class EnergyStorage extends net.neoforged.neoforge.energy.EnergyStorage {
 	}
 
 	public void setEnergy(int value) {
-		energy = Math.min(value, capacity);
+		energy = Math.max(0, Math.min(value, capacity));
 	}
 
 	public void setMax(int value) {

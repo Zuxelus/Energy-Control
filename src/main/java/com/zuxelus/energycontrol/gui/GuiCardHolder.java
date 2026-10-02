@@ -22,6 +22,7 @@ public class GuiCardHolder extends AbstractContainerScreen<ContainerCardHolder> 
 		super(container, inventory, title);
 		this.player = inventory.player;
 		inventoryRows = 6;
+		name = title.getString();
 		imageHeight = 114 + inventoryRows * 18;
 	}
 

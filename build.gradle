@@ -150,5 +150,3 @@ idea {
         downloadJavadoc = true
     }
 }
-
-tasks.withType(JavaCompile).configureEach { options.compilerArgs.addAll(["-Xmaxerrs", "1000"]) }

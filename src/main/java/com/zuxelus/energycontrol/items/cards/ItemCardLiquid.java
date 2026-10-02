@@ -112,7 +112,10 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		if (fluidName.isEmpty())
 			return;
 
-		Fluid fluid = BuiltInRegistries.FLUID.get(ResourceLocation.parse(fluidName));
+		ResourceLocation id = ResourceLocation.tryParse(fluidName);
+		if (id == null)
+			return;
+		Fluid fluid = BuiltInRegistries.FLUID.get(id);
 		IClientFluidTypeExtensions fluidExt = IClientFluidTypeExtensions.of(fluid);
 
 		TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(fluidExt.getStillTexture());
@@ -121,7 +124,8 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 
 		float textureX = sprite.getU0();
 		float textureY = sprite.getV0();
-		float width = 14 / 16.0F * reader.getInt("amount") / reader.getInt("capacity");
+		long capacity = reader.getLong("capacity");
+		float width = capacity <= 0 ? 0 : 14 / 16.0F * reader.getLong("amount") / capacity;
 		float height = 0.4375F;
 
 		int color = fluidExt.getTintColor();
@@ -130,6 +134,10 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		float f2 = (color >> 8 & 255) / 255.0F;
 		float f3 = (color & 255) / 255.0F;
 
+		if (f == 0)
+			f = 1.0F;
+
+		matrixStack.pushPose();
 		matrixStack.scale(displayWidth / 0.875f, displayHeight / 0.875f, 1);
 		VertexConsumer builder = buffer.getBuffer(ModRenderTypes.screenImage(TextureAtlas.LOCATION_BLOCKS));
 		Matrix4f matrix = matrixStack.last().pose();
@@ -139,6 +147,6 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		builder.addVertex(matrix, x, y + 0.4375F / 2, z).setColor(f1, f2, f3, f).setUv(textureX, textureY).setLight(LightTexture.FULL_BRIGHT);
 
 		IHasBars.drawTransparentRect(matrixStack, buffer, x + 0.875F - width, y + height + 0.4375F / 2, x, y + 0.4375F / 2, -0.0001F, 0xB0000000);
-		matrixStack.scale(0.875F / displayWidth, 0.875F / displayHeight, 1);
+		matrixStack.popPose();
 	}
 }

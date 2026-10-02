@@ -2,9 +2,6 @@ package com.zuxelus.energycontrol.gui.controls;
 
 import java.util.List;
 
-import org.lwjgl.opengl.GL11;
-
-import com.mojang.blaze3d.platform.Window;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 
@@ -108,9 +105,7 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 		}
 
 		int rowTop = BASIC_Y_OFFSET;
-		GL11.glEnable(GL11.GL_SCISSOR_TEST);
-		Window scaler = minecraft.getWindow();
-		GL11.glScissor((int) (getX() * scaler.getGuiScale()), (int) (scaler.getHeight() - (getY() + height) * scaler.getGuiScale()), (int) ((width - SCROLL_WIDTH) * scaler.getGuiScale()), (int) (height * scaler.getGuiScale()));
+		matrixStack.enableScissor(getX(), getY(), getX() + width - SCROLL_WIDTH, getY() + height);
 
 		for (String row : items) {
 			if(row.equals(currentItem)) {
@@ -122,7 +117,7 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 			rowTop += lineHeight;
 		}
 		
-		GL11.glDisable(GL11.GL_SCISSOR_TEST);
+		matrixStack.disableScissor();
 
 		// Slider
 		int sliderX = getX() + width - SCROLL_WIDTH + 1;

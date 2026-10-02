@@ -56,11 +56,6 @@ public class GuiThermalMonitor extends GuiBase {
 	}
 
 	@Override
-	public void tick() {
-		super.tick();
-	}
-
-	@Override
 	public void onClose() {
 		updateHeat(0);
 		super.onClose();

@@ -72,18 +72,13 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int mouseButton) {
 		if (textboxTitle != null) {
-			textboxTitle.mouseReleased(mouseX - leftPos, mouseY - topPos, mouseButton);
+			textboxTitle.mouseReleased(mouseX, mouseY, mouseButton);
 			if (textboxTitle.isFocused())
 				return super.mouseReleased(mouseX, mouseY, mouseButton);
 			setFocused(null);
 			updateTitle();
 		}
 		return super.mouseReleased(mouseX, mouseY, mouseButton);
-	}
-
-	@Override
-	public void containerTick() {
-		super.containerTick();
 	}
 
 	protected void updateTitle() {
@@ -135,13 +130,6 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 		ItemStack card = panel.getCards().get(activeTab);
 		if (!card.isEmpty() && card.getItem() instanceof ItemCardText)
 			minecraft.setScreen(new GuiCardText(card, panel, this, activeTab));
-	}
-
-	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (keyCode == 69)
-			return true;
-		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 
 	@Override
