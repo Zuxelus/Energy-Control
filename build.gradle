@@ -65,11 +65,9 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-	// Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
 	it.options.release = 17
 }
 
-// jar name: energycontrol-{loader}-{version}.jar, e.g. energycontrol-fabric-1.18.2-0.3.0.jar
 base {
 	archivesName = "${project.mod_id}-${project.loader_name}"
 }

@@ -143,6 +143,15 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 			i = -(i * 7);
 			rotateVert = (byte) i;
 		}
+		// the panel body is a baked model, so its chunk has to be rebuilt to show the new shape
+		if (world == null)
+			return;
+		if (world.isClient)
+			refreshScreenModel();
+		else {
+			markDirty();
+			notifyBlockUpdate();
+		}
 	}
 
 	@Override

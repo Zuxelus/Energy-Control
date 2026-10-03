@@ -9,6 +9,7 @@ import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -23,7 +24,11 @@ import net.minecraft.world.World;
 public class InfoPanelExtender extends FacingBlockActive {
 
 	public InfoPanelExtender() {
-		super(FabricBlockSettings.copyOf(ModItems.settings).luminance(state -> state.get(ACTIVE) ? 10 : 0));
+		this(FabricBlockSettings.copyOf(ModItems.settings));
+	}
+
+	public InfoPanelExtender(AbstractBlock.Settings settings) {
+		super(settings.luminance(state -> state.get(ACTIVE) ? 10 : 0));
 	}
 
 	@Override

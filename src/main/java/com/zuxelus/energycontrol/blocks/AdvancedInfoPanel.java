@@ -5,7 +5,6 @@ import java.util.Random;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
-import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
@@ -30,7 +29,8 @@ import net.minecraft.world.World;
 public class AdvancedInfoPanel extends InfoPanel {
 
 	public AdvancedInfoPanel() {
-		super(FabricBlockSettings.copyOf(ModItems.settings).nonOpaque());
+		// the shape follows the panel thickness, so it must not be cached per block state
+		super(FabricBlockSettings.copyOf(ModItems.settings).nonOpaque().dynamicBounds());
 	}
 
 	@Override
@@ -57,27 +57,26 @@ public class AdvancedInfoPanel extends InfoPanel {
 		if (!(tile instanceof TileEntityAdvancedInfoPanel))
 			return VoxelShapes.fullCube();
 
-		TileEntityAdvancedInfoPanel te = (TileEntityAdvancedInfoPanel) tile;
-		Screen screen = te.getScreen();
-		if (screen == null)
-			return VoxelShapes.fullCube();
-
+		// the client gets the screen later than the block entity, so the shape only depends on the thickness
+		int thickness = ((TileEntityAdvancedInfoPanel) tile).thickness;
+		if (thickness < 1 || thickness > 16)
+			thickness = 16;
 		Direction enumfacing = (Direction) state.get(FACING);
-		if (!(te instanceof TileEntityAdvancedInfoPanel) || enumfacing == null)
+		if (enumfacing == null)
 			return VoxelShapes.fullCube();
 		switch (enumfacing) {
 		case EAST:
-			return Block.createCuboidShape(0.0D, 0.0D, 0.0D, te.thickness, 16.0D, 16.0D);
+			return Block.createCuboidShape(0.0D, 0.0D, 0.0D, thickness, 16.0D, 16.0D);
 		case WEST:
-			return Block.createCuboidShape(16.0D - te.thickness, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+			return Block.createCuboidShape(16.0D - thickness, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
 		case SOUTH:
-			return Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, te.thickness);
+			return Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, thickness);
 		case NORTH:
-			return Block.createCuboidShape(0.0D, 0.0D, 16.0D - te.thickness, 16.0D, 16.0D, 16.0D);
+			return Block.createCuboidShape(0.0D, 0.0D, 16.0D - thickness, 16.0D, 16.0D, 16.0D);
 		case UP:
-			return Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, te.thickness, 16.0D);
+			return Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, thickness, 16.0D);
 		case DOWN:
-			return Block.createCuboidShape(0.0D, 16.0D - te.thickness, 0.0D, 16.0D, 16.0D, 16.0D);
+			return Block.createCuboidShape(0.0D, 16.0D - thickness, 0.0D, 16.0D, 16.0D, 16.0D);
 		default:
 			return VoxelShapes.fullCube();
 		}
