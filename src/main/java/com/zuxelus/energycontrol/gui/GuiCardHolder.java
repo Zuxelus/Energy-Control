@@ -8,7 +8,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -17,12 +16,9 @@ import net.minecraft.util.Identifier;
 public class GuiCardHolder extends HandledScreen<ContainerCardHolder> {
 	private static final Identifier TEXTURE = new Identifier("textures/gui/container/generic_54.png");
 	private final int inventoryRows;
-	private PlayerEntity player;
-	private String name;
 
 	public GuiCardHolder(ContainerCardHolder container, PlayerInventory inventory, Text title) {
 		super(container, inventory, title);
-		this.player = inventory.player;
 		inventoryRows = 6;
 		backgroundHeight = 114 + inventoryRows * 18;
 	}
@@ -35,13 +31,14 @@ public class GuiCardHolder extends HandledScreen<ContainerCardHolder> {
 	}
 
 	@Override
-	protected void drawForeground(MatrixStack matrixStack, int x, int y) {
-		textRenderer.draw(matrixStack, name, 8, 6, 4210752);
-		textRenderer.draw(matrixStack, player.getInventory().getDisplayName().asString(), 8, backgroundHeight - 96 + 2, 4210752);
+	protected void drawForeground(MatrixStack matrixStack, int mouseX, int mouseY) {
+		textRenderer.draw(matrixStack, title, 8, 6, 4210752);
+		textRenderer.draw(matrixStack, playerInventoryTitle, 8, backgroundHeight - 96 + 2, 4210752);
 	}
 
 	@Override
-	protected void drawBackground(MatrixStack matrixStack, float partialTicks, int x, int y) {
+	// the last two parameters are the mouse position; x and y below are the screen position fields
+	protected void drawBackground(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderTexture(0, TEXTURE);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);

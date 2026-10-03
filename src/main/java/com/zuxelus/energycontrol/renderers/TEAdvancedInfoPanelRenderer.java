@@ -2,33 +2,20 @@ package com.zuxelus.energycontrol.renderers;
 
 import java.util.List;
 
-import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory.Context;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3f;
 
 public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEntityAdvancedInfoPanel> {
-	private static final Identifier TEXTURE = new Identifier(EnergyControl.MODID + ":textures/block/info_panel/alladv.png");
-	private static final CubeRenderer model[];
 	private final TextRenderer font;
-
-	static {
-		model = new CubeRenderer[16];
-		for (int i = 0; i < 4; i++)
-			for (int j = 0; j < 4; j++)
-				model[i * 4 + j] = new CubeRenderer(i * 32 + 64, j * 32 + 64);
-	}
 
 	private static String implodeArray(String[] inputArray, String glueString) {
 		String output = "";
@@ -52,9 +39,12 @@ public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 	}
 
 	@Override
+	// the panel body is a baked model (PanelModel), only the text is drawn here
 	public void render(TileEntityAdvancedInfoPanel te, float partialTicks, MatrixStack matrixStack, VertexConsumerProvider buffer, int combinedLight, int combinedOverlay) {
+		Screen screen = te.getScreen();
+		if (!te.powered || screen == null)
+			return;
 		matrixStack.push();
-		int[] light = TileEntityInfoPanelRenderer.getBlockLight(te);
 		switch (te.getFacing()) {
 		case UP:
 			break;
@@ -80,28 +70,13 @@ public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 			break;
 		}
 
-		int color = TileEntityInfoPanelRenderer.getFaceColor(te.getColored() ? te.getColorBackground() : TileEntityAdvancedInfoPanel.DEFAULT_BACKGROUND, te.getPowered());
-		VertexConsumer vertexBuilder = buffer.getBuffer(RenderLayer.getEntitySolid(TEXTURE));
-
-		int textureId = te.findTexture();
 		byte thickness = te.thickness;
 		if (thickness < 1 || thickness > 16)
 			thickness = 16;
-		int rotateHor = te.rotateHor / 7;
-		int rotateVert = te.rotateVert / 7;
-		RotationOffset offset = new RotationOffset(thickness * 2, rotateHor, rotateVert);
-		Screen screen = te.getScreen();
-		if (screen != null) {
-			if (thickness == 16 && rotateHor == 0 && rotateVert == 0)
-				model[textureId].render(matrixStack, vertexBuilder, light, combinedOverlay, color);
-			else
-				new CubeRenderer(textureId / 4 * 32 + 64, textureId % 4 * 32 + 64, offset.addOffset(screen, te.getPos(), te.getFacing(), te.getRotation())).render(matrixStack, vertexBuilder, light, combinedOverlay, color);
-			if (te.powered) {
-				List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
-				if (joinedData != null)
-					drawText(te, joinedData, matrixStack, buffer, combinedLight, thickness, offset);
-			}
-		}
+		RotationOffset offset = new RotationOffset(thickness * 2, te.rotateHor / 7, te.rotateVert / 7);
+		List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
+		if (joinedData != null)
+			drawText(te, joinedData, matrixStack, buffer, combinedLight, thickness, offset);
 		matrixStack.pop();
 	}
 

@@ -2,11 +2,11 @@ package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
+import com.zuxelus.energycontrol.renderers.RotationOffset;
 import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -18,7 +18,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
-public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IScreenPart, ITilePacketHandler {
+public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IScreenPart, ITilePacketHandler, RenderAttachmentBlockEntity {
 	protected boolean init;
 
 	protected Screen screen;
@@ -49,8 +49,8 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 			return;
 		facing = newFacing;
 		if (init) {
-			EnergyControl.INSTANCE.screenManager.unregisterScreenPart(this);
-			EnergyControl.INSTANCE.screenManager.registerInfoPanelExtender(this);
+			EnergyControl.screenManager.unregisterScreenPart(this);
+			EnergyControl.screenManager.registerInfoPanelExtender(this);
 		}
 	}
 
@@ -104,6 +104,7 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 			updateScreen();
 			if (world.isClient)
 				world.getChunkManager().getLightingProvider().checkBlock(pos);
+			TileEntityInfoPanel.refreshModel(world, pos);
 		}
 	}
 
@@ -132,7 +133,7 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	@Override
 	public void markRemoved() {
 		if (!world.isClient)
-			EnergyControl.INSTANCE.screenManager.unregisterScreenPart(this);
+			EnergyControl.screenManager.unregisterScreenPart(this);
 		super.markRemoved();
 	}
 
@@ -148,7 +149,7 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 			return;
 
 		if (!world.isClient && !partOfScreen)
-			EnergyControl.INSTANCE.screenManager.registerInfoPanelExtender(this);
+			EnergyControl.screenManager.registerInfoPanelExtender(this);
 
 		updateScreen();
 		init = true;
@@ -157,6 +158,7 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	@Override
 	public void setScreen(Screen screen) {
 		this.screen = screen;
+		TileEntityInfoPanel.refreshModel(world, pos);
 		if (screen != null) {
 			partOfScreen = true;
 			TileEntityInfoPanel core = screen.getCore(world);
@@ -239,7 +241,19 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 		return oldState.getBlock() != newSate.getBlock();
 	}*/
 
-	@Environment(EnvType.CLIENT)
+	@Override
+	public Object getRenderAttachmentData() {
+		return new PanelRenderData(findTexture(), getColored() ? getColorBackground() : getDefaultBackground(), getPowered(), getRenderOffset());
+	}
+
+	protected int getDefaultBackground() {
+		return TileEntityInfoPanel.GREEN;
+	}
+
+	protected RotationOffset getRenderOffset() {
+		return null;
+	}
+
 	public int findTexture() {
 		Screen scr = getScreen();
 		if (scr != null) {

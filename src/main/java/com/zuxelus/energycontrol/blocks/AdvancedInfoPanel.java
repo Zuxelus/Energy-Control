@@ -1,5 +1,7 @@
 package com.zuxelus.energycontrol.blocks;
 
+import java.util.Random;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
@@ -19,6 +21,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
@@ -34,6 +37,19 @@ public class AdvancedInfoPanel extends InfoPanel {
 	protected BlockEntityFacing newBlockEntity(BlockPos pos, BlockState state) {
 		return ModTileEntityTypes.info_panel_advanced.instantiate(pos, state);
 	}
+
+	// on/off depends on the power mode, so the block entity sets ACTIVE (light) instead of the redstone signal
+	@Override
+	public void neighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+		if (world.isClient)
+			return;
+		BlockEntity be = world.getBlockEntity(pos);
+		if (be instanceof TileEntityAdvancedInfoPanel)
+			((TileEntityAdvancedInfoPanel) be).updatePower();
+	}
+
+	@Override
+	public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) { }
 
 	@Override
 	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {

@@ -5,15 +5,17 @@ import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.zlib.items.ItemInventory;
 
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.NamedScreenHandlerFactory;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
-public class InventoryPortablePanel extends ItemInventory implements NamedScreenHandlerFactory {
+public class InventoryPortablePanel extends ItemInventory implements ExtendedScreenHandlerFactory {
 	public static final byte SLOT_CARD = 0;
 	public static final byte SLOT_UPGRADE_RANGE = 1;
 
@@ -48,4 +50,8 @@ public class InventoryPortablePanel extends ItemInventory implements NamedScreen
 	public Text getDisplayName() {
 		return new TranslatableText(ModItems.portable_panel.getTranslationKey());
 	}
+
+	// the screen type is extended; the container needs no extra data
+	@Override
+	public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) { }
 }

@@ -24,6 +24,7 @@ public class ModItems {
 	public static final Block industrial_alarm = new IndustrialAlarm();
 	public static final Block thermal_monitor = new ThermalMonitor();
 	public static final Block range_trigger = new RangeTrigger();
+	public static final Block remote_thermo = new RemoteThermalMonitor();
 	public static final Block info_panel = new InfoPanel();
 	public static final Block info_panel_extender = new InfoPanelExtender();
 	public static final Block info_panel_advanced = new AdvancedInfoPanel();
@@ -89,6 +90,7 @@ public class ModItems {
 		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "industrial_alarm"), industrial_alarm);
 		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "thermal_monitor"), thermal_monitor);
 		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "range_trigger"), range_trigger);
+		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "remote_thermo"), remote_thermo);
 		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "info_panel"), info_panel);
 		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "info_panel_extender"), info_panel_extender);
 		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "info_panel_advanced"), info_panel_advanced);
@@ -114,6 +116,7 @@ public class ModItems {
 		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "holo_panel"), new BlockItem(holo_panel, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
 		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "holo_panel_extender"), new BlockItem(holo_panel_extender, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
 		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "range_trigger"), new BlockItem(range_trigger, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "remote_thermo"), new BlockItem(remote_thermo, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
 		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "kit_assembler"), new BlockItem(kit_assembler, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
 		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "timer"), new BlockItem(timer, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
 

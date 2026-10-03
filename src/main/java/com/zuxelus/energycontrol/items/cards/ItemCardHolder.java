@@ -8,7 +8,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class ItemCardHolder extends Item {
@@ -20,7 +19,8 @@ public class ItemCardHolder extends Item {
 	@Override
 	public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getStackInHand(hand);
-		if (!player.isSneaking() && !world.isClient && stack.getCount() == 1)
+		// main hand only: the container reads the main hand stack and locks the selected hotbar slot
+		if (!player.isSneaking() && !world.isClient && hand == Hand.MAIN_HAND && stack.getCount() == 1)
 			player.openHandledScreen(new InventoryCardHolder(stack));
 		return TypedActionResult.success(stack);
 	}

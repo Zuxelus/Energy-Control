@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import com.zuxelus.energycontrol.blocks.RemoteThermalMonitor;
 import com.zuxelus.energycontrol.blocks.ThermalMonitor;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
@@ -146,7 +147,9 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 
 	@Override
 	public void markRemoved() {
-		world.updateNeighborsAlways(pos, world.getBlockState(pos).getBlock());
+		// also called while the chunk unloads; touching the world then loads the chunk again and never finishes unloading
+		if (Screen.isLoaded(world, pos))
+			world.updateNeighborsAlways(pos, world.getBlockState(pos).getBlock());
 		super.markRemoved();
 	}
 
@@ -182,7 +185,7 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 	protected void notifyBlockUpdate() {
 		BlockState state = world.getBlockState(pos);
 		Block block = state.getBlock();
-		if (block instanceof ThermalMonitor /*|| block instanceof RemoteThermo*/) { // TODO
+		if (block instanceof ThermalMonitor || block instanceof RemoteThermalMonitor) {
 			boolean newValue = status < 0 ? false : status == 1 ? !invertRedstone : invertRedstone;
 			if (poweredBlock != newValue) {
 				poweredBlock = newValue;

@@ -8,7 +8,6 @@ import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
 
 public class ModMenu implements ModMenuApi {
@@ -27,35 +26,35 @@ public class ModMenu implements ModMenuApi {
 
 		general.addEntry(
 				entryBuilder.startIntField(new TranslatableText("config." + EnergyControl.MODID + ".howlerAlarmRange"), ConfigHandler.howlerAlarmRange)
-						.setDefaultValue(64).setTooltip(new LiteralText("howlerAlarmRange"))
+						.setDefaultValue(64).setTooltip(new TranslatableText("config." + EnergyControl.MODID + ".howlerAlarmRange.tooltip"))
 						.setSaveConsumer(value -> ConfigHandler.howlerAlarmRange = value).build());
 		general.addEntry(
 				entryBuilder.startIntField(new TranslatableText("config." + EnergyControl.MODID + ".maxAlarmRange"), ConfigHandler.maxAlarmRange)
-						.setDefaultValue(128).setTooltip(new LiteralText("maxAlarmRange"))
+						.setDefaultValue(128).setTooltip(new TranslatableText("config." + EnergyControl.MODID + ".maxAlarmRange.tooltip"))
 						.setSaveConsumer(value -> ConfigHandler.maxAlarmRange = value).build());
 		general.addEntry(
 				entryBuilder.startStrField(new TranslatableText("config." + EnergyControl.MODID + ".allowedAlarms"), ConfigHandler.allowedAlarms)
-						.setDefaultValue("default,sci-fi,siren").setTooltip(new LiteralText("allowedAlarms"))
+						.setDefaultValue("default,sci-fi,siren").setTooltip(new TranslatableText("config." + EnergyControl.MODID + ".allowedAlarms.tooltip"))
 						.setSaveConsumer(value -> ConfigHandler.allowedAlarms = value).build());
 		general.addEntry(
 				entryBuilder.startIntField(new TranslatableText("config." + EnergyControl.MODID + ".remoteThermalMonitorEnergyConsumption"), ConfigHandler.remoteThermalMonitorEnergyConsumption)
-						.setDefaultValue(1).setTooltip(new LiteralText("remoteThermalMonitorEnergyConsumption"))
+						.setDefaultValue(1).setTooltip(new TranslatableText("config." + EnergyControl.MODID + ".remoteThermalMonitorEnergyConsumption.tooltip"))
 						.setSaveConsumer(value -> ConfigHandler.remoteThermalMonitorEnergyConsumption = value).build());
 		general.addEntry(
 				entryBuilder.startIntField(new TranslatableText("config." + EnergyControl.MODID + ".screenRefreshPeriod"), ConfigHandler.screenRefreshPeriod)
-						.setDefaultValue(20).setTooltip(new LiteralText("screenRefreshPeriod"))
+						.setDefaultValue(20).setTooltip(new TranslatableText("config." + EnergyControl.MODID + ".screenRefreshPeriod.tooltip"))
 						.setSaveConsumer(value -> ConfigHandler.screenRefreshPeriod = value).build());
 		general.addEntry(
 				entryBuilder.startIntField(new TranslatableText("config." + EnergyControl.MODID + ".rangeTriggerRefreshPeriod"), ConfigHandler.rangeTriggerRefreshPeriod)
-						.setDefaultValue(20).setTooltip(new LiteralText("rangeTriggerRefreshPeriod"))
+						.setDefaultValue(20).setTooltip(new TranslatableText("config." + EnergyControl.MODID + ".rangeTriggerRefreshPeriod.tooltip"))
 						.setSaveConsumer(value -> ConfigHandler.rangeTriggerRefreshPeriod = value).build());
 		general.addEntry(
 				entryBuilder.startIntField(new TranslatableText("config." + EnergyControl.MODID + ".SMPMaxAlarmRange"), ConfigHandler.SMPMaxAlarmRange)
-						.setDefaultValue(256).setTooltip(new LiteralText("SMPMaxAlarmRange"))
+						.setDefaultValue(256).setTooltip(new TranslatableText("config." + EnergyControl.MODID + ".SMPMaxAlarmRange.tooltip"))
 						.setSaveConsumer(value -> ConfigHandler.SMPMaxAlarmRange = value).build());
 		general.addEntry(
 				entryBuilder.startBooleanToggle(new TranslatableText("config." + EnergyControl.MODID + ".useCustomSounds"), ConfigHandler.useCustomSounds)
-						.setDefaultValue(true).setTooltip(new LiteralText("useCustomSounds"))
+						.setDefaultValue(true).setTooltip(new TranslatableText("config." + EnergyControl.MODID + ".useCustomSounds.tooltip"))
 						.setSaveConsumer(value -> ConfigHandler.useCustomSounds = value).build());
 
 		return builder.setSavingRunnable(() -> {

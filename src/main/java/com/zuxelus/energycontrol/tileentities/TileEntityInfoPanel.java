@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.renderers.RotationOffset;
 import com.zuxelus.energycontrol.api.*;
 import com.zuxelus.energycontrol.blocks.InfoPanelExtender;
 import com.zuxelus.energycontrol.config.ConfigHandler;
@@ -18,10 +19,8 @@ import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -47,7 +46,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class TileEntityInfoPanel extends TileEntityInventory implements ExtendedScreenHandlerFactory, ITilePacketHandler, IScreenPart, ISlotItemFilter {
+public class TileEntityInfoPanel extends TileEntityInventory implements ExtendedScreenHandlerFactory, ITilePacketHandler, IScreenPart, ISlotItemFilter, RenderAttachmentBlockEntity {
 	public static final String NAME = "info_panel";
 	public static final int DISPLAY_DEFAULT = Integer.MAX_VALUE - 1024;
 	public static final int GREEN = 0xFF14E300;
@@ -103,9 +102,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 			return;
 
 		if (screenData == null) {
-			EnergyControl.INSTANCE.screenManager.registerInfoPanel(this);
+			EnergyControl.screenManager.registerInfoPanel(this);
 		} else {
-			screen = EnergyControl.INSTANCE.screenManager.loadScreen(this);
+			screen = EnergyControl.screenManager.loadScreen(this);
 			if (screen != null)
 				screen.init(true, world);
 		}
@@ -119,8 +118,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 			return;
 		facing = newFacing;
 		if (init) {
-			EnergyControl.INSTANCE.screenManager.unregisterScreenPart(this);
-			EnergyControl.INSTANCE.screenManager.registerInfoPanel(this);
+			EnergyControl.screenManager.unregisterScreenPart(this);
+			EnergyControl.screenManager.registerInfoPanel(this);
 		}
 	}
 
@@ -151,7 +150,10 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	public void setColored(boolean newColored) {
 		if (!world.isClient && colored != newColored)
 			notifyBlockUpdate();
+		boolean changed = colored != newColored;
 		colored = newColored;
+		if (changed)
+			refreshScreenModel();
 	}
 
 	public int getColorBackground() {
@@ -161,7 +163,10 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	public void setColorBackground(int c) {
 		if (!world.isClient && colorBackground != c)
 			notifyBlockUpdate();
+		boolean changed = colorBackground != c;
 		colorBackground = c;
+		if (changed)
+			refreshScreenModel();
 	}
 
 	public int getColorText() {
@@ -196,7 +201,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 		if (screen != null && world.isClient)
 			screen.destroy(true, world);
 		if (screenData != null) {
-			screen = EnergyControl.INSTANCE.screenManager.loadScreen(this);
+			screen = EnergyControl.screenManager.loadScreen(this);
 			if (screen != null)
 				screen.init(true, world);
 		}
@@ -311,6 +316,40 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 				world.getChunkManager().getLightingProvider().checkBlock(pos);
 			}
 		}
+		refreshScreenModel();
+	}
+
+	@Override
+	public Object getRenderAttachmentData() {
+		return new PanelRenderData(findTexture(), getColored() ? colorBackground : getDefaultBackground(), getPowered(), getRenderOffset());
+	}
+
+	protected int getDefaultBackground() {
+		return GREEN;
+	}
+
+	protected RotationOffset getRenderOffset() {
+		return null;
+	}
+
+	protected void refreshScreenModel() {
+		if (world == null || !world.isClient)
+			return;
+		if (screen == null) {
+			refreshModel(world, pos);
+			return;
+		}
+		for (int x = screen.minX; x <= screen.maxX; x++)
+			for (int y = screen.minY; y <= screen.maxY; y++)
+				for (int z = screen.minZ; z <= screen.maxZ; z++)
+					refreshModel(world, new BlockPos(x, y, z));
+	}
+
+	public static void refreshModel(World world, BlockPos pos) {
+		if (world == null || !world.isClient)
+			return;
+		BlockState state = world.getBlockState(pos);
+		world.updateListeners(pos, state, state, 8);
 	}
 
 	// RGB colors always have alpha bits set, so 0-15 can only be an old palette index
@@ -366,7 +405,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	@Override
 	public void markRemoved() {
 		if (!world.isClient)
-			EnergyControl.INSTANCE.screenManager.unregisterScreenPart(this);
+			EnergyControl.screenManager.unregisterScreenPart(this);
 		super.markRemoved();
 	}
 
@@ -600,6 +639,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	@Override
 	public void setScreen(Screen screen) {
 		this.screen = screen;
+		refreshModel(world, pos);
 	}
 
 	@Override
@@ -641,7 +681,6 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 		return new AABB(new BlockPos(screen.minX, screen.minY, screen.minZ), new BlockPos(screen.maxX + 1, screen.maxY + 1, screen.maxZ + 1));
 	}*/
 
-	@Environment(EnvType.CLIENT)
 	public int findTexture() {
 		Screen scr = getScreen();
 		if (scr != null) {
@@ -691,7 +730,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 
 	public boolean hasBars(ItemStack stack) {
 		Item item = stack.getItem();
-		return !stack.isEmpty() && item instanceof IHasBars && ((IHasBars) item).enableBars(stack) && (getDisplaySettingsForCardInSlot(SLOT_CARD) & 1024) > 0;
+		// no bar while the target is missing: the card still holds the last values it read
+		return !stack.isEmpty() && item instanceof IHasBars && ((IHasBars) item).enableBars(stack) && (getDisplaySettingsForCardInSlot(SLOT_CARD) & 1024) > 0
+				&& new ItemCardReader(stack).getState() == CardState.OK;
 	}
 
 	public void renderImage(float displayWidth, float displayHeight, MatrixStack matrixStack) {

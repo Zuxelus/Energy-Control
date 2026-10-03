@@ -2,21 +2,17 @@ package com.zuxelus.energycontrol.renderers;
 
 import java.util.List;
 
-import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory.Context;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3f;
@@ -24,16 +20,7 @@ import net.minecraft.util.math.Vec3f;
 public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEntityInfoPanel> {
 	private static int[][] sides = new int[][] { { 3, 2, 1, 0, 5, 4 }, { 2, 3, 1, 0, 4, 5 }, { 4, 5, 1, 0, 3, 2 },
 		{ 5 ,4, 1, 0, 2, 3 }, { 1, 0, 3, 2, 4, 5 }, { 0, 1, 2, 3, 4, 5 } };
-	private static final Identifier TEXTURE = new Identifier(EnergyControl.MODID + ":textures/block/info_panel/all.png");
-	private static final CubeRenderer model[];
 	private final TextRenderer font;
-
-	static {
-		model = new CubeRenderer[16];
-		for (int i = 0; i < 4; i++)
-			for (int j = 0; j < 4; j++)
-				model[i * 4 + j] = new CubeRenderer(i * 32 + 64, j * 32 + 64);
-	}
 
 	private static String implodeArray(String[] inputArray, String glueString) {
 		String output = "";
@@ -63,24 +50,16 @@ public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 		return light;
 	}
 
-	// an unpowered screen is drawn at 60% brightness, like the old "off" textures
-	public static int getFaceColor(int color, boolean isPowered) {
-		if (isPowered)
-			return color;
-		int r = (color >> 16 & 255) * 3 / 5;
-		int g = (color >> 8 & 255) * 3 / 5;
-		int b = (color & 255) * 3 / 5;
-		return 0xFF000000 | r << 16 | g << 8 | b;
-	}
-
 	public TileEntityInfoPanelRenderer(Context ctx) {
 		font = ctx.getTextRenderer();
 	}
 
 	@Override
+	// the panel body is a baked model (PanelModel), only the text is drawn here
 	public void render(TileEntityInfoPanel te, float partialTicks, MatrixStack matrixStack, VertexConsumerProvider buffer, int combinedLight, int combinedOverlay) {
+		if (!te.getPowered())
+			return;
 		matrixStack.push();
-		int[] light = getBlockLight(te);
 		switch (te.getFacing()) {
 		case UP:
 			break;
@@ -106,13 +85,8 @@ public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 			break;
 		}
 
-		int color = TileEntityInfoPanelRenderer.getFaceColor(te.getColored() ? te.getColorBackground() : TileEntityInfoPanel.GREEN, te.getPowered());
-		VertexConsumer vertexBuilder = buffer.getBuffer(RenderLayer.getEntitySolid(TEXTURE));
-		model[te.findTexture()].render(matrixStack, vertexBuilder, light, combinedOverlay, color);
-		if (te.getPowered()) {
-			List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
-			drawText(te, joinedData, matrixStack, buffer, combinedLight);
-		}
+		List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
+		drawText(te, joinedData, matrixStack, buffer, combinedLight);
 		matrixStack.pop();
 	}
 

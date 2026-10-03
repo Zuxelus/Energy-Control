@@ -15,6 +15,8 @@ public class ModTileEntityTypes {
 		FabricBlockEntityTypeBuilder.create(TileEntityThermalMonitor::new, ModItems.thermal_monitor).build(null));
 	public static final BlockEntityType<TileEntityRangeTrigger> range_trigger = Registry.register(Registry.BLOCK_ENTITY_TYPE, "range_trigger",
 		FabricBlockEntityTypeBuilder.create(TileEntityRangeTrigger::new, ModItems.range_trigger).build(null));
+	public static final BlockEntityType<TileEntityRemoteThermalMonitor> remote_thermo = Registry.register(Registry.BLOCK_ENTITY_TYPE, "remote_thermo",
+		FabricBlockEntityTypeBuilder.create(TileEntityRemoteThermalMonitor::new, ModItems.remote_thermo).build(null));
 	public static final BlockEntityType<TileEntityInfoPanel> info_panel = Registry.register(Registry.BLOCK_ENTITY_TYPE, "info_panel",
 		FabricBlockEntityTypeBuilder.create(TileEntityInfoPanel::new, ModItems.info_panel).build(null)); 
 	public static final BlockEntityType<TileEntityInfoPanelExtender> info_panel_extender = Registry.register(Registry.BLOCK_ENTITY_TYPE, "info_panel_extender",

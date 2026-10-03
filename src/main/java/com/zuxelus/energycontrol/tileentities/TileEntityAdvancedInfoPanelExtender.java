@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
+import com.zuxelus.energycontrol.renderers.RotationOffset;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
@@ -15,6 +16,16 @@ public class TileEntityAdvancedInfoPanelExtender extends TileEntityInfoPanelExte
 
 	public TileEntityAdvancedInfoPanelExtender(BlockPos pos, BlockState state) {
 		this(ModTileEntityTypes.info_panel_advanced_extender, pos, state);
+	}
+
+	@Override
+	protected int getDefaultBackground() {
+		return TileEntityAdvancedInfoPanel.DEFAULT_BACKGROUND;
+	}
+
+	@Override
+	protected RotationOffset getRenderOffset() {
+		return TileEntityAdvancedInfoPanel.getRenderOffset(getThickness(), getRotateHor(), getRotateVert(), screen, getPos(), getFacing(), getRotation());
 	}
 
 	public byte getThickness() {

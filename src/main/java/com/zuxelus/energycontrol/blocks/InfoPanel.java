@@ -97,6 +97,6 @@ public class InfoPanel extends FacingBlockActive {
 
 	@Override
 	public BlockRenderType getRenderType(BlockState state) {
-		return BlockRenderType.ENTITYBLOCK_ANIMATED;
+		return BlockRenderType.MODEL;
 	}
 }

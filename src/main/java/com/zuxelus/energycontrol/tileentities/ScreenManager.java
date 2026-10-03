@@ -138,6 +138,8 @@ public class ScreenManager {
 	}
 
 	private boolean isValidExtender(World world, BlockPos pos, Direction facing, boolean advanced, boolean holo) {
+		if (!Screen.isLoaded(world, pos))
+			return false;
 		Block block = world.getBlockState(pos).getBlock();
 		if (!(block instanceof InfoPanelExtender || block instanceof HoloPanelExtender))
 			return false;

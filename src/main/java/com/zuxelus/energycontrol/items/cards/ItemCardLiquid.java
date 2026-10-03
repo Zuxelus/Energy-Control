@@ -14,7 +14,8 @@ import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
@@ -28,6 +29,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Matrix4f;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 public class ItemCardLiquid extends ItemCardMain implements IHasBars {
@@ -105,27 +107,31 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		float y = -0.5F + 1/ 16.0F;
 		float z = 0;
 
-		String texture = reader.getString("texture");
-		if (texture.isEmpty())
+		// the card stores the fluid id; its texture and tint only exist on the client
+		String fluidId = reader.getString("fluid");
+		long capacity = reader.getLong("capacity");
+		if (fluidId.isEmpty() || capacity <= 0)
 			return;
-
-		Sprite sprite = MinecraftClient.getInstance().getSpriteAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).apply(new Identifier(texture));
+		FluidVariant fluid = FluidVariant.of(Registry.FLUID.get(new Identifier(fluidId)));
+		if (fluid.isBlank())
+			return;
+		Sprite sprite = FluidVariantRendering.getSprite(fluid);
 		if (sprite == null)
 			return;
 
 		float textureX = sprite.getMinU();
 		float textureY = sprite.getMinV();
-		float width = 14 / 16.0F * reader.getInt("amount") / reader.getInt("capacity");
+		float width = 14 / 16.0F * Math.min(reader.getLong("amount"), capacity) / capacity;
 		float height = 0.4375F;
 
-		int color = reader.getInt("color");
+		int color = 0xFF000000 | FluidVariantRendering.getColor(fluid); // tint has no alpha
 		float f = (color >> 24 & 255) / 255.0F;
 		float f1 = (color >> 16 & 255) / 255.0F;
 		float f2 = (color >> 8 & 255) / 255.0F;
 		float f3 = (color & 255) / 255.0F;
 
 		matrixStack.scale(displayWidth / 0.875f, displayHeight / 0.875f, 1);
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShader(GameRenderer::getPositionTexColorShader); // the vertices carry the fluid tint
 		RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
 		RenderSystem.enableDepthTest();
 		RenderSystem.disableBlend();

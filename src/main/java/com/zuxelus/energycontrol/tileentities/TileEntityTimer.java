@@ -6,6 +6,7 @@ import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -14,16 +15,17 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class TileEntityTimer extends BlockEntityFacing implements NamedScreenHandlerFactory, ITilePacketHandler {
+public class TileEntityTimer extends BlockEntityFacing implements ExtendedScreenHandlerFactory, ITilePacketHandler {
 	private int time;
 	private int startingTime;
 	private boolean invertRedstone;
@@ -216,7 +218,9 @@ public class TileEntityTimer extends BlockEntityFacing implements NamedScreenHan
 
 	@Override
 	public void markRemoved() {
-		world.updateNeighborsAlways(pos, world.getBlockState(pos).getBlock());
+		// also called while the chunk unloads; touching the world then loads the chunk again and never finishes unloading
+		if (Screen.isLoaded(world, pos))
+			world.updateNeighborsAlways(pos, world.getBlockState(pos).getBlock());
 		super.markRemoved();
 	}
 
@@ -270,5 +274,10 @@ public class TileEntityTimer extends BlockEntityFacing implements NamedScreenHan
 	@Override
 	public Text getDisplayName() {
 		return new TranslatableText(ModItems.timer.getTranslationKey());
+	}
+
+	@Override
+	public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
+		buf.writeBlockPos(pos);
 	}
 }

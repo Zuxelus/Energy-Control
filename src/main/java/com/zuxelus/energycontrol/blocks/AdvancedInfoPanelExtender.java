@@ -41,7 +41,7 @@ public class AdvancedInfoPanelExtender extends InfoPanelExtender {
 		if (EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) panel).getFacing() == hit.getSide())
 			if (((TileEntityInfoPanel) panel).runTouchAction(player.getStackInHand(hand), pos, hit.getPos()))
 				return ActionResult.SUCCESS;
-		player.openHandledScreen(state.createScreenHandlerFactory(world, pos));
+		player.openHandledScreen(panel); // the extender has no GUI of its own, open the core panel's
 		return ActionResult.SUCCESS;
 	}
 

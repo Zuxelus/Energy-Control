@@ -1,0 +1,20 @@
+{
+  "replace": false,
+  "values": [
+    "energycontrol:white_lamp",
+    "energycontrol:orange_lamp",
+    "energycontrol:howler_alarm",
+    "energycontrol:industrial_alarm",
+    "energycontrol:thermal_monitor",
+    "energycontrol:range_trigger",
+    "energycontrol:remote_thermo",
+    "energycontrol:info_panel",
+    "energycontrol:info_panel_extender",
+    "energycontrol:info_panel_advanced",
+    "energycontrol:info_panel_advanced_extender",
+    "energycontrol:holo_panel",
+    "energycontrol:holo_panel_extender",
+    "energycontrol:kit_assembler",
+    "energycontrol:timer"
+  ]
+}

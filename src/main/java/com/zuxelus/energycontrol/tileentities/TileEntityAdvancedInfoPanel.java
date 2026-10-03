@@ -1,9 +1,13 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import com.zuxelus.energycontrol.blocks.AdvancedInfoPanel;
 import com.zuxelus.energycontrol.containers.ContainerAdvancedInfoPanel;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
+
+import com.zuxelus.energycontrol.renderers.RotationOffset;
+import com.zuxelus.zlib.blocks.FacingBlockActive;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
@@ -16,6 +20,7 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 
 public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
@@ -34,7 +39,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	public static final int OFFSET_ROTATE_HOR = 200;
 	public static final int OFFSET_ROTATE_VERT = 300;
 
-	public static final int DEFAULT_BACKGROUND = 0xFF00D4DC;
+	public static final int DEFAULT_BACKGROUND = 0xFF464646;
 
 	public byte powerMode;
 	public byte thickness;
@@ -59,7 +64,25 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	public void setPowerMode(byte mode) {
 		powerMode = mode;
 		if (world != null && !world.isClient)
-			calcPowered();
+			updatePower();
+	}
+
+	// The power mode decides whether the panel is on, so the block state (and its light) follows it here
+	// instead of following redstone in the block
+	public void updatePower() { // server
+		calcPowered();
+		BlockState state = world.getBlockState(pos);
+		if (state.getBlock() instanceof AdvancedInfoPanel && state.get(FacingBlockActive.ACTIVE) != powered)
+			world.setBlockState(pos, state.with(FacingBlockActive.ACTIVE, powered), 2);
+		updateExtenders(world, powered);
+	}
+
+	@Override
+	protected void tick() {
+		boolean firstTick = !init;
+		super.tick();
+		if (firstTick && !world.isClient)
+			updatePower();
 	}
 
 	public byte getNextPowerMode() {
@@ -146,6 +169,27 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 		deserializeSlotSettings(tag, "dSettings1", SLOT_CARD1);
 		deserializeSlotSettings(tag, "dSettings2", SLOT_CARD2);
 		deserializeSlotSettings(tag, "dSettings3", SLOT_CARD3);
+	}
+
+	@Override
+	protected int getDefaultBackground() {
+		return DEFAULT_BACKGROUND;
+	}
+
+	@Override
+	protected RotationOffset getRenderOffset() {
+		return getRenderOffset(thickness, rotateHor, rotateVert, screen, getPos(), getFacing(), getRotation());
+	}
+
+	public static RotationOffset getRenderOffset(byte thickness, byte rotateHor, byte rotateVert, Screen screen, BlockPos pos, Direction facing, Direction rotation) {
+		if (thickness < 1 || thickness > 16)
+			thickness = 16;
+		int hor = rotateHor / 7;
+		int vert = rotateVert / 7;
+		if (thickness == 16 && hor == 0 && vert == 0)
+			return null;
+		RotationOffset offset = new RotationOffset(thickness * 2, hor, vert);
+		return screen == null ? offset : offset.addOffset(screen, pos, facing, rotation);
 	}
 
 	@Override

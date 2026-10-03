@@ -27,8 +27,10 @@
 		"modmenu": [
 			"com.zuxelus.energycontrol.config.ModMenu"
 		],
-		"rei": [
-			"com.zuxelus.energycontrol.crossmod.rei.ServerPlugin",
+		"rei_common": [
+			"com.zuxelus.energycontrol.crossmod.rei.ServerPlugin"
+		],
+		"rei_client": [
 			"com.zuxelus.energycontrol.crossmod.rei.ClientPlugin"
 		]
 	},

@@ -3,18 +3,26 @@ package com.zuxelus.energycontrol.init;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.containers.*;
 
-import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 public final class ModContainerTypes {
-	public static final ScreenHandlerType<ContainerInfoPanel> info_panel = ScreenHandlerRegistry.registerExtended(new Identifier(EnergyControl.MODID, "info_panel"), ContainerInfoPanel::new);
-	public static final ScreenHandlerType<ContainerAdvancedInfoPanel> info_panel_advanced = ScreenHandlerRegistry.registerExtended(new Identifier(EnergyControl.MODID, "info_panel_advanced"), ContainerAdvancedInfoPanel::new);
-	public static final ScreenHandlerType<ContainerHoloPanel> holo_panel = ScreenHandlerRegistry.registerExtended(new Identifier(EnergyControl.MODID, "holo_panel"), ContainerHoloPanel::new);
-	public static final ScreenHandlerType<ContainerRangeTrigger> range_trigger = ScreenHandlerRegistry.registerExtended(new Identifier(EnergyControl.MODID, "range_trigger"), ContainerRangeTrigger::new);
-	public static final ScreenHandlerType<ContainerKitAssembler> kit_assembler = ScreenHandlerRegistry.registerExtended(new Identifier(EnergyControl.MODID, "kit_assembler"), ContainerKitAssembler::new);
-	public static final ScreenHandlerType<ContainerTimer> timer = ScreenHandlerRegistry.registerExtended(new Identifier(EnergyControl.MODID, "timer"), ContainerTimer::new);
+	public static final ScreenHandlerType<ContainerInfoPanel> info_panel = register("info_panel", ContainerInfoPanel::new);
+	public static final ScreenHandlerType<ContainerAdvancedInfoPanel> info_panel_advanced = register("info_panel_advanced", ContainerAdvancedInfoPanel::new);
+	public static final ScreenHandlerType<ContainerHoloPanel> holo_panel = register("holo_panel", ContainerHoloPanel::new);
+	public static final ScreenHandlerType<ContainerRangeTrigger> range_trigger = register("range_trigger", ContainerRangeTrigger::new);
+	public static final ScreenHandlerType<ContainerRemoteThermalMonitor> remote_thermo = register("remote_thermo", ContainerRemoteThermalMonitor::new);
+	public static final ScreenHandlerType<ContainerKitAssembler> kit_assembler = register("kit_assembler", ContainerKitAssembler::new);
+	public static final ScreenHandlerType<ContainerTimer> timer = register("timer", ContainerTimer::new);
 
-	public static final ScreenHandlerType<ContainerPortablePanel> portable_panel = ScreenHandlerRegistry.registerExtended(new Identifier(EnergyControl.MODID, "portable_panel"), ContainerPortablePanel::new);
-	public static final ScreenHandlerType<ContainerCardHolder> card_holder = ScreenHandlerRegistry.registerExtended(new Identifier(EnergyControl.MODID, "card_holder"), ContainerCardHolder::new);
+	public static final ScreenHandlerType<ContainerPortablePanel> portable_panel = register("portable_panel", ContainerPortablePanel::new);
+	public static final ScreenHandlerType<ContainerCardHolder> card_holder = register("card_holder", ContainerCardHolder::new);
+
+	// replaces the deprecated ScreenHandlerRegistry.registerExtended
+	private static <T extends ScreenHandler> ScreenHandlerType<T> register(String name, ExtendedScreenHandlerType.ExtendedFactory<T> factory) {
+		return Registry.register(Registry.SCREEN_HANDLER, new Identifier(EnergyControl.MODID, name), new ExtendedScreenHandlerType<>(factory));
+	}
 }

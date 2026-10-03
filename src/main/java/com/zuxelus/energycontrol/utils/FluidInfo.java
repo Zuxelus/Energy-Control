@@ -4,19 +4,19 @@ import com.zuxelus.energycontrol.api.ICardReader;
 
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
-import net.minecraft.client.resource.language.I18n;
+import net.minecraft.util.registry.Registry;
 
 public class FluidInfo {
-	String translationKey;
-	String texture;
+	String name; // display name, translated where the info is created
+	String fluid; // fluid id; the client looks up its texture and tint color for the bar
 	long amount;
 	long capacity;
-	int color;
 
-	public FluidInfo(String translationKey, String texture, long amount, long capacity) {
-		this.translationKey = translationKey;
-		this.texture = texture;
+	public FluidInfo(String name, String fluid, long amount, long capacity) {
+		this.name = name;
+		this.fluid = fluid;
 		this.amount = amount;
 		this.capacity = capacity;
 	}
@@ -48,34 +48,25 @@ public class FluidInfo {
 	public FluidInfo(SingleSlotStorage<FluidVariant> stack) {
 		if (stack != null) {
 			amount = stack.getAmount() / 81;
-			if (amount > 0) {
-				/*translationKey = stack.getTranslationKey();
-				texture = stack.fluidKey.getRawFluid().getAttributes().getStillTexture().toString();
-				color = stack.fluidKey.getRawFluid().getAttributes().getColor();*/
+			FluidVariant variant = stack.getResource();
+			if (amount > 0 && !variant.isBlank()) {
+				// works on a dedicated server too: Language there is the server's built-in en_us
+				name = FluidVariantAttributes.getName(variant).getString();
+				fluid = Registry.FLUID.getId(variant.getFluid()).toString();
 			}
 		}
 		this.capacity = stack.getCapacity() / 81;
 	}
 
 	public void write(ICardReader reader) {
-		if (translationKey != null)
-			reader.setString("name", I18n.translate(translationKey));
-		else
-			reader.setString("name", "");
-		if (texture != null)
-			reader.setString("texture", texture);
-		else
-			reader.setString("texture", "");
+		reader.setString("name", name != null ? name : "");
+		reader.setString("fluid", fluid != null ? fluid : "");
 		reader.setLong("amount", amount);
 		reader.setLong("capacity", capacity);
-		reader.setInt("color", color);
 	}
 
 	public void write(ICardReader reader, int i) {
-		if (translationKey != null)
-			reader.setString(String.format("_%dname", i), I18n.translate(translationKey));
-		else
-			reader.setString(String.format("_%dname", i), "");
+		reader.setString(String.format("_%dname", i), name != null ? name : "");
 		reader.setLong(String.format("_%damount", i), amount);
 		reader.setLong(String.format("_%dcapacity", i), capacity);
 	}

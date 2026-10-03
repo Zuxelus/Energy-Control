@@ -3,6 +3,7 @@ package com.zuxelus.energycontrol.tileentities;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.world.World;
 
 public class Screen {
@@ -38,8 +39,19 @@ public class Screen {
 		powered = panel.getPowered();
 	}
 
+	public static BlockEntity getLoadedBlockEntity(World world, BlockPos pos) {
+		if (!isLoaded(world, pos))
+			return null;
+		return world.getBlockEntity(pos);
+	}
+
+	// same check as the deprecated World.isChunkLoaded(BlockPos)
+	public static boolean isLoaded(World world, BlockPos pos) {
+		return world.getChunkManager().isChunkLoaded(ChunkSectionPos.getSectionCoord(pos.getX()), ChunkSectionPos.getSectionCoord(pos.getZ()));
+	}
+
 	public TileEntityInfoPanel getCore(World world) {
-		BlockEntity be = world.getBlockEntity(corePos);
+		BlockEntity be = getLoadedBlockEntity(world, corePos);
 		if (!(be instanceof TileEntityInfoPanel))
 			return null;
 		return (TileEntityInfoPanel) be;
@@ -70,7 +82,7 @@ public class Screen {
 		for (int x = minX; x <= maxX; x++) {
 			for (int y = minY; y <= maxY; y++) {
 				for (int z = minZ; z <= maxZ; z++) {
-					BlockEntity tileEntity = world.getBlockEntity(new BlockPos(x, y, z));
+					BlockEntity tileEntity = getLoadedBlockEntity(world, new BlockPos(x, y, z));
 					if (tileEntity == null || !(tileEntity instanceof IScreenPart))
 						continue;
 					((IScreenPart) tileEntity).setScreen(this);
@@ -85,7 +97,7 @@ public class Screen {
 		for (int x = minX; x <= maxX; x++) {
 			for (int y = minY; y <= maxY; y++) {
 				for (int z = minZ; z <= maxZ; z++) {
-					BlockEntity be = world.getBlockEntity(new BlockPos(x, y, z));
+					BlockEntity be = getLoadedBlockEntity(world, new BlockPos(x, y, z));
 					if (!(be instanceof IScreenPart))
 						continue;
 					IScreenPart part = (IScreenPart) be;
@@ -114,7 +126,7 @@ public class Screen {
 		for (int x = minX; x <= maxX; x++) {
 			for (int y = minY; y <= maxY; y++) {
 				for (int z = minZ; z <= maxZ; z++) {
-					BlockEntity te = world.getBlockEntity(new BlockPos(x, y, z));
+					BlockEntity te = getLoadedBlockEntity(world, new BlockPos(x, y, z));
 					if (te instanceof IScreenPart)
 						((IScreenPart)te).updateTileEntity();
 				}

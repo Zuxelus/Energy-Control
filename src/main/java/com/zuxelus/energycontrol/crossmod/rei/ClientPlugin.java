@@ -9,6 +9,7 @@ import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry;
+import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRegistry;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.fabricmc.api.EnvType;
@@ -21,7 +22,8 @@ public final class ClientPlugin implements REIClientPlugin {
 	@Override
 	public void registerCategories(CategoryRegistry registry) {
 		registry.add(new KitAssemblerRecipeCategory());
-		registry.removePlusButton(KitAssemblerRecipeCategory.id);
+		// what the deprecated removePlusButton() did: a null area hides the "+" button
+		registry.configure(KitAssemblerRecipeCategory.id, config -> config.setPlusButtonArea(bounds -> null));
 		registry.addWorkstations(KitAssemblerRecipeCategory.id, EntryStacks.of(new ItemStack(ModItems.kit_assembler)));
 	}
 
@@ -35,7 +37,9 @@ public final class ClientPlugin implements REIClientPlugin {
 		registry.registerContainerClickArea(new Rectangle(87, 35, 22, 15), GuiKitAssembler.class, new CategoryIdentifier[] { KitAssemblerRecipeCategory.id });
 	}
 
-	/*public void registerTransferHandlers(TransferHandlerRegistry registry) {
+	// REI's SimpleTransferHandler moves only one item per slot, recipes here need several
+	@Override
+	public void registerTransferHandlers(TransferHandlerRegistry registry) {
 		registry.register(new KitAssemblerTransferHandler());
-	}*/
+	}
 }

@@ -1,0 +1,21 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "request": "attach",
+      "name": "Debug Minecraft Client (Gradle)",
+      "hostName": "localhost",
+      "port": 5005,
+      "preLaunchTask": "runClient (debug)"
+    },
+    {
+      "type": "node-terminal",
+      "request": "launch",
+      "name": "Run Minecraft Client (Gradle, no debugger)",
+      "command": ".\\gradlew.bat runClient --console=plain",
+      "cwd": "${workspaceFolder}",
+      "env": { "JAVA_HOME": "${config:java.import.gradle.java.home}" }
+    }
+  ]
+}

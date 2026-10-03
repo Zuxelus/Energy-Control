@@ -11,6 +11,8 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.world.World;
 
 @Mixin(ClientPlayNetworkHandler.class)
@@ -21,7 +23,8 @@ public class ClientPlayNetworkHandlerMixin {
 		World world = MinecraftClient.getInstance().world;
 		if (world == null)
 			return;
-		if (world.isChunkLoaded(packet.getPos())) {
+		BlockPos pos = packet.getPos();
+		if (world.getChunkManager().isChunkLoaded(ChunkSectionPos.getSectionCoord(pos.getX()), ChunkSectionPos.getSectionCoord(pos.getZ()))) {
 			BlockEntity be = world.getBlockEntity(packet.getPos());
 			if (be instanceof ITilePacketHandler)
 				((ITilePacketHandler) be).onDataPacket(packet);

@@ -1,0 +1,17 @@
+{
+    "parent": "block/cube",
+    "elements": [
+        {
+            "from": [ 0, 0, 0 ],
+            "to": [ 16, 16, 16 ],
+            "faces": {
+                "north": { "texture": "#face", "uv": [ 0, 0, 16, 16 ] },
+                "east": { "texture": "#all", "uv": [ 0, 4, 4, 8 ] },
+                "south": { "texture": "#all", "uv": [ 12, 4, 16, 8 ] },
+                "west": { "texture": "#all", "uv": [ 8, 4, 12, 8 ] },
+                "up": { "texture": "#all", "uv": [ 4, 0, 8, 4 ], "rotation": 180 },
+                "down": { "texture": "#all", "uv": [ 4, 8, 8, 12 ], "rotation": 180 }
+            }
+        }
+    ]
+}

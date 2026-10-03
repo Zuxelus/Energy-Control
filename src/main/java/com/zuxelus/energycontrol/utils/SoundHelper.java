@@ -36,7 +36,7 @@ public class SoundHelper extends SinglePreparationResourceReloader<Map<String, S
 	private static final TypeToken<Map<String, SoundEntry>> TYPE = new TypeToken<Map<String, SoundEntry>>() {};
 
 	public SoundHelper() {
-		File configFolder = FabricLoader.getInstance().getConfigDirectory();
+		File configFolder = FabricLoader.getInstance().getConfigDir().toFile();
 		if (configFolder == null || !ConfigHandler.useCustomSounds)
 			return;
 

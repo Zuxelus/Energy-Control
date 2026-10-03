@@ -12,7 +12,10 @@ import com.zuxelus.zlib.gui.controls.GuiTextNumeric;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.texture.NativeImage;
+import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
@@ -20,7 +23,16 @@ import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
 public class GuiScreenColor extends GuiBase {
-	private final static Identifier PICKER = new Identifier(EnergyControl.MODID + ":textures/gui/gui_color_picker.png");
+	private final static Identifier PICKER = new Identifier(EnergyControl.MODID, "dynamic/color_picker");
+	// Picker layout: a center disc (white / black) surrounded by rings split into hue sectors.
+	// Light picker: value = 1, ring = saturation. Dark picker: saturation = 1, ring = value.
+	private static final int HUE_SECTORS = 16;
+	private static final float[] LIGHT_RINGS = { 0.5F, 1.0F };
+	private static final float[] DARK_RINGS = { 0.4F, 0.7F };
+	private static final float CENTER_RADIUS = 8.0F;
+	private static final float RADIUS = 36.0F;
+	private static final int SIZE = 80;
+	private static boolean pickerRegistered;
 
 	private GuiPanelBase<?> parentGui;
 	private int colorText;
@@ -50,6 +62,7 @@ public class GuiScreenColor extends GuiBase {
 	@Override
 	public void init() {
 		super.init();
+		registerPickerTexture();
 		fieldList.clear();
 		rText = new GuiTextNumeric(textRenderer, guiLeft + 10, guiTop + 18, 26, 12, LiteralText.EMPTY, 255);
 		rText.setMaxLength(3);
@@ -120,22 +133,10 @@ public class GuiScreenColor extends GuiBase {
 			isDarkPicker = true;
 			return;
 		}
-		if (isInside(mouseX, mouseY, 20, 34, 80, 80)) {
-			double x = mouseX - 20 - 40;
-			double y = mouseY - 34 - 40;
-			float saturation = (float) Math.sqrt(x * x + y * y) / 36.0F;
-			if (saturation > 1)
+		if (isInside(mouseX, mouseY, 20, 34, SIZE, SIZE)) {
+			Color c = getPickerColor(mouseX - 20 - SIZE / 2, mouseY - 34 - SIZE / 2, isDarkPicker);
+			if (c == null)
 				return;
-			int hue = (int) (x == 0 ? 0 : Math.round(Math.toDegrees(Math.atan(Math.abs(y / x)))));
-			if (x <= 0 && y >= 0)
-				hue = 180 - hue;
-			else if (x <= 0 && y <= 0)
-				hue = 180 + hue;
-			else if (x >= 0 && y <= 0)
-				hue = 360 - hue;
-			if (hue > 360)
-				hue = 359;
-			Color c = isDarkPicker ? getColorFromHSV(hue, 1.0F, saturation) : getColorFromHSV(hue, saturation, 1.0F);
 			setColorText(c);
 			fieldList.get(0).setText(Integer.toString(c.getRed()));
 			fieldList.get(1).setText(Integer.toString(c.getGreen()));
@@ -152,22 +153,10 @@ public class GuiScreenColor extends GuiBase {
 			isDarkPicker2 = true;
 			return;
 		}
-		if (isInside(mouseX, mouseY, 20 + offset, 34, 80, 80)) {
-			double x = mouseX - 20 - 40 - offset;
-			double y = mouseY - 34 - 40;
-			float saturation = (float) Math.sqrt(x * x + y * y) / 36.0F;
-			if (saturation > 1)
+		if (isInside(mouseX, mouseY, 20 + offset, 34, SIZE, SIZE)) {
+			Color c = getPickerColor(mouseX - 20 - SIZE / 2 - offset, mouseY - 34 - SIZE / 2, isDarkPicker2);
+			if (c == null)
 				return;
-			int hue = (int) (x == 0 ? 0 : Math.round(Math.toDegrees(Math.atan(Math.abs(y / x)))));
-			if (x <= 0 && y >= 0)
-				hue = 180 - hue;
-			else if (x <= 0 && y <= 0)
-				hue = 180 + hue;
-			else if (x >= 0 && y <= 0)
-				hue = 360 - hue;
-			if (hue > 360)
-				hue = 359;
-			Color c = isDarkPicker2 ? getColorFromHSV(hue, 1.0F, saturation) : getColorFromHSV(hue, saturation, 1.0F);
 			setColorBackground(c);
 			fieldList2.get(0).setText(Integer.toString(c.getRed()));
 			fieldList2.get(1).setText(Integer.toString(c.getGreen()));
@@ -175,7 +164,47 @@ public class GuiScreenColor extends GuiBase {
 		}
 	}
 
-	private Color getColorFromHSV(int hue, float saturation, float value) {
+	// x, y are relative to the picker center. Returns null outside the circle.
+	private static Color getPickerColor(double x, double y, boolean dark) {
+		double dist = Math.sqrt(x * x + y * y);
+		if (dist > RADIUS)
+			return null;
+		if (dist < CENTER_RADIUS)
+			return dark ? Color.BLACK : Color.WHITE;
+		float[] rings = dark ? DARK_RINGS : LIGHT_RINGS;
+		int ring = Math.min((int) ((dist - CENTER_RADIUS) / (RADIUS - CENTER_RADIUS) * rings.length), rings.length - 1);
+		double angle = (Math.toDegrees(Math.atan2(y, x)) + 360) % 360;
+		int sector = (int) Math.floor(angle * HUE_SECTORS / 360.0 + 0.5) % HUE_SECTORS;
+		float hue = sector * 360.0F / HUE_SECTORS;
+		return dark ? getColorFromHSV(hue, 1.0F, rings[ring]) : getColorFromHSV(hue, rings[ring], 1.0F);
+	}
+
+	// Builds the 160x80 picker texture (light picker at u = 0, dark picker at u = 80)
+	// from getPickerColor, so the drawn sectors always match the clickable ones.
+	private static void registerPickerTexture() {
+		if (pickerRegistered)
+			return;
+		NativeImage image = new NativeImage(SIZE * 2, SIZE, true);
+		for (int mode = 0; mode < 2; mode++)
+			for (int px = 0; px < SIZE; px++)
+				for (int py = 0; py < SIZE; py++) {
+					double x = px + 0.5 - SIZE / 2;
+					double y = py + 0.5 - SIZE / 2;
+					Color c = getPickerColor(x, y, mode == 1);
+					int abgr = 0;
+					if (c != null) {
+						boolean border = !c.equals(getPickerColor(x + 1, y, mode == 1)) || !c.equals(getPickerColor(x - 1, y, mode == 1))
+								|| !c.equals(getPickerColor(x, y + 1, mode == 1)) || !c.equals(getPickerColor(x, y - 1, mode == 1));
+						float k = border ? 0.6F : 1.0F;
+						abgr = 0xFF000000 | ((int) (c.getBlue() * k) << 16) | ((int) (c.getGreen() * k) << 8) | (int) (c.getRed() * k);
+					}
+					image.setColor(px + mode * SIZE, py, abgr);
+				}
+		MinecraftClient.getInstance().getTextureManager().registerTexture(PICKER, new NativeImageBackedTexture(image));
+		pickerRegistered = true;
+	}
+
+	private static Color getColorFromHSV(float hue, float saturation, float value) {
 		float c = saturation * value;
 		float x = c * (1 - Math.abs((hue / 60.0F) % 2 - 1));
 		float m = value - c;

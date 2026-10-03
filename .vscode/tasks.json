@@ -1,0 +1,36 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "runClient",
+            "type": "shell",
+            "command": "${workspaceFolder}\\gradlew.bat",
+            "args": [ "runClient", "--console=plain" ],
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": { "JAVA_HOME": "${config:java.import.gradle.java.home}" }
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "runClient (debug)",
+            "type": "shell",
+            "command": "${workspaceFolder}\\gradlew.bat",
+            "args": [ "runClient", "--debug-jvm", "--console=plain" ],
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": { "JAVA_HOME": "${config:java.import.gradle.java.home}" }
+            },
+            "isBackground": true,
+            "problemMatcher": {
+                "owner": "gradle",
+                "pattern": { "regexp": "^__never_matches__$" },
+                "background": {
+                    "activeAtBeginning": true,
+                    "beginsPattern": "^.*(Starting a Gradle Daemon|Task :).*$",
+                    "endsPattern": "^.*Listening for transport dt_socket at address: 5005.*$"
+                }
+            }
+        }
+    ]
+}

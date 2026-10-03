@@ -11,7 +11,6 @@ import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.math.Vector4f;
 
 public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
-	private static final int FACE = 3; // quad with the screen face texture
 	private ModelBox cube;
 
 	public CubeRenderer(int faceOffsetX, int faceOffsetY) {
@@ -33,12 +32,6 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 	@Environment(EnvType.CLIENT)
 	public void render(MatrixStack matrixStack, VertexConsumer buffer, int[] light, int combinedOverlay) {
 		cube.render(matrixStack, buffer, light, combinedOverlay);
-	}
-
-	// Tints only the screen face with the RGB color
-	@Environment(EnvType.CLIENT)
-	public void render(MatrixStack matrixStack, VertexConsumer buffer, int[] light, int combinedOverlay, int faceColor) {
-		cube.render(matrixStack, buffer, light, combinedOverlay, faceColor);
 	}
 
 	@Environment(EnvType.CLIENT)
@@ -110,26 +103,12 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 			matrixStack.scale(2.0F, 2.0F, 2.0F);
 		}
 
-		public void render(MatrixStack matrixStack, VertexConsumer buffer, int[] light, int combinedOverlay, int faceColor) {
-			matrixStack.scale(0.5F, 0.5F, 0.5F);
-			render(matrixStack.peek(), buffer, light, combinedOverlay, 1.0F, 1.0F, 1.0F, 1.0F, faceColor);
-			matrixStack.scale(2.0F, 2.0F, 2.0F);
-		}
-
 		public void render(MatrixStack.Entry matrixEntry, VertexConsumer buffer, int[] light, int combinedOverlay, float red, float green, float blue, float alpha) {
-			render(matrixEntry, buffer, light, combinedOverlay, red, green, blue, alpha, -1);
-		}
-
-		private void render(MatrixStack.Entry matrixEntry, VertexConsumer buffer, int[] light, int combinedOverlay, float red, float green, float blue, float alpha, int faceColor) {
 			Matrix4f matrix4f = matrixEntry.getPositionMatrix();
 			Matrix3f matrix3f = matrixEntry.getNormalMatrix();
-			float faceRed = red * (faceColor >> 16 & 255) / 255.0F;
-			float faceGreen = green * (faceColor >> 8 & 255) / 255.0F;
-			float faceBlue = blue * (faceColor & 255) / 255.0F;
 
 			for (int n = 0; n < quads.length; ++n) {
 				TexturedQuad quad = quads[n];
-				boolean isFace = n == FACE;
 				Vec3f vector3f = quad.normal.copy();
 				vector3f.transform(matrix3f);
 				float f = vector3f.getX();
@@ -140,7 +119,7 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 					PositionTextureVertex vertex = quad.vertexPositions[i];
 					Vector4f vector4f = new Vector4f(vertex.position.getX() / 16.0F, vertex.position.getY() / 16.0F, vertex.position.getZ() / 16.0F, 1.0F);
 					vector4f.transform(matrix4f);
-					buffer.vertex(vector4f.getX(), vector4f.getY(), vector4f.getZ(), isFace ? faceRed : red, isFace ? faceGreen : green, isFace ? faceBlue : blue, alpha,vertex.textureU, vertex.textureV, combinedOverlay, light[n], f, g, h);
+					buffer.vertex(vector4f.getX(), vector4f.getY(), vector4f.getZ(), red, green, blue, alpha, vertex.textureU, vertex.textureV, combinedOverlay, light[n], f, g, h);
 				}
 			}
 		}

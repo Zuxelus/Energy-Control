@@ -47,6 +47,8 @@ public abstract class FacingHorizontal extends BlockWithEntity {
 			return checkType(type, type, TileEntityHoloPanel::tickStatic);
 		if (type == ModTileEntityTypes.holo_panel_extender)
 			return checkType(type, type, TileEntityHoloPanelExtender::tickStatic);
+		if (type == ModTileEntityTypes.remote_thermo)
+			return checkType(type, type, TileEntityRemoteThermalMonitor::tickStatic);
 		if (type == ModTileEntityTypes.kit_assembler)
 			return checkType(type, type, TileEntityKitAssembler::tickStatic);
 		return null;
