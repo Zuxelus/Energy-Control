@@ -17,7 +17,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -291,6 +290,6 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 
 	@Override
 	public Text getDisplayName() {
-		return new TranslatableText(ModItems.info_panel_advanced.getTranslationKey());
+		return Text.translatable(ModItems.info_panel_advanced.getTranslationKey());
 	}
 }

@@ -63,7 +63,7 @@ public abstract class ContainerBase<T extends Inventory> extends ScreenHandler {
 	}
 
 	@Override
-	public ItemStack transferSlot(PlayerEntity player, int index) {
+	public ItemStack quickMove(PlayerEntity player, int index) {
 		Slot slot = slots.get(index);
 		if (slot == null || !slot.hasStack())
 			return ItemStack.EMPTY;

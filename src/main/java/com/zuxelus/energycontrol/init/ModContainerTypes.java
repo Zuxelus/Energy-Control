@@ -7,7 +7,8 @@ import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 
 public final class ModContainerTypes {
 	public static final ScreenHandlerType<ContainerInfoPanel> info_panel = register("info_panel", ContainerInfoPanel::new);
@@ -23,6 +24,6 @@ public final class ModContainerTypes {
 
 	// replaces the deprecated ScreenHandlerRegistry.registerExtended
 	private static <T extends ScreenHandler> ScreenHandlerType<T> register(String name, ExtendedScreenHandlerType.ExtendedFactory<T> factory) {
-		return Registry.register(Registry.SCREEN_HANDLER, new Identifier(EnergyControl.MODID, name), new ExtendedScreenHandlerType<>(factory));
+		return Registry.register(Registries.SCREEN_HANDLER, new Identifier(EnergyControl.MODID, name), new ExtendedScreenHandlerType<>(factory));
 	}
 }

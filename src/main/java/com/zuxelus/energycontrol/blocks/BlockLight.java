@@ -1,6 +1,6 @@
 package com.zuxelus.energycontrol.blocks;
 
-import java.util.Random;
+import net.minecraft.util.math.random.Random;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
@@ -43,7 +43,7 @@ public class BlockLight extends Block {
 			return;
 
 		if (flag)
-			world.createAndScheduleBlockTick(pos, this, 4);
+			world.scheduleBlockTick(pos, this, 4);
 		else
 			world.setBlockState(pos, state.cycle(LIT), 2);
 	}

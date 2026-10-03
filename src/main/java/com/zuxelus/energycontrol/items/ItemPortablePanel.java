@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.items;
 
-import com.zuxelus.energycontrol.EnergyControl;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -12,7 +11,7 @@ import net.minecraft.world.World;
 public class ItemPortablePanel extends Item {
 
 	public ItemPortablePanel() {
-		super(new Item.Settings().maxCount(1).group(EnergyControl.ITEM_GROUP));
+		super(new Item.Settings().maxCount(1));
 	}
 
 	@Override

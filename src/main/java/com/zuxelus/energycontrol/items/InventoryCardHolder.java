@@ -13,7 +13,6 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 
 public class InventoryCardHolder extends ItemInventory implements ExtendedScreenHandlerFactory {
 
@@ -44,7 +43,7 @@ public class InventoryCardHolder extends ItemInventory implements ExtendedScreen
 
 	@Override
 	public Text getDisplayName() {
-		return new TranslatableText(ModItems.card_holder.getTranslationKey());
+		return Text.translatable(ModItems.card_holder.getTranslationKey());
 	}
 
 	// the screen type is extended; the container needs no extra data

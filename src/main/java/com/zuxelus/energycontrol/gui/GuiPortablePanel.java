@@ -46,7 +46,7 @@ public class GuiPortablePanel extends HandledScreen<ContainerPortablePanel> {
 
 	@Override
 	protected void drawBackground(MatrixStack matrixStack, float partialTicks, int x, int y) {
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShader(GameRenderer::getPositionTexProgram);
 		RenderSystem.setShaderTexture(0, TEXTURE);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		int left = (width - backgroundWidth) / 2;

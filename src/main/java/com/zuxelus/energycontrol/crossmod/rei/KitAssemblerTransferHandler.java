@@ -1,5 +1,7 @@
 package com.zuxelus.energycontrol.crossmod.rei;
 
+import net.minecraft.text.Text;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +21,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.text.TranslatableText;
 
 /**
  * REI's simple transfer puts one item per slot per craft, but Kit Assembler recipes need several
@@ -50,7 +51,7 @@ public class KitAssemblerTransferHandler implements TransferHandler {
 		List<EntryIngredient> missing = new ArrayList<>();
 		Item[] chosen = allocate(inputs, counts, 1, available, missing);
 		if (chosen == null)
-			return Result.createFailed(new TranslatableText("error.rei.not.enough.materials")).tooltipMissing(missing);
+			return Result.createFailed(Text.translatable("error.rei.not.enough.materials")).tooltipMissing(missing);
 		if (!context.isActuallyCrafting())
 			return Result.createSuccessful();
 

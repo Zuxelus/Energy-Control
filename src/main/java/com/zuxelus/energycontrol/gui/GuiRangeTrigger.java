@@ -16,7 +16,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -41,12 +40,12 @@ public class GuiRangeTrigger extends GuiContainerBase<ContainerRangeTrigger> {
 		prevCard = card;
 		// ten digits, up to 10 billions
 		for (int i = 0; i < 10; i++) {
-			addDrawableChild(new CompactButton(i * 10, x + 30 + i * 12 + (i + 2) / 3 * 6, y + 20, 12, 12, new LiteralText("-"), (button) -> { actionPerformed(button); }));
-			addDrawableChild(new CompactButton(i * 10 + 1, x + 30 + i * 12 + (i + 2) / 3 * 6, y + 42, 12, 12, new LiteralText("+"), (button) -> { actionPerformed(button); }));
+			addDrawableChild(new CompactButton(i * 10, x + 30 + i * 12 + (i + 2) / 3 * 6, y + 20, 12, 12, Text.literal("-"), (button) -> { actionPerformed(button); }));
+			addDrawableChild(new CompactButton(i * 10 + 1, x + 30 + i * 12 + (i + 2) / 3 * 6, y + 42, 12, 12, Text.literal("+"), (button) -> { actionPerformed(button); }));
 		}
 		for (int i = 0; i < 10; i++) {
-			addDrawableChild(new CompactButton(100 + i * 10, x + 30 + i * 12 + (i + 2) / 3 * 6, y + 57, 12, 12, new LiteralText("-"), (button) -> { actionPerformed(button); }));
-			addDrawableChild(new CompactButton(100 + i * 10 + 1, x + 30 + i * 12 + (i + 2) / 3 * 6, y + 79, 12, 12, new LiteralText("+"), (button) -> { actionPerformed(button); }));
+			addDrawableChild(new CompactButton(100 + i * 10, x + 30 + i * 12 + (i + 2) / 3 * 6, y + 57, 12, 12, Text.literal("-"), (button) -> { actionPerformed(button); }));
+			addDrawableChild(new CompactButton(100 + i * 10 + 1, x + 30 + i * 12 + (i + 2) / 3 * 6, y + 79, 12, 12, Text.literal("+"), (button) -> { actionPerformed(button); }));
 		}
 		addDrawableChild(new GuiRangeTriggerInvertRedstone(x + 8, y + 62, container.te));
 	}

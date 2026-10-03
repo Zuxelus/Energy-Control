@@ -1,5 +1,7 @@
 package com.zuxelus.energycontrol.gui;
 
+import net.minecraft.text.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +14,6 @@ import com.zuxelus.zlib.gui.GuiBase;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.TranslatableText;
 
 @Environment(EnvType.CLIENT)
 public class GuiHowlerAlarm extends GuiBase {
@@ -41,6 +42,6 @@ public class GuiHowlerAlarm extends GuiBase {
 	@Override
 	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
 		drawTitle(matrixStack);
-		textRenderer.draw(matrixStack, new TranslatableText("msg.ec.HowlerAlarmSound"), 12, 53, 0x404040);
+		textRenderer.draw(matrixStack, Text.translatable("msg.ec.HowlerAlarmSound"), 12, 53, 0x404040);
 	}
 }

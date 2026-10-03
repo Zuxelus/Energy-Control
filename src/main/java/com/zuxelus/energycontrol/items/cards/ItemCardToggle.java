@@ -12,11 +12,10 @@ import com.zuxelus.energycontrol.api.PanelString;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.AbstractButtonBlock;
+import net.minecraft.block.ButtonBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.WoodenButtonBlock;
 import net.minecraft.block.enums.WallMountLocation;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.GameRenderer;
@@ -32,7 +31,7 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Matrix4f;
+import org.joml.Matrix4f;
 import net.minecraft.world.World;
 
 public class ItemCardToggle extends ItemCardMain implements ITouchAction {
@@ -50,7 +49,7 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 
 		BlockState state = world.getBlockState(target);
 		Block block = state.getBlock();
-		if (block == Blocks.LEVER || block instanceof AbstractButtonBlock) {
+		if (block == Blocks.LEVER || block instanceof ButtonBlock) {
 			reader.setBoolean("value", state.get(POWERED));
 			return CardState.OK;
 		}
@@ -87,11 +86,8 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 			world.updateNeighborsAlways(pos, block);
 			world.updateNeighborsAlways(pos.offset(getFacing(state).getOpposite()), block);
 		}
-		if (block instanceof AbstractButtonBlock) {
-			world.setBlockState(pos, state.with(POWERED, Boolean.valueOf(true)), 3);
-			world.updateNeighborsAlways(pos, block);
-			world.updateNeighborsAlways(pos.offset(getFacing(state).getOpposite()), block);
-			world.createAndScheduleBlockTick(pos, block, block instanceof WoodenButtonBlock ? 30 : 20);
+		if (block instanceof ButtonBlock) {
+			((ButtonBlock) block).powerOn(state, world, pos);
 		}
 		return false;
 	}
@@ -116,7 +112,7 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 		float width = 1;
 		float textureX = 0;
 		float textureY = 0;
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShader(GameRenderer::getPositionTexProgram);
 		if (reader.getBoolean("value"))
 			RenderSystem.setShaderTexture(0, TEXTURE_ON);
 		else

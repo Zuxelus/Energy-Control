@@ -30,7 +30,7 @@ public class ReloadableResourceManagerImplMixin {
 			return packs;
 
 		List<ResourcePack> list = new ArrayList<>(packs);
-		list.add(new DirectoryResourcePack(alarms));
+		list.add(new DirectoryResourcePack("energycontrol_alarms", alarms.toPath(), false));
 		return list;
 	}
 }

@@ -12,7 +12,7 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory.Context;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.math.RotationAxis;
 
 public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEntityAdvancedInfoPanel> {
 	private final TextRenderer font;
@@ -49,23 +49,23 @@ public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 		case UP:
 			break;
 		case NORTH:
-			matrixStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90));
+			matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-90));
 			matrixStack.translate(0.0F, -1.0F, 0.0F);
 			break;
 		case SOUTH:
-			matrixStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90));
+			matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90));
 			matrixStack.translate(0.0F, 0.0F, -1.0F);
 			break;
 		case DOWN:
-			matrixStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(180));
+			matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180));
 			matrixStack.translate(0.0F, -1.0F, -1.0F);
 			break;
 		case WEST:
-			matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(90));
+			matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(90));
 			matrixStack.translate(0.0F, -1.0F, 0.0F);
 			break;
 		case EAST:
-			matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(-90));
+			matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(-90));
 			matrixStack.translate(-1.0F, 0.0F, 0.0F);
 			break;
 		}
@@ -177,13 +177,13 @@ public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 			}
 		}
 
-		matrixStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90));
+		matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-90));
 		switch(panel.getRotation())
 		{
 		case UP:
 			break;
 		case NORTH:
-			matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(180));
+			matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180));
 			matrixStack.translate(dx - 1.0F, dz, 0.0F);
 			break;
 		case SOUTH:
@@ -192,11 +192,11 @@ public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 		case DOWN:
 			break;
 		case WEST:
-			matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(-90));
+			matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(-90));
 			matrixStack.translate(dz, dx, 0.0F);
 			break;
 		case EAST:
-			matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(90));
+			matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(90));
 			matrixStack.translate(dz - 1.0F, dx - 1.0F, 0.0F);
 			break;
 		}
@@ -208,9 +208,10 @@ public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 		int i = offset.rotateVert == 0 ? 0 : offset.rotateVert > 0 ? -1 : 1;
 		int j = offset.rotateHor == 0 ? 0 : offset.rotateHor > 0 ? -1 : 1;
 		matrixStack.translate(displayWidth / 2, displayHeight / 2, 1 + (32 * h - offset.leftTop - offset.leftBottom) / 64);
-		matrixStack.multiply(Vec3f.NEGATIVE_Y.getDegreesQuaternion((float) Math.toDegrees(b)));
-		matrixStack.multiply(Vec3f.NEGATIVE_X.getDegreesQuaternion((float) Math.toDegrees(a)));
-		matrixStack.multiply(new Vec3f(0.0F, 0.0F, i * j).getDegreesQuaternion(90.0F - (float) Math.toDegrees( // Law of cosines
+		matrixStack.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees((float) Math.toDegrees(b)));
+		matrixStack.multiply(RotationAxis.NEGATIVE_X.rotationDegrees((float) Math.toDegrees(a)));
+		if (i * j != 0)
+			matrixStack.multiply((i * j > 0 ? RotationAxis.POSITIVE_Z : RotationAxis.NEGATIVE_Z).rotationDegrees(90.0F - (float) Math.toDegrees( // Law of cosines
 			Math.acos((h * h + v * v) / 2 / Math.sqrt(displayWidth * displayWidth + h * h) / Math.sqrt(displayHeight * displayHeight + v * v)))));
 		matrixStack.translate(0.0F, 0.001F * i, 0.001F);
 		displayHeight = (float) ((displayHeight - 0.125F) / Math.cos(a));
@@ -252,19 +253,19 @@ public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 			if (panelString.textLeft != null) {
 				font.draw(panelString.textLeft, offsetX - realWidth / 2,
 						1 + offsetY - realHeight / 2 + row * lineHeight,
-						panelString.colorLeft != 0 ? panelString.colorLeft : colorHex, false, matrixStack.peek().getPositionMatrix(), buffer, false, 0, combinedLight);
+						panelString.colorLeft != 0 ? panelString.colorLeft : colorHex, false, matrixStack.peek().getPositionMatrix(), buffer, TextRenderer.TextLayerType.NORMAL, 0, combinedLight);
 			}
 			if (panelString.textCenter != null) {
 				font.draw(panelString.textCenter,
 						-font.getWidth(panelString.textCenter) / 2,
 						offsetY - realHeight / 2 + row * lineHeight,
-						panelString.colorCenter != 0 ? panelString.colorCenter : colorHex, false, matrixStack.peek().getPositionMatrix(), buffer, false, 0, combinedLight);
+						panelString.colorCenter != 0 ? panelString.colorCenter : colorHex, false, matrixStack.peek().getPositionMatrix(), buffer, TextRenderer.TextLayerType.NORMAL, 0, combinedLight);
 			}
 			if (panelString.textRight != null) {
 				font.draw(panelString.textRight,
 						realWidth / 2 - font.getWidth(panelString.textRight),
 						offsetY - realHeight / 2 + row * lineHeight,
-						panelString.colorRight != 0 ? panelString.colorRight : colorHex, false, matrixStack.peek().getPositionMatrix(), buffer, false, 0, combinedLight);
+						panelString.colorRight != 0 ? panelString.colorRight : colorHex, false, matrixStack.peek().getPositionMatrix(), buffer, TextRenderer.TextLayerType.NORMAL, 0, combinedLight);
 			}
 			row++;
 		}

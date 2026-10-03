@@ -1,5 +1,7 @@
 package com.zuxelus.energycontrol.gui;
 
+import net.minecraft.text.Text;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.gui.controls.CompactButton;
 import com.zuxelus.energycontrol.gui.controls.GuiThermoInvertRedstone;
@@ -12,7 +14,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 
 @Environment(EnvType.CLIENT)
 public class GuiThermalMonitor extends GuiBase {
@@ -27,17 +28,17 @@ public class GuiThermalMonitor extends GuiBase {
 	@Override
 	public void init() {
 		super.init();
-		addDrawableChild(new CompactButton(0, guiLeft + 47, guiTop + 20, 22, 12, new LiteralText("-1"), (button) -> { actionPerformed(button); }));
-		addDrawableChild(new CompactButton(1, guiLeft + 47, guiTop + 31, 22, 12, new LiteralText("-10"), (button) -> { actionPerformed(button); }));
-		addDrawableChild(new CompactButton(2, guiLeft + 12, guiTop + 20, 36, 12, new LiteralText("-100"), (button) -> { actionPerformed(button); }));
-		addDrawableChild(new CompactButton(3, guiLeft + 12, guiTop + 31, 36, 12, new LiteralText("-1000"), (button) -> { actionPerformed(button); }));
-		addDrawableChild(new CompactButton(4, guiLeft + 12, guiTop + 42, 57, 12, new LiteralText("-10000"), (button) -> { actionPerformed(button); }));
+		addDrawableChild(new CompactButton(0, guiLeft + 47, guiTop + 20, 22, 12, Text.literal("-1"), (button) -> { actionPerformed(button); }));
+		addDrawableChild(new CompactButton(1, guiLeft + 47, guiTop + 31, 22, 12, Text.literal("-10"), (button) -> { actionPerformed(button); }));
+		addDrawableChild(new CompactButton(2, guiLeft + 12, guiTop + 20, 36, 12, Text.literal("-100"), (button) -> { actionPerformed(button); }));
+		addDrawableChild(new CompactButton(3, guiLeft + 12, guiTop + 31, 36, 12, Text.literal("-1000"), (button) -> { actionPerformed(button); }));
+		addDrawableChild(new CompactButton(4, guiLeft + 12, guiTop + 42, 57, 12, Text.literal("-10000"), (button) -> { actionPerformed(button); }));
 
-		addDrawableChild(new CompactButton(5, guiLeft + 122, guiTop + 20, 22, 12, new LiteralText("+1"), (button) -> { actionPerformed(button); }));
-		addDrawableChild(new CompactButton(6, guiLeft + 122, guiTop + 31, 22, 12, new LiteralText("+10"), (button) -> { actionPerformed(button); }));
-		addDrawableChild(new CompactButton(7, guiLeft + 143, guiTop + 20, 36, 12, new LiteralText("+100"), (button) -> { actionPerformed(button); }));
-		addDrawableChild(new CompactButton(8, guiLeft + 143, guiTop + 31, 36, 12, new LiteralText("+1000"), (button) -> { actionPerformed(button); }));
-		addDrawableChild(new CompactButton(9, guiLeft + 122, guiTop + 42, 57, 12, new LiteralText("+10000"), (button) -> { actionPerformed(button); }));
+		addDrawableChild(new CompactButton(5, guiLeft + 122, guiTop + 20, 22, 12, Text.literal("+1"), (button) -> { actionPerformed(button); }));
+		addDrawableChild(new CompactButton(6, guiLeft + 122, guiTop + 31, 22, 12, Text.literal("+10"), (button) -> { actionPerformed(button); }));
+		addDrawableChild(new CompactButton(7, guiLeft + 143, guiTop + 20, 36, 12, Text.literal("+100"), (button) -> { actionPerformed(button); }));
+		addDrawableChild(new CompactButton(8, guiLeft + 143, guiTop + 31, 36, 12, Text.literal("+1000"), (button) -> { actionPerformed(button); }));
+		addDrawableChild(new CompactButton(9, guiLeft + 122, guiTop + 42, 57, 12, Text.literal("+10000"), (button) -> { actionPerformed(button); }));
 
 		addDrawableChild(new GuiThermoInvertRedstone(guiLeft + 70, guiTop + 38, thermo));
 

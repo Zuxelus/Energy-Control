@@ -5,10 +5,10 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Matrix3f;
-import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Vec3f;
-import net.minecraft.util.math.Vector4f;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 	private ModelBox cube;
@@ -36,19 +36,19 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 
 	@Environment(EnvType.CLIENT)
 	static class PositionTextureVertex {
-		public final Vec3f position;
+		public final Vector3f position;
 		public final float textureU;
 		public final float textureV;
 
 		public PositionTextureVertex(float x, float y, float z, float texU, float texV) {
-			this(new Vec3f(x, y, z), texU, texV);
+			this(new Vector3f(x, y, z), texU, texV);
 		}
 
 		public PositionTextureVertex setTextureUV(float texU, float texV) {
 			return new PositionTextureVertex(this.position, texU, texV);
 		}
 
-		public PositionTextureVertex(Vec3f posIn, float texU, float texV) {
+		public PositionTextureVertex(Vector3f posIn, float texU, float texV) {
 			this.position = posIn;
 			this.textureU = texU;
 			this.textureV = texV;
@@ -58,7 +58,7 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 	@Environment(EnvType.CLIENT)
 	static class TexturedQuad {
 		public final PositionTextureVertex[] vertexPositions;
-		public final Vec3f normal;
+		public final Vector3f normal;
 
 		public TexturedQuad(PositionTextureVertex[] positionsIn, float u1, float v1, float u2, float v2, float texWidth, float texHeight, Direction direction) {
 			this.vertexPositions = positionsIn;
@@ -109,17 +109,16 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 
 			for (int n = 0; n < quads.length; ++n) {
 				TexturedQuad quad = quads[n];
-				Vec3f vector3f = quad.normal.copy();
-				vector3f.transform(matrix3f);
-				float f = vector3f.getX();
-				float g = vector3f.getY();
-				float h = vector3f.getZ();
+				Vector3f vector3f = matrix3f.transform(new Vector3f(quad.normal));
+				float f = vector3f.x();
+				float g = vector3f.y();
+				float h = vector3f.z();
 
 				for (int i = 0; i < 4; ++i) {
 					PositionTextureVertex vertex = quad.vertexPositions[i];
-					Vector4f vector4f = new Vector4f(vertex.position.getX() / 16.0F, vertex.position.getY() / 16.0F, vertex.position.getZ() / 16.0F, 1.0F);
-					vector4f.transform(matrix4f);
-					buffer.vertex(vector4f.getX(), vector4f.getY(), vector4f.getZ(), red, green, blue, alpha, vertex.textureU, vertex.textureV, combinedOverlay, light[n], f, g, h);
+					Vector4f vector4f = new Vector4f(vertex.position.x() / 16.0F, vertex.position.y() / 16.0F, vertex.position.z() / 16.0F, 1.0F);
+					matrix4f.transform(vector4f);
+					buffer.vertex(vector4f.x(), vector4f.y(), vector4f.z(), red, green, blue, alpha, vertex.textureU, vertex.textureV, combinedOverlay, light[n], f, g, h);
 				}
 			}
 		}

@@ -1,5 +1,7 @@
 package com.zuxelus.energycontrol.gui;
 
+import net.minecraft.screen.ScreenTexts;
+
 import java.awt.Color;
 import java.util.ArrayList;
 
@@ -18,7 +20,6 @@ import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
@@ -64,28 +65,28 @@ public class GuiScreenColor extends GuiBase {
 		super.init();
 		registerPickerTexture();
 		fieldList.clear();
-		rText = new GuiTextNumeric(textRenderer, guiLeft + 10, guiTop + 18, 26, 12, LiteralText.EMPTY, 255);
+		rText = new GuiTextNumeric(textRenderer, guiLeft + 10, guiTop + 18, 26, 12, ScreenTexts.EMPTY, 255);
 		rText.setMaxLength(3);
 		rText.setText(Integer.toString((colorText & 0x00FF0000) >> 16));
 		fieldList.add(rText);
-		gText = new GuiTextNumeric(textRenderer, guiLeft + 46, guiTop + 18, 26, 12, LiteralText.EMPTY, 255);
+		gText = new GuiTextNumeric(textRenderer, guiLeft + 46, guiTop + 18, 26, 12, ScreenTexts.EMPTY, 255);
 		gText.setMaxLength(3);
 		gText.setText(Integer.toString((colorText & 0x0000FF00) >> 8));
 		fieldList.add(gText);
-		bText = new GuiTextNumeric(textRenderer, guiLeft + 82, guiTop + 18, 26, 12, LiteralText.EMPTY, 255);
+		bText = new GuiTextNumeric(textRenderer, guiLeft + 82, guiTop + 18, 26, 12, ScreenTexts.EMPTY, 255);
 		bText.setMaxLength(3);
 		bText.setText(Integer.toString(colorText & 0x000000FF));
 		fieldList.add(bText);
 		fieldList2.clear();
-		rText2 = new GuiTextNumeric(textRenderer, guiLeft + 10 + offset, guiTop + 18, 26, 12, LiteralText.EMPTY, 255);
+		rText2 = new GuiTextNumeric(textRenderer, guiLeft + 10 + offset, guiTop + 18, 26, 12, ScreenTexts.EMPTY, 255);
 		rText2.setMaxLength(3);
 		rText2.setText(Integer.toString((colorBack & 0x00FF0000) >> 16));
 		fieldList2.add(rText2);
-		gText2 = new GuiTextNumeric(textRenderer, guiLeft + 46 + offset, guiTop + 18, 26, 12, LiteralText.EMPTY, 255);
+		gText2 = new GuiTextNumeric(textRenderer, guiLeft + 46 + offset, guiTop + 18, 26, 12, ScreenTexts.EMPTY, 255);
 		gText2.setMaxLength(3);
 		gText2.setText(Integer.toString((colorBack & 0x0000FF00) >> 8));
 		fieldList2.add(gText2);
-		bText2 = new GuiTextNumeric(textRenderer, guiLeft + 82 + offset, guiTop + 18, 26, 12, LiteralText.EMPTY, 255);
+		bText2 = new GuiTextNumeric(textRenderer, guiLeft + 82 + offset, guiTop + 18, 26, 12, ScreenTexts.EMPTY, 255);
 		bText2.setMaxLength(3);
 		bText2.setText(Integer.toString(colorBack & 0x000000FF));
 		fieldList2.add(bText2);
@@ -103,7 +104,7 @@ public class GuiScreenColor extends GuiBase {
 		RenderSystem.setShaderTexture(0, PICKER);
 		drawTexture(matrixStack, guiLeft + 20, guiTop + 34, isDarkPicker ? 80 : 0, 0, 80, 80, 160, 80);
 		drawTexture(matrixStack, guiLeft + 20 + offset, guiTop + 34, isDarkPicker2 ? 80 : 0, 0, 80, 80, 160, 80);
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShader(GameRenderer::getPositionTexProgram);
 		RenderSystem.setShaderTexture(0, texture);
 		for (GuiTextNumeric text : fieldList)
 			text.render(matrixStack, mouseX, mouseY, partialTicks);
@@ -254,23 +255,23 @@ public class GuiScreenColor extends GuiBase {
 		}
 		if (keyCode == 258) {
 			if (fieldList.get(0).isFocused()) {
-				fieldList.get(0).setTextFieldFocused(false);
-				fieldList.get(1).setTextFieldFocused(true);
+				fieldList.get(0).setFocused(false);
+				fieldList.get(1).setFocused(true);
 			} else if (fieldList.get(1).isFocused()) {
-				fieldList.get(1).setTextFieldFocused(false);
-				fieldList.get(2).setTextFieldFocused(true);
+				fieldList.get(1).setFocused(false);
+				fieldList.get(2).setFocused(true);
 			} else if (fieldList.get(2).isFocused()) {
-				fieldList.get(2).setTextFieldFocused(false);
-				fieldList2.get(0).setTextFieldFocused(true);
+				fieldList.get(2).setFocused(false);
+				fieldList2.get(0).setFocused(true);
 			} else if (fieldList2.get(0).isFocused()) {
-				fieldList2.get(0).setTextFieldFocused(false);
-				fieldList2.get(1).setTextFieldFocused(true);
+				fieldList2.get(0).setFocused(false);
+				fieldList2.get(1).setFocused(true);
 			} else if (fieldList2.get(1).isFocused()) {
-				fieldList2.get(1).setTextFieldFocused(false);
-				fieldList2.get(2).setTextFieldFocused(true);
+				fieldList2.get(1).setFocused(false);
+				fieldList2.get(2).setFocused(true);
 			} else if (fieldList2.get(2).isFocused()) {
-				fieldList2.get(2).setTextFieldFocused(false);
-				fieldList.get(0).setTextFieldFocused(true);
+				fieldList2.get(2).setFocused(false);
+				fieldList.get(0).setFocused(true);
 			}
 			return true;
 		} else {

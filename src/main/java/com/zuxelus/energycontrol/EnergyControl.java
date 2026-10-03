@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,10 +18,11 @@ import com.zuxelus.energycontrol.tileentities.ScreenManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 
 public class EnergyControl implements ModInitializer {
@@ -37,8 +39,7 @@ public class EnergyControl implements ModInitializer {
 
 	public static Map<PlayerEntity, Boolean> altPressed = new HashMap<PlayerEntity, Boolean>();
 
-	public static final ItemGroup ITEM_GROUP = FabricItemGroupBuilder.build(
-			new Identifier(MODID, "general"), () -> new ItemStack(ModItems.kit_energy));
+	public static ItemGroup ITEM_GROUP;
 
 	@Override
 	public void onInitialize() {
@@ -46,6 +47,13 @@ public class EnergyControl implements ModInitializer {
 		new ConfigHandler();
 		new ModContainerTypes();
 		ModItems.init();
+		ITEM_GROUP = FabricItemGroup.builder(new Identifier(MODID, "general"))
+			.icon(() -> new ItemStack(ModItems.kit_energy))
+			.entries((context, entries) -> Registries.ITEM.getIds().stream()
+				.filter(id -> id.getNamespace().equals(MODID))
+				.sorted(Comparator.comparingInt(id -> Registries.ITEM.getRawId(Registries.ITEM.get(id))))
+				.forEach(id -> entries.add(Registries.ITEM.get(id))))
+			.build();
 		ChannelHandler.init();
 		CrossModLoader.init();
 	}

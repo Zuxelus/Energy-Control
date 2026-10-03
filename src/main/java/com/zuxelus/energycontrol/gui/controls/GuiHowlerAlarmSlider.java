@@ -1,5 +1,8 @@
 package com.zuxelus.energycontrol.gui.controls;
 
+import net.minecraft.text.Text;
+import net.minecraft.screen.ScreenTexts;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.config.ConfigHandler;
@@ -14,8 +17,6 @@ import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.PressableWidget;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
@@ -31,7 +32,7 @@ public class GuiHowlerAlarmSlider extends PressableWidget {
 
 	@SuppressWarnings("resource")
 	public GuiHowlerAlarmSlider(int x, int y, TileEntityHowlerAlarm alarm) {
-		super(x, y, 107, 16, LiteralText.EMPTY);
+		super(x, y, 107, 16, ScreenTexts.EMPTY);
 		this.alarm = alarm;
 		dragging = false;
 		if (alarm.getWorld().isClient)
@@ -40,7 +41,7 @@ public class GuiHowlerAlarmSlider extends PressableWidget {
 		if (alarm.getWorld().isClient && currentRange > maxValue)
 			currentRange = maxValue;
 		sliderValue = ((float) currentRange - minValue) / (maxValue - minValue);
-		setMessage(new TranslatableText("msg.ec.HowlerAlarmSoundRange", getNormalizedValue()));
+		setMessage(Text.translatable("msg.ec.HowlerAlarmSoundRange", getNormalizedValue()));
 	}
 
 	private int getNormalizedValue() {
@@ -49,7 +50,7 @@ public class GuiHowlerAlarmSlider extends PressableWidget {
 
 	@SuppressWarnings("resource")
 	private void setSliderPos(double targetX) {
-		sliderValue = (float) (targetX - (x + 4)) / (float) (width - 8);
+		sliderValue = (float) (targetX - (getX() + 4)) / (float) (width - 8);
 		
 		if (sliderValue < 0.0F)
 			sliderValue = 0.0F;
@@ -62,7 +63,7 @@ public class GuiHowlerAlarmSlider extends PressableWidget {
 			NetworkHelper.updateSeverTileEntity(alarm.getPos(), 2, newValue);
 			alarm.setRange(newValue);
 		}
-		setMessage(new TranslatableText("msg.ec.HowlerAlarmSoundRange", newValue));
+		setMessage(Text.translatable("msg.ec.HowlerAlarmSoundRange", newValue));
 	}
 
 	@Override
@@ -71,14 +72,14 @@ public class GuiHowlerAlarmSlider extends PressableWidget {
 			return;
 		MinecraftClient minecraft = MinecraftClient.getInstance();
 		TextRenderer fontRenderer = minecraft.textRenderer;
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShader(GameRenderer::getPositionTexProgram);
 		RenderSystem.setShaderTexture(0, TEXTURE);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		if (dragging)
 			setSliderPos(mouseX);
 
-		drawTexture(matrixStack, x + (int) (sliderValue * (width - 8)), y, 131, 0, 8, 16);
-		fontRenderer.draw(matrixStack, getMessage(), x, y - 12, 0x404040);
+		drawTexture(matrixStack, getX() + (int) (sliderValue * (width - 8)), getY(), 131, 0, 8, 16);
+		fontRenderer.draw(matrixStack, getMessage(), getX(), getY() - 12, 0x404040);
 	}
 
 	@Override
@@ -96,7 +97,7 @@ public class GuiHowlerAlarmSlider extends PressableWidget {
 	}
 
 	@Override
-	public void appendNarrations(NarrationMessageBuilder var1) {
+	public void appendClickableNarrations(NarrationMessageBuilder var1) {
 		// TODO Auto-generated method stub
 	}
 }

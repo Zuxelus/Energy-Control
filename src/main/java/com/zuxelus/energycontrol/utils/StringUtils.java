@@ -42,7 +42,7 @@ public class StringUtils {
 
 	@Environment(EnvType.CLIENT)
 	public static String getItemName(ItemStack stack) {
-		List<Text> list = stack.getTooltip(MinecraftClient.getInstance().player, TooltipContext.Default.NORMAL);
+		List<Text> list = stack.getTooltip(MinecraftClient.getInstance().player, TooltipContext.BASIC);
 		if (list.size() == 0)
 			return stack.getItem().getTranslationKey();
 		return list.get(0).getString();// .getFormattedText();

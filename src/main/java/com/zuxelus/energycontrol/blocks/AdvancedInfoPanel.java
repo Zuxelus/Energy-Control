@@ -1,6 +1,6 @@
 package com.zuxelus.energycontrol.blocks;
 
-import java.util.Random;
+import net.minecraft.util.math.random.Random;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.init.ModItems;

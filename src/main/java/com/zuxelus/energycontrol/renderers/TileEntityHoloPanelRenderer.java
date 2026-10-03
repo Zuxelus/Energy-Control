@@ -14,7 +14,7 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory.Context;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.math.RotationAxis;
 
 public class TileEntityHoloPanelRenderer implements BlockEntityRenderer<TileEntityHoloPanel> {
 	private final TextRenderer font;
@@ -34,23 +34,23 @@ public class TileEntityHoloPanelRenderer implements BlockEntityRenderer<TileEnti
 		case UP:
 			break;
 		case NORTH:
-			matrixStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90));
+			matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-90));
 			matrixStack.translate(0.0F, -1.5F, 0.0F);
 			break;
 		case SOUTH:
-			matrixStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90));
+			matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90));
 			matrixStack.translate(0.0F, -0.5F, -1.0F);
 			break;
 		case DOWN:
-			matrixStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(180));
+			matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180));
 			matrixStack.translate(0.0F, -1.0F, -1.0F);
 			break;
 		case WEST:
-			matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(90));
+			matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(90));
 			matrixStack.translate(0.0F, -1.5F, 0.0F);
 			break;
 		case EAST:
-			matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(-90));
+			matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(-90));
 			matrixStack.translate(-1.0F, -0.5F, 0.0F);
 			break;
 		}
@@ -106,28 +106,28 @@ public class TileEntityHoloPanelRenderer implements BlockEntityRenderer<TileEnti
 		}
 
 		matrixStack.translate(0.5F - dy / 2, 1.01F - dx / 2 , 0.5F - dz / 2);
-		matrixStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90));
+		matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-90));
 		switch(panel.getFacing())
 		{
 		case NORTH:
-			matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(180));
+			matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180));
 			break;
 		case SOUTH:
 			break;
 		case WEST:
-			matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(-90));
+			matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(-90));
 			break;
 		case EAST:
-			matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(90));
+			matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(90));
 			break;
 		}
 		float imageWidth = 0.475F + (displayWidth - 0.875F) / 2F;
 		float imageHeight = 0.5F + (power - 1) / 2F;
 		if (partialTicks == -1) {
 			IHasBars.drawTransparentRect(matrixStack, imageWidth, imageHeight, -imageWidth, -imageHeight, -0.0001F, 0x40AADDDD);
-			matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180));
+			matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
 			IHasBars.drawTransparentRect(matrixStack, imageWidth, imageHeight, -imageWidth, -imageHeight, -0.0001F, 0x40AADDDD);
-			matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180));
+			matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
 		} else if (joinedData != null) {
 			matrixStack.translate(0, 0, 0.0002F * (power + 1) / 2);
 			int colorHex = 0x000000;

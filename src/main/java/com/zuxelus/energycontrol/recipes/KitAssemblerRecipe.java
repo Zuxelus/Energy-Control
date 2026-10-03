@@ -9,6 +9,7 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
@@ -48,7 +49,7 @@ public class KitAssemblerRecipe implements Recipe<EmptyInventory>{
 			return false;
 		ItemStack result = te.getStack(TileEntityKitAssembler.SLOT_RESULT);
 		if (!result.isEmpty()) {
-			if (!result.isItemEqualIgnoreDamage(output))
+			if (!result.isItemEqual(output))
 				return false;
 			if (result.getCount() + output.getCount() > result.getMaxCount())
 				return false;
@@ -67,7 +68,7 @@ public class KitAssemblerRecipe implements Recipe<EmptyInventory>{
 	}
 
 	@Override
-	public ItemStack craft(EmptyInventory inv) {
+	public ItemStack craft(EmptyInventory inv, DynamicRegistryManager registryManager) {
 		return output;
 	}
 
@@ -77,7 +78,7 @@ public class KitAssemblerRecipe implements Recipe<EmptyInventory>{
 	}
 
 	@Override
-	public ItemStack getOutput() {
+	public ItemStack getOutput(DynamicRegistryManager registryManager) {
 		return ItemStack.EMPTY;
 	}
 

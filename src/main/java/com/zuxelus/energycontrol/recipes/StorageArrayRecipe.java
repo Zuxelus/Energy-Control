@@ -12,6 +12,8 @@ import net.minecraft.recipe.CraftingRecipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.ShapelessRecipe;
 import net.minecraft.util.Identifier;
+import net.minecraft.recipe.book.CraftingRecipeCategory;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -28,11 +30,11 @@ public class StorageArrayRecipe implements CraftingRecipe {
 
 	@Override
 	public boolean matches(CraftingInventory inv, World level) {
-		return !craft(inv).isEmpty();
+		return !craft(inv, level.getRegistryManager()).isEmpty();
 	}
 
 	@Override
-	public ItemStack craft(CraftingInventory inv) {
+	public ItemStack craft(CraftingInventory inv, DynamicRegistryManager registryManager) {
 		int inventoryLength = inv.size();
 		int cardCount = 0;
 		int arrayCount = 0;
@@ -118,12 +120,17 @@ public class StorageArrayRecipe implements CraftingRecipe {
 	}
 
 	@Override
+	public CraftingRecipeCategory getCategory() {
+		return CraftingRecipeCategory.MISC;
+	}
+
+	@Override
 	public boolean fits(int width, int height) {
 		return width * height >= 2;
 	}
 
 	@Override
-	public ItemStack getOutput() {
+	public ItemStack getOutput(DynamicRegistryManager registryManager) {
 		return ItemStack.EMPTY;
 	}
 

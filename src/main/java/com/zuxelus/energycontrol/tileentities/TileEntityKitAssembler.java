@@ -22,14 +22,13 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.Packet;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -322,7 +321,7 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 
 	@Override
 	public Text getDisplayName() {
-		return new TranslatableText(ModItems.kit_assembler.getTranslationKey());
+		return Text.translatable(ModItems.kit_assembler.getTranslationKey());
 	}
 
 	@Override

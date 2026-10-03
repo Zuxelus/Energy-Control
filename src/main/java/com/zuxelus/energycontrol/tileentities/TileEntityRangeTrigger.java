@@ -24,14 +24,13 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.Packet;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -266,7 +265,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements Exten
 
 	@Override
 	public Text getDisplayName() {
-		return new TranslatableText(ModItems.range_trigger.getTranslationKey());
+		return Text.translatable(ModItems.range_trigger.getTranslationKey());
 	}
 
 	@Override

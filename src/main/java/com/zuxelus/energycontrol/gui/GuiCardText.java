@@ -1,5 +1,7 @@
 package com.zuxelus.energycontrol.gui;
 
+import net.minecraft.text.Text;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
@@ -10,11 +12,10 @@ import com.zuxelus.zlib.gui.controls.GuiTextArea;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.screen.ScreenTexts;
+import net.minecraft.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.LiteralText;
 
 @Environment(EnvType.CLIENT)
 public class GuiCardText extends GuiBase {
@@ -39,8 +40,8 @@ public class GuiCardText extends GuiBase {
 	@Override
 	public void init() {
 		super.init();
-		addDrawableChild(new ButtonWidget(guiLeft + xSize - 60 - 8, guiTop + 120, 60, 20, ScreenTexts.DONE, (button) -> { actionPerformed(1); }));
-		addDrawableChild(new ButtonWidget(guiLeft + 8, guiTop + 120, 60, 20, new LiteralText("Style"), (button) -> { actionPerformed(2); }));
+		addDrawableChild(ButtonWidget.builder(ScreenTexts.DONE, (button) -> { actionPerformed(1); }).dimensions(guiLeft + xSize - 60 - 8, guiTop + 120, 60, 20).build());
+		addDrawableChild(ButtonWidget.builder(Text.literal("Style"), (button) -> { actionPerformed(2); }).dimensions(guiLeft + 8, guiTop + 120, 60, 20).build());
 		textArea = new GuiTextArea(textRenderer, guiLeft + 8, guiTop + 5, xSize - 16, ySize - 35, lineCount);
 		addSelectableChild(textArea);
 		setInitialFocus(textArea);

@@ -1,5 +1,7 @@
 package com.zuxelus.energycontrol.gui.controls;
 
+import net.minecraft.screen.ScreenTexts;
+
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
@@ -21,7 +23,6 @@ import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
@@ -46,7 +47,7 @@ public class GuiHowlerAlarmListBox extends PressableWidget {
 	private int dragDelta;
 
 	public GuiHowlerAlarmListBox(int left, int top, int width, int height, List<String> items, TileEntityHowlerAlarm alarm) {
-		super(left, top, width, height, LiteralText.EMPTY);
+		super(left, top, width, height, ScreenTexts.EMPTY);
 		this.items = items;
 		this.alarm = alarm;
 		fontColor = 0x404040;
@@ -88,7 +89,7 @@ public class GuiHowlerAlarmListBox extends PressableWidget {
 	@Override
 	public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (dragging) {
-			int pos = (mouseY - y - SCROLL_BUTTON_HEIGHT - dragDelta)
+			int pos = (mouseY - getY() - SCROLL_BUTTON_HEIGHT - dragDelta)
 					* (lineHeight * items.size() + BASIC_Y_OFFSET - height)
 					/ Math.max(height - 2 * SCROLL_BUTTON_HEIGHT - sliderHeight, 1);
 			scrollTo(pos);
@@ -116,14 +117,14 @@ public class GuiHowlerAlarmListBox extends PressableWidget {
 		int rowTop = BASIC_Y_OFFSET;
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
 		Window scaler = minecraft.getWindow();
-		GL11.glScissor((int) (x * scaler.getScaleFactor()), (int) (scaler.getHeight() - (y + height) * scaler.getScaleFactor()), (int) ((width - SCROLL_WIDTH) * scaler.getScaleFactor()), (int) (height * scaler.getScaleFactor()));
+		GL11.glScissor((int) (getX() * scaler.getScaleFactor()), (int) (scaler.getHeight() - (getY() + height) * scaler.getScaleFactor()), (int) ((width - SCROLL_WIDTH) * scaler.getScaleFactor()), (int) (height * scaler.getScaleFactor()));
 
 		for (String row : items) {
 			if(row.equals(currentItem)) {
-				fill(matrixStack, x, y + rowTop - scrollTop - 1, x + width - SCROLL_WIDTH, y + rowTop - scrollTop + lineHeight - 1, selectedColor);
-				fontRenderer.draw(matrixStack, row, x + BASIC_X_OFFSET, y + rowTop - scrollTop, selectedFontColor);
+				fill(matrixStack, getX(), getY() + rowTop - scrollTop - 1, getX() + width - SCROLL_WIDTH, getY() + rowTop - scrollTop + lineHeight - 1, selectedColor);
+				fontRenderer.draw(matrixStack, row, getX() + BASIC_X_OFFSET, getY() + rowTop - scrollTop, selectedFontColor);
 			} else
-				fontRenderer.draw(matrixStack, row, x + BASIC_X_OFFSET, y + rowTop - scrollTop, fontColor);
+				fontRenderer.draw(matrixStack, row, getX() + BASIC_X_OFFSET, getY() + rowTop - scrollTop, fontColor);
 			
 			rowTop += lineHeight;
 		}
@@ -131,9 +132,9 @@ public class GuiHowlerAlarmListBox extends PressableWidget {
 		GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
 		// Slider
-		int sliderX = x + width - SCROLL_WIDTH + 1;
-		sliderY = y + SCROLL_BUTTON_HEIGHT + ((height - 2 * SCROLL_BUTTON_HEIGHT - sliderHeight) * scrollTop) / (lineHeight * items.size() + BASIC_Y_OFFSET - height);
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		int sliderX = getX() + width - SCROLL_WIDTH + 1;
+		sliderY = getY() + SCROLL_BUTTON_HEIGHT + ((height - 2 * SCROLL_BUTTON_HEIGHT - sliderHeight) * scrollTop) / (lineHeight * items.size() + BASIC_Y_OFFSET - height);
+		RenderSystem.setShader(GameRenderer::getPositionTexProgram);
 		RenderSystem.setShaderTexture(0, TEXTURE);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		drawTexture(matrixStack, sliderX, sliderY, 131, 16, SCROLL_WIDTH - 1, 1);
@@ -141,10 +142,10 @@ public class GuiHowlerAlarmListBox extends PressableWidget {
 		Tessellator tesselator = Tessellator.getInstance();
 		BufferBuilder bufferbuilder = tesselator.getBuffer();
 		bufferbuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
-		bufferbuilder.vertex((sliderX), sliderY + sliderHeight - 1, getZOffset()).texture(131 / 256F, (18) / 256F).next();
-		bufferbuilder.vertex(sliderX + SCROLL_WIDTH - 1, sliderY + sliderHeight - 1, getZOffset()).texture((131 + SCROLL_WIDTH - 1) / 256F, (18) / 256F).next();
-		bufferbuilder.vertex(sliderX + SCROLL_WIDTH - 1, sliderY + 1, getZOffset()).texture((131 + SCROLL_WIDTH - 1) / 256F, (17) / 256F).next();
-		bufferbuilder.vertex((sliderX), sliderY + 1, getZOffset()).texture(131 / 256F, (17) / 256F).next();
+		bufferbuilder.vertex((sliderX), sliderY + sliderHeight - 1, 0).texture(131 / 256F, (18) / 256F).next();
+		bufferbuilder.vertex(sliderX + SCROLL_WIDTH - 1, sliderY + sliderHeight - 1, 0).texture((131 + SCROLL_WIDTH - 1) / 256F, (18) / 256F).next();
+		bufferbuilder.vertex(sliderX + SCROLL_WIDTH - 1, sliderY + 1, 0).texture((131 + SCROLL_WIDTH - 1) / 256F, (17) / 256F).next();
+		bufferbuilder.vertex((sliderX), sliderY + 1, 0).texture(131 / 256F, (17) / 256F).next();
 		tesselator.draw();
 
 		drawTexture(matrixStack, sliderX, sliderY + sliderHeight - 1, 131, 19, SCROLL_WIDTH - 1, 1);
@@ -154,7 +155,7 @@ public class GuiHowlerAlarmListBox extends PressableWidget {
 		if (lineHeight == 0)
 			return;
 
-		int itemIndex = ((int) targetY - BASIC_Y_OFFSET - y + scrollTop) / lineHeight;
+		int itemIndex = ((int) targetY - BASIC_Y_OFFSET - getY() + scrollTop) / lineHeight;
 		if (itemIndex >= items.size())
 			itemIndex = items.size() - 1;
 		
@@ -170,10 +171,10 @@ public class GuiHowlerAlarmListBox extends PressableWidget {
 
 	@Override
 	public void onClick(double mouseX, double mouseY) {
-		if (mouseX > x + width - SCROLL_WIDTH) {// scroll click
-			if (mouseY - y < SCROLL_BUTTON_HEIGHT)
+		if (mouseX > getX() + width - SCROLL_WIDTH) {// scroll click
+			if (mouseY - getY() < SCROLL_BUTTON_HEIGHT)
 				scrollUp();
-			else if (height + y - mouseY < SCROLL_BUTTON_HEIGHT)
+			else if (height + getY() - mouseY < SCROLL_BUTTON_HEIGHT)
 				scrollDown();
 			else if (mouseY >= sliderY && mouseY <= sliderY + sliderHeight) {
 				dragging = true;
@@ -189,7 +190,7 @@ public class GuiHowlerAlarmListBox extends PressableWidget {
 	}
 
 	@Override
-	public void appendNarrations(NarrationMessageBuilder var1) {
+	public void appendClickableNarrations(NarrationMessageBuilder var1) {
 		// TODO Auto-generated method stub
 	}
 }

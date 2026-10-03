@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.items.InventoryCardHolder;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -13,7 +12,7 @@ import net.minecraft.world.World;
 public class ItemCardHolder extends Item {
 
 	public ItemCardHolder() {
-		super(new Item.Settings().group(EnergyControl.ITEM_GROUP).maxCount(1));
+		super(new Item.Settings().maxCount(1));
 	}
 
 	@Override

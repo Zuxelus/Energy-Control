@@ -15,7 +15,7 @@ import net.minecraft.client.render.block.entity.BlockEntityRendererFactory.Conte
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.math.RotationAxis;
 
 public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEntityInfoPanel> {
 	private static int[][] sides = new int[][] { { 3, 2, 1, 0, 5, 4 }, { 2, 3, 1, 0, 4, 5 }, { 4, 5, 1, 0, 3, 2 },
@@ -64,23 +64,23 @@ public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 		case UP:
 			break;
 		case NORTH:
-			matrixStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90));
+			matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-90));
 			matrixStack.translate(0.0F, -1.0F, 0.0F);
 			break;
 		case SOUTH:
-			matrixStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90));
+			matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90));
 			matrixStack.translate(0.0F, 0.0F, -1.0F);
 			break;
 		case DOWN:
-			matrixStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(180));
+			matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180));
 			matrixStack.translate(0.0F, -1.0F, -1.0F);
 			break;
 		case WEST:
-			matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(90));
+			matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(90));
 			matrixStack.translate(0.0F, -1.0F, 0.0F);
 			break;
 		case EAST:
-			matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(-90));
+			matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(-90));
 			matrixStack.translate(-1.0F, 0.0F, 0.0F);
 			break;
 		}
@@ -160,30 +160,30 @@ public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 		}
 
 		matrixStack.translate(0.5F - dy / 2, 1.01F - dx / 2 , 0.5F - dz / 2);
-		matrixStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90));
+		matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-90));
 		switch(panel.getRotation())
 		{
 		case UP:
 			break;
 		case NORTH:
-			matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(180));
+			matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180));
 			break;
 		case SOUTH:
 			break;
 		case DOWN:
 			break;
 		case WEST:
-			matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(-90));
+			matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(-90));
 			break;
 		case EAST:
-			matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(90));
+			matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(90));
 			break;
 		}
 
 		if (panel.isTouchCard() || panel.hasBars()) {
-			matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180));
+			matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
 			panel.renderImage(displayWidth, displayHeight, matrixStack);
-			matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180));
+			matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
 		}
 		if (joinedData != null) {
 			matrixStack.translate(0, 0, 0.0002F);

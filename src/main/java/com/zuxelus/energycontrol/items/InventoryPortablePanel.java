@@ -13,7 +13,6 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 
 public class InventoryPortablePanel extends ItemInventory implements ExtendedScreenHandlerFactory {
 	public static final byte SLOT_CARD = 0;
@@ -48,7 +47,7 @@ public class InventoryPortablePanel extends ItemInventory implements ExtendedScr
 
 	@Override
 	public Text getDisplayName() {
-		return new TranslatableText(ModItems.portable_panel.getTranslationKey());
+		return Text.translatable(ModItems.portable_panel.getTranslationKey());
 	}
 
 	// the screen type is extended; the container needs no extra data

@@ -18,7 +18,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -45,14 +44,14 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 		else
 			drawMouseoverTooltip(matrixStack, mouseX, mouseY);
 		if (isPointWithinBounds(165, 16, 4, 52, mouseX, mouseY))
-			renderTooltip(matrixStack, new LiteralText(String.format("%d FE/%d FE", (int) container.te.getEnergy(), TileEntityKitAssembler.CAPACITY)), mouseX, mouseY);
+			renderTooltip(matrixStack, Text.literal(String.format("%d FE/%d FE", (int) container.te.getEnergy(), TileEntityKitAssembler.CAPACITY)), mouseX, mouseY);
 	}
 
 	private void renderInfoToolTip(MatrixStack matrixStack, Slot slot, int x, int y) {
 		ItemStack stack = slot.getStack();
 		if (stack.isEmpty() || !(stack.getItem() instanceof ItemCardMain))
 			return;
-		List<Text> stackList = stack.getTooltip(client.player, client.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.NORMAL);
+		List<Text> stackList = stack.getTooltip(client.player, client.options.advancedItemTooltips ? TooltipContext.ADVANCED : TooltipContext.BASIC);
 		List<Text> list = Lists.<Text>newArrayList();
 		if (stackList.size() > 0)
 			list.add(stackList.get(0));
@@ -60,7 +59,7 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 		if (data != null)
 			for (PanelString panelString : data) {
 				if (panelString.textLeft != null)
-					list.add(new LiteralText(Formatting.GRAY + panelString.textLeft));
+					list.add(Text.literal(Formatting.GRAY + panelString.textLeft));
 			}
 		renderTooltip(matrixStack, list, stack.getTooltipData(), x, y);
 	}

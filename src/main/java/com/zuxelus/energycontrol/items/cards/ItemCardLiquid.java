@@ -28,8 +28,9 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.registry.Registry;
+import org.joml.Matrix4f;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.world.World;
 
 public class ItemCardLiquid extends ItemCardMain implements IHasBars {
@@ -112,7 +113,7 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		long capacity = reader.getLong("capacity");
 		if (fluidId.isEmpty() || capacity <= 0)
 			return;
-		FluidVariant fluid = FluidVariant.of(Registry.FLUID.get(new Identifier(fluidId)));
+		FluidVariant fluid = FluidVariant.of(Registries.FLUID.get(new Identifier(fluidId)));
 		if (fluid.isBlank())
 			return;
 		Sprite sprite = FluidVariantRendering.getSprite(fluid);
@@ -131,7 +132,7 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		float f3 = (color & 255) / 255.0F;
 
 		matrixStack.scale(displayWidth / 0.875f, displayHeight / 0.875f, 1);
-		RenderSystem.setShader(GameRenderer::getPositionTexColorShader); // the vertices carry the fluid tint
+		RenderSystem.setShader(GameRenderer::getPositionTexColorProgram); // the vertices carry the fluid tint
 		RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
 		RenderSystem.enableDepthTest();
 		RenderSystem.disableBlend();

@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.items.kits;
 
-import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.IItemKit;
 
 import net.minecraft.entity.ItemEntity;
@@ -18,7 +17,7 @@ import net.minecraft.world.World;
 public abstract class ItemKitMain extends Item implements IItemKit {
 
 	public ItemKitMain() {
-		super(new Item.Settings().group(EnergyControl.ITEM_GROUP).maxCount(16));
+		super(new Item.Settings().maxCount(16));
 	}
 
 	public ActionResult onItemUseFirst(World world, PlayerEntity player, Hand hand) {

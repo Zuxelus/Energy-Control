@@ -1,6 +1,6 @@
 package com.zuxelus.energycontrol.blocks;
 
-import java.util.Random;
+import net.minecraft.util.math.random.Random;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.init.ModItems;
@@ -66,7 +66,7 @@ public class InfoPanel extends FacingBlockActive {
 			return;
 
 		if (flag)
-			world.createAndScheduleBlockTick(pos, this, 4);
+			world.scheduleBlockTick(pos, this, 4);
 		else {
 			world.setBlockState(pos, state.cycle(ACTIVE), 2);
 			updateExtenders(state, world, pos);

@@ -9,7 +9,7 @@ import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Matrix4f;
+import org.joml.Matrix4f;
 
 /**
  * Used to draw (progress) bars on Info Panels
@@ -22,11 +22,10 @@ public interface IHasBars {
 
 	// copy from GuiComponent.fillGradient()
 	static void drawTransparentRect(MatrixStack matrixStack, float left, float top, float right, float bottom, float zLevel, int color) {
-		RenderSystem.disableTexture();
 		RenderSystem.enableBlend();
 		RenderSystem.enableDepthTest();
 		RenderSystem.defaultBlendFunc();
-		RenderSystem.setShader(GameRenderer::getPositionColorShader);
+		RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 		Tessellator tesselator = Tessellator.getInstance();
 		BufferBuilder bufferbuilder = tesselator.getBuffer();
 		bufferbuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
@@ -34,7 +33,6 @@ public interface IHasBars {
 		tesselator.draw();
 		RenderSystem.disableBlend();
 		RenderSystem.disableDepthTest();
-		RenderSystem.enableTexture();
 	}
 
 	static void drawPositionColor(Matrix4f matrix, BufferBuilder builder, float left, float top, float right, float bottom, float zLevel, int color) {

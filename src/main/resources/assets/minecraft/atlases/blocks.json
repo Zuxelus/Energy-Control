@@ -1,0 +1,10 @@
+{
+	"sources": [
+		{ "type": "single", "resource": "energycontrol:slots/slot_card" },
+		{ "type": "single", "resource": "energycontrol:slots/slot_color" },
+		{ "type": "single", "resource": "energycontrol:slots/slot_range" },
+		{ "type": "single", "resource": "energycontrol:slots/slot_touch" },
+		{ "type": "single", "resource": "energycontrol:slots/slot_power" },
+		{ "type": "single", "resource": "zlib:slots/slot_dischargeable" }
+	]
+}

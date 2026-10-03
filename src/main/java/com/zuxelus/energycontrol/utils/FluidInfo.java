@@ -6,7 +6,8 @@ import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 
 public class FluidInfo {
 	String name; // display name, translated where the info is created
@@ -52,7 +53,7 @@ public class FluidInfo {
 			if (amount > 0 && !variant.isBlank()) {
 				// works on a dedicated server too: Language there is the server's built-in en_us
 				name = FluidVariantAttributes.getName(variant).getString();
-				fluid = Registry.FLUID.getId(variant.getFluid()).toString();
+				fluid = Registries.FLUID.getId(variant.getFluid()).toString();
 			}
 		}
 		this.capacity = stack.getCapacity() / 81;

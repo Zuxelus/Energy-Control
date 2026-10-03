@@ -10,6 +10,7 @@ import com.zuxelus.zlib.containers.ContainerBase;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -30,6 +31,11 @@ public class ContainerTimer extends ScreenHandler {
 		lastTime = 0;
 		if (inventory.player instanceof ServerPlayerEntity)
 			containerListeners.add((ServerPlayerEntity) inventory.player);
+	}
+
+	@Override
+	public ItemStack quickMove(PlayerEntity player, int slot) {
+		return ItemStack.EMPTY;
 	}
 
 	@Override

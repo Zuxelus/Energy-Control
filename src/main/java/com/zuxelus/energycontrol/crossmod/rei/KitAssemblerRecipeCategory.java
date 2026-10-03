@@ -16,15 +16,13 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 
 @Environment(EnvType.CLIENT)
 public class KitAssemblerRecipeCategory implements DisplayCategory<KitAssemblerDisplay> {
 	public static final CategoryIdentifier<KitAssemblerDisplay> id = CategoryIdentifier.of(EnergyControl.MODID,
 			"kit_assembler");
-	private static final Text title = new TranslatableText(ModItems.kit_assembler.getTranslationKey());
+	private static final Text title = Text.translatable(ModItems.kit_assembler.getTranslationKey());
 	private static final Renderer icon = EntryStacks.of(ModItems.kit_assembler);
 
 	@Override
@@ -49,7 +47,7 @@ public class KitAssemblerRecipeCategory implements DisplayCategory<KitAssemblerD
 		widgets.add(Widgets.createRecipeBase(bounds));
 		widgets.add(Widgets.createResultSlotBackground(new Point(startPoint.x + 61, startPoint.y + 19)));
 		widgets.add(Widgets.createArrow(new Point(startPoint.x + 24, startPoint.y + 18)).animationDurationTicks(display.getTime()));
-		widgets.add(Widgets.createLabel(new Point(bounds.x + bounds.width - 5, bounds.y + 5), new LiteralText(String.format("%d ticks", display.getTime()))).noShadow().rightAligned().color(-12566464, -4473925));
+		widgets.add(Widgets.createLabel(new Point(bounds.x + bounds.width - 5, bounds.y + 5), Text.literal(String.format("%d ticks", display.getTime()))).noShadow().rightAligned().color(-12566464, -4473925));
 		widgets.add(Widgets.createSlot(new Point(startPoint.x + 61, startPoint.y + 19))
 				.entries(display.getOutputEntries().get(0)).disableBackground().markOutput());
 		widgets.add(Widgets.createSlot(new Point(startPoint.x + 1, startPoint.y))

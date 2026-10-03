@@ -1,5 +1,7 @@
 package com.zuxelus.zlib.gui.controls;
 
+import net.minecraft.screen.ScreenTexts;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.fabricmc.api.EnvType;
@@ -9,7 +11,6 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -24,11 +25,11 @@ public class GuiButtonGeneral extends ButtonWidget {
 	private boolean hasGradient;
 
 	public GuiButtonGeneral(int left, int top, int width, int height, Identifier texture, int textureLeft, int textureTop, ButtonWidget.PressAction onPress) {
-		this(left, top, width, height, LiteralText.EMPTY, texture, textureLeft, textureTop, 0, "", onPress);
+		this(left, top, width, height, ScreenTexts.EMPTY, texture, textureLeft, textureTop, 0, "", onPress);
 	}
 
 	public GuiButtonGeneral(int left, int top, int width, int height, Identifier texture, int textureLeft, int textureTop, int textureTopOff, ButtonWidget.PressAction onPress) {
-		this(left, top, width, height, LiteralText.EMPTY, texture, textureLeft, textureTop, textureTopOff, "", onPress);
+		this(left, top, width, height, ScreenTexts.EMPTY, texture, textureLeft, textureTop, textureTopOff, "", onPress);
 	}
 
 	public GuiButtonGeneral(int left, int top, int width, int height, Text text, ButtonWidget.PressAction onPress) {
@@ -36,7 +37,7 @@ public class GuiButtonGeneral extends ButtonWidget {
 	}
 
 	public GuiButtonGeneral(int left, int top, int width, int height, Text text, Identifier texture, int textureLeft, int textureTop, int textureTopOff, String tooltip, ButtonWidget.PressAction onPress) {
-		super(left, top, width, height, text, onPress);
+		super(left, top, width, height, text, onPress, DEFAULT_NARRATION_SUPPLIER);
 		this.texture = texture;
 		this.textureLeft = textureLeft;
 		this.textureTop = textureTop;
@@ -53,7 +54,7 @@ public class GuiButtonGeneral extends ButtonWidget {
 		MinecraftClient minecraft = MinecraftClient.getInstance();
 		TextRenderer fontRenderer = minecraft.textRenderer;
 		if (texture != null) {
-			RenderSystem.setShader(GameRenderer::getPositionTexShader);
+			RenderSystem.setShader(GameRenderer::getPositionTexProgram);
 			RenderSystem.setShaderTexture(0, texture);
 		}
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -62,13 +63,13 @@ public class GuiButtonGeneral extends ButtonWidget {
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);*/
 		if (hovered && hasGradient)
-			fillGradient(matrixStack, x, y, x + width, y + height, 0x80FFFFFF, 0x80FFFFFF);
+			fillGradient(matrixStack, getX(), getY(), getX() + width, getY() + height, 0x80FFFFFF, 0x80FFFFFF);
 		if (texture != null)
-			drawTexture(matrixStack, x, y, textureLeft / scale, hovered ? (textureTop + textureTopOff) / scale : textureTop / scale, width, height, 256 / scale, 256 / scale);
+			drawTexture(matrixStack, getX(), getY(), textureLeft / scale, hovered ? (textureTop + textureTopOff) / scale : textureTop / scale, width, height, 256 / scale, 256 / scale);
 		//mouseDragged(mc, mouseX, mouseY);
 		String displayString = getMessage().getString();
 		if (!displayString.equals(""))
-			fontRenderer.draw(matrixStack, displayString, x + (width - fontRenderer.getWidth(displayString)) / 2, y - 3 + height / 2, 0x404040);
+			fontRenderer.draw(matrixStack, displayString, getX() + (width - fontRenderer.getWidth(displayString)) / 2, getY() - 3 + height / 2, 0x404040);
 	}
 
 	public GuiButtonGeneral setGradient() {
@@ -86,7 +87,7 @@ public class GuiButtonGeneral extends ButtonWidget {
 	}
 
 	public String getActiveTooltip(int mouseX, int mouseY) {
-		if (mouseX < x || mouseX >= x + width || mouseY < y || mouseY >= y + height)
+		if (mouseX < getX() || mouseX >= getX() + width || mouseY < getY() || mouseY >= getY() + height)
 			return null;
 		return tooltip;
 	}

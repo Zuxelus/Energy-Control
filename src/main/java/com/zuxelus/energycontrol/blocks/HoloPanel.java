@@ -1,6 +1,6 @@
 package com.zuxelus.energycontrol.blocks;
 
-import java.util.Random;
+import net.minecraft.util.math.random.Random;
 
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
@@ -56,7 +56,7 @@ public class HoloPanel extends FacingHorizontalActive {
 			return;
 
 		if (flag)
-			world.createAndScheduleBlockTick(pos, this, 4);
+			world.scheduleBlockTick(pos, this, 4);
 		else
 			world.setBlockState(pos, state.cycle(ACTIVE), 2);
 	}

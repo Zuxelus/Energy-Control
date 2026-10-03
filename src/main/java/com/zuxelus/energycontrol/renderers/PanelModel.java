@@ -3,12 +3,10 @@ package com.zuxelus.energycontrol.renderers;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import net.minecraft.util.math.random.Random;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import com.mojang.datafixers.util.Pair;
 import com.zuxelus.energycontrol.tileentities.PanelRenderData;
 import com.zuxelus.zlib.blocks.FacingBlock;
 import com.zuxelus.zlib.blocks.FacingBlockActive;
@@ -23,7 +21,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.ModelBakeSettings;
-import net.minecraft.client.render.model.ModelLoader;
+import net.minecraft.client.render.model.Baker;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.json.ModelTransformation;
@@ -59,12 +57,10 @@ public class PanelModel implements UnbakedModel {
 	}
 
 	@Override
-	public Collection<SpriteIdentifier> getTextureDependencies(Function<Identifier, UnbakedModel> unbakedModelGetter, Set<Pair<String, String>> unresolvedTextureReferences) {
-		return List.of(body, screen, particle);
-	}
+	public void setParents(Function<Identifier, UnbakedModel> modelLoader) { }
 
 	@Override
-	public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
+	public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
 		return new Baked(textureGetter.apply(body), textureGetter.apply(screen), textureGetter.apply(particle), defaultColor);
 	}
 

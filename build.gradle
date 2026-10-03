@@ -48,8 +48,8 @@ dependencies {
 	modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
 		exclude(group: "net.fabricmc", module: "fabric-loader")
 	}
-	modImplementation "curse.maven:reborncore-237903:4145508"
-	modImplementation "curse.maven:techreborn-233564:4145507"
+	modImplementation "curse.maven:reborncore-237903:4443864"
+	modImplementation "curse.maven:techreborn-233564:4443863"
 	include(modApi("teamreborn:energy:${project.energy_version}")) {
 		transitive = false
 	}

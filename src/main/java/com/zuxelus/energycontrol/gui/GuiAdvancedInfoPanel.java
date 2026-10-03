@@ -1,5 +1,7 @@
 package com.zuxelus.energycontrol.gui;
 
+import net.minecraft.screen.ScreenTexts;
+
 import java.util.List;
 
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -23,7 +25,6 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -44,13 +45,13 @@ public class GuiAdvancedInfoPanel extends GuiPanelBase<ContainerAdvancedInfoPane
 		addDrawableChild(new GuiButtonGeneral(x + 83 + 17 * 1, y + 42, 16, 16, TEXTURE, 192, 15, (button) -> { actionPerformed(button, ID_SLOPE); }).setGradient());
 		addDrawableChild(new GuiButtonGeneral(x + 83 + 17 * 2, y + 42, 16, 16, TEXTURE, 192, 28, (button) -> { actionPerformed(button, ID_COLORS); }).setGradient().setScale(2));
 		addDrawableChild(new GuiButtonGeneral(x + 83 + 17 * 3, y + 42, 16, 16, TEXTURE, 192 - 16, getIconPowerTopOffset(((TileEntityAdvancedInfoPanel) panel).getPowerMode()), (button) -> { actionPerformed(button, ID_POWER); }).setGradient());
-		addDrawableChild(new GuiButtonGeneral(x + 83 + 17 * 4, y + 42 + 17, 16, 16, new LiteralText(Integer.toString(panel.getTickRate())), (button) -> { actionPerformed(button, ID_TICKRATE); }).setGradient());
+		addDrawableChild(new GuiButtonGeneral(x + 83 + 17 * 4, y + 42 + 17, 16, 16, Text.literal(Integer.toString(panel.getTickRate())), (button) -> { actionPerformed(button, ID_TICKRATE); }).setGradient());
 	}
 
 	@Override
 	protected void initControls() {
 		ItemStack stack = panel.getCards().get(activeTab);
-		if (ItemStack.areItemsEqualIgnoreDamage(stack, oldStack))
+		if (ItemStack.areItemsEqual(stack, oldStack))
 			return;
 		if (!oldStack.isEmpty() && stack.isEmpty())
 			updateTitle();
@@ -60,7 +61,7 @@ public class GuiAdvancedInfoPanel extends GuiPanelBase<ContainerAdvancedInfoPane
 		if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain) {
 			int slot = panel.getCardSlot(stack);
 			if (stack.getItem() instanceof ItemCardText)
-				addDrawableChild(new GuiButtonGeneral(x + 83 + 17 * 4, y + 42, 16, 16, new LiteralText("txt"), (button) -> { actionPerformed(button, ID_TEXT); }).setGradient());
+				addDrawableChild(new GuiButtonGeneral(x + 83 + 17 * 4, y + 42, 16, 16, Text.literal("txt"), (button) -> { actionPerformed(button, ID_TEXT); }).setGradient());
 			List<PanelSetting> settingsList = ((ItemCardMain) stack.getItem()).getSettingsList();
 
 			int hy = textRenderer.fontHeight + 1;
@@ -71,8 +72,8 @@ public class GuiAdvancedInfoPanel extends GuiPanelBase<ContainerAdvancedInfoPane
 					yy++;
 				}
 			if (!modified) {
-				textboxTitle = new TextFieldWidget(textRenderer, x + 7, y + 16, 162, 18, null, LiteralText.EMPTY);
-				textboxTitle.changeFocus(true);
+				textboxTitle = new TextFieldWidget(textRenderer, x + 7, y + 16, 162, 18, null, ScreenTexts.EMPTY);
+				textboxTitle.setFocused(true);
 				textboxTitle.setText(new ItemCardReader(stack).getTitle());
 				addSelectableChild(textboxTitle);
 				setInitialFocus(textboxTitle);
@@ -99,7 +100,7 @@ public class GuiAdvancedInfoPanel extends GuiPanelBase<ContainerAdvancedInfoPane
 
 	@Override
 	protected void drawBackground(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShader(GameRenderer::getPositionTexProgram);
 		RenderSystem.setShaderTexture(0, TEXTURE);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		drawTexture(matrixStack, x, y, 0, 0, backgroundWidth, backgroundHeight);

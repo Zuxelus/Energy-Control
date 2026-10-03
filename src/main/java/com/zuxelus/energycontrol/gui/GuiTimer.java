@@ -13,7 +13,6 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -38,18 +37,18 @@ public class GuiTimer extends GuiContainerBase<ContainerTimer> {
 		super.init();
 		lastIsWorking = timer.getIsWorking();
 
-		addButton(new CompactButton(0, x + 14, y + 50, 34, 12, new LiteralText("+1"), (button) -> { actionPerformed(button); }));
-		addButton(new CompactButton(1, x + 14, y + 64, 34, 12, new LiteralText("+10"), (button) -> { actionPerformed(button); }));
-		addButton(new CompactButton(2, x + 50, y + 50, 34, 12, new LiteralText("+100"), (button) -> { actionPerformed(button); }));
-		addButton(new CompactButton(3, x + 50, y + 64, 34, 12, new LiteralText("+1000"), (button) -> { actionPerformed(button); }));
-		addButton(new CompactButton(4, x + 14, y + 78, 70, 12, new LiteralText("+10000"), (button) -> { actionPerformed(button); }));
+		addButton(new CompactButton(0, x + 14, y + 50, 34, 12, Text.literal("+1"), (button) -> { actionPerformed(button); }));
+		addButton(new CompactButton(1, x + 14, y + 64, 34, 12, Text.literal("+10"), (button) -> { actionPerformed(button); }));
+		addButton(new CompactButton(2, x + 50, y + 50, 34, 12, Text.literal("+100"), (button) -> { actionPerformed(button); }));
+		addButton(new CompactButton(3, x + 50, y + 64, 34, 12, Text.literal("+1000"), (button) -> { actionPerformed(button); }));
+		addButton(new CompactButton(4, x + 14, y + 78, 70, 12, Text.literal("+10000"), (button) -> { actionPerformed(button); }));
 
-		addButton(new CompactButton(5, x + 14, y + 36, 34, 12, new LiteralText("Reset"), (button) -> { actionPerformed(button); }));
-		addButton(new CompactButton(6, x + 50, y + 36, 34, 12, new LiteralText("Ticks"), (button) -> { actionPerformed(button); }));
+		addButton(new CompactButton(5, x + 14, y + 36, 34, 12, Text.literal("Reset"), (button) -> { actionPerformed(button); }));
+		addButton(new CompactButton(6, x + 50, y + 36, 34, 12, Text.literal("Ticks"), (button) -> { actionPerformed(button); }));
 		addButton(new CompactButton(7, x + 14, y + 92, 70, 12,
-				new LiteralText(timer.getInvertRedstone() ? "No Redstone" : "Redstone"), (button) -> { actionPerformed(button); }));
+				Text.literal(timer.getInvertRedstone() ? "No Redstone" : "Redstone"), (button) -> { actionPerformed(button); }));
 		addButton(new CompactButton(8, x + 14, y + 106, 70, 12,
-				new LiteralText(lastIsWorking ? "Stop" : "Start"), (button) -> { actionPerformed(button); }));
+				Text.literal(lastIsWorking ? "Stop" : "Start"), (button) -> { actionPerformed(button); }));
 
 		updateCaptions(timer.getIsTicks());
 
@@ -62,12 +61,12 @@ public class GuiTimer extends GuiContainerBase<ContainerTimer> {
 	}
 
 	private void updateCaptions(boolean isTicks) {
-		buttons[0].setMessage(new LiteralText(isTicks ? "+1" : "+1s"));
-		buttons[1].setMessage(new LiteralText(isTicks ? "+10" : "+30s"));
-		buttons[2].setMessage(new LiteralText(isTicks ? "+100" : "+1m"));
-		buttons[3].setMessage(new LiteralText(isTicks ? "+1000" : "+30m"));
-		buttons[4].setMessage(new LiteralText(isTicks ? "+10000" : "+1h"));
-		buttons[6].setMessage(new LiteralText(isTicks ? "Ticks" : "Time"));
+		buttons[0].setMessage(Text.literal(isTicks ? "+1" : "+1s"));
+		buttons[1].setMessage(Text.literal(isTicks ? "+10" : "+30s"));
+		buttons[2].setMessage(Text.literal(isTicks ? "+100" : "+1m"));
+		buttons[3].setMessage(Text.literal(isTicks ? "+1000" : "+30m"));
+		buttons[4].setMessage(Text.literal(isTicks ? "+10000" : "+1h"));
+		buttons[6].setMessage(Text.literal(isTicks ? "Ticks" : "Time"));
 	}
 
 	@Override
@@ -88,8 +87,8 @@ public class GuiTimer extends GuiContainerBase<ContainerTimer> {
 		boolean isWorking = timer.getIsWorking();
 		if (isWorking != lastIsWorking) {
 			textboxTimer.setEditable(!isWorking);
-			textboxTimer.changeFocus(!isWorking);
-			buttons[8].setMessage(new LiteralText(isWorking ? "Stop" : "Start"));
+			textboxTimer.setFocused(!isWorking);
+			buttons[8].setMessage(Text.literal(isWorking ? "Stop" : "Start"));
 			lastIsWorking = isWorking;
 		}
 		if (isWorking)
@@ -165,16 +164,16 @@ public class GuiTimer extends GuiContainerBase<ContainerTimer> {
 			boolean invertRedstone = timer.getInvertRedstone();
 			NetworkHelper.updateSeverTileEntity(timer.getPos(), 2, invertRedstone ? 0 : 1);
 			timer.setInvertRedstone(!invertRedstone);
-			buttons[7].setMessage(new LiteralText(!invertRedstone ? "No Redstone" : "Redstone"));
+			buttons[7].setMessage(Text.literal(!invertRedstone ? "No Redstone" : "Redstone"));
 			break;
 		case 8:
 			updateTime(0);
 			boolean isWorking = timer.getIsWorking();
 			NetworkHelper.updateSeverTileEntity(timer.getPos(), 3, isWorking ? 0 : 1);
 			timer.setIsWorking(!isWorking);
-			buttons[8].setMessage(new LiteralText(!isWorking ? "Stop" : "Start"));
+			buttons[8].setMessage(Text.literal(!isWorking ? "Stop" : "Start"));
 			textboxTimer.setEditable(isWorking);
-			textboxTimer.changeFocus(isWorking);
+			textboxTimer.setFocused(isWorking);
 			break;
 		}
 	}

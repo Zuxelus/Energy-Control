@@ -1,5 +1,7 @@
 package com.zuxelus.zlib.gui.controls;
 
+import net.minecraft.screen.ScreenTexts;
+
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -10,11 +12,11 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.MathHelper;
 
 @Environment(EnvType.CLIENT)
@@ -29,7 +31,7 @@ public class GuiTextArea extends ClickableWidget {
 	private final TextRenderer fontRenderer;
 
 	public GuiTextArea(TextRenderer fontRenderer, int xPos, int yPos, int width, int height, int lineCount) {
-		super(xPos, yPos, width, height, LiteralText.EMPTY);
+		super(xPos, yPos, width, height, ScreenTexts.EMPTY);
 		this.fontRenderer = fontRenderer;
 		this.lineCount = lineCount;
 		text = new String[lineCount];
@@ -43,12 +45,12 @@ public class GuiTextArea extends ClickableWidget {
 
 	@Override
 	public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-		fill(matrixStack, x - 1, y - 1, x + width + 1, y + height + 1, 0xFFA0A0A0);
-		fill(matrixStack, x, y, x + width, y + height, 0xFF000000);
+		fill(matrixStack, getX() - 1, getY() - 1, getX() + width + 1, getY() + height + 1, 0xFFA0A0A0);
+		fill(matrixStack, getX(), getY(), getX() + width, getY() + height, 0xFF000000);
 		int textColor = 0xE0E0E0;
 
-		int textLeft = x + 4;
-		int textTop = y + (height - lineCount * (fontRenderer.fontHeight + 1)) / 2;
+		int textLeft = getX() + 4;
+		int textTop = getY() + (height - lineCount * (fontRenderer.fontHeight + 1)) / 2;
 
 		for (int i = 0; i < lineCount; i++)
 			fontRenderer.drawWithShadow(matrixStack, text[i], textLeft, textTop + (fontRenderer.fontHeight + 1) * i, textColor);
@@ -76,7 +78,7 @@ public class GuiTextArea extends ClickableWidget {
 		Tessellator tesselator = Tessellator.getInstance();
 		BufferBuilder bufferbuilder = tesselator.getBuffer();
 		RenderSystem.setShaderColor(0.0F, 0.0F, 255.0F, 255.0F);
-		RenderSystem.disableTexture();
+		RenderSystem.setShader(GameRenderer::getPositionProgram);
 		RenderSystem.enableColorLogicOp();
 		RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
 		bufferbuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
@@ -86,7 +88,6 @@ public class GuiTextArea extends ClickableWidget {
 		bufferbuilder.vertex(left, top, 0.0D).next();
 		tesselator.draw();
 		RenderSystem.disableColorLogicOp();
-		RenderSystem.enableTexture();
 	}
 
 	public void updateCursorCounter() {
@@ -160,10 +161,10 @@ public class GuiTextArea extends ClickableWidget {
 
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
-		boolean flag = mouseX >= x && mouseX < (x + width) && mouseY >= y && mouseY < (y + height);
+		boolean flag = mouseX >= getX() && mouseX < (getX() + width) && mouseY >= getY() && mouseY < (getY() + height);
 		if (isFocused() && flag && mouseButton == 0) {
-			int xi = MathHelper.floor(mouseX) - x;
-			int yi = MathHelper.floor(mouseY) - y;
+			int xi = MathHelper.floor(mouseX) - getX();
+			int yi = MathHelper.floor(mouseY) - getY();
 			setCursorPosition(fontRenderer.trimToWidth(text[(yi - 4) / 10], xi).length(), (yi - 4) / 10);
 			return true;
 		}
@@ -220,7 +221,7 @@ public class GuiTextArea extends ClickableWidget {
 	}
 
 	@Override
-	public void appendNarrations(NarrationMessageBuilder var1) {
+	public void appendClickableNarrations(NarrationMessageBuilder var1) {
 		// TODO Auto-generated method stub
 	}
 }

@@ -39,7 +39,7 @@ public class GuiCardHolder extends HandledScreen<ContainerCardHolder> {
 	@Override
 	// the last two parameters are the mouse position; x and y below are the screen position fields
 	protected void drawBackground(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShader(GameRenderer::getPositionTexProgram);
 		RenderSystem.setShaderTexture(0, TEXTURE);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		drawTexture(matrixStack, x, y, 0, 0, backgroundWidth, inventoryRows * 18 + 17);

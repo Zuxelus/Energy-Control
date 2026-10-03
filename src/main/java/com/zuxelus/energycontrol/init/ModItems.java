@@ -14,7 +14,8 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 
 public class ModItems {
 	public static final FabricBlockSettings settings = FabricBlockSettings.of(Material.METAL).strength(3.0F);
@@ -64,15 +65,15 @@ public class ModItems {
 	public static Item card_immersive_engineering;
 	public static Item card_mekanism;
 	public static Item card_thermal_expansion;
-	public static final Item upgrade_range = new Item(new Item.Settings().group(EnergyControl.ITEM_GROUP));
-	public static final Item upgrade_color = new Item(new Item.Settings().group(EnergyControl.ITEM_GROUP));
-	public static final Item upgrade_touch = new Item(new Item.Settings().group(EnergyControl.ITEM_GROUP));
+	public static final Item upgrade_range = new Item(new Item.Settings());
+	public static final Item upgrade_color = new Item(new Item.Settings());
+	public static final Item upgrade_touch = new Item(new Item.Settings());
 	public static final Item portable_panel = new ItemPortablePanel();
-	public static final Item machine_casing = new Item(new Item.Settings().group(EnergyControl.ITEM_GROUP));
-	public static final Item basic_circuit = new Item(new Item.Settings().group(EnergyControl.ITEM_GROUP));
-	public static final Item advanced_circuit = new Item(new Item.Settings().group(EnergyControl.ITEM_GROUP));
-	public static final Item radio_transmitter = new Item(new Item.Settings().group(EnergyControl.ITEM_GROUP));
-	public static final Item strong_string = new Item(new Item.Settings().group(EnergyControl.ITEM_GROUP));
+	public static final Item machine_casing = new Item(new Item.Settings());
+	public static final Item basic_circuit = new Item(new Item.Settings());
+	public static final Item advanced_circuit = new Item(new Item.Settings());
+	public static final Item radio_transmitter = new Item(new Item.Settings());
+	public static final Item strong_string = new Item(new Item.Settings());
 
 	public static RecipeSerializer<StorageArrayRecipe> ARRAY_SERIALIZER;
 	public static RecipeSerializer<KitAssemblerRecipe> KIT_ASSEMBLER_SERIALIZER;
@@ -84,74 +85,74 @@ public class ModItems {
 	}
 
 	private static void registerBlocks() {
-		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "white_lamp"), white_lamp);
-		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "orange_lamp"), orange_lamp);
-		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "howler_alarm"), howler_alarm);
-		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "industrial_alarm"), industrial_alarm);
-		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "thermal_monitor"), thermal_monitor);
-		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "range_trigger"), range_trigger);
-		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "remote_thermo"), remote_thermo);
-		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "info_panel"), info_panel);
-		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "info_panel_extender"), info_panel_extender);
-		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "info_panel_advanced"), info_panel_advanced);
-		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "info_panel_advanced_extender"), info_panel_advanced_extender);
-		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "holo_panel"), holo_panel);
-		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "holo_panel_extender"), holo_panel_extender);
-		//Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "average_counter"), average_counter);
-		//Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "energy_counter"), energy_counter);
-		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "kit_assembler"), kit_assembler);
-		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "timer"), timer);
+		Registry.register(Registries.BLOCK, new Identifier(EnergyControl.MODID, "white_lamp"), white_lamp);
+		Registry.register(Registries.BLOCK, new Identifier(EnergyControl.MODID, "orange_lamp"), orange_lamp);
+		Registry.register(Registries.BLOCK, new Identifier(EnergyControl.MODID, "howler_alarm"), howler_alarm);
+		Registry.register(Registries.BLOCK, new Identifier(EnergyControl.MODID, "industrial_alarm"), industrial_alarm);
+		Registry.register(Registries.BLOCK, new Identifier(EnergyControl.MODID, "thermal_monitor"), thermal_monitor);
+		Registry.register(Registries.BLOCK, new Identifier(EnergyControl.MODID, "range_trigger"), range_trigger);
+		Registry.register(Registries.BLOCK, new Identifier(EnergyControl.MODID, "remote_thermo"), remote_thermo);
+		Registry.register(Registries.BLOCK, new Identifier(EnergyControl.MODID, "info_panel"), info_panel);
+		Registry.register(Registries.BLOCK, new Identifier(EnergyControl.MODID, "info_panel_extender"), info_panel_extender);
+		Registry.register(Registries.BLOCK, new Identifier(EnergyControl.MODID, "info_panel_advanced"), info_panel_advanced);
+		Registry.register(Registries.BLOCK, new Identifier(EnergyControl.MODID, "info_panel_advanced_extender"), info_panel_advanced_extender);
+		Registry.register(Registries.BLOCK, new Identifier(EnergyControl.MODID, "holo_panel"), holo_panel);
+		Registry.register(Registries.BLOCK, new Identifier(EnergyControl.MODID, "holo_panel_extender"), holo_panel_extender);
+		//Registry.register(Registries.BLOCK, new Identifier(EnergyControl.MODID, "average_counter"), average_counter);
+		//Registry.register(Registries.BLOCK, new Identifier(EnergyControl.MODID, "energy_counter"), energy_counter);
+		Registry.register(Registries.BLOCK, new Identifier(EnergyControl.MODID, "kit_assembler"), kit_assembler);
+		Registry.register(Registries.BLOCK, new Identifier(EnergyControl.MODID, "timer"), timer);
 	}
 
 	private static void registerItems() {
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "white_lamp"), new BlockItem(white_lamp, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "orange_lamp"), new BlockItem(orange_lamp, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "howler_alarm"), new BlockItem(howler_alarm, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "industrial_alarm"), new BlockItem(industrial_alarm, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "thermal_monitor"), new BlockItem(thermal_monitor, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "info_panel"), new BlockItem(info_panel, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "info_panel_extender"), new BlockItem(info_panel_extender, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "info_panel_advanced"), new BlockItem(info_panel_advanced, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "info_panel_advanced_extender"), new BlockItem(info_panel_advanced_extender, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "holo_panel"), new BlockItem(holo_panel, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "holo_panel_extender"), new BlockItem(holo_panel_extender, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "range_trigger"), new BlockItem(range_trigger, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "remote_thermo"), new BlockItem(remote_thermo, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "kit_assembler"), new BlockItem(kit_assembler, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "timer"), new BlockItem(timer, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "white_lamp"), new BlockItem(white_lamp, new Item.Settings()));
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "orange_lamp"), new BlockItem(orange_lamp, new Item.Settings()));
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "howler_alarm"), new BlockItem(howler_alarm, new Item.Settings()));
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "industrial_alarm"), new BlockItem(industrial_alarm, new Item.Settings()));
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "thermal_monitor"), new BlockItem(thermal_monitor, new Item.Settings()));
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "info_panel"), new BlockItem(info_panel, new Item.Settings()));
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "info_panel_extender"), new BlockItem(info_panel_extender, new Item.Settings()));
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "info_panel_advanced"), new BlockItem(info_panel_advanced, new Item.Settings()));
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "info_panel_advanced_extender"), new BlockItem(info_panel_advanced_extender, new Item.Settings()));
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "holo_panel"), new BlockItem(holo_panel, new Item.Settings()));
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "holo_panel_extender"), new BlockItem(holo_panel_extender, new Item.Settings()));
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "range_trigger"), new BlockItem(range_trigger, new Item.Settings()));
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "remote_thermo"), new BlockItem(remote_thermo, new Item.Settings()));
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "kit_assembler"), new BlockItem(kit_assembler, new Item.Settings()));
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "timer"), new BlockItem(timer, new Item.Settings()));
 
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "kit_energy"), kit_energy);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "kit_inventory"), kit_inventory);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "kit_liquid"), kit_liquid);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "kit_liquid_advanced"), kit_liquid_advanced);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "kit_redstone"), kit_redstone);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "kit_toggle"), kit_toggle);
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "kit_energy"), kit_energy);
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "kit_inventory"), kit_inventory);
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "kit_liquid"), kit_liquid);
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "kit_liquid_advanced"), kit_liquid_advanced);
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "kit_redstone"), kit_redstone);
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "kit_toggle"), kit_toggle);
 
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "card_holder"), card_holder);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "card_energy"), card_energy);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "card_energy_array"), card_energy_array);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "card_inventory"), card_inventory);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "card_liquid"), card_liquid);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "card_liquid_advanced"), card_liquid_advanced);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "card_liquid_array"), card_liquid_array);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "card_redstone"), card_redstone);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "card_text"), card_text);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "card_time"), card_time);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "card_toggle"), card_toggle);
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "card_holder"), card_holder);
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "card_energy"), card_energy);
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "card_energy_array"), card_energy_array);
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "card_inventory"), card_inventory);
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "card_liquid"), card_liquid);
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "card_liquid_advanced"), card_liquid_advanced);
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "card_liquid_array"), card_liquid_array);
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "card_redstone"), card_redstone);
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "card_text"), card_text);
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "card_time"), card_time);
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "card_toggle"), card_toggle);
 
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "upgrade_range"), upgrade_range);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "upgrade_color"), upgrade_color);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "upgrade_touch"), upgrade_touch);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "portable_panel"), portable_panel);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "machine_casing"), machine_casing);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "basic_circuit"), basic_circuit);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "advanced_circuit"), advanced_circuit);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "radio_transmitter"), radio_transmitter);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "strong_string"), strong_string);
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "upgrade_range"), upgrade_range);
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "upgrade_color"), upgrade_color);
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "upgrade_touch"), upgrade_touch);
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "portable_panel"), portable_panel);
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "machine_casing"), machine_casing);
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "basic_circuit"), basic_circuit);
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "advanced_circuit"), advanced_circuit);
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "radio_transmitter"), radio_transmitter);
+		Registry.register(Registries.ITEM, new Identifier(EnergyControl.MODID, "strong_string"), strong_string);
 	}
 
 	private static void register() {
-		ARRAY_SERIALIZER = Registry.register(Registry.RECIPE_SERIALIZER, new Identifier(EnergyControl.MODID, "array"), new ArrayRecipeSerializer());
-		KIT_ASSEMBLER_SERIALIZER = Registry.register(Registry.RECIPE_SERIALIZER, new Identifier(EnergyControl.MODID, "kit_assembler"), new KitAssemblerSerializer());
+		ARRAY_SERIALIZER = Registry.register(Registries.RECIPE_SERIALIZER, new Identifier(EnergyControl.MODID, "array"), new ArrayRecipeSerializer());
+		KIT_ASSEMBLER_SERIALIZER = Registry.register(Registries.RECIPE_SERIALIZER, new Identifier(EnergyControl.MODID, "kit_assembler"), new KitAssemblerSerializer());
 	}
 }

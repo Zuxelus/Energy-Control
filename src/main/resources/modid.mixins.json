@@ -10,7 +10,6 @@
   	"AbstractBlockStateMixin",
     "ClientPlayNetworkHandlerMixin",
     "ReloadableResourceManagerImplMixin",
-    "SpriteAtlasTextureMixin",
     "WorldRendererMixin"
   ],
   "injectors": {

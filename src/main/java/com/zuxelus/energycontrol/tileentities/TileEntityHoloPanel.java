@@ -11,7 +11,6 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
 
 public class TileEntityHoloPanel extends TileEntityInfoPanel {
@@ -60,6 +59,6 @@ public class TileEntityHoloPanel extends TileEntityInfoPanel {
 
 	@Override
 	public Text getDisplayName() {
-		return new TranslatableText(ModItems.holo_panel.getTranslationKey());
+		return Text.translatable(ModItems.holo_panel.getTranslationKey());
 	}
 }

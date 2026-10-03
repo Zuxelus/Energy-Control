@@ -2,7 +2,6 @@ package com.zuxelus.energycontrol.items.cards;
 
 import java.util.List;
 
-import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.*;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
@@ -14,7 +13,6 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -22,7 +20,7 @@ public abstract class ItemCardMain extends Item implements IItemCard {
 	public static final int LOCATION_RANGE = 8;
 
 	public ItemCardMain() {
-		super(new Item.Settings().group(EnergyControl.ITEM_GROUP).maxCount(1));
+		super(new Item.Settings().maxCount(1));
 	}
 
 	public static boolean isCard(ItemStack stack) {
@@ -42,16 +40,16 @@ public abstract class ItemCardMain extends Item implements IItemCard {
 		ItemCardReader reader = new ItemCardReader(stack);
 		String title = reader.getTitle();
 		if (title != null && !title.isEmpty())
-			tooltip.add(new TranslatableText(title));
+			tooltip.add(Text.translatable(title));
 
 		addInformation(reader, tooltip);
 
 		BlockPos target = reader.getTarget();
 		if (target != null)
-			tooltip.add(new TranslatableText(String.format("x: %d, y: %d, z: %d", target.getX(), target.getY(), target.getZ())));
+			tooltip.add(Text.translatable(String.format("x: %d, y: %d, z: %d", target.getX(), target.getY(), target.getZ())));
 		int count = reader.getCardCount();
 		if (count > 0)
-			tooltip.add(new TranslatableText(I18n.translate("msg.ec.cards", reader.getCardCount())));
+			tooltip.add(Text.translatable(I18n.translate("msg.ec.cards", reader.getCardCount())));
 	}
 
 	public CardState updateCardNBT(World world, BlockPos pos, ICardReader reader, ItemStack upgradeStack) {

@@ -1,5 +1,8 @@
 package com.zuxelus.zlib.gui;
 
+import net.minecraft.text.Text;
+import net.minecraft.screen.ScreenTexts;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.fabricmc.api.EnvType;
@@ -8,9 +11,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.OrderedText;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
@@ -22,7 +23,7 @@ public abstract class GuiBase extends Screen {
 	protected int guiTop;
 
 	public GuiBase(String name, int xSize, int ySize, String texture) {
-		super(new TranslatableText(name));
+		super(Text.translatable(name));
 		this.xSize = xSize;
 		this.ySize = ySize;
 		this.texture = new Identifier(texture);
@@ -55,7 +56,7 @@ public abstract class GuiBase extends Screen {
 	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {}
 
 	protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShader(GameRenderer::getPositionTexProgram);
 		RenderSystem.setShaderTexture(0, texture);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		drawTexture(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize);
@@ -67,9 +68,9 @@ public abstract class GuiBase extends Screen {
 	}
 
 	protected TextFieldWidget addTextFieldWidget(int left, int top, int width, int height, boolean isEnabled, String text) {
-		TextFieldWidget textBox = new TextFieldWidget(textRenderer, guiLeft + left, guiTop + top, width, height, null, LiteralText.EMPTY);
+		TextFieldWidget textBox = new TextFieldWidget(textRenderer, guiLeft + left, guiTop + top, width, height, null, ScreenTexts.EMPTY);
 		textBox.setEditable(isEnabled);
-		textBox.changeFocus(isEnabled);
+		textBox.setFocused(isEnabled);
 		textBox.setText(text);
 		addSelectableChild(textBox);
 		setInitialFocus(textBox);

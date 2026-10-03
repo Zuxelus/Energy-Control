@@ -15,7 +15,6 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -36,17 +35,17 @@ public class GuiRemoteThermalMonitor extends GuiContainerBase<ContainerRemoteThe
 	@Override
 	public void init() {
 		super.init();
-		addDrawableChild(new CompactButton(0, x + 40, y - 5 + 20, 22, 12, new LiteralText("-1"), (button) -> { actionPerformed(button); }));
-		addDrawableChild(new CompactButton(1, x + 40, y - 5 + 31, 22, 12, new LiteralText("-10"), (button) -> { actionPerformed(button); }));
-		addDrawableChild(new CompactButton(2, x + 5, y - 5 + 20, 36, 12, new LiteralText("-100"), (button) -> { actionPerformed(button); }));
-		addDrawableChild(new CompactButton(3, x + 5, y - 5 + 31, 36, 12, new LiteralText("-1000"), (button) -> { actionPerformed(button); }));
-		addDrawableChild(new CompactButton(4, x + 5, y - 5 + 42, 57, 12, new LiteralText("-10000"), (button) -> { actionPerformed(button); }));
+		addDrawableChild(new CompactButton(0, x + 40, y - 5 + 20, 22, 12, Text.literal("-1"), (button) -> { actionPerformed(button); }));
+		addDrawableChild(new CompactButton(1, x + 40, y - 5 + 31, 22, 12, Text.literal("-10"), (button) -> { actionPerformed(button); }));
+		addDrawableChild(new CompactButton(2, x + 5, y - 5 + 20, 36, 12, Text.literal("-100"), (button) -> { actionPerformed(button); }));
+		addDrawableChild(new CompactButton(3, x + 5, y - 5 + 31, 36, 12, Text.literal("-1000"), (button) -> { actionPerformed(button); }));
+		addDrawableChild(new CompactButton(4, x + 5, y - 5 + 42, 57, 12, Text.literal("-10000"), (button) -> { actionPerformed(button); }));
 
-		addDrawableChild(new CompactButton(5, x + 115, y - 5 + 20, 22, 12, new LiteralText("+1"), (button) -> { actionPerformed(button); }));
-		addDrawableChild(new CompactButton(6, x + 115, y - 5 + 31, 22, 12, new LiteralText("+10"), (button) -> { actionPerformed(button); }));
-		addDrawableChild(new CompactButton(7, x + 136, y - 5 + 20, 36, 12, new LiteralText("+100"), (button) -> { actionPerformed(button); }));
-		addDrawableChild(new CompactButton(8, x + 136, y - 5 + 31, 36, 12, new LiteralText("+1000"), (button) -> { actionPerformed(button); }));
-		addDrawableChild(new CompactButton(9, x + 115, y - 5 + 42, 57, 12, new LiteralText("+10000"), (button) -> { actionPerformed(button); }));
+		addDrawableChild(new CompactButton(5, x + 115, y - 5 + 20, 22, 12, Text.literal("+1"), (button) -> { actionPerformed(button); }));
+		addDrawableChild(new CompactButton(6, x + 115, y - 5 + 31, 22, 12, Text.literal("+10"), (button) -> { actionPerformed(button); }));
+		addDrawableChild(new CompactButton(7, x + 136, y - 5 + 20, 36, 12, Text.literal("+100"), (button) -> { actionPerformed(button); }));
+		addDrawableChild(new CompactButton(8, x + 136, y - 5 + 31, 36, 12, Text.literal("+1000"), (button) -> { actionPerformed(button); }));
+		addDrawableChild(new CompactButton(9, x + 115, y - 5 + 42, 57, 12, Text.literal("+10000"), (button) -> { actionPerformed(button); }));
 
 		addDrawableChild(new GuiThermoInvertRedstone(x + 63, y + 33, te));
 

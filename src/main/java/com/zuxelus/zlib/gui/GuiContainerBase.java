@@ -1,5 +1,7 @@
 package com.zuxelus.zlib.gui;
 
+import net.minecraft.screen.ScreenTexts;
+
 import java.text.DecimalFormat;
 
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -12,7 +14,6 @@ import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.ScreenHandler;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -39,7 +40,7 @@ public class GuiContainerBase<T extends ScreenHandler> extends HandledScreen<T> 
 
 	@Override
 	protected void drawBackground(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShader(GameRenderer::getPositionTexProgram);
 		RenderSystem.setShaderTexture(0, texture);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		drawTexture(matrixStack, x, y, 0, 0, backgroundWidth, backgroundHeight);
@@ -89,9 +90,9 @@ public class GuiContainerBase<T extends ScreenHandler> extends HandledScreen<T> 
 	}
 
 	protected TextFieldWidget addTextFieldWidget(int left, int top, int width, int height, boolean isEnabled, String text) {
-		TextFieldWidget textBox = new TextFieldWidget(textRenderer, x + left, y + top, width, height, null, LiteralText.EMPTY);
+		TextFieldWidget textBox = new TextFieldWidget(textRenderer, x + left, y + top, width, height, null, ScreenTexts.EMPTY);
 		textBox.setEditable(isEnabled);
-		textBox.changeFocus(isEnabled);
+		textBox.setFocused(isEnabled);
 		textBox.setText(text);
 		addSelectableChild(textBox);
 		setInitialFocus(textBox);

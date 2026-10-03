@@ -17,7 +17,7 @@ import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Matrix4f;
+import org.joml.Matrix4f;
 import net.minecraft.util.math.Vec3d;
 
 @Mixin(WorldRenderer.class)

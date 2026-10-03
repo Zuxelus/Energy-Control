@@ -13,8 +13,8 @@ import net.minecraft.client.render.block.entity.BlockEntityRendererFactory.Conte
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Vec3f;
+import org.joml.Matrix4f;
+import net.minecraft.util.math.RotationAxis;
 
 // The body is a block model (remote_thermo.json); only the heat bar and the heat level text are drawn here
 public class TERemoteThermalMonitorRenderer implements BlockEntityRenderer<TileEntityRemoteThermalMonitor> {
@@ -36,11 +36,11 @@ public class TERemoteThermalMonitorRenderer implements BlockEntityRenderer<TileE
 		// turn the north facing layout towards the front of the block
 		Direction facing = te.getFacing() == null ? Direction.NORTH : te.getFacing();
 		matrixStack.translate(0.5F, 0.0F, 0.5F);
-		matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180.0F - facing.asRotation()));
+		matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0F - facing.asRotation()));
 		matrixStack.translate(-0.5F, 0.0F, -0.5F);
 
-		matrixStack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180.0F));
-		matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(180.0F));
+		matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0F));
+		matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180.0F));
 		matrixStack.translate(0.0F, -0.5F, 0.001F);
 
 		int status = te.getStatus();
@@ -59,13 +59,13 @@ public class TERemoteThermalMonitorRenderer implements BlockEntityRenderer<TileE
 			bar.vertex(matrix, rate, BAR_HEIGHT, 0).color(1.0F, 1.0F, 1.0F, 1.0F).texture(rate * BAR_U, BAR_V).light(FULL_BRIGHT).next();
 		}
 
-		matrixStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(180.0F));
-		matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(180.0F));
+		matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180.0F));
+		matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180.0F));
 		matrixStack.translate(-0.5F, -0.125F, 0.0F);
 		matrixStack.scale(0.015625F, 0.015625F, 0.015625F);
 
 		String text = Integer.toString(level);
-		font.draw(text, -font.getWidth(text) / 2, -font.fontHeight, 0x000000, false, matrixStack.peek().getPositionMatrix(), buffer, false, 0, FULL_BRIGHT);
+		font.draw(text, -font.getWidth(text) / 2, -font.fontHeight, 0x000000, false, matrixStack.peek().getPositionMatrix(), buffer, TextRenderer.TextLayerType.NORMAL, 0, FULL_BRIGHT);
 		matrixStack.pop();
 	}
 }

@@ -21,7 +21,7 @@ public class CompactButton extends ButtonWidget {
 	private int id;
 
 	public CompactButton(int id, int x, int y, int widthIn, int heightIn, Text buttonText, ButtonWidget.PressAction onPress) {
-		super(x, y, widthIn, heightIn, buttonText, onPress);
+		super(x, y, widthIn, heightIn, buttonText, onPress, DEFAULT_NARRATION_SUPPLIER);
 		this.id = id;
 	}
 
@@ -32,18 +32,17 @@ public class CompactButton extends ButtonWidget {
 
 		MinecraftClient minecraft = MinecraftClient.getInstance();
 		TextRenderer fontRenderer = minecraft.textRenderer;
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShader(GameRenderer::getPositionTexProgram);
 		RenderSystem.setShaderTexture(0, TEXTURE);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		int i = this.getYImage(isHovered());
+		int i = !active ? 0 : isHovered() ? 2 : 1;
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
-		drawTexture(matrixStack, x, y, 0, 64 + i * 12, width / 2 + width % 2, height);
-		drawTexture(matrixStack, x + width / 2 + width % 2, y, 200 - width / 2, 64 + i * 12, width / 2, height);
-		renderBackground(matrixStack, minecraft, mouseX, mouseY);
+		drawTexture(matrixStack, getX(), getY(), 0, 64 + i * 12, width / 2 + width % 2, height);
+		drawTexture(matrixStack, getX() + width / 2 + width % 2, getY(), 200 - width / 2, 64 + i * 12, width / 2, height);
 		OrderedText ireorderingprocessor = getMessage().asOrderedText();
-		fontRenderer.draw(matrixStack, ireorderingprocessor, x + (width - fontRenderer.getWidth(ireorderingprocessor)) / 2, y + (height - 8) / 2, 0x404040);
+		fontRenderer.draw(matrixStack, ireorderingprocessor, getX() + (width - fontRenderer.getWidth(ireorderingprocessor)) / 2, getY() + (height - 8) / 2, 0x404040);
 	}
 
 	public int getId() {
