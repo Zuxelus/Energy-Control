@@ -2,7 +2,6 @@ package com.zuxelus.energycontrol.utils;
 
 import com.zuxelus.energycontrol.api.ICardReader;
 
-import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
@@ -33,18 +32,6 @@ public class FluidInfo {
 		}
 		capacity = tank.getCapacity();
 	}*/
-
-	public FluidInfo(FluidVolume stack, long capacity) {
-		if (stack != null) {
-			amount = stack.amount().whole;
-			if (amount > 0) {
-				/*translationKey = stack.getTranslationKey();
-				texture = stack.fluidKey.getRawFluid().getAttributes().getStillTexture().toString();
-				color = stack.fluidKey.getRawFluid().getAttributes().getColor();*/
-			}
-		}
-		this.capacity = capacity;
-	}
 
 	public FluidInfo(SingleSlotStorage<FluidVariant> stack) {
 		if (stack != null) {

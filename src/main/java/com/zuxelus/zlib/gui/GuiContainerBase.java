@@ -4,14 +4,11 @@ import net.minecraft.screen.ScreenTexts;
 
 import java.text.DecimalFormat;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.OrderedText;
@@ -39,50 +36,47 @@ public class GuiContainerBase<T extends ScreenHandler> extends HandledScreen<T> 
 	}
 
 	@Override
-	protected void drawBackground(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-		RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-		RenderSystem.setShaderTexture(0, texture);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		drawTexture(matrixStack, x, y, 0, 0, backgroundWidth, backgroundHeight);
+	protected void drawBackground(DrawContext context, float partialTicks, int mouseX, int mouseY) {
+		context.drawTexture(texture, x, y, 0, 0, backgroundWidth, backgroundHeight);
 	}
 
-	public void drawCenteredText(MatrixStack matrixStack, Text text, int x, int y) {
-		drawCenteredText(matrixStack, text, x, y, 0x404040);
+	public void drawCenteredText(DrawContext context, Text text, int x, int y) {
+		drawCenteredText(context, text, x, y, 0x404040);
 	}
 
-	public void drawRightAlignedText(MatrixStack matrixStack, String text, int x, int y) {
-		drawRightAlignedText(matrixStack, text, x, y, 0x404040);
+	public void drawRightAlignedText(DrawContext context, String text, int x, int y) {
+		drawRightAlignedText(context, text, x, y, 0x404040);
 	}
 
-	public void drawLeftAlignedText(MatrixStack matrixStack, String text, int x, int y) {
-		drawLeftAlignedText(matrixStack, text, x, y, 0x404040);
+	public void drawLeftAlignedText(DrawContext context, String text, int x, int y) {
+		drawLeftAlignedText(context, text, x, y, 0x404040);
 	}
 
-	public void drawCenteredText(MatrixStack matrixStack, Text text, int x, int y, int color) {
+	public void drawCenteredText(DrawContext context, Text text, int x, int y, int color) {
 		OrderedText ireorderingprocessor = text.asOrderedText();
-		textRenderer.draw(matrixStack, ireorderingprocessor, (x - textRenderer.getWidth(ireorderingprocessor)) / 2, y, color);
+		context.drawText(textRenderer, ireorderingprocessor, (x - textRenderer.getWidth(ireorderingprocessor)) / 2, y, color, false);
 	}
 
-	public void drawRightAlignedText(MatrixStack matrixStack, String text, int x, int y, int color) {
-		textRenderer.draw(matrixStack, text, x - textRenderer.getWidth(text), y, color);
+	public void drawRightAlignedText(DrawContext context, String text, int x, int y, int color) {
+		context.drawText(textRenderer, text, x - textRenderer.getWidth(text), y, color, false);
 	}
 
-	public void drawLeftAlignedText(MatrixStack matrixStack, String text, int x, int y, int color) {
-		textRenderer.draw(matrixStack, text, x, y, color);
+	public void drawLeftAlignedText(DrawContext context, String text, int x, int y, int color) {
+		context.drawText(textRenderer, text, x, y, color, false);
 	}
 
-	public void drawRightAlignedGlowingText(MatrixStack matrixStack, String text, int x, int y, int color, int glowColor) {
-		drawGlowingText(matrixStack, text, x - textRenderer.getWidth(text), y, color, glowColor);
+	public void drawRightAlignedGlowingText(DrawContext context, String text, int x, int y, int color, int glowColor) {
+		drawGlowingText(context, text, x - textRenderer.getWidth(text), y, color, glowColor);
 	}
 
-	public void drawGlowingText(MatrixStack matrixStack, String text, int x, int y, int color, int glowColor) {
+	public void drawGlowingText(DrawContext context, String text, int x, int y, int color, int glowColor) {
 		for (int i = 0; i < 4; i++)
-			textRenderer.draw(matrixStack, text, x + oX[i], y + oY[i], glowColor);
-		textRenderer.draw(matrixStack, text, x, y, color);
+			context.drawText(textRenderer, text, x + oX[i], y + oY[i], glowColor, false);
+		context.drawText(textRenderer, text, x, y, color, false);
 	}
 
-	public void drawCenteredGlowingText(MatrixStack matrixStack, String text, int x, int y, int color, int glowColor) {
-		drawGlowingText(matrixStack, text, x - textRenderer.getWidth(text) / 2, y, color, glowColor);
+	public void drawCenteredGlowingText(DrawContext context, String text, int x, int y, int color, int glowColor) {
+		drawGlowingText(context, text, x - textRenderer.getWidth(text) / 2, y, color, glowColor);
 	}
 
 	public static int multiplyColorComponents(int color, float brightnessFactor) {

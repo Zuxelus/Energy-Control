@@ -7,7 +7,7 @@ import com.zuxelus.zlib.gui.GuiBase;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 
 @Environment(EnvType.CLIENT)
 public class GuiIndustrialAlarm extends GuiBase {
@@ -27,7 +27,7 @@ public class GuiIndustrialAlarm extends GuiBase {
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
-		drawTitle(matrixStack);
+	protected void drawGuiContainerForegroundLayer(DrawContext context, int mouseX, int mouseY) {
+		drawTitle(context);
 	}
 }

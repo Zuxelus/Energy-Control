@@ -1,23 +1,31 @@
 package com.zuxelus.energycontrol.blocks;
 
+import com.mojang.serialization.MapCodec;
+import net.minecraft.block.BlockWithEntity;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityHoloPanelExtender;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.block.Block;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.random.Random;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
 public class HoloPanelExtender extends HoloPanel {
+	public static final MapCodec<HoloPanelExtender> CODEC = createCodec(settings -> new HoloPanelExtender());
+
+	@Override
+	protected MapCodec<? extends BlockWithEntity> getCodec() {
+		return CODEC;
+	}
 
 	@Override
 	protected BlockEntityFacing newBlockEntity(BlockPos pos, BlockState state) {

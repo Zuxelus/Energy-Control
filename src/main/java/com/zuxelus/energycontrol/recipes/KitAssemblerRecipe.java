@@ -10,12 +10,10 @@ import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 
 public class KitAssemblerRecipe implements Recipe<EmptyInventory>{
-	private final Identifier id;
 	public final Ingredient input1;
 	public final Ingredient input2;
 	public final Ingredient input3;
@@ -25,8 +23,7 @@ public class KitAssemblerRecipe implements Recipe<EmptyInventory>{
 	public final ItemStack output;
 	public final int time;
 
-	public KitAssemblerRecipe(Identifier id, Ingredient input1, int count1, Ingredient input2, int count2, Ingredient input3, int count3, ItemStack output, int time) {
-		this.id = id;
+	public KitAssemblerRecipe(Ingredient input1, int count1, Ingredient input2, int count2, Ingredient input3, int count3, ItemStack output, int time) {
 		this.input1 = input1;
 		this.count1 = count1;
 		this.input2 = input2;
@@ -49,7 +46,7 @@ public class KitAssemblerRecipe implements Recipe<EmptyInventory>{
 			return false;
 		ItemStack result = te.getStack(TileEntityKitAssembler.SLOT_RESULT);
 		if (!result.isEmpty()) {
-			if (!result.isItemEqual(output))
+			if (!ItemStack.areItemsEqual(result, output))
 				return false;
 			if (result.getCount() + output.getCount() > result.getMaxCount())
 				return false;
@@ -78,18 +75,13 @@ public class KitAssemblerRecipe implements Recipe<EmptyInventory>{
 	}
 
 	@Override
-	public ItemStack getOutput(DynamicRegistryManager registryManager) {
+	public ItemStack getResult(DynamicRegistryManager registryManager) {
 		return ItemStack.EMPTY;
 	}
 
 	@Override
 	public DefaultedList<Ingredient> getIngredients() {
 		return DefaultedList.copyOf(Ingredient.EMPTY, input1, input2, input3);
-	}
-
-	@Override
-	public Identifier getId() {
-		return id;
 	}
 
 	@Override

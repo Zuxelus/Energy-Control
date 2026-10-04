@@ -12,7 +12,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -57,18 +57,17 @@ public class GuiRangeTrigger extends GuiContainerBase<ContainerRangeTrigger> {
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(matrixStack);
-		super.render(matrixStack, mouseX, mouseY, partialTicks);
-		drawMouseoverTooltip(matrixStack, mouseX, mouseY);
+	public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+		super.render(context, mouseX, mouseY, partialTicks);
+		drawMouseoverTooltip(context, mouseX, mouseY);
 	}
 
-	private void renderValue(MatrixStack matrixStack, double value, int x, int y) {
+	private void renderValue(DrawContext context, double value, int x, int y) {
 		x += 114;
 		for (int i = 0; i < 10; i++) {
 			byte digit = (byte) (value % 10);
 			String str = Byte.toString(digit);
-			textRenderer.draw(matrixStack, str, x - 12 * i - textRenderer.getWidth("0") / 2 + (9 - i + 2) / 3 * 6, y, 0x404040);
+			context.drawText(textRenderer, str, x - 12 * i - textRenderer.getWidth("0") / 2 + (9 - i + 2) / 3 * 6, y, 0x404040, false);
 			value /= 10;
 		}
 	}
@@ -108,11 +107,11 @@ public class GuiRangeTrigger extends GuiContainerBase<ContainerRangeTrigger> {
 	}
 
 	@Override
-	protected void drawForeground(MatrixStack matrixStack, int mouseX, int mouseY) {
-		drawCenteredText(matrixStack, title, backgroundWidth, 6);
-		drawLeftAlignedText(matrixStack, I18n.translate("container.inventory"), 8, (backgroundHeight - 96) + 2);
+	protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
+		drawCenteredText(context, title, backgroundWidth, 6);
+		drawLeftAlignedText(context, I18n.translate("container.inventory"), 8, (backgroundHeight - 96) + 2);
 
-		renderValue(matrixStack, container.te.levelStart, 30, 33);
-		renderValue(matrixStack, container.te.levelEnd, 30, 70);
+		renderValue(context, container.te.levelStart, 30, 33);
+		renderValue(context, container.te.levelEnd, 30, 70);
 	}
 }

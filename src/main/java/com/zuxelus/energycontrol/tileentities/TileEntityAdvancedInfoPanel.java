@@ -38,7 +38,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	public static final int OFFSET_ROTATE_HOR = 200;
 	public static final int OFFSET_ROTATE_VERT = 300;
 
-	public static final int DEFAULT_TEXT = 0xFFFFFFFF;
+	public static final int DEFAULT_TEXT = 0xFFFFFFFF; // white, as on Forge
 	public static final int DEFAULT_BACKGROUND = 0xFF464646;
 
 	public byte powerMode;

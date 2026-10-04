@@ -14,7 +14,7 @@ import com.zuxelus.zlib.gui.GuiContainerBase;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.item.TooltipContext;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
@@ -35,19 +35,18 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(matrixStack);
-		super.render(matrixStack, mouseX, mouseY, partialTicks);
+	public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+		super.render(context, mouseX, mouseY, partialTicks);
 		Slot slot = container.getSlot(TileEntityKitAssembler.SLOT_INFO);
 		if (isPointWithinBounds(slot.x, slot.y, 16, 16, mouseX, mouseY) && slot.isEnabled())
-			renderInfoToolTip(matrixStack, slot, mouseX, mouseY);
+			renderInfoToolTip(context, slot, mouseX, mouseY);
 		else
-			drawMouseoverTooltip(matrixStack, mouseX, mouseY);
+			drawMouseoverTooltip(context, mouseX, mouseY);
 		if (isPointWithinBounds(165, 16, 4, 52, mouseX, mouseY))
-			renderTooltip(matrixStack, Text.literal(String.format("%d FE/%d FE", (int) container.te.getEnergy(), TileEntityKitAssembler.CAPACITY)), mouseX, mouseY);
+			context.drawTooltip(textRenderer, Text.literal(String.format("%d FE/%d FE", (int) container.te.getEnergy(), TileEntityKitAssembler.CAPACITY)), mouseX, mouseY);
 	}
 
-	private void renderInfoToolTip(MatrixStack matrixStack, Slot slot, int x, int y) {
+	private void renderInfoToolTip(DrawContext context, Slot slot, int x, int y) {
 		ItemStack stack = slot.getStack();
 		if (stack.isEmpty() || !(stack.getItem() instanceof ItemCardMain))
 			return;
@@ -61,23 +60,23 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 				if (panelString.textLeft != null)
 					list.add(Text.literal(Formatting.GRAY + panelString.textLeft));
 			}
-		renderTooltip(matrixStack, list, stack.getTooltipData(), x, y);
+		context.drawTooltip(textRenderer, list, stack.getTooltipData(), x, y);
 	}
 
 	@Override
-	protected void drawBackground(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-		super.drawBackground(matrixStack, partialTicks, mouseX, mouseY);
+	protected void drawBackground(DrawContext context, float partialTicks, int mouseX, int mouseY) {
+		super.drawBackground(context, partialTicks, mouseX, mouseY);
 
 		int energyHeight = container.te.getEnergyFactor();
 		if (energyHeight > 0)
-			drawTexture(matrixStack, x + 165, y + 16 + (52 - energyHeight), 176, 17 + 52 - energyHeight, 4, energyHeight);
+			context.drawTexture(TEXTURE, x + 165, y + 16 + (52 - energyHeight), 176, 17 + 52 - energyHeight, 4, energyHeight);
 		int productionWidth = container.te.getProductionFactor();
 		if (productionWidth > 0)
-			drawTexture(matrixStack, x + 86, y + 35, 176, 0, productionWidth, 17);
+			context.drawTexture(TEXTURE, x + 86, y + 35, 176, 0, productionWidth, 17);
 	}
 
 	@Override
-	protected void drawForeground(MatrixStack matrixStack, int mouseX, int mouseY) {
-		drawCenteredText(matrixStack, title, backgroundWidth, 6);
+	protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
+		drawCenteredText(context, title, backgroundWidth, 6);
 	}
 }

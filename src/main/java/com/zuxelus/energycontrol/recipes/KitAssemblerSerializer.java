@@ -1,36 +1,35 @@
 package com.zuxelus.energycontrol.recipes;
 
-import com.google.gson.JsonObject;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.ShapedRecipe;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
 
 public class KitAssemblerSerializer implements RecipeSerializer<KitAssemblerRecipe> {
+	// an ingredient object with an optional "count" next to "item"/"tag": { "item": "...", "count": 2 }
+	// the count is decoded first because a field codec hands the whole object on to the ingredient codec
+	private static final Codec<Pair<Integer, Ingredient>> COUNTED_INGREDIENT = Codec.pair(Codec.INT.optionalFieldOf("count", 1).codec(), Ingredient.DISALLOW_EMPTY_CODEC);
+
+	private static final Codec<KitAssemblerRecipe> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			COUNTED_INGREDIENT.fieldOf("input1").forGetter(recipe -> Pair.of(recipe.count1, recipe.input1)),
+			COUNTED_INGREDIENT.fieldOf("input2").forGetter(recipe -> Pair.of(recipe.count2, recipe.input2)),
+			COUNTED_INGREDIENT.fieldOf("input3").forGetter(recipe -> Pair.of(recipe.count3, recipe.input3)),
+			ItemStack.RECIPE_RESULT_CODEC.fieldOf("result").forGetter(recipe -> recipe.output),
+			Codec.INT.optionalFieldOf("time", 300).forGetter(recipe -> recipe.time)
+		).apply(instance, (input1, input2, input3, output, time) -> new KitAssemblerRecipe(
+			input1.getSecond(), input1.getFirst(), input2.getSecond(), input2.getFirst(), input3.getSecond(), input3.getFirst(), output, time)));
 
 	@Override
-	public KitAssemblerRecipe read(Identifier id, JsonObject json) {
-		Ingredient input1 = getIngredient(json, "input1");
-		int count1 = JsonHelper.getInt(JsonHelper.getObject(json, "input1"), "count", 1);
-		Ingredient input2 = getIngredient(json, "input2");
-		int count2 = JsonHelper.getInt(JsonHelper.getObject(json, "input2"), "count", 1);
-		Ingredient input3 = getIngredient(json, "input3");
-		int count3 = JsonHelper.getInt(JsonHelper.getObject(json, "input3"), "count", 1);
-		ItemStack output = ShapedRecipe.outputFromJson(JsonHelper.getObject(json, "result"));
-		int time = JsonHelper.getInt(json, "time", 300);
-		return new KitAssemblerRecipe(id, input1, count1, input2, count2, input3, count3, output, time);
-	}
-
-	private Ingredient getIngredient(JsonObject json, String name) {
-		return Ingredient.fromJson(JsonHelper.hasArray(json, name) ? JsonHelper.getArray(json, name) : JsonHelper.getObject(json, name));
+	public Codec<KitAssemblerRecipe> codec() {
+		return CODEC;
 	}
 
 	@Override
-	public KitAssemblerRecipe read(Identifier id, PacketByteBuf buffer) {
+	public KitAssemblerRecipe read(PacketByteBuf buffer) {
 		Ingredient input1 = Ingredient.fromPacket(buffer);
 		int count1 = buffer.readVarInt();
 		Ingredient input2 = Ingredient.fromPacket(buffer);
@@ -39,7 +38,7 @@ public class KitAssemblerSerializer implements RecipeSerializer<KitAssemblerReci
 		int count3 = buffer.readVarInt();
 		ItemStack output = buffer.readItemStack();
 		int time = buffer.readInt();
-		return new KitAssemblerRecipe(id, input1, count1, input2, count2, input3, count3, output, time);
+		return new KitAssemblerRecipe(input1, count1, input2, count2, input3, count3, output, time);
 	}
 
 	@Override

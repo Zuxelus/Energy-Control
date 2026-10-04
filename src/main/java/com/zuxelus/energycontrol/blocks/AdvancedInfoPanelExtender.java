@@ -1,5 +1,7 @@
 package com.zuxelus.energycontrol.blocks;
 
+import com.mojang.serialization.MapCodec;
+import net.minecraft.block.BlockWithEntity;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
@@ -24,6 +26,12 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 public class AdvancedInfoPanelExtender extends InfoPanelExtender {
+	public static final MapCodec<AdvancedInfoPanelExtender> CODEC = createCodec(settings -> new AdvancedInfoPanelExtender());
+
+	@Override
+	protected MapCodec<? extends BlockWithEntity> getCodec() {
+		return CODEC;
+	}
 
 	// the shape follows the core panel thickness, so it must not be cached per block state,
 	// and like the core it is not opaque, so neighbours are not culled by a sloped panel

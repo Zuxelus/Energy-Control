@@ -11,7 +11,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -70,20 +70,19 @@ public class GuiTimer extends GuiContainerBase<ContainerTimer> {
 	}
 
 	@Override
-	protected void drawBackground(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-		super.drawBackground(matrixStack, partialTicks, mouseX, mouseY);
-		textboxTimer.renderButton(matrixStack, mouseX, mouseY, partialTicks);
+	protected void drawBackground(DrawContext context, float partialTicks, int mouseX, int mouseY) {
+		super.drawBackground(context, partialTicks, mouseX, mouseY);
+		textboxTimer.render(context, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
-	protected void drawForeground(MatrixStack matrixStack, int mouseX, int mouseY) {
-		drawCenteredText(matrixStack, title, backgroundWidth, 6);
+	protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
+		drawCenteredText(context, title, backgroundWidth, 6);
 	}
 
 	@Override
 	public void handledScreenTick() {
 		super.handledScreenTick();
-		textboxTimer.tick();
 		boolean isWorking = timer.getIsWorking();
 		if (isWorking != lastIsWorking) {
 			textboxTimer.setEditable(!isWorking);

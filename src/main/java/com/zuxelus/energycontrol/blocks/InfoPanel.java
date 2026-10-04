@@ -1,5 +1,7 @@
 package com.zuxelus.energycontrol.blocks;
 
+import com.mojang.serialization.MapCodec;
+import net.minecraft.block.BlockWithEntity;
 import net.minecraft.util.math.random.Random;
 
 import com.zuxelus.energycontrol.EnergyControl;
@@ -25,6 +27,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class InfoPanel extends FacingBlockActive {
+	public static final MapCodec<InfoPanel> CODEC = createCodec(InfoPanel::new);
+
+	@Override
+	protected MapCodec<? extends BlockWithEntity> getCodec() {
+		return CODEC;
+	}
 
 	public InfoPanel() {
 		super(FabricBlockSettings.copyOf(ModItems.settings).luminance(state -> state.get(ACTIVE) ? 10 : 0));

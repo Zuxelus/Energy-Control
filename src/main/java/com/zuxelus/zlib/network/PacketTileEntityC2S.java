@@ -30,9 +30,9 @@ public class PacketTileEntityC2S extends PacketBase {
 		BlockPos pos = buf.readBlockPos();
 		NbtCompound tag = buf.readNbt();
 		server.execute(() -> {
-			if (player == null || player.world == null)
+			if (player == null || player.getWorld() == null)
 				return;
-			BlockEntity te = player.world.getBlockEntity(pos);
+			BlockEntity te = player.getWorld().getBlockEntity(pos);
 			if (!(te instanceof ITilePacketHandler))
 				return;
 			((ITilePacketHandler) te).onServerMessageReceived(tag);

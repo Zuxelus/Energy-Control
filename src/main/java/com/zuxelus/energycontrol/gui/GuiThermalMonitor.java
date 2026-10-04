@@ -13,7 +13,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 
 @Environment(EnvType.CLIENT)
 public class GuiThermalMonitor extends GuiBase {
@@ -46,19 +46,13 @@ public class GuiThermalMonitor extends GuiBase {
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-		super.drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
-		textboxHeat.renderButton(matrixStack, mouseX, mouseY, partialTicks);
+	protected void drawGuiContainerBackgroundLayer(DrawContext context, float partialTicks, int mouseX, int mouseY) {
+		super.drawGuiContainerBackgroundLayer(context, partialTicks, mouseX, mouseY);
+		textboxHeat.render(context, mouseX, mouseY, partialTicks);
 	}
 	@Override
-	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
-		drawTitle(matrixStack);
-	}
-
-	@Override
-	public void tick() {
-		super.tick();
-		textboxHeat.tick();
+	protected void drawGuiContainerForegroundLayer(DrawContext context, int mouseX, int mouseY) {
+		drawTitle(context);
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package com.zuxelus.energycontrol.blocks;
 
+import com.mojang.serialization.MapCodec;
+import net.minecraft.block.BlockWithEntity;
 import com.zuxelus.energycontrol.gui.ScreenHandler;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
@@ -21,6 +23,12 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 public class HowlerAlarm extends FacingBlockSmall {
+	public static final MapCodec<HowlerAlarm> CODEC = createCodec(HowlerAlarm::new);
+
+	@Override
+	protected MapCodec<? extends BlockWithEntity> getCodec() {
+		return CODEC;
+	}
 	protected static final VoxelShape AABB_DOWN = Block.createCuboidShape(2.0D, 9.0D, 2.0D, 14.0D, 16.0D, 14.0D);
 	protected static final VoxelShape AABB_UP = Block.createCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 7.0D, 14.0D);
 	protected static final VoxelShape AABB_NORTH = Block.createCuboidShape(2.0D, 2.0D, 9.0D, 14.0D, 14.0D, 16.0D);

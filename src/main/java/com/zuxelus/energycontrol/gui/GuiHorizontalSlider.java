@@ -2,7 +2,6 @@ package com.zuxelus.energycontrol.gui;
 
 import net.minecraft.text.Text;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
@@ -14,8 +13,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.PressableWidget;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.OrderedText;
 
 @Environment(EnvType.CLIENT)
@@ -39,8 +37,8 @@ public class GuiHorizontalSlider extends GuiBase {
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
-		drawTitle(matrixStack);
+	protected void drawGuiContainerForegroundLayer(DrawContext context, int mouseX, int mouseY) {
+		drawTitle(context);
 	}
 
 	@Override
@@ -81,20 +79,17 @@ public class GuiHorizontalSlider extends GuiBase {
 		}
 
 		@Override
-		public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+		public void renderWidget(DrawContext context, int mouseX, int mouseY, float partialTicks) {
 			if (!visible)
 				return;
 			MinecraftClient minecraft = MinecraftClient.getInstance();
 			TextRenderer fontRenderer = minecraft.textRenderer;
-			RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-			RenderSystem.setShaderTexture(0, texture);
-			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 			if (dragging)
 				setSliderPos(mouseX);
 
-			drawTexture(matrixStack, getX() - 2 + sliderValue, getY(), 152, 0, 8, 16);
+			context.drawTexture(texture, getX() - 2 + sliderValue, getY(), 152, 0, 8, 16);
 			OrderedText ireorderingprocessor = getMessage().asOrderedText();
-			fontRenderer.draw(matrixStack, ireorderingprocessor, getX() - 10 + (width - fontRenderer.getWidth(ireorderingprocessor)) / 2, getY() - 12, 0x404040);
+			context.drawText(fontRenderer, ireorderingprocessor, getX() - 10 + (width - fontRenderer.getWidth(ireorderingprocessor)) / 2, getY() - 12, 0x404040, false);
 		}
 
 		@Override

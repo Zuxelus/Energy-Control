@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
 
+import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.world.World;
@@ -12,6 +13,12 @@ import net.minecraft.world.World;
 public class KitAssemblerRecipeType implements RecipeType<KitAssemblerRecipe> {
 	public static final KitAssemblerRecipeType TYPE = new KitAssemblerRecipeType();
 	private List<KitAssemblerRecipe> cachedRecipes = Collections.emptyList();
+
+	// same as the types vanilla registers through RecipeType.register
+	@Override
+	public String toString() {
+		return "energycontrol:kit_assembler";
+	}
 
 	public List<KitAssemblerRecipe> getRecipes(World level) {
 		if (level == null)
@@ -36,7 +43,7 @@ public class KitAssemblerRecipeType implements RecipeType<KitAssemblerRecipe> {
 		if (level == null)
 			return;
 		RecipeManager recipeManager = level.getRecipeManager();
-		List<KitAssemblerRecipe> recipes = recipeManager.listAllOfType(this);
+		List<KitAssemblerRecipe> recipes = recipeManager.listAllOfType(this).stream().map(RecipeEntry::value).toList();
 		cachedRecipes = recipes;
 	}
 }

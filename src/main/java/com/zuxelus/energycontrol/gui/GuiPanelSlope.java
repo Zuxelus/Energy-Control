@@ -7,7 +7,7 @@ import com.zuxelus.zlib.gui.GuiBase;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 
 @Environment(EnvType.CLIENT)
 public class GuiPanelSlope extends GuiBase {
@@ -48,13 +48,13 @@ public class GuiPanelSlope extends GuiBase {
 	}
 
 	@Override
-	public void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-		super.drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
+	public void drawGuiContainerBackgroundLayer(DrawContext context, float partialTicks, int mouseX, int mouseY) {
+		super.drawGuiContainerBackgroundLayer(context, partialTicks, mouseX, mouseY);
 		int textureHeight = 4 * (16 - panel.thickness);
 
-		drawTexture(matrixStack, guiLeft + 21, guiTop + 25, 172, 0, 14, textureHeight);
-		drawTexture(matrixStack, guiLeft + 79, guiTop + 25 + (panel.rotateHor < 0 ? 32 + panel.rotateHor * 4 / 7 : 32), 186, 0, 14, Math.abs(panel.rotateHor * 4 / 7));
-		drawTexture(matrixStack, guiLeft + 137, guiTop + 25 + (panel.rotateVert < 0 ? 32 + panel.rotateVert * 4 / 7 : 32), 186, 0, 14, Math.abs(panel.rotateVert * 4 / 7));
+		context.drawTexture(texture, guiLeft + 21, guiTop + 25, 172, 0, 14, textureHeight);
+		context.drawTexture(texture, guiLeft + 79, guiTop + 25 + (panel.rotateHor < 0 ? 32 + panel.rotateHor * 4 / 7 : 32), 186, 0, 14, Math.abs(panel.rotateHor * 4 / 7));
+		context.drawTexture(texture, guiLeft + 137, guiTop + 25 + (panel.rotateVert < 0 ? 32 + panel.rotateVert * 4 / 7 : 32), 186, 0, 14, Math.abs(panel.rotateVert * 4 / 7));
 	}
 
 	@Override

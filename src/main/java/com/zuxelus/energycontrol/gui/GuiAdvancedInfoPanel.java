@@ -4,7 +4,6 @@ import net.minecraft.screen.ScreenTexts;
 
 import java.util.List;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.containers.ContainerAdvancedInfoPanel;
@@ -20,9 +19,8 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -99,14 +97,11 @@ public class GuiAdvancedInfoPanel extends GuiPanelBase<ContainerAdvancedInfoPane
 	}
 
 	@Override
-	protected void drawBackground(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-		RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-		RenderSystem.setShaderTexture(0, TEXTURE);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		drawTexture(matrixStack, x, y, 0, 0, backgroundWidth, backgroundHeight);
-		drawTexture(matrixStack, x + 24, y + 62 + activeTab * 14, 182, 0, 1, 15);
+	protected void drawBackground(DrawContext context, float partialTicks, int mouseX, int mouseY) {
+		context.drawTexture(TEXTURE, x, y, 0, 0, backgroundWidth, backgroundHeight);
+		context.drawTexture(TEXTURE, x + 24, y + 62 + activeTab * 14, 182, 0, 1, 15);
 		if (textboxTitle != null)
-			textboxTitle.renderButton(matrixStack, mouseX, mouseY, partialTicks);
+			textboxTitle.render(context, mouseX, mouseY, partialTicks);
 	}
 
 	@Override

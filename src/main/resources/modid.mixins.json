@@ -4,10 +4,10 @@
   "package": "com.zuxelus.energycontrol.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
+    "AbstractBlockStateMixin",
     "PlayerManagerMixin"
   ],
   "client": [
-  	"AbstractBlockStateMixin",
     "ClientPlayNetworkHandlerMixin",
     "ReloadableResourceManagerImplMixin",
     "WorldRendererMixin"

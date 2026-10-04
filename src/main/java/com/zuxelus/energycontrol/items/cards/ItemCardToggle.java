@@ -16,7 +16,7 @@ import net.minecraft.block.ButtonBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.enums.WallMountLocation;
+import net.minecraft.block.enums.BlockFace;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
@@ -36,7 +36,7 @@ import net.minecraft.world.World;
 
 public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 	private static final BooleanProperty POWERED = Properties.POWERED;
-	private static final EnumProperty<WallMountLocation> FACE = Properties.WALL_MOUNT_LOCATION;
+	private static final EnumProperty<BlockFace> FACE = Properties.BLOCK_FACE;
 	private static final DirectionProperty HORIZONTAL_FACING = Properties.HORIZONTAL_FACING;
 	private static final Identifier TEXTURE_ON = new Identifier(EnergyControl.MODID, "textures/gui/green.png");
 	private static final Identifier TEXTURE_OFF = new Identifier(EnergyControl.MODID, "textures/gui/grey.png");
@@ -58,7 +58,12 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 
 	@Override
 	public List<PanelString> getStringData(World world, int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
-		return null;
+		List<PanelString> result = reader.getTitleList();
+		PanelString line = new PanelString();
+		line.textCenter = "o";
+		line.colorCenter = reader.getBoolean("value") ? 0x00ff00 : 0xff0000;
+		result.add(line);
+		return result;
 	}
 
 	@Override
@@ -93,7 +98,7 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 	}
 
 	private static Direction getFacing(BlockState state) {
-		switch ((WallMountLocation) state.get(FACE)) {
+		switch ((BlockFace) state.get(FACE)) {
 		case CEILING:
 			return Direction.DOWN;
 		case FLOOR:

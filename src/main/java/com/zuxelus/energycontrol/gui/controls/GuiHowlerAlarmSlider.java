@@ -3,7 +3,6 @@ package com.zuxelus.energycontrol.gui.controls;
 import net.minecraft.text.Text;
 import net.minecraft.screen.ScreenTexts;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.network.NetworkHelper;
@@ -15,8 +14,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.PressableWidget;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
@@ -67,19 +65,16 @@ public class GuiHowlerAlarmSlider extends PressableWidget {
 	}
 
 	@Override
-	public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void renderWidget(DrawContext context, int mouseX, int mouseY, float partialTicks) {
 		if (!visible)
 			return;
 		MinecraftClient minecraft = MinecraftClient.getInstance();
 		TextRenderer fontRenderer = minecraft.textRenderer;
-		RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-		RenderSystem.setShaderTexture(0, TEXTURE);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		if (dragging)
 			setSliderPos(mouseX);
 
-		drawTexture(matrixStack, getX() + (int) (sliderValue * (width - 8)), getY(), 131, 0, 8, 16);
-		fontRenderer.draw(matrixStack, getMessage(), getX(), getY() - 12, 0x404040);
+		context.drawTexture(TEXTURE, getX() + (int) (sliderValue * (width - 8)), getY(), 131, 0, 8, 16);
+		context.drawText(fontRenderer, getMessage(), getX(), getY() - 12, 0x404040, false);
 	}
 
 	@Override

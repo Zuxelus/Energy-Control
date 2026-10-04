@@ -18,7 +18,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -92,9 +92,9 @@ public class GuiHoloPanel extends GuiPanelBase<ContainerHoloPanel> {
 	}
 
 	@Override
-	protected void drawBackground(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-		super.drawBackground(matrixStack, partialTicks, mouseX, mouseY);
+	protected void drawBackground(DrawContext context, float partialTicks, int mouseX, int mouseY) {
+		super.drawBackground(context, partialTicks, mouseX, mouseY);
 		if (textboxTitle != null)
-			textboxTitle.renderButton(matrixStack, mouseX, mouseY, partialTicks);
+			textboxTitle.render(context, mouseX, mouseY, partialTicks);
 	}
 }

@@ -2,7 +2,6 @@ package com.zuxelus.energycontrol.gui.controls;
 
 import net.minecraft.text.Text;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.network.NetworkHelper;
@@ -14,8 +13,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.PressableWidget;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 
@@ -37,17 +35,14 @@ public class GuiInfoPanelCheckBox extends PressableWidget {
 	}
 
 	@Override
-	public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void renderWidget(DrawContext context, int mouseX, int mouseY, float partialTicks) {
 		if (!visible)
 			return;
 		MinecraftClient minecraft = MinecraftClient.getInstance();
 		TextRenderer fontRenderer = minecraft.textRenderer;
-		RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-		RenderSystem.setShaderTexture(0, TEXTURE);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		int delta = checked ? 6 : 0;
-		drawTexture(matrixStack, getX(), getY() + 1, 176, delta, 6, 6);
-		fontRenderer.draw(matrixStack, getMessage(), getX() + 8, getY(), 0x404040);
+		context.drawTexture(TEXTURE, getX(), getY() + 1, 176, delta, 6, 6);
+		context.drawText(fontRenderer, getMessage(), getX() + 8, getY(), 0x404040, false);
 	}
 
 	@Override

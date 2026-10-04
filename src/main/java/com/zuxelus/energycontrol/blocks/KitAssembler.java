@@ -1,5 +1,7 @@
 package com.zuxelus.energycontrol.blocks;
 
+import com.mojang.serialization.MapCodec;
+import net.minecraft.block.BlockWithEntity;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
@@ -17,6 +19,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class KitAssembler extends FacingHorizontalActive {
+	public static final MapCodec<KitAssembler> CODEC = createCodec(settings -> new KitAssembler());
+
+	@Override
+	protected MapCodec<? extends BlockWithEntity> getCodec() {
+		return CODEC;
+	}
 
 	public KitAssembler() {
 		super(FabricBlockSettings.copyOf(ModItems.settings));

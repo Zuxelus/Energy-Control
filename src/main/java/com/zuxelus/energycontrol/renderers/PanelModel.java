@@ -124,7 +124,7 @@ public class PanelModel implements UnbakedModel {
 			for (int i = 0; i < 4; i++) {
 				float[] p = transform(quad[i][0], quad[i][1], quad[i][2], facing);
 				emitter.pos(i, p[0], p[1], p[2]);
-				emitter.sprite(i, 0, sprite.getFrameU(uv[i][0] * 16), sprite.getFrameV(uv[i][1] * 16));
+				emitter.sprite(i, 0, sprite.getFrameU(uv[i][0]), sprite.getFrameV(uv[i][1]));
 				emitter.spriteColor(i, 0, color);
 				float coord = p[side.getAxis().ordinal()];
 				if (coord != (side.getDirection() == Direction.AxisDirection.POSITIVE ? 1.0F : 0.0F))

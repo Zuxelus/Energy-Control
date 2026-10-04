@@ -13,7 +13,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -58,34 +58,27 @@ public abstract class GuiPanelBase<T extends ScreenHandler> extends GuiContainer
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(matrixStack);
-		super.render(matrixStack, mouseX, mouseY, partialTicks);
-		drawMouseoverTooltip(matrixStack, mouseX, mouseY);
+	public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+		super.render(context, mouseX, mouseY, partialTicks);
+		drawMouseoverTooltip(context, mouseX, mouseY);
 	}
 
 	@Override
-	protected void drawForeground(MatrixStack matrixStack, int mouseX, int mouseY) {
-		drawCenteredText(matrixStack, title, backgroundWidth, 6);
+	protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
+		drawCenteredText(context, title, backgroundWidth, 6);
 	}
 
 	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int mouseButton) {
 		if (textboxTitle != null) {
 			textboxTitle.mouseReleased(mouseX - x, mouseY - y, mouseButton);
+			// the screen places a carried item in a slot on mouse release, so the release must reach it
 			if (textboxTitle.isFocused())
 				return super.mouseReleased(mouseX, mouseY, mouseButton);
 			focusOn(null);
 			updateTitle();
 		}
 		return super.mouseReleased(mouseX, mouseY, mouseButton);
-	}
-
-	@Override
-	public void handledScreenTick() {
-		super.handledScreenTick();
-		if (textboxTitle != null)
-			textboxTitle.tick();
 	}
 
 	@SuppressWarnings("resource")

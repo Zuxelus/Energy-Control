@@ -44,13 +44,15 @@ public abstract class FacingHorizontal extends BlockWithEntity {
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
 		if (type == ModTileEntityTypes.holo_panel)
-			return checkType(type, type, TileEntityHoloPanel::tickStatic);
+			return validateTicker(type, type, TileEntityHoloPanel::tickStatic);
 		if (type == ModTileEntityTypes.holo_panel_extender)
-			return checkType(type, type, TileEntityHoloPanelExtender::tickStatic);
+			return validateTicker(type, type, TileEntityHoloPanelExtender::tickStatic);
 		if (type == ModTileEntityTypes.remote_thermo)
-			return checkType(type, type, TileEntityRemoteThermalMonitor::tickStatic);
+			return validateTicker(type, type, TileEntityRemoteThermalMonitor::tickStatic);
 		if (type == ModTileEntityTypes.kit_assembler)
-			return checkType(type, type, TileEntityKitAssembler::tickStatic);
+			return validateTicker(type, type, TileEntityKitAssembler::tickStatic);
+		if (type == ModTileEntityTypes.range_trigger)
+			return validateTicker(type, type, TileEntityRangeTrigger::tickStatic);
 		return null;
 	}
 

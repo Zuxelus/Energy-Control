@@ -237,7 +237,7 @@ public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 		}
 	}
 
-	// immediate full-bright draw like TextRenderer.draw(MatrixStack, ...); the polygon offset keeps the text off the screen face
+	// replacement for TextRenderer.draw(MatrixStack, ...) removed in 1.20: immediate full-bright draw; the polygon offset keeps the text off the screen face
 	private static void drawString(TextRenderer fontRenderer, MatrixStack matrixStack, String text, float x, float y, int color) {
 		VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
 		fontRenderer.draw(text, x, y, color, false, matrixStack.peek().getPositionMatrix(), immediate, TextRenderer.TextLayerType.POLYGON_OFFSET, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);

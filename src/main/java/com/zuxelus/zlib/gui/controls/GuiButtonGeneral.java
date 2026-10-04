@@ -2,15 +2,12 @@ package com.zuxelus.zlib.gui.controls;
 
 import net.minecraft.screen.ScreenTexts;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -47,29 +44,19 @@ public class GuiButtonGeneral extends ButtonWidget {
 	}
 
 	@Override
-	public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void renderWidget(DrawContext context, int mouseX, int mouseY, float partialTicks) {
 		if (!visible)
 			return;
 
 		MinecraftClient minecraft = MinecraftClient.getInstance();
 		TextRenderer fontRenderer = minecraft.textRenderer;
-		if (texture != null) {
-			RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-			RenderSystem.setShaderTexture(0, texture);
-		}
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		//isHovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
-		/*RenderSystem.enableBlend();
-		RenderSystem.defaultBlendFunc();
-		RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);*/
 		if (hovered && hasGradient)
-			fillGradient(matrixStack, getX(), getY(), getX() + width, getY() + height, 0x80FFFFFF, 0x80FFFFFF);
+			context.fillGradient(getX(), getY(), getX() + width, getY() + height, 0x80FFFFFF, 0x80FFFFFF);
 		if (texture != null)
-			drawTexture(matrixStack, getX(), getY(), textureLeft / scale, hovered ? (textureTop + textureTopOff) / scale : textureTop / scale, width, height, 256 / scale, 256 / scale);
-		//mouseDragged(mc, mouseX, mouseY);
+			context.drawTexture(texture, getX(), getY(), textureLeft / scale, hovered ? (textureTop + textureTopOff) / scale : textureTop / scale, width, height, 256 / scale, 256 / scale);
 		String displayString = getMessage().getString();
 		if (!displayString.equals(""))
-			fontRenderer.draw(matrixStack, displayString, getX() + (width - fontRenderer.getWidth(displayString)) / 2, getY() - 3 + height / 2, 0x404040);
+			context.drawText(fontRenderer, displayString, getX() + (width - fontRenderer.getWidth(displayString)) / 2, getY() - 3 + height / 2, 0x404040, false);
 	}
 
 	public GuiButtonGeneral setGradient() {

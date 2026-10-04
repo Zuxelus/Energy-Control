@@ -46,6 +46,6 @@ public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel
 			return;
 
 		ItemCardReader reader = new ItemCardReader(card);
-		((ItemCardMain) item).updateCardNBT(player.world, player.getBlockPos(), reader, te.getStack(InventoryPortablePanel.SLOT_UPGRADE_RANGE));
+		((ItemCardMain) item).updateCardNBT(player.getWorld(), player.getBlockPos(), reader, te.getStack(InventoryPortablePanel.SLOT_UPGRADE_RANGE));
 	}
 }

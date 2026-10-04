@@ -3,6 +3,7 @@ package com.zuxelus.energycontrol.crossmod.rei;
 import com.zuxelus.energycontrol.gui.GuiKitAssembler;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.recipes.KitAssemblerRecipe;
+import com.zuxelus.energycontrol.recipes.KitAssemblerRecipeType;
 
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
@@ -15,6 +16,7 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.item.ItemStack;
+import net.minecraft.recipe.RecipeEntry;
 
 @Environment(EnvType.CLIENT)
 public final class ClientPlugin implements REIClientPlugin {
@@ -29,7 +31,7 @@ public final class ClientPlugin implements REIClientPlugin {
 
 	@Override
 	public void registerDisplays(DisplayRegistry registry) {
-		registry.registerFiller(KitAssemblerRecipe.class, KitAssemblerDisplay::new);
+		registry.registerRecipeFiller(KitAssemblerRecipe.class, KitAssemblerRecipeType.TYPE, (RecipeEntry<KitAssemblerRecipe> entry) -> new KitAssemblerDisplay(entry.value()));
 	}
 
 	@Override

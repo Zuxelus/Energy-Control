@@ -4,9 +4,6 @@ import net.minecraft.screen.ScreenTexts;
 
 import java.util.List;
 
-import org.lwjgl.opengl.GL11;
-
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 
@@ -16,13 +13,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.PressableWidget;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.util.Window;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
@@ -87,7 +78,7 @@ public class GuiHowlerAlarmListBox extends PressableWidget {
 	}
 
 	@Override
-	public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void renderWidget(DrawContext context, int mouseX, int mouseY, float partialTicks) {
 		if (dragging) {
 			int pos = (mouseY - getY() - SCROLL_BUTTON_HEIGHT - dragDelta)
 					* (lineHeight * items.size() + BASIC_Y_OFFSET - height)
@@ -115,40 +106,27 @@ public class GuiHowlerAlarmListBox extends PressableWidget {
 		}
 
 		int rowTop = BASIC_Y_OFFSET;
-		GL11.glEnable(GL11.GL_SCISSOR_TEST);
-		Window scaler = minecraft.getWindow();
-		GL11.glScissor((int) (getX() * scaler.getScaleFactor()), (int) (scaler.getHeight() - (getY() + height) * scaler.getScaleFactor()), (int) ((width - SCROLL_WIDTH) * scaler.getScaleFactor()), (int) (height * scaler.getScaleFactor()));
+		context.enableScissor(getX(), getY(), getX() + width - SCROLL_WIDTH, getY() + height);
 
 		for (String row : items) {
 			if(row.equals(currentItem)) {
-				fill(matrixStack, getX(), getY() + rowTop - scrollTop - 1, getX() + width - SCROLL_WIDTH, getY() + rowTop - scrollTop + lineHeight - 1, selectedColor);
-				fontRenderer.draw(matrixStack, row, getX() + BASIC_X_OFFSET, getY() + rowTop - scrollTop, selectedFontColor);
+				context.fill(getX(), getY() + rowTop - scrollTop - 1, getX() + width - SCROLL_WIDTH, getY() + rowTop - scrollTop + lineHeight - 1, selectedColor);
+				context.drawText(fontRenderer, row, getX() + BASIC_X_OFFSET, getY() + rowTop - scrollTop, selectedFontColor, false);
 			} else
-				fontRenderer.draw(matrixStack, row, getX() + BASIC_X_OFFSET, getY() + rowTop - scrollTop, fontColor);
+				context.drawText(fontRenderer, row, getX() + BASIC_X_OFFSET, getY() + rowTop - scrollTop, fontColor, false);
 			
 			rowTop += lineHeight;
 		}
 		
-		GL11.glDisable(GL11.GL_SCISSOR_TEST);
+		context.disableScissor();
 
 		// Slider
 		int sliderX = getX() + width - SCROLL_WIDTH + 1;
 		sliderY = getY() + SCROLL_BUTTON_HEIGHT + ((height - 2 * SCROLL_BUTTON_HEIGHT - sliderHeight) * scrollTop) / (lineHeight * items.size() + BASIC_Y_OFFSET - height);
-		RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-		RenderSystem.setShaderTexture(0, TEXTURE);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		drawTexture(matrixStack, sliderX, sliderY, 131, 16, SCROLL_WIDTH - 1, 1);
-
-		Tessellator tesselator = Tessellator.getInstance();
-		BufferBuilder bufferbuilder = tesselator.getBuffer();
-		bufferbuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
-		bufferbuilder.vertex((sliderX), sliderY + sliderHeight - 1, 0).texture(131 / 256F, (18) / 256F).next();
-		bufferbuilder.vertex(sliderX + SCROLL_WIDTH - 1, sliderY + sliderHeight - 1, 0).texture((131 + SCROLL_WIDTH - 1) / 256F, (18) / 256F).next();
-		bufferbuilder.vertex(sliderX + SCROLL_WIDTH - 1, sliderY + 1, 0).texture((131 + SCROLL_WIDTH - 1) / 256F, (17) / 256F).next();
-		bufferbuilder.vertex((sliderX), sliderY + 1, 0).texture(131 / 256F, (17) / 256F).next();
-		tesselator.draw();
-
-		drawTexture(matrixStack, sliderX, sliderY + sliderHeight - 1, 131, 19, SCROLL_WIDTH - 1, 1);
+		context.drawTexture(TEXTURE, sliderX, sliderY, 131, 16, SCROLL_WIDTH - 1, 1);
+		// slider body: one texture row stretched to the slider height
+		context.drawTexture(TEXTURE, sliderX, sliderY + 1, SCROLL_WIDTH - 1, sliderHeight - 2, 131, 17, SCROLL_WIDTH - 1, 1, 256, 256);
+		context.drawTexture(TEXTURE, sliderX, sliderY + sliderHeight - 1, 131, 19, SCROLL_WIDTH - 1, 1);
 	}
 
 	private void setCurrent(double targetY) {
@@ -164,6 +142,31 @@ public class GuiHowlerAlarmListBox extends PressableWidget {
 			NetworkHelper.updateSeverTileEntity(alarm.getPos(), 1, newSound);
 			alarm.setSoundName(newSound);
 		}
+	}
+
+	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		// consumed, otherwise the screen also moves keyboard focus away from the list
+		if (keyCode == 264) { // down
+			scrollDown();
+			return true;
+		}
+		if (keyCode == 265) { // up
+			scrollUp();
+			return true;
+		}
+		return super.keyPressed(keyCode, scanCode, modifiers);
+	}
+
+	@Override
+	public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+		if (isMouseOver(mouseX, mouseY)) {
+			if (verticalAmount > 0)
+				scrollUp();
+			if (verticalAmount < 0)
+				scrollDown();
+		}
+		return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
 	}
 
 	@Override

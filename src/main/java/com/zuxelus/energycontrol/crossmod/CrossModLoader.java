@@ -9,7 +9,7 @@ import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
+import net.minecraft.inventory.Inventory;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
@@ -111,20 +111,20 @@ public class CrossModLoader {
 				return tag;
 		}
 		NbtCompound tag = new NbtCompound();
-		if (te instanceof FixedItemInv) {
-			FixedItemInv inv = (FixedItemInv) te;
+		if (te instanceof Inventory) {
+			Inventory inv = (Inventory) te;
 			/*if (te instanceof BaseContainerBlockEntity)
 				tag.putString("name", ((BaseContainerBlockEntity) te).getDisplayName().getString());
 			tag.putBoolean("sided", inv instanceof WorldlyContainer);*/
 			int inUse = 0;
 			int items = 0;
-			tag.putInt("size", inv.getSlotCount());
-			for (int i = 0; i < Math.min(6, inv.getSlotCount()); i++) {
-				if (inv.getInvStack(i) != ItemStack.EMPTY) {
+			tag.putInt("size", inv.size());
+			for (int i = 0; i < Math.min(6, inv.size()); i++) {
+				if (inv.getStack(i) != ItemStack.EMPTY) {
 					inUse++;
-					items += inv.getInvStack(i).getCount();
+					items += inv.getStack(i).getCount();
 				}
-				tag.put("slot" + Integer.toString(i), inv.getInvStack(i).writeNbt(new NbtCompound()));
+				tag.put("slot" + Integer.toString(i), inv.getStack(i).writeNbt(new NbtCompound()));
 			}
 			tag.putInt("used", inUse);
 			tag.putInt("items", items);

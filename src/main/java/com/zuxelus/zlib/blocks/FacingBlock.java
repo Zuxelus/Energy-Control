@@ -45,19 +45,21 @@ public abstract class FacingBlock extends BlockWithEntity {
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
 		if (type == ModTileEntityTypes.info_panel)
-			return checkType(type, type, TileEntityInfoPanel::tickStatic);
+			return validateTicker(type, type, TileEntityInfoPanel::tickStatic);
 		if (type == ModTileEntityTypes.info_panel_extender)
-			return checkType(type, type, TileEntityInfoPanelExtender::tickStatic);
+			return validateTicker(type, type, TileEntityInfoPanelExtender::tickStatic);
 		if (type == ModTileEntityTypes.info_panel_advanced)
-			return checkType(type, type, TileEntityAdvancedInfoPanel::tickStatic);
+			return validateTicker(type, type, TileEntityAdvancedInfoPanel::tickStatic);
 		if (type == ModTileEntityTypes.info_panel_advanced_extender)
-			return checkType(type, type, TileEntityAdvancedInfoPanelExtender::tickStatic);
+			return validateTicker(type, type, TileEntityAdvancedInfoPanelExtender::tickStatic);
 		if (type == ModTileEntityTypes.howler_alarm)
-			return checkType(type, type, TileEntityHowlerAlarm::tickStatic);
+			return validateTicker(type, type, TileEntityHowlerAlarm::tickStatic);
 		if (type == ModTileEntityTypes.industrial_alarm)
-			return checkType(type, type, TileEntityIndustrialAlarm::tickStatic);
+			return validateTicker(type, type, TileEntityIndustrialAlarm::tickStatic);
 		if (type == ModTileEntityTypes.timer)
-			return checkType(type, type, TileEntityTimer::tickStatic);
+			return validateTicker(type, type, TileEntityTimer::tickStatic);
+		if (type == ModTileEntityTypes.thermal_monitor)
+			return validateTicker(type, type, TileEntityThermalMonitor::tickStatic);
 		return null;
 	}
 

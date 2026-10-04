@@ -5,13 +5,12 @@ import java.util.Vector;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.*;
 
-import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.RecipeInputInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.CraftingRecipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.ShapelessRecipe;
-import net.minecraft.util.Identifier;
 import net.minecraft.recipe.book.CraftingRecipeCategory;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.util.math.BlockPos;
@@ -29,12 +28,12 @@ public class StorageArrayRecipe implements CraftingRecipe {
 	}
 
 	@Override
-	public boolean matches(CraftingInventory inv, World level) {
+	public boolean matches(RecipeInputInventory inv, World level) {
 		return !craft(inv, level.getRegistryManager()).isEmpty();
 	}
 
 	@Override
-	public ItemStack craft(CraftingInventory inv, DynamicRegistryManager registryManager) {
+	public ItemStack craft(RecipeInputInventory inv, DynamicRegistryManager registryManager) {
 		int inventoryLength = inv.size();
 		int cardCount = 0;
 		int arrayCount = 0;
@@ -130,13 +129,8 @@ public class StorageArrayRecipe implements CraftingRecipe {
 	}
 
 	@Override
-	public ItemStack getOutput(DynamicRegistryManager registryManager) {
+	public ItemStack getResult(DynamicRegistryManager registryManager) {
 		return ItemStack.EMPTY;
-	}
-
-	@Override
-	public Identifier getId() {
-		return recipe.getId();
 	}
 
 	@Override

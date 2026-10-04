@@ -13,7 +13,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -53,11 +53,10 @@ public class GuiRemoteThermalMonitor extends GuiContainerBase<ContainerRemoteThe
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(matrixStack);
-		super.render(matrixStack, mouseX, mouseY, partialTicks);
-		textboxHeat.renderButton(matrixStack, mouseX, mouseY, partialTicks);
-		drawMouseoverTooltip(matrixStack, mouseX, mouseY);
+	public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+		super.render(context, mouseX, mouseY, partialTicks);
+		textboxHeat.render(context, mouseX, mouseY, partialTicks);
+		drawMouseoverTooltip(context, mouseX, mouseY);
 	}
 
 	@SuppressWarnings("resource")
@@ -82,12 +81,6 @@ public class GuiRemoteThermalMonitor extends GuiContainerBase<ContainerRemoteThe
 		textboxHeat.setText(Integer.toString(heat));
 	}
 
-	@Override
-	protected void handledScreenTick() {
-		super.handledScreenTick();
-		textboxHeat.tick();
-	}
-
 	// while typing, keys must not close the screen (inventory key) or move hotbar items (number keys)
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
@@ -102,9 +95,9 @@ public class GuiRemoteThermalMonitor extends GuiContainerBase<ContainerRemoteThe
 	}
 
 	@Override
-	protected void drawForeground(MatrixStack matrixStack, int mouseX, int mouseY) {
-		drawCenteredText(matrixStack, title, backgroundWidth, 6);
-		drawLeftAlignedText(matrixStack, I18n.translate("container.inventory"), 8, (backgroundHeight - 96) + 2);
+	protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
+		drawCenteredText(context, title, backgroundWidth, 6);
+		drawLeftAlignedText(context, I18n.translate("container.inventory"), 8, (backgroundHeight - 96) + 2);
 	}
 
 	@Override

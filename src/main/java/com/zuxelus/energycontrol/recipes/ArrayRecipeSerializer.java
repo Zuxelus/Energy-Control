@@ -1,24 +1,27 @@
 package com.zuxelus.energycontrol.recipes;
 
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.zuxelus.energycontrol.EnergyControl;
 
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.ShapelessRecipe;
-import net.minecraft.util.Identifier;
 
 public class ArrayRecipeSerializer implements RecipeSerializer<StorageArrayRecipe> {
+	// recipe codecs are dispatched by "type" and must stay map codecs, so the xmap is applied to the MapCodec
+	private static final Codec<StorageArrayRecipe> CODEC = ((MapCodec.MapCodecCodec<ShapelessRecipe>) RecipeSerializer.SHAPELESS.codec()).codec()
+			.xmap(StorageArrayRecipe::new, StorageArrayRecipe::getRecipe).codec();
 
 	@Override
-	public StorageArrayRecipe read(Identifier recipeId, JsonObject json) {
-		return new StorageArrayRecipe((ShapelessRecipe) RecipeSerializer.SHAPELESS.read(recipeId, json));
+	public Codec<StorageArrayRecipe> codec() {
+		return CODEC;
 	}
 
 	@Override
-	public StorageArrayRecipe read(Identifier recipeId, PacketByteBuf buffer) {
+	public StorageArrayRecipe read(PacketByteBuf buffer) {
 		try {
-			return new StorageArrayRecipe((ShapelessRecipe) RecipeSerializer.SHAPELESS.read(recipeId, buffer));
+			return new StorageArrayRecipe(RecipeSerializer.SHAPELESS.read(buffer));
 		} catch (Exception e) {
 			EnergyControl.LOGGER.error("Error reading storage array recipe from packet.", e);
 			throw e;

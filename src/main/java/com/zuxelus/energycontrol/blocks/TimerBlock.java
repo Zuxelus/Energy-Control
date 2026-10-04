@@ -1,5 +1,7 @@
 package com.zuxelus.energycontrol.blocks;
 
+import com.mojang.serialization.MapCodec;
+import net.minecraft.block.BlockWithEntity;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityTimer;
@@ -23,6 +25,12 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 public class TimerBlock extends FacingBlockSmall {
+	public static final MapCodec<TimerBlock> CODEC = createCodec(settings -> new TimerBlock());
+
+	@Override
+	protected MapCodec<? extends BlockWithEntity> getCodec() {
+		return CODEC;
+	}
 	protected static final VoxelShape AABB_DOWN = Block.createCuboidShape(1.0F, 9.0F, 1.0F, 15.0F, 15.0F, 15.0F);
 	protected static final VoxelShape AABB_UP = Block.createCuboidShape(1.0F, 0.0F, 1.0F, 15.0F, 7.0F, 15.0F);
 	protected static final VoxelShape AABB_NORTH = Block.createCuboidShape(1.0F, 1.0F, 9.0F, 15.0F, 15.0F, 15.0F);

@@ -14,7 +14,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.Element;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.item.ItemStack;
 
 @Environment(EnvType.CLIENT)
@@ -51,9 +51,9 @@ public class GuiCardText extends GuiBase {
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-		super.drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
-		textArea.render(matrixStack, mouseY, mouseY, partialTicks);
+	protected void drawGuiContainerBackgroundLayer(DrawContext context, float partialTicks, int mouseX, int mouseY) {
+		super.drawGuiContainerBackgroundLayer(context, partialTicks, mouseX, mouseY);
+		textArea.render(context, mouseY, mouseY, partialTicks);
 	}
 
 	@Override

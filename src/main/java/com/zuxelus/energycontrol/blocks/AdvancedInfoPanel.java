@@ -1,5 +1,7 @@
 package com.zuxelus.energycontrol.blocks;
 
+import com.mojang.serialization.MapCodec;
+import net.minecraft.block.BlockWithEntity;
 import net.minecraft.util.math.random.Random;
 
 import com.zuxelus.energycontrol.EnergyControl;
@@ -27,6 +29,12 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 public class AdvancedInfoPanel extends InfoPanel {
+	public static final MapCodec<AdvancedInfoPanel> CODEC = createCodec(settings -> new AdvancedInfoPanel());
+
+	@Override
+	protected MapCodec<? extends BlockWithEntity> getCodec() {
+		return CODEC;
+	}
 
 	public AdvancedInfoPanel() {
 		// the shape follows the panel thickness, so it must not be cached per block state

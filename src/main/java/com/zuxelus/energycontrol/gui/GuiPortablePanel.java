@@ -2,7 +2,6 @@ package com.zuxelus.energycontrol.gui;
 
 import java.util.List;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.PanelString;
@@ -13,9 +12,8 @@ import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -38,24 +36,20 @@ public class GuiPortablePanel extends HandledScreen<ContainerPortablePanel> {
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(matrixStack);
-		super.render(matrixStack, mouseX, mouseY, partialTicks);
-		drawMouseoverTooltip(matrixStack, mouseX, mouseY);
+	public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+		super.render(context, mouseX, mouseY, partialTicks);
+		drawMouseoverTooltip(context, mouseX, mouseY);
 	}
 
 	@Override
-	protected void drawBackground(MatrixStack matrixStack, float partialTicks, int x, int y) {
-		RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-		RenderSystem.setShaderTexture(0, TEXTURE);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+	protected void drawBackground(DrawContext context, float partialTicks, int x, int y) {
 		int left = (width - backgroundWidth) / 2;
 		int top = (height - backgroundHeight) / 2;
-		drawTexture(matrixStack, left, top, 0, 0, backgroundWidth, backgroundHeight);
+		context.drawTexture(TEXTURE, left, top, 0, 0, backgroundWidth, backgroundHeight);
 	}
 
 	@Override
-	protected void drawForeground(MatrixStack matrixStack, int x, int y) {
+	protected void drawForeground(DrawContext context, int x, int y) {
 		ItemStack stack = te.getStack(InventoryPortablePanel.SLOT_CARD);
 		if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain) {
 			ItemCardReader reader = new ItemCardReader(stack);
@@ -65,19 +59,19 @@ public class GuiPortablePanel extends HandledScreen<ContainerPortablePanel> {
 			if (state != CardState.OK && state != CardState.CUSTOM_ERROR)
 				joinedData = ItemCardReader.getStateMessage(state);
 			else
-				joinedData = ((ItemCardMain) stack.getItem()).getStringData(player.world, Integer.MAX_VALUE, reader, false, true);
+				joinedData = ((ItemCardMain) stack.getItem()).getStringData(player.getWorld(), Integer.MAX_VALUE, reader, false, true);
 
 			int row = 0;
 			for (PanelString panelString : joinedData) {
 				if (row < 14) {
 					if (panelString.textLeft != null)
-						textRenderer.draw(matrixStack, panelString.textLeft, 9, row * 10 + 10, 0x06aee4);
+						context.drawText(textRenderer, panelString.textLeft, 9, row * 10 + 10, 0x06aee4, false);
 					if (panelString.textCenter != null)
-						textRenderer.draw(matrixStack, panelString.textCenter, (168 - textRenderer.getWidth(panelString.textCenter)) / 2, row * 10 + 10, 0x06aee4);
+						context.drawText(textRenderer, panelString.textCenter, (168 - textRenderer.getWidth(panelString.textCenter)) / 2, row * 10 + 10, 0x06aee4, false);
 					if (panelString.textRight != null)
-						textRenderer.draw(matrixStack, panelString.textRight, 168 - textRenderer.getWidth(panelString.textRight), row * 10 + 10, 0x06aee4);
+						context.drawText(textRenderer, panelString.textRight, 168 - textRenderer.getWidth(panelString.textRight), row * 10 + 10, 0x06aee4, false);
 				} else if (row == 14)
-					textRenderer.draw(matrixStack, "...", 9, row * 10 + 10, 0x06aee4);
+					context.drawText(textRenderer, "...", 9, row * 10 + 10, 0x06aee4, false);
 				row++;
 			}
 		}

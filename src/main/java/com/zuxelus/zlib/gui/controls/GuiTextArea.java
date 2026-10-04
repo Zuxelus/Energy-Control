@@ -2,21 +2,14 @@ package com.zuxelus.zlib.gui.controls;
 
 import net.minecraft.screen.ScreenTexts;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.math.MathHelper;
 
 @Environment(EnvType.CLIENT)
@@ -44,50 +37,22 @@ public class GuiTextArea extends ClickableWidget {
 	}
 
 	@Override
-	public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-		fill(matrixStack, getX() - 1, getY() - 1, getX() + width + 1, getY() + height + 1, 0xFFA0A0A0);
-		fill(matrixStack, getX(), getY(), getX() + width, getY() + height, 0xFF000000);
+	public void renderWidget(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+		context.fill(getX() - 1, getY() - 1, getX() + width + 1, getY() + height + 1, 0xFFA0A0A0);
+		context.fill(getX(), getY(), getX() + width, getY() + height, 0xFF000000);
 		int textColor = 0xE0E0E0;
 
 		int textLeft = getX() + 4;
 		int textTop = getY() + (height - lineCount * (fontRenderer.fontHeight + 1)) / 2;
 
 		for (int i = 0; i < lineCount; i++)
-			fontRenderer.drawWithShadow(matrixStack, text[i], textLeft, textTop + (fontRenderer.fontHeight + 1) * i, textColor);
+			context.drawTextWithShadow(fontRenderer, text[i], textLeft, textTop + (fontRenderer.fontHeight + 1) * i, textColor);
 		textTop += (fontRenderer.fontHeight + 1) * cursorLine;
 		int cursorPositionX = textLeft + fontRenderer.getWidth(text[cursorLine].substring(0, Math.min(text[cursorLine].length(), cursorPosition))) - 1;
 		boolean drawCursor = isFocused() && cursorCounter / 6 % 2 == 0;
 		if (drawCursor)
-			drawCursorVertical(cursorPositionX, textTop - 1, cursorPositionX + 1, textTop + 1 + fontRenderer.fontHeight);
-	}
-
-	// Copy of TextFieldWidget.renderHighlight
-	private void drawCursorVertical(int left, int top, int right, int bottom) {
-		if (left < right) {
-			int i = left;
-			left = right;
-			right = i;
-		}
-
-		if (top < bottom) {
-			int j = top;
-			top = bottom;
-			bottom = j;
-		}
-
-		Tessellator tesselator = Tessellator.getInstance();
-		BufferBuilder bufferbuilder = tesselator.getBuffer();
-		RenderSystem.setShaderColor(0.0F, 0.0F, 255.0F, 255.0F);
-		RenderSystem.setShader(GameRenderer::getPositionProgram);
-		RenderSystem.enableColorLogicOp();
-		RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-		bufferbuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
-		bufferbuilder.vertex(left, bottom, 0.0D).next();
-		bufferbuilder.vertex(right, bottom, 0.0D).next();
-		bufferbuilder.vertex(right, top, 0.0D).next();
-		bufferbuilder.vertex(left, top, 0.0D).next();
-		tesselator.draw();
-		RenderSystem.disableColorLogicOp();
+			// same inverting highlight that TextFieldWidget uses for selections
+			context.fill(RenderLayer.getGuiTextHighlight(), cursorPositionX, textTop - 1, cursorPositionX + 1, textTop + 1 + fontRenderer.fontHeight, 0xFF0000FF);
 	}
 
 	public void updateCursorCounter() {

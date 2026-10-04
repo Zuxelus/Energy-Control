@@ -11,7 +11,6 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import reborncore.common.powerSystem.PowerAcceptorBlockEntity;
 import reborncore.common.powerSystem.PowerSystem;
-import reborncore.common.powerSystem.PowerSystem.EnergySystem;
 import techreborn.blockentity.generator.BaseFluidGeneratorBlockEntity;
 import techreborn.blockentity.storage.fluid.TankUnitBaseBlockEntity;
 
@@ -23,14 +22,10 @@ public class CrossTechReborn extends CrossModBase {
 			NbtCompound tag = new NbtCompound();
 			PowerAcceptorBlockEntity storage = (PowerAcceptorBlockEntity) te;
 			tag.putInt("type", 12);
-			tag.putString("euType", PowerSystem.getDisplayPower().abbreviation);
-			if (PowerSystem.getDisplayPower() == EnergySystem.EU) {
-				tag.putDouble("storage", storage.getEnergy());
-				tag.putDouble("maxStorage", storage.getMaxStoredPower());
-			} else {
-				tag.putDouble("storage", storage.getEnergy()/* * RebornCoreConfig.euPerFU*/);
-				tag.putDouble("maxStorage", storage.getMaxStoredPower()/* * RebornCoreConfig.euPerFU*/);
-			}
+			// RebornCore has a single energy unit since 1.20
+			tag.putString("euType", PowerSystem.ABBREVIATION);
+			tag.putDouble("storage", storage.getEnergy());
+			tag.putDouble("maxStorage", storage.getMaxStoredPower());
 			return tag;
 		}
 		return null;

@@ -12,8 +12,10 @@ import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.init.ModContainerTypes;
 import com.zuxelus.energycontrol.init.ModItems;
+import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.network.ChannelHandler;
 import com.zuxelus.energycontrol.tileentities.ScreenManager;
+import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -23,6 +25,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 public class EnergyControl implements ModInitializer {
@@ -47,13 +51,16 @@ public class EnergyControl implements ModInitializer {
 		new ConfigHandler();
 		new ModContainerTypes();
 		ModItems.init();
-		ITEM_GROUP = FabricItemGroup.builder(new Identifier(MODID, "general"))
+		ITEM_GROUP = Registry.register(Registries.ITEM_GROUP, new Identifier(MODID, "general"), FabricItemGroup.builder()
+			.displayName(Text.translatable("itemGroup.energycontrol.general"))
 			.icon(() -> new ItemStack(ModItems.kit_energy))
 			.entries((context, entries) -> Registries.ITEM.getIds().stream()
 				.filter(id -> id.getNamespace().equals(MODID))
 				.sorted(Comparator.comparingInt(id -> Registries.ITEM.getRawId(Registries.ITEM.get(id))))
 				.forEach(id -> entries.add(Registries.ITEM.get(id))))
-			.build();
+			.build());
+		// also loads ModTileEntityTypes, so the block entity types are registered while the registries are open
+		team.reborn.energy.api.EnergyStorage.SIDED.registerForBlockEntity(TileEntityKitAssembler::getEnergyInput, ModTileEntityTypes.kit_assembler);
 		ChannelHandler.init();
 		CrossModLoader.init();
 	}

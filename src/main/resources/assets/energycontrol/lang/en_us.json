@@ -171,8 +171,8 @@
     "msg.ec.InfoPanelRotorHealth": "RotorHealth: %s",
     "msg.ec.InfoPanelUsing": "Using: %s",
     "msg.ec.InfoPanelWastemb": "Waste: %s mb",
-    "msg.ec.InfoPanelWaterFlow": "WaterFlow: %s",
-    "msg.ec.InfoPanelWindStrength": "WindStrength: %s",
+    "msg.ec.InfoPanelWaterFlow": "Water Flow: %s",
+    "msg.ec.InfoPanelWindStrength": "Wind Strength: %s",
 
     "msg.ec.cbInfoPanelLiquidName": "Liquid name",
     "msg.ec.cbInfoPanelLiquidAmount": "Amount",

@@ -1,5 +1,7 @@
 package com.zuxelus.energycontrol.blocks;
 
+import com.mojang.serialization.MapCodec;
+import net.minecraft.block.BlockWithEntity;
 import com.zuxelus.energycontrol.gui.ScreenHandler;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
@@ -22,6 +24,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class IndustrialAlarm extends HowlerAlarm {
+	public static final MapCodec<IndustrialAlarm> CODEC = createCodec(settings -> new IndustrialAlarm());
+
+	@Override
+	protected MapCodec<? extends BlockWithEntity> getCodec() {
+		return CODEC;
+	}
 	public static final IntProperty LIGHT = IntProperty.of("light", 0, 3);
 	private static final int[] lightSteps = { 0, 7, 14, 7, 0};
 

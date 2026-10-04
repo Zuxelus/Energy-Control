@@ -1,5 +1,7 @@
 package com.zuxelus.energycontrol.blocks;
 
+import com.mojang.serialization.MapCodec;
+import net.minecraft.block.BlockWithEntity;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
@@ -22,6 +24,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class InfoPanelExtender extends FacingBlockActive {
+	public static final MapCodec<InfoPanelExtender> CODEC = createCodec(InfoPanelExtender::new);
+
+	@Override
+	protected MapCodec<? extends BlockWithEntity> getCodec() {
+		return CODEC;
+	}
 
 	public InfoPanelExtender() {
 		this(FabricBlockSettings.copyOf(ModItems.settings));

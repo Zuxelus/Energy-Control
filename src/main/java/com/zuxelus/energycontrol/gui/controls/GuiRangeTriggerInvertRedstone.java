@@ -2,7 +2,6 @@ package com.zuxelus.energycontrol.gui.controls;
 
 import net.minecraft.screen.ScreenTexts;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityRangeTrigger;
@@ -11,8 +10,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.PressableWidget;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
 
 
@@ -32,14 +30,11 @@ public class GuiRangeTriggerInvertRedstone extends PressableWidget {
 	}
 
 	@Override
-	public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void renderWidget(DrawContext context, int mouseX, int mouseY, float partialTicks) {
 		if (!visible)
 			return;
 
-		RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-		RenderSystem.setShaderTexture(0, TEXTURE);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		drawTexture(matrixStack, getX(), getY() + 1, 176, checked ? 15 : 0, 18, 15);
+		context.drawTexture(TEXTURE, getX(), getY() + 1, 176, checked ? 15 : 0, 18, 15);
 	}
 
 	@Override

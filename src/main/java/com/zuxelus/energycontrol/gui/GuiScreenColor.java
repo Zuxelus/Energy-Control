@@ -5,7 +5,6 @@ import net.minecraft.screen.ScreenTexts;
 import java.awt.Color;
 import java.util.ArrayList;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
@@ -15,11 +14,10 @@ import com.zuxelus.zlib.gui.controls.GuiTextNumeric;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
@@ -93,23 +91,20 @@ public class GuiScreenColor extends GuiBase {
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
-		textRenderer.draw(matrixStack, I18n.translate("msg.ec.ScreenColor"), 152, 6, colorBack);
-		textRenderer.draw(matrixStack, I18n.translate("msg.ec.TextColor"), 8, 6, colorText);
+	protected void drawGuiContainerForegroundLayer(DrawContext context, int mouseX, int mouseY) {
+		context.drawText(textRenderer, I18n.translate("msg.ec.ScreenColor"), 152, 6, colorBack, false);
+		context.drawText(textRenderer, I18n.translate("msg.ec.TextColor"), 8, 6, colorText, false);
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-		super.drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
-		RenderSystem.setShaderTexture(0, PICKER);
-		drawTexture(matrixStack, guiLeft + 20, guiTop + 34, isDarkPicker ? 80 : 0, 0, 80, 80, 160, 80);
-		drawTexture(matrixStack, guiLeft + 20 + offset, guiTop + 34, isDarkPicker2 ? 80 : 0, 0, 80, 80, 160, 80);
-		RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-		RenderSystem.setShaderTexture(0, texture);
+	protected void drawGuiContainerBackgroundLayer(DrawContext context, float partialTicks, int mouseX, int mouseY) {
+		super.drawGuiContainerBackgroundLayer(context, partialTicks, mouseX, mouseY);
+		context.drawTexture(PICKER, guiLeft + 20, guiTop + 34, isDarkPicker ? 80 : 0, 0, 80, 80, 160, 80);
+		context.drawTexture(PICKER, guiLeft + 20 + offset, guiTop + 34, isDarkPicker2 ? 80 : 0, 0, 80, 80, 160, 80);
 		for (GuiTextNumeric text : fieldList)
-			text.render(matrixStack, mouseX, mouseY, partialTicks);
+			text.render(context, mouseX, mouseY, partialTicks);
 		for (GuiTextNumeric text : fieldList2)
-			text.render(matrixStack, mouseX, mouseY, partialTicks);
+			text.render(context, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
@@ -236,15 +231,6 @@ public class GuiScreenColor extends GuiBase {
 
 	private boolean isInside(double mouseX, double mouseY, int x, int y, int width, int height) {
 		return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
-	}
-
-	@Override
-	public void tick() {
-		super.tick();
-		for (GuiTextNumeric text : fieldList)
-			text.tick();
-		for (GuiTextNumeric text : fieldList2)
-			text.tick();
 	}
 
 	@Override

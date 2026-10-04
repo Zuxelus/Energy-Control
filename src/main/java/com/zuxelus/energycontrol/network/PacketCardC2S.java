@@ -42,9 +42,9 @@ public class PacketCardC2S extends PacketBase {
 		String className = buf.readString();
 		NbtCompound tag = buf.readNbt();
 		server.execute(() -> {
-			if (player == null || player.world == null)
+			if (player == null || player.getWorld() == null)
 				return;
-			BlockEntity te = player.world.getBlockEntity(pos);
+			BlockEntity te = player.getWorld().getBlockEntity(pos);
 			if (te == null || !(te instanceof TileEntityInfoPanel))
 				return;
 			TileEntityInfoPanel panel = (TileEntityInfoPanel) te;

@@ -1,13 +1,11 @@
 package com.zuxelus.energycontrol.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.zuxelus.energycontrol.containers.ContainerCardHolder;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -24,25 +22,21 @@ public class GuiCardHolder extends HandledScreen<ContainerCardHolder> {
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(matrixStack);
-		super.render(matrixStack, mouseX, mouseY, partialTicks);
-		drawMouseoverTooltip(matrixStack, mouseX, mouseY);
+	public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+		super.render(context, mouseX, mouseY, partialTicks);
+		drawMouseoverTooltip(context, mouseX, mouseY);
 	}
 
 	@Override
-	protected void drawForeground(MatrixStack matrixStack, int mouseX, int mouseY) {
-		textRenderer.draw(matrixStack, title, 8, 6, 4210752);
-		textRenderer.draw(matrixStack, playerInventoryTitle, 8, backgroundHeight - 96 + 2, 4210752);
+	protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
+		context.drawText(textRenderer, title, 8, 6, 4210752, false);
+		context.drawText(textRenderer, playerInventoryTitle, 8, backgroundHeight - 96 + 2, 4210752, false);
 	}
 
 	@Override
 	// the last two parameters are the mouse position; x and y below are the screen position fields
-	protected void drawBackground(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-		RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-		RenderSystem.setShaderTexture(0, TEXTURE);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		drawTexture(matrixStack, x, y, 0, 0, backgroundWidth, inventoryRows * 18 + 17);
-		drawTexture(matrixStack, x, y + inventoryRows * 18 + 17, 0, 126, backgroundWidth, 96);
+	protected void drawBackground(DrawContext context, float partialTicks, int mouseX, int mouseY) {
+		context.drawTexture(TEXTURE, x, y, 0, 0, backgroundWidth, inventoryRows * 18 + 17);
+		context.drawTexture(TEXTURE, x, y + inventoryRows * 18 + 17, 0, 126, backgroundWidth, 96);
 	}
 }

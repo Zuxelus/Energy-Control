@@ -1,7 +1,5 @@
 package com.zuxelus.energycontrol.gui.controls;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.zuxelus.energycontrol.EnergyControl;
 
 import net.fabricmc.api.EnvType;
@@ -9,8 +7,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -26,23 +23,17 @@ public class CompactButton extends ButtonWidget {
 	}
 
 	@Override
-	public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void renderWidget(DrawContext context, int mouseX, int mouseY, float partialTicks) {
 		if (!visible)
 			return;
 
 		MinecraftClient minecraft = MinecraftClient.getInstance();
 		TextRenderer fontRenderer = minecraft.textRenderer;
-		RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-		RenderSystem.setShaderTexture(0, TEXTURE);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		int i = !active ? 0 : isHovered() ? 2 : 1;
-		RenderSystem.enableBlend();
-		RenderSystem.defaultBlendFunc();
-		RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
-		drawTexture(matrixStack, getX(), getY(), 0, 64 + i * 12, width / 2 + width % 2, height);
-		drawTexture(matrixStack, getX() + width / 2 + width % 2, getY(), 200 - width / 2, 64 + i * 12, width / 2, height);
+		context.drawTexture(TEXTURE, getX(), getY(), 0, 64 + i * 12, width / 2 + width % 2, height);
+		context.drawTexture(TEXTURE, getX() + width / 2 + width % 2, getY(), 200 - width / 2, 64 + i * 12, width / 2, height);
 		OrderedText ireorderingprocessor = getMessage().asOrderedText();
-		fontRenderer.draw(matrixStack, ireorderingprocessor, getX() + (width - fontRenderer.getWidth(ireorderingprocessor)) / 2, getY() + (height - 8) / 2, 0x404040);
+		context.drawText(fontRenderer, ireorderingprocessor, getX() + (width - fontRenderer.getWidth(ireorderingprocessor)) / 2, getY() + (height - 8) / 2, 0x404040, false);
 	}
 
 	public int getId() {

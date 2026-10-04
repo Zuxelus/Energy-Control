@@ -90,7 +90,7 @@ public abstract class ContainerBase<T extends Inventory> extends ScreenHandler {
 	public static BlockEntity getBlockEntity(PlayerInventory player, PacketByteBuf data) {
 		Objects.requireNonNull(player, "Player cannot be null!");
 		Objects.requireNonNull(data, "Data cannot be null!");
-		BlockEntity te = player.player.world.getBlockEntity(data.readBlockPos());
+		BlockEntity te = player.player.getWorld().getBlockEntity(data.readBlockPos());
 		if (te instanceof TileEntityInfoPanelExtender)
 			te = ((TileEntityInfoPanelExtender) te).getCore();
 		if (te instanceof TileEntityAdvancedInfoPanelExtender)

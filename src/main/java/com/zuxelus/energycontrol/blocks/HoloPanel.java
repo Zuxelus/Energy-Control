@@ -1,5 +1,7 @@
 package com.zuxelus.energycontrol.blocks;
 
+import com.mojang.serialization.MapCodec;
+import net.minecraft.block.BlockWithEntity;
 import net.minecraft.util.math.random.Random;
 
 import com.zuxelus.energycontrol.init.ModItems;
@@ -29,6 +31,12 @@ import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 
 public class HoloPanel extends FacingHorizontalActive {
+	public static final MapCodec<HoloPanel> CODEC = createCodec(settings -> new HoloPanel());
+
+	@Override
+	protected MapCodec<? extends BlockWithEntity> getCodec() {
+		return CODEC;
+	}
 
 	public HoloPanel() {
 		super(FabricBlockSettings.copyOf(ModItems.settings));

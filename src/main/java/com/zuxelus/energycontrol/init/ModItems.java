@@ -9,7 +9,7 @@ import com.zuxelus.energycontrol.recipes.*;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
-import net.minecraft.block.Material;
+import net.minecraft.block.MapColor;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.recipe.RecipeSerializer;
@@ -18,7 +18,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 
 public class ModItems {
-	public static final FabricBlockSettings settings = FabricBlockSettings.of(Material.METAL).strength(3.0F);
+	public static final FabricBlockSettings settings = FabricBlockSettings.create().mapColor(MapColor.IRON_GRAY).strength(3.0F);
 	public static final Block white_lamp = new BlockLight();
 	public static final Block orange_lamp = new BlockLight();
 	public static final Block howler_alarm = new HowlerAlarm();
@@ -154,5 +154,6 @@ public class ModItems {
 	private static void register() {
 		ARRAY_SERIALIZER = Registry.register(Registries.RECIPE_SERIALIZER, new Identifier(EnergyControl.MODID, "array"), new ArrayRecipeSerializer());
 		KIT_ASSEMBLER_SERIALIZER = Registry.register(Registries.RECIPE_SERIALIZER, new Identifier(EnergyControl.MODID, "kit_assembler"), new KitAssemblerSerializer());
+		Registry.register(Registries.RECIPE_TYPE, new Identifier(EnergyControl.MODID, "kit_assembler"), KitAssemblerRecipeType.TYPE);
 	}
 }
