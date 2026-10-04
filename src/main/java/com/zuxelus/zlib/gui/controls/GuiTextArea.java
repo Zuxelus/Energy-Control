@@ -4,7 +4,7 @@ import net.minecraft.screen.ScreenTexts;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.SharedConstants;
+import net.minecraft.util.StringHelper;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
@@ -96,7 +96,7 @@ public class GuiTextArea extends ClickableWidget {
 
 	public void writeText(String additionalText) {
 		String newLine = "";
-		String filteredText = SharedConstants.stripInvalidChars(additionalText);
+		String filteredText = StringHelper.stripInvalidChars(additionalText);
 		int freeCharCount = this.maxStringLength - text[cursorLine].length();
 
 		if (text[cursorLine].length() > 0)
@@ -178,7 +178,7 @@ public class GuiTextArea extends ClickableWidget {
 
 	@Override
 	public boolean charTyped(char typedChar, int keyCode) {
-		if (isFocused() && SharedConstants.isValidChar(typedChar)) {
+		if (isFocused() && StringHelper.isValidChar(typedChar)) {
 			writeText(Character.toString(typedChar));
 			return true;
 		}

@@ -18,7 +18,7 @@ import net.minecraft.util.math.RotationAxis;
 
 // The body is a block model (remote_thermo.json); only the heat bar and the heat level text are drawn here
 public class TERemoteThermalMonitorRenderer implements BlockEntityRenderer<TileEntityRemoteThermalMonitor> {
-	private static final Identifier TEXTURE = new Identifier(EnergyControl.MODID, "textures/block/remote_thermal_monitor/all.png");
+	private static final Identifier TEXTURE = Identifier.of(EnergyControl.MODID, "textures/block/remote_thermal_monitor/all.png");
 	// the bar image is the top left 32x11 corner of all.png (128x128), shown at 32 pixels per block
 	private static final float BAR_HEIGHT = 11 / 32.0F;
 	private static final float BAR_U = 0.25F;
@@ -53,10 +53,10 @@ public class TERemoteThermalMonitorRenderer implements BlockEntityRenderer<TileE
 
 			VertexConsumer bar = buffer.getBuffer(RenderLayer.getText(TEXTURE));
 			Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-			bar.vertex(matrix, rate, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).texture(rate * BAR_U, 0).light(FULL_BRIGHT).next();
-			bar.vertex(matrix, 1, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).texture(BAR_U, 0).light(FULL_BRIGHT).next();
-			bar.vertex(matrix, 1, BAR_HEIGHT, 0).color(1.0F, 1.0F, 1.0F, 1.0F).texture(BAR_U, BAR_V).light(FULL_BRIGHT).next();
-			bar.vertex(matrix, rate, BAR_HEIGHT, 0).color(1.0F, 1.0F, 1.0F, 1.0F).texture(rate * BAR_U, BAR_V).light(FULL_BRIGHT).next();
+			bar.vertex(matrix, rate, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).texture(rate * BAR_U, 0).light(FULL_BRIGHT);
+			bar.vertex(matrix, 1, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).texture(BAR_U, 0).light(FULL_BRIGHT);
+			bar.vertex(matrix, 1, BAR_HEIGHT, 0).color(1.0F, 1.0F, 1.0F, 1.0F).texture(BAR_U, BAR_V).light(FULL_BRIGHT);
+			bar.vertex(matrix, rate, BAR_HEIGHT, 0).color(1.0F, 1.0F, 1.0F, 1.0F).texture(rate * BAR_U, BAR_V).light(FULL_BRIGHT);
 		}
 
 		matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180.0F));

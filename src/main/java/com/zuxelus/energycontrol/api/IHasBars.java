@@ -3,6 +3,7 @@ package com.zuxelus.energycontrol.api;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
@@ -27,10 +28,9 @@ public interface IHasBars {
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 		Tessellator tesselator = Tessellator.getInstance();
-		BufferBuilder bufferbuilder = tesselator.getBuffer();
-		bufferbuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+		BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 		drawPositionColor(matrixStack.peek().getPositionMatrix(), bufferbuilder, left, top, right, bottom, zLevel, color);
-		tesselator.draw();
+		BufferRenderer.drawWithGlobalProgram(bufferbuilder.end());
 		RenderSystem.disableBlend();
 		RenderSystem.disableDepthTest();
 	}
@@ -40,9 +40,9 @@ public interface IHasBars {
 		float f1 = (color >> 16 & 255) / 255.0F;
 		float f2 = (color >> 8 & 255) / 255.0F;
 		float f3 = (color & 255) / 255.0F;
-		builder.vertex(matrix, right, top, zLevel).color(f1, f2, f3, f).next();
-		builder.vertex(matrix, left, top, zLevel).color(f1, f2, f3, f).next();
-		builder.vertex(matrix, left, bottom, zLevel).color(f1, f2, f3, f).next();
-		builder.vertex(matrix, right, bottom, zLevel).color(f1, f2, f3, f).next();
+		builder.vertex(matrix, right, top, zLevel).color(f1, f2, f3, f);
+		builder.vertex(matrix, left, top, zLevel).color(f1, f2, f3, f);
+		builder.vertex(matrix, left, bottom, zLevel).color(f1, f2, f3, f);
+		builder.vertex(matrix, right, bottom, zLevel).color(f1, f2, f3, f);
 	}
 }

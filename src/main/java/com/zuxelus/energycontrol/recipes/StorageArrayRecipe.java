@@ -2,17 +2,18 @@ package com.zuxelus.energycontrol.recipes;
 
 import java.util.Vector;
 
+import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.*;
 
-import net.minecraft.inventory.RecipeInputInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.CraftingRecipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.ShapelessRecipe;
 import net.minecraft.recipe.book.CraftingRecipeCategory;
-import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.recipe.input.CraftingRecipeInput;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -28,13 +29,13 @@ public class StorageArrayRecipe implements CraftingRecipe {
 	}
 
 	@Override
-	public boolean matches(RecipeInputInventory inv, World level) {
+	public boolean matches(CraftingRecipeInput inv, World level) {
 		return !craft(inv, level.getRegistryManager()).isEmpty();
 	}
 
 	@Override
-	public ItemStack craft(RecipeInputInventory inv, DynamicRegistryManager registryManager) {
-		int inventoryLength = inv.size();
+	public ItemStack craft(CraftingRecipeInput inv, RegistryWrapper.WrapperLookup registryManager) {
+		int inventoryLength = inv.getSize();
 		int cardCount = 0;
 		int arrayCount = 0;
 		int cardCountLiquid = 0;
@@ -42,7 +43,7 @@ public class StorageArrayRecipe implements CraftingRecipe {
 		ItemStack array = null;
 		Vector<ItemStack> cards = new Vector<>();
 		for (int i = 0; i < inventoryLength; i++) {
-			ItemStack itemStack = inv.getStack(i);
+			ItemStack itemStack = inv.getStackInSlot(i);
 			if (itemStack.isEmpty())
 				continue;
 			Item item = itemStack.getItem();
@@ -85,7 +86,7 @@ public class StorageArrayRecipe implements CraftingRecipe {
 			int cnt = new ItemCardReader(array).getInt("cardCount");
 			if (cnt + cardCount <= 16) {
 				ItemStack itemStack = createCard(type);
-				itemStack.setNbt(array.getNbt().copy());
+				ItemStackHelper.setTag(itemStack, ItemStackHelper.getTagCompound(array));
 				initArray(itemStack, cards);
 				return itemStack;
 			}
@@ -129,7 +130,7 @@ public class StorageArrayRecipe implements CraftingRecipe {
 	}
 
 	@Override
-	public ItemStack getResult(DynamicRegistryManager registryManager) {
+	public ItemStack getResult(RegistryWrapper.WrapperLookup registryManager) {
 		return ItemStack.EMPTY;
 	}
 

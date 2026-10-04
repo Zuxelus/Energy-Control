@@ -1,0 +1,24 @@
+{
+	"type": "minecraft:crafting_shaped",
+    "pattern": [
+        "RF",
+        "PW"
+    ],
+    "key": {
+        "R": {
+            "item": "minecraft:chest"
+        },
+        "P": {
+            "item": "minecraft:paper"
+        },
+        "F": {
+            "item": "energycontrol:radio_transmitter"
+        },
+        "W": {
+			"tag": "c:dyes/gray"
+        }
+    },
+	"result": {
+		"id": "energycontrol:kit_inventory"
+	}
+}

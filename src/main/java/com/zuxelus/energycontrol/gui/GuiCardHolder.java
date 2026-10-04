@@ -12,7 +12,7 @@ import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
 public class GuiCardHolder extends HandledScreen<ContainerCardHolder> {
-	private static final Identifier TEXTURE = new Identifier("textures/gui/container/generic_54.png");
+	private static final Identifier TEXTURE = Identifier.of("textures/gui/container/generic_54.png");
 	private final int inventoryRows;
 
 	public GuiCardHolder(ContainerCardHolder container, PlayerInventory inventory, Text title) {

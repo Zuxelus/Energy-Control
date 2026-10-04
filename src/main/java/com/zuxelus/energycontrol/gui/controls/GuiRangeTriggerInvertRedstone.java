@@ -16,7 +16,7 @@ import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
 public class GuiRangeTriggerInvertRedstone extends PressableWidget {
-	private static final Identifier TEXTURE = new Identifier(EnergyControl.MODID, "textures/gui/gui_range_trigger.png");
+	private static final Identifier TEXTURE = Identifier.of(EnergyControl.MODID, "textures/gui/gui_range_trigger.png");
 
 	TileEntityRangeTrigger trigger;
 	private boolean checked;

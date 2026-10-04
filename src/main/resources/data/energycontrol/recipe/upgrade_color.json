@@ -1,0 +1,40 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"RYG",
+		"WCM",
+		"IAB"
+	],
+	"key": {
+		"R": {
+			"tag": "c:dyes/red"
+		},
+		"Y": {
+			"tag": "c:dyes/yellow"
+		},
+		"G": {
+			"tag": "c:dyes/green"
+		},
+		"W": {
+			"tag": "c:dyes/white"
+		},
+		"C": {
+			"item": "energycontrol:basic_circuit"
+		},
+		"M": {
+			"tag": "c:dyes/magenta"
+		},
+		"I": {
+			"tag": "c:dyes/black"
+		},
+		"A": {
+			"tag": "c:dyes/cyan"
+		},
+		"B": {
+			"tag": "c:dyes/blue"
+		}
+	},
+	"result": {
+		"id": "energycontrol:upgrade_color"
+	}
+}

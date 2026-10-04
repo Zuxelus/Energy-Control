@@ -19,7 +19,7 @@ import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
 public class GuiInfoPanelCheckBox extends PressableWidget {
-	private static final Identifier TEXTURE = new Identifier(EnergyControl.MODID, "textures/gui/gui_info_panel.png");
+	private static final Identifier TEXTURE = Identifier.of(EnergyControl.MODID, "textures/gui/gui_info_panel.png");
 
 	private TileEntityInfoPanel panel;
 	private boolean checked;

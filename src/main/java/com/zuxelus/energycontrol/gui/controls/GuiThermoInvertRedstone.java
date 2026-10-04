@@ -15,7 +15,7 @@ import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
 public class GuiThermoInvertRedstone extends PressableWidget {
-	private static final Identifier TEXTURE = new Identifier(EnergyControl.MODID + ":textures/gui/gui_thermal_monitor.png");
+	private static final Identifier TEXTURE = Identifier.of(EnergyControl.MODID + ":textures/gui/gui_thermal_monitor.png");
 
 	TileEntityThermalMonitor thermo;
 	private boolean checked;

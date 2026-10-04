@@ -13,7 +13,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.ScreenHandlerType;
@@ -87,10 +87,10 @@ public abstract class ContainerBase<T extends Inventory> extends ScreenHandler {
 		return result;
 	}
 
-	public static BlockEntity getBlockEntity(PlayerInventory player, PacketByteBuf data) {
+	public static BlockEntity getBlockEntity(PlayerInventory player, BlockPos data) {
 		Objects.requireNonNull(player, "Player cannot be null!");
 		Objects.requireNonNull(data, "Data cannot be null!");
-		BlockEntity te = player.player.getWorld().getBlockEntity(data.readBlockPos());
+		BlockEntity te = player.player.getWorld().getBlockEntity(data);
 		if (te instanceof TileEntityInfoPanelExtender)
 			te = ((TileEntityInfoPanelExtender) te).getCore();
 		if (te instanceof TileEntityAdvancedInfoPanelExtender)

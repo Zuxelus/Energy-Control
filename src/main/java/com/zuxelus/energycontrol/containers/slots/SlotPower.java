@@ -24,6 +24,6 @@ public class SlotPower extends SlotFilter {
 	@Override
 	@Environment(EnvType.CLIENT)
 	public Pair<Identifier, Identifier> getBackgroundSprite() {
-		return Pair.of(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, new Identifier(EnergyControl.MODID, "slots/slot_power"));
+		return Pair.of(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier.of(EnergyControl.MODID, "slots/slot_power"));
 	}
 }

@@ -2,18 +2,18 @@ package com.zuxelus.energycontrol.recipes;
 
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
-import com.zuxelus.zlib.recipes.EmptyInventory;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
-import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.recipe.input.RecipeInput;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 
-public class KitAssemblerRecipe implements Recipe<EmptyInventory>{
+public class KitAssemblerRecipe implements Recipe<RecipeInput> {
 	public final Ingredient input1;
 	public final Ingredient input2;
 	public final Ingredient input3;
@@ -55,7 +55,7 @@ public class KitAssemblerRecipe implements Recipe<EmptyInventory>{
 	}
 
 	@Override
-	public boolean matches(EmptyInventory inv, World world) {
+	public boolean matches(RecipeInput inv, World world) {
 		return false;
 	}
 
@@ -65,7 +65,7 @@ public class KitAssemblerRecipe implements Recipe<EmptyInventory>{
 	}
 
 	@Override
-	public ItemStack craft(EmptyInventory inv, DynamicRegistryManager registryManager) {
+	public ItemStack craft(RecipeInput inv, RegistryWrapper.WrapperLookup registryManager) {
 		return output;
 	}
 
@@ -75,7 +75,7 @@ public class KitAssemblerRecipe implements Recipe<EmptyInventory>{
 	}
 
 	@Override
-	public ItemStack getResult(DynamicRegistryManager registryManager) {
+	public ItemStack getResult(RegistryWrapper.WrapperLookup registryManager) {
 		return ItemStack.EMPTY;
 	}
 

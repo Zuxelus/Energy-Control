@@ -1,0 +1,11 @@
+{
+	"type": "energycontrol:array",
+	"ingredients": [
+		{
+			"item": "energycontrol:card_energy_array"
+		}
+	],
+	"result": {
+		"id": "energycontrol:card_energy_array"
+	}
+}

@@ -28,12 +28,14 @@ import com.zuxelus.energycontrol.utils.SoundHelper;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
+import net.minecraft.registry.Registries;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 
@@ -84,24 +86,21 @@ public class EnergyControlClient implements ClientModInitializer {
 		PanelModel infoPanelExtender = panelModel("extender_all", "extender_back", TileEntityInfoPanel.GREEN);
 		PanelModel advancedPanel = panelModel("panel_advanced_all", "panel_advanced_side", TileEntityAdvancedInfoPanel.DEFAULT_BACKGROUND);
 		PanelModel advancedExtender = panelModel("extender_advanced_all", "extender_advanced_back", TileEntityAdvancedInfoPanel.DEFAULT_BACKGROUND);
-		ModelLoadingRegistry.INSTANCE.registerVariantProvider(manager -> (modelId, context) -> {
-			if (!modelId.getNamespace().equals(EnergyControl.MODID) || modelId.getVariant().equals("inventory"))
-				return null;
-			switch (modelId.getPath()) {
-			case "info_panel":
-				return infoPanel;
-			case "info_panel_extender":
-				return infoPanelExtender;
-			case "info_panel_advanced":
-				return advancedPanel;
-			case "info_panel_advanced_extender":
-				return advancedExtender;
-			}
-			return null;
+		ModelLoadingPlugin.register(context -> {
+			registerPanelModel(context, "info_panel", infoPanel);
+			registerPanelModel(context, "info_panel_extender", infoPanelExtender);
+			registerPanelModel(context, "info_panel_advanced", advancedPanel);
+			registerPanelModel(context, "info_panel_advanced_extender", advancedExtender);
 		});
 	}
 
+	// every block state of the panel uses the custom model; the item keeps its JSON model
+	private static void registerPanelModel(ModelLoadingPlugin.Context context, String name, PanelModel model) {
+		Block block = Registries.BLOCK.get(Identifier.of(EnergyControl.MODID, name));
+		context.registerBlockStateResolver(block, resolver -> block.getStateManager().getStates().forEach(state -> resolver.setModel(state, model)));
+	}
+
 	private static PanelModel panelModel(String texture, String particle, int defaultColor) {
-		return new PanelModel(new Identifier(EnergyControl.MODID, "block/info_panel/" + texture), new Identifier(EnergyControl.MODID, "block/info_panel/panel_screen"), new Identifier(EnergyControl.MODID, "block/info_panel/" + particle), defaultColor);
+		return new PanelModel(Identifier.of(EnergyControl.MODID, "block/info_panel/" + texture), Identifier.of(EnergyControl.MODID, "block/info_panel/panel_screen"), Identifier.of(EnergyControl.MODID, "block/info_panel/" + particle), defaultColor);
 	}
 }

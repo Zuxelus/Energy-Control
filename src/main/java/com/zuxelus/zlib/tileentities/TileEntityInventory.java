@@ -12,6 +12,7 @@ import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -25,16 +26,16 @@ public abstract class TileEntityInventory extends BlockEntityFacing implements I
 	}
 
 	@Override
-	protected void readProperties(NbtCompound tag) {
-		super.readProperties(tag);
+	protected void readProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
+		super.readProperties(tag, registries);
 		inventory = DefaultedList.ofSize(size(), ItemStack.EMPTY);
-		Inventories.readNbt(tag, inventory);
+		Inventories.readNbt(tag, inventory, registries);
 	}
 
 	@Override
-	protected NbtCompound writeProperties(NbtCompound tag) {
-		tag = super.writeProperties(tag);
-		Inventories.writeNbt(tag, inventory);
+	protected NbtCompound writeProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
+		tag = super.writeProperties(tag, registries);
+		Inventories.writeNbt(tag, inventory, registries);
 		return tag;
 	}
 
@@ -107,9 +108,7 @@ public abstract class TileEntityInventory extends BlockEntityFacing implements I
 			float ry = rand.nextFloat() * 0.8F + 0.1F;
 			float rz = rand.nextFloat() * 0.8F + 0.1F;
 
-			ItemEntity entityItem = new ItemEntity(world, pos.getX() + rx, pos.getY() + ry, pos.getZ() + rz, new ItemStack(stack.getItem(), stack.getCount()));
-			if (stack.hasNbt())
-				entityItem.getStack().setNbt(stack.getNbt().copy());
+			ItemEntity entityItem = new ItemEntity(world, pos.getX() + rx, pos.getY() + ry, pos.getZ() + rz, stack.copy());
 
 			float factor = 0.05F;
 			entityItem.setVelocity(rand.nextGaussian() * factor, rand.nextGaussian() * factor + 0.2F, rand.nextGaussian() * factor);

@@ -8,12 +8,12 @@ import com.zuxelus.energycontrol.tileentities.TileEntityRangeTrigger;
 import com.zuxelus.zlib.containers.ContainerBase;
 
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.screen.ScreenHandlerContext;
 
 public class ContainerRangeTrigger extends ContainerBase<TileEntityRangeTrigger> {
 
-	public ContainerRangeTrigger(int windowId, PlayerInventory inventory, PacketByteBuf data) {
+	public ContainerRangeTrigger(int windowId, PlayerInventory inventory, BlockPos data) {
 		this(windowId, inventory, (TileEntityRangeTrigger) getBlockEntity(inventory, data));
 	}
 

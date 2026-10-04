@@ -21,7 +21,7 @@ import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
 public class GuiRangeTrigger extends GuiContainerBase<ContainerRangeTrigger> {
-	private static final Identifier TEXTURE = new Identifier(EnergyControl.MODID + ":textures/gui/gui_range_trigger.png");
+	private static final Identifier TEXTURE = Identifier.of(EnergyControl.MODID + ":textures/gui/gui_range_trigger.png");
 
 	private ContainerRangeTrigger container;
 	private ItemStack prevCard;

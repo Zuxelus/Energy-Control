@@ -1,6 +1,7 @@
 {
     "pack": {
         "description": "Resources used for Energy Control",
-        "pack_format": 22
+        "pack_format": 48,
+        "supported_formats": [34, 48]
     }
 }

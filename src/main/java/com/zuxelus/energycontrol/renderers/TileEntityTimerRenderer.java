@@ -14,8 +14,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
 
 public class TileEntityTimerRenderer implements BlockEntityRenderer<TileEntityTimer> {
-	private static final Identifier TEXTURE = new Identifier(EnergyControl.MODID + ":textures/block/timer/all.png");
-	private static final Identifier TEXTURE_ACTIVE = new Identifier(EnergyControl.MODID + ":textures/block/timer/active.png");
+	private static final Identifier TEXTURE = Identifier.of(EnergyControl.MODID + ":textures/block/timer/all.png");
+	private static final Identifier TEXTURE_ACTIVE = Identifier.of(EnergyControl.MODID + ":textures/block/timer/active.png");
 	private static final CubeRenderer model = new CubeRenderer(2, 0, 2, 28, 14, 28, 128, 64, 0, 0);
 	private final TextRenderer font;
 

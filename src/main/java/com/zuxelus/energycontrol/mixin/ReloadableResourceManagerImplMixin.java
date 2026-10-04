@@ -3,6 +3,7 @@ package com.zuxelus.energycontrol.mixin;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,8 +15,11 @@ import com.zuxelus.energycontrol.utils.SoundHelper;
 
 import net.minecraft.resource.DirectoryResourcePack;
 import net.minecraft.resource.ReloadableResourceManagerImpl;
+import net.minecraft.resource.ResourcePackInfo;
 import net.minecraft.resource.ResourcePack;
+import net.minecraft.resource.ResourcePackSource;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.text.Text;
 
 @Mixin(ReloadableResourceManagerImpl.class)
 public class ReloadableResourceManagerImplMixin {
@@ -30,7 +34,7 @@ public class ReloadableResourceManagerImplMixin {
 			return packs;
 
 		List<ResourcePack> list = new ArrayList<>(packs);
-		list.add(new DirectoryResourcePack("energycontrol_alarms", alarms.toPath(), false));
+		list.add(new DirectoryResourcePack(new ResourcePackInfo("energycontrol_alarms", Text.literal("energycontrol_alarms"), ResourcePackSource.NONE, Optional.empty()), alarms.toPath()));
 		return list;
 	}
 }

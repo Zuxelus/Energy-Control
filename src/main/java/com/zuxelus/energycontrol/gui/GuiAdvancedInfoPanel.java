@@ -28,7 +28,7 @@ import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
 public class GuiAdvancedInfoPanel extends GuiPanelBase<ContainerAdvancedInfoPanel> {
-	private static final Identifier TEXTURE = new Identifier(EnergyControl.MODID, "textures/gui/gui_advanced_info_panel.png");
+	private static final Identifier TEXTURE = Identifier.of(EnergyControl.MODID, "textures/gui/gui_advanced_info_panel.png");
 
 	public GuiAdvancedInfoPanel(ContainerAdvancedInfoPanel container, PlayerInventory inventory, Text title) {
 		super(container, inventory, title, TEXTURE);

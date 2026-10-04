@@ -64,7 +64,7 @@ public class PanelModel implements UnbakedModel {
 	public void setParents(Function<Identifier, UnbakedModel> modelLoader) { }
 
 	@Override
-	public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
+	public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer) {
 		return new Baked(textureGetter.apply(body), textureGetter.apply(screen), textureGetter.apply(particle), defaultColor);
 	}
 

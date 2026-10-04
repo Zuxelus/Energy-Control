@@ -1,0 +1,22 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		" S ",
+		"PCP",
+		" S "
+	],
+	"key": {
+		"P": {
+			"item": "minecraft:paper"
+		},
+		"C": {
+			"item": "energycontrol:basic_circuit"
+		},
+		"S": {
+			"item": "energycontrol:strong_string"
+		}
+	},
+	"result": {
+		"id": "energycontrol:card_text"
+	}
+}

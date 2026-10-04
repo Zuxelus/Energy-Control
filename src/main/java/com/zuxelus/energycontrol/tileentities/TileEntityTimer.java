@@ -14,8 +14,8 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.network.packet.Packet;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.screen.ScreenHandler;
@@ -24,7 +24,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class TileEntityTimer extends BlockEntityFacing implements ExtendedScreenHandlerFactory, ITilePacketHandler {
+public class TileEntityTimer extends BlockEntityFacing implements ExtendedScreenHandlerFactory<BlockPos>, ITilePacketHandler {
 	private int time;
 	private int startingTime;
 	private boolean invertRedstone;
@@ -160,21 +160,21 @@ public class TileEntityTimer extends BlockEntityFacing implements ExtendedScreen
 
 	@Override
 	public void onDataPacket(BlockEntityUpdateS2CPacket pkt) {
-		readProperties(pkt.getNbt());
+		readProperties(pkt.getNbt(), world.getRegistryManager());
 	}
 
 	@Override
-	public NbtCompound toInitialChunkDataNbt() {
-		NbtCompound tag = super.toInitialChunkDataNbt();
-		tag = writeProperties(tag);
+	public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registries) {
+		NbtCompound tag = super.toInitialChunkDataNbt(registries);
+		tag = writeProperties(tag, registries);
 		tag.putBoolean("isTicks", isTicks);
 		tag.putBoolean("poweredBlock", sendSignal);
 		return tag;
 	}
 
 	@Override
-	protected void readProperties(NbtCompound tag) {
-		super.readProperties(tag);
+	protected void readProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
+		super.readProperties(tag, registries);
 		if (tag.contains("timer"))
 			time = tag.getInt("timer");
 		if (tag.contains("startingTime"))
@@ -192,14 +192,14 @@ public class TileEntityTimer extends BlockEntityFacing implements ExtendedScreen
 	}
 
 	@Override
-	public void readNbt(NbtCompound tag) {
-		super.readNbt(tag);
-		readProperties(tag);
+	protected void readNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
+		super.readNbt(tag, registries);
+		readProperties(tag, registries);
 	}
 
 	@Override
-	protected NbtCompound writeProperties(NbtCompound tag) {
-		tag = super.writeProperties(tag);
+	protected NbtCompound writeProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
+		tag = super.writeProperties(tag, registries);
 		tag.putInt("timer", time);
 		tag.putInt("startingTime", startingTime);
 		tag.putBoolean("invert", invertRedstone);
@@ -210,9 +210,9 @@ public class TileEntityTimer extends BlockEntityFacing implements ExtendedScreen
 	}
 
 	@Override
-	protected void writeNbt(NbtCompound tag) {
-		super.writeNbt(tag);
-		writeProperties(tag);
+	protected void writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
+		super.writeNbt(tag, registries);
+		writeProperties(tag, registries);
 	}
 
 	@Override
@@ -276,7 +276,7 @@ public class TileEntityTimer extends BlockEntityFacing implements ExtendedScreen
 	}
 
 	@Override
-	public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
-		buf.writeBlockPos(pos);
+	public BlockPos getScreenOpeningData(ServerPlayerEntity player) {
+		return pos;
 	}
 }

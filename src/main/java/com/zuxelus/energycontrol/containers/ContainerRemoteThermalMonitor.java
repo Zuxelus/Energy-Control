@@ -8,12 +8,12 @@ import com.zuxelus.energycontrol.tileentities.TileEntityRemoteThermalMonitor;
 import com.zuxelus.zlib.containers.ContainerBase;
 
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.screen.ScreenHandlerContext;
 
 public class ContainerRemoteThermalMonitor extends ContainerBase<TileEntityRemoteThermalMonitor> {
 
-	public ContainerRemoteThermalMonitor(int windowId, PlayerInventory inventory, PacketByteBuf data) {
+	public ContainerRemoteThermalMonitor(int windowId, PlayerInventory inventory, BlockPos data) {
 		this(windowId, inventory, (TileEntityRemoteThermalMonitor) getBlockEntity(inventory, data));
 	}
 

@@ -2,13 +2,12 @@ package com.zuxelus.zlib.items;
 
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ContainerComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
 import net.minecraft.util.collection.DefaultedList;
 
 public abstract class ItemInventory implements Inventory, ISlotItemFilter {
@@ -23,37 +22,11 @@ public abstract class ItemInventory implements Inventory, ISlotItemFilter {
 	}
 
 	private void readFromParentNBT() {
-		NbtCompound tag = parent.getNbt();
-		if (tag == null) {
-			tag = new NbtCompound();
-			parent.setNbt(tag);
-		}
-
-		NbtList list = tag.getList("Items", NbtElement.COMPOUND_TYPE);
-		for (int i = 0; i < list.size(); i++) {
-			NbtCompound stackTag = list.getCompound(i);
-			setStack(stackTag.getByte("Slot"), ItemStack.fromNbt(stackTag));
-		}
+		parent.getOrDefault(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).copyTo(inventory);
 	}
 
 	private void writeToParentNBT() {
-		NbtCompound tag = parent.getNbt();
-		if (tag == null) {
-			tag = new NbtCompound();
-			parent.setNbt(tag);
-		}
-
-		NbtList list = new NbtList();
-		for (byte i = 0; i < size(); i++) {
-			ItemStack stack = getStack(i);
-			if (!stack.isEmpty()) {
-				NbtCompound stackTag = new NbtCompound();
-				stackTag.putByte("Slot", i);
-				stack.writeNbt(stackTag);
-				list.add(stackTag);
-			}
-		}
-		tag.put("Items", list);
+		parent.set(DataComponentTypes.CONTAINER, ContainerComponent.fromStacks(inventory));
 	}
 
 	@Override

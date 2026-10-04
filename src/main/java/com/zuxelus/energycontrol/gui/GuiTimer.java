@@ -18,7 +18,7 @@ import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
 public class GuiTimer extends GuiContainerBase<ContainerTimer> {
-	private static final Identifier TEXTURE = new Identifier(EnergyControl.MODID, "textures/gui/gui_timer.png");
+	private static final Identifier TEXTURE = Identifier.of(EnergyControl.MODID, "textures/gui/gui_timer.png");
 	private TileEntityTimer timer;
 	private TextFieldWidget textboxTimer = null;
 	private boolean lastIsWorking;

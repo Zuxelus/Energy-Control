@@ -14,6 +14,11 @@ public abstract class FacingBlockActive extends FacingBlock {
 		//setDefaultState(getDefaultState().with(ACTIVE, false));
 	}
 
+	// wall panels use this ACTIVE, holo panels the one in FacingHorizontalActive: block state properties are compared by identity
+	public static BooleanProperty getActive(BlockState state) {
+		return state.contains(FacingHorizontalActive.ACTIVE) ? FacingHorizontalActive.ACTIVE : ACTIVE;
+	}
+
 	@Override
 	protected void appendProperties(Builder<Block, BlockState> builder) {
 		super.appendProperties(builder);

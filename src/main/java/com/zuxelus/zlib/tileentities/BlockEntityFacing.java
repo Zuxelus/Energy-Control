@@ -4,6 +4,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
@@ -40,7 +41,7 @@ public abstract class BlockEntityFacing extends BlockEntity {
 		rotation = meta;
 	}
 
-	protected void readProperties(NbtCompound tag) {
+	protected void readProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
 		if (tag.contains("facing"))
 			facing = Direction.byId(tag.getInt("facing"));
 		else
@@ -53,7 +54,7 @@ public abstract class BlockEntityFacing extends BlockEntity {
 		}
 	}
 
-	protected NbtCompound writeProperties(NbtCompound tag) {
+	protected NbtCompound writeProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
 		tag.putInt("facing", facing.getId());
 		if (hasRotation() && rotation != null)
 			tag.putInt("rotation", rotation.getId());

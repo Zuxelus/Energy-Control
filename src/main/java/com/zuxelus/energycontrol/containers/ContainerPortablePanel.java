@@ -12,12 +12,12 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.math.BlockPos;
 
 public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel> {
 	private PlayerEntity player;
 
-	public ContainerPortablePanel(int windowId, PlayerInventory inventory, PacketByteBuf data) {
+	public ContainerPortablePanel(int windowId, PlayerInventory inventory, BlockPos data) {
 		this(windowId, inventory);
 	}
 	public ContainerPortablePanel(int windowId, PlayerInventory inventory) {

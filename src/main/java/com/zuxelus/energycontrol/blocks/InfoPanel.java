@@ -21,7 +21,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -48,12 +47,12 @@ public class InfoPanel extends FacingBlockActive {
 	}
 
 	@Override
-	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+	protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
 		BlockEntity te = world.getBlockEntity(pos);
 		if (!(te instanceof TileEntityInfoPanel))
 			return ActionResult.PASS;
 		if (!world.isClient && EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) te).getFacing() == hit.getSide())
-			if (((TileEntityInfoPanel) te).runTouchAction(player.getStackInHand(hand), pos, hit.getPos()))
+			if (((TileEntityInfoPanel) te).runTouchAction(player.getMainHandStack(), pos, hit.getPos()))
 				return ActionResult.SUCCESS;
 		if (!world.isClient)
 			player.openHandledScreen(state.createScreenHandlerFactory(world, pos));

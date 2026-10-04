@@ -5,6 +5,7 @@ import com.zuxelus.zlib.network.PacketTileEntityC2S;
 import com.zuxelus.zlib.network.PacketTileEntityS2C;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -15,7 +16,7 @@ import net.minecraft.world.World;
 public class NetworkHelper {
 
 	public static void sendToPlayer(ServerPlayerEntity player, PacketBase packet) {
-		ServerPlayNetworking.send(player, packet.getId(), packet);
+		ServerPlayNetworking.send(player, packet);
 	}
 
 	// server
@@ -49,7 +50,7 @@ public class NetworkHelper {
 
 	// client
 	public static void sendToServer(PacketBase packet) {
-		ClientPlayNetworking.send(packet.getId(), packet);
+		ClientPlayNetworking.send(packet);
 	}
 
 	public static void updateSeverTileEntity(BlockPos pos, int type, String string) {

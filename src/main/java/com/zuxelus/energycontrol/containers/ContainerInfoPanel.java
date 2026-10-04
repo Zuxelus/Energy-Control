@@ -10,12 +10,12 @@ import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.containers.ContainerBase;
 
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.screen.ScreenHandlerContext;
 
 public class ContainerInfoPanel extends ContainerBase<TileEntityInfoPanel> {
 
-	public ContainerInfoPanel(int windowId, PlayerInventory inventory, PacketByteBuf data) {
+	public ContainerInfoPanel(int windowId, PlayerInventory inventory, BlockPos data) {
 		this(windowId, inventory, (TileEntityInfoPanel) getBlockEntity(inventory, data));
 	}
 

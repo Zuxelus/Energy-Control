@@ -19,7 +19,7 @@ import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
 public class GuiHowlerAlarmSlider extends PressableWidget {
-	private static final Identifier TEXTURE = new Identifier(EnergyControl.MODID, "textures/gui/gui_howler_alarm.png");
+	private static final Identifier TEXTURE = Identifier.of(EnergyControl.MODID, "textures/gui/gui_howler_alarm.png");
 
 	public float sliderValue;
 	public boolean dragging;

@@ -3,29 +3,24 @@ package com.zuxelus.energycontrol.network;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.zlib.network.PacketBase;
 
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.util.Identifier;
 
-public class PacketKeys extends PacketBase {
-	public static final Identifier ID = new Identifier(EnergyControl.MODID, "c2s_keys");
-
-	public PacketKeys(boolean altPressed) {
-		writeBoolean(altPressed);
-	}
+public record PacketKeys(boolean altPressed) implements PacketBase {
+	public static final Id<PacketKeys> ID = new Id<>(Identifier.of(EnergyControl.MODID, "c2s_keys"));
+	public static final PacketCodec<RegistryByteBuf, PacketKeys> CODEC = PacketCodecs.BOOL.<RegistryByteBuf>cast().xmap(PacketKeys::new, PacketKeys::altPressed);
 
 	@Override
-	public Identifier getId() {
+	public Id<PacketKeys> getId() {
 		return ID;
 	}
 
-	public static void handle(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
-		boolean altPressed = buf.readBoolean();
-		server.execute(() -> {
-			EnergyControl.altPressed.put(player, altPressed);
+	public static void handle(PacketKeys packet, ServerPlayNetworking.Context context) {
+		context.server().execute(() -> {
+			EnergyControl.altPressed.put(context.player(), packet.altPressed());
 		});
 	}
 }

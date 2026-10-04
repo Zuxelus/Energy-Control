@@ -1,0 +1,22 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"LLL",
+		"LCL",
+		"LRL"
+	],
+	"key": {
+		"L": {
+			"tag": "c:ingots/gold"
+		},
+		"R": {
+			"tag": "c:dusts/redstone"
+		},
+		"C": {
+			"item": "energycontrol:advanced_circuit"
+		}
+	},
+	"result": {
+		"id": "energycontrol:thermal_monitor"
+	}
+}

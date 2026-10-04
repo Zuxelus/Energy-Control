@@ -11,7 +11,7 @@ import com.zuxelus.zlib.containers.ContainerBase;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 
@@ -21,7 +21,7 @@ public class ContainerTimer extends ScreenHandler {
 	private boolean lastIsWorking;
 	public List<ServerPlayerEntity> containerListeners = Lists.newArrayList();
 
-	public ContainerTimer(int windowId, PlayerInventory inventory, PacketByteBuf data) {
+	public ContainerTimer(int windowId, PlayerInventory inventory, BlockPos data) {
 		this(windowId, inventory, (TileEntityTimer) ContainerBase.getBlockEntity(inventory, data));
 	}
 

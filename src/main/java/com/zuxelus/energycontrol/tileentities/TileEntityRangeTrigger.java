@@ -24,8 +24,8 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.network.packet.Packet;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.screen.ScreenHandler;
@@ -34,7 +34,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class TileEntityRangeTrigger extends TileEntityInventory implements ExtendedScreenHandlerFactory, ISlotItemFilter, ITilePacketHandler {
+public class TileEntityRangeTrigger extends TileEntityInventory implements ExtendedScreenHandlerFactory<BlockPos>, ISlotItemFilter, ITilePacketHandler {
 	public static final int SLOT_CARD = 0;
 	public static final int SLOT_UPGRADE = 1;
 
@@ -160,20 +160,20 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements Exten
 
 	@Override
 	public void onDataPacket(BlockEntityUpdateS2CPacket pkt) {
-		readProperties(pkt.getNbt());
+		readProperties(pkt.getNbt(), world.getRegistryManager());
 	}
 
 	@Override
-	public NbtCompound toInitialChunkDataNbt() {
-		NbtCompound tag = super.toInitialChunkDataNbt();
-		tag = writeProperties(tag);
+	public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registries) {
+		NbtCompound tag = super.toInitialChunkDataNbt(registries);
+		tag = writeProperties(tag, registries);
 		tag.putBoolean("poweredBlock", poweredBlock);
 		return tag;
 	}
 
 	@Override
-	protected void readProperties(NbtCompound tag) {
-		super.readProperties(tag);
+	protected void readProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
+		super.readProperties(tag, registries);
 		invertRedstone = tag.getBoolean("invert");
 		levelStart = tag.getDouble("levelStart");
 		levelEnd = tag.getDouble("levelEnd");
@@ -182,14 +182,14 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements Exten
 	}
 
 	@Override
-	public void readNbt(NbtCompound tag) {
-		super.readNbt(tag);
-		readProperties(tag);
+	protected void readNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
+		super.readNbt(tag, registries);
+		readProperties(tag, registries);
 	}
 
 	@Override
-	protected NbtCompound writeProperties(NbtCompound tag) {
-		tag = super.writeProperties(tag);
+	protected NbtCompound writeProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
+		tag = super.writeProperties(tag, registries);
 		tag.putBoolean("invert", invertRedstone);
 		tag.putDouble("levelStart", levelStart);
 		tag.putDouble("levelEnd", levelEnd);
@@ -197,9 +197,9 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements Exten
 	}
 
 	@Override
-	protected void writeNbt(NbtCompound tag) {
-		super.writeNbt(tag);
-		writeProperties(tag);
+	protected void writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
+		super.writeNbt(tag, registries);
+		writeProperties(tag, registries);
 	}
 
 	@Override
@@ -269,7 +269,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements Exten
 	}
 
 	@Override
-	public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
-		buf.writeBlockPos(pos);
+	public BlockPos getScreenOpeningData(ServerPlayerEntity player) {
+		return pos;
 	}
 }

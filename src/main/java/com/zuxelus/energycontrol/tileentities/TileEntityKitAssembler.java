@@ -27,8 +27,8 @@ import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.network.packet.Packet;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.registry.Registries;
@@ -41,7 +41,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import team.reborn.energy.api.EnergyStorageUtil;
 
-public class TileEntityKitAssembler extends TileEntityItemHandler implements ExtendedScreenHandlerFactory, ITilePacketHandler, ISlotItemFilter, SidedInventory {
+public class TileEntityKitAssembler extends TileEntityItemHandler implements ExtendedScreenHandlerFactory<BlockPos>, ITilePacketHandler, ISlotItemFilter, SidedInventory {
 	public static final byte SLOT_INFO = 0;
 	public static final byte SLOT_CARD1 = 1;
 	public static final byte SLOT_ITEM = 2;
@@ -52,7 +52,7 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 	private static final int[] SLOTS_TOP = { SLOT_CARD1, SLOT_ITEM, SLOT_CARD2 };
 	private static final int[] SLOTS_BOTTOM = { SLOT_RESULT };
 	private static final int[] SLOTS_NONE = {};
-	private static final Identifier TRANSFORMER_UPGRADE = new Identifier("techreborn", "transformer_upgrade");
+	private static final Identifier TRANSFORMER_UPGRADE = Identifier.of("techreborn", "transformer_upgrade");
 	private EnergyStorage storage;
 	// what cables and other mods see: insert only, at the rate set by the transformer upgrades
 	private final team.reborn.energy.api.EnergyStorage energyInput = new EnergyInput();
@@ -159,21 +159,21 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 
 	@Override
 	public void onDataPacket(BlockEntityUpdateS2CPacket pkt) {
-		readProperties(pkt.getNbt());
+		readProperties(pkt.getNbt(), world.getRegistryManager());
 	}
 
 	@Override
-	public NbtCompound toInitialChunkDataNbt() {
-		NbtCompound tag = super.toInitialChunkDataNbt();
-		tag = writeProperties(tag);
+	public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registries) {
+		NbtCompound tag = super.toInitialChunkDataNbt(registries);
+		tag = writeProperties(tag, registries);
 		updateActive();
 		tag.putBoolean("active", active);
 		return tag;
 	}
 
 	@Override
-	protected void readProperties(NbtCompound tag) {
-		super.readProperties(tag);
+	protected void readProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
+		super.readProperties(tag, registries);
 		if (tag.contains("energy"))
 			storage.setEnergy(tag.getLong("energy"));
 		if (tag.contains("buffer"))
@@ -185,15 +185,15 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 	}
 
 	@Override
-	public void readNbt(NbtCompound tag) {
-		super.readNbt(tag);
-		readProperties(tag);
+	protected void readNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
+		super.readNbt(tag, registries);
+		readProperties(tag, registries);
 		lastEnergy = storage.getAmount();
 	}
 
 	@Override
-	protected NbtCompound writeProperties(NbtCompound tag) {
-		tag = super.writeProperties(tag);
+	protected NbtCompound writeProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
+		tag = super.writeProperties(tag, registries);
 		tag.putLong("energy", storage.getAmount());
 		tag.putInt("buffer", buffer);
 		tag.putDouble("production", production);
@@ -201,9 +201,9 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 	}
 
 	@Override
-	protected void writeNbt(NbtCompound tag) {
-		super.writeNbt(tag);
-		writeProperties(tag);
+	protected void writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
+		super.writeNbt(tag, registries);
+		writeProperties(tag, registries);
 	}
 
 	public static void tickStatic(World level, BlockPos pos, BlockState state, BlockEntity be) {
@@ -394,8 +394,8 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 	}
 
 	@Override
-	public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
-		buf.writeBlockPos(pos);
+	public BlockPos getScreenOpeningData(ServerPlayerEntity player) {
+		return pos;
 	}
 
 	private class EnergyInput implements team.reborn.energy.api.EnergyStorage {

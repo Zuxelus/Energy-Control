@@ -18,7 +18,7 @@ import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
 public class GuiHowlerAlarmListBox extends PressableWidget {
-	private static final Identifier TEXTURE = new Identifier("energycontrol:textures/gui/gui_howler_alarm.png");
+	private static final Identifier TEXTURE = Identifier.of("energycontrol:textures/gui/gui_howler_alarm.png");
 
 	private static final int BASIC_X_OFFSET = 2;
 	private static final int BASIC_Y_OFFSET = 2;

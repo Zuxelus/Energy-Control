@@ -18,7 +18,6 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -45,7 +44,7 @@ public class InfoPanelExtender extends FacingBlockActive {
 	}
 
 	@Override
-	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+	protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
 		if (world.isClient)
 			return ActionResult.PASS;
 		BlockEntity te = world.getBlockEntity(pos);
@@ -55,7 +54,7 @@ public class InfoPanelExtender extends FacingBlockActive {
 		if (panel == null)
 			return ActionResult.PASS;
 		if (EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) panel).getFacing() == hit.getSide())
-			if (((TileEntityInfoPanel) panel).runTouchAction(player.getStackInHand(hand), pos, hit.getPos()))
+			if (((TileEntityInfoPanel) panel).runTouchAction(player.getMainHandStack(), pos, hit.getPos()))
 				return ActionResult.SUCCESS;
 		player.openHandledScreen(panel); // the extender has no GUI of its own, open the core panel's
 		return ActionResult.SUCCESS;

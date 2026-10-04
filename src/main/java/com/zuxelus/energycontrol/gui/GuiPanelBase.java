@@ -75,7 +75,7 @@ public abstract class GuiPanelBase<T extends ScreenHandler> extends GuiContainer
 			// the screen places a carried item in a slot on mouse release, so the release must reach it
 			if (textboxTitle.isFocused())
 				return super.mouseReleased(mouseX, mouseY, mouseButton);
-			focusOn(null);
+			setFocused(null);
 			updateTitle();
 		}
 		return super.mouseReleased(mouseX, mouseY, mouseButton);

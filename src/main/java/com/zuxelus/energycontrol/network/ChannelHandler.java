@@ -7,6 +7,7 @@ import com.zuxelus.zlib.network.PacketTileEntityS2C;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
@@ -15,6 +16,13 @@ import net.minecraft.world.World;
 public class ChannelHandler {
 
 	public static void init() {
+		PayloadTypeRegistry.playC2S().register(PacketCardC2S.ID, PacketCardC2S.CODEC);
+		PayloadTypeRegistry.playC2S().register(PacketTileEntityC2S.ID, PacketTileEntityC2S.CODEC);
+		PayloadTypeRegistry.playC2S().register(PacketKeys.ID, PacketKeys.CODEC);
+		PayloadTypeRegistry.playS2C().register(PacketCardS2C.ID, PacketCardS2C.CODEC);
+		PayloadTypeRegistry.playS2C().register(PacketTileEntityS2C.ID, PacketTileEntityS2C.CODEC);
+		PayloadTypeRegistry.playS2C().register(PacketAlarm.ID, PacketAlarm.CODEC);
+
 		ServerPlayNetworking.registerGlobalReceiver(PacketCardC2S.ID, PacketCardC2S::handle);
 		ServerPlayNetworking.registerGlobalReceiver(PacketTileEntityC2S.ID, PacketTileEntityC2S::handle);
 		ServerPlayNetworking.registerGlobalReceiver(PacketKeys.ID, PacketKeys::handle);
@@ -52,6 +60,6 @@ public class ChannelHandler {
 	}
 
 	public static void updateSeverKeys(boolean altPressed) {
-		ClientPlayNetworking.send(PacketKeys.ID, new PacketKeys(altPressed));
+		ClientPlayNetworking.send(new PacketKeys(altPressed));
 	}
 }

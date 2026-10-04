@@ -1,0 +1,25 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		" R ",
+		"ICI",
+		" A "
+	],
+	"key": {
+		"R": {
+			"tag": "c:dusts/redstone"
+		},
+		"I": {
+			"item": "energycontrol:strong_string"
+		},
+		"C": {
+			"item": "energycontrol:basic_circuit"
+		},
+		"A": {
+			"tag": "c:charcoal"
+		}
+	},
+	"result": {
+		"id": "energycontrol:upgrade_touch"
+	}
+}

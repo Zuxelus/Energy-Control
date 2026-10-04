@@ -4,6 +4,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.Direction;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
@@ -118,7 +119,7 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 					PositionTextureVertex vertex = quad.vertexPositions[i];
 					Vector4f vector4f = new Vector4f(vertex.position.x() / 16.0F, vertex.position.y() / 16.0F, vertex.position.z() / 16.0F, 1.0F);
 					matrix4f.transform(vector4f);
-					buffer.vertex(vector4f.x(), vector4f.y(), vector4f.z(), red, green, blue, alpha, vertex.textureU, vertex.textureV, combinedOverlay, light[n], f, g, h);
+					buffer.vertex(vector4f.x(), vector4f.y(), vector4f.z(), ColorHelper.Argb.fromFloats(alpha, red, green, blue), vertex.textureU, vertex.textureV, combinedOverlay, light[n], f, g, h);
 				}
 			}
 		}

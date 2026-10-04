@@ -53,8 +53,8 @@ dependencies {
 	modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
 		exclude(group: "net.fabricmc", module: "fabric-loader")
 	}
-	modImplementation "curse.maven:reborncore-237903:5319152"
-	modImplementation "curse.maven:techreborn-233564:5319153"
+	modImplementation "curse.maven:reborncore-237903:6664366"
+	modImplementation "curse.maven:techreborn-233564:6664367"
 	include(modApi("teamreborn:energy:${project.energy_version}")) {
 		transitive = false
 	}
@@ -70,7 +70,7 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.release = 17
+	it.options.release = 21
 }
 
 base {
@@ -80,8 +80,8 @@ base {
 java {
 	withSourcesJar()
 
-	sourceCompatibility = JavaVersion.VERSION_17
-	targetCompatibility = JavaVersion.VERSION_17
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
 }
 
 jar {

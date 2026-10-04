@@ -6,32 +6,29 @@ import java.util.Arrays;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.zlib.network.PacketBase;
 
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.PacketByteBuf;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.util.Identifier;
 
-public class PacketAlarm extends PacketBase {
-	public static final Identifier ID = new Identifier(EnergyControl.MODID, "s2c_alarm");
-
-	public PacketAlarm() { }
+public record PacketAlarm(String alarms) implements PacketBase {
+	public static final Id<PacketAlarm> ID = new Id<>(Identifier.of(EnergyControl.MODID, "s2c_alarm"));
+	public static final PacketCodec<RegistryByteBuf, PacketAlarm> CODEC = PacketCodecs.STRING.<RegistryByteBuf>cast().xmap(PacketAlarm::new, PacketAlarm::alarms);
 
 	public PacketAlarm(int range, String alarms) {
-		//writeVarInt(range);
-		writeString(alarms);
+		this(alarms);
 	}
 
 	@Override
-	public Identifier getId() {
+	public Id<PacketAlarm> getId() {
 		return ID;
 	}
 
-	public static void handleClient(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
-		String alarms = buf.readString();
-		client.execute(() -> {
+	public static void handleClient(PacketAlarm packet, ClientPlayNetworking.Context context) {
+		context.client().execute(() -> {
 			//ConfigHandler.MAX_ALARM_RANGE.set(buf.readVarInt());
-			EnergyControl.INSTANCE.serverAllowedAlarms = new ArrayList<String>(Arrays.asList(alarms.split(",")));
+			EnergyControl.INSTANCE.serverAllowedAlarms = new ArrayList<String>(Arrays.asList(packet.alarms().split(",")));
 		});
 	}
 }

@@ -11,6 +11,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
@@ -80,19 +81,19 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 
 	@Override
 	public void onDataPacket(BlockEntityUpdateS2CPacket pkt) {
-		readProperties(pkt.getNbt());
+		readProperties(pkt.getNbt(), world.getRegistryManager());
 	}
 
 	@Override
-	public NbtCompound toInitialChunkDataNbt() {
-		NbtCompound tag = super.toInitialChunkDataNbt();
-		tag = writeProperties(tag);
+	public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registries) {
+		NbtCompound tag = super.toInitialChunkDataNbt(registries);
+		tag = writeProperties(tag, registries);
 		return tag;
 	}
 
 	@Override
-	protected void readProperties(NbtCompound tag) {
-		super.readProperties(tag);
+	protected void readProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
+		super.readProperties(tag, registries);
 		if (tag.contains("partOfScreen"))
 			partOfScreen = tag.getBoolean("partOfScreen");
 		if (tag.contains("coreX")) {
@@ -109,14 +110,14 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	}
 
 	@Override
-	public void readNbt(NbtCompound tag) {
-		super.readNbt(tag);
-		readProperties(tag);
+	protected void readNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
+		super.readNbt(tag, registries);
+		readProperties(tag, registries);
 	}
 
 	@Override
-	protected NbtCompound writeProperties(NbtCompound tag) {
-		tag = super.writeProperties(tag);
+	protected NbtCompound writeProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
+		tag = super.writeProperties(tag, registries);
 		tag.putBoolean("partOfScreen", partOfScreen);
 		tag.putInt("coreX", coreX);
 		tag.putInt("coreY", coreY);
@@ -125,9 +126,9 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	}
 
 	@Override
-	protected void writeNbt(NbtCompound tag) {
-		super.writeNbt(tag);
-		writeProperties(tag);
+	protected void writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
+		super.writeNbt(tag, registries);
+		writeProperties(tag, registries);
 	}
 
 	@Override
@@ -170,14 +171,14 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 				BlockState stateCore = world.getBlockState(core.getPos());
 				BlockState state = world.getBlockState(pos);
 				// block states change on the server only; the client rebuilds the screen on every panel update
-				if (!world.isClient && state.get(FacingBlockActive.ACTIVE) != stateCore.get(FacingBlockActive.ACTIVE))
-					world.setBlockState(pos, state.cycle(FacingBlockActive.ACTIVE), 2);
+				if (!world.isClient && state.get(FacingBlockActive.getActive(state)) != stateCore.get(FacingBlockActive.getActive(stateCore)))
+					world.setBlockState(pos, state.cycle(FacingBlockActive.getActive(state)), 2);
 				return;
 			}
 		} else {
 			BlockState state = world.getBlockState(pos);
-			if (!world.isClient && state.get(FacingBlockActive.ACTIVE))
-				world.setBlockState(pos, state.with(FacingBlockActive.ACTIVE, false), 2);
+			if (!world.isClient && state.get(FacingBlockActive.getActive(state)))
+				world.setBlockState(pos, state.with(FacingBlockActive.getActive(state), false), 2);
 		}
 		partOfScreen = false;
 		coreX = 0;

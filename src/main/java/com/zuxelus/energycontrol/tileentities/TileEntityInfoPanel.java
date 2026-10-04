@@ -31,10 +31,10 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.network.packet.Packet;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.screen.ScreenHandler;
@@ -46,7 +46,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class TileEntityInfoPanel extends TileEntityInventory implements ExtendedScreenHandlerFactory, ITilePacketHandler, IScreenPart, ISlotItemFilter, RenderAttachmentBlockEntity {
+public class TileEntityInfoPanel extends TileEntityInventory implements ExtendedScreenHandlerFactory<BlockPos>, ITilePacketHandler, IScreenPart, ISlotItemFilter, RenderAttachmentBlockEntity {
 	public static final String NAME = "info_panel";
 	public static final int DISPLAY_DEFAULT = Integer.MAX_VALUE - 1024;
 	public static final int GREEN = 0xFF14E300;
@@ -248,13 +248,13 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 
 	@Override
 	public void onDataPacket(BlockEntityUpdateS2CPacket pkt) {
-		readProperties(pkt.getNbt());
+		readProperties(pkt.getNbt(), world.getRegistryManager());
 	}
 
 	@Override
-	public NbtCompound toInitialChunkDataNbt() {
-		NbtCompound tag = super.toInitialChunkDataNbt();
-		tag = writeProperties(tag);
+	public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registries) {
+		NbtCompound tag = super.toInitialChunkDataNbt(registries);
+		tag = writeProperties(tag, registries);
 		calcPowered();
 		tag.putBoolean("powered", powered);
 		colored = isColoredEval();
@@ -281,8 +281,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	}
 
 	@Override
-	protected void readProperties(NbtCompound tag) {
-		super.readProperties(tag);
+	protected void readProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
+		super.readProperties(tag, registries);
 		if (tag.contains("tickRate"))
 			tickRate = tag.getInt("tickRate");
 		if (tag.contains("showLabels"))
@@ -348,9 +348,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	}
 
 	@Override
-	public void readNbt(NbtCompound tag) {
-		super.readNbt(tag);
-		readProperties(tag);
+	protected void readNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
+		super.readNbt(tag, registries);
+		readProperties(tag, registries);
 	}
 
 	protected void serializeDisplaySettings(NbtCompound tag) {
@@ -369,8 +369,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	}
 
 	@Override
-	protected NbtCompound writeProperties(NbtCompound tag) {
-		tag = super.writeProperties(tag);
+	protected NbtCompound writeProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
+		tag = super.writeProperties(tag, registries);
 		tag.putInt("tickRate",tickRate);
 		tag.putBoolean("showLabels", getShowLabels());
 		tag.putInt("colorBackground", colorBackground);
@@ -385,9 +385,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	}
 
 	@Override
-	protected void writeNbt(NbtCompound tag) {
-		super.writeNbt(tag);
-		writeProperties(tag);
+	protected void writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
+		super.writeNbt(tag, registries);
+		writeProperties(tag, registries);
 	}
 
 	@Override
@@ -659,7 +659,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 					BlockPos pos = new BlockPos(x, y, z);
 					BlockState state = world.getBlockState(pos);
 					if (state.getBlock() instanceof InfoPanelExtender || state.getBlock() instanceof HoloPanelExtender)
-						world.setBlockState(pos, state.with(FacingBlockActive.ACTIVE, active), 2);
+						world.setBlockState(pos, state.with(FacingBlockActive.getActive(state), active), 2);
 				}
 	}
 
@@ -754,7 +754,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	}
 
 	@Override
-	public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
-		buf.writeBlockPos(pos);
+	public BlockPos getScreenOpeningData(ServerPlayerEntity player) {
+		return pos;
 	}
 }

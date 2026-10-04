@@ -1,0 +1,21 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"BLB",
+		"BHB"
+	],
+	"key": {
+		"B": {
+			"item": "energycontrol:strong_string"
+		},
+		"L": {
+			"item": "energycontrol:orange_lamp"
+		},
+		"H": {
+			"item": "energycontrol:howler_alarm"
+		}
+	},
+	"result": {
+		"id": "energycontrol:industrial_alarm"
+	}
+}

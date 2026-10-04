@@ -12,7 +12,7 @@ import com.zuxelus.zlib.containers.slots.SlotTransformer;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.server.network.ServerPlayerEntity;
 
@@ -20,7 +20,7 @@ public class ContainerKitAssembler extends ContainerBase<TileEntityKitAssembler>
 	private double lastEnergy = -1;
 	private double lastProduction = -1;
 
-	public ContainerKitAssembler(int windowId, PlayerInventory inventory, PacketByteBuf data) {
+	public ContainerKitAssembler(int windowId, PlayerInventory inventory, BlockPos data) {
 		this(windowId, inventory, (TileEntityKitAssembler) getBlockEntity(inventory, data));
 	}
 

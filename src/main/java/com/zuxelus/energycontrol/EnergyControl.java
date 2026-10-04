@@ -51,7 +51,7 @@ public class EnergyControl implements ModInitializer {
 		new ConfigHandler();
 		new ModContainerTypes();
 		ModItems.init();
-		ITEM_GROUP = Registry.register(Registries.ITEM_GROUP, new Identifier(MODID, "general"), FabricItemGroup.builder()
+		ITEM_GROUP = Registry.register(Registries.ITEM_GROUP, Identifier.of(MODID, "general"), FabricItemGroup.builder()
 			.displayName(Text.translatable("itemGroup.energycontrol.general"))
 			.icon(() -> new ItemStack(ModItems.kit_energy))
 			.entries((context, entries) -> Registries.ITEM.getIds().stream()

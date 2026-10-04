@@ -15,13 +15,13 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 
-public class TileEntityRemoteThermalMonitor extends TileEntityThermalMonitor implements ExtendedScreenHandlerFactory, ISlotItemFilter {
+public class TileEntityRemoteThermalMonitor extends TileEntityThermalMonitor implements ExtendedScreenHandlerFactory<BlockPos>, ISlotItemFilter {
 	public static final int SLOT_CARD = 0;
 	public static final byte SLOT_UPGRADE_RANGE = 1;
 	private static final int LOCATION_RANGE = 8;
@@ -41,15 +41,15 @@ public class TileEntityRemoteThermalMonitor extends TileEntityThermalMonitor imp
 	}
 
 	@Override
-	protected void readProperties(NbtCompound tag) {
-		super.readProperties(tag);
+	protected void readProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
+		super.readProperties(tag, registries);
 		if (tag.contains("heat"))
 			heat = tag.getInt("heat");
 	}
 
 	@Override
-	protected NbtCompound writeProperties(NbtCompound tag) {
-		tag = super.writeProperties(tag);
+	protected NbtCompound writeProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
+		tag = super.writeProperties(tag, registries);
 		tag.putInt("heat", heat);
 		return tag;
 	}
@@ -126,7 +126,7 @@ public class TileEntityRemoteThermalMonitor extends TileEntityThermalMonitor imp
 	}
 
 	@Override
-	public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
-		buf.writeBlockPos(pos);
+	public BlockPos getScreenOpeningData(ServerPlayerEntity player) {
+		return pos;
 	}
 }

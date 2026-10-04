@@ -17,7 +17,7 @@ public class SlotTransformer extends SlotFilter {
 	@Override
 	@Environment(EnvType.CLIENT)
 	public Pair<Identifier, Identifier> getBackgroundSprite() {
-		return Pair.of(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, new Identifier("zlib:slots/slot_transformer"));
+		return Pair.of(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier.of("zlib:slots/slot_transformer"));
 	}
 
 	@Override

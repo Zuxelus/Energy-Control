@@ -9,12 +9,12 @@ import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.text.Text;
 
-public class InventoryPortablePanel extends ItemInventory implements ExtendedScreenHandlerFactory {
+public class InventoryPortablePanel extends ItemInventory implements ExtendedScreenHandlerFactory<BlockPos> {
 	public static final byte SLOT_CARD = 0;
 	public static final byte SLOT_UPGRADE_RANGE = 1;
 
@@ -52,5 +52,7 @@ public class InventoryPortablePanel extends ItemInventory implements ExtendedScr
 
 	// the screen type is extended; the container needs no extra data
 	@Override
-	public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) { }
+	public BlockPos getScreenOpeningData(ServerPlayerEntity player) {
+		return BlockPos.ORIGIN;
+	}
 }

@@ -26,7 +26,7 @@ import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
 public class GuiHoloPanel extends GuiPanelBase<ContainerHoloPanel> { 
-	private static final Identifier TEXTURE = new Identifier(EnergyControl.MODID, "textures/gui/gui_holo_panel.png");
+	private static final Identifier TEXTURE = Identifier.of(EnergyControl.MODID, "textures/gui/gui_holo_panel.png");
 	private GuiButtonGeneral colorButton;
 
 	public GuiHoloPanel(ContainerHoloPanel container, PlayerInventory inventory, Text title) {

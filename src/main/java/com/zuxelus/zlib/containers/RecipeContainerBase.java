@@ -10,14 +10,14 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.AbstractRecipeScreenHandler;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-public abstract class RecipeContainerBase<T extends Inventory> extends AbstractRecipeScreenHandler<T> {
+public abstract class RecipeContainerBase<T extends Inventory> extends ScreenHandler {
 	public final T te;
 	private final Block block;
 	private final ScreenHandlerContext posCallable;
@@ -84,7 +84,7 @@ public abstract class RecipeContainerBase<T extends Inventory> extends AbstractR
 		return result;
 	}
 
-	public static BlockEntity getBlockEntity(PlayerInventory player, PacketByteBuf data) {
+	public static BlockEntity getBlockEntity(PlayerInventory player, BlockPos data) {
 		return ContainerBase.getBlockEntity(player, data);
 	}
 }

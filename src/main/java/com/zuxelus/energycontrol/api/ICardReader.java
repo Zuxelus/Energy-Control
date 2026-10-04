@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
@@ -96,9 +97,9 @@ public interface ICardReader {
 
 	NbtList getTagList(String name, int type);
 
-	ArrayList<ItemStack> getItemStackList(boolean reset);
+	ArrayList<ItemStack> getItemStackList(boolean reset, RegistryWrapper.WrapperLookup registries);
 	
-	void setItemStackList(ArrayList<ItemStack> list);
+	void setItemStackList(ArrayList<ItemStack> list, RegistryWrapper.WrapperLookup registries);
 
 	List<PanelString> getTitleList();
 

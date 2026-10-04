@@ -46,7 +46,7 @@ public class ItemCardInventory extends ItemCardMain {
 			result.add(new PanelString("msg.ec.InfoPanelSidedInventory", reader.getBoolean("sided").toString(), showLabels));
 			for (int i = 0; i < 6; i++)
 				if (reader.hasField("slot" + Integer.toString(i))) {
-					ItemStack stack = ItemStack.fromNbt(reader.getTag("slot" + Integer.toString(i)));
+					ItemStack stack = ItemStack.fromNbtOrEmpty(world.getRegistryManager(), reader.getTag("slot" + Integer.toString(i)));
 					result.add(new PanelString(String.format("msg.ec.InfoPanelSlot%d", i + 1), StringUtils.getItemName(stack) + " x" + Integer.toString(stack.getCount()), showLabels));
 				}
 		}

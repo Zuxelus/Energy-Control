@@ -124,7 +124,7 @@ public class CrossModLoader {
 					inUse++;
 					items += inv.getStack(i).getCount();
 				}
-				tag.put("slot" + Integer.toString(i), inv.getStack(i).writeNbt(new NbtCompound()));
+				tag.put("slot" + Integer.toString(i), inv.getStack(i).encodeAllowEmpty(te.getWorld().getRegistryManager()));
 			}
 			tag.putInt("used", inUse);
 			tag.putInt("items", items);

@@ -13,7 +13,8 @@ import com.zuxelus.zlib.gui.GuiContainerBase;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.item.TooltipContext;
+import net.minecraft.item.Item;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -24,7 +25,7 @@ import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
 public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
-	private static final Identifier TEXTURE = new Identifier(EnergyControl.MODID, "textures/gui/gui_kit_assembler.png");
+	private static final Identifier TEXTURE = Identifier.of(EnergyControl.MODID, "textures/gui/gui_kit_assembler.png");
 
 	private ContainerKitAssembler container;
 
@@ -50,7 +51,7 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 		ItemStack stack = slot.getStack();
 		if (stack.isEmpty() || !(stack.getItem() instanceof ItemCardMain))
 			return;
-		List<Text> stackList = stack.getTooltip(client.player, client.options.advancedItemTooltips ? TooltipContext.ADVANCED : TooltipContext.BASIC);
+		List<Text> stackList = stack.getTooltip(Item.TooltipContext.create(client.world), client.player, client.options.advancedItemTooltips ? TooltipType.ADVANCED : TooltipType.BASIC);
 		List<Text> list = Lists.<Text>newArrayList();
 		if (stackList.size() > 0)
 			list.add(stackList.get(0));

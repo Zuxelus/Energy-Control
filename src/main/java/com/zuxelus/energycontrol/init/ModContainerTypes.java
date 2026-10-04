@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 
@@ -23,7 +24,7 @@ public final class ModContainerTypes {
 	public static final ScreenHandlerType<ContainerCardHolder> card_holder = register("card_holder", ContainerCardHolder::new);
 
 	// replaces the deprecated ScreenHandlerRegistry.registerExtended
-	private static <T extends ScreenHandler> ScreenHandlerType<T> register(String name, ExtendedScreenHandlerType.ExtendedFactory<T> factory) {
-		return Registry.register(Registries.SCREEN_HANDLER, new Identifier(EnergyControl.MODID, name), new ExtendedScreenHandlerType<>(factory));
+	private static <T extends ScreenHandler> ScreenHandlerType<T> register(String name, ExtendedScreenHandlerType.ExtendedFactory<T, BlockPos> factory) {
+		return Registry.register(Registries.SCREEN_HANDLER, Identifier.of(EnergyControl.MODID, name), new ExtendedScreenHandlerType<>(factory, BlockPos.PACKET_CODEC));
 	}
 }

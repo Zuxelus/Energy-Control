@@ -14,9 +14,9 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
 
 public class TEThermalMonitorRenderer implements BlockEntityRenderer<TileEntityThermalMonitor> {
-	private static final Identifier TEXTURE0 = new Identifier(EnergyControl.MODID, "textures/block/thermal_monitor/all0.png");
-	private static final Identifier TEXTURE1 = new Identifier(EnergyControl.MODID, "textures/block/thermal_monitor/all1.png");
-	private static final Identifier TEXTURE2 = new Identifier(EnergyControl.MODID, "textures/block/thermal_monitor/all2.png");
+	private static final Identifier TEXTURE0 = Identifier.of(EnergyControl.MODID, "textures/block/thermal_monitor/all0.png");
+	private static final Identifier TEXTURE1 = Identifier.of(EnergyControl.MODID, "textures/block/thermal_monitor/all1.png");
+	private static final Identifier TEXTURE2 = Identifier.of(EnergyControl.MODID, "textures/block/thermal_monitor/all2.png");
 	private static final CubeRenderer model = new CubeRenderer(2, 0, 2, 28, 14, 28, 128, 64, 0, 0);
 	private final TextRenderer font;
 

@@ -17,6 +17,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
@@ -113,7 +114,7 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		long capacity = reader.getLong("capacity");
 		if (fluidId.isEmpty() || capacity <= 0)
 			return;
-		FluidVariant fluid = FluidVariant.of(Registries.FLUID.get(new Identifier(fluidId)));
+		FluidVariant fluid = FluidVariant.of(Registries.FLUID.get(Identifier.of(fluidId)));
 		if (fluid.isBlank())
 			return;
 		Sprite sprite = FluidVariantRendering.getSprite(fluid);
@@ -137,14 +138,13 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		RenderSystem.enableDepthTest();
 		RenderSystem.disableBlend();
 		Tessellator tesselator = Tessellator.getInstance();
-		BufferBuilder bufferbuilder = tesselator.getBuffer();
-		bufferbuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
+		BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		bufferbuilder.vertex(matrix, x, y + 0.4375F / 2 + height, z).texture(textureX, sprite.getMaxV()).color(f1, f2, f3, f).next();
-		bufferbuilder.vertex(matrix, x + 0.875F, y + 0.4375F / 2 + height, z).texture(sprite.getMaxU(), sprite.getMaxV()).color(f1, f2, f3, f).next();
-		bufferbuilder.vertex(matrix, x + 0.875F, y + 0.4375F / 2, z).texture(sprite.getMaxU(), textureY).color(f1, f2, f3, f).next();
-		bufferbuilder.vertex(matrix, x, y + 0.4375F / 2, z).texture(textureX, textureY).color(f1, f2, f3, f).next();
-		tesselator.draw();
+		bufferbuilder.vertex(matrix, x, y + 0.4375F / 2 + height, z).texture(textureX, sprite.getMaxV()).color(f1, f2, f3, f);
+		bufferbuilder.vertex(matrix, x + 0.875F, y + 0.4375F / 2 + height, z).texture(sprite.getMaxU(), sprite.getMaxV()).color(f1, f2, f3, f);
+		bufferbuilder.vertex(matrix, x + 0.875F, y + 0.4375F / 2, z).texture(sprite.getMaxU(), textureY).color(f1, f2, f3, f);
+		bufferbuilder.vertex(matrix, x, y + 0.4375F / 2, z).texture(textureX, textureY).color(f1, f2, f3, f);
+		BufferRenderer.drawWithGlobalProgram(bufferbuilder.end());
 		RenderSystem.disableDepthTest();
 
 		IHasBars.drawTransparentRect(matrixStack, x + 0.875F - width, y + height + 0.4375F / 2, x, y + 0.4375F / 2, -0.0001F, 0xB0000000);

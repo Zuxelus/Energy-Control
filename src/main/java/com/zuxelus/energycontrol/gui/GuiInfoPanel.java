@@ -26,7 +26,7 @@ import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
 public class GuiInfoPanel extends GuiPanelBase<ContainerInfoPanel> { 
-	private static final Identifier TEXTURE = new Identifier(EnergyControl.MODID, "textures/gui/gui_info_panel.png");
+	private static final Identifier TEXTURE = Identifier.of(EnergyControl.MODID, "textures/gui/gui_info_panel.png");
 	private GuiButtonGeneral colorButton;
 
 	public GuiInfoPanel(ContainerInfoPanel container, PlayerInventory inventory, Text title) {

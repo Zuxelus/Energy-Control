@@ -12,19 +12,20 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ItemActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.world.World;
 
 @Mixin(AbstractBlock.AbstractBlockState.class)
 public abstract class AbstractBlockStateMixin {
 
-	@Inject(method = "onUse(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;Lnet/minecraft/util/hit/BlockHitResult;)Lnet/minecraft/util/ActionResult;", at = @At("HEAD"), cancellable = true)
-	protected void onUse(final World world, final PlayerEntity player, final Hand hand, final BlockHitResult hitResult, final CallbackInfoReturnable<ActionResult> info) {
-		ItemStack stack = player.getMainHandStack();
+	// since 1.20.5 using an item on a block goes through onUseWithItem before the block's own onUse
+	@Inject(method = "onUseWithItem(Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;Lnet/minecraft/util/hit/BlockHitResult;)Lnet/minecraft/util/ItemActionResult;", at = @At("HEAD"), cancellable = true)
+	protected void onUseWithItem(final ItemStack stack, final World world, final PlayerEntity player, final Hand hand, final BlockHitResult hitResult, final CallbackInfoReturnable<ItemActionResult> info) {
 		if (!stack.isEmpty() && stack.getItem() instanceof ItemKitMain) {
 			ActionResult result = ((ItemKitMain) stack.getItem()).onItemUseFirst(world, player, hand);
 			if (result == ActionResult.SUCCESS)
-				info.setReturnValue(result);
+				info.setReturnValue(ItemActionResult.SUCCESS);
 		}
 	}
 }

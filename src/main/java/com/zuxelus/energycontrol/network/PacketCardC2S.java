@@ -6,56 +6,52 @@ import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.network.PacketBase;
 
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
-public class PacketCardC2S extends PacketBase {
-	public static final Identifier ID = new Identifier(EnergyControl.MODID, "c2s_card");
+public record PacketCardC2S(BlockPos pos, int slot, String className, NbtCompound tag) implements PacketBase {
+	public static final Id<PacketCardC2S> ID = new Id<>(Identifier.of(EnergyControl.MODID, "c2s_card"));
+	public static final PacketCodec<RegistryByteBuf, PacketCardC2S> CODEC = PacketCodec.tuple(
+			BlockPos.PACKET_CODEC, PacketCardC2S::pos,
+			PacketCodecs.VAR_INT, PacketCardC2S::slot,
+			PacketCodecs.STRING, PacketCardC2S::className,
+			PacketCodecs.NBT_COMPOUND, PacketCardC2S::tag,
+			PacketCardC2S::new);
 
 	public PacketCardC2S(ItemStack stack, BlockPos pos, int slot) {
-		this(ItemStackHelper.getTagCompound(stack), pos, slot, stack.getItem().getClass().getName());
-	}
-
-	public PacketCardC2S(NbtCompound tag, BlockPos pos, int slot, String className) {
-		writeBlockPos(pos);
-		writeVarInt(slot);
-		writeString(className);
-		writeNbt(tag);
+		this(pos, slot, stack.getItem().getClass().getName(), ItemStackHelper.getTagCompound(stack));
 	}
 
 	@Override
-	public Identifier getId() {
+	public Id<PacketCardC2S> getId() {
 		return ID;
 	}
 
-	public static void handle(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
-		BlockPos pos = buf.readBlockPos();
-		int slot = buf.readVarInt();
-		String className = buf.readString();
-		NbtCompound tag = buf.readNbt();
-		server.execute(() -> {
+	public static void handle(PacketCardC2S packet, ServerPlayNetworking.Context context) {
+		ServerPlayerEntity player = context.player();
+		context.server().execute(() -> {
 			if (player == null || player.getWorld() == null)
 				return;
-			BlockEntity te = player.getWorld().getBlockEntity(pos);
+			BlockEntity te = player.getWorld().getBlockEntity(packet.pos());
 			if (te == null || !(te instanceof TileEntityInfoPanel))
 				return;
 			TileEntityInfoPanel panel = (TileEntityInfoPanel) te;
-			ItemStack stack = panel.getStack(slot);
+			ItemStack stack = panel.getStack(packet.slot());
 			if (stack.isEmpty() || !(stack.getItem() instanceof ItemCardMain))
 				return;
-			if (!stack.getItem().getClass().getName().equals(className)) {
-				EnergyControl.LOGGER.warn("Class mismatch: '%s'!='%s'", className, stack.getItem().getClass().getName());
+			if (!stack.getItem().getClass().getName().equals(packet.className())) {
+				EnergyControl.LOGGER.warn("Class mismatch: '{}'!='{}'", packet.className(), stack.getItem().getClass().getName());
 				return;
 			}
-			stack.setNbt(tag);
+			ItemStackHelper.setTag(stack, packet.tag());
 		});
 	}
 }

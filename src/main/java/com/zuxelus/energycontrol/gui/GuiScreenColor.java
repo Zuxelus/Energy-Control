@@ -22,7 +22,7 @@ import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
 public class GuiScreenColor extends GuiBase {
-	private final static Identifier PICKER = new Identifier(EnergyControl.MODID, "dynamic/color_picker");
+	private final static Identifier PICKER = Identifier.of(EnergyControl.MODID, "dynamic/color_picker");
 	// Picker layout: a center disc (white / black) surrounded by rings split into hue sectors.
 	// Light picker: value = 1, ring = saturation. Dark picker: saturation = 1, ring = value.
 	private static final int HUE_SECTORS = 16;

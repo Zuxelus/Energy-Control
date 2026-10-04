@@ -22,7 +22,7 @@ import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
 public class GuiPortablePanel extends HandledScreen<ContainerPortablePanel> {
-	private static final Identifier TEXTURE = new Identifier(EnergyControl.MODID + ":textures/gui/gui_portable_panel.png");
+	private static final Identifier TEXTURE = Identifier.of(EnergyControl.MODID + ":textures/gui/gui_portable_panel.png");
 	private PlayerEntity player;
 
 	private InventoryPortablePanel te;

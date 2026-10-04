@@ -24,7 +24,7 @@ public abstract class GuiBase extends Screen {
 		super(Text.translatable(name));
 		this.xSize = xSize;
 		this.ySize = ySize;
-		this.texture = new Identifier(texture);
+		this.texture = Identifier.of(texture);
 	}
 
 	@Override

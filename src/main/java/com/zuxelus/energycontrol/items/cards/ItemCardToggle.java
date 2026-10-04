@@ -18,6 +18,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.enums.BlockFace;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
@@ -38,8 +39,8 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 	private static final BooleanProperty POWERED = Properties.POWERED;
 	private static final EnumProperty<BlockFace> FACE = Properties.BLOCK_FACE;
 	private static final DirectionProperty HORIZONTAL_FACING = Properties.HORIZONTAL_FACING;
-	private static final Identifier TEXTURE_ON = new Identifier(EnergyControl.MODID, "textures/gui/green.png");
-	private static final Identifier TEXTURE_OFF = new Identifier(EnergyControl.MODID, "textures/gui/grey.png");
+	private static final Identifier TEXTURE_ON = Identifier.of(EnergyControl.MODID, "textures/gui/green.png");
+	private static final Identifier TEXTURE_OFF = Identifier.of(EnergyControl.MODID, "textures/gui/grey.png");
 
 	@Override
 	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
@@ -92,7 +93,7 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 			world.updateNeighborsAlways(pos.offset(getFacing(state).getOpposite()), block);
 		}
 		if (block instanceof ButtonBlock) {
-			((ButtonBlock) block).powerOn(state, world, pos);
+			((ButtonBlock) block).powerOn(state, world, pos, null);
 		}
 		return false;
 	}
@@ -124,14 +125,13 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 			RenderSystem.setShaderTexture(0, TEXTURE_OFF);
 		RenderSystem.enableDepthTest();
 		Tessellator tesselator = Tessellator.getInstance();
-		BufferBuilder bufferbuilder = tesselator.getBuffer();
-		bufferbuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
+		BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
 		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		bufferbuilder.vertex(matrix, x + 0, y + height, z).texture(textureX + 0, textureY + height).next();
-		bufferbuilder.vertex(matrix, x + width, y + height, z).texture(textureX + width, textureY + height).next();
-		bufferbuilder.vertex(matrix, x + width, y + 0, z).texture(textureX + width, textureY + 0).next();
-		bufferbuilder.vertex(matrix, x + 0, y + 0, z).texture(textureX + 0, textureY + 0).next();
-		tesselator.draw();
+		bufferbuilder.vertex(matrix, x + 0, y + height, z).texture(textureX + 0, textureY + height);
+		bufferbuilder.vertex(matrix, x + width, y + height, z).texture(textureX + width, textureY + height);
+		bufferbuilder.vertex(matrix, x + width, y + 0, z).texture(textureX + width, textureY + 0);
+		bufferbuilder.vertex(matrix, x + 0, y + 0, z).texture(textureX + 0, textureY + 0);
+		BufferRenderer.drawWithGlobalProgram(bufferbuilder.end());
 		RenderSystem.disableDepthTest();
 	}
 }

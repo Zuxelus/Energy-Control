@@ -7,7 +7,7 @@ import com.zuxelus.zlib.containers.slots.SlotFilter;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 
@@ -15,7 +15,7 @@ public class ContainerCardHolder extends ContainerBase<InventoryCardHolder> {
 	// menu slot showing the card holder itself (the selected hotbar slot); its cards are saved into that stack
 	private int holderSlot = -1;
 
-	public ContainerCardHolder(int windowId, PlayerInventory inventory, PacketByteBuf data) {
+	public ContainerCardHolder(int windowId, PlayerInventory inventory, BlockPos data) {
 		this(windowId, inventory);
 	}
 	public ContainerCardHolder(int windowId, PlayerInventory inventory) {
