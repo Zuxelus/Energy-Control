@@ -27,6 +27,7 @@ import net.minecraft.util.Identifier;
 @Environment(EnvType.CLIENT)
 public class GuiInfoPanel extends GuiPanelBase<ContainerInfoPanel> { 
 	private static final Identifier TEXTURE = new Identifier(EnergyControl.MODID, "textures/gui/gui_info_panel.png");
+	private GuiButtonGeneral colorButton;
 
 	public GuiInfoPanel(ContainerInfoPanel container, PlayerInventory inventory, Text title) {
 		super(container, inventory, title, TEXTURE);
@@ -37,15 +38,28 @@ public class GuiInfoPanel extends GuiPanelBase<ContainerInfoPanel> {
 
 	protected void initButtons() {
 		addDrawableChild(new GuiButtonGeneral(x + backgroundWidth - 24, y + 42, 16, 16, TEXTURE, 176, panel.getShowLabels() ? 15 : 31, (button) -> { actionPerformed(button, ID_LABELS); }).setGradient());
-		if (panel.isColoredEval())
-			addDrawableChild(new GuiButtonGeneral(x + backgroundWidth - 24, y + 42 + 17, 16, 16, TEXTURE, 192, 0, (button) -> { actionPerformed(button, ID_COLORS); }).setGradient().setScale(2));
+		colorButton = null;
+		updateColorButton();
 		addDrawableChild(new GuiButtonGeneral(x + backgroundWidth - 24, y + 42 + 17 * 3, 16, 16, Text.literal(Integer.toString(panel.getTickRate())), (button) -> { actionPerformed(button, ID_TICKRATE); }).setGradient());
+	}
+
+	// the color upgrade slot can change while the GUI is open
+	private void updateColorButton() {
+		boolean colored = panel.isColoredEval();
+		if (colored && colorButton == null)
+			colorButton = addDrawableChild(new GuiButtonGeneral(x + backgroundWidth - 24, y + 42 + 17, 16, 16, TEXTURE, 192, 0, (button) -> { actionPerformed(button, ID_COLORS); }).setGradient().setScale(2));
+		else if (!colored && colorButton != null) {
+			remove(colorButton);
+			colorButton = null;
+		}
 	}
 
 	protected void initControls() {
 		ItemStack stack = panel.getCards().get(activeTab);
-		if (ItemStack.areItemsEqual(stack, oldStack))
+		if (ItemStack.areItemsEqual(stack, oldStack)) {
+			updateColorButton();
 			return;
+		}
 		if (!oldStack.isEmpty() && stack.isEmpty())
 			updateTitle();
 		oldStack = stack.copy();

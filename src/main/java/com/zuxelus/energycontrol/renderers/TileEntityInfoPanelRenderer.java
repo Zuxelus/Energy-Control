@@ -8,6 +8,8 @@ import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.render.LightmapTextureManager;
+import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
@@ -223,16 +225,29 @@ public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 		int row = 0;
 		for (PanelString panelString : joinedData) {
 			if (panelString.textLeft != null)
-				fontRenderer.draw(matrixStack, panelString.textLeft, offsetX - realWidth / 2,
+				drawString(fontRenderer, matrixStack, panelString.textLeft, offsetX - realWidth / 2,
 					offsetY - realHeight / 2 + row * lineHeight, panelString.colorLeft != 0 ? panelString.colorLeft : colorHex);
 			if (panelString.textCenter != null)
-				fontRenderer.draw(matrixStack, panelString.textCenter, -fontRenderer.getWidth(panelString.textCenter) / 2,
+				drawString(fontRenderer, matrixStack, panelString.textCenter, -fontRenderer.getWidth(panelString.textCenter) / 2,
 					offsetY - realHeight / 2 + row * lineHeight, panelString.colorCenter != 0 ? panelString.colorCenter : colorHex);
 			if (panelString.textRight != null)
-				fontRenderer.draw(matrixStack, panelString.textRight, realWidth / 2 - fontRenderer.getWidth(panelString.textRight),
+				drawString(fontRenderer, matrixStack, panelString.textRight, realWidth / 2 - fontRenderer.getWidth(panelString.textRight),
 					offsetY - realHeight / 2 + row * lineHeight, panelString.colorRight != 0 ? panelString.colorRight : colorHex);
 			row++;
 		}
+	}
+
+	// immediate full-bright draw like TextRenderer.draw(MatrixStack, ...); the polygon offset keeps the text off the screen face
+	private static void drawString(TextRenderer fontRenderer, MatrixStack matrixStack, String text, float x, float y, int color) {
+		VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+		fontRenderer.draw(text, x, y, color, false, matrixStack.peek().getPositionMatrix(), immediate, TextRenderer.TextLayerType.POLYGON_OFFSET, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+		immediate.draw();
+	}
+
+	// a screen can be larger than the core block: keep drawing the text while only other parts of it are in view
+	@Override
+	public boolean rendersOutsideBoundingBox(TileEntityInfoPanel te) {
+		return true;
 	}
 
 	@Override

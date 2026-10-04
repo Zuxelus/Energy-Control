@@ -5,6 +5,7 @@ import net.minecraft.util.math.random.Random;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityHoloPanel;
+import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.blocks.FacingHorizontalActive;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
@@ -57,14 +58,25 @@ public class HoloPanel extends FacingHorizontalActive {
 
 		if (flag)
 			world.scheduleBlockTick(pos, this, 4);
-		else
+		else {
 			world.setBlockState(pos, state.cycle(ACTIVE), 2);
+			updateExtenders(state, world, pos);
+		}
 	}
 
 	@Override
 	public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-		if (state.get(ACTIVE).booleanValue() && !world.isReceivingRedstonePower(pos))
+		if (state.get(ACTIVE).booleanValue() && !world.isReceivingRedstonePower(pos)) {
 			world.setBlockState(pos, state.cycle(ACTIVE), 2);
+			updateExtenders(state, world, pos);
+		}
+	}
+
+	// same as InfoPanel: the extenders of the screen switch with the core
+	private void updateExtenders(BlockState state, World world, BlockPos pos) {
+		BlockEntity be = world.getBlockEntity(pos);
+		if (be instanceof TileEntityInfoPanel)
+			((TileEntityInfoPanel) be).updateExtenders(world, !state.get(ACTIVE));
 	}
 
 	@Override

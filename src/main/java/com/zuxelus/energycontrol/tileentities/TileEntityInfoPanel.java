@@ -8,6 +8,7 @@ import java.util.Map;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.renderers.RotationOffset;
 import com.zuxelus.energycontrol.api.*;
+import com.zuxelus.energycontrol.blocks.HoloPanelExtender;
 import com.zuxelus.energycontrol.blocks.InfoPanelExtender;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.containers.ContainerInfoPanel;
@@ -50,11 +51,6 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	public static final int DISPLAY_DEFAULT = Integer.MAX_VALUE - 1024;
 	public static final int GREEN = 0xFF14E300;
 	public static final int BLACK = 0xFF000000;
-	// palette indexes (0-15) used before RGB colors, kept to convert old worlds
-	private static final int[] LEGACY_TEXT = { 0x000000, 0xe93535, 0x82e306, 0x702b14, 0x1f3ce7, 0x8f1fea, 0x1fd7e9,
-			0xcbcbcb, 0x222222, 0xe60675, 0x1fe723, 0xe9cc1f, 0x06aee4, 0xb006e3, 0xe7761f, 0xffffff };
-	private static final int[] LEGACY_BACKGROUND = { 0x090909, 0xff4141, 0x14e300, 0x842c01, 0x0037e2, 0xa600e6, 0x00d4dc,
-			0xb3b3b3, 0x1a1a1a, 0xff117e, 0x00f500, 0xe9cf00, 0x00aef1, 0xd100ef, 0xff7b00, 0xffffff };
 
 	private static final byte SLOT_CARD = 0;
 	private static final byte SLOT_UPGRADE_RANGE = 1;
@@ -292,10 +288,10 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 		if (tag.contains("showLabels"))
 			showLabels = tag.getBoolean("showLabels");
 
-		if (tag.contains("colorBackground")) {
-			colorText = fromLegacyColor(tag.getInt("colorText"), LEGACY_TEXT);
-			colorBackground = fromLegacyColor(tag.getInt("colorBackground"), LEGACY_BACKGROUND);
-		}
+		if (tag.contains("colorText"))
+			colorText = tag.getInt("colorText");
+		if (tag.contains("colorBackground"))
+			colorBackground = tag.getInt("colorBackground");
 
 		if (tag.contains("colored"))
 			setColored(tag.getBoolean("colored"));
@@ -349,13 +345,6 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 			return;
 		BlockState state = world.getBlockState(pos);
 		world.updateListeners(pos, state, state, 8);
-	}
-
-	// RGB colors always have alpha bits set, so 0-15 can only be an old palette index
-	private static int fromLegacyColor(int color, int[] palette) {
-		if (color >= 0 && color < palette.length)
-			return 0xFF000000 | palette[color];
-		return color;
 	}
 
 	@Override
@@ -658,7 +647,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 		notifyBlockUpdate();
 	}
 
-	public void updateExtenders(World world, Boolean active) {
+	public void updateExtenders(World world, Boolean active) { // server
+		// the block just switched on or off, so update the power now instead of waiting for the next update packet
+		calcPowered();
 		if (screen == null)
 			return;
 
@@ -667,7 +658,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 				for (int z = screen.minZ; z <= screen.maxZ; z++) {
 					BlockPos pos = new BlockPos(x, y, z);
 					BlockState state = world.getBlockState(pos);
-					if (state.getBlock() instanceof InfoPanelExtender)
+					if (state.getBlock() instanceof InfoPanelExtender || state.getBlock() instanceof HoloPanelExtender)
 						world.setBlockState(pos, state.with(FacingBlockActive.ACTIVE, active), 2);
 				}
 	}

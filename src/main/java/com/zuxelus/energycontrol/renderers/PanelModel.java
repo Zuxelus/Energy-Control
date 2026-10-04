@@ -13,10 +13,14 @@ import com.zuxelus.zlib.blocks.FacingBlockActive;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.renderer.v1.Renderer;
+import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
+import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
+import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
@@ -84,12 +88,16 @@ public class PanelModel implements UnbakedModel {
 		private final Sprite screen;
 		private final Sprite particle;
 		private final int defaultColor;
+		// a powered screen glows like a display: full brightness, no ambient occlusion (null = default material)
+		private final RenderMaterial glowing;
 
 		Baked(Sprite body, Sprite screen, Sprite particle, int defaultColor) {
 			this.body = body;
 			this.screen = screen;
 			this.particle = particle;
 			this.defaultColor = defaultColor;
+			Renderer renderer = RendererAccess.INSTANCE.getRenderer();
+			glowing = renderer == null ? null : renderer.materialFinder().emissive(true).ambientOcclusion(TriState.FALSE).find();
 		}
 
 		@Override
@@ -104,13 +112,14 @@ public class PanelModel implements UnbakedModel {
 			QuadEmitter emitter = context.getEmitter();
 			for (int n = 0; n < box.length; n++) {
 				if (n == FACE)
-					emitQuad(emitter, box[n], screenUv(data.textureId()), screen, facing, rotate(SIDES[n], facing), faceColor);
+					emitQuad(emitter, box[n], screenUv(data.textureId()), screen, facing, rotate(SIDES[n], facing), faceColor, data.powered() ? glowing : null);
 				else
-					emitQuad(emitter, box[n], bodyUv(box[n], SIDES[n]), body, facing, rotate(SIDES[n], facing), -1);
+					emitQuad(emitter, box[n], bodyUv(box[n], SIDES[n]), body, facing, rotate(SIDES[n], facing), -1, null);
 			}
 		}
 
-		private void emitQuad(QuadEmitter emitter, float[][] quad, float[][] uv, Sprite sprite, Direction facing, Direction side, int color) {
+		private void emitQuad(QuadEmitter emitter, float[][] quad, float[][] uv, Sprite sprite, Direction facing, Direction side, int color, RenderMaterial material) {
+			emitter.material(material);
 			boolean flush = true;
 			for (int i = 0; i < 4; i++) {
 				float[] p = transform(quad[i][0], quad[i][1], quad[i][2], facing);

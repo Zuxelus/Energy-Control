@@ -20,8 +20,7 @@ import net.minecraft.text.Text;
 
 @Environment(EnvType.CLIENT)
 public class KitAssemblerRecipeCategory implements DisplayCategory<KitAssemblerDisplay> {
-	public static final CategoryIdentifier<KitAssemblerDisplay> id = CategoryIdentifier.of(EnergyControl.MODID,
-			"kit_assembler");
+	public static final CategoryIdentifier<KitAssemblerDisplay> id = KitAssemblerDisplay.ID;
 	private static final Text title = Text.translatable(ModItems.kit_assembler.getTranslationKey());
 	private static final Renderer icon = EntryStacks.of(ModItems.kit_assembler);
 

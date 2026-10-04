@@ -169,13 +169,14 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 
 				BlockState stateCore = world.getBlockState(core.getPos());
 				BlockState state = world.getBlockState(pos);
-				if (state.get(FacingBlockActive.ACTIVE) != stateCore.get(FacingBlockActive.ACTIVE))
+				// block states change on the server only; the client rebuilds the screen on every panel update
+				if (!world.isClient && state.get(FacingBlockActive.ACTIVE) != stateCore.get(FacingBlockActive.ACTIVE))
 					world.setBlockState(pos, state.cycle(FacingBlockActive.ACTIVE), 2);
 				return;
 			}
 		} else {
 			BlockState state = world.getBlockState(pos);
-			if (state.get(FacingBlockActive.ACTIVE))
+			if (!world.isClient && state.get(FacingBlockActive.ACTIVE))
 				world.setBlockState(pos, state.with(FacingBlockActive.ACTIVE, false), 2);
 		}
 		partOfScreen = false;

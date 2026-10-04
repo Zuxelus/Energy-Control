@@ -7,6 +7,6 @@ public class ServerPlugin implements REIServerPlugin {
 
 	@Override
 	public void registerDisplaySerializer(DisplaySerializerRegistry registry) {
-		registry.register(KitAssemblerRecipeCategory.id, KitAssemblerDisplay.serializer(KitAssemblerDisplay::new));
+		registry.register(KitAssemblerDisplay.ID, KitAssemblerDisplay.serializer(KitAssemblerDisplay::new));
 	}
 }

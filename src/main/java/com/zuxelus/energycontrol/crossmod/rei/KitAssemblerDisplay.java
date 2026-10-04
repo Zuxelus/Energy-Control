@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.recipes.KitAssemblerRecipe;
 
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
@@ -16,6 +17,8 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.recipe.Ingredient;
 
 public class KitAssemblerDisplay extends BasicDisplay implements SimpleGridMenuDisplay {
+	// kept here, not in the client-only KitAssemblerRecipeCategory, because the server plugin needs it too
+	public static final CategoryIdentifier<KitAssemblerDisplay> ID = CategoryIdentifier.of(EnergyControl.MODID, "kit_assembler");
 	public final int count1;
 	public final int count2;
 	public final int count3;
@@ -51,7 +54,7 @@ public class KitAssemblerDisplay extends BasicDisplay implements SimpleGridMenuD
 
 	@Override
 	public CategoryIdentifier<?> getCategoryIdentifier() {
-		return KitAssemblerRecipeCategory.id;
+		return ID;
 	}
 
 	@Override
