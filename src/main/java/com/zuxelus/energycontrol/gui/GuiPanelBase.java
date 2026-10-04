@@ -74,7 +74,7 @@ public abstract class GuiPanelBase<T extends ScreenHandler> extends GuiContainer
 		if (textboxTitle != null) {
 			textboxTitle.mouseReleased(mouseX - x, mouseY - y, mouseButton);
 			if (textboxTitle.isFocused())
-				return true;
+				return super.mouseReleased(mouseX, mouseY, mouseButton);
 			focusOn(null);
 			updateTitle();
 		}
