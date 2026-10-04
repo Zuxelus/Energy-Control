@@ -7,6 +7,7 @@ import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory.Context;
@@ -252,25 +253,31 @@ public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 			if (panelString.textLeft != null) {
 				font.draw(panelString.textLeft, offsetX - realWidth / 2,
 						1 + offsetY - realHeight / 2 + row * lineHeight,
-						panelString.colorLeft != 0 ? panelString.colorLeft : colorHex, false, matrixStack.peek().getPositionMatrix(), buffer, false, 0, combinedLight);
+						panelString.colorLeft != 0 ? panelString.colorLeft : colorHex, false, matrixStack.peek().getPositionMatrix(), buffer, false, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
 			}
 			if (panelString.textCenter != null) {
 				font.draw(panelString.textCenter,
 						-font.getWidth(panelString.textCenter) / 2,
 						offsetY - realHeight / 2 + row * lineHeight,
-						panelString.colorCenter != 0 ? panelString.colorCenter : colorHex, false, matrixStack.peek().getPositionMatrix(), buffer, false, 0, combinedLight);
+						panelString.colorCenter != 0 ? panelString.colorCenter : colorHex, false, matrixStack.peek().getPositionMatrix(), buffer, false, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
 			}
 			if (panelString.textRight != null) {
 				font.draw(panelString.textRight,
 						realWidth / 2 - font.getWidth(panelString.textRight),
 						offsetY - realHeight / 2 + row * lineHeight,
-						panelString.colorRight != 0 ? panelString.colorRight : colorHex, false, matrixStack.peek().getPositionMatrix(), buffer, false, 0, combinedLight);
+						panelString.colorRight != 0 ? panelString.colorRight : colorHex, false, matrixStack.peek().getPositionMatrix(), buffer, false, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
 			}
 			row++;
 		}
 
 		//matrixStack.enableLighting();
 		//matrixStack.color(1.0F, 1.0F, 1.0F, 1.0F);
+	}
+
+	// a screen can be larger than the core block: keep drawing the text while only other parts of it are in view
+	@Override
+	public boolean rendersOutsideBoundingBox(TileEntityAdvancedInfoPanel te) {
+		return true;
 	}
 
 	@Override

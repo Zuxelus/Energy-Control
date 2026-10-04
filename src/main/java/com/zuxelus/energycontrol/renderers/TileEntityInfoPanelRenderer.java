@@ -235,6 +235,12 @@ public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 		}
 	}
 
+	// a screen can be larger than the core block: keep drawing the text while only other parts of it are in view
+	@Override
+	public boolean rendersOutsideBoundingBox(TileEntityInfoPanel te) {
+		return true;
+	}
+
 	@Override
 	public int getRenderDistance() {
 		return 65536;

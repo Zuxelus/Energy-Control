@@ -5,6 +5,9 @@ import com.zuxelus.energycontrol.tileentities.TileEntityHoloPanelExtender;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
+import net.minecraft.block.Block;
+import net.minecraft.server.world.ServerWorld;
+import java.util.Random;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -21,6 +24,13 @@ public class HoloPanelExtender extends HoloPanel {
 		return ModTileEntityTypes.holo_panel_extender.instantiate(pos, state);
 	}
 
+	// an extender follows the core panel (TileEntityInfoPanel.updateExtenders), not its own redstone signal
+	@Override
+	public void neighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) { }
+
+	@Override
+	public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) { }
+
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
 		if (world.isClient)
@@ -31,7 +41,7 @@ public class HoloPanelExtender extends HoloPanel {
 		TileEntityInfoPanel panel = ((TileEntityHoloPanelExtender) te).getCore();
 		if (panel == null)
 			return ActionResult.PASS;
-		player.openHandledScreen(state.createScreenHandlerFactory(world, pos));
+		player.openHandledScreen(panel); // the extender has no GUI of its own, open the core panel's
 		return ActionResult.SUCCESS;
 	}
 }
