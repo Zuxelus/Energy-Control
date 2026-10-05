@@ -12,8 +12,10 @@ import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.init.ModContainerTypes;
 import com.zuxelus.energycontrol.init.ModItems;
+import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.network.ChannelHandler;
 import com.zuxelus.energycontrol.tileentities.ScreenManager;
+import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -54,6 +56,8 @@ public class EnergyControl implements ModInitializer {
 				.sorted(Comparator.comparingInt(id -> Registries.ITEM.getRawId(Registries.ITEM.get(id))))
 				.forEach(id -> entries.add(Registries.ITEM.get(id))))
 			.build();
+		// lets cables charge the kit assembler and energy sensors read it
+		team.reborn.energy.api.EnergyStorage.SIDED.registerForBlockEntity(TileEntityKitAssembler::getEnergyInput, ModTileEntityTypes.kit_assembler);
 		ChannelHandler.init();
 		CrossModLoader.init();
 	}
