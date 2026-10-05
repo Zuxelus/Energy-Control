@@ -28,8 +28,9 @@ import com.zuxelus.energycontrol.utils.SoundHelper;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
+import net.minecraft.client.util.ModelIdentifier;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.gui.screen.Screen;
@@ -68,12 +69,12 @@ public class EnergyControlClient implements ClientModInitializer {
 	}
 
 	public static void registerRenders() {
-		BlockEntityRendererRegistry.register(ModTileEntityTypes.thermal_monitor, TEThermalMonitorRenderer::new);
-		BlockEntityRendererRegistry.register(ModTileEntityTypes.remote_thermo, TERemoteThermalMonitorRenderer::new);
-		BlockEntityRendererRegistry.register(ModTileEntityTypes.info_panel, TileEntityInfoPanelRenderer::new);
-		BlockEntityRendererRegistry.register(ModTileEntityTypes.info_panel_advanced, TEAdvancedInfoPanelRenderer::new);
-		BlockEntityRendererRegistry.register(ModTileEntityTypes.holo_panel, TileEntityHoloPanelRenderer::new);
-		BlockEntityRendererRegistry.register(ModTileEntityTypes.timer, TileEntityTimerRenderer::new);
+		BlockEntityRendererFactories.register(ModTileEntityTypes.thermal_monitor, TEThermalMonitorRenderer::new);
+		BlockEntityRendererFactories.register(ModTileEntityTypes.remote_thermo, TERemoteThermalMonitorRenderer::new);
+		BlockEntityRendererFactories.register(ModTileEntityTypes.info_panel, TileEntityInfoPanelRenderer::new);
+		BlockEntityRendererFactories.register(ModTileEntityTypes.info_panel_advanced, TEAdvancedInfoPanelRenderer::new);
+		BlockEntityRendererFactories.register(ModTileEntityTypes.holo_panel, TileEntityHoloPanelRenderer::new);
+		BlockEntityRendererFactories.register(ModTileEntityTypes.timer, TileEntityTimerRenderer::new);
 		registerPanelModels();
 	}
 
@@ -84,9 +85,9 @@ public class EnergyControlClient implements ClientModInitializer {
 		PanelModel infoPanelExtender = panelModel("extender_all", "extender_back", TileEntityInfoPanel.GREEN);
 		PanelModel advancedPanel = panelModel("panel_advanced_all", "panel_advanced_side", TileEntityAdvancedInfoPanel.DEFAULT_BACKGROUND);
 		PanelModel advancedExtender = panelModel("extender_advanced_all", "extender_advanced_back", TileEntityAdvancedInfoPanel.DEFAULT_BACKGROUND);
-		ModelLoadingRegistry.INSTANCE.registerVariantProvider(manager -> (modelId, context) -> {
-			if (!modelId.getNamespace().equals(EnergyControl.MODID) || modelId.getVariant().equals("inventory"))
-				return null;
+		ModelLoadingPlugin.register(pluginContext -> pluginContext.modifyModelOnLoad().register((model, context) -> {
+			if (!(context.id() instanceof ModelIdentifier modelId) || !modelId.getNamespace().equals(EnergyControl.MODID) || modelId.getVariant().equals("inventory"))
+				return model;
 			switch (modelId.getPath()) {
 			case "info_panel":
 				return infoPanel;
@@ -97,8 +98,8 @@ public class EnergyControlClient implements ClientModInitializer {
 			case "info_panel_advanced_extender":
 				return advancedExtender;
 			}
-			return null;
-		});
+			return model;
+		}));
 	}
 
 	private static PanelModel panelModel(String texture, String particle, int defaultColor) {

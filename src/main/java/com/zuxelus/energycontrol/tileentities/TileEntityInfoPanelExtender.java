@@ -6,7 +6,6 @@ import com.zuxelus.energycontrol.renderers.RotationOffset;
 import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -18,7 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
-public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IScreenPart, ITilePacketHandler, RenderAttachmentBlockEntity {
+public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IScreenPart, ITilePacketHandler {
 	protected boolean init;
 
 	protected Screen screen;
@@ -243,7 +242,7 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	}*/
 
 	@Override
-	public Object getRenderAttachmentData() {
+	public Object getRenderData() {
 		return new PanelRenderData(findTexture(), getColored() ? getColorBackground() : getDefaultBackground(), getPowered(), getRenderOffset());
 	}
 

@@ -22,6 +22,10 @@ public abstract class ItemInventory implements Inventory, ISlotItemFilter {
 		readFromParentNBT();
 	}
 
+	public ItemStack getParent() {
+		return parent;
+	}
+
 	private void readFromParentNBT() {
 		NbtCompound tag = parent.getNbt();
 		if (tag == null) {
