@@ -10,9 +10,10 @@ import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
-import net.minecraft.inventory.Inventory;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.loader.api.FabricLoader;
@@ -155,24 +156,47 @@ public class CrossModLoader {
 				return tag;
 		}
 		NbtCompound tag = new NbtCompound();
-		if (te instanceof Inventory) {
-			Inventory inv = (Inventory) te;
+		// any block exposing the Fabric Transfer API, including every vanilla Inventory
+		Storage<ItemVariant> storage = findItemStorage(te);
+		if (storage != null) {
 			/*if (te instanceof BaseContainerBlockEntity)
 				tag.putString("name", ((BaseContainerBlockEntity) te).getDisplayName().getString());
 			tag.putBoolean("sided", inv instanceof WorldlyContainer);*/
+			int size = 0;
 			int inUse = 0;
 			int items = 0;
-			tag.putInt("size", inv.size());
-			for (int i = 0; i < Math.min(6, inv.size()); i++) {
-				if (inv.getStack(i) != ItemStack.EMPTY) {
+			for (StorageView<ItemVariant> view : storage) {
+				ItemStack stack = view.isResourceBlank() ? ItemStack.EMPTY : view.getResource().toStack((int) Math.min(view.getAmount(), Integer.MAX_VALUE));
+				if (!stack.isEmpty()) {
 					inUse++;
-					items += inv.getStack(i).getCount();
+					items += stack.getCount();
 				}
-				tag.put("slot" + Integer.toString(i), inv.getStack(i).writeNbt(new NbtCompound()));
+				if (size < 6)
+					tag.put("slot" + Integer.toString(size), stack.writeNbt(new NbtCompound()));
+				size++;
 			}
+			tag.putInt("size", size);
 			tag.putInt("used", inUse);
 			tag.putInt("items", items);
 		}
 		return tag;
+	}
+
+	private static Storage<ItemVariant> findItemStorage(BlockEntity te) {
+		World world = te.getWorld();
+		if (world == null)
+			return null;
+		BlockPos pos = te.getPos();
+		BlockState state = te.getCachedState();
+		Storage<ItemVariant> storage = ItemStorage.SIDED.find(world, pos, state, te, null);
+		if (storage != null)
+			return storage;
+		// some providers only answer for a real side
+		for (Direction side : Direction.values()) {
+			storage = ItemStorage.SIDED.find(world, pos, state, te, side);
+			if (storage != null)
+				return storage;
+		}
+		return null;
 	}
 }
