@@ -104,8 +104,8 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 		}
 
 		public void render(MatrixStack.Entry matrixEntry, VertexConsumer buffer, int[] light, int combinedOverlay, float red, float green, float blue, float alpha) {
-			Matrix4f matrix4f = matrixEntry.getPositionMatrix();
-			Matrix3f matrix3f = matrixEntry.getNormalMatrix();
+			Matrix4f matrix4f = matrixEntry.getModel();
+			Matrix3f matrix3f = matrixEntry.getNormal();
 
 			for (int n = 0; n < quads.length; ++n) {
 				TexturedQuad quad = quads[n];

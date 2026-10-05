@@ -27,9 +27,7 @@ import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.screen.ScreenHandler;
@@ -154,8 +152,8 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 	}
 
 	@Override
-	public Packet<ClientPlayPacketListener> toUpdatePacket() {
-		return BlockEntityUpdateS2CPacket.create(this);
+	public BlockEntityUpdateS2CPacket toUpdatePacket() {
+		return new BlockEntityUpdateS2CPacket(pos, 127, toInitialChunkDataNbt()); // unused vanilla type id, handled by ClientPlayNetworkHandlerMixin
 	}
 
 	@Override
@@ -202,9 +200,8 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 	}
 
 	@Override
-	protected void writeNbt(NbtCompound tag) {
-		super.writeNbt(tag);
-		writeProperties(tag);
+	public NbtCompound writeNbt(NbtCompound tag) {
+		return writeProperties(super.writeNbt(tag));
 	}
 
 	public static void tickStatic(World level, BlockPos pos, BlockState state, BlockEntity be) {

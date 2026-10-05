@@ -7,6 +7,8 @@ import java.util.Map;
 
 import com.zuxelus.energycontrol.containers.ContainerKitAssembler;
 
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import me.shedaniel.rei.api.client.registry.transfer.TransferHandler;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
@@ -47,10 +49,10 @@ public class KitAssemblerTransferHandler implements TransferHandler {
 		for (int i = 0; i < INPUTS; i++)
 			addStack(available, menu.getSlot(FIRST_INPUT + i).getStack());
 
-		List<EntryIngredient> missing = new ArrayList<>();
+		IntList missing = new IntArrayList();
 		Item[] chosen = allocate(inputs, counts, 1, available, missing);
 		if (chosen == null)
-			return Result.createFailed(new TranslatableText("error.rei.not.enough.materials")).tooltipMissing(missing);
+			return Result.createFailed(new TranslatableText("error.rei.not.enough.materials"), missing);
 		if (!context.isActuallyCrafting())
 			return Result.createSuccessful();
 
@@ -62,7 +64,7 @@ public class KitAssemblerTransferHandler implements TransferHandler {
 				if (counts[i] > 0 && chosen[i] != null)
 					max = Math.min(max, Math.min(menu.getSlot(FIRST_INPUT + i).getMaxItemCount(), chosen[i].getMaxCount()) / counts[i]);
 			for (int k = max; k > 1; k--) {
-				Item[] items = allocate(inputs, counts, k, available, new ArrayList<>());
+				Item[] items = allocate(inputs, counts, k, available, new IntArrayList());
 				if (items != null) {
 					chosen = items;
 					crafts = k;
@@ -85,7 +87,7 @@ public class KitAssemblerTransferHandler implements TransferHandler {
 	}
 
 	// Picks an item for every input so that all inputs fit into the available items at once. Returns null if something is missing.
-	private static Item[] allocate(List<EntryIngredient> inputs, int[] counts, int crafts, Map<Item, Integer> available, List<EntryIngredient> missing) {
+	private static Item[] allocate(List<EntryIngredient> inputs, int[] counts, int crafts, Map<Item, Integer> available, IntList missing) {
 		Map<Item, Integer> left = new HashMap<>(available);
 		Item[] chosen = new Item[INPUTS];
 		boolean ok = true;
@@ -98,7 +100,7 @@ public class KitAssemblerTransferHandler implements TransferHandler {
 				if (left.getOrDefault(item, 0) >= need && (best == null || left.get(item) > left.get(best)))
 					best = item;
 			if (best == null) {
-				missing.add(inputs.get(i));
+				missing.add(i); // display input index, highlighted red by REI
 				ok = false;
 				continue;
 			}

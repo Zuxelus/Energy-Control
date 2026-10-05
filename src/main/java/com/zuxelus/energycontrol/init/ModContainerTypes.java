@@ -3,11 +3,10 @@ package com.zuxelus.energycontrol.init;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.containers.*;
 
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
+import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 public final class ModContainerTypes {
 	public static final ScreenHandlerType<ContainerInfoPanel> info_panel = register("info_panel", ContainerInfoPanel::new);
@@ -21,8 +20,8 @@ public final class ModContainerTypes {
 	public static final ScreenHandlerType<ContainerPortablePanel> portable_panel = register("portable_panel", ContainerPortablePanel::new);
 	public static final ScreenHandlerType<ContainerCardHolder> card_holder = register("card_holder", ContainerCardHolder::new);
 
-	// replaces the deprecated ScreenHandlerRegistry.registerExtended
-	private static <T extends ScreenHandler> ScreenHandlerType<T> register(String name, ExtendedScreenHandlerType.ExtendedFactory<T> factory) {
-		return Registry.register(Registry.SCREEN_HANDLER, new Identifier(EnergyControl.MODID, name), new ExtendedScreenHandlerType<>(factory));
+	// ExtendedScreenHandlerType is not public API in Fabric API for 1.17
+	private static <T extends ScreenHandler> ScreenHandlerType<T> register(String name, ScreenHandlerRegistry.ExtendedClientHandlerFactory<T> factory) {
+		return ScreenHandlerRegistry.registerExtended(new Identifier(EnergyControl.MODID, name), factory);
 	}
 }

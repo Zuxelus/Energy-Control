@@ -51,8 +51,8 @@ dependencies {
 	modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
 		exclude(group: "net.fabricmc", module: "fabric-loader")
 	}
-	modImplementation "curse.maven:reborncore-237903:4145508"
-	modImplementation "curse.maven:techreborn-233564:4145507"
+	modImplementation "curse.maven:reborncore-237903:3517197"
+	modImplementation "curse.maven:techreborn-233564:3517196"
 	include(modApi("teamreborn:energy:${project.energy_version}")) {
 		transitive = false
 	}
@@ -68,7 +68,14 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.release = 17
+	it.options.release = 16
+}
+
+// Loom needs Gradle on JDK 25, but the game (runClient, runServer, ...) runs on the Java it targets
+tasks.withType(JavaExec).configureEach {
+	javaLauncher = javaToolchains.launcherFor {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
 }
 
 base {
@@ -78,8 +85,8 @@ base {
 java {
 	withSourcesJar()
 
-	sourceCompatibility = JavaVersion.VERSION_17
-	targetCompatibility = JavaVersion.VERSION_17
+	sourceCompatibility = JavaVersion.VERSION_16
+	targetCompatibility = JavaVersion.VERSION_16
 }
 
 jar {

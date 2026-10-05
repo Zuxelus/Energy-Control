@@ -42,7 +42,7 @@ public class PacketCardS2C extends PacketBase {
 		String className = buf.readString();
 		NbtCompound tag = buf.readNbt();
 		client.execute(() -> {
-			World world = client.player.getWorld();
+			World world = client.player.world;
 			if (world == null)
 				return;
 			BlockEntity te = world.getBlockEntity(pos);

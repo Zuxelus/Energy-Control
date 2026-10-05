@@ -141,7 +141,7 @@ public class TileEntityTimerRenderer implements BlockEntityRenderer<TileEntityTi
 		matrixStack.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90.0F));
 		matrixStack.translate(0.5F, 0.575F, -0.4376F);
 		matrixStack.scale(0.015625F, 0.015625F, 0.015625F);
-		font.draw(time, -font.getWidth(time) / 2, -font.fontHeight, 0x000000, false, matrixStack.peek().getPositionMatrix(), buffer, false, 0, combinedLight);
+		font.draw(time, -font.getWidth(time) / 2, -font.fontHeight, 0x000000, false, matrixStack.peek().getModel(), buffer, false, 0, combinedLight);
 		matrixStack.pop();
 	}
 

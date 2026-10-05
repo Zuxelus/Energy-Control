@@ -57,7 +57,7 @@ public class HoloPanel extends FacingHorizontalActive {
 			return;
 
 		if (flag)
-			world.createAndScheduleBlockTick(pos, this, 4);
+			world.getBlockTickScheduler().schedule(pos, this, 4);
 		else {
 			world.setBlockState(pos, state.cycle(ACTIVE), 2);
 			updateExtenders(state, world, pos);

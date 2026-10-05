@@ -91,7 +91,7 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 			world.setBlockState(pos, state.with(POWERED, Boolean.valueOf(true)), 3);
 			world.updateNeighborsAlways(pos, block);
 			world.updateNeighborsAlways(pos.offset(getFacing(state).getOpposite()), block);
-			world.createAndScheduleBlockTick(pos, block, block instanceof WoodenButtonBlock ? 30 : 20);
+			world.getBlockTickScheduler().schedule(pos, block, block instanceof WoodenButtonBlock ? 30 : 20);
 		}
 		return false;
 	}
@@ -125,7 +125,7 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 		Tessellator tesselator = Tessellator.getInstance();
 		BufferBuilder bufferbuilder = tesselator.getBuffer();
 		bufferbuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
-		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
+		Matrix4f matrix = matrixStack.peek().getModel();
 		bufferbuilder.vertex(matrix, x + 0, y + height, z).texture(textureX + 0, textureY + height).next();
 		bufferbuilder.vertex(matrix, x + width, y + height, z).texture(textureX + width, textureY + height).next();
 		bufferbuilder.vertex(matrix, x + width, y + 0, z).texture(textureX + width, textureY + 0).next();

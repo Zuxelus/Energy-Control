@@ -52,7 +52,7 @@ public class TERemoteThermalMonitorRenderer implements BlockEntityRenderer<TileE
 				rate = Math.round((1 - Math.min((float) heat / level, 1)) * 16) / (float) 16;
 
 			VertexConsumer bar = buffer.getBuffer(RenderLayer.getText(TEXTURE));
-			Matrix4f matrix = matrixStack.peek().getPositionMatrix();
+			Matrix4f matrix = matrixStack.peek().getModel();
 			bar.vertex(matrix, rate, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).texture(rate * BAR_U, 0).light(FULL_BRIGHT).next();
 			bar.vertex(matrix, 1, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).texture(BAR_U, 0).light(FULL_BRIGHT).next();
 			bar.vertex(matrix, 1, BAR_HEIGHT, 0).color(1.0F, 1.0F, 1.0F, 1.0F).texture(BAR_U, BAR_V).light(FULL_BRIGHT).next();
@@ -65,7 +65,7 @@ public class TERemoteThermalMonitorRenderer implements BlockEntityRenderer<TileE
 		matrixStack.scale(0.015625F, 0.015625F, 0.015625F);
 
 		String text = Integer.toString(level);
-		font.draw(text, -font.getWidth(text) / 2, -font.fontHeight, 0x000000, false, matrixStack.peek().getPositionMatrix(), buffer, false, 0, FULL_BRIGHT);
+		font.draw(text, -font.getWidth(text) / 2, -font.fontHeight, 0x000000, false, matrixStack.peek().getModel(), buffer, false, 0, FULL_BRIGHT);
 		matrixStack.pop();
 	}
 }

@@ -33,9 +33,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
-import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -243,8 +241,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	}
 
 	@Override
-	public Packet<ClientPlayPacketListener> toUpdatePacket() {
-		return BlockEntityUpdateS2CPacket.create(this);
+	public BlockEntityUpdateS2CPacket toUpdatePacket() {
+		return new BlockEntityUpdateS2CPacket(pos, 127, toInitialChunkDataNbt()); // unused vanilla type id, handled by ClientPlayNetworkHandlerMixin
 	}
 
 	@Override
@@ -386,9 +384,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	}
 
 	@Override
-	protected void writeNbt(NbtCompound tag) {
-		super.writeNbt(tag);
-		writeProperties(tag);
+	public NbtCompound writeNbt(NbtCompound tag) {
+		return writeProperties(super.writeNbt(tag));
 	}
 
 	@Override

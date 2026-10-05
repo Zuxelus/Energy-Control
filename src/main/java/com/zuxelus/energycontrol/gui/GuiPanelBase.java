@@ -105,9 +105,9 @@ public abstract class GuiPanelBase<T extends ScreenHandler> extends GuiContainer
 	}
 
 	@Override
-	public void close() {
+	public void onClose() {
 		updateTitle();
-		super.close();
+		super.onClose();
 		handler.removeListener(this);
 	}
 

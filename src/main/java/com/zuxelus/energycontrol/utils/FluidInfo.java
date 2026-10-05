@@ -3,8 +3,12 @@ package com.zuxelus.energycontrol.utils;
 import com.zuxelus.energycontrol.api.ICardReader;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class FluidInfo {
@@ -40,10 +44,19 @@ public class FluidInfo {
 		FluidVariant variant = stack.getResource();
 		if (amount > 0 && !variant.isBlank()) {
 			// works on a dedicated server too: Language there is the server's built-in en_us
-			name = FluidVariantAttributes.getName(variant).getString();
-			fluid = Registry.FLUID.getId(variant.getFluid()).toString();
+			Identifier id = Registry.FLUID.getId(variant.getFluid());
+			name = getName(variant, id).getString();
+			fluid = id.toString();
 		}
 		capacity = stack.getCapacity() / 81;
+	}
+
+	// FluidVariantAttributes is not available in Fabric API for 1.17: use the fluid block name, as its default handler does
+	private static Text getName(FluidVariant variant, Identifier id) {
+		Block block = variant.getFluid().getDefaultState().getBlockState().getBlock();
+		if (block != Blocks.AIR)
+			return block.getName();
+		return new TranslatableText("block." + id.getNamespace() + "." + id.getPath());
 	}
 
 	public void write(ICardReader reader) {

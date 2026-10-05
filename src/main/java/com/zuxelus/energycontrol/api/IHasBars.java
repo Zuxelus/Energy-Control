@@ -30,7 +30,7 @@ public interface IHasBars {
 		Tessellator tesselator = Tessellator.getInstance();
 		BufferBuilder bufferbuilder = tesselator.getBuffer();
 		bufferbuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-		drawPositionColor(matrixStack.peek().getPositionMatrix(), bufferbuilder, left, top, right, bottom, zLevel, color);
+		drawPositionColor(matrixStack.peek().getModel(), bufferbuilder, left, top, right, bottom, zLevel, color);
 		tesselator.draw();
 		RenderSystem.disableBlend();
 		RenderSystem.disableDepthTest();

@@ -30,10 +30,10 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
+import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 
@@ -45,15 +45,15 @@ public class EnergyControlClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		registerRenders();
 
-		HandledScreens.register(ModContainerTypes.info_panel, GuiInfoPanel::new);
-		HandledScreens.register(ModContainerTypes.info_panel_advanced, GuiAdvancedInfoPanel::new);
-		HandledScreens.register(ModContainerTypes.holo_panel, GuiHoloPanel::new);
-		HandledScreens.register(ModContainerTypes.range_trigger, GuiRangeTrigger::new);
-		HandledScreens.register(ModContainerTypes.remote_thermo, GuiRemoteThermalMonitor::new);
-		HandledScreens.register(ModContainerTypes.kit_assembler, GuiKitAssembler::new);
-		HandledScreens.register(ModContainerTypes.timer, GuiTimer::new);
-		HandledScreens.register(ModContainerTypes.card_holder, GuiCardHolder::new);
-		HandledScreens.register(ModContainerTypes.portable_panel, GuiPortablePanel::new);
+		ScreenRegistry.register(ModContainerTypes.info_panel, GuiInfoPanel::new);
+		ScreenRegistry.register(ModContainerTypes.info_panel_advanced, GuiAdvancedInfoPanel::new);
+		ScreenRegistry.register(ModContainerTypes.holo_panel, GuiHoloPanel::new);
+		ScreenRegistry.register(ModContainerTypes.range_trigger, GuiRangeTrigger::new);
+		ScreenRegistry.register(ModContainerTypes.remote_thermo, GuiRemoteThermalMonitor::new);
+		ScreenRegistry.register(ModContainerTypes.kit_assembler, GuiKitAssembler::new);
+		ScreenRegistry.register(ModContainerTypes.timer, GuiTimer::new);
+		ScreenRegistry.register(ModContainerTypes.card_holder, GuiCardHolder::new);
+		ScreenRegistry.register(ModContainerTypes.portable_panel, GuiPortablePanel::new);
 
 		ChannelHandler.initClient();
 		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new SoundHelper());

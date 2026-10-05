@@ -138,7 +138,7 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		Tessellator tesselator = Tessellator.getInstance();
 		BufferBuilder bufferbuilder = tesselator.getBuffer();
 		bufferbuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
-		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
+		Matrix4f matrix = matrixStack.peek().getModel();
 		bufferbuilder.vertex(matrix, x, y + 0.4375F / 2 + height, z).texture(textureX, sprite.getMaxV()).color(f1, f2, f3, f).next();
 		bufferbuilder.vertex(matrix, x + 0.875F, y + 0.4375F / 2 + height, z).texture(sprite.getMaxU(), sprite.getMaxV()).color(f1, f2, f3, f).next();
 		bufferbuilder.vertex(matrix, x + 0.875F, y + 0.4375F / 2, z).texture(sprite.getMaxU(), textureY).color(f1, f2, f3, f).next();

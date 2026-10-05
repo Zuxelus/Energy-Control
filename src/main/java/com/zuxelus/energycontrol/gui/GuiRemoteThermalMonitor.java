@@ -109,9 +109,9 @@ public class GuiRemoteThermalMonitor extends GuiContainerBase<ContainerRemoteThe
 	}
 
 	@Override
-	public void close() {
+	public void onClose() {
 		updateHeat(0);
-		super.close();
+		super.onClose();
 	}
 
 	protected void actionPerformed(ButtonWidget button) {
