@@ -3,7 +3,6 @@ package com.zuxelus.energycontrol.crossmod.rei;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.init.ModItems;
 
 import me.shedaniel.math.Point;

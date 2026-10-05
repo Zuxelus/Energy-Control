@@ -1,19 +1,25 @@
 package com.zuxelus.energycontrol.gui;
 
 import java.util.List;
+import java.util.Map;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.containers.ContainerPortablePanel;
+import com.zuxelus.energycontrol.gui.controls.ToggleButton;
 import com.zuxelus.energycontrol.items.InventoryPortablePanel;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
+import com.zuxelus.energycontrol.network.NetworkHelper;
+import com.zuxelus.energycontrol.network.PacketPortableBars;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.gui.tooltip.Tooltip;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
@@ -25,6 +31,12 @@ import net.minecraft.util.Identifier;
 @Environment(EnvType.CLIENT)
 public class GuiPortablePanel extends HandledScreen<ContainerPortablePanel> {
 	private static final Identifier TEXTURE = new Identifier(EnergyControl.MODID + ":textures/gui/gui_portable_panel.png");
+	private static final int ROWS_PER_PAGE = 14;
+	private int page;
+	private ButtonWidget previousPage;
+	private ButtonWidget nextPage;
+	private ToggleButton toggleBars;
+	private boolean showBars;
 	private PlayerEntity player;
 
 	private InventoryPortablePanel te;
@@ -32,9 +44,42 @@ public class GuiPortablePanel extends HandledScreen<ContainerPortablePanel> {
 	public GuiPortablePanel(ContainerPortablePanel container, PlayerInventory inventory, Text title) {
 		super(container, inventory, title);
 		this.te = container.te;
+		this.showBars = container.getShowBars();
 		this.player = inventory.player;
 		this.backgroundWidth = 226;
 		this.backgroundHeight = 226;
+	}
+
+	@Override
+	protected void init() {
+		super.init();
+		previousPage = addDrawableChild(ButtonWidget.builder(Text.literal("<"), button -> page--)
+				.dimensions(x + 174, y + 53, 16, 16).build());
+		nextPage = addDrawableChild(ButtonWidget.builder(Text.literal(">"), button -> page++)
+				.dimensions(x + 174, y + 71, 16, 16).build());
+		previousPage.visible = nextPage.visible = false;
+		toggleBars = addDrawableChild(new ToggleButton(x + 174, y + 89, 16, 16, Text.literal("B"), showBars, button -> {
+			showBars = !showBars;
+			toggleBars.setPressed(showBars);
+			handler.setShowBars(showBars);
+			NetworkHelper.sendToServer(new PacketPortableBars(showBars));
+			button.setTooltip(Tooltip.of(barButtonTitle()));
+		}));
+		toggleBars.setTooltip(Tooltip.of(barButtonTitle()));
+		toggleBars.visible = false;
+	}
+
+	@Override
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		boolean result = super.mouseClicked(mouseX, mouseY, button);
+		// a clicked button keeps focus and stays highlighted after the mouse leaves it
+		if (getFocused() instanceof ButtonWidget)
+			setFocused(null);
+		return result;
+	}
+
+	private Text barButtonTitle() {
+		return Text.translatable(showBars ? "gui.ec.portableBarsOn" : "gui.ec.portableBarsOff");
 	}
 
 	@Override
@@ -67,19 +112,37 @@ public class GuiPortablePanel extends HandledScreen<ContainerPortablePanel> {
 			else
 				joinedData = ((ItemCardMain) stack.getItem()).getStringData(player.world, Integer.MAX_VALUE, reader, false, true);
 
-			int row = 0;
-			for (PanelString panelString : joinedData) {
-				if (row < 14) {
-					if (panelString.textLeft != null)
-						textRenderer.draw(matrixStack, panelString.textLeft, 9, row * 10 + 10, 0x06aee4);
-					if (panelString.textCenter != null)
-						textRenderer.draw(matrixStack, panelString.textCenter, (168 - textRenderer.getWidth(panelString.textCenter)) / 2, row * 10 + 10, 0x06aee4);
-					if (panelString.textRight != null)
-						textRenderer.draw(matrixStack, panelString.textRight, 168 - textRenderer.getWidth(panelString.textRight), row * 10 + 10, 0x06aee4);
-				} else if (row == 14)
-					textRenderer.draw(matrixStack, "...", 9, row * 10 + 10, 0x06aee4);
-				row++;
+			int pageCount = joinedData.isEmpty() ? 1 : (joinedData.size() - 1) / ROWS_PER_PAGE + 1;
+			page = Math.max(0, Math.min(page, pageCount - 1));
+			previousPage.visible = nextPage.visible = pageCount > 1;
+			previousPage.active = page > 0;
+			nextPage.active = page < pageCount - 1;
+			Map<Integer, Double> bars = PortableProgressBars.forRows(stack, reader);
+			toggleBars.visible = !bars.isEmpty();
+
+			int firstRow = page * ROWS_PER_PAGE;
+			int lastRow = Math.min(firstRow + ROWS_PER_PAGE, joinedData.size());
+			for (int index = firstRow; index < lastRow; index++) {
+				PanelString panelString = joinedData.get(index);
+				int row = index - firstRow;
+				if (showBars && bars.containsKey(index)) {
+					int top = row * 10 + 9;
+					fill(matrixStack, 8, top, 168, top + 10, 0xFF20343A);
+					fill(matrixStack, 8, top, 8 + (int) Math.round(160 * bars.get(index)), top + 10, 0xFF205E36);
+				}
+				if (panelString.textLeft != null)
+					textRenderer.draw(matrixStack, panelString.textLeft, 9, row * 10 + 10, 0x06aee4);
+				if (panelString.textCenter != null)
+					textRenderer.draw(matrixStack, panelString.textCenter, (168 - textRenderer.getWidth(panelString.textCenter)) / 2, row * 10 + 10, 0x06aee4);
+				if (panelString.textRight != null)
+					textRenderer.draw(matrixStack, panelString.textRight, 168 - textRenderer.getWidth(panelString.textRight), row * 10 + 10, 0x06aee4);
 			}
+			if (pageCount > 1)
+				textRenderer.draw(matrixStack, (page + 1) + " / " + pageCount, 9, 150, 0x06aee4);
+		} else {
+			page = 0;
+			previousPage.visible = nextPage.visible = false;
+			toggleBars.visible = false;
 		}
 	}
 }

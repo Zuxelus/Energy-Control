@@ -18,6 +18,7 @@ public class ChannelHandler {
 		ServerPlayNetworking.registerGlobalReceiver(PacketCardC2S.ID, PacketCardC2S::handle);
 		ServerPlayNetworking.registerGlobalReceiver(PacketTileEntityC2S.ID, PacketTileEntityC2S::handle);
 		ServerPlayNetworking.registerGlobalReceiver(PacketKeys.ID, PacketKeys::handle);
+		ServerPlayNetworking.registerGlobalReceiver(PacketPortableBars.ID, PacketPortableBars::handle);
 	}
 
 	@Environment(EnvType.CLIENT)

@@ -13,6 +13,7 @@ import com.zuxelus.energycontrol.gui.GuiRangeTrigger;
 import com.zuxelus.energycontrol.gui.GuiRemoteThermalMonitor;
 import com.zuxelus.energycontrol.gui.GuiTimer;
 import com.zuxelus.energycontrol.init.ModContainerTypes;
+import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.network.ChannelHandler;
 import com.zuxelus.energycontrol.renderers.TEAdvancedInfoPanelRenderer;
@@ -28,8 +29,10 @@ import com.zuxelus.energycontrol.utils.SoundHelper;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.gui.screen.Screen;
@@ -68,12 +71,12 @@ public class EnergyControlClient implements ClientModInitializer {
 	}
 
 	public static void registerRenders() {
-		BlockEntityRendererRegistry.register(ModTileEntityTypes.thermal_monitor, TEThermalMonitorRenderer::new);
-		BlockEntityRendererRegistry.register(ModTileEntityTypes.remote_thermo, TERemoteThermalMonitorRenderer::new);
-		BlockEntityRendererRegistry.register(ModTileEntityTypes.info_panel, TileEntityInfoPanelRenderer::new);
-		BlockEntityRendererRegistry.register(ModTileEntityTypes.info_panel_advanced, TEAdvancedInfoPanelRenderer::new);
-		BlockEntityRendererRegistry.register(ModTileEntityTypes.holo_panel, TileEntityHoloPanelRenderer::new);
-		BlockEntityRendererRegistry.register(ModTileEntityTypes.timer, TileEntityTimerRenderer::new);
+		BlockEntityRendererFactories.register(ModTileEntityTypes.thermal_monitor, TEThermalMonitorRenderer::new);
+		BlockEntityRendererFactories.register(ModTileEntityTypes.remote_thermo, TERemoteThermalMonitorRenderer::new);
+		BlockEntityRendererFactories.register(ModTileEntityTypes.info_panel, TileEntityInfoPanelRenderer::new);
+		BlockEntityRendererFactories.register(ModTileEntityTypes.info_panel_advanced, TEAdvancedInfoPanelRenderer::new);
+		BlockEntityRendererFactories.register(ModTileEntityTypes.holo_panel, TileEntityHoloPanelRenderer::new);
+		BlockEntityRendererFactories.register(ModTileEntityTypes.timer, TileEntityTimerRenderer::new);
 		registerPanelModels();
 	}
 
@@ -84,20 +87,19 @@ public class EnergyControlClient implements ClientModInitializer {
 		PanelModel infoPanelExtender = panelModel("extender_all", "extender_back", TileEntityInfoPanel.GREEN);
 		PanelModel advancedPanel = panelModel("panel_advanced_all", "panel_advanced_side", TileEntityAdvancedInfoPanel.DEFAULT_BACKGROUND);
 		PanelModel advancedExtender = panelModel("extender_advanced_all", "extender_advanced_back", TileEntityAdvancedInfoPanel.DEFAULT_BACKGROUND);
-		ModelLoadingRegistry.INSTANCE.registerVariantProvider(manager -> (modelId, context) -> {
-			if (!modelId.getNamespace().equals(EnergyControl.MODID) || modelId.getVariant().equals("inventory"))
-				return null;
-			switch (modelId.getPath()) {
-			case "info_panel":
-				return infoPanel;
-			case "info_panel_extender":
-				return infoPanelExtender;
-			case "info_panel_advanced":
-				return advancedPanel;
-			case "info_panel_advanced_extender":
-				return advancedExtender;
-			}
-			return null;
+		ModelLoadingPlugin.register(context -> {
+			registerPanelModel(context, ModItems.info_panel, infoPanel);
+			registerPanelModel(context, ModItems.info_panel_extender, infoPanelExtender);
+			registerPanelModel(context, ModItems.info_panel_advanced, advancedPanel);
+			registerPanelModel(context, ModItems.info_panel_advanced_extender, advancedExtender);
+		});
+	}
+
+	// every block state uses the same model; facing and connections are handled while emitting quads
+	private static void registerPanelModel(ModelLoadingPlugin.Context context, Block block, PanelModel model) {
+		context.registerBlockStateResolver(block, resolver -> {
+			for (BlockState state : block.getStateManager().getStates())
+				resolver.setModel(state, model);
 		});
 	}
 

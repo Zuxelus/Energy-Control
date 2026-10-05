@@ -18,7 +18,7 @@ public class ItemPortablePanel extends Item {
 	public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getStackInHand(hand);
 		if (!player.isSneaking() && !world.isClient && stack.getCount() == 1)
-			player.openHandledScreen(new InventoryPortablePanel(stack));
+			player.openHandledScreen(new InventoryPortablePanel(stack, hand));
 		return TypedActionResult.success(stack);
 	}
 }

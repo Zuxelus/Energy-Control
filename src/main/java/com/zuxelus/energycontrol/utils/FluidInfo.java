@@ -2,12 +2,10 @@ package com.zuxelus.energycontrol.utils;
 
 import com.zuxelus.energycontrol.api.ICardReader;
 
-import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
 
 public class FluidInfo {
 	String name; // display name, translated where the info is created
@@ -34,29 +32,18 @@ public class FluidInfo {
 		capacity = tank.getCapacity();
 	}*/
 
-	public FluidInfo(FluidVolume stack, long capacity) {
-		if (stack != null) {
-			amount = stack.amount().whole;
-			if (amount > 0) {
-				/*translationKey = stack.getTranslationKey();
-				texture = stack.fluidKey.getRawFluid().getAttributes().getStillTexture().toString();
-				color = stack.fluidKey.getRawFluid().getAttributes().getColor();*/
-			}
+	// amounts are in droplets (81000 per bucket), stored as mB
+	public FluidInfo(StorageView<FluidVariant> stack) {
+		if (stack == null)
+			return;
+		amount = stack.getAmount() / 81;
+		FluidVariant variant = stack.getResource();
+		if (amount > 0 && !variant.isBlank()) {
+			// works on a dedicated server too: Language there is the server's built-in en_us
+			name = FluidVariantAttributes.getName(variant).getString();
+			fluid = Registries.FLUID.getId(variant.getFluid()).toString();
 		}
-		this.capacity = capacity;
-	}
-
-	public FluidInfo(SingleSlotStorage<FluidVariant> stack) {
-		if (stack != null) {
-			amount = stack.getAmount() / 81;
-			FluidVariant variant = stack.getResource();
-			if (amount > 0 && !variant.isBlank()) {
-				// works on a dedicated server too: Language there is the server's built-in en_us
-				name = FluidVariantAttributes.getName(variant).getString();
-				fluid = Registries.FLUID.getId(variant.getFluid()).toString();
-			}
-		}
-		this.capacity = stack.getCapacity() / 81;
+		capacity = stack.getCapacity() / 81;
 	}
 
 	public void write(ICardReader reader) {

@@ -17,7 +17,6 @@ import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.fabricmc.fabric.api.util.TriState;
@@ -78,7 +77,7 @@ public class PanelModel implements UnbakedModel {
 		return 0xFF000000 | r << 16 | g << 8 | b;
 	}
 
-	private static class Baked implements BakedModel, FabricBakedModel {
+	private static class Baked implements BakedModel {
 		private static final Direction[] SIDES = { Direction.EAST, Direction.WEST, Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH };
 		private static final int FACE = 3;
 		private static final Direction[] BODY_SIDES = { Direction.EAST, Direction.WEST, Direction.DOWN, Direction.UP, Direction.SOUTH };
@@ -124,8 +123,8 @@ public class PanelModel implements UnbakedModel {
 			for (int i = 0; i < 4; i++) {
 				float[] p = transform(quad[i][0], quad[i][1], quad[i][2], facing);
 				emitter.pos(i, p[0], p[1], p[2]);
-				emitter.sprite(i, 0, sprite.getFrameU(uv[i][0] * 16), sprite.getFrameV(uv[i][1] * 16));
-				emitter.spriteColor(i, 0, color);
+				emitter.uv(i, sprite.getFrameU(uv[i][0] * 16), sprite.getFrameV(uv[i][1] * 16));
+				emitter.color(i, color);
 				float coord = p[side.getAxis().ordinal()];
 				if (coord != (side.getDirection() == Direction.AxisDirection.POSITIVE ? 1.0F : 0.0F))
 					flush = false;
