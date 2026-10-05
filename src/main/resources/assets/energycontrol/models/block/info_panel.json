@@ -2,11 +2,11 @@
     "parent": "block/cube",
     "textures": {
         "particle": "energycontrol:block/info_panel/panel_back",
-        "down": "energycontrol:block/info_panel/panel_back",
-        "up": "energycontrol:block/info_panel/panel_face",
-        "north": "energycontrol:block/info_panel/panel_side",
+        "down": "energycontrol:block/info_panel/panel_side",
+        "up": "energycontrol:block/info_panel/panel_side",
+        "north": "energycontrol:block/info_panel/panel_face",
         "east": "energycontrol:block/info_panel/panel_side",
-        "south": "energycontrol:block/info_panel/panel_side",
+        "south": "energycontrol:block/info_panel/panel_back",
         "west": "energycontrol:block/info_panel/panel_side"
     }
 }

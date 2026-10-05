@@ -1,5 +1,5 @@
 {
-    "type": "minecraft:crafting_shaped",
+	"type": "minecraft:crafting_shaped",
     "pattern": [
         "BKB"
     ],
@@ -10,8 +10,8 @@
         "K": {
         "item": "energycontrol:kit_liquid"
         }
-    },
-    "result": {
-        "item": "energycontrol:kit_liquid_advanced"
-    }
+	},
+	"result": {
+		"item": "energycontrol:kit_liquid_advanced"
+	}
 }

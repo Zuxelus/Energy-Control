@@ -1,16 +1,26 @@
 package com.zuxelus.energycontrol.api;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.texture.TextureManager;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.Matrix4f;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+/**
+ * Lets players interact with Info Panels, using them as touchscreen
+ */
 public interface ITouchAction {
+	
+	boolean enableTouch();
+	
+	/**
+	 * Called when a player right-clicks a Panel screen. 
+	 * If <code>true</code> is returned, an update packet will be sent to the client.
+	 * 
+	 * @return whether an action was performed
+	 */
+	boolean runTouchAction(World world, ICardReader reader, ItemStack stack);
 
-	void runTouchAction(PlayerEntity player, World world, ICardReader reader);
-
-	@Environment(EnvType.CLIENT)
-	void renderImage(TextureManager manager, Matrix4f matrix4f, ICardReader reader);
+	/**
+	 * Used to draw objects onto Info Panel displays
+	 */
+	void renderImage(ICardReader reader, MatrixStack matrixStack);
 }

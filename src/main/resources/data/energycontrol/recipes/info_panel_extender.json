@@ -10,7 +10,7 @@
 			"item": "minecraft:lime_stained_glass_pane"
 		},
 		"R": {
-			"item": "minecraft:redstone"
+			"tag": "c:redstone_dusts"
 		},
 		"W": {
 			"tag": "minecraft:planks"

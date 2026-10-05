@@ -1,0 +1,17 @@
+{
+	"type": "energycontrol:kit_assembler",
+	"input1": {
+		"tag": "c:redstone_dusts",
+		"count": 2
+	},
+	"input2": {
+		"tag": "c:gold_ingots"
+	},
+	"input3": {
+		"item": "energycontrol:basic_circuit"
+	},
+	"result": {
+		"item": "energycontrol:advanced_circuit"
+	},
+	"time": 300
+}

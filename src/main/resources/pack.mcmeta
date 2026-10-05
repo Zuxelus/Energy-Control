@@ -1,6 +1,6 @@
 {
-   "pack":{
-      "pack_format":4,
-      "description":"Energy Control Resources"
-   }
+    "pack": {
+        "description": "Energy Control Resources",
+        "pack_format": 7
+    }
 }

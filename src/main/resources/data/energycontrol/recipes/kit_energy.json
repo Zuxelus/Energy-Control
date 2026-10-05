@@ -1,22 +1,22 @@
 {
 	"type": "minecraft:crafting_shaped",
 	"pattern": [
-		"RF",
-		"PO"
-	],
-	"key": {
-		"P": {
-			"item": "minecraft:paper"
-		},
-		"R": {
-			"item": "minecraft:redstone"
-		},
-		"F": {
-			"item": "techreborn:frequency_transmitter"
-		},
-		"O": {
-			"item": "red_dye"
-		}
+        "RF",
+        "PO"
+    ],
+    "key": {
+        "P": {
+            "item": "minecraft:paper"
+        },
+        "R": {
+            "tag": "c:redstone_dusts"
+        },
+        "F": {
+            "item": "energycontrol:radio_transmitter"
+        },
+        "O": {
+			"tag": "c:red_dyes"
+        }
 	},
 	"result": {
 		"item": "energycontrol:kit_energy"

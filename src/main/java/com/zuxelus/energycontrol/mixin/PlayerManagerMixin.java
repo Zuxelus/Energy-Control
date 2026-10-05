@@ -6,7 +6,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.network.NetworkHelper;
+import com.zuxelus.energycontrol.network.PacketAlarm;
 
 import net.minecraft.network.ClientConnection;
 import net.minecraft.server.PlayerManager;
@@ -17,8 +19,7 @@ public class PlayerManagerMixin {
 
 	@Inject(method = "onPlayerConnect(Lnet/minecraft/network/ClientConnection;Lnet/minecraft/server/network/ServerPlayerEntity;)V", at = @At("RETURN"))
 	private void onPlayerConnect(ClientConnection conn, ServerPlayerEntity player, CallbackInfo ci) {
-		NetworkHelper.sendAlarmList(player);
-		EnergyControl.modeSwitchKeyPressed.put(player.getGameProfile().getId(), false);
-		EnergyControl.altPressed.put(player.getGameProfile().getId(), false);
+		EnergyControl.altPressed.put(player, false);
+		NetworkHelper.sendToPlayer(player, new PacketAlarm(ConfigHandler.maxAlarmRange, ConfigHandler.allowedAlarms));
 	}
 }

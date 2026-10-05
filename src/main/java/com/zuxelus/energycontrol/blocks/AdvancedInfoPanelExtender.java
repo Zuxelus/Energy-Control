@@ -1,0 +1,79 @@
+package com.zuxelus.energycontrol.blocks;
+
+import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.init.ModItems;
+import com.zuxelus.energycontrol.init.ModTileEntityTypes;
+import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanelExtender;
+import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
+import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanelExtender;
+import com.zuxelus.zlib.tileentities.BlockEntityFacing;
+
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.ShapeContext;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
+
+public class AdvancedInfoPanelExtender extends InfoPanelExtender {
+
+	// the shape follows the core panel thickness, so it must not be cached per block state,
+	// and like the core it is not opaque, so neighbours are not culled by a sloped panel
+	public AdvancedInfoPanelExtender() {
+		super(FabricBlockSettings.copyOf(ModItems.settings).nonOpaque().dynamicBounds());
+	}
+
+	@Override
+	protected BlockEntityFacing newBlockEntity() {
+		return ModTileEntityTypes.info_panel_advanced_extender.instantiate();
+	}
+
+	@Override
+	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+		if (world.isClient)
+			return ActionResult.PASS;
+		BlockEntity te = world.getBlockEntity(pos);
+		if (!(te instanceof TileEntityInfoPanelExtender))
+			return ActionResult.PASS;
+		TileEntityInfoPanel panel = ((TileEntityInfoPanelExtender) te).getCore();
+		if (panel == null)
+			return ActionResult.PASS;
+		if (EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) panel).getFacing() == hit.getSide())
+			if (((TileEntityInfoPanel) panel).runTouchAction(player.getStackInHand(hand), pos, hit.getPos()))
+				return ActionResult.SUCCESS;
+		player.openHandledScreen(panel); // the extender has no GUI of its own, open the core panel's
+		return ActionResult.SUCCESS;
+	}
+
+	@Override
+	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+		BlockEntity te = world.getBlockEntity(pos);
+		Direction enumfacing = (Direction) state.get(FACING);
+		if (!(te instanceof TileEntityAdvancedInfoPanelExtender) || enumfacing == null)
+			return Block.createCuboidShape(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+		switch (enumfacing) {
+		case EAST:
+			return Block.createCuboidShape(0.0D, 0.0D, 0.0D, ((TileEntityAdvancedInfoPanelExtender)te).getThickness(), 16.0D, 16.0D);
+		case WEST:
+			return Block.createCuboidShape(16.0D - ((TileEntityAdvancedInfoPanelExtender)te).getThickness(), 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+		case SOUTH:
+			return Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, ((TileEntityAdvancedInfoPanelExtender)te).getThickness());
+		case NORTH:
+			return Block.createCuboidShape(0.0D, 0.0D, 16.0D - ((TileEntityAdvancedInfoPanelExtender)te).getThickness(), 16.0D, 16.0D, 16.0D);
+		case UP:
+			return Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, ((TileEntityAdvancedInfoPanelExtender)te).getThickness(), 16.0D);
+		case DOWN:
+			return Block.createCuboidShape(0.0D, 16.0D - ((TileEntityAdvancedInfoPanelExtender)te).getThickness(), 0.0D, 16.0D, 16.0D, 16.0D);
+		default:
+			return Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+		}
+	}
+}

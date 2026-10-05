@@ -1,6 +1,6 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
         "CF",
         "PB"
     ],
@@ -12,13 +12,13 @@
             "item": "minecraft:bucket"
         },
         "F": {
-            "item": "techreborn:frequency_transmitter"
+            "item": "energycontrol:radio_transmitter"
         },
         "B": {
-            "item": "blue_dye"
+			"tag": "c:blue_dyes"
         }
-    },
-    "result": {
-        "item": "energycontrol:kit_liquid"
-    }
+	},
+	"result": {
+		"item": "energycontrol:kit_liquid"
+	}
 }

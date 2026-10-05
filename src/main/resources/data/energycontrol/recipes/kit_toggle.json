@@ -12,10 +12,10 @@
             "item": "minecraft:paper"
         },
         "F": {
-            "item": "techreborn:frequency_transmitter"
+            "item": "energycontrol:radio_transmitter"
         },
         "W": {
-            "item": "gray_dye"
+			"tag": "c:gray_dyes"
         }
     },
     "result": {

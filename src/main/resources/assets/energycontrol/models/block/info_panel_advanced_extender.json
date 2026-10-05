@@ -1,0 +1,12 @@
+{
+    "parent": "block/cube",
+    "textures": {
+        "particle": "energycontrol:block/info_panel/extender_advanced_back",
+        "down": "energycontrol:block/info_panel/extender_advanced_side",
+        "up": "energycontrol:block/info_panel/extender_advanced_side",
+        "north": "energycontrol:block/info_panel/extender_advanced_face",
+        "east": "energycontrol:block/info_panel/extender_advanced_side",
+        "south": "energycontrol:block/info_panel/extender_advanced_back",
+        "west": "energycontrol:block/info_panel/extender_advanced_side"
+    }
+}

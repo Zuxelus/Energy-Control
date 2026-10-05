@@ -11,13 +11,13 @@ import com.zuxelus.energycontrol.EnergyControl;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class ConfigHandler {
-	public static final File CONFIG_FILE = new File(FabricLoader.getInstance().getConfigDirectory(), EnergyControl.MODID + ".config");
+	public static final File CONFIG_FILE = new File(FabricLoader.getInstance().getConfigDir().toFile(), EnergyControl.MODID + ".config");
 
 	public static int howlerAlarmRange = 64;
 	public static int maxAlarmRange = 128;
 	public static String allowedAlarms = "default,sci-fi,siren";
 	public static int remoteThermalMonitorEnergyConsumption = 1;
-	public static int infoPanelRefreshPeriod = 20;
+	public static int screenRefreshPeriod = 20;
 	public static int rangeTriggerRefreshPeriod = 20;
 	public static int SMPMaxAlarmRange = 256;
 	public static boolean useCustomSounds = false;
@@ -36,9 +36,10 @@ public class ConfigHandler {
 			maxAlarmRange = Integer.parseInt(cfg.getProperty("maxAlarmRange"));
 			allowedAlarms = cfg.getProperty("allowedAlarms");
 			remoteThermalMonitorEnergyConsumption = Integer.parseInt(cfg.getProperty("remoteThermalMonitorEnergyConsumption"));
-			infoPanelRefreshPeriod = Integer.parseInt(cfg.getProperty("infoPanelRefreshPeriod"));
+			screenRefreshPeriod = Integer.parseInt(cfg.getProperty("screenRefreshPeriod"));
 			rangeTriggerRefreshPeriod = Integer.parseInt(cfg.getProperty("rangeTriggerRefreshPeriod"));
 			SMPMaxAlarmRange = Integer.parseInt(cfg.getProperty("SMPMaxAlarmRange"));
+			useCustomSounds = Boolean.parseBoolean(cfg.getProperty("useCustomSounds"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -51,9 +52,10 @@ public class ConfigHandler {
 			fos.write(("maxAlarmRange=" + maxAlarmRange + "\n").getBytes());
 			fos.write(("allowedAlarms=" + allowedAlarms + "\n").getBytes());
 			fos.write(("remoteThermalMonitorEnergyConsumption=" + remoteThermalMonitorEnergyConsumption + "\n").getBytes());
-			fos.write(("infoPanelRefreshPeriod=" + infoPanelRefreshPeriod + "\n").getBytes());
+			fos.write(("screenRefreshPeriod=" + screenRefreshPeriod + "\n").getBytes());
 			fos.write(("rangeTriggerRefreshPeriod=" + rangeTriggerRefreshPeriod + "\n").getBytes());
 			fos.write(("SMPMaxAlarmRange=" + SMPMaxAlarmRange + "\n").getBytes());
+			fos.write(("useCustomSounds=" + useCustomSounds + "\n").getBytes());
 			fos.close();
 		} catch (IOException e) {
 			e.printStackTrace();

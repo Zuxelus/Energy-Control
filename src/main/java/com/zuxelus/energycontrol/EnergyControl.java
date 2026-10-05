@@ -3,25 +3,26 @@ package com.zuxelus.energycontrol;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.zuxelus.energycontrol.blockentities.ScreenManager;
 import com.zuxelus.energycontrol.config.ConfigHandler;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.init.ModContainerTypes;
 import com.zuxelus.energycontrol.init.ModItems;
+import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.network.ChannelHandler;
-import com.zuxelus.energycontrol.recipes.NanoBowRecipeTR;
+import com.zuxelus.energycontrol.tileentities.ScreenManager;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 public class EnergyControl implements ModInitializer {
 	public static final String MODID = "energycontrol";
@@ -35,18 +36,19 @@ public class EnergyControl implements ModInitializer {
 	@Environment(EnvType.CLIENT)
 	public List<String> serverAllowedAlarms; // will be loaded from server
 
-	public static Map<UUID, Boolean> modeSwitchKeyPressed = new HashMap<UUID, Boolean>();
-	public static Map<UUID, Boolean> altPressed = new HashMap<UUID, Boolean>();
+	public static Map<PlayerEntity, Boolean> altPressed = new HashMap<PlayerEntity, Boolean>();
 
 	public static final ItemGroup ITEM_GROUP = FabricItemGroupBuilder.build(
-			new Identifier(MODID, "general"), () -> new ItemStack(ModItems.ENERGY_ITEM_KIT));
+			new Identifier(MODID, "general"), () -> new ItemStack(ModItems.kit_energy));
 
 	@Override
 	public void onInitialize() {
 		INSTANCE = this;
 		new ConfigHandler();
+		new ModContainerTypes();
 		ModItems.init();
+		new ModTileEntityTypes(); // registers the block entity types (they need the blocks from ModItems)
 		ChannelHandler.init();
-		Registry.register(Registry.RECIPE_SERIALIZER, new Identifier(MODID, "nano_bow"), new NanoBowRecipeTR.Serializer());
+		CrossModLoader.init();
 	}
 }

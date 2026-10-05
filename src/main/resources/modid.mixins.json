@@ -7,7 +7,11 @@
     "PlayerManagerMixin"
   ],
   "client": [
-    "ClientPlayNetworkHandlerMixin"
+  	"AbstractBlockStateMixin",
+    "ClientPlayNetworkHandlerMixin",
+    "ReloadableResourceManagerImplMixin",
+    "SpriteAtlasTextureMixin",
+    "WorldRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

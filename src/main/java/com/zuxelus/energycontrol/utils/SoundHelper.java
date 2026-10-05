@@ -4,20 +4,15 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.config.ConfigHandler;
@@ -26,23 +21,22 @@ import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.sound.SoundEntry;
 import net.minecraft.client.sound.SoundEntryDeserializer;
-import net.minecraft.resource.DirectoryResourcePack;
-import net.minecraft.resource.ReloadableResourceManagerImpl;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.SinglePreparationResourceReloadListener;
+import net.minecraft.resource.SinglePreparationResourceReloader;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.profiler.Profiler;
 
-public class SoundHelper extends SinglePreparationResourceReloadListener<Map<String, SoundEntry>> implements IdentifiableResourceReloadListener {
+public class SoundHelper extends SinglePreparationResourceReloader<Map<String, SoundEntry>> implements IdentifiableResourceReloadListener {
+	public static final Identifier ID = new Identifier(EnergyControl.MODID, "alarms");
 	private static File alarms;
 	private static final Gson GSON = (new GsonBuilder()).registerTypeHierarchyAdapter(Text.class, new Text.Serializer()).registerTypeAdapter(SoundEntry.class, new SoundEntryDeserializer()).create();
 	private static final TypeToken<Map<String, SoundEntry>> TYPE = new TypeToken<Map<String, SoundEntry>>() {};
 
 	public SoundHelper() {
-		File configFolder = FabricLoader.getInstance().getConfigDirectory();
+		File configFolder = FabricLoader.getInstance().getConfigDir().toFile();
 		if (configFolder == null || !ConfigHandler.useCustomSounds)
 			return;
 
@@ -53,49 +47,55 @@ public class SoundHelper extends SinglePreparationResourceReloadListener<Map<Str
 			try {
 				alarms.mkdir();
 				audioLoc.mkdirs();
-				buildJSON();
+				createSoundsJson();
+				createPackMeta();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
-	private static void buildJSON() throws IOException {
-		JsonWriter parse = new JsonWriter(new FileWriter(alarms.getAbsolutePath() + File.separator + "assets" + File.separator + EnergyControl.MODID + File.separator + "sounds.json"));
-		parse.beginObject();
-		parse.name("_comment").value("EXAMPLE 'alarm-name': {'category': 'master','sounds': [{'name': 'energycontrol:alarm-name','stream': true}]}");
-		parse.endObject();
-		parse.close();
+	private static void createSoundsJson() throws IOException {
+		JsonWriter writer = new JsonWriter(new FileWriter(alarms.getAbsolutePath() + File.separator + "assets" + File.separator + EnergyControl.MODID + File.separator + "sounds.json"));
+		writer.beginObject();
+		writer.name("_comment").value("EXAMPLE 'alarm-name': {'category': 'master','sounds': [{'name': 'energycontrol:alarm-name','stream': true}]}");
+		writer.endObject();
+		writer.close();
+	}
+
+	private static void createPackMeta() throws IOException {
+		JsonWriter writer = new JsonWriter(new FileWriter(SoundHelper.alarms.getAbsolutePath() + File.separator + "pack.mcmeta"));
+		writer.beginObject();
+		writer.name("pack");
+		writer.beginObject();
+		writer.name("description").value("Energy Control custom alarms");
+		writer.name("pack_format").value(8); // for 1.18
+		writer.endObject();
+		writer.endObject();
+		writer.close();
+	}
+
+	// Added to the client resource packs by ReloadableResourceManagerImplMixin
+	public static File getAlarmsFolder() {
+		return alarms;
 	}
 
 	@Override
 	public Identifier getFabricId() {
-		return new Identifier(EnergyControl.MODID, "custom_sounds");
+		return ID;
 	}
 
 	@Override
 	protected Map<String, SoundEntry> prepare(ResourceManager manager, Profiler profiler) {
-		if (alarms != null) {
-			DirectoryResourcePack pack = new DirectoryResourcePack(alarms);
-			((ReloadableResourceManagerImpl) manager).addPack(pack);
-		}
 		EnergyControl.INSTANCE.availableAlarms = new ArrayList<String>();
 
 		try {
 			List<Resource> list = manager.getAllResources(new Identifier(EnergyControl.MODID, "sounds.json"));
 
 			for (int i = list.size() - 1; i >= 0; --i) {
-				Resource resource = (Resource) list.get(i);
-
-				try {
-					Map<String, SoundEntry> map = (Map<String, SoundEntry>) JsonHelper.deserialize(GSON, new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8), TYPE);
-					Iterator<Entry<String, SoundEntry>> iterator = map.entrySet().iterator();
-
-					while (iterator.hasNext()) {
-						Entry<String, SoundEntry> entry = (Entry<String, SoundEntry>) iterator.next();
-						EnergyControl.INSTANCE.availableAlarms.add(((String) entry.getKey()).replace("alarm-", ""));
-					}
-				} catch (RuntimeException runtimeexception) { }
+				Resource resource = list.get(i);
+				Map<String, SoundEntry> map = JsonHelper.deserialize(GSON, new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8), TYPE);
+				map.forEach((string, entry) -> EnergyControl.INSTANCE.availableAlarms.add(string.replace("alarm-", "")));
 			}
 		} catch (IOException ioexception) { 
 			System.out.print(ioexception.getMessage());
@@ -104,15 +104,5 @@ public class SoundHelper extends SinglePreparationResourceReloadListener<Map<Str
 	}
 
 	@Override
-	protected void apply(Map<String, SoundEntry> loader, ResourceManager manager, Profiler profiler) { }
-
-	public static <T> T deserialize(Gson gson, Reader reader, TypeToken<T> typeToken, boolean lenient) {
-		try {
-			JsonReader jsonReader = new JsonReader(reader);
-			jsonReader.setLenient(lenient);
-			return gson.getAdapter(typeToken).read(jsonReader);
-		} catch (IOException var5) {
-			throw new JsonParseException(var5);
-		}
-	}
+	protected void apply(Map<String, SoundEntry> loader, ResourceManager manager, Profiler profiler) {}
 }

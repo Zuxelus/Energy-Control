@@ -1,6 +1,6 @@
 package com.zuxelus.energycontrol.renderers;
 
-import com.zuxelus.energycontrol.blockentities.Screen;
+import com.zuxelus.energycontrol.tileentities.Screen;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -71,6 +71,7 @@ public class RotationOffset {
 		offset.rightBottom += length * (pos + ((state >> 0) & 1));
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	public RotationOffset addOffset(Screen screen, BlockPos pos, Direction facing, Direction rotation) {
 		if (rotateHor == 0 && rotateVert == 0)
 			return this;

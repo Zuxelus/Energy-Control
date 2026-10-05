@@ -2,17 +2,17 @@
 	"type": "minecraft:crafting_shaped",
 	"pattern": [
 		"CCC",
-		"IFI"
+		"SFS"
 	],
 	"key": {
-		"I": {
-			"item": "techreborn:insulated_copper_cable"
+		"S": {
+			"item": "energycontrol:strong_string"
 		},
 		"F": {
-			"item": "techreborn:frequency_transmitter"
+			"item": "energycontrol:radio_transmitter"
 		},
 		"C": {
-			"item": "techreborn:water_coolant_cell_10k"
+			"tag": "c:iron_ingots"
 		}
 	},
 	"result": {

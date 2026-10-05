@@ -1,129 +1,157 @@
 package com.zuxelus.energycontrol.init;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.blockentities.*;
 import com.zuxelus.energycontrol.blocks.*;
 import com.zuxelus.energycontrol.items.*;
 import com.zuxelus.energycontrol.items.cards.*;
 import com.zuxelus.energycontrol.items.kits.*;
-import com.zuxelus.energycontrol.screen.handlers.*;
+import com.zuxelus.energycontrol.recipes.*;
 
-import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
-import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.block.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class ModItems {
-	public static final Item FABRIC_ITEM = new Item(new Item.Settings().group(EnergyControl.ITEM_GROUP));
-	public static final Identifier CARD_HOLDER = new Identifier(EnergyControl.MODID, "card_holder");
-	public static final Item CARD_HOLDER_ITEM = new CardHolderItem();
-	public static final ScreenHandlerType<CardHolderScreenHandler> CARD_HOLDER_SCREEN_HANDLER = ScreenHandlerRegistry.registerSimple(new Identifier(EnergyControl.MODID, "card_holder_container"), CardHolderScreenHandler::new);
+	public static final FabricBlockSettings settings = FabricBlockSettings.of(Material.METAL).strength(3.0F);
+	public static final Block white_lamp = new BlockLight();
+	public static final Block orange_lamp = new BlockLight();
+	public static final Block howler_alarm = new HowlerAlarm();
+	public static final Block industrial_alarm = new IndustrialAlarm();
+	public static final Block thermal_monitor = new ThermalMonitor();
+	public static final Block range_trigger = new RangeTrigger();
+	public static final Block remote_thermo = new RemoteThermalMonitor();
+	public static final Block info_panel = new InfoPanel();
+	public static final Block info_panel_extender = new InfoPanelExtender();
+	public static final Block info_panel_advanced = new AdvancedInfoPanel();
+	public static final Block info_panel_advanced_extender = new AdvancedInfoPanelExtender();
+	public static final Block holo_panel = new HoloPanel();
+	public static final Block holo_panel_extender = new HoloPanelExtender();
+	//public static final Block average_counter = new AverageCounter();
+	//public static final Block energy_counter = new EnergyCounter();
+	public static final Block kit_assembler = new KitAssembler();
+	public static final Block timer = new TimerBlock();
 
-	public static final Identifier PORTABLE_PANEL = new Identifier(EnergyControl.MODID, "portable_panel");
-	public static final Item PORTABLE_PANEL_ITEM = new PortablePanelItem();
-	public static final ScreenHandlerType<PortablePanelScreenHandler> PORTABLE_PANEL_SCREEN_HANDLER = ScreenHandlerRegistry.registerSimple(new Identifier(EnergyControl.MODID, "portable_panel_container"), PortablePanelScreenHandler::new);;
+	public static final Item kit_energy = new ItemKitEnergy();
+	public static final Item kit_inventory = new ItemKitInventory();
+	public static final Item kit_liquid = new ItemKitLiquid();
+	public static final Item kit_liquid_advanced = new ItemKitLiquidAdvanced();
+	public static final Item kit_redstone = new ItemKitRedstone();
+	public static final Item kit_toggle = new ItemKitToggle();
+	public static Item kit_app_eng;
+	public static Item kit_big_reactors;
+	public static Item kit_immersive_engineering;
+	public static Item kit_mekanism;
+	public static Item kit_thermal_expansion;
+	public static final Item card_holder = new ItemCardHolder();
+	public static final Item card_energy = new ItemCardEnergy();
+	public static final Item card_energy_array = new ItemCardEnergyArray();
+	public static final Item card_inventory = new ItemCardInventory();
+	public static final Item card_liquid = new ItemCardLiquid();
+	public static final Item card_liquid_advanced = new ItemCardLiquidAdvanced();
+	public static final Item card_liquid_array = new ItemCardLiquidArray();
+	public static final Item card_redstone = new ItemCardRedstone();
+	public static final Item card_text = new ItemCardText();
+	public static final Item card_time = new ItemCardTime();
+	public static final Item card_toggle = new ItemCardToggle();
+	public static Item card_app_eng;
+	public static Item card_app_eng_inv;
+	public static Item card_big_reactors;
+	public static Item card_immersive_engineering;
+	public static Item card_mekanism;
+	public static Item card_thermal_expansion;
+	public static final Item upgrade_range = new Item(new Item.Settings().group(EnergyControl.ITEM_GROUP));
+	public static final Item upgrade_color = new Item(new Item.Settings().group(EnergyControl.ITEM_GROUP));
+	public static final Item upgrade_touch = new Item(new Item.Settings().group(EnergyControl.ITEM_GROUP));
+	public static final Item portable_panel = new ItemPortablePanel();
+	public static final Item machine_casing = new Item(new Item.Settings().group(EnergyControl.ITEM_GROUP));
+	public static final Item basic_circuit = new Item(new Item.Settings().group(EnergyControl.ITEM_GROUP));
+	public static final Item advanced_circuit = new Item(new Item.Settings().group(EnergyControl.ITEM_GROUP));
+	public static final Item radio_transmitter = new Item(new Item.Settings().group(EnergyControl.ITEM_GROUP));
+	public static final Item strong_string = new Item(new Item.Settings().group(EnergyControl.ITEM_GROUP));
 
-	public static final Item UPGRADE_RANGE_ITEM = new UpgradeRangeItem();
-	public static final Item UPGRADE_COLOR_ITEM = new UpgradeColorItem();
-	public static final Item UPGRADE_TOUCH_ITEM = new UpgradeTouchItem();
-
-	public static final Item NANO_BOW_ITEM = new NanoBowTRItem();
-	public static final Item ENERGY_ITEM_CARD = new EnergyItemCard();
-	public static final Item GENERATOR_ITEM_CARD = new GeneratorItemCard();
-	public static final Item LIQUID_ADVANCED_ITEM_CARD = new LiquidAdvancedItemCard();
-	public static final Item LIQUID_ITEM_CARD = new LiquidItemCard();
-	public static final Item TIME_ITEM_CARD = new TimeItemCard();
-	public static final Item TEXT_ITEM_CARD = new TextItemCard();
-	public static final Item TOGGLE_ITEM_CARD = new ToggleItemCard();
-
-	public static final Item ENERGY_ITEM_KIT = new EnergyItemKit();
-	public static final Item GENERATOR_ITEM_KIT = new GeneratorItemKit();
-	public static final Item LIQUID_ADVANCED_ITEM_KIT = new LiquidAdvancedItemKit();
-	public static final Item LIQUID_ITEM_KIT = new LiquidItemKit();
-	public static final Item TOGGLE_ITEM_KIT = new ToggleItemKit();
-
-	public static final Block WHITE_LAMP_BLOCK = new LightBlock();
-	public static final Block ORANGE_LAMP_BLOCK = new LightBlock();
-
-	public static final Block HOWLER_ALARM_BLOCK = new HowlerAlarmBlock();
-	public static final Identifier HOWLER_ALARM = new Identifier(EnergyControl.MODID, "howler_alarm");
-	public static final Block INDUSTRIAL_ALARM_BLOCK = new IndustrialAlarmBlock();
-	public static final Identifier INDUSTRIAL_ALARM = new Identifier(EnergyControl.MODID, "industrial_alarm");
-
-	public static final Block INFO_PANEL_BLOCK = new InfoPanelBlock();
-	public static final Identifier INFO_PANEL = new Identifier(EnergyControl.MODID, "info_panel");
-	public static final ScreenHandlerType<InfoPanelScreenHandler> INFO_PANEL_SCREEN_HANDLER = ScreenHandlerRegistry.registerExtended(new Identifier(EnergyControl.MODID, "info_panel_container"), InfoPanelScreenHandler::new);
-
-	public static final Block INFO_PANEL_EXTENDER_BLOCK = new InfoPanelExtenderBlock();
-	public static final Identifier INFO_PANEL_EXTENDER = new Identifier(EnergyControl.MODID, "info_panel_extender");
-	
-	public static final Block AVERAGE_COUNTER_BLOCK = new AverageCounterBlock();
-	public static final Identifier AVERAGE_COUNTER = new Identifier(EnergyControl.MODID, "average_counter");
-	public static final Block ENERGY_COUNTER_BLOCK = new EnergyCounterBlock();
-	public static final Identifier ENERGY_COUNTER = new Identifier(EnergyControl.MODID, "energy_counter");
-	
-	public static BlockEntityType<HowlerAlarmBlockEntity> HOWLER_ALARM_BLOCK_ENTITY;
-	public static BlockEntityType<IndustrialAlarmBlockEntity> INDUSTRIAL_ALARM_BLOCK_ENTITY;
-	public static BlockEntityType<InfoPanelBlockEntity> INFO_PANEL_BLOCK_ENTITY;
-	public static BlockEntityType<InfoPanelExtenderBlockEntity> INFO_PANEL_EXTENDER_BLOCK_ENTITY;
+	public static RecipeSerializer<StorageArrayRecipe> ARRAY_SERIALIZER;
+	public static RecipeSerializer<KitAssemblerRecipe> KIT_ASSEMBLER_SERIALIZER;
 
 	public static void init() {
 		registerBlocks();
 		registerItems();
-		registerBlockEntities();
+		register();
 	}
 
 	private static void registerBlocks() {
-		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "white_lamp"), WHITE_LAMP_BLOCK);
-		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "orange_lamp"), ORANGE_LAMP_BLOCK);
-		Registry.register(Registry.BLOCK, HOWLER_ALARM, HOWLER_ALARM_BLOCK);
-		Registry.register(Registry.BLOCK, INDUSTRIAL_ALARM, INDUSTRIAL_ALARM_BLOCK);
-		Registry.register(Registry.BLOCK, INFO_PANEL, INFO_PANEL_BLOCK);
-		Registry.register(Registry.BLOCK, INFO_PANEL_EXTENDER, INFO_PANEL_EXTENDER_BLOCK);
-		Registry.register(Registry.BLOCK, AVERAGE_COUNTER, AVERAGE_COUNTER_BLOCK);
-		Registry.register(Registry.BLOCK, ENERGY_COUNTER, ENERGY_COUNTER_BLOCK);
+		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "white_lamp"), white_lamp);
+		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "orange_lamp"), orange_lamp);
+		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "howler_alarm"), howler_alarm);
+		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "industrial_alarm"), industrial_alarm);
+		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "thermal_monitor"), thermal_monitor);
+		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "range_trigger"), range_trigger);
+		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "remote_thermo"), remote_thermo);
+		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "info_panel"), info_panel);
+		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "info_panel_extender"), info_panel_extender);
+		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "info_panel_advanced"), info_panel_advanced);
+		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "info_panel_advanced_extender"), info_panel_advanced_extender);
+		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "holo_panel"), holo_panel);
+		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "holo_panel_extender"), holo_panel_extender);
+		//Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "average_counter"), average_counter);
+		//Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "energy_counter"), energy_counter);
+		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "kit_assembler"), kit_assembler);
+		Registry.register(Registry.BLOCK, new Identifier(EnergyControl.MODID, "timer"), timer);
 	}
 
 	private static void registerItems() {
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "white_lamp"), new BlockItem(WHITE_LAMP_BLOCK, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "orange_lamp"), new BlockItem(ORANGE_LAMP_BLOCK, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
-		Registry.register(Registry.ITEM, HOWLER_ALARM, new BlockItem(HOWLER_ALARM_BLOCK, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
-		Registry.register(Registry.ITEM, INDUSTRIAL_ALARM, new BlockItem(INDUSTRIAL_ALARM_BLOCK, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
-		Registry.register(Registry.ITEM, INFO_PANEL, new BlockItem(INFO_PANEL_BLOCK, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
-		Registry.register(Registry.ITEM, INFO_PANEL_EXTENDER, new BlockItem(INFO_PANEL_EXTENDER_BLOCK, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
-		Registry.register(Registry.ITEM, AVERAGE_COUNTER, new BlockItem(AVERAGE_COUNTER_BLOCK, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
-		Registry.register(Registry.ITEM, ENERGY_COUNTER, new BlockItem(ENERGY_COUNTER_BLOCK, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "white_lamp"), new BlockItem(white_lamp, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "orange_lamp"), new BlockItem(orange_lamp, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "howler_alarm"), new BlockItem(howler_alarm, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "industrial_alarm"), new BlockItem(industrial_alarm, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "thermal_monitor"), new BlockItem(thermal_monitor, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "info_panel"), new BlockItem(info_panel, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "info_panel_extender"), new BlockItem(info_panel_extender, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "info_panel_advanced"), new BlockItem(info_panel_advanced, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "info_panel_advanced_extender"), new BlockItem(info_panel_advanced_extender, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "holo_panel"), new BlockItem(holo_panel, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "holo_panel_extender"), new BlockItem(holo_panel_extender, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "range_trigger"), new BlockItem(range_trigger, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "remote_thermo"), new BlockItem(remote_thermo, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "kit_assembler"), new BlockItem(kit_assembler, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "timer"), new BlockItem(timer, new Item.Settings().group(EnergyControl.ITEM_GROUP)));
 
-		Registry.register(Registry.ITEM, CARD_HOLDER, CARD_HOLDER_ITEM);
-		Registry.register(Registry.ITEM, PORTABLE_PANEL, PORTABLE_PANEL_ITEM);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID + ":upgrade_range"), UPGRADE_RANGE_ITEM);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID + ":upgrade_color"), UPGRADE_COLOR_ITEM);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID + ":upgrade_touch"), UPGRADE_TOUCH_ITEM);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID + ":nano_bow"), NANO_BOW_ITEM);
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "kit_energy"), kit_energy);
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "kit_inventory"), kit_inventory);
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "kit_liquid"), kit_liquid);
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "kit_liquid_advanced"), kit_liquid_advanced);
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "kit_redstone"), kit_redstone);
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "kit_toggle"), kit_toggle);
 
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID + ":card_energy"), ENERGY_ITEM_CARD);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID + ":card_generator"), GENERATOR_ITEM_CARD);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID + ":card_liquid_advanced"), LIQUID_ADVANCED_ITEM_CARD);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID + ":card_liquid"), LIQUID_ITEM_CARD);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID + ":card_time"), TIME_ITEM_CARD);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID + ":card_text"), TEXT_ITEM_CARD);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID + ":card_toggle"), TOGGLE_ITEM_CARD);
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "card_holder"), card_holder);
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "card_energy"), card_energy);
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "card_energy_array"), card_energy_array);
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "card_inventory"), card_inventory);
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "card_liquid"), card_liquid);
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "card_liquid_advanced"), card_liquid_advanced);
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "card_liquid_array"), card_liquid_array);
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "card_redstone"), card_redstone);
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "card_text"), card_text);
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "card_time"), card_time);
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "card_toggle"), card_toggle);
 
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID + ":kit_energy"), ENERGY_ITEM_KIT);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID + ":kit_generator"), GENERATOR_ITEM_KIT);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID + ":kit_liquid_advanced"), LIQUID_ADVANCED_ITEM_KIT);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID + ":kit_liquid"), LIQUID_ITEM_KIT);
-		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID + ":kit_toggle"), TOGGLE_ITEM_KIT);
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "upgrade_range"), upgrade_range);
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "upgrade_color"), upgrade_color);
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "upgrade_touch"), upgrade_touch);
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "portable_panel"), portable_panel);
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "machine_casing"), machine_casing);
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "basic_circuit"), basic_circuit);
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "advanced_circuit"), advanced_circuit);
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "radio_transmitter"), radio_transmitter);
+		Registry.register(Registry.ITEM, new Identifier(EnergyControl.MODID, "strong_string"), strong_string);
 	}
 
-	private static void registerBlockEntities() {
-		INFO_PANEL_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, INFO_PANEL.toString(), BlockEntityType.Builder.create(InfoPanelBlockEntity::new, INFO_PANEL_BLOCK).build(null));
-		INFO_PANEL_EXTENDER_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, INFO_PANEL_EXTENDER.toString(), BlockEntityType.Builder.create(InfoPanelExtenderBlockEntity::new, INFO_PANEL_EXTENDER_BLOCK).build(null));
-		HOWLER_ALARM_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, HOWLER_ALARM.toString(), BlockEntityType.Builder.create(HowlerAlarmBlockEntity::new, HOWLER_ALARM_BLOCK).build(null));
-		INDUSTRIAL_ALARM_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, INDUSTRIAL_ALARM.toString(), BlockEntityType.Builder.create(IndustrialAlarmBlockEntity::new, INDUSTRIAL_ALARM_BLOCK).build(null));
+	private static void register() {
+		ARRAY_SERIALIZER = Registry.register(Registry.RECIPE_SERIALIZER, new Identifier(EnergyControl.MODID, "array"), new ArrayRecipeSerializer());
+		KIT_ASSEMBLER_SERIALIZER = Registry.register(Registry.RECIPE_SERIALIZER, new Identifier(EnergyControl.MODID, "kit_assembler"), new KitAssemblerSerializer());
 	}
 }

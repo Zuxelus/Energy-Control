@@ -1,19 +1,19 @@
 {
 	"type": "minecraft:crafting_shaped",
 	"pattern": [
-		" C ",
-		"PFP",
-		" C "
+		" S ",
+		"PCP",
+		" S "
 	],
 	"key": {
 		"P": {
 			"item": "minecraft:paper"
 		},
 		"C": {
-			"item": "techreborn:electronic_circuit"
+			"item": "energycontrol:basic_circuit"
 		},
-		"F": {
-			"item": "techreborn:tin_cable"
+		"S": {
+			"item": "energycontrol:strong_string"
 		}
 	},
 	"result": {

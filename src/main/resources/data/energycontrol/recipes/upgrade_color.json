@@ -7,31 +7,31 @@
 	],
 	"key": {
 		"R": {
-			"item": "red_dye"
+			"tag": "c:red_dyes"
 		},
 		"Y": {
-			"item": "yellow_dye"
+			"tag": "c:yellow_dyes"
 		},
 		"G": {
-			"item": "green_dye"
+			"tag": "c:green_dyes"
 		},
 		"W": {
-			"item": "white_dye"
+			"tag": "c:white_dyes"
 		},
 		"C": {
-			"item": "techreborn:electronic_circuit"
+			"item": "energycontrol:basic_circuit"
 		},
 		"M": {
-			"item": "magenta_dye"
+			"tag": "c:magenta_dyes"
 		},
 		"I": {
-			"item": "black_dye"
+			"tag": "c:black_dyes"
 		},
 		"A": {
-			"item": "cyan_dye"
+			"tag": "c:cyan_dyes"
 		},
 		"B": {
-			"item": "blue_dye"
+			"tag": "c:blue_dyes"
 		}
 	},
 	"result": {

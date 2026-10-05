@@ -1,18 +1,20 @@
 package com.zuxelus.energycontrol.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public interface ICardReader {
 
 	/**
-	 * Method to get target coordinates for card. Can be used if card implements
-	 * {@link IRemoteSensor}.
-	 * 
-	 * @return
+	 * Method to get target coordinates for card.
 	 */
 	BlockPos getTarget();
 
@@ -31,6 +33,10 @@ public interface ICardReader {
 	void setString(String name, String value);
 
 	String getString(String name);
+
+	void setByte(String name, Byte value);
+
+	Byte getByte(String name);
 
 	void setBoolean(String name, Boolean value);
 
@@ -61,7 +67,7 @@ public interface ICardReader {
 	/**
 	 * Set the state of card. In most cases shouldn't be called by card, use
 	 * return value of
-	 * {@link IPanelDataSource#update(TileEntity, ICardWrapper, int)} instead.
+	 * {@link IItemCard#update(World, ICardReader, int, BlockPos)} instead.
 	 * 
 	 * @param state
 	 */
@@ -69,12 +75,10 @@ public interface ICardReader {
 
 	/**
 	 * Check is field exists
-	 * 
-	 * @param field
-	 *            field name
-	 * @return
 	 */
-	boolean hasField(String field);
+	boolean hasField(String name);
+
+	void removeField(String name);
 
 	/**
 	 * Used to send changed data to nearby players. In most cases shouldn't be
@@ -82,16 +86,25 @@ public interface ICardReader {
 	 * 
 	 * @param panel
 	 */
-	void updateClient(BlockEntity panel, int slot);
+	void updateClient(ItemStack stack, BlockEntity panel, int slot);
 
-	void setTag(String name, CompoundTag value);
+	void updateServer(ItemStack stack, BlockEntity panel, int slot);
 
-	CompoundTag getTag(String name);
+	void setTag(String name, NbtElement value);
+
+	NbtCompound getTag(String name);
+
+	NbtList getTagList(String name, int type);
+
+	ArrayList<ItemStack> getItemStackList(boolean reset);
+	
+	void setItemStackList(ArrayList<ItemStack> list);
 
 	List<PanelString> getTitleList();
 
 	int getCardCount();
 
-	//int getCardType();
+	void reset();
 
+	void copyFrom(NbtCompound tag);
 }

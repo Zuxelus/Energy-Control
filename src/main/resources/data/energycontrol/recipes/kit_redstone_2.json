@@ -1,0 +1,18 @@
+{
+	"type": "energycontrol:kit_assembler",
+	"input1": {
+		"item": "energycontrol:card_redstone"
+	},
+	"input2": {
+		"item": "energycontrol:strong_string",
+		"count": 2
+	},
+	"input3": {
+		"item": "energycontrol:card_redstone"
+	},
+	"result": {
+		"item": "energycontrol:kit_redstone",
+		"count": 2
+	},
+	"time": 1000
+}

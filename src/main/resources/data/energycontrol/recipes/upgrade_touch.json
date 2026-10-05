@@ -7,16 +7,16 @@
 	],
 	"key": {
 		"R": {
-			"tag": "c:tin_plates"
+			"tag": "c:redstone_dusts"
 		},
 		"I": {
-			"item": "techreborn:insulated_copper_cable"
+			"item": "energycontrol:strong_string"
 		},
 		"C": {
-			"item": "techreborn:electronic_circuit"
+			"item": "energycontrol:basic_circuit"
 		},
 		"A": {
-			"item": "techreborn:carbon_plate"
+			"tag": "c:charcoal"
 		}
 	},
 	"result": {

@@ -10,16 +10,16 @@
 			"item": "minecraft:lime_stained_glass_pane"
 		},
 		"C": {
-			"item": "techreborn:electronic_circuit"
+			"item": "energycontrol:basic_circuit"
 		},
 		"I": {
-			"item": "minecraft:black_dye"
+			"tag": "c:black_dyes"
 		},
 		"R": {
-			"item": "minecraft:redstone"
+			"tag": "c:redstone_dusts"
 		},
 		"M": {
-			"item": "techreborn:basic_machine_frame"
+			"item": "energycontrol:machine_casing"
 		}
 	},
 	"result": {
