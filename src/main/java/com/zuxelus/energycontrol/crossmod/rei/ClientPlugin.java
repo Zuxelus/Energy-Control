@@ -14,7 +14,10 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.item.ItemConvertible;
+import me.shedaniel.rei.plugin.client.BuiltinClientPlugin;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.TranslatableText;
 
 @Environment(EnvType.CLIENT)
 public final class ClientPlugin implements REIClientPlugin {
@@ -30,6 +33,49 @@ public final class ClientPlugin implements REIClientPlugin {
 	@Override
 	public void registerDisplays(DisplayRegistry registry) {
 		registry.registerFiller(KitAssemblerRecipe.class, KitAssemblerDisplay::new);
+		registerInformation();
+	}
+
+	// REI's "Information" pages, the same texts as JEI's ingredient info
+	private static void registerInformation() {
+		registerItem(ModItems.white_lamp, "ec.jei.blockLightWhite");
+		registerItem(ModItems.orange_lamp, "ec.jei.blockLightOrange");
+		registerItem(ModItems.howler_alarm, "ec.jei.blockHowlerAlarm");
+		registerItem(ModItems.industrial_alarm, "ec.jei.blockIndustrialAlarm");
+		registerItem(ModItems.thermal_monitor, "ec.jei.blockThermalMonitor");
+		registerItem(ModItems.info_panel, "ec.jei.blockInfoPanel");
+		registerItem(ModItems.info_panel_extender, "ec.jei.blockInfoPanelExtender");
+		registerItem(ModItems.info_panel_advanced, "ec.jei.blockInfoPanelAdvanced");
+		registerItem(ModItems.info_panel_advanced_extender, "ec.jei.blockInfoPanelAdvancedExtender");
+		registerItem(ModItems.holo_panel, "ec.jei.blockHoloPanel");
+		registerItem(ModItems.kit_assembler, "ec.jei.blockKitAssembler");
+
+		registerItem(ModItems.upgrade_color, "ec.jei.upgradeColor");
+		registerItem(ModItems.upgrade_range, "ec.jei.upgradeRange");
+		registerItem(ModItems.upgrade_touch, "ec.jei.upgradeTouch");
+
+		registerItem(ModItems.kit_energy, "ec.jei.kitEnergy");
+		registerItem(ModItems.kit_liquid, "ec.jei.kitLiquid");
+		registerItem(ModItems.kit_liquid_advanced, "ec.jei.kitLiquidAdv");
+		registerItem(ModItems.kit_toggle, "ec.jei.kitToggle");
+
+		registerItem(ModItems.card_energy, "ec.jei.cards");
+		registerItem(ModItems.card_inventory, "ec.jei.cards");
+		registerItem(ModItems.card_liquid_advanced, "ec.jei.cards");
+		registerItem(ModItems.card_liquid, "ec.jei.cards");
+		registerItem(ModItems.card_redstone, "ec.jei.cards");
+		registerItem(ModItems.card_toggle, "ec.jei.cards");
+
+		registerItem(ModItems.card_holder, "ec.jei.itemCardHolder");
+		registerItem(ModItems.portable_panel, "ec.jei.itemPortablePanel");
+	}
+
+	private static void registerItem(ItemConvertible item, String key) {
+		if (item != null)
+			BuiltinClientPlugin.getInstance().registerInformation(EntryStacks.of(item), item.asItem().getName(), lines -> {
+				lines.add(new TranslatableText(key));
+				return lines;
+			});
 	}
 
 	@Override

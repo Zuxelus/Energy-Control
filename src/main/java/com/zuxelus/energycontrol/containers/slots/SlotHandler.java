@@ -21,6 +21,7 @@ public class SlotHandler {
 		registerTexture(set, EnergyControl.MODID + ":slots/slot_power");
 		//registerTexture(set, "zlib:slots/slot_chargeable");
 		registerTexture(set, "zlib:slots/slot_dischargeable");
+		registerTexture(set, "zlib:slots/slot_transformer");
 	}
 
 	private static void registerTexture(Set<Identifier> set, String texture) {

@@ -14,13 +14,17 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Hand;
 
 public class InventoryPortablePanel extends ItemInventory implements ExtendedScreenHandlerFactory {
 	public static final byte SLOT_CARD = 0;
 	public static final byte SLOT_UPGRADE_RANGE = 1;
 
-	public InventoryPortablePanel(ItemStack parent) {
+	private final Hand hand;
+
+	public InventoryPortablePanel(ItemStack parent, Hand hand) {
 		super(parent);
+		this.hand = hand;
 	}
 
 	@Override
@@ -43,7 +47,7 @@ public class InventoryPortablePanel extends ItemInventory implements ExtendedScr
 	// NamedScreenHandlerFactory
 	@Override
 	public ScreenHandler createMenu(int windowId, PlayerInventory inventory, PlayerEntity player) {
-		return new ContainerPortablePanel(windowId, inventory);
+		return new ContainerPortablePanel(windowId, inventory, hand);
 	}
 
 	@Override
@@ -51,7 +55,9 @@ public class InventoryPortablePanel extends ItemInventory implements ExtendedScr
 		return new TranslatableText(ModItems.portable_panel.getTranslationKey());
 	}
 
-	// the screen type is extended; the container needs no extra data
+	// the client needs to know which hand holds the panel
 	@Override
-	public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) { }
+	public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
+		buf.writeBoolean(hand == Hand.OFF_HAND);
+	}
 }

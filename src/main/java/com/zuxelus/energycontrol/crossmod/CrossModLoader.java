@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.crossmod;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,13 +10,22 @@ import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
-import alexiil.mc.lib.attributes.item.FixedItemInv;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import team.reborn.energy.api.EnergyStorage;
 
 public class CrossModLoader {
 	private static final Map<String, CrossModBase> CROSS_MODS = new HashMap<>();
@@ -28,6 +38,7 @@ public class CrossModLoader {
 		CROSS_MODS.put(modid, FabricLoader.getInstance().getModContainer(modid).isPresent() ? factory.get() : new CrossModBase());
 	}
 
+	@SuppressWarnings("unused")
 	private static void loadCrossModSafely(String modid, Supplier<Supplier<? extends CrossModBase>> factory) {
 		CROSS_MODS.put(modid, FabricLoader.getInstance().getModContainer(modid).isPresent() ? factory.get().get() : new CrossModBase());
 	}
@@ -55,15 +66,33 @@ public class CrossModLoader {
 			if (tag != null)
 				return tag;
 		}
-		/*Optional<IEnergyStorage> cap = te.getCapability(CapabilityEnergy.ENERGY).resolve();
-		if (cap.isPresent()) {
-			IEnergyStorage handler = cap.get();
+		// any block exposing Team Reborn Energy, e.g. the kit assembler
+		EnergyStorage storage = findEnergyStorage(te);
+		if (storage != null) {
 			NbtCompound tag = new NbtCompound();
-			tag.putString("euType", "FE");
-			tag.putDouble("storage", handler.getEnergyStored());
-			tag.putDouble("maxStorage", handler.getMaxEnergyStored());
+			tag.putString("euType", "E");
+			tag.putDouble("storage", storage.getAmount());
+			tag.putDouble("maxStorage", storage.getCapacity());
 			return tag;
-		}*/
+		}
+		return null;
+	}
+
+	private static EnergyStorage findEnergyStorage(BlockEntity te) {
+		World world = te.getWorld();
+		if (world == null)
+			return null;
+		BlockPos pos = te.getPos();
+		BlockState state = te.getCachedState();
+		EnergyStorage storage = EnergyStorage.SIDED.find(world, pos, state, te, null);
+		if (storage != null)
+			return storage;
+		// some providers only answer for a real side
+		for (Direction side : Direction.values()) {
+			storage = EnergyStorage.SIDED.find(world, pos, state, te, side);
+			if (storage != null)
+				return storage;
+		}
 		return null;
 	}
 
@@ -76,17 +105,37 @@ public class CrossModLoader {
 			if (list != null)
 				return list;
 		}
-		/*Optional<IFluidHandler> fluid = te.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null).resolve();
-		if (fluid.isPresent()) {
-			IFluidHandler handler = fluid.get();
+		// any block exposing the Fabric Transfer API, e.g. vanilla cauldrons and most tech mods
+		Storage<FluidVariant> storage = findFluidStorage(te);
+		if (storage != null) {
 			List<FluidInfo> result = new ArrayList<>();
-			for (int i = 0; i < handler.getTanks(); i++) {
-				FluidTank tank = new FluidTank(handler.getTankCapacity(i));
-				tank.setFluid(handler.getFluidInTank(i));
-				result.add(new FluidInfo(tank));
+			// 1.18.2 storages are iterated inside a transaction; it is only read, never committed
+			try (Transaction transaction = Transaction.openOuter()) {
+				for (StorageView<FluidVariant> view : storage.iterable(transaction))
+					if (view.getCapacity() > 0)
+						result.add(new FluidInfo(view));
 			}
-			return result;
-		}*/
+			if (!result.isEmpty())
+				return result;
+		}
+		return null;
+	}
+
+	private static Storage<FluidVariant> findFluidStorage(BlockEntity te) {
+		World world = te.getWorld();
+		if (world == null)
+			return null;
+		BlockPos pos = te.getPos();
+		BlockState state = te.getCachedState();
+		Storage<FluidVariant> storage = FluidStorage.SIDED.find(world, pos, state, te, null);
+		if (storage != null)
+			return storage;
+		// some providers only answer for a real side
+		for (Direction side : Direction.values()) {
+			storage = FluidStorage.SIDED.find(world, pos, state, te, side);
+			if (storage != null)
+				return storage;
+		}
 		return null;
 	}
 
@@ -111,24 +160,49 @@ public class CrossModLoader {
 				return tag;
 		}
 		NbtCompound tag = new NbtCompound();
-		if (te instanceof FixedItemInv) {
-			FixedItemInv inv = (FixedItemInv) te;
+		// any block exposing the Fabric Transfer API, including every vanilla Inventory
+		Storage<ItemVariant> storage = findItemStorage(te);
+		if (storage != null) {
 			/*if (te instanceof BaseContainerBlockEntity)
 				tag.putString("name", ((BaseContainerBlockEntity) te).getDisplayName().getString());
 			tag.putBoolean("sided", inv instanceof WorldlyContainer);*/
+			int size = 0;
 			int inUse = 0;
 			int items = 0;
-			tag.putInt("size", inv.getSlotCount());
-			for (int i = 0; i < Math.min(6, inv.getSlotCount()); i++) {
-				if (inv.getInvStack(i) != ItemStack.EMPTY) {
-					inUse++;
-					items += inv.getInvStack(i).getCount();
+			try (Transaction transaction = Transaction.openOuter()) {
+				for (StorageView<ItemVariant> view : storage.iterable(transaction)) {
+					ItemStack stack = view.isResourceBlank() ? ItemStack.EMPTY : view.getResource().toStack((int) Math.min(view.getAmount(), Integer.MAX_VALUE));
+					if (!stack.isEmpty()) {
+						inUse++;
+						items += stack.getCount();
+					}
+					if (size < 6)
+						tag.put("slot" + Integer.toString(size), stack.writeNbt(new NbtCompound()));
+					size++;
 				}
-				tag.put("slot" + Integer.toString(i), inv.getInvStack(i).writeNbt(new NbtCompound()));
 			}
+			tag.putInt("size", size);
 			tag.putInt("used", inUse);
 			tag.putInt("items", items);
 		}
 		return tag;
+	}
+
+	private static Storage<ItemVariant> findItemStorage(BlockEntity te) {
+		World world = te.getWorld();
+		if (world == null)
+			return null;
+		BlockPos pos = te.getPos();
+		BlockState state = te.getCachedState();
+		Storage<ItemVariant> storage = ItemStorage.SIDED.find(world, pos, state, te, null);
+		if (storage != null)
+			return storage;
+		// some providers only answer for a real side
+		for (Direction side : Direction.values()) {
+			storage = ItemStorage.SIDED.find(world, pos, state, te, side);
+			if (storage != null)
+				return storage;
+		}
+		return null;
 	}
 }
