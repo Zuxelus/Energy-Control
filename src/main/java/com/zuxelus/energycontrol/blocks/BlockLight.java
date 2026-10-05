@@ -1,8 +1,8 @@
 package com.zuxelus.energycontrol.blocks;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.util.math.random.Random;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemPlacementContext;
@@ -18,7 +18,7 @@ public class BlockLight extends Block {
 	public static final BooleanProperty LIT = Properties.LIT;
 
 	public BlockLight() {
-		super(FabricBlockSettings.create().luminance(state -> state.get(LIT) ? 15 : 0).strength(0.3F).sounds(BlockSoundGroup.GLASS));
+		super(AbstractBlock.Settings.create().luminance(state -> state.get(LIT) ? 15 : 0).strength(0.3F).sounds(BlockSoundGroup.GLASS));
 		setDefaultState(getStateManager().getDefaultState().with(LIT, false));
 	}
 

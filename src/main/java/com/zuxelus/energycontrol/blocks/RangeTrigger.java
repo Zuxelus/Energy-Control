@@ -8,7 +8,6 @@ import com.zuxelus.energycontrol.tileentities.TileEntityRangeTrigger;
 import com.zuxelus.zlib.blocks.FacingHorizontal;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -34,7 +33,7 @@ public class RangeTrigger extends FacingHorizontal {
 	public static final EnumProperty<EnumState> STATE = EnumProperty.of("state", EnumState.class);
 
 	public RangeTrigger() {
-		super(FabricBlockSettings.copyOf(ModItems.settings));
+		super(ModItems.blockSettings());
 	}
 
 	@Override

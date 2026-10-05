@@ -43,7 +43,6 @@ public abstract class FacingBlockSmall extends FacingBlock {
 		return null;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public BlockState getStateForNeighborUpdate(BlockState state, Direction facing, BlockState facingState, WorldAccess world, BlockPos currentPos, BlockPos facingPos) {
 		return state.get(FACING).getOpposite() == facing && !state.canPlaceAt(world, currentPos)

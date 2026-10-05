@@ -19,6 +19,7 @@ public class ChannelHandler {
 		PayloadTypeRegistry.playC2S().register(PacketCardC2S.ID, PacketCardC2S.CODEC);
 		PayloadTypeRegistry.playC2S().register(PacketTileEntityC2S.ID, PacketTileEntityC2S.CODEC);
 		PayloadTypeRegistry.playC2S().register(PacketKeys.ID, PacketKeys.CODEC);
+		PayloadTypeRegistry.playC2S().register(PacketPortableBars.ID, PacketPortableBars.CODEC);
 		PayloadTypeRegistry.playS2C().register(PacketCardS2C.ID, PacketCardS2C.CODEC);
 		PayloadTypeRegistry.playS2C().register(PacketTileEntityS2C.ID, PacketTileEntityS2C.CODEC);
 		PayloadTypeRegistry.playS2C().register(PacketAlarm.ID, PacketAlarm.CODEC);
@@ -26,6 +27,7 @@ public class ChannelHandler {
 		ServerPlayNetworking.registerGlobalReceiver(PacketCardC2S.ID, PacketCardC2S::handle);
 		ServerPlayNetworking.registerGlobalReceiver(PacketTileEntityC2S.ID, PacketTileEntityC2S::handle);
 		ServerPlayNetworking.registerGlobalReceiver(PacketKeys.ID, PacketKeys::handle);
+		ServerPlayNetworking.registerGlobalReceiver(PacketPortableBars.ID, PacketPortableBars::handle);
 	}
 
 	@Environment(EnvType.CLIENT)

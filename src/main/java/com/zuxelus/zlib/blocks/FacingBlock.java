@@ -91,7 +91,6 @@ public abstract class FacingBlock extends BlockWithEntity {
 		return getDefaultState().with(FACING, placer.getHorizontalFacing().getOpposite());
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {

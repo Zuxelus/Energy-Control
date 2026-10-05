@@ -29,7 +29,7 @@ import com.zuxelus.energycontrol.utils.SoundHelper;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
-import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
@@ -70,12 +70,12 @@ public class EnergyControlClient implements ClientModInitializer {
 	}
 
 	public static void registerRenders() {
-		BlockEntityRendererRegistry.register(ModTileEntityTypes.thermal_monitor, TEThermalMonitorRenderer::new);
-		BlockEntityRendererRegistry.register(ModTileEntityTypes.remote_thermo, TERemoteThermalMonitorRenderer::new);
-		BlockEntityRendererRegistry.register(ModTileEntityTypes.info_panel, TileEntityInfoPanelRenderer::new);
-		BlockEntityRendererRegistry.register(ModTileEntityTypes.info_panel_advanced, TEAdvancedInfoPanelRenderer::new);
-		BlockEntityRendererRegistry.register(ModTileEntityTypes.holo_panel, TileEntityHoloPanelRenderer::new);
-		BlockEntityRendererRegistry.register(ModTileEntityTypes.timer, TileEntityTimerRenderer::new);
+		BlockEntityRendererFactories.register(ModTileEntityTypes.thermal_monitor, TEThermalMonitorRenderer::new);
+		BlockEntityRendererFactories.register(ModTileEntityTypes.remote_thermo, TERemoteThermalMonitorRenderer::new);
+		BlockEntityRendererFactories.register(ModTileEntityTypes.info_panel, TileEntityInfoPanelRenderer::new);
+		BlockEntityRendererFactories.register(ModTileEntityTypes.info_panel_advanced, TEAdvancedInfoPanelRenderer::new);
+		BlockEntityRendererFactories.register(ModTileEntityTypes.holo_panel, TileEntityHoloPanelRenderer::new);
+		BlockEntityRendererFactories.register(ModTileEntityTypes.timer, TileEntityTimerRenderer::new);
 		registerPanelModels();
 	}
 

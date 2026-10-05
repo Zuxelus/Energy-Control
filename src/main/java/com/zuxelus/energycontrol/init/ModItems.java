@@ -7,7 +7,7 @@ import com.zuxelus.energycontrol.items.cards.*;
 import com.zuxelus.energycontrol.items.kits.*;
 import com.zuxelus.energycontrol.recipes.*;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.MapColor;
 import net.minecraft.item.BlockItem;
@@ -18,7 +18,10 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 
 public class ModItems {
-	public static final FabricBlockSettings settings = FabricBlockSettings.create().mapColor(MapColor.IRON_GRAY).strength(3.0F);
+	// a new instance each time: block settings are mutable and must not be shared between blocks
+	public static AbstractBlock.Settings blockSettings() {
+		return AbstractBlock.Settings.create().mapColor(MapColor.IRON_GRAY).strength(3.0F);
+	}
 	public static final Block white_lamp = new BlockLight();
 	public static final Block orange_lamp = new BlockLight();
 	public static final Block howler_alarm = new HowlerAlarm();

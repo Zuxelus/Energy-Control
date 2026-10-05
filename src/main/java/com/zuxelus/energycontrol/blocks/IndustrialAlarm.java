@@ -9,7 +9,6 @@ import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 import com.zuxelus.energycontrol.tileentities.TileEntityIndustrialAlarm;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -33,7 +32,7 @@ public class IndustrialAlarm extends HowlerAlarm {
 	private static final int[] lightSteps = { 0, 7, 14, 7, 0};
 
 	public IndustrialAlarm() {
-		super(FabricBlockSettings.copyOf(ModItems.settings).luminance(state -> lightSteps[state.get(LIGHT)]));
+		super(ModItems.blockSettings().luminance(state -> lightSteps[state.get(LIGHT)]));
 	}
 
 	@Override

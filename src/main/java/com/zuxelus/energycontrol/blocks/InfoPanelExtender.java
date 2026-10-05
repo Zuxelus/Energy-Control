@@ -10,7 +10,6 @@ import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanelExtender;
 import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -31,7 +30,7 @@ public class InfoPanelExtender extends FacingBlockActive {
 	}
 
 	public InfoPanelExtender() {
-		this(FabricBlockSettings.copyOf(ModItems.settings));
+		this(ModItems.blockSettings());
 	}
 
 	public InfoPanelExtender(AbstractBlock.Settings settings) {

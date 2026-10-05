@@ -2,14 +2,11 @@ package com.zuxelus.energycontrol.utils;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.List;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
 
 public class StringUtils {
 	private static DecimalFormat formatter = null;

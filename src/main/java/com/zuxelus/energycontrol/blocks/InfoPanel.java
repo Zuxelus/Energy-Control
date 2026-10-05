@@ -11,7 +11,6 @@ import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -34,7 +33,7 @@ public class InfoPanel extends FacingBlockActive {
 	}
 
 	public InfoPanel() {
-		super(FabricBlockSettings.copyOf(ModItems.settings).luminance(state -> state.get(ACTIVE) ? 10 : 0));
+		super(ModItems.blockSettings().luminance(state -> state.get(ACTIVE) ? 10 : 0));
 	}
 
 	public InfoPanel(AbstractBlock.Settings settings) {

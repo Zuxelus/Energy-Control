@@ -76,7 +76,6 @@ public abstract class FacingHorizontal extends BlockWithEntity {
 		return state;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {

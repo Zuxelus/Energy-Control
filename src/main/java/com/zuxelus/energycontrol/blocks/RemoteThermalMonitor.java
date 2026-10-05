@@ -9,7 +9,6 @@ import com.zuxelus.energycontrol.tileentities.TileEntityThermalMonitor;
 import com.zuxelus.zlib.blocks.FacingHorizontal;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -29,7 +28,7 @@ public class RemoteThermalMonitor extends FacingHorizontal {
 	}
 
 	public RemoteThermalMonitor() {
-		super(FabricBlockSettings.copyOf(ModItems.settings));
+		super(ModItems.blockSettings());
 	}
 
 	@Override

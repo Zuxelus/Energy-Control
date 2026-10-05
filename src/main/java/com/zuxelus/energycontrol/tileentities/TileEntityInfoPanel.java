@@ -20,7 +20,6 @@ import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
-import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -46,7 +45,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class TileEntityInfoPanel extends TileEntityInventory implements ExtendedScreenHandlerFactory<BlockPos>, ITilePacketHandler, IScreenPart, ISlotItemFilter, RenderAttachmentBlockEntity {
+public class TileEntityInfoPanel extends TileEntityInventory implements ExtendedScreenHandlerFactory<BlockPos>, ITilePacketHandler, IScreenPart, ISlotItemFilter {
 	public static final String NAME = "info_panel";
 	public static final int DISPLAY_DEFAULT = Integer.MAX_VALUE - 1024;
 	public static final int GREEN = 0xFF14E300;
@@ -315,7 +314,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	}
 
 	@Override
-	public Object getRenderAttachmentData() {
+	public Object getRenderData() {
 		return new PanelRenderData(findTexture(), getColored() ? colorBackground : getDefaultBackground(), getPowered(), getRenderOffset());
 	}
 

@@ -9,7 +9,6 @@ import com.zuxelus.energycontrol.tileentities.TileEntityThermalMonitor;
 import com.zuxelus.zlib.blocks.FacingBlockSmall;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -39,7 +38,7 @@ public class ThermalMonitor extends FacingBlockSmall {
 	protected static final VoxelShape AABB_EAST = Block.createCuboidShape(0.0F, 1.0F, 1.0F, 7.0F, 15.0F, 15.0F);
 
 	public ThermalMonitor() {
-		super(FabricBlockSettings.copyOf(ModItems.settings));
+		super(ModItems.blockSettings());
 	}
 
 	@Override

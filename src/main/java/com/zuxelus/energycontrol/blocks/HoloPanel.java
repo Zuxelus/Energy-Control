@@ -11,7 +11,6 @@ import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.blocks.FacingHorizontalActive;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -38,7 +37,7 @@ public class HoloPanel extends FacingHorizontalActive {
 	}
 
 	public HoloPanel() {
-		super(FabricBlockSettings.copyOf(ModItems.settings));
+		super(ModItems.blockSettings());
 	}
 
 	protected static final VoxelShape AABB_NORTH = Block.createCuboidShape(0.0D, 0.0D, 4.0D, 16.0D, 1.0D, 12.0D);
@@ -99,7 +98,6 @@ public class HoloPanel extends FacingHorizontalActive {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public BlockState getStateForNeighborUpdate(BlockState state, Direction facing, BlockState facingState, WorldAccess world, BlockPos currentPos, BlockPos facingPos) {
 		return canPlaceAt(state, world, currentPos) ? super.getStateForNeighborUpdate(state, facing, facingState, world, currentPos, facingPos) : Blocks.AIR.getDefaultState();

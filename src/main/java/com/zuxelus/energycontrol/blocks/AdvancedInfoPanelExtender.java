@@ -10,7 +10,6 @@ import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanelExtender;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
@@ -35,7 +34,7 @@ public class AdvancedInfoPanelExtender extends InfoPanelExtender {
 	// the shape follows the core panel thickness, so it must not be cached per block state,
 	// and like the core it is not opaque, so neighbours are not culled by a sloped panel
 	public AdvancedInfoPanelExtender() {
-		super(FabricBlockSettings.copyOf(ModItems.settings).nonOpaque().dynamicBounds());
+		super(ModItems.blockSettings().nonOpaque().dynamicBounds());
 	}
 
 	@Override

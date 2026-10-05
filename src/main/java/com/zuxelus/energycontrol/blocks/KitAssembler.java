@@ -8,7 +8,6 @@ import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
 import com.zuxelus.zlib.blocks.FacingHorizontalActive;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -26,7 +25,7 @@ public class KitAssembler extends FacingHorizontalActive {
 	}
 
 	public KitAssembler() {
-		super(FabricBlockSettings.copyOf(ModItems.settings));
+		super(ModItems.blockSettings());
 	}
 
 	@Override

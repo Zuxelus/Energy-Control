@@ -11,7 +11,6 @@ import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
@@ -37,7 +36,7 @@ public class AdvancedInfoPanel extends InfoPanel {
 
 	public AdvancedInfoPanel() {
 		// the shape follows the panel thickness, so it must not be cached per block state
-		super(FabricBlockSettings.copyOf(ModItems.settings).nonOpaque().dynamicBounds());
+		super(ModItems.blockSettings().nonOpaque().dynamicBounds());
 	}
 
 	@Override

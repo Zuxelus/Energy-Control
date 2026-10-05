@@ -8,7 +8,6 @@ import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 import com.zuxelus.zlib.blocks.FacingBlockSmall;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
@@ -36,7 +35,7 @@ public class HowlerAlarm extends FacingBlockSmall {
 	protected static final VoxelShape AABB_EAST = Block.createCuboidShape(0.0D, 2.0D, 2.0D, 7.0D, 14.0D, 14.0D);
 
 	public HowlerAlarm() {
-		super(FabricBlockSettings.copyOf(ModItems.settings));
+		super(ModItems.blockSettings());
 	}
 
 	public HowlerAlarm(Settings settings) {

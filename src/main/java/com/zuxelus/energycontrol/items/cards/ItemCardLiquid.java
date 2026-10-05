@@ -31,7 +31,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import org.joml.Matrix4f;
 import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
 import net.minecraft.world.World;
 
 public class ItemCardLiquid extends ItemCardMain implements IHasBars {
