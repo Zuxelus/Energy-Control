@@ -30,7 +30,7 @@
 		"rei_common": [
 			"com.zuxelus.energycontrol.crossmod.rei.ServerPlugin"
 		],
-		"rei_client": [
+		"rei": [
 			"com.zuxelus.energycontrol.crossmod.rei.ClientPlugin"
 		]
 	},
@@ -45,6 +45,6 @@
 
 	},
 	"suggests": {
-		"cloth-config": "*"
+		"cloth-config2": "*"
 	}
 }
