@@ -6,17 +6,14 @@ import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.utils.TileEntitySound;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import com.mojang.serialization.Codec;
 
 public class TileEntityHowlerAlarm extends BlockEntityFacing implements ITilePacketHandler {
 	private static final String DEFAULT_SOUND_NAME = "default";
@@ -103,38 +100,17 @@ public class TileEntityHowlerAlarm extends BlockEntityFacing implements ITilePac
 	public void onClientMessageReceived(CompoundTag tag) { }
 
 	@Override
-	public Packet<ClientGamePacketListener> getUpdatePacket() {
-		return ClientboundBlockEntityDataPacket.create(this);
-	}
-
-	@Override
-	public void onDataPacket(ClientboundBlockEntityDataPacket pkt) {
-		readProperties(pkt.getTag(), level.registryAccess());
-	}
-
-	@Override
-	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-		CompoundTag tag = writeProperties(registries);
+	protected void writeUpdateData(ValueOutput tag) {
 		powered = level.hasNeighborSignal(worldPosition);
 		tag.putBoolean("powered", powered);
-		return tag;
 	}
 
 	@Override
 	protected void readProperties(ValueInput tag) {
 		super.readProperties(tag);
-		if (tag.contains("soundName"))
-			soundName = prevSoundName = tag.getStringOr("soundName", "");
-		if (tag.contains("range"))
-			range = tag.getIntOr("range", 0);
-		if (tag.contains("powered"))
-			updatePowered(tag.getBooleanOr("powered", false));
-	}
-
-	@Override
-	protected void loadAdditional(ValueInput tag) {
-		super.loadAdditional(tag);
-		readProperties(tag);
+		tag.getString("soundName").ifPresent(v -> soundName = prevSoundName = v);
+		range = tag.getIntOr("range", range);
+		tag.read("powered", Codec.BOOL).ifPresent(this::updatePowered);
 	}
 
 	@Override
@@ -142,12 +118,6 @@ public class TileEntityHowlerAlarm extends BlockEntityFacing implements ITilePac
 		super.writeProperties(tag);
 		tag.putString("soundName", soundName);
 		tag.putInt("range", range);
-	}
-
-	@Override
-	protected void saveAdditional(ValueOutput tag) {
-		super.saveAdditional(tag);
-		writeProperties(tag);
 	}
 
 	@Override

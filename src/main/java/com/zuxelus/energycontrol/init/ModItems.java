@@ -17,6 +17,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 
@@ -27,7 +28,7 @@ public class ModItems {
 	// a new instance each time: block settings are mutable and must not be shared between blocks.
 	// Since 1.21.2 the registry key has to be set before the block is constructed, see block(...)
 	public static BlockBehaviour.Properties blockSettings() {
-		return BlockBehaviour.Properties.of().setId(blockKey).mapColor(MapColor.METAL).strength(3.0F);
+		return BlockBehaviour.Properties.of().setId(blockKey).mapColor(MapColor.METAL).strength(1.0F, 3.0F).sound(SoundType.METAL);
 	}
 
 	public static BlockBehaviour.Properties emptyBlockSettings() {

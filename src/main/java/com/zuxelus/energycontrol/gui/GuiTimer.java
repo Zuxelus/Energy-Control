@@ -84,7 +84,6 @@ public class GuiTimer extends GuiContainerBase<ContainerTimer> {
 		boolean isWorking = timer.getIsWorking();
 		if (isWorking != lastIsWorking) {
 			textboxTimer.setEditable(!isWorking);
-			textboxTimer.setFocused(!isWorking);
 			buttons[8].setMessage(Component.literal(isWorking ? "Stop" : "Start"));
 			lastIsWorking = isWorking;
 		}
@@ -170,7 +169,6 @@ public class GuiTimer extends GuiContainerBase<ContainerTimer> {
 			timer.setIsWorking(!isWorking);
 			buttons[8].setMessage(Component.literal(!isWorking ? "Stop" : "Start"));
 			textboxTimer.setEditable(isWorking);
-			textboxTimer.setFocused(isWorking);
 			break;
 		}
 	}

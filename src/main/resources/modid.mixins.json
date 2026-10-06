@@ -8,7 +8,6 @@
     "PlayerManagerMixin"
   ],
   "client": [
-    "ClientPlayNetworkHandlerMixin",
     "ReloadableResourceManagerImplMixin"
   ],
   "injectors": {

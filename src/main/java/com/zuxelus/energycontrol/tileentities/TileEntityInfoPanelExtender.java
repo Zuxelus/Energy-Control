@@ -7,11 +7,7 @@ import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -75,31 +71,12 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	public void onServerMessageReceived(CompoundTag tag) {}
 
 	@Override
-	public Packet<ClientGamePacketListener> getUpdatePacket() {
-		return ClientboundBlockEntityDataPacket.create(this);
-	}
-
-	@Override
-	public void onDataPacket(ClientboundBlockEntityDataPacket pkt) {
-		readProperties(pkt.getTag(), level.registryAccess());
-	}
-
-	@Override
-	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-		CompoundTag tag = writeProperties(registries);
-		return tag;
-	}
-
-	@Override
 	protected void readProperties(ValueInput tag) {
 		super.readProperties(tag);
-		if (tag.contains("partOfScreen"))
-			partOfScreen = tag.getBooleanOr("partOfScreen", false);
-		if (tag.contains("coreX")) {
-			coreX = tag.getIntOr("coreX", 0);
-			coreY = tag.getIntOr("coreY", 0);
-			coreZ = tag.getIntOr("coreZ", 0);
-		}
+		partOfScreen = tag.getBooleanOr("partOfScreen", partOfScreen);
+		coreX = tag.getIntOr("coreX", coreX);
+		coreY = tag.getIntOr("coreY", coreY);
+		coreZ = tag.getIntOr("coreZ", coreZ);
 		if (level != null) {
 			updateScreen();
 			if (level.isClientSide())
@@ -109,24 +86,12 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	}
 
 	@Override
-	protected void loadAdditional(ValueInput tag) {
-		super.loadAdditional(tag);
-		readProperties(tag);
-	}
-
-	@Override
 	protected void writeProperties(ValueOutput tag) {
 		super.writeProperties(tag);
 		tag.putBoolean("partOfScreen", partOfScreen);
 		tag.putInt("coreX", coreX);
 		tag.putInt("coreY", coreY);
 		tag.putInt("coreZ", coreZ);
-	}
-
-	@Override
-	protected void saveAdditional(ValueOutput tag) {
-		super.saveAdditional(tag);
-		writeProperties(tag);
 	}
 
 	@Override

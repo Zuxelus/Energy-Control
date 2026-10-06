@@ -27,10 +27,11 @@ public final class ModContainerTypes {
 	public static final MenuType<ContainerKitAssembler> kit_assembler = register("kit_assembler", ContainerKitAssembler::new);
 	public static final MenuType<ContainerTimer> timer = register("timer", ContainerTimer::new);
 
-	// opened from an item, so it needs the hand instead of a position
+	// opened from an item, so they need the hand instead of a position
 	public static final MenuType<ContainerPortablePanel> portable_panel = Registry.register(BuiltInRegistries.MENU, Identifier.fromNamespaceAndPath(EnergyControl.MODID, "portable_panel"),
 			new ExtendedMenuType<>(ContainerPortablePanel::new, HAND_CODEC));
-	public static final MenuType<ContainerCardHolder> card_holder = register("card_holder", ContainerCardHolder::new);
+	public static final MenuType<ContainerCardHolder> card_holder = Registry.register(BuiltInRegistries.MENU, Identifier.fromNamespaceAndPath(EnergyControl.MODID, "card_holder"),
+			new ExtendedMenuType<>(ContainerCardHolder::new, HAND_CODEC));
 
 	// replaces the deprecated ScreenHandlerRegistry.registerExtended
 	private static <T extends AbstractContainerMenu> MenuType<T> register(String name, ExtendedMenuType.ExtendedFactory<T, BlockPos> factory) {

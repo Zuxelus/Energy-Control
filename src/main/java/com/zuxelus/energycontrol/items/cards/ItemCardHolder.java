@@ -18,9 +18,8 @@ public class ItemCardHolder extends Item {
 	@Override
 	public InteractionResult use(Level world, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		// main hand only: the container reads the main hand stack and locks the selected hotbar slot
-		if (!player.isShiftKeyDown() && !world.isClientSide() && hand == InteractionHand.MAIN_HAND && stack.getCount() == 1)
-			player.openMenu(new InventoryCardHolder(stack));
+		if (!player.isShiftKeyDown() && !world.isClientSide() && stack.getCount() == 1)
+			player.openMenu(new InventoryCardHolder(stack, hand));
 		return InteractionResult.SUCCESS;
 	}
 }

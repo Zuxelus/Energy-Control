@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.zuxelus.energycontrol.utils.FluidInfo;
+import com.zuxelus.energycontrol.utils.DataHelper;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
@@ -23,9 +24,9 @@ public class CrossTechReborn extends CrossModBase {
 			PowerAcceptorBlockEntity storage = (PowerAcceptorBlockEntity) te;
 			tag.putInt("type", 12);
 			// RebornCore has a single energy unit since 1.20
-			tag.putString("euType", PowerSystem.ABBREVIATION);
-			tag.putDouble("storage", storage.getEnergy());
-			tag.putDouble("maxStorage", storage.getMaxStoredPower());
+			tag.putString(DataHelper.EUTYPE, PowerSystem.ABBREVIATION);
+			tag.putDouble(DataHelper.ENERGY, storage.getEnergy());
+			tag.putDouble(DataHelper.CAPACITY, storage.getMaxStoredPower());
 			return tag;
 		}
 		return null;

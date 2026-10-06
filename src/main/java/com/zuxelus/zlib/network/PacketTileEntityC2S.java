@@ -28,7 +28,7 @@ public record PacketTileEntityC2S(BlockPos pos, CompoundTag tag) implements Pack
 	public static void handle(PacketTileEntityC2S packet, ServerPlayNetworking.Context context) {
 		ServerPlayer player = context.player();
 		context.server().execute(() -> {
-			if (player == null || player.level() == null)
+			if (player == null || player.level() == null || !player.level().isLoaded(packet.pos()))
 				return;
 			BlockEntity te = player.level().getBlockEntity(packet.pos());
 			if (!(te instanceof ITilePacketHandler))

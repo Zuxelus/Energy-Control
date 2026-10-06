@@ -5,9 +5,7 @@ import com.zuxelus.energycontrol.tileentities.*;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
-import net.minecraft.world.Containers;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
@@ -28,7 +26,7 @@ public abstract class FacingBlock extends BaseEntityBlock {
 
 	public FacingBlock(BlockBehaviour.Properties settings) {
 		super(settings);
-		//setDefaultState(getDefaultState().with(FACING, Direction.NORTH));
+		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
 	}
 
 	protected abstract BlockEntityFacing createFacingBlockEntity(BlockPos pos, BlockState state);
@@ -70,13 +68,17 @@ public abstract class FacingBlock extends BaseEntityBlock {
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context) {
 		Player placer = context.getPlayer();
-		rotation = placer.getDirection().getOpposite();
-		if (placer.getXRot() >= 65)
+		if (placer == null)
+			return defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
+		if (placer.getXRot() >= 65) {
+			rotation = placer.getDirection().getOpposite();
 			return defaultBlockState().setValue(FACING, Direction.UP);
+		}
 		if (placer.getXRot() <= -65) {
 			rotation = placer.getDirection();
 			return defaultBlockState().setValue(FACING, Direction.DOWN);
 		}
+		rotation = Direction.DOWN;
 		switch (Mth.floor(placer.getYRot() * 4.0F / 360.0F + 0.5D) & 3) {
 		case 0:
 			return defaultBlockState().setValue(FACING, Direction.NORTH);
@@ -88,11 +90,5 @@ public abstract class FacingBlock extends BaseEntityBlock {
 			return defaultBlockState().setValue(FACING, Direction.WEST);
 		}
 		return defaultBlockState().setValue(FACING, placer.getDirection().getOpposite());
-	}
-
-	// contents are dropped by BlockEntity.preRemoveSideEffects, only the comparators need an update
-	@Override
-	protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel world, BlockPos pos, boolean movedByPiston) {
-		Containers.updateNeighboursAfterDestroy(state, world, pos);
 	}
 }

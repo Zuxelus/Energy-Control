@@ -207,14 +207,10 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	@Override
 	protected void readProperties(ValueInput tag) {
 		super.readProperties(tag);
-		if (tag.contains("powerMode"))
-			setPowerMode(tag.getByteOr("powerMode", (byte) 0));
-		if (tag.contains("thickness"))
-			thickness = tag.getByteOr("thickness", (byte) 0);
-		if (tag.contains("rotateHor"))
-			rotateHor = tag.getByteOr("rotateHor", (byte) 0);
-		if (tag.contains("rotateVert"))
-			rotateVert = tag.getByteOr("rotateVert", (byte) 0);
+		setPowerMode(tag.getByteOr("powerMode", powerMode));
+		thickness = tag.getByteOr("thickness", thickness);
+		rotateHor = tag.getByteOr("rotateHor", rotateHor);
+		rotateVert = tag.getByteOr("rotateVert", rotateVert);
 	}
 
 	@Override

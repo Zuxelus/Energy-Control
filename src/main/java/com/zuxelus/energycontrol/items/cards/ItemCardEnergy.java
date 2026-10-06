@@ -10,6 +10,7 @@ import com.zuxelus.energycontrol.api.IHasBars;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.utils.DataHelper;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -36,9 +37,9 @@ public class ItemCardEnergy extends ItemCardMain implements IHasBars {
 
 		CompoundTag tag = CrossModLoader.getEnergyData(te);
 		if (tag != null) {
-			reader.setDouble("storage", tag.getDoubleOr("storage", 0.0));
-			reader.setDouble("maxStorage", tag.getDoubleOr("maxStorage", 0.0));
-			reader.setString("euType", tag.getStringOr("euType", ""));
+			reader.setDouble(DataHelper.ENERGY, tag.getDoubleOr(DataHelper.ENERGY, 0.0));
+			reader.setDouble(DataHelper.CAPACITY, tag.getDoubleOr(DataHelper.CAPACITY, 0.0));
+			reader.setString(DataHelper.EUTYPE, tag.getStringOr(DataHelper.EUTYPE, ""));
 			return CardState.OK;
 		}
 		return CardState.NO_TARGET;
@@ -48,9 +49,9 @@ public class ItemCardEnergy extends ItemCardMain implements IHasBars {
 	public List<PanelString> getStringData(Level world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 
-		double energy = reader.getDouble("storage");
-		double storage = reader.getDouble("maxStorage");
-		String euType = reader.getString("euType");
+		double energy = reader.getDouble(DataHelper.ENERGY);
+		double storage = reader.getDouble(DataHelper.CAPACITY);
+		String euType = reader.getString(DataHelper.EUTYPE);
 
 		if ((settings & 1) > 0)
 			result.add(new PanelString("msg.ec.InfoPanelEnergy", energy, euType, showLabels));
@@ -90,13 +91,13 @@ public class ItemCardEnergy extends ItemCardMain implements IHasBars {
 	@Override
 	@Environment(EnvType.CLIENT)
 	public void renderBars(float displayWidth, float displayHeight, ICardReader reader, PoseStack matrixStack, SubmitNodeCollector collector) {
-		double storage = reader.getDouble("maxStorage");
+		double storage = reader.getDouble(DataHelper.CAPACITY);
 		if (storage <= 0)
 			return;
 		float x = -0.5F + 1 / 16.0F;
 		float y = -0.5F + 1 / 16.0F + 0.4375F / 2;
 		float height = 0.4375F;
-		float width = 14 / 16.0F * (float) (Math.min(reader.getDouble("storage"), storage) / storage);
+		float width = 14 / 16.0F * (float) (Math.min(reader.getDouble(DataHelper.ENERGY), storage) / storage);
 
 		matrixStack.scale(displayWidth / 0.875F, displayHeight / 0.875F, 1);
 		IHasBars.drawTransparentRect(matrixStack, collector, x + 0.875F, y + height, x, y, 0, BAR_COLOR);

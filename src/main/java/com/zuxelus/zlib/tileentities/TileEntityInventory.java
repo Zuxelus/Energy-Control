@@ -1,33 +1,29 @@
 package com.zuxelus.zlib.tileentities;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
-public abstract class TileEntityInventory extends BlockEntityFacing implements Container {
+public abstract class TileEntityInventory extends BlockEntityFacing implements WorldlyContainer {
 	protected NonNullList<ItemStack> inventory;
 
 	public TileEntityInventory(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
-		inventory = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
+		inventory = NonNullList.<ItemStack>withSize(getContainerSize(), ItemStack.EMPTY);
 	}
 
 	@Override
 	protected void readProperties(ValueInput tag) {
 		super.readProperties(tag);
-		inventory = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
+		inventory = NonNullList.<ItemStack>withSize(getContainerSize(), ItemStack.EMPTY);
 		ContainerHelper.loadAllItems(tag, inventory);
 	}
 
@@ -53,6 +49,8 @@ public abstract class TileEntityInventory extends BlockEntityFacing implements C
 	@Override
 	public ItemStack removeItem(int index, int count) {
 		ItemStack stack = ContainerHelper.removeItem(inventory, index, count);
+		if (!stack.isEmpty())
+			setChanged();
 		return stack;
 	}
 
@@ -74,11 +72,6 @@ public abstract class TileEntityInventory extends BlockEntityFacing implements C
 	}
 
 	@Override
-	public int getMaxStackSize() {
-		return 64;
-	}
-
-	@Override
 	public boolean stillValid(Player player) {
 		return level.getBlockEntity(worldPosition) != this ? false : player.distanceToSqr(worldPosition.getX() + 0.5D, worldPosition.getY() + 0.5D, worldPosition.getZ() + 0.5D) <= 64.0D;
 	}
@@ -88,30 +81,19 @@ public abstract class TileEntityInventory extends BlockEntityFacing implements C
 		inventory.clear();
 	}
 
-	public List<ItemStack> getDrops(int fortune) {
-		List<ItemStack> list = new ArrayList<>();
-		for (int i = 0; i < getContainerSize(); i++) {
-			ItemStack stack = getItem(i);
-			if (!stack.isEmpty())
-				list.add(stack);
-		}
-		return list;
+	// ISidedInventory
+	@Override
+	public int[] getSlotsForFace(Direction side) {
+		return new int[0];
 	}
 
-	public void dropItems(Level world, BlockPos pos) {
-		Random rand = new Random();
-		List<ItemStack> list = getDrops(1);
-		for (ItemStack stack : list) {
-			float rx = rand.nextFloat() * 0.8F + 0.1F;
-			float ry = rand.nextFloat() * 0.8F + 0.1F;
-			float rz = rand.nextFloat() * 0.8F + 0.1F;
+	@Override
+	public boolean canPlaceItemThroughFace(int slot, ItemStack stack, Direction side) {
+		return false;
+	}
 
-			ItemEntity entityItem = new ItemEntity(world, pos.getX() + rx, pos.getY() + ry, pos.getZ() + rz, stack.copy());
-
-			float factor = 0.05F;
-			entityItem.setDeltaMovement(rand.nextGaussian() * factor, rand.nextGaussian() * factor + 0.2F, rand.nextGaussian() * factor);
-			world.addFreshEntity(entityItem);
-			stack.setCount(0);
-		}
+	@Override
+	public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) {
+		return false;
 	}
 }

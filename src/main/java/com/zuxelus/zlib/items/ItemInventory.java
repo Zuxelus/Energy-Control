@@ -1,6 +1,7 @@
 package com.zuxelus.zlib.items;
 
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
+
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.Container;
@@ -16,19 +17,21 @@ public abstract class ItemInventory implements Container, ISlotItemFilter {
 
 	public ItemInventory(ItemStack parent) {
 		this.parent = parent;
-		inventory = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
-		readFromParentNBT();
+		inventory = NonNullList.<ItemStack>withSize(getContainerSize(), ItemStack.EMPTY);
+		readFromParent();
 	}
 
 	public ItemStack getParent() {
 		return parent;
 	}
 
-	private void readFromParentNBT() {
-		parent.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY).copyInto(inventory);
+	private void readFromParent() {
+		ItemContainerContents contents = parent.get(DataComponents.CONTAINER);
+		if (contents != null)
+			contents.copyInto(inventory);
 	}
 
-	private void writeToParentNBT() {
+	private void writeToParent() {
 		parent.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(inventory));
 	}
 
@@ -48,6 +51,8 @@ public abstract class ItemInventory implements Container, ISlotItemFilter {
 	@Override
 	public ItemStack removeItem(int index, int count) {
 		ItemStack stack = ContainerHelper.removeItem(inventory, index, count);
+		if (!stack.isEmpty())
+			setChanged();
 		return stack;
 	}
 
@@ -57,6 +62,7 @@ public abstract class ItemInventory implements Container, ISlotItemFilter {
 		if (stack.isEmpty())
 			return ItemStack.EMPTY;
 		inventory.set(slot, ItemStack.EMPTY);
+		setChanged();
 		return stack;
 	}
 
@@ -75,7 +81,7 @@ public abstract class ItemInventory implements Container, ISlotItemFilter {
 
 	@Override
 	public void setChanged() {
-		writeToParentNBT();
+		writeToParent();
 	}
 
 	@Override
@@ -91,5 +97,6 @@ public abstract class ItemInventory implements Container, ISlotItemFilter {
 	@Override
 	public void clearContent() {
 		inventory.clear();
+		setChanged();
 	}
 }

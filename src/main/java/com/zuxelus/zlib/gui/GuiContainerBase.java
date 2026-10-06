@@ -7,6 +7,8 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -35,7 +37,6 @@ public class GuiContainerBase<T extends AbstractContainerMenu> extends AbstractC
 		this(container, inv, name, texture, DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT);
 	}
 
-	// the image size is final now and must be known when the label positions are computed
 	public GuiContainerBase(T container, Inventory inv, Component name, Identifier texture, int imageWidth, int imageHeight) {
 		super(container, inv, name, imageWidth, imageHeight);
 		this.texture = texture;
@@ -90,10 +91,21 @@ public class GuiContainerBase<T extends AbstractContainerMenu> extends AbstractC
 		return ((int) (brightnessFactor * (color & MASKR)) & MASKR) | ((int) (brightnessFactor * (color & MASKG)) & MASKG) | ((int) (brightnessFactor * (color & MASKB)) & MASKB);
 	}
 
+	// While a text field is focused, keys like inventory / drop / hotbar must not act on the container screen
+	@Override
+	public boolean keyPressed(KeyEvent event) {
+		if (!event.isEscape() && isInputCaptured()) {
+			GuiEventListener focused = getFocused();
+			if (focused != null)
+				focused.keyPressed(event);
+			return true;
+		}
+		return super.keyPressed(event);
+	}
+
 	protected EditBox addTextFieldWidget(int left, int top, int width, int height, boolean isEnabled, String text) {
 		EditBox textBox = new EditBox(font, leftPos + left, topPos + top, width, height, null, CommonComponents.EMPTY);
 		textBox.setEditable(isEnabled);
-		textBox.setFocused(isEnabled);
 		textBox.setValue(text);
 		addWidget(textBox);
 		setInitialFocus(textBox);

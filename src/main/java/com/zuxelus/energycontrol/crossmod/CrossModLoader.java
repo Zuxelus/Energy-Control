@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.utils.FluidInfo;
+import com.zuxelus.energycontrol.utils.DataHelper;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -69,9 +70,9 @@ public class CrossModLoader {
 		EnergyStorage storage = findEnergyStorage(te);
 		if (storage != null) {
 			CompoundTag tag = new CompoundTag();
-			tag.putString("euType", "E");
-			tag.putDouble("storage", storage.getAmount());
-			tag.putDouble("maxStorage", storage.getCapacity());
+			tag.putString(DataHelper.EUTYPE, "E");
+			tag.putDouble(DataHelper.ENERGY, storage.getAmount());
+			tag.putDouble(DataHelper.CAPACITY, storage.getCapacity());
 			return tag;
 		}
 		return null;

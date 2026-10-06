@@ -5,8 +5,6 @@ import com.zuxelus.energycontrol.tileentities.*;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.Containers;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -46,12 +44,12 @@ public abstract class FacingHorizontal extends BaseEntityBlock {
 			return createTickerHelper(type, type, TileEntityHoloPanel::tickStatic);
 		if (type == ModTileEntityTypes.holo_panel_extender)
 			return createTickerHelper(type, type, TileEntityHoloPanelExtender::tickStatic);
-		if (type == ModTileEntityTypes.remote_thermo)
-			return createTickerHelper(type, type, TileEntityRemoteThermalMonitor::tickStatic);
 		if (type == ModTileEntityTypes.kit_assembler)
 			return createTickerHelper(type, type, TileEntityKitAssembler::tickStatic);
 		if (type == ModTileEntityTypes.range_trigger)
 			return createTickerHelper(type, type, TileEntityRangeTrigger::tickStatic);
+		if (type == ModTileEntityTypes.remote_thermo)
+			return createTickerHelper(type, type, TileEntityRemoteThermalMonitor::tickStatic);
 		return null;
 	}
 
@@ -73,12 +71,6 @@ public abstract class FacingHorizontal extends BaseEntityBlock {
 	@Override
 	public BlockState mirror(BlockState state, Mirror mirror) {
 		return state;
-	}
-
-	// contents are dropped by BlockEntity.preRemoveSideEffects, only the comparators need an update
-	@Override
-	protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel world, BlockPos pos, boolean movedByPiston) {
-		Containers.updateNeighboursAfterDestroy(state, world, pos);
 	}
 
 	@Override

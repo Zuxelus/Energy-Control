@@ -20,7 +20,7 @@ public class BlockLight extends Block {
 	public static final BooleanProperty LIT = BlockStateProperties.LIT;
 
 	public BlockLight() {
-		super(ModItems.emptyBlockSettings().lightLevel(state -> state.getValue(LIT) ? 15 : 0).strength(0.3F).sound(SoundType.GLASS));
+		super(ModItems.emptyBlockSettings().lightLevel(state -> state.getValue(LIT) ? 15 : 0).strength(1.0F, 3.0F).sound(SoundType.GLASS));
 		registerDefaultState(getStateDefinition().any().setValue(LIT, false));
 	}
 

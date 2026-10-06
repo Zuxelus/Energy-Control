@@ -6,11 +6,7 @@ import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -96,40 +92,18 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 	public void onClientMessageReceived(CompoundTag tag) { }
 
 	@Override
-	public Packet<ClientGamePacketListener> getUpdatePacket() {
-		return ClientboundBlockEntityDataPacket.create(this);
-	}
-
-	@Override
-	public void onDataPacket(ClientboundBlockEntityDataPacket pkt) {
-		readProperties(pkt.getTag(), level.registryAccess());
-	}
-
-	@Override
-	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-		CompoundTag tag = writeProperties(registries);
+	protected void writeUpdateData(ValueOutput tag) {
 		tag.putInt("status", status);
 		tag.putBoolean("poweredBlock", poweredBlock);
-		return tag;
 	}
 
 	@Override
 	protected void readProperties(ValueInput tag) {
 		super.readProperties(tag);
-		if (tag.contains("heatLevel"))
-			heatLevel = tag.getIntOr("heatLevel", 0);
-		if (tag.contains("invert"))
-			invertRedstone = tag.getBooleanOr("invert", false);
-		if (tag.contains("status"))
-			setStatus(tag.getIntOr("status", 0));
-		if (tag.contains("poweredBlock"))
-			poweredBlock = tag.getBooleanOr("poweredBlock", false);
-	}
-
-	@Override
-	protected void loadAdditional(ValueInput tag) {
-		super.loadAdditional(tag);
-		readProperties(tag);
+		heatLevel = tag.getIntOr("heatLevel", heatLevel);
+		invertRedstone = tag.getBooleanOr("invert", invertRedstone);
+		tag.getInt("status").ifPresent(this::setStatus);
+		poweredBlock = tag.getBooleanOr("poweredBlock", poweredBlock);
 	}
 
 	@Override
@@ -137,12 +111,6 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 		super.writeProperties(tag);
 		tag.putInt("heatLevel", heatLevel);
 		tag.putBoolean("invert", invertRedstone);
-	}
-
-	@Override
-	protected void saveAdditional(ValueOutput tag) {
-		super.saveAdditional(tag);
-		writeProperties(tag);
 	}
 
 	@Override

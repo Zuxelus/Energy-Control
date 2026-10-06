@@ -24,15 +24,11 @@ import com.zuxelus.zlib.tileentities.TileEntityInventory;
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -243,23 +239,11 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	}
 
 	@Override
-	public Packet<ClientGamePacketListener> getUpdatePacket() {
-		return ClientboundBlockEntityDataPacket.create(this);
-	}
-
-	@Override
-	public void onDataPacket(ClientboundBlockEntityDataPacket pkt) {
-		readProperties(pkt.getTag(), level.registryAccess());
-	}
-
-	@Override
-	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-		CompoundTag tag = writeProperties(registries);
+	protected void writeUpdateData(ValueOutput tag) {
 		calcPowered();
 		tag.putBoolean("powered", powered);
 		colored = isColoredEval();
 		tag.putBoolean("colored", colored);
-		return tag;
 	}
 
 	protected void deserializeDisplaySettings(ValueInput tag) {
@@ -281,31 +265,24 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	@Override
 	protected void readProperties(ValueInput tag) {
 		super.readProperties(tag);
-		if (tag.contains("tickRate"))
-			tickRate = tag.getIntOr("tickRate", 0);
-		if (tag.contains("showLabels"))
-			showLabels = tag.getBooleanOr("showLabels", false);
-
-		if (tag.contains("colorText"))
-			colorText = tag.getIntOr("colorText", 0);
-		if (tag.contains("colorBackground"))
-			colorBackground = tag.getIntOr("colorBackground", 0);
-
-		if (tag.contains("colored"))
-			setColored(tag.getBooleanOr("colored", false));
-
-		if (tag.contains("screenData")) {
+		tickRate = tag.getIntOr("tickRate", tickRate);
+		showLabels = tag.getBooleanOr("showLabels", showLabels);
+		colorText = tag.getIntOr("colorText", colorText);
+		colorBackground = tag.getIntOr("colorBackground", colorBackground);
+		setColored(tag.getBooleanOr("colored", colored));
+		CompoundTag newScreenData = tag.read("screenData", CompoundTag.CODEC).orElse(null);
+		if (newScreenData != null) {
 			if (level != null)
-				setScreenData(tag.read("screenData", CompoundTag.CODEC).orElse(null));
+				setScreenData(newScreenData);
 			else
-				screenData = tag.read("screenData", CompoundTag.CODEC).orElse(null);
+				screenData = newScreenData;
 		} else
 			screenData = null;
 		deserializeDisplaySettings(tag);
-		if (tag.contains("powered") && level.isClientSide()) {
-			boolean newPowered = tag.getBooleanOr("powered", false);
-			if (powered != newPowered) {
-				powered = newPowered; 
+		if (level != null && level.isClientSide()) {
+			boolean newPowered = tag.getBooleanOr("powered", powered);
+			if (newPowered != powered) {
+				powered = newPowered;
 				level.getChunkSource().getLightEngine().checkBlock(worldPosition);
 			}
 		}
@@ -345,12 +322,6 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 		world.sendBlockUpdated(pos, state, state, 8);
 	}
 
-	@Override
-	protected void loadAdditional(ValueInput tag) {
-		super.loadAdditional(tag);
-		readProperties(tag);
-	}
-
 	protected void serializeDisplaySettings(ValueOutput tag) {
 		serializeSlotSettings(tag, "dSettings", SLOT_CARD);
 	}
@@ -377,12 +348,6 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 			screenData = screen.toTag();
 			tag.store("screenData", CompoundTag.CODEC, screenData);
 		}
-	}
-
-	@Override
-	protected void saveAdditional(ValueOutput tag) {
-		super.saveAdditional(tag);
-		writeProperties(tag);
 	}
 
 	@Override

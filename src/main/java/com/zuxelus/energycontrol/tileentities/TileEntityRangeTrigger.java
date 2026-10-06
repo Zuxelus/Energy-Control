@@ -13,15 +13,12 @@ import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.zlib.blocks.FacingHorizontal;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
+import com.zuxelus.energycontrol.utils.DataHelper;
 
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -156,20 +153,8 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements Exten
 	public void onClientMessageReceived(CompoundTag tag) { }
 
 	@Override
-	public Packet<ClientGamePacketListener> getUpdatePacket() {
-		return ClientboundBlockEntityDataPacket.create(this);
-	}
-
-	@Override
-	public void onDataPacket(ClientboundBlockEntityDataPacket pkt) {
-		readProperties(pkt.getTag(), level.registryAccess());
-	}
-
-	@Override
-	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-		CompoundTag tag = writeProperties(registries);
+	protected void writeUpdateData(ValueOutput tag) {
 		tag.putBoolean("poweredBlock", poweredBlock);
-		return tag;
 	}
 
 	@Override
@@ -178,14 +163,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements Exten
 		invertRedstone = tag.getBooleanOr("invert", false);
 		levelStart = tag.getDoubleOr("levelStart", 0.0);
 		levelEnd = tag.getDoubleOr("levelEnd", 0.0);
-		if (tag.contains("poweredBlock"))
-			poweredBlock = tag.getBooleanOr("poweredBlock", false);
-	}
-
-	@Override
-	protected void loadAdditional(ValueInput tag) {
-		super.loadAdditional(tag);
-		readProperties(tag);
+		poweredBlock = tag.getBooleanOr("poweredBlock", poweredBlock);
 	}
 
 	@Override
@@ -194,12 +172,6 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements Exten
 		tag.putBoolean("invert", invertRedstone);
 		tag.putDouble("levelStart", levelStart);
 		tag.putDouble("levelEnd", levelEnd);
-	}
-
-	@Override
-	protected void saveAdditional(ValueOutput tag) {
-		super.saveAdditional(tag);
-		writeProperties(tag);
 	}
 
 	@Override
@@ -216,7 +188,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements Exten
 				ItemCardReader reader = new ItemCardReader(card);
 				CardState state = ((ItemCardMain) item).updateCardNBT(level, worldPosition, reader, getItem(SLOT_UPGRADE));
 				if (state == CardState.OK) {
-					double cur = item instanceof ItemCardEnergy ? reader.getDouble("storage") :  reader.getLong("amount");
+					double cur = item instanceof ItemCardEnergy ? reader.getDouble(DataHelper.ENERGY) : reader.getLong("amount");
 					status = cur > Math.max(levelStart, levelEnd) || cur < Math.min(levelStart, levelEnd) ? STATE_ACTIVE : STATE_PASSIVE;
 				} else
 					status = STATE_UNKNOWN;

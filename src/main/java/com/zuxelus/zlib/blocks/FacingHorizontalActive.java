@@ -7,12 +7,11 @@ import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 public abstract class FacingHorizontalActive extends FacingHorizontal {
+	public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
 	public FacingHorizontalActive(Properties settings) {
 		super(settings);
 	}
-
-	public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
 	@Override
 	protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {

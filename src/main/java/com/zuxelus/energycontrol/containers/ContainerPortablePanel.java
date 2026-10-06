@@ -8,6 +8,7 @@ import com.zuxelus.energycontrol.items.InventoryPortablePanel;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.zlib.containers.ContainerBase;
+import com.zuxelus.zlib.containers.slots.SlotLocked;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
@@ -21,7 +22,7 @@ import net.minecraft.world.item.ItemStack;
 public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel> {
 	private static final String SHOW_BARS = "showBars";
 	private Player player;
-	private static final int OFF_HAND_SLOT = 40; // PlayerInventory.OFF_HAND_SLOT
+	public static final int OFF_HAND_SLOT = 40; // PlayerInventory.OFF_HAND_SLOT
 	private final int panelSlot;
 
 	public ContainerPortablePanel(int windowId, Inventory inventory, InteractionHand hand) {
@@ -40,7 +41,7 @@ public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel
 	protected void addPlayerInventoryTopSlots(Container inventory, int width, int height) {
 		for (int col = 0; col < 9; col++)
 			if (col == panelSlot)
-				addSlot(new LockedSlot(inventory, col, width + col * 18, height - 24));
+				addSlot(new SlotLocked(inventory, col, width + col * 18, height - 24));
 			else
 				addSlot(new Slot(inventory, col, width + col * 18, height - 24));
 	}
@@ -79,21 +80,5 @@ public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel
 
 		ItemCardReader reader = new ItemCardReader(card);
 		((ItemCardMain) item).updateCardNBT(player.level(), player.blockPosition(), reader, te.getItem(InventoryPortablePanel.SLOT_UPGRADE_RANGE));
-	}
-
-	private static class LockedSlot extends Slot {
-		public LockedSlot(Container inventory, int index, int x, int y) {
-			super(inventory, index, x, y);
-		}
-
-		@Override
-		public boolean mayPickup(Player player) {
-			return false;
-		}
-
-		@Override
-		public boolean mayPlace(ItemStack stack) {
-			return false;
-		}
 	}
 }

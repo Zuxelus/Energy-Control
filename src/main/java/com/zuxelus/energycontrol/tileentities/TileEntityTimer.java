@@ -8,12 +8,8 @@ import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -156,46 +152,21 @@ public class TileEntityTimer extends BlockEntityFacing implements ExtendedMenuPr
 	}
 
 	@Override
-	public Packet<ClientGamePacketListener> getUpdatePacket() {
-		return ClientboundBlockEntityDataPacket.create(this);
-	}
-
-	@Override
-	public void onDataPacket(ClientboundBlockEntityDataPacket pkt) {
-		readProperties(pkt.getTag(), level.registryAccess());
-	}
-
-	@Override
-	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-		CompoundTag tag = writeProperties(registries);
+	protected void writeUpdateData(ValueOutput tag) {
 		tag.putBoolean("isTicks", isTicks);
 		tag.putBoolean("poweredBlock", sendSignal);
-		return tag;
 	}
 
 	@Override
 	protected void readProperties(ValueInput tag) {
 		super.readProperties(tag);
-		if (tag.contains("timer"))
-			time = tag.getIntOr("timer", 0);
-		if (tag.contains("startingTime"))
-			startingTime = tag.getIntOr("startingTime", 0);
-		if (tag.contains("invert"))
-			invertRedstone = tag.getBooleanOr("invert", false);
-		if (tag.contains("isWorking"))
-			isWorking = tag.getBooleanOr("isWorking", false);
-		if (tag.contains("isTicks"))
-			isTicks = tag.getBooleanOr("isTicks", false);
-		if (tag.contains("poweredBlock"))
-			sendSignal = tag.getBooleanOr("poweredBlock", false);
-		if (tag.contains("isPowered"))
-			isPowered = tag.getBooleanOr("isPowered", false);
-	}
-
-	@Override
-	protected void loadAdditional(ValueInput tag) {
-		super.loadAdditional(tag);
-		readProperties(tag);
+		time = tag.getIntOr("timer", time);
+		startingTime = tag.getIntOr("startingTime", startingTime);
+		invertRedstone = tag.getBooleanOr("invert", invertRedstone);
+		isWorking = tag.getBooleanOr("isWorking", isWorking);
+		isTicks = tag.getBooleanOr("isTicks", isTicks);
+		sendSignal = tag.getBooleanOr("poweredBlock", sendSignal);
+		isPowered = tag.getBooleanOr("isPowered", isPowered);
 	}
 
 	@Override
@@ -207,12 +178,6 @@ public class TileEntityTimer extends BlockEntityFacing implements ExtendedMenuPr
 		tag.putBoolean("isWorking", isWorking);
 		tag.putBoolean("isTicks", isTicks);
 		tag.putBoolean("isPowered", isPowered);
-	}
-
-	@Override
-	protected void saveAdditional(ValueOutput tag) {
-		super.saveAdditional(tag);
-		writeProperties(tag);
 	}
 
 	@Override

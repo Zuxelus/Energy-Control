@@ -9,6 +9,7 @@ import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.utils.StringUtils;
+import com.zuxelus.energycontrol.utils.DataHelper;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -41,8 +42,8 @@ public class ItemCardEnergyArray extends ItemCardMain {
 				if (te != null) {
 					CompoundTag tag = CrossModLoader.getEnergyData(te);
 					if (tag != null) {
-						double stored = tag.getDoubleOr("storage", 0.0);
-						double capacity = tag.getDoubleOr("maxStorage", 0.0);
+						double stored = tag.getDoubleOr(DataHelper.ENERGY, 0.0);
+						double capacity = tag.getDoubleOr(DataHelper.CAPACITY, 0.0);
 						totalEnergy += stored;
 						reader.setInt(String.format("_%denergy", i), (int) stored);
 						reader.setInt(String.format("_%dmaxStorage", i), (int) capacity);

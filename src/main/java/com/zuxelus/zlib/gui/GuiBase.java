@@ -63,7 +63,6 @@ public abstract class GuiBase extends Screen {
 	protected EditBox addTextFieldWidget(int left, int top, int width, int height, boolean isEnabled, String text) {
 		EditBox textBox = new EditBox(font, guiLeft + left, guiTop + top, width, height, null, CommonComponents.EMPTY);
 		textBox.setEditable(isEnabled);
-		textBox.setFocused(isEnabled);
 		textBox.setValue(text);
 		addWidget(textBox);
 		setInitialFocus(textBox);

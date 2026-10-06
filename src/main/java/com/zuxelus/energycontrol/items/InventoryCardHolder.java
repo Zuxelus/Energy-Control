@@ -6,18 +6,20 @@ import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.zlib.items.ItemInventory;
 
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 
-public class InventoryCardHolder extends ItemInventory implements ExtendedMenuProvider<BlockPos> {
+public class InventoryCardHolder extends ItemInventory implements ExtendedMenuProvider<InteractionHand> {
+	private final InteractionHand hand;
 
-	public InventoryCardHolder(ItemStack parent) {
+	public InventoryCardHolder(ItemStack parent, InteractionHand hand) {
 		super(parent);
+		this.hand = hand;
 	}
 
 	@Override
@@ -38,7 +40,7 @@ public class InventoryCardHolder extends ItemInventory implements ExtendedMenuPr
 	// NamedScreenHandlerFactory
 	@Override
 	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
-		return new ContainerCardHolder(windowId, inventory);
+		return new ContainerCardHolder(windowId, inventory, hand);
 	}
 
 	@Override
@@ -46,9 +48,9 @@ public class InventoryCardHolder extends ItemInventory implements ExtendedMenuPr
 		return Component.translatable(ModItems.card_holder.getDescriptionId());
 	}
 
-	// the screen type is extended; the container needs no extra data
+	// the client needs to know which hand holds the card holder
 	@Override
-	public BlockPos getScreenOpeningData(ServerPlayer player) {
-		return BlockPos.ZERO;
+	public InteractionHand getScreenOpeningData(ServerPlayer player) {
+		return hand;
 	}
 }

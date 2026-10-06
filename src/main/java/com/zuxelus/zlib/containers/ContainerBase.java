@@ -63,7 +63,7 @@ public abstract class ContainerBase<T extends Container> extends AbstractContain
 	@Override
 	public ItemStack quickMoveStack(Player player, int index) {
 		Slot slot = slots.get(index);
-		if (slot == null || !slot.hasItem())
+		if (!slot.hasItem())
 			return ItemStack.EMPTY;
 
 		ItemStack stack = slot.getItem();

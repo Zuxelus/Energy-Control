@@ -10,7 +10,7 @@ import com.zuxelus.energycontrol.recipes.KitAssemblerRecipe;
 import com.zuxelus.energycontrol.recipes.KitAssemblerRecipeType;
 import com.zuxelus.zlib.containers.EnergyStorage;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
-import com.zuxelus.zlib.tileentities.TileEntityItemHandler;
+import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
@@ -19,16 +19,11 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -43,7 +38,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import team.reborn.energy.api.EnergyStorageUtil;
 
-public class TileEntityKitAssembler extends TileEntityItemHandler implements ExtendedMenuProvider<BlockPos>, ITilePacketHandler, ISlotItemFilter, WorldlyContainer {
+public class TileEntityKitAssembler extends TileEntityInventory implements ExtendedMenuProvider<BlockPos>, ITilePacketHandler, ISlotItemFilter {
 	public static final byte SLOT_INFO = 0;
 	public static final byte SLOT_CARD1 = 1;
 	public static final byte SLOT_ITEM = 2;
@@ -155,40 +150,23 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 	}
 
 	@Override
-	public Packet<ClientGamePacketListener> getUpdatePacket() {
-		return ClientboundBlockEntityDataPacket.create(this);
-	}
-
-	@Override
-	public void onDataPacket(ClientboundBlockEntityDataPacket pkt) {
-		readProperties(pkt.getTag(), level.registryAccess());
-	}
-
-	@Override
-	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-		CompoundTag tag = writeProperties(registries);
+	protected void writeUpdateData(ValueOutput tag) {
 		updateActive();
 		tag.putBoolean("active", active);
-		return tag;
 	}
 
 	@Override
 	protected void readProperties(ValueInput tag) {
 		super.readProperties(tag);
-		if (tag.contains("energy"))
-			storage.setEnergy(tag.getLongOr("energy", 0L));
-		if (tag.contains("buffer"))
-			buffer = tag.getIntOr("buffer", 0);
-		if (tag.contains("production"))
-			production = tag.getDoubleOr("production", 0.0);
-		if (tag.contains("active"))
-			active = tag.getBooleanOr("active", false);
+		tag.getLong("energy").ifPresent(storage::setEnergy);
+		buffer = tag.getIntOr("buffer", buffer);
+		production = tag.getDoubleOr("production", production);
+		active = tag.getBooleanOr("active", active);
 	}
 
 	@Override
 	protected void loadAdditional(ValueInput tag) {
 		super.loadAdditional(tag);
-		readProperties(tag);
 		lastEnergy = storage.getAmount();
 	}
 
@@ -198,12 +176,6 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 		tag.putLong("energy", storage.getAmount());
 		tag.putInt("buffer", buffer);
 		tag.putDouble("production", production);
-	}
-
-	@Override
-	protected void saveAdditional(ValueOutput tag) {
-		super.saveAdditional(tag);
-		writeProperties(tag);
 	}
 
 	public static void tickStatic(Level level, BlockPos pos, BlockState state, BlockEntity be) {
