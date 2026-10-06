@@ -2,12 +2,11 @@ package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.blocks.IndustrialAlarm;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
-
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm {
 	private static final int[] lightSteps = { 0, 7, 14, 7, 0 };
@@ -26,7 +25,7 @@ public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm {
 		this(ModTileEntityTypes.industrial_alarm, pos, state);
 	}
 
-	public static void tickStatic(World level, BlockPos pos, BlockState state, BlockEntity be) {
+	public static void tickStatic(Level level, BlockPos pos, BlockState state, BlockEntity be) {
 		if (!(be instanceof TileEntityIndustrialAlarm))
 			return;
 		TileEntityIndustrialAlarm te = (TileEntityIndustrialAlarm) be;
@@ -34,7 +33,7 @@ public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm {
 	}
 
 	protected void tick() {
-		if (world.isClient) {
+		if (level.isClientSide()) {
 			super.checkStatus();
 			if (updateLightTicker-- <= 0) {
 				updateLightTicker = tickRate / 20;
@@ -46,7 +45,7 @@ public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm {
 	@Override
 	protected void checkStatus() {
 		int light = lightLevel;
-		BlockState state = world.getBlockState(pos);
+		BlockState state = level.getBlockState(worldPosition);
 		if (!powered) {
 			lightLevel = 0;
 			internalFire = 0;
@@ -58,8 +57,8 @@ public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm {
 		}
 		
 		if (lightLevel != light) {
-			world.setBlockState(pos, state.cycle(IndustrialAlarm.LIGHT), 3);
-			world.getChunkManager().getLightingProvider().checkBlock(pos);
+			level.setBlock(worldPosition, state.cycle(IndustrialAlarm.LIGHT), 3);
+			level.getChunkSource().getLightEngine().checkBlock(worldPosition);
 		}
 	}
 }

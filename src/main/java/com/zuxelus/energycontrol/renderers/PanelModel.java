@@ -1,11 +1,7 @@
 package com.zuxelus.energycontrol.renderers;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import net.minecraft.util.math.random.Random;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.Predicate;
 
 import com.zuxelus.energycontrol.tileentities.PanelRenderData;
 import com.zuxelus.zlib.blocks.FacingBlock;
@@ -13,57 +9,55 @@ import com.zuxelus.zlib.blocks.FacingBlockActive;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
-import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.util.TriState;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.ModelBakeSettings;
-import net.minecraft.client.render.model.Baker;
-import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.PlayerScreenHandler;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.block.state.BlockState;
 
+// since 1.21.5 block models are BlockStateModels; the panel is emitted through FabricBlockStateModel.emitQuads
 @Environment(EnvType.CLIENT)
-public class PanelModel implements UnbakedModel {
+public class PanelModel implements BlockStateModel.UnbakedRoot {
 	private static final float TEX_SIZE = 128.0F;
 	private static final RotationOffset FULL = new RotationOffset();
 
-	private final SpriteIdentifier body;
-	private final SpriteIdentifier screen;
-	private final SpriteIdentifier particle;
+	private final Material body;
+	private final Material screen;
+	private final Material particle;
 	private final int defaultColor;
 
 	public PanelModel(Identifier body, Identifier screen, Identifier particle, int defaultColor) {
-		this.body = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, body);
-		this.screen = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, screen);
-		this.particle = new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, particle);
+		this.body = new Material(body);
+		this.screen = new Material(screen);
+		this.particle = new Material(particle);
 		this.defaultColor = defaultColor;
 	}
 
 	@Override
-	public Collection<Identifier> getModelDependencies() {
-		return Collections.emptyList();
+	public void resolveDependencies(Resolver resolver) { }
+
+	@Override
+	public BlockStateModel bake(BlockState state, ModelBaker baker) {
+		return new Baked(baker.materials().get(body, this::debugName).sprite(), baker.materials().get(screen, this::debugName).sprite(),
+				baker.materials().get(particle, this::debugName), defaultColor);
 	}
 
+	// all states share one baked model, the facing is applied while emitting
 	@Override
-	public void setParents(Function<Identifier, UnbakedModel> modelLoader) { }
+	public Object visualEqualityGroup(BlockState state) {
+		return this;
+	}
 
-	@Override
-	public BakedModel bake(Baker baker, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer) {
-		return new Baked(textureGetter.apply(body), textureGetter.apply(screen), textureGetter.apply(particle), defaultColor);
+	private String debugName() {
+		return "energycontrol:panel/" + body.sprite();
 	}
 
 	// an unpowered screen is drawn at 60% brightness
@@ -76,58 +70,57 @@ public class PanelModel implements UnbakedModel {
 		return 0xFF000000 | r << 16 | g << 8 | b;
 	}
 
-	private static class Baked implements BakedModel {
+	private static class Baked implements BlockStateModel {
 		private static final Direction[] SIDES = { Direction.EAST, Direction.WEST, Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH };
 		private static final int FACE = 3;
 		private static final Direction[] BODY_SIDES = { Direction.EAST, Direction.WEST, Direction.DOWN, Direction.UP, Direction.SOUTH };
 		private static final float[][] BODY_UV = buildBodyUv();
 
-		private final Sprite body;
-		private final Sprite screen;
-		private final Sprite particle;
+		private final TextureAtlasSprite body;
+		private final TextureAtlasSprite screen;
+		private final Material.Baked particle;
 		private final int defaultColor;
-		// a powered screen glows like a display: full brightness, no ambient occlusion (null = default material)
-		private final RenderMaterial glowing;
 
-		Baked(Sprite body, Sprite screen, Sprite particle, int defaultColor) {
+		Baked(TextureAtlasSprite body, TextureAtlasSprite screen, Material.Baked particle, int defaultColor) {
 			this.body = body;
 			this.screen = screen;
 			this.particle = particle;
 			this.defaultColor = defaultColor;
-			Renderer renderer = RendererAccess.INSTANCE.getRenderer();
-			glowing = renderer == null ? null : renderer.materialFinder().emissive(true).ambientOcclusion(TriState.FALSE).find();
 		}
 
 		@Override
-		public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+		public void emitQuads(QuadEmitter emitter, BlockAndTintGetter blockView, BlockPos pos, BlockState state, RandomSource random, Predicate<Direction> cullTest) {
 			PanelRenderData data = blockView.getBlockEntityRenderData(pos) instanceof PanelRenderData d ? d : null;
 			if (data == null)
-				data = new PanelRenderData(15, defaultColor, state.get(FacingBlockActive.ACTIVE), null);
+				data = new PanelRenderData(15, defaultColor, state.getValue(FacingBlockActive.ACTIVE), null);
 
-			Direction facing = state.get(FacingBlock.FACING);
+			Direction facing = state.getValue(FacingBlock.FACING);
 			float[][][] box = buildBox(data.offset() == null ? FULL : data.offset());
 			int faceColor = getFaceColor(data.color(), data.powered());
-			QuadEmitter emitter = context.getEmitter();
 			for (int n = 0; n < box.length; n++) {
 				if (n == FACE)
-					emitQuad(emitter, box[n], screenUv(data.textureId()), screen, facing, rotate(SIDES[n], facing), faceColor, data.powered() ? glowing : null);
+					emitQuad(emitter, cullTest, box[n], screenUv(data.textureId()), screen, facing, rotate(SIDES[n], facing), faceColor, data.powered());
 				else
-					emitQuad(emitter, box[n], bodyUv(box[n], SIDES[n]), body, facing, rotate(SIDES[n], facing), -1, null);
+					emitQuad(emitter, cullTest, box[n], bodyUv(box[n], SIDES[n]), body, facing, rotate(SIDES[n], facing), -1, false);
 			}
 		}
 
-		private void emitQuad(QuadEmitter emitter, float[][] quad, float[][] uv, Sprite sprite, Direction facing, Direction side, int color, RenderMaterial material) {
-			emitter.material(material);
+		// a powered screen glows like a display: full brightness, no ambient occlusion
+		private void emitQuad(QuadEmitter emitter, Predicate<Direction> cullTest, float[][] quad, float[][] uv, TextureAtlasSprite sprite, Direction facing, Direction side, int color, boolean glowing) {
 			boolean flush = true;
 			for (int i = 0; i < 4; i++) {
 				float[] p = transform(quad[i][0], quad[i][1], quad[i][2], facing);
 				emitter.pos(i, p[0], p[1], p[2]);
-				emitter.uv(i, sprite.getFrameU(uv[i][0]), sprite.getFrameV(uv[i][1]));
+				emitter.uv(i, sprite.getU(uv[i][0]), sprite.getV(uv[i][1]));
 				emitter.color(i, color);
 				float coord = p[side.getAxis().ordinal()];
-				if (coord != (side.getDirection() == Direction.AxisDirection.POSITIVE ? 1.0F : 0.0F))
+				if (coord != (side.getAxisDirection() == Direction.AxisDirection.POSITIVE ? 1.0F : 0.0F))
 					flush = false;
 			}
+			if (flush && cullTest.test(side))
+				return;
+			emitter.emissive(glowing);
+			emitter.ambientOcclusion(glowing ? TriState.FALSE : TriState.DEFAULT);
 			emitter.nominalFace(side);
 			emitter.cullFace(flush ? side : null);
 			emitter.emit();
@@ -240,57 +233,24 @@ public class PanelModel implements UnbakedModel {
 		}
 
 		private static Direction rotate(Direction side, Direction facing) {
-			float[] p = transform(side.getOffsetX(), side.getOffsetY(), side.getOffsetZ(), facing);
+			float[] p = transform(side.getStepX(), side.getStepY(), side.getStepZ(), facing);
 			float[] o = transform(0, 0, 0, facing);
-			return Direction.getFacing(p[0] - o[0], p[1] - o[1], p[2] - o[2]);
+			return Direction.getApproximateNearest(p[0] - o[0], p[1] - o[1], p[2] - o[2]);
 		}
 
+		// everything is emitted by emitQuads
 		@Override
-		public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) { }
+		public void collectParts(RandomSource random, List<BlockStateModelPart> output) { }
 
 		@Override
-		public boolean isVanillaAdapter() {
-			return false;
-		}
-
-		@Override
-		public List<BakedQuad> getQuads(BlockState state, Direction face, Random random) {
-			return Collections.emptyList();
-		}
-
-		@Override
-		public boolean useAmbientOcclusion() {
-			return true;
-		}
-
-		@Override
-		public boolean hasDepth() {
-			return false;
-		}
-
-		@Override
-		public boolean isSideLit() {
-			return true;
-		}
-
-		@Override
-		public boolean isBuiltin() {
-			return false;
-		}
-
-		@Override
-		public Sprite getParticleSprite() {
+		public Material.Baked particleMaterial() {
 			return particle;
 		}
 
+		// no tinted or translucent quads
 		@Override
-		public ModelTransformation getTransformation() {
-			return ModelTransformation.NONE;
-		}
-
-		@Override
-		public ModelOverrideList getOverrides() {
-			return ModelOverrideList.EMPTY;
+		public int materialFlags() {
+			return 0;
 		}
 	}
 }

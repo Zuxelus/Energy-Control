@@ -2,11 +2,10 @@ package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.renderers.RotationOffset;
-
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityAdvancedInfoPanelExtender extends TileEntityInfoPanelExtender {
 
@@ -25,13 +24,13 @@ public class TileEntityAdvancedInfoPanelExtender extends TileEntityInfoPanelExte
 
 	@Override
 	protected RotationOffset getRenderOffset() {
-		return TileEntityAdvancedInfoPanel.getRenderOffset(getThickness(), getRotateHor(), getRotateVert(), screen, getPos(), getFacing(), getRotation());
+		return TileEntityAdvancedInfoPanel.getRenderOffset(getThickness(), getRotateHor(), getRotateVert(), screen, getBlockPos(), getFacing(), getRotation());
 	}
 
 	public byte getThickness() {
 		if (screen == null)
 			return 16;
-		TileEntityInfoPanel core = screen.getCore(world);
+		TileEntityInfoPanel core = screen.getCore(level);
 		if (core == null || !(core instanceof TileEntityAdvancedInfoPanel))
 			return 16;
 		return ((TileEntityAdvancedInfoPanel) core).thickness;
@@ -40,7 +39,7 @@ public class TileEntityAdvancedInfoPanelExtender extends TileEntityInfoPanelExte
 	public byte getRotateHor() {
 		if (screen == null)
 			return 0;
-		TileEntityInfoPanel core = screen.getCore(world);
+		TileEntityInfoPanel core = screen.getCore(level);
 		if (core == null || !(core instanceof TileEntityAdvancedInfoPanel))
 			return 0;
 		return ((TileEntityAdvancedInfoPanel) core).rotateHor;
@@ -49,7 +48,7 @@ public class TileEntityAdvancedInfoPanelExtender extends TileEntityInfoPanelExte
 	public byte getRotateVert() {
 		if (screen == null)
 			return 0;
-		TileEntityInfoPanel core = screen.getCore(world);
+		TileEntityInfoPanel core = screen.getCore(level);
 		if (core == null || !(core instanceof TileEntityAdvancedInfoPanel))
 			return 0;
 		return ((TileEntityAdvancedInfoPanel) core).rotateVert;
@@ -59,7 +58,7 @@ public class TileEntityAdvancedInfoPanelExtender extends TileEntityInfoPanelExte
 	public Direction getRotation() {
 		if (screen == null)
 			return Direction.NORTH;
-		TileEntityInfoPanel core = screen.getCore(world);
+		TileEntityInfoPanel core = screen.getCore(level);
 		if (core == null || !(core instanceof TileEntityAdvancedInfoPanel))
 			return Direction.NORTH;
 		return ((TileEntityAdvancedInfoPanel) core).getRotation();

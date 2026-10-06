@@ -6,12 +6,8 @@
 		" S#"
 	],
 	"key": {
-		"#": {
-			"item": "minecraft:cactus"
-		},
-		"S": {
-			"item": "minecraft:sugar_cane"
-		}
+		"#": "minecraft:cactus",
+		"S": "minecraft:sugar_cane"
 	},
 	"result": {
 		"id": "energycontrol:strong_string",

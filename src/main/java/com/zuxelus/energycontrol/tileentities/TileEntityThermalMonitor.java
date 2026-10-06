@@ -5,19 +5,20 @@ import com.zuxelus.energycontrol.blocks.ThermalMonitor;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class TileEntityThermalMonitor extends TileEntityInventory implements ITilePacketHandler {
 	private int heatLevel;
@@ -48,7 +49,7 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 	public void setHeatLevel(int value) {
 		int old = heatLevel;
 		heatLevel = value;
-		if (!world.isClient && heatLevel != old)
+		if (!level.isClientSide() && heatLevel != old)
 			notifyBlockUpdate();
 	}
 
@@ -59,7 +60,7 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 	public void setInvertRedstone(boolean value) {
 		boolean old = invertRedstone;
 		invertRedstone = value;
-		if (!world.isClient && invertRedstone != old)
+		if (!level.isClientSide() && invertRedstone != old)
 			notifyBlockUpdate();
 	}
 
@@ -76,85 +77,83 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 	}
 
 	@Override
-	public void onServerMessageReceived(NbtCompound tag) {
+	public void onServerMessageReceived(CompoundTag tag) {
 		if (!tag.contains("type"))
 			return;
-		switch (tag.getInt("type")) {
+		switch (tag.getIntOr("type", 0)) {
 		case 1:
 			if (tag.contains("value"))
-				setHeatLevel(tag.getInt("value"));
+				setHeatLevel(tag.getIntOr("value", 0));
 			break;
 		case 2:
 			if (tag.contains("value"))
-				setInvertRedstone(tag.getInt("value") == 1);
+				setInvertRedstone(tag.getIntOr("value", 0) == 1);
 			break;
 		}
 	}
 
 	@Override
-	public void onClientMessageReceived(NbtCompound tag) { }
+	public void onClientMessageReceived(CompoundTag tag) { }
 
 	@Override
-	public Packet<ClientPlayPacketListener> toUpdatePacket() {
-		return BlockEntityUpdateS2CPacket.create(this);
+	public Packet<ClientGamePacketListener> getUpdatePacket() {
+		return ClientboundBlockEntityDataPacket.create(this);
 	}
 
 	@Override
-	public void onDataPacket(BlockEntityUpdateS2CPacket pkt) {
-		readProperties(pkt.getNbt(), world.getRegistryManager());
+	public void onDataPacket(ClientboundBlockEntityDataPacket pkt) {
+		readProperties(pkt.getTag(), level.registryAccess());
 	}
 
 	@Override
-	public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registries) {
-		NbtCompound tag = super.toInitialChunkDataNbt(registries);
-		tag = writeProperties(tag, registries);
+	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+		CompoundTag tag = writeProperties(registries);
 		tag.putInt("status", status);
 		tag.putBoolean("poweredBlock", poweredBlock);
 		return tag;
 	}
 
 	@Override
-	protected void readProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
-		super.readProperties(tag, registries);
+	protected void readProperties(ValueInput tag) {
+		super.readProperties(tag);
 		if (tag.contains("heatLevel"))
-			heatLevel = tag.getInt("heatLevel");
+			heatLevel = tag.getIntOr("heatLevel", 0);
 		if (tag.contains("invert"))
-			invertRedstone = tag.getBoolean("invert");
+			invertRedstone = tag.getBooleanOr("invert", false);
 		if (tag.contains("status"))
-			setStatus(tag.getInt("status"));
+			setStatus(tag.getIntOr("status", 0));
 		if (tag.contains("poweredBlock"))
-			poweredBlock = tag.getBoolean("poweredBlock");
+			poweredBlock = tag.getBooleanOr("poweredBlock", false);
 	}
 
 	@Override
-	protected void readNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
-		super.readNbt(tag, registries);
-		readProperties(tag, registries);
+	protected void loadAdditional(ValueInput tag) {
+		super.loadAdditional(tag);
+		readProperties(tag);
 	}
 
 	@Override
-	protected NbtCompound writeProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
-		tag = super.writeProperties(tag, registries);
+	protected void writeProperties(ValueOutput tag) {
+		super.writeProperties(tag);
 		tag.putInt("heatLevel", heatLevel);
 		tag.putBoolean("invert", invertRedstone);
-		return tag;
 	}
 
 	@Override
-	protected void writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
-		super.writeNbt(tag, registries);
-		writeProperties(tag, registries);
+	protected void saveAdditional(ValueOutput tag) {
+		super.saveAdditional(tag);
+		writeProperties(tag);
 	}
 
 	@Override
-	public void markRemoved() {
+	public void setRemoved() {
 		// also called while the chunk unloads; touching the world then loads the chunk again and never finishes unloading
-		if (Screen.isLoaded(world, pos))
-			world.updateNeighborsAlways(pos, world.getBlockState(pos).getBlock());
-		super.markRemoved();
+		if (Screen.isLoaded(level, worldPosition))
+			level.updateNeighborsAt(worldPosition, level.getBlockState(worldPosition).getBlock());
+		super.setRemoved();
 	}
 
-	public static void tickStatic(World level, BlockPos pos, BlockState state, BlockEntity be) {
+	public static void tickStatic(Level level, BlockPos pos, BlockState state, BlockEntity be) {
 		if (!(be instanceof TileEntityThermalMonitor))
 			return;
 		TileEntityThermalMonitor te = (TileEntityThermalMonitor) be;
@@ -162,7 +161,7 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 	}
 
 	protected void tick() {
-		if (world.isClient)
+		if (level.isClientSide())
 			return;
 	
 		if (updateTicker-- > 0)
@@ -172,27 +171,27 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 	}
 
 	protected void checkStatus() {
-		int heat = CrossModLoader.getReactorHeat(world, pos);
+		int heat = CrossModLoader.getReactorHeat(level, worldPosition);
 		int newStatus = heat == -1 ? -2 : heat >= heatLevel ? 1 : 0;
 
 		if (newStatus != status) {
 			status = newStatus;
 			notifyBlockUpdate();
-			world.updateNeighborsAlways(pos, world.getBlockState(pos).getBlock());
+			level.updateNeighborsAt(worldPosition, level.getBlockState(worldPosition).getBlock());
 		}
 	}
 
 	@Override
 	protected void notifyBlockUpdate() {
-		BlockState state = world.getBlockState(pos);
+		BlockState state = level.getBlockState(worldPosition);
 		Block block = state.getBlock();
 		if (block instanceof ThermalMonitor || block instanceof RemoteThermalMonitor) {
 			boolean newValue = status < 0 ? false : status == 1 ? !invertRedstone : invertRedstone;
 			if (poweredBlock != newValue) {
 				poweredBlock = newValue;
-				world.updateNeighborsAlways(pos, block);
+				level.updateNeighborsAt(worldPosition, block);
 			}
-			world.updateListeners(pos, state, state, 2);
+			level.sendBlockUpdated(worldPosition, state, state, 2);
 		}
 	}
 
@@ -203,12 +202,12 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 
 	// ------- Inventory ------- 
 	@Override
-	public int size() {
+	public int getContainerSize() {
 		return 0;
 	}
 
 	@Override
-	public boolean isValid(int index, ItemStack stack) {
+	public boolean canPlaceItem(int index, ItemStack stack) {
 		return false;
 	}
 }

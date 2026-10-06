@@ -1,11 +1,14 @@
 package com.zuxelus.energycontrol.renderers;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.ColorHelper;
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.util.ARGB;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -31,8 +34,8 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 	}
 
 	@Environment(EnvType.CLIENT)
-	public void render(MatrixStack matrixStack, VertexConsumer buffer, int[] light, int combinedOverlay) {
-		cube.render(matrixStack, buffer, light, combinedOverlay);
+	public void render(PoseStack matrixStack, SubmitNodeCollector collector, RenderType renderType, int[] light) {
+		cube.render(matrixStack, collector, renderType, light);
 	}
 
 	@Environment(EnvType.CLIENT)
@@ -69,7 +72,7 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 			positionsIn[1] = positionsIn[1].setTextureUV(u1 / texWidth + f, v1 / texHeight + f1);
 			positionsIn[2] = positionsIn[2].setTextureUV(u1 / texWidth + f, v2 / texHeight - f1);
 			positionsIn[3] = positionsIn[3].setTextureUV(u2 / texWidth - f, v2 / texHeight - f1);
-			this.normal = direction.getUnitVector();
+			this.normal = direction.step();
 		}
 	}
 
@@ -98,15 +101,15 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 			quads[5] = new TexturedQuad(new PositionTextureVertex[] { vertex5, vertex6, vertex7, vertex8 }, dz + dx + dz, dz, dz + dx + dz + dx, dz + dy, texWidth, texHeight, Direction.SOUTH);
 		}
 
-		public void render(MatrixStack matrixStack, VertexConsumer buffer, int[] light, int combinedOverlay) {
+		public void render(PoseStack matrixStack, SubmitNodeCollector collector, RenderType renderType, int[] light) {
 			matrixStack.scale(0.5F, 0.5F, 0.5F);
-			render(matrixStack.peek(), buffer, light, combinedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
+			collector.submitCustomGeometry(matrixStack, renderType, (pose, buffer) -> render(pose, buffer, light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F));
 			matrixStack.scale(2.0F, 2.0F, 2.0F);
 		}
 
-		public void render(MatrixStack.Entry matrixEntry, VertexConsumer buffer, int[] light, int combinedOverlay, float red, float green, float blue, float alpha) {
-			Matrix4f matrix4f = matrixEntry.getPositionMatrix();
-			Matrix3f matrix3f = matrixEntry.getNormalMatrix();
+		public void render(PoseStack.Pose matrixEntry, VertexConsumer buffer, int[] light, int combinedOverlay, float red, float green, float blue, float alpha) {
+			Matrix4f matrix4f = matrixEntry.pose();
+			Matrix3f matrix3f = matrixEntry.normal();
 
 			for (int n = 0; n < quads.length; ++n) {
 				TexturedQuad quad = quads[n];
@@ -119,7 +122,7 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 					PositionTextureVertex vertex = quad.vertexPositions[i];
 					Vector4f vector4f = new Vector4f(vertex.position.x() / 16.0F, vertex.position.y() / 16.0F, vertex.position.z() / 16.0F, 1.0F);
 					matrix4f.transform(vector4f);
-					buffer.vertex(vector4f.x(), vector4f.y(), vector4f.z(), ColorHelper.Argb.fromFloats(alpha, red, green, blue), vertex.textureU, vertex.textureV, combinedOverlay, light[n], f, g, h);
+					buffer.addVertex(vector4f.x(), vector4f.y(), vector4f.z(), ARGB.colorFromFloat(alpha, red, green, blue), vertex.textureU, vertex.textureV, combinedOverlay, light[n], f, g, h);
 				}
 			}
 		}

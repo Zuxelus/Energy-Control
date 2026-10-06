@@ -1,22 +1,14 @@
 {
 	"type": "minecraft:crafting_shaped",
 	"pattern": [
-        "CF",
-        "PB"
-    ],
-    "key": {
-        "P": {
-            "item": "minecraft:paper"
-        },
-        "C": {
-            "item": "minecraft:bucket"
-        },
-        "F": {
-            "item": "energycontrol:radio_transmitter"
-        },
-        "B": {
-			"tag": "c:dyes/blue"
-        }
+		"CF",
+		"PB"
+	],
+	"key": {
+		"P": "minecraft:paper",
+		"C": "minecraft:bucket",
+		"F": "energycontrol:radio_transmitter",
+		"B": "#c:dyes/blue"
 	},
 	"result": {
 		"id": "energycontrol:kit_liquid"

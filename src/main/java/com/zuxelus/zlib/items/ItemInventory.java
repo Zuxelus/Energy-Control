@@ -1,23 +1,22 @@
 package com.zuxelus.zlib.items;
 
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.Container;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.ContainerComponent;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventories;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.collection.DefaultedList;
-
-public abstract class ItemInventory implements Inventory, ISlotItemFilter {
+public abstract class ItemInventory implements Container, ISlotItemFilter {
 
 	private final ItemStack parent;
-	protected DefaultedList<ItemStack> inventory;
+	protected NonNullList<ItemStack> inventory;
 
 	public ItemInventory(ItemStack parent) {
 		this.parent = parent;
-		inventory = DefaultedList.ofSize(size(), ItemStack.EMPTY);
+		inventory = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
 		readFromParentNBT();
 	}
 
@@ -26,11 +25,11 @@ public abstract class ItemInventory implements Inventory, ISlotItemFilter {
 	}
 
 	private void readFromParentNBT() {
-		parent.getOrDefault(DataComponentTypes.CONTAINER, ContainerComponent.DEFAULT).copyTo(inventory);
+		parent.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY).copyInto(inventory);
 	}
 
 	private void writeToParentNBT() {
-		parent.set(DataComponentTypes.CONTAINER, ContainerComponent.fromStacks(inventory));
+		parent.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(inventory));
 	}
 
 	@Override
@@ -42,19 +41,19 @@ public abstract class ItemInventory implements Inventory, ISlotItemFilter {
 	}
 
 	@Override
-	public ItemStack getStack(int slot) {
-		return slot >= 0 && slot < size() ? inventory.get(slot) : ItemStack.EMPTY;
+	public ItemStack getItem(int slot) {
+		return slot >= 0 && slot < getContainerSize() ? inventory.get(slot) : ItemStack.EMPTY;
 	}
 
 	@Override
-	public ItemStack removeStack(int index, int count) {
-		ItemStack stack = Inventories.splitStack(inventory, index, count);
+	public ItemStack removeItem(int index, int count) {
+		ItemStack stack = ContainerHelper.removeItem(inventory, index, count);
 		return stack;
 	}
 
 	@Override
-	public ItemStack removeStack(int slot) {
-		ItemStack stack = getStack(slot);
+	public ItemStack removeItemNoUpdate(int slot) {
+		ItemStack stack = getItem(slot);
 		if (stack.isEmpty())
 			return ItemStack.EMPTY;
 		inventory.set(slot, ItemStack.EMPTY);
@@ -62,35 +61,35 @@ public abstract class ItemInventory implements Inventory, ISlotItemFilter {
 	}
 
 	@Override
-	public void setStack(int slot, ItemStack stack) {
+	public void setItem(int slot, ItemStack stack) {
 		inventory.set(slot, stack);
-		if (!stack.isEmpty() && stack.getCount() > getMaxCountPerStack())
-			stack.setCount(getMaxCountPerStack());
-		markDirty();
+		if (!stack.isEmpty() && stack.getCount() > getMaxStackSize())
+			stack.setCount(getMaxStackSize());
+		setChanged();
 	}
 
 	@Override
-	public int getMaxCountPerStack() {
+	public int getMaxStackSize() {
 		return 64;
 	}
 
 	@Override
-	public void markDirty() {
+	public void setChanged() {
 		writeToParentNBT();
 	}
 
 	@Override
-	public boolean canPlayerUse(PlayerEntity player) {
+	public boolean stillValid(Player player) {
 		return true;
 	}
 
 	@Override
-	public boolean isValid(int index, ItemStack stack) {
+	public boolean canPlaceItem(int index, ItemStack stack) {
 		return isItemValid(index, stack);
 	}
 
 	@Override
-	public void clear() {
+	public void clearContent() {
 		inventory.clear();
 	}
 }

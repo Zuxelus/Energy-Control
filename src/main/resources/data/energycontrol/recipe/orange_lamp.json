@@ -1,22 +1,16 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-        "GGG",
-        "GWG",
-        "GLG"
-    ],
-    "key": {
-        "G": {
-            "tag": "c:glass_panes"
-        },
-        "W": {
-			"tag": "c:dyes/orange"
-        },
-        "L": {
-            "item": "minecraft:redstone_lamp"
-        }
-    },
-    "result": {
-        "id": "energycontrol:orange_lamp"
-    }
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"GGG",
+		"GWG",
+		"GLG"
+	],
+	"key": {
+		"G": "#c:glass_panes",
+		"W": "#c:dyes/orange",
+		"L": "minecraft:redstone_lamp"
+	},
+	"result": {
+		"id": "energycontrol:orange_lamp"
+	}
 }

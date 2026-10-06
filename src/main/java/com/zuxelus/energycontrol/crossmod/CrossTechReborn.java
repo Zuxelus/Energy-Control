@@ -7,8 +7,8 @@ import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import reborncore.common.powerSystem.PowerAcceptorBlockEntity;
 import reborncore.common.powerSystem.PowerSystem;
 import techreborn.blockentity.generator.BaseFluidGeneratorBlockEntity;
@@ -17,9 +17,9 @@ import techreborn.blockentity.storage.fluid.TankUnitBaseBlockEntity;
 public class CrossTechReborn extends CrossModBase {
 
 	@Override
-	public NbtCompound getEnergyData(BlockEntity te) {
+	public CompoundTag getEnergyData(BlockEntity te) {
 		if (te instanceof PowerAcceptorBlockEntity) {
-			NbtCompound tag = new NbtCompound();
+			CompoundTag tag = new CompoundTag();
 			PowerAcceptorBlockEntity storage = (PowerAcceptorBlockEntity) te;
 			tag.putInt("type", 12);
 			// RebornCore has a single energy unit since 1.20

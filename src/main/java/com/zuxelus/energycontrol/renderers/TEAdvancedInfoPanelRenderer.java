@@ -1,22 +1,24 @@
 package com.zuxelus.energycontrol.renderers;
 
 import java.util.List;
-
+import net.minecraft.util.LightCoordsUtil;
+import org.jspecify.annotations.Nullable;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
+import net.minecraft.core.BlockPos;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory.Context;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RotationAxis;
-
-public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEntityAdvancedInfoPanel> {
-	private final TextRenderer font;
+public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEntityAdvancedInfoPanel, BlockEntityFacingRenderState<TileEntityAdvancedInfoPanel>> {
+	private final Font font;
 
 	private static String implodeArray(String[] inputArray, String glueString) {
 		String output = "";
@@ -36,37 +38,50 @@ public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 	}
 
 	public TEAdvancedInfoPanelRenderer(Context ctx) {
-		font = ctx.getTextRenderer();
+		font = ctx.font();
 	}
 
 	@Override
+	public BlockEntityFacingRenderState<TileEntityAdvancedInfoPanel> createRenderState() {
+		return new BlockEntityFacingRenderState<>();
+	}
+
+	@Override
+	public void extractRenderState(TileEntityAdvancedInfoPanel te, BlockEntityFacingRenderState<TileEntityAdvancedInfoPanel> state, float partialTicks, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
+		BlockEntityRenderer.super.extractRenderState(te, state, partialTicks, cameraPosition, breakProgress);
+		state.te = te;
+	}
+
 	// the panel body is a baked model (PanelModel), only the text is drawn here
-	public void render(TileEntityAdvancedInfoPanel te, float partialTicks, MatrixStack matrixStack, VertexConsumerProvider buffer, int combinedLight, int combinedOverlay) {
+	@Override
+	public void submit(BlockEntityFacingRenderState<TileEntityAdvancedInfoPanel> state, PoseStack matrixStack, SubmitNodeCollector collector, CameraRenderState camera) {
+		TileEntityAdvancedInfoPanel te = state.te;
+		int combinedLight = state.lightCoords;
 		Screen screen = te.getScreen();
 		if (!te.powered || screen == null)
 			return;
-		matrixStack.push();
+		matrixStack.pushPose();
 		switch (te.getFacing()) {
 		case UP:
 			break;
 		case NORTH:
-			matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-90));
+			matrixStack.rotate(Axis.XP.rotationDegrees(-90));
 			matrixStack.translate(0.0F, -1.0F, 0.0F);
 			break;
 		case SOUTH:
-			matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90));
+			matrixStack.rotate(Axis.XP.rotationDegrees(90));
 			matrixStack.translate(0.0F, 0.0F, -1.0F);
 			break;
 		case DOWN:
-			matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180));
+			matrixStack.rotate(Axis.XP.rotationDegrees(180));
 			matrixStack.translate(0.0F, -1.0F, -1.0F);
 			break;
 		case WEST:
-			matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(90));
+			matrixStack.rotate(Axis.ZP.rotationDegrees(90));
 			matrixStack.translate(0.0F, -1.0F, 0.0F);
 			break;
 		case EAST:
-			matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(-90));
+			matrixStack.rotate(Axis.ZP.rotationDegrees(-90));
 			matrixStack.translate(-1.0F, 0.0F, 0.0F);
 			break;
 		}
@@ -77,13 +92,13 @@ public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 		RotationOffset offset = new RotationOffset(thickness * 2, te.rotateHor / 7, te.rotateVert / 7);
 		List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
 		if (joinedData != null)
-			drawText(te, joinedData, matrixStack, buffer, combinedLight, thickness, offset);
-		matrixStack.pop();
+			drawText(te, joinedData, matrixStack, collector, combinedLight, thickness, offset);
+		matrixStack.popPose();
 	}
 
-	private void drawText(TileEntityAdvancedInfoPanel panel, List<PanelString> joinedData, MatrixStack matrixStack, VertexConsumerProvider buffer, int combinedLight, byte thickness, RotationOffset offset) {
+	private void drawText(TileEntityAdvancedInfoPanel panel, List<PanelString> joinedData, PoseStack matrixStack, SubmitNodeCollector collector, int combinedLight, byte thickness, RotationOffset offset) {
 		Screen screen = panel.getScreen();
-		BlockPos pos = panel.getPos();
+		BlockPos pos = panel.getBlockPos();
 		float displayWidth = 1.0F;
 		float displayHeight = 1.0F;
 		float dx = 0; float dz = 0;
@@ -178,13 +193,13 @@ public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 			}
 		}
 
-		matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-90));
+		matrixStack.rotate(Axis.XP.rotationDegrees(-90));
 		switch(panel.getRotation())
 		{
 		case UP:
 			break;
 		case NORTH:
-			matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180));
+			matrixStack.rotate(Axis.ZP.rotationDegrees(180));
 			matrixStack.translate(dx - 1.0F, dz, 0.0F);
 			break;
 		case SOUTH:
@@ -193,11 +208,11 @@ public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 		case DOWN:
 			break;
 		case WEST:
-			matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(-90));
+			matrixStack.rotate(Axis.ZP.rotationDegrees(-90));
 			matrixStack.translate(dz, dx, 0.0F);
 			break;
 		case EAST:
-			matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(90));
+			matrixStack.rotate(Axis.ZP.rotationDegrees(90));
 			matrixStack.translate(dz - 1.0F, dx - 1.0F, 0.0F);
 			break;
 		}
@@ -209,10 +224,10 @@ public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 		int i = offset.rotateVert == 0 ? 0 : offset.rotateVert > 0 ? -1 : 1;
 		int j = offset.rotateHor == 0 ? 0 : offset.rotateHor > 0 ? -1 : 1;
 		matrixStack.translate(displayWidth / 2, displayHeight / 2, 1 + (32 * h - offset.leftTop - offset.leftBottom) / 64);
-		matrixStack.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees((float) Math.toDegrees(b)));
-		matrixStack.multiply(RotationAxis.NEGATIVE_X.rotationDegrees((float) Math.toDegrees(a)));
+		matrixStack.rotate(Axis.YN.rotationDegrees((float) Math.toDegrees(b)));
+		matrixStack.rotate(Axis.XN.rotationDegrees((float) Math.toDegrees(a)));
 		if (i * j != 0)
-			matrixStack.multiply((i * j > 0 ? RotationAxis.POSITIVE_Z : RotationAxis.NEGATIVE_Z).rotationDegrees(90.0F - (float) Math.toDegrees( // Law of cosines
+			matrixStack.rotate((i * j > 0 ? Axis.ZP : Axis.ZN).rotationDegrees(90.0F - (float) Math.toDegrees( // Law of cosines
 			Math.acos((h * h + v * v) / 2 / Math.sqrt(displayWidth * displayWidth + h * h) / Math.sqrt(displayHeight * displayHeight + v * v)))));
 		matrixStack.translate(0.0F, 0.001F * i, 0.001F);
 		displayHeight = (float) ((displayHeight - 0.125F) / Math.cos(a));
@@ -222,11 +237,11 @@ public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 		int maxWidth = 1;
 		for (PanelString panelString : joinedData) {
 			String currentString = implodeArray(new String[] { panelString.textLeft, panelString.textCenter, panelString.textRight }, " ");
-			maxWidth = Math.max(font.getWidth(currentString), maxWidth);
+			maxWidth = Math.max(font.width(currentString), maxWidth);
 		}
 		maxWidth += 4;
 
-		int lineHeight = font.fontHeight + 2;
+		int lineHeight = font.lineHeight + 2;
 		int requiredHeight = lineHeight * joinedData.size();
 		float scaleX = displayWidth / maxWidth;
 		float scaleY = displayHeight / requiredHeight;
@@ -252,21 +267,21 @@ public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 			colorHex = panel.getColorTextHex();
 		for (PanelString panelString : joinedData) {
 			if (panelString.textLeft != null) {
-				font.draw(panelString.textLeft, offsetX - realWidth / 2,
+				RenderHelper.drawString(matrixStack, collector, panelString.textLeft, offsetX - realWidth / 2,
 						1 + offsetY - realHeight / 2 + row * lineHeight,
-						panelString.colorLeft != 0 ? panelString.colorLeft : colorHex, false, matrixStack.peek().getPositionMatrix(), buffer, TextRenderer.TextLayerType.POLYGON_OFFSET, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+						panelString.colorLeft != 0 ? panelString.colorLeft : colorHex, Font.DisplayMode.POLYGON_OFFSET, LightCoordsUtil.FULL_BRIGHT);
 			}
 			if (panelString.textCenter != null) {
-				font.draw(panelString.textCenter,
-						-font.getWidth(panelString.textCenter) / 2,
+				RenderHelper.drawString(matrixStack, collector, panelString.textCenter,
+						-font.width(panelString.textCenter) / 2,
 						offsetY - realHeight / 2 + row * lineHeight,
-						panelString.colorCenter != 0 ? panelString.colorCenter : colorHex, false, matrixStack.peek().getPositionMatrix(), buffer, TextRenderer.TextLayerType.POLYGON_OFFSET, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+						panelString.colorCenter != 0 ? panelString.colorCenter : colorHex, Font.DisplayMode.POLYGON_OFFSET, LightCoordsUtil.FULL_BRIGHT);
 			}
 			if (panelString.textRight != null) {
-				font.draw(panelString.textRight,
-						realWidth / 2 - font.getWidth(panelString.textRight),
+				RenderHelper.drawString(matrixStack, collector, panelString.textRight,
+						realWidth / 2 - font.width(panelString.textRight),
 						offsetY - realHeight / 2 + row * lineHeight,
-						panelString.colorRight != 0 ? panelString.colorRight : colorHex, false, matrixStack.peek().getPositionMatrix(), buffer, TextRenderer.TextLayerType.POLYGON_OFFSET, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+						panelString.colorRight != 0 ? panelString.colorRight : colorHex, Font.DisplayMode.POLYGON_OFFSET, LightCoordsUtil.FULL_BRIGHT);
 			}
 			row++;
 		}
@@ -277,12 +292,12 @@ public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 
 	// a screen can be larger than the core block: keep drawing the text while only other parts of it are in view
 	@Override
-	public boolean rendersOutsideBoundingBox(TileEntityAdvancedInfoPanel te) {
+	public boolean shouldRenderOffScreen() {
 		return true;
 	}
 
 	@Override
-	public int getRenderDistance() {
+	public int getViewDistance() {
 		return 65536;
 	}
 }

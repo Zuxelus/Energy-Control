@@ -1,42 +1,43 @@
 package com.zuxelus.zlib.blocks;
 
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.WorldAccess;
-import net.minecraft.world.WorldView;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class FacingBlockSmall extends FacingBlock {
 
-	public FacingBlockSmall(Settings settings) {
+	public FacingBlockSmall(Properties settings) {
 		super(settings);
 	}
 
 	@Override
-	public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
-		return canPlaceAt(world, pos, state.get(FACING).getOpposite());
+	protected boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
+		return canPlaceAt(world, pos, state.getValue(FACING).getOpposite());
 	}
 
-	public static boolean canPlaceAt(WorldView world, BlockPos pos, Direction direction) {
-		BlockPos blockPos = pos.offset(direction);
-		return world.getBlockState(blockPos).isSideSolidFullSquare(world, blockPos, direction.getOpposite());
+	public static boolean canPlaceAt(LevelReader world, BlockPos pos, Direction direction) {
+		BlockPos blockPos = pos.relative(direction);
+		return world.getBlockState(blockPos).isFaceSturdy(world, blockPos, direction.getOpposite());
 	}
 
 	@Override
-	public BlockState getPlacementState(ItemPlacementContext ctx) {
-		Direction[] directions = ctx.getPlacementDirections();
+	public BlockState getStateForPlacement(BlockPlaceContext ctx) {
+		Direction[] directions = ctx.getNearestLookingDirections();
 
 		for (Direction direction : directions) {
-			BlockState state = getDefaultState().with(FACING, direction.getOpposite());
-			if (state.canPlaceAt(ctx.getWorld(), ctx.getBlockPos())) {
-				PlayerEntity placer = ctx.getPlayer();
-				rotation = placer.getHorizontalFacing().getOpposite();
-				if (placer.getPitch() <= -65)
-					rotation = placer.getHorizontalFacing();
+			BlockState state = defaultBlockState().setValue(FACING, direction.getOpposite());
+			if (state.canSurvive(ctx.getLevel(), ctx.getClickedPos())) {
+				Player placer = ctx.getPlayer();
+				rotation = placer.getDirection().getOpposite();
+				if (placer.getXRot() <= -65)
+					rotation = placer.getDirection();
 				return state;
 			}
 		}
@@ -44,19 +45,19 @@ public abstract class FacingBlockSmall extends FacingBlock {
 	}
 
 	@Override
-	public BlockState getStateForNeighborUpdate(BlockState state, Direction facing, BlockState facingState, WorldAccess world, BlockPos currentPos, BlockPos facingPos) {
-		return state.get(FACING).getOpposite() == facing && !state.canPlaceAt(world, currentPos)
-				? Blocks.AIR.getDefaultState()
-				: super.getStateForNeighborUpdate(state, facing, facingState, world, currentPos, facingPos);
+	protected BlockState updateShape(BlockState state, LevelReader world, ScheduledTickAccess ticks, BlockPos currentPos, Direction facing, BlockPos facingPos, BlockState facingState, RandomSource random) {
+		return state.getValue(FACING).getOpposite() == facing && !state.canSurvive(world, currentPos)
+				? Blocks.AIR.defaultBlockState()
+				: super.updateShape(state, world, ticks, currentPos, facing, facingPos, facingState, random);
 	}
 
 	@Override
-	public boolean emitsRedstonePower(BlockState state) {
+	protected boolean isSignalSource(BlockState state) {
 		return true;
 	}
 
 	@Override
-	public BlockRenderType getRenderType(BlockState state) {
-		return BlockRenderType.MODEL;
+	protected RenderShape getRenderShape(BlockState state) {
+		return RenderShape.MODEL;
 	}
 }

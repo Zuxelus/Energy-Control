@@ -6,21 +6,11 @@
 		"IRI"
 	],
 	"key": {
-		"P": {
-			"item": "minecraft:lime_stained_glass_pane"
-		},
-		"C": {
-			"item": "energycontrol:basic_circuit"
-		},
-		"I": {
-			"tag": "c:dyes/black"
-		},
-		"R": {
-			"tag": "c:dusts/redstone"
-		},
-		"M": {
-			"item": "energycontrol:machine_casing"
-		}
+		"P": "minecraft:lime_stained_glass_pane",
+		"C": "energycontrol:basic_circuit",
+		"I": "#c:dyes/black",
+		"R": "#c:dusts/redstone",
+		"M": "energycontrol:machine_casing"
 	},
 	"result": {
 		"id": "energycontrol:info_panel"

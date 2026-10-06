@@ -1,10 +1,14 @@
 package com.zuxelus.energycontrol.gui;
 
-import net.minecraft.screen.ScreenTexts;
-
 import java.awt.Color;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.util.ARGB;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import java.util.ArrayList;
-
+import com.mojang.blaze3d.platform.NativeImage;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
@@ -13,16 +17,16 @@ import com.zuxelus.zlib.gui.controls.GuiTextNumeric;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.client.texture.NativeImageBackedTexture;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.resources.Identifier;
 
 @Environment(EnvType.CLIENT)
 public class GuiScreenColor extends GuiBase {
-	private final static Identifier PICKER = Identifier.of(EnergyControl.MODID, "dynamic/color_picker");
+	private final static Identifier PICKER = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "dynamic/color_picker");
 	// Picker layout: a center disc (white / black) surrounded by rings split into hue sectors.
 	// Light picker: value = 1, ring = saturation. Dark picker: saturation = 1, ring = value.
 	private static final int HUE_SECTORS = 16;
@@ -63,57 +67,65 @@ public class GuiScreenColor extends GuiBase {
 		super.init();
 		registerPickerTexture();
 		fieldList.clear();
-		rText = new GuiTextNumeric(textRenderer, guiLeft + 10, guiTop + 18, 26, 12, ScreenTexts.EMPTY, 255);
+		rText = new GuiTextNumeric(font, guiLeft + 10, guiTop + 18, 26, 12, CommonComponents.EMPTY, 255);
 		rText.setMaxLength(3);
-		rText.setText(Integer.toString((colorText & 0x00FF0000) >> 16));
+		rText.setValue(Integer.toString((colorText & 0x00FF0000) >> 16));
 		fieldList.add(rText);
-		gText = new GuiTextNumeric(textRenderer, guiLeft + 46, guiTop + 18, 26, 12, ScreenTexts.EMPTY, 255);
+		gText = new GuiTextNumeric(font, guiLeft + 46, guiTop + 18, 26, 12, CommonComponents.EMPTY, 255);
 		gText.setMaxLength(3);
-		gText.setText(Integer.toString((colorText & 0x0000FF00) >> 8));
+		gText.setValue(Integer.toString((colorText & 0x0000FF00) >> 8));
 		fieldList.add(gText);
-		bText = new GuiTextNumeric(textRenderer, guiLeft + 82, guiTop + 18, 26, 12, ScreenTexts.EMPTY, 255);
+		bText = new GuiTextNumeric(font, guiLeft + 82, guiTop + 18, 26, 12, CommonComponents.EMPTY, 255);
 		bText.setMaxLength(3);
-		bText.setText(Integer.toString(colorText & 0x000000FF));
+		bText.setValue(Integer.toString(colorText & 0x000000FF));
 		fieldList.add(bText);
 		fieldList2.clear();
-		rText2 = new GuiTextNumeric(textRenderer, guiLeft + 10 + offset, guiTop + 18, 26, 12, ScreenTexts.EMPTY, 255);
+		rText2 = new GuiTextNumeric(font, guiLeft + 10 + offset, guiTop + 18, 26, 12, CommonComponents.EMPTY, 255);
 		rText2.setMaxLength(3);
-		rText2.setText(Integer.toString((colorBack & 0x00FF0000) >> 16));
+		rText2.setValue(Integer.toString((colorBack & 0x00FF0000) >> 16));
 		fieldList2.add(rText2);
-		gText2 = new GuiTextNumeric(textRenderer, guiLeft + 46 + offset, guiTop + 18, 26, 12, ScreenTexts.EMPTY, 255);
+		gText2 = new GuiTextNumeric(font, guiLeft + 46 + offset, guiTop + 18, 26, 12, CommonComponents.EMPTY, 255);
 		gText2.setMaxLength(3);
-		gText2.setText(Integer.toString((colorBack & 0x0000FF00) >> 8));
+		gText2.setValue(Integer.toString((colorBack & 0x0000FF00) >> 8));
 		fieldList2.add(gText2);
-		bText2 = new GuiTextNumeric(textRenderer, guiLeft + 82 + offset, guiTop + 18, 26, 12, ScreenTexts.EMPTY, 255);
+		bText2 = new GuiTextNumeric(font, guiLeft + 82 + offset, guiTop + 18, 26, 12, CommonComponents.EMPTY, 255);
 		bText2.setMaxLength(3);
-		bText2.setText(Integer.toString(colorBack & 0x000000FF));
+		bText2.setValue(Integer.toString(colorBack & 0x000000FF));
 		fieldList2.add(bText2);
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(DrawContext context, int mouseX, int mouseY) {
-		context.drawText(textRenderer, I18n.translate("msg.ec.ScreenColor"), 152, 6, colorBack, false);
-		context.drawText(textRenderer, I18n.translate("msg.ec.TextColor"), 8, 6, colorText, false);
+	protected void drawGuiContainerForegroundLayer(GuiGraphicsExtractor context, int mouseX, int mouseY) {
+		context.text(font, I18n.get("msg.ec.ScreenColor"), 152, 6, ARGB.opaque(colorBack), false);
+		context.text(font, I18n.get("msg.ec.TextColor"), 8, 6, ARGB.opaque(colorText), false);
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(DrawContext context, float partialTicks, int mouseX, int mouseY) {
+	protected void drawGuiContainerBackgroundLayer(GuiGraphicsExtractor context, float partialTicks, int mouseX, int mouseY) {
 		super.drawGuiContainerBackgroundLayer(context, partialTicks, mouseX, mouseY);
-		context.drawTexture(PICKER, guiLeft + 20, guiTop + 34, isDarkPicker ? 80 : 0, 0, 80, 80, 160, 80);
-		context.drawTexture(PICKER, guiLeft + 20 + offset, guiTop + 34, isDarkPicker2 ? 80 : 0, 0, 80, 80, 160, 80);
+		context.blit(RenderPipelines.GUI_TEXTURED, PICKER, guiLeft + 20, guiTop + 34, isDarkPicker ? 80 : 0, 0, 80, 80, 160, 80);
+		context.blit(RenderPipelines.GUI_TEXTURED, PICKER, guiLeft + 20 + offset, guiTop + 34, isDarkPicker2 ? 80 : 0, 0, 80, 80, 160, 80);
 		for (GuiTextNumeric text : fieldList)
-			text.render(context, mouseX, mouseY, partialTicks);
+			text.extractRenderState(context, mouseX, mouseY, partialTicks);
 		for (GuiTextNumeric text : fieldList2)
-			text.render(context, mouseX, mouseY, partialTicks);
+			text.extractRenderState(context, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
-		if (mouseButton == 0) {
-			for (GuiTextNumeric text : fieldList)
-				text.mouseClicked(mouseX, mouseY, mouseButton);
-			for (GuiTextNumeric text : fieldList2)
-				text.mouseClicked(mouseX, mouseY, mouseButton);
+	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+		double mouseX = event.x();
+		double mouseY = event.y();
+		int mouseButton = event.button();
+		if (mouseButton == InputConstants.MOUSE_BUTTON_LEFT) {
+			// the fields are not children of the screen, and since 26.1 an EditBox no longer focuses itself on click
+			for (GuiTextNumeric text : fieldList) {
+				text.setFocused(text.isMouseOver(mouseX, mouseY));
+				text.mouseClicked(event, doubleClick);
+			}
+			for (GuiTextNumeric text : fieldList2) {
+				text.setFocused(text.isMouseOver(mouseX, mouseY));
+				text.mouseClicked(event, doubleClick);
+			}
 			checkColorPicker(mouseX - guiLeft, mouseY - guiTop);
 			checkColorPicker2(mouseX - guiLeft, mouseY - guiTop);
 		}
@@ -134,9 +146,9 @@ public class GuiScreenColor extends GuiBase {
 			if (c == null)
 				return;
 			setColorText(c);
-			fieldList.get(0).setText(Integer.toString(c.getRed()));
-			fieldList.get(1).setText(Integer.toString(c.getGreen()));
-			fieldList.get(2).setText(Integer.toString(c.getBlue()));
+			fieldList.get(0).setValue(Integer.toString(c.getRed()));
+			fieldList.get(1).setValue(Integer.toString(c.getGreen()));
+			fieldList.get(2).setValue(Integer.toString(c.getBlue()));
 		}
 	}
 
@@ -154,9 +166,9 @@ public class GuiScreenColor extends GuiBase {
 			if (c == null)
 				return;
 			setColorBackground(c);
-			fieldList2.get(0).setText(Integer.toString(c.getRed()));
-			fieldList2.get(1).setText(Integer.toString(c.getGreen()));
-			fieldList2.get(2).setText(Integer.toString(c.getBlue()));
+			fieldList2.get(0).setValue(Integer.toString(c.getRed()));
+			fieldList2.get(1).setValue(Integer.toString(c.getGreen()));
+			fieldList2.get(2).setValue(Integer.toString(c.getBlue()));
 		}
 	}
 
@@ -194,9 +206,9 @@ public class GuiScreenColor extends GuiBase {
 						float k = border ? 0.6F : 1.0F;
 						abgr = 0xFF000000 | ((int) (c.getBlue() * k) << 16) | ((int) (c.getGreen() * k) << 8) | (int) (c.getRed() * k);
 					}
-					image.setColor(px + mode * SIZE, py, abgr);
+					image.setPixelABGR(px + mode * SIZE, py, abgr);
 				}
-		MinecraftClient.getInstance().getTextureManager().registerTexture(PICKER, new NativeImageBackedTexture(image));
+		Minecraft.getInstance().getTextureManager().register(PICKER, new DynamicTexture(PICKER::toString, image));
 		pickerRegistered = true;
 	}
 
@@ -219,13 +231,13 @@ public class GuiScreenColor extends GuiBase {
 
 	private void setColorText(Color c) {
 		colorText = c.getRGB();
-		NetworkHelper.updateSeverTileEntity(panel.getPos(), 7, colorText);
+		NetworkHelper.updateSeverTileEntity(panel.getBlockPos(), 7, colorText);
 		panel.setColorText(colorText);
 	}
 
 	private void setColorBackground(Color c) {
 		colorBack = c.getRGB();
-		NetworkHelper.updateSeverTileEntity(panel.getPos(), 6, colorBack);
+		NetworkHelper.updateSeverTileEntity(panel.getBlockPos(), 6, colorBack);
 		panel.setColorBackground(colorBack);
 	}
 
@@ -234,12 +246,15 @@ public class GuiScreenColor extends GuiBase {
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (keyCode == 256) {
-			client.setScreen(parentGui);
+	public boolean keyPressed(KeyEvent event) {
+		int keyCode = event.key();
+		int scanCode = event.keycode();
+		int modifiers = event.modifiers();
+		if (keyCode == InputConstants.KEY_ESCAPE) {
+			minecraft.gui.setScreen(parentGui);
 			return true;
 		}
-		if (keyCode == 258) {
+		if (keyCode == InputConstants.KEY_TAB) {
 			if (fieldList.get(0).isFocused()) {
 				fieldList.get(0).setFocused(false);
 				fieldList.get(1).setFocused(true);
@@ -262,55 +277,56 @@ public class GuiScreenColor extends GuiBase {
 			return true;
 		} else {
 			for (GuiTextNumeric text : fieldList) {
-				String value = text.getText();
-				if (text.keyPressed(keyCode, scanCode, modifiers)) {
-					if (!value.equals(text.getText()))
+				String value = text.getValue();
+				if (text.keyPressed(event)) {
+					if (!value.equals(text.getValue()))
 						setColorText(new Color(getColotInt(0), getColotInt(1), getColotInt(2)));
 					return true;
 				}
 			}
 			for (GuiTextNumeric text : fieldList2) {
-				String value = text.getText();
-				if (text.keyPressed(keyCode, scanCode, modifiers)) {
-					if (!value.equals(text.getText()))
+				String value = text.getValue();
+				if (text.keyPressed(event)) {
+					if (!value.equals(text.getValue()))
 						setColorBackground(new Color(getColotInt2(0), getColotInt2(1), getColotInt2(2)));
 					return true;
 				}
 			}
 		}
-		return super.keyPressed(keyCode, scanCode, modifiers);
+		return super.keyPressed(event);
 	}
 
 	@Override
-	public boolean charTyped(char typedChar, int keyCode) {
+	public boolean charTyped(CharacterEvent event) {
+		char typedChar = (char) event.codepoint();
 		for (GuiTextNumeric text : fieldList) {
-			String value = text.getText();
-			if (text.charTyped(typedChar, keyCode)) {
-				if (!value.equals(text.getText()))
+			String value = text.getValue();
+			if (text.charTyped(event)) {
+				if (!value.equals(text.getValue()))
 					setColorText(new Color(getColotInt(0), getColotInt(1), getColotInt(2)));
 				return true;
 			}
 		}
 		for (GuiTextNumeric text : fieldList2) {
-			String value = text.getText();
-			if (text.charTyped(typedChar, keyCode)) {
-				if (!value.equals(text.getText()))
+			String value = text.getValue();
+			if (text.charTyped(event)) {
+				if (!value.equals(text.getValue()))
 					setColorBackground(new Color(getColotInt2(0), getColotInt2(1), getColotInt2(2)));
 				return true;
 			}
 		}
-		return super.charTyped(typedChar, keyCode);
+		return super.charTyped(event);
 	}
 
 	private int getColotInt(int id) {
-		String text = fieldList.get(id).getText();
+		String text = fieldList.get(id).getValue();
 		if (text == null || text.isEmpty())
 			return 0;
 		return Integer.parseInt(text);
 	}
 
 	private int getColotInt2(int id) {
-		String text = fieldList2.get(id).getText();
+		String text = fieldList2.get(id).getValue();
 		if (text == null || text.isEmpty())
 			return 0;
 		return Integer.parseInt(text);

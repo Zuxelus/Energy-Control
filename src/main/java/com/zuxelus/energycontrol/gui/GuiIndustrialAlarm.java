@@ -7,7 +7,7 @@ import com.zuxelus.zlib.gui.GuiBase;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 @Environment(EnvType.CLIENT)
 public class GuiIndustrialAlarm extends GuiBase {
@@ -23,11 +23,11 @@ public class GuiIndustrialAlarm extends GuiBase {
 	public void init() {
 		super.init();
 		slider = new GuiHowlerAlarmSlider(guiLeft + 12, guiTop + 33, alarm);
-		addDrawableChild(slider);
+		addRenderableWidget(slider);
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(DrawContext context, int mouseX, int mouseY) {
+	protected void drawGuiContainerForegroundLayer(GuiGraphicsExtractor context, int mouseX, int mouseY) {
 		drawTitle(context);
 	}
 }

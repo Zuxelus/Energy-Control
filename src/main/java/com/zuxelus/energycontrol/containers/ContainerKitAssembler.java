@@ -9,23 +9,22 @@ import com.zuxelus.zlib.containers.ContainerBase;
 import com.zuxelus.zlib.containers.slots.SlotDischargeable;
 import com.zuxelus.zlib.containers.slots.SlotFilter;
 import com.zuxelus.zlib.containers.slots.SlotTransformer;
-
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.screen.ScreenHandlerContext;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 
 public class ContainerKitAssembler extends ContainerBase<TileEntityKitAssembler> {
 	private double lastEnergy = -1;
 	private double lastProduction = -1;
 
-	public ContainerKitAssembler(int windowId, PlayerInventory inventory, BlockPos data) {
+	public ContainerKitAssembler(int windowId, Inventory inventory, BlockPos data) {
 		this(windowId, inventory, (TileEntityKitAssembler) getBlockEntity(inventory, data));
 	}
 
-	public ContainerKitAssembler(int windowId, PlayerInventory inventory, TileEntityKitAssembler te) {
-		super(te, ModContainerTypes.kit_assembler, windowId, ModItems.kit_assembler, ScreenHandlerContext.create(te.getWorld(), te.getPos()));
+	public ContainerKitAssembler(int windowId, Inventory inventory, TileEntityKitAssembler te) {
+		super(te, ModContainerTypes.kit_assembler, windowId, ModItems.kit_assembler, ContainerLevelAccess.create(te.getLevel(), te.getBlockPos()));
 		// info card
 		addSlot(new SlotCard(te, 0, 8, 17));
 
@@ -38,23 +37,23 @@ public class ContainerKitAssembler extends ContainerBase<TileEntityKitAssembler>
 		addSlot(new SlotTransformer(te, 6, 8, 17 + 18));
 		// inventory
 		addPlayerInventorySlots(inventory, 166);
-		if (inventory.player instanceof ServerPlayerEntity)
-			containerListeners.add((ServerPlayerEntity) inventory.player);
+		if (inventory.player instanceof ServerPlayer)
+			containerListeners.add((ServerPlayer) inventory.player);
 	}
 
 	@Override
-	public void sendContentUpdates() {
-		super.sendContentUpdates();
+	public void broadcastChanges() {
+		super.broadcastChanges();
 		double energy = te.getEnergy();
 		double production = te.getProduction();
-		for (ServerPlayerEntity listener : containerListeners)
+		for (ServerPlayer listener : containerListeners)
 			if (lastEnergy != energy || lastProduction != production) {
-				NbtCompound tag = new NbtCompound();
+				CompoundTag tag = new CompoundTag();
 				tag.putInt("type", 1);
 				tag.putDouble("energy", energy);
 				tag.putDouble("production", production);
 				tag.putInt("time", te.getRecipeTime());
-				NetworkHelper.updateClientTileEntity(listener, te.getPos(), tag);
+				NetworkHelper.updateClientTileEntity(listener, te.getBlockPos(), tag);
 			}
 		lastEnergy = energy;
 		lastProduction = production;

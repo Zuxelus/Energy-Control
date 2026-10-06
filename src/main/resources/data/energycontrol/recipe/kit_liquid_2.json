@@ -1,14 +1,14 @@
 {
 	"type": "energycontrol:kit_assembler",
 	"input1": {
-		"item": "energycontrol:card_liquid"
+		"ingredient": "energycontrol:card_liquid"
 	},
 	"input2": {
-		"item": "energycontrol:strong_string",
+		"ingredient": "energycontrol:strong_string",
 		"count": 2
 	},
 	"input3": {
-		"item": "energycontrol:card_liquid"
+		"ingredient": "energycontrol:card_liquid"
 	},
 	"result": {
 		"id": "energycontrol:kit_liquid",

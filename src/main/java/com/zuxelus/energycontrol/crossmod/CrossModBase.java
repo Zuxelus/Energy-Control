@@ -1,17 +1,15 @@
 package com.zuxelus.energycontrol.crossmod;
 
 import java.util.List;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import com.zuxelus.energycontrol.utils.FluidInfo;
-
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 public class CrossModBase {
 
-	public NbtCompound getEnergyData(BlockEntity te) {
+	public CompoundTag getEnergyData(BlockEntity te) {
 		return null;
 	}
 
@@ -19,15 +17,15 @@ public class CrossModBase {
 		return null;
 	}
 
-	public NbtCompound getCardData(BlockEntity te) {
+	public CompoundTag getCardData(BlockEntity te) {
 		return null;
 	}
 
-	public NbtCompound getInventoryData(BlockEntity te) {
+	public CompoundTag getInventoryData(BlockEntity te) {
 		return null;
 	}
 
-	public int getReactorHeat(World world, BlockPos pos) {
+	public int getReactorHeat(Level world, BlockPos pos) {
 		return -1;
 	}
 }

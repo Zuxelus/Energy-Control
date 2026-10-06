@@ -1,5 +1,5 @@
 plugins {
-	id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
 	id 'maven-publish'
 }
 
@@ -33,33 +33,34 @@ repositories {
 
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// Fabric API
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
 	// Cloth API
-	modApi("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_version}") {
+	api("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_version}") {
 		exclude(group: "net.fabricmc.fabric-api")
 		exclude(group: "net.fabricmc", module: "fabric-loader")
 	}
-	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
-	//modImplementation "alexiil.mc.lib:${project.lba_version}"
+	implementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+	//implementation "alexiil.mc.lib:${project.lba_version}"
 	// REI pulls its own older fabric-loader, which clashes with ours at runtime
-	modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}") {
+	compileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}") {
 		exclude(group: "net.fabricmc", module: "fabric-loader")
 	}
 	// information pages (BuiltinClientPlugin) live in the default plugin, not in the api
-	modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:${project.rei_version}") {
+	compileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:${project.rei_version}") {
 		exclude(group: "net.fabricmc", module: "fabric-loader")
 	}
-	modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
+	// REI's EntryStacks/EntryIngredients overloads mention architectury's FluidStack, which REI only declares for runtime
+	compileOnly "dev.architectury:architectury-fabric:${project.architectury_version}"
+	runtimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
 		exclude(group: "net.fabricmc", module: "fabric-loader")
 	}
-	modImplementation "curse.maven:reborncore-237903:6664366"
-	modImplementation "curse.maven:techreborn-233564:6664367"
-	include(modApi("teamreborn:energy:${project.energy_version}")) {
+	implementation "curse.maven:reborncore-237903:8888168"
+	implementation "curse.maven:techreborn-233564:8888169"
+	include(api("teamreborn:energy:${project.energy_version}")) {
 		transitive = false
 	}
 }
@@ -74,7 +75,7 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.release = 21
+	it.options.release = 25
 }
 
 base {
@@ -84,8 +85,8 @@ base {
 java {
 	withSourcesJar()
 
-	sourceCompatibility = JavaVersion.VERSION_21
-	targetCompatibility = JavaVersion.VERSION_21
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
 }
 
 jar {

@@ -1,10 +1,10 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkSectionPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class Screen {
 	public int minX;
@@ -17,7 +17,7 @@ public class Screen {
 	private boolean powered;
 
 	public Screen(TileEntityInfoPanel panel) {
-		BlockPos pos = panel.getPos();
+		BlockPos pos = panel.getBlockPos();
 		maxX = minX = pos.getX();
 		maxY = minY = pos.getY();
 		maxZ = minZ = pos.getZ();
@@ -26,31 +26,31 @@ public class Screen {
 		powered = panel.getPowered();
 	}
 
-	public Screen(TileEntityInfoPanel panel, NbtCompound tag) {
-		minX = tag.getInt("minX");
-		minY = tag.getInt("minY");
-		minZ = tag.getInt("minZ");
+	public Screen(TileEntityInfoPanel panel, CompoundTag tag) {
+		minX = tag.getIntOr("minX", 0);
+		minY = tag.getIntOr("minY", 0);
+		minZ = tag.getIntOr("minZ", 0);
 
-		maxX = tag.getInt("maxX");
-		maxY = tag.getInt("maxY");
-		maxZ = tag.getInt("maxZ");
+		maxX = tag.getIntOr("maxX", 0);
+		maxY = tag.getIntOr("maxY", 0);
+		maxZ = tag.getIntOr("maxZ", 0);
 
-		corePos = panel.getPos();
+		corePos = panel.getBlockPos();
 		powered = panel.getPowered();
 	}
 
-	public static BlockEntity getLoadedBlockEntity(World world, BlockPos pos) {
+	public static BlockEntity getLoadedBlockEntity(Level world, BlockPos pos) {
 		if (!isLoaded(world, pos))
 			return null;
 		return world.getBlockEntity(pos);
 	}
 
 	// same check as the deprecated World.isChunkLoaded(BlockPos)
-	public static boolean isLoaded(World world, BlockPos pos) {
-		return world.getChunkManager().isChunkLoaded(ChunkSectionPos.getSectionCoord(pos.getX()), ChunkSectionPos.getSectionCoord(pos.getZ()));
+	public static boolean isLoaded(Level world, BlockPos pos) {
+		return world.getChunkSource().hasChunk(SectionPos.blockToSectionCoord(pos.getX()), SectionPos.blockToSectionCoord(pos.getZ()));
 	}
 
-	public TileEntityInfoPanel getCore(World world) {
+	public TileEntityInfoPanel getCore(Level world) {
 		BlockEntity be = getLoadedBlockEntity(world, corePos);
 		if (!(be instanceof TileEntityInfoPanel))
 			return null;
@@ -58,7 +58,7 @@ public class Screen {
 	}
 
 	public boolean isBlockNearby(BlockEntity tileEntity) {
-		BlockPos pos = tileEntity.getPos();
+		BlockPos pos = tileEntity.getBlockPos();
 		int x = pos.getX();
 		int y = pos.getY();
 		int z = pos.getZ();
@@ -71,14 +71,14 @@ public class Screen {
 	}
 
 	public boolean isBlockPartOf(BlockEntity tileEntity) {
-		BlockPos pos = tileEntity.getPos();
+		BlockPos pos = tileEntity.getBlockPos();
 		int x = pos.getX();
 		int y = pos.getY();
 		int z = pos.getZ();
 		return x >= minX && x <= maxX && y >= minY && y <= maxY && z >= minZ && z <= maxZ;
 	}
 
-	public void init(boolean force, World world) {
+	public void init(boolean force, Level world) {
 		for (int x = minX; x <= maxX; x++) {
 			for (int y = minY; y <= maxY; y++) {
 				for (int z = minZ; z <= maxZ; z++) {
@@ -93,7 +93,7 @@ public class Screen {
 		}
 	}
 
-	public void destroy(boolean force, World world) {
+	public void destroy(boolean force, Level world) {
 		for (int x = minX; x <= maxX; x++) {
 			for (int y = minY; y <= maxY; y++) {
 				for (int z = minZ; z <= maxZ; z++) {
@@ -115,14 +115,14 @@ public class Screen {
 		}
 	}
 
-	public void turnPower(boolean on, World world) {
+	public void turnPower(boolean on, Level world) {
 		if (powered == on)
 			return;
 		powered = on;
 		markUpdate(world);
 	}
 
-	private void markUpdate(World world) {
+	private void markUpdate(Level world) {
 		for (int x = minX; x <= maxX; x++) {
 			for (int y = minY; y <= maxY; y++) {
 				for (int z = minZ; z <= maxZ; z++) {
@@ -134,8 +134,8 @@ public class Screen {
 		}
 	}	
 
-	public NbtCompound toTag() {
-		NbtCompound tag = new NbtCompound();
+	public CompoundTag toTag() {
+		CompoundTag tag = new CompoundTag();
 
 		tag.putInt("minX", minX);
 		tag.putInt("minY", minY);

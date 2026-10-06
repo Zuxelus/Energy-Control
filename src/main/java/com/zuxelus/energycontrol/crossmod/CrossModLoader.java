@@ -17,13 +17,13 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import team.reborn.energy.api.EnergyStorage;
 
 public class CrossModLoader {
@@ -46,11 +46,11 @@ public class CrossModLoader {
 		return CROSS_MODS.get(modid);
 	}
 
-	public static ItemStack getEnergyCard(World world, BlockPos pos) {
+	public static ItemStack getEnergyCard(Level world, BlockPos pos) {
 		BlockEntity te = world.getBlockEntity(pos);
 		if (te == null)
 			return ItemStack.EMPTY;
-		NbtCompound data = getEnergyData(te);
+		CompoundTag data = getEnergyData(te);
 		if (data != null) {
 			ItemStack card = new ItemStack(ModItems.card_energy);
 			ItemStackHelper.setCoordinates(card, pos);
@@ -59,16 +59,16 @@ public class CrossModLoader {
 		return ItemStack.EMPTY;
 	}
 
-	public static NbtCompound getEnergyData(BlockEntity te) {
+	public static CompoundTag getEnergyData(BlockEntity te) {
 		for (CrossModBase crossMod : CROSS_MODS.values()) {
-			NbtCompound tag = crossMod.getEnergyData(te);
+			CompoundTag tag = crossMod.getEnergyData(te);
 			if (tag != null)
 				return tag;
 		}
 		// any block exposing Team Reborn Energy, e.g. the kit assembler
 		EnergyStorage storage = findEnergyStorage(te);
 		if (storage != null) {
-			NbtCompound tag = new NbtCompound();
+			CompoundTag tag = new CompoundTag();
 			tag.putString("euType", "E");
 			tag.putDouble("storage", storage.getAmount());
 			tag.putDouble("maxStorage", storage.getCapacity());
@@ -78,11 +78,11 @@ public class CrossModLoader {
 	}
 
 	private static EnergyStorage findEnergyStorage(BlockEntity te) {
-		World world = te.getWorld();
+		Level world = te.getLevel();
 		if (world == null)
 			return null;
-		BlockPos pos = te.getPos();
-		BlockState state = te.getCachedState();
+		BlockPos pos = te.getBlockPos();
+		BlockState state = te.getBlockState();
 		EnergyStorage storage = EnergyStorage.SIDED.find(world, pos, state, te, null);
 		if (storage != null)
 			return storage;
@@ -95,7 +95,7 @@ public class CrossModLoader {
 		return null;
 	}
 
-	public static List<FluidInfo> getAllTanks(World world, BlockPos pos) {
+	public static List<FluidInfo> getAllTanks(Level world, BlockPos pos) {
 		BlockEntity te = world.getBlockEntity(pos);
 		if (te == null)
 			return null;
@@ -118,11 +118,11 @@ public class CrossModLoader {
 	}
 
 	private static Storage<FluidVariant> findFluidStorage(BlockEntity te) {
-		World world = te.getWorld();
+		Level world = te.getLevel();
 		if (world == null)
 			return null;
-		BlockPos pos = te.getPos();
-		BlockState state = te.getCachedState();
+		BlockPos pos = te.getBlockPos();
+		BlockState state = te.getBlockState();
 		Storage<FluidVariant> storage = FluidStorage.SIDED.find(world, pos, state, te, null);
 		if (storage != null)
 			return storage;
@@ -135,12 +135,12 @@ public class CrossModLoader {
 		return null;
 	}
 
-	public static FluidInfo getTankAt(World world, BlockPos pos) {
+	public static FluidInfo getTankAt(Level world, BlockPos pos) {
 		List<FluidInfo> tanks = getAllTanks(world, pos);
 		return tanks != null && tanks.size() > 0 ? tanks.get(0) : null;
 	}
 
-	public static int getReactorHeat(World world, BlockPos pos) {
+	public static int getReactorHeat(Level world, BlockPos pos) {
 		for (CrossModBase crossMod : CROSS_MODS.values()) {
 			int heat = crossMod.getReactorHeat(world, pos);
 			if (heat != -1)
@@ -149,13 +149,13 @@ public class CrossModLoader {
 		return -1;
 	}
 
-	public static NbtCompound getInventoryData(BlockEntity te) {
+	public static CompoundTag getInventoryData(BlockEntity te) {
 		for (CrossModBase crossMod : CROSS_MODS.values()) {
-			NbtCompound tag = crossMod.getInventoryData(te);
+			CompoundTag tag = crossMod.getInventoryData(te);
 			if (tag != null)
 				return tag;
 		}
-		NbtCompound tag = new NbtCompound();
+		CompoundTag tag = new CompoundTag();
 		// any block exposing the Fabric Transfer API, including every vanilla Inventory
 		Storage<ItemVariant> storage = findItemStorage(te);
 		if (storage != null) {
@@ -173,7 +173,7 @@ public class CrossModLoader {
 				}
 				// the world is non-null here: findItemStorage returns null without one
 				if (size < 6)
-					tag.put("slot" + Integer.toString(size), stack.encodeAllowEmpty(te.getWorld().getRegistryManager()));
+					tag.put("slot" + Integer.toString(size), ItemStackHelper.saveOptional(stack, te.getLevel().registryAccess()));
 				size++;
 			}
 			tag.putInt("size", size);
@@ -184,11 +184,11 @@ public class CrossModLoader {
 	}
 
 	private static Storage<ItemVariant> findItemStorage(BlockEntity te) {
-		World world = te.getWorld();
+		Level world = te.getLevel();
 		if (world == null)
 			return null;
-		BlockPos pos = te.getPos();
-		BlockState state = te.getCachedState();
+		BlockPos pos = te.getBlockPos();
+		BlockState state = te.getBlockState();
 		Storage<ItemVariant> storage = ItemStorage.SIDED.find(world, pos, state, te, null);
 		if (storage != null)
 			return storage;

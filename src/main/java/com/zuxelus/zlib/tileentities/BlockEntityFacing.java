@@ -1,12 +1,17 @@
 package com.zuxelus.zlib.tileentities;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public abstract class BlockEntityFacing extends BlockEntity {
 
@@ -22,7 +27,7 @@ public abstract class BlockEntityFacing extends BlockEntity {
 	}
 
 	public void setFacing(int meta) {
-		facing = Direction.byId(meta);
+		facing = Direction.from3DDataValue(meta);
 	}
 
 	protected boolean hasRotation() {
@@ -34,35 +39,38 @@ public abstract class BlockEntityFacing extends BlockEntity {
 	}
 
 	public void setRotation(int meta) {
-		rotation = Direction.byId(meta);
+		rotation = Direction.from3DDataValue(meta);
 	}
 
 	public void setRotation(Direction meta) {
 		rotation = meta;
 	}
 
-	protected void readProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
-		if (tag.contains("facing"))
-			facing = Direction.byId(tag.getInt("facing"));
-		else
-			facing = Direction.NORTH;
-		if (hasRotation()) {
-			if (tag.contains("rotation"))
-				rotation = Direction.byId(tag.getInt("rotation"));
-			else
-				rotation = Direction.NORTH;
-		}
+	protected void readProperties(ValueInput tag) {
+		facing = Direction.from3DDataValue(tag.getIntOr("facing", Direction.NORTH.get3DDataValue()));
+		if (hasRotation())
+			rotation = Direction.from3DDataValue(tag.getIntOr("rotation", Direction.NORTH.get3DDataValue()));
 	}
 
-	protected NbtCompound writeProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
-		tag.putInt("facing", facing.getId());
+	protected void writeProperties(ValueOutput tag) {
+		tag.putInt("facing", facing.get3DDataValue());
 		if (hasRotation() && rotation != null)
-			tag.putInt("rotation", rotation.getId());
-		return tag;
+			tag.putInt("rotation", rotation.get3DDataValue());
+	}
+
+	// update packets still carry a raw CompoundTag
+	protected void readProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		readProperties(TagValueInput.create(ProblemReporter.DISCARDING, registries, tag));
+	}
+
+	protected CompoundTag writeProperties(HolderLookup.Provider registries) {
+		TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, registries);
+		writeProperties(output);
+		return output.buildResult();
 	}
 
 	protected void notifyBlockUpdate() {
-		BlockState state = world.getBlockState(pos);
-		world.updateListeners(pos, state, state, 2);
+		BlockState state = level.getBlockState(worldPosition);
+		level.sendBlockUpdated(worldPosition, state, state, 2);
 	}
 }

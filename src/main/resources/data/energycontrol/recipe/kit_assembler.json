@@ -6,21 +6,11 @@
 		"iFi"
 	],
 	"key": {
-		"i": {
-			"tag": "c:ingots/iron"
-		},
-		"C": {
-			"item": "minecraft:crafting_table"
-		},
-		"R": {
-			"tag": "c:dusts/redstone"
-		},
-		"H": {
-			"item": "minecraft:chest"
-		},
-		"F": {
-			"item": "minecraft:furnace"
-		}
+		"i": "#c:ingots/iron",
+		"C": "minecraft:crafting_table",
+		"R": "#c:dusts/redstone",
+		"H": "minecraft:chest",
+		"F": "minecraft:furnace"
 	},
 	"result": {
 		"id": "energycontrol:kit_assembler"

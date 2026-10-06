@@ -1,8 +1,9 @@
 package com.zuxelus.energycontrol.gui;
 
-import net.minecraft.text.Text;
-
 import com.zuxelus.energycontrol.EnergyControl;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
@@ -11,11 +12,12 @@ import com.zuxelus.zlib.gui.controls.GuiTextArea;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.Element;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 @Environment(EnvType.CLIENT)
 public class GuiCardText extends GuiBase {
@@ -40,10 +42,10 @@ public class GuiCardText extends GuiBase {
 	@Override
 	public void init() {
 		super.init();
-		addDrawableChild(ButtonWidget.builder(ScreenTexts.DONE, (button) -> { actionPerformed(1); }).dimensions(guiLeft + xSize - 60 - 8, guiTop + 120, 60, 20).build());
-		addDrawableChild(ButtonWidget.builder(Text.literal("Style"), (button) -> { actionPerformed(2); }).dimensions(guiLeft + 8, guiTop + 120, 60, 20).build());
-		textArea = new GuiTextArea(textRenderer, guiLeft + 8, guiTop + 5, xSize - 16, ySize - 35, lineCount);
-		addSelectableChild(textArea);
+		addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, (button) -> { actionPerformed(1); }).bounds(guiLeft + xSize - 60 - 8, guiTop + 120, 60, 20).build());
+		addRenderableWidget(Button.builder(Component.literal("Style"), (button) -> { actionPerformed(2); }).bounds(guiLeft + 8, guiTop + 120, 60, 20).build());
+		textArea = new GuiTextArea(font, guiLeft + 8, guiTop + 5, xSize - 16, ySize - 35, lineCount);
+		addWidget(textArea);
 		setInitialFocus(textArea);
 		String[] data = textArea.getText();
 		for (int i = 0; i < lineCount; i++)
@@ -51,9 +53,9 @@ public class GuiCardText extends GuiBase {
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(DrawContext context, float partialTicks, int mouseX, int mouseY) {
+	protected void drawGuiContainerBackgroundLayer(GuiGraphicsExtractor context, float partialTicks, int mouseX, int mouseY) {
 		super.drawGuiContainerBackgroundLayer(context, partialTicks, mouseX, mouseY);
-		textArea.render(context, mouseY, mouseY, partialTicks);
+		textArea.extractRenderState(context, mouseY, mouseY, partialTicks);
 	}
 
 	@Override
@@ -72,7 +74,7 @@ public class GuiCardText extends GuiBase {
 						reader.setString("line_" + i, lines[i]);
 			}
 			reader.updateServer(stack, panel, slot);
-			client.setScreen(parentGui);
+			minecraft.gui.setScreen(parentGui);
 			break;
 		case 2:
 			textArea.writeText("@");
@@ -81,28 +83,34 @@ public class GuiCardText extends GuiBase {
 	}
 
 	@Override
-	public boolean mouseClicked(double x, double y, int p_94697_) {
-		Element control = getFocused();
+	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+		double x = event.x();
+		double y = event.y();
+		int p_94697_ = event.button();
+		GuiEventListener control = getFocused();
 		if (control instanceof GuiTextArea) {
-			boolean result = super.mouseClicked(x, y, p_94697_);
+			boolean result = super.mouseClicked(event, doubleClick);
 			setFocused(control);
 			return result;
 		}
-		return super.mouseClicked(x, y, p_94697_);
+		return super.mouseClicked(event, doubleClick);
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (keyCode == 256) {
+	public boolean keyPressed(KeyEvent event) {
+		int keyCode = event.key();
+		int scanCode = event.keycode();
+		int modifiers = event.modifiers();
+		if (keyCode == InputConstants.KEY_ESCAPE) {
 			actionPerformed(1);
 			return true;
 		}
-		return super.keyPressed(keyCode, scanCode, modifiers);
+		return super.keyPressed(event);
 	}
 
 	@Override
-	public void close() {
+	public void onClose() {
 		actionPerformed(1);
-		super.close();
+		super.onClose();
 	}
 }

@@ -1,28 +1,18 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-        "A  ",
-        "CMC",
-        "RPP"
-    ],
-    "key": {
-        "A": {
-            "item": "energycontrol:strong_string"
-        },
-        "C": {
-            "item": "energycontrol:radio_transmitter"
-        },
-        "M": {
-            "item": "energycontrol:info_panel_extender"
-        },
-        "R": {
-            "item": "energycontrol:upgrade_range"
-        },
-        "P": {
-            "tag": "c:charcoal"
-        }
-    },
-    "result": {
-        "id": "energycontrol:portable_panel"
-    }
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"A  ",
+		"CMC",
+		"RPP"
+	],
+	"key": {
+		"A": "energycontrol:strong_string",
+		"C": "energycontrol:radio_transmitter",
+		"M": "energycontrol:info_panel_extender",
+		"R": "energycontrol:upgrade_range",
+		"P": "#c:charcoal"
+	},
+	"result": {
+		"id": "energycontrol:portable_panel"
+	}
 }

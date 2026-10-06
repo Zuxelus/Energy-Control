@@ -2,8 +2,6 @@ package com.zuxelus.energycontrol.crossmod.rei;
 
 import com.zuxelus.energycontrol.gui.GuiKitAssembler;
 import com.zuxelus.energycontrol.init.ModItems;
-import com.zuxelus.energycontrol.recipes.KitAssemblerRecipe;
-import com.zuxelus.energycontrol.recipes.KitAssemblerRecipeType;
 
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
@@ -15,11 +13,10 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 import me.shedaniel.rei.plugin.client.BuiltinClientPlugin;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.RecipeEntry;
-import net.minecraft.text.Text;
 
 @Environment(EnvType.CLIENT)
 public final class ClientPlugin implements REIClientPlugin {
@@ -34,7 +31,7 @@ public final class ClientPlugin implements REIClientPlugin {
 
 	@Override
 	public void registerDisplays(DisplayRegistry registry) {
-		registry.registerRecipeFiller(KitAssemblerRecipe.class, KitAssemblerRecipeType.TYPE, (RecipeEntry<KitAssemblerRecipe> entry) -> new KitAssemblerDisplay(entry.value()));
+		// the kit assembler displays come from the server, see ServerPlugin
 		registerInformation();
 	}
 
@@ -72,10 +69,10 @@ public final class ClientPlugin implements REIClientPlugin {
 		registerItem(ModItems.portable_panel, "ec.jei.itemPortablePanel");
 	}
 
-	private static void registerItem(ItemConvertible item, String key) {
+	private static void registerItem(ItemLike item, String key) {
 		if (item != null)
-			BuiltinClientPlugin.getInstance().registerInformation(EntryStacks.of(item), item.asItem().getName(), lines -> {
-				lines.add(Text.translatable(key));
+			BuiltinClientPlugin.getInstance().registerInformation(EntryStacks.of(item), Component.translatable(item.asItem().getDescriptionId()), lines -> {
+				lines.add(Component.translatable(key));
 				return lines;
 			});
 	}

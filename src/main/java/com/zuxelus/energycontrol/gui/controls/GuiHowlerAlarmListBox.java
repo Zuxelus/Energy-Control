@@ -1,24 +1,28 @@
 package com.zuxelus.energycontrol.gui.controls;
 
-import net.minecraft.screen.ScreenTexts;
-
 import java.util.List;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.PressableWidget;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.resources.Identifier;
 
 @Environment(EnvType.CLIENT)
-public class GuiHowlerAlarmListBox extends PressableWidget {
-	private static final Identifier TEXTURE = Identifier.of("energycontrol:textures/gui/gui_howler_alarm.png");
+public class GuiHowlerAlarmListBox extends AbstractButton {
+	private static final Identifier TEXTURE = Identifier.parse("energycontrol:textures/gui/gui_howler_alarm.png");
 
 	private static final int BASIC_X_OFFSET = 2;
 	private static final int BASIC_Y_OFFSET = 2;
@@ -38,12 +42,12 @@ public class GuiHowlerAlarmListBox extends PressableWidget {
 	private int dragDelta;
 
 	public GuiHowlerAlarmListBox(int left, int top, int width, int height, List<String> items, TileEntityHowlerAlarm alarm) {
-		super(left, top, width, height, ScreenTexts.EMPTY);
+		super(left, top, width, height, CommonComponents.EMPTY);
 		this.items = items;
 		this.alarm = alarm;
-		fontColor = 0x404040;
+		fontColor = 0xFF404040;
 		selectedColor = 0xff404040;
-		selectedFontColor = 0xA0A0A0;
+		selectedFontColor = 0xFFA0A0A0;
 		scrollTop = 0;
 		lineHeight = 0;
 		sliderHeight = 0;
@@ -78,7 +82,7 @@ public class GuiHowlerAlarmListBox extends PressableWidget {
 	}
 
 	@Override
-	public void renderWidget(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+	protected void extractContents(GuiGraphicsExtractor context, int mouseX, int mouseY, float partialTicks) {
 		if (dragging) {
 			int pos = (mouseY - getY() - SCROLL_BUTTON_HEIGHT - dragDelta)
 					* (lineHeight * items.size() + BASIC_Y_OFFSET - height)
@@ -86,11 +90,11 @@ public class GuiHowlerAlarmListBox extends PressableWidget {
 			scrollTo(pos);
 		}
 
-		MinecraftClient minecraft = MinecraftClient.getInstance();
-		TextRenderer fontRenderer = minecraft.textRenderer;
+		Minecraft minecraft = Minecraft.getInstance();
+		Font fontRenderer = minecraft.font;
 		String currentItem = alarm.getSoundName();
 		if (lineHeight == 0) {
-			lineHeight = fontRenderer.fontHeight + 2;
+			lineHeight = fontRenderer.lineHeight + 2;
 			if (scrollTop == 0) {
 				int rowsPerHeight = height / lineHeight;
 				int currentIndex = items.indexOf(currentItem);
@@ -111,9 +115,9 @@ public class GuiHowlerAlarmListBox extends PressableWidget {
 		for (String row : items) {
 			if(row.equals(currentItem)) {
 				context.fill(getX(), getY() + rowTop - scrollTop - 1, getX() + width - SCROLL_WIDTH, getY() + rowTop - scrollTop + lineHeight - 1, selectedColor);
-				context.drawText(fontRenderer, row, getX() + BASIC_X_OFFSET, getY() + rowTop - scrollTop, selectedFontColor, false);
+				context.text(fontRenderer, row, getX() + BASIC_X_OFFSET, getY() + rowTop - scrollTop, selectedFontColor, false);
 			} else
-				context.drawText(fontRenderer, row, getX() + BASIC_X_OFFSET, getY() + rowTop - scrollTop, fontColor, false);
+				context.text(fontRenderer, row, getX() + BASIC_X_OFFSET, getY() + rowTop - scrollTop, fontColor, false);
 			
 			rowTop += lineHeight;
 		}
@@ -123,10 +127,10 @@ public class GuiHowlerAlarmListBox extends PressableWidget {
 		// Slider
 		int sliderX = getX() + width - SCROLL_WIDTH + 1;
 		sliderY = getY() + SCROLL_BUTTON_HEIGHT + ((height - 2 * SCROLL_BUTTON_HEIGHT - sliderHeight) * scrollTop) / (lineHeight * items.size() + BASIC_Y_OFFSET - height);
-		context.drawTexture(TEXTURE, sliderX, sliderY, 131, 16, SCROLL_WIDTH - 1, 1);
+		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, sliderX, sliderY, 131, 16, SCROLL_WIDTH - 1, 1, 256, 256);
 		// slider body: one texture row stretched to the slider height
-		context.drawTexture(TEXTURE, sliderX, sliderY + 1, SCROLL_WIDTH - 1, sliderHeight - 2, 131, 17, SCROLL_WIDTH - 1, 1, 256, 256);
-		context.drawTexture(TEXTURE, sliderX, sliderY + sliderHeight - 1, 131, 19, SCROLL_WIDTH - 1, 1);
+		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, sliderX, sliderY + 1, 131, 17, SCROLL_WIDTH - 1, sliderHeight - 2, SCROLL_WIDTH - 1, 1, 256, 256);
+		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, sliderX, sliderY + sliderHeight - 1, 131, 19, SCROLL_WIDTH - 1, 1, 256, 256);
 	}
 
 	private void setCurrent(double targetY) {
@@ -138,24 +142,27 @@ public class GuiHowlerAlarmListBox extends PressableWidget {
 			itemIndex = items.size() - 1;
 		
 		String newSound = items.get(itemIndex);
-		if (alarm.getWorld().isClient && !newSound.equals(alarm.getSoundName())) {
-			NetworkHelper.updateSeverTileEntity(alarm.getPos(), 1, newSound);
+		if (alarm.getLevel().isClientSide() && !newSound.equals(alarm.getSoundName())) {
+			NetworkHelper.updateSeverTileEntity(alarm.getBlockPos(), 1, newSound);
 			alarm.setSoundName(newSound);
 		}
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+	public boolean keyPressed(KeyEvent event) {
+		int keyCode = event.key();
+		int scanCode = event.keycode();
+		int modifiers = event.modifiers();
 		// consumed, otherwise the screen also moves keyboard focus away from the list
-		if (keyCode == 264) { // down
+		if (keyCode == InputConstants.KEY_DOWN) { // down
 			scrollDown();
 			return true;
 		}
-		if (keyCode == 265) { // up
+		if (keyCode == InputConstants.KEY_UP) { // up
 			scrollUp();
 			return true;
 		}
-		return super.keyPressed(keyCode, scanCode, modifiers);
+		return super.keyPressed(event);
 	}
 
 	@Override
@@ -170,10 +177,12 @@ public class GuiHowlerAlarmListBox extends PressableWidget {
 	}
 
 	@Override
-	public void onPress() { }
+	public void onPress(InputWithModifiers input) { }
 
 	@Override
-	public void onClick(double mouseX, double mouseY) {
+	public void onClick(MouseButtonEvent event, boolean doubleClick) {
+		double mouseX = event.x();
+		double mouseY = event.y();
 		if (mouseX > getX() + width - SCROLL_WIDTH) {// scroll click
 			if (mouseY - getY() < SCROLL_BUTTON_HEIGHT)
 				scrollUp();
@@ -188,12 +197,14 @@ public class GuiHowlerAlarmListBox extends PressableWidget {
 	}
 
 	@Override
-	public void onRelease(double mouseX, double mouseY) {
+	public void onRelease(MouseButtonEvent event) {
+		double mouseX = event.x();
+		double mouseY = event.y();
 		dragging = false;
 	}
 
 	@Override
-	public void appendClickableNarrations(NarrationMessageBuilder var1) {
+	public void updateWidgetNarration(NarrationElementOutput var1) {
 		// TODO Auto-generated method stub
 	}
 }

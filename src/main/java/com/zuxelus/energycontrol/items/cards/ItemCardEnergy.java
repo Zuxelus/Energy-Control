@@ -1,8 +1,9 @@
 package com.zuxelus.energycontrol.items.cards;
 
 import java.util.ArrayList;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import java.util.List;
-
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.IHasBars;
@@ -12,20 +13,19 @@ import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class ItemCardEnergy extends ItemCardMain implements IHasBars {
 	private static final int BAR_COLOR = 0xFF2ECC40; // filled part
 	private static final int EMPTY_COLOR = 0xB0000000; // darkens the empty part, as on the liquid card
 
 	@Override
-	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
+	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
 		BlockPos target = reader.getTarget();
 		if (target == null)
 			return CardState.NO_TARGET;
@@ -34,18 +34,18 @@ public class ItemCardEnergy extends ItemCardMain implements IHasBars {
 		if (te == null)
 			return CardState.NO_TARGET;
 
-		NbtCompound tag = CrossModLoader.getEnergyData(te);
+		CompoundTag tag = CrossModLoader.getEnergyData(te);
 		if (tag != null) {
-			reader.setDouble("storage", tag.getDouble("storage"));
-			reader.setDouble("maxStorage", tag.getDouble("maxStorage"));
-			reader.setString("euType", tag.getString("euType"));
+			reader.setDouble("storage", tag.getDoubleOr("storage", 0.0));
+			reader.setDouble("maxStorage", tag.getDoubleOr("maxStorage", 0.0));
+			reader.setString("euType", tag.getStringOr("euType", ""));
 			return CardState.OK;
 		}
 		return CardState.NO_TARGET;
 	}
 
 	@Override
-	public List<PanelString> getStringData(World world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(Level world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 
 		double energy = reader.getDouble("storage");
@@ -67,11 +67,11 @@ public class ItemCardEnergy extends ItemCardMain implements IHasBars {
 	@Environment(EnvType.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(5);
-		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelEnergy"), 1));
-		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelFree"), 2));
-		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelCapacity"), 4));
-		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelPercentage"), 8));
-		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelShowBar"), 1024));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelEnergy"), 1));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelFree"), 2));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelCapacity"), 4));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelPercentage"), 8));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelShowBar"), 1024));
 		return result;
 	}
 
@@ -89,7 +89,7 @@ public class ItemCardEnergy extends ItemCardMain implements IHasBars {
 	// same place and size as the liquid card bar: a band across the middle of the screen
 	@Override
 	@Environment(EnvType.CLIENT)
-	public void renderBars(float displayWidth, float displayHeight, ICardReader reader, MatrixStack matrixStack) {
+	public void renderBars(float displayWidth, float displayHeight, ICardReader reader, PoseStack matrixStack, SubmitNodeCollector collector) {
 		double storage = reader.getDouble("maxStorage");
 		if (storage <= 0)
 			return;
@@ -99,8 +99,8 @@ public class ItemCardEnergy extends ItemCardMain implements IHasBars {
 		float width = 14 / 16.0F * (float) (Math.min(reader.getDouble("storage"), storage) / storage);
 
 		matrixStack.scale(displayWidth / 0.875F, displayHeight / 0.875F, 1);
-		IHasBars.drawTransparentRect(matrixStack, x + 0.875F, y + height, x, y, 0, BAR_COLOR);
-		IHasBars.drawTransparentRect(matrixStack, x + 0.875F - width, y + height, x, y, -0.0001F, EMPTY_COLOR);
+		IHasBars.drawTransparentRect(matrixStack, collector, x + 0.875F, y + height, x, y, 0, BAR_COLOR);
+		IHasBars.drawTransparentRect(matrixStack, collector, x + 0.875F - width, y + height, x, y, -0.0001F, EMPTY_COLOR);
 		matrixStack.scale(0.875F / displayWidth, 0.875F / displayHeight, 1);
 	}
 }

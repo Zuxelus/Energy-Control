@@ -6,15 +6,9 @@
 		"CCC"
 	],
 	"key": {
-		"P": {
-			"item": "minecraft:cyan_stained_glass_pane"
-		},
-		"E": {
-			"item": "energycontrol:info_panel_extender"
-		},
-		"C": {
-			"tag": "c:charcoal"
-		}
+		"P": "minecraft:cyan_stained_glass_pane",
+		"E": "energycontrol:info_panel_extender",
+		"C": "#c:charcoal"
 	},
 	"result": {
 		"id": "energycontrol:info_panel_advanced_extender"

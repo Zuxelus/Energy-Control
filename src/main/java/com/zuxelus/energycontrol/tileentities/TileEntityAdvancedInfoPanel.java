@@ -8,20 +8,21 @@ import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 
 import com.zuxelus.energycontrol.renderers.RotationOffset;
 import com.zuxelus.zlib.blocks.FacingBlockActive;
-
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.text.Text;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.Vec3;
 
 public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	public static final String NAME = "info_panel_advanced";
@@ -65,7 +66,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 
 	public void setPowerMode(byte mode) {
 		powerMode = mode;
-		if (world != null && !world.isClient)
+		if (level != null && !level.isClientSide())
 			updatePower();
 	}
 
@@ -73,17 +74,17 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	// instead of following redstone in the block
 	public void updatePower() { // server
 		calcPowered();
-		BlockState state = world.getBlockState(pos);
-		if (state.getBlock() instanceof AdvancedInfoPanel && state.get(FacingBlockActive.ACTIVE) != powered)
-			world.setBlockState(pos, state.with(FacingBlockActive.ACTIVE, powered), 2);
-		updateExtenders(world, powered);
+		BlockState state = level.getBlockState(worldPosition);
+		if (state.getBlock() instanceof AdvancedInfoPanel && state.getValue(FacingBlockActive.ACTIVE) != powered)
+			level.setBlock(worldPosition, state.setValue(FacingBlockActive.ACTIVE, powered), 2);
+		updateExtenders(level, powered);
 	}
 
 	@Override
 	protected void tick() {
 		boolean firstTick = !init;
 		super.tick();
-		if (firstTick && !world.isClient)
+		if (firstTick && !level.isClientSide())
 			updatePower();
 	}
 
@@ -103,7 +104,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 
 	@Override
 	protected void calcPowered() { //server
-		boolean newPowered = world.isReceivingRedstonePower(pos);
+		boolean newPowered = level.hasNeighborSignal(worldPosition);
 		switch (powerMode) {
 		case POWER_ON:
 			newPowered = true;
@@ -120,7 +121,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 		if (newPowered != powered) {
 			powered = newPowered;
 			if (screen != null)
-				screen.turnPower(powered, world);
+				screen.turnPower(powered, level);
 		}
 	}
 
@@ -146,37 +147,37 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 			rotateVert = (byte) i;
 		}
 		// the panel body is a baked model, so its chunk has to be rebuilt to show the new shape
-		if (world == null)
+		if (level == null)
 			return;
-		if (world.isClient)
+		if (level.isClientSide())
 			refreshScreenModel();
 		else {
-			markDirty();
+			setChanged();
 			notifyBlockUpdate();
 		}
 	}
 
 	@Override
-	public void onServerMessageReceived(NbtCompound tag) {
+	public void onServerMessageReceived(CompoundTag tag) {
 		if (!tag.contains("type"))
 			return;
-		int type = tag.getInt("type");
+		int type = tag.getIntOr("type", 0);
 		if (type < 10) {
 			super.onServerMessageReceived(tag);
 			return;
 		}
 		switch (type) {
 		case 10:
-			setValues(tag.getInt("value"));
+			setValues(tag.getIntOr("value", 0));
 			break;
 		case 11:
-			setPowerMode((byte) tag.getInt("value"));
+			setPowerMode((byte) tag.getIntOr("value", 0));
 			break;
 		}
 	}
 
 	@Override
-	protected void deserializeDisplaySettings(NbtCompound tag) {
+	protected void deserializeDisplaySettings(ValueInput tag) {
 		deserializeSlotSettings(tag, "dSettings1", SLOT_CARD1);
 		deserializeSlotSettings(tag, "dSettings2", SLOT_CARD2);
 		deserializeSlotSettings(tag, "dSettings3", SLOT_CARD3);
@@ -189,7 +190,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 
 	@Override
 	protected RotationOffset getRenderOffset() {
-		return getRenderOffset(thickness, rotateHor, rotateVert, screen, getPos(), getFacing(), getRotation());
+		return getRenderOffset(thickness, rotateHor, rotateVert, screen, getBlockPos(), getFacing(), getRotation());
 	}
 
 	public static RotationOffset getRenderOffset(byte thickness, byte rotateHor, byte rotateVert, Screen screen, BlockPos pos, Direction facing, Direction rotation) {
@@ -204,41 +205,40 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	}
 
 	@Override
-	protected void readProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
-		super.readProperties(tag, registries);
+	protected void readProperties(ValueInput tag) {
+		super.readProperties(tag);
 		if (tag.contains("powerMode"))
-			setPowerMode(tag.getByte("powerMode"));
+			setPowerMode(tag.getByteOr("powerMode", (byte) 0));
 		if (tag.contains("thickness"))
-			thickness = tag.getByte("thickness");
+			thickness = tag.getByteOr("thickness", (byte) 0);
 		if (tag.contains("rotateHor"))
-			rotateHor = tag.getByte("rotateHor");
+			rotateHor = tag.getByteOr("rotateHor", (byte) 0);
 		if (tag.contains("rotateVert"))
-			rotateVert = tag.getByte("rotateVert");
+			rotateVert = tag.getByteOr("rotateVert", (byte) 0);
 	}
 
 	@Override
-	protected void serializeDisplaySettings(NbtCompound tag) {
-		tag.put("dSettings1", serializeSlotSettings(SLOT_CARD1));
-		tag.put("dSettings2", serializeSlotSettings(SLOT_CARD2));
-		tag.put("dSettings3", serializeSlotSettings(SLOT_CARD3));
+	protected void serializeDisplaySettings(ValueOutput tag) {
+		serializeSlotSettings(tag, "dSettings1", SLOT_CARD1);
+		serializeSlotSettings(tag, "dSettings2", SLOT_CARD2);
+		serializeSlotSettings(tag, "dSettings3", SLOT_CARD3);
 	}
 
 	@Override
-	protected NbtCompound writeProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
-		tag = super.writeProperties(tag, registries);
+	protected void writeProperties(ValueOutput tag) {
+		super.writeProperties(tag);
 		tag.putByte("powerMode", powerMode);
 		tag.putByte("thickness", thickness);
 		tag.putByte("rotateHor", rotateHor);
 		tag.putByte("rotateVert", rotateVert);
-		return tag;
 	}
 
 	@Override
-	public DefaultedList<ItemStack> getCards() {
-		DefaultedList<ItemStack> data = DefaultedList.of();
-		data.add(getStack(SLOT_CARD1));
-		data.add(getStack(SLOT_CARD2));
-		data.add(getStack(SLOT_CARD3));
+	public NonNullList<ItemStack> getCards() {
+		NonNullList<ItemStack> data = NonNullList.create();
+		data.add(getItem(SLOT_CARD1));
+		data.add(getItem(SLOT_CARD2));
+		data.add(getItem(SLOT_CARD3));
 		return data;
 	}
 
@@ -258,7 +258,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	}
 
 	@Override
-	public int size() {
+	public int getContainerSize() {
 		return 4;
 	}
 
@@ -277,22 +277,22 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	}
 
 	@Override
-	public boolean runTouchAction(ItemStack stack, BlockPos pos, Vec3d hit) {
-		if (world.isClient)
+	public boolean runTouchAction(ItemStack stack, BlockPos pos, Vec3 hit) {
+		if (level.isClientSide())
 			return false;
-		ItemStack card = getStack(SLOT_CARD1);
+		ItemStack card = getItem(SLOT_CARD1);
 		runTouchAction(this, card, stack, SLOT_CARD1, false);
 		return true;
 	}
 
 	// NamedScreenHandlerFactory
 	@Override
-	public ScreenHandler createMenu(int windowId, PlayerInventory inventory, PlayerEntity player) {
+	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerAdvancedInfoPanel(windowId, inventory, this);
 	}
 
 	@Override
-	public Text getDisplayName() {
-		return Text.translatable(ModItems.info_panel_advanced.getTranslationKey());
+	public Component getDisplayName() {
+		return Component.translatable(ModItems.info_panel_advanced.getDescriptionId());
 	}
 }

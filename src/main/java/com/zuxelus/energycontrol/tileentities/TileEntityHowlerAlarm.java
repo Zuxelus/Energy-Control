@@ -5,17 +5,18 @@ import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.utils.TileEntitySound;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
-
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class TileEntityHowlerAlarm extends BlockEntityFacing implements ITilePacketHandler {
 	private static final String DEFAULT_SOUND_NAME = "default";
@@ -49,7 +50,7 @@ public class TileEntityHowlerAlarm extends BlockEntityFacing implements ITilePac
 	}
 
 	public void setRange(int r) {
-		if (!world.isClient && range != r)
+		if (!level.isClientSide() && range != r)
 			notifyBlockUpdate();
 		range = r;
 	}
@@ -60,11 +61,11 @@ public class TileEntityHowlerAlarm extends BlockEntityFacing implements ITilePac
 
 	public void setSoundName(String name) {
 		soundName = name;
-		if (!world.isClient && !prevSoundName.equals(soundName))
+		if (!level.isClientSide() && !prevSoundName.equals(soundName))
 			notifyBlockUpdate();
-		if (world.isClient) {
+		if (level.isClientSide()) {
 			if (EnergyControl.INSTANCE.availableAlarms != null && !EnergyControl.INSTANCE.availableAlarms.contains(soundName)) {
-				EnergyControl.LOGGER.info(String.format("Can't set sound '%s' at %d,%d,%d, using default", soundName, pos.getX(), pos.getY(), pos.getZ()));
+				EnergyControl.LOGGER.info(String.format("Can't set sound '%s' at %d,%d,%d, using default", soundName, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ()));
 				soundName = DEFAULT_SOUND_NAME;
 			}
 		}
@@ -76,89 +77,87 @@ public class TileEntityHowlerAlarm extends BlockEntityFacing implements ITilePac
 	}
 
 	public void updatePowered(boolean isPowered) {
-		if (world.isClient && isPowered != powered) {
+		if (level.isClientSide() && isPowered != powered) {
 			powered = isPowered;
 			checkStatus();
 		}
 	}
 
 	@Override
-	public void onServerMessageReceived(NbtCompound tag) {
+	public void onServerMessageReceived(CompoundTag tag) {
 		if (!tag.contains("type"))
 			return;
-		switch (tag.getInt("type")) {
+		switch (tag.getIntOr("type", 0)) {
 		case 1:
 			if (tag.contains("string"))
-				setSoundName(tag.getString("string"));
+				setSoundName(tag.getStringOr("string", ""));
 			break;
 		case 2:
 			if (tag.contains("value"))
-				setRange(tag.getInt("value"));
+				setRange(tag.getIntOr("value", 0));
 			break;
 		}
 	}
 
 	@Override
-	public void onClientMessageReceived(NbtCompound tag) { }
+	public void onClientMessageReceived(CompoundTag tag) { }
 
 	@Override
-	public Packet<ClientPlayPacketListener> toUpdatePacket() {
-		return BlockEntityUpdateS2CPacket.create(this);
+	public Packet<ClientGamePacketListener> getUpdatePacket() {
+		return ClientboundBlockEntityDataPacket.create(this);
 	}
 
 	@Override
-	public void onDataPacket(BlockEntityUpdateS2CPacket pkt) {
-		readProperties(pkt.getNbt(), world.getRegistryManager());
+	public void onDataPacket(ClientboundBlockEntityDataPacket pkt) {
+		readProperties(pkt.getTag(), level.registryAccess());
 	}
 
 	@Override
-	public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registries) {
-		NbtCompound tag = super.toInitialChunkDataNbt(registries);
-		tag = writeProperties(tag, registries);
-		powered = world.isReceivingRedstonePower(pos);
+	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+		CompoundTag tag = writeProperties(registries);
+		powered = level.hasNeighborSignal(worldPosition);
 		tag.putBoolean("powered", powered);
 		return tag;
 	}
 
 	@Override
-	protected void readProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
-		super.readProperties(tag, registries);
+	protected void readProperties(ValueInput tag) {
+		super.readProperties(tag);
 		if (tag.contains("soundName"))
-			soundName = prevSoundName = tag.getString("soundName");
+			soundName = prevSoundName = tag.getStringOr("soundName", "");
 		if (tag.contains("range"))
-			range = tag.getInt("range");
+			range = tag.getIntOr("range", 0);
 		if (tag.contains("powered"))
-			updatePowered(tag.getBoolean("powered"));
+			updatePowered(tag.getBooleanOr("powered", false));
 	}
 
 	@Override
-	protected void readNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
-		super.readNbt(tag, registries);
-		readProperties(tag, registries);
+	protected void loadAdditional(ValueInput tag) {
+		super.loadAdditional(tag);
+		readProperties(tag);
 	}
 
 	@Override
-	protected NbtCompound writeProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
-		tag = super.writeProperties(tag, registries);
+	protected void writeProperties(ValueOutput tag) {
+		super.writeProperties(tag);
 		tag.putString("soundName", soundName);
 		tag.putInt("range", range);
-		return tag;
 	}
 
 	@Override
-	protected void writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
-		super.writeNbt(tag, registries);
-		writeProperties(tag, registries);
+	protected void saveAdditional(ValueOutput tag) {
+		super.saveAdditional(tag);
+		writeProperties(tag);
 	}
 
 	@Override
-	public void markRemoved() {
-		if (world.isClient && sound != null)
+	public void setRemoved() {
+		if (level.isClientSide() && sound != null)
 			sound.stopAlarm();
-		super.markRemoved();
+		super.setRemoved();
 	}
 
-	public static void tickStatic(World level, BlockPos pos, BlockState state, BlockEntity be) {
+	public static void tickStatic(Level level, BlockPos pos, BlockState state, BlockEntity be) {
 		if (!(be instanceof TileEntityHowlerAlarm))
 			return;
 		TileEntityHowlerAlarm te = (TileEntityHowlerAlarm) be;
@@ -166,7 +165,7 @@ public class TileEntityHowlerAlarm extends BlockEntityFacing implements ITilePac
 	}
 
 	protected void tick() {
-		if (world.isClient)
+		if (level.isClientSide())
 			checkStatus();
 	}
 
@@ -180,7 +179,7 @@ public class TileEntityHowlerAlarm extends BlockEntityFacing implements ITilePac
 			updateTicker = tickRate;
 		}
 		if (powered && !sound.isPlaying() && updateTicker < 0) {
-			sound.playAlarm(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, SOUND_PREFIX + soundName, range);
+			sound.playAlarm(worldPosition.getX() + 0.5D, worldPosition.getY() + 0.5D, worldPosition.getZ() + 0.5D, SOUND_PREFIX + soundName, range);
 			updateTicker = tickRate;
 		}
 	}

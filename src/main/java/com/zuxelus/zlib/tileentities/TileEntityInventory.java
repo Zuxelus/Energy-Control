@@ -3,40 +3,38 @@ package com.zuxelus.zlib.tileentities;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.Container;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventories;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
-public abstract class TileEntityInventory extends BlockEntityFacing implements Inventory {
-	protected DefaultedList<ItemStack> inventory;
+public abstract class TileEntityInventory extends BlockEntityFacing implements Container {
+	protected NonNullList<ItemStack> inventory;
 
 	public TileEntityInventory(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
-		inventory = DefaultedList.ofSize(size(), ItemStack.EMPTY);
+		inventory = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
 	}
 
 	@Override
-	protected void readProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
-		super.readProperties(tag, registries);
-		inventory = DefaultedList.ofSize(size(), ItemStack.EMPTY);
-		Inventories.readNbt(tag, inventory, registries);
+	protected void readProperties(ValueInput tag) {
+		super.readProperties(tag);
+		inventory = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
+		ContainerHelper.loadAllItems(tag, inventory);
 	}
 
 	@Override
-	protected NbtCompound writeProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
-		tag = super.writeProperties(tag, registries);
-		Inventories.writeNbt(tag, inventory, registries);
-		return tag;
+	protected void writeProperties(ValueOutput tag) {
+		super.writeProperties(tag);
+		ContainerHelper.saveAllItems(tag, inventory);
 	}
 
 	@Override
@@ -48,19 +46,19 @@ public abstract class TileEntityInventory extends BlockEntityFacing implements I
 	}
 
 	@Override
-	public ItemStack getStack(int slot) {
-		return slot >= 0 && slot < size() ? inventory.get(slot) : ItemStack.EMPTY;
+	public ItemStack getItem(int slot) {
+		return slot >= 0 && slot < getContainerSize() ? inventory.get(slot) : ItemStack.EMPTY;
 	}
 
 	@Override
-	public ItemStack removeStack(int index, int count) {
-		ItemStack stack = Inventories.splitStack(inventory, index, count);
+	public ItemStack removeItem(int index, int count) {
+		ItemStack stack = ContainerHelper.removeItem(inventory, index, count);
 		return stack;
 	}
 
 	@Override
-	public ItemStack removeStack(int slot) {
-		ItemStack stack = getStack(slot);
+	public ItemStack removeItemNoUpdate(int slot) {
+		ItemStack stack = getItem(slot);
 		if (stack.isEmpty())
 			return ItemStack.EMPTY;
 		inventory.set(slot, ItemStack.EMPTY);
@@ -68,39 +66,39 @@ public abstract class TileEntityInventory extends BlockEntityFacing implements I
 	}
 
 	@Override
-	public void setStack(int slot, ItemStack stack) {
+	public void setItem(int slot, ItemStack stack) {
 		inventory.set(slot, stack);
-		if (!stack.isEmpty() && stack.getCount() > getMaxCountPerStack())
-			stack.setCount(getMaxCountPerStack());
-		markDirty();
+		if (!stack.isEmpty() && stack.getCount() > getMaxStackSize())
+			stack.setCount(getMaxStackSize());
+		setChanged();
 	}
 
 	@Override
-	public int getMaxCountPerStack() {
+	public int getMaxStackSize() {
 		return 64;
 	}
 
 	@Override
-	public boolean canPlayerUse(PlayerEntity player) {
-		return world.getBlockEntity(pos) != this ? false : player.squaredDistanceTo(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) <= 64.0D;
+	public boolean stillValid(Player player) {
+		return level.getBlockEntity(worldPosition) != this ? false : player.distanceToSqr(worldPosition.getX() + 0.5D, worldPosition.getY() + 0.5D, worldPosition.getZ() + 0.5D) <= 64.0D;
 	}
 
 	@Override
-	public void clear() {
+	public void clearContent() {
 		inventory.clear();
 	}
 
 	public List<ItemStack> getDrops(int fortune) {
 		List<ItemStack> list = new ArrayList<>();
-		for (int i = 0; i < size(); i++) {
-			ItemStack stack = getStack(i);
+		for (int i = 0; i < getContainerSize(); i++) {
+			ItemStack stack = getItem(i);
 			if (!stack.isEmpty())
 				list.add(stack);
 		}
 		return list;
 	}
 
-	public void dropItems(World world, BlockPos pos) {
+	public void dropItems(Level world, BlockPos pos) {
 		Random rand = new Random();
 		List<ItemStack> list = getDrops(1);
 		for (ItemStack stack : list) {
@@ -111,8 +109,8 @@ public abstract class TileEntityInventory extends BlockEntityFacing implements I
 			ItemEntity entityItem = new ItemEntity(world, pos.getX() + rx, pos.getY() + ry, pos.getZ() + rz, stack.copy());
 
 			float factor = 0.05F;
-			entityItem.setVelocity(rand.nextGaussian() * factor, rand.nextGaussian() * factor + 0.2F, rand.nextGaussian() * factor);
-			world.spawnEntity(entityItem);
+			entityItem.setDeltaMovement(rand.nextGaussian() * factor, rand.nextGaussian() * factor + 0.2F, rand.nextGaussian() * factor);
+			world.addFreshEntity(entityItem);
 			stack.setCount(0);
 		}
 	}

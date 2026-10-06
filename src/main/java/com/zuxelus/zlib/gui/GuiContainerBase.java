@@ -1,22 +1,23 @@
 package com.zuxelus.zlib.gui;
 
-import net.minecraft.screen.ScreenTexts;
-
 import java.text.DecimalFormat;
+import net.minecraft.client.renderer.RenderPipelines;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 
 @Environment(EnvType.CLIENT)
-public class GuiContainerBase<T extends ScreenHandler> extends HandledScreen<T> {
+public class GuiContainerBase<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
 	private static final int oX[] = {0, -1, 0, 1};
 	private static final int oY[] = {-1, 0, 1, 0};
 	private static final int MASKR = 0xFF0000;
@@ -30,65 +31,71 @@ public class GuiContainerBase<T extends ScreenHandler> extends HandledScreen<T> 
 
 	private final Identifier texture;
 
-	public GuiContainerBase(T container, PlayerInventory inv, Text name, Identifier texture) {
-		super(container, inv, name);
+	public GuiContainerBase(T container, Inventory inv, Component name, Identifier texture) {
+		this(container, inv, name, texture, DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT);
+	}
+
+	// the image size is final now and must be known when the label positions are computed
+	public GuiContainerBase(T container, Inventory inv, Component name, Identifier texture, int imageWidth, int imageHeight) {
+		super(container, inv, name, imageWidth, imageHeight);
 		this.texture = texture;
 	}
 
 	@Override
-	protected void drawBackground(DrawContext context, float partialTicks, int mouseX, int mouseY) {
-		context.drawTexture(texture, x, y, 0, 0, backgroundWidth, backgroundHeight);
+	public void extractBackground(GuiGraphicsExtractor context, int mouseX, int mouseY, float partialTicks) {
+		super.extractBackground(context, mouseX, mouseY, partialTicks);
+		context.blit(RenderPipelines.GUI_TEXTURED, texture, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
 	}
 
-	public void drawCenteredText(DrawContext context, Text text, int x, int y) {
-		drawCenteredText(context, text, x, y, 0x404040);
+	public void drawCenteredText(GuiGraphicsExtractor context, Component text, int x, int y) {
+		drawCenteredText(context, text, x, y, 0xFF404040);
 	}
 
-	public void drawRightAlignedText(DrawContext context, String text, int x, int y) {
-		drawRightAlignedText(context, text, x, y, 0x404040);
+	public void drawRightAlignedText(GuiGraphicsExtractor context, String text, int x, int y) {
+		drawRightAlignedText(context, text, x, y, 0xFF404040);
 	}
 
-	public void drawLeftAlignedText(DrawContext context, String text, int x, int y) {
-		drawLeftAlignedText(context, text, x, y, 0x404040);
+	public void drawLeftAlignedText(GuiGraphicsExtractor context, String text, int x, int y) {
+		drawLeftAlignedText(context, text, x, y, 0xFF404040);
 	}
 
-	public void drawCenteredText(DrawContext context, Text text, int x, int y, int color) {
-		OrderedText ireorderingprocessor = text.asOrderedText();
-		context.drawText(textRenderer, ireorderingprocessor, (x - textRenderer.getWidth(ireorderingprocessor)) / 2, y, color, false);
+	public void drawCenteredText(GuiGraphicsExtractor context, Component text, int x, int y, int color) {
+		FormattedCharSequence ireorderingprocessor = text.getVisualOrderText();
+		context.text(font, ireorderingprocessor, (x - font.width(ireorderingprocessor)) / 2, y, ARGB.opaque(color), false);
 	}
 
-	public void drawRightAlignedText(DrawContext context, String text, int x, int y, int color) {
-		context.drawText(textRenderer, text, x - textRenderer.getWidth(text), y, color, false);
+	public void drawRightAlignedText(GuiGraphicsExtractor context, String text, int x, int y, int color) {
+		context.text(font, text, x - font.width(text), y, ARGB.opaque(color), false);
 	}
 
-	public void drawLeftAlignedText(DrawContext context, String text, int x, int y, int color) {
-		context.drawText(textRenderer, text, x, y, color, false);
+	public void drawLeftAlignedText(GuiGraphicsExtractor context, String text, int x, int y, int color) {
+		context.text(font, text, x, y, ARGB.opaque(color), false);
 	}
 
-	public void drawRightAlignedGlowingText(DrawContext context, String text, int x, int y, int color, int glowColor) {
-		drawGlowingText(context, text, x - textRenderer.getWidth(text), y, color, glowColor);
+	public void drawRightAlignedGlowingText(GuiGraphicsExtractor context, String text, int x, int y, int color, int glowColor) {
+		drawGlowingText(context, text, x - font.width(text), y, color, glowColor);
 	}
 
-	public void drawGlowingText(DrawContext context, String text, int x, int y, int color, int glowColor) {
+	public void drawGlowingText(GuiGraphicsExtractor context, String text, int x, int y, int color, int glowColor) {
 		for (int i = 0; i < 4; i++)
-			context.drawText(textRenderer, text, x + oX[i], y + oY[i], glowColor, false);
-		context.drawText(textRenderer, text, x, y, color, false);
+			context.text(font, text, x + oX[i], y + oY[i], ARGB.opaque(glowColor), false);
+		context.text(font, text, x, y, ARGB.opaque(color), false);
 	}
 
-	public void drawCenteredGlowingText(DrawContext context, String text, int x, int y, int color, int glowColor) {
-		drawGlowingText(context, text, x - textRenderer.getWidth(text) / 2, y, color, glowColor);
+	public void drawCenteredGlowingText(GuiGraphicsExtractor context, String text, int x, int y, int color, int glowColor) {
+		drawGlowingText(context, text, x - font.width(text) / 2, y, color, glowColor);
 	}
 
 	public static int multiplyColorComponents(int color, float brightnessFactor) {
 		return ((int) (brightnessFactor * (color & MASKR)) & MASKR) | ((int) (brightnessFactor * (color & MASKG)) & MASKG) | ((int) (brightnessFactor * (color & MASKB)) & MASKB);
 	}
 
-	protected TextFieldWidget addTextFieldWidget(int left, int top, int width, int height, boolean isEnabled, String text) {
-		TextFieldWidget textBox = new TextFieldWidget(textRenderer, x + left, y + top, width, height, null, ScreenTexts.EMPTY);
+	protected EditBox addTextFieldWidget(int left, int top, int width, int height, boolean isEnabled, String text) {
+		EditBox textBox = new EditBox(font, leftPos + left, topPos + top, width, height, null, CommonComponents.EMPTY);
 		textBox.setEditable(isEnabled);
 		textBox.setFocused(isEnabled);
-		textBox.setText(text);
-		addSelectableChild(textBox);
+		textBox.setValue(text);
+		addWidget(textBox);
 		setInitialFocus(textBox);
 		return textBox;
 	}

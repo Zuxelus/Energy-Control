@@ -1,18 +1,18 @@
 package com.zuxelus.zlib.gui.controls;
 
-import net.minecraft.screen.ScreenTexts;
-
 import net.fabricmc.api.EnvType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
 @Environment(EnvType.CLIENT)
-public class GuiButtonGeneral extends ButtonWidget {
+public class GuiButtonGeneral extends Button {
 	private Identifier texture;
 	public int textureLeft;
 	protected int textureTop;
@@ -21,20 +21,20 @@ public class GuiButtonGeneral extends ButtonWidget {
 	public String tooltip;
 	private boolean hasGradient;
 
-	public GuiButtonGeneral(int left, int top, int width, int height, Identifier texture, int textureLeft, int textureTop, ButtonWidget.PressAction onPress) {
-		this(left, top, width, height, ScreenTexts.EMPTY, texture, textureLeft, textureTop, 0, "", onPress);
+	public GuiButtonGeneral(int left, int top, int width, int height, Identifier texture, int textureLeft, int textureTop, Button.OnPress onPress) {
+		this(left, top, width, height, CommonComponents.EMPTY, texture, textureLeft, textureTop, 0, "", onPress);
 	}
 
-	public GuiButtonGeneral(int left, int top, int width, int height, Identifier texture, int textureLeft, int textureTop, int textureTopOff, ButtonWidget.PressAction onPress) {
-		this(left, top, width, height, ScreenTexts.EMPTY, texture, textureLeft, textureTop, textureTopOff, "", onPress);
+	public GuiButtonGeneral(int left, int top, int width, int height, Identifier texture, int textureLeft, int textureTop, int textureTopOff, Button.OnPress onPress) {
+		this(left, top, width, height, CommonComponents.EMPTY, texture, textureLeft, textureTop, textureTopOff, "", onPress);
 	}
 
-	public GuiButtonGeneral(int left, int top, int width, int height, Text text, ButtonWidget.PressAction onPress) {
+	public GuiButtonGeneral(int left, int top, int width, int height, Component text, Button.OnPress onPress) {
 		this(left, top, width, height, text, null, 0, 0, 0, "", onPress);
 	}
 
-	public GuiButtonGeneral(int left, int top, int width, int height, Text text, Identifier texture, int textureLeft, int textureTop, int textureTopOff, String tooltip, ButtonWidget.PressAction onPress) {
-		super(left, top, width, height, text, onPress, DEFAULT_NARRATION_SUPPLIER);
+	public GuiButtonGeneral(int left, int top, int width, int height, Component text, Identifier texture, int textureLeft, int textureTop, int textureTopOff, String tooltip, Button.OnPress onPress) {
+		super(left, top, width, height, text, onPress, DEFAULT_NARRATION);
 		this.texture = texture;
 		this.textureLeft = textureLeft;
 		this.textureTop = textureTop;
@@ -44,19 +44,19 @@ public class GuiButtonGeneral extends ButtonWidget {
 	}
 
 	@Override
-	public void renderWidget(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+	protected void extractContents(GuiGraphicsExtractor context, int mouseX, int mouseY, float partialTicks) {
 		if (!visible)
 			return;
 
-		MinecraftClient minecraft = MinecraftClient.getInstance();
-		TextRenderer fontRenderer = minecraft.textRenderer;
-		if (hovered && hasGradient)
+		Minecraft minecraft = Minecraft.getInstance();
+		Font fontRenderer = minecraft.font;
+		if (isHovered && hasGradient)
 			context.fillGradient(getX(), getY(), getX() + width, getY() + height, 0x80FFFFFF, 0x80FFFFFF);
 		if (texture != null)
-			context.drawTexture(texture, getX(), getY(), textureLeft / scale, hovered ? (textureTop + textureTopOff) / scale : textureTop / scale, width, height, 256 / scale, 256 / scale);
+			context.blit(RenderPipelines.GUI_TEXTURED, texture, getX(), getY(), textureLeft / scale, isHovered ? (textureTop + textureTopOff) / scale : textureTop / scale, width, height, 256 / scale, 256 / scale);
 		String displayString = getMessage().getString();
 		if (!displayString.equals(""))
-			context.drawText(fontRenderer, displayString, getX() + (width - fontRenderer.getWidth(displayString)) / 2, getY() - 3 + height / 2, 0x404040, false);
+			context.text(fontRenderer, displayString, getX() + (width - fontRenderer.width(displayString)) / 2, getY() - 3 + height / 2, 0xFF404040, false);
 	}
 
 	public GuiButtonGeneral setGradient() {

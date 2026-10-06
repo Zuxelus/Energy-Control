@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.gui;
 
 import java.util.List;
+import net.minecraft.client.renderer.RenderPipelines;
 
 import com.google.common.collect.Lists;
 import com.zuxelus.energycontrol.EnergyControl;
@@ -13,71 +14,70 @@ import com.zuxelus.zlib.gui.GuiContainerBase;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.item.Item;
-import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 
 @Environment(EnvType.CLIENT)
 public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
-	private static final Identifier TEXTURE = Identifier.of(EnergyControl.MODID, "textures/gui/gui_kit_assembler.png");
+	private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/gui_kit_assembler.png");
 
 	private ContainerKitAssembler container;
 
-	public GuiKitAssembler(ContainerKitAssembler container, PlayerInventory inventory, Text title) {
-		super(container, inventory, title, TEXTURE);
+	public GuiKitAssembler(ContainerKitAssembler container, Inventory inventory, Component title) {
+		super(container, inventory, title, TEXTURE, DEFAULT_IMAGE_WIDTH, 182);
 		this.container = container;
-		backgroundHeight = 182;
 	}
 
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
-		super.render(context, mouseX, mouseY, partialTicks);
+	public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float partialTicks) {
+		super.extractRenderState(context, mouseX, mouseY, partialTicks);
 		Slot slot = container.getSlot(TileEntityKitAssembler.SLOT_INFO);
-		if (isPointWithinBounds(slot.x, slot.y, 16, 16, mouseX, mouseY) && slot.isEnabled())
+		if (isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY) && slot.isActive())
 			renderInfoToolTip(context, slot, mouseX, mouseY);
 		else
-			drawMouseoverTooltip(context, mouseX, mouseY);
-		if (isPointWithinBounds(165, 16, 4, 52, mouseX, mouseY))
-			context.drawTooltip(textRenderer, Text.literal(String.format("%d FE/%d FE", (int) container.te.getEnergy(), TileEntityKitAssembler.CAPACITY)), mouseX, mouseY);
+			extractTooltip(context, mouseX, mouseY);
+		if (isHovering(165, 16, 4, 52, mouseX, mouseY))
+			context.setTooltipForNextFrame(font, Component.literal(String.format("%d FE/%d FE", (int) container.te.getEnergy(), TileEntityKitAssembler.CAPACITY)), mouseX, mouseY);
 	}
 
-	private void renderInfoToolTip(DrawContext context, Slot slot, int x, int y) {
-		ItemStack stack = slot.getStack();
+	private void renderInfoToolTip(GuiGraphicsExtractor context, Slot slot, int x, int y) {
+		ItemStack stack = slot.getItem();
 		if (stack.isEmpty() || !(stack.getItem() instanceof ItemCardMain))
 			return;
-		List<Text> stackList = stack.getTooltip(Item.TooltipContext.create(client.world), client.player, client.options.advancedItemTooltips ? TooltipType.ADVANCED : TooltipType.BASIC);
-		List<Text> list = Lists.<Text>newArrayList();
+		List<Component> stackList = stack.getTooltipLines(Item.TooltipContext.of(minecraft.level), minecraft.player, minecraft.options.advancedItemTooltips ? TooltipFlag.ADVANCED : TooltipFlag.NORMAL);
+		List<Component> list = Lists.<Component>newArrayList();
 		if (stackList.size() > 0)
 			list.add(stackList.get(0));
 		List<PanelString> data = new ItemCardReader(stack).getAllData();
 		if (data != null)
 			for (PanelString panelString : data) {
 				if (panelString.textLeft != null)
-					list.add(Text.literal(Formatting.GRAY + panelString.textLeft));
+					list.add(Component.literal(ChatFormatting.GRAY + panelString.textLeft));
 			}
-		context.drawTooltip(textRenderer, list, stack.getTooltipData(), x, y);
+		context.setTooltipForNextFrame(font, list, stack.getTooltipImage(), x, y);
 	}
 
 	@Override
-	protected void drawBackground(DrawContext context, float partialTicks, int mouseX, int mouseY) {
-		super.drawBackground(context, partialTicks, mouseX, mouseY);
+	public void extractBackground(GuiGraphicsExtractor context, int mouseX, int mouseY, float partialTicks) {
+		super.extractBackground(context, mouseX, mouseY, partialTicks);
 
 		int energyHeight = container.te.getEnergyFactor();
 		if (energyHeight > 0)
-			context.drawTexture(TEXTURE, x + 165, y + 16 + (52 - energyHeight), 176, 17 + 52 - energyHeight, 4, energyHeight);
+			context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, leftPos + 165, topPos + 16 + (52 - energyHeight), 176, 17 + 52 - energyHeight, 4, energyHeight, 256, 256);
 		int productionWidth = container.te.getProductionFactor();
 		if (productionWidth > 0)
-			context.drawTexture(TEXTURE, x + 86, y + 35, 176, 0, productionWidth, 17);
+			context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, leftPos + 86, topPos + 35, 176, 0, productionWidth, 17, 256, 256);
 	}
 
 	@Override
-	protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
-		drawCenteredText(context, title, backgroundWidth, 6);
+	protected void extractLabels(GuiGraphicsExtractor context, int mouseX, int mouseY) {
+		drawCenteredText(context, title, imageWidth, 6);
 	}
 }

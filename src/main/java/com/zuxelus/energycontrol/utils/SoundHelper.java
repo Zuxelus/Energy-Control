@@ -7,34 +7,24 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import com.google.common.collect.Maps;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
+import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.sound.SoundEntry;
-import net.minecraft.client.sound.SoundEntryDeserializer;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.resource.Resource;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.SinglePreparationResourceReloader;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
-import net.minecraft.util.profiler.Profiler;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.util.profiling.ProfilerFiller;
 
-public class SoundHelper extends SinglePreparationResourceReloader<Map<String, SoundEntry>> implements IdentifiableResourceReloadListener {
-	public static final Identifier ID = Identifier.of(EnergyControl.MODID, "alarms");
+public class SoundHelper extends SimplePreparableReloadListener<Void> implements IdentifiableResourceReloadListener {
+	public static final Identifier ID = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "alarms");
 	private static File alarms;
-	private static final Gson GSON = (new GsonBuilder()).registerTypeHierarchyAdapter(Text.class, new Text.Serializer(DynamicRegistryManager.EMPTY)).registerTypeAdapter(SoundEntry.class, new SoundEntryDeserializer()).create();
-	private static final TypeToken<Map<String, SoundEntry>> TYPE = new TypeToken<Map<String, SoundEntry>>() {};
 
 	public SoundHelper() {
 		File configFolder = FabricLoader.getInstance().getConfigDir().toFile();
@@ -87,23 +77,26 @@ public class SoundHelper extends SinglePreparationResourceReloader<Map<String, S
 	}
 
 	@Override
-	protected Map<String, SoundEntry> prepare(ResourceManager manager, Profiler profiler) {
+	protected Void prepare(ResourceManager manager, ProfilerFiller profiler) {
 		EnergyControl.INSTANCE.availableAlarms = new ArrayList<String>();
 
 		try {
-			List<Resource> list = manager.getAllResources(Identifier.of(EnergyControl.MODID, "sounds.json"));
+			List<Resource> list = manager.getResourceStack(Identifier.fromNamespaceAndPath(EnergyControl.MODID, "sounds.json"));
 
 			for (int i = list.size() - 1; i >= 0; --i) {
 				Resource resource = list.get(i);
-				Map<String, SoundEntry> map = JsonHelper.deserialize(GSON, new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8), TYPE);
-				map.forEach((string, entry) -> EnergyControl.INSTANCE.availableAlarms.add(string.replace("alarm-", "")));
+				// only the sound event names are needed here, the sounds themselves are loaded by the SoundManager
+				JsonObject json = GsonHelper.parse(new InputStreamReader(resource.open(), StandardCharsets.UTF_8));
+				for (String name : json.keySet())
+					if (!name.startsWith("_"))
+						EnergyControl.INSTANCE.availableAlarms.add(name.replace("alarm-", ""));
 			}
 		} catch (IOException ioexception) { 
 			System.out.print(ioexception.getMessage());
 		}
-		return Maps.newHashMap();
+		return null;
 	}
 
 	@Override
-	protected void apply(Map<String, SoundEntry> loader, ResourceManager manager, Profiler profiler) {}
+	protected void apply(Void loader, ResourceManager manager, ProfilerFiller profiler) {}
 }

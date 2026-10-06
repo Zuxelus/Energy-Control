@@ -2,46 +2,44 @@ package com.zuxelus.zlib.containers;
 
 import java.util.List;
 import java.util.Objects;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import com.google.common.collect.Lists;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanelExtender;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanelExtender;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerContext;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.server.network.ServerPlayerEntity;
-
-public abstract class ContainerBase<T extends Inventory> extends ScreenHandler {
+public abstract class ContainerBase<T extends Container> extends AbstractContainerMenu {
 	public final T te;
 	private final Block block;
-	private final ScreenHandlerContext posCallable;
-	public List<ServerPlayerEntity> containerListeners = Lists.newArrayList();
+	private final ContainerLevelAccess posCallable;
+	public List<ServerPlayer> containerListeners = Lists.newArrayList();
 
-	protected ContainerBase(T te, ScreenHandlerType<?> type, int id) {
+	protected ContainerBase(T te, MenuType<?> type, int id) {
 		this(te, type, id, null, null);
 	}
 
-	protected ContainerBase(T te, ScreenHandlerType<?> type, int id, Block block, ScreenHandlerContext posCallable) {
+	protected ContainerBase(T te, MenuType<?> type, int id, Block block, ContainerLevelAccess posCallable) {
 		super(type, id);
 		this.te = te;
 		this.block = block;
 		this.posCallable = posCallable;
 	}
 
-	protected void addPlayerInventorySlots(Inventory inventory, int height) {
+	protected void addPlayerInventorySlots(Container inventory, int height) {
 		addPlayerInventorySlots(inventory, 178, height);
 	}
 	
-	protected void addPlayerInventorySlots(Inventory inventory, int width, int height) {
+	protected void addPlayerInventorySlots(Container inventory, int width, int height) {
 		int xStart = (width - 162) / 2;
 		for (int row = 0; row < 3; row++)
 			for (int i = 0; i < 9; i++)
@@ -50,47 +48,50 @@ public abstract class ContainerBase<T extends Inventory> extends ScreenHandler {
 		addPlayerInventoryTopSlots(inventory, xStart, height);
 	}
 
-	protected void addPlayerInventoryTopSlots(Inventory inventory, int width, int height) {
+	protected void addPlayerInventoryTopSlots(Container inventory, int width, int height) {
 		for (int col = 0; col < 9; col++)
 			addSlot(new Slot(inventory, col, width + col * 18, height - 24));
 	}
 
 	@Override
-	public boolean canUse(PlayerEntity player) {
+	public boolean stillValid(Player player) {
 		if (posCallable == null || block == null)
 			return true;
-		return canUse(posCallable, player, block);
+		return stillValid(posCallable, player, block);
 	}
 
 	@Override
-	public ItemStack quickMove(PlayerEntity player, int index) {
+	public ItemStack quickMoveStack(Player player, int index) {
 		Slot slot = slots.get(index);
-		if (slot == null || !slot.hasStack())
+		if (slot == null || !slot.hasItem())
 			return ItemStack.EMPTY;
 
-		ItemStack stack = slot.getStack();
+		ItemStack stack = slot.getItem();
 		ItemStack result = stack.copy();
 
-		int containerSlots = slots.size() - player.getInventory().main.size();
+		// container slots come first; some menus (portable panel) show only the hotbar, so count instead of assuming 36
+		int containerSlots = 0;
+		while (containerSlots < slots.size() && !(slots.get(containerSlots).container instanceof Inventory))
+			containerSlots++;
 		if (index < containerSlots) {
-			if (!insertItem(stack, containerSlots, slots.size(), true))
+			if (!moveItemStackTo(stack, containerSlots, slots.size(), true))
 				return ItemStack.EMPTY;
-		} else if (!insertItem(stack, 0, containerSlots, false))
+		} else if (!moveItemStackTo(stack, 0, containerSlots, false))
 			return ItemStack.EMPTY;
 		if (stack.getCount() == 0)
-			slot.setStack(ItemStack.EMPTY);
+			slot.setByPlayer(ItemStack.EMPTY);
 		else
-			slot.markDirty();
+			slot.setChanged();
 		if (stack.getCount() == result.getCount())
 			return ItemStack.EMPTY;
-		slot.onTakeItem(player, stack);
+		slot.onTake(player, stack);
 		return result;
 	}
 
-	public static BlockEntity getBlockEntity(PlayerInventory player, BlockPos data) {
+	public static BlockEntity getBlockEntity(Inventory player, BlockPos data) {
 		Objects.requireNonNull(player, "Player cannot be null!");
 		Objects.requireNonNull(data, "Data cannot be null!");
-		BlockEntity te = player.player.getWorld().getBlockEntity(data);
+		BlockEntity te = player.player.level().getBlockEntity(data);
 		if (te instanceof TileEntityInfoPanelExtender)
 			te = ((TileEntityInfoPanelExtender) te).getCore();
 		if (te instanceof TileEntityAdvancedInfoPanelExtender)

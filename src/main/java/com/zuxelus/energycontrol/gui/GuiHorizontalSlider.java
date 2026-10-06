@@ -1,20 +1,24 @@
 package com.zuxelus.energycontrol.gui;
 
-import net.minecraft.text.Text;
-
 import com.zuxelus.energycontrol.EnergyControl;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.gui.GuiBase;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.PressableWidget;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.OrderedText;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
 
 @Environment(EnvType.CLIENT)
 public class GuiHorizontalSlider extends GuiBase {
@@ -33,31 +37,34 @@ public class GuiHorizontalSlider extends GuiBase {
 	public void init() {
 		super.init();
 		slider = new HorizontalSlider(guiLeft + 12, guiTop + 33);
-		addDrawableChild(slider);
+		addRenderableWidget(slider);
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(DrawContext context, int mouseX, int mouseY) {
+	protected void drawGuiContainerForegroundLayer(GuiGraphicsExtractor context, int mouseX, int mouseY) {
 		drawTitle(context);
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (keyCode == 256) {
-			client.setScreen(parentGui);
+	public boolean keyPressed(KeyEvent event) {
+		int keyCode = event.key();
+		int scanCode = event.keycode();
+		int modifiers = event.modifiers();
+		if (keyCode == InputConstants.KEY_ESCAPE) {
+			minecraft.gui.setScreen(parentGui);
 			return true;
 		}
-		return super.keyPressed(keyCode, scanCode, modifiers);
+		return super.keyPressed(event);
 	}
 
-	public class HorizontalSlider extends PressableWidget {
+	public class HorizontalSlider extends AbstractButton {
 		public int sliderValue;
 		public boolean dragging;
 		private int minValue = 1;
 		private int maxValue = 128;
 
 		public HorizontalSlider(int x, int y) {
-			super(x, y, 132, 16, Text.translatable("msg.ec.Ticks", Integer.toString(panel.getTickRate())));
+			super(x, y, 132, 16, Component.translatable("msg.ec.Ticks", Integer.toString(panel.getTickRate())));
 			dragging = false;
 			sliderValue = panel.getTickRate();
 		}
@@ -71,42 +78,46 @@ public class GuiHorizontalSlider extends GuiBase {
 			if (sliderValue > maxValue)
 				sliderValue = maxValue;
 
-			if (panel.getWorld().isClient && panel.getTickRate() != sliderValue) {
-				NetworkHelper.updateSeverTileEntity(panel.getPos(), 5, sliderValue);
+			if (panel.getLevel().isClientSide() && panel.getTickRate() != sliderValue) {
+				NetworkHelper.updateSeverTileEntity(panel.getBlockPos(), 5, sliderValue);
 				panel.setTickRate(sliderValue);
 			}
-			setMessage(Text.translatable("msg.ec.Ticks", Integer.toString(sliderValue)));
+			setMessage(Component.translatable("msg.ec.Ticks", Integer.toString(sliderValue)));
 		}
 
 		@Override
-		public void renderWidget(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+		protected void extractContents(GuiGraphicsExtractor context, int mouseX, int mouseY, float partialTicks) {
 			if (!visible)
 				return;
-			MinecraftClient minecraft = MinecraftClient.getInstance();
-			TextRenderer fontRenderer = minecraft.textRenderer;
+			Minecraft minecraft = Minecraft.getInstance();
+			Font fontRenderer = minecraft.font;
 			if (dragging)
 				setSliderPos(mouseX);
 
-			context.drawTexture(texture, getX() - 2 + sliderValue, getY(), 152, 0, 8, 16);
-			OrderedText ireorderingprocessor = getMessage().asOrderedText();
-			context.drawText(fontRenderer, ireorderingprocessor, getX() - 10 + (width - fontRenderer.getWidth(ireorderingprocessor)) / 2, getY() - 12, 0x404040, false);
+			context.blit(RenderPipelines.GUI_TEXTURED, texture, getX() - 2 + sliderValue, getY(), 152, 0, 8, 16, 256, 256);
+			FormattedCharSequence ireorderingprocessor = getMessage().getVisualOrderText();
+			context.text(fontRenderer, ireorderingprocessor, getX() - 10 + (width - fontRenderer.width(ireorderingprocessor)) / 2, getY() - 12, 0xFF404040, false);
 		}
 
 		@Override
-		public void onPress() { }
+		public void onPress(InputWithModifiers input) { }
 
 		@Override
-		public void onClick(double mouseX, double mouseY) {
+		public void onClick(MouseButtonEvent event, boolean doubleClick) {
+		double mouseX = event.x();
+		double mouseY = event.y();
 			dragging = true;
 		}
 
 		@Override
-		public void onRelease(double mouseX, double mouseY) {
+		public void onRelease(MouseButtonEvent event) {
+		double mouseX = event.x();
+		double mouseY = event.y();
 			dragging = false;
 		}
 
 		@Override
-		public void appendClickableNarrations(NarrationMessageBuilder var1) {
+		public void updateWidgetNarration(NarrationElementOutput var1) {
 			// TODO Auto-generated method stub
 		}
 	}

@@ -6,15 +6,9 @@
 		"WWW"
 	],
 	"key": {
-		"P": {
-			"item": "minecraft:lime_stained_glass_pane"
-		},
-		"R": {
-			"tag": "c:dusts/redstone"
-		},
-		"W": {
-			"tag": "minecraft:planks"
-		}
+		"P": "minecraft:lime_stained_glass_pane",
+		"R": "#c:dusts/redstone",
+		"W": "#minecraft:planks"
 	},
 	"result": {
 		"id": "energycontrol:info_panel_extender"

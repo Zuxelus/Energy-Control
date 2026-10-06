@@ -6,21 +6,11 @@
 		" R "
 	],
 	"key": {
-		"P": {
-			"tag": "c:ingots/iron"
-		},
-		"F": {
-			"item": "energycontrol:radio_transmitter"
-		},
-		"A": {
-			"item": "energycontrol:advanced_circuit"
-		},
-		"M": {
-			"item": "energycontrol:machine_casing"
-		},
-		"R": {
-			"tag": "c:dusts/redstone"
-		}
+		"P": "#c:ingots/iron",
+		"F": "energycontrol:radio_transmitter",
+		"A": "energycontrol:advanced_circuit",
+		"M": "energycontrol:machine_casing",
+		"R": "#c:dusts/redstone"
 	},
 	"result": {
 		"id": "energycontrol:range_trigger"

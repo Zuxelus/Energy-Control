@@ -9,20 +9,20 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 public class ChannelHandler {
 
 	public static void init() {
-		PayloadTypeRegistry.playC2S().register(PacketCardC2S.ID, PacketCardC2S.CODEC);
-		PayloadTypeRegistry.playC2S().register(PacketTileEntityC2S.ID, PacketTileEntityC2S.CODEC);
-		PayloadTypeRegistry.playC2S().register(PacketKeys.ID, PacketKeys.CODEC);
-		PayloadTypeRegistry.playC2S().register(PacketPortableBars.ID, PacketPortableBars.CODEC);
-		PayloadTypeRegistry.playS2C().register(PacketCardS2C.ID, PacketCardS2C.CODEC);
-		PayloadTypeRegistry.playS2C().register(PacketTileEntityS2C.ID, PacketTileEntityS2C.CODEC);
-		PayloadTypeRegistry.playS2C().register(PacketAlarm.ID, PacketAlarm.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(PacketCardC2S.ID, PacketCardC2S.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(PacketTileEntityC2S.ID, PacketTileEntityC2S.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(PacketKeys.ID, PacketKeys.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(PacketPortableBars.ID, PacketPortableBars.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(PacketCardS2C.ID, PacketCardS2C.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(PacketTileEntityS2C.ID, PacketTileEntityS2C.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(PacketAlarm.ID, PacketAlarm.CODEC);
 
 		ServerPlayNetworking.registerGlobalReceiver(PacketCardC2S.ID, PacketCardC2S::handle);
 		ServerPlayNetworking.registerGlobalReceiver(PacketTileEntityC2S.ID, PacketTileEntityC2S::handle);
@@ -42,11 +42,11 @@ public class ChannelHandler {
 		if (card.isEmpty() || panel == null || slot < 0)
 			return;
 
-		World world = panel.getWorld();
-		if (world == null || world.isClient)
+		Level world = panel.getLevel();
+		if (world == null || world.isClientSide())
 			return;
 
-		NetworkHelper.sendPacketToAllAround((ServerWorld) world, new PacketCardS2C(card, panel.getPos(), slot));
+		NetworkHelper.sendPacketToAllAround((ServerLevel) world, new PacketCardS2C(card, panel.getBlockPos(), slot));
 	}
 
 	// client
@@ -54,11 +54,11 @@ public class ChannelHandler {
 		if (card.isEmpty() || panel == null || slot < 0)
 			return;
 
-		World world = panel.getWorld();
-		if (world == null || !world.isClient)
+		Level world = panel.getLevel();
+		if (world == null || !world.isClientSide())
 			return;
 
-		NetworkHelper.sendToServer(new PacketCardC2S(card, panel.getPos(), slot));
+		NetworkHelper.sendToServer(new PacketCardC2S(card, panel.getBlockPos(), slot));
 	}
 
 	public static void updateSeverKeys(boolean altPressed) {

@@ -1,9 +1,14 @@
 package com.zuxelus.energycontrol.items.cards;
 
 import java.util.ArrayList;
+import com.zuxelus.energycontrol.renderers.RenderHelper;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import java.util.List;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.IHasBars;
@@ -16,27 +21,18 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferRenderer;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import org.joml.Matrix4f;
-import net.minecraft.registry.Registries;
-import net.minecraft.world.World;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 
 	@Override
-	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
+	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
 		BlockPos target = reader.getTarget();
 		if (target == null) {
 			reader.reset();
@@ -55,7 +51,7 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 	}
 
 	@Override
-	public List<PanelString> getStringData(World world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(Level world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		long capacity = reader.getLong("capacity");
 		long amount = reader.getLong("amount");
@@ -63,7 +59,7 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		if ((settings & 1) > 0) {
 			String name = reader.getString("name");
 			if (name.isEmpty())
-				name = isServer ? "N/A" : I18n.translate("msg.ec.None");
+				name = isServer ? "N/A" : I18n.get("msg.ec.None");
 			result.add(new PanelString("msg.ec.InfoPanelName", name, showLabels));
 		}
 		if ((settings & 2) > 0)
@@ -81,12 +77,12 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 	@Environment(EnvType.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(5);
-		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelLiquidName"), 1));
-		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelLiquidAmount"), 2));
-		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelLiquidFree"), 4));
-		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelLiquidCapacity"), 8));
-		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelLiquidPercentage"), 16));
-		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelShowBar"), 1024));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidName"), 1));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidAmount"), 2));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidFree"), 4));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidCapacity"), 8));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidPercentage"), 16));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelShowBar"), 1024));
 		return result;
 	}
 
@@ -101,9 +97,9 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		return true;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
-	public void renderBars(float displayWidth, float displayHeight, ICardReader reader, MatrixStack matrixStack) {
+	@Environment(EnvType.CLIENT)
+	public void renderBars(float displayWidth, float displayHeight, ICardReader reader, PoseStack matrixStack, SubmitNodeCollector collector) {
 		float x = -0.5F + 1 / 16.0F;
 		float y = -0.5F + 1/ 16.0F;
 		float z = 0;
@@ -113,40 +109,22 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		long capacity = reader.getLong("capacity");
 		if (fluidId.isEmpty() || capacity <= 0)
 			return;
-		FluidVariant fluid = FluidVariant.of(Registries.FLUID.get(Identifier.of(fluidId)));
-		if (fluid.isBlank())
+		Fluid fluid = BuiltInRegistries.FLUID.getValue(Identifier.parse(fluidId));
+		if (fluid == Fluids.EMPTY)
 			return;
-		Sprite sprite = FluidVariantRendering.getSprite(fluid);
+		// since 26.1 the fluid textures come from the vanilla fluid models
+		TextureAtlasSprite sprite = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(fluid.defaultFluidState()).stillMaterial().sprite();
 		if (sprite == null)
 			return;
 
-		float textureX = sprite.getMinU();
-		float textureY = sprite.getMinV();
 		float width = 14 / 16.0F * Math.min(reader.getLong("amount"), capacity) / capacity;
 		float height = 0.4375F;
-
-		int color = 0xFF000000 | FluidVariantRendering.getColor(fluid); // tint has no alpha
-		float f = (color >> 24 & 255) / 255.0F;
-		float f1 = (color >> 16 & 255) / 255.0F;
-		float f2 = (color >> 8 & 255) / 255.0F;
-		float f3 = (color & 255) / 255.0F;
+		int color = 0xFF000000 | FluidVariantRendering.getColor(FluidVariant.of(fluid)); // tint has no alpha
 
 		matrixStack.scale(displayWidth / 0.875f, displayHeight / 0.875f, 1);
-		RenderSystem.setShader(GameRenderer::getPositionTexColorProgram); // the vertices carry the fluid tint
-		RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
-		RenderSystem.enableDepthTest();
-		RenderSystem.disableBlend();
-		Tessellator tesselator = Tessellator.getInstance();
-		BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
-		Matrix4f matrix = matrixStack.peek().getPositionMatrix();
-		bufferbuilder.vertex(matrix, x, y + 0.4375F / 2 + height, z).texture(textureX, sprite.getMaxV()).color(f1, f2, f3, f);
-		bufferbuilder.vertex(matrix, x + 0.875F, y + 0.4375F / 2 + height, z).texture(sprite.getMaxU(), sprite.getMaxV()).color(f1, f2, f3, f);
-		bufferbuilder.vertex(matrix, x + 0.875F, y + 0.4375F / 2, z).texture(sprite.getMaxU(), textureY).color(f1, f2, f3, f);
-		bufferbuilder.vertex(matrix, x, y + 0.4375F / 2, z).texture(textureX, textureY).color(f1, f2, f3, f);
-		BufferRenderer.drawWithGlobalProgram(bufferbuilder.end());
-		RenderSystem.disableDepthTest();
-
-		IHasBars.drawTransparentRect(matrixStack, x + 0.875F - width, y + height + 0.4375F / 2, x, y + 0.4375F / 2, -0.0001F, 0xB0000000);
+		RenderHelper.texturedRect(matrixStack, collector, sprite.atlasLocation(), x, y + 0.4375F / 2, x + 0.875F, y + 0.4375F / 2 + height, z,
+				sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(), color);
+		IHasBars.drawTransparentRect(matrixStack, collector, x + 0.875F - width, y + height + 0.4375F / 2, x, y + 0.4375F / 2, -0.0001F, 0xB0000000);
 		matrixStack.scale(0.875F / displayWidth, 0.875F / displayHeight, 1);
 	}
 }

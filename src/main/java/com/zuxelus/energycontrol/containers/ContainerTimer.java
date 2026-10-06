@@ -1,58 +1,56 @@
 package com.zuxelus.energycontrol.containers;
 
 import java.util.List;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 import com.google.common.collect.Lists;
 import com.zuxelus.energycontrol.init.ModContainerTypes;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityTimer;
 import com.zuxelus.zlib.containers.ContainerBase;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-
-public class ContainerTimer extends ScreenHandler {
+public class ContainerTimer extends AbstractContainerMenu {
 	public TileEntityTimer te;
 	private int lastTime;
 	private boolean lastIsWorking;
-	public List<ServerPlayerEntity> containerListeners = Lists.newArrayList();
+	public List<ServerPlayer> containerListeners = Lists.newArrayList();
 
-	public ContainerTimer(int windowId, PlayerInventory inventory, BlockPos data) {
+	public ContainerTimer(int windowId, Inventory inventory, BlockPos data) {
 		this(windowId, inventory, (TileEntityTimer) ContainerBase.getBlockEntity(inventory, data));
 	}
 
-	public ContainerTimer(int windowId, PlayerInventory inventory, TileEntityTimer te) {
+	public ContainerTimer(int windowId, Inventory inventory, TileEntityTimer te) {
 		super(ModContainerTypes.timer, windowId);
 		this.te = te;
 		lastTime = 0;
-		if (inventory.player instanceof ServerPlayerEntity)
-			containerListeners.add((ServerPlayerEntity) inventory.player);
+		if (inventory.player instanceof ServerPlayer)
+			containerListeners.add((ServerPlayer) inventory.player);
 	}
 
 	@Override
-	public ItemStack quickMove(PlayerEntity player, int slot) {
+	public ItemStack quickMoveStack(Player player, int slot) {
 		return ItemStack.EMPTY;
 	}
 
 	@Override
-	public boolean canUse(PlayerEntity player) {
-		return player.squaredDistanceTo(te.getPos().getX() + 0.5D, te.getPos().getY() + 0.5D, te.getPos().getZ() + 0.5D) <= 64.0D;
+	public boolean stillValid(Player player) {
+		return player.distanceToSqr(te.getBlockPos().getX() + 0.5D, te.getBlockPos().getY() + 0.5D, te.getBlockPos().getZ() + 0.5D) <= 64.0D;
 	}
 
 	@Override
-	public void sendContentUpdates() {
-		super.sendContentUpdates();
+	public void broadcastChanges() {
+		super.broadcastChanges();
 		int time = te.getTime();
 		boolean isWorking = te.getIsWorking();
-		for (ServerPlayerEntity listener : containerListeners) {
+		for (ServerPlayer listener : containerListeners) {
 			if (lastTime != time)
-				NetworkHelper.updateClientTileEntity(listener, te.getPos(), 1, time);
+				NetworkHelper.updateClientTileEntity(listener, te.getBlockPos(), 1, time);
 			if (lastIsWorking != isWorking)
-				NetworkHelper.updateClientTileEntity(listener, te.getPos(), 2, isWorking ? 1 : 0);
+				NetworkHelper.updateClientTileEntity(listener, te.getBlockPos(), 2, isWorking ? 1 : 0);
 		}
 		lastTime = time;
 		lastIsWorking = isWorking;

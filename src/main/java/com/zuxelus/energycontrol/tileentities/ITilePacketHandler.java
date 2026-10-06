@@ -1,13 +1,13 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 
 public interface ITilePacketHandler {
 
-	void onServerMessageReceived(NbtCompound tag);
+	void onServerMessageReceived(CompoundTag tag);
 
-	void onClientMessageReceived(NbtCompound tag);
+	void onClientMessageReceived(CompoundTag tag);
 
-	void onDataPacket(BlockEntityUpdateS2CPacket pkt);
+	void onDataPacket(ClientboundBlockEntityDataPacket pkt);
 }

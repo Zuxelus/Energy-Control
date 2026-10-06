@@ -1,8 +1,9 @@
 package com.zuxelus.energycontrol.api;
 
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 /**
  * Lets players interact with Info Panels, using them as touchscreen
@@ -17,10 +18,10 @@ public interface ITouchAction {
 	 * 
 	 * @return whether an action was performed
 	 */
-	boolean runTouchAction(World world, ICardReader reader, ItemStack stack);
+	boolean runTouchAction(Level world, ICardReader reader, ItemStack stack);
 
 	/**
 	 * Used to draw objects onto Info Panel displays
 	 */
-	void renderImage(ICardReader reader, MatrixStack matrixStack);
+	void renderImage(ICardReader reader, PoseStack matrixStack, SubmitNodeCollector collector);
 }

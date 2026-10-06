@@ -1,12 +1,12 @@
 package com.zuxelus.energycontrol.utils;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.client.sound.SoundInstance;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.resources.Identifier;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.phys.Vec3;
 
 public class TileEntitySound {
 	private SoundInstance sound;
@@ -14,14 +14,14 @@ public class TileEntitySound {
 	public TileEntitySound() { }
 
 	public void playAlarm(double x, double y, double z, String name, float range) {
-		Vec3d person = MinecraftClient.getInstance().gameRenderer.getCamera().getPos();
+		Vec3 person = Minecraft.getInstance().gameRenderer.mainCamera().position();
 		if (person != null) {
-			double volume = 1.0F - Math.sqrt(person.squaredDistanceTo(x, y, z) / range / range);
+			double volume = 1.0F - Math.sqrt(person.distanceToSqr(x, y, z) / range / range);
 			if (volume > 0) {
 				if (volume < 0.3)
 					volume = 0.3;
-				sound = new PositionedSoundInstance(SoundEvent.of(Identifier.of(name)), SoundCategory.MASTER, (float) volume, 1.0F, SoundInstance.createRandom(), person.x, person.y, person.z);
-				MinecraftClient.getInstance().getSoundManager().play(sound);
+				sound = new SimpleSoundInstance(SoundEvent.createVariableRangeEvent(Identifier.parse(name)), SoundSource.MASTER, (float) volume, 1.0F, SoundInstance.createUnseededRandom(), person.x, person.y, person.z);
+				Minecraft.getInstance().getSoundManager().play(sound);
 				return;
 			}
 		}
@@ -30,13 +30,13 @@ public class TileEntitySound {
 
 	public void stopAlarm() {
 		if (sound != null) {
-			MinecraftClient.getInstance().getSoundManager().stop(sound);
+			Minecraft.getInstance().getSoundManager().stop(sound);
 			sound = null;
 		}
 	}
 
 	public boolean isPlaying() {
-		return sound == null ? false : MinecraftClient.getInstance().getSoundManager().isPlaying(sound);
+		return sound == null ? false : Minecraft.getInstance().getSoundManager().isActive(sound);
 	}
 }
 

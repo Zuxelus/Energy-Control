@@ -1,8 +1,6 @@
 package com.zuxelus.energycontrol;
 
-import java.util.List;
 
-import com.google.common.collect.Lists;
 import com.zuxelus.energycontrol.gui.GuiAdvancedInfoPanel;
 import com.zuxelus.energycontrol.gui.GuiCardHolder;
 import com.zuxelus.energycontrol.gui.GuiHoloPanel;
@@ -29,39 +27,37 @@ import com.zuxelus.energycontrol.utils.SoundHelper;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.minecraft.block.Block;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.HandledScreens;
-import net.minecraft.registry.Registries;
-import net.minecraft.resource.ResourceType;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.world.level.block.Block;
 
 public class EnergyControlClient implements ClientModInitializer {
 	public static boolean altPressed;
-	public static List<BlockEntity> holo_panels = Lists.newArrayList();
 
 	@Override
 	public void onInitializeClient() {
 		registerRenders();
 
-		HandledScreens.register(ModContainerTypes.info_panel, GuiInfoPanel::new);
-		HandledScreens.register(ModContainerTypes.info_panel_advanced, GuiAdvancedInfoPanel::new);
-		HandledScreens.register(ModContainerTypes.holo_panel, GuiHoloPanel::new);
-		HandledScreens.register(ModContainerTypes.range_trigger, GuiRangeTrigger::new);
-		HandledScreens.register(ModContainerTypes.remote_thermo, GuiRemoteThermalMonitor::new);
-		HandledScreens.register(ModContainerTypes.kit_assembler, GuiKitAssembler::new);
-		HandledScreens.register(ModContainerTypes.timer, GuiTimer::new);
-		HandledScreens.register(ModContainerTypes.card_holder, GuiCardHolder::new);
-		HandledScreens.register(ModContainerTypes.portable_panel, GuiPortablePanel::new);
+		MenuScreens.register(ModContainerTypes.info_panel, GuiInfoPanel::new);
+		MenuScreens.register(ModContainerTypes.info_panel_advanced, GuiAdvancedInfoPanel::new);
+		MenuScreens.register(ModContainerTypes.holo_panel, GuiHoloPanel::new);
+		MenuScreens.register(ModContainerTypes.range_trigger, GuiRangeTrigger::new);
+		MenuScreens.register(ModContainerTypes.remote_thermo, GuiRemoteThermalMonitor::new);
+		MenuScreens.register(ModContainerTypes.kit_assembler, GuiKitAssembler::new);
+		MenuScreens.register(ModContainerTypes.timer, GuiTimer::new);
+		MenuScreens.register(ModContainerTypes.card_holder, GuiCardHolder::new);
+		MenuScreens.register(ModContainerTypes.portable_panel, GuiPortablePanel::new);
 
 		ChannelHandler.initClient();
-		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new SoundHelper());
+		ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new SoundHelper());
 
 		ClientTickEvents.START_CLIENT_TICK.register(client -> {
-			boolean alt = Screen.hasAltDown();
+			boolean alt = client.hasAltDown();
 			if (altPressed != alt) {
 				altPressed = alt;
 				ChannelHandler.updateSeverKeys(alt);
@@ -70,12 +66,12 @@ public class EnergyControlClient implements ClientModInitializer {
 	}
 
 	public static void registerRenders() {
-		BlockEntityRendererFactories.register(ModTileEntityTypes.thermal_monitor, TEThermalMonitorRenderer::new);
-		BlockEntityRendererFactories.register(ModTileEntityTypes.remote_thermo, TERemoteThermalMonitorRenderer::new);
-		BlockEntityRendererFactories.register(ModTileEntityTypes.info_panel, TileEntityInfoPanelRenderer::new);
-		BlockEntityRendererFactories.register(ModTileEntityTypes.info_panel_advanced, TEAdvancedInfoPanelRenderer::new);
-		BlockEntityRendererFactories.register(ModTileEntityTypes.holo_panel, TileEntityHoloPanelRenderer::new);
-		BlockEntityRendererFactories.register(ModTileEntityTypes.timer, TileEntityTimerRenderer::new);
+		BlockEntityRenderers.register(ModTileEntityTypes.thermal_monitor, TEThermalMonitorRenderer::new);
+		BlockEntityRenderers.register(ModTileEntityTypes.remote_thermo, TERemoteThermalMonitorRenderer::new);
+		BlockEntityRenderers.register(ModTileEntityTypes.info_panel, TileEntityInfoPanelRenderer::new);
+		BlockEntityRenderers.register(ModTileEntityTypes.info_panel_advanced, TEAdvancedInfoPanelRenderer::new);
+		BlockEntityRenderers.register(ModTileEntityTypes.holo_panel, TileEntityHoloPanelRenderer::new);
+		BlockEntityRenderers.register(ModTileEntityTypes.timer, TileEntityTimerRenderer::new);
 		registerPanelModels();
 	}
 
@@ -96,11 +92,11 @@ public class EnergyControlClient implements ClientModInitializer {
 
 	// every block state of the panel uses the custom model; the item keeps its JSON model
 	private static void registerPanelModel(ModelLoadingPlugin.Context context, String name, PanelModel model) {
-		Block block = Registries.BLOCK.get(Identifier.of(EnergyControl.MODID, name));
-		context.registerBlockStateResolver(block, resolver -> block.getStateManager().getStates().forEach(state -> resolver.setModel(state, model)));
+		Block block = BuiltInRegistries.BLOCK.getValue(Identifier.fromNamespaceAndPath(EnergyControl.MODID, name));
+		context.registerBlockStateResolver(block, resolver -> block.getStateDefinition().getPossibleStates().forEach(state -> resolver.setModel(state, model)));
 	}
 
 	private static PanelModel panelModel(String texture, String particle, int defaultColor) {
-		return new PanelModel(Identifier.of(EnergyControl.MODID, "block/info_panel/" + texture), Identifier.of(EnergyControl.MODID, "block/info_panel/panel_screen"), Identifier.of(EnergyControl.MODID, "block/info_panel/" + particle), defaultColor);
+		return new PanelModel(Identifier.fromNamespaceAndPath(EnergyControl.MODID, "block/info_panel/" + texture), Identifier.fromNamespaceAndPath(EnergyControl.MODID, "block/info_panel/panel_screen"), Identifier.fromNamespaceAndPath(EnergyControl.MODID, "block/info_panel/" + particle), defaultColor);
 	}
 }

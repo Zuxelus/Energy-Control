@@ -1,6 +1,8 @@
 package com.zuxelus.energycontrol.gui;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.input.KeyEvent;
 import com.zuxelus.energycontrol.containers.ContainerRemoteThermalMonitor;
 import com.zuxelus.energycontrol.gui.controls.CompactButton;
 import com.zuxelus.energycontrol.gui.controls.GuiThermoInvertRedstone;
@@ -10,53 +12,51 @@ import com.zuxelus.zlib.gui.GuiContainerBase;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.player.Inventory;
 
 @Environment(EnvType.CLIENT)
 public class GuiRemoteThermalMonitor extends GuiContainerBase<ContainerRemoteThermalMonitor> {
-	private static final Identifier TEXTURE = Identifier.of(EnergyControl.MODID, "textures/gui/gui_remote_thermo.png");
+	private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/gui_remote_thermo.png");
 
 	private TileEntityRemoteThermalMonitor te;
-	private TextFieldWidget textboxHeat;
+	private EditBox textboxHeat;
 
-	public GuiRemoteThermalMonitor(ContainerRemoteThermalMonitor container, PlayerInventory inventory, Text title) {
-		super(container, inventory, title, TEXTURE);
+	public GuiRemoteThermalMonitor(ContainerRemoteThermalMonitor container, Inventory inventory, Component title) {
+		super(container, inventory, title, TEXTURE, 178, 166);
 		this.te = container.te;
-		backgroundWidth = 178;
-		backgroundHeight = 166;
 	}
 
 	@Override
 	public void init() {
 		super.init();
-		addDrawableChild(new CompactButton(0, x + 40, y - 5 + 20, 22, 12, Text.literal("-1"), (button) -> { actionPerformed(button); }));
-		addDrawableChild(new CompactButton(1, x + 40, y - 5 + 31, 22, 12, Text.literal("-10"), (button) -> { actionPerformed(button); }));
-		addDrawableChild(new CompactButton(2, x + 5, y - 5 + 20, 36, 12, Text.literal("-100"), (button) -> { actionPerformed(button); }));
-		addDrawableChild(new CompactButton(3, x + 5, y - 5 + 31, 36, 12, Text.literal("-1000"), (button) -> { actionPerformed(button); }));
-		addDrawableChild(new CompactButton(4, x + 5, y - 5 + 42, 57, 12, Text.literal("-10000"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(0, leftPos + 40, topPos - 5 + 20, 22, 12, Component.literal("-1"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(1, leftPos + 40, topPos - 5 + 31, 22, 12, Component.literal("-10"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(2, leftPos + 5, topPos - 5 + 20, 36, 12, Component.literal("-100"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(3, leftPos + 5, topPos - 5 + 31, 36, 12, Component.literal("-1000"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(4, leftPos + 5, topPos - 5 + 42, 57, 12, Component.literal("-10000"), (button) -> { actionPerformed(button); }));
 
-		addDrawableChild(new CompactButton(5, x + 115, y - 5 + 20, 22, 12, Text.literal("+1"), (button) -> { actionPerformed(button); }));
-		addDrawableChild(new CompactButton(6, x + 115, y - 5 + 31, 22, 12, Text.literal("+10"), (button) -> { actionPerformed(button); }));
-		addDrawableChild(new CompactButton(7, x + 136, y - 5 + 20, 36, 12, Text.literal("+100"), (button) -> { actionPerformed(button); }));
-		addDrawableChild(new CompactButton(8, x + 136, y - 5 + 31, 36, 12, Text.literal("+1000"), (button) -> { actionPerformed(button); }));
-		addDrawableChild(new CompactButton(9, x + 115, y - 5 + 42, 57, 12, Text.literal("+10000"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(5, leftPos + 115, topPos - 5 + 20, 22, 12, Component.literal("+1"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(6, leftPos + 115, topPos - 5 + 31, 22, 12, Component.literal("+10"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(7, leftPos + 136, topPos - 5 + 20, 36, 12, Component.literal("+100"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(8, leftPos + 136, topPos - 5 + 31, 36, 12, Component.literal("+1000"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(9, leftPos + 115, topPos - 5 + 42, 57, 12, Component.literal("+10000"), (button) -> { actionPerformed(button); }));
 
-		addDrawableChild(new GuiThermoInvertRedstone(x + 63, y + 33, te));
+		addRenderableWidget(new GuiThermoInvertRedstone(leftPos + 63, topPos + 33, te));
 
 		textboxHeat = addTextFieldWidget(63, 16, 51, 12, true, Integer.toString(te.getHeatLevel()));
 	}
 
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
-		super.render(context, mouseX, mouseY, partialTicks);
-		textboxHeat.render(context, mouseX, mouseY, partialTicks);
-		drawMouseoverTooltip(context, mouseX, mouseY);
+	public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float partialTicks) {
+		super.extractRenderState(context, mouseX, mouseY, partialTicks);
+		textboxHeat.extractRenderState(context, mouseX, mouseY, partialTicks);
+		extractTooltip(context, mouseX, mouseY);
 	}
 
 	@SuppressWarnings("resource")
@@ -65,7 +65,7 @@ public class GuiRemoteThermalMonitor extends GuiContainerBase<ContainerRemoteThe
 			return;
 		int heat = 0;
 		try {
-			String value = textboxHeat.getText();
+			String value = textboxHeat.getValue();
 			if (!"".equals(value))
 				heat = Integer.parseInt(value);
 		} catch (NumberFormatException e) { }
@@ -74,39 +74,42 @@ public class GuiRemoteThermalMonitor extends GuiContainerBase<ContainerRemoteThe
 			heat = 0;
 		if (heat >= 1000000)
 			heat = 1000000;
-		if (te.getWorld().isClient && te.getHeatLevel() != heat) {
-			NetworkHelper.updateSeverTileEntity(te.getPos(), 1, heat);
+		if (te.getLevel().isClientSide() && te.getHeatLevel() != heat) {
+			NetworkHelper.updateSeverTileEntity(te.getBlockPos(), 1, heat);
 			te.setHeatLevel(heat);
 		}
-		textboxHeat.setText(Integer.toString(heat));
+		textboxHeat.setValue(Integer.toString(heat));
 	}
 
 	// while typing, keys must not close the screen (inventory key) or move hotbar items (number keys)
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (textboxHeat.isFocused() && keyCode != 256) {
-			if (keyCode == 257 || keyCode == 335) // Enter
+	public boolean keyPressed(KeyEvent event) {
+		int keyCode = event.key();
+		int scanCode = event.keycode();
+		int modifiers = event.modifiers();
+		if (textboxHeat.isFocused() && keyCode != InputConstants.KEY_ESCAPE) {
+			if (keyCode == InputConstants.KEY_RETURN || keyCode == InputConstants.KEY_NUMPADENTER) // Enter
 				updateHeat(0);
 			else
-				textboxHeat.keyPressed(keyCode, scanCode, modifiers);
+				textboxHeat.keyPressed(event);
 			return true;
 		}
-		return super.keyPressed(keyCode, scanCode, modifiers);
+		return super.keyPressed(event);
 	}
 
 	@Override
-	protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
-		drawCenteredText(context, title, backgroundWidth, 6);
-		drawLeftAlignedText(context, I18n.translate("container.inventory"), 8, (backgroundHeight - 96) + 2);
+	protected void extractLabels(GuiGraphicsExtractor context, int mouseX, int mouseY) {
+		drawCenteredText(context, title, imageWidth, 6);
+		drawLeftAlignedText(context, I18n.get("container.inventory"), 8, (imageHeight - 96) + 2);
 	}
 
 	@Override
-	public void close() {
+	public void onClose() {
 		updateHeat(0);
-		super.close();
+		super.onClose();
 	}
 
-	protected void actionPerformed(ButtonWidget button) {
+	protected void actionPerformed(Button button) {
 		if (((CompactButton) button).getId() >= 10)
 			return;
 

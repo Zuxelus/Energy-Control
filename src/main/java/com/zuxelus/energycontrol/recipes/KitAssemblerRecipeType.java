@@ -2,13 +2,12 @@ package com.zuxelus.energycontrol.recipes;
 
 import java.util.Collections;
 import java.util.List;
-
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
-
-import net.minecraft.recipe.RecipeEntry;
-import net.minecraft.recipe.RecipeManager;
-import net.minecraft.recipe.RecipeType;
-import net.minecraft.world.World;
 
 public class KitAssemblerRecipeType implements RecipeType<KitAssemblerRecipe> {
 	public static final KitAssemblerRecipeType TYPE = new KitAssemblerRecipeType();
@@ -20,7 +19,7 @@ public class KitAssemblerRecipeType implements RecipeType<KitAssemblerRecipe> {
 		return "energycontrol:kit_assembler";
 	}
 
-	public List<KitAssemblerRecipe> getRecipes(World level) {
+	public List<KitAssemblerRecipe> getRecipes(Level level) {
 		if (level == null)
 			return Collections.emptyList();
 
@@ -31,7 +30,7 @@ public class KitAssemblerRecipeType implements RecipeType<KitAssemblerRecipe> {
 
 	public KitAssemblerRecipe findRecipe(TileEntityKitAssembler te) {
 		if (cachedRecipes.isEmpty())
-			loadRecipes(te.getWorld());
+			loadRecipes(te.getLevel());
 		for(KitAssemblerRecipe recipe : cachedRecipes) {
 			if (recipe.isSuitable(te))
 				return recipe; 
@@ -39,11 +38,17 @@ public class KitAssemblerRecipeType implements RecipeType<KitAssemblerRecipe> {
 		return null;
 	}
 
-	private void loadRecipes(World level) {
+	private void loadRecipes(Level level) {
 		if (level == null)
 			return;
-		RecipeManager recipeManager = level.getRecipeManager();
-		List<KitAssemblerRecipe> recipes = recipeManager.listAllOfType(this).stream().map(RecipeEntry::value).toList();
-		cachedRecipes = recipes;
+		// since 1.21.2 only the server knows the recipes
+		if (!(level instanceof ServerLevel serverLevel))
+			return;
+		RecipeManager recipeManager = serverLevel.recipeAccess();
+		cachedRecipes = recipeManager.getRecipes().stream()
+				.map(RecipeHolder::value)
+				.filter(recipe -> recipe.getType() == this)
+				.map(recipe -> (KitAssemblerRecipe) recipe)
+				.toList();
 	}
 }

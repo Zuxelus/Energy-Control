@@ -4,14 +4,13 @@ import com.zuxelus.energycontrol.containers.ContainerHoloPanel;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
-
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityHoloPanel extends TileEntityInfoPanel {
 	private static final byte SLOT_CARD = 0;
@@ -23,7 +22,7 @@ public class TileEntityHoloPanel extends TileEntityInfoPanel {
 	}
 
 	public int getPower() {
-		ItemStack stack = getStack(SLOT_UPGRADE_POWER);
+		ItemStack stack = getItem(SLOT_UPGRADE_POWER);
 		if (stack.isEmpty())
 			return 1;
 		return stack.getCount() + 1;
@@ -53,12 +52,12 @@ public class TileEntityHoloPanel extends TileEntityInfoPanel {
 
 	// NamedScreenHandlerFactory
 	@Override
-	public ScreenHandler createMenu(int windowId, PlayerInventory inventory, PlayerEntity player) {
+	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerHoloPanel(windowId, inventory, this);
 	}
 
 	@Override
-	public Text getDisplayName() {
-		return Text.translatable(ModItems.holo_panel.getTranslationKey());
+	public Component getDisplayName() {
+		return Component.translatable(ModItems.holo_panel.getDescriptionId());
 	}
 }

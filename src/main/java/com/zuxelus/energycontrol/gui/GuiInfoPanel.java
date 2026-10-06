@@ -1,7 +1,5 @@
 package com.zuxelus.energycontrol.gui;
 
-import net.minecraft.screen.ScreenTexts;
-
 import java.util.List;
 
 import com.zuxelus.energycontrol.EnergyControl;
@@ -16,73 +14,73 @@ import com.zuxelus.zlib.gui.controls.GuiButtonGeneral;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 
 @Environment(EnvType.CLIENT)
 public class GuiInfoPanel extends GuiPanelBase<ContainerInfoPanel> { 
-	private static final Identifier TEXTURE = Identifier.of(EnergyControl.MODID, "textures/gui/gui_info_panel.png");
+	private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/gui_info_panel.png");
 	private GuiButtonGeneral colorButton;
 
-	public GuiInfoPanel(ContainerInfoPanel container, PlayerInventory inventory, Text title) {
-		super(container, inventory, title, TEXTURE);
-		backgroundHeight = 201;
+	public GuiInfoPanel(ContainerInfoPanel container, Inventory inventory, Component title) {
+		super(container, inventory, title, TEXTURE, 201);
 		panel = (TileEntityInfoPanel) container.te;
-		name = I18n.translate("block.energycontrol.info_panel");
+		name = I18n.get("block.energycontrol.info_panel");
 	}
 
 	protected void initButtons() {
-		addDrawableChild(new GuiButtonGeneral(x + backgroundWidth - 24, y + 42, 16, 16, TEXTURE, 176, panel.getShowLabels() ? 15 : 31, (button) -> { actionPerformed(button, ID_LABELS); }).setGradient());
+		addRenderableWidget(new GuiButtonGeneral(leftPos + imageWidth - 24, topPos + 42, 16, 16, TEXTURE, 176, panel.getShowLabels() ? 15 : 31, (button) -> { actionPerformed(button, ID_LABELS); }).setGradient());
 		colorButton = null;
 		updateColorButton();
-		addDrawableChild(new GuiButtonGeneral(x + backgroundWidth - 24, y + 42 + 17 * 3, 16, 16, Text.literal(Integer.toString(panel.getTickRate())), (button) -> { actionPerformed(button, ID_TICKRATE); }).setGradient());
+		addRenderableWidget(new GuiButtonGeneral(leftPos + imageWidth - 24, topPos + 42 + 17 * 3, 16, 16, Component.literal(Integer.toString(panel.getTickRate())), (button) -> { actionPerformed(button, ID_TICKRATE); }).setGradient());
 	}
 
 	// the color upgrade slot can change while the GUI is open
 	private void updateColorButton() {
 		boolean colored = panel.isColoredEval();
 		if (colored && colorButton == null)
-			colorButton = addDrawableChild(new GuiButtonGeneral(x + backgroundWidth - 24, y + 42 + 17, 16, 16, TEXTURE, 192, 0, (button) -> { actionPerformed(button, ID_COLORS); }).setGradient().setScale(2));
+			colorButton = addRenderableWidget(new GuiButtonGeneral(leftPos + imageWidth - 24, topPos + 42 + 17, 16, 16, TEXTURE, 192, 0, (button) -> { actionPerformed(button, ID_COLORS); }).setGradient().setScale(2));
 		else if (!colored && colorButton != null) {
-			remove(colorButton);
+			removeWidget(colorButton);
 			colorButton = null;
 		}
 	}
 
 	protected void initControls() {
 		ItemStack stack = panel.getCards().get(activeTab);
-		if (ItemStack.areItemsEqual(stack, oldStack)) {
+		if (ItemStack.isSameItem(stack, oldStack)) {
 			updateColorButton();
 			return;
 		}
 		if (!oldStack.isEmpty() && stack.isEmpty())
 			updateTitle();
 		oldStack = stack.copy();
-		clearChildren();
+		clearWidgets();
 		initButtons();
 		if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain) {
 			int slot = panel.getCardSlot(stack);
 			if (stack.getItem() instanceof ItemCardText)
-				addDrawableChild(new GuiButtonGeneral(x + backgroundWidth - 24, y + 42 + 17 * 2, 16, 16, Text.literal("txt"), (button) -> { actionPerformed(button, ID_TEXT); }).setGradient());
+				addRenderableWidget(new GuiButtonGeneral(leftPos + imageWidth - 24, topPos + 42 + 17 * 2, 16, 16, Component.literal("txt"), (button) -> { actionPerformed(button, ID_TEXT); }).setGradient());
 			List<PanelSetting> settingsList = ((ItemCardMain) stack.getItem()).getSettingsList();
 
-			int hy = textRenderer.fontHeight + 1;
+			int hy = font.lineHeight + 1;
 			int yy = 1;
 			if (settingsList != null)
 				for (PanelSetting panelSetting : settingsList) {
-					addDrawableChild(new GuiInfoPanelCheckBox(x + 28, y + 28 + hy * yy, panelSetting, panel, slot, textRenderer));
+					addRenderableWidget(new GuiInfoPanelCheckBox(leftPos + 28, topPos + 28 + hy * yy, panelSetting, panel, slot, font));
 					yy++;
 				}
 			if (!modified) {
-				textboxTitle = new TextFieldWidget(textRenderer, x + 7, y + 16, 162, 18, null, ScreenTexts.EMPTY);
+				textboxTitle = new EditBox(font, leftPos + 7, topPos + 16, 162, 18, null, CommonComponents.EMPTY);
 				textboxTitle.setFocused(true);
-				textboxTitle.setText(new ItemCardReader(stack).getTitle());
-				addSelectableChild(textboxTitle);
+				textboxTitle.setValue(new ItemCardReader(stack).getTitle());
+				addWidget(textboxTitle);
 				setInitialFocus(textboxTitle);
 			}
 		} else {
@@ -92,9 +90,9 @@ public class GuiInfoPanel extends GuiPanelBase<ContainerInfoPanel> {
 	}
 
 	@Override
-	protected void drawBackground(DrawContext context, float partialTicks, int mouseX, int mouseY) {
-		super.drawBackground(context, partialTicks, mouseX, mouseY);
+	public void extractBackground(GuiGraphicsExtractor context, int mouseX, int mouseY, float partialTicks) {
+		super.extractBackground(context, mouseX, mouseY, partialTicks);
 		if (textboxTitle != null)
-			textboxTitle.render(context, mouseX, mouseY, partialTicks);
+			textboxTitle.extractRenderState(context, mouseX, mouseY, partialTicks);
 	}
 }

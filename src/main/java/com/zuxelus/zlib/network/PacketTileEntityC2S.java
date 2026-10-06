@@ -4,33 +4,33 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.tileentities.ITilePacketHandler;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
-public record PacketTileEntityC2S(BlockPos pos, NbtCompound tag) implements PacketBase {
-	public static final Id<PacketTileEntityC2S> ID = new Id<>(Identifier.of(EnergyControl.MODID, "c2s_tile"));
-	public static final PacketCodec<RegistryByteBuf, PacketTileEntityC2S> CODEC = PacketCodec.tuple(
-			BlockPos.PACKET_CODEC, PacketTileEntityC2S::pos,
-			PacketCodecs.NBT_COMPOUND, PacketTileEntityC2S::tag,
+public record PacketTileEntityC2S(BlockPos pos, CompoundTag tag) implements PacketBase {
+	public static final Type<PacketTileEntityC2S> ID = new Type<>(Identifier.fromNamespaceAndPath(EnergyControl.MODID, "c2s_tile"));
+	public static final StreamCodec<RegistryFriendlyByteBuf, PacketTileEntityC2S> CODEC = StreamCodec.composite(
+			BlockPos.STREAM_CODEC, PacketTileEntityC2S::pos,
+			ByteBufCodecs.COMPOUND_TAG, PacketTileEntityC2S::tag,
 			PacketTileEntityC2S::new);
 
 	@Override
-	public Id<PacketTileEntityC2S> getId() {
+	public Type<PacketTileEntityC2S> type() {
 		return ID;
 	}
 
 	public static void handle(PacketTileEntityC2S packet, ServerPlayNetworking.Context context) {
-		ServerPlayerEntity player = context.player();
+		ServerPlayer player = context.player();
 		context.server().execute(() -> {
-			if (player == null || player.getWorld() == null)
+			if (player == null || player.level() == null)
 				return;
-			BlockEntity te = player.getWorld().getBlockEntity(packet.pos());
+			BlockEntity te = player.level().getBlockEntity(packet.pos());
 			if (!(te instanceof ITilePacketHandler))
 				return;
 			((ITilePacketHandler) te).onServerMessageReceived(packet.tag());

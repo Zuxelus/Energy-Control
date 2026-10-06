@@ -8,34 +8,33 @@ import com.zuxelus.energycontrol.init.ModContainerTypes;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.containers.ContainerBase;
-
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.screen.ScreenHandlerContext;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 
 public class ContainerInfoPanel extends ContainerBase<TileEntityInfoPanel> {
 
-	public ContainerInfoPanel(int windowId, PlayerInventory inventory, BlockPos data) {
+	public ContainerInfoPanel(int windowId, Inventory inventory, BlockPos data) {
 		this(windowId, inventory, (TileEntityInfoPanel) getBlockEntity(inventory, data));
 	}
 
-	public ContainerInfoPanel(int windowId, PlayerInventory inventory, TileEntityInfoPanel panel) {
-		super(panel, ModContainerTypes.info_panel, windowId, ModItems.info_panel, ScreenHandlerContext.create(panel.getWorld(), panel.getPos()));
+	public ContainerInfoPanel(int windowId, Inventory inventory, TileEntityInfoPanel panel) {
+		super(panel, ModContainerTypes.info_panel, windowId, ModItems.info_panel, ContainerLevelAccess.create(panel.getLevel(), panel.getBlockPos()));
 		addSlot(new SlotCard(panel, 0, 8, 24 + 18) {
 			@SuppressWarnings("resource")
 			@Override
-			public void markDirty() {
-				if (panel.getWorld().isClient)
-					ContainerInfoPanel.this.sendContentUpdates();
+			public void setChanged() {
+				if (panel.getLevel().isClientSide())
+					ContainerInfoPanel.this.broadcastChanges();
 			};
 		});
 		addSlot(new SlotRange(panel, 1, 8, 24 + 18 * 2));
 		addSlot(new SlotColor(panel, 2, 8, 24 + 18 * 3) {
 			@SuppressWarnings("resource")
 			@Override
-			public void markDirty() {
-				if (panel.getWorld().isClient)
-					ContainerInfoPanel.this.sendContentUpdates();
+			public void setChanged() {
+				if (panel.getLevel().isClientSide())
+					ContainerInfoPanel.this.broadcastChanges();
 			};
 		});
 		addSlot(new SlotTouch(panel, 3, 8, 24 + 18 * 4));

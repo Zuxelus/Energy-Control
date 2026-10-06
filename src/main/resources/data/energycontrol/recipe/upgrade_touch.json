@@ -6,18 +6,10 @@
 		" A "
 	],
 	"key": {
-		"R": {
-			"tag": "c:dusts/redstone"
-		},
-		"I": {
-			"item": "energycontrol:strong_string"
-		},
-		"C": {
-			"item": "energycontrol:basic_circuit"
-		},
-		"A": {
-			"tag": "c:charcoal"
-		}
+		"R": "#c:dusts/redstone",
+		"I": "energycontrol:strong_string",
+		"C": "energycontrol:basic_circuit",
+		"A": "#c:charcoal"
 	},
 	"result": {
 		"id": "energycontrol:upgrade_touch"

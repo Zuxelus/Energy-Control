@@ -12,9 +12,13 @@ import me.shedaniel.rei.api.common.display.SimpleGridMenuDisplay;
 import me.shedaniel.rei.api.common.display.basic.BasicDisplay;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.recipe.Ingredient;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import me.shedaniel.rei.api.common.display.DisplaySerializer;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 
 public class KitAssemblerDisplay extends BasicDisplay implements SimpleGridMenuDisplay {
 	// kept here, not in the client-only KitAssemblerRecipeCategory, because the server plugin needs it too
@@ -33,22 +37,18 @@ public class KitAssemblerDisplay extends BasicDisplay implements SimpleGridMenuD
 		time = recipe.time;
 	}
 
-	public KitAssemblerDisplay(List<EntryIngredient> input, List<EntryIngredient> output, NbtCompound tag) {
+	public KitAssemblerDisplay(List<EntryIngredient> input, List<EntryIngredient> output, int count1, int count2, int count3, int time) {
 		super(input, output);
-		count1 = tag.getInt("count1");
-		count2 = tag.getInt("count2");
-		count3 = tag.getInt("count3");
-		time = tag.getInt("time");
+		this.count1 = count1;
+		this.count2 = count2;
+		this.count3 = count3;
+		this.time = time;
 	}
 
 	// shows the required amount on each ingredient (the recipe keeps counts separately from its ingredients)
 	private static EntryIngredient withCount(Ingredient ingredient, int count) {
 		List<ItemStack> stacks = new ArrayList<>();
-		for (ItemStack stack : ingredient.getMatchingStacks()) {
-			ItemStack copy = stack.copy();
-			copy.setCount(count);
-			stacks.add(copy);
-		}
+		ingredient.items().forEach(item -> stacks.add(new ItemStack(item, count)));
 		return EntryIngredients.ofItemStacks(stacks);
 	}
 
@@ -71,12 +71,27 @@ public class KitAssemblerDisplay extends BasicDisplay implements SimpleGridMenuD
 		return this.time;
 	}
 
-	public static <R extends KitAssemblerDisplay> BasicDisplay.Serializer<R> serializer(BasicDisplay.Serializer.RecipeLessConstructor<R> constructor) {
-		return BasicDisplay.Serializer.ofRecipeLess(constructor, (display, tag) -> {
-			tag.putInt("count1", display.count1);
-			tag.putInt("count2", display.count2);
-			tag.putInt("count3", display.count3);
-			tag.putInt("time", display.getTime());
-		});
+	@Override
+	public DisplaySerializer<KitAssemblerDisplay> getSerializer() {
+		return SERIALIZER;
 	}
+
+	// displays are made on the server and synced to the client
+	public static final DisplaySerializer<KitAssemblerDisplay> SERIALIZER = DisplaySerializer.of(
+		RecordCodecBuilder.mapCodec(instance -> instance.group(
+			EntryIngredient.codec().listOf().fieldOf("inputs").forGetter(KitAssemblerDisplay::getInputEntries),
+			EntryIngredient.codec().listOf().fieldOf("outputs").forGetter(KitAssemblerDisplay::getOutputEntries),
+			Codec.INT.fieldOf("count1").forGetter(display -> display.count1),
+			Codec.INT.fieldOf("count2").forGetter(display -> display.count2),
+			Codec.INT.fieldOf("count3").forGetter(display -> display.count3),
+			Codec.INT.fieldOf("time").forGetter(KitAssemblerDisplay::getTime)
+		).apply(instance, KitAssemblerDisplay::new)),
+		StreamCodec.composite(
+			EntryIngredient.streamCodec().apply(ByteBufCodecs.list()), KitAssemblerDisplay::getInputEntries,
+			EntryIngredient.streamCodec().apply(ByteBufCodecs.list()), KitAssemblerDisplay::getOutputEntries,
+			ByteBufCodecs.VAR_INT, display -> display.count1,
+			ByteBufCodecs.VAR_INT, display -> display.count2,
+			ByteBufCodecs.VAR_INT, display -> display.count3,
+			ByteBufCodecs.VAR_INT, KitAssemblerDisplay::getTime,
+			KitAssemblerDisplay::new));
 }

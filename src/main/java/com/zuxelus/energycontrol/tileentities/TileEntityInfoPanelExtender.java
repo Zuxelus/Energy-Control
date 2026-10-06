@@ -5,18 +5,19 @@ import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.renderers.RotationOffset;
 import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
-
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IScreenPart, ITilePacketHandler {
 	protected boolean init;
@@ -44,7 +45,7 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 
 	@Override
 	public void setFacing(int meta) {
-		Direction newFacing = Direction.byId(meta);
+		Direction newFacing = Direction.from3DDataValue(meta);
 		if (facing == newFacing)
 			return;
 		facing = newFacing;
@@ -56,88 +57,86 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 
 	private void updateScreen() {
 		if (partOfScreen && screen == null) {
-			BlockEntity core = world.getBlockEntity(new BlockPos(coreX, coreY, coreZ));
+			BlockEntity core = level.getBlockEntity(new BlockPos(coreX, coreY, coreZ));
 			if (core != null && core instanceof TileEntityInfoPanel) {
 				screen = ((TileEntityInfoPanel) core).getScreen();
 				if (screen != null)
-					screen.init(true, world);
+					screen.init(true, level);
 			}
 		}
-		if (world.isClient && !partOfScreen && screen != null)
+		if (level.isClientSide() && !partOfScreen && screen != null)
 			setScreen(null);
 	}
 
 	@Override
-	public void onClientMessageReceived(NbtCompound tag) { }
+	public void onClientMessageReceived(CompoundTag tag) { }
 
 	@Override
-	public void onServerMessageReceived(NbtCompound tag) {}
+	public void onServerMessageReceived(CompoundTag tag) {}
 
 	@Override
-	public Packet<ClientPlayPacketListener> toUpdatePacket() {
-		return BlockEntityUpdateS2CPacket.create(this);
+	public Packet<ClientGamePacketListener> getUpdatePacket() {
+		return ClientboundBlockEntityDataPacket.create(this);
 	}
 
 	@Override
-	public void onDataPacket(BlockEntityUpdateS2CPacket pkt) {
-		readProperties(pkt.getNbt(), world.getRegistryManager());
+	public void onDataPacket(ClientboundBlockEntityDataPacket pkt) {
+		readProperties(pkt.getTag(), level.registryAccess());
 	}
 
 	@Override
-	public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registries) {
-		NbtCompound tag = super.toInitialChunkDataNbt(registries);
-		tag = writeProperties(tag, registries);
+	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+		CompoundTag tag = writeProperties(registries);
 		return tag;
 	}
 
 	@Override
-	protected void readProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
-		super.readProperties(tag, registries);
+	protected void readProperties(ValueInput tag) {
+		super.readProperties(tag);
 		if (tag.contains("partOfScreen"))
-			partOfScreen = tag.getBoolean("partOfScreen");
+			partOfScreen = tag.getBooleanOr("partOfScreen", false);
 		if (tag.contains("coreX")) {
-			coreX = tag.getInt("coreX");
-			coreY = tag.getInt("coreY");
-			coreZ = tag.getInt("coreZ");
+			coreX = tag.getIntOr("coreX", 0);
+			coreY = tag.getIntOr("coreY", 0);
+			coreZ = tag.getIntOr("coreZ", 0);
 		}
-		if (world != null) {
+		if (level != null) {
 			updateScreen();
-			if (world.isClient)
-				world.getChunkManager().getLightingProvider().checkBlock(pos);
-			TileEntityInfoPanel.refreshModel(world, pos);
+			if (level.isClientSide())
+				level.getChunkSource().getLightEngine().checkBlock(worldPosition);
+			TileEntityInfoPanel.refreshModel(level, worldPosition);
 		}
 	}
 
 	@Override
-	protected void readNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
-		super.readNbt(tag, registries);
-		readProperties(tag, registries);
+	protected void loadAdditional(ValueInput tag) {
+		super.loadAdditional(tag);
+		readProperties(tag);
 	}
 
 	@Override
-	protected NbtCompound writeProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
-		tag = super.writeProperties(tag, registries);
+	protected void writeProperties(ValueOutput tag) {
+		super.writeProperties(tag);
 		tag.putBoolean("partOfScreen", partOfScreen);
 		tag.putInt("coreX", coreX);
 		tag.putInt("coreY", coreY);
 		tag.putInt("coreZ", coreZ);
-		return tag;
 	}
 
 	@Override
-	protected void writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
-		super.writeNbt(tag, registries);
-		writeProperties(tag, registries);
+	protected void saveAdditional(ValueOutput tag) {
+		super.saveAdditional(tag);
+		writeProperties(tag);
 	}
 
 	@Override
-	public void markRemoved() {
-		if (!world.isClient)
+	public void setRemoved() {
+		if (!level.isClientSide())
 			EnergyControl.screenManager.unregisterScreenPart(this);
-		super.markRemoved();
+		super.setRemoved();
 	}
 
-	public static void tickStatic(World level, BlockPos pos, BlockState state, BlockEntity be) {
+	public static void tickStatic(Level level, BlockPos pos, BlockState state, BlockEntity be) {
 		if (!(be instanceof TileEntityInfoPanelExtender))
 			return;
 		TileEntityInfoPanelExtender te = (TileEntityInfoPanelExtender) be;
@@ -148,7 +147,7 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 		if (init)
 			return;
 
-		if (!world.isClient && !partOfScreen)
+		if (!level.isClientSide() && !partOfScreen)
 			EnergyControl.screenManager.registerInfoPanelExtender(this);
 
 		updateScreen();
@@ -158,26 +157,26 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	@Override
 	public void setScreen(Screen screen) {
 		this.screen = screen;
-		TileEntityInfoPanel.refreshModel(world, pos);
+		TileEntityInfoPanel.refreshModel(level, worldPosition);
 		if (screen != null) {
 			partOfScreen = true;
-			TileEntityInfoPanel core = screen.getCore(world);
+			TileEntityInfoPanel core = screen.getCore(level);
 			if (core != null) {
-				coreX = core.getPos().getX();
-				coreY = core.getPos().getY();
-				coreZ = core.getPos().getZ();
+				coreX = core.getBlockPos().getX();
+				coreY = core.getBlockPos().getY();
+				coreZ = core.getBlockPos().getZ();
 
-				BlockState stateCore = world.getBlockState(core.getPos());
-				BlockState state = world.getBlockState(pos);
+				BlockState stateCore = level.getBlockState(core.getBlockPos());
+				BlockState state = level.getBlockState(worldPosition);
 				// block states change on the server only; the client rebuilds the screen on every panel update
-				if (!world.isClient && state.get(FacingBlockActive.getActive(state)) != stateCore.get(FacingBlockActive.getActive(stateCore)))
-					world.setBlockState(pos, state.cycle(FacingBlockActive.getActive(state)), 2);
+				if (!level.isClientSide() && state.getValue(FacingBlockActive.getActive(state)) != stateCore.getValue(FacingBlockActive.getActive(stateCore)))
+					level.setBlock(worldPosition, state.cycle(FacingBlockActive.getActive(state)), 2);
 				return;
 			}
 		} else {
-			BlockState state = world.getBlockState(pos);
-			if (!world.isClient && state.get(FacingBlockActive.getActive(state)))
-				world.setBlockState(pos, state.with(FacingBlockActive.getActive(state), false), 2);
+			BlockState state = level.getBlockState(worldPosition);
+			if (!level.isClientSide() && state.getValue(FacingBlockActive.getActive(state)))
+				level.setBlock(worldPosition, state.setValue(FacingBlockActive.getActive(state), false), 2);
 		}
 		partOfScreen = false;
 		coreX = 0;
@@ -193,7 +192,7 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	public TileEntityInfoPanel getCore() {
 		if (screen == null)
 			return null;
-		return screen.getCore(world);
+		return screen.getCore(level);
 	}
 
 	@Override
@@ -207,7 +206,7 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	public boolean getColored() {
 		if (screen == null)
 			return false;
-		TileEntityInfoPanel core = screen.getCore(world);
+		TileEntityInfoPanel core = screen.getCore(level);
 		if (core == null)
 			return false;
 		return core.getColored();
@@ -216,7 +215,7 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	public boolean getPowered() {
 		if (screen == null)
 			return false;
-		TileEntityInfoPanel core = screen.getCore(world);
+		TileEntityInfoPanel core = screen.getCore(level);
 		if (core == null)
 			return false;
 		return core.powered;
@@ -225,7 +224,7 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	public int getColorBackground() {
 		if (screen == null)
 			return TileEntityInfoPanel.GREEN;
-		TileEntityInfoPanel core = screen.getCore(world);
+		TileEntityInfoPanel core = screen.getCore(level);
 		if (core == null)
 			return TileEntityInfoPanel.GREEN;
 		return core.getColorBackground();
@@ -258,7 +257,7 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	public int findTexture() {
 		Screen scr = getScreen();
 		if (scr != null) {
-			BlockPos pos = getPos();
+			BlockPos pos = getBlockPos();
 			switch (getFacing()) {
 			case SOUTH:
 				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 4 * boolToInt(pos.getY() == scr.minY) + 8 * boolToInt(pos.getY() == scr.maxY);

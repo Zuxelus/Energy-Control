@@ -6,15 +6,9 @@
 		"LRL"
 	],
 	"key": {
-		"L": {
-			"tag": "c:ingots/gold"
-		},
-		"R": {
-			"tag": "c:dusts/redstone"
-		},
-		"C": {
-			"item": "energycontrol:advanced_circuit"
-		}
+		"L": "#c:ingots/gold",
+		"R": "#c:dusts/redstone",
+		"C": "energycontrol:advanced_circuit"
 	},
 	"result": {
 		"id": "energycontrol:thermal_monitor"

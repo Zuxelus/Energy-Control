@@ -1,22 +1,14 @@
 {
 	"type": "minecraft:crafting_shaped",
 	"pattern": [
-        "RF",
-        "PO"
-    ],
-    "key": {
-        "P": {
-            "item": "minecraft:paper"
-        },
-        "R": {
-            "tag": "c:dusts/redstone"
-        },
-        "F": {
-            "item": "energycontrol:radio_transmitter"
-        },
-        "O": {
-			"tag": "c:dyes/red"
-        }
+		"RF",
+		"PO"
+	],
+	"key": {
+		"P": "minecraft:paper",
+		"R": "#c:dusts/redstone",
+		"F": "energycontrol:radio_transmitter",
+		"O": "#c:dyes/red"
 	},
 	"result": {
 		"id": "energycontrol:kit_energy"

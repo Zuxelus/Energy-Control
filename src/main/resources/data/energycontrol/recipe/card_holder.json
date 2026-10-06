@@ -6,12 +6,8 @@
 		" L "
 	],
 	"key": {
-		"C": {
-			"item": "minecraft:chest"
-		},
-		"L": {
-			"item": "minecraft:leather"
-		}
+		"C": "minecraft:chest",
+		"L": "minecraft:leather"
 	},
 	"result": {
 		"id": "energycontrol:card_holder"

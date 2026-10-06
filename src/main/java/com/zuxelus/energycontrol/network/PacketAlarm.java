@@ -7,21 +7,21 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.zlib.network.PacketBase;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
 
 public record PacketAlarm(String alarms) implements PacketBase {
-	public static final Id<PacketAlarm> ID = new Id<>(Identifier.of(EnergyControl.MODID, "s2c_alarm"));
-	public static final PacketCodec<RegistryByteBuf, PacketAlarm> CODEC = PacketCodecs.STRING.<RegistryByteBuf>cast().xmap(PacketAlarm::new, PacketAlarm::alarms);
+	public static final Type<PacketAlarm> ID = new Type<>(Identifier.fromNamespaceAndPath(EnergyControl.MODID, "s2c_alarm"));
+	public static final StreamCodec<RegistryFriendlyByteBuf, PacketAlarm> CODEC = ByteBufCodecs.STRING_UTF8.<RegistryFriendlyByteBuf>cast().map(PacketAlarm::new, PacketAlarm::alarms);
 
 	public PacketAlarm(int range, String alarms) {
 		this(alarms);
 	}
 
 	@Override
-	public Id<PacketAlarm> getId() {
+	public Type<PacketAlarm> type() {
 		return ID;
 	}
 

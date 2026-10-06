@@ -7,23 +7,23 @@ import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.network.PacketBase;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
-public record PacketCardC2S(BlockPos pos, int slot, String className, NbtCompound tag) implements PacketBase {
-	public static final Id<PacketCardC2S> ID = new Id<>(Identifier.of(EnergyControl.MODID, "c2s_card"));
-	public static final PacketCodec<RegistryByteBuf, PacketCardC2S> CODEC = PacketCodec.tuple(
-			BlockPos.PACKET_CODEC, PacketCardC2S::pos,
-			PacketCodecs.VAR_INT, PacketCardC2S::slot,
-			PacketCodecs.STRING, PacketCardC2S::className,
-			PacketCodecs.NBT_COMPOUND, PacketCardC2S::tag,
+public record PacketCardC2S(BlockPos pos, int slot, String className, CompoundTag tag) implements PacketBase {
+	public static final Type<PacketCardC2S> ID = new Type<>(Identifier.fromNamespaceAndPath(EnergyControl.MODID, "c2s_card"));
+	public static final StreamCodec<RegistryFriendlyByteBuf, PacketCardC2S> CODEC = StreamCodec.composite(
+			BlockPos.STREAM_CODEC, PacketCardC2S::pos,
+			ByteBufCodecs.VAR_INT, PacketCardC2S::slot,
+			ByteBufCodecs.STRING_UTF8, PacketCardC2S::className,
+			ByteBufCodecs.COMPOUND_TAG, PacketCardC2S::tag,
 			PacketCardC2S::new);
 
 	public PacketCardC2S(ItemStack stack, BlockPos pos, int slot) {
@@ -31,20 +31,20 @@ public record PacketCardC2S(BlockPos pos, int slot, String className, NbtCompoun
 	}
 
 	@Override
-	public Id<PacketCardC2S> getId() {
+	public Type<PacketCardC2S> type() {
 		return ID;
 	}
 
 	public static void handle(PacketCardC2S packet, ServerPlayNetworking.Context context) {
-		ServerPlayerEntity player = context.player();
+		ServerPlayer player = context.player();
 		context.server().execute(() -> {
-			if (player == null || player.getWorld() == null)
+			if (player == null || player.level() == null)
 				return;
-			BlockEntity te = player.getWorld().getBlockEntity(packet.pos());
+			BlockEntity te = player.level().getBlockEntity(packet.pos());
 			if (te == null || !(te instanceof TileEntityInfoPanel))
 				return;
 			TileEntityInfoPanel panel = (TileEntityInfoPanel) te;
-			ItemStack stack = panel.getStack(packet.slot());
+			ItemStack stack = panel.getItem(packet.slot());
 			if (stack.isEmpty() || !(stack.getItem() instanceof ItemCardMain))
 				return;
 			if (!stack.getItem().getClass().getName().equals(packet.className())) {

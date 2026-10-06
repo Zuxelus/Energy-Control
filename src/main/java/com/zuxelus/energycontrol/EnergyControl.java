@@ -20,14 +20,14 @@ import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 
 public class EnergyControl implements ModInitializer {
 	public static final String MODID = "energycontrol";
@@ -41,9 +41,9 @@ public class EnergyControl implements ModInitializer {
 	@Environment(EnvType.CLIENT)
 	public List<String> serverAllowedAlarms; // will be loaded from server
 
-	public static Map<PlayerEntity, Boolean> altPressed = new HashMap<PlayerEntity, Boolean>();
+	public static Map<Player, Boolean> altPressed = new HashMap<Player, Boolean>();
 
-	public static ItemGroup ITEM_GROUP;
+	public static CreativeModeTab ITEM_GROUP;
 
 	@Override
 	public void onInitialize() {
@@ -51,13 +51,13 @@ public class EnergyControl implements ModInitializer {
 		new ConfigHandler();
 		new ModContainerTypes();
 		ModItems.init();
-		ITEM_GROUP = Registry.register(Registries.ITEM_GROUP, Identifier.of(MODID, "general"), FabricItemGroup.builder()
-			.displayName(Text.translatable("itemGroup.energycontrol.general"))
+		ITEM_GROUP = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, Identifier.fromNamespaceAndPath(MODID, "general"), FabricCreativeModeTab.builder()
+			.title(Component.translatable("itemGroup.energycontrol.general"))
 			.icon(() -> new ItemStack(ModItems.kit_energy))
-			.entries((context, entries) -> Registries.ITEM.getIds().stream()
+			.displayItems((context, entries) -> BuiltInRegistries.ITEM.keySet().stream()
 				.filter(id -> id.getNamespace().equals(MODID))
-				.sorted(Comparator.comparingInt(id -> Registries.ITEM.getRawId(Registries.ITEM.get(id))))
-				.forEach(id -> entries.add(Registries.ITEM.get(id))))
+				.sorted(Comparator.comparingInt(id -> BuiltInRegistries.ITEM.getId(BuiltInRegistries.ITEM.getValue(id))))
+				.forEach(id -> entries.accept(BuiltInRegistries.ITEM.getValue(id))))
 			.build());
 		// also loads ModTileEntityTypes, so the block entity types are registered while the registries are open
 		team.reborn.energy.api.EnergyStorage.SIDED.registerForBlockEntity(TileEntityKitAssembler::getEnergyInput, ModTileEntityTypes.kit_assembler);

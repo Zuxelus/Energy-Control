@@ -6,26 +6,24 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.zuxelus.energycontrol.items.kits.ItemKitMain;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.phys.BlockHitResult;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ItemActionResult;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.world.World;
-
-@Mixin(AbstractBlock.AbstractBlockState.class)
+@Mixin(BlockBehaviour.BlockStateBase.class)
 public abstract class AbstractBlockStateMixin {
 
 	// since 1.20.5 using an item on a block goes through onUseWithItem before the block's own onUse
-	@Inject(method = "onUseWithItem(Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;Lnet/minecraft/util/hit/BlockHitResult;)Lnet/minecraft/util/ItemActionResult;", at = @At("HEAD"), cancellable = true)
-	protected void onUseWithItem(final ItemStack stack, final World world, final PlayerEntity player, final Hand hand, final BlockHitResult hitResult, final CallbackInfoReturnable<ItemActionResult> info) {
+	@Inject(method = "useItemOn(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/phys/BlockHitResult;)Lnet/minecraft/world/InteractionResult;", at = @At("HEAD"), cancellable = true)
+	protected void onUseWithItem(final ItemStack stack, final Level world, final Player player, final InteractionHand hand, final BlockHitResult hitResult, final CallbackInfoReturnable<InteractionResult> info) {
 		if (!stack.isEmpty() && stack.getItem() instanceof ItemKitMain) {
-			ActionResult result = ((ItemKitMain) stack.getItem()).onItemUseFirst(world, player, hand);
-			if (result == ActionResult.SUCCESS)
-				info.setReturnValue(ItemActionResult.SUCCESS);
+			InteractionResult result = ((ItemKitMain) stack.getItem()).onItemUseFirst(world, player, hand);
+			if (result == InteractionResult.SUCCESS)
+				info.setReturnValue(InteractionResult.SUCCESS);
 		}
 	}
 }

@@ -12,36 +12,38 @@ import com.zuxelus.zlib.containers.EnergyStorage;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.TileEntityItemHandler;
 
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ContainerStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.SidedInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.registry.Registries;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import team.reborn.energy.api.EnergyStorageUtil;
 
-public class TileEntityKitAssembler extends TileEntityItemHandler implements ExtendedScreenHandlerFactory<BlockPos>, ITilePacketHandler, ISlotItemFilter, SidedInventory {
+public class TileEntityKitAssembler extends TileEntityItemHandler implements ExtendedMenuProvider<BlockPos>, ITilePacketHandler, ISlotItemFilter, WorldlyContainer {
 	public static final byte SLOT_INFO = 0;
 	public static final byte SLOT_CARD1 = 1;
 	public static final byte SLOT_ITEM = 2;
@@ -52,7 +54,7 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 	private static final int[] SLOTS_TOP = { SLOT_CARD1, SLOT_ITEM, SLOT_CARD2 };
 	private static final int[] SLOTS_BOTTOM = { SLOT_RESULT };
 	private static final int[] SLOTS_NONE = {};
-	private static final Identifier TRANSFORMER_UPGRADE = Identifier.of("techreborn", "transformer_upgrade");
+	private static final Identifier TRANSFORMER_UPGRADE = Identifier.fromNamespaceAndPath("techreborn", "transformer_upgrade");
 	private EnergyStorage storage;
 	// what cables and other mods see: insert only, at the rate set by the transformer upgrades
 	private final team.reborn.energy.api.EnergyStorage energyInput = new EnergyInput();
@@ -107,7 +109,7 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 	}
 
 	private int getUpgrades() {
-		return getStack(SLOT_TRANSFORMER).getCount();
+		return getItem(SLOT_TRANSFORMER).getCount();
 	}
 
 	// each transformer upgrade doubles speed and consumption and quadruples the input rate
@@ -120,32 +122,32 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 	}
 
 	@Override
-	public void onServerMessageReceived(NbtCompound tag) {
+	public void onServerMessageReceived(CompoundTag tag) {
 		if (!tag.contains("type"))
 			return;
-		switch (tag.getInt("type")) {
+		switch (tag.getIntOr("type", 0)) {
 		case 4:
 			if (tag.contains("slot") && tag.contains("title")) {
-				ItemStack itemStack = getStack(tag.getInt("slot"));
+				ItemStack itemStack = getItem(tag.getIntOr("slot", 0));
 				if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemCardMain)
-					new ItemCardReader(itemStack).setTitle(tag.getString("title"));
+					new ItemCardReader(itemStack).setTitle(tag.getStringOr("title", ""));
 			}
 			break;
 		}
 	}
 
 	@Override
-	public void onClientMessageReceived(NbtCompound tag) {
+	public void onClientMessageReceived(CompoundTag tag) {
 		if (!tag.contains("type"))
 			return;
-		switch (tag.getInt("type")) {
+		switch (tag.getIntOr("type", 0)) {
 		case 1:
 			if (tag.contains("energy") && tag.contains("production")) {
-				storage.setEnergy(tag.getLong("energy"));
-				production = tag.getDouble("production");
+				storage.setEnergy(tag.getLongOr("energy", 0L));
+				production = tag.getDoubleOr("production", 0.0);
 			}
 			if (tag.contains("time"))
-				recipeTime = tag.getInt("time");
+				recipeTime = tag.getIntOr("time", 0);
 			else
 				recipeTime = 0;
 			break;
@@ -153,60 +155,58 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 	}
 
 	@Override
-	public Packet<ClientPlayPacketListener> toUpdatePacket() {
-		return BlockEntityUpdateS2CPacket.create(this);
+	public Packet<ClientGamePacketListener> getUpdatePacket() {
+		return ClientboundBlockEntityDataPacket.create(this);
 	}
 
 	@Override
-	public void onDataPacket(BlockEntityUpdateS2CPacket pkt) {
-		readProperties(pkt.getNbt(), world.getRegistryManager());
+	public void onDataPacket(ClientboundBlockEntityDataPacket pkt) {
+		readProperties(pkt.getTag(), level.registryAccess());
 	}
 
 	@Override
-	public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registries) {
-		NbtCompound tag = super.toInitialChunkDataNbt(registries);
-		tag = writeProperties(tag, registries);
+	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+		CompoundTag tag = writeProperties(registries);
 		updateActive();
 		tag.putBoolean("active", active);
 		return tag;
 	}
 
 	@Override
-	protected void readProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
-		super.readProperties(tag, registries);
+	protected void readProperties(ValueInput tag) {
+		super.readProperties(tag);
 		if (tag.contains("energy"))
-			storage.setEnergy(tag.getLong("energy"));
+			storage.setEnergy(tag.getLongOr("energy", 0L));
 		if (tag.contains("buffer"))
-			buffer = tag.getInt("buffer");
+			buffer = tag.getIntOr("buffer", 0);
 		if (tag.contains("production"))
-			production = tag.getDouble("production");
+			production = tag.getDoubleOr("production", 0.0);
 		if (tag.contains("active"))
-			active = tag.getBoolean("active");
+			active = tag.getBooleanOr("active", false);
 	}
 
 	@Override
-	protected void readNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
-		super.readNbt(tag, registries);
-		readProperties(tag, registries);
+	protected void loadAdditional(ValueInput tag) {
+		super.loadAdditional(tag);
+		readProperties(tag);
 		lastEnergy = storage.getAmount();
 	}
 
 	@Override
-	protected NbtCompound writeProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
-		tag = super.writeProperties(tag, registries);
+	protected void writeProperties(ValueOutput tag) {
+		super.writeProperties(tag);
 		tag.putLong("energy", storage.getAmount());
 		tag.putInt("buffer", buffer);
 		tag.putDouble("production", production);
-		return tag;
 	}
 
 	@Override
-	protected void writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
-		super.writeNbt(tag, registries);
-		writeProperties(tag, registries);
+	protected void saveAdditional(ValueOutput tag) {
+		super.saveAdditional(tag);
+		writeProperties(tag);
 	}
 
-	public static void tickStatic(World level, BlockPos pos, BlockState state, BlockEntity be) {
+	public static void tickStatic(Level level, BlockPos pos, BlockState state, BlockEntity be) {
 		if (!(be instanceof TileEntityKitAssembler))
 			return;
 		TileEntityKitAssembler te = (TileEntityKitAssembler) be;
@@ -214,18 +214,18 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 	}
 
 	protected void tick() {
-		if (world.isClient)
+		if (level.isClientSide())
 			return;
 		// energy also changes from cables, which do not mark the chunk for saving
 		if (storage.getAmount() != lastEnergy) {
 			lastEnergy = storage.getAmount();
-			world.markDirty(pos);
+			level.blockEntityChanged(worldPosition);
 		}
 		handleDischarger(SLOT_DISCHARGER);
 		long energyNeeded = getEnergyNeeded();
 		if (!active) {
 			// energy from cables arrives without an inventory change, so check now and then whether work can start
-			if (storage.getAmount() >= energyNeeded && world.getTime() % 10 == 0)
+			if (storage.getAmount() >= energyNeeded && level.getGameTime() % 10 == 0)
 				updateState();
 			return;
 		}
@@ -233,19 +233,19 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 			storage.extract(energyNeeded, false);
 			production += Math.pow(2, getUpgrades());
 			if (recipe != null && production >= recipe.time) {
-				ItemStack stack1 = getStack(SLOT_CARD1);
-				ItemStack stack2 = getStack(SLOT_ITEM);
-				ItemStack stack3 = getStack(SLOT_CARD2);
-				ItemStack result = getStack(SLOT_RESULT);
-				stack1.decrement(recipe.count1);
+				ItemStack stack1 = getItem(SLOT_CARD1);
+				ItemStack stack2 = getItem(SLOT_ITEM);
+				ItemStack stack3 = getItem(SLOT_CARD2);
+				ItemStack result = getItem(SLOT_RESULT);
+				stack1.shrink(recipe.count1);
 				if (stack1.getCount() == 0)
-					removeStack(SLOT_CARD1);
-				stack2.decrement(recipe.count2);
-				stack3.decrement(recipe.count3);
+					removeItemNoUpdate(SLOT_CARD1);
+				stack2.shrink(recipe.count2);
+				stack3.shrink(recipe.count3);
 				if (result.isEmpty())
-					setStack(SLOT_RESULT, recipe.output.copy());
+					setItem(SLOT_RESULT, recipe.output.create());
 				else
-					result.increment(recipe.output.getCount());
+					result.grow(recipe.output.count());
 				production = 0;
 				updateState();
 			}
@@ -266,17 +266,17 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 			buffer -= (int) inserted;
 			needed -= inserted;
 		}
-		ItemStack stack = getStack(slot);
+		ItemStack stack = getItem(slot);
 		if (stack.isEmpty() || needed <= 0)
 			return;
 		if (stack.getItem().equals(Items.LAVA_BUCKET)) {
-			buffer += 2000;
+			buffer += 5000;
 			buffer -= (int) storage.insert(Math.min(buffer, needed), false);
-			setStack(slot, new ItemStack(Items.BUCKET));
+			setItem(slot, new ItemStack(Items.BUCKET));
 			return;
 		}
 		// TechReborn batteries and other items with Team Reborn Energy
-		team.reborn.energy.api.EnergyStorage itemStorage = team.reborn.energy.api.EnergyStorage.ITEM.find(stack, ContainerItemContext.ofSingleSlot(InventoryStorage.of(this, null).getSlot(slot)));
+		team.reborn.energy.api.EnergyStorage itemStorage = team.reborn.energy.api.EnergyStorage.ITEM.find(stack, ContainerItemContext.ofSingleSlot(ContainerStorage.of(this, null).getSlot(slot)));
 		if (itemStorage == null)
 			return;
 		try (Transaction transaction = Transaction.openOuter()) {
@@ -286,9 +286,9 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 	}
 
 	@Override
-	public void markDirty() {
-		super.markDirty();
-		if (world == null || world.isClient)
+	public void setChanged() {
+		super.setChanged();
+		if (level == null || level.isClientSide())
 			return;
 		updateState();
 	}
@@ -322,24 +322,24 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 
 		production = 0;
 
-		BlockState blockstate = world.getBlockState(pos);
+		BlockState blockstate = level.getBlockState(worldPosition);
 		Block block = blockstate.getBlock();
-		if (!(block instanceof KitAssembler) || blockstate.get(KitAssembler.ACTIVE) == active)
+		if (!(block instanceof KitAssembler) || blockstate.getValue(KitAssembler.ACTIVE) == active)
 			return;
-		BlockState newState = block.getDefaultState()
-				.with(KitAssembler.FACING, blockstate.get(KitAssembler.FACING))
-				.with(KitAssembler.ACTIVE, active);
-		world.setBlockState(pos, newState, 3);
+		BlockState newState = block.defaultBlockState()
+				.setValue(KitAssembler.FACING, blockstate.getValue(KitAssembler.FACING))
+				.setValue(KitAssembler.ACTIVE, active);
+		level.setBlock(worldPosition, newState, 3);
 	}
 
 	// ------- Inventory -------
 	@Override
-	public int size() {
+	public int getContainerSize() {
 		return 7;
 	}
 
 	@Override
-	public boolean isValid(int slot, ItemStack stack) {
+	public boolean canPlaceItem(int slot, ItemStack stack) {
 		return isItemValid(slot, stack);
 	}
 
@@ -355,7 +355,7 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 		case SLOT_DISCHARGER:
 			return EnergyStorageUtil.isEnergyStorage(stack) || stack.getItem().equals(Items.LAVA_BUCKET);
 		case SLOT_TRANSFORMER:
-			return Registries.ITEM.getId(stack.getItem()).equals(TRANSFORMER_UPGRADE);
+			return BuiltInRegistries.ITEM.getKey(stack.getItem()).equals(TRANSFORMER_UPGRADE);
 		case SLOT_RESULT:
 		default:
 			return false;
@@ -364,7 +364,7 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 
 	// SidedInventory: hoppers fill the recipe inputs from the top and take the result from the bottom
 	@Override
-	public int[] getAvailableSlots(Direction side) {
+	public int[] getSlotsForFace(Direction side) {
 		if (side == Direction.UP)
 			return SLOTS_TOP;
 		if (side == Direction.DOWN)
@@ -373,29 +373,29 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 	}
 
 	@Override
-	public boolean canInsert(int slot, ItemStack stack, Direction side) {
+	public boolean canPlaceItemThroughFace(int slot, ItemStack stack, Direction side) {
 		return side == Direction.UP && (slot == SLOT_CARD1 || slot == SLOT_ITEM || slot == SLOT_CARD2);
 	}
 
 	@Override
-	public boolean canExtract(int slot, ItemStack stack, Direction side) {
+	public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) {
 		return side == Direction.DOWN && slot == SLOT_RESULT;
 	}
 
 	// NamedScreenHandlerFactory
 	@Override
-	public ScreenHandler createMenu(int windowId, PlayerInventory inventory, PlayerEntity player) {
+	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerKitAssembler(windowId, inventory, this);
 	}
 
 	@Override
-	public Text getDisplayName() {
-		return Text.translatable(ModItems.kit_assembler.getTranslationKey());
+	public Component getDisplayName() {
+		return Component.translatable(ModItems.kit_assembler.getDescriptionId());
 	}
 
 	@Override
-	public BlockPos getScreenOpeningData(ServerPlayerEntity player) {
-		return pos;
+	public BlockPos getScreenOpeningData(ServerPlayer player) {
+		return worldPosition;
 	}
 
 	private class EnergyInput implements team.reborn.energy.api.EnergyStorage {

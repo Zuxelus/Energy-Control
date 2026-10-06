@@ -1,9 +1,7 @@
 {
 	"type": "minecraft:crafting_shapeless",
 	"ingredients": [
-		{
-			"tag": "energycontrol:cards"
-		}
+		"#energycontrol:cards"
 	],
 	"result": {
 		"id": "energycontrol:radio_transmitter"

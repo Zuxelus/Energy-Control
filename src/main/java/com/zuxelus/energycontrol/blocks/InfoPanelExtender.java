@@ -1,7 +1,5 @@
 package com.zuxelus.energycontrol.blocks;
 
-import com.mojang.serialization.MapCodec;
-import net.minecraft.block.BlockWithEntity;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
@@ -9,62 +7,55 @@ import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanelExtender;
 import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
-
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 
 public class InfoPanelExtender extends FacingBlockActive {
-	public static final MapCodec<InfoPanelExtender> CODEC = createCodec(InfoPanelExtender::new);
-
-	@Override
-	protected MapCodec<? extends BlockWithEntity> getCodec() {
-		return CODEC;
-	}
-
 	public InfoPanelExtender() {
 		this(ModItems.blockSettings());
 	}
 
-	public InfoPanelExtender(AbstractBlock.Settings settings) {
-		super(settings.luminance(state -> state.get(ACTIVE) ? 10 : 0));
+	public InfoPanelExtender(BlockBehaviour.Properties settings) {
+		super(settings.lightLevel(state -> state.getValue(ACTIVE) ? 10 : 0));
 	}
 
 	@Override
-	protected BlockEntityFacing newBlockEntity(BlockPos pos, BlockState state) {
-		return ModTileEntityTypes.info_panel_extender.instantiate(pos, state);
+	protected BlockEntityFacing createFacingBlockEntity(BlockPos pos, BlockState state) {
+		return ModTileEntityTypes.info_panel_extender.create(pos, state);
 	}
 
 	@Override
-	protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-		if (world.isClient)
-			return ActionResult.PASS;
+	protected InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
+		if (world.isClientSide())
+			return InteractionResult.PASS;
 		BlockEntity te = world.getBlockEntity(pos);
 		if (!(te instanceof TileEntityInfoPanelExtender))
-			return ActionResult.PASS;
+			return InteractionResult.PASS;
 		TileEntityInfoPanel panel = ((TileEntityInfoPanelExtender) te).getCore();
 		if (panel == null)
-			return ActionResult.PASS;
-		if (EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) panel).getFacing() == hit.getSide())
-			if (((TileEntityInfoPanel) panel).runTouchAction(player.getMainHandStack(), pos, hit.getPos()))
-				return ActionResult.SUCCESS;
-		player.openHandledScreen(panel); // the extender has no GUI of its own, open the core panel's
-		return ActionResult.SUCCESS;
+			return InteractionResult.PASS;
+		if (EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) panel).getFacing() == hit.getDirection())
+			if (((TileEntityInfoPanel) panel).runTouchAction(player.getMainHandItem(), pos, hit.getLocation()))
+				return InteractionResult.SUCCESS;
+		player.openMenu(panel); // the extender has no GUI of its own, open the core panel's
+		return InteractionResult.SUCCESS;
 	}
 
-	public BlockState getPlacementState(ItemPlacementContext ctx) {
-		return super.getPlacementState(ctx).with(ACTIVE, ctx.getWorld().isReceivingRedstonePower(ctx.getBlockPos()));
+	public BlockState getStateForPlacement(BlockPlaceContext ctx) {
+		return super.getStateForPlacement(ctx).setValue(ACTIVE, ctx.getLevel().hasNeighborSignal(ctx.getClickedPos()));
 	}
 
 	@Override
-	public BlockRenderType getRenderType(BlockState state) {
-		return BlockRenderType.MODEL;
+	public RenderShape getRenderShape(BlockState state) {
+		return RenderShape.MODEL;
 	}
 }

@@ -1,16 +1,15 @@
 package com.zuxelus.zlib.gui;
 
-import net.minecraft.text.Text;
-import net.minecraft.screen.ScreenTexts;
-
+import net.minecraft.client.renderer.RenderPipelines;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.OrderedText;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.FormattedCharSequence;
 
 @Environment(EnvType.CLIENT)
 public abstract class GuiBase extends Screen {
@@ -21,10 +20,10 @@ public abstract class GuiBase extends Screen {
 	protected int guiTop;
 
 	public GuiBase(String name, int xSize, int ySize, String texture) {
-		super(Text.translatable(name));
+		super(Component.translatable(name));
 		this.xSize = xSize;
 		this.ySize = ySize;
-		this.texture = Identifier.of(texture);
+		this.texture = Identifier.parse(texture);
 	}
 
 	@Override
@@ -35,45 +34,44 @@ public abstract class GuiBase extends Screen {
 	}
 
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
-		// Screen.render draws the background (see renderBackground) and then the widgets
-		super.render(context, mouseX, mouseY, partialTicks);
-		MatrixStack matrices = context.getMatrices();
-		matrices.push();
-		matrices.translate((float) guiLeft, (float) guiTop, 0.0F);
+	public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float partialTicks) {
+		// Screen.extractRenderState draws the widgets; the background comes from extractBackground
+		super.extractRenderState(context, mouseX, mouseY, partialTicks);
+		context.pose().pushMatrix();
+		context.pose().translate(guiLeft, guiTop);
 		drawGuiContainerForegroundLayer(context, mouseX, mouseY);
-		matrices.pop();
+		context.pose().popMatrix();
 	}
 
 	@Override
-	public void renderBackground(DrawContext context, int mouseX, int mouseY, float partialTicks) {
-		super.renderBackground(context, mouseX, mouseY, partialTicks);
+	public void extractBackground(GuiGraphicsExtractor context, int mouseX, int mouseY, float partialTicks) {
+		super.extractBackground(context, mouseX, mouseY, partialTicks);
 		drawGuiContainerBackgroundLayer(context, partialTicks, mouseX, mouseY);
 	}
 
-	protected void drawGuiContainerForegroundLayer(DrawContext context, int mouseX, int mouseY) {}
+	protected void drawGuiContainerForegroundLayer(GuiGraphicsExtractor context, int mouseX, int mouseY) {}
 
-	protected void drawGuiContainerBackgroundLayer(DrawContext context, float partialTicks, int mouseX, int mouseY) {
-		context.drawTexture(texture, guiLeft, guiTop, 0, 0, xSize, ySize);
+	protected void drawGuiContainerBackgroundLayer(GuiGraphicsExtractor context, float partialTicks, int mouseX, int mouseY) {
+		context.blit(RenderPipelines.GUI_TEXTURED, texture, guiLeft, guiTop, 0, 0, xSize, ySize, 256, 256);
 	}
 
 	@Override
-	public boolean shouldPause() {
+	public boolean isPauseScreen() {
 		return false;
 	}
 
-	protected TextFieldWidget addTextFieldWidget(int left, int top, int width, int height, boolean isEnabled, String text) {
-		TextFieldWidget textBox = new TextFieldWidget(textRenderer, guiLeft + left, guiTop + top, width, height, null, ScreenTexts.EMPTY);
+	protected EditBox addTextFieldWidget(int left, int top, int width, int height, boolean isEnabled, String text) {
+		EditBox textBox = new EditBox(font, guiLeft + left, guiTop + top, width, height, null, CommonComponents.EMPTY);
 		textBox.setEditable(isEnabled);
 		textBox.setFocused(isEnabled);
-		textBox.setText(text);
-		addSelectableChild(textBox);
+		textBox.setValue(text);
+		addWidget(textBox);
 		setInitialFocus(textBox);
 		return textBox;
 	}
 
-	protected void drawTitle(DrawContext context) {
-		OrderedText ireorderingprocessor = title.asOrderedText();
-		context.drawText(textRenderer, ireorderingprocessor, (xSize - textRenderer.getWidth(ireorderingprocessor)) / 2, 6, 0x404040, false);
+	protected void drawTitle(GuiGraphicsExtractor context) {
+		FormattedCharSequence ireorderingprocessor = title.getVisualOrderText();
+		context.text(font, ireorderingprocessor, (xSize - font.width(ireorderingprocessor)) / 2, 6, 0xFF404040, false);
 	}
 }

@@ -9,7 +9,7 @@ import com.zuxelus.energycontrol.items.cards.*;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 /** Read-only decoration for the portable panel's all-fields row layout.
  * No packet, item component, card setting, or sensor value is written here. */

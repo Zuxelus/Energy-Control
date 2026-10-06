@@ -1,6 +1,8 @@
 package com.zuxelus.energycontrol.gui;
 
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardText;
 import com.zuxelus.energycontrol.network.NetworkHelper;
@@ -10,20 +12,20 @@ import com.zuxelus.zlib.gui.controls.GuiButtonGeneral;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerListener;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerListener;
+import net.minecraft.world.item.ItemStack;
 
 @Environment(EnvType.CLIENT)
-public abstract class GuiPanelBase<T extends ScreenHandler> extends GuiContainerBase<T> implements ScreenHandlerListener {
+public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiContainerBase<T> implements ContainerListener {
 	protected static final int ID_LABELS = 1;
 	protected static final int ID_SLOPE = 2;
 	protected static final int ID_COLORS = 3;
@@ -33,13 +35,13 @@ public abstract class GuiPanelBase<T extends ScreenHandler> extends GuiContainer
 
 	protected String name;
 	protected TileEntityInfoPanel panel;
-	protected TextFieldWidget textboxTitle;
+	protected EditBox textboxTitle;
 	protected byte activeTab;
 	protected boolean modified;
 	protected ItemStack oldStack = ItemStack.EMPTY;
 
-	public GuiPanelBase(T container, PlayerInventory inv, Text name, Identifier texture) {
-		super(container, inv, name, texture);
+	public GuiPanelBase(T container, Inventory inv, Component name, Identifier texture, int imageHeight) {
+		super(container, inv, name, texture, DEFAULT_IMAGE_WIDTH, imageHeight);
 		activeTab = 0;
 		modified = false;
 	}
@@ -53,68 +55,71 @@ public abstract class GuiPanelBase<T extends ScreenHandler> extends GuiContainer
 		super.init();
 		initButtons();
 		initControls();
-		handler.removeListener(this);
-		handler.addListener(this);
+		menu.removeSlotListener(this);
+		menu.addSlotListener(this);
 	}
 
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
-		super.render(context, mouseX, mouseY, partialTicks);
-		drawMouseoverTooltip(context, mouseX, mouseY);
+	public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float partialTicks) {
+		super.extractRenderState(context, mouseX, mouseY, partialTicks);
+		extractTooltip(context, mouseX, mouseY);
 	}
 
 	@Override
-	protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
-		drawCenteredText(context, title, backgroundWidth, 6);
+	protected void extractLabels(GuiGraphicsExtractor context, int mouseX, int mouseY) {
+		drawCenteredText(context, title, imageWidth, 6);
 	}
 
 	@Override
-	public boolean mouseReleased(double mouseX, double mouseY, int mouseButton) {
+	public boolean mouseReleased(MouseButtonEvent event) {
+		double mouseX = event.x();
+		double mouseY = event.y();
+		int mouseButton = event.button();
 		if (textboxTitle != null) {
-			textboxTitle.mouseReleased(mouseX - x, mouseY - y, mouseButton);
+			textboxTitle.mouseReleased(new MouseButtonEvent(mouseX - leftPos, mouseY - topPos, event.buttonInfo()));
 			// the screen places a carried item in a slot on mouse release, so the release must reach it
 			if (textboxTitle.isFocused())
-				return super.mouseReleased(mouseX, mouseY, mouseButton);
+				return super.mouseReleased(event);
 			setFocused(null);
 			updateTitle();
 		}
-		return super.mouseReleased(mouseX, mouseY, mouseButton);
+		return super.mouseReleased(event);
 	}
 
 	@SuppressWarnings("resource")
 	protected void updateTitle() {
 		if (textboxTitle == null)
 			return;
-		if (panel.getWorld().isClient) {
-			NbtCompound tag = new NbtCompound();
+		if (panel.getLevel().isClientSide()) {
+			CompoundTag tag = new CompoundTag();
 			tag.putInt("type", 4);
 			tag.putInt("slot", activeTab);
-			tag.putString("title", textboxTitle.getText());
-			NetworkHelper.updateSeverTileEntity(panel.getPos(), tag);
-			ItemStack card = panel.getStack(activeTab);
+			tag.putString("title", textboxTitle.getValue());
+			NetworkHelper.updateSeverTileEntity(panel.getBlockPos(), tag);
+			ItemStack card = panel.getItem(activeTab);
 			if (!card.isEmpty() && card.getItem() instanceof ItemCardMain)
-				new ItemCardReader(card).setTitle(textboxTitle.getText());
+				new ItemCardReader(card).setTitle(textboxTitle.getValue());
 		}
 	}
 
 	@Override
-	public void close() {
+	public void onClose() {
 		updateTitle();
-		super.close();
-		handler.removeListener(this);
+		super.onClose();
+		menu.removeSlotListener(this);
 	}
 
-	protected void actionPerformed(ButtonWidget button, int id) {
+	protected void actionPerformed(Button button, int id) {
 		switch (id) {
 		case ID_LABELS:
 			boolean checked = !panel.getShowLabels();
 			((GuiButtonGeneral) button).setTextureTop(checked ? 15 : 31);
-			NetworkHelper.updateSeverTileEntity(panel.getPos(), 3, checked ? 1 : 0);
+			NetworkHelper.updateSeverTileEntity(panel.getBlockPos(), 3, checked ? 1 : 0);
 			panel.setShowLabels(checked);
 			break;
 		case ID_COLORS:
 			Screen colorGui = new GuiScreenColor(this, panel);
-			client.setScreen(colorGui);
+			minecraft.gui.setScreen(colorGui);
 			break;
 		case ID_TEXT:
 			oldStack = ItemStack.EMPTY;
@@ -122,7 +127,7 @@ public abstract class GuiPanelBase<T extends ScreenHandler> extends GuiContainer
 			break;
 		case ID_TICKRATE:
 			GuiHorizontalSlider slider = new GuiHorizontalSlider(this, panel);
-			client.setScreen(slider);
+			minecraft.gui.setScreen(slider);
 			break;
 		}
 	}
@@ -130,21 +135,24 @@ public abstract class GuiPanelBase<T extends ScreenHandler> extends GuiContainer
 	protected void openTextGui() {
 		ItemStack card = panel.getCards().get(activeTab);
 		if (!card.isEmpty() && card.getItem() instanceof ItemCardText)
-			client.setScreen(new GuiCardText(card, panel, this, activeTab));
+			minecraft.gui.setScreen(new GuiCardText(card, panel, this, activeTab));
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (keyCode == 69)
+	public boolean keyPressed(KeyEvent event) {
+		int keyCode = event.key();
+		int scanCode = event.keycode();
+		int modifiers = event.modifiers();
+		if (minecraft.options.keyInventory.matches(event))
 			return true;
-		return super.keyPressed(keyCode, scanCode, modifiers);
+		return super.keyPressed(event);
 	}
 
 	@Override
-	public void onSlotUpdate(ScreenHandler container, int slot, ItemStack stack) {
+	public void slotChanged(AbstractContainerMenu container, int slot, ItemStack stack) {
 		initControls();
 	}
 
 	@Override
-	public void onPropertyUpdate(ScreenHandler container, int varToUpdate, int newValue) {}
+	public void dataChanged(AbstractContainerMenu container, int varToUpdate, int newValue) {}
 }

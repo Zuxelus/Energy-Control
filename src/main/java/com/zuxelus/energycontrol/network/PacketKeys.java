@@ -4,17 +4,17 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.zlib.network.PacketBase;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
 
 public record PacketKeys(boolean altPressed) implements PacketBase {
-	public static final Id<PacketKeys> ID = new Id<>(Identifier.of(EnergyControl.MODID, "c2s_keys"));
-	public static final PacketCodec<RegistryByteBuf, PacketKeys> CODEC = PacketCodecs.BOOL.<RegistryByteBuf>cast().xmap(PacketKeys::new, PacketKeys::altPressed);
+	public static final Type<PacketKeys> ID = new Type<>(Identifier.fromNamespaceAndPath(EnergyControl.MODID, "c2s_keys"));
+	public static final StreamCodec<RegistryFriendlyByteBuf, PacketKeys> CODEC = ByteBufCodecs.BOOL.<RegistryFriendlyByteBuf>cast().map(PacketKeys::new, PacketKeys::altPressed);
 
 	@Override
-	public Id<PacketKeys> getId() {
+	public Type<PacketKeys> type() {
 		return ID;
 	}
 

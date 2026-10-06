@@ -1,21 +1,19 @@
 package com.zuxelus.energycontrol.recipes;
 
 import java.util.Vector;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.PlacementInfo;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
+import net.minecraft.world.level.Level;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.*;
-
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.CraftingRecipe;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.ShapelessRecipe;
-import net.minecraft.recipe.book.CraftingRecipeCategory;
-import net.minecraft.recipe.input.CraftingRecipeInput;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 public class StorageArrayRecipe implements CraftingRecipe {
 	private final ShapelessRecipe recipe;
@@ -29,13 +27,13 @@ public class StorageArrayRecipe implements CraftingRecipe {
 	}
 
 	@Override
-	public boolean matches(CraftingRecipeInput inv, World level) {
-		return !craft(inv, level.getRegistryManager()).isEmpty();
+	public boolean matches(CraftingInput inv, Level level) {
+		return !assemble(inv).isEmpty();
 	}
 
 	@Override
-	public ItemStack craft(CraftingRecipeInput inv, RegistryWrapper.WrapperLookup registryManager) {
-		int inventoryLength = inv.getSize();
+	public ItemStack assemble(CraftingInput inv) {
+		int inventoryLength = inv.size();
 		int cardCount = 0;
 		int arrayCount = 0;
 		int cardCountLiquid = 0;
@@ -43,7 +41,7 @@ public class StorageArrayRecipe implements CraftingRecipe {
 		Vector<ItemStack> arrays = new Vector<>();
 		Vector<ItemStack> cards = new Vector<>();
 		for (int i = 0; i < inventoryLength; i++) {
-			ItemStack itemStack = inv.getStackInSlot(i);
+			ItemStack itemStack = inv.getItem(i);
 			if (itemStack.isEmpty())
 				continue;
 			Item item = itemStack.getItem();
@@ -138,22 +136,32 @@ public class StorageArrayRecipe implements CraftingRecipe {
 	}
 
 	@Override
-	public CraftingRecipeCategory getCategory() {
-		return CraftingRecipeCategory.MISC;
+	public CraftingBookCategory category() {
+		return CraftingBookCategory.MISC;
 	}
 
 	@Override
-	public boolean fits(int width, int height) {
-		return width * height >= 2;
+	public boolean isSpecial() {
+		return true;
 	}
 
 	@Override
-	public ItemStack getResult(RegistryWrapper.WrapperLookup registryManager) {
-		return ItemStack.EMPTY;
+	public boolean showNotification() {
+		return false;
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public String group() {
+		return "";
+	}
+
+	@Override
+	public PlacementInfo placementInfo() {
+		return PlacementInfo.NOT_PLACEABLE;
+	}
+
+	@Override
+	public RecipeSerializer<StorageArrayRecipe> getSerializer() {
 		return ModItems.ARRAY_SERIALIZER;
 	}
 }

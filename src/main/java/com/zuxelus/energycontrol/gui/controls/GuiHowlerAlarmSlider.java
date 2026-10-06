@@ -1,25 +1,27 @@
 package com.zuxelus.energycontrol.gui.controls;
 
-import net.minecraft.text.Text;
-import net.minecraft.screen.ScreenTexts;
-
 import com.zuxelus.energycontrol.EnergyControl;
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.PressableWidget;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
 @Environment(EnvType.CLIENT)
-public class GuiHowlerAlarmSlider extends PressableWidget {
-	private static final Identifier TEXTURE = Identifier.of(EnergyControl.MODID, "textures/gui/gui_howler_alarm.png");
+public class GuiHowlerAlarmSlider extends AbstractButton {
+	private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/gui_howler_alarm.png");
 
 	public float sliderValue;
 	public boolean dragging;
@@ -30,16 +32,16 @@ public class GuiHowlerAlarmSlider extends PressableWidget {
 
 	@SuppressWarnings("resource")
 	public GuiHowlerAlarmSlider(int x, int y, TileEntityHowlerAlarm alarm) {
-		super(x, y, 107, 16, ScreenTexts.EMPTY);
+		super(x, y, 107, 16, CommonComponents.EMPTY);
 		this.alarm = alarm;
 		dragging = false;
-		if (alarm.getWorld().isClient)
+		if (alarm.getLevel().isClientSide())
 			maxValue = ConfigHandler.maxAlarmRange;
 		int currentRange = alarm.getRange();
-		if (alarm.getWorld().isClient && currentRange > maxValue)
+		if (alarm.getLevel().isClientSide() && currentRange > maxValue)
 			currentRange = maxValue;
 		sliderValue = ((float) currentRange - minValue) / (maxValue - minValue);
-		setMessage(Text.translatable("msg.ec.HowlerAlarmSoundRange", getNormalizedValue()));
+		setMessage(Component.translatable("msg.ec.HowlerAlarmSoundRange", getNormalizedValue()));
 	}
 
 	private int getNormalizedValue() {
@@ -57,42 +59,46 @@ public class GuiHowlerAlarmSlider extends PressableWidget {
 			sliderValue = 1.0F;
 		
 		int newValue = getNormalizedValue();
-		if (alarm.getWorld().isClient && alarm.getRange() != newValue) {
-			NetworkHelper.updateSeverTileEntity(alarm.getPos(), 2, newValue);
+		if (alarm.getLevel().isClientSide() && alarm.getRange() != newValue) {
+			NetworkHelper.updateSeverTileEntity(alarm.getBlockPos(), 2, newValue);
 			alarm.setRange(newValue);
 		}
-		setMessage(Text.translatable("msg.ec.HowlerAlarmSoundRange", newValue));
+		setMessage(Component.translatable("msg.ec.HowlerAlarmSoundRange", newValue));
 	}
 
 	@Override
-	public void renderWidget(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+	protected void extractContents(GuiGraphicsExtractor context, int mouseX, int mouseY, float partialTicks) {
 		if (!visible)
 			return;
-		MinecraftClient minecraft = MinecraftClient.getInstance();
-		TextRenderer fontRenderer = minecraft.textRenderer;
+		Minecraft minecraft = Minecraft.getInstance();
+		Font fontRenderer = minecraft.font;
 		if (dragging)
 			setSliderPos(mouseX);
 
-		context.drawTexture(TEXTURE, getX() + (int) (sliderValue * (width - 8)), getY(), 131, 0, 8, 16);
-		context.drawText(fontRenderer, getMessage(), getX(), getY() - 12, 0x404040, false);
+		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, getX() + (int) (sliderValue * (width - 8)), getY(), 131, 0, 8, 16, 256, 256);
+		context.text(fontRenderer, getMessage(), getX(), getY() - 12, 0xFF404040, false);
 	}
 
 	@Override
-	public void onPress() { }
+	public void onPress(InputWithModifiers input) { }
 
 	@Override
-	public void onClick(double mouseX, double mouseY) {
+	public void onClick(MouseButtonEvent event, boolean doubleClick) {
+		double mouseX = event.x();
+		double mouseY = event.y();
 		setSliderPos(mouseX);
 		dragging = true;
 	}
 
 	@Override
-	public void onRelease(double mouseX, double mouseY) {
+	public void onRelease(MouseButtonEvent event) {
+		double mouseX = event.x();
+		double mouseY = event.y();
 		dragging = false;
 	}
 
 	@Override
-	public void appendClickableNarrations(NarrationMessageBuilder var1) {
+	public void updateWidgetNarration(NarrationElementOutput var1) {
 		// TODO Auto-generated method stub
 	}
 }

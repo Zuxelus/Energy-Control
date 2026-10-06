@@ -6,15 +6,9 @@
 		" S "
 	],
 	"key": {
-		"P": {
-			"item": "minecraft:paper"
-		},
-		"C": {
-			"item": "energycontrol:basic_circuit"
-		},
-		"S": {
-			"item": "energycontrol:strong_string"
-		}
+		"P": "minecraft:paper",
+		"C": "energycontrol:basic_circuit",
+		"S": "energycontrol:strong_string"
 	},
 	"result": {
 		"id": "energycontrol:card_text"

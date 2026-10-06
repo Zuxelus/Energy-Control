@@ -1,7 +1,5 @@
 package com.zuxelus.energycontrol.crossmod.rei;
 
-import net.minecraft.text.Text;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,12 +13,13 @@ import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ContainerInput;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * REI's simple transfer puts one item per slot per craft, but Kit Assembler recipes need several
@@ -44,14 +43,14 @@ public class KitAssemblerTransferHandler implements TransferHandler {
 		// items the player can use: the inventory plus whatever is already in the input slots
 		Map<Item, Integer> available = new HashMap<>();
 		for (Slot slot : inventory)
-			addStack(available, slot.getStack());
+			addStack(available, slot.getItem());
 		for (int i = 0; i < INPUTS; i++)
-			addStack(available, menu.getSlot(FIRST_INPUT + i).getStack());
+			addStack(available, menu.getSlot(FIRST_INPUT + i).getItem());
 
 		List<EntryIngredient> missing = new ArrayList<>();
 		Item[] chosen = allocate(inputs, counts, 1, available, missing);
 		if (chosen == null)
-			return Result.createFailed(Text.translatable("error.rei.not.enough.materials")).tooltipMissing(missing);
+			return Result.createFailed(Component.translatable("error.rei.not.enough.materials")).tooltipMissing(missing);
 		if (!context.isActuallyCrafting())
 			return Result.createSuccessful();
 
@@ -61,7 +60,7 @@ public class KitAssemblerTransferHandler implements TransferHandler {
 			int max = Integer.MAX_VALUE;
 			for (int i = 0; i < INPUTS; i++)
 				if (counts[i] > 0 && chosen[i] != null)
-					max = Math.min(max, Math.min(menu.getSlot(FIRST_INPUT + i).getMaxItemCount(), chosen[i].getMaxCount()) / counts[i]);
+					max = Math.min(max, Math.min(menu.getSlot(FIRST_INPUT + i).getMaxStackSize(), chosen[i].getDefaultMaxStackSize()) / counts[i]);
 			for (int k = max; k > 1; k--) {
 				Item[] items = allocate(inputs, counts, k, available, new ArrayList<>());
 				if (items != null) {
@@ -72,12 +71,12 @@ public class KitAssemblerTransferHandler implements TransferHandler {
 			}
 		}
 
-		MinecraftClient mc = context.getMinecraft();
-		mc.setScreen(context.getContainerScreen());
+		Minecraft mc = context.getMinecraft();
+		mc.gui.setScreen(context.getContainerScreen());
 		for (int i = 0; i < INPUTS; i++) {
 			Slot input = menu.getSlot(FIRST_INPUT + i);
-			if (input.hasStack())
-				click(mc, menu, input.id, 0, SlotActionType.QUICK_MOVE);
+			if (input.hasItem())
+				click(mc, menu, input.index, 0, ContainerInput.QUICK_MOVE);
 		}
 		for (int i = 0; i < INPUTS; i++)
 			if (chosen[i] != null)
@@ -110,33 +109,33 @@ public class KitAssemblerTransferHandler implements TransferHandler {
 	}
 
 	// Moves exactly 'amount' items of 'item' from the player inventory into 'target'.
-	private static void fillSlot(MinecraftClient mc, ContainerKitAssembler menu, List<Slot> inventory, Slot target, Item item, int amount) {
+	private static void fillSlot(Minecraft mc, ContainerKitAssembler menu, List<Slot> inventory, Slot target, Item item, int amount) {
 		for (Slot source : inventory) {
 			if (amount <= 0)
 				return;
-			if (!source.getStack().isOf(item))
+			if (!source.getItem().is(item))
 				continue;
-			click(mc, menu, source.id, 0, SlotActionType.PICKUP); // pick up the whole stack
-			int before = target.getStack().getCount();
-			if (menu.getCursorStack().getCount() <= amount)
-				click(mc, menu, target.id, 0, SlotActionType.PICKUP); // place all of it
+			click(mc, menu, source.index, 0, ContainerInput.PICKUP); // pick up the whole stack
+			int before = target.getItem().getCount();
+			if (menu.getCarried().getCount() <= amount)
+				click(mc, menu, target.index, 0, ContainerInput.PICKUP); // place all of it
 			else
 				for (int j = 0; j < amount; j++)
-					click(mc, menu, target.id, 1, SlotActionType.PICKUP); // place one at a time
-			amount -= target.getStack().getCount() - before;
-			if (!menu.getCursorStack().isEmpty())
-				click(mc, menu, source.id, 0, SlotActionType.PICKUP); // put the rest back
+					click(mc, menu, target.index, 1, ContainerInput.PICKUP); // place one at a time
+			amount -= target.getItem().getCount() - before;
+			if (!menu.getCarried().isEmpty())
+				click(mc, menu, source.index, 0, ContainerInput.PICKUP); // put the rest back
 		}
 	}
 
-	private static void click(MinecraftClient mc, ContainerKitAssembler menu, int slotId, int button, SlotActionType action) {
-		mc.interactionManager.clickSlot(menu.syncId, slotId, button, action, mc.player);
+	private static void click(Minecraft mc, ContainerKitAssembler menu, int slotId, int button, ContainerInput action) {
+		mc.gameMode.handleContainerInput(menu.containerId, slotId, button, action, mc.player);
 	}
 
 	private static List<Slot> getPlayerSlots(ContainerKitAssembler menu) {
 		List<Slot> list = new ArrayList<>();
 		for (Slot slot : menu.slots)
-			if (slot.inventory instanceof PlayerInventory)
+			if (slot.container instanceof Inventory)
 				list.add(slot);
 		return list;
 	}

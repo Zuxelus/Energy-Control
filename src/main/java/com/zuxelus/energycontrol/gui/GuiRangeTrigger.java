@@ -10,44 +10,43 @@ import com.zuxelus.zlib.gui.GuiContainerBase;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 
 @Environment(EnvType.CLIENT)
 public class GuiRangeTrigger extends GuiContainerBase<ContainerRangeTrigger> {
-	private static final Identifier TEXTURE = Identifier.of(EnergyControl.MODID + ":textures/gui/gui_range_trigger.png");
+	private static final Identifier TEXTURE = Identifier.parse(EnergyControl.MODID + ":textures/gui/gui_range_trigger.png");
 
 	private ContainerRangeTrigger container;
 	private ItemStack prevCard;
 
-	public GuiRangeTrigger(ContainerRangeTrigger container, PlayerInventory inventory, Text title) {
-		super(container, inventory, title, TEXTURE);
+	public GuiRangeTrigger(ContainerRangeTrigger container, Inventory inventory, Component title) {
+		super(container, inventory, title, TEXTURE, DEFAULT_IMAGE_WIDTH, 190);
 		this.container = container;
-		backgroundHeight = 190;
 	}
 
 	private void initControls() {
-		ItemStack card = container.getSlot(TileEntityRangeTrigger.SLOT_CARD).getStack();
+		ItemStack card = container.getSlot(TileEntityRangeTrigger.SLOT_CARD).getItem();
 		if (!card.isEmpty() && card.equals(prevCard))
 			return;
-		clearChildren();
+		clearWidgets();
 		prevCard = card;
 		// ten digits, up to 10 billions
 		for (int i = 0; i < 10; i++) {
-			addDrawableChild(new CompactButton(i * 10, x + 30 + i * 12 + (i + 2) / 3 * 6, y + 20, 12, 12, Text.literal("-"), (button) -> { actionPerformed(button); }));
-			addDrawableChild(new CompactButton(i * 10 + 1, x + 30 + i * 12 + (i + 2) / 3 * 6, y + 42, 12, 12, Text.literal("+"), (button) -> { actionPerformed(button); }));
+			addRenderableWidget(new CompactButton(i * 10, leftPos + 30 + i * 12 + (i + 2) / 3 * 6, topPos + 20, 12, 12, Component.literal("-"), (button) -> { actionPerformed(button); }));
+			addRenderableWidget(new CompactButton(i * 10 + 1, leftPos + 30 + i * 12 + (i + 2) / 3 * 6, topPos + 42, 12, 12, Component.literal("+"), (button) -> { actionPerformed(button); }));
 		}
 		for (int i = 0; i < 10; i++) {
-			addDrawableChild(new CompactButton(100 + i * 10, x + 30 + i * 12 + (i + 2) / 3 * 6, y + 57, 12, 12, Text.literal("-"), (button) -> { actionPerformed(button); }));
-			addDrawableChild(new CompactButton(100 + i * 10 + 1, x + 30 + i * 12 + (i + 2) / 3 * 6, y + 79, 12, 12, Text.literal("+"), (button) -> { actionPerformed(button); }));
+			addRenderableWidget(new CompactButton(100 + i * 10, leftPos + 30 + i * 12 + (i + 2) / 3 * 6, topPos + 57, 12, 12, Component.literal("-"), (button) -> { actionPerformed(button); }));
+			addRenderableWidget(new CompactButton(100 + i * 10 + 1, leftPos + 30 + i * 12 + (i + 2) / 3 * 6, topPos + 79, 12, 12, Component.literal("+"), (button) -> { actionPerformed(button); }));
 		}
-		addDrawableChild(new GuiRangeTriggerInvertRedstone(x + 8, y + 62, container.te));
+		addRenderableWidget(new GuiRangeTriggerInvertRedstone(leftPos + 8, topPos + 62, container.te));
 	}
 
 	@Override
@@ -57,22 +56,22 @@ public class GuiRangeTrigger extends GuiContainerBase<ContainerRangeTrigger> {
 	}
 
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
-		super.render(context, mouseX, mouseY, partialTicks);
-		drawMouseoverTooltip(context, mouseX, mouseY);
+	public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float partialTicks) {
+		super.extractRenderState(context, mouseX, mouseY, partialTicks);
+		extractTooltip(context, mouseX, mouseY);
 	}
 
-	private void renderValue(DrawContext context, double value, int x, int y) {
+	private void renderValue(GuiGraphicsExtractor context, double value, int x, int y) {
 		x += 114;
 		for (int i = 0; i < 10; i++) {
 			byte digit = (byte) (value % 10);
 			String str = Byte.toString(digit);
-			context.drawText(textRenderer, str, x - 12 * i - textRenderer.getWidth("0") / 2 + (9 - i + 2) / 3 * 6, y, 0x404040, false);
+			context.text(font, str, x - 12 * i - font.width("0") / 2 + (9 - i + 2) / 3 * 6, y, 0xFF404040, false);
 			value /= 10;
 		}
 	}
 
-	protected void actionPerformed(ButtonWidget button) {
+	protected void actionPerformed(Button button) {
 		int id = ((CompactButton) button).getId();
 		boolean isPlus = id % 2 == 1;
 		id /= 10;
@@ -92,24 +91,24 @@ public class GuiRangeTrigger extends GuiContainerBase<ContainerRangeTrigger> {
 		if (newValue != initValue) {
 			TileEntityRangeTrigger trigger = container.te;
 
-			NbtCompound tag = new NbtCompound();
+			CompoundTag tag = new CompoundTag();
 			tag.putDouble("value", newValue);
 			if (isEnd) {
 				tag.putInt("type", 3);
-				NetworkHelper.updateSeverTileEntity(trigger.getPos(), tag);
+				NetworkHelper.updateSeverTileEntity(trigger.getBlockPos(), tag);
 				trigger.setLevelEnd(newValue);
 			} else {
 				tag.putInt("type", 1);
-				NetworkHelper.updateSeverTileEntity(trigger.getPos(), tag);
+				NetworkHelper.updateSeverTileEntity(trigger.getBlockPos(), tag);
 				trigger.setLevelStart(newValue);
 			}
 		}
 	}
 
 	@Override
-	protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
-		drawCenteredText(context, title, backgroundWidth, 6);
-		drawLeftAlignedText(context, I18n.translate("container.inventory"), 8, (backgroundHeight - 96) + 2);
+	protected void extractLabels(GuiGraphicsExtractor context, int mouseX, int mouseY) {
+		drawCenteredText(context, title, imageWidth, 6);
+		drawLeftAlignedText(context, I18n.get("container.inventory"), 8, (imageHeight - 96) + 2);
 
 		renderValue(context, container.te.levelStart, 30, 33);
 		renderValue(context, container.te.levelEnd, 30, 70);

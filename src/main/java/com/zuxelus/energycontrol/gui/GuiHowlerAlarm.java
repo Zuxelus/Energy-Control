@@ -1,7 +1,5 @@
 package com.zuxelus.energycontrol.gui;
 
-import net.minecraft.text.Text;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +11,8 @@ import com.zuxelus.zlib.gui.GuiBase;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.network.chat.Component;
 
 @Environment(EnvType.CLIENT)
 public class GuiHowlerAlarm extends GuiBase {
@@ -40,13 +39,13 @@ public class GuiHowlerAlarm extends GuiBase {
 		items.retainAll(EnergyControl.INSTANCE.serverAllowedAlarms);
 
 		listBox = new GuiHowlerAlarmListBox(guiLeft + 13, guiTop + 63, 105, isBig ? 165 : 65, items, alarm);
-		addDrawableChild(slider);
-		addDrawableChild(listBox);
+		addRenderableWidget(slider);
+		addRenderableWidget(listBox);
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(DrawContext context, int mouseX, int mouseY) {
+	protected void drawGuiContainerForegroundLayer(GuiGraphicsExtractor context, int mouseX, int mouseY) {
 		drawTitle(context);
-		context.drawText(textRenderer, Text.translatable("msg.ec.HowlerAlarmSound"), 12, 53, 0x404040, false);
+		context.text(font, Component.translatable("msg.ec.HowlerAlarmSound"), 12, 53, 0xFF404040, false);
 	}
 }

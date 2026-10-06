@@ -5,28 +5,28 @@ import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.zlib.items.ItemInventory;
 
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.text.Text;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 
-public class InventoryPortablePanel extends ItemInventory implements ExtendedScreenHandlerFactory<Hand> {
+public class InventoryPortablePanel extends ItemInventory implements ExtendedMenuProvider<InteractionHand> {
 	public static final byte SLOT_CARD = 0;
 	public static final byte SLOT_UPGRADE_RANGE = 1;
 
-	private final Hand hand;
+	private final InteractionHand hand;
 
-	public InventoryPortablePanel(ItemStack parent, Hand hand) {
+	public InventoryPortablePanel(ItemStack parent, InteractionHand hand) {
 		super(parent);
 		this.hand = hand;
 	}
 
 	@Override
-	public int size() {
+	public int getContainerSize() {
 		return 2;
 	}
 
@@ -44,18 +44,18 @@ public class InventoryPortablePanel extends ItemInventory implements ExtendedScr
 
 	// NamedScreenHandlerFactory
 	@Override
-	public ScreenHandler createMenu(int windowId, PlayerInventory inventory, PlayerEntity player) {
+	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerPortablePanel(windowId, inventory, hand);
 	}
 
 	@Override
-	public Text getDisplayName() {
-		return Text.translatable(ModItems.portable_panel.getTranslationKey());
+	public Component getDisplayName() {
+		return Component.translatable(ModItems.portable_panel.getDescriptionId());
 	}
 
 	// the client needs to know which hand holds the panel
 	@Override
-	public Hand getScreenOpeningData(ServerPlayerEntity player) {
+	public InteractionHand getScreenOpeningData(ServerPlayer player) {
 		return hand;
 	}
 }
