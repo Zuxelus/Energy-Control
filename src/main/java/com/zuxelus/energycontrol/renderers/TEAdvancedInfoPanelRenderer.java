@@ -21,7 +21,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 
 public class TEAdvancedInfoPanelRenderer extends TileRenderer<TileEntityAdvancedInfoPanel> {
-	private static final Identifier TEXTURE = Identifier.parse(EnergyControl.MODID + ":textures/block/info_panel/panel_advanced_all.png");
 	private final Font font;
 
 	private static String implodeArray(String[] inputArray, String glueString) {
@@ -53,29 +52,13 @@ public class TEAdvancedInfoPanelRenderer extends TileRenderer<TileEntityAdvanced
 	@Override
 	protected void render(TileEntityAdvancedInfoPanel te, PoseStack matrixStack, SubmitNodeCollector buffer, int combinedLight, int combinedOverlay) {
 		matrixStack.pushPose();
-		int[] light = CubeRenderer.getBlockLight(te);
+		// the panel body is a baked model (PanelModel), only the text is drawn here
 		CubeRenderer.rotateBlock(matrixStack, te.getFacing(), te.getRotation());
-
-		int color = te.getColored() ? te.getColorBackground() : TileEntityAdvancedInfoPanel.DEFAULT_BACKGROUND;
-		RenderType vertexBuilder = RenderTypes.entityCutout(TEXTURE);
-
-		int textureId = te.findTexture();
 		byte thickness = te.thickness;
 		if (thickness < 1 || thickness > 16)
 			thickness = 16;
-		int rotateHor = te.rotateHor / 7;
-		int rotateVert = te.rotateVert / 7;
-		RotationOffset offset = new RotationOffset(thickness * 2, rotateHor, rotateVert);
+		RotationOffset offset = new RotationOffset(thickness * 2, te.rotateHor / 7, te.rotateVert / 7);
 		Screen screen = te.getScreen();
-		// the plain cube doesn't depend on the screen, so draw it even before the screen is known
-		if (screen == null || (thickness == 16 && rotateHor == 0 && rotateVert == 0)) {
-			CubeRenderer.MODEL.render(matrixStack, buffer, vertexBuilder, light, combinedOverlay);
-			TileEntityInfoPanelRenderer.drawFace(matrixStack, buffer, textureId, color, te.getPowered(), light[CubeRenderer.FACE], combinedOverlay);
-		} else {
-			RotationOffset offsetScreen = offset.addOffset(screen, te.getBlockPos(), te.getFacing(), te.getRotation());
-			CubeRenderer.getModel(offsetScreen).render(matrixStack, buffer, vertexBuilder, light, combinedOverlay);
-			CubeRenderer.getFaceModel(offsetScreen, textureId).render(matrixStack, buffer, RenderTypes.entitySolid(TileEntityInfoPanelRenderer.SCREEN), new int[] { TileEntityInfoPanelRenderer.getScreenLight(te.getPowered(), light[CubeRenderer.FACE]) }, combinedOverlay, color);
-		}
 
 		if (screen != null) {
 			CubeRenderer.rotateBlockText(matrixStack, te.getFacing(), te.getRotation());

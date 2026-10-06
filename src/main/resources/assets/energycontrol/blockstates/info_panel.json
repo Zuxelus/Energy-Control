@@ -1,16 +1,11 @@
 {
     "variants": {
-        "active=false,facing=up":    { "model": "energycontrol:block/info_panel" },
-        "active=false,facing=down":  { "model": "energycontrol:block/info_panel", "x": 180 },
-        "active=false,facing=east":  { "model": "energycontrol:block/info_panel", "x": 90, "y": 90 },
-        "active=false,facing=west":  { "model": "energycontrol:block/info_panel", "x": 90, "y": 270 },
-        "active=false,facing=south": { "model": "energycontrol:block/info_panel", "x": 90, "y": 180 },
-        "active=false,facing=north": { "model": "energycontrol:block/info_panel", "x": 90 },
-        "active=true,facing=up":    { "model": "energycontrol:block/info_panel" },
-        "active=true,facing=down":  { "model": "energycontrol:block/info_panel", "x": 180 },
-        "active=true,facing=east":  { "model": "energycontrol:block/info_panel", "x": 90, "y": 90 },
-        "active=true,facing=west":  { "model": "energycontrol:block/info_panel", "x": 90, "y": 270 },
-        "active=true,facing=south": { "model": "energycontrol:block/info_panel", "x": 90, "y": 180 },
-        "active=true,facing=north": { "model": "energycontrol:block/info_panel", "x": 90 }
+        "": {
+            "type": "energycontrol:panel",
+            "body": "energycontrol:block/info_panel/panel_all",
+            "screen": "energycontrol:block/info_panel/panel_screen",
+            "particle": "energycontrol:block/info_panel/panel_back",
+            "default_color": -16724992
+        }
     }
-} 
+}

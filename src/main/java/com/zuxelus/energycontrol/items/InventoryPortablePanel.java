@@ -5,6 +5,7 @@ import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.zlib.items.ItemInventory;
 
+import net.minecraft.world.InteractionHand;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -16,8 +17,11 @@ public class InventoryPortablePanel extends ItemInventory implements MenuProvide
 	public static final byte SLOT_CARD = 0;
 	public static final byte SLOT_UPGRADE_RANGE = 1;
 
-	public InventoryPortablePanel(ItemStack parent) {
+	private final InteractionHand hand;
+
+	public InventoryPortablePanel(ItemStack parent, InteractionHand hand) {
 		super(parent);
+		this.hand = hand;
 	}
 
 	@Override
@@ -40,7 +44,7 @@ public class InventoryPortablePanel extends ItemInventory implements MenuProvide
 	// MenuProvider
 	@Override
 	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
-		return new ContainerPortablePanel(windowId, inventory);
+		return new ContainerPortablePanel(windowId, inventory, hand);
 	}
 
 	@Override

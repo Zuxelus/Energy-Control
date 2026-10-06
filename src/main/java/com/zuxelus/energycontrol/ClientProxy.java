@@ -1,6 +1,8 @@
 package com.zuxelus.energycontrol;
 
 import com.zuxelus.energycontrol.gui.*;
+import com.zuxelus.energycontrol.renderers.PanelModel;
+import net.neoforged.neoforge.client.event.RegisterBlockStateModels;
 import com.zuxelus.energycontrol.init.ModContainerTypes;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.network.PacketAlarm;
@@ -32,6 +34,12 @@ public class ClientProxy {
 		modEventBus.addListener(ClientProxy::registerPayloadHandlers);
 		modEventBus.addListener(SoundLoader::locatePacks);
 		modEventBus.addListener(ClientProxy::registerReloadListeners);
+		modEventBus.addListener(ClientProxy::registerBlockStateModels);
+	}
+
+	// panel bodies are baked into the chunk mesh, see PanelModel and the panel blockstate files
+	private static void registerBlockStateModels(RegisterBlockStateModels event) {
+		event.registerModel(PanelModel.ID, PanelModel.CODEC);
 	}
 
 	private static void onClientSetup(final FMLClientSetupEvent event) {
@@ -58,9 +66,7 @@ public class ClientProxy {
 		event.registerBlockEntityRenderer(ModTileEntityTypes.thermal_monitor.get(), TEThermalMonitorRenderer::new);
 		event.registerBlockEntityRenderer(ModTileEntityTypes.remote_thermo.get(), TERemoteThermalMonitorRenderer::new);
 		event.registerBlockEntityRenderer(ModTileEntityTypes.info_panel.get(), TileEntityInfoPanelRenderer::new);
-		event.registerBlockEntityRenderer(ModTileEntityTypes.info_panel_extender.get(), TEInfoPanelExtenderRenderer::new);
 		event.registerBlockEntityRenderer(ModTileEntityTypes.info_panel_advanced.get(), TEAdvancedInfoPanelRenderer::new);
-		event.registerBlockEntityRenderer(ModTileEntityTypes.info_panel_advanced_extender.get(), TEAdvancedInfoPanelExtenderRenderer::new);
 		event.registerBlockEntityRenderer(ModTileEntityTypes.holo_panel.get(), TileEntityHoloPanelRenderer::new);
 		event.registerBlockEntityRenderer(ModTileEntityTypes.timer.get(), TileEntityTimerRenderer::new);
 	}

@@ -32,18 +32,18 @@ public abstract class GuiBase extends Screen {
 	}
 
 	@Override
-	public void extractBackground(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY, float partialTicks) {
-		super.extractBackground(matrixStack, mouseX, mouseY, partialTicks);
-		drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
-	}
-
-	@Override
 	public void extractRenderState(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY, float partialTicks) {
 		super.extractRenderState(matrixStack, mouseX, mouseY, partialTicks);
 		matrixStack.pose().pushMatrix();
 		matrixStack.pose().translate(guiLeft, guiTop);
 		drawGuiContainerForegroundLayer(matrixStack, mouseX, mouseY);
 		matrixStack.pose().popMatrix();
+	}
+
+	@Override
+	public void extractBackground(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY, float partialTicks) {
+		super.extractBackground(matrixStack, mouseX, mouseY, partialTicks);
+		drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
 	}
 
 	protected void drawGuiContainerForegroundLayer(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY) {}

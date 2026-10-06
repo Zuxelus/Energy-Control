@@ -5,6 +5,7 @@ import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.zlib.items.ItemInventory;
 
+import net.minecraft.world.InteractionHand;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -14,8 +15,11 @@ import net.minecraft.world.item.ItemStack;
 
 public class InventoryCardHolder extends ItemInventory implements MenuProvider {
 
-	public InventoryCardHolder(ItemStack parent) {
+	private final InteractionHand hand;
+
+	public InventoryCardHolder(ItemStack parent, InteractionHand hand) {
 		super(parent);
+		this.hand = hand;
 	}
 
 	@Override
@@ -36,7 +40,7 @@ public class InventoryCardHolder extends ItemInventory implements MenuProvider {
 	// MenuProvider
 	@Override
 	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
-		return new ContainerCardHolder(windowId, inventory);
+		return new ContainerCardHolder(windowId, inventory, hand);
 	}
 
 	@Override

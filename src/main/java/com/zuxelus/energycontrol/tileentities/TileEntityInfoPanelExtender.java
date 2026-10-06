@@ -1,6 +1,8 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.renderers.RotationOffset;
+import net.neoforged.neoforge.model.data.ModelData;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.blocks.FacingHorizontalActive;
@@ -77,7 +79,22 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 			updateScreen();
 			if (level.isClientSide())
 				level.getChunkSource().getLightEngine().checkBlock(worldPosition);
+			TileEntityInfoPanel.refreshModel(level, worldPosition);
 		}
+	}
+
+	// the extender body is a baked model (PanelModel) too
+	@Override
+	public ModelData getModelData() {
+		return ModelData.of(PanelRenderData.PROPERTY, new PanelRenderData(findTexture(), getColored() ? getColorBackground() : getDefaultBackground(), getPowered(), getRenderOffset()));
+	}
+
+	protected int getDefaultBackground() {
+		return TileEntityInfoPanel.GREEN;
+	}
+
+	protected RotationOffset getRenderOffset() {
+		return null;
 	}
 
 	@Override
@@ -117,6 +134,7 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	@Override
 	public void setScreen(Screen screen) {
 		this.screen = screen;
+		TileEntityInfoPanel.refreshModel(level, worldPosition);
 		if (screen != null) {
 			partOfScreen = true;
 			TileEntityInfoPanel core = screen.getCore(level);

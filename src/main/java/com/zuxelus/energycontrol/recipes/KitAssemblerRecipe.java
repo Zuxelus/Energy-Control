@@ -7,7 +7,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
-import com.zuxelus.zlib.recipes.EmptyInventory;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -19,11 +18,12 @@ import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeBookCategories;
 import net.minecraft.world.item.crafting.RecipeBookCategory;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
-public class KitAssemblerRecipe implements Recipe<EmptyInventory> {
+public class KitAssemblerRecipe implements Recipe<RecipeInput> {
 	public record CountedIngredient(Ingredient ingredient, int count) {
 		public static final Codec<CountedIngredient> CODEC = RecordCodecBuilder.create(i -> i.group(
 				Ingredient.CODEC.fieldOf("ingredient").forGetter(CountedIngredient::ingredient),
@@ -100,7 +100,7 @@ public class KitAssemblerRecipe implements Recipe<EmptyInventory> {
 	}
 
 	@Override
-	public boolean matches(EmptyInventory inv, Level world) {
+	public boolean matches(RecipeInput inv, Level world) {
 		return false;
 	}
 
@@ -120,7 +120,7 @@ public class KitAssemblerRecipe implements Recipe<EmptyInventory> {
 	}
 
 	@Override
-	public ItemStack assemble(EmptyInventory inv) {
+	public ItemStack assemble(RecipeInput inv) {
 		return getOutput();
 	}
 

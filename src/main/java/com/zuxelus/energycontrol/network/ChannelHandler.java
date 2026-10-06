@@ -16,6 +16,7 @@ public class ChannelHandler {
 		registrar.playBidirectional(PacketTileEntity.TYPE, PacketTileEntity.STREAM_CODEC, PacketTileEntity::handleServer, null);
 		registrar.playToClient(PacketAlarm.TYPE, PacketAlarm.STREAM_CODEC);
 		registrar.playToServer(PacketKeys.TYPE, PacketKeys.STREAM_CODEC, PacketKeys::handle);
+		registrar.playToServer(PacketPortableBars.TYPE, PacketPortableBars.STREAM_CODEC, PacketPortableBars::handle);
 	}
 
 	// server

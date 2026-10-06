@@ -21,6 +21,10 @@ public abstract class ItemInventory implements Container, ISlotItemFilter {
 		readFromParent();
 	}
 
+	public ItemStack getParent() {
+		return parent;
+	}
+
 	private void readFromParent() {
 		ItemContainerContents contents = parent.get(DataComponents.CONTAINER);
 		if (contents != null)

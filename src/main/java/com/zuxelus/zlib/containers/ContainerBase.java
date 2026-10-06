@@ -71,7 +71,10 @@ public abstract class ContainerBase<T extends Container> extends AbstractContain
 		ItemStack stack = slot.getItem();
 		ItemStack result = stack.copy();
 
-		int containerSlots = slots.size() - player.getInventory().getNonEquipmentItems().size();
+		// container slots come first; some menus (portable panel) show only the hotbar, so count instead of assuming 36
+		int containerSlots = 0;
+		while (containerSlots < slots.size() && !(slots.get(containerSlots).container instanceof Inventory))
+			containerSlots++;
 		if (index < containerSlots) {
 			if (!moveItemStackTo(stack, containerSlots, slots.size(), true))
 				return ItemStack.EMPTY;

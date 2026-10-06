@@ -1,6 +1,8 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import java.util.HashMap;
+import com.zuxelus.energycontrol.renderers.RotationOffset;
+import net.neoforged.neoforge.model.data.ModelData;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -138,7 +140,10 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	public void setColored(boolean newColored) {
 		/*if (!level.isClientSide() && colored != newColored)
 			notifyBlockUpdate();*/
+		boolean changed = colored != newColored;
 		colored = newColored;
+		if (changed)
+			refreshScreenModel();
 	}
 
 	public int getColorBackground() {
@@ -148,7 +153,10 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	public void setColorBackground(int c) {
 		/*if (!level.isClientSide() && colorBackground != c)
 			notifyBlockUpdate();*/
+		boolean changed = colorBackground != c;
 		colorBackground = c;
+		if (changed)
+			refreshScreenModel();
 	}
 
 	public int getColorText() {
@@ -283,6 +291,45 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 				level.getChunkSource().getLightEngine().checkBlock(worldPosition);
 			}
 		}
+		refreshScreenModel();
+	}
+
+	// the panel body is a baked model (PanelModel), it reads this when the chunk mesh is built
+	@Override
+	public ModelData getModelData() {
+		return ModelData.of(PanelRenderData.PROPERTY, new PanelRenderData(findTexture(), getColored() ? colorBackground : getDefaultBackground(), getPowered(), getRenderOffset()));
+	}
+
+	protected int getDefaultBackground() {
+		return GREEN;
+	}
+
+	protected RotationOffset getRenderOffset() {
+		return null;
+	}
+
+	// rebuilds the meshes of all blocks of the screen, e.g. after a color or power change
+	protected void refreshScreenModel() {
+		if (level == null || !level.isClientSide())
+			return;
+		if (screen == null) {
+			refreshModel(level, worldPosition);
+			return;
+		}
+		for (int x = screen.minX; x <= screen.maxX; x++)
+			for (int y = screen.minY; y <= screen.maxY; y++)
+				for (int z = screen.minZ; z <= screen.maxZ; z++)
+					refreshModel(level, new BlockPos(x, y, z));
+	}
+
+	public static void refreshModel(Level world, BlockPos pos) {
+		if (world == null || !world.isClientSide())
+			return;
+		BlockEntity be = world.getBlockEntity(pos);
+		if (be != null)
+			be.requestModelDataUpdate();
+		BlockState state = world.getBlockState(pos);
+		world.sendBlockUpdated(pos, state, state, 8);
 	}
 
 	protected void serializeDisplaySettings(ValueOutput tag) {
@@ -549,6 +596,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	@Override
 	public void setScreen(Screen screen) {
 		this.screen = screen;
+		refreshModel(level, worldPosition);
 	}
 
 	@Override
@@ -666,7 +714,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 
 	public boolean hasBars(ItemStack stack) {
 		Item item = stack.getItem();
-		return !stack.isEmpty() && item instanceof IHasBars && ((IHasBars) item).enableBars(stack) && (getDisplaySettingsForCardInSlot(SLOT_CARD) & 1024) > 0;
+		// no bar while the target is missing: the card still holds the last values it read
+		return !stack.isEmpty() && item instanceof IHasBars && ((IHasBars) item).enableBars(stack) && (getDisplaySettingsForCardInSlot(SLOT_CARD) & 1024) > 0
+				&& new ItemCardReader(stack).getState() == CardState.OK;
 	}
 
 	public void renderImage(float displayWidth, float displayHeight, PoseStack matrixStack, SubmitNodeCollector buffer) {

@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.gui;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.zuxelus.energycontrol.EnergyControl;

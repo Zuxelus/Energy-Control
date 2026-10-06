@@ -11,7 +11,7 @@ import com.zuxelus.energycontrol.recipes.KitAssemblerRecipe;
 import com.zuxelus.energycontrol.recipes.KitAssemblerRecipeType;
 import com.zuxelus.zlib.containers.EnergyStorage;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
-import com.zuxelus.zlib.tileentities.TileEntityItemHandler;
+import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.storage.ValueInput;
@@ -35,7 +35,7 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 
-public class TileEntityKitAssembler extends TileEntityItemHandler implements MenuProvider, ITilePacketHandler, ISlotItemFilter, IEnergyBlockEntity {
+public class TileEntityKitAssembler extends TileEntityInventory implements MenuProvider, ITilePacketHandler, ISlotItemFilter, IEnergyBlockEntity {
 	public static final byte SLOT_INFO = 0;
 	public static final byte SLOT_CARD1 = 1;
 	public static final byte SLOT_ITEM = 2;
@@ -211,7 +211,7 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Men
 		ItemStack stack = getItem(slot);
 		if (!stack.isEmpty() && needed > 0) {
 			if (stack.getItem().equals(Items.LAVA_BUCKET)) {
-				buffer += 2000;
+				buffer += 5000;
 				buffer -= storage.receiveEnergy(buffer, false);
 				setItem(slot, new ItemStack(Items.BUCKET));
 				return;

@@ -22,8 +22,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 
 public class TileEntityInfoPanelRenderer extends TileRenderer<TileEntityInfoPanel> {
-	private static final Identifier TEXTURE = Identifier.parse(EnergyControl.MODID + ":textures/block/info_panel/panel_all.png");
-	public static final Identifier SCREEN = Identifier.parse(EnergyControl.MODID + ":textures/block/info_panel/panel_screen.png");
 	private final Font font;
 
 	private static String implodeArray(String[] inputArray, String glueString) {
@@ -54,38 +52,15 @@ public class TileEntityInfoPanelRenderer extends TileRenderer<TileEntityInfoPane
 
 	@Override
 	protected void render(TileEntityInfoPanel te, PoseStack matrixStack, SubmitNodeCollector buffer, int combinedLight, int combinedOverlay) {
+		// the panel body is a baked model (PanelModel), only the text is drawn here
 		matrixStack.pushPose();
 		CubeRenderer.rotateBlock(matrixStack, te.getFacing(), te.getRotation());
-		int[] light = CubeRenderer.getBlockLight(te);
-
-		int color = te.getColored() ? te.getColorBackground() : TileEntityInfoPanel.GREEN;
-		// cutout: the face area of the texture is transparent and must not fight with the screen drawn at the same depth
-		CubeRenderer.MODEL.render(matrixStack, buffer, RenderTypes.entityCutout(TEXTURE), light, combinedOverlay);
-		drawFace(matrixStack, buffer, te.findTexture(), color, te.getPowered(), light[CubeRenderer.FACE], combinedOverlay);
 		CubeRenderer.rotateBlockText(matrixStack, te.getFacing(), te.getRotation());
 		if (te.getPowered()) {
 			List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
 			drawText(te, joinedData, matrixStack, buffer, combinedLight);
 		}
 		matrixStack.popPose();
-	}
-
-	public static void drawFace(PoseStack matrixStack, SubmitNodeCollector collector, int texture, int color, boolean isPowered, int faceLight, int combinedOverlay) {
-
-		float x = (texture / 4) * 0.25F;
-		float y = (texture % 4) * 0.25F;
-		PositionTextureVertex v = new PositionTextureVertex(0, 16, 0, 0.0F, 0.0F);
-		PositionTextureVertex v1 = new PositionTextureVertex(16, 16, 0, 0.0F, 8.0F);
-		PositionTextureVertex v2 = new PositionTextureVertex(16, 0, 0, 8.0F, 8.0F);
-		PositionTextureVertex v3 = new PositionTextureVertex(0, 0, 0, 8.0F, 0.0F);
-		TexturedQuad quad = new TexturedQuad(new PositionTextureVertex[] { v, v1, v2, v3 }, x, y, x + 0.25F , y + 0.25F, 1.0F, 1.0F, Direction.NORTH);
-		int light = getScreenLight(isPowered, faceLight);
-		collector.submitCustomGeometry(matrixStack, RenderTypes.entitySolid(SCREEN), (pose, buffer) -> quad.draw(pose, buffer, light, combinedOverlay, color));
-	}
-
-	// a powered screen glows
-	public static int getScreenLight(boolean isPowered, int faceLight) {
-		return isPowered ? LightCoordsUtil.FULL_BRIGHT : faceLight;
 	}
 
 	private void drawText(TileEntityInfoPanel panel, List<PanelString> joinedData, PoseStack matrixStack, SubmitNodeCollector buffer, int combinedLight) {

@@ -1,6 +1,8 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.containers.ContainerAdvancedInfoPanel;
+import net.minecraft.core.Direction;
+import com.zuxelus.energycontrol.renderers.RotationOffset;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
@@ -126,6 +128,30 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 			i = -(i * 7);
 			rotateVert = (byte) i;
 		}
+		// the panel body is a baked model, so its chunk has to be rebuilt to show the new shape
+		if (level != null && level.isClientSide())
+			refreshScreenModel();
+	}
+
+	@Override
+	protected int getDefaultBackground() {
+		return DEFAULT_BACKGROUND;
+	}
+
+	@Override
+	protected RotationOffset getRenderOffset() {
+		return getRenderOffset(thickness, rotateHor, rotateVert, screen, getBlockPos(), getFacing(), getRotation());
+	}
+
+	public static RotationOffset getRenderOffset(byte thickness, byte rotateHor, byte rotateVert, Screen screen, BlockPos pos, Direction facing, Direction rotation) {
+		if (thickness < 1 || thickness > 16)
+			thickness = 16;
+		int hor = rotateHor / 7;
+		int vert = rotateVert / 7;
+		if (thickness == 16 && hor == 0 && vert == 0)
+			return null;
+		RotationOffset offset = new RotationOffset(thickness * 2, hor, vert);
+		return screen == null ? offset : offset.addOffset(screen, pos, facing, rotation);
 	}
 
 	@Override

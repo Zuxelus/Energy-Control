@@ -3,20 +3,26 @@ package com.zuxelus.energycontrol.items.cards;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
+import com.zuxelus.energycontrol.api.IHasBars;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.utils.DataHelper;
 
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public class ItemCardEnergy extends ItemCardMain {
+public class ItemCardEnergy extends ItemCardMain implements IHasBars {
+	private static final int BAR_COLOR = 0xFF2ECC40; // filled part
+	private static final int EMPTY_COLOR = 0xB0000000; // darkens the empty part, as on the liquid card
 
 	public ItemCardEnergy(Properties properties) {
 		super(properties);
@@ -63,16 +69,40 @@ public class ItemCardEnergy extends ItemCardMain {
 
 	@Override
 	public List<PanelSetting> getSettingsList() {
-		List<PanelSetting> result = new ArrayList<>(4);
+		List<PanelSetting> result = new ArrayList<>(5);
 		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelEnergy"), 1));
 		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelFree"), 2));
 		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelCapacity"), 4));
 		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelPercentage"), 8));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelShowBar"), 1024));
 		return result;
 	}
 
 	@Override
 	public boolean isRemoteCard() {
 		return true;
+	}
+
+	// IHasBars
+	@Override
+	public boolean enableBars(ItemStack stack) {
+		return true;
+	}
+
+	// same place and size as the liquid card bar: a band across the middle of the screen
+	@Override
+	public void renderBars(float displayWidth, float displayHeight, ICardReader reader, PoseStack matrixStack, SubmitNodeCollector collector) {
+		double storage = reader.getDouble(DataHelper.CAPACITY);
+		if (storage <= 0)
+			return;
+		float x = -0.5F + 1 / 16.0F;
+		float y = -0.5F + 1 / 16.0F + 0.4375F / 2;
+		float height = 0.4375F;
+		float width = 14 / 16.0F * (float) (Math.min(reader.getDouble(DataHelper.ENERGY), storage) / storage);
+
+		matrixStack.scale(displayWidth / 0.875F, displayHeight / 0.875F, 1);
+		IHasBars.drawTransparentRect(matrixStack, collector, x + 0.875F, y + height, x, y, 0, BAR_COLOR);
+		IHasBars.drawTransparentRect(matrixStack, collector, x + 0.875F - width, y + height, x, y, -0.0001F, EMPTY_COLOR);
+		matrixStack.scale(0.875F / displayWidth, 0.875F / displayHeight, 1);
 	}
 }

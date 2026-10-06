@@ -85,12 +85,6 @@ public abstract class TileEntityInventory extends BlockEntityFacing implements W
 		inventory.clear();
 	}
 
-	@Override
-	public void preRemoveSideEffects(BlockPos pos, BlockState state) {
-		if (level != null)
-			net.minecraft.world.Containers.dropContents(level, pos, this);
-	}
-
 	public ResourceHandler<ItemResource> getItemHandler(Direction side) {
 		return side == null ? VanillaContainerWrapper.of(this) : new WorldlyContainerWrapper(this, side);
 	}

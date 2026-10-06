@@ -9,6 +9,7 @@ import com.zuxelus.energycontrol.recipes.KitAssemblerRecipe;
 
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
@@ -75,16 +76,18 @@ public class KitAssemblerRecipeCategory implements IRecipeCategory<KitAssemblerR
 
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, KitAssemblerRecipe recipe, IFocusGroup focuses) {
-		builder.addSlot(RecipeIngredientRole.INPUT, 34, 1).addItemStacks(getStackList(recipe.input1, recipe.count1));
-		builder.addSlot(RecipeIngredientRole.INPUT, 34, 19).addItemStacks(getStackList(recipe.input2, recipe.count2));
-		builder.addSlot(RecipeIngredientRole.INPUT, 34, 37).addItemStacks(getStackList(recipe.input3, recipe.count3));
+		addInputSlot(builder, 34, 1, recipe.input1, recipe.count1);
+		addInputSlot(builder, 34, 19, recipe.input2, recipe.count2);
+		addInputSlot(builder, 34, 37, recipe.input3, recipe.count3);
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 93, 19).add(recipe.result);
 	}
 
-	private static List<ItemStack> getStackList(Ingredient ingredient, int count) {
+	private static void addInputSlot(IRecipeLayoutBuilder builder, int x, int y, Ingredient ingredient, int count) {
+		IRecipeSlotBuilder slot = builder.addSlot(RecipeIngredientRole.INPUT, x, y);
 		List<ItemStack> list = new ArrayList<>();
-		ingredient.items().forEach(item -> list.add(new ItemStack(item, count)));
-		return list;
+		for (ItemStack stack : ingredient.display().resolveForStacks(slot.getContextMap()))
+			list.add(stack.copyWithCount(count));
+		slot.addItemStacks(list);
 	}
 
 	@Override

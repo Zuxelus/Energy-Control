@@ -18,7 +18,7 @@ public class BlockLight extends Block {
 	public static final BooleanProperty LIT = BlockStateProperties.LIT;
 
 	public BlockLight(Block.Properties properties) {
-		super(properties.lightLevel(state -> state.getValue(LIT) ? 15 : 0).strength(0.3F).sound(SoundType.GLASS));
+		super(properties.lightLevel(state -> state.getValue(LIT) ? 15 : 0).strength(1.0F, 3.0F).sound(SoundType.GLASS));
 		registerDefaultState(defaultBlockState().setValue(LIT, Boolean.valueOf(false)));
 	}
 
