@@ -215,6 +215,20 @@ public class ScreenManager {
 		}
 	}
 
+	// chunk unload: only forget the screen, don't touch the world. Changing block states or reading
+	// neighbour blocks here loads chunks again, which stalls the server on save/exit
+	@SuppressWarnings("resource")
+	public void unloadScreenPart(BlockEntity part) {
+		String key = getWorldKey(part.getLevel());
+		if (part instanceof TileEntityInfoPanel && unusedPanels.containsKey(key))
+			unusedPanels.get(key).remove(part);
+		if (!(part instanceof IScreenPart) || !screens.containsKey(key))
+			return;
+		Screen screen = ((IScreenPart) part).getScreen();
+		if (screen != null)
+			screens.get(key).remove(screen);
+	}
+
 	@SuppressWarnings("resource")
 	public void unregisterScreenPart(BlockEntity part) {
 		if (part.getLevel().isClientSide())

@@ -24,6 +24,7 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	private int coreX;
 	private int coreY;
 	private int coreZ;
+	private boolean broken;
 
 	public TileEntityInfoPanelExtender(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -94,10 +95,22 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 		tag.putInt("coreZ", coreZ);
 	}
 
+	// server, only when the block is broken or replaced; setRemoved() is also called on chunk unload
+	@Override
+	public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+		broken = true;
+		super.preRemoveSideEffects(pos, state);
+	}
+
 	@Override
 	public void setRemoved() {
-		if (!level.isClientSide())
-			EnergyControl.screenManager.unregisterScreenPart(this);
+		if (!level.isClientSide()) {
+			// on chunk unload only forget the screen: changing blocks or reading neighbours here loads chunks again and stalls saving
+			if (broken)
+				EnergyControl.screenManager.unregisterScreenPart(this);
+			else
+				EnergyControl.screenManager.unloadScreenPart(this);
+		}
 		super.setRemoved();
 	}
 
@@ -208,7 +221,7 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 
 	@Override
 	public Object getRenderData() {
-		return new PanelRenderData(findTexture(), getColored() ? getColorBackground() : getDefaultBackground(), getPowered(), getRenderOffset());
+		return new PanelRenderData(findTexture(), getColored() ? getColorBackground() : getDefaultBackground(), getPowered(), getRotation(), getRenderOffset());
 	}
 
 	protected int getDefaultBackground() {

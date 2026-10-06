@@ -69,6 +69,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 
 	protected boolean colored;
 	public boolean powered;
+	private boolean broken;
 
 	public TileEntityInfoPanel(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -291,7 +292,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 
 	@Override
 	public Object getRenderData() {
-		return new PanelRenderData(findTexture(), getColored() ? colorBackground : getDefaultBackground(), getPowered(), getRenderOffset());
+		return new PanelRenderData(findTexture(), getColored() ? colorBackground : getDefaultBackground(), getPowered(), getRotation(), getRenderOffset());
 	}
 
 	protected int getDefaultBackground() {
@@ -350,10 +351,22 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 		}
 	}
 
+	// server, only when the block is broken or replaced; setRemoved() is also called on chunk unload
+	@Override
+	public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+		broken = true;
+		super.preRemoveSideEffects(pos, state);
+	}
+
 	@Override
 	public void setRemoved() {
-		if (!level.isClientSide())
-			EnergyControl.screenManager.unregisterScreenPart(this);
+		if (!level.isClientSide()) {
+			// on chunk unload only forget the screen: changing blocks or reading neighbours here loads chunks again and stalls saving
+			if (broken)
+				EnergyControl.screenManager.unregisterScreenPart(this);
+			else
+				EnergyControl.screenManager.unloadScreenPart(this);
+		}
 		super.setRemoved();
 	}
 

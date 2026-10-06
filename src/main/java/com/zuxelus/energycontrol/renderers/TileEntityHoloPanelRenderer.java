@@ -133,11 +133,8 @@ public class TileEntityHoloPanelRenderer implements BlockEntityRenderer<TileEnti
 		}
 		float imageWidth = 0.475F + (displayWidth - 0.875F) / 2F;
 		float imageHeight = 0.5F + (power - 1) / 2F;
-		// translucent submits are sorted, so the hologram no longer needs its own pass after the level
+		// debugQuads is not culled and doesn't write depth, so one quad is visible from both sides and doesn't hide water behind it
 		IHasBars.drawTransparentRect(matrixStack, collector, imageWidth, imageHeight, -imageWidth, -imageHeight, -0.0001F, 0x40AADDDD);
-		matrixStack.rotate(Axis.YP.rotationDegrees(180));
-		IHasBars.drawTransparentRect(matrixStack, collector, imageWidth, imageHeight, -imageWidth, -imageHeight, -0.0001F, 0x40AADDDD);
-		matrixStack.rotate(Axis.YP.rotationDegrees(180));
 		if (joinedData != null) {
 			matrixStack.translate(0, 0, 0.0002F * (power + 1) / 2);
 			int colorHex = 0x000000;
