@@ -56,6 +56,34 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 		matrixStack.popPose();
 	}
 
+	// Hands every quad to the visitor in block coordinates (0..1), transformed like render() does,
+	// so a baked model can use the same geometry. u and v are relative to the texture (0..1).
+	public void visitQuads(PoseStack matrixStack, QuadVisitor visitor) {
+		matrixStack.pushPose();
+		matrixStack.scale(0.5F, 0.5F, 0.5F);
+		Matrix4f matrix4f = matrixStack.last().pose();
+		Matrix3f matrix3f = matrixStack.last().normal();
+		for (int n = 0; n < cube.quads.length; n++) {
+			TexturedQuad quad = cube.quads[n];
+			Vector3f[] positions = new Vector3f[4];
+			float[] u = new float[4];
+			float[] v = new float[4];
+			for (int i = 0; i < 4; i++) {
+				PositionTextureVertex vertex = quad.vertexPositions[i];
+				Vector4f pos = matrix4f.transform(new Vector4f(vertex.position.x() / 16.0F, vertex.position.y() / 16.0F, vertex.position.z() / 16.0F, 1.0F));
+				positions[i] = new Vector3f(pos.x(), pos.y(), pos.z());
+				u[i] = vertex.textureU;
+				v[i] = vertex.textureV;
+			}
+			visitor.accept(n, positions, u, v, matrix3f.transform(new Vector3f(quad.normal)));
+		}
+		matrixStack.popPose();
+	}
+
+	public interface QuadVisitor {
+		void accept(int index, Vector3f[] positions, float[] u, float[] v, Vector3f normal);
+	}
+
 	static class PositionTextureVertex {
 		public final Vector3f position;
 		public final float textureU;

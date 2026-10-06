@@ -31,6 +31,7 @@ public class ClientProxy {
 		modEventBus.addListener(ClientProxy::onClientSetup);
 		modEventBus.addListener(ClientProxy::registerScreens);
 		modEventBus.addListener(ClientProxy::registerRenders);
+		modEventBus.addListener(ModRenderTypes::registerPipelines);
 		modEventBus.addListener(ClientProxy::registerPayloadHandlers);
 		modEventBus.addListener(SoundLoader::locatePacks);
 		modEventBus.addListener(ClientProxy::registerReloadListeners);

@@ -28,6 +28,7 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	private int coreX;
 	private int coreY;
 	private int coreZ;
+	private boolean unloaded;
 
 	public TileEntityInfoPanelExtender(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -86,7 +87,7 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	// the extender body is a baked model (PanelModel) too
 	@Override
 	public ModelData getModelData() {
-		return ModelData.of(PanelRenderData.PROPERTY, new PanelRenderData(findTexture(), getColored() ? getColorBackground() : getDefaultBackground(), getPowered(), getRenderOffset()));
+		return ModelData.of(PanelRenderData.PROPERTY, new PanelRenderData(findTexture(), getColored() ? getColorBackground() : getDefaultBackground(), getPowered(), getRotation(), getRenderOffset()));
 	}
 
 	protected int getDefaultBackground() {
@@ -107,9 +108,18 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	}
 
 	@Override
+	public void onChunkUnloaded() {
+		unloaded = true;
+	}
+
+	@Override
 	public void setRemoved() {
-		if (!level.isClientSide())
-			EnergyControl.INSTANCE.screenManager.unregisterScreenPart(this);
+		if (!level.isClientSide()) {
+			if (unloaded)
+				EnergyControl.INSTANCE.screenManager.unloadScreenPart(this);
+			else
+				EnergyControl.INSTANCE.screenManager.unregisterScreenPart(this);
+		}
 		super.setRemoved();
 	}
 

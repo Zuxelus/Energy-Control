@@ -68,6 +68,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 
 	protected boolean colored;
 	protected boolean powered;
+	private boolean unloaded;
 
 	public TileEntityInfoPanel(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -297,7 +298,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	// the panel body is a baked model (PanelModel), it reads this when the chunk mesh is built
 	@Override
 	public ModelData getModelData() {
-		return ModelData.of(PanelRenderData.PROPERTY, new PanelRenderData(findTexture(), getColored() ? colorBackground : getDefaultBackground(), getPowered(), getRenderOffset()));
+		return ModelData.of(PanelRenderData.PROPERTY, new PanelRenderData(findTexture(), getColored() ? colorBackground : getDefaultBackground(), getPowered(), getRotation(), getRenderOffset()));
 	}
 
 	protected int getDefaultBackground() {
@@ -361,9 +362,18 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	}
 
 	@Override
+	public void onChunkUnloaded() {
+		unloaded = true;
+	}
+
+	@Override
 	public void setRemoved() {
-		if (!level.isClientSide())
-			EnergyControl.INSTANCE.screenManager.unregisterScreenPart(this);
+		if (!level.isClientSide()) {
+			if (unloaded)
+				EnergyControl.INSTANCE.screenManager.unloadScreenPart(this);
+			else
+				EnergyControl.INSTANCE.screenManager.unregisterScreenPart(this);
+		}
 		super.setRemoved();
 	}
 
