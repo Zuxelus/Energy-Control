@@ -5,6 +5,7 @@ import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.util.StringUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.util.ARGB;
@@ -47,27 +48,19 @@ public class GuiTextArea extends AbstractWidget {
 
 		for (int i = 0; i < lineCount; i++)
 			matrixStack.text(fontRenderer, text[i], textLeft, textTop + (fontRenderer.lineHeight + 1) * i, ARGB.opaque(textColor));
+		textTop += (fontRenderer.lineHeight + 1) * cursorLine;
 		int cursorPositionX = textLeft + fontRenderer.width(text[cursorLine].substring(0, Math.min(text[cursorLine].length(), cursorPosition))) - 1;
 		boolean drawCursor = isFocused() && cursorCounter / 6 % 2 == 0;
 		if (drawCursor)
-			drawCursorVertical(matrixStack, cursorPositionX, textTop - 1, cursorPositionX + 1, textTop + 1 + fontRenderer.lineHeight);
+			// same inverting highlight that EditBox uses for selections
+			matrixStack.textHighlight(cursorPositionX, textTop - 1, cursorPositionX + 1, textTop + 1 + fontRenderer.lineHeight, true);
 	}
 
-	// Copy of EditBox.renderHighlight
-	private void drawCursorVertical(GuiGraphicsExtractor matrixStack, int left, int top, int right, int bottom) {
-		if (left < right) {
-			int i = left;
-			left = right;
-			right = i;
-		}
-
-		if (top < bottom) {
-			int j = top;
-			top = bottom;
-			bottom = j;
-		}
-
-		matrixStack.textHighlight(left, top, right, bottom, false);
+	// since SDL input the game only sends typed characters while text input is started, like EditBox does
+	@Override
+	public void setFocused(boolean focused) {
+		super.setFocused(focused);
+		Minecraft.getInstance().onTextInputFocusChange(this, focused);
 	}
 
 	public void updateCursorCounter() {
@@ -109,6 +102,41 @@ public class GuiTextArea extends AbstractWidget {
 		}
 	}
 
+	// moves the text right of the cursor to the next line, pushing the lines below down, and puts the cursor at the start of it
+	private void splitLine() {
+		if (cursorLine >= lineCount - 1)
+			return;
+		// the last line would be pushed out, so it is only done when that loses nothing
+		if (text[lineCount - 1].isEmpty()) {
+			String line = text[cursorLine];
+			for (int i = lineCount - 1; i > cursorLine + 1; i--)
+				text[i] = text[i - 1];
+			text[cursorLine] = line.substring(0, cursorPosition);
+			text[cursorLine + 1] = line.substring(cursorPosition);
+		}
+		cursorLine++;
+		cursorPosition = 0;
+	}
+
+	// appends the next line to the current one and moves the lines below it one line up, nothing happens if the result is too long
+	private void joinWithNextLine() {
+		if (cursorLine >= lineCount - 1 || text[cursorLine].length() + text[cursorLine + 1].length() > maxStringLength)
+			return;
+		text[cursorLine] += text[cursorLine + 1];
+		for (int i = cursorLine + 1; i < lineCount - 1; i++)
+			text[i] = text[i + 1];
+		text[lineCount - 1] = "";
+	}
+
+	// appends the current line to the previous one, the cursor goes to the join point
+	private void joinWithPreviousLine() {
+		if (cursorLine == 0 || text[cursorLine - 1].length() + text[cursorLine].length() > maxStringLength)
+			return;
+		cursorLine--;
+		cursorPosition = text[cursorLine].length();
+		joinWithNextLine();
+	}
+
 	public void writeText(String additionalText) {
 		String newLine = "";
 		String filteredText = StringUtil.filterText(additionalText);
@@ -145,13 +173,14 @@ public class GuiTextArea extends AbstractWidget {
 		double mouseY = event.y();
 		int mouseButton = event.button();
 		boolean flag = mouseX >= getX() && mouseX < (getX() + width) && mouseY >= getY() && mouseY < (getY() + height);
-		if (isFocused() && flag && mouseButton == InputConstants.MOUSE_BUTTON_LEFT) {
-			int xi = Mth.floor(mouseX) - getX();
-			int yi = Mth.floor(mouseY) - getY();
-			setCursorPosition(fontRenderer.plainSubstrByWidth(text[(yi - 4) / 10], xi).length(), (yi - 4) / 10);
-			return true;
-		}
-		return false;
+		if (!flag || mouseButton != InputConstants.MOUSE_BUTTON_LEFT)
+			return false;
+		// returning true lets the screen focus this widget, so a click into an unfocused area starts typing
+		int xi = Mth.floor(mouseX) - getX();
+		int yi = Mth.floor(mouseY) - getY();
+		int line = Mth.clamp((yi - 4) / 10, 0, lineCount - 1);
+		setCursorPosition(fontRenderer.plainSubstrByWidth(text[line], xi).length(), line);
+		return true;
 	}
 
 	@Override
@@ -165,10 +194,13 @@ public class GuiTextArea extends AbstractWidget {
 			return true;*/
 		case InputConstants.KEY_RETURN: // enter
 		case InputConstants.KEY_NUMPADENTER:
-			setCursorLine(1);
+			splitLine();
 			return true;
 		case InputConstants.KEY_BACKSPACE: // backspace
-			deleteFromCursor(-1);
+			if (cursorPosition == 0)
+				joinWithPreviousLine();
+			else
+				deleteFromCursor(-1);
 			return true;
 		case InputConstants.KEY_HOME: //home
 			setCursorPosition(0, cursorLine);
@@ -189,10 +221,14 @@ public class GuiTextArea extends AbstractWidget {
 			setCursorPosition(text[cursorLine].length(), cursorLine);
 			return true;
 		case InputConstants.KEY_DELETE: // delete
-			deleteFromCursor(1);
+			if (cursorPosition >= text[cursorLine].length())
+				joinWithNextLine();
+			else
+				deleteFromCursor(1);
 			return true;
 		}
-		return true;
+		// not consumed, so the character of the key reaches charTyped
+		return false;
 	}
 
 	@Override

@@ -43,7 +43,7 @@ public class GuiCardText extends GuiBase {
 		addRenderableWidget(Button.builder(Component.literal("Style"), (button) -> { actionPerformed(2); }).bounds(guiLeft + 8, guiTop + 120, 60, 20).build());
 		textArea = new GuiTextArea(font, guiLeft + 8, guiTop + 5, xSize - 16, ySize - 35, lineCount);
 		addWidget(textArea);
-		setInitialFocus(textArea);
+		setFocused(textArea);
 		String[] data = textArea.getText();
 		for (int i = 0; i < lineCount; i++)
 			data[i] = reader.getString("line_" + i);
