@@ -104,6 +104,41 @@ public class GuiTextArea extends AbstractWidget {
 		}
 	}
 
+	// moves the text right of the cursor to the next line, pushing the lines below down, and puts the cursor at the start of it
+	private void splitLine() {
+		if (cursorLine >= lineCount - 1)
+			return;
+		// the last line would be pushed out, so it is only done when that loses nothing
+		if (text[lineCount - 1].isEmpty()) {
+			String line = text[cursorLine];
+			for (int i = lineCount - 1; i > cursorLine + 1; i--)
+				text[i] = text[i - 1];
+			text[cursorLine] = line.substring(0, cursorPosition);
+			text[cursorLine + 1] = line.substring(cursorPosition);
+		}
+		cursorLine++;
+		cursorPosition = 0;
+	}
+
+	// appends the next line to the current one and moves the lines below it one line up, nothing happens if the result is too long
+	private void joinWithNextLine() {
+		if (cursorLine >= lineCount - 1 || text[cursorLine].length() + text[cursorLine + 1].length() > maxStringLength)
+			return;
+		text[cursorLine] += text[cursorLine + 1];
+		for (int i = cursorLine + 1; i < lineCount - 1; i++)
+			text[i] = text[i + 1];
+		text[lineCount - 1] = "";
+	}
+
+	// appends the current line to the previous one, the cursor goes to the join point
+	private void joinWithPreviousLine() {
+		if (cursorLine == 0 || text[cursorLine - 1].length() + text[cursorLine].length() > maxStringLength)
+			return;
+		cursorLine--;
+		cursorPosition = text[cursorLine].length();
+		joinWithNextLine();
+	}
+
 	public void writeText(String additionalText) {
 		String newLine = "";
 		String filteredText = StringUtil.filterText(additionalText);
@@ -161,10 +196,13 @@ public class GuiTextArea extends AbstractWidget {
 			return true;*/
 		case InputConstants.KEY_RETURN: // enter
 		case InputConstants.KEY_NUMPADENTER:
-			setCursorLine(1);
+			splitLine();
 			return true;
 		case InputConstants.KEY_BACKSPACE: // backspace
-			deleteFromCursor(-1);
+			if (cursorPosition == 0)
+				joinWithPreviousLine();
+			else
+				deleteFromCursor(-1);
 			return true;
 		case InputConstants.KEY_HOME: //home
 			setCursorPosition(0, cursorLine);
@@ -185,7 +223,10 @@ public class GuiTextArea extends AbstractWidget {
 			setCursorPosition(text[cursorLine].length(), cursorLine);
 			return true;
 		case InputConstants.KEY_DELETE: // delete
-			deleteFromCursor(1);
+			if (cursorPosition >= text[cursorLine].length())
+				joinWithNextLine();
+			else
+				deleteFromCursor(1);
 			return true;
 		}
 		// not consumed, so the character of the key reaches charTyped
