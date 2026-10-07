@@ -25,7 +25,9 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 public class AdvancedInfoPanelExtender extends InfoPanelExtender {
 
 	public AdvancedInfoPanelExtender(Block.Properties properties) {
-		super(properties);
+		// the shape follows the panel thickness, so it must not be cached per block state,
+		// and like the core it is not opaque, so neighbours are not culled by a sloped panel
+		super(properties.noOcclusion().dynamicShape());
 	}
 
 	@Override
@@ -46,7 +48,7 @@ public class AdvancedInfoPanelExtender extends InfoPanelExtender {
 		if (EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) panel).getFacing() == hit.getDirection())
 			if (((TileEntityInfoPanel) panel).runTouchAction(player.getItemInHand(hand), pos, hit.getLocation()))
 				return InteractionResult.SUCCESS;
-		player.openMenu((TileEntityAdvancedInfoPanel) panel, buf -> buf.writeBlockPos(pos));
+		player.openMenu((TileEntityAdvancedInfoPanel) panel, buf -> buf.writeBlockPos(pos)); // the extender has no GUI of its own, open the core panel's
 		return InteractionResult.SUCCESS;
 	}
 
@@ -55,20 +57,24 @@ public class AdvancedInfoPanelExtender extends InfoPanelExtender {
 		BlockEntity te = world.getBlockEntity(pos);
 		Direction enumfacing = state.getValue(FACING);
 		if (!(te instanceof TileEntityAdvancedInfoPanelExtender) || enumfacing == null)
-			return Block.box(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+			return super.getShape(state, world, pos, context);
+
+		int thickness = ((TileEntityAdvancedInfoPanelExtender) te).getThickness();
+		if (thickness < 1 || thickness > 16)
+			thickness = 16;
 		switch (enumfacing) {
 		case EAST:
-			return Block.box(0.0D, 0.0D, 0.0D, ((TileEntityAdvancedInfoPanelExtender)te).getThickness(), 16.0D, 16.0D);
+			return Block.box(0.0D, 0.0D, 0.0D, thickness, 16.0D, 16.0D);
 		case WEST:
-			return Block.box(16.0D - ((TileEntityAdvancedInfoPanelExtender)te).getThickness(), 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+			return Block.box(16.0D - thickness, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
 		case SOUTH:
-			return Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, ((TileEntityAdvancedInfoPanelExtender)te).getThickness());
+			return Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, thickness);
 		case NORTH:
-			return Block.box(0.0D, 0.0D, 16.0D - ((TileEntityAdvancedInfoPanelExtender)te).getThickness(), 16.0D, 16.0D, 16.0D);
+			return Block.box(0.0D, 0.0D, 16.0D - thickness, 16.0D, 16.0D, 16.0D);
 		case UP:
-			return Block.box(0.0D, 0.0D, 0.0D, 16.0D, ((TileEntityAdvancedInfoPanelExtender)te).getThickness(), 16.0D);
+			return Block.box(0.0D, 0.0D, 0.0D, 16.0D, thickness, 16.0D);
 		case DOWN:
-			return Block.box(0.0D, 16.0D - ((TileEntityAdvancedInfoPanelExtender)te).getThickness(), 0.0D, 16.0D, 16.0D, 16.0D);
+			return Block.box(0.0D, 16.0D - thickness, 0.0D, 16.0D, 16.0D, 16.0D);
 		default:
 			return super.getShape(state, world, pos, context);
 		}

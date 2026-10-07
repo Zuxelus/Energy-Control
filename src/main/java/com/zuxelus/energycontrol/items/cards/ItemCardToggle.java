@@ -9,10 +9,9 @@ import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.ITouchAction;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
-import com.zuxelus.energycontrol.renderers.ModRenderTypes;
+import com.zuxelus.energycontrol.renderers.RenderHelper;
 
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
@@ -57,13 +56,8 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 	public List<PanelString> getStringData(Level world, int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		PanelString line = new PanelString();
-		if (reader.getBoolean("value")) {
-			line.textCenter = "o";
-			line.colorCenter = 0x00ff00;
-		} else {
-			line.textCenter = "o";
-			line.colorCenter = 0xff0000;
-		}
+		line.textCenter = "o";
+		line.colorCenter = reader.getBoolean("value") ? 0x00ff00 : 0xff0000;
 		result.add(line);
 		return result;
 	}
@@ -121,11 +115,6 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 		float width = 1;
 		float textureX = 0;
 		float textureY = 0;
-		buffer.submitCustomGeometry(matrixStack, ModRenderTypes.screenImage(reader.getBoolean("value") ? TEXTURE_ON : TEXTURE_OFF), (pose, builder) -> {
-			builder.addVertex(pose, x + 0, y + height, z).setColor(1.0F, 1.0F, 1.0F, 1.0F).setUv(textureX + 0, textureY + height).setLight(LightCoordsUtil.FULL_BRIGHT);
-			builder.addVertex(pose, x + width, y + height, z).setColor(1.0F, 1.0F, 1.0F, 1.0F).setUv(textureX + width, textureY + height).setLight(LightCoordsUtil.FULL_BRIGHT);
-			builder.addVertex(pose, x + width, y + 0, z).setColor(1.0F, 1.0F, 1.0F, 1.0F).setUv(textureX + width, textureY + 0).setLight(LightCoordsUtil.FULL_BRIGHT);
-			builder.addVertex(pose, x + 0, y + 0, z).setColor(1.0F, 1.0F, 1.0F, 1.0F).setUv(textureX + 0, textureY + 0).setLight(LightCoordsUtil.FULL_BRIGHT);
-		});
+		RenderHelper.texturedRect(matrixStack, buffer, reader.getBoolean("value") ? TEXTURE_ON : TEXTURE_OFF, x, y, x + width, y + height, z, textureX, textureY, textureX + width, textureY + height, 0xFFFFFFFF);
 	}
 }

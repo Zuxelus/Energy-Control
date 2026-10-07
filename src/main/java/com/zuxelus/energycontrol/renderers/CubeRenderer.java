@@ -1,8 +1,5 @@
 package com.zuxelus.energycontrol.renderers;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -19,69 +16,23 @@ import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.core.Direction;
 
 public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
-	public static final CubeRenderer MODEL = new CubeRenderer(0, 0, 0, 32, 32, 32, 128, 128, 0, 0, false);
-	private static final Map<ModelKey, CubeRenderer> LIBRARY = new HashMap<>();
-	private static final Map<ModelKey, CubeRenderer> LIBRARY_FACE = new HashMap<>();
-	// side of each ModelBox quad before rotation (see ModelBox constructor); index 4 is the screen face
-	private static final Direction[] QUAD_SIDES = { Direction.EAST, Direction.WEST, Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH };
+	// timer and thermal monitor: a flat box whose top side is the screen
+	public static final CubeRenderer MODEL = new CubeRenderer(2, 0, 2, 28, 14, 28, 128, 64);
+	// side of each ModelBox quad before rotation (see ModelBox constructor)
+	static final Direction[] QUAD_SIDES = { Direction.EAST, Direction.WEST, Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH };
 	private static final Direction[][][] WORLD_SIDES = new Direction[6][6][];
-	public static final int FACE = 4;
 
-	private ModelBox cube;
+	private final ModelBox cube;
 
-	public CubeRenderer(int faceOffsetX, int faceOffsetY) {
-		this(0.0F, 0.0F, 0.0F, 32, 32, 32, 128, 192, faceOffsetX, faceOffsetY, false);
-	}
-
-	public CubeRenderer(float offX, float offY, float offZ, int width, int height, int depth, float textureWidth, float textureHeight, int faceOffsetX, int faceOffsetY, boolean faceOnly) {
-		this(offX, offY, offZ, width, height, depth, textureWidth, textureHeight, faceOffsetX, faceOffsetY, new RotationOffset(), faceOnly);
-	}
-
-	public CubeRenderer(int faceOffsetX, int faceOffsetY, RotationOffset offset, boolean faceOnly) {
-		this(0.0F, 0.0F, 0.0F, 32, 32, 32, 128, 128, faceOffsetX, faceOffsetY, offset, faceOnly);
-	}
-
-	public CubeRenderer(float x, float y, float z, int dx, int dy, int dz, float textureWidth, float textureHeight, int faceTexU, int faceTexV, RotationOffset offset, boolean faceOnly) {
-		cube = new ModelBox(faceTexU, faceTexV, x, y, z, dx, dy, dz, textureWidth, textureHeight, offset.leftTop, offset.leftBottom, offset.rightTop, offset.rightBottom, faceOnly);
+	private CubeRenderer(float x, float y, float z, int dx, int dy, int dz, float textureWidth, float textureHeight) {
+		cube = new ModelBox(x, y, z, dx, dy, dz, textureWidth, textureHeight);
 	}
 
 	public void render(PoseStack matrixStack, SubmitNodeCollector collector, RenderType type, int[] light, int combinedOverlay) {
-		render(matrixStack, collector, type, light, combinedOverlay, 0xFFFFFFFF);
-	}
-
-	public void render(PoseStack matrixStack, SubmitNodeCollector collector, RenderType type, int[] light, int combinedOverlay, int color) {
 		matrixStack.pushPose();
 		matrixStack.scale(0.5F, 0.5F, 0.5F);
-		collector.submitCustomGeometry(matrixStack, type, (pose, buffer) -> cube.render(pose, buffer, light, combinedOverlay, color));
+		collector.submitCustomGeometry(matrixStack, type, (pose, buffer) -> cube.render(pose, buffer, light, combinedOverlay, 0xFFFFFFFF));
 		matrixStack.popPose();
-	}
-
-	// Hands every quad to the visitor in block coordinates (0..1), transformed like render() does,
-	// so a baked model can use the same geometry. u and v are relative to the texture (0..1).
-	public void visitQuads(PoseStack matrixStack, QuadVisitor visitor) {
-		matrixStack.pushPose();
-		matrixStack.scale(0.5F, 0.5F, 0.5F);
-		Matrix4f matrix4f = matrixStack.last().pose();
-		Matrix3f matrix3f = matrixStack.last().normal();
-		for (int n = 0; n < cube.quads.length; n++) {
-			TexturedQuad quad = cube.quads[n];
-			Vector3f[] positions = new Vector3f[4];
-			float[] u = new float[4];
-			float[] v = new float[4];
-			for (int i = 0; i < 4; i++) {
-				PositionTextureVertex vertex = quad.vertexPositions[i];
-				Vector4f pos = matrix4f.transform(new Vector4f(vertex.position.x() / 16.0F, vertex.position.y() / 16.0F, vertex.position.z() / 16.0F, 1.0F));
-				positions[i] = new Vector3f(pos.x(), pos.y(), pos.z());
-				u[i] = vertex.textureU;
-				v[i] = vertex.textureV;
-			}
-			visitor.accept(n, positions, u, v, matrix3f.transform(new Vector3f(quad.normal)));
-		}
-		matrixStack.popPose();
-	}
-
-	public interface QuadVisitor {
-		void accept(int index, Vector3f[] positions, float[] u, float[] v, Vector3f normal);
 	}
 
 	static class PositionTextureVertex {
@@ -135,47 +86,28 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 		}
 	}
 
-	public class ModelBox {
+	private class ModelBox {
 		private final TexturedQuad[] quads;
 
-		public ModelBox(int texOffX, int texOffY, float x, float y, float z, float dx, float dy, float dz, float texWidth, float texHeight, float leftTop, float leftBottom, float rightTop, float rightBottom, boolean faceOnly) {
-			quads = faceOnly ? new TexturedQuad[1] : new TexturedQuad[6];
+		public ModelBox(float x, float y, float z, float dx, float dy, float dz, float texWidth, float texHeight) {
+			quads = new TexturedQuad[6];
 			float f = x + dx;
 			float f1 = y + dy;
 			float f2 = z + dz;
-			/*PositionTextureVertex v = new PositionTextureVertex(x, y, z, 0.0F, 0.0F);
+			PositionTextureVertex v = new PositionTextureVertex(x, y, z, 0.0F, 0.0F);
 			PositionTextureVertex v2 = new PositionTextureVertex(f, y, z, 0.0F, 8.0F);
-			PositionTextureVertex v3 = new PositionTextureVertex(f, f1 - leftTop, z, 8.0F, 8.0F);
-			PositionTextureVertex v4 = new PositionTextureVertex(x, f1 - leftBottom, z, 8.0F, 0.0F);
+			PositionTextureVertex v3 = new PositionTextureVertex(f, f1, z, 8.0F, 8.0F);
+			PositionTextureVertex v4 = new PositionTextureVertex(x, f1, z, 8.0F, 0.0F);
 			PositionTextureVertex v5 = new PositionTextureVertex(x, y, f2, 0.0F, 0.0F);
 			PositionTextureVertex v6 = new PositionTextureVertex(f, y, f2, 0.0F, 8.0F);
-			PositionTextureVertex v7 = new PositionTextureVertex(f, f1 - rightTop, f2, 8.0F, 8.0F);
-			PositionTextureVertex v8 = new PositionTextureVertex(x, f1 - rightBottom, f2, 8.0F, 0.0F);
-			quads[2] = new TexturedQuad(new PositionTextureVertex[] { v6, v5, v, v2 }, dz, 0, dz + dx, dz, texWidth, texHeight, Direction.DOWN);
-			quads[3] = new TexturedQuad(new PositionTextureVertex[] { v3, v4, v8, v7 }, texOffX + dz + dx, texOffY + dz, texOffX + dz + dx + dx, texOffY, texWidth, texHeight, Direction.UP);
-			quads[1] = new TexturedQuad(new PositionTextureVertex[] { v, v5, v8, v4 }, 0, dz, dz, dz + dy, texWidth, texHeight, Direction.WEST);
-			quads[4] = new TexturedQuad(new PositionTextureVertex[] { v2, v, v4, v3 }, dz, dz, dz + dx, dz + dy, texWidth, texHeight, Direction.NORTH);
+			PositionTextureVertex v7 = new PositionTextureVertex(f, f1, f2, 8.0F, 8.0F);
+			PositionTextureVertex v8 = new PositionTextureVertex(x, f1, f2, 8.0F, 0.0F);
 			quads[0] = new TexturedQuad(new PositionTextureVertex[] { v6, v2, v3, v7 }, dz + dx, dz, dz + dx + dz, dz + dy, texWidth, texHeight, Direction.EAST);
-			quads[5] = new TexturedQuad(new PositionTextureVertex[] { v5, v6, v7, v8 }, dz + dx + dz, dz, dz + dx + dz + dx, dz + dy, texWidth, texHeight, Direction.SOUTH);*/
-
-			PositionTextureVertex v7 = new PositionTextureVertex(x, y, z + rightBottom, 0.0F, 0.0F);
-			PositionTextureVertex v = new PositionTextureVertex(f, y, z + leftBottom, 0.0F, 8.0F);
-			PositionTextureVertex v1 = new PositionTextureVertex(f, f1, z + leftTop, 8.0F, 8.0F);
-			PositionTextureVertex v2 = new PositionTextureVertex(x, f1, z + rightTop, 8.0F, 0.0F);
-			PositionTextureVertex v3 = new PositionTextureVertex(x, y, f2, 0.0F, 0.0F);
-			PositionTextureVertex v4 = new PositionTextureVertex(f, y, f2, 0.0F, 8.0F);
-			PositionTextureVertex v5 = new PositionTextureVertex(f, f1, f2, 8.0F, 8.0F);
-			PositionTextureVertex v6 = new PositionTextureVertex(x, f1, f2, 8.0F, 0.0F);
-			if (faceOnly) {
-				quads[0] = new TexturedQuad(new PositionTextureVertex[] { v2, v1, v, v7 }, texOffX, texOffY, texOffX + dx , texOffY + dx, texWidth, texHeight, Direction.NORTH);
-				return;
-			}
-			quads[0] = new TexturedQuad(new PositionTextureVertex[] { v1, v5, v4, v }, 0, dz, dz, dz + dy, texWidth, texHeight, Direction.EAST); // left
-			quads[1] = new TexturedQuad(new PositionTextureVertex[] { v6, v2, v7, v3 }, dz + dx, dz, dz + dx + dz, dz + dy, texWidth, texHeight, Direction.WEST); // right
-			quads[2] = new TexturedQuad(new PositionTextureVertex[] { v7, v, v4, v3 }, dz, dz + dz, dz + dx, dz + dz + dz, texWidth, texHeight, Direction.DOWN); // bottom
-			quads[3] = new TexturedQuad(new PositionTextureVertex[] { v6, v5, v1, v2 }, dz, 0, dz + dx, dz, texWidth, texHeight, Direction.UP); // top
-			quads[4] = new TexturedQuad(new PositionTextureVertex[] { v2, v1, v, v7 }, dz, dz, dz + dx, dz + dy, texWidth, texHeight, Direction.NORTH); // face
-			quads[5] = new TexturedQuad(new PositionTextureVertex[] { v5, v6, v3, v4 }, dz + dx + dz, dz, dz + dx + dz + dx, dz + dy, texWidth, texHeight, Direction.SOUTH); // back
+			quads[1] = new TexturedQuad(new PositionTextureVertex[] { v, v5, v8, v4 }, 0, dz, dz, dz + dy, texWidth, texHeight, Direction.WEST);
+			quads[2] = new TexturedQuad(new PositionTextureVertex[] { v6, v5, v, v2 }, dz, 0, dz + dx, dz, texWidth, texHeight, Direction.DOWN);
+			quads[3] = new TexturedQuad(new PositionTextureVertex[] { v3, v4, v8, v7 }, dz + dx, dz, dz + dx + dx, 0, texWidth, texHeight, Direction.UP);
+			quads[4] = new TexturedQuad(new PositionTextureVertex[] { v2, v, v4, v3 }, dz, dz, dz + dx, dz + dy, texWidth, texHeight, Direction.NORTH);
+			quads[5] = new TexturedQuad(new PositionTextureVertex[] { v5, v6, v7, v8 }, dz + dx + dz, dz, dz + dx + dz + dx, dz + dy, texWidth, texHeight, Direction.SOUTH);
 		}
 
 		public void render(PoseStack.Pose pose, VertexConsumer buffer, int[] light, int combinedOverlay, int color) {
@@ -184,186 +116,143 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 		}
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	public static void rotateBlock(PoseStack matrixStack, Direction facing, Direction rotation) {
 		if (rotation == null)
-			rotation = Direction.NORTH;
+			rotation = facing.getAxis().isVertical() ? Direction.SOUTH : Direction.DOWN;
 
 		switch (facing) {
 		case UP:
-			switch(rotation) {
+			switch (rotation) {
 			case NORTH:
-				matrixStack.rotate(Axis.XP.rotationDegrees(90));
+				matrixStack.rotate(Axis.YP.rotationDegrees(180.0F));
+				matrixStack.translate(-1.0F, 0.0F, -1.0F);
+				break;
+			case SOUTH:
+				break;
+			case WEST:
+				matrixStack.rotate(Axis.YP.rotationDegrees(-90.0F));
+				matrixStack.translate(0.0F, 0.0F, -1.0F);
+				break;
+			case EAST:
+				matrixStack.rotate(Axis.YP.rotationDegrees(90.0F));
+				matrixStack.translate(-1.0F, 0.0F, 0.0F);
+				break;
+			}
+			break;
+		case NORTH:
+			matrixStack.rotate(Axis.XP.rotationDegrees(-90.0F));
+			matrixStack.rotate(Axis.YP.rotationDegrees(180.0F));
+			matrixStack.translate(-1.0F, -1.0F, -1.0F);
+			switch (rotation) {
+			case UP:
+				matrixStack.rotate(Axis.YP.rotationDegrees(180.0F));
+				matrixStack.translate(-1.0F, 0.0F, -1.0F);
+				break;
+			case DOWN:
+				break;
+			case EAST:
+				matrixStack.rotate(Axis.YP.rotationDegrees(-90.0F));
+				matrixStack.translate(0.0F, 0.0F, -1.0F);
+				break;
+			case WEST:
+				matrixStack.rotate(Axis.YP.rotationDegrees(90.0F));
+				matrixStack.translate(-1.0F, 0.0F, 0.0F);
+				break;
+			}
+			break;
+		case SOUTH:
+			matrixStack.rotate(Axis.XP.rotationDegrees(90.0F));
+			matrixStack.translate(0.0F, 0.0F, -1.0F);
+			switch (rotation) {
+			case UP:
+				matrixStack.rotate(Axis.YP.rotationDegrees(180.0F));
+				matrixStack.translate(-1.0F, 0.0F, -1.0F);
+				break;
+			case DOWN:
+				break;
+			case WEST:
+				matrixStack.rotate(Axis.YP.rotationDegrees(-90.0F));
+				matrixStack.translate(0.0F, 0.0F, -1.0F);
+				break;
+			case EAST:
+				matrixStack.rotate(Axis.YP.rotationDegrees(90.0F));
+				matrixStack.translate(-1.0F, 0.0F, 0.0F);
+				break;
+			}
+			break;
+		case DOWN:
+			matrixStack.rotate(Axis.XP.rotationDegrees(180.0F));
+			matrixStack.translate(0.0F, -1.0F, -1.0F);
+			break;
+		case WEST:
+			matrixStack.rotate(Axis.ZP.rotationDegrees(90.0F));
+			matrixStack.rotate(Axis.YP.rotationDegrees(-90.0F));
+			matrixStack.translate(0.0F, -1.0F, -1.0F);
+			switch (rotation) {
+			case UP:
+				matrixStack.rotate(Axis.YP.rotationDegrees(180.0F));
+				matrixStack.translate(-1.0F, 0.0F, -1.0F);
+				break;
+			case DOWN:
+				break;
+			case NORTH:
+				matrixStack.rotate(Axis.YP.rotationDegrees(-90.0F));
 				matrixStack.translate(0.0F, 0.0F, -1.0F);
 				break;
 			case SOUTH:
-				matrixStack.rotate(Axis.XP.rotationDegrees(90));
-				matrixStack.rotate(Axis.ZP.rotationDegrees(180));
-				matrixStack.translate(-1.0F, -1.0F, -1.0F);
-				break;
-			case WEST:
-				matrixStack.rotate(Axis.XP.rotationDegrees(90));
-				matrixStack.rotate(Axis.ZP.rotationDegrees(-90));
-				matrixStack.translate(-1.0F, 0.0F, -1.0F);
-				break;
-			case EAST:
-				matrixStack.rotate(Axis.XP.rotationDegrees(90));
-				matrixStack.rotate(Axis.ZP.rotationDegrees(90));
-				matrixStack.translate(0.0F, -1.0F, -1.0F);
-				break;
-			default:
-				break;
-			}
-			break;
-		case DOWN:
-			switch(rotation) {
-			case NORTH:
-				matrixStack.rotate(Axis.XP.rotationDegrees(-90));
-				matrixStack.rotate(Axis.ZP.rotationDegrees(180));
+				matrixStack.rotate(Axis.YP.rotationDegrees(90.0F));
 				matrixStack.translate(-1.0F, 0.0F, 0.0F);
 				break;
-			case SOUTH:
-				matrixStack.rotate(Axis.XP.rotationDegrees(-90));
-				matrixStack.translate(0.0F, -1.0F, 0.0F);
-				break;
-			case WEST:
-				matrixStack.rotate(Axis.XP.rotationDegrees(-90));
-				matrixStack.rotate(Axis.ZP.rotationDegrees(-90));
-				matrixStack.translate(0.0F, 0.0F, 0.0F);
-				break;
-			case EAST:
-				matrixStack.rotate(Axis.XP.rotationDegrees(-90));
-				matrixStack.rotate(Axis.ZP.rotationDegrees(90));
-				matrixStack.translate(-1.0F, -1.0F, 0.0F);
-				break;
-			default:
-				break;
 			}
 			break;
-		case NORTH:
-			break;
-		case SOUTH:
-			matrixStack.rotate(Axis.YP.rotationDegrees(180)); // 180 by Y
+		case EAST:
+			matrixStack.rotate(Axis.ZP.rotationDegrees(-90.0F));
+			matrixStack.rotate(Axis.YP.rotationDegrees(90.0F));
 			matrixStack.translate(-1.0F, 0.0F, -1.0F);
-			break;
-		case WEST:
-			matrixStack.rotate(Axis.YP.rotationDegrees(90));
-			matrixStack.translate(-1.0F, 0.0F, 0.0F);
-			break;
-		case EAST:
-			matrixStack.rotate(Axis.YP.rotationDegrees(-90));
-			matrixStack.translate(0.0F, 0.0F, -1.0F);
-			break;
-		}
-	}
-
-	public static void rotateBlockText(PoseStack matrixStack, Direction facing, Direction rotation) {
-		if (rotation == null)
-			rotation = Direction.NORTH;
-
-		switch (facing) {
-		case UP:
-			switch(rotation) {
-			case NORTH:
-				matrixStack.rotate(Axis.XP.rotationDegrees(-90));
-				matrixStack.translate(0.0F, -1.0F, 1.0F);
+			switch (rotation) {
+			case UP:
+				matrixStack.rotate(Axis.YP.rotationDegrees(180.0F));
+				matrixStack.translate(-1.0F, 0.0F, -1.0F);
+				break;
+			case DOWN:
 				break;
 			case SOUTH:
-				matrixStack.rotate(Axis.XP.rotationDegrees(-90));
-				matrixStack.rotate(Axis.YP.rotationDegrees(180));
-				matrixStack.translate(-1.0F, -1.0F, 0.0F);
+				matrixStack.rotate(Axis.YP.rotationDegrees(-90.0F));
+				matrixStack.translate(0.0F, 0.0F, -1.0F);
 				break;
-			case WEST:
-				matrixStack.rotate(Axis.XP.rotationDegrees(-90));
-				matrixStack.rotate(Axis.YP.rotationDegrees(-90));
-				matrixStack.translate(0.0F, -1.0F, 0.0F);
-				break;
-			case EAST:
-				matrixStack.rotate(Axis.XP.rotationDegrees(-90));
-				matrixStack.rotate(Axis.YP.rotationDegrees(90));
-				matrixStack.translate(-1.0F, -1.0F, 1.0F);
-				break;
-			default:
+			case NORTH:
+				matrixStack.rotate(Axis.YP.rotationDegrees(90.0F));
+				matrixStack.translate(-1.0F, 0.0F, 0.0F);
 				break;
 			}
 			break;
-		case DOWN:
-			switch(rotation) {
-			case NORTH:
-				matrixStack.rotate(Axis.XP.rotationDegrees(-90));
-				matrixStack.translate(0.0F, -1.0F, 0.0F);
-				break;
-			case SOUTH:
-				matrixStack.rotate(Axis.XP.rotationDegrees(-90));
-				matrixStack.rotate(Axis.YP.rotationDegrees(180));
-				matrixStack.translate(-1.0F, -1.0F, -1.0F);
-				break;
-			case WEST:
-				matrixStack.rotate(Axis.XP.rotationDegrees(-90));
-				matrixStack.rotate(Axis.YP.rotationDegrees(-90));
-				matrixStack.translate(0.0F, -1.0F, -1.0F);
-				break;
-			case EAST:
-				matrixStack.rotate(Axis.XP.rotationDegrees(-90));
-				matrixStack.rotate(Axis.YP.rotationDegrees(90));
-				matrixStack.translate(-1.0F, -1.0F, 0.0F);
-				break;
-			default:
-				break;
-			}
-			break;
-		case NORTH:
-			matrixStack.rotate(Axis.XP.rotationDegrees(-90));
-			matrixStack.rotate(Axis.YP.rotationDegrees(180));
-			matrixStack.translate(-1.0F, -1.0F, 0.0F);
-			break;
-		case SOUTH:
-			matrixStack.rotate(Axis.XP.rotationDegrees(90));
-			matrixStack.rotate(Axis.ZP.rotationDegrees(180));
-			matrixStack.translate(-1.0F, -1.0F, 0.0F);
-			break;
-		case WEST:
-			matrixStack.rotate(Axis.XP.rotationDegrees(-90));
-			matrixStack.rotate(Axis.YP.rotationDegrees(180));
-			matrixStack.translate(-1.0F, -1.0F, 0.0F);
-			break;
-		case EAST:
-			matrixStack.rotate(Axis.ZP.rotationDegrees(180));
-			matrixStack.rotate(Axis.XP.rotationDegrees(-90));
-			matrixStack.translate(-1.0F, -1.0F, 0.0F);
-			break;
 		}
 	}
 
-	public static CubeRenderer getModel(RotationOffset offset) {
-		return LIBRARY.computeIfAbsent(new ModelKey(0, offset), key -> new CubeRenderer(0, 0, offset, false));
-	}
-
-	public static CubeRenderer getFaceModel(RotationOffset offset, int textureId) {
-		return LIBRARY_FACE.computeIfAbsent(new ModelKey(textureId, offset), key -> new CubeRenderer(textureId / 4 * 32, textureId % 4 * 32, offset, true));
-	}
-
-	// offsets are fractional, so they can't be packed into a number without collisions
-	private record ModelKey(int textureId, float leftTop, float leftBottom, float rightTop, float rightBottom) {
-		ModelKey(int textureId, RotationOffset offset) {
-			this(textureId, offset.leftTop, offset.leftBottom, offset.rightTop, offset.rightBottom);
-		}
-	}
-
-	// Light of the neighbour block each quad of the full model faces, in quad order
 	public static int[] getBlockLight(BlockEntityFacing te) {
+		return getBlockLight(te, WORLD_SIDES, CubeRenderer::rotateBlock);
+	}
+
+	interface Rotator {
+		void rotate(PoseStack matrixStack, Direction facing, Direction rotation);
+	}
+
+	// Light of the neighbour block each quad faces, in quad order. The sides each quad faces after the rotation are cached
+	static int[] getBlockLight(BlockEntityFacing te, Direction[][][] cache, Rotator rotator) {
 		Direction facing = te.getFacing();
 		Direction rotation = te.getRotation() == null ? Direction.NORTH : te.getRotation();
-		Direction[] sides = WORLD_SIDES[facing.get3DDataValue()][rotation.get3DDataValue()];
+		Direction[] sides = cache[facing.get3DDataValue()][rotation.get3DDataValue()];
 		if (sides == null) {
 			PoseStack matrixStack = new PoseStack();
-			rotateBlock(matrixStack, facing, rotation);
+			rotator.rotate(matrixStack, facing, rotation);
 			Matrix3f normal = matrixStack.last().normal();
 			sides = new Direction[QUAD_SIDES.length];
 			for (int i = 0; i < QUAD_SIDES.length; i++) {
 				Vector3f v = normal.transform(new Vector3f(QUAD_SIDES[i].step()));
 				sides[i] = Direction.getApproximateNearest(v.x(), v.y(), v.z());
 			}
-			WORLD_SIDES[facing.get3DDataValue()][rotation.get3DDataValue()] = sides;
+			cache[facing.get3DDataValue()][rotation.get3DDataValue()] = sides;
 		}
 		int[] light = new int[sides.length];
 		for (int i = 0; i < sides.length; i++)

@@ -11,7 +11,6 @@ import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.utils.DataHelper;
 
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
@@ -89,12 +88,12 @@ public class ItemCardAdvGenerators extends ItemCardMain {
 	@Override
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(4);
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelOutput"), 1));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelUsing"), 2));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelEnergy"), 4));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelCapacity"), 8));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelTank"), 16));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelOther"), 32));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelOutput", 1));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelUsing", 2));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelEnergy", 4));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelCapacity", 8));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelTank", 16));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelOther", 32));
 		return result;
 	}
 }

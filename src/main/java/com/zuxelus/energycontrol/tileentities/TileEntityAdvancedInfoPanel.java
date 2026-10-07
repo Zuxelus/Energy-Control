@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import com.zuxelus.energycontrol.blocks.AdvancedInfoPanel;
 import com.zuxelus.energycontrol.containers.ContainerAdvancedInfoPanel;
 import net.minecraft.core.Direction;
 import com.zuxelus.energycontrol.renderers.RotationOffset;
@@ -65,7 +66,26 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	public void setPowerMode(byte mode) {
 		powerMode = mode;
 		if (level != null && !level.isClientSide())
-			calcPowered();
+			updatePower();
+	}
+
+	// The power mode decides whether the panel is on, so the block state (and its light) follows it here
+	// instead of following redstone in the block
+	public void updatePower() { // server
+		calcPowered();
+		BlockState state = level.getBlockState(worldPosition);
+		if (state.getBlock() instanceof AdvancedInfoPanel && state.getValue(FacingBlockActive.ACTIVE) != powered) {
+			level.setBlock(worldPosition, state.setValue(FacingBlockActive.ACTIVE, powered), 2);
+			updateExtenders(level, powered);
+		}
+	}
+
+	@Override
+	protected void tick() {
+		boolean firstTick = !init;
+		super.tick();
+		if (firstTick && !level.isClientSide())
+			updatePower();
 	}
 
 	public byte getNextPowerMode() {

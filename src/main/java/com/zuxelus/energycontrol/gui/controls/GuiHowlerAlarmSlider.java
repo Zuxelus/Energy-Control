@@ -68,12 +68,12 @@ public class GuiHowlerAlarmSlider extends AbstractButton {
 	protected void extractContents(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (!visible)
 			return;
+		Minecraft minecraft = Minecraft.getInstance();
+		Font fontRenderer = minecraft.font;
 		if (dragging)
 			setSliderPos(mouseX);
 
 		matrixStack.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, getX() + (int) (sliderValue * (width - 8)), getY(), 131, 0, 8, 16, 256, 256);
-		Minecraft minecraft = Minecraft.getInstance();
-		Font fontRenderer = minecraft.font;
 		matrixStack.text(fontRenderer, getMessage(), getX(), getY() - 12, ARGB.opaque(0x404040), false);
 	}
 
@@ -93,7 +93,5 @@ public class GuiHowlerAlarmSlider extends AbstractButton {
 	}
 
 	@Override
-	protected void updateWidgetNarration(NarrationElementOutput output) {
-		// TODO Auto-generated method stub
-	}
+	protected void updateWidgetNarration(NarrationElementOutput output) { }
 }

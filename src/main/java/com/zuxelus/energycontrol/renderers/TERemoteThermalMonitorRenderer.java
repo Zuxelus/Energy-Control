@@ -24,9 +24,9 @@ public class TERemoteThermalMonitorRenderer extends TileRenderer<TileEntityRemot
 	protected void render(TileEntityRemoteThermalMonitor te, PoseStack matrixStack, SubmitNodeCollector buffer, int combinedLight, int combinedOverlay) {
 		matrixStack.pushPose();
 
-		CubeRenderer.rotateBlock(matrixStack, te.getFacing(), te.getRotation());
+		PanelCube.rotateBlock(matrixStack, te.getFacing(), te.getRotation());
 
-		CubeRenderer.MODEL.render(matrixStack, buffer, RenderTypes.entitySolid(TEXTURE), CubeRenderer.getBlockLight(te), combinedOverlay);
+		PanelCube.MODEL.render(matrixStack, buffer, RenderTypes.entitySolid(TEXTURE), PanelCube.getBlockLight(te), combinedOverlay);
 		matrixStack.rotate(Axis.YP.rotationDegrees(180.0F));
 		matrixStack.rotate(Axis.ZP.rotationDegrees(180.0F));
 		matrixStack.translate(0.0F, -0.5F, 0.001F);
@@ -36,12 +36,7 @@ public class TERemoteThermalMonitorRenderer extends TileRenderer<TileEntityRemot
 		int level = te.getHeatLevel();
 		if (status > -2) {
 			float rate = status > -1 ? Math.round((1 - Math.min((float) heat / level, 1)) * 16) / (float) 16 : 1;
-			buffer.submitCustomGeometry(matrixStack, ModRenderTypes.screenImage(TEXTURE), (pose, bar) -> {
-				bar.addVertex(pose, rate, 0, 0).setColor(1.0F, 1.0F, 1.0F, 1.0F).setUv(rate * 0.25F, 0).setLight(LightCoordsUtil.FULL_BRIGHT);
-				bar.addVertex(pose, 1, 0, 0).setColor(1.0F, 1.0F, 1.0F, 1.0F).setUv(0.25F, 0).setLight(LightCoordsUtil.FULL_BRIGHT);
-				bar.addVertex(pose, 1.0F, 0.75F, 0).setColor(1.0F, 1.0F, 1.0F, 1.0F).setUv(0.25F, 0.1875F).setLight(LightCoordsUtil.FULL_BRIGHT);
-				bar.addVertex(pose, rate, 0.75F, 0).setColor(1.0F, 1.0F, 1.0F, 1.0F).setUv(rate * 0.25F, 0.1875F).setLight(LightCoordsUtil.FULL_BRIGHT);
-			});
+			RenderHelper.texturedRect(matrixStack, buffer, TEXTURE, rate, 0, 1, 0.75F, 0, rate * 0.25F, 0, 0.25F, 0.1875F, 0xFFFFFFFF);
 		}
 
 		matrixStack.rotate(Axis.XP.rotationDegrees(180.0F));
@@ -50,7 +45,7 @@ public class TERemoteThermalMonitorRenderer extends TileRenderer<TileEntityRemot
 		matrixStack.scale(0.015625F, 0.015625F, 0.015625F);
 
 		String text = Integer.toString(level);
-		drawString(buffer, matrixStack, text, -font.width(text) / 2, -font.lineHeight, 0x000000, LightCoordsUtil.FULL_BRIGHT);
+		RenderHelper.drawString(matrixStack, buffer, text, -font.width(text) / 2, -font.lineHeight, 0x000000, LightCoordsUtil.FULL_BRIGHT);
 		matrixStack.popPose();
 	}
 }

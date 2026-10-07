@@ -1,8 +1,8 @@
 package com.zuxelus.energycontrol.blocks;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.redstone.Orientation;
 import org.jspecify.annotations.Nullable;
+
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -13,12 +13,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.redstone.Orientation;
 
 public class BlockLight extends Block {
 	public static final BooleanProperty LIT = BlockStateProperties.LIT;
 
-	public BlockLight(Block.Properties properties) {
-		super(properties.lightLevel(state -> state.getValue(LIT) ? 15 : 0).strength(1.0F, 3.0F).sound(SoundType.GLASS));
+	public BlockLight(Block.Properties properties, MapColor color) {
+		super(properties.mapColor(color).lightLevel(state -> state.getValue(LIT) ? 15 : 0).strength(1.0F, 3.0F).sound(SoundType.GLASS));
 		registerDefaultState(defaultBlockState().setValue(LIT, Boolean.valueOf(false)));
 	}
 

@@ -13,6 +13,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.MapColor;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -20,8 +21,8 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class ModItems {
 	public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(EnergyControl.MODID);
-	public static final DeferredBlock<Block> white_lamp = BLOCKS.registerBlock("white_lamp", BlockLight::new);
-	public static final DeferredBlock<Block> orange_lamp = BLOCKS.registerBlock("orange_lamp", BlockLight::new);
+	public static final DeferredBlock<Block> white_lamp = BLOCKS.registerBlock("white_lamp", properties -> new BlockLight(properties, MapColor.SNOW));
+	public static final DeferredBlock<Block> orange_lamp = BLOCKS.registerBlock("orange_lamp", properties -> new BlockLight(properties, MapColor.COLOR_ORANGE));
 	public static final DeferredBlock<Block> howler_alarm = BLOCKS.registerBlock("howler_alarm", HowlerAlarm::new);
 	public static final DeferredBlock<Block> industrial_alarm = BLOCKS.registerBlock("industrial_alarm", IndustrialAlarm::new);
 	public static final DeferredBlock<Block> thermal_monitor = BLOCKS.registerBlock("thermal_monitor", ThermalMonitor::new);

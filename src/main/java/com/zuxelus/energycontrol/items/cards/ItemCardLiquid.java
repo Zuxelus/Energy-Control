@@ -9,7 +9,7 @@ import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.api.IHasBars;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
-import com.zuxelus.energycontrol.renderers.ModRenderTypes;
+import com.zuxelus.energycontrol.renderers.RenderHelper;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
@@ -25,7 +25,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.util.LightCoordsUtil;
 
 public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 
@@ -78,12 +77,12 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 	@Override
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(5);
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidName"), 1));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidAmount"), 2));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidFree"), 4));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidCapacity"), 8));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidPercentage"), 16));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelShowBar"), 1024));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelLiquidName", 1));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelLiquidAmount", 2));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelLiquidFree", 4));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelLiquidCapacity", 8));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelLiquidPercentage", 16));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelShowBar", 1024));
 		return result;
 	}
 
@@ -127,22 +126,12 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		float height = 0.4375F;
 
 		int color = model.fluidTintSource() != null ? model.fluidTintSource().color(state) : -1;
-		float f = (color >> 24 & 255) / 255.0F;
-		float f1 = (color >> 16 & 255) / 255.0F;
-		float f2 = (color >> 8 & 255) / 255.0F;
-		float f3 = (color & 255) / 255.0F;
-		if (f == 0)
-			f = 1.0F;
-		float alpha = f;
+		if ((color >>> 24) == 0)
+			color |= 0xFF000000;
 
 		matrixStack.pushPose();
 		matrixStack.scale(displayWidth / 0.875f, displayHeight / 0.875f, 1);
-		buffer.submitCustomGeometry(matrixStack, ModRenderTypes.screenImage(sprite.atlasLocation()), (pose, builder) -> {
-			builder.addVertex(pose, x, y + 0.4375F / 2 + height, z).setColor(f1, f2, f3, alpha).setUv(textureX, v1).setLight(LightCoordsUtil.FULL_BRIGHT);
-			builder.addVertex(pose, x + 0.875F, y + 0.4375F / 2 + height, z).setColor(f1, f2, f3, alpha).setUv(u1, v1).setLight(LightCoordsUtil.FULL_BRIGHT);
-			builder.addVertex(pose, x + 0.875F, y + 0.4375F / 2, z).setColor(f1, f2, f3, alpha).setUv(u1, textureY).setLight(LightCoordsUtil.FULL_BRIGHT);
-			builder.addVertex(pose, x, y + 0.4375F / 2, z).setColor(f1, f2, f3, alpha).setUv(textureX, textureY).setLight(LightCoordsUtil.FULL_BRIGHT);
-		});
+		RenderHelper.texturedRect(matrixStack, buffer, sprite.atlasLocation(), x, y + 0.4375F / 2, x + 0.875F, y + 0.4375F / 2 + height, z, textureX, textureY, u1, v1, color);
 
 		IHasBars.drawTransparentRect(matrixStack, buffer, x + 0.875F - width, y + height + 0.4375F / 2, x, y + 0.4375F / 2, -0.0001F, 0xB0000000);
 		matrixStack.popPose();

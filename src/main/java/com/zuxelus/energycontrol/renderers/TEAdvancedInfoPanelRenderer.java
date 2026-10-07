@@ -53,7 +53,7 @@ public class TEAdvancedInfoPanelRenderer extends TileRenderer<TileEntityAdvanced
 	protected void render(TileEntityAdvancedInfoPanel te, PoseStack matrixStack, SubmitNodeCollector buffer, int combinedLight, int combinedOverlay) {
 		matrixStack.pushPose();
 		// the panel body is a baked model (PanelModel), only the text is drawn here
-		CubeRenderer.rotateBlock(matrixStack, te.getFacing(), te.getRotation());
+		PanelCube.rotateBlock(matrixStack, te.getFacing(), te.getRotation());
 		byte thickness = te.thickness;
 		if (thickness < 1 || thickness > 16)
 			thickness = 16;
@@ -61,7 +61,7 @@ public class TEAdvancedInfoPanelRenderer extends TileRenderer<TileEntityAdvanced
 		Screen screen = te.getScreen();
 
 		if (screen != null) {
-			CubeRenderer.rotateBlockText(matrixStack, te.getFacing(), te.getRotation());
+			PanelCube.rotateBlockText(matrixStack, te.getFacing(), te.getRotation());
 
 			if (te.getPowered()) {
 				List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
@@ -214,13 +214,21 @@ public class TEAdvancedInfoPanelRenderer extends TileRenderer<TileEntityAdvanced
 			colorHex = panel.getColorText();
 		for (PanelString panelString : joinedData) {
 			if (panelString.textLeft != null) {
-				drawString(buffer, matrixStack, panelString.textLeft, offsetX - realWidth / 2, 1 + offsetY - realHeight / 2 + row * lineHeight, panelString.colorLeft != 0 ? panelString.colorLeft : colorHex, LightCoordsUtil.FULL_BRIGHT);
+				RenderHelper.drawString(matrixStack, buffer, panelString.textLeft, offsetX - realWidth / 2,
+					1 + offsetY - realHeight / 2 + row * lineHeight,
+					panelString.colorLeft != 0 ? panelString.colorLeft : colorHex, LightCoordsUtil.FULL_BRIGHT);
 			}
 			if (panelString.textCenter != null) {
-				drawString(buffer, matrixStack, panelString.textCenter, -font.width(panelString.textCenter) / 2, offsetY - realHeight / 2 + row * lineHeight, panelString.colorCenter != 0 ? panelString.colorCenter : colorHex, LightCoordsUtil.FULL_BRIGHT);
+				RenderHelper.drawString(matrixStack, buffer, panelString.textCenter,
+					-font.width(panelString.textCenter) / 2,
+					offsetY - realHeight / 2 + row * lineHeight,
+					panelString.colorCenter != 0 ? panelString.colorCenter : colorHex, LightCoordsUtil.FULL_BRIGHT);
 			}
 			if (panelString.textRight != null) {
-				drawString(buffer, matrixStack, panelString.textRight, realWidth / 2 - font.width(panelString.textRight), offsetY - realHeight / 2 + row * lineHeight, panelString.colorRight != 0 ? panelString.colorRight : colorHex, LightCoordsUtil.FULL_BRIGHT);
+				RenderHelper.drawString(matrixStack, buffer, panelString.textRight,
+					realWidth / 2 - font.width(panelString.textRight),
+					offsetY - realHeight / 2 + row * lineHeight,
+					panelString.colorRight != 0 ? panelString.colorRight : colorHex, LightCoordsUtil.FULL_BRIGHT);
 			}
 			row++;
 		}

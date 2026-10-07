@@ -24,14 +24,14 @@ public class TileEntityTimerRenderer extends TileRenderer<TileEntityTimer> {
 	protected void render(TileEntityTimer te, PoseStack matrixStack, SubmitNodeCollector buffer, int combinedLight, int combinedOverlay) {
 		matrixStack.pushPose();
 
-		CubeSmallRenderer.rotateBlock(matrixStack, te.getFacing(), te.getRotation());
+		CubeRenderer.rotateBlock(matrixStack, te.getFacing(), te.getRotation());
 
-		CubeSmallRenderer.MODEL.render(matrixStack, buffer, RenderTypes.entitySolid(te.getIsWorking() ? TEXTURE_ACTIVE : TEXTURE), CubeSmallRenderer.getBlockLight(te), combinedOverlay);
+		CubeRenderer.MODEL.render(matrixStack, buffer, RenderTypes.entitySolid(te.getIsWorking() ? TEXTURE_ACTIVE : TEXTURE), CubeRenderer.getBlockLight(te), combinedOverlay);
 		String time = te.getTimeString();
 		matrixStack.rotate(Axis.XP.rotationDegrees(90.0F));
 		matrixStack.translate(0.5F, 0.575F, -0.4376F);
 		matrixStack.scale(0.015625F, 0.015625F, 0.015625F);
-		drawString(buffer, matrixStack, time, -font.width(time) / 2, -font.lineHeight, 0x000000, combinedLight);
+		RenderHelper.drawString(matrixStack, buffer, time, -font.width(time) / 2, -font.lineHeight, 0x000000, combinedLight);
 		matrixStack.popPose();
 	}
 }

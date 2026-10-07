@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
@@ -36,7 +37,7 @@ public abstract class FacingBlock extends BaseEntityBlock {
 	}
 
 	public static Block.Properties metal(Block.Properties builder) {
-		return builder.strength(1.0F, 3.0F).sound(SoundType.METAL);
+		return builder.mapColor(MapColor.METAL).strength(1.0F, 3.0F).sound(SoundType.METAL);
 	}
 
 	protected abstract BlockEntityFacing createBlockEntity(BlockPos pos, BlockState state);

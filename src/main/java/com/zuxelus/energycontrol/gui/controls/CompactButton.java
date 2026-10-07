@@ -28,21 +28,11 @@ public class CompactButton extends Button {
 
 		Minecraft minecraft = Minecraft.getInstance();
 		Font fontRenderer = minecraft.font;
-				int i = getTextureY();
+		int i = !active ? 0 : isHoveredOrFocused() ? 2 : 1;
 		matrixStack.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, getX(), getY(), 0, 64 + i * 12, width / 2 + width % 2, height, 256, 256);
 		matrixStack.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, getX() + width / 2 + width % 2, getY(), 200 - width / 2, 64 + i * 12, width / 2, height, 256, 256);
 		FormattedCharSequence ireorderingprocessor = getMessage().getVisualOrderText();
 		matrixStack.text(fontRenderer, ireorderingprocessor, getX() + (width - fontRenderer.width(ireorderingprocessor)) / 2, getY() + (height - 8) / 2, ARGB.opaque(0x404040), false);
-	}
-
-	private int getTextureY() {
-		int i = 1;
-		if (!this.active) {
-			i = 0;
-		} else if (this.isHoveredOrFocused()) {
-			i = 2;
-		}
-		return i;
 	}
 
 	public int getId() {

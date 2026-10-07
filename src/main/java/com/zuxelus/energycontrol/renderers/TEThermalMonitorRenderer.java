@@ -25,7 +25,7 @@ public class TEThermalMonitorRenderer extends TileRenderer<TileEntityThermalMoni
 	protected void render(TileEntityThermalMonitor te, PoseStack matrixStack, SubmitNodeCollector buffer, int combinedLight, int combinedOverlay) {
 		matrixStack.pushPose();
 
-		CubeSmallRenderer.rotateBlock(matrixStack, te.getFacing(), te.getRotation());
+		CubeRenderer.rotateBlock(matrixStack, te.getFacing(), te.getRotation());
 
 		Identifier texture;
 		switch (te.getStatus()) {
@@ -39,15 +39,14 @@ public class TEThermalMonitorRenderer extends TileRenderer<TileEntityThermalMoni
 			texture = TEXTURE0;
 			break;
 		}
-		CubeSmallRenderer.MODEL.render(matrixStack, buffer, RenderTypes.entitySolid(texture), CubeSmallRenderer.getBlockLight(te), combinedOverlay);
+		CubeRenderer.MODEL.render(matrixStack, buffer, RenderTypes.entitySolid(texture), CubeRenderer.getBlockLight(te), combinedOverlay);
 
 		matrixStack.rotate(Axis.XP.rotationDegrees(90.0F));
-		matrixStack.rotate(Axis.ZP.rotationDegrees(180.0F));
-		matrixStack.translate(-0.5F, -0.55F, -0.4376F);
+		matrixStack.translate(0.5F, 0.45F, -0.4376F);
 		matrixStack.scale(0.015625F, 0.015625F, 0.015625F);
 
 		String value = String.valueOf(te.getHeatLevel());
-		drawString(buffer, matrixStack, value, -font.width(value) / 2, -font.lineHeight, 0x000000, combinedLight);
+		RenderHelper.drawString(matrixStack, buffer, value, -font.width(value) / 2, -font.lineHeight, 0x000000, combinedLight);
 		matrixStack.popPose();
 	}
 }

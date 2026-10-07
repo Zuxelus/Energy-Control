@@ -126,16 +126,6 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 		int sliderX = getX() + width - SCROLL_WIDTH + 1;
 		sliderY = getY() + SCROLL_BUTTON_HEIGHT + ((height - 2 * SCROLL_BUTTON_HEIGHT - sliderHeight) * scrollTop) / (lineHeight * items.size() + BASIC_Y_OFFSET - height);
 		matrixStack.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, sliderX, sliderY, 131, 16, SCROLL_WIDTH - 1, 1, 256, 256);
-
-		/*Tesselator tesselator = Tesselator.getInstance();
-		BufferBuilder bufferbuilder = tesselator.getBuilder();
-		bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-		bufferbuilder.vertex((sliderX), sliderY + sliderHeight - 1, getBlitOffset()).uv(131 / 256F, (18) / 256F).endVertex();
-		bufferbuilder.vertex(sliderX + SCROLL_WIDTH - 1, sliderY + sliderHeight - 1, getBlitOffset()).uv((131 + SCROLL_WIDTH - 1) / 256F, (18) / 256F).endVertex();
-		bufferbuilder.vertex(sliderX + SCROLL_WIDTH - 1, sliderY + 1, getBlitOffset()).uv((131 + SCROLL_WIDTH - 1) / 256F, (17) / 256F).endVertex();
-		bufferbuilder.vertex((sliderX), sliderY + 1, getBlitOffset()).uv(131 / 256F, (17) / 256F).endVertex();
-		tesselator.end();*/
-
 		matrixStack.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, sliderX, sliderY + sliderHeight - 1, 131, 19, SCROLL_WIDTH - 1, 1, 256, 256);
 	}
 
@@ -166,6 +156,17 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 	}
 
 	@Override
+	public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double p_94736_) {
+		if (isMouseOver(mouseX, mouseY)) {
+			if (p_94736_ > 0)
+				scrollUp();
+			if (p_94736_ < 0)
+				scrollDown();
+		}
+		return super.mouseScrolled(mouseX, mouseY, scrollX, p_94736_);
+	}
+
+	@Override
 	public void onPress(InputWithModifiers input) { }
 
 	@Override
@@ -188,19 +189,6 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 	@Override
 	public void onRelease(MouseButtonEvent event) {
 		dragging = false;
-	}
-
-	@Override
-	public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double p_94736_) {
-		if (isMouseOver(mouseX, mouseY)) {
-			if (p_94736_ > 0) {
-				scrollUp();
-			}
-			if (p_94736_ < 0) {
-				scrollDown();
-			}
-		}
-		return super.mouseScrolled(mouseX, mouseY, scrollX, p_94736_);
 	}
 
 	@Override

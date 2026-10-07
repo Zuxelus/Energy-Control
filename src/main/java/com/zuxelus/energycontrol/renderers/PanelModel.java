@@ -2,6 +2,8 @@ package com.zuxelus.energycontrol.renderers;
 
 import java.util.List;
 
+import javax.naming.spi.Resolver;
+
 import org.joml.Vector3f;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -16,10 +18,10 @@ import com.zuxelus.zlib.blocks.FacingBlockActive;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
-import net.minecraft.client.resources.model.geometry.QuadCollection;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.SimpleModelWrapper;
+import net.minecraft.client.resources.model.geometry.QuadCollection;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -95,17 +97,17 @@ public record PanelModel(Identifier body, Identifier screen, Identifier particle
 
 			// same geometry and rotation as the block entity renderer used, so the screen borders match findTexture()
 			PoseStack matrixStack = new PoseStack();
-			CubeRenderer.rotateBlock(matrixStack, state.getValue(FacingBlock.FACING), data.rotation());
+			PanelCube.rotateBlock(matrixStack, state.getValue(FacingBlock.FACING), data.rotation());
 			QuadCollection.Builder quads = new QuadCollection.Builder();
-			CubeRenderer model = data.offset() == null ? CubeRenderer.MODEL : CubeRenderer.getModel(data.offset());
+			PanelCube model = data.offset() == null ? PanelCube.MODEL : PanelCube.getModel(data.offset());
 			// the body's face quad lies under the screen
 			model.visitQuads(matrixStack, (index, positions, u, v, normal) -> {
-				if (index != CubeRenderer.FACE)
+				if (index != PanelCube.FACE)
 					addQuad(quads, positions, u, v, normal, body, -1, false);
 			});
 			int faceColor = getFaceColor(data.color(), data.powered());
 			boolean glowing = data.powered();
-			CubeRenderer.getFaceModel(data.offset() == null ? FULL : data.offset(), data.textureId()).visitQuads(matrixStack,
+			PanelCube.getFaceModel(data.offset() == null ? FULL : data.offset(), data.textureId()).visitQuads(matrixStack,
 					(index, positions, u, v, normal) -> addQuad(quads, positions, u, v, normal, screen, faceColor, glowing));
 			parts.add(new SimpleModelWrapper(quads.build(), true, particle));
 		}

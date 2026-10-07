@@ -12,7 +12,6 @@ import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
 import com.zuxelus.energycontrol.utils.DataHelper;
 
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
@@ -95,13 +94,13 @@ public class ItemCardBigReactors extends ItemCardMain {
 	@Override
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(6);
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelOnOff"), 1));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelHeat"), 2));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelEnergy"), 4));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelCapacity"), 8));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelOutput"), 16));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbFuel"), 32));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelOther"), 64));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelOnOff", 1));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelHeat", 2));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelEnergy", 4));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelCapacity", 8));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelOutput", 16));
+		result.add(new PanelSetting("msg.ec.cbFuel", 32));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelOther", 64));
 		return result;
 	}
 

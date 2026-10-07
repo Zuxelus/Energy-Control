@@ -37,11 +37,10 @@ public class GuiInfoPanelCheckBox extends AbstractButton {
 	protected void extractContents(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (!visible)
 			return;
-
-		int delta = checked ? 6 : 0;
-		matrixStack.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, getX(), getY() + 1, 176, delta, 6, 6, 256, 256);
 		Minecraft minecraft = Minecraft.getInstance();
 		Font fontRenderer = minecraft.font;
+		int delta = checked ? 6 : 0;
+		matrixStack.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, getX(), getY() + 1, 176, delta, 6, 6, 256, 256);
 		matrixStack.text(fontRenderer, getMessage(), getX() + 8, getY(), ARGB.opaque(0x404040), false);
 	}
 
@@ -66,7 +65,5 @@ public class GuiInfoPanelCheckBox extends AbstractButton {
 	}
 
 	@Override
-	protected void updateWidgetNarration(NarrationElementOutput output) {
-		// TODO Auto-generated method stub
-	}
+	protected void updateWidgetNarration(NarrationElementOutput output) { }
 }

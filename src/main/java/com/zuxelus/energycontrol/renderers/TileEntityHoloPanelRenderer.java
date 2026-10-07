@@ -121,8 +121,8 @@ public class TileEntityHoloPanelRenderer extends TileRenderer<TileEntityHoloPane
 		float imageWidth = 0.475F + (displayWidth - 0.875F) / 2F;
 		float imageHeight = 0.5F + (power - 1) / 2F;
 		// the render type is back-face culled, so draw both windings to be visible from both sides
-		IHasBars.drawTransparentRect(matrixStack, buffer, ModRenderTypes.holoColor(), imageWidth, imageHeight, -imageWidth, -imageHeight, -0.0001F, 0x40AADDDD);
-		IHasBars.drawTransparentRect(matrixStack, buffer, ModRenderTypes.holoColor(), -imageWidth, imageHeight, imageWidth, -imageHeight, -0.0001F, 0x40AADDDD);
+		RenderHelper.fillRect(matrixStack, buffer, ModRenderTypes.holoColor(), imageWidth, imageHeight, -imageWidth, -imageHeight, -0.0001F, 0x40AADDDD);
+		RenderHelper.fillRect(matrixStack, buffer, ModRenderTypes.holoColor(), -imageWidth, imageHeight, imageWidth, -imageHeight, -0.0001F, 0x40AADDDD);
 		if (joinedData != null) {
 			matrixStack.translate(0, 0, 0.0002F * (power + 1) / 2);
 			int colorHex = 0x000000;

@@ -46,7 +46,5 @@ public class GuiThermoInvertRedstone extends AbstractButton {
 	}
 
 	@Override
-	protected void updateWidgetNarration(NarrationElementOutput output) {
-		// TODO Auto-generated method stub
-	}
+	protected void updateWidgetNarration(NarrationElementOutput output) { }
 }
