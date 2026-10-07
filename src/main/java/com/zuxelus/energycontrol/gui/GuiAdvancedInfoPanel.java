@@ -63,11 +63,11 @@ public class GuiAdvancedInfoPanel extends GuiPanelBase<ContainerAdvancedInfoPane
 			List<PanelSetting> settingsList = ((ItemCardMain) stack.getItem()).getSettingsList();
 
 			int hy = font.lineHeight + 1;
-			int yy = 1;
+			int y = 1;
 			if (settingsList != null)
 				for (PanelSetting panelSetting : settingsList) {
-					addRenderableWidget(new GuiInfoPanelCheckBox(leftPos + 28, topPos + 51 + hy * yy, panelSetting, panel, slot, font));
-					yy++;
+					addRenderableWidget(new GuiInfoPanelCheckBox(leftPos + 28, topPos + 51 + hy * y, panelSetting, panel, slot, font));
+					y++;
 				}
 			if (!modified) {
 				textboxTitle = new EditBox(font, leftPos + 7, topPos + 16, 162, 18, null, CommonComponents.EMPTY);
@@ -109,7 +109,6 @@ public class GuiAdvancedInfoPanel extends GuiPanelBase<ContainerAdvancedInfoPane
 	public boolean mouseReleased(MouseButtonEvent event) {
 		double mouseX = event.x();
 		double mouseY = event.y();
-		int mouseButton = event.button();
 		if (mouseX >= leftPos + 7 && mouseX <= leftPos + 24 && mouseY >= topPos + 62 && mouseY <= topPos + 104) {
 			byte newTab = (byte) ((mouseY - topPos - 62) / 14);
 			if (newTab > 2)

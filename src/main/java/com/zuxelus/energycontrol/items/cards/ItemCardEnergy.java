@@ -14,7 +14,6 @@ import com.zuxelus.energycontrol.utils.DataHelper;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -68,11 +67,11 @@ public class ItemCardEnergy extends ItemCardMain implements IHasBars {
 	@Environment(EnvType.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(5);
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelEnergy"), 1));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelFree"), 2));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelCapacity"), 4));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelPercentage"), 8));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelShowBar"), 1024));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelEnergy", 1));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelFree", 2));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelCapacity", 4));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelPercentage", 8));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelShowBar", 1024));
 		return result;
 	}
 

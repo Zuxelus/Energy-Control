@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.crossmod.rei;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -12,6 +11,7 @@ import me.shedaniel.rei.api.common.display.SimpleGridMenuDisplay;
 import me.shedaniel.rei.api.common.display.basic.BasicDisplay;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
+import me.shedaniel.rei.api.common.util.EntryStacks;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import me.shedaniel.rei.api.common.display.DisplaySerializer;
@@ -47,9 +47,7 @@ public class KitAssemblerDisplay extends BasicDisplay implements SimpleGridMenuD
 
 	// shows the required amount on each ingredient (the recipe keeps counts separately from its ingredients)
 	private static EntryIngredient withCount(Ingredient ingredient, int count) {
-		List<ItemStack> stacks = new ArrayList<>();
-		ingredient.items().forEach(item -> stacks.add(new ItemStack(item, count)));
-		return EntryIngredients.ofItemStacks(stacks);
+		return EntryIngredients.ofIngredient(ingredient).map(stack -> EntryStacks.of(stack.<ItemStack>castValue().copyWithCount(count)));
 	}
 
 	@Override

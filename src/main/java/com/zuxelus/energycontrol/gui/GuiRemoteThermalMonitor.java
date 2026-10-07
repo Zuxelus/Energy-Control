@@ -85,8 +85,6 @@ public class GuiRemoteThermalMonitor extends GuiContainerBase<ContainerRemoteThe
 	@Override
 	public boolean keyPressed(KeyEvent event) {
 		int keyCode = event.key();
-		int scanCode = event.keycode();
-		int modifiers = event.modifiers();
 		if (textboxHeat.isFocused() && keyCode != InputConstants.KEY_ESCAPE) {
 			if (keyCode == InputConstants.KEY_RETURN || keyCode == InputConstants.KEY_NUMPADENTER) // Enter
 				updateHeat(0);

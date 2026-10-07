@@ -1,27 +1,26 @@
 package com.zuxelus.energycontrol.renderers;
 
 import java.util.List;
-import net.minecraft.util.LightCoordsUtil;
+
 import org.jspecify.annotations.Nullable;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
-import com.zuxelus.zlib.tileentities.BlockEntityFacing;
+
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.world.phys.Vec3;
 
 public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEntityInfoPanel, BlockEntityFacingRenderState<TileEntityInfoPanel>> {
-	private static int[][] sides = new int[][] { { 3, 2, 1, 0, 5, 4 }, { 2, 3, 1, 0, 4, 5 }, { 4, 5, 1, 0, 3, 2 },
-		{ 5 ,4, 1, 0, 2, 3 }, { 1, 0, 3, 2, 4, 5 }, { 0, 1, 2, 3, 4, 5 } };
 	private final Font font;
 
 	private static String implodeArray(String[] inputArray, String glueString) {
@@ -39,17 +38,6 @@ public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 				output = output.substring(1);
 		}
 		return output;
-	}
-
-	public static int[] getBlockLight(BlockEntityFacing te) {
-		int[] light = new int[6];
-		light[sides[te.getFacing().get3DDataValue()][0]] = LightCoordsUtil.getLightCoords(te.getLevel(), te.getBlockPos().relative(Direction.DOWN));
-		light[sides[te.getFacing().get3DDataValue()][1]] = LightCoordsUtil.getLightCoords(te.getLevel(), te.getBlockPos().relative(Direction.UP));
-		light[sides[te.getFacing().get3DDataValue()][2]] = LightCoordsUtil.getLightCoords(te.getLevel(), te.getBlockPos().relative(Direction.WEST));
-		light[sides[te.getFacing().get3DDataValue()][3]] = LightCoordsUtil.getLightCoords(te.getLevel(), te.getBlockPos().relative(Direction.EAST));
-		light[sides[te.getFacing().get3DDataValue()][4]] = LightCoordsUtil.getLightCoords(te.getLevel(), te.getBlockPos().relative(Direction.NORTH));
-		light[sides[te.getFacing().get3DDataValue()][5]] = LightCoordsUtil.getLightCoords(te.getLevel(), te.getBlockPos().relative(Direction.SOUTH));
-		return light;
 	}
 
 	public TileEntityInfoPanelRenderer(Context ctx) {
@@ -75,30 +63,8 @@ public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 		if (!te.getPowered())
 			return;
 		matrixStack.pushPose();
-		switch (te.getFacing()) {
-		case UP:
-			break;
-		case NORTH:
-			matrixStack.rotate(Axis.XP.rotationDegrees(-90));
-			matrixStack.translate(0.0F, -1.0F, 0.0F);
-			break;
-		case SOUTH:
-			matrixStack.rotate(Axis.XP.rotationDegrees(90));
-			matrixStack.translate(0.0F, 0.0F, -1.0F);
-			break;
-		case DOWN:
-			matrixStack.rotate(Axis.XP.rotationDegrees(180));
-			matrixStack.translate(0.0F, -1.0F, -1.0F);
-			break;
-		case WEST:
-			matrixStack.rotate(Axis.ZP.rotationDegrees(90));
-			matrixStack.translate(0.0F, -1.0F, 0.0F);
-			break;
-		case EAST:
-			matrixStack.rotate(Axis.ZP.rotationDegrees(-90));
-			matrixStack.translate(-1.0F, 0.0F, 0.0F);
-			break;
-		}
+		PanelCube.rotateBlock(matrixStack, te.getFacing(), te.getRotation());
+		PanelCube.rotateBlockText(matrixStack, te.getFacing(), te.getRotation());
 
 		List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
 		drawText(te, joinedData, matrixStack, collector, combinedLight);
@@ -146,8 +112,8 @@ public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 				}
 				break;
 			case NORTH:
-				dz = (pos.getY() - screen.maxY - screen.minY + pos.getY());
-				dy = pos.getX() - screen.maxX - screen.minX + pos.getX();
+				dz = - (pos.getY() - screen.maxY - screen.minY + pos.getY());
+				dy = - (pos.getX() - screen.maxX - screen.minX + pos.getX());
 				displayWidth += screen.maxX - screen.minX;
 				displayHeight += screen.maxY - screen.minY;
 				break;
@@ -160,21 +126,21 @@ public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 			case DOWN:
  				break;
 			case WEST:
-				dz = pos.getZ() - screen.maxZ + pos.getZ() - screen.minZ;
-				dy = (pos.getY() - screen.maxY - screen.minY + pos.getY());
+				dy = pos.getZ() - screen.maxZ + pos.getZ() - screen.minZ;
+				dz = - (pos.getY() - screen.maxY - screen.minY + pos.getY());
 				displayWidth += screen.maxZ - screen.minZ;
 				displayHeight += screen.maxY - screen.minY;
 				break;
 			case EAST:
-				dz = pos.getZ() - screen.maxZ + pos.getZ() - screen.minZ;
-				dy = - (pos.getY() - screen.maxY - screen.minY + pos.getY());
+				dy = - (pos.getZ() - screen.maxZ + pos.getZ() - screen.minZ);
+				dz = - (pos.getY() - screen.maxY - screen.minY + pos.getY());
 				displayWidth += screen.maxZ - screen.minZ;
 				displayHeight += screen.maxY - screen.minY;
 				break;
 			}
 		}
 
-		matrixStack.translate(0.5F - dy / 2, 1.01F - dx / 2 , 0.5F - dz / 2);
+		matrixStack.translate(0.5F - dy / 2, 1.01F - dx / 2 , -0.5F - dz / 2);
 		matrixStack.rotate(Axis.XP.rotationDegrees(-90));
 		switch(panel.getRotation())
 		{

@@ -49,7 +49,5 @@ public class GuiRangeTriggerInvertRedstone extends AbstractButton {
 	}
 
 	@Override
-	public void updateWidgetNarration(NarrationElementOutput var1) {
-		// TODO Auto-generated method stub
-	}
+	public void updateWidgetNarration(NarrationElementOutput output) { }
 }

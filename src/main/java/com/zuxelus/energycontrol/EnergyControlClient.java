@@ -27,9 +27,8 @@ import com.zuxelus.energycontrol.utils.SoundHelper;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -54,9 +53,12 @@ public class EnergyControlClient implements ClientModInitializer {
 		MenuScreens.register(ModContainerTypes.portable_panel, GuiPortablePanel::new);
 
 		ChannelHandler.initClient();
-		ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new SoundHelper());
+		ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloadListener(SoundHelper.ID, new SoundHelper());
 
 		ClientTickEvents.START_CLIENT_TICK.register(client -> {
+			// the client ticks in menus too, where there is no connection to send the key state to
+			if (client.player == null)
+				return;
 			boolean alt = client.hasAltDown();
 			if (altPressed != alt) {
 				altPressed = alt;

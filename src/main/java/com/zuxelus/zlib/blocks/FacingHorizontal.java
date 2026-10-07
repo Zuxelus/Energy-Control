@@ -5,6 +5,11 @@ import com.zuxelus.energycontrol.tileentities.*;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -36,6 +41,21 @@ public abstract class FacingHorizontal extends BaseEntityBlock {
 		BlockEntityFacing be = createFacingBlockEntity(pos, state);
 		be.setFacing(state.getValue(FACING).get3DDataValue());
 		return be;
+	}
+
+	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		return InteractionResult.PASS;
+	}
+
+	@Override
+	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		InteractionResult result = onUse(state, world, pos, player, hand, hit);
+		return result == InteractionResult.PASS ? InteractionResult.TRY_WITH_EMPTY_HAND : result;
+	}
+
+	@Override
+	protected InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
+		return onUse(state, world, pos, player, InteractionHand.MAIN_HAND, hit);
 	}
 
 	@Override

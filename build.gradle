@@ -44,7 +44,6 @@ dependencies {
 		exclude(group: "net.fabricmc", module: "fabric-loader")
 	}
 	implementation "com.terraformersmc:modmenu:${project.modmenu_version}"
-	//implementation "alexiil.mc.lib:${project.lba_version}"
 	// REI pulls its own older fabric-loader, which clashes with ours at runtime
 	compileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}") {
 		exclude(group: "net.fabricmc", module: "fabric-loader")

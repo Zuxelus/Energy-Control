@@ -69,9 +69,6 @@ public class GuiPortablePanel extends AbstractContainerScreen<ContainerPortableP
 
 	@Override
 	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-		double mouseX = event.x();
-		double mouseY = event.y();
-		int button = event.button();
 		boolean result = super.mouseClicked(event, doubleClick);
 		// a clicked button keeps focus and stays highlighted after the mouse leaves it
 		if (getFocused() instanceof Button)

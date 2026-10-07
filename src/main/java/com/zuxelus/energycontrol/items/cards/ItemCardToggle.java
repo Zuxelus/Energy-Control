@@ -27,7 +27,6 @@ import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
 
 public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 	private static final BooleanProperty POWERED = BlockStateProperties.POWERED;

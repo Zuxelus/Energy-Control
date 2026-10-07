@@ -48,8 +48,6 @@ public class GuiHorizontalSlider extends GuiBase {
 	@Override
 	public boolean keyPressed(KeyEvent event) {
 		int keyCode = event.key();
-		int scanCode = event.keycode();
-		int modifiers = event.modifiers();
 		if (keyCode == InputConstants.KEY_ESCAPE) {
 			minecraft.gui.setScreen(parentGui);
 			return true;
@@ -104,15 +102,11 @@ public class GuiHorizontalSlider extends GuiBase {
 
 		@Override
 		public void onClick(MouseButtonEvent event, boolean doubleClick) {
-		double mouseX = event.x();
-		double mouseY = event.y();
 			dragging = true;
 		}
 
 		@Override
 		public void onRelease(MouseButtonEvent event) {
-		double mouseX = event.x();
-		double mouseY = event.y();
 			dragging = false;
 		}
 

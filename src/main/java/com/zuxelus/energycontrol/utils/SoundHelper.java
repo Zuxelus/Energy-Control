@@ -13,7 +13,6 @@ import com.google.gson.stream.JsonWriter;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 
-import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
@@ -22,7 +21,7 @@ import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 
-public class SoundHelper extends SimplePreparableReloadListener<Void> implements IdentifiableResourceReloadListener {
+public class SoundHelper extends SimplePreparableReloadListener<Void> {
 	public static final Identifier ID = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "alarms");
 	private static File alarms;
 
@@ -69,11 +68,6 @@ public class SoundHelper extends SimplePreparableReloadListener<Void> implements
 	// Added to the client resource packs by ReloadableResourceManagerImplMixin
 	public static File getAlarmsFolder() {
 		return alarms;
-	}
-
-	@Override
-	public Identifier getFabricId() {
-		return ID;
 	}
 
 	@Override

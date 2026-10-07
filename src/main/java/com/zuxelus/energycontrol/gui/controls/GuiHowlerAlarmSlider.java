@@ -85,20 +85,15 @@ public class GuiHowlerAlarmSlider extends AbstractButton {
 	@Override
 	public void onClick(MouseButtonEvent event, boolean doubleClick) {
 		double mouseX = event.x();
-		double mouseY = event.y();
 		setSliderPos(mouseX);
 		dragging = true;
 	}
 
 	@Override
 	public void onRelease(MouseButtonEvent event) {
-		double mouseX = event.x();
-		double mouseY = event.y();
 		dragging = false;
 	}
 
 	@Override
-	public void updateWidgetNarration(NarrationElementOutput var1) {
-		// TODO Auto-generated method stub
-	}
+	public void updateWidgetNarration(NarrationElementOutput output) { }
 }

@@ -6,6 +6,7 @@ import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -55,6 +56,13 @@ public class GuiTextArea extends AbstractWidget {
 		if (drawCursor)
 			// same inverting highlight that EditBox uses for selections
 			context.textHighlight(cursorPositionX, textTop - 1, cursorPositionX + 1, textTop + 1 + fontRenderer.lineHeight, true);
+	}
+
+	// since SDL input the game only sends typed characters while text input is started, like EditBox does
+	@Override
+	public void setFocused(boolean focused) {
+		super.setFocused(focused);
+		Minecraft.getInstance().onTextInputFocusChange(this, focused);
 	}
 
 	public void updateCursorCounter() {
@@ -132,20 +140,19 @@ public class GuiTextArea extends AbstractWidget {
 		double mouseY = event.y();
 		int mouseButton = event.button();
 		boolean flag = mouseX >= getX() && mouseX < (getX() + width) && mouseY >= getY() && mouseY < (getY() + height);
-		if (isFocused() && flag && mouseButton == InputConstants.MOUSE_BUTTON_LEFT) {
-			int xi = Mth.floor(mouseX) - getX();
-			int yi = Mth.floor(mouseY) - getY();
-			setCursorPosition(fontRenderer.plainSubstrByWidth(text[(yi - 4) / 10], xi).length(), (yi - 4) / 10);
-			return true;
-		}
-		return false;
+		if (!flag || mouseButton != InputConstants.MOUSE_BUTTON_LEFT)
+			return false;
+		// returning true lets the screen focus this widget, so a click into an unfocused area starts typing
+		int xi = Mth.floor(mouseX) - getX();
+		int yi = Mth.floor(mouseY) - getY();
+		int line = Mth.clamp((yi - 4) / 10, 0, lineCount - 1);
+		setCursorPosition(fontRenderer.plainSubstrByWidth(text[line], xi).length(), line);
+		return true;
 	}
 
 	@Override
 	public boolean keyPressed(KeyEvent event) {
 		int keyCode = event.key();
-		int scanCode = event.keycode();
-		int modifiers = event.modifiers();
 		if (!isFocused())
 			return false;
 		switch (keyCode) {
@@ -181,7 +188,8 @@ public class GuiTextArea extends AbstractWidget {
 			deleteFromCursor(1);
 			return true;
 		}
-		return true;
+		// not consumed, so the character of the key reaches charTyped
+		return false;
 	}
 
 	@Override

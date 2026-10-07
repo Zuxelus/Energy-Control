@@ -151,8 +151,6 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 	@Override
 	public boolean keyPressed(KeyEvent event) {
 		int keyCode = event.key();
-		int scanCode = event.keycode();
-		int modifiers = event.modifiers();
 		// consumed, otherwise the screen also moves keyboard focus away from the list
 		if (keyCode == InputConstants.KEY_DOWN) { // down
 			scrollDown();
@@ -198,13 +196,9 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 
 	@Override
 	public void onRelease(MouseButtonEvent event) {
-		double mouseX = event.x();
-		double mouseY = event.y();
 		dragging = false;
 	}
 
 	@Override
-	public void updateWidgetNarration(NarrationElementOutput var1) {
-		// TODO Auto-generated method stub
-	}
+	public void updateWidgetNarration(NarrationElementOutput output) { }
 }

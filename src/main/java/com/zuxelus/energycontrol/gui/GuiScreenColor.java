@@ -248,8 +248,6 @@ public class GuiScreenColor extends GuiBase {
 	@Override
 	public boolean keyPressed(KeyEvent event) {
 		int keyCode = event.key();
-		int scanCode = event.keycode();
-		int modifiers = event.modifiers();
 		if (keyCode == InputConstants.KEY_ESCAPE) {
 			minecraft.gui.setScreen(parentGui);
 			return true;
@@ -298,7 +296,6 @@ public class GuiScreenColor extends GuiBase {
 
 	@Override
 	public boolean charTyped(CharacterEvent event) {
-		char typedChar = (char) event.codepoint();
 		for (GuiTextNumeric text : fieldList) {
 			String value = text.getValue();
 			if (text.charTyped(event)) {

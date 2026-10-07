@@ -1,21 +1,24 @@
 package com.zuxelus.energycontrol.renderers;
 
 import java.util.List;
+
 import org.jspecify.annotations.Nullable;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
-import net.minecraft.core.BlockPos;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.zuxelus.energycontrol.api.IHasBars;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityHoloPanel;
+
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
 
 public class TileEntityHoloPanelRenderer implements BlockEntityRenderer<TileEntityHoloPanel, BlockEntityFacingRenderState<TileEntityHoloPanel>> {
 	private final Font font;
@@ -65,12 +68,6 @@ public class TileEntityHoloPanelRenderer implements BlockEntityRenderer<TileEnti
 			break;
 		}
 
-		/*int color = 2;
-		if (te.getColored()) {
-			color = te.getColorBackground();
-			if (color > 15 || color < 0)
-				color = 2;
-		}*/
 		if (te.getPowered()) {
 			List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
 			drawText(te, joinedData, matrixStack, collector, combinedLight);

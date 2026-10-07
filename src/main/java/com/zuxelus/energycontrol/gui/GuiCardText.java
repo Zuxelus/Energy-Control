@@ -46,7 +46,7 @@ public class GuiCardText extends GuiBase {
 		addRenderableWidget(Button.builder(Component.literal("Style"), (button) -> { actionPerformed(2); }).bounds(guiLeft + 8, guiTop + 120, 60, 20).build());
 		textArea = new GuiTextArea(font, guiLeft + 8, guiTop + 5, xSize - 16, ySize - 35, lineCount);
 		addWidget(textArea);
-		setInitialFocus(textArea);
+		setFocused(textArea);
 		String[] data = textArea.getText();
 		for (int i = 0; i < lineCount; i++)
 			data[i] = reader.getString("line_" + i);
@@ -55,7 +55,7 @@ public class GuiCardText extends GuiBase {
 	@Override
 	protected void drawGuiContainerBackgroundLayer(GuiGraphicsExtractor context, float partialTicks, int mouseX, int mouseY) {
 		super.drawGuiContainerBackgroundLayer(context, partialTicks, mouseX, mouseY);
-		textArea.extractRenderState(context, mouseY, mouseY, partialTicks);
+		textArea.extractRenderState(context, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
@@ -84,9 +84,6 @@ public class GuiCardText extends GuiBase {
 
 	@Override
 	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-		double x = event.x();
-		double y = event.y();
-		int p_94697_ = event.button();
 		GuiEventListener control = getFocused();
 		if (control instanceof GuiTextArea) {
 			boolean result = super.mouseClicked(event, doubleClick);
@@ -99,8 +96,6 @@ public class GuiCardText extends GuiBase {
 	@Override
 	public boolean keyPressed(KeyEvent event) {
 		int keyCode = event.key();
-		int scanCode = event.keycode();
-		int modifiers = event.modifiers();
 		if (keyCode == InputConstants.KEY_ESCAPE) {
 			actionPerformed(1);
 			return true;

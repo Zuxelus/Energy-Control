@@ -1,20 +1,22 @@
 package com.zuxelus.energycontrol.renderers;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.util.LightCoordsUtil;
 import org.jspecify.annotations.Nullable;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.tileentities.TileEntityRemoteThermalMonitor;
+
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.world.phys.Vec3;
 
 // The body is a block model (remote_thermo.json); only the heat bar and the heat level text are drawn here
 public class TERemoteThermalMonitorRenderer implements BlockEntityRenderer<TileEntityRemoteThermalMonitor, BlockEntityFacingRenderState<TileEntityRemoteThermalMonitor>> {
@@ -44,7 +46,6 @@ public class TERemoteThermalMonitorRenderer implements BlockEntityRenderer<TileE
 	@Override
 	public void submit(BlockEntityFacingRenderState<TileEntityRemoteThermalMonitor> state, PoseStack matrixStack, SubmitNodeCollector collector, CameraRenderState camera) {
 		TileEntityRemoteThermalMonitor te = state.te;
-		int combinedLight = state.lightCoords;
 		matrixStack.pushPose();
 		// turn the north facing layout towards the front of the block
 		Direction facing = te.getFacing() == null ? Direction.NORTH : te.getFacing();
@@ -60,10 +61,7 @@ public class TERemoteThermalMonitorRenderer implements BlockEntityRenderer<TileE
 		int heat = te.getHeat();
 		int level = te.getHeatLevel();
 		if (status > -2) {
-			float rate = 1;
-			if (status > -1)
-				rate = Math.round((1 - Math.min((float) heat / level, 1)) * 16) / (float) 16;
-
+			float rate = status > -1 ? Math.round((1 - Math.min((float) heat / level, 1)) * 16) / (float) 16 : 1;
 			RenderHelper.texturedRect(matrixStack, collector, TEXTURE, rate, 0, 1, BAR_HEIGHT, 0, rate * BAR_U, 0, BAR_U, BAR_V, 0xFFFFFFFF);
 		}
 

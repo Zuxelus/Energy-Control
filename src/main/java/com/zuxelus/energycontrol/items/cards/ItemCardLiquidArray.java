@@ -13,7 +13,6 @@ import com.zuxelus.energycontrol.utils.StringUtils;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
@@ -143,12 +142,12 @@ public class ItemCardLiquidArray extends ItemCardMain {
 	@Environment(EnvType.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(6);
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidName"), 1));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidFree"), 2));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidCapacity"), 4));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidPercentage"), 8));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelEachCard"), 16));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelTotal"), 32));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelLiquidName", 1));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelLiquidFree", 2));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelLiquidCapacity", 4));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelLiquidPercentage", 8));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelEachCard", 16));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelTotal", 32));
 		return result;
 	}
 

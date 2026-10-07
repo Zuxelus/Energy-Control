@@ -9,7 +9,6 @@ import com.zuxelus.energycontrol.api.PanelString;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.world.level.Level;
 
 public class ItemCardTime extends ItemCardMain {
@@ -37,7 +36,7 @@ public class ItemCardTime extends ItemCardMain {
 	@Environment(EnvType.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(1);
-		result.add(new PanelSetting(I18n.get("msg.ec.cb24h"), 1));
+		result.add(new PanelSetting("msg.ec.cb24h", 1));
 		return result;
 	}
 }

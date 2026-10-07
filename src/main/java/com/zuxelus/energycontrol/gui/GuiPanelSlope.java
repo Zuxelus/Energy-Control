@@ -26,7 +26,6 @@ public class GuiPanelSlope extends GuiBase {
 	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
 		double mouseX = event.x();
 		double mouseY = event.y();
-		int mouseButton = event.button();
 		mouseX -= guiLeft;
 		mouseY -= guiTop;
 		if (mouseY >= 23 && mouseY <= 89) {

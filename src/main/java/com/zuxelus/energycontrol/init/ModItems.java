@@ -39,8 +39,8 @@ public class ModItems {
 		return new Item.Properties().setId(itemKey);
 	}
 
-	public static final Block white_lamp = block("white_lamp", BlockLight::new);
-	public static final Block orange_lamp = block("orange_lamp", BlockLight::new);
+	public static final Block white_lamp = block("white_lamp", () -> new BlockLight(MapColor.SNOW));
+	public static final Block orange_lamp = block("orange_lamp", () -> new BlockLight(MapColor.COLOR_ORANGE));
 	public static final Block howler_alarm = block("howler_alarm", HowlerAlarm::new);
 	public static final Block industrial_alarm = block("industrial_alarm", IndustrialAlarm::new);
 	public static final Block thermal_monitor = block("thermal_monitor", ThermalMonitor::new);

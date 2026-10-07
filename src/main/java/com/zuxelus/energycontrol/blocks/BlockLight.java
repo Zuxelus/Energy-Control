@@ -1,8 +1,9 @@
 package com.zuxelus.energycontrol.blocks;
 
-import com.zuxelus.energycontrol.init.ModItems;
-import net.minecraft.world.level.redstone.Orientation;
 import org.jspecify.annotations.Nullable;
+
+import com.zuxelus.energycontrol.init.ModItems;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -10,17 +11,18 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.redstone.Orientation;
 
 public class BlockLight extends Block {
 	public static final BooleanProperty LIT = BlockStateProperties.LIT;
 
-	public BlockLight() {
-		super(ModItems.emptyBlockSettings().lightLevel(state -> state.getValue(LIT) ? 15 : 0).strength(1.0F, 3.0F).sound(SoundType.GLASS));
+	public BlockLight(MapColor color) {
+		super(ModItems.emptyBlockSettings().mapColor(color).lightLevel(state -> state.getValue(LIT) ? 15 : 0).strength(1.0F, 3.0F).sound(SoundType.GLASS));
 		registerDefaultState(getStateDefinition().any().setValue(LIT, false));
 	}
 

@@ -77,12 +77,12 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 	@Environment(EnvType.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(5);
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidName"), 1));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidAmount"), 2));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidFree"), 4));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidCapacity"), 8));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidPercentage"), 16));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelShowBar"), 1024));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelLiquidName", 1));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelLiquidAmount", 2));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelLiquidFree", 4));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelLiquidCapacity", 8));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelLiquidPercentage", 16));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelShowBar", 1024));
 		return result;
 	}
 

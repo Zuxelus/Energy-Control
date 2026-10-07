@@ -1,20 +1,27 @@
 package com.zuxelus.energycontrol.renderers;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.core.Direction;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.ARGB;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
+import com.zuxelus.zlib.tileentities.BlockEntityFacing;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.Direction;
+import net.minecraft.util.LightCoordsUtil;
+
 public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
+	// side of each ModelBox quad before rotation (see ModelBox constructor)
+	static final Direction[] QUAD_SIDES = { Direction.EAST, Direction.WEST, Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH };
+	private static final Direction[][][] WORLD_SIDES = new Direction[6][6][];
 	private ModelBox cube;
 
 	public CubeRenderer(int faceOffsetX, int faceOffsetY) {
@@ -74,6 +81,21 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 			positionsIn[3] = positionsIn[3].setTextureUV(u2 / texWidth - f, v2 / texHeight - f1);
 			this.normal = direction.step();
 		}
+
+		public void draw(PoseStack.Pose pose, VertexConsumer buffer, int light, int combinedOverlay, int color) {
+			Matrix4f matrix4f = pose.pose();
+			Vector3f vector3f = pose.transformNormal(normal, new Vector3f());
+
+			float f = vector3f.x();
+			float g = vector3f.y();
+			float h = vector3f.z();
+
+			for (int i = 0; i < 4; ++i) {
+				PositionTextureVertex vertex = vertexPositions[i];
+				Vector4f vector4f = matrix4f.transform(new Vector4f(vertex.position.x() / 16.0F, vertex.position.y() / 16.0F, vertex.position.z() / 16.0F, 1.0F));
+				buffer.addVertex(vector4f.x(), vector4f.y(), vector4f.z(), color, vertex.textureU, vertex.textureV, combinedOverlay, light, f, g, h);
+			}
+		}
 	}
 
 	@Environment(EnvType.CLIENT)
@@ -103,28 +125,157 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 
 		public void render(PoseStack matrixStack, SubmitNodeCollector collector, RenderType renderType, int[] light) {
 			matrixStack.scale(0.5F, 0.5F, 0.5F);
-			collector.submitCustomGeometry(matrixStack, renderType, (pose, buffer) -> render(pose, buffer, light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F));
+			collector.submitCustomGeometry(matrixStack, renderType, (pose, buffer) -> render(pose, buffer, light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF));
 			matrixStack.scale(2.0F, 2.0F, 2.0F);
 		}
 
-		public void render(PoseStack.Pose matrixEntry, VertexConsumer buffer, int[] light, int combinedOverlay, float red, float green, float blue, float alpha) {
-			Matrix4f matrix4f = matrixEntry.pose();
-			Matrix3f matrix3f = matrixEntry.normal();
-
-			for (int n = 0; n < quads.length; ++n) {
-				TexturedQuad quad = quads[n];
-				Vector3f vector3f = matrix3f.transform(new Vector3f(quad.normal));
-				float f = vector3f.x();
-				float g = vector3f.y();
-				float h = vector3f.z();
-
-				for (int i = 0; i < 4; ++i) {
-					PositionTextureVertex vertex = quad.vertexPositions[i];
-					Vector4f vector4f = new Vector4f(vertex.position.x() / 16.0F, vertex.position.y() / 16.0F, vertex.position.z() / 16.0F, 1.0F);
-					matrix4f.transform(vector4f);
-					buffer.addVertex(vector4f.x(), vector4f.y(), vector4f.z(), ARGB.colorFromFloat(alpha, red, green, blue), vertex.textureU, vertex.textureV, combinedOverlay, light[n], f, g, h);
-				}
-			}
+		public void render(PoseStack.Pose pose, VertexConsumer buffer, int[] light, int combinedOverlay, int color) {
+			for (int n = 0; n < quads.length; ++n)
+				quads[n].draw(pose, buffer, light[n], combinedOverlay, color);
 		}
+	}
+
+	@SuppressWarnings("incomplete-switch")
+	public static void rotateBlock(PoseStack matrixStack, Direction facing, Direction rotation) {
+		if (rotation == null)
+			rotation = facing.getAxis().isVertical() ? Direction.SOUTH : Direction.DOWN;
+
+		switch (facing) {
+		case UP:
+			switch (rotation) {
+			case NORTH:
+				matrixStack.rotate(Axis.YP.rotationDegrees(180.0F));
+				matrixStack.translate(-1.0F, 0.0F, -1.0F);
+				break;
+			case SOUTH:
+				break;
+			case WEST:
+				matrixStack.rotate(Axis.YP.rotationDegrees(-90.0F));
+				matrixStack.translate(0.0F, 0.0F, -1.0F);
+				break;
+			case EAST:
+				matrixStack.rotate(Axis.YP.rotationDegrees(90.0F));
+				matrixStack.translate(-1.0F, 0.0F, 0.0F);
+				break;
+			}
+			break;
+		case NORTH:
+			matrixStack.rotate(Axis.XP.rotationDegrees(-90.0F));
+			matrixStack.rotate(Axis.YP.rotationDegrees(180.0F));
+			matrixStack.translate(-1.0F, -1.0F, -1.0F);
+			switch (rotation) {
+			case UP:
+				matrixStack.rotate(Axis.YP.rotationDegrees(180.0F));
+				matrixStack.translate(-1.0F, 0.0F, -1.0F);
+				break;
+			case DOWN:
+				break;
+			case EAST:
+				matrixStack.rotate(Axis.YP.rotationDegrees(-90.0F));
+				matrixStack.translate(0.0F, 0.0F, -1.0F);
+				break;
+			case WEST:
+				matrixStack.rotate(Axis.YP.rotationDegrees(90.0F));
+				matrixStack.translate(-1.0F, 0.0F, 0.0F);
+				break;
+			}
+			break;
+		case SOUTH:
+			matrixStack.rotate(Axis.XP.rotationDegrees(90.0F));
+			matrixStack.translate(0.0F, 0.0F, -1.0F);
+			switch (rotation) {
+			case UP:
+				matrixStack.rotate(Axis.YP.rotationDegrees(180.0F));
+				matrixStack.translate(-1.0F, 0.0F, -1.0F);
+				break;
+			case DOWN:
+				break;
+			case WEST:
+				matrixStack.rotate(Axis.YP.rotationDegrees(-90.0F));
+				matrixStack.translate(0.0F, 0.0F, -1.0F);
+				break;
+			case EAST:
+				matrixStack.rotate(Axis.YP.rotationDegrees(90.0F));
+				matrixStack.translate(-1.0F, 0.0F, 0.0F);
+				break;
+			}
+			break;
+		case DOWN:
+			matrixStack.rotate(Axis.XP.rotationDegrees(180.0F));
+			matrixStack.translate(0.0F, -1.0F, -1.0F);
+			break;
+		case WEST:
+			matrixStack.rotate(Axis.ZP.rotationDegrees(90.0F));
+			matrixStack.rotate(Axis.YP.rotationDegrees(-90.0F));
+			matrixStack.translate(0.0F, -1.0F, -1.0F);
+			switch (rotation) {
+			case UP:
+				matrixStack.rotate(Axis.YP.rotationDegrees(180.0F));
+				matrixStack.translate(-1.0F, 0.0F, -1.0F);
+				break;
+			case DOWN:
+				break;
+			case NORTH:
+				matrixStack.rotate(Axis.YP.rotationDegrees(-90.0F));
+				matrixStack.translate(0.0F, 0.0F, -1.0F);
+				break;
+			case SOUTH:
+				matrixStack.rotate(Axis.YP.rotationDegrees(90.0F));
+				matrixStack.translate(-1.0F, 0.0F, 0.0F);
+				break;
+			}
+			break;
+		case EAST:
+			matrixStack.rotate(Axis.ZP.rotationDegrees(-90.0F));
+			matrixStack.rotate(Axis.YP.rotationDegrees(90.0F));
+			matrixStack.translate(-1.0F, 0.0F, -1.0F);
+			switch (rotation) {
+			case UP:
+				matrixStack.rotate(Axis.YP.rotationDegrees(180.0F));
+				matrixStack.translate(-1.0F, 0.0F, -1.0F);
+				break;
+			case DOWN:
+				break;
+			case SOUTH:
+				matrixStack.rotate(Axis.YP.rotationDegrees(-90.0F));
+				matrixStack.translate(0.0F, 0.0F, -1.0F);
+				break;
+			case NORTH:
+				matrixStack.rotate(Axis.YP.rotationDegrees(90.0F));
+				matrixStack.translate(-1.0F, 0.0F, 0.0F);
+				break;
+			}
+			break;
+		}
+	}
+
+	public static int[] getBlockLight(BlockEntityFacing te) {
+		return getBlockLight(te, WORLD_SIDES, CubeRenderer::rotateBlock);
+	}
+
+	interface Rotator {
+		void rotate(PoseStack matrixStack, Direction facing, Direction rotation);
+	}
+
+	// Light of the neighbour block each quad faces, in quad order. The sides each quad faces after the rotation are cached
+	static int[] getBlockLight(BlockEntityFacing te, Direction[][][] cache, Rotator rotator) {
+		Direction facing = te.getFacing();
+		Direction rotation = te.getRotation() == null ? Direction.NORTH : te.getRotation();
+		Direction[] sides = cache[facing.get3DDataValue()][rotation.get3DDataValue()];
+		if (sides == null) {
+			PoseStack matrixStack = new PoseStack();
+			rotator.rotate(matrixStack, facing, rotation);
+			Matrix3f normal = matrixStack.last().normal();
+			sides = new Direction[QUAD_SIDES.length];
+			for (int i = 0; i < QUAD_SIDES.length; i++) {
+				Vector3f v = normal.transform(new Vector3f(QUAD_SIDES[i].step()));
+				sides[i] = Direction.getApproximateNearest(v.x(), v.y(), v.z());
+			}
+			cache[facing.get3DDataValue()][rotation.get3DDataValue()] = sides;
+		}
+		int[] light = new int[sides.length];
+		for (int i = 0; i < sides.length; i++)
+			light[i] = LightCoordsUtil.getLightCoords(te.getLevel(), te.getBlockPos().relative(sides[i]));
+		return light;
 	}
 }

@@ -1,34 +1,36 @@
 package com.zuxelus.energycontrol.blocks;
 
-import com.zuxelus.energycontrol.EnergyControl;
-import net.minecraft.world.level.redstone.Orientation;
 import org.jspecify.annotations.Nullable;
+
+import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class AdvancedInfoPanel extends InfoPanel {
+
 	public AdvancedInfoPanel() {
 		// the shape follows the panel thickness, so it must not be cached per block state
-		super(ModItems.blockSettings().noOcclusion().dynamicShape());
+		super(ModItems.blockSettings().dynamicShape().noOcclusion());
 	}
 
 	@Override
@@ -53,15 +55,14 @@ public class AdvancedInfoPanel extends InfoPanel {
 	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
 		BlockEntity tile = world.getBlockEntity(pos);
 		if (!(tile instanceof TileEntityAdvancedInfoPanel))
-			return Shapes.block();
+			return super.getShape(state, world, pos, context);
 
-		// the client gets the screen later than the block entity, so the shape only depends on the thickness
 		int thickness = ((TileEntityAdvancedInfoPanel) tile).thickness;
 		if (thickness < 1 || thickness > 16)
 			thickness = 16;
 		Direction enumfacing = (Direction) state.getValue(FACING);
 		if (enumfacing == null)
-			return Shapes.block();
+			return super.getShape(state, world, pos, context);
 		switch (enumfacing) {
 		case EAST:
 			return Block.box(0.0D, 0.0D, 0.0D, thickness, 16.0D, 16.0D);
@@ -76,22 +77,17 @@ public class AdvancedInfoPanel extends InfoPanel {
 		case DOWN:
 			return Block.box(0.0D, 16.0D - thickness, 0.0D, 16.0D, 16.0D, 16.0D);
 		default:
-			return Shapes.block();
+			return super.getShape(state, world, pos, context);
 		}
 	}
 
 	@Override
-	public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-		return getShape(state, world, pos, context);
-	}
-
-	@Override
-	protected InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
+	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		BlockEntity te = world.getBlockEntity(pos);
 		if (!(te instanceof TileEntityInfoPanel))
 			return InteractionResult.PASS;
 		if (!world.isClientSide() && EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) te).getFacing() == hit.getDirection())
-			if (((TileEntityInfoPanel) te).runTouchAction(player.getMainHandItem(), pos, hit.getLocation()))
+			if (((TileEntityInfoPanel) te).runTouchAction(player.getItemInHand(hand), pos, hit.getLocation()))
 				return InteractionResult.SUCCESS;
 		if (!world.isClientSide())
 			player.openMenu(state.getMenuProvider(world, pos));

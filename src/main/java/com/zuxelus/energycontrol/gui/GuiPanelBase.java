@@ -74,7 +74,6 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 	public boolean mouseReleased(MouseButtonEvent event) {
 		double mouseX = event.x();
 		double mouseY = event.y();
-		int mouseButton = event.button();
 		if (textboxTitle != null) {
 			textboxTitle.mouseReleased(new MouseButtonEvent(mouseX - leftPos, mouseY - topPos, event.buttonInfo()));
 			// the screen places a carried item in a slot on mouse release, so the release must reach it
@@ -140,9 +139,6 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 
 	@Override
 	public boolean keyPressed(KeyEvent event) {
-		int keyCode = event.key();
-		int scanCode = event.keycode();
-		int modifiers = event.modifiers();
 		if (minecraft.options.keyInventory.matches(event))
 			return true;
 		return super.keyPressed(event);
