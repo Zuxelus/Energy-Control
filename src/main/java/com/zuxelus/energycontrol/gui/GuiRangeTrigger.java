@@ -16,6 +16,7 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 
@@ -66,7 +67,7 @@ public class GuiRangeTrigger extends GuiContainerBase<ContainerRangeTrigger> {
 		for (int i = 0; i < 10; i++) {
 			byte digit = (byte) (value % 10);
 			String str = Byte.toString(digit);
-			context.text(font, str, x - 12 * i - font.width("0") / 2 + (9 - i + 2) / 3 * 6, y, 0xFF404040, false);
+			context.text(font, str, x - 12 * i - font.width("0") / 2 + (9 - i + 2) / 3 * 6, y, ARGB.opaque(0x404040), false);
 			value /= 10;
 		}
 	}

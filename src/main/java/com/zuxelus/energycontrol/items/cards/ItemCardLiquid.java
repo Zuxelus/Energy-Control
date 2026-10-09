@@ -1,26 +1,20 @@
 package com.zuxelus.energycontrol.items.cards;
 
 import java.util.ArrayList;
-import com.zuxelus.energycontrol.renderers.RenderHelper;
-import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.SubmitNodeCollector;
 import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.zuxelus.energycontrol.api.CardState;
-import com.zuxelus.energycontrol.api.ICardReader;
-import com.zuxelus.energycontrol.api.IHasBars;
-import com.zuxelus.energycontrol.api.PanelSetting;
-import com.zuxelus.energycontrol.api.PanelString;
+import com.zuxelus.energycontrol.api.*;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.renderers.RenderHelper;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
@@ -28,6 +22,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 
 public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 
@@ -109,7 +105,10 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		long capacity = reader.getLong("capacity");
 		if (fluidId.isEmpty() || capacity <= 0)
 			return;
-		Fluid fluid = BuiltInRegistries.FLUID.getValue(Identifier.parse(fluidId));
+		Identifier id = Identifier.tryParse(fluidId);
+		if (id == null)
+			return;
+		Fluid fluid = BuiltInRegistries.FLUID.getValue(id);
 		if (fluid == Fluids.EMPTY)
 			return;
 		// since 26.1 the fluid textures come from the vanilla fluid models
@@ -121,10 +120,11 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		float height = 0.4375F;
 		int color = 0xFF000000 | FluidVariantRendering.getColor(FluidVariant.of(fluid)); // tint has no alpha
 
+		matrixStack.pushPose();
 		matrixStack.scale(displayWidth / 0.875f, displayHeight / 0.875f, 1);
 		RenderHelper.texturedRect(matrixStack, collector, sprite.atlasLocation(), x, y + 0.4375F / 2, x + 0.875F, y + 0.4375F / 2 + height, z,
 				sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(), color);
 		IHasBars.drawTransparentRect(matrixStack, collector, x + 0.875F - width, y + height + 0.4375F / 2, x, y + 0.4375F / 2, -0.0001F, 0xB0000000);
-		matrixStack.scale(0.875F / displayWidth, 0.875F / displayHeight, 1);
+		matrixStack.popPose();
 	}
 }

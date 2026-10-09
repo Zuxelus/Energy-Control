@@ -1,8 +1,8 @@
 package com.zuxelus.energycontrol.items.cards;
 
 import java.util.ArrayList;
-import net.minecraft.client.renderer.SubmitNodeCollector;
 import java.util.List;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
@@ -14,6 +14,7 @@ import com.zuxelus.energycontrol.utils.DataHelper;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;

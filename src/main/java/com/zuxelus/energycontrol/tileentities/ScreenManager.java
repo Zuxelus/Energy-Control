@@ -50,7 +50,6 @@ public class ScreenManager {
 			unusedPanels.get(key).clear();
 	}
 
-	@SuppressWarnings("resource")
 	public void registerInfoPanel(TileEntityInfoPanel panel) {
 		Level world = panel.getLevel();
 		if (world.isClientSide())
@@ -155,7 +154,6 @@ public class ScreenManager {
 		return ((IScreenPart) te).getScreen() == null;
 	}
 
-	@SuppressWarnings("resource")
 	public Screen loadScreen(TileEntityInfoPanel panel) {
 		if (panel.screenData == null)
 			return null;
@@ -170,7 +168,6 @@ public class ScreenManager {
 		return screen;
 	}
 
-	@SuppressWarnings("resource")
 	public void registerInfoPanelExtender(TileEntityInfoPanelExtender extender) { // server
 		if (extender.getLevel().isClientSide())
 			return;

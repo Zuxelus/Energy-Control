@@ -1,16 +1,17 @@
 package com.zuxelus.energycontrol.init;
 
+import java.util.function.Supplier;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.blocks.*;
 import com.zuxelus.energycontrol.items.*;
 import com.zuxelus.energycontrol.items.cards.*;
 import com.zuxelus.energycontrol.items.kits.*;
 import com.zuxelus.energycontrol.recipes.*;
-import java.util.function.Supplier;
 
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;

@@ -2,6 +2,7 @@ package com.zuxelus.energycontrol.api;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -56,6 +57,20 @@ public interface ICardReader {
 	 * @return
 	 */
 	String getTitle();
+
+	/**
+	 * Changes the id of the card. Used for Web Socket data.
+	 * 
+	 * @param id
+	 */
+	void setId(String id);
+
+	/**
+	 * Get id of the card. Used for Web Socket data.
+	 * 
+	 * @return
+	 */
+	String getId();
 
 	/**
 	 * Get current card state. In most cases shouldn't be called by card.

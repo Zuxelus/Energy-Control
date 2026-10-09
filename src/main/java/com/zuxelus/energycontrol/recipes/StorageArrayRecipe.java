@@ -87,7 +87,7 @@ public class StorageArrayRecipe implements CraftingRecipe {
 				cnt += new ItemCardReader(array).getInt("cardCount");
 			if (cnt <= 16) {
 				ItemStack itemStack = createCard(type);
-				ItemStackHelper.setTag(itemStack, ItemStackHelper.getTagCompound(arrays.get(0)));
+				ItemStackHelper.setTag(itemStack, ItemStackHelper.getTag(arrays.get(0)));
 				for (int i = 1; i < arrays.size(); i++)
 					appendArray(itemStack, arrays.get(i));
 				initArray(itemStack, cards);

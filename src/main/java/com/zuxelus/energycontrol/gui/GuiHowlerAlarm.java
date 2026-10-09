@@ -12,7 +12,8 @@ import com.zuxelus.zlib.gui.GuiBase;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.ARGB;
 
 @Environment(EnvType.CLIENT)
 public class GuiHowlerAlarm extends GuiBase {
@@ -46,6 +47,6 @@ public class GuiHowlerAlarm extends GuiBase {
 	@Override
 	protected void drawGuiContainerForegroundLayer(GuiGraphicsExtractor context, int mouseX, int mouseY) {
 		drawTitle(context);
-		context.text(font, Component.translatable("msg.ec.HowlerAlarmSound"), 12, 53, 0xFF404040, false);
+		context.text(font, Component.translatable("msg.ec.HowlerAlarmSound"), 12, 53, ARGB.opaque(0x404040), false);
 	}
 }

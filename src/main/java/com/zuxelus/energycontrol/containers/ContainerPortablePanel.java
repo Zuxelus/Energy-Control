@@ -10,7 +10,7 @@ import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.zlib.containers.ContainerBase;
 import com.zuxelus.zlib.containers.slots.SlotLocked;
-import net.minecraft.nbt.CompoundTag;
+
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
@@ -56,8 +56,7 @@ public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel
 	}
 
 	public boolean getShowBars() {
-		CompoundTag tag = ItemStackHelper.getTag(te.getParent());
-		return tag != null && tag.getBooleanOr(SHOW_BARS, false);
+		return ItemStackHelper.getTag(te.getParent()).getBooleanOr(SHOW_BARS, false);
 	}
 
 	public void setShowBars(boolean value) {

@@ -17,7 +17,8 @@ import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 
 @Environment(EnvType.CLIENT)
 public class GuiHowlerAlarmSlider extends AbstractButton {
@@ -76,7 +77,7 @@ public class GuiHowlerAlarmSlider extends AbstractButton {
 			setSliderPos(mouseX);
 
 		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, getX() + (int) (sliderValue * (width - 8)), getY(), 131, 0, 8, 16, 256, 256);
-		context.text(fontRenderer, getMessage(), getX(), getY() - 12, 0xFF404040, false);
+		context.text(fontRenderer, getMessage(), getX(), getY() - 12, ARGB.opaque(0x404040), false);
 	}
 
 	@Override

@@ -49,10 +49,10 @@ public class AdvancedInfoPanel extends InfoPanel {
 	}
 
 	@Override
-	public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) { }
+	protected void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) { }
 
 	@Override
-	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+	protected VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
 		BlockEntity tile = world.getBlockEntity(pos);
 		if (!(tile instanceof TileEntityAdvancedInfoPanel))
 			return super.getShape(state, world, pos, context);

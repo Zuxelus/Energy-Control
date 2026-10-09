@@ -18,7 +18,8 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 
 @Environment(EnvType.CLIENT)
 public class GuiHowlerAlarmListBox extends AbstractButton {
@@ -45,9 +46,9 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 		super(left, top, width, height, CommonComponents.EMPTY);
 		this.items = items;
 		this.alarm = alarm;
-		fontColor = 0xFF404040;
-		selectedColor = 0xff404040;
-		selectedFontColor = 0xFFA0A0A0;
+		fontColor = 0x404040;
+		selectedColor = 0x404040;
+		selectedFontColor = 0xA0A0A0;
 		scrollTop = 0;
 		lineHeight = 0;
 		sliderHeight = 0;
@@ -114,10 +115,10 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 
 		for (String row : items) {
 			if(row.equals(currentItem)) {
-				context.fill(getX(), getY() + rowTop - scrollTop - 1, getX() + width - SCROLL_WIDTH, getY() + rowTop - scrollTop + lineHeight - 1, selectedColor);
-				context.text(fontRenderer, row, getX() + BASIC_X_OFFSET, getY() + rowTop - scrollTop, selectedFontColor, false);
+				context.fill(getX(), getY() + rowTop - scrollTop - 1, getX() + width - SCROLL_WIDTH, getY() + rowTop - scrollTop + lineHeight - 1, ARGB.opaque(selectedColor));
+				context.text(fontRenderer, row, getX() + BASIC_X_OFFSET, getY() + rowTop - scrollTop, ARGB.opaque(selectedFontColor), false);
 			} else
-				context.text(fontRenderer, row, getX() + BASIC_X_OFFSET, getY() + rowTop - scrollTop, fontColor, false);
+				context.text(fontRenderer, row, getX() + BASIC_X_OFFSET, getY() + rowTop - scrollTop, ARGB.opaque(fontColor), false);
 			
 			rowTop += lineHeight;
 		}

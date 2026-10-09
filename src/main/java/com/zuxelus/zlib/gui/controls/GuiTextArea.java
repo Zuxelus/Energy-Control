@@ -13,6 +13,7 @@ import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringUtil;
 
@@ -42,15 +43,15 @@ public class GuiTextArea extends AbstractWidget {
 
 	@Override
 	protected void extractWidgetRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float partialTicks) {
-		context.fill(getX() - 1, getY() - 1, getX() + width + 1, getY() + height + 1, 0xFFA0A0A0);
-		context.fill(getX(), getY(), getX() + width, getY() + height, 0xFF000000);
-		int textColor = 0xFFE0E0E0;
+		context.fill(getX() - 1, getY() - 1, getX() + width + 1, getY() + height + 1, ARGB.opaque(0xA0A0A0));
+		context.fill(getX(), getY(), getX() + width, getY() + height, ARGB.opaque(0x000000));
+		int textColor = 0xE0E0E0;
 
 		int textLeft = getX() + 4;
 		int textTop = getY() + (height - lineCount * (fontRenderer.lineHeight + 1)) / 2;
 
 		for (int i = 0; i < lineCount; i++)
-			context.text(fontRenderer, text[i], textLeft, textTop + (fontRenderer.lineHeight + 1) * i, textColor);
+			context.text(fontRenderer, text[i], textLeft, textTop + (fontRenderer.lineHeight + 1) * i, ARGB.opaque(textColor));
 		textTop += (fontRenderer.lineHeight + 1) * cursorLine;
 		int cursorPositionX = textLeft + fontRenderer.width(text[cursorLine].substring(0, Math.min(text[cursorLine].length(), cursorPosition))) - 1;
 		boolean drawCursor = isFocused() && cursorCounter / 6 % 2 == 0;
@@ -236,9 +237,8 @@ public class GuiTextArea extends AbstractWidget {
 
 	@Override
 	public boolean charTyped(CharacterEvent event) {
-		char typedChar = (char) event.codepoint();
-		if (isFocused() && StringUtil.isAllowedChatCharacter(typedChar)) {
-			writeText(Character.toString(typedChar));
+		if (isFocused() && event.isAllowedChatCharacter()) {
+			writeText(event.codepointAsString());
 			return true;
 		}
 		return false;

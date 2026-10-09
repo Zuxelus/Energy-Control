@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
 
 @Environment(EnvType.CLIENT)
@@ -70,6 +71,6 @@ public abstract class GuiBase extends Screen {
 
 	protected void drawTitle(GuiGraphicsExtractor context) {
 		FormattedCharSequence ireorderingprocessor = title.getVisualOrderText();
-		context.text(font, ireorderingprocessor, (xSize - font.width(ireorderingprocessor)) / 2, 6, 0xFF404040, false);
+		context.text(font, ireorderingprocessor, (xSize - font.width(ireorderingprocessor)) / 2, 6, ARGB.opaque(0x404040), false);
 	}
 }

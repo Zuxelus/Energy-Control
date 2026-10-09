@@ -18,6 +18,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
 
 @Environment(EnvType.CLIENT)
@@ -94,7 +95,7 @@ public class GuiHorizontalSlider extends GuiBase {
 
 			context.blit(RenderPipelines.GUI_TEXTURED, texture, getX() - 2 + sliderValue, getY(), 152, 0, 8, 16, 256, 256);
 			FormattedCharSequence ireorderingprocessor = getMessage().getVisualOrderText();
-			context.text(fontRenderer, ireorderingprocessor, getX() - 10 + (width - fontRenderer.width(ireorderingprocessor)) / 2, getY() - 12, 0xFF404040, false);
+			context.text(fontRenderer, ireorderingprocessor, getX() - 10 + (width - fontRenderer.width(ireorderingprocessor)) / 2, getY() - 12, ARGB.opaque(0x404040), false);
 		}
 
 		@Override

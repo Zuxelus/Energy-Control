@@ -1,5 +1,8 @@
 package com.zuxelus.zlib.tileentities;
 
+import net.fabricmc.fabric.api.transfer.v1.item.ContainerStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -79,6 +82,10 @@ public abstract class TileEntityInventory extends BlockEntityFacing implements W
 	@Override
 	public void clearContent() {
 		inventory.clear();
+	}
+
+	public Storage<ItemVariant> getItemStorage(Direction side) {
+		return ContainerStorage.of(this, side);
 	}
 
 	// ISidedInventory

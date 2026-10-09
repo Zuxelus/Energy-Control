@@ -56,7 +56,7 @@ public class InfoPanelExtender extends FacingBlockActive {
 	}
 
 	@Override
-	public RenderShape getRenderShape(BlockState state) {
+	protected RenderShape getRenderShape(BlockState state) {
 		return RenderShape.MODEL;
 	}
 }

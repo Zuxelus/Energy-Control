@@ -16,6 +16,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -43,7 +44,7 @@ public class HoloPanel extends FacingHorizontalActive {
 	}
 
 	@Override
-	public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
+	protected boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
 		return world.getBlockState(pos.below()).isFaceSturdy(world, pos.below(), Direction.UP);
 	}
 
@@ -65,7 +66,7 @@ public class HoloPanel extends FacingHorizontalActive {
 	}
 
 	@Override
-	public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
+	protected void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
 		if (state.getValue(ACTIVE).booleanValue() && !world.hasNeighborSignal(pos)) {
 			world.setBlock(pos, state.cycle(ACTIVE), 2);
 			updateExtenders(state, world, pos);
@@ -79,7 +80,7 @@ public class HoloPanel extends FacingHorizontalActive {
 	}
 
 	@Override
-	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+	protected VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
 		switch (state.getValue(FACING)) {
 		case WEST:
 		case EAST:
@@ -104,5 +105,10 @@ public class HoloPanel extends FacingHorizontalActive {
 		if (!world.isClientSide())
 			player.openMenu(state.getMenuProvider(world, pos));
 		return InteractionResult.SUCCESS;
+	}
+
+	@Override
+	public BlockState getStateForPlacement(BlockPlaceContext context) {
+		return super.getStateForPlacement(context).setValue(ACTIVE, context.getLevel().hasNeighborSignal(context.getClickedPos()));
 	}
 }

@@ -14,11 +14,13 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class RemoteThermalMonitor extends FacingHorizontal {
+
 	public RemoteThermalMonitor() {
 		super(ModItems.blockSettings());
 	}
@@ -39,7 +41,7 @@ public class RemoteThermalMonitor extends FacingHorizontal {
 	}
 
 	@Override
-	public int getSignal(BlockState state, BlockGetter blockAccess, BlockPos pos, Direction side) {
+	protected int getSignal(BlockState state, BlockGetter blockAccess, BlockPos pos, Direction side) {
 		BlockEntity te = blockAccess.getBlockEntity(pos);
 		if (!(te instanceof TileEntityThermalMonitor))
 			return 0;
@@ -47,7 +49,12 @@ public class RemoteThermalMonitor extends FacingHorizontal {
 	}
 
 	@Override
-	public boolean isSignalSource(BlockState state) {
+	protected boolean isSignalSource(BlockState state) {
 		return true;
+	}
+
+	@Override
+	protected RenderShape getRenderShape(BlockState state) {
+		return RenderShape.INVISIBLE;
 	}
 }

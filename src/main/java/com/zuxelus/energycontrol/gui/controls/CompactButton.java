@@ -11,6 +11,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
 
 @Environment(EnvType.CLIENT)
@@ -34,7 +35,7 @@ public class CompactButton extends Button {
 		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, getX(), getY(), 0, 64 + i * 12, width / 2 + width % 2, height, 256, 256);
 		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, getX() + width / 2 + width % 2, getY(), 200 - width / 2, 64 + i * 12, width / 2, height, 256, 256);
 		FormattedCharSequence ireorderingprocessor = getMessage().getVisualOrderText();
-		context.text(fontRenderer, ireorderingprocessor, getX() + (width - fontRenderer.width(ireorderingprocessor)) / 2, getY() + (height - 8) / 2, 0xFF404040, false);
+		context.text(fontRenderer, ireorderingprocessor, getX() + (width - fontRenderer.width(ireorderingprocessor)) / 2, getY() + (height - 8) / 2, ARGB.opaque(0x404040), false);
 	}
 
 	public int getId() {

@@ -1,15 +1,15 @@
 package com.zuxelus.zlib.gui;
 
 import java.text.DecimalFormat;
-import net.minecraft.client.renderer.RenderPipelines;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -49,15 +49,15 @@ public class GuiContainerBase<T extends AbstractContainerMenu> extends AbstractC
 	}
 
 	public void drawCenteredText(GuiGraphicsExtractor context, Component text, int x, int y) {
-		drawCenteredText(context, text, x, y, 0xFF404040);
+		drawCenteredText(context, text, x, y, 0x404040);
 	}
 
 	public void drawRightAlignedText(GuiGraphicsExtractor context, String text, int x, int y) {
-		drawRightAlignedText(context, text, x, y, 0xFF404040);
+		drawRightAlignedText(context, text, x, y, 0x404040);
 	}
 
 	public void drawLeftAlignedText(GuiGraphicsExtractor context, String text, int x, int y) {
-		drawLeftAlignedText(context, text, x, y, 0xFF404040);
+		drawLeftAlignedText(context, text, x, y, 0x404040);
 	}
 
 	public void drawCenteredText(GuiGraphicsExtractor context, Component text, int x, int y, int color) {

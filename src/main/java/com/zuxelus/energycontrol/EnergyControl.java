@@ -10,12 +10,11 @@ import org.apache.logging.log4j.Logger;
 
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.init.ModCapabilities;
 import com.zuxelus.energycontrol.init.ModContainerTypes;
 import com.zuxelus.energycontrol.init.ModItems;
-import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.network.ChannelHandler;
 import com.zuxelus.energycontrol.tileentities.ScreenManager;
-import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -33,14 +32,12 @@ public class EnergyControl implements ModInitializer {
 	public static final String MODID = "energycontrol";
 	public static EnergyControl INSTANCE;
 	public static final Logger LOGGER = LogManager.getLogger(MODID);
-
-	public static ScreenManager screenManager = new ScreenManager();
+	public static final ScreenManager screenManager = new ScreenManager();
 
 	@Environment(EnvType.CLIENT)
 	public List<String> availableAlarms; //on client
 	@Environment(EnvType.CLIENT)
 	public List<String> serverAllowedAlarms; // will be loaded from server
-
 	public static Map<Player, Boolean> altPressed = new HashMap<Player, Boolean>();
 
 	public static CreativeModeTab ITEM_GROUP;
@@ -60,8 +57,9 @@ public class EnergyControl implements ModInitializer {
 				.forEach(id -> entries.accept(BuiltInRegistries.ITEM.getValue(id))))
 			.build());
 		// also loads ModTileEntityTypes, so the block entity types are registered while the registries are open
-		team.reborn.energy.api.EnergyStorage.SIDED.registerForBlockEntity(TileEntityKitAssembler::getEnergyInput, ModTileEntityTypes.kit_assembler);
+		ModCapabilities.register();
 		ChannelHandler.init();
+		ServerTickHandler.init();
 		CrossModLoader.init();
 	}
 }

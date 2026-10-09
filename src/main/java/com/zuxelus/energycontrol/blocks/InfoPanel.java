@@ -74,7 +74,7 @@ public class InfoPanel extends FacingBlockActive {
 	}
 
 	@Override
-	public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
+	protected void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
 		if (state.getValue(ACTIVE).booleanValue() && !world.hasNeighborSignal(pos)) {
 			world.setBlock(pos, state.cycle(ACTIVE), 2);
 			updateExtenders(state, world, pos);
@@ -96,7 +96,7 @@ public class InfoPanel extends FacingBlockActive {
 	}*/
 
 	@Override
-	public RenderShape getRenderShape(BlockState state) {
+	protected RenderShape getRenderShape(BlockState state) {
 		return RenderShape.MODEL;
 	}
 }

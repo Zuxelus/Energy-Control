@@ -42,7 +42,6 @@ public class InventoryPortablePanel extends ItemInventory implements ExtendedMen
 		}
 	}
 
-	// NamedScreenHandlerFactory
 	@Override
 	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerPortablePanel(windowId, inventory, hand);

@@ -1,17 +1,19 @@
 package com.zuxelus.energycontrol.containers;
 
 import java.util.List;
+
+import com.google.common.collect.Lists;
+import com.zuxelus.energycontrol.init.ModContainerTypes;
+import com.zuxelus.energycontrol.network.NetworkHelper;
+import com.zuxelus.energycontrol.tileentities.TileEntityTimer;
+import com.zuxelus.zlib.containers.ContainerBase;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import com.google.common.collect.Lists;
-import com.zuxelus.energycontrol.init.ModContainerTypes;
-import com.zuxelus.energycontrol.network.NetworkHelper;
-import com.zuxelus.energycontrol.tileentities.TileEntityTimer;
-import com.zuxelus.zlib.containers.ContainerBase;
 
 public class ContainerTimer extends AbstractContainerMenu {
 	public TileEntityTimer te;

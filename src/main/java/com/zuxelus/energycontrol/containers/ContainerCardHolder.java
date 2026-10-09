@@ -5,6 +5,7 @@ import com.zuxelus.energycontrol.items.InventoryCardHolder;
 import com.zuxelus.zlib.containers.ContainerBase;
 import com.zuxelus.zlib.containers.slots.SlotFilter;
 import com.zuxelus.zlib.containers.slots.SlotLocked;
+
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;

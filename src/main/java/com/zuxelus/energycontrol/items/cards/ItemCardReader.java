@@ -1,15 +1,12 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import com.zuxelus.energycontrol.api.IItemCard;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.api.CardState;
-import com.zuxelus.energycontrol.api.ICardReader;
-import com.zuxelus.energycontrol.api.ItemStackHelper;
-import com.zuxelus.energycontrol.api.PanelString;
+import com.zuxelus.energycontrol.api.*;
 import com.zuxelus.energycontrol.network.ChannelHandler;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
@@ -18,16 +15,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.ByteTag;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.DoubleTag;
-import net.minecraft.nbt.IntTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.LongTag;
-import net.minecraft.nbt.NumericTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.nbt.TagType;
+import net.minecraft.nbt.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -41,11 +29,13 @@ public class ItemCardReader implements ICardReader {
 		this.card = card;
 	}
 
+	private CompoundTag tag() {
+		return ItemStackHelper.getTag(card);
+	}
+
 	@Override
 	public BlockPos getTarget() {
-		CompoundTag tag = ItemStackHelper.getTag(card);
-		if (tag == null)
-			return null;
+		CompoundTag tag = tag();
 		if (!tag.contains("x") || !tag.contains("y") || !tag.contains("z"))
 			return null;
 		return new BlockPos(tag.getIntOr("x", 0), tag.getIntOr("y", 0), tag.getIntOr("z", 0));
@@ -58,10 +48,7 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public Integer getInt(String name) {
-		CompoundTag tag = ItemStackHelper.getTag(card);
-		if (tag == null)
-			return 0;
-		return tag.getIntOr(name, 0);
+		return tag().getIntOr(name, 0);
 	}
 
 	@Override
@@ -71,10 +58,7 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public Long getLong(String name) {
-		CompoundTag tag = ItemStackHelper.getTag(card);
-		if (tag == null)
-			return 0L;
-		return tag.getLongOr(name, 0L);
+		return tag().getLongOr(name, 0L);
 	}
 
 	@Override
@@ -84,10 +68,7 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public Double getDouble(String name) {
-		CompoundTag tag = ItemStackHelper.getTag(card);
-		if (tag == null)
-			return 0.0;
-		return tag.getDoubleOr(name, 0.0);
+		return tag().getDoubleOr(name, 0.0);
 	}
 
 	@Override
@@ -99,10 +80,7 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public String getString(String name) {
-		CompoundTag tag = ItemStackHelper.getTag(card);
-		if (tag == null)
-			return "";
-		return tag.getStringOr(name, "");
+		return tag().getStringOr(name, "");
 	}
 
 	@Override
@@ -112,10 +90,7 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public Byte getByte(String name) {
-		CompoundTag tag = ItemStackHelper.getTag(card);
-		if (tag == null)
-			return 0;
-		return tag.getByteOr(name, (byte) 0);
+		return tag().getByteOr(name, (byte) 0);
 	}
 
 	@Override
@@ -125,10 +100,7 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public Boolean getBoolean(String name) {
-		CompoundTag tag = ItemStackHelper.getTag(card);
-		if (tag == null)
-			return false;
-		return tag.getBooleanOr(name, false);
+		return tag().getBooleanOr(name, false);
 	}
 
 	@Override
@@ -139,6 +111,21 @@ public class ItemCardReader implements ICardReader {
 	@Override
 	public String getTitle() {
 		return getString("title");
+	}
+
+	@Override
+	public void setId(String id) {
+		setString("id", id);
+	}
+
+	@Override
+	public String getId() {
+		String id = getString("id");
+		if (id.isEmpty()) {
+			id = UUID.randomUUID().toString();
+			setId(id);
+		}
+		return id;
 	}
 
 	@Override
@@ -156,7 +143,7 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public boolean hasField(String field) {
-		return ItemStackHelper.getTagCompound(card).contains(field);
+		return tag().contains(field);
 	}
 
 	@Override
@@ -183,14 +170,12 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public CompoundTag getTag(String name) {
-		CompoundTag tag = ItemStackHelper.getTag(card);
-		return tag == null ? null : (CompoundTag) tag.get(name);
+		return (CompoundTag) tag().get(name);
 	}
 
 	@Override
 	public ListTag getTagList(String name, int type) {
-		CompoundTag tag = ItemStackHelper.getTagCompound(card);
-		return (ListTag) tag.getListOrEmpty(name);
+		return tag().getListOrEmpty(name);
 	}
 
 	@Override
@@ -210,9 +195,8 @@ public class ItemCardReader implements ICardReader {
 	@Override
 	public void setItemStackList(ArrayList<ItemStack> list, HolderLookup.Provider registries) {
 		ListTag values = new ListTag();
-		for (ItemStack stack : list) {
+		for (ItemStack stack : list)
 			values.add(ItemStackHelper.saveOptional(stack, registries));
-		}
 		setTag("Items", values);
 	}
 
@@ -230,11 +214,13 @@ public class ItemCardReader implements ICardReader {
 	public void reset() {
 		BlockPos pos = getTarget();
 		String title = getTitle();
+		String id = getId();
 		ItemStackHelper.setTag(card, new CompoundTag());
 		if (pos != null)
 			ItemStackHelper.setCoordinates(card, pos);
 		if (!title.isEmpty())
 			setTitle(title);
+		setId(id);
 	}
 
 	@Override
@@ -296,9 +282,10 @@ public class ItemCardReader implements ICardReader {
 	}
 
 	public List<PanelString> getAllData() {
-		CompoundTag nbt = ItemStackHelper.getTag(card);
-		if (nbt == null)
+		if (!ItemStackHelper.hasTag(card))
 			return null;
+
+		CompoundTag nbt = tag();
 
 		List<PanelString> result = new LinkedList<PanelString>();
 

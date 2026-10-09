@@ -16,7 +16,8 @@ import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 
 @Environment(EnvType.CLIENT)
 public class GuiInfoPanelCheckBox extends AbstractButton {
@@ -43,7 +44,7 @@ public class GuiInfoPanelCheckBox extends AbstractButton {
 		Font fontRenderer = minecraft.font;
 		int delta = checked ? 6 : 0;
 		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, getX(), getY() + 1, 176, delta, 6, 6, 256, 256);
-		context.text(fontRenderer, getMessage(), getX() + 8, getY(), 0xFF404040, false);
+		context.text(fontRenderer, getMessage(), getX() + 8, getY(), ARGB.opaque(0x404040), false);
 	}
 
 	@Override

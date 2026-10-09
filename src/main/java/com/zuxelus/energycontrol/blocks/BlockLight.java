@@ -52,7 +52,7 @@ public class BlockLight extends Block {
 	}
 
 	@Override
-	public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
+	protected void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
 		if (state.getValue(LIT).booleanValue() && !world.hasNeighborSignal(pos))
 			world.setBlock(pos, state.cycle(LIT), 2);
 	}

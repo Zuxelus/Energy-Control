@@ -85,7 +85,6 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 		return super.mouseReleased(event);
 	}
 
-	@SuppressWarnings("resource")
 	protected void updateTitle() {
 		if (textboxTitle == null)
 			return;

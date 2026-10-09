@@ -60,7 +60,6 @@ public class GuiThermalMonitor extends GuiBase {
 		super.onClose();
 	}
 
-	@SuppressWarnings("resource")
 	private void updateHeat(int delta) {
 		if (textboxHeat == null)
 			return;

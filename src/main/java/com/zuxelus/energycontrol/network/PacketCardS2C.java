@@ -28,7 +28,7 @@ public record PacketCardS2C(BlockPos pos, int slot, String className, CompoundTa
 			PacketCardS2C::new);
 
 	public PacketCardS2C(ItemStack stack, BlockPos pos, int slot) {
-		this(pos, slot, stack.getItem().getClass().getName(), ItemStackHelper.getTagCompound(stack));
+		this(pos, slot, stack.getItem().getClass().getName(), ItemStackHelper.getTag(stack));
 	}
 
 	@Override

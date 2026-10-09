@@ -9,6 +9,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.player.Inventory;
 
 @Environment(EnvType.CLIENT)
@@ -29,8 +30,8 @@ public class GuiCardHolder extends AbstractContainerScreen<ContainerCardHolder> 
 
 	@Override
 	protected void extractLabels(GuiGraphicsExtractor context, int mouseX, int mouseY) {
-		context.text(font, title, 8, 6, 0xFF404040, false);
-		context.text(font, playerInventoryTitle, 8, imageHeight - 96 + 2, 0xFF404040, false);
+		context.text(font, title, 8, 6, ARGB.opaque(0x404040), false);
+		context.text(font, playerInventoryTitle, 8, imageHeight - 96 + 2, ARGB.opaque(0x404040), false);
 	}
 
 	@Override

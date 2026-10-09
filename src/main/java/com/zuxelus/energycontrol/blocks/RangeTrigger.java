@@ -56,7 +56,7 @@ public class RangeTrigger extends FacingHorizontal {
 	}
 
 	@Override
-	public int getSignal(BlockState blockState, BlockGetter blockAccess, BlockPos pos, Direction side) {
+	protected int getSignal(BlockState blockState, BlockGetter blockAccess, BlockPos pos, Direction side) {
 		BlockEntity te = blockAccess.getBlockEntity(pos);
 		if (!(te instanceof TileEntityRangeTrigger))
 			return 0;
@@ -64,7 +64,7 @@ public class RangeTrigger extends FacingHorizontal {
 	}
 
 	@Override
-	public boolean isSignalSource(BlockState state) {
+	protected boolean isSignalSource(BlockState state) {
 		return true;
 	}
 

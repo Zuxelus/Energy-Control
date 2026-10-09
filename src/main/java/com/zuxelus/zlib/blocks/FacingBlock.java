@@ -3,14 +3,14 @@ package com.zuxelus.zlib.blocks;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.*;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -18,18 +18,18 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.phys.BlockHitResult;
 
 public abstract class FacingBlock extends BaseEntityBlock {
 	public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
 	protected Direction rotation;
 
-	public FacingBlock(BlockBehaviour.Properties settings) {
-		super(settings);
+	public FacingBlock(Properties properties) {
+		super(properties);
 		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
 	}
 
@@ -59,7 +59,7 @@ public abstract class FacingBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
 		if (type == ModTileEntityTypes.info_panel)
 			return createTickerHelper(type, type, TileEntityInfoPanel::tickStatic);
 		if (type == ModTileEntityTypes.info_panel_extender)
@@ -72,10 +72,10 @@ public abstract class FacingBlock extends BaseEntityBlock {
 			return createTickerHelper(type, type, TileEntityHowlerAlarm::tickStatic);
 		if (type == ModTileEntityTypes.industrial_alarm)
 			return createTickerHelper(type, type, TileEntityIndustrialAlarm::tickStatic);
-		if (type == ModTileEntityTypes.timer)
-			return createTickerHelper(type, type, TileEntityTimer::tickStatic);
 		if (type == ModTileEntityTypes.thermal_monitor)
 			return createTickerHelper(type, type, TileEntityThermalMonitor::tickStatic);
+		if (type == ModTileEntityTypes.timer)
+			return createTickerHelper(type, type, TileEntityTimer::tickStatic);
 		return null;
 	}
 

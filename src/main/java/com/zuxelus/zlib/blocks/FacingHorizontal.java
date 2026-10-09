@@ -24,7 +24,6 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -34,8 +33,8 @@ import net.minecraft.world.phys.BlockHitResult;
 public abstract class FacingHorizontal extends BaseEntityBlock {
 	public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-	public FacingHorizontal(BlockBehaviour.Properties settings) {
-		super(settings);
+	public FacingHorizontal(Properties properties) {
+		super(properties);
 		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
 	}
 
@@ -64,7 +63,7 @@ public abstract class FacingHorizontal extends BaseEntityBlock {
 	}
 
 	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
 		if (type == ModTileEntityTypes.holo_panel)
 			return createTickerHelper(type, type, TileEntityHoloPanel::tickStatic);
 		if (type == ModTileEntityTypes.holo_panel_extender)
@@ -89,17 +88,17 @@ public abstract class FacingHorizontal extends BaseEntityBlock {
 	}
 
 	@Override
-	public BlockState rotate(BlockState state, Rotation rotation) {
+	protected BlockState rotate(BlockState state, Rotation rotation) {
 		return state;
 	}
 
 	@Override
-	public BlockState mirror(BlockState state, Mirror mirror) {
+	protected BlockState mirror(BlockState state, Mirror mirror) {
 		return state;
 	}
 
 	@Override
-	public RenderShape getRenderShape(BlockState state) {
+	protected RenderShape getRenderShape(BlockState state) {
 		return RenderShape.MODEL;
 	}
 }

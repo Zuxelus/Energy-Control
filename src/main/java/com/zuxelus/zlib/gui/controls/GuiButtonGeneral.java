@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 
 @Environment(EnvType.CLIENT)
 public class GuiButtonGeneral extends Button {
@@ -53,7 +54,7 @@ public class GuiButtonGeneral extends Button {
 			context.blit(RenderPipelines.GUI_TEXTURED, texture, getX(), getY(), textureLeft / scale, isHovered ? (textureTop + textureTopOff) / scale : textureTop / scale, width, height, 256 / scale, 256 / scale);
 		String displayString = getMessage().getString();
 		if (!displayString.equals(""))
-			context.text(fontRenderer, displayString, getX() + (width - fontRenderer.width(displayString)) / 2, getY() - 3 + height / 2, 0xFF404040, false);
+			context.text(fontRenderer, displayString, getX() + (width - fontRenderer.width(displayString)) / 2, getY() - 3 + height / 2, ARGB.opaque(0x404040), false);
 	}
 
 	public GuiButtonGeneral setGradient() {

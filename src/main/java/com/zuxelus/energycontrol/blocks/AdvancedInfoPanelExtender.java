@@ -53,7 +53,7 @@ public class AdvancedInfoPanelExtender extends InfoPanelExtender {
 	}
 
 	@Override
-	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+	protected VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
 		BlockEntity te = world.getBlockEntity(pos);
 		Direction enumfacing = (Direction) state.getValue(FACING);
 		if (!(te instanceof TileEntityAdvancedInfoPanelExtender) || enumfacing == null)
