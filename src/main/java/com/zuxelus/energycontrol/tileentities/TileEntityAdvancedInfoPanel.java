@@ -5,9 +5,9 @@ import com.zuxelus.energycontrol.containers.ContainerAdvancedInfoPanel;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
-
 import com.zuxelus.energycontrol.renderers.RotationOffset;
 import com.zuxelus.zlib.blocks.FacingBlockActive;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -39,7 +39,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	public static final int OFFSET_ROTATE_HOR = 200;
 	public static final int OFFSET_ROTATE_VERT = 300;
 
-	public static final int DEFAULT_TEXT = 0xFFFFFFFF; // white, as on Forge
+	public static final int DEFAULT_TEXT = 0xFFFFFFFF;
 	public static final int DEFAULT_BACKGROUND = 0xFF464646;
 
 	public byte powerMode;
@@ -117,11 +117,7 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 			newPowered = !newPowered;
 			break;
 		}
-		if (newPowered != powered) {
-			powered = newPowered;
-			if (screen != null)
-				screen.turnPower(powered, level);
-		}
+		setPowered(newPowered);
 	}
 
 	public void setValues(int i) {
@@ -157,6 +153,27 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	}
 
 	@Override
+	protected int getDefaultBackground() {
+		return DEFAULT_BACKGROUND;
+	}
+
+	@Override
+	protected RotationOffset getRenderOffset() {
+		return getRenderOffset(thickness, rotateHor, rotateVert, screen, getBlockPos(), getFacing(), getRotation());
+	}
+
+	public static RotationOffset getRenderOffset(byte thickness, byte rotateHor, byte rotateVert, Screen screen, BlockPos pos, Direction facing, Direction rotation) {
+		if (thickness < 1 || thickness > 16)
+			thickness = 16;
+		int hor = rotateHor / 7;
+		int vert = rotateVert / 7;
+		if (thickness == 16 && hor == 0 && vert == 0)
+			return null;
+		RotationOffset offset = new RotationOffset(thickness * 2, hor, vert);
+		return screen == null ? offset : offset.addOffset(screen, pos, facing, rotation);
+	}
+
+	@Override
 	public void onServerMessageReceived(CompoundTag tag) {
 		if (!tag.contains("type"))
 			return;
@@ -180,27 +197,6 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 		deserializeSlotSettings(tag, "dSettings1", SLOT_CARD1);
 		deserializeSlotSettings(tag, "dSettings2", SLOT_CARD2);
 		deserializeSlotSettings(tag, "dSettings3", SLOT_CARD3);
-	}
-
-	@Override
-	protected int getDefaultBackground() {
-		return DEFAULT_BACKGROUND;
-	}
-
-	@Override
-	protected RotationOffset getRenderOffset() {
-		return getRenderOffset(thickness, rotateHor, rotateVert, screen, getBlockPos(), getFacing(), getRotation());
-	}
-
-	public static RotationOffset getRenderOffset(byte thickness, byte rotateHor, byte rotateVert, Screen screen, BlockPos pos, Direction facing, Direction rotation) {
-		if (thickness < 1 || thickness > 16)
-			thickness = 16;
-		int hor = rotateHor / 7;
-		int vert = rotateVert / 7;
-		if (thickness == 16 && hor == 0 && vert == 0)
-			return null;
-		RotationOffset offset = new RotationOffset(thickness * 2, hor, vert);
-		return screen == null ? offset : offset.addOffset(screen, pos, facing, rotation);
 	}
 
 	@Override
@@ -280,7 +276,6 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 		return true;
 	}
 
-	// NamedScreenHandlerFactory
 	@Override
 	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerAdvancedInfoPanel(windowId, inventory, this);

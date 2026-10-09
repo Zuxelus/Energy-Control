@@ -1,11 +1,11 @@
 package com.zuxelus.energycontrol.network;
 
-import com.zuxelus.zlib.network.PacketBase;
 import com.zuxelus.zlib.network.PacketTileEntityC2S;
 import com.zuxelus.zlib.network.PacketTileEntityS2C;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -14,12 +14,12 @@ import net.minecraft.world.level.Level;
 
 public class NetworkHelper {
 
-	public static void sendToPlayer(ServerPlayer player, PacketBase packet) {
+	public static void sendToPlayer(ServerPlayer player, CustomPacketPayload packet) {
 		ServerPlayNetworking.send(player, packet);
 	}
 
 	// server
-	public static void sendPacketToAllAround(ServerLevel world, PacketBase packet) {
+	public static void sendPacketToAllAround(ServerLevel world, CustomPacketPayload packet) {
 		for (ServerPlayer player : world.players())
 			sendToPlayer(player, packet);
 	}
@@ -48,7 +48,7 @@ public class NetworkHelper {
 	}
 
 	// client
-	public static void sendToServer(PacketBase packet) {
+	public static void sendToServer(CustomPacketPayload packet) {
 		ClientPlayNetworking.send(packet);
 	}
 

@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.containers;
 
+import com.zuxelus.energycontrol.api.IItemCard;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.containers.slots.SlotCard;
 import com.zuxelus.energycontrol.containers.slots.SlotRange;
@@ -75,10 +76,10 @@ public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel
 			return;
 
 		Item item = card.getItem();
-		if (!(item instanceof ItemCardMain))
+		if (!ItemCardMain.isCard(card))
 			return;
 
 		ItemCardReader reader = new ItemCardReader(card);
-		((ItemCardMain) item).updateCardNBT(player.level(), player.blockPosition(), reader, te.getItem(InventoryPortablePanel.SLOT_UPGRADE_RANGE));
+		ItemCardMain.updateCardNBT((IItemCard) item, player.level(), player.blockPosition(), reader, te.getItem(InventoryPortablePanel.SLOT_UPGRADE_RANGE));
 	}
 }

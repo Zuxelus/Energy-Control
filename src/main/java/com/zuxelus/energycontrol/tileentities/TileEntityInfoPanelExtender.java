@@ -5,6 +5,7 @@ import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.renderers.RotationOffset;
 import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -147,14 +148,14 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 				BlockState stateCore = level.getBlockState(core.getBlockPos());
 				BlockState state = level.getBlockState(worldPosition);
 				// block states change on the server only; the client rebuilds the screen on every panel update
-				if (!level.isClientSide() && state.getValue(FacingBlockActive.getActive(state)) != stateCore.getValue(FacingBlockActive.getActive(stateCore)))
-					level.setBlock(worldPosition, state.cycle(FacingBlockActive.getActive(state)), 2);
+				if (!level.isClientSide() && state.getValue(FacingBlockActive.ACTIVE) != stateCore.getValue(FacingBlockActive.ACTIVE))
+					level.setBlock(worldPosition, state.cycle(FacingBlockActive.ACTIVE), 2);
 				return;
 			}
 		} else {
 			BlockState state = level.getBlockState(worldPosition);
-			if (!level.isClientSide() && state.getValue(FacingBlockActive.getActive(state)))
-				level.setBlock(worldPosition, state.setValue(FacingBlockActive.getActive(state), false), 2);
+			if (!level.isClientSide() && state.getValue(FacingBlockActive.ACTIVE))
+				level.setBlock(worldPosition, state.setValue(FacingBlockActive.ACTIVE, false), 2);
 		}
 		partOfScreen = false;
 		coreX = 0;
@@ -196,7 +197,7 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 		TileEntityInfoPanel core = screen.getCore(level);
 		if (core == null)
 			return false;
-		return core.powered;
+		return core.getPowered();
 	}
 
 	public int getColorBackground() {
@@ -207,12 +208,6 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 			return TileEntityInfoPanel.GREEN;
 		return core.getColorBackground();
 	}
-
-	/*@Override
-	@Environment(EnvType.CLIENT)
-	public AABB getRenderBoundingBox() {
-		return new AABB(pos.offset(0, 0, 0), pos.offset(1, 1, 1));
-	}*/
 
 	/*@Override // TODO
 	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {

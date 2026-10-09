@@ -30,12 +30,12 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class HoloPanel extends FacingHorizontalActive {
+	protected static final VoxelShape AABB_NORTH = Block.box(0.0D, 0.0D, 4.0D, 16.0D, 1.0D, 12.0D);
+	protected static final VoxelShape AABB_WEST = Block.box(4.0D, 0.0D, 0.0D, 12.0D, 1.0D, 16.0D);
+
 	public HoloPanel() {
 		super(ModItems.blockSettings());
 	}
-
-	protected static final VoxelShape AABB_NORTH = Block.box(0.0D, 0.0D, 4.0D, 16.0D, 1.0D, 12.0D);
-	protected static final VoxelShape AABB_WEST = Block.box(4.0D, 0.0D, 0.0D, 12.0D, 1.0D, 16.0D);
 
 	@Override
 	protected BlockEntityFacing createFacingBlockEntity(BlockPos pos, BlockState state) {
@@ -72,8 +72,7 @@ public class HoloPanel extends FacingHorizontalActive {
 		}
 	}
 
-	// same as InfoPanel: the extenders of the screen switch with the core
-	private void updateExtenders(BlockState state, Level world, BlockPos pos) {
+	private void updateExtenders(BlockState state, Level world, BlockPos pos) { // server
 		BlockEntity be = world.getBlockEntity(pos);
 		if (be instanceof TileEntityInfoPanel)
 			((TileEntityInfoPanel) be).updateExtenders(world, !state.getValue(ACTIVE));

@@ -1,14 +1,18 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import com.zuxelus.energycontrol.api.IItemCard;
 import java.util.HashMap;
-import net.minecraft.client.renderer.SubmitNodeCollector;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.renderers.RotationOffset;
-import com.zuxelus.energycontrol.api.*;
+import com.zuxelus.energycontrol.api.CardState;
+import com.zuxelus.energycontrol.api.ICardReader;
+import com.zuxelus.energycontrol.api.IHasBars;
+import com.zuxelus.energycontrol.api.ITouchAction;
+import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.blocks.HoloPanelExtender;
 import com.zuxelus.energycontrol.blocks.InfoPanelExtender;
 import com.zuxelus.energycontrol.config.ConfigHandler;
@@ -17,11 +21,13 @@ import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
+import com.zuxelus.energycontrol.renderers.RotationOffset;
 import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -44,7 +50,7 @@ import net.minecraft.world.phys.Vec3;
 public class TileEntityInfoPanel extends TileEntityInventory implements ExtendedMenuProvider<BlockPos>, ITilePacketHandler, IScreenPart, ISlotItemFilter {
 	public static final String NAME = "info_panel";
 	public static final int DISPLAY_DEFAULT = Integer.MAX_VALUE - 1024;
-	public static final int GREEN = 0xFF14E300;
+	public static final int GREEN = -16724992; // 00CC00
 	public static final int BLACK = 0xFF000000;
 
 	private static final byte SLOT_CARD = 0;
@@ -66,7 +72,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	public int colorText;
 
 	protected boolean colored;
-	public boolean powered;
+	protected boolean powered;
 	private boolean broken;
 
 	public TileEntityInfoPanel(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -119,7 +125,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	}
 
 	public void setShowLabels(boolean newShowLabels) {
-		if (!level.isClientSide() && showLabels != newShowLabels)
+		if (level != null && !level.isClientSide() && showLabels != newShowLabels)
 			notifyBlockUpdate();
 		showLabels = newShowLabels;
 	}
@@ -129,7 +135,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	}
 
 	public void setTickRate(int newValue) {
-		if (!level.isClientSide() && tickRate != newValue)
+		if (level != null && !level.isClientSide() && tickRate != newValue)
 			notifyBlockUpdate();
 		tickRate = newValue;
 	}
@@ -152,7 +158,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	}
 
 	public void setColorBackground(int c) {
-		if (!level.isClientSide() && colorBackground != c)
+		if (level != null && !level.isClientSide() && colorBackground != c)
 			notifyBlockUpdate();
 		boolean changed = colorBackground != c;
 		colorBackground = c;
@@ -164,12 +170,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 		return colorText;
 	}
 
-	public int getColorTextHex() {
-		return colorText & 0xFFFFFF;
-	}
-
 	public void setColorText(int c) {
-		if (!level.isClientSide() && colorText != c)
+		if (level != null && !level.isClientSide() && colorText != c)
 			notifyBlockUpdate();
 		colorText = c;
 	}
@@ -178,13 +180,12 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 		return powered;
 	}
 
+	public void setPowered(boolean value) {
+		powered = value;
+	}
+
 	protected void calcPowered() { // server
-		boolean newPowered = level.hasNeighborSignal(worldPosition);
-		if (newPowered != powered) {
-			powered = newPowered;
-			if (screen != null)
-				screen.turnPower(powered, level);
-		}
+		setPowered(level.hasNeighborSignal(worldPosition));
 	}
 
 	public void setScreenData(CompoundTag nbtTagCompound) {
@@ -217,7 +218,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 		case 4:
 			if (tag.contains("slot") && tag.contains("title")) {
 				ItemStack itemStack = getItem(tag.getIntOr("slot", 0));
-				if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemCardMain) {
+				if (ItemCardMain.isCard(itemStack)) {
 					new ItemCardReader(itemStack).setTitle(tag.getStringOr("title", ""));
 					resetCardData();
 				}
@@ -250,8 +251,6 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	}
 
 	protected void deserializeSlotSettings(ValueInput tag, String tagName, int slot) {
-		if (!(tag.contains(tagName)))
-			return;
 		for (ValueInput compound : tag.childrenListOrEmpty(tagName)) {
 			try {
 				getDisplaySettingsForSlot(slot).put(compound.getStringOr("key", ""), compound.getIntOr("value", 0));
@@ -281,13 +280,14 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 		if (level != null && level.isClientSide()) {
 			boolean newPowered = tag.getBooleanOr("powered", powered);
 			if (newPowered != powered) {
-				powered = newPowered;
+				setPowered(newPowered); // update power on client
 				level.getChunkSource().getLightEngine().checkBlock(worldPosition);
 			}
 		}
 		refreshScreenModel();
 	}
 
+	// the panel body is a baked model (PanelModel), it reads this when the chunk mesh is built
 	@Override
 	public Object getRenderData() {
 		return new PanelRenderData(findTexture(), getColored() ? colorBackground : getDefaultBackground(), getPowered(), getRotation(), getRenderOffset());
@@ -301,6 +301,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 		return null;
 	}
 
+	// rebuilds the meshes of all blocks of the screen, e.g. after a color or power change
 	protected void refreshScreenModel() {
 		if (level == null || !level.isClientSide())
 			return;
@@ -328,9 +329,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	protected void serializeSlotSettings(ValueOutput tag, String tagName, int slot) {
 		ValueOutput.ValueOutputList settingsList = tag.childrenList(tagName);
 		for (Map.Entry<String, Integer> item : getDisplaySettingsForSlot(slot).entrySet()) {
-			ValueOutput setting = settingsList.addChild();
-			setting.putString("key", item.getKey());
-			setting.putInt("value", item.getValue());
+			ValueOutput child = settingsList.addChild();
+			child.putString("key", item.getKey());
+			child.putInt("value", item.getValue());
 		}
 	}
 
@@ -460,20 +461,28 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	}
 
 	public List<String> getPanelStringList() {
+		return getPanelStringList(true);
+	}
+
+	public List<String> getPanelStringList(boolean isRaw) {
 		List<PanelString> joinedData = getPanelStringList(true, false);
 		List<String> list = NonNullList.create();
-		if (joinedData == null || joinedData.size() == 0)
+		if (joinedData == null || joinedData.isEmpty())
 			return list;
 
 		for (PanelString panelString : joinedData) {
 			if (panelString.textLeft != null)
-				list.add(panelString.textLeft);
+				list.add(formatString(panelString.textLeft, isRaw));
 			if (panelString.textCenter != null)
-				list.add(panelString.textCenter);
+				list.add(formatString(panelString.textCenter, isRaw));
 			if (panelString.textRight != null)
-				list.add(panelString.textRight);
+				list.add(formatString(panelString.textRight, isRaw));
 		}
 		return list;
+	}
+
+	private String formatString(String text, boolean isRaw) {
+		return isRaw ? text : text.replaceAll("\\u00a7[1-9,a-f]", "");
 	}
 
 	public int getCardSlot(ItemStack card) {
@@ -494,7 +503,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	private void processCard(ItemStack card, int slot, ItemStack stack) {
 		if (ItemCardMain.isCard(card)) {
 			ItemCardReader reader = new ItemCardReader(card);
-			((ItemCardMain) card.getItem()).updateCardNBT(level, worldPosition, reader, stack);
+			ItemCardMain.updateCardNBT((IItemCard) card.getItem(), level, worldPosition, reader, stack);
 			reader.updateClient(card, this, slot);
 		}
 	}
@@ -533,9 +542,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 
 	public int getDisplaySettingsForCardInSlot(int slot) {
 		ItemStack card = getItem(slot);
-		if (card.isEmpty()) {
+		if (card.isEmpty())
 			return 0;
-		}
 		return getDisplaySettingsByCard(card);
 	}
 
@@ -581,18 +589,13 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 
 	@Override
 	public boolean isItemValid(int index, ItemStack stack) { // ISlotItemFilter
-		switch (index) {
-		case SLOT_CARD:
-			return ItemCardMain.isCard(stack);
-		case SLOT_UPGRADE_RANGE:
-			return stack.getItem().equals(ModItems.upgrade_range);
-		case SLOT_UPGRADE_COLOR:
-			return stack.getItem().equals(ModItems.upgrade_color);
-		case SLOT_UPGRADE_TOUCH:
-			return stack.getItem().equals(ModItems.upgrade_touch);
-		default:
-			return false;
-		}
+		return switch (index) {
+		case SLOT_CARD -> ItemCardMain.isCard(stack);
+		case SLOT_UPGRADE_RANGE -> stack.getItem().equals(ModItems.upgrade_range);
+		case SLOT_UPGRADE_COLOR -> stack.getItem().equals(ModItems.upgrade_color);
+		case SLOT_UPGRADE_TOUCH -> stack.getItem().equals(ModItems.upgrade_touch);
+		default -> false;
+		};
 	}
 
 	@Override
@@ -607,7 +610,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	}
 
 	@Override
-	public void updateData() {
+	public void updateData() { // server
 		if (level.isClientSide())
 			return;
 
@@ -620,7 +623,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 
 	public void updateExtenders(Level world, Boolean active) { // server
 		// the block just switched on or off, so update the power now instead of waiting for the next update packet
-		calcPowered();
+		setPowered(active);
 		if (screen == null)
 			return;
 
@@ -630,17 +633,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 					BlockPos pos = new BlockPos(x, y, z);
 					BlockState state = world.getBlockState(pos);
 					if (state.getBlock() instanceof InfoPanelExtender || state.getBlock() instanceof HoloPanelExtender)
-						world.setBlock(pos, state.setValue(FacingBlockActive.getActive(state), active), 2);
+						world.setBlock(pos, state.setValue(FacingBlockActive.ACTIVE, active), 2);
 				}
 	}
-
-	/*@Override
-	@Environment(EnvType.CLIENT)
-	public AABB getRenderBoundingBox() {
-		if (screen == null)
-			return new AABB(pos.offset(0, 0, 0), pos.offset(1, 1, 1));
-		return new AABB(new BlockPos(screen.minX, screen.minY, screen.minZ), new BlockPos(screen.maxX + 1, screen.maxY + 1, screen.maxZ + 1));
-	}*/
 
 	public int findTexture() {
 		Screen scr = getScreen();
@@ -737,7 +732,6 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 		}
 	}
 
-	// NamedScreenHandlerFactory
 	@Override
 	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerInfoPanel(windowId, inventory, this);

@@ -1,12 +1,12 @@
 package com.zuxelus.zlib.gui.controls;
 
 import net.fabricmc.api.EnvType;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -45,9 +45,6 @@ public class GuiButtonGeneral extends Button {
 
 	@Override
 	protected void extractContents(GuiGraphicsExtractor context, int mouseX, int mouseY, float partialTicks) {
-		if (!visible)
-			return;
-
 		Minecraft minecraft = Minecraft.getInstance();
 		Font fontRenderer = minecraft.font;
 		if (isHovered && hasGradient)

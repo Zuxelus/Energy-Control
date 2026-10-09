@@ -105,7 +105,7 @@ public class TileEntityRemoteThermalMonitor extends TileEntityThermalMonitor imp
 			return false;
 		switch (slotIndex) {
 		case SLOT_CARD:
-			return stack.getItem() instanceof ItemCardMain;
+			return ItemCardMain.isCard(stack);
 		case SLOT_UPGRADE_RANGE:
 			return stack.getItem().equals(ModItems.upgrade_range);
 		default:

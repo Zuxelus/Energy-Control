@@ -170,7 +170,7 @@ public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 			matrixStack.translate(0, 0, 0.0002F);
 			int colorHex = 0x000000;
 			if (panel.getColored())
-				colorHex = panel.getColorTextHex();
+				colorHex = panel.getColorText();
 			renderText(joinedData, displayWidth, displayHeight, colorHex, matrixStack, collector, font);
 		}
 	}
@@ -198,7 +198,7 @@ public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 			offsetY = (realHeight - requiredHeight) / 2;
 		} else {
 			offsetX = (realWidth - maxWidth) / 2 + 2;
-			offsetY = 0;
+			offsetY = 1;
 		}
 
 		int row = 0;
@@ -221,14 +221,13 @@ public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 		RenderHelper.drawString(matrixStack, collector, text, x, y, color, Font.DisplayMode.POLYGON_OFFSET, LightCoordsUtil.FULL_BRIGHT);
 	}
 
-	// a screen can be larger than the core block: keep drawing the text while only other parts of it are in view
 	@Override
-	public boolean shouldRenderOffScreen() {
+	public boolean shouldRenderOffScreen() { // fabric only
 		return true;
 	}
 
 	@Override
-	public int getViewDistance() {
+	public int getViewDistance() { // fabric only
 		return 65536;
 	}
 }

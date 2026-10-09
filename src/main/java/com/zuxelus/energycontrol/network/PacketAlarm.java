@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.zlib.network.PacketBase;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 
-public record PacketAlarm(String alarms) implements PacketBase {
+public record PacketAlarm(String alarms) implements CustomPacketPayload {
 	public static final Type<PacketAlarm> ID = new Type<>(Identifier.fromNamespaceAndPath(EnergyControl.MODID, "s2c_alarm"));
 	public static final StreamCodec<RegistryFriendlyByteBuf, PacketAlarm> CODEC = ByteBufCodecs.STRING_UTF8.<RegistryFriendlyByteBuf>cast().map(PacketAlarm::new, PacketAlarm::alarms);
 

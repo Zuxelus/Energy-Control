@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.gui;
 
+import com.zuxelus.energycontrol.api.IItemCard;
 import java.util.List;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -97,7 +98,7 @@ public class GuiPortablePanel extends AbstractContainerScreen<ContainerPortableP
 	@Override
 	protected void extractLabels(GuiGraphicsExtractor context, int x, int y) {
 		ItemStack stack = te.getItem(InventoryPortablePanel.SLOT_CARD);
-		if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain) {
+		if (ItemCardMain.isCard(stack)) {
 			ItemCardReader reader = new ItemCardReader(stack);
 
 			CardState state = reader.getState();
@@ -105,7 +106,7 @@ public class GuiPortablePanel extends AbstractContainerScreen<ContainerPortableP
 			if (state != CardState.OK && state != CardState.CUSTOM_ERROR)
 				joinedData = ItemCardReader.getStateMessage(state);
 			else
-				joinedData = ((ItemCardMain) stack.getItem()).getStringData(player.level(), Integer.MAX_VALUE, reader, false, true);
+				joinedData = ((IItemCard) stack.getItem()).getStringData(player.level(), Integer.MAX_VALUE, reader, false, true);
 
 			int pageCount = joinedData.isEmpty() ? 1 : (joinedData.size() - 1) / ROWS_PER_PAGE + 1;
 			page = Math.max(0, Math.min(page, pageCount - 1));

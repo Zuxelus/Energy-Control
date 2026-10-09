@@ -124,7 +124,7 @@ public class TileEntityKitAssembler extends TileEntityInventory implements Exten
 		case 4:
 			if (tag.contains("slot") && tag.contains("title")) {
 				ItemStack itemStack = getItem(tag.getIntOr("slot", 0));
-				if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemCardMain)
+				if (ItemCardMain.isCard(itemStack))
 					new ItemCardReader(itemStack).setTitle(tag.getStringOr("title", ""));
 			}
 			break;
@@ -323,7 +323,7 @@ public class TileEntityKitAssembler extends TileEntityInventory implements Exten
 		case SLOT_ITEM:
 			return true;
 		case SLOT_INFO:
-			return stack.getItem() instanceof ItemCardMain;
+			return ItemCardMain.isCard(stack);
 		case SLOT_DISCHARGER:
 			return EnergyStorageUtil.isEnergyStorage(stack) || stack.getItem().equals(Items.LAVA_BUCKET);
 		case SLOT_TRANSFORMER:

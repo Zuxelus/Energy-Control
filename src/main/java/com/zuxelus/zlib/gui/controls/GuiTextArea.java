@@ -1,16 +1,17 @@
 package com.zuxelus.zlib.gui.controls;
 
-import net.fabricmc.api.EnvType;
 import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.client.input.CharacterEvent;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
+
+import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringUtil;
@@ -244,7 +245,5 @@ public class GuiTextArea extends AbstractWidget {
 	}
 
 	@Override
-	public void updateWidgetNarration(NarrationElementOutput var1) {
-		// TODO Auto-generated method stub
-	}
+	public void updateWidgetNarration(NarrationElementOutput output) { }
 }

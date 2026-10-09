@@ -136,9 +136,15 @@ public class TileEntityHoloPanelRenderer implements BlockEntityRenderer<TileEnti
 			matrixStack.translate(0, 0, 0.0002F * (power + 1) / 2);
 			int colorHex = 0x000000;
 			if (panel.getColored())
-				colorHex = panel.getColorTextHex();
+				colorHex = panel.getColorText();
 			TileEntityInfoPanelRenderer.renderText(joinedData, displayWidth, displayHeight, colorHex, matrixStack, collector, font);
 		}
+	}
+
+	// the hologram is larger than the core block: keep drawing it while only other parts of it are in view
+	@Override
+	public boolean shouldRenderOffScreen() {
+		return true;
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.tileentities.ITilePacketHandler;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -14,7 +15,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public record PacketTileEntityS2C(BlockPos pos, CompoundTag tag) implements PacketBase {
+public record PacketTileEntityS2C(BlockPos pos, CompoundTag tag) implements CustomPacketPayload {
 	public static final Type<PacketTileEntityS2C> ID = new Type<>(Identifier.fromNamespaceAndPath(EnergyControl.MODID, "s2c_tile"));
 	public static final StreamCodec<RegistryFriendlyByteBuf, PacketTileEntityS2C> CODEC = StreamCodec.composite(
 			BlockPos.STREAM_CODEC, PacketTileEntityS2C::pos,

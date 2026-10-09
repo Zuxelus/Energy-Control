@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.gui;
 
+import com.zuxelus.energycontrol.api.IItemCard;
 import java.util.List;
 
 import com.zuxelus.energycontrol.EnergyControl;
@@ -63,11 +64,11 @@ public class GuiInfoPanel extends GuiPanelBase<ContainerInfoPanel> {
 		oldStack = stack.copy();
 		clearWidgets();
 		initButtons();
-		if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain) {
+		if (ItemCardMain.isCard(stack)) {
 			int slot = panel.getCardSlot(stack);
 			if (stack.getItem() instanceof ItemCardText)
 				addRenderableWidget(new GuiButtonGeneral(leftPos + imageWidth - 24, topPos + 42 + 17 * 2, 16, 16, Component.literal("txt"), (button) -> { actionPerformed(button, ID_TEXT); }).setGradient());
-			List<PanelSetting> settingsList = ((ItemCardMain) stack.getItem()).getSettingsList();
+			List<PanelSetting> settingsList = ((IItemCard) stack.getItem()).getSettingsList();
 
 			int hy = font.lineHeight + 1;
 			int yy = 1;
@@ -78,7 +79,6 @@ public class GuiInfoPanel extends GuiPanelBase<ContainerInfoPanel> {
 				}
 			if (!modified) {
 				textboxTitle = new EditBox(font, leftPos + 7, topPos + 16, 162, 18, null, CommonComponents.EMPTY);
-				textboxTitle.setFocused(true);
 				textboxTitle.setValue(new ItemCardReader(stack).getTitle());
 				addWidget(textboxTitle);
 				setInitialFocus(textboxTitle);

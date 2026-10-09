@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.zuxelus.energycontrol.blocks.HoloPanelExtender;
+import com.zuxelus.energycontrol.blocks.InfoPanelExtender;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
@@ -11,8 +15,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import com.zuxelus.energycontrol.blocks.HoloPanelExtender;
-import com.zuxelus.energycontrol.blocks.InfoPanelExtender;
 
 public class ScreenManager {
 
@@ -142,7 +144,7 @@ public class ScreenManager {
 		if (!(block instanceof InfoPanelExtender || block instanceof HoloPanelExtender))
 			return false;
 		BlockEntity te = world.getBlockEntity(pos);
-		if (!(te instanceof TileEntityInfoPanelExtender))
+		if (!(te instanceof TileEntityInfoPanelExtender) || te.isRemoved())
 			return false;
 		if (advanced ^ (te instanceof TileEntityAdvancedInfoPanelExtender))
 			return false;
@@ -169,7 +171,7 @@ public class ScreenManager {
 	}
 
 	@SuppressWarnings("resource")
-	public void registerInfoPanelExtender(TileEntityInfoPanelExtender extender) {
+	public void registerInfoPanelExtender(TileEntityInfoPanelExtender extender) { // server
 		if (extender.getLevel().isClientSide())
 			return;
 		if (!screens.containsKey(getWorldKey(extender.getLevel())))
@@ -249,7 +251,7 @@ public class ScreenManager {
 		TileEntityInfoPanel core = screen.getCore(part.getLevel());
 		destroyScreen(screen, part.getLevel());
 		boolean isCoreDestroyed = part instanceof TileEntityInfoPanel;
-		if (!isCoreDestroyed && core != null) {
+		if (!isCoreDestroyed && core != null && !core.isRemoved()) {
 			Screen newScreen = buildFromPanel(core);
 			screens.get(getWorldKey(core.getLevel())).add(newScreen);
 		}

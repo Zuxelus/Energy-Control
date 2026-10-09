@@ -1,11 +1,11 @@
 package com.zuxelus.zlib.gui;
 
-import net.minecraft.client.renderer.RenderPipelines;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -35,7 +35,6 @@ public abstract class GuiBase extends Screen {
 
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float partialTicks) {
-		// Screen.extractRenderState draws the widgets; the background comes from extractBackground
 		super.extractRenderState(context, mouseX, mouseY, partialTicks);
 		context.pose().pushMatrix();
 		context.pose().translate(guiLeft, guiTop);

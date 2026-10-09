@@ -14,7 +14,6 @@ public class Screen {
 	public int maxY;
 	public int maxZ;
 	private BlockPos corePos;
-	private boolean powered;
 
 	public Screen(TileEntityInfoPanel panel) {
 		BlockPos pos = panel.getBlockPos();
@@ -23,7 +22,6 @@ public class Screen {
 		maxZ = minZ = pos.getZ();
 
 		corePos = pos;
-		powered = panel.getPowered();
 	}
 
 	public Screen(TileEntityInfoPanel panel, CompoundTag tag) {
@@ -36,9 +34,9 @@ public class Screen {
 		maxZ = tag.getIntOr("maxZ", 0);
 
 		corePos = panel.getBlockPos();
-		powered = panel.getPowered();
 	}
 
+	// the screen can reach into chunks that are not loaded, Level.getBlockEntity would load them
 	public static BlockEntity getLoadedBlockEntity(Level world, BlockPos pos) {
 		if (!isLoaded(world, pos))
 			return null;
@@ -82,12 +80,10 @@ public class Screen {
 		for (int x = minX; x <= maxX; x++) {
 			for (int y = minY; y <= maxY; y++) {
 				for (int z = minZ; z <= maxZ; z++) {
-					BlockEntity tileEntity = getLoadedBlockEntity(world, new BlockPos(x, y, z));
-					if (tileEntity == null || !(tileEntity instanceof IScreenPart))
+					BlockEntity te = getLoadedBlockEntity(world, new BlockPos(x, y, z));
+					if (te == null || !(te instanceof IScreenPart))
 						continue;
-					((IScreenPart) tileEntity).setScreen(this);
-					if (powered || force)
-						((IScreenPart)tileEntity).updateTileEntity();
+					((IScreenPart) te).setScreen(this);
 				}
 			}
 		}
@@ -106,33 +102,10 @@ public class Screen {
 						part.setScreen(null);
 						part.updateData();
 					}
-					if (powered || force) {
-						part.updateTileEntity();
-						//world.checkLight(new BlockPos(x , y, z));
-					}
 				}
 			}
 		}
 	}
-
-	public void turnPower(boolean on, Level world) {
-		if (powered == on)
-			return;
-		powered = on;
-		markUpdate(world);
-	}
-
-	private void markUpdate(Level world) {
-		for (int x = minX; x <= maxX; x++) {
-			for (int y = minY; y <= maxY; y++) {
-				for (int z = minZ; z <= maxZ; z++) {
-					BlockEntity te = getLoadedBlockEntity(world, new BlockPos(x, y, z));
-					if (te instanceof IScreenPart)
-						((IScreenPart)te).updateTileEntity();
-				}
-			}
-		}
-	}	
 
 	public CompoundTag toTag() {
 		CompoundTag tag = new CompoundTag();

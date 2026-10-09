@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.gui;
 
+import com.zuxelus.energycontrol.api.IItemCard;
 import java.util.List;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -56,11 +57,11 @@ public class GuiAdvancedInfoPanel extends GuiPanelBase<ContainerAdvancedInfoPane
 		oldStack = stack.copy();
 		clearWidgets();
 		initButtons();
-		if (!stack.isEmpty() && stack.getItem() instanceof ItemCardMain) {
+		if (ItemCardMain.isCard(stack)) {
 			int slot = panel.getCardSlot(stack);
 			if (stack.getItem() instanceof ItemCardText)
 				addRenderableWidget(new GuiButtonGeneral(leftPos + 83 + 17 * 4, topPos + 42, 16, 16, Component.literal("txt"), (button) -> { actionPerformed(button, ID_TEXT); }).setGradient());
-			List<PanelSetting> settingsList = ((ItemCardMain) stack.getItem()).getSettingsList();
+			List<PanelSetting> settingsList = ((IItemCard) stack.getItem()).getSettingsList();
 
 			int hy = font.lineHeight + 1;
 			int y = 1;
@@ -71,7 +72,6 @@ public class GuiAdvancedInfoPanel extends GuiPanelBase<ContainerAdvancedInfoPane
 				}
 			if (!modified) {
 				textboxTitle = new EditBox(font, leftPos + 7, topPos + 16, 162, 18, null, CommonComponents.EMPTY);
-				textboxTitle.setFocused(true);
 				textboxTitle.setValue(new ItemCardReader(stack).getTitle());
 				addWidget(textboxTitle);
 				setInitialFocus(textboxTitle);

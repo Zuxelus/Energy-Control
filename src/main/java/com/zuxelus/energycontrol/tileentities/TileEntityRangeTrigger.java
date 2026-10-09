@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import com.zuxelus.energycontrol.api.IItemCard;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.blocks.RangeTrigger;
 import com.zuxelus.energycontrol.config.ConfigHandler;
@@ -10,10 +11,10 @@ import com.zuxelus.energycontrol.items.cards.ItemCardEnergy;
 import com.zuxelus.energycontrol.items.cards.ItemCardLiquid;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
+import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.zlib.blocks.FacingHorizontal;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
-import com.zuxelus.energycontrol.utils.DataHelper;
 
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.minecraft.core.BlockPos;
@@ -184,9 +185,9 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements Exten
 		ItemStack card = getItem(SLOT_CARD);
 		if (!card.isEmpty()) {
 			Item item = card.getItem();
-			if (item instanceof ItemCardMain) {
+			if (item instanceof IItemCard) {
 				ItemCardReader reader = new ItemCardReader(card);
-				CardState state = ((ItemCardMain) item).updateCardNBT(level, worldPosition, reader, getItem(SLOT_UPGRADE));
+				CardState state = ItemCardMain.updateCardNBT((IItemCard) item, level, worldPosition, reader, getItem(SLOT_UPGRADE));
 				if (state == CardState.OK) {
 					double cur = item instanceof ItemCardEnergy ? reader.getDouble(DataHelper.ENERGY) : reader.getLong("amount");
 					status = cur > Math.max(levelStart, levelEnd) || cur < Math.min(levelStart, levelEnd) ? STATE_ACTIVE : STATE_PASSIVE;

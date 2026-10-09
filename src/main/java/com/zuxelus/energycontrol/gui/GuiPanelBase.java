@@ -96,7 +96,7 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 			tag.putString("title", textboxTitle.getValue());
 			NetworkHelper.updateSeverTileEntity(panel.getBlockPos(), tag);
 			ItemStack card = panel.getItem(activeTab);
-			if (!card.isEmpty() && card.getItem() instanceof ItemCardMain)
+			if (ItemCardMain.isCard(card))
 				new ItemCardReader(card).setTitle(textboxTitle.getValue());
 		}
 	}
