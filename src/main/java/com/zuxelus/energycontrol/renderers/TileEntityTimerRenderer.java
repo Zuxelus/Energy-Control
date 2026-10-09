@@ -31,7 +31,7 @@ public class TileEntityTimerRenderer extends TileRenderer<TileEntityTimer> {
 		matrixStack.rotate(Axis.XP.rotationDegrees(90.0F));
 		matrixStack.translate(0.5F, 0.575F, -0.4376F);
 		matrixStack.scale(0.015625F, 0.015625F, 0.015625F);
-		RenderHelper.drawString(matrixStack, buffer, time, -font.width(time) / 2, -font.lineHeight, 0x000000, combinedLight);
+		RenderHelper.drawString(matrixStack, buffer, time, -font.width(time) / 2, -font.lineHeight, 0x000000, Font.DisplayMode.NORMAL, combinedLight);
 		matrixStack.popPose();
 	}
 }

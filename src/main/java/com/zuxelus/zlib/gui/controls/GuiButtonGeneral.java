@@ -32,7 +32,7 @@ public class GuiButtonGeneral extends Button {
 	}
 
 	public GuiButtonGeneral(int left, int top, int width, int height, Component text, Identifier texture, int textureLeft, int textureTop, int textureTopOff, String tooltip, Button.OnPress onPress) {
-		super(left, top, width, height, text, onPress, Button.DEFAULT_NARRATION);
+		super(left, top, width, height, text, onPress, DEFAULT_NARRATION);
 		this.texture = texture;
 		this.textureLeft = textureLeft;
 		this.textureTop = textureTop;

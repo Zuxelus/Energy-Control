@@ -31,7 +31,7 @@ public class EnergyControl {
 
 	public static EnergyControl INSTANCE;
 	public static final Logger LOGGER = LogManager.getLogger(MODID);
-	public ScreenManager screenManager = new ScreenManager();
+	public static final ScreenManager screenManager = new ScreenManager();
 
 	public List<String> availableAlarms; //on client
 	public List<String> serverAllowedAlarms; // will be loaded from server

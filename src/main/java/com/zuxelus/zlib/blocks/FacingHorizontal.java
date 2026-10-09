@@ -33,8 +33,8 @@ import net.minecraft.world.phys.BlockHitResult;
 public abstract class FacingHorizontal extends BaseEntityBlock {
 	public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-	public FacingHorizontal(Block.Properties builder) {
-		super(builder);
+	public FacingHorizontal(Properties properties) {
+		super(properties);
 		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
 	}
 

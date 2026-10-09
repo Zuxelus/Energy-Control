@@ -45,7 +45,7 @@ public class TERemoteThermalMonitorRenderer extends TileRenderer<TileEntityRemot
 		matrixStack.scale(0.015625F, 0.015625F, 0.015625F);
 
 		String text = Integer.toString(level);
-		RenderHelper.drawString(matrixStack, buffer, text, -font.width(text) / 2, -font.lineHeight, 0x000000, LightCoordsUtil.FULL_BRIGHT);
+		RenderHelper.drawString(matrixStack, buffer, text, -font.width(text) / 2, -font.lineHeight, 0x000000, Font.DisplayMode.NORMAL, LightCoordsUtil.FULL_BRIGHT);
 		matrixStack.popPose();
 	}
 }

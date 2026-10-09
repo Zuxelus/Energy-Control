@@ -14,7 +14,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 
 public class InventoryCardHolder extends ItemInventory implements MenuProvider {
-
 	private final InteractionHand hand;
 
 	public InventoryCardHolder(ItemStack parent, InteractionHand hand) {
@@ -37,7 +36,6 @@ public class InventoryCardHolder extends ItemInventory implements MenuProvider {
 		return ItemCardMain.isCard(stack);
 	}
 
-	// MenuProvider
 	@Override
 	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerCardHolder(windowId, inventory, hand);

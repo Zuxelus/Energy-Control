@@ -1,28 +1,30 @@
 package com.zuxelus.energycontrol.recipes;
 
 import java.util.Vector;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.PlacementInfo;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
+import net.minecraft.world.level.Level;
+import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.items.cards.*;
 
-import com.mojang.serialization.MapCodec;
-import com.zuxelus.energycontrol.api.ItemStackHelper;
+public class StorageArrayRecipe implements CraftingRecipe {
+	private final ShapelessRecipe recipe;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.CustomRecipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.level.Level;
+	public StorageArrayRecipe(ShapelessRecipe internal) {
+		this.recipe = internal;
+	}
 
-public class StorageArrayRecipe extends CustomRecipe {
-	public static final StorageArrayRecipe INSTANCE = new StorageArrayRecipe();
-	public static final MapCodec<StorageArrayRecipe> MAP_CODEC = MapCodec.unit(INSTANCE);
-	public static final StreamCodec<RegistryFriendlyByteBuf, StorageArrayRecipe> STREAM_CODEC = StreamCodec.unit(INSTANCE);
-	public static final RecipeSerializer<StorageArrayRecipe> SERIALIZER = new RecipeSerializer<>(MAP_CODEC, STREAM_CODEC);
+	public ShapelessRecipe getRecipe() {
+		return recipe;
+	}
 
 	@Override
 	public boolean matches(CraftingInput inv, Level level) {
@@ -131,6 +133,31 @@ public class StorageArrayRecipe extends CustomRecipe {
 			cardCount++;
 		}
 		reader.setInt("cardCount", cardCount);
+	}
+
+	@Override
+	public CraftingBookCategory category() {
+		return CraftingBookCategory.MISC;
+	}
+
+	@Override
+	public boolean isSpecial() {
+		return true;
+	}
+
+	@Override
+	public boolean showNotification() {
+		return false;
+	}
+
+	@Override
+	public String group() {
+		return "";
+	}
+
+	@Override
+	public PlacementInfo placementInfo() {
+		return PlacementInfo.NOT_PLACEABLE;
 	}
 
 	@Override

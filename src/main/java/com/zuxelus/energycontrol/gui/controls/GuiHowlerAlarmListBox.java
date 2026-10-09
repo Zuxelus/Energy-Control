@@ -44,7 +44,7 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 		this.items = items;
 		this.alarm = alarm;
 		fontColor = 0x404040;
-		selectedColor = 0xff404040;
+		selectedColor = 0x404040;
 		selectedFontColor = 0xA0A0A0;
 		scrollTop = 0;
 		lineHeight = 0;
@@ -112,7 +112,7 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 
 		for (String row : items) {
 			if(row.equals(currentItem)) {
-				matrixStack.fill(getX(), getY() + rowTop - scrollTop - 1, getX() + width - SCROLL_WIDTH, getY() + rowTop - scrollTop + lineHeight - 1, selectedColor);
+				matrixStack.fill(getX(), getY() + rowTop - scrollTop - 1, getX() + width - SCROLL_WIDTH, getY() + rowTop - scrollTop + lineHeight - 1, ARGB.opaque(selectedColor));
 				matrixStack.text(fontRenderer, row, getX() + BASIC_X_OFFSET, getY() + rowTop - scrollTop, ARGB.opaque(selectedFontColor), false);
 			} else
 				matrixStack.text(fontRenderer, row, getX() + BASIC_X_OFFSET, getY() + rowTop - scrollTop, ARGB.opaque(fontColor), false);

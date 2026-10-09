@@ -54,11 +54,6 @@ public class ThermalMonitor extends FacingBlockSmall {
 	}
 
 	@Override
-	protected boolean isSignalSource(BlockState state) {
-		return true;
-	}
-
-	@Override
 	protected VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
 		switch (state.getValue(FACING)) {
 		case EAST:

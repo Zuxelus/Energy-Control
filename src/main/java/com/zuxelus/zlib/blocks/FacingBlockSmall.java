@@ -35,7 +35,12 @@ public abstract class FacingBlockSmall extends FacingBlock {
 			BlockState state = defaultBlockState().setValue(FACING, direction.getOpposite());
 			if (state.canSurvive(ctx.getLevel(), ctx.getClickedPos())) {
 				Player placer = ctx.getPlayer();
-				rotation = placer != null ? placer.getDirection() : ctx.getHorizontalDirection();
+				if (placer == null)
+					rotation = ctx.getHorizontalDirection();
+				else if (placer.getXRot() <= -65)
+					rotation = placer.getDirection();
+				else
+					rotation = placer.getDirection().getOpposite();
 				return state;
 			}
 		}

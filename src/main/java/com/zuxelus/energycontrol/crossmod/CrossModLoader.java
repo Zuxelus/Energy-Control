@@ -152,7 +152,7 @@ public class CrossModLoader {
 					inUse++;
 					items += stack.getCount();
 				}
-				tag.put("slot" + Integer.toString(i), ItemStackHelper.saveStack(stack));
+				tag.put("slot" + Integer.toString(i), ItemStackHelper.saveOptional(stack, te.getLevel().registryAccess()));
 			}
 			tag.putInt("used", inUse);
 			tag.putInt("items", items);
@@ -171,7 +171,7 @@ public class CrossModLoader {
 						inUse++;
 						items += inv.getItem(i).getCount();
 					}
-					tag.put("slot" + Integer.toString(i), ItemStackHelper.saveStack(inv.getItem(i)));
+					tag.put("slot" + Integer.toString(i), ItemStackHelper.saveOptional(inv.getItem(i), te.getLevel().registryAccess()));
 				}
 				tag.putInt("used", inUse);
 				tag.putInt("items", items);

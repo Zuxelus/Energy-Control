@@ -103,6 +103,6 @@ public class ModItems {
 	public static final DeferredHolder<RecipeType<?>, KitAssemblerRecipeType> KIT_ASSEMBLER_TYPE = RECIPE_TYPES.register("kit_assembler", () -> KitAssemblerRecipeType.TYPE);
 
 	public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(Registries.RECIPE_SERIALIZER, EnergyControl.MODID);
-	public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<StorageArrayRecipe>> ARRAY_SERIALIZER = RECIPE_SERIALIZERS.register("array", () -> StorageArrayRecipe.SERIALIZER);
+	public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<StorageArrayRecipe>> ARRAY_SERIALIZER = RECIPE_SERIALIZERS.register("array", ArrayRecipeSerializer::create);
 	public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<KitAssemblerRecipe>> KIT_ASSEMBLER_SERIALIZER = RECIPE_SERIALIZERS.register("kit_assembler", () -> KitAssemblerRecipe.SERIALIZER);
 }

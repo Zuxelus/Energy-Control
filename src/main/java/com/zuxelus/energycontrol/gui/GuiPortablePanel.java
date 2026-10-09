@@ -23,6 +23,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -120,18 +121,18 @@ public class GuiPortablePanel extends AbstractContainerScreen<ContainerPortableP
 				int row = index - firstRow;
 				if (showBars && bars.containsKey(index)) {
 					int top = row * 10 + 9;
-					context.fill(8, top, 168, top + 10, 0xFF20343A);
-					context.fill(8, top, 8 + (int) Math.round(160 * bars.get(index)), top + 10, 0xFF205E36);
+					context.fill(8, top, 168, top + 10, ARGB.opaque(0x20343A));
+					context.fill(8, top, 8 + (int) Math.round(160 * bars.get(index)), top + 10, ARGB.opaque(0x205E36));
 				}
 				if (panelString.textLeft != null)
-					context.text(font, panelString.textLeft, 9, row * 10 + 10, 0xFF06aee4, false);
+					context.text(font, panelString.textLeft, 9, row * 10 + 10, ARGB.opaque(0x06aee4), false);
 				if (panelString.textCenter != null)
-					context.text(font, panelString.textCenter, (168 - font.width(panelString.textCenter)) / 2, row * 10 + 10, 0xFF06aee4, false);
+					context.text(font, panelString.textCenter, (168 - font.width(panelString.textCenter)) / 2, row * 10 + 10, ARGB.opaque(0x06aee4), false);
 				if (panelString.textRight != null)
-					context.text(font, panelString.textRight, 168 - font.width(panelString.textRight), row * 10 + 10, 0xFF06aee4, false);
+					context.text(font, panelString.textRight, 168 - font.width(panelString.textRight), row * 10 + 10, ARGB.opaque(0x06aee4), false);
 			}
 			if (pageCount > 1)
-				context.text(font, (page + 1) + " / " + pageCount, 9, 150, 0xFF06aee4, false);
+				context.text(font, (page + 1) + " / " + pageCount, 9, 150, ARGB.opaque(0x06aee4), false);
 		} else {
 			page = 0;
 			previousPage.visible = nextPage.visible = false;

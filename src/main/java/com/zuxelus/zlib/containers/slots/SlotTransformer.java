@@ -20,4 +20,3 @@ public class SlotTransformer extends SlotFilter {
 		return 3;
 	}
 }
-

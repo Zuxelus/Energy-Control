@@ -67,7 +67,7 @@ public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel
 	}
 
 	public void setShowBars(boolean value) {
-		ItemStackHelper.update(te.getParent(), tag -> tag.putBoolean(SHOW_BARS, value));
+		ItemStackHelper.updateTag(te.getParent(), tag -> tag.putBoolean(SHOW_BARS, value));
 	}
 
 	@Override

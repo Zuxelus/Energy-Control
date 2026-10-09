@@ -31,7 +31,7 @@ public class ServerTickHandler {
 
 	@SubscribeEvent
 	public void onWorldUnload(LevelEvent.Unload event) {
-		EnergyControl.INSTANCE.screenManager.clearWorld(event.getLevel());
+		EnergyControl.screenManager.clearWorld(event.getLevel());
 	}
 
 	@SubscribeEvent

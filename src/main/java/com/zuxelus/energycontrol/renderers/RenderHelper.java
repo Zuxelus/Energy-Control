@@ -44,10 +44,10 @@ public final class RenderHelper {
 	}
 
 	/** text colours are ARGB now: an RGB colour without alpha would be invisible */
-	public static void drawString(PoseStack matrixStack, SubmitNodeCollector collector, String text, float x, float y, int color, int light) {
+	public static void drawString(PoseStack matrixStack, SubmitNodeCollector collector, String text, float x, float y, int color, Font.DisplayMode mode, int light) {
 		if (text == null)
 			return;
-		collector.submitText(matrixStack, x, y, toSequence(text), false, Font.DisplayMode.POLYGON_OFFSET, light, ARGB.opaque(color), 0, 0);
+		collector.submitText(matrixStack, x, y, toSequence(text), false, mode, light, ARGB.opaque(color), 0, 0);
 	}
 
 	private static FormattedCharSequence toSequence(String text) {

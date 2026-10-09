@@ -40,8 +40,8 @@ public class GuiTextArea extends AbstractWidget {
 
 	@Override
 	protected void extractWidgetRenderState(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY, float partialTicks) {
-		matrixStack.fill(getX() - 1, getY() - 1, getX() + width + 1, getY() + height + 1, 0xFFA0A0A0);
-		matrixStack.fill(getX(), getY(), getX() + width, getY() + height, 0xFF000000);
+		matrixStack.fill(getX() - 1, getY() - 1, getX() + width + 1, getY() + height + 1, ARGB.opaque(0xA0A0A0));
+		matrixStack.fill(getX(), getY(), getX() + width, getY() + height, ARGB.opaque(0x000000));
 		int textColor = 0xE0E0E0;
 
 		int textLeft = getX() + 4;

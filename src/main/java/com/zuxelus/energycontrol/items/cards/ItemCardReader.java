@@ -15,6 +15,7 @@ import com.zuxelus.energycontrol.network.ChannelHandler;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.locale.Language;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.CompoundTag;
@@ -51,7 +52,7 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public void setInt(String name, Integer value) {
-		ItemStackHelper.update(card, tag -> tag.putInt(name, value));
+		ItemStackHelper.updateTag(card, tag -> tag.putInt(name, value));
 	}
 
 	@Override
@@ -61,7 +62,7 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public void setLong(String name, Long value) {
-		ItemStackHelper.update(card, tag -> tag.putLong(name, value));
+		ItemStackHelper.updateTag(card, tag -> tag.putLong(name, value));
 	}
 
 	@Override
@@ -71,7 +72,7 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public void setDouble(String name, Double value) {
-		ItemStackHelper.update(card, tag -> tag.putDouble(name, value));
+		ItemStackHelper.updateTag(card, tag -> tag.putDouble(name, value));
 	}
 
 	@Override
@@ -83,7 +84,7 @@ public class ItemCardReader implements ICardReader {
 	public void setString(String name, String value) {
 		if (name == null)
 			return;
-		ItemStackHelper.update(card, tag -> tag.putString(name, value));
+		ItemStackHelper.updateTag(card, tag -> tag.putString(name, value));
 	}
 
 	@Override
@@ -93,7 +94,7 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public void setByte(String name, Byte value) {
-		ItemStackHelper.update(card, tag -> tag.putByte(name, value));
+		ItemStackHelper.updateTag(card, tag -> tag.putByte(name, value));
 	}
 
 	@Override
@@ -103,7 +104,7 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public void setBoolean(String name, Boolean value) {
-		ItemStackHelper.update(card, tag -> tag.putBoolean(name, value));
+		ItemStackHelper.updateTag(card, tag -> tag.putBoolean(name, value));
 	}
 
 	@Override
@@ -151,7 +152,7 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public boolean hasField(String field) {
-		return ItemStackHelper.contains(card, field);
+		return tag().contains(field);
 	}
 
 	@Override
@@ -168,7 +169,7 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public void setTag(String name, Tag value) {
-		ItemStackHelper.update(card, tag -> {
+		ItemStackHelper.updateTag(card, tag -> {
 			if (value == null)
 				tag.remove(name);
 			else
@@ -187,12 +188,12 @@ public class ItemCardReader implements ICardReader {
 	}
 
 	@Override
-	public ArrayList<ItemStack> getItemStackList(boolean reset) {
+	public ArrayList<ItemStack> getItemStackList(boolean reset, HolderLookup.Provider registries) {
 		ListTag list = getTagList("Items", Tag.TAG_COMPOUND);
 		ArrayList<ItemStack> result = new ArrayList<ItemStack> ();
 		for (int i = 0; i < list.size(); i++) {
 			CompoundTag stackTag = list.getCompoundOrEmpty(i);
-			ItemStack stack = ItemStackHelper.loadStack(stackTag);
+			ItemStack stack = ItemStackHelper.parseOptional(registries, stackTag);
 			if (reset)
 				stack.setCount(1);
 			result.add(stack);
@@ -201,16 +202,16 @@ public class ItemCardReader implements ICardReader {
 	}
 
 	@Override
-	public void setItemStackList(ArrayList<ItemStack> list) {
+	public void setItemStackList(ArrayList<ItemStack> list, HolderLookup.Provider registries) {
 		ListTag values = new ListTag();
 		for (ItemStack stack : list)
-			values.add(ItemStackHelper.saveStack(stack));
+			values.add(ItemStackHelper.saveOptional(stack, registries));
 		setTag("Items", values);
 	}
 
 	@Override
 	public void removeField(String name) {
-		ItemStackHelper.update(card, tag -> tag.remove(name));
+		ItemStackHelper.updateTag(card, tag -> tag.remove(name));
 	}
 
 	@Override
@@ -233,7 +234,7 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public void copyFrom(CompoundTag nbt) {
-		ItemStackHelper.update(card, dest -> {
+		ItemStackHelper.updateTag(card, dest -> {
 			for (String name : nbt.keySet()) {
 				Tag tag = nbt.get(name);
 				if (tag instanceof StringTag || tag instanceof IntTag || tag instanceof DoubleTag || tag instanceof LongTag || tag instanceof ByteTag || tag instanceof CompoundTag)

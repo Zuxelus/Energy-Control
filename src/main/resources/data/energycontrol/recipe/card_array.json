@@ -1,3 +1,9 @@
 {
-  "type": "energycontrol:array"
+	"type": "energycontrol:array",
+	"ingredients": [
+		"energycontrol:card_energy_array"
+	],
+	"result": {
+		"id": "energycontrol:card_energy_array"
+	}
 }

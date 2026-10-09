@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -110,9 +111,9 @@ public interface ICardReader {
 
 	ListTag getTagList(String name, int type);
 
-	ArrayList<ItemStack> getItemStackList(boolean reset);
+	ArrayList<ItemStack> getItemStackList(boolean reset, HolderLookup.Provider registries);
 	
-	void setItemStackList(ArrayList<ItemStack> list);
+	void setItemStackList(ArrayList<ItemStack> list, HolderLookup.Provider registries);
 
 	List<PanelString> getTitleList();
 

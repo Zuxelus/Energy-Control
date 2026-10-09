@@ -4,13 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.zuxelus.energycontrol.api.CardState;
-import com.zuxelus.energycontrol.api.ICardReader;
-import com.zuxelus.energycontrol.api.IHasBars;
-import com.zuxelus.energycontrol.api.PanelSetting;
-import com.zuxelus.energycontrol.api.PanelString;
-import com.zuxelus.energycontrol.renderers.RenderHelper;
+import com.zuxelus.energycontrol.api.*;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
+import com.zuxelus.energycontrol.renderers.RenderHelper;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import net.minecraft.client.Minecraft;
@@ -25,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 
 public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 
@@ -98,31 +95,29 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 	}
 
 	@Override
-	public void renderBars(float displayWidth, float displayHeight, ICardReader reader, PoseStack matrixStack, SubmitNodeCollector buffer) {
+	public void renderBars(float displayWidth, float displayHeight, ICardReader reader, PoseStack matrixStack, SubmitNodeCollector collector) {
 		float x = -0.5F + 1 / 16.0F;
 		float y = -0.5F + 1/ 16.0F;
 		float z = 0;
 
 		String fluidName = reader.getString("fluidName");
-		if (fluidName.isEmpty())
+		long capacity = reader.getLong("capacity");
+		if (fluidName.isEmpty() || capacity <= 0)
 			return;
 
 		Identifier id = Identifier.tryParse(fluidName);
 		if (id == null)
 			return;
 		Fluid fluid = BuiltInRegistries.FLUID.getValue(id);
+		if (fluid == Fluids.EMPTY)
+			return;
 		FluidState state = fluid.defaultFluidState();
 		FluidModel model = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(state);
 		if (model == null)
 			return;
 
 		TextureAtlasSprite sprite = model.stillMaterial().sprite();
-		float textureX = sprite.getU0();
-		float textureY = sprite.getV0();
-		float u1 = sprite.getU1();
-		float v1 = sprite.getV1();
-		long capacity = reader.getLong("capacity");
-		float width = capacity <= 0 ? 0 : 14 / 16.0F * reader.getLong("amount") / capacity;
+		float width = 14 / 16.0F * Math.min(reader.getLong("amount"), capacity) / capacity;
 		float height = 0.4375F;
 
 		int color = model.fluidTintSource() != null ? model.fluidTintSource().color(state) : -1;
@@ -131,9 +126,9 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 
 		matrixStack.pushPose();
 		matrixStack.scale(displayWidth / 0.875f, displayHeight / 0.875f, 1);
-		RenderHelper.texturedRect(matrixStack, buffer, sprite.atlasLocation(), x, y + 0.4375F / 2, x + 0.875F, y + 0.4375F / 2 + height, z, textureX, textureY, u1, v1, color);
-
-		IHasBars.drawTransparentRect(matrixStack, buffer, x + 0.875F - width, y + height + 0.4375F / 2, x, y + 0.4375F / 2, -0.0001F, 0xB0000000);
+		RenderHelper.texturedRect(matrixStack, collector, sprite.atlasLocation(), x, y + 0.4375F / 2, x + 0.875F, y + 0.4375F / 2 + height, z,
+				sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(), color);
+		IHasBars.drawTransparentRect(matrixStack, collector, x + 0.875F - width, y + height + 0.4375F / 2, x, y + 0.4375F / 2, -0.0001F, 0xB0000000);
 		matrixStack.popPose();
 	}
 }

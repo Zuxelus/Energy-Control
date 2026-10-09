@@ -100,9 +100,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 			return;
 
 		if (screenData == null) {
-			EnergyControl.INSTANCE.screenManager.registerInfoPanel(this);
+			EnergyControl.screenManager.registerInfoPanel(this);
 		} else {
-			screen = EnergyControl.INSTANCE.screenManager.loadScreen(this);
+			screen = EnergyControl.screenManager.loadScreen(this);
 			if (screen != null)
 				screen.init(true, level);
 		}
@@ -116,8 +116,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 			return;
 		facing = newFacing;
 		if (init) {
-			EnergyControl.INSTANCE.screenManager.unregisterScreenPart(this);
-			EnergyControl.INSTANCE.screenManager.registerInfoPanel(this);
+			EnergyControl.screenManager.unregisterScreenPart(this);
+			EnergyControl.screenManager.registerInfoPanel(this);
 		}
 	}
 
@@ -194,7 +194,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 		if (screen != null && level.isClientSide())
 			screen.destroy(true, level);
 		if (screenData != null) {
-			screen = EnergyControl.INSTANCE.screenManager.loadScreen(this);
+			screen = EnergyControl.screenManager.loadScreen(this);
 			if (screen != null)
 				screen.init(true, level);
 		}
@@ -366,9 +366,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 		if (!level.isClientSide()) {
 			// on chunk unload only forget the screen: changing blocks or reading neighbours here loads chunks again and stalls saving
 			if (broken)
-				EnergyControl.INSTANCE.screenManager.unregisterScreenPart(this);
+				EnergyControl.screenManager.unregisterScreenPart(this);
 			else
-				EnergyControl.INSTANCE.screenManager.unloadScreenPart(this);
+				EnergyControl.screenManager.unloadScreenPart(this);
 		}
 		super.setRemoved();
 	}

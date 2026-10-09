@@ -9,8 +9,8 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 public abstract class FacingHorizontalActive extends FacingHorizontal {
 	public static final BooleanProperty ACTIVE = FacingBlockActive.ACTIVE;
 
-	public FacingHorizontalActive(Block.Properties builder) {
-		super(builder);
+	public FacingHorizontalActive(Properties properties) {
+		super(properties);
 		registerDefaultState(defaultBlockState().setValue(ACTIVE, false));
 	}
 

@@ -46,7 +46,7 @@ public class TEThermalMonitorRenderer extends TileRenderer<TileEntityThermalMoni
 		matrixStack.scale(0.015625F, 0.015625F, 0.015625F);
 
 		String value = String.valueOf(te.getHeatLevel());
-		RenderHelper.drawString(matrixStack, buffer, value, -font.width(value) / 2, -font.lineHeight, 0x000000, combinedLight);
+		RenderHelper.drawString(matrixStack, buffer, value, -font.width(value) / 2, -font.lineHeight, 0x000000, Font.DisplayMode.NORMAL, combinedLight);
 		matrixStack.popPose();
 	}
 }

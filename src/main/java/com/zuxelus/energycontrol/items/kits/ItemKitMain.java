@@ -19,11 +19,9 @@ public abstract class ItemKitMain extends Item implements IItemKit {
 	@Override
 	public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
 		Player player = context.getPlayer();
-		if (player == null || !(player instanceof ServerPlayer))
+		if (!(player instanceof ServerPlayer) || stack.isEmpty())
 			return InteractionResult.PASS;
 
-		if (stack.isEmpty())
-			return InteractionResult.PASS;
 		ItemStack sensorLocationCard = ((ItemKitMain) stack.getItem()).getSensorCard(stack, player, context.getLevel(), context.getClickedPos(), context.getClickedFace());
 		if (sensorLocationCard.isEmpty())
 			return InteractionResult.PASS;

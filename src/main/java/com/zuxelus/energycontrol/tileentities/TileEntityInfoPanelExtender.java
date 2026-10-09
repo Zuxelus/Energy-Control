@@ -50,8 +50,8 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 			return;
 		facing = newFacing;
 		if (init) {
-			EnergyControl.INSTANCE.screenManager.unregisterScreenPart(this);
-			EnergyControl.INSTANCE.screenManager.registerInfoPanelExtender(this);
+			EnergyControl.screenManager.unregisterScreenPart(this);
+			EnergyControl.screenManager.registerInfoPanelExtender(this);
 		}
 	}
 
@@ -118,9 +118,9 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 		if (!level.isClientSide()) {
 			// on chunk unload only forget the screen: changing blocks or reading neighbours here loads chunks again and stalls saving
 			if (broken)
-				EnergyControl.INSTANCE.screenManager.unregisterScreenPart(this);
+				EnergyControl.screenManager.unregisterScreenPart(this);
 			else
-				EnergyControl.INSTANCE.screenManager.unloadScreenPart(this);
+				EnergyControl.screenManager.unloadScreenPart(this);
 		}
 		super.setRemoved();
 	}
@@ -137,7 +137,7 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 			return;
 
 		if (!level.isClientSide() && !partOfScreen)
-			EnergyControl.INSTANCE.screenManager.registerInfoPanelExtender(this);
+			EnergyControl.screenManager.registerInfoPanelExtender(this);
 
 		updateScreen();
 		init = true;

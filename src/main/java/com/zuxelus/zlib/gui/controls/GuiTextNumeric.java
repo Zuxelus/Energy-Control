@@ -9,7 +9,7 @@ public class GuiTextNumeric extends EditBox {
 
 	public GuiTextNumeric(Font font, int x, int y, int width, int height, Component msg, int max) {
 		super(font, x, y, width, height, msg);
-		this.max = max; 
+		this.max = max;
 	}
 
 	@Override
