@@ -12,13 +12,13 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 public class FluidInfo {
 	String translationKey;
-	String fluidName;
+	String fluidId;
 	long amount;
 	long capacity;
 
-	public FluidInfo(String translationKey, String fluidName, long amount, long capacity) {
+	public FluidInfo(String translationKey, String fluidId, long amount, long capacity) {
 		this.translationKey = translationKey;
-		this.fluidName = fluidName;
+		this.fluidId = fluidId;
 		this.amount = amount;
 		this.capacity = capacity;
 	}
@@ -28,7 +28,7 @@ public class FluidInfo {
 			amount = stack.getAmount();
 			if (amount > 0) {
 				translationKey = stack.getDescriptionId();
-				fluidName = BuiltInRegistries.FLUID.getKey(stack.getFluid()).toString();
+				fluidId = BuiltInRegistries.FLUID.getKey(stack.getFluid()).toString();
 			}
 		}
 		this.capacity = capacity;
@@ -38,7 +38,7 @@ public class FluidInfo {
 		this.amount = amount;
 		if (resource != null && !resource.isEmpty() && amount > 0) {
 			translationKey = resource.getFluidType().getDescriptionId();
-			fluidName = BuiltInRegistries.FLUID.getKey(resource.getFluid()).toString();
+			fluidId = BuiltInRegistries.FLUID.getKey(resource.getFluid()).toString();
 		}
 		this.capacity = capacity;
 	}
@@ -46,7 +46,7 @@ public class FluidInfo {
 	public FluidInfo(Fluid fluid, long amount, long capacity) {
 		if (fluid != null && !(fluid instanceof EmptyFluid)) {
 			translationKey = fluid.getFluidType().getDescriptionId();
-			fluidName = BuiltInRegistries.FLUID.getKey(fluid).toString();
+			fluidId = BuiltInRegistries.FLUID.getKey(fluid).toString();
 		}
 		this.amount = amount;
 		this.capacity = capacity;
@@ -57,8 +57,8 @@ public class FluidInfo {
 			reader.setString("name", Language.getInstance().getOrDefault(translationKey));
 		else
 			reader.setString("name", "");
-		if (fluidName != null)
-			reader.setString("fluidName", fluidName);
+		if (fluidId != null)
+			reader.setString("fluidName", fluidId);
 		else
 			reader.setString("fluidName", "");
 		reader.setLong("amount", amount);

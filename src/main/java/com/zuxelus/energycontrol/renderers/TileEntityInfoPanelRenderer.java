@@ -4,22 +4,16 @@ import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelString;
-import com.zuxelus.energycontrol.renderers.CubeRenderer.PositionTextureVertex;
-import com.zuxelus.energycontrol.renderers.CubeRenderer.TexturedQuad;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.util.LightCoordsUtil;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.Identifier;
+import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.world.phys.AABB;
 
 public class TileEntityInfoPanelRenderer extends TileRenderer<TileEntityInfoPanel> {
 	private final Font font;
@@ -175,7 +169,7 @@ public class TileEntityInfoPanelRenderer extends TileRenderer<TileEntityInfoPane
 		}
 		maxWidth += 4;
 
-		int lineHeight = fontRenderer.lineHeight + 3;
+		int lineHeight = fontRenderer.lineHeight + 2;
 		int requiredHeight = lineHeight * joinedData.size();
 		float scaleX = displayWidth / maxWidth;
 		float scaleY = displayHeight / requiredHeight;
@@ -190,22 +184,26 @@ public class TileEntityInfoPanelRenderer extends TileRenderer<TileEntityInfoPane
 			offsetY = (realHeight - requiredHeight) / 2;
 		} else {
 			offsetX = (realWidth - maxWidth) / 2 + 2;
-			offsetY = 3;
+			offsetY = 1;
 		}
 
 		int row = 0;
 		for (PanelString panelString : joinedData) {
 			if (panelString.textLeft != null)
-				RenderHelper.drawString(matrixStack, buffer, panelString.textLeft, offsetX - realWidth / 2,
-					offsetY - realHeight / 2 + row * lineHeight, panelString.colorLeft != 0 ? panelString.colorLeft : colorHex, LightCoordsUtil.FULL_BRIGHT);
+				drawString(buffer, matrixStack, panelString.textLeft, offsetX - realWidth / 2,
+					offsetY - realHeight / 2 + row * lineHeight, panelString.colorLeft != 0 ? panelString.colorLeft : colorHex);
 			if (panelString.textCenter != null)
-				RenderHelper.drawString(matrixStack, buffer, panelString.textCenter, -fontRenderer.width(panelString.textCenter) / 2,
-					offsetY - realHeight / 2 + row * lineHeight, panelString.colorCenter != 0 ? panelString.colorCenter : colorHex, LightCoordsUtil.FULL_BRIGHT);
+				drawString(buffer, matrixStack, panelString.textCenter, -fontRenderer.width(panelString.textCenter) / 2,
+					offsetY - realHeight / 2 + row * lineHeight, panelString.colorCenter != 0 ? panelString.colorCenter : colorHex);
 			if (panelString.textRight != null)
-				RenderHelper.drawString(matrixStack, buffer, panelString.textRight, realWidth / 2 - fontRenderer.width(panelString.textRight),
-					offsetY - realHeight / 2 + row * lineHeight, panelString.colorRight != 0 ? panelString.colorRight : colorHex, LightCoordsUtil.FULL_BRIGHT);
+				drawString(buffer, matrixStack, panelString.textRight, realWidth / 2 - fontRenderer.width(panelString.textRight),
+					offsetY - realHeight / 2 + row * lineHeight, panelString.colorRight != 0 ? panelString.colorRight : colorHex);
 			row++;
 		}
 	}
 
+	// full bright; the polygon offset keeps the text off the screen face
+	private static void drawString(SubmitNodeCollector collector, PoseStack matrixStack, String text, float x, float y, int color) {
+		RenderHelper.drawString(matrixStack, collector, text, x, y, color, Font.DisplayMode.POLYGON_OFFSET, LightCoordsUtil.FULL_BRIGHT);
+	}
 }

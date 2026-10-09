@@ -31,12 +31,12 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class HoloPanel extends FacingHorizontalActive {
+	protected static final VoxelShape AABB_NORTH = Block.box(0.0D, 0.0D, 4.0D, 16.0D, 1.0D, 12.0D);
+	protected static final VoxelShape AABB_WEST = Block.box(4.0D, 0.0D, 0.0D, 12.0D, 1.0D, 16.0D);
 
 	public HoloPanel(Block.Properties properties) {
 		super(FacingBlock.metal(properties));
 	}
-	protected static final VoxelShape AABB_NORTH = Block.box(0.0D, 0.0D, 4.0D, 16.0D, 1.0D, 12.0D);
-	protected static final VoxelShape AABB_WEST = Block.box(4.0D, 0.0D, 0.0D, 12.0D, 1.0D, 16.0D);
 
 	@Override
 	protected BlockEntityFacing createBlockEntity(BlockPos pos, BlockState state) {
@@ -46,21 +46,6 @@ public class HoloPanel extends FacingHorizontalActive {
 	@Override
 	protected boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
 		return world.getBlockState(pos.below()).isFaceSturdy(world, pos.below(), Direction.UP);
-	}
-
-	@Override
-	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		BlockEntity te = world.getBlockEntity(pos);
-		if (!(te instanceof TileEntityHoloPanel))
-			return InteractionResult.PASS;
-		if (!world.isClientSide())
-			player.openMenu((TileEntityHoloPanel) te, buf -> buf.writeBlockPos(pos));
-		return InteractionResult.SUCCESS;
-	}
-
-	@Override
-	public BlockState getStateForPlacement(BlockPlaceContext context) {
-		return super.getStateForPlacement(context).setValue(ACTIVE, context.getLevel().hasNeighborSignal(context.getClickedPos()));
 	}
 
 	@Override
@@ -110,5 +95,20 @@ public class HoloPanel extends FacingHorizontalActive {
 	@Override
 	protected BlockState updateShape(BlockState state, LevelReader world, ScheduledTickAccess ticks, BlockPos currentPos, Direction facing, BlockPos facingPos, BlockState facingState, RandomSource random) {
 		return canSurvive(state, world, currentPos) ? super.updateShape(state, world, ticks, currentPos, facing, facingPos, facingState, random) : Blocks.AIR.defaultBlockState();
+	}
+
+	@Override
+	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		BlockEntity te = world.getBlockEntity(pos);
+		if (!(te instanceof TileEntityHoloPanel))
+			return InteractionResult.PASS;
+		if (!world.isClientSide())
+			player.openMenu((TileEntityHoloPanel) te, buf -> buf.writeBlockPos(pos));
+		return InteractionResult.SUCCESS;
+	}
+
+	@Override
+	public BlockState getStateForPlacement(BlockPlaceContext context) {
+		return super.getStateForPlacement(context).setValue(ACTIVE, context.getLevel().hasNeighborSignal(context.getClickedPos()));
 	}
 }

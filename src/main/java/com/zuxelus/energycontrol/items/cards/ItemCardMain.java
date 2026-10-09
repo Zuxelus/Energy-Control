@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.items.cards;
 
+import com.zuxelus.energycontrol.api.IItemCard;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -50,7 +51,7 @@ public abstract class ItemCardMain extends Item implements IItemCard {
 			tooltip.accept(Component.translatable("msg.ec.cards", reader.getCardCount()));
 	}
 
-	public CardState updateCardNBT(Level world, BlockPos pos, ICardReader reader, ItemStack upgradeStack) {
+	public static CardState updateCardNBT(IItemCard card, Level world, BlockPos pos, ICardReader reader, ItemStack upgradeStack) {
 		int upgradeCountRange = 0;
 		if (upgradeStack != ItemStack.EMPTY && upgradeStack.getItem().equals(ModItems.upgrade_range.get()))
 			upgradeCountRange = upgradeStack.getCount();
@@ -59,7 +60,7 @@ public abstract class ItemCardMain extends Item implements IItemCard {
 		int range = LOCATION_RANGE * (int) Math.pow(2, Math.min(upgradeCountRange, 7));
 
 		CardState state = CardState.INVALID_CARD;
-		if (!ConfigHandler.DISABLE_RANGE_CHECK.get() && isRemoteCard()) {
+		if (!ConfigHandler.DISABLE_RANGE_CHECK.get() && card.isRemoteCard()) {
 			BlockPos target = reader.getTarget();
 			if (target != null) {
 				int dx = target.getX() - pos.getX();
@@ -74,7 +75,7 @@ public abstract class ItemCardMain extends Item implements IItemCard {
 		}
 
 		if (needUpdate)
-			state = update(world, reader, range, pos);
+			state = card.update(world, reader, range, pos);
 		reader.setState(state);
 		return state;
 	}

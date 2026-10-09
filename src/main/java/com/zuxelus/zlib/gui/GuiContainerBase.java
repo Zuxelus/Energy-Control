@@ -31,7 +31,7 @@ public class GuiContainerBase<T extends AbstractContainerMenu> extends AbstractC
 	protected final Identifier texture;
 
 	public GuiContainerBase(T container, Inventory inv, Component name, Identifier texture) {
-		this(container, inv, name, texture, 176, 166);
+		this(container, inv, name, texture, DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT);
 	}
 
 	public GuiContainerBase(T container, Inventory inv, Component name, Identifier texture, int imageWidth, int imageHeight) {

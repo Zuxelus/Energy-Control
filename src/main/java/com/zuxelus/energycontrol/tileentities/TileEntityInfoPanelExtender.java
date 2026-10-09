@@ -1,23 +1,22 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.renderers.RotationOffset;
-import net.neoforged.neoforge.model.data.ModelData;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
+import com.zuxelus.energycontrol.renderers.RotationOffset;
 import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.blocks.FacingHorizontalActive;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.model.data.ModelData;
 
 public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IScreenPart {
 	protected boolean init;
@@ -28,7 +27,7 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	private int coreX;
 	private int coreY;
 	private int coreZ;
-	private boolean unloaded;
+	private boolean broken;
 
 	public TileEntityInfoPanelExtender(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -107,18 +106,21 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 		tag.putInt("coreZ", coreZ);
 	}
 
+	// server, only when the block is broken or replaced; setRemoved() is also called on chunk unload
 	@Override
-	public void onChunkUnloaded() {
-		unloaded = true;
+	public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+		broken = true;
+		super.preRemoveSideEffects(pos, state);
 	}
 
 	@Override
 	public void setRemoved() {
 		if (!level.isClientSide()) {
-			if (unloaded)
-				EnergyControl.INSTANCE.screenManager.unloadScreenPart(this);
-			else
+			// on chunk unload only forget the screen: changing blocks or reading neighbours here loads chunks again and stalls saving
+			if (broken)
 				EnergyControl.INSTANCE.screenManager.unregisterScreenPart(this);
+			else
+				EnergyControl.INSTANCE.screenManager.unloadScreenPart(this);
 		}
 		super.setRemoved();
 	}

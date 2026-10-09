@@ -4,41 +4,19 @@ import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.util.LightCoordsUtil;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.Identifier;
+import net.minecraft.world.phys.AABB;
 
 public class TEAdvancedInfoPanelRenderer extends TileRenderer<TileEntityAdvancedInfoPanel> {
 	private final Font font;
-
-	private static String implodeArray(String[] inputArray, String glueString) {
-		String output = "";
-		if (inputArray.length > 0) {
-			StringBuilder sb = new StringBuilder();
-			for (String s : inputArray) {
-				if (s == null || s.isEmpty())
-					continue;
-				sb.append(glueString);
-				sb.append(s);
-			}
-			output = sb.toString();
-			if (output.length() > 1)
-				output = output.substring(1);
-		}
-		return output;
-	}
 
 	public TEAdvancedInfoPanelRenderer(Context ctx) {
 		font = ctx.font();
@@ -182,56 +160,10 @@ public class TEAdvancedInfoPanelRenderer extends TileRenderer<TileEntityAdvanced
 		displayHeight = (float) ((displayHeight - 0.125F) / Math.cos(a));
 		displayWidth = (float) ((displayWidth - 0.125F) / Math.cos(b));
 
-		// getMaxWidth
-		int maxWidth = 1;
-		for (PanelString panelString : joinedData) {
-			String currentString = implodeArray(new String[] { panelString.textLeft, panelString.textCenter, panelString.textRight }, " ");
-			maxWidth = Math.max(font.width(currentString), maxWidth);
-		}
-		maxWidth += 4;
-
-		int lineHeight = font.lineHeight + 3;
-		int requiredHeight = lineHeight * joinedData.size();
-		float scaleX = displayWidth / maxWidth;
-		float scaleY = displayHeight / requiredHeight;
-		float scale = Math.min(scaleX, scaleY);
-		matrixStack.scale(scale, -scale, scale);
-		int realHeight = (int) Math.floor(displayHeight / scale);
-		int realWidth = (int) Math.floor(displayWidth / scale);
-		int offsetX;
-		int offsetY;
-		if (scaleX < scaleY) {
-			offsetX = 2;
-			offsetY = (realHeight - requiredHeight) / 2;
-		} else {
-			offsetX = (realWidth - maxWidth) / 2 + 2;
-			offsetY = 3;
-		}
-
-		int row = 0;
 		int colorHex = 0x000000;
 		if (panel.getColored())
 			colorHex = panel.getColorText();
-		for (PanelString panelString : joinedData) {
-			if (panelString.textLeft != null) {
-				RenderHelper.drawString(matrixStack, buffer, panelString.textLeft, offsetX - realWidth / 2,
-					1 + offsetY - realHeight / 2 + row * lineHeight,
-					panelString.colorLeft != 0 ? panelString.colorLeft : colorHex, LightCoordsUtil.FULL_BRIGHT);
-			}
-			if (panelString.textCenter != null) {
-				RenderHelper.drawString(matrixStack, buffer, panelString.textCenter,
-					-font.width(panelString.textCenter) / 2,
-					offsetY - realHeight / 2 + row * lineHeight,
-					panelString.colorCenter != 0 ? panelString.colorCenter : colorHex, LightCoordsUtil.FULL_BRIGHT);
-			}
-			if (panelString.textRight != null) {
-				RenderHelper.drawString(matrixStack, buffer, panelString.textRight,
-					realWidth / 2 - font.width(panelString.textRight),
-					offsetY - realHeight / 2 + row * lineHeight,
-					panelString.colorRight != 0 ? panelString.colorRight : colorHex, LightCoordsUtil.FULL_BRIGHT);
-			}
-			row++;
-		}
+		TileEntityInfoPanelRenderer.renderText(joinedData, displayWidth, displayHeight, colorHex, matrixStack, buffer, font);
 	}
 
 }

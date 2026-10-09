@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import com.zuxelus.energycontrol.api.IItemCard;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.blocks.RangeTrigger;
 import com.zuxelus.energycontrol.config.ConfigHandler;
@@ -16,8 +17,6 @@ import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
@@ -31,6 +30,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class TileEntityRangeTrigger extends TileEntityInventory implements MenuProvider, ISlotItemFilter, ITilePacketHandler {
 	public static final int SLOT_CARD = 0;
@@ -183,9 +184,9 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements MenuP
 		ItemStack card = getItem(SLOT_CARD);
 		if (!card.isEmpty()) {
 			Item item = card.getItem();
-			if (item instanceof ItemCardMain) {
+			if (item instanceof IItemCard) {
 				ItemCardReader reader = new ItemCardReader(card);
-				CardState state = ((ItemCardMain) item).updateCardNBT(level, worldPosition, reader, getItem(SLOT_UPGRADE));
+				CardState state = ItemCardMain.updateCardNBT((IItemCard) item, level, worldPosition, reader, getItem(SLOT_UPGRADE));
 				if (state == CardState.OK) {
 					double cur = item instanceof ItemCardEnergy ? reader.getDouble(DataHelper.ENERGY) : reader.getLong("amount");
 					status = cur > Math.max(levelStart, levelEnd) || cur < Math.min(levelStart, levelEnd) ? STATE_ACTIVE : STATE_PASSIVE;

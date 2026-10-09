@@ -34,7 +34,7 @@ public class InventoryCardHolder extends ItemInventory implements MenuProvider {
 
 	@Override
 	public boolean isItemValid(int index, ItemStack stack) {
-		return stack.getItem() instanceof ItemCardMain;
+		return ItemCardMain.isCard(stack);
 	}
 
 	// MenuProvider

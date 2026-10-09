@@ -2,8 +2,6 @@ package com.zuxelus.energycontrol.renderers;
 
 import java.util.List;
 
-import javax.naming.spi.Resolver;
-
 import org.joml.Vector3f;
 
 import com.mojang.blaze3d.vertex.PoseStack;

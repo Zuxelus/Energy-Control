@@ -138,13 +138,13 @@ public class ScreenManager {
 	}
 
 	private boolean isValidExtender(Level world, BlockPos pos, Direction facing, boolean advanced, boolean holo) {
+		if (!Screen.isLoaded(world, pos))
+			return false;
 		Block block = world.getBlockState(pos).getBlock();
 		if (!(block instanceof InfoPanelExtender || block instanceof HoloPanelExtender))
 			return false;
 		BlockEntity te = world.getBlockEntity(pos);
-		if (te.isRemoved())
-			return false;
-		if (!(te instanceof TileEntityInfoPanelExtender))
+		if (!(te instanceof TileEntityInfoPanelExtender) || te.isRemoved())
 			return false;
 		if (advanced ^ (te instanceof TileEntityAdvancedInfoPanelExtender))
 			return false;
@@ -175,7 +175,7 @@ public class ScreenManager {
 		if (extender.getLevel().isClientSide())
 			return;
 		if (!screens.containsKey(getWorldKey(extender.getLevel())))
-			screens.put(getWorldKey(extender.getLevel()), new ArrayList<>());
+			screens.put(getWorldKey(extender.getLevel()), new ArrayList<Screen>());
 		if (!unusedPanels.containsKey(getWorldKey(extender.getLevel())))
 			unusedPanels.put(getWorldKey(extender.getLevel()), new ArrayList<>());
 

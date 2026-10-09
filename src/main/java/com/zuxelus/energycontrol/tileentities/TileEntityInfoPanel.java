@@ -1,15 +1,18 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import com.zuxelus.energycontrol.api.IItemCard;
 import java.util.HashMap;
-import com.zuxelus.energycontrol.renderers.RotationOffset;
-import net.neoforged.neoforge.model.data.ModelData;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.api.*;
+import com.zuxelus.energycontrol.api.CardState;
+import com.zuxelus.energycontrol.api.ICardReader;
+import com.zuxelus.energycontrol.api.IHasBars;
+import com.zuxelus.energycontrol.api.ITouchAction;
+import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.blocks.HoloPanelExtender;
 import com.zuxelus.energycontrol.blocks.InfoPanelExtender;
 import com.zuxelus.energycontrol.config.ConfigHandler;
@@ -18,7 +21,7 @@ import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
-import com.zuxelus.energycontrol.network.NetworkHelper;
+import com.zuxelus.energycontrol.renderers.RotationOffset;
 import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
@@ -39,15 +42,18 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.model.data.ModelData;
 
 public class TileEntityInfoPanel extends TileEntityInventory implements MenuProvider, ITilePacketHandler, IScreenPart, ISlotItemFilter {
 	public static final String NAME = "info_panel";
 	public static final int DISPLAY_DEFAULT = Integer.MAX_VALUE - 1024;
 	public static final int GREEN = -16724992; // 00CC00
+	public static final int BLACK = 0xFF000000;
+
 	private static final byte SLOT_CARD = 0;
 	private static final byte SLOT_UPGRADE_RANGE = 1;
 	private static final byte SLOT_UPGRADE_COLOR = 2;
@@ -68,7 +74,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 
 	protected boolean colored;
 	protected boolean powered;
-	private boolean unloaded;
+	private boolean broken;
 
 	public TileEntityInfoPanel(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -80,6 +86,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 		dataTicker = 4;
 		showLabels = true;
 		colorBackground = GREEN;
+		colorText = BLACK;
 		colored = false;
 	}
 
@@ -99,7 +106,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 			if (screen != null)
 				screen.init(true, level);
 		}
-		//notifyBlockUpdate();
+		notifyBlockUpdate();
 	}
 
 	@Override
@@ -119,8 +126,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	}
 
 	public void setShowLabels(boolean newShowLabels) {
-		/*if (!level.isClientSide() && showLabels != newShowLabels)
-			notifyBlockUpdate();*/
+		if (level != null && !level.isClientSide() && showLabels != newShowLabels)
+			notifyBlockUpdate();
 		showLabels = newShowLabels;
 	}
 
@@ -129,8 +136,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	}
 
 	public void setTickRate(int newValue) {
-		/*if (!level.isClientSide() && tickRate != newValue)
-			notifyBlockUpdate();*/
+		if (level != null && !level.isClientSide() && tickRate != newValue)
+			notifyBlockUpdate();
 		tickRate = newValue;
 	}
 
@@ -139,8 +146,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	}
 
 	public void setColored(boolean newColored) {
-		/*if (!level.isClientSide() && colored != newColored)
-			notifyBlockUpdate();*/
+		if (level != null && !level.isClientSide() && colored != newColored)
+			notifyBlockUpdate();
 		boolean changed = colored != newColored;
 		colored = newColored;
 		if (changed)
@@ -152,8 +159,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	}
 
 	public void setColorBackground(int c) {
-		/*if (!level.isClientSide() && colorBackground != c)
-			notifyBlockUpdate();*/
+		if (level != null && !level.isClientSide() && colorBackground != c)
+			notifyBlockUpdate();
 		boolean changed = colorBackground != c;
 		colorBackground = c;
 		if (changed)
@@ -165,7 +172,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	}
 
 	public void setColorText(int c) {
-		if (!level.isClientSide() && colorText != c)
+		if (level != null && !level.isClientSide() && colorText != c)
 			notifyBlockUpdate();
 		colorText = c;
 	}
@@ -194,21 +201,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	}
 
 	@Override
-	public void onClientMessageReceived(CompoundTag tag) {
-		if (!tag.contains("type"))
-			return;
-		switch (tag.getIntOr("type", 0)) {
-			case 1:
-				if (tag.contains("screenData")) {
-					if (level != null)
-						setScreenData(tag.getCompoundOrEmpty("screenData"));
-					else
-						screenData = tag.getCompoundOrEmpty("screenData");
-				} else
-					screenData = null;
-				break;
-		}
-	}
+	public void onClientMessageReceived(CompoundTag tag) { }
 
 	@Override
 	public void onServerMessageReceived(CompoundTag tag) {
@@ -226,7 +219,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 		case 4:
 			if (tag.contains("slot") && tag.contains("title")) {
 				ItemStack itemStack = getItem(tag.getIntOr("slot", 0));
-				if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemCardMain) {
+				if (ItemCardMain.isCard(itemStack)) {
 					new ItemCardReader(itemStack).setTitle(tag.getStringOr("title", ""));
 					resetCardData();
 				}
@@ -328,7 +321,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 			return;
 		BlockEntity be = world.getBlockEntity(pos);
 		if (be != null)
-			be.requestModelDataUpdate();
+			be.requestModelDataUpdate(); // forge only
 		BlockState state = world.getBlockState(pos);
 		world.sendBlockUpdated(pos, state, state, 8);
 	}
@@ -361,18 +354,21 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 		}
 	}
 
+	// server, only when the block is broken or replaced; setRemoved() is also called on chunk unload
 	@Override
-	public void onChunkUnloaded() {
-		unloaded = true;
+	public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+		broken = true;
+		super.preRemoveSideEffects(pos, state);
 	}
 
 	@Override
 	public void setRemoved() {
 		if (!level.isClientSide()) {
-			if (unloaded)
-				EnergyControl.INSTANCE.screenManager.unloadScreenPart(this);
-			else
+			// on chunk unload only forget the screen: changing blocks or reading neighbours here loads chunks again and stalls saving
+			if (broken)
 				EnergyControl.INSTANCE.screenManager.unregisterScreenPart(this);
+			else
+				EnergyControl.INSTANCE.screenManager.unloadScreenPart(this);
 		}
 		super.setRemoved();
 	}
@@ -507,7 +503,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	private void processCard(ItemStack card, int slot, ItemStack stack) {
 		if (ItemCardMain.isCard(card)) {
 			ItemCardReader reader = new ItemCardReader(card);
-			((ItemCardMain) card.getItem()).updateCardNBT(level, worldPosition, reader, stack);
+			ItemCardMain.updateCardNBT((IItemCard) card.getItem(), level, worldPosition, reader, stack);
 			ItemCardMain.sendCardToWS(getPanelStringList(true, getShowLabels()), reader);
 			reader.updateClient(card, this, slot);
 		}
@@ -594,13 +590,13 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 
 	@Override
 	public boolean isItemValid(int index, ItemStack stack) { // ISlotItemFilter
-        return switch (index) {
-            case SLOT_CARD -> ItemCardMain.isCard(stack);
-            case SLOT_UPGRADE_RANGE -> stack.getItem().equals(ModItems.upgrade_range.get());
-            case SLOT_UPGRADE_COLOR -> stack.getItem().equals(ModItems.upgrade_color.get());
-            case SLOT_UPGRADE_TOUCH -> stack.getItem().equals(ModItems.upgrade_touch.get());
-            default -> false;
-        };
+		return switch (index) {
+		case SLOT_CARD -> ItemCardMain.isCard(stack);
+		case SLOT_UPGRADE_RANGE -> stack.getItem().equals(ModItems.upgrade_range.get());
+		case SLOT_UPGRADE_COLOR -> stack.getItem().equals(ModItems.upgrade_color.get());
+		case SLOT_UPGRADE_TOUCH -> stack.getItem().equals(ModItems.upgrade_touch.get());
+		default -> false;
+		};
 	}
 
 	@Override
@@ -623,14 +619,11 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 			screenData = null;
 		} else
 			screenData = screen.toTag();
-		CompoundTag tag = new CompoundTag();
-		tag.putInt("type", 1);
-		if (screenData != null)
-			tag.put("screenData", screenData);
-		NetworkHelper.updateClientTileEntity(level, getBlockPos(), tag);
+		notifyBlockUpdate();
 	}
 
 	public void updateExtenders(Level world, Boolean active) { // server
+		// the block just switched on or off, so update the power now instead of waiting for the next update packet
 		setPowered(active);
 		if (screen == null)
 			return;
@@ -645,7 +638,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 				}
 	}
 
-	public AABB getRenderBoundingBox() {
+	public AABB getRenderBoundingBox() { // forge only
 		if (screen == null)
 			return new AABB(worldPosition);
 		return new AABB(screen.minX, screen.minY, screen.minZ, screen.maxX + 1, screen.maxY + 1, screen.maxZ + 1);
@@ -729,13 +722,13 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 				&& new ItemCardReader(stack).getState() == CardState.OK;
 	}
 
-	public void renderImage(float displayWidth, float displayHeight, PoseStack matrixStack, SubmitNodeCollector buffer) {
+	public void renderImage(float displayWidth, float displayHeight, PoseStack matrixStack, SubmitNodeCollector collector) {
 		ItemStack stack = getItem(SLOT_CARD);
 		Item card = stack.getItem();
 		if (isTouchCard())
-			((ITouchAction) card).renderImage(new ItemCardReader(stack), matrixStack, buffer);
+			((ITouchAction) card).renderImage(new ItemCardReader(stack), matrixStack, collector);
 		if (hasBars())
-			((IHasBars) card).renderBars(displayWidth, displayHeight, new ItemCardReader(stack), matrixStack, buffer);
+			((IHasBars) card).renderBars(displayWidth, displayHeight, new ItemCardReader(stack), matrixStack, collector);
 	}
 
 	protected void runTouchAction(TileEntityInfoPanel panel, ItemStack cardStack, ItemStack stack, int slot, boolean needsTouchUpgrade) {
@@ -746,7 +739,6 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 		}
 	}
 
-	// MenuProvider
 	@Override
 	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerInfoPanel(windowId, inventory, this);

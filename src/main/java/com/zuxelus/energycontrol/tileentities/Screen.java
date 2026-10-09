@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.tileentities;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -12,7 +13,6 @@ public class Screen {
 	public int maxX;
 	public int maxY;
 	public int maxZ;
-	private TileEntityInfoPanel coreTile;
 	private BlockPos corePos;
 
 	public Screen(TileEntityInfoPanel panel) {
@@ -21,7 +21,6 @@ public class Screen {
 		maxY = minY = pos.getY();
 		maxZ = minZ = pos.getZ();
 
-		coreTile = panel;
 		corePos = pos;
 	}
 
@@ -34,12 +33,26 @@ public class Screen {
 		maxY = tag.getIntOr("maxY", 0);
 		maxZ = tag.getIntOr("maxZ", 0);
 
-		coreTile = panel;
 		corePos = panel.getBlockPos();
 	}
 
+	// the screen can reach into chunks that are not loaded, Level.getBlockEntity would load them
+	public static BlockEntity getLoadedBlockEntity(Level world, BlockPos pos) {
+		if (!isLoaded(world, pos))
+			return null;
+		return world.getBlockEntity(pos);
+	}
+
+	// same check as the deprecated World.isChunkLoaded(BlockPos)
+	public static boolean isLoaded(Level world, BlockPos pos) {
+		return world.getChunkSource().hasChunk(SectionPos.blockToSectionCoord(pos.getX()), SectionPos.blockToSectionCoord(pos.getZ()));
+	}
+
 	public TileEntityInfoPanel getCore(Level world) {
-		return coreTile;
+		BlockEntity be = getLoadedBlockEntity(world, corePos);
+		if (!(be instanceof TileEntityInfoPanel))
+			return null;
+		return (TileEntityInfoPanel) be;
 	}
 
 	public boolean isBlockNearby(BlockEntity tileEntity) {
@@ -67,12 +80,10 @@ public class Screen {
 		for (int x = minX; x <= maxX; x++) {
 			for (int y = minY; y <= maxY; y++) {
 				for (int z = minZ; z <= maxZ; z++) {
-					BlockEntity te = world.getBlockEntity(new BlockPos(x, y, z));
+					BlockEntity te = getLoadedBlockEntity(world, new BlockPos(x, y, z));
 					if (te == null || !(te instanceof IScreenPart))
 						continue;
 					((IScreenPart) te).setScreen(this);
-					/*if (coreTile.getPowered() || force)
-						((IScreenPart) te).updateTileEntity();*/
 				}
 			}
 		}
@@ -82,7 +93,7 @@ public class Screen {
 		for (int x = minX; x <= maxX; x++) {
 			for (int y = minY; y <= maxY; y++) {
 				for (int z = minZ; z <= maxZ; z++) {
-					BlockEntity be = world.getBlockEntity(new BlockPos(x, y, z));
+					BlockEntity be = getLoadedBlockEntity(world, new BlockPos(x, y, z));
 					if (!(be instanceof IScreenPart))
 						continue;
 					IScreenPart part = (IScreenPart) be;
@@ -91,8 +102,6 @@ public class Screen {
 						part.setScreen(null);
 						part.updateData();
 					}
-					/*if (coreTile.getPowered() || force)
-						part.updateTileEntity();*/
 				}
 			}
 		}

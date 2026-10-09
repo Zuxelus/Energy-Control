@@ -2,14 +2,14 @@ package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.blocks.AdvancedInfoPanel;
 import com.zuxelus.energycontrol.containers.ContainerAdvancedInfoPanel;
-import net.minecraft.core.Direction;
-import com.zuxelus.energycontrol.renderers.RotationOffset;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
-
+import com.zuxelus.energycontrol.renderers.RotationOffset;
 import com.zuxelus.zlib.blocks.FacingBlockActive;
+
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -19,9 +19,9 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.Vec3;
 
 public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	public static final String NAME = "info_panel_advanced";
@@ -39,8 +39,8 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	public static final int OFFSET_ROTATE_HOR = 200;
 	public static final int OFFSET_ROTATE_VERT = 300;
 
-	public static final int DEFAULT_TEXT = -1;
-	public static final int DEFAULT_BACKGROUND = -12171706; // 0xFF464646
+	public static final int DEFAULT_TEXT = 0xFFFFFFFF;
+	public static final int DEFAULT_BACKGROUND = 0xFF464646;
 
 	public byte powerMode;
 	public byte thickness;
@@ -118,13 +118,8 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 			newPowered = !newPowered;
 			break;
 		}
-		if (newPowered != powered) {
-			powered = newPowered; // update powered on server side
-			BlockPos pos = getBlockPos();
-			BlockState state = level.getBlockState(pos);
-			level.setBlock(pos, state.setValue(FacingBlockActive.ACTIVE, newPowered), 2);
-			updateExtenders(level, newPowered);
-		}
+		// only the value: this is also called while the update packet is written, changing blocks is done by updatePower
+		setPowered(newPowered);
 	}
 
 	public void setValues(int i) {
@@ -149,8 +144,14 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 			rotateVert = (byte) i;
 		}
 		// the panel body is a baked model, so its chunk has to be rebuilt to show the new shape
-		if (level != null && level.isClientSide())
+		if (level == null)
+			return;
+		if (level.isClientSide())
 			refreshScreenModel();
+		else {
+			setChanged();
+			notifyBlockUpdate();
+		}
 	}
 
 	@Override
@@ -277,7 +278,6 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 		return true;
 	}
 
-	// MenuProvider
 	@Override
 	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerAdvancedInfoPanel(windowId, inventory, this);

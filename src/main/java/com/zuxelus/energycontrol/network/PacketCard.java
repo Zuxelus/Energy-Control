@@ -50,7 +50,7 @@ public record PacketCard(CompoundTag tag, BlockPos pos, int slot, String classNa
 		if (!(te instanceof TileEntityInfoPanel panel))
 			return;
 		ItemStack stack = panel.getItem(message.slot);
-		if (stack.isEmpty() || !(stack.getItem() instanceof ItemCardMain))
+		if (!ItemCardMain.isCard(stack))
 			return;
 		if (!stack.getItem().getClass().getName().equals(message.className)) {
 			EnergyControl.LOGGER.warn("Class mismatch: '{}'!='{}'", message.className, stack.getItem().getClass().getName());

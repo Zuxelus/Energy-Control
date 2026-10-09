@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.items.cards;
 
+import com.zuxelus.energycontrol.api.IItemCard;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,7 +32,7 @@ public class ItemCardReader implements ICardReader {
 	private ItemStack card;
 
 	public ItemCardReader(ItemStack card) {
-		if (!(card.getItem() instanceof ItemCardMain))
+		if (!ItemCardMain.isCard(card))
 			EnergyControl.LOGGER.error("CardReader should be used for card items only.");
 		this.card = card;
 	}
@@ -278,7 +279,7 @@ public class ItemCardReader implements ICardReader {
 	}
 
 	public List<PanelString> getStringData(Level world, int settings, boolean isServer, boolean showLabels) {
-		return ((ItemCardMain) card.getItem()).getStringData(world, settings, this, isServer, showLabels);
+		return ((IItemCard) card.getItem()).getStringData(world, settings, this, isServer, showLabels);
 	}
 
 	public List<PanelString> getAllData() {

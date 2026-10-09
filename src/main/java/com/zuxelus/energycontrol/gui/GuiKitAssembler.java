@@ -44,7 +44,7 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 
 	private void renderInfoToolTip(GuiGraphicsExtractor matrixStack, Slot slot, int x, int y) {
 		ItemStack stack = slot.getItem();
-		if (stack.isEmpty() || !(stack.getItem() instanceof ItemCardMain))
+		if (!ItemCardMain.isCard(stack))
 			return;
 		List<Component> stackList = stack.getTooltipLines(Item.TooltipContext.of(minecraft.level), minecraft.player, minecraft.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
 		List<Component> list = Lists.<Component>newArrayList();

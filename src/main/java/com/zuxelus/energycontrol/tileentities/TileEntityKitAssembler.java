@@ -14,8 +14,6 @@ import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -30,6 +28,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
@@ -99,7 +99,7 @@ public class TileEntityKitAssembler extends TileEntityInventory implements MenuP
 		case 4:
 			if (tag.contains("slot") && tag.contains("title")) {
 				ItemStack itemStack = getItem(tag.getIntOr("slot", 0));
-				if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemCardMain)
+				if (ItemCardMain.isCard(itemStack))
 					new ItemCardReader(itemStack).setTitle(tag.getStringOr("title", ""));
 			}
 			break;
@@ -315,7 +315,7 @@ public class TileEntityKitAssembler extends TileEntityInventory implements MenuP
 		case SLOT_ITEM:
 			return true;
 		case SLOT_INFO:
-			return stack.getItem() instanceof ItemCardMain;
+			return ItemCardMain.isCard(stack);
 		case SLOT_DISCHARGER:
 			return getStackEnergyStorage(stack) != null || CrossModLoader.isElectricItem(stack) || stack.getItem().equals(Items.LAVA_BUCKET);
 		case SLOT_TRANSFORMER:
