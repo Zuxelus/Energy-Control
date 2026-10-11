@@ -149,9 +149,9 @@ public class GalacticraftHelper {
 	public static String getStatus(TileEntitySolar te) {
 		if (te.getDisabled(0))
 			return EnumColor.ORANGE + GCCoreUtil.translate("gui.status.disabled.name");
-		if (!te.getWorld().isDaytime())
+		if (!te.getWorldObj().isDaytime())
 			return EnumColor.DARK_RED + GCCoreUtil.translate("gui.status.blockedfully.name");
-		if (te.getWorld().isRaining() || te.getWorld().isThundering())
+		if (te.getWorldObj().isRaining() || te.getWorldObj().isThundering())
 			return EnumColor.DARK_RED + GCCoreUtil.translate("gui.status.raining.name");
 		if (te.solarStrength == 0)
 			return EnumColor.DARK_RED + GCCoreUtil.translate("gui.status.blockedfully.name");

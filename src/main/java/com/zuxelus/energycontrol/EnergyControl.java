@@ -31,7 +31,7 @@ import net.minecraft.entity.player.EntityPlayer;
 @Mod(modid = EnergyControl.MODID, version = EnergyControl.VERSION, dependencies = "after:IC2", guiFactory = "com.zuxelus.energycontrol.config.GuiFactory", acceptedMinecraftVersions = "[1.7.10]")
 public class EnergyControl {
 	public static final String MODID = "energycontrol";
-	public static final String VERSION = "@VERSION@";
+	public static final String VERSION = Tags.VERSION;
 
 	@SidedProxy(clientSide = "com.zuxelus.energycontrol.proxy.ClientProxy", serverSide = "com.zuxelus.energycontrol.proxy.ServerProxy")
 	public static IProxy proxy;

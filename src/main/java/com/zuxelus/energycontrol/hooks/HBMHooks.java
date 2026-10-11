@@ -92,38 +92,6 @@ public class HBMHooks {
 	}*/
 
 	@Hook
-	public static void updateEntity(TileEntityMachineTurbine te) {
-		if (!map.containsKey(te) || te.getWorldObj().isRemote)
-			return;
-
-		ArrayList<Long> values = new ArrayList<>();
-		FluidType in = te.tanks[0].getTankType();
-		if (in.hasTrait(FT_Coolable.class)) {
-			FT_Coolable trait = (FT_Coolable) in.getTrait(FT_Coolable.class);
-			double eff = trait.getEfficiency(FT_Coolable.CoolingType.TURBINE) * 0.85D;
-			if (eff > 0.0D) {
-				te.tanks[1].setTankType(trait.coolsTo);
-				int inputOps = te.tanks[0].getFill() / trait.amountReq;
-				int outputOps = (te.tanks[1].getMaxFill() - te.tanks[1].getFill()) / trait.amountProduced;
-				int cap = 6000 / trait.amountReq;
-				int ops = Math.min(inputOps, Math.min(outputOps, cap));
-				values.add((long) (ops * trait.amountReq));
-				values.add((long) (ops * trait.amountProduced));
-				values.add((long) (ops * trait.heatEnergy * eff));
-			} else {
-				values.add(0L);
-				values.add(0L);
-				values.add(0L);
-			}
-		} else {
-			values.add(0L);
-			values.add(0L);
-			values.add(0L);
-		}
-		map.put(te, values);
-	}
-
-	@Hook
 	public static void updateEntity(TileEntityMachineLargeTurbine te) {
 		if (!map.containsKey(te) || te.getWorldObj().isRemote)
 			return;
@@ -157,24 +125,6 @@ public class HBMHooks {
 
 	@Hook
 	public static void updateEntity(TileEntityMachineBattery te) {
-		if (!map.containsKey(te) || te.getWorldObj().isRemote)
-			return;
-
-		ArrayList<Long> values = map.get(te);
-		if (values != null && values.size() > 0) {
-			for (int i = 20; i > 0; i--)
-				values.set(i, values.get(i - 1));
-			values.set(0, te.power);
-		} else {
-			values = new ArrayList<>();
-			for (int i = 0; i < 21; i++)
-				values.add(te.power);
-			map.put(te, values);
-		}
-	}
-
-	@Hook
-	public static void updateEntity(TileEntityMachineFENSU te) {
 		if (!map.containsKey(te) || te.getWorldObj().isRemote)
 			return;
 

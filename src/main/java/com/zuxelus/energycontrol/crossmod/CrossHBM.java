@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.crossmod;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +8,6 @@ import com.hbm.blocks.BlockDummyable;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTank;
-import com.hbm.items.machine.ItemBattery;
 import com.hbm.tileentity.TileEntityProxyCombo;
 import com.hbm.tileentity.machine.*;
 import com.hbm.tileentity.machine.TileEntityMachineGasCent.PseudoFluidTank;
@@ -27,6 +27,7 @@ import com.zuxelus.energycontrol.recipes.Recipes;
 import com.zuxelus.energycontrol.utils.DataHelper;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
+import api.hbm.energymk2.IBatteryItem;
 import api.hbm.fluidmk2.IFluidUserMK2;
 import api.hbm.tile.IInfoProviderEC;
 import net.minecraft.block.Block;
@@ -40,18 +41,18 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class CrossHBM extends CrossModBase {
+	private static final BigInteger LONG_MAX = BigInteger.valueOf(Long.MAX_VALUE);
+	private static final BigInteger LONG_MIN = BigInteger.valueOf(Long.MIN_VALUE);
 
 	@Override
 	public boolean isElectricItem(ItemStack stack) {
-		if (stack.getItem() instanceof ItemBattery)
-			return true;
-		return false;
+		return stack.getItem() instanceof IBatteryItem;
 	}
 
 	@Override
 	public double dischargeItem(ItemStack stack, double needed) {
-		ItemBattery item = (ItemBattery) stack.getItem();
-		long amount =  Math.min(Math.min((long) needed, item.getDischargeRate(null)), item.getCharge(stack));
+		IBatteryItem item = (IBatteryItem) stack.getItem();
+		long amount =  Math.min(Math.min((long) needed, item.getDischargeRate(stack)), item.getCharge(stack));
 		item.dischargeBattery(stack, amount);
 		return amount;
 	}
@@ -64,7 +65,9 @@ public class CrossHBM extends CrossModBase {
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setString(DataHelper.EUTYPE, "HE");
 		tag.setDouble(DataHelper.ENERGY, data.getLong(DataHelper.ENERGY));
-		tag.setDouble(DataHelper.CAPACITY, data.getLong(DataHelper.CAPACITY));
+		// Blocks without a real capacity (the REDD battery) report none rather than a made up one.
+		if (data.hasKey(DataHelper.CAPACITY))
+			tag.setDouble(DataHelper.CAPACITY, data.getLong(DataHelper.CAPACITY));
 		return tag;
 	}
 
@@ -144,6 +147,15 @@ public class CrossHBM extends CrossModBase {
 			tag.setString(name, String.format("%s: %s mB", tank.getTankType().getName(), tank.getFill()));
 	}
 
+	/** BigInteger.longValue() silently wraps on overflow, so clamp: REDD storage is unbounded. */
+	private static long toLong(BigInteger value) {
+		if (value.compareTo(LONG_MAX) > 0)
+			return Long.MAX_VALUE;
+		if (value.compareTo(LONG_MIN) < 0)
+			return Long.MIN_VALUE;
+		return value.longValue();
+	}
+
 	public TileEntity findTileEntity(World world, int x, int y, int z) {
 		Block block = world.getBlock(x, y, z);
 		if (block instanceof BlockDummyable) {
@@ -183,13 +195,17 @@ public class CrossHBM extends CrossModBase {
 		// ---------------- Storage ----------------
 		if (te instanceof TileEntityBatteryREDD) {
 			TileEntityBatteryREDD m = (TileEntityBatteryREDD) te;
-			tag.setLong(DataHelper.ENERGY, m.getPower());
-			tag.setLong(DataHelper.CAPACITY, m.getMaxPower());
+			// getPower()/getMaxPower() are power net interface values (capped at maxPower/2 and
+			// Long.MAX_VALUE/100), not storage. The real charge is the unbounded BigInteger field,
+			// and the block has no capacity at all, so no capacity is reported.
+			tag.setLong(DataHelper.ENERGY, toLong(m.power));
+			tag.setLong(DataHelper.DIFF, toLong(m.delta) / 20);
 			found = true;
 		} else if (te instanceof TileEntityBatterySocket) {
 			TileEntityBatterySocket m = (TileEntityBatterySocket) te;
 			tag.setLong(DataHelper.ENERGY, m.getPower());
 			tag.setLong(DataHelper.CAPACITY, m.getMaxPower());
+			tag.setLong(DataHelper.DIFF, m.delta / 20);
 			found = true;
 		} else if (te instanceof TileEntityMachineFluidTank) {
 			addTank(DataHelper.TANK, tag, ((TileEntityMachineFluidTank) te).tank);
@@ -219,20 +235,6 @@ public class CrossHBM extends CrossModBase {
 			found = true;
 
 		// ---------------- Turbines / engines ----------------
-		} else if (te instanceof TileEntityMachineTurbine) {
-			TileEntityMachineTurbine m = (TileEntityMachineTurbine) te;
-			tag.setLong(DataHelper.ENERGY, m.power);
-			tag.setLong(DataHelper.CAPACITY, TileEntityMachineTurbine.maxPower);
-			addTank(DataHelper.TANK, tag, m.tanks[0]);
-			addTank(DataHelper.TANK2, tag, m.tanks[1]);
-			ArrayList values = getHookValues(m);
-			if (values != null) {
-				tag.setBoolean(DataHelper.ACTIVE, (Long) values.get(1) > 0);
-				tag.setDouble(DataHelper.CONSUMPTION, (Long) values.get(0));
-				tag.setDouble(DataHelper.OUTPUTMB, (Long) values.get(1));
-				tag.setDouble(DataHelper.OUTPUT, (Long) values.get(2));
-			}
-			found = true;
 		} else if (te instanceof TileEntityMachineLargeTurbine) {
 			TileEntityMachineLargeTurbine m = (TileEntityMachineLargeTurbine) te;
 			tag.setLong(DataHelper.ENERGY, m.power);
@@ -623,14 +625,6 @@ public class CrossHBM extends CrossModBase {
 			TileEntityMachineRadarNT m = (TileEntityMachineRadarNT) te;
 			tag.setLong(DataHelper.ENERGY, m.power);
 			tag.setLong(DataHelper.CAPACITY, TileEntityMachineRadarNT.maxPower);
-			found = true;
-		} else if (te instanceof TileEntityMachineIGenerator) {
-			TileEntityMachineIGenerator m = (TileEntityMachineIGenerator) te;
-			tag.setLong(DataHelper.ENERGY, m.power);
-			tag.setLong(DataHelper.CAPACITY, TileEntityMachineIGenerator.maxPower);
-			addTank(DataHelper.TANK, tag, m.tanks[0]);
-			addTank(DataHelper.TANK2, tag, m.tanks[1]);
-			addTank(DataHelper.TANK3, tag, m.tanks[2]);
 			found = true;
 		} else if (te instanceof TileEntityMachineIntake) {
 			TileEntityMachineIntake m = (TileEntityMachineIntake) te;

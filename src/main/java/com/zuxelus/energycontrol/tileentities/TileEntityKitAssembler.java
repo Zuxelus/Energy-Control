@@ -13,7 +13,10 @@ import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.ITilePacketHandler;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
+import api.hbm.energymk2.IEnergyConductorMK2;
 import api.hbm.energymk2.IEnergyReceiverMK2;
+import api.hbm.energymk2.Nodespace;
+import api.hbm.energymk2.Nodespace.PowerNode;
 import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Optional;
@@ -27,6 +30,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -202,7 +206,7 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITile
 		handleDischarger(SLOT_DISCHARGER);
 		if (Loader.isModLoaded(ModIDs.HBM))
 			for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
-				trySubscribe(worldObj, xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ, dir); 
+				trySubscribe(worldObj, xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
 		if (!active)
 			return;
 		if (storage.getEnergyStored() >= CONSUMPTION) {
@@ -381,6 +385,17 @@ public class TileEntityKitAssembler extends TileEntityInventory implements ITile
 	@Override
 	public ItemStack getWrenchDrop(EntityPlayer player) {
 		return new ItemStack(ModItems.blockKitAssembler);
+	}
+
+	// Replaces IEnergyReceiverMK2.trySubscribe(), which HBM dropped in 1.0.27_X5844.
+	// Joining the neighbouring conductor's power net is now the receiver's own job.
+	@Optional.Method(modid = ModIDs.HBM)
+	private void trySubscribe(World world, int x, int y, int z) {
+		if (!(world.getTileEntity(x, y, z) instanceof IEnergyConductorMK2))
+			return;
+		PowerNode node = Nodespace.getNode(world, x, y, z);
+		if (node != null && node.net != null)
+			node.net.addReceiver(this);
 	}
 
 	// IEnergyUser
