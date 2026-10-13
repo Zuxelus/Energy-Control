@@ -39,8 +39,8 @@ public final class ConfigHandler {
 		DISABLE_RANGE_CHECK =  builder.comment("Disable Range Check").define("disableRangeCheck", false);
 
 		WS_ENABLED =  builder.comment("Web Socket Enabled").define("wsEnabled", false);
-		WS_HOST =  builder.comment("Web Socket Host").define("wsHost", "");
-		WS_PORT =  builder.comment("Web Socket Port").defineInRange("wsPort", 0, 0, 65535);
+		WS_HOST =  builder.comment("Web Socket Host").define("wsHost", "localhost");
+		WS_PORT =  builder.comment("Web Socket Port").defineInRange("wsPort", 8000, 0, 65535);
 		WS_TOKEN =  builder.comment("Web Socket Token").define("wsToken", "78c2b80a-1203-43fd-a9af-75cec29f5acf");
 		WS_REFRESH_RATE =  builder.comment("Web Socket Refresh Rate").defineInRange("wsRefreshRate", 100, 10, 20000);
 		WS_SERVER_ID =  builder.comment("Web Socket Server ID").define("wsServerID", UUID.randomUUID().toString());

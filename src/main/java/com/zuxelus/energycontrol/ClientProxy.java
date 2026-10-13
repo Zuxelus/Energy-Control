@@ -2,9 +2,6 @@ package com.zuxelus.energycontrol;
 
 import com.zuxelus.energycontrol.gui.*;
 import com.zuxelus.energycontrol.renderers.PanelModel;
-import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
-import net.neoforged.neoforge.client.gui.ConfigurationScreen;
-import net.neoforged.fml.ModContainer;
 import net.neoforged.neoforge.client.event.RegisterBlockStateModels;
 import com.zuxelus.energycontrol.init.ModContainerTypes;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
@@ -20,18 +17,21 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.gui.ConfigurationScreen;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent;
 
 @Mod(value = EnergyControl.MODID, dist = Dist.CLIENT)
 public class ClientProxy {
 
 	public ClientProxy(IEventBus modEventBus, ModContainer container) {
-		// the Config button of the mod list
+		// enables the Config button in the mod list
 		container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
 		modEventBus.addListener(ClientProxy::onClientSetup);
 		modEventBus.addListener(ClientProxy::registerScreens);

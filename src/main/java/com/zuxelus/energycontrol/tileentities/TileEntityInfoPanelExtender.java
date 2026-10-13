@@ -214,10 +214,10 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 
 	public int getColorBackground() {
 		if (screen == null)
-			return TileEntityInfoPanel.GREEN;
+			return getDefaultBackground();
 		TileEntityInfoPanel core = screen.getCore(level);
 		if (core == null)
-			return TileEntityInfoPanel.GREEN;
+			return getDefaultBackground();
 		return core.getColorBackground();
 	}
 

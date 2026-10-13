@@ -44,7 +44,7 @@ public class TileEntityHoloPanel extends TileEntityInfoPanel {
 		}
 	}
 
-	public AABB getRenderBoundingBox() {
+	public AABB getRenderBoundingBox() { // forge only
 		if (screen == null)
 			return new AABB(worldPosition);
 		return new AABB(screen.minX, screen.minY, screen.minZ, screen.maxX + 1, screen.maxY + getPower(), screen.maxZ + 1);

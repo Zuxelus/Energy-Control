@@ -100,12 +100,12 @@ public abstract class BlockEntityFacing extends BlockEntity {
 	}
 
 	@Override
-	public void onDataPacket(Connection net, ValueInput input) {
+	public void onDataPacket(Connection net, ValueInput input) { // forge only
 		readProperties(input);
 	}
 
 	@Override
-	public void handleUpdateTag(ValueInput input) {
+	public void handleUpdateTag(ValueInput input) { // forge only
 		readProperties(input);
 	}
 

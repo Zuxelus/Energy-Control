@@ -14,6 +14,7 @@ import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.registration.IRecipeTransferRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -42,6 +43,11 @@ public class CrossJEI implements IModPlugin {
 	}
 
 	@Override
+	public void registerRecipeTransferHandlers(IRecipeTransferRegistration registry) {
+		registry.addRecipeTransferHandler(new KitAssemblerTransferHandler(registry.getTransferHelper()), KitAssemblerRecipeCategory.recipeType);
+	}
+
+	@Override
 	public void registerRecipes(IRecipeRegistration registry) {
 		registry.addRecipes(KitAssemblerRecipeCategory.recipeType, KitAssemblerRecipeType.getRecipes(Minecraft.getInstance().level));
 		registerItem(registry, ModItems.white_lamp.get(), "ec.jei.blockLightWhite");
@@ -59,6 +65,7 @@ public class CrossJEI implements IModPlugin {
 		registerItem(registry, ModItems.upgrade_color.get(), "ec.jei.upgradeColor");
 		registerItem(registry, ModItems.upgrade_range.get(), "ec.jei.upgradeRange");
 		registerItem(registry, ModItems.upgrade_touch.get(), "ec.jei.upgradeTouch");
+		registerItem(registry, ModItems.upgrade_web.get(), "ec.jei.upgradeWeb");
 
 		registerItem(registry, ModItems.kit_app_eng, "ec.jei.kitAppEng");
 		registerItem(registry, ModItems.kit_big_reactors.get(), "ec.jei.kitBigReactors");

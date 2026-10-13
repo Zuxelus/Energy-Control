@@ -46,8 +46,8 @@ public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel
 	@Override
 	protected void addPlayerInventoryTopSlots(Inventory inventory, int width, int height) {
 		for (int col = 0; col < 9; col++)
-			// the open panel stays in the hand, so its slot is locked
 			if (col == panelSlot)
+				// the open panel stays in the hand, so its slot is locked
 				addSlot(new SlotLocked(inventory, col, width + col * 18, height - 24));
 			else
 				addSlot(new Slot(inventory, col, width + col * 18, height - 24));

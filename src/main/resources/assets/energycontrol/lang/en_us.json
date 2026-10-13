@@ -204,6 +204,7 @@
     "ec.jei.upgradeColor": "Used to change the font and background color in information panel.",
     "ec.jei.upgradeRange": "Used to increase working range in information, advanced and portable panels.",
     "ec.jei.upgradeTouch": "Used to enable touch screen functionality in information panel.",
+    "ec.jei.upgradeWeb": "Used to send card data to a Web Socket server. Put it in the touch screen upgrade slot of an information panel.",
     "ec.jei.kitAppEng": "Used for to get info from Applied Energistics 2 network.",
     "ec.jei.kitBigReactors": "Used to get info from Reactor and Turbine from Extreme Reactors / Bigger Reactors mods.",
     "ec.jei.kitEnergy": "Used to get info from energy storages. Should work with blocks from many different mods.",
@@ -233,9 +234,15 @@
     "energycontrol.configuration.disableRangeCheck": "Disable Range Check",
     "energycontrol.configuration.disableRangeCheck.tooltip": "Cards work at any distance",
     "energycontrol.configuration.wsEnabled": "Web Socket Enabled",
+    "energycontrol.configuration.wsEnabled.tooltip": "Send card data to a Web Socket server",
     "energycontrol.configuration.wsHost": "Web Socket Host",
+    "energycontrol.configuration.wsHost.tooltip": "Web Socket Host",
     "energycontrol.configuration.wsPort": "Web Socket Port",
+    "energycontrol.configuration.wsPort.tooltip": "Web Socket Port",
     "energycontrol.configuration.wsToken": "Web Socket Token",
+    "energycontrol.configuration.wsToken.tooltip": "Web Socket Token",
     "energycontrol.configuration.wsRefreshRate": "Web Socket Refresh Rate",
-    "energycontrol.configuration.wsServerID": "Web Socket Server ID"
+    "energycontrol.configuration.wsRefreshRate.tooltip": "Web Socket Refresh Rate, in ticks",
+    "energycontrol.configuration.wsServerID": "Web Socket Server ID",
+    "energycontrol.configuration.wsServerID.tooltip": "Web Socket Server ID"
 }

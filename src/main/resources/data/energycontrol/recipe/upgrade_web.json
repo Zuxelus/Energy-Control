@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " U ",
+    "UCU",
+    " U "
+  ],
+  "key": {
+    "U": "energycontrol:upgrade_range",
+    "C": "#c:circuits/advanced"
+  },
+  "result": {
+    "id": "energycontrol:upgrade_web"
+  }
+}

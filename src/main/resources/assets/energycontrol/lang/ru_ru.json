@@ -191,6 +191,7 @@
     "ec.jei.upgradeColor": "Used to change the font and background color in information panel.",
     "ec.jei.upgradeRange": "Used to increase working range in information, advanced and portable panels.",
     "ec.jei.upgradeTouch": "Used to enable touch screen functionality in information panel.",
+    "ec.jei.upgradeWeb": "Отправляет данные карты на сервер Web Socket. Помещается в слот улучшения сенсорного экрана информационной панели.",
     "ec.jei.kitAppEng": "Used for to get info from Applied Energistics 2 network.",
     "ec.jei.kitBigReactors": "Used to get info from Reactor and Turbine from Extreme Reactors / Bigger Reactors mods.",
     "ec.jei.kitEnergy": "Used to get info from energy storages. Should work with blocks from many different mods.",
@@ -220,9 +221,15 @@
     "energycontrol.configuration.disableRangeCheck": "Отключить проверку дальности",
     "energycontrol.configuration.disableRangeCheck.tooltip": "Карточки работают на любом расстоянии",
     "energycontrol.configuration.wsEnabled": "Web Socket включён",
-    "energycontrol.configuration.wsHost": "Web Socket хост",
-    "energycontrol.configuration.wsPort": "Web Socket порт",
-    "energycontrol.configuration.wsToken": "Web Socket токен",
-    "energycontrol.configuration.wsRefreshRate": "Web Socket период обновления",
-    "energycontrol.configuration.wsServerID": "Web Socket ID сервера"
+    "energycontrol.configuration.wsEnabled.tooltip": "Отправлять данные карт на сервер Web Socket",
+    "energycontrol.configuration.wsHost": "Web Socket: хост",
+    "energycontrol.configuration.wsHost.tooltip": "Хост Web Socket",
+    "energycontrol.configuration.wsPort": "Web Socket: порт",
+    "energycontrol.configuration.wsPort.tooltip": "Порт Web Socket",
+    "energycontrol.configuration.wsToken": "Web Socket: токен",
+    "energycontrol.configuration.wsToken.tooltip": "Токен Web Socket",
+    "energycontrol.configuration.wsRefreshRate": "Web Socket: период обновления",
+    "energycontrol.configuration.wsRefreshRate.tooltip": "Период обновления Web Socket, в тиках",
+    "energycontrol.configuration.wsServerID": "Web Socket: ID сервера",
+    "energycontrol.configuration.wsServerID.tooltip": "ID сервера Web Socket"
 }

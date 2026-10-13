@@ -369,6 +369,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 				EnergyControl.screenManager.unregisterScreenPart(this);
 			else
 				EnergyControl.screenManager.unloadScreenPart(this);
+		} else if (!level.getBlockState(worldPosition).is(getBlockState().getBlock())) {
+			// the core was broken or replaced: the other blocks of the screen were baked with its thickness, rotation and colors
+			refreshScreenModel();
 		}
 		super.setRemoved();
 	}
@@ -464,7 +467,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 		return null;
 	}
 
-	public List<String> getPanelStringList(boolean isRaw) {
+	/*public List<String> getPanelStringList(boolean isRaw) {
 		List<PanelString> joinedData = getPanelStringList(true, false);
 		List<String> list = NonNullList.create();
 		if (joinedData == null || joinedData.isEmpty())
@@ -483,7 +486,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 
 	private String formatString(String text, boolean isRaw) {
 		return isRaw ? text : text.replaceAll("\\u00a7[1-9,a-f]", "");
-	}
+	}*/
 
 	public int getCardSlot(ItemStack card) {
 		if (card.isEmpty())
@@ -504,9 +507,15 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 		if (ItemCardMain.isCard(card)) {
 			ItemCardReader reader = new ItemCardReader(card);
 			ItemCardMain.updateCardNBT((IItemCard) card.getItem(), level, worldPosition, reader, stack);
-			ItemCardMain.sendCardToWS(getPanelStringList(true, getShowLabels()), reader);
+			if (hasWebUpgrade())
+				ItemCardMain.sendCardToWS(getPanelStringList(true, getShowLabels()), reader);
 			reader.updateClient(card, this, slot);
 		}
+	}
+
+	// shares the slot with the touch screen upgrade
+	public boolean hasWebUpgrade() {
+		return getItem(SLOT_UPGRADE_TOUCH).getItem().equals(ModItems.upgrade_web.get());
 	}
 
 	public boolean isColoredEval() {
@@ -594,7 +603,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 		case SLOT_CARD -> ItemCardMain.isCard(stack);
 		case SLOT_UPGRADE_RANGE -> stack.getItem().equals(ModItems.upgrade_range.get());
 		case SLOT_UPGRADE_COLOR -> stack.getItem().equals(ModItems.upgrade_color.get());
-		case SLOT_UPGRADE_TOUCH -> stack.getItem().equals(ModItems.upgrade_touch.get());
+		case SLOT_UPGRADE_TOUCH -> stack.getItem().equals(ModItems.upgrade_touch.get()) || stack.getItem().equals(ModItems.upgrade_web.get());
 		default -> false;
 		};
 	}
@@ -732,7 +741,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 	}
 
 	protected void runTouchAction(TileEntityInfoPanel panel, ItemStack cardStack, ItemStack stack, int slot, boolean needsTouchUpgrade) {
-		if (isTouchCard(cardStack) && (!needsTouchUpgrade || !getItem(SLOT_UPGRADE_TOUCH).isEmpty())) {
+		if (isTouchCard(cardStack) && (!needsTouchUpgrade || getItem(SLOT_UPGRADE_TOUCH).getItem().equals(ModItems.upgrade_touch.get()))) {
 			ICardReader reader = new ItemCardReader(cardStack);
 			if (((ITouchAction) cardStack.getItem()).runTouchAction(panel.getLevel(), reader, stack))
 				reader.updateClient(cardStack, panel, slot);
