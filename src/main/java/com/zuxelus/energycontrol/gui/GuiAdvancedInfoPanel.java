@@ -1,11 +1,9 @@
 package com.zuxelus.energycontrol.gui;
 
-import com.zuxelus.energycontrol.api.IItemCard;
 import java.util.List;
-import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.api.IItemCard;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.containers.ContainerAdvancedInfoPanel;
 import com.zuxelus.energycontrol.gui.controls.GuiInfoPanelCheckBox;
@@ -21,6 +19,8 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -99,7 +99,6 @@ public class GuiAdvancedInfoPanel extends GuiPanelBase<ContainerAdvancedInfoPane
 	@Override
 	public void extractBackground(GuiGraphicsExtractor context, int mouseX, int mouseY, float partialTicks) {
 		super.extractBackground(context, mouseX, mouseY, partialTicks);
-		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
 		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, leftPos + 24, topPos + 62 + activeTab * 14, 182, 0, 1, 15, 256, 256);
 		if (textboxTitle != null)
 			textboxTitle.extractRenderState(context, mouseX, mouseY, partialTicks);

@@ -159,10 +159,14 @@
     "config.energycontrol.screenRefreshPeriod.tooltip": "Период обновления новой информационной панели по умолчанию, в тиках",
     "config.energycontrol.rangeTriggerRefreshPeriod": "Период обновления датчика диапазона",
     "config.energycontrol.rangeTriggerRefreshPeriod.tooltip": "Период обновления нового датчика диапазона, в тиках",
+    "config.energycontrol.thermalMonitorRefreshPeriod": "Период обновления термодатчика",
+    "config.energycontrol.thermalMonitorRefreshPeriod.tooltip": "Период обновления нового термодатчика по умолчанию, в тиках",
     "config.energycontrol.SMPMaxAlarmRange": "Макс. радиус сирены на сервере",
     "config.energycontrol.SMPMaxAlarmRange.tooltip": "Наибольший радиус сирены в мультиплеере, в блоках (пока не используется)",
     "config.energycontrol.useCustomSounds": "Свои звуки",
     "config.energycontrol.useCustomSounds.tooltip": "Загружать свои звуки сирены из config/alarms (после перезапуска)",
+    "config.energycontrol.alarmPause": "Пауза сирены",
+    "config.energycontrol.alarmPause.tooltip": "Пауза между двумя воспроизведениями звука сирены, в тиках",
     "gui.ec.portableBarsOn": "Шкалы: вкл",
     "gui.ec.portableBarsOff": "Шкалы: выкл"
 }

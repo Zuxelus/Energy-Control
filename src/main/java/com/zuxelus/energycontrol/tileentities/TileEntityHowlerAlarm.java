@@ -32,7 +32,7 @@ public class TileEntityHowlerAlarm extends BlockEntityFacing implements ITilePac
 
 	public TileEntityHowlerAlarm(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
-		tickRate = 20;
+		tickRate = ConfigHandler.alarmPause;
 		updateTicker = 0;
 		powered = false;
 		soundName = prevSoundName = DEFAULT_SOUND_NAME;

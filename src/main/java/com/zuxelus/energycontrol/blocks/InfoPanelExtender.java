@@ -25,8 +25,8 @@ public class InfoPanelExtender extends FacingBlockActive {
 		this(ModItems.blockSettings());
 	}
 
-	public InfoPanelExtender(BlockBehaviour.Properties settings) {
-		super(settings.lightLevel(state -> state.getValue(ACTIVE) ? 10 : 0));
+	public InfoPanelExtender(BlockBehaviour.Properties properties) {
+		super(properties.lightLevel(state -> state.getValue(ACTIVE) ? 10 : 0));
 	}
 
 	@Override

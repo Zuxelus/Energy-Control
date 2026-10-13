@@ -8,7 +8,6 @@ import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -16,7 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
-public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IScreenPart, ITilePacketHandler {
+public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IScreenPart {
 	protected boolean init;
 
 	protected Screen screen;
@@ -67,12 +66,6 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	}
 
 	@Override
-	public void onClientMessageReceived(CompoundTag tag) { }
-
-	@Override
-	public void onServerMessageReceived(CompoundTag tag) {}
-
-	@Override
 	protected void readProperties(ValueInput tag) {
 		super.readProperties(tag);
 		partOfScreen = tag.getBooleanOr("partOfScreen", partOfScreen);
@@ -85,6 +78,20 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 				level.getChunkSource().getLightEngine().checkBlock(worldPosition);
 			TileEntityInfoPanel.refreshModel(level, worldPosition);
 		}
+	}
+
+	// the extender body is a baked model (PanelModel) too
+	@Override
+	public Object getRenderData() {
+		return new PanelRenderData(findTexture(), getColored() ? getColorBackground() : getDefaultBackground(), getPowered(), getRotation(), getRenderOffset());
+	}
+
+	protected int getDefaultBackground() {
+		return TileEntityInfoPanel.GREEN;
+	}
+
+	protected RotationOffset getRenderOffset() {
+		return null;
 	}
 
 	@Override
@@ -147,14 +154,16 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 
 				BlockState stateCore = level.getBlockState(core.getBlockPos());
 				BlockState state = level.getBlockState(worldPosition);
-				// block states change on the server only; the client rebuilds the screen on every panel update
-				if (!level.isClientSide() && state.getValue(FacingBlockActive.ACTIVE) != stateCore.getValue(FacingBlockActive.ACTIVE))
-					level.setBlock(worldPosition, state.cycle(FacingBlockActive.ACTIVE), 2);
-				return;
+				if (stateCore.hasProperty(FacingBlockActive.ACTIVE) && state.hasProperty(FacingBlockActive.ACTIVE)) {
+					// block states change on the server only; the client rebuilds the screen on every panel update
+					if (!level.isClientSide() && state.getValue(FacingBlockActive.ACTIVE) != stateCore.getValue(FacingBlockActive.ACTIVE))
+						level.setBlock(worldPosition, state.cycle(FacingBlockActive.ACTIVE), 2);
+					return;
+				}
 			}
 		} else {
 			BlockState state = level.getBlockState(worldPosition);
-			if (!level.isClientSide() && state.getValue(FacingBlockActive.ACTIVE))
+			if (!level.isClientSide() && state.hasProperty(FacingBlockActive.ACTIVE) && state.getValue(FacingBlockActive.ACTIVE))
 				level.setBlock(worldPosition, state.setValue(FacingBlockActive.ACTIVE, false), 2);
 		}
 		partOfScreen = false;
@@ -207,24 +216,6 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 		if (core == null)
 			return TileEntityInfoPanel.GREEN;
 		return core.getColorBackground();
-	}
-
-	/*@Override // TODO
-	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
-		return oldState.getBlock() != newSate.getBlock();
-	}*/
-
-	@Override
-	public Object getRenderData() {
-		return new PanelRenderData(findTexture(), getColored() ? getColorBackground() : getDefaultBackground(), getPowered(), getRotation(), getRenderOffset());
-	}
-
-	protected int getDefaultBackground() {
-		return TileEntityInfoPanel.GREEN;
-	}
-
-	protected RotationOffset getRenderOffset() {
-		return null;
 	}
 
 	public int findTexture() {

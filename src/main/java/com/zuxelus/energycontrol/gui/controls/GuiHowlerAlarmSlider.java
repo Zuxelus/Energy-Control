@@ -1,9 +1,6 @@
 package com.zuxelus.energycontrol.gui.controls;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import net.minecraft.client.input.InputWithModifiers;
-import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
@@ -15,9 +12,12 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 
 @Environment(EnvType.CLIENT)
@@ -96,5 +96,5 @@ public class GuiHowlerAlarmSlider extends AbstractButton {
 	}
 
 	@Override
-	public void updateWidgetNarration(NarrationElementOutput output) { }
+	protected void updateWidgetNarration(NarrationElementOutput output) { }
 }

@@ -30,8 +30,8 @@ public class InfoPanel extends FacingBlockActive {
 		super(ModItems.blockSettings().lightLevel(state -> state.getValue(ACTIVE) ? 10 : 0));
 	}
 
-	public InfoPanel(BlockBehaviour.Properties settings) {
-		super(settings.lightLevel(state -> state.getValue(ACTIVE) ? 10 : 0));
+	public InfoPanel(BlockBehaviour.Properties properties) {
+		super(properties.lightLevel(state -> state.getValue(ACTIVE) ? 10 : 0));
 	}
 
 	@Override
@@ -52,8 +52,8 @@ public class InfoPanel extends FacingBlockActive {
 		return InteractionResult.SUCCESS;
 	}
 
-	public BlockState getStateForPlacement(BlockPlaceContext ctx) {
-		return super.getStateForPlacement(ctx).setValue(ACTIVE, ctx.getLevel().hasNeighborSignal(ctx.getClickedPos()));
+	public BlockState getStateForPlacement(BlockPlaceContext context) {
+		return super.getStateForPlacement(context).setValue(ACTIVE, context.getLevel().hasNeighborSignal(context.getClickedPos()));
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class InfoPanel extends FacingBlockActive {
 		}
 	}
 
-	private void updateExtenders(BlockState state, Level world, BlockPos pos) {
+	private void updateExtenders(BlockState state, Level world, BlockPos pos) { // server
 		BlockEntity be = world.getBlockEntity(pos);
 		if (be instanceof TileEntityInfoPanel)
 			((TileEntityInfoPanel) be).updateExtenders(world, !state.getValue(ACTIVE));

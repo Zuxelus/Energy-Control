@@ -1,11 +1,7 @@
 package com.zuxelus.energycontrol.gui;
 
-import com.zuxelus.energycontrol.EnergyControl;
 import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.client.input.InputWithModifiers;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
+import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.gui.GuiBase;
@@ -17,6 +13,10 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
@@ -112,7 +112,7 @@ public class GuiHorizontalSlider extends GuiBase {
 		}
 
 		@Override
-		public void updateWidgetNarration(NarrationElementOutput var1) {
+		protected void updateWidgetNarration(NarrationElementOutput var1) {
 			// TODO Auto-generated method stub
 		}
 	}

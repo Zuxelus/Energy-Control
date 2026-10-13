@@ -180,14 +180,6 @@ public class TileEntityTimer extends BlockEntityFacing implements ExtendedMenuPr
 		tag.putBoolean("isPowered", isPowered);
 	}
 
-	@Override
-	public void setRemoved() {
-		// also called while the chunk unloads; touching the world then loads the chunk again and never finishes unloading
-		if (Screen.isLoaded(level, worldPosition))
-			level.updateNeighborsAt(worldPosition, level.getBlockState(worldPosition).getBlock());
-		super.setRemoved();
-	}
-
 	public static void tickStatic(Level level, BlockPos pos, BlockState state, BlockEntity be) {
 		if (!(be instanceof TileEntityTimer))
 			return;
@@ -229,7 +221,6 @@ public class TileEntityTimer extends BlockEntityFacing implements ExtendedMenuPr
 		return true;
 	}
 
-	// NamedScreenHandlerFactory
 	@Override
 	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerTimer(windowId, inventory, this);
@@ -241,7 +232,7 @@ public class TileEntityTimer extends BlockEntityFacing implements ExtendedMenuPr
 	}
 
 	@Override
-	public BlockPos getScreenOpeningData(ServerPlayer player) {
+	public BlockPos getScreenOpeningData(ServerPlayer player) { // fabric only
 		return worldPosition;
 	}
 }

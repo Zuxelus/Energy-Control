@@ -2,6 +2,7 @@ package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.blocks.IndustrialAlarm;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -9,16 +10,12 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm {
-	private static final int[] lightSteps = { 0, 7, 14, 7, 0 };
-
-	protected byte internalFire;
-	public int lightLevel;
+	private int lightStep;
 	private int updateLightTicker;
 
 	public TileEntityIndustrialAlarm(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
-		internalFire = 0;
-		lightLevel = 0;
+		lightStep = 0;
 	}
 
 	public TileEntityIndustrialAlarm(BlockPos pos, BlockState state) {
@@ -36,28 +33,24 @@ public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm {
 		if (level.isClientSide()) {
 			super.checkStatus();
 			if (updateLightTicker-- <= 0) {
-				updateLightTicker = tickRate / 20;
+				updateLightTicker = 3;
 				checkStatus();
 			}
 		}
 	}
 
+	// The light is only a decoration, so every client animates it on its own and the server never changes the block.
+	// The step is written into the block state (not cycled), so a state reset by the server or a switched off alarm always ends up right
 	@Override
 	protected void checkStatus() {
-		int light = lightLevel;
+		if (!powered)
+			lightStep = 0;
+		else if (++lightStep >= IndustrialAlarm.lightSteps.length)
+			lightStep = 0;
+
 		BlockState state = level.getBlockState(worldPosition);
-		if (!powered) {
-			lightLevel = 0;
-			internalFire = 0;
-		} else {
-			lightLevel = lightSteps[internalFire];
-			internalFire++;
-			if (internalFire >= lightSteps.length)
-				internalFire = 0;
-		}
-		
-		if (lightLevel != light) {
-			level.setBlock(worldPosition, state.cycle(IndustrialAlarm.LIGHT), 3);
+		if (state.getBlock() instanceof IndustrialAlarm && state.getValue(IndustrialAlarm.LIGHT) != lightStep) {
+			level.setBlock(worldPosition, state.setValue(IndustrialAlarm.LIGHT, lightStep), 2);
 			level.getChunkSource().getLightEngine().checkBlock(worldPosition);
 		}
 	}

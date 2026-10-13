@@ -22,7 +22,8 @@ import net.minecraft.world.phys.BlockHitResult;
 
 public class IndustrialAlarm extends HowlerAlarm {
 	public static final IntegerProperty LIGHT = IntegerProperty.create("light", 0, 3);
-	private static final int[] lightSteps = { 0, 7, 14, 7, 0};
+	// light level of each LIGHT state, the alarm steps through them in order
+	public static final int[] lightSteps = { 0, 7, 14, 7 };
 
 	public IndustrialAlarm() {
 		super(ModItems.blockSettings().lightLevel(state -> lightSteps[state.getValue(LIGHT)]));
@@ -35,8 +36,8 @@ public class IndustrialAlarm extends HowlerAlarm {
 	}
 
 	@Override
-	public BlockState getStateForPlacement(BlockPlaceContext ctx) {
-		return super.getStateForPlacement(ctx).setValue(LIGHT, 0);
+	public BlockState getStateForPlacement(BlockPlaceContext context) {
+		return super.getStateForPlacement(context).setValue(LIGHT, 0);
 	}
 
 	@Override

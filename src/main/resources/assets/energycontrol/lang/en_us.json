@@ -159,10 +159,14 @@
     "config.energycontrol.screenRefreshPeriod.tooltip": "Default refresh period of a newly placed Information Panel, in ticks",
     "config.energycontrol.rangeTriggerRefreshPeriod": "Range Trigger Refresh Period",
     "config.energycontrol.rangeTriggerRefreshPeriod.tooltip": "Refresh period of a newly placed Range Trigger, in ticks",
+    "config.energycontrol.thermalMonitorRefreshPeriod": "Thermal Monitor Refresh Period",
+    "config.energycontrol.thermalMonitorRefreshPeriod.tooltip": "Default refresh period of a newly placed Thermal Monitor, in ticks",
     "config.energycontrol.SMPMaxAlarmRange": "Max Alarm Range on Servers",
     "config.energycontrol.SMPMaxAlarmRange.tooltip": "Largest alarm range allowed in multiplayer, in blocks (not used yet)",
     "config.energycontrol.useCustomSounds": "Use Custom Sounds",
     "config.energycontrol.useCustomSounds.tooltip": "Load custom alarm sounds from config/alarms (applies after a restart)",
+    "config.energycontrol.alarmPause": "Alarm Pause",
+    "config.energycontrol.alarmPause.tooltip": "Pause between two plays of an alarm sound, in ticks",
     "gui.ec.portableBarsOn": "Bars: On",
     "gui.ec.portableBarsOff": "Bars: Off"
 }

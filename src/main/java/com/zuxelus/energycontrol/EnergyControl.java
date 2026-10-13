@@ -1,5 +1,8 @@
 package com.zuxelus.energycontrol;
 
+import com.zuxelus.energycontrol.items.kits.ItemKitMain;
+import net.minecraft.world.InteractionResult;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -48,6 +51,13 @@ public class EnergyControl implements ModInitializer {
 		new ConfigHandler();
 		new ModContainerTypes();
 		ModItems.init();
+		// a kit used on a block makes its sensor card before the block reacts to the click
+		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
+			ItemStack stack = player.getItemInHand(hand);
+			if (!stack.isEmpty() && stack.getItem() instanceof ItemKitMain kit && kit.onItemUseFirst(world, player, hand, hitResult) == InteractionResult.SUCCESS)
+				return InteractionResult.SUCCESS;
+			return InteractionResult.PASS;
+		});
 		ITEM_GROUP = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, Identifier.fromNamespaceAndPath(MODID, "general"), FabricCreativeModeTab.builder()
 			.title(Component.translatable("itemGroup.energycontrol.general"))
 			.icon(() -> new ItemStack(ModItems.kit_energy))

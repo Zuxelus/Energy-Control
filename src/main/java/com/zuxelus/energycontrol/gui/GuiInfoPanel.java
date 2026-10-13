@@ -1,9 +1,9 @@
 package com.zuxelus.energycontrol.gui;
 
-import com.zuxelus.energycontrol.api.IItemCard;
 import java.util.List;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.api.IItemCard;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.containers.ContainerInfoPanel;
 import com.zuxelus.energycontrol.gui.controls.GuiInfoPanelCheckBox;
@@ -71,11 +71,11 @@ public class GuiInfoPanel extends GuiPanelBase<ContainerInfoPanel> {
 			List<PanelSetting> settingsList = ((IItemCard) stack.getItem()).getSettingsList();
 
 			int hy = font.lineHeight + 1;
-			int yy = 1;
+			int y = 1;
 			if (settingsList != null)
 				for (PanelSetting panelSetting : settingsList) {
-					addRenderableWidget(new GuiInfoPanelCheckBox(leftPos + 28, topPos + 28 + hy * yy, panelSetting, panel, slot, font));
-					yy++;
+					addRenderableWidget(new GuiInfoPanelCheckBox(leftPos + 28, topPos + 28 + hy * y, panelSetting, panel, slot, font));
+					y++;
 				}
 			if (!modified) {
 				textboxTitle = new EditBox(font, leftPos + 7, topPos + 16, 162, 18, null, CommonComponents.EMPTY);

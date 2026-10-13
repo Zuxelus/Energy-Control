@@ -1,8 +1,6 @@
 package com.zuxelus.energycontrol.gui;
 
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardText;
 import com.zuxelus.energycontrol.network.NetworkHelper;
@@ -16,6 +14,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -60,22 +59,14 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 	}
 
 	@Override
-	public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float partialTicks) {
-		super.extractRenderState(context, mouseX, mouseY, partialTicks);
-		extractTooltip(context, mouseX, mouseY);
-	}
-
-	@Override
 	protected void extractLabels(GuiGraphicsExtractor context, int mouseX, int mouseY) {
 		drawCenteredText(context, title, imageWidth, 6);
 	}
 
 	@Override
 	public boolean mouseReleased(MouseButtonEvent event) {
-		double mouseX = event.x();
-		double mouseY = event.y();
 		if (textboxTitle != null) {
-			textboxTitle.mouseReleased(new MouseButtonEvent(mouseX - leftPos, mouseY - topPos, event.buttonInfo()));
+			textboxTitle.mouseReleased(event);
 			// the screen places a carried item in a slot on mouse release, so the release must reach it
 			if (textboxTitle.isFocused())
 				return super.mouseReleased(event);
@@ -134,13 +125,6 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 		ItemStack card = panel.getCards().get(activeTab);
 		if (!card.isEmpty() && card.getItem() instanceof ItemCardText)
 			minecraft.gui.setScreen(new GuiCardText(card, panel, this, activeTab));
-	}
-
-	@Override
-	public boolean keyPressed(KeyEvent event) {
-		if (minecraft.options.keyInventory.matches(event))
-			return true;
-		return super.keyPressed(event);
 	}
 
 	@Override

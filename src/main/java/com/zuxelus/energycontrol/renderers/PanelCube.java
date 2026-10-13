@@ -77,7 +77,8 @@ public class PanelCube {
 			PositionTextureVertex v5 = new PositionTextureVertex(f, f1, f2, 8.0F, 8.0F);
 			PositionTextureVertex v6 = new PositionTextureVertex(x, f1, f2, 8.0F, 0.0F);
 			if (faceOnly) {
-				quads[0] = new TexturedQuad(new PositionTextureVertex[] { v2, v1, v, v7 }, texOffX, texOffY, texOffX + dx , texOffY + dx, texWidth, texHeight, Direction.NORTH);
+				// half a texel inside the cell, so mipmaps and filtering do not pick up the border pixels of the neighbouring cells
+				quads[0] = new TexturedQuad(new PositionTextureVertex[] { v2, v1, v, v7 }, texOffX + 0.5F, texOffY + 0.5F, texOffX + dx - 0.5F, texOffY + dx - 0.5F, texWidth, texHeight, Direction.NORTH);
 				return;
 			}
 			quads[0] = new TexturedQuad(new PositionTextureVertex[] { v1, v5, v4, v }, 0, dz, dz, dz + dy, texWidth, texHeight, Direction.EAST); // left

@@ -1,8 +1,6 @@
 package com.zuxelus.energycontrol.gui;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 import com.zuxelus.zlib.gui.GuiBase;
@@ -10,6 +8,8 @@ import com.zuxelus.zlib.gui.GuiBase;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 
 @Environment(EnvType.CLIENT)
 public class GuiPanelSlope extends GuiBase {
@@ -24,10 +24,8 @@ public class GuiPanelSlope extends GuiBase {
 
 	@Override
 	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-		double mouseX = event.x();
-		double mouseY = event.y();
-		mouseX -= guiLeft;
-		mouseY -= guiTop;
+		double mouseX = event.x() - guiLeft;
+		double mouseY = event.y() - guiTop;
 		if (mouseY >= 23 && mouseY <= 89) {
 			int amount = (int) ((87 - mouseY + 2) / 4);
 			int offset = 0;

@@ -56,12 +56,6 @@ public class GuiRangeTrigger extends GuiContainerBase<ContainerRangeTrigger> {
 		initControls();
 	}
 
-	@Override
-	public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float partialTicks) {
-		super.extractRenderState(context, mouseX, mouseY, partialTicks);
-		extractTooltip(context, mouseX, mouseY);
-	}
-
 	private void renderValue(GuiGraphicsExtractor context, double value, int x, int y) {
 		x += 114;
 		for (int i = 0; i < 10; i++) {

@@ -1,9 +1,7 @@
 package com.zuxelus.energycontrol.gui;
 
-import com.zuxelus.energycontrol.EnergyControl;
 import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
+import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
@@ -15,6 +13,8 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -31,7 +31,7 @@ public class GuiCardText extends GuiBase {
 	private static final int lineCount = 10;
 
 	public GuiCardText(ItemStack card, TileEntityInfoPanel panel, GuiPanelBase<?> gui, int slot) {
-		super("", 226, 146, EnergyControl.MODID + ":textures/gui/gui_text_card.png");
+		super("", 256, 146, EnergyControl.MODID + ":textures/gui/gui_text_card.png");
 		this.reader = new ItemCardReader(card);
 		this.stack = card;
 		this.panel = panel;
@@ -95,8 +95,7 @@ public class GuiCardText extends GuiBase {
 
 	@Override
 	public boolean keyPressed(KeyEvent event) {
-		int keyCode = event.key();
-		if (keyCode == InputConstants.KEY_ESCAPE) {
+		if (event.key() == InputConstants.KEY_ESCAPE) {
 			actionPerformed(1);
 			return true;
 		}

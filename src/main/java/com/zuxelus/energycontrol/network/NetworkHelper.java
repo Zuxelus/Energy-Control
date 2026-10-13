@@ -4,6 +4,7 @@ import com.zuxelus.zlib.network.PacketTileEntityC2S;
 import com.zuxelus.zlib.network.PacketTileEntityS2C;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.core.BlockPos;
@@ -18,10 +19,16 @@ public class NetworkHelper {
 		ServerPlayNetworking.send(player, packet);
 	}
 
+	// client
+	public static void sendToServer(CustomPacketPayload packet) {
+		ClientPlayNetworking.send(packet);
+	}
+
 	// server
-	public static void sendPacketToAllAround(ServerLevel world, CustomPacketPayload packet) {
-		for (ServerPlayer player : world.players())
-			sendToPlayer(player, packet);
+	public static void sendPacketToAllAround(Level world, BlockPos pos, CustomPacketPayload packet) {
+		if (world instanceof ServerLevel level)
+			for (ServerPlayer player : PlayerLookup.tracking(level, pos))
+				sendToPlayer(player, packet);
 	}
 
 	// server
@@ -44,14 +51,10 @@ public class NetworkHelper {
 	}
 
 	public static void updateClientTileEntity(Level world, BlockPos pos, CompoundTag tag) {
-		sendPacketToAllAround((ServerLevel) world, new PacketTileEntityS2C(pos, tag));
+		sendPacketToAllAround(world, pos, new PacketTileEntityS2C(pos, tag));
 	}
 
 	// client
-	public static void sendToServer(CustomPacketPayload packet) {
-		ClientPlayNetworking.send(packet);
-	}
-
 	public static void updateSeverTileEntity(BlockPos pos, int type, String string) {
 		CompoundTag tag = new CompoundTag();
 		tag.putInt("type", type);

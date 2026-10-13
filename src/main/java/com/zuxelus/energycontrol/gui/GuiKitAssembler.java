@@ -1,7 +1,6 @@
 package com.zuxelus.energycontrol.gui;
 
 import java.util.List;
-import net.minecraft.client.renderer.RenderPipelines;
 
 import com.google.common.collect.Lists;
 import com.zuxelus.energycontrol.EnergyControl;
@@ -16,6 +15,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
@@ -41,8 +41,6 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 		Slot slot = container.getSlot(TileEntityKitAssembler.SLOT_INFO);
 		if (isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY) && slot.isActive())
 			renderInfoToolTip(context, slot, mouseX, mouseY);
-		else
-			extractTooltip(context, mouseX, mouseY);
 		if (isHovering(165, 16, 4, 52, mouseX, mouseY))
 			context.setTooltipForNextFrame(font, Component.literal(String.format("%d FE/%d FE", (int) container.te.getEnergy(), TileEntityKitAssembler.CAPACITY)), mouseX, mouseY);
 	}

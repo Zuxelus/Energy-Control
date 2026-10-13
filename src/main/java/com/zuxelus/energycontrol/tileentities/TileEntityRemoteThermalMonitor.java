@@ -43,8 +43,7 @@ public class TileEntityRemoteThermalMonitor extends TileEntityThermalMonitor imp
 	@Override
 	protected void readProperties(ValueInput tag) {
 		super.readProperties(tag);
-		if (tag.contains("heat"))
-			heat = tag.getIntOr("heat", 0);
+		heat = tag.getIntOr("heat", heat);
 	}
 
 	@Override
@@ -113,7 +112,6 @@ public class TileEntityRemoteThermalMonitor extends TileEntityThermalMonitor imp
 		}
 	}
 
-	// NamedScreenHandlerFactory
 	@Override
 	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerRemoteThermalMonitor(windowId, inventory, this);
@@ -125,7 +123,7 @@ public class TileEntityRemoteThermalMonitor extends TileEntityThermalMonitor imp
 	}
 
 	@Override
-	public BlockPos getScreenOpeningData(ServerPlayer player) {
+	public BlockPos getScreenOpeningData(ServerPlayer player) { // fabric only
 		return worldPosition;
 	}
 }

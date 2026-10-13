@@ -2,9 +2,11 @@ package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.blocks.RemoteThermalMonitor;
 import com.zuxelus.energycontrol.blocks.ThermalMonitor;
+import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -30,7 +32,7 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 		invertRedstone = false;
 		heatLevel = 500;
 		updateTicker = 0;
-		tickRate = -1;
+		tickRate = ConfigHandler.thermalMonitorRefreshPeriod;
 		status = -1;
 	}
 
@@ -113,14 +115,6 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 		tag.putBoolean("invert", invertRedstone);
 	}
 
-	@Override
-	public void setRemoved() {
-		// also called while the chunk unloads; touching the world then loads the chunk again and never finishes unloading
-		if (Screen.isLoaded(level, worldPosition))
-			level.updateNeighborsAt(worldPosition, level.getBlockState(worldPosition).getBlock());
-		super.setRemoved();
-	}
-
 	public static void tickStatic(Level level, BlockPos pos, BlockState state, BlockEntity be) {
 		if (!(be instanceof TileEntityThermalMonitor))
 			return;
@@ -133,7 +127,7 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 			return;
 	
 		if (updateTicker-- > 0)
-				return;
+			return;
 		updateTicker = tickRate;
 		checkStatus();
 	}

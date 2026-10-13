@@ -29,13 +29,8 @@ public class ContainerTimer extends AbstractContainerMenu {
 		super(ModContainerTypes.timer, windowId);
 		this.te = te;
 		lastTime = 0;
-		if (inventory.player instanceof ServerPlayer)
+		if (inventory.player instanceof ServerPlayer) // fabric only
 			containerListeners.add((ServerPlayer) inventory.player);
-	}
-
-	@Override
-	public ItemStack quickMoveStack(Player player, int slot) {
-		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -56,5 +51,10 @@ public class ContainerTimer extends AbstractContainerMenu {
 		}
 		lastTime = time;
 		lastIsWorking = isWorking;
+	}
+
+	@Override
+	public ItemStack quickMoveStack(Player player, int index) {
+		return ItemStack.EMPTY;
 	}
 }

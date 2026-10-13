@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.gui;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.zuxelus.energycontrol.EnergyControl;
@@ -12,7 +11,7 @@ import com.zuxelus.zlib.gui.GuiBase;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 
 @Environment(EnvType.CLIENT)
@@ -36,8 +35,7 @@ public class GuiHowlerAlarm extends GuiBase {
 		super.init();
 		slider = new GuiHowlerAlarmSlider(guiLeft + 12, guiTop + 33, alarm);
 
-		List<String> items = new ArrayList<String>(EnergyControl.INSTANCE.availableAlarms);
-		items.retainAll(EnergyControl.INSTANCE.serverAllowedAlarms);
+		List<String> items = ScreenHandler.getAlarms();
 
 		listBox = new GuiHowlerAlarmListBox(guiLeft + 13, guiTop + 63, 105, isBig ? 165 : 65, items, alarm);
 		addRenderableWidget(slider);

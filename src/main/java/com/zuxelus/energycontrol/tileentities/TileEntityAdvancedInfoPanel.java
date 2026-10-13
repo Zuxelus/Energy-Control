@@ -74,9 +74,10 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	public void updatePower() { // server
 		calcPowered();
 		BlockState state = level.getBlockState(worldPosition);
-		if (state.getBlock() instanceof AdvancedInfoPanel && state.getValue(FacingBlockActive.ACTIVE) != powered)
+		if (state.getBlock() instanceof AdvancedInfoPanel && state.getValue(FacingBlockActive.ACTIVE) != powered) {
 			level.setBlock(worldPosition, state.setValue(FacingBlockActive.ACTIVE, powered), 2);
-		updateExtenders(level, powered);
+			updateExtenders(level, powered);
+		}
 	}
 
 	@Override

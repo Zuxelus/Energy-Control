@@ -20,8 +20,10 @@ public class ConfigHandler {
 	public static int remoteThermalMonitorEnergyConsumption = 1;
 	public static int screenRefreshPeriod = 20;
 	public static int rangeTriggerRefreshPeriod = 20;
+	public static int thermalMonitorRefreshPeriod = 20;
 	public static int SMPMaxAlarmRange = 256;
 	public static boolean useCustomSounds = false;
+	public static int alarmPause = 60;
 	public static boolean disableRangeCheck = false;
 	public static boolean wsEnabled = false;
 	public static String wsHost = "";
@@ -46,8 +48,10 @@ public class ConfigHandler {
 			remoteThermalMonitorEnergyConsumption = Integer.parseInt(cfg.getProperty("remoteThermalMonitorEnergyConsumption"));
 			screenRefreshPeriod = Integer.parseInt(cfg.getProperty("screenRefreshPeriod"));
 			rangeTriggerRefreshPeriod = Integer.parseInt(cfg.getProperty("rangeTriggerRefreshPeriod"));
+			thermalMonitorRefreshPeriod = Math.max(1, Integer.parseInt(cfg.getProperty("thermalMonitorRefreshPeriod", String.valueOf(thermalMonitorRefreshPeriod))));
 			SMPMaxAlarmRange = Integer.parseInt(cfg.getProperty("SMPMaxAlarmRange"));
 			useCustomSounds = Boolean.parseBoolean(cfg.getProperty("useCustomSounds"));
+			alarmPause = Math.max(10, Math.min(2000, Integer.parseInt(cfg.getProperty("alarmPause", String.valueOf(alarmPause)))));
 			disableRangeCheck = Boolean.parseBoolean(cfg.getProperty("disableRangeCheck", String.valueOf(disableRangeCheck)));
 			// older config files have no web socket keys: keep the defaults, and the generated server id, and write them out
 			boolean hasWebSocketKeys = cfg.getProperty("wsServerID") != null;
@@ -73,8 +77,10 @@ public class ConfigHandler {
 			fos.write(("remoteThermalMonitorEnergyConsumption=" + remoteThermalMonitorEnergyConsumption + "\n").getBytes());
 			fos.write(("screenRefreshPeriod=" + screenRefreshPeriod + "\n").getBytes());
 			fos.write(("rangeTriggerRefreshPeriod=" + rangeTriggerRefreshPeriod + "\n").getBytes());
+			fos.write(("thermalMonitorRefreshPeriod=" + thermalMonitorRefreshPeriod + "\n").getBytes());
 			fos.write(("SMPMaxAlarmRange=" + SMPMaxAlarmRange + "\n").getBytes());
 			fos.write(("useCustomSounds=" + useCustomSounds + "\n").getBytes());
+			fos.write(("alarmPause=" + alarmPause + "\n").getBytes());
 			fos.write(("disableRangeCheck=" + disableRangeCheck + "\n").getBytes());
 			fos.write(("wsEnabled=" + wsEnabled + "\n").getBytes());
 			fos.write(("wsHost=" + wsHost + "\n").getBytes());

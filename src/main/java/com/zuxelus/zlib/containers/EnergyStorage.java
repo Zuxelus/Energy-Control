@@ -14,6 +14,13 @@ public class EnergyStorage extends SimpleEnergyStorage {
 		amount = Math.min(value, capacity);
 	}
 
+	// removes energy without a transaction, for the owner of the storage: extract() may be closed for outside callers
+	public long consume(long value) {
+		long consumed = Math.min(value, amount);
+		amount -= consumed;
+		return consumed;
+	}
+
 	public long insert(long amount, boolean simulate) {
 		long amountInserted = 0;
 		try (Transaction transaction = Transaction.openNested(null)) {

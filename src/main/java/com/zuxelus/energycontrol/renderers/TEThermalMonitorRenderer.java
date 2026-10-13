@@ -60,11 +60,13 @@ public class TEThermalMonitorRenderer implements BlockEntityRenderer<TileEntityT
 			break;
 		}
 		model.render(matrixStack, collector, RenderTypes.entitySolid(texture), state.light);
-		int value = te.getHeatLevel();
+
 		matrixStack.rotate(Axis.XP.rotationDegrees(90.0F));
 		matrixStack.translate(0.5F, 0.45F, -0.4376F);
 		matrixStack.scale(0.015625F, 0.015625F, 0.015625F);
-		RenderHelper.drawString(matrixStack, collector, String.valueOf(value), -font.width(String.valueOf(value)) / 2, -font.lineHeight, 0x000000, Font.DisplayMode.NORMAL, combinedLight);
+
+		String value = String.valueOf(te.getHeatLevel());
+		RenderHelper.drawString(matrixStack, collector, value, -font.width(value) / 2, -font.lineHeight, 0x000000, Font.DisplayMode.NORMAL, combinedLight);
 		matrixStack.popPose();
 	}
 

@@ -8,9 +8,10 @@ import java.util.function.Supplier;
 
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.init.ModItems;
-import com.zuxelus.energycontrol.utils.FluidInfo;
 import com.zuxelus.energycontrol.utils.DataHelper;
+import com.zuxelus.energycontrol.utils.FluidInfo;
 
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
@@ -21,8 +22,11 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.Container;
+import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import team.reborn.energy.api.EnergyStorage;
@@ -61,6 +65,8 @@ public class CrossModLoader {
 	}
 
 	public static CompoundTag getEnergyData(BlockEntity te) {
+		if (te == null)
+			return null;
 		for (CrossModBase crossMod : CROSS_MODS.values()) {
 			CompoundTag tag = crossMod.getEnergyData(te);
 			if (tag != null)
@@ -78,7 +84,7 @@ public class CrossModLoader {
 		return null;
 	}
 
-	private static EnergyStorage findEnergyStorage(BlockEntity te) {
+	private static EnergyStorage findEnergyStorage(BlockEntity te) { // fabric only
 		Level world = te.getLevel();
 		if (world == null)
 			return null;
@@ -118,7 +124,7 @@ public class CrossModLoader {
 		return null;
 	}
 
-	private static Storage<FluidVariant> findFluidStorage(BlockEntity te) {
+	private static Storage<FluidVariant> findFluidStorage(BlockEntity te) { // fabric only
 		Level world = te.getLevel();
 		if (world == null)
 			return null;
@@ -151,18 +157,19 @@ public class CrossModLoader {
 	}
 
 	public static CompoundTag getInventoryData(BlockEntity te) {
+		if (te == null)
+			return null;
 		for (CrossModBase crossMod : CROSS_MODS.values()) {
 			CompoundTag tag = crossMod.getInventoryData(te);
 			if (tag != null)
 				return tag;
 		}
-		CompoundTag tag = new CompoundTag();
 		// any block exposing the Fabric Transfer API, including every vanilla Inventory
 		Storage<ItemVariant> storage = findItemStorage(te);
+		if (storage == null && !(te instanceof Container))
+			return null;
+		CompoundTag tag = new CompoundTag();
 		if (storage != null) {
-			/*if (te instanceof BaseContainerBlockEntity)
-				tag.putString("name", ((BaseContainerBlockEntity) te).getDisplayName().getString());
-			tag.putBoolean("sided", inv instanceof WorldlyContainer);*/
 			int size = 0;
 			int inUse = 0;
 			int items = 0;
@@ -181,10 +188,15 @@ public class CrossModLoader {
 			tag.putInt("used", inUse);
 			tag.putInt("items", items);
 		}
+		if (te instanceof Container inv) {
+			if (te instanceof BaseContainerBlockEntity container)
+				tag.putString("name", container.getDisplayName().getString());
+			tag.putBoolean("sided", inv instanceof WorldlyContainer);
+		}
 		return tag;
 	}
 
-	private static Storage<ItemVariant> findItemStorage(BlockEntity te) {
+	private static Storage<ItemVariant> findItemStorage(BlockEntity te) { // fabric only
 		Level world = te.getLevel();
 		if (world == null)
 			return null;
@@ -200,5 +212,12 @@ public class CrossModLoader {
 				return storage;
 		}
 		return null;
+	}
+
+	public static boolean isElectricItem(ItemStack stack) {
+		if (stack.isEmpty())
+			return false;
+		// an item that can be charged or discharged through the Team Reborn Energy API (TechReborn batteries and others)
+		return EnergyStorage.ITEM.find(stack, ContainerItemContext.withConstant(stack)) != null;
 	}
 }

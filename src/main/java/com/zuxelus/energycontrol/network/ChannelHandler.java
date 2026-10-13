@@ -9,7 +9,6 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -46,7 +45,7 @@ public class ChannelHandler {
 		if (world == null || world.isClientSide())
 			return;
 
-		NetworkHelper.sendPacketToAllAround((ServerLevel) world, new PacketCardS2C(card, panel.getBlockPos(), slot));
+		NetworkHelper.sendPacketToAllAround(world, panel.getBlockPos(), new PacketCardS2C(card, panel.getBlockPos(), slot));
 	}
 
 	// client
@@ -62,6 +61,6 @@ public class ChannelHandler {
 	}
 
 	public static void updateSeverKeys(boolean altPressed) {
-		ClientPlayNetworking.send(new PacketKeys(altPressed));
+		NetworkHelper.sendToServer(new PacketKeys(altPressed));
 	}
 }

@@ -38,6 +38,10 @@ public class KitAssemblerRecipe implements Recipe<RecipeInput> {
 		this.time = time;
 	}
 
+	public ItemStack getOutput() {
+		return output.create();
+	}
+
 	public boolean isSuitable(TileEntityKitAssembler te) {
 		ItemStack stack1 = te.getItem(TileEntityKitAssembler.SLOT_CARD1);
 		if (stack1.isEmpty() || stack1.getCount() < count1 || !input1.test(stack1))
@@ -58,6 +62,10 @@ public class KitAssemblerRecipe implements Recipe<RecipeInput> {
 		return true;
 	}
 
+	public List<Ingredient> getIngredients() {
+		return List.of(input1, input2, input3);
+	}
+
 	@Override
 	public boolean matches(RecipeInput inv, Level world) {
 		return false;
@@ -66,11 +74,6 @@ public class KitAssemblerRecipe implements Recipe<RecipeInput> {
 	@Override
 	public boolean isSpecial() {
 		return true;
-	}
-
-	@Override
-	public ItemStack assemble(RecipeInput inv) {
-		return output.create();
 	}
 
 	@Override
@@ -83,6 +86,11 @@ public class KitAssemblerRecipe implements Recipe<RecipeInput> {
 		return "";
 	}
 
+	@Override
+	public ItemStack assemble(RecipeInput inv) {
+		return getOutput();
+	}
+
 	// the kit assembler is not a recipe book block
 	@Override
 	public PlacementInfo placementInfo() {
@@ -92,10 +100,6 @@ public class KitAssemblerRecipe implements Recipe<RecipeInput> {
 	@Override
 	public RecipeBookCategory recipeBookCategory() {
 		return RecipeBookCategories.CRAFTING_MISC;
-	}
-
-	public List<Ingredient> getIngredients() {
-		return List.of(input1, input2, input3);
 	}
 
 	@Override

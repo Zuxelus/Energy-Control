@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.tileentities;
 
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.blocks.KitAssembler;
 import com.zuxelus.energycontrol.containers.ContainerKitAssembler;
 import com.zuxelus.energycontrol.init.ModItems;
@@ -51,8 +52,6 @@ public class TileEntityKitAssembler extends TileEntityInventory implements Exten
 	private static final int[] SLOTS_NONE = {};
 	private static final Identifier TRANSFORMER_UPGRADE = Identifier.fromNamespaceAndPath("techreborn", "transformer_upgrade");
 	private EnergyStorage storage;
-	// what cables and other mods see: insert only, at the rate set by the transformer upgrades
-	private final team.reborn.energy.api.EnergyStorage energyInput = new EnergyInput();
 	private int buffer;
 	private static final long CONSUMPTION = 5;
 	private KitAssemblerRecipe recipe;
@@ -61,22 +60,38 @@ public class TileEntityKitAssembler extends TileEntityInventory implements Exten
 	public static final long OUTPUT = 32;
 	private double production;
 	private boolean active;
-	private long lastEnergy;
 
 	public TileEntityKitAssembler(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
-		// the input rate depends on the upgrades, so it is limited by getInputRate() instead of the storage
-		storage = new EnergyStorage(CAPACITY, CAPACITY, CAPACITY, 0);
+		// what cables and other mods see: insert only, at the rate set by the transformer upgrades
+		storage = new EnergyStorage(CAPACITY, CAPACITY, CAPACITY, 0) {
+			@Override
+			public long insert(long maxAmount, TransactionContext transaction) {
+				return super.insert(Math.min(maxAmount, getInputRate()), transaction);
+			}
+
+			// cables and batteries change the energy through transactions, which do not mark the chunk for saving
+			@Override
+			protected void onFinalCommit() {
+				markEnergyChanged();
+			}
+
+			@Override
+			public boolean supportsExtraction() {
+				return false;
+			}
+
+			@Override
+			public long extract(long maxAmount, TransactionContext transaction) {
+				return 0;
+			}
+		};
 		active = false;
 		production = 0;
 	}
 
 	public TileEntityKitAssembler(BlockPos pos, BlockState state) {
 		this(ModTileEntityTypes.kit_assembler, pos, state);
-	}
-
-	public team.reborn.energy.api.EnergyStorage getEnergyInput(Direction side) {
-		return energyInput;
 	}
 
 	public double getEnergy() {
@@ -107,7 +122,6 @@ public class TileEntityKitAssembler extends TileEntityInventory implements Exten
 		return getItem(SLOT_TRANSFORMER).getCount();
 	}
 
-	// each transformer upgrade doubles speed and consumption and quadruples the input rate
 	private long getInputRate() {
 		return OUTPUT * (long) Math.pow(4, getUpgrades());
 	}
@@ -165,12 +179,6 @@ public class TileEntityKitAssembler extends TileEntityInventory implements Exten
 	}
 
 	@Override
-	protected void loadAdditional(ValueInput tag) {
-		super.loadAdditional(tag);
-		lastEnergy = storage.getAmount();
-	}
-
-	@Override
 	protected void writeProperties(ValueOutput tag) {
 		super.writeProperties(tag);
 		tag.putLong("energy", storage.getAmount());
@@ -188,11 +196,6 @@ public class TileEntityKitAssembler extends TileEntityInventory implements Exten
 	protected void tick() {
 		if (level.isClientSide())
 			return;
-		// energy also changes from cables, which do not mark the chunk for saving
-		if (storage.getAmount() != lastEnergy) {
-			lastEnergy = storage.getAmount();
-			level.blockEntityChanged(worldPosition);
-		}
 		handleDischarger(SLOT_DISCHARGER);
 		long energyNeeded = getEnergyNeeded();
 		if (!active) {
@@ -202,7 +205,8 @@ public class TileEntityKitAssembler extends TileEntityInventory implements Exten
 			return;
 		}
 		if (storage.getAmount() >= energyNeeded) {
-			storage.extract(energyNeeded, false);
+			storage.consume(energyNeeded);
+			markEnergyChanged(); // fabric only
 			production += Math.pow(2, getUpgrades());
 			if (recipe != null && production >= recipe.time) {
 				ItemStack stack1 = getItem(SLOT_CARD1);
@@ -215,7 +219,7 @@ public class TileEntityKitAssembler extends TileEntityInventory implements Exten
 				stack2.shrink(recipe.count2);
 				stack3.shrink(recipe.count3);
 				if (result.isEmpty())
-					setItem(SLOT_RESULT, recipe.output.create());
+					setItem(SLOT_RESULT, recipe.getOutput());
 				else
 					result.grow(recipe.output.count());
 				production = 0;
@@ -223,14 +227,14 @@ public class TileEntityKitAssembler extends TileEntityInventory implements Exten
 			}
 		} else {
 			storage.setEnergy(0);
+			markEnergyChanged(); // fabric only
 			production = 0;
 			updateState();
 		}
 	}
 
 	private void handleDischarger(int slot) {
-		long rate = getInputRate();
-		long needed = Math.min(rate, storage.getCapacity() - storage.getAmount());
+		long needed = Math.min(getInputRate(), storage.getCapacity() - storage.getAmount());
 		if (needed <= 0)
 			return;
 		if (buffer > 0) {
@@ -255,6 +259,12 @@ public class TileEntityKitAssembler extends TileEntityInventory implements Exten
 			EnergyStorageUtil.move(itemStorage, storage, needed, transaction);
 			transaction.commit();
 		}
+	}
+
+	// each transformer upgrade doubles speed and consumption and quadruples the input rate
+	private void markEnergyChanged() { // fabric only
+		if (level != null && !level.isClientSide())
+			level.blockEntityChanged(worldPosition);
 	}
 
 	@Override
@@ -325,13 +335,17 @@ public class TileEntityKitAssembler extends TileEntityInventory implements Exten
 		case SLOT_INFO:
 			return ItemCardMain.isCard(stack);
 		case SLOT_DISCHARGER:
-			return EnergyStorageUtil.isEnergyStorage(stack) || stack.getItem().equals(Items.LAVA_BUCKET);
+			return CrossModLoader.isElectricItem(stack) || stack.getItem().equals(Items.LAVA_BUCKET);
 		case SLOT_TRANSFORMER:
 			return BuiltInRegistries.ITEM.getKey(stack.getItem()).equals(TRANSFORMER_UPGRADE);
 		case SLOT_RESULT:
 		default:
 			return false;
 		}
+	}
+
+	public team.reborn.energy.api.EnergyStorage getEnergyInput(Direction side) {
+		return storage;
 	}
 
 	// SidedInventory: hoppers fill the recipe inputs from the top and take the result from the bottom
@@ -354,7 +368,6 @@ public class TileEntityKitAssembler extends TileEntityInventory implements Exten
 		return side == Direction.DOWN && slot == SLOT_RESULT;
 	}
 
-	// NamedScreenHandlerFactory
 	@Override
 	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerKitAssembler(windowId, inventory, this);
@@ -366,34 +379,7 @@ public class TileEntityKitAssembler extends TileEntityInventory implements Exten
 	}
 
 	@Override
-	public BlockPos getScreenOpeningData(ServerPlayer player) {
+	public BlockPos getScreenOpeningData(ServerPlayer player) { // fabric only
 		return worldPosition;
-	}
-
-	private class EnergyInput implements team.reborn.energy.api.EnergyStorage {
-		@Override
-		public long insert(long maxAmount, TransactionContext transaction) {
-			return storage.insert(Math.min(maxAmount, getInputRate()), transaction);
-		}
-
-		@Override
-		public boolean supportsExtraction() {
-			return false;
-		}
-
-		@Override
-		public long extract(long maxAmount, TransactionContext transaction) {
-			return 0;
-		}
-
-		@Override
-		public long getAmount() {
-			return storage.getAmount();
-		}
-
-		@Override
-		public long getCapacity() {
-			return storage.getCapacity();
-		}
 	}
 }

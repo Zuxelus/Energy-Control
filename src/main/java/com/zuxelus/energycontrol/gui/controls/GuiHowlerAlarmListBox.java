@@ -1,12 +1,8 @@
 package com.zuxelus.energycontrol.gui.controls;
 
 import java.util.List;
-import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.client.input.InputWithModifiers;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 
@@ -17,8 +13,12 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 
 @Environment(EnvType.CLIENT)
@@ -152,7 +152,6 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 	@Override
 	public boolean keyPressed(KeyEvent event) {
 		int keyCode = event.key();
-		// consumed, otherwise the screen also moves keyboard focus away from the list
 		if (keyCode == InputConstants.KEY_DOWN) { // down
 			scrollDown();
 			return true;
@@ -165,14 +164,14 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 	}
 
 	@Override
-	public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+	public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
 		if (isMouseOver(mouseX, mouseY)) {
-			if (verticalAmount > 0)
+			if (scrollY > 0)
 				scrollUp();
-			if (verticalAmount < 0)
+			if (scrollY < 0)
 				scrollDown();
 		}
-		return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
+		return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
 	}
 
 	@Override
@@ -201,5 +200,5 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 	}
 
 	@Override
-	public void updateWidgetNarration(NarrationElementOutput output) { }
+	protected void updateWidgetNarration(NarrationElementOutput output) { }
 }

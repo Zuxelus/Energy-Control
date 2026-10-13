@@ -1,12 +1,12 @@
 package com.zuxelus.energycontrol.gui;
 
 import com.zuxelus.energycontrol.containers.ContainerCardHolder;
-import net.minecraft.client.renderer.RenderPipelines;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
@@ -23,19 +23,12 @@ public class GuiCardHolder extends AbstractContainerScreen<ContainerCardHolder> 
 	}
 
 	@Override
-	public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float partialTicks) {
-		super.extractRenderState(context, mouseX, mouseY, partialTicks);
-		extractTooltip(context, mouseX, mouseY);
-	}
-
-	@Override
 	protected void extractLabels(GuiGraphicsExtractor context, int mouseX, int mouseY) {
 		context.text(font, title, 8, 6, ARGB.opaque(0x404040), false);
 		context.text(font, playerInventoryTitle, 8, imageHeight - 96 + 2, ARGB.opaque(0x404040), false);
 	}
 
 	@Override
-	// the last two parameters are the mouse position; x and y below are the screen position fields
 	public void extractBackground(GuiGraphicsExtractor context, int mouseX, int mouseY, float partialTicks) {
 		super.extractBackground(context, mouseX, mouseY, partialTicks);
 		context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, leftPos, topPos, 0, 0, imageWidth, inventoryRows * 18 + 17, 256, 256);

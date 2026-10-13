@@ -1,8 +1,7 @@
 package com.zuxelus.energycontrol.gui;
 
-import com.zuxelus.energycontrol.EnergyControl;
 import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.client.input.KeyEvent;
+import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.containers.ContainerRemoteThermalMonitor;
 import com.zuxelus.energycontrol.gui.controls.CompactButton;
 import com.zuxelus.energycontrol.gui.controls.GuiThermoInvertRedstone;
@@ -15,6 +14,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -56,7 +56,6 @@ public class GuiRemoteThermalMonitor extends GuiContainerBase<ContainerRemoteThe
 	public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float partialTicks) {
 		super.extractRenderState(context, mouseX, mouseY, partialTicks);
 		textboxHeat.extractRenderState(context, mouseX, mouseY, partialTicks);
-		extractTooltip(context, mouseX, mouseY);
 	}
 
 	@SuppressWarnings("resource")
@@ -81,15 +80,12 @@ public class GuiRemoteThermalMonitor extends GuiContainerBase<ContainerRemoteThe
 		textboxHeat.setValue(Integer.toString(heat));
 	}
 
-	// while typing, keys must not close the screen (inventory key) or move hotbar items (number keys)
+	// Enter applies the heat level, the other keys go to the focused field through GuiContainerBase
 	@Override
 	public boolean keyPressed(KeyEvent event) {
 		int keyCode = event.key();
-		if (textboxHeat.isFocused() && keyCode != InputConstants.KEY_ESCAPE) {
-			if (keyCode == InputConstants.KEY_RETURN || keyCode == InputConstants.KEY_NUMPADENTER) // Enter
-				updateHeat(0);
-			else
-				textboxHeat.keyPressed(event);
+		if (textboxHeat.isFocused() && (keyCode == InputConstants.KEY_RETURN || keyCode == InputConstants.KEY_NUMPADENTER)) {
+			updateHeat(0);
 			return true;
 		}
 		return super.keyPressed(event);

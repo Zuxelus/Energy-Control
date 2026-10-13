@@ -22,8 +22,9 @@ import net.minecraft.world.item.ItemStack;
 
 public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel> {
 	private static final String SHOW_BARS = "showBars";
-	private Player player;
 	public static final int OFF_HAND_SLOT = 40; // PlayerInventory.OFF_HAND_SLOT
+	private Player player;
+	// inventory slot of the open panel; it stays in the hand, so it is locked
 	private final int panelSlot;
 
 	public ContainerPortablePanel(int windowId, Inventory inventory, InteractionHand hand) {
@@ -37,10 +38,10 @@ public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel
 		addPlayerInventoryTopSlots(inventory, 8, 188);
 	}
 
-	// the open panel stays in the hand, so its slot is locked
 	@Override
 	protected void addPlayerInventoryTopSlots(Container inventory, int width, int height) {
 		for (int col = 0; col < 9; col++)
+			// the open panel stays in the hand, so its slot is locked
 			if (col == panelSlot)
 				addSlot(new SlotLocked(inventory, col, width + col * 18, height - 24));
 			else
