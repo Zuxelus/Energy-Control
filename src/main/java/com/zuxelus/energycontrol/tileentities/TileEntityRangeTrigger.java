@@ -180,7 +180,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements Exten
 		super.setChanged();
 		if (level == null || level.isClientSide())
 			return;
-		
+
 		int status = STATE_UNKNOWN;
 		ItemStack card = getItem(SLOT_CARD);
 		if (!card.isEmpty()) {
@@ -230,7 +230,6 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements Exten
 		return stack.getItem().equals(ModItems.upgrade_range);
 	}
 
-	// NamedScreenHandlerFactory
 	@Override
 	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerRangeTrigger(windowId, inventory, this);
@@ -242,7 +241,7 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements Exten
 	}
 
 	@Override
-	public BlockPos getScreenOpeningData(ServerPlayer player) {
+	public BlockPos getScreenOpeningData(ServerPlayer player) { // fabric only
 		return worldPosition;
 	}
 }

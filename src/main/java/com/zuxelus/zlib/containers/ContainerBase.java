@@ -24,7 +24,7 @@ public abstract class ContainerBase<T extends Container> extends AbstractContain
 	public final T te;
 	private final Block block;
 	private final ContainerLevelAccess posCallable;
-	public List<ServerPlayer> containerListeners = Lists.newArrayList();
+	public List<ServerPlayer> listeners = Lists.newArrayList();
 
 	protected ContainerBase(T te, MenuType<?> type, int id) {
 		this(te, type, id, null, null);

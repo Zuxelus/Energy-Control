@@ -19,7 +19,7 @@ public class ContainerTimer extends AbstractContainerMenu {
 	public TileEntityTimer te;
 	private int lastTime;
 	private boolean lastIsWorking;
-	public List<ServerPlayer> containerListeners = Lists.newArrayList();
+	public List<ServerPlayer> listeners = Lists.newArrayList();
 
 	public ContainerTimer(int windowId, Inventory inventory, BlockPos data) {
 		this(windowId, inventory, (TileEntityTimer) ContainerBase.getBlockEntity(inventory, data));
@@ -30,7 +30,7 @@ public class ContainerTimer extends AbstractContainerMenu {
 		this.te = te;
 		lastTime = 0;
 		if (inventory.player instanceof ServerPlayer) // fabric only
-			containerListeners.add((ServerPlayer) inventory.player);
+			listeners.add((ServerPlayer) inventory.player);
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class ContainerTimer extends AbstractContainerMenu {
 		super.broadcastChanges();
 		int time = te.getTime();
 		boolean isWorking = te.getIsWorking();
-		for (ServerPlayer listener : containerListeners) {
+		for (ServerPlayer listener : listeners) {
 			if (lastTime != time)
 				NetworkHelper.updateClientTileEntity(listener, te.getBlockPos(), 1, time);
 			if (lastIsWorking != isWorking)

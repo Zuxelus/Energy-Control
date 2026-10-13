@@ -38,8 +38,8 @@ public class ContainerKitAssembler extends ContainerBase<TileEntityKitAssembler>
 		addSlot(new SlotTransformer(te, 6, 8, 17 + 18));
 		// inventory
 		addPlayerInventorySlots(inventory, 166);
-		if (inventory.player instanceof ServerPlayer)
-			containerListeners.add((ServerPlayer) inventory.player);
+		if (inventory.player instanceof ServerPlayer) // fabric only
+			listeners.add((ServerPlayer) inventory.player);
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class ContainerKitAssembler extends ContainerBase<TileEntityKitAssembler>
 		super.broadcastChanges();
 		double energy = te.getEnergy();
 		double production = te.getProduction();
-		for (ServerPlayer listener : containerListeners)
+		for (ServerPlayer listener : listeners)
 			if (lastEnergy != energy || lastProduction != production) {
 				CompoundTag tag = new CompoundTag();
 				tag.putInt("type", 1);

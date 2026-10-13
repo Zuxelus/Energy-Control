@@ -43,15 +43,6 @@ public class TileEntityHoloPanel extends TileEntityInfoPanel {
 		}
 	}
 
-	/*@Override
-	@Environment(EnvType.CLIENT)
-	public AABB getRenderBoundingBox() {
-		if (screen == null)
-			return new AABB(pos.offset(0, 0, 0), pos.offset(1, 1, 1));
-		return new AABB(new BlockPos(screen.minX, screen.minY, screen.minZ), new BlockPos(screen.maxX + 1, screen.maxY + getPower(), screen.maxZ + 1));
-	}*/
-
-	// NamedScreenHandlerFactory
 	@Override
 	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerHoloPanel(windowId, inventory, this);

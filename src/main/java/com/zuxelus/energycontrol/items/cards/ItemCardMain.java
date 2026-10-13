@@ -141,7 +141,7 @@ public abstract class ItemCardMain extends Item implements IItemCard {
 	}
 
 	public static void sendCardToWS(List<PanelString> list, ICardReader reader) {
-		if (ConfigHandler.wsHost.isEmpty())
+		if (list == null || ConfigHandler.wsHost.isEmpty())
 			return;
 		String id = reader.getId();
 		JsonObject json = new JsonObject();

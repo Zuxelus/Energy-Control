@@ -52,6 +52,7 @@ public final class ClientPlugin implements REIClientPlugin {
 		registerItem(ModItems.upgrade_color, "ec.jei.upgradeColor");
 		registerItem(ModItems.upgrade_range, "ec.jei.upgradeRange");
 		registerItem(ModItems.upgrade_touch, "ec.jei.upgradeTouch");
+		registerItem(ModItems.upgrade_web, "ec.jei.upgradeWeb");
 
 		registerItem(ModItems.kit_energy, "ec.jei.kitEnergy");
 		registerItem(ModItems.kit_liquid, "ec.jei.kitLiquid");

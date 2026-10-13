@@ -105,6 +105,7 @@ public class ModItems {
 	public static final Item upgrade_range = item("upgrade_range", () -> new Item(itemSettings()));
 	public static final Item upgrade_color = item("upgrade_color", () -> new Item(itemSettings()));
 	public static final Item upgrade_touch = item("upgrade_touch", () -> new Item(itemSettings()));
+	public static final Item upgrade_web = item("upgrade_web", () -> new Item(itemSettings()));
 	public static final Item portable_panel = item("portable_panel", ItemPortablePanel::new);
 	public static final Item machine_casing = item("machine_casing", () -> new Item(itemSettings()));
 	public static final Item basic_circuit = item("basic_circuit", () -> new Item(itemSettings()));

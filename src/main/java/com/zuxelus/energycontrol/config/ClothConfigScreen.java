@@ -48,6 +48,10 @@ public final class ClothConfigScreen {
 						.setDefaultValue(20).setMin(1).setTooltip(Component.translatable("config." + EnergyControl.MODID + ".thermalMonitorRefreshPeriod.tooltip"))
 						.setSaveConsumer(value -> ConfigHandler.thermalMonitorRefreshPeriod = value).build());
 		general.addEntry(
+				entryBuilder.startIntField(Component.translatable("config." + EnergyControl.MODID + ".alarmPause"), ConfigHandler.alarmPause)
+						.setDefaultValue(60).setMin(10).setMax(2000).setTooltip(Component.translatable("config." + EnergyControl.MODID + ".alarmPause.tooltip"))
+						.setSaveConsumer(value -> ConfigHandler.alarmPause = value).build());
+		general.addEntry(
 				entryBuilder.startIntField(Component.translatable("config." + EnergyControl.MODID + ".SMPMaxAlarmRange"), ConfigHandler.SMPMaxAlarmRange)
 						.setDefaultValue(256).setTooltip(Component.translatable("config." + EnergyControl.MODID + ".SMPMaxAlarmRange.tooltip"))
 						.setSaveConsumer(value -> ConfigHandler.SMPMaxAlarmRange = value).build());
@@ -55,10 +59,6 @@ public final class ClothConfigScreen {
 				entryBuilder.startBooleanToggle(Component.translatable("config." + EnergyControl.MODID + ".useCustomSounds"), ConfigHandler.useCustomSounds)
 						.setDefaultValue(true).setTooltip(Component.translatable("config." + EnergyControl.MODID + ".useCustomSounds.tooltip"))
 						.setSaveConsumer(value -> ConfigHandler.useCustomSounds = value).build());
-		general.addEntry(
-				entryBuilder.startIntField(Component.translatable("config." + EnergyControl.MODID + ".alarmPause"), ConfigHandler.alarmPause)
-						.setDefaultValue(60).setMin(10).setMax(2000).setTooltip(Component.translatable("config." + EnergyControl.MODID + ".alarmPause.tooltip"))
-						.setSaveConsumer(value -> ConfigHandler.alarmPause = value).build());
 
 		return builder.setSavingRunnable(() -> {
 			ConfigHandler.saveConfig(ConfigHandler.CONFIG_FILE);
