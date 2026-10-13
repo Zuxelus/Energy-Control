@@ -27,26 +27,23 @@ public class TEAdvancedInfoPanelRenderer extends TileRenderer<TileEntityAdvanced
 		return te.getRenderBoundingBox();
 	}
 
+	// the panel body is a baked model (PanelModel), only the text is drawn here
 	@Override
 	protected void render(TileEntityAdvancedInfoPanel te, PoseStack matrixStack, SubmitNodeCollector buffer, int combinedLight, int combinedOverlay) {
+		Screen screen = te.getScreen();
+		if (!te.getPowered() || screen == null)
+			return;
 		matrixStack.pushPose();
-		// the panel body is a baked model (PanelModel), only the text is drawn here
 		PanelCube.rotateBlock(matrixStack, te.getFacing(), te.getRotation());
+		PanelCube.rotateBlockText(matrixStack, te.getFacing(), te.getRotation());
+
 		byte thickness = te.thickness;
 		if (thickness < 1 || thickness > 16)
 			thickness = 16;
 		RotationOffset offset = new RotationOffset(thickness * 2, te.rotateHor / 7, te.rotateVert / 7);
-		Screen screen = te.getScreen();
-
-		if (screen != null) {
-			PanelCube.rotateBlockText(matrixStack, te.getFacing(), te.getRotation());
-
-			if (te.getPowered()) {
-				List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
-				if (joinedData != null)
-					drawText(te, joinedData, matrixStack, buffer, combinedLight, thickness, offset);
-			}
-		}
+		List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
+		if (joinedData != null)
+			drawText(te, joinedData, matrixStack, buffer, combinedLight, thickness, offset);
 		matrixStack.popPose();
 	}
 
@@ -154,8 +151,9 @@ public class TEAdvancedInfoPanelRenderer extends TileRenderer<TileEntityAdvanced
 		matrixStack.translate(displayWidth / 2, displayHeight / 2, 1 + (32 * h - offset.leftTop - offset.leftBottom) / 64);
 		matrixStack.rotate(Axis.YN.rotationDegrees((float) Math.toDegrees(b)));
 		matrixStack.rotate(Axis.XN.rotationDegrees((float) Math.toDegrees(a)));
-		/*matrixStack.mulPose(new Vector3f(0.0F, 0.0F, i * j).rotationDegrees(90.0F - (float) Math.toDegrees( // Law of cosines
-			Math.acos((h * h + v * v) / 2 / Math.sqrt(displayWidth * displayWidth + h * h) / Math.sqrt(displayHeight * displayHeight + v * v)))));*/
+		if (i * j != 0)
+			matrixStack.rotate((i * j > 0 ? Axis.ZP : Axis.ZN).rotationDegrees(90.0F - (float) Math.toDegrees( // Law of cosines
+			Math.acos((h * h + v * v) / 2 / Math.sqrt(displayWidth * displayWidth + h * h) / Math.sqrt(displayHeight * displayHeight + v * v)))));
 		matrixStack.translate(0.0F, 0.001F * i, 0.001F);
 		displayHeight = (float) ((displayHeight - 0.125F) / Math.cos(a));
 		displayWidth = (float) ((displayWidth - 0.125F) / Math.cos(b));

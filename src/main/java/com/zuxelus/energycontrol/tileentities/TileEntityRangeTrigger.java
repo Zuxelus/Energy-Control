@@ -228,7 +228,6 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements MenuP
 		return stack.getItem().equals(ModItems.upgrade_range.get());
 	}
 
-	// MenuProvider
 	@Override
 	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerRangeTrigger(windowId, inventory, this);

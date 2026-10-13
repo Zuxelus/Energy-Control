@@ -1,9 +1,9 @@
 package com.zuxelus.energycontrol.gui;
 
-import com.zuxelus.energycontrol.api.IItemCard;
 import java.util.List;
 
 import com.zuxelus.energycontrol.EnergyControl;
+import com.zuxelus.energycontrol.api.IItemCard;
 import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.containers.ContainerInfoPanel;
 import com.zuxelus.energycontrol.gui.controls.GuiInfoPanelCheckBox;
@@ -24,7 +24,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class GuiInfoPanel extends GuiPanelBase<ContainerInfoPanel> { 
 	private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/gui_info_panel.png");
-	private boolean isColored;
+	private GuiButtonGeneral colorButton;
 
 	public GuiInfoPanel(ContainerInfoPanel container, Inventory inventory, Component title) {
 		super(container, inventory, title, TEXTURE, 201);
@@ -34,16 +34,28 @@ public class GuiInfoPanel extends GuiPanelBase<ContainerInfoPanel> {
 
 	protected void initButtons() {
 		addRenderableWidget(new GuiButtonGeneral(leftPos + imageWidth - 24, topPos + 42, 16, 16, TEXTURE, 176, panel.getShowLabels() ? 15 : 31, (button) -> { actionPerformed(button, ID_LABELS); }).setGradient());
-		isColored = panel.isColoredEval();
-		if (isColored)
-			addRenderableWidget(new GuiButtonGeneral(leftPos + imageWidth - 24, topPos + 42 + 17, 16, 16, TEXTURE, 192, 0, (button) -> { actionPerformed(button, ID_COLORS); }).setGradient().setScale(2));
+		colorButton = null;
+		updateColorButton();
 		addRenderableWidget(new GuiButtonGeneral(leftPos + imageWidth - 24, topPos + 42 + 17 * 3, 16, 16, Component.literal(Integer.toString(panel.getTickRate())), (button) -> { actionPerformed(button, ID_TICKRATE); }).setGradient());
+	}
+
+	// the color upgrade slot can change while the GUI is open
+	private void updateColorButton() {
+		boolean colored = panel.isColoredEval();
+		if (colored && colorButton == null)
+			colorButton = addRenderableWidget(new GuiButtonGeneral(leftPos + imageWidth - 24, topPos + 42 + 17, 16, 16, TEXTURE, 192, 0, (button) -> { actionPerformed(button, ID_COLORS); }).setGradient().setScale(2));
+		else if (!colored && colorButton != null) {
+			removeWidget(colorButton);
+			colorButton = null;
+		}
 	}
 
 	protected void initControls() {
 		ItemStack stack = panel.getCards().get(activeTab);
-		if (ItemStack.isSameItem(stack, oldStack) && panel.isColoredEval() == isColored)
+		if (ItemStack.isSameItem(stack, oldStack)) {
+			updateColorButton();
 			return;
+		}
 		if (!oldStack.isEmpty() && stack.isEmpty())
 			updateTitle();
 		oldStack = stack.copy();
@@ -64,7 +76,6 @@ public class GuiInfoPanel extends GuiPanelBase<ContainerInfoPanel> {
 				}
 			if (!modified) {
 				textboxTitle = new EditBox(font, leftPos + 7, topPos + 16, 162, 18, null, CommonComponents.EMPTY);
-				//textboxTitle.changeFocus(true);
 				textboxTitle.setValue(new ItemCardReader(stack).getTitle());
 				addWidget(textboxTitle);
 				setInitialFocus(textboxTitle);

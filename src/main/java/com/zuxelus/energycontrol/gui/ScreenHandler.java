@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.tileentities.*;
+import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
+import com.zuxelus.energycontrol.tileentities.TileEntityIndustrialAlarm;
+import com.zuxelus.energycontrol.tileentities.TileEntityThermalMonitor;
 
 import net.minecraft.client.Minecraft;
 

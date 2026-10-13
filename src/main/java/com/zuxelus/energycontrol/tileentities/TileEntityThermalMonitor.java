@@ -144,15 +144,15 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 	}
 
 	public void notifyBlockUpdate() {
-		BlockState iblockstate = level.getBlockState(worldPosition);
-		Block block = iblockstate.getBlock();
+		BlockState state = level.getBlockState(worldPosition);
+		Block block = state.getBlock();
 		if (block instanceof ThermalMonitor || block instanceof RemoteThermalMonitor) {
 			boolean newValue = status < 0 ? false : status == 1 ? !invertRedstone : invertRedstone;
 			if (poweredBlock != newValue) {
 				poweredBlock = newValue;
 				level.updateNeighborsAt(worldPosition, block);
 			}
-			level.sendBlockUpdated(worldPosition, iblockstate, iblockstate, 2);
+			level.sendBlockUpdated(worldPosition, state, state, 2);
 		}
 	}
 

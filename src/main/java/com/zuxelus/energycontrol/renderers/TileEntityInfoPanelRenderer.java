@@ -47,13 +47,14 @@ public class TileEntityInfoPanelRenderer extends TileRenderer<TileEntityInfoPane
 	@Override
 	protected void render(TileEntityInfoPanel te, PoseStack matrixStack, SubmitNodeCollector buffer, int combinedLight, int combinedOverlay) {
 		// the panel body is a baked model (PanelModel), only the text is drawn here
+		if (!te.getPowered())
+			return;
 		matrixStack.pushPose();
 		PanelCube.rotateBlock(matrixStack, te.getFacing(), te.getRotation());
 		PanelCube.rotateBlockText(matrixStack, te.getFacing(), te.getRotation());
-		if (te.getPowered()) {
-			List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
-			drawText(te, joinedData, matrixStack, buffer, combinedLight);
-		}
+
+		List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
+		drawText(te, joinedData, matrixStack, buffer, combinedLight);
 		matrixStack.popPose();
 	}
 

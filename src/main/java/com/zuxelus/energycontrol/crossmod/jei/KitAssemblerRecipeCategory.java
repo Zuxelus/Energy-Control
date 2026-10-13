@@ -68,18 +68,12 @@ public class KitAssemblerRecipeCategory implements IRecipeCategory<KitAssemblerR
 		return recipeType;
 	}
 
-	/*@Override
-	public void setIngredients(KitAssemblerRecipe recipe, IIngredients ingredients) {
-		ingredients.setInputIngredients(recipe.getIngredients());
-		ingredients.setOutput(VanillaTypes.ITEM, recipe.getOutput());
-	}*/
-
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, KitAssemblerRecipe recipe, IFocusGroup focuses) {
 		addInputSlot(builder, 34, 1, recipe.input1, recipe.count1);
 		addInputSlot(builder, 34, 19, recipe.input2, recipe.count2);
 		addInputSlot(builder, 34, 37, recipe.input3, recipe.count3);
-		builder.addSlot(RecipeIngredientRole.OUTPUT, 93, 19).add(recipe.result);
+		builder.addSlot(RecipeIngredientRole.OUTPUT, 93, 19).add(recipe.output);
 	}
 
 	private static void addInputSlot(IRecipeLayoutBuilder builder, int x, int y, Ingredient ingredient, int count) {

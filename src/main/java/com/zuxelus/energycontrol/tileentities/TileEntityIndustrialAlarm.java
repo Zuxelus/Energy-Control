@@ -10,13 +10,12 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm {
-
-	private int lightLevel;
+	private int lightStep;
 	private int updateLightTicker;
 
 	public TileEntityIndustrialAlarm(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
-		lightLevel = 0;
+		lightStep = 0;
 	}
 
 	public TileEntityIndustrialAlarm(BlockPos pos, BlockState state) {
@@ -31,29 +30,28 @@ public class TileEntityIndustrialAlarm extends TileEntityHowlerAlarm {
 	}
 
 	protected void tick() {
-		super.checkStatus();
-		if (updateLightTicker-- <= 0) {
-			updateLightTicker = 3;
-			checkStatus();
+		if (level.isClientSide()) {
+			super.checkStatus();
+			if (updateLightTicker-- <= 0) {
+				updateLightTicker = 3;
+				checkStatus();
+			}
 		}
 	}
 
+	// The light is only a decoration, so every client animates it on its own and the server never changes the block.
+	// The step is written into the block state (not cycled), so a state reset by the server or a switched off alarm always ends up right
 	@Override
 	protected void checkStatus() {
-		if (level.isClientSide())
-			return;
-		int light = lightLevel;
 		if (!powered)
-			lightLevel = 0;
-		else {
-			lightLevel++;
-			if (lightLevel >= 4)
-				lightLevel = 0;
-		}
-		if (lightLevel != light) {
-			BlockState state = level.getBlockState(worldPosition);
-			if (state.getBlock() instanceof IndustrialAlarm)
-				level.setBlock(worldPosition, state.setValue(IndustrialAlarm.LIGHT, lightLevel), 2);
+			lightStep = 0;
+		else if (++lightStep >= IndustrialAlarm.lightSteps.length)
+			lightStep = 0;
+
+		BlockState state = level.getBlockState(worldPosition);
+		if (state.getBlock() instanceof IndustrialAlarm && state.getValue(IndustrialAlarm.LIGHT) != lightStep) {
+			level.setBlock(worldPosition, state.setValue(IndustrialAlarm.LIGHT, lightStep), 2);
+			level.getChunkSource().getLightEngine().checkBlock(worldPosition);
 		}
 	}
 }

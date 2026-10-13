@@ -17,7 +17,7 @@ public class CompactButton extends Button {
 	private int id;
 
 	public CompactButton(int id, int x, int y, int widthIn, int heightIn, Component buttonText, Button.OnPress onPress) {
-		super(x, y, widthIn, heightIn, buttonText, onPress, Button.DEFAULT_NARRATION);
+		super(x, y, widthIn, heightIn, buttonText, onPress, DEFAULT_NARRATION);
 		this.id = id;
 	}
 

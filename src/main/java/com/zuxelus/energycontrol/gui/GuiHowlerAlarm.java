@@ -9,8 +9,8 @@ import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 import com.zuxelus.zlib.gui.GuiBase;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.util.ARGB;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.ARGB;
 
 public class GuiHowlerAlarm extends GuiBase {
 	private TileEntityHowlerAlarm alarm;

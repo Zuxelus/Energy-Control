@@ -81,6 +81,11 @@ public class TileEntityRemoteThermalMonitor extends TileEntityThermalMonitor imp
 		}
 	}
 
+	@Override
+	protected boolean hasRotation() {
+		return false;
+	}
+
 	// Inventory
 	@Override
 	public int getContainerSize() {
@@ -106,7 +111,6 @@ public class TileEntityRemoteThermalMonitor extends TileEntityThermalMonitor imp
 		}
 	}
 
-	// MenuProvider
 	@Override
 	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerRemoteThermalMonitor(windowId, inventory, this);

@@ -1,6 +1,5 @@
 package com.zuxelus.zlib.containers.slots;
 
-
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
 

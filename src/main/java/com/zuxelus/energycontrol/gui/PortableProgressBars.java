@@ -6,8 +6,8 @@ import java.util.Map;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.items.cards.*;
-
 import com.zuxelus.energycontrol.utils.DataHelper;
+
 import net.minecraft.world.item.ItemStack;
 
 /** Read-only decoration for the portable panel's all-fields row layout.

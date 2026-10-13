@@ -43,22 +43,22 @@ public class TileEntityKitAssembler extends TileEntityInventory implements MenuP
 	public static final byte SLOT_RESULT = 4;
 	public static final byte SLOT_DISCHARGER = 5;
 	public static final byte SLOT_TRANSFORMER = 6;
+	private static final int[] SLOTS_TOP = { SLOT_CARD1, SLOT_ITEM, SLOT_CARD2 };
+	private static final int[] SLOTS_BOTTOM = { SLOT_RESULT };
+	private static final int[] SLOTS_NONE = {};
 	private EnergyStorage storage;
 	private int buffer;
 	private static final int CONSUMPTION = 5;
-	private int upgrades;
 	private KitAssemblerRecipe recipe;
 	private int recipeTime; // client Only
 	public static final int CAPACITY = 5000;
 	public static final int OUTPUT = 32;
 	private double production;
-	//private boolean addedToEnet;
 	private boolean active;
 
 	public TileEntityKitAssembler(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
 		storage = new EnergyStorage(CAPACITY, OUTPUT, OUTPUT, 0);
-		//addedToEnet = false;
 		active = false;
 		production = 0;
 	}
@@ -89,6 +89,19 @@ public class TileEntityKitAssembler extends TileEntityInventory implements MenuP
 		if (recipe == null)
 			return 0;
 		return recipe.time;
+	}
+
+	private int getUpgrades() {
+		return getItem(SLOT_TRANSFORMER).getCount();
+	}
+
+	// each transformer upgrade doubles speed and consumption and quadruples the input rate
+	private int getInputRate() {
+		return OUTPUT * (int) Math.pow(4, getUpgrades());
+	}
+
+	private int getEnergyNeeded() {
+		return CONSUMPTION * (int) Math.pow(2, getUpgrades());
 	}
 
 	@Override
@@ -171,12 +184,12 @@ public class TileEntityKitAssembler extends TileEntityInventory implements MenuP
 			CrossModLoader.getCrossMod(ModIDs.IC2).updateEnergyNet(this, true);
 		}*/
 		handleDischarger(SLOT_DISCHARGER);
+		int energyNeeded = getEnergyNeeded();
 		if (!active)
 			return;
-		int energyNeeded = CONSUMPTION * (int) Math.pow(2, upgrades);
 		if (storage.getEnergyStored() >= energyNeeded) {
 			storage.extractEnergy(energyNeeded, false);
-			production += Math.pow(2, upgrades);
+			production += Math.pow(2, getUpgrades());
 			if (recipe != null && production >= recipe.time) {
 				ItemStack stack1 = getItem(SLOT_CARD1);
 				ItemStack stack2 = getItem(SLOT_ITEM);
@@ -190,7 +203,7 @@ public class TileEntityKitAssembler extends TileEntityInventory implements MenuP
 				if (result.isEmpty())
 					setItem(SLOT_RESULT, recipe.getOutput());
 				else
-					result.grow(recipe.result.count());
+					result.grow(recipe.output.count());
 				production = 0;
 				updateState();
 			}
@@ -202,39 +215,39 @@ public class TileEntityKitAssembler extends TileEntityInventory implements MenuP
 	}
 
 	private void handleDischarger(int slot) {
-		int needed = Math.min(OUTPUT * (int) Math.pow(4, upgrades), storage.getMaxEnergyStored() - storage.getEnergyStored());
+		int needed = Math.min(getInputRate(), storage.getMaxEnergyStored() - storage.getEnergyStored());
 		if (needed <= 0)
 			return;
 		if (buffer > 0)
 			buffer -= storage.receiveEnergy(buffer, false);
-		needed = Math.min(OUTPUT * (int) Math.pow(4, upgrades), storage.getMaxEnergyStored() - storage.getEnergyStored());
+		needed = Math.min(getInputRate(), storage.getMaxEnergyStored() - storage.getEnergyStored());
 		ItemStack stack = getItem(slot);
-		if (!stack.isEmpty() && needed > 0) {
-			if (stack.getItem().equals(Items.LAVA_BUCKET)) {
-				buffer += 5000;
-				buffer -= storage.receiveEnergy(buffer, false);
-				setItem(slot, new ItemStack(Items.BUCKET));
-				return;
+		if (stack.isEmpty() || needed <= 0)
+			return;
+		if (stack.getItem().equals(Items.LAVA_BUCKET)) {
+			buffer += 5000;
+			buffer -= storage.receiveEnergy(buffer, false);
+			setItem(slot, new ItemStack(Items.BUCKET));
+			return;
+		}
+		EnergyHandler stackStorage = getStackEnergyStorage(stack);
+		if (stackStorage != null) {
+			int extracted;
+			try (Transaction tx = Transaction.openRoot()) {
+				extracted = stackStorage.extract(needed, tx);
+				tx.commit();
 			}
-			EnergyHandler stackStorage = getStackEnergyStorage(stack);
-			if (stackStorage != null) {
-				int extracted;
-				try (Transaction tx = Transaction.openRoot()) {
-					extracted = stackStorage.extract(needed, tx);
-					tx.commit();
-				}
-				if (storage.receiveEnergy(extracted, false) > 0)
-					active = true;
-			} else if (CrossModLoader.isElectricItem(stack)) {
-				double old = storage.getEnergyStored();
-				storage.receiveEnergy((int) CrossModLoader.dischargeItem(stack, needed, getSinkTier()), false);
-				if (!active && storage.getEnergyStored() > old)
-					setChanged();
-			}
+			if (storage.receiveEnergy(extracted, false) > 0)
+				active = true;
+		} else if (CrossModLoader.isElectricItem(stack)) {
+			double old = storage.getEnergyStored();
+			storage.receiveEnergy((int) CrossModLoader.dischargeItem(stack, needed, getSinkTier()), false);
+			if (!active && storage.getEnergyStored() > old)
+				setChanged();
 		}
 	}
 
-	private EnergyHandler getStackEnergyStorage(ItemStack stack) {
+	private EnergyHandler getStackEnergyStorage(ItemStack stack) { // forge only
 		if (stack.isEmpty())
 			return null;
 		return ItemAccess.forStack(stack).getCapability(Capabilities.Energy.ITEM);
@@ -255,10 +268,8 @@ public class TileEntityKitAssembler extends TileEntityInventory implements MenuP
 
 	private void updateActive() {
 		active = false;
-		ItemStack stack = getItem(SLOT_TRANSFORMER);
-		upgrades = stack.getCount();
-		storage.setMax(OUTPUT * (int) Math.pow(4, upgrades));
-		int energyNeeded = CONSUMPTION * (int) Math.pow(2, upgrades);
+		storage.setMax(getInputRate());
+		int energyNeeded = getEnergyNeeded();
 		if (storage.getEnergyStored() < energyNeeded)
 			return;
 		KitAssemblerRecipe newRecipe;
@@ -336,12 +347,12 @@ public class TileEntityKitAssembler extends TileEntityInventory implements MenuP
 	}
 
 	public int getSinkTier() {
-		return 1 + upgrades;
+		return 1 + getUpgrades();
 	}
 
 	public int acceptEnergy(Direction directionFrom, int amount, int voltage) {
 		int left = 0;
-		int input = OUTPUT * (int) Math.pow(4, upgrades);
+		int input = getInputRate();
 		if (amount > input) {
 			left = amount - input;
 			amount = input;
@@ -379,12 +390,12 @@ public class TileEntityKitAssembler extends TileEntityInventory implements MenuP
 
 	// ISidedInventory
 	@Override
-	public int [] getSlotsForFace(Direction side) {
+	public int[] getSlotsForFace(Direction side) {
 		if (side == Direction.UP)
-			return new int[] { SLOT_CARD1, SLOT_ITEM, SLOT_CARD2 };
+			return SLOTS_TOP;
 		if (side == Direction.DOWN)
-			return new int[] { SLOT_RESULT };
-		return super.getSlotsForFace(side);
+			return SLOTS_BOTTOM;
+		return SLOTS_NONE;
 	}
 
 	@Override
@@ -397,7 +408,6 @@ public class TileEntityKitAssembler extends TileEntityInventory implements MenuP
 		return side == Direction.DOWN && slot == SLOT_RESULT;
 	}
 
-	// MenuProvider
 	@Override
 	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerKitAssembler(windowId, inventory, this);

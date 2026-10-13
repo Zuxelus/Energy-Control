@@ -16,11 +16,17 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.StringUtil;
 
 public class GuiTextArea extends AbstractWidget {
+	private static final int MAX_STRING_LENGTH = 128;
+	private static final int CELL_WIDTH = 6;
+	private static final int TEXT_MARGIN = 4;
+
 	private final int lineCount;
-	private int maxStringLength = 32;
+	private final int maxGuiLength; // characters that fit into the widget
 	private int cursorCounter;
-	private int cursorPosition = 0;
-	private int cursorLine = 0;
+	private int cursorLine;
+	private int caret; // the moving end of the selection, where the text cursor is
+	private int anchor; // the fixed end of the selection, equal to caret when nothing is selected
+	private int scrollOffset; // first visible character
 	private String[] text;
 
 	private final Font fontRenderer;
@@ -29,6 +35,7 @@ public class GuiTextArea extends AbstractWidget {
 		super(xPos, yPos, width, height, CommonComponents.EMPTY);
 		this.fontRenderer = fontRenderer;
 		this.lineCount = lineCount;
+		maxGuiLength = (width - TEXT_MARGIN - 2) / CELL_WIDTH;
 		text = new String[lineCount];
 		for (int i = 0; i < lineCount; i++)
 			text[i] = "";
@@ -38,73 +45,110 @@ public class GuiTextArea extends AbstractWidget {
 		return text;
 	}
 
-	@Override
-	protected void extractWidgetRenderState(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY, float partialTicks) {
-		matrixStack.fill(getX() - 1, getY() - 1, getX() + width + 1, getY() + height + 1, ARGB.opaque(0xA0A0A0));
-		matrixStack.fill(getX(), getY(), getX() + width, getY() + height, ARGB.opaque(0x000000));
-		int textColor = 0xE0E0E0;
-
-		int textLeft = getX() + 4;
-		int textTop = getY() + (height - lineCount * (fontRenderer.lineHeight + 1)) / 2;
-
-		for (int i = 0; i < lineCount; i++)
-			matrixStack.text(fontRenderer, text[i], textLeft, textTop + (fontRenderer.lineHeight + 1) * i, ARGB.opaque(textColor));
-		textTop += (fontRenderer.lineHeight + 1) * cursorLine;
-		int cursorPositionX = textLeft + fontRenderer.width(text[cursorLine].substring(0, Math.min(text[cursorLine].length(), cursorPosition))) - 1;
-		boolean drawCursor = isFocused() && cursorCounter / 6 % 2 == 0;
-		if (drawCursor)
-			// same inverting highlight that EditBox uses for selections
-			matrixStack.textHighlight(cursorPositionX, textTop - 1, cursorPositionX + 1, textTop + 1 + fontRenderer.lineHeight, true);
-	}
-
-	// since SDL input the game only sends typed characters while text input is started, like EditBox does
-	@Override
-	public void setFocused(boolean focused) {
-		super.setFocused(focused);
-		Minecraft.getInstance().onTextInputFocusChange(this, focused);
-	}
-
 	public void updateCursorCounter() {
 		cursorCounter++;
 	}
 
-	public void setCursorPosition(int x, int y) {
-		if (y >= text.length)
-			y = text.length - 1;
-		cursorPosition = x;
-		cursorLine = y;
-		int lineLength = text[y].length();
-
-		if (cursorPosition < 0)
-			cursorPosition = 0;
-
-		if (cursorPosition > lineLength)
-			cursorPosition = lineLength;
+	// the lines can be replaced from outside
+	private void clampCursor() {
+		int length = text[cursorLine].length();
+		caret = Mth.clamp(caret, 0, length);
+		anchor = Mth.clamp(anchor, 0, length);
+		scrollOffset = Mth.clamp(scrollOffset, 0, Math.max(0, length));
 	}
 
-	public void deleteFromCursor(int count) {
-		if (text[cursorLine].length() != 0) {
-			boolean back = count < 0;
-			String curLine = text[cursorLine];
-			int left = back ? cursorPosition + count : cursorPosition;
-			int right = back ? cursorPosition : cursorPosition + count;
-			String newLine = "";
+	private boolean hasSelection() {
+		return caret != anchor;
+	}
 
-			if (left >= 0)
-				newLine = curLine.substring(0, left);
+	private int selectionStart() {
+		return Math.min(caret, anchor);
+	}
 
-			if (right < curLine.length())
-				newLine = newLine + curLine.substring(right);
+	private int selectionEnd() {
+		return Math.max(caret, anchor);
+	}
 
-			text[cursorLine] = newLine;
+	public String getSelectedText() {
+		clampCursor();
+		return text[cursorLine].substring(selectionStart(), selectionEnd());
+	}
 
-			if (back)
-				setCursorPosition(cursorPosition + count, cursorLine);
+	private void scrollToCursor() {
+		if (caret < scrollOffset)
+			scrollOffset = caret;
+		else if (caret - scrollOffset > maxGuiLength)
+			scrollOffset = caret - maxGuiLength;
+		scrollOffset = Math.max(0, scrollOffset);
+	}
+
+	private void moveCursor(int position, boolean select) {
+		caret = Mth.clamp(position, 0, text[cursorLine].length());
+		if (!select)
+			anchor = caret;
+		scrollToCursor();
+	}
+
+	public void setCursorPosition(int x, int y) {
+		cursorLine = Mth.clamp(y, 0, lineCount - 1);
+		moveCursor(x, false);
+	}
+
+	private void setCursorLine(int delta) {
+		cursorLine = Mth.clamp(cursorLine + delta, 0, lineCount - 1);
+		moveCursor(caret, false);
+	}
+
+	// start of the next word to the right, or of the current one to the left
+	private int wordBoundary(int position, int direction) {
+		String line = text[cursorLine];
+		if (direction < 0) {
+			while (position > 0 && line.charAt(position - 1) == ' ')
+				position--;
+			while (position > 0 && line.charAt(position - 1) != ' ')
+				position--;
+		} else {
+			while (position < line.length() && line.charAt(position) != ' ')
+				position++;
+			while (position < line.length() && line.charAt(position) == ' ')
+				position++;
 		}
+		return position;
+	}
+
+	private void deleteRange(int from, int to) {
+		String line = text[cursorLine];
+		text[cursorLine] = line.substring(0, from) + line.substring(to);
+		caret = anchor = from;
+		scrollToCursor();
+	}
+
+	private void deleteSelection() {
+		deleteRange(selectionStart(), selectionEnd());
+	}
+
+	private void deleteBackward(boolean word) {
+		if (hasSelection())
+			deleteSelection();
+		else if (caret == 0)
+			joinWithPreviousLine();
+		else
+			deleteRange(word ? wordBoundary(caret, -1) : caret - 1, caret);
+	}
+
+	private void deleteForward(boolean word) {
+		if (hasSelection())
+			deleteSelection();
+		else if (caret >= text[cursorLine].length())
+			joinWithNextLine();
+		else
+			deleteRange(caret, word ? wordBoundary(caret, 1) : caret + 1);
 	}
 
 	// moves the text right of the cursor to the next line, pushing the lines below down, and puts the cursor at the start of it
 	private void splitLine() {
+		if (hasSelection())
+			deleteSelection();
 		if (cursorLine >= lineCount - 1)
 			return;
 		// the last line would be pushed out, so it is only done when that loses nothing
@@ -112,16 +156,17 @@ public class GuiTextArea extends AbstractWidget {
 			String line = text[cursorLine];
 			for (int i = lineCount - 1; i > cursorLine + 1; i--)
 				text[i] = text[i - 1];
-			text[cursorLine] = line.substring(0, cursorPosition);
-			text[cursorLine + 1] = line.substring(cursorPosition);
+			text[cursorLine] = line.substring(0, caret);
+			text[cursorLine + 1] = line.substring(caret);
 		}
 		cursorLine++;
-		cursorPosition = 0;
+		scrollOffset = 0;
+		caret = anchor = 0;
 	}
 
 	// appends the next line to the current one and moves the lines below it one line up, nothing happens if the result is too long
 	private void joinWithNextLine() {
-		if (cursorLine >= lineCount - 1 || text[cursorLine].length() + text[cursorLine + 1].length() > maxStringLength)
+		if (cursorLine >= lineCount - 1 || text[cursorLine].length() + text[cursorLine + 1].length() > MAX_STRING_LENGTH)
 			return;
 		text[cursorLine] += text[cursorLine + 1];
 		for (int i = cursorLine + 1; i < lineCount - 1; i++)
@@ -131,101 +176,159 @@ public class GuiTextArea extends AbstractWidget {
 
 	// appends the current line to the previous one, the cursor goes to the join point
 	private void joinWithPreviousLine() {
-		if (cursorLine == 0 || text[cursorLine - 1].length() + text[cursorLine].length() > maxStringLength)
+		if (cursorLine == 0 || text[cursorLine - 1].length() + text[cursorLine].length() > MAX_STRING_LENGTH)
 			return;
 		cursorLine--;
-		cursorPosition = text[cursorLine].length();
+		caret = anchor = text[cursorLine].length();
 		joinWithNextLine();
+		scrollToCursor();
 	}
 
 	public void writeText(String additionalText) {
-		String newLine = "";
+		clampCursor();
+		if (hasSelection())
+			deleteSelection();
 		String filteredText = StringUtil.filterText(additionalText);
-		int freeCharCount = this.maxStringLength - text[cursorLine].length();
-
-		if (text[cursorLine].length() > 0)
-			newLine = newLine + text[cursorLine].substring(0, cursorPosition);
-
-		if (freeCharCount < filteredText.length())
-			newLine = newLine + filteredText.substring(0, freeCharCount);
-		else
-			newLine = newLine + filteredText;
-
-		if (text[cursorLine].length() > 0 && cursorPosition < text[cursorLine].length())
-			newLine = newLine + text[cursorLine].substring(cursorPosition);
-
-		text[cursorLine] = newLine;
-		setCursorPosition(cursorPosition + filteredText.length(), cursorLine);
+		String line = text[cursorLine];
+		int freeCharCount = MAX_STRING_LENGTH - line.length();
+		if (freeCharCount <= 0 || filteredText.isEmpty())
+			return;
+		if (filteredText.length() > freeCharCount)
+			filteredText = filteredText.substring(0, freeCharCount);
+		text[cursorLine] = line.substring(0, caret) + filteredText + line.substring(caret);
+		caret = anchor = caret + filteredText.length();
+		scrollToCursor();
 	}
 
-	private void setCursorLine(int delta) {
-		int newCursorLine = cursorLine + delta;
-		if (newCursorLine < 0)
-			newCursorLine = 0;
-		if (newCursorLine >= lineCount)
-			newCursorLine = lineCount - 1;
-		cursorPosition = Math.min(cursorPosition, text[newCursorLine].length());
-		cursorLine = newCursorLine;
+	private int textTop() {
+		return getY() + (height - lineCount * (fontRenderer.lineHeight + 1)) / 2;
+	}
+
+	@Override
+	protected void extractWidgetRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float partialTicks) {
+		clampCursor();
+		context.fill(getX() - 1, getY() - 1, getX() + width + 1, getY() + height + 1, ARGB.opaque(0xA0A0A0));
+		context.fill(getX(), getY(), getX() + width, getY() + height, ARGB.opaque(0x000000));
+		int textColor = 0xE0E0E0;
+
+		int textLeft = getX() + TEXT_MARGIN;
+		int lineHeight = fontRenderer.lineHeight + 1;
+		int textTop = textTop();
+
+		for (int i = 0; i < lineCount; i++) {
+			String line = text[i];
+			int visible = Math.min(line.length() - scrollOffset, maxGuiLength);
+			for (int j = 0; j < visible; j++) {
+				String character = line.substring(scrollOffset + j, scrollOffset + j + 1);
+				context.text(fontRenderer, character, textLeft + j * CELL_WIDTH + (CELL_WIDTH - fontRenderer.width(character)) / 2, textTop + lineHeight * i, ARGB.opaque(textColor));
+			}
+		}
+
+		int lineTop = textTop + lineHeight * cursorLine;
+		// same inverting highlight that EditBox uses for selections
+		if (isFocused() && hasSelection()) {
+			int from = Math.max(selectionStart(), scrollOffset);
+			int to = Math.min(selectionEnd(), scrollOffset + maxGuiLength);
+			if (from < to)
+				context.textHighlight(textLeft + (from - scrollOffset) * CELL_WIDTH - 1, lineTop - 1, textLeft + (to - scrollOffset) * CELL_WIDTH - 1, lineTop + 1 + fontRenderer.lineHeight, true);
+		}
+		if (isFocused() && cursorCounter / 6 % 2 == 0) {
+			int cursorX = textLeft + (caret - scrollOffset) * CELL_WIDTH - 1;
+			context.textHighlight(cursorX, lineTop - 1, cursorX + 1, lineTop + 1 + fontRenderer.lineHeight, true);
+		}
+	}
+
+	// since SDL input the game only sends typed characters while text input is started, like EditBox does
+	@Override
+	public void setFocused(boolean focused) {
+		super.setFocused(focused);
+		Minecraft.getInstance().onTextInputFocusChange(this, focused);
+	}
+
+	private int lineAt(double mouseY) {
+		return Mth.clamp((int) Math.floor((mouseY - textTop()) / (fontRenderer.lineHeight + 1)), 0, lineCount - 1);
+	}
+
+	private int columnAt(double mouseX) {
+		int column = scrollOffset + (int) Math.floor((mouseX - getX() - TEXT_MARGIN + CELL_WIDTH / 2.0) / CELL_WIDTH);
+		return Mth.clamp(column, 0, text[cursorLine].length());
 	}
 
 	@Override
 	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
 		double mouseX = event.x();
 		double mouseY = event.y();
-		int mouseButton = event.button();
-		boolean flag = mouseX >= getX() && mouseX < (getX() + width) && mouseY >= getY() && mouseY < (getY() + height);
-		if (!flag || mouseButton != InputConstants.MOUSE_BUTTON_LEFT)
+		boolean inside = mouseX >= getX() && mouseX < (getX() + width) && mouseY >= getY() && mouseY < (getY() + height);
+		if (!inside || event.button() != InputConstants.MOUSE_BUTTON_LEFT)
 			return false;
 		// returning true lets the screen focus this widget, so a click into an unfocused area starts typing
-		int xi = Mth.floor(mouseX) - getX();
-		int yi = Mth.floor(mouseY) - getY();
-		int line = Mth.clamp((yi - 4) / 10, 0, lineCount - 1);
-		setCursorPosition(fontRenderer.plainSubstrByWidth(text[line], xi).length(), line);
+		cursorLine = lineAt(mouseY);
+		moveCursor(columnAt(mouseX), event.hasShiftDown());
 		return true;
+	}
+
+	// selecting with the mouse
+	@Override
+	protected void onDrag(MouseButtonEvent event, double dx, double dy) {
+		moveCursor(columnAt(event.x()), true);
 	}
 
 	@Override
 	public boolean keyPressed(KeyEvent event) {
-		int keyCode = event.key();
 		if (!isFocused())
 			return false;
-		switch (keyCode) {
-		/*case 1:
-			setCursorPosition(text[cursorLine].length(), cursorLine);
-			return true;*/
-		case InputConstants.KEY_RETURN: // enter
+		clampCursor();
+		if (event.isSelectAll()) {
+			anchor = 0;
+			caret = text[cursorLine].length();
+			scrollToCursor();
+			return true;
+		}
+		if (event.isCopy()) {
+			Minecraft.getInstance().keyboardHandler.setClipboard(getSelectedText());
+			return true;
+		}
+		if (event.isPaste()) {
+			writeText(Minecraft.getInstance().keyboardHandler.getClipboard());
+			return true;
+		}
+		if (event.isCut()) {
+			Minecraft.getInstance().keyboardHandler.setClipboard(getSelectedText());
+			if (hasSelection())
+				deleteSelection();
+			return true;
+		}
+
+		boolean shift = event.hasShiftDown();
+		boolean ctrl = event.hasControlDown();
+		switch (event.key()) {
+		case InputConstants.KEY_RETURN:
 		case InputConstants.KEY_NUMPADENTER:
 			splitLine();
 			return true;
-		case InputConstants.KEY_BACKSPACE: // backspace
-			if (cursorPosition == 0)
-				joinWithPreviousLine();
-			else
-				deleteFromCursor(-1);
+		case InputConstants.KEY_BACKSPACE:
+			deleteBackward(ctrl);
 			return true;
-		case InputConstants.KEY_HOME: //home
-			setCursorPosition(0, cursorLine);
+		case InputConstants.KEY_DELETE:
+			deleteForward(ctrl);
 			return true;
-		case InputConstants.KEY_LEFT: // left
-			setCursorPosition(cursorPosition - 1, cursorLine);
+		case InputConstants.KEY_HOME:
+			moveCursor(0, shift);
 			return true;
-		case InputConstants.KEY_RIGHT: // right
-			setCursorPosition(cursorPosition + 1, cursorLine);
+		case InputConstants.KEY_END:
+			moveCursor(text[cursorLine].length(), shift);
 			return true;
-		case InputConstants.KEY_UP: // up
+		case InputConstants.KEY_LEFT:
+			moveCursor(ctrl ? wordBoundary(caret, -1) : caret - 1, shift);
+			return true;
+		case InputConstants.KEY_RIGHT:
+			moveCursor(ctrl ? wordBoundary(caret, 1) : caret + 1, shift);
+			return true;
+		case InputConstants.KEY_UP:
 			setCursorLine(-1);
 			return true;
-		case InputConstants.KEY_DOWN: // down
+		case InputConstants.KEY_DOWN:
 			setCursorLine(1);
-			return true;
-		case InputConstants.KEY_END: // end
-			setCursorPosition(text[cursorLine].length(), cursorLine);
-			return true;
-		case InputConstants.KEY_DELETE: // delete
-			if (cursorPosition >= text[cursorLine].length())
-				joinWithNextLine();
-			else
-				deleteFromCursor(1);
 			return true;
 		}
 		// not consumed, so the character of the key reaches charTyped

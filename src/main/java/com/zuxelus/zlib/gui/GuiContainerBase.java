@@ -28,7 +28,7 @@ public class GuiContainerBase<T extends AbstractContainerMenu> extends AbstractC
 	protected static final int REDGLOW = multiplyColorComponents(RED, 0.16F);
 	protected DecimalFormat fraction = new DecimalFormat("##0.00");
 
-	protected final Identifier texture;
+	private final Identifier texture;
 
 	public GuiContainerBase(T container, Inventory inv, Component name, Identifier texture) {
 		this(container, inv, name, texture, DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT);

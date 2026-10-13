@@ -85,7 +85,7 @@ public abstract class TileEntityInventory extends BlockEntityFacing implements W
 		inventory.clear();
 	}
 
-	public ResourceHandler<ItemResource> getItemHandler(Direction side) {
+	public ResourceHandler<ItemResource> getItemHandler(Direction side) { // forge only
 		return side == null ? VanillaContainerWrapper.of(this) : new WorldlyContainerWrapper(this, side);
 	}
 

@@ -1,9 +1,9 @@
 package com.zuxelus.energycontrol.gui;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import java.awt.Color;
 import java.util.ArrayList;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.network.NetworkHelper;
@@ -16,15 +16,15 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.util.ARGB;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 
 public class GuiScreenColor extends GuiBase {
-	private final static Identifier PICKER = Identifier.parse(EnergyControl.MODID + ":dynamic/color_picker");
+	private final static Identifier PICKER = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "dynamic/color_picker");
 	// Picker layout: a center disc (white / black) surrounded by rings split into hue sectors.
 	// Light picker: value = 1, ring = saturation. Dark picker: saturation = 1, ring = value.
 	private static final int HUE_SECTORS = 16;
@@ -68,7 +68,6 @@ public class GuiScreenColor extends GuiBase {
 		rText = new GuiTextNumeric(font, guiLeft + 10, guiTop + 18, 26, 12, CommonComponents.EMPTY, 255);
 		rText.setMaxLength(3);
 		rText.setValue(Integer.toString((colorText & 0x00FF0000) >> 16));
-		//rText.setEnableBackgroundDrawing(false);
 		fieldList.add(rText);
 		gText = new GuiTextNumeric(font, guiLeft + 46, guiTop + 18, 26, 12, CommonComponents.EMPTY, 255);
 		gText.setMaxLength(3);
@@ -82,7 +81,6 @@ public class GuiScreenColor extends GuiBase {
 		rText2 = new GuiTextNumeric(font, guiLeft + 10 + offset, guiTop + 18, 26, 12, CommonComponents.EMPTY, 255);
 		rText2.setMaxLength(3);
 		rText2.setValue(Integer.toString((colorBack & 0x00FF0000) >> 16));
-		//rText.setEnableBackgroundDrawing(false);
 		fieldList2.add(rText2);
 		gText2 = new GuiTextNumeric(font, guiLeft + 46 + offset, guiTop + 18, 26, 12, CommonComponents.EMPTY, 255);
 		gText2.setMaxLength(3);
@@ -96,9 +94,6 @@ public class GuiScreenColor extends GuiBase {
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY) {
-		//RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		//RenderSystem.setShaderTexture(0, texture);
-		//blit(matrixStack, 158 + (colorBack % 4) * 14, 21 + (colorBack / 4) * 14, 234, 0, 14, 14);
 		matrixStack.text(font, I18n.get("msg.ec.ScreenColor"), 152, 6, ARGB.opaque(colorBack), false);
 		matrixStack.text(font, I18n.get("msg.ec.TextColor"), 8, 6, ARGB.opaque(colorText), false);
 	}
@@ -118,7 +113,8 @@ public class GuiScreenColor extends GuiBase {
 	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
 		double mouseX = event.x();
 		double mouseY = event.y();
-		if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
+		int mouseButton = event.button();
+		if (mouseButton == InputConstants.MOUSE_BUTTON_LEFT) {
 			for (GuiTextNumeric text : fieldList) {
 				text.setFocused(text.isMouseOver(mouseX, mouseY));
 				text.mouseClicked(event, doubleClick);
@@ -209,7 +205,7 @@ public class GuiScreenColor extends GuiBase {
 					}
 					image.setPixelABGR(px + mode * SIZE, py, abgr);
 				}
-		Minecraft.getInstance().getTextureManager().register(PICKER, new DynamicTexture(() -> "energycontrol color picker", image));
+		Minecraft.getInstance().getTextureManager().register(PICKER, new DynamicTexture(PICKER::toString, image));
 		pickerRegistered = true;
 	}
 
@@ -245,7 +241,6 @@ public class GuiScreenColor extends GuiBase {
 	private boolean isInside(double mouseX, double mouseY, int x, int y, int width, int height) {
 		return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
 	}
-
 
 	@Override
 	public boolean keyPressed(KeyEvent event) {

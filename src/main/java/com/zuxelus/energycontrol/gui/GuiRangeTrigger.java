@@ -9,12 +9,12 @@ import com.zuxelus.energycontrol.tileentities.TileEntityRangeTrigger;
 import com.zuxelus.zlib.gui.GuiContainerBase;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.util.ARGB;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 
@@ -25,7 +25,7 @@ public class GuiRangeTrigger extends GuiContainerBase<ContainerRangeTrigger> {
 	private ItemStack prevCard;
 
 	public GuiRangeTrigger(ContainerRangeTrigger container, Inventory inventory, Component title) {
-		super(container, inventory, title, TEXTURE, 176, 190);
+		super(container, inventory, title, TEXTURE, DEFAULT_IMAGE_WIDTH, 190);
 		this.container = container;
 	}
 
@@ -33,7 +33,7 @@ public class GuiRangeTrigger extends GuiContainerBase<ContainerRangeTrigger> {
 		ItemStack card = container.getSlot(TileEntityRangeTrigger.SLOT_CARD).getItem();
 		if (!card.isEmpty() && card.equals(prevCard))
 			return;
-		renderables.clear();
+		clearWidgets();
 		prevCard = card;
 		// ten digits, up to 10 billions
 		for (int i = 0; i < 10; i++) {
@@ -52,7 +52,6 @@ public class GuiRangeTrigger extends GuiContainerBase<ContainerRangeTrigger> {
 		super.init();
 		initControls();
 	}
-
 
 	private void renderValue(GuiGraphicsExtractor matrixStack, double value, int x, int y) {
 		x += 114;

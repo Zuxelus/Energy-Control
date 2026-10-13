@@ -2,6 +2,9 @@ package com.zuxelus.energycontrol;
 
 import com.zuxelus.energycontrol.gui.*;
 import com.zuxelus.energycontrol.renderers.PanelModel;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+import net.neoforged.neoforge.client.gui.ConfigurationScreen;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.neoforge.client.event.RegisterBlockStateModels;
 import com.zuxelus.energycontrol.init.ModContainerTypes;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
@@ -27,7 +30,9 @@ import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlers
 @Mod(value = EnergyControl.MODID, dist = Dist.CLIENT)
 public class ClientProxy {
 
-	public ClientProxy(IEventBus modEventBus) {
+	public ClientProxy(IEventBus modEventBus, ModContainer container) {
+		// the Config button of the mod list
+		container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
 		modEventBus.addListener(ClientProxy::onClientSetup);
 		modEventBus.addListener(ClientProxy::registerScreens);
 		modEventBus.addListener(ClientProxy::registerRenders);

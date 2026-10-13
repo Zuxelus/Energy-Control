@@ -1,13 +1,11 @@
 package com.zuxelus.energycontrol.gui;
 
-import com.zuxelus.energycontrol.api.IItemCard;
 import java.util.List;
-import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
 import java.util.Map;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.api.CardState;
+import com.zuxelus.energycontrol.api.IItemCard;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.containers.ContainerPortablePanel;
 import com.zuxelus.energycontrol.gui.controls.ToggleButton;
@@ -21,6 +19,8 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
@@ -77,12 +77,6 @@ public class GuiPortablePanel extends AbstractContainerScreen<ContainerPortableP
 
 	private Component barButtonTitle() {
 		return Component.translatable(showBars ? "gui.ec.portableBarsOn" : "gui.ec.portableBarsOff");
-	}
-
-	@Override
-	public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float partialTicks) {
-		super.extractRenderState(context, mouseX, mouseY, partialTicks);
-		extractTooltip(context, mouseX, mouseY);
 	}
 
 	@Override

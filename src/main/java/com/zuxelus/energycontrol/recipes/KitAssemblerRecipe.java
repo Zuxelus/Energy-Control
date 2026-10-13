@@ -39,14 +39,14 @@ public class KitAssemblerRecipe implements Recipe<RecipeInput> {
 			CountedIngredient.CODEC.fieldOf("input1").forGetter(o -> new CountedIngredient(o.input1, o.count1)),
 			CountedIngredient.CODEC.fieldOf("input2").forGetter(o -> new CountedIngredient(o.input2, o.count2)),
 			CountedIngredient.CODEC.fieldOf("input3").forGetter(o -> new CountedIngredient(o.input3, o.count3)),
-			ItemStackTemplate.CODEC.fieldOf("result").forGetter(o -> o.result),
+			ItemStackTemplate.CODEC.fieldOf("result").forGetter(o -> o.output),
 			Codec.INT.optionalFieldOf("time", 300).forGetter(o -> o.time)
 		).apply(i, KitAssemblerRecipe::new));
 	public static final StreamCodec<RegistryFriendlyByteBuf, KitAssemblerRecipe> STREAM_CODEC = StreamCodec.composite(
 			CountedIngredient.STREAM_CODEC, o -> new CountedIngredient(o.input1, o.count1),
 			CountedIngredient.STREAM_CODEC, o -> new CountedIngredient(o.input2, o.count2),
 			CountedIngredient.STREAM_CODEC, o -> new CountedIngredient(o.input3, o.count3),
-			ItemStackTemplate.STREAM_CODEC, o -> o.result,
+			ItemStackTemplate.STREAM_CODEC, o -> o.output,
 			ByteBufCodecs.INT, o -> o.time,
 			KitAssemblerRecipe::new);
 	public static final RecipeSerializer<KitAssemblerRecipe> SERIALIZER = new RecipeSerializer<>(MAP_CODEC, STREAM_CODEC);
@@ -57,22 +57,23 @@ public class KitAssemblerRecipe implements Recipe<RecipeInput> {
 	public final int count1;
 	public final int count2;
 	public final int count3;
-	public final ItemStackTemplate result;
+	// since 26.1 recipes are loaded before item components exist, so results are templates
+	public final ItemStackTemplate output;
 	public final int time;
 
-	public KitAssemblerRecipe(CountedIngredient input1, CountedIngredient input2, CountedIngredient input3, ItemStackTemplate result, int time) {
+	public KitAssemblerRecipe(CountedIngredient input1, CountedIngredient input2, CountedIngredient input3, ItemStackTemplate output, int time) {
 		this.input1 = input1.ingredient();
 		this.count1 = input1.count();
 		this.input2 = input2.ingredient();
 		this.count2 = input2.count();
 		this.input3 = input3.ingredient();
 		this.count3 = input3.count();
-		this.result = result;
+		this.output = output;
 		this.time = time;
 	}
 
 	public ItemStack getOutput() {
-		return result.create();
+		return output.create();
 	}
 
 	public boolean isSuitable(TileEntityKitAssembler te) {
@@ -87,9 +88,9 @@ public class KitAssemblerRecipe implements Recipe<RecipeInput> {
 			return false;
 		ItemStack result = te.getItem(TileEntityKitAssembler.SLOT_RESULT);
 		if (!result.isEmpty()) {
-			if (!result.is(this.result.item()))
+			if (!result.is(output.item()))
 				return false;
-			if (result.getCount() + this.result.count() > result.getMaxStackSize())
+			if (result.getCount() + output.count() > result.getMaxStackSize())
 				return false;
 		}
 		return true;
@@ -124,6 +125,7 @@ public class KitAssemblerRecipe implements Recipe<RecipeInput> {
 		return getOutput();
 	}
 
+	// the kit assembler is not a recipe book block
 	@Override
 	public PlacementInfo placementInfo() {
 		return PlacementInfo.NOT_PLACEABLE;

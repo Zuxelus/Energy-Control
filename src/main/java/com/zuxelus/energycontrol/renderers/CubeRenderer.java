@@ -28,13 +28,6 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 		cube = new ModelBox(x, y, z, dx, dy, dz, textureWidth, textureHeight);
 	}
 
-	public void render(PoseStack matrixStack, SubmitNodeCollector collector, RenderType type, int[] light, int combinedOverlay) {
-		matrixStack.pushPose();
-		matrixStack.scale(0.5F, 0.5F, 0.5F);
-		collector.submitCustomGeometry(matrixStack, type, (pose, buffer) -> cube.render(pose, buffer, light, combinedOverlay, 0xFFFFFFFF));
-		matrixStack.popPose();
-	}
-
 	static class PositionTextureVertex {
 		public final Vector3f position;
 		public final float textureU;
@@ -114,6 +107,13 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 			for (int n = 0; n < quads.length; ++n)
 				quads[n].draw(pose, buffer, light[n], combinedOverlay, color);
 		}
+	}
+
+	public void render(PoseStack matrixStack, SubmitNodeCollector collector, RenderType type, int[] light, int combinedOverlay) {
+		matrixStack.pushPose();
+		matrixStack.scale(0.5F, 0.5F, 0.5F);
+		collector.submitCustomGeometry(matrixStack, type, (pose, buffer) -> cube.render(pose, buffer, light, combinedOverlay, 0xFFFFFFFF));
+		matrixStack.popPose();
 	}
 
 	@SuppressWarnings("incomplete-switch")

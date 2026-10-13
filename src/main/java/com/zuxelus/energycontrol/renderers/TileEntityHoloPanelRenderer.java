@@ -27,7 +27,7 @@ public class TileEntityHoloPanelRenderer extends TileRenderer<TileEntityHoloPane
 	}
 
 	@Override
-	protected void render(TileEntityHoloPanel te, PoseStack matrixStack, SubmitNodeCollector buffer, int combinedLight, int combinedOverlay) {
+	protected void render(TileEntityHoloPanel te, PoseStack matrixStack, SubmitNodeCollector collector, int combinedLight, int combinedOverlay) {
 		matrixStack.pushPose();
 		switch (te.getFacing()) {
 		case UP:
@@ -56,7 +56,7 @@ public class TileEntityHoloPanelRenderer extends TileRenderer<TileEntityHoloPane
 
 		if (te.getPowered()) {
 			List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
-			drawText(te, joinedData, matrixStack, buffer, combinedLight);
+			drawText(te, joinedData, matrixStack, collector, combinedLight);
 		}
 		matrixStack.popPose();
 	}

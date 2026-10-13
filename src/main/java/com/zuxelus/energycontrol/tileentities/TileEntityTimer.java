@@ -202,15 +202,15 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 	}
 
 	public void notifyBlockUpdate() {
-		BlockState iblockstate = level.getBlockState(worldPosition);
-		Block block = iblockstate.getBlock();
+		BlockState state = level.getBlockState(worldPosition);
+		Block block = state.getBlock();
 		if (block instanceof TimerBlock) {
 			boolean newValue = time > 0 && isWorking ? !invertRedstone : invertRedstone;
 			if (sendSignal != newValue) {
 				sendSignal = newValue;
 				level.updateNeighborsAt(worldPosition, block);
 			}
-			level.sendBlockUpdated(worldPosition, iblockstate, iblockstate, 2);
+			level.sendBlockUpdated(worldPosition, state, state, 2);
 		}
 	}
 
@@ -219,7 +219,6 @@ public class TileEntityTimer extends BlockEntityFacing implements MenuProvider, 
 		return true;
 	}
 
-	// MenuProvider
 	@Override
 	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerTimer(windowId, inventory, this);

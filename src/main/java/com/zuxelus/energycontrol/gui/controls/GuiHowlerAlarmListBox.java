@@ -1,23 +1,23 @@
 package com.zuxelus.energycontrol.gui.controls;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import java.util.List;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.input.InputWithModifiers;
-import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.util.ARGB;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 
 public class GuiHowlerAlarmListBox extends AbstractButton {
 	private static final Identifier TEXTURE = Identifier.parse("energycontrol:textures/gui/gui_howler_alarm.png");
@@ -126,6 +126,8 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 		int sliderX = getX() + width - SCROLL_WIDTH + 1;
 		sliderY = getY() + SCROLL_BUTTON_HEIGHT + ((height - 2 * SCROLL_BUTTON_HEIGHT - sliderHeight) * scrollTop) / (lineHeight * items.size() + BASIC_Y_OFFSET - height);
 		matrixStack.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, sliderX, sliderY, 131, 16, SCROLL_WIDTH - 1, 1, 256, 256);
+		// slider body: one texture row stretched to the slider height
+		matrixStack.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, sliderX, sliderY + 1, 131, 17, SCROLL_WIDTH - 1, sliderHeight - 2, SCROLL_WIDTH - 1, 1, 256, 256);
 		matrixStack.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, sliderX, sliderY + sliderHeight - 1, 131, 19, SCROLL_WIDTH - 1, 1, 256, 256);
 	}
 
@@ -147,23 +149,26 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 	@Override
 	public boolean keyPressed(KeyEvent event) {
 		int keyCode = event.key();
-		if (keyCode == InputConstants.KEY_DOWN) {
+		if (keyCode == InputConstants.KEY_DOWN) { // down
 			scrollDown();
-		} else if (keyCode == InputConstants.KEY_UP) {
+			return true;
+		}
+		if (keyCode == InputConstants.KEY_UP) { // up
 			scrollUp();
+			return true;
 		}
 		return super.keyPressed(event);
 	}
 
 	@Override
-	public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double p_94736_) {
+	public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
 		if (isMouseOver(mouseX, mouseY)) {
-			if (p_94736_ > 0)
+			if (scrollY > 0)
 				scrollUp();
-			if (p_94736_ < 0)
+			if (scrollY < 0)
 				scrollDown();
 		}
-		return super.mouseScrolled(mouseX, mouseY, scrollX, p_94736_);
+		return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
 	}
 
 	@Override

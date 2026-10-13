@@ -50,7 +50,6 @@ public class TileEntityHoloPanel extends TileEntityInfoPanel {
 		return new AABB(screen.minX, screen.minY, screen.minZ, screen.maxX + 1, screen.maxY + getPower(), screen.maxZ + 1);
 	}
 
-	// MenuProvider
 	@Override
 	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerHoloPanel(windowId, inventory, this);

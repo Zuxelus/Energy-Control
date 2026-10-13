@@ -9,10 +9,10 @@ import com.zuxelus.zlib.gui.GuiContainerBase;
 import com.zuxelus.zlib.gui.controls.GuiButtonGeneral;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -37,7 +37,7 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 	protected ItemStack oldStack = ItemStack.EMPTY;
 
 	public GuiPanelBase(T container, Inventory inv, Component name, Identifier texture, int imageHeight) {
-		super(container, inv, name, texture, 176, imageHeight);
+		super(container, inv, name, texture, DEFAULT_IMAGE_WIDTH, imageHeight);
 		activeTab = 0;
 		modified = false;
 	}
@@ -55,7 +55,6 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 		menu.addSlotListener(this);
 	}
 
-
 	@Override
 	protected void extractLabels(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY) {
 		drawCenteredText(matrixStack, title, imageWidth, 6);
@@ -65,6 +64,7 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 	public boolean mouseReleased(MouseButtonEvent event) {
 		if (textboxTitle != null) {
 			textboxTitle.mouseReleased(event);
+			// the screen places a carried item in a slot on mouse release, so the release must reach it
 			if (textboxTitle.isFocused())
 				return super.mouseReleased(event);
 			setFocused(null);
@@ -72,7 +72,6 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 		}
 		return super.mouseReleased(event);
 	}
-
 
 	protected void updateTitle() {
 		if (textboxTitle == null)

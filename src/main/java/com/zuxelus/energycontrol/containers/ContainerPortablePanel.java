@@ -11,7 +11,6 @@ import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.zlib.containers.ContainerBase;
 import com.zuxelus.zlib.containers.slots.SlotLocked;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
@@ -47,6 +46,7 @@ public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel
 	@Override
 	protected void addPlayerInventoryTopSlots(Inventory inventory, int width, int height) {
 		for (int col = 0; col < 9; col++)
+			// the open panel stays in the hand, so its slot is locked
 			if (col == panelSlot)
 				addSlot(new SlotLocked(inventory, col, width + col * 18, height - 24));
 			else
@@ -62,8 +62,7 @@ public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel
 	}
 
 	public boolean getShowBars() {
-		CompoundTag tag = ItemStackHelper.getTag(te.getParent());
-		return tag != null && tag.getBooleanOr(SHOW_BARS, false);
+		return ItemStackHelper.getTag(te.getParent()).getBooleanOr(SHOW_BARS, false);
 	}
 
 	public void setShowBars(boolean value) {

@@ -118,7 +118,6 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 			newPowered = !newPowered;
 			break;
 		}
-		// only the value: this is also called while the update packet is written, changing blocks is done by updatePower
 		setPowered(newPowered);
 	}
 

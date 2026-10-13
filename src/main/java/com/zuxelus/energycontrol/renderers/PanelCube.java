@@ -9,14 +9,10 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.zuxelus.energycontrol.renderers.CubeRenderer.PositionTextureVertex;
 import com.zuxelus.energycontrol.renderers.CubeRenderer.TexturedQuad;
-import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.core.Direction;
 
 // Geometry of the info panels and the remote thermal monitor, PanelModel bakes it so the screen borders match findTexture()
@@ -25,7 +21,6 @@ public class PanelCube {
 	// chunk meshes are built on several threads
 	private static final Map<ModelKey, PanelCube> LIBRARY = new ConcurrentHashMap<>();
 	private static final Map<ModelKey, PanelCube> LIBRARY_FACE = new ConcurrentHashMap<>();
-	private static final Direction[][][] WORLD_SIDES = new Direction[6][6][];
 	public static final int FACE = 4;
 
 	private final ModelBox cube;
@@ -34,18 +29,7 @@ public class PanelCube {
 		cube = new ModelBox(faceTexU, faceTexV, 0.0F, 0.0F, 0.0F, 32, 32, 32, 128, 128, offset.leftTop, offset.leftBottom, offset.rightTop, offset.rightBottom, faceOnly);
 	}
 
-	public void render(PoseStack matrixStack, SubmitNodeCollector collector, RenderType type, int[] light, int combinedOverlay) {
-		render(matrixStack, collector, type, light, combinedOverlay, 0xFFFFFFFF);
-	}
-
-	public void render(PoseStack matrixStack, SubmitNodeCollector collector, RenderType type, int[] light, int combinedOverlay, int color) {
-		matrixStack.pushPose();
-		matrixStack.scale(0.5F, 0.5F, 0.5F);
-		collector.submitCustomGeometry(matrixStack, type, (pose, buffer) -> cube.render(pose, buffer, light, combinedOverlay, color));
-		matrixStack.popPose();
-	}
-
-	// Hands every quad to the visitor in block coordinates (0..1), transformed like render() does,
+	// Hands every quad to the visitor in block coordinates (0..1), transformed by matrixStack,
 	// so a baked model can use the same geometry. u and v are relative to the texture (0..1).
 	public void visitQuads(PoseStack matrixStack, QuadVisitor visitor) {
 		matrixStack.pushPose();
@@ -73,7 +57,7 @@ public class PanelCube {
 		void accept(int index, Vector3f[] positions, float[] u, float[] v, Vector3f normal);
 	}
 
-	private class ModelBox {
+	private static class ModelBox {
 		private final TexturedQuad[] quads;
 
 		public ModelBox(int texOffX, int texOffY, float x, float y, float z, float dx, float dy, float dz, float texWidth, float texHeight, float leftTop, float leftBottom, float rightTop, float rightBottom, boolean faceOnly) {
@@ -100,11 +84,6 @@ public class PanelCube {
 			quads[3] = new TexturedQuad(new PositionTextureVertex[] { v6, v5, v1, v2 }, dz, 0, dz + dx, dz, texWidth, texHeight, Direction.UP); // top
 			quads[4] = new TexturedQuad(new PositionTextureVertex[] { v2, v1, v, v7 }, dz, dz, dz + dx, dz + dy, texWidth, texHeight, Direction.NORTH); // face
 			quads[5] = new TexturedQuad(new PositionTextureVertex[] { v5, v6, v3, v4 }, dz + dx + dz, dz, dz + dx + dz + dx, dz + dy, texWidth, texHeight, Direction.SOUTH); // back
-		}
-
-		public void render(PoseStack.Pose pose, VertexConsumer buffer, int[] light, int combinedOverlay, int color) {
-			for (int n = 0; n < quads.length; ++n)
-				quads[n].draw(pose, buffer, light[n], combinedOverlay, color);
 		}
 	}
 
@@ -271,9 +250,5 @@ public class PanelCube {
 		ModelKey(int textureId, RotationOffset offset) {
 			this(textureId, offset.leftTop, offset.leftBottom, offset.rightTop, offset.rightBottom);
 		}
-	}
-
-	public static int[] getBlockLight(BlockEntityFacing te) {
-		return CubeRenderer.getBlockLight(te, WORLD_SIDES, PanelCube::rotateBlock);
 	}
 }

@@ -75,7 +75,7 @@ public class TileEntityHowlerAlarm extends BlockEntityFacing implements ITilePac
 	}
 
 	public void updatePowered(boolean isPowered) {
-		if (level != null && level.isClientSide() && isPowered != powered) {
+		if (level.isClientSide() && isPowered != powered) {
 			powered = isPowered;
 			checkStatus();
 		}
@@ -136,12 +136,11 @@ public class TileEntityHowlerAlarm extends BlockEntityFacing implements ITilePac
 	}
 
 	protected void tick() {
-		checkStatus();
+		if (level.isClientSide())
+			checkStatus();
 	}
 
 	protected void checkStatus() {
-		if (!level.isClientSide())
-			return;
 		if (sound == null)
 			sound = new TileEntitySound();
 		if (!sound.isPlaying())

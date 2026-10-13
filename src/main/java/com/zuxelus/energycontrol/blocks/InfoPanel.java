@@ -25,8 +25,8 @@ import net.minecraft.world.phys.BlockHitResult;
 
 public class InfoPanel extends FacingBlockActive {
 
-	public InfoPanel(Block.Properties builder) {
-		super(metal(builder).lightLevel(state -> state.getValue(ACTIVE) ? 10 : 0));
+	public InfoPanel(Block.Properties properties) {
+		super(metal(properties).lightLevel(state -> state.getValue(ACTIVE) ? 10 : 0));
 	}
 
 	@Override

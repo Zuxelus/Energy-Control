@@ -156,16 +156,17 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 				coreZ = core.getBlockPos().getZ();
 
 				BlockState stateCore = level.getBlockState(core.getBlockPos());
-				if (stateCore.getBlock() instanceof FacingBlockActive || stateCore.getBlock() instanceof FacingHorizontalActive) {
-					BlockState state = level.getBlockState(worldPosition);
-					if (state.getValue(FacingBlockActive.ACTIVE) != stateCore.getValue(FacingBlockActive.ACTIVE))
+				BlockState state = level.getBlockState(worldPosition);
+				if (stateCore.hasProperty(FacingBlockActive.ACTIVE) && state.hasProperty(FacingBlockActive.ACTIVE)) {
+					// block states change on the server only; the client rebuilds the screen on every panel update
+					if (!level.isClientSide() && state.getValue(FacingBlockActive.ACTIVE) != stateCore.getValue(FacingBlockActive.ACTIVE))
 						level.setBlock(worldPosition, state.cycle(FacingBlockActive.ACTIVE), 2);
 					return;
 				}
 			}
 		} else {
 			BlockState state = level.getBlockState(worldPosition);
-			if (state.getValue(FacingBlockActive.ACTIVE))
+			if (!level.isClientSide() && state.hasProperty(FacingBlockActive.ACTIVE) && state.getValue(FacingBlockActive.ACTIVE))
 				level.setBlock(worldPosition, state.setValue(FacingBlockActive.ACTIVE, false), 2);
 		}
 		partOfScreen = false;
@@ -213,14 +214,14 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 
 	public int getColorBackground() {
 		if (screen == null)
-			return 2;
+			return TileEntityInfoPanel.GREEN;
 		TileEntityInfoPanel core = screen.getCore(level);
 		if (core == null)
-			return 2;
+			return TileEntityInfoPanel.GREEN;
 		return core.getColorBackground();
 	}
 
-	public AABB getRenderBoundingBox() {
+	public AABB getRenderBoundingBox() { // forge only
 		return new AABB(worldPosition);
 	}
 

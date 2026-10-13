@@ -53,6 +53,6 @@ public class ContainerTimer extends AbstractContainerMenu {
 
 	@Override
 	public ItemStack quickMoveStack(Player player, int index) {
-		return null;
+		return ItemStack.EMPTY;
 	}
 }

@@ -28,7 +28,7 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 	private ContainerKitAssembler container;
 
 	public GuiKitAssembler(ContainerKitAssembler container, Inventory inventory, Component title) {
-		super(container, inventory, title, TEXTURE, 176, 182);
+		super(container, inventory, title, TEXTURE, DEFAULT_IMAGE_WIDTH, 182);
 		this.container = container;
 	}
 
@@ -39,7 +39,7 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 		if (isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY) && slot.isActive())
 			renderInfoToolTip(matrixStack, slot, mouseX, mouseY);
 		if (isHovering(165, 16, 4, 52, mouseX, mouseY))
-			matrixStack.setTooltipForNextFrame(this.font, Component.literal(String.format("%d FE/%d FE", (int) container.te.getEnergy(), TileEntityKitAssembler.CAPACITY)), mouseX, mouseY);
+			matrixStack.setTooltipForNextFrame(font, Component.literal(String.format("%d FE/%d FE", (int) container.te.getEnergy(), TileEntityKitAssembler.CAPACITY)), mouseX, mouseY);
 	}
 
 	private void renderInfoToolTip(GuiGraphicsExtractor matrixStack, Slot slot, int x, int y) {
@@ -56,7 +56,7 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 				if (panelString.textLeft != null)
 					list.add(Component.literal(ChatFormatting.GRAY + panelString.textLeft));
 			}
-		matrixStack.setTooltipForNextFrame(this.font, list, stack.getTooltipImage(), x, y);
+		matrixStack.setTooltipForNextFrame(font, list, stack.getTooltipImage(), x, y);
 	}
 
 	@Override
@@ -65,10 +65,10 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 
 		int energyHeight = container.te.getEnergyFactor();
 		if (energyHeight > 0)
-			matrixStack.blit(RenderPipelines.GUI_TEXTURED, texture, leftPos + 165, topPos + 16 + (52 - energyHeight), 176, 17 + 52 - energyHeight, 4, energyHeight, 256, 256);
+			matrixStack.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, leftPos + 165, topPos + 16 + (52 - energyHeight), 176, 17 + 52 - energyHeight, 4, energyHeight, 256, 256);
 		int productionWidth = container.te.getProductionFactor();
 		if (productionWidth > 0)
-			matrixStack.blit(RenderPipelines.GUI_TEXTURED, texture, leftPos + 86, topPos + 35, 176, 0, productionWidth, 17, 256, 256);
+			matrixStack.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, leftPos + 86, topPos + 35, 176, 0, productionWidth, 17, 256, 256);
 	}
 
 	@Override

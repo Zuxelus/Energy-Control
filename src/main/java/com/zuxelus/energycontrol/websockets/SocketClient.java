@@ -9,7 +9,8 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.MultiThreadIoEventLoopGroup;
+import io.netty.channel.nio.NioIoHandler;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.DefaultHttpHeaders;
@@ -22,12 +23,14 @@ import io.netty.handler.codec.http.websocketx.WebSocketVersion;
 import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketClientCompressionHandler;
 
 public class SocketClient {
+	// limit of the decompressed size of a message
+	private static final int MAX_MESSAGE_SIZE = 1024 * 1024;
 	private static EventLoopGroup group;
 	private static Channel channel;
 
 	public static void connect(String host, int port) {
 		if (group == null)
-			group = new NioEventLoopGroup();
+			group = new MultiThreadIoEventLoopGroup(NioIoHandler.newFactory());
 		try {
 			final SocketClientHandler handler = new SocketClientHandler(WebSocketClientHandshakerFactory.newHandshaker(
 					new URI(String.format("ws://%s:%s/?token=%s&id=%s", host, port, ConfigHandler.WS_TOKEN.get(), ConfigHandler.WS_SERVER_ID.get())), WebSocketVersion.V13, null, true, new DefaultHttpHeaders()));
@@ -37,7 +40,7 @@ public class SocketClient {
 						@Override
 						protected void initChannel(SocketChannel ch) {
 							ChannelPipeline p = ch.pipeline();
-							p.addLast(new HttpClientCodec(), new HttpObjectAggregator(8192), WebSocketClientCompressionHandler.INSTANCE, handler);
+							p.addLast(new HttpClientCodec(), new HttpObjectAggregator(8192), new WebSocketClientCompressionHandler(MAX_MESSAGE_SIZE), handler);
 						}
 					});
 

@@ -52,7 +52,6 @@ public class GuiThermalMonitor extends GuiBase {
 		drawTitle(matrixStack);
 	}
 
-
 	@Override
 	public void onClose() {
 		updateHeat(0);
