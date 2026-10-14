@@ -23,7 +23,7 @@ import io.netty.handler.codec.http.websocketx.WebSocketVersion;
 import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketClientCompressionHandler;
 
 public class SocketClient {
-	// limit of the decompressed size of a message
+	// limit of the decompressed size of a message 1 MiB
 	private static final int MAX_MESSAGE_SIZE = 1024 * 1024;
 	private static EventLoopGroup group;
 	private static Channel channel;

@@ -41,6 +41,7 @@ public class EnergyControl implements ModInitializer {
 	public List<String> availableAlarms; //on client
 	@Environment(EnvType.CLIENT)
 	public List<String> serverAllowedAlarms; // will be loaded from server
+	public int serverMaxAlarmRange = -1; // will be loaded from server
 	public static Map<Player, Boolean> altPressed = new HashMap<Player, Boolean>();
 
 	public static CreativeModeTab ITEM_GROUP;

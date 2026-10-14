@@ -32,10 +32,6 @@ public final class ClothConfigScreen {
 						.setDefaultValue("default,sci-fi,siren").setTooltip(Component.translatable("config." + EnergyControl.MODID + ".allowedAlarms.tooltip"))
 						.setSaveConsumer(value -> ConfigHandler.allowedAlarms = value).build());
 		general.addEntry(
-				entryBuilder.startIntField(Component.translatable("config." + EnergyControl.MODID + ".remoteThermalMonitorEnergyConsumption"), ConfigHandler.remoteThermalMonitorEnergyConsumption)
-						.setDefaultValue(1).setTooltip(Component.translatable("config." + EnergyControl.MODID + ".remoteThermalMonitorEnergyConsumption.tooltip"))
-						.setSaveConsumer(value -> ConfigHandler.remoteThermalMonitorEnergyConsumption = value).build());
-		general.addEntry(
 				entryBuilder.startIntField(Component.translatable("config." + EnergyControl.MODID + ".screenRefreshPeriod"), ConfigHandler.screenRefreshPeriod)
 						.setDefaultValue(20).setTooltip(Component.translatable("config." + EnergyControl.MODID + ".screenRefreshPeriod.tooltip"))
 						.setSaveConsumer(value -> ConfigHandler.screenRefreshPeriod = value).build());
@@ -52,9 +48,33 @@ public final class ClothConfigScreen {
 						.setDefaultValue(60).setMin(10).setMax(2000).setTooltip(Component.translatable("config." + EnergyControl.MODID + ".alarmPause.tooltip"))
 						.setSaveConsumer(value -> ConfigHandler.alarmPause = value).build());
 		general.addEntry(
-				entryBuilder.startIntField(Component.translatable("config." + EnergyControl.MODID + ".SMPMaxAlarmRange"), ConfigHandler.SMPMaxAlarmRange)
-						.setDefaultValue(256).setTooltip(Component.translatable("config." + EnergyControl.MODID + ".SMPMaxAlarmRange.tooltip"))
-						.setSaveConsumer(value -> ConfigHandler.SMPMaxAlarmRange = value).build());
+				entryBuilder.startBooleanToggle(Component.translatable("config." + EnergyControl.MODID + ".disableRangeCheck"), ConfigHandler.disableRangeCheck)
+						.setDefaultValue(false).setTooltip(Component.translatable("config." + EnergyControl.MODID + ".disableRangeCheck.tooltip"))
+						.setSaveConsumer(value -> ConfigHandler.disableRangeCheck = value).build());
+		general.addEntry(
+				entryBuilder.startBooleanToggle(Component.translatable("config." + EnergyControl.MODID + ".wsEnabled"), ConfigHandler.wsEnabled)
+						.setDefaultValue(false).setTooltip(Component.translatable("config." + EnergyControl.MODID + ".wsEnabled.tooltip"))
+						.setSaveConsumer(value -> ConfigHandler.wsEnabled = value).build());
+		general.addEntry(
+				entryBuilder.startStrField(Component.translatable("config." + EnergyControl.MODID + ".wsHost"), ConfigHandler.wsHost)
+						.setDefaultValue("").setTooltip(Component.translatable("config." + EnergyControl.MODID + ".wsHost.tooltip"))
+						.setSaveConsumer(value -> ConfigHandler.wsHost = value).build());
+		general.addEntry(
+				entryBuilder.startIntField(Component.translatable("config." + EnergyControl.MODID + ".wsPort"), ConfigHandler.wsPort)
+						.setDefaultValue(0).setMin(0).setMax(65535).setTooltip(Component.translatable("config." + EnergyControl.MODID + ".wsPort.tooltip"))
+						.setSaveConsumer(value -> ConfigHandler.wsPort = value).build());
+		general.addEntry(
+				entryBuilder.startStrField(Component.translatable("config." + EnergyControl.MODID + ".wsToken"), ConfigHandler.wsToken)
+						.setDefaultValue("78c2b80a-1203-43fd-a9af-75cec29f5acf").setTooltip(Component.translatable("config." + EnergyControl.MODID + ".wsToken.tooltip"))
+						.setSaveConsumer(value -> ConfigHandler.wsToken = value).build());
+		general.addEntry(
+				entryBuilder.startIntField(Component.translatable("config." + EnergyControl.MODID + ".wsRefreshRate"), ConfigHandler.wsRefreshRate)
+						.setDefaultValue(100).setMin(10).setMax(20000).setTooltip(Component.translatable("config." + EnergyControl.MODID + ".wsRefreshRate.tooltip"))
+						.setSaveConsumer(value -> ConfigHandler.wsRefreshRate = value).build());
+		general.addEntry(
+				entryBuilder.startStrField(Component.translatable("config." + EnergyControl.MODID + ".wsServerID"), ConfigHandler.wsServerId)
+						.setDefaultValue(ConfigHandler.wsServerId).setTooltip(Component.translatable("config." + EnergyControl.MODID + ".wsServerID.tooltip"))
+						.setSaveConsumer(value -> ConfigHandler.wsServerId = value).build());
 		general.addEntry(
 				entryBuilder.startBooleanToggle(Component.translatable("config." + EnergyControl.MODID + ".useCustomSounds"), ConfigHandler.useCustomSounds)
 						.setDefaultValue(true).setTooltip(Component.translatable("config." + EnergyControl.MODID + ".useCustomSounds.tooltip"))

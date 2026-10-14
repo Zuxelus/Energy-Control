@@ -17,12 +17,10 @@ public class ConfigHandler {
 	public static int howlerAlarmRange = 64;
 	public static int maxAlarmRange = 128;
 	public static String allowedAlarms = "default,sci-fi,siren";
-	public static int remoteThermalMonitorEnergyConsumption = 1;
 	public static int screenRefreshPeriod = 20;
 	public static int rangeTriggerRefreshPeriod = 20;
 	public static int thermalMonitorRefreshPeriod = 20;
 	public static int alarmPause = 60;
-	public static int SMPMaxAlarmRange = 256;
 	public static boolean useCustomSounds = false;
 	public static boolean disableRangeCheck = false;
 	public static boolean wsEnabled = false;
@@ -45,15 +43,12 @@ public class ConfigHandler {
 			howlerAlarmRange = Integer.parseInt(cfg.getProperty("howlerAlarmRange"));
 			maxAlarmRange = Integer.parseInt(cfg.getProperty("maxAlarmRange"));
 			allowedAlarms = cfg.getProperty("allowedAlarms");
-			remoteThermalMonitorEnergyConsumption = Integer.parseInt(cfg.getProperty("remoteThermalMonitorEnergyConsumption"));
 			screenRefreshPeriod = Integer.parseInt(cfg.getProperty("screenRefreshPeriod"));
 			rangeTriggerRefreshPeriod = Integer.parseInt(cfg.getProperty("rangeTriggerRefreshPeriod"));
 			thermalMonitorRefreshPeriod = Math.max(1, Integer.parseInt(cfg.getProperty("thermalMonitorRefreshPeriod", String.valueOf(thermalMonitorRefreshPeriod))));
 			alarmPause = Math.max(10, Math.min(2000, Integer.parseInt(cfg.getProperty("alarmPause", String.valueOf(alarmPause)))));
-			SMPMaxAlarmRange = Integer.parseInt(cfg.getProperty("SMPMaxAlarmRange"));
 			useCustomSounds = Boolean.parseBoolean(cfg.getProperty("useCustomSounds"));
 			disableRangeCheck = Boolean.parseBoolean(cfg.getProperty("disableRangeCheck", String.valueOf(disableRangeCheck)));
-			// older config files have no web socket keys: keep the defaults, and the generated server id, and write them out
 			boolean hasWebSocketKeys = cfg.getProperty("wsServerID") != null;
 			wsEnabled = Boolean.parseBoolean(cfg.getProperty("wsEnabled", String.valueOf(wsEnabled)));
 			wsHost = cfg.getProperty("wsHost", wsHost);
@@ -74,12 +69,10 @@ public class ConfigHandler {
 			fos.write(("howlerAlarmRange=" + howlerAlarmRange + "\n").getBytes());
 			fos.write(("maxAlarmRange=" + maxAlarmRange + "\n").getBytes());
 			fos.write(("allowedAlarms=" + allowedAlarms + "\n").getBytes());
-			fos.write(("remoteThermalMonitorEnergyConsumption=" + remoteThermalMonitorEnergyConsumption + "\n").getBytes());
 			fos.write(("screenRefreshPeriod=" + screenRefreshPeriod + "\n").getBytes());
 			fos.write(("rangeTriggerRefreshPeriod=" + rangeTriggerRefreshPeriod + "\n").getBytes());
 			fos.write(("thermalMonitorRefreshPeriod=" + thermalMonitorRefreshPeriod + "\n").getBytes());
 			fos.write(("alarmPause=" + alarmPause + "\n").getBytes());
-			fos.write(("SMPMaxAlarmRange=" + SMPMaxAlarmRange + "\n").getBytes());
 			fos.write(("useCustomSounds=" + useCustomSounds + "\n").getBytes());
 			fos.write(("disableRangeCheck=" + disableRangeCheck + "\n").getBytes());
 			fos.write(("wsEnabled=" + wsEnabled + "\n").getBytes());

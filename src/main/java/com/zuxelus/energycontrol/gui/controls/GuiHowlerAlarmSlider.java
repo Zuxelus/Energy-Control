@@ -37,7 +37,7 @@ public class GuiHowlerAlarmSlider extends AbstractButton {
 		this.alarm = alarm;
 		dragging = false;
 		if (alarm.getLevel().isClientSide())
-			maxValue = ConfigHandler.maxAlarmRange;
+			maxValue = EnergyControl.INSTANCE.serverMaxAlarmRange > 0 ? EnergyControl.INSTANCE.serverMaxAlarmRange : ConfigHandler.maxAlarmRange;
 		int currentRange = alarm.getRange();
 		if (alarm.getLevel().isClientSide() && currentRange > maxValue)
 			currentRange = maxValue;

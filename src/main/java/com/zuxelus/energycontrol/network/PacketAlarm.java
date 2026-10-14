@@ -12,13 +12,12 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 
-public record PacketAlarm(String alarms) implements CustomPacketPayload {
+public record PacketAlarm(int maxAlarmRange, String alarms) implements CustomPacketPayload {
 	public static final Type<PacketAlarm> ID = new Type<>(Identifier.fromNamespaceAndPath(EnergyControl.MODID, "s2c_alarm"));
-	public static final StreamCodec<RegistryFriendlyByteBuf, PacketAlarm> CODEC = ByteBufCodecs.STRING_UTF8.<RegistryFriendlyByteBuf>cast().map(PacketAlarm::new, PacketAlarm::alarms);
-
-	public PacketAlarm(int range, String alarms) {
-		this(alarms);
-	}
+	public static final StreamCodec<RegistryFriendlyByteBuf, PacketAlarm> CODEC = StreamCodec.composite(
+			ByteBufCodecs.INT, PacketAlarm::maxAlarmRange,
+			ByteBufCodecs.STRING_UTF8, PacketAlarm::alarms,
+			PacketAlarm::new);
 
 	@Override
 	public Type<PacketAlarm> type() {
@@ -27,7 +26,7 @@ public record PacketAlarm(String alarms) implements CustomPacketPayload {
 
 	public static void handleClient(PacketAlarm packet, ClientPlayNetworking.Context context) {
 		context.client().execute(() -> {
-			//ConfigHandler.MAX_ALARM_RANGE.set(buf.readVarInt());
+			EnergyControl.INSTANCE.serverMaxAlarmRange = packet.maxAlarmRange();
 			EnergyControl.INSTANCE.serverAllowedAlarms = new ArrayList<String>(Arrays.asList(packet.alarms().split(",")));
 		});
 	}
