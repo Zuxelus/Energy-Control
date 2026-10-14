@@ -1,6 +1,6 @@
 package com.zuxelus.energycontrol.blocks;
 
-import org.jspecify.annotations.Nullable;
+import com.mojang.serialization.MapCodec;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
@@ -16,17 +16,22 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class InfoPanel extends FacingBlockActive {
 
 	public InfoPanel(Block.Properties properties) {
 		super(metal(properties).lightLevel(state -> state.getValue(ACTIVE) ? 10 : 0));
+	}
+
+	@Override
+	protected MapCodec<? extends BaseEntityBlock> codec() {
+		return simpleCodec(InfoPanel::new);
 	}
 
 	@Override
@@ -53,7 +58,7 @@ public class InfoPanel extends FacingBlockActive {
 	}
 
 	@Override
-	protected void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, @Nullable Orientation orientation, boolean isMoving) {
+	protected void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
 		if (world.isClientSide())
 			return;
 

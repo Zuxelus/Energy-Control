@@ -9,6 +9,7 @@ import com.zuxelus.energycontrol.renderers.RotationOffset;
 import com.zuxelus.zlib.blocks.FacingBlockActive;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -19,8 +20,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
@@ -178,47 +177,47 @@ public class TileEntityAdvancedInfoPanel extends TileEntityInfoPanel {
 	public void onServerMessageReceived(CompoundTag tag) {
 		if (!tag.contains("type"))
 			return;
-		int type = tag.getIntOr("type", 0);
+		int type = tag.getInt("type");
 		if (type < 10) {
 			super.onServerMessageReceived(tag);
 			return;
 		}
 		switch (type) {
 		case 10:
-			setValues(tag.getIntOr("value", 0));
+			setValues(tag.getInt("value"));
 			break;
 		case 11:
-			setPowerMode((byte) tag.getIntOr("value", 0));
+			setPowerMode((byte) tag.getInt("value"));
 			break;
 		}
 	}
 
 	@Override
-	protected void deserializeDisplaySettings(ValueInput tag) {
+	protected void deserializeDisplaySettings(CompoundTag tag) {
 		deserializeSlotSettings(tag, "dSettings1", SLOT_CARD1);
 		deserializeSlotSettings(tag, "dSettings2", SLOT_CARD2);
 		deserializeSlotSettings(tag, "dSettings3", SLOT_CARD3);
 	}
 
 	@Override
-	protected void readProperties(ValueInput tag) {
-		super.readProperties(tag);
-		setPowerMode(tag.getByteOr("powerMode", powerMode));
-		thickness = tag.getByteOr("thickness", thickness);
-		rotateHor = tag.getByteOr("rotateHor", rotateHor);
-		rotateVert = tag.getByteOr("rotateVert", rotateVert);
+	protected void readProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.readProperties(tag, registries);
+		setPowerMode((tag.contains("powerMode") ? tag.getByte("powerMode") : powerMode));
+		thickness = (tag.contains("thickness") ? tag.getByte("thickness") : thickness);
+		rotateHor = (tag.contains("rotateHor") ? tag.getByte("rotateHor") : rotateHor);
+		rotateVert = (tag.contains("rotateVert") ? tag.getByte("rotateVert") : rotateVert);
 	}
 
 	@Override
-	protected void serializeDisplaySettings(ValueOutput tag) {
+	protected void serializeDisplaySettings(CompoundTag tag) {
 		serializeSlotSettings(tag, "dSettings1", SLOT_CARD1);
 		serializeSlotSettings(tag, "dSettings2", SLOT_CARD2);
 		serializeSlotSettings(tag, "dSettings3", SLOT_CARD3);
 	}
 
 	@Override
-	protected void writeProperties(ValueOutput tag) {
-		super.writeProperties(tag);
+	protected void writeProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.writeProperties(tag, registries);
 		tag.putByte("powerMode", powerMode);
 		tag.putByte("thickness", thickness);
 		tag.putByte("rotateHor", rotateHor);

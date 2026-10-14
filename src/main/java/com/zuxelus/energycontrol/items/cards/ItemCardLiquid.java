@@ -10,18 +10,18 @@ import com.zuxelus.energycontrol.renderers.RenderHelper;
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.FluidModel;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 
 public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 
@@ -95,7 +95,7 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 	}
 
 	@Override
-	public void renderBars(float displayWidth, float displayHeight, ICardReader reader, PoseStack matrixStack, SubmitNodeCollector collector) {
+	public void renderBars(float displayWidth, float displayHeight, ICardReader reader, PoseStack matrixStack, MultiBufferSource buffer) {
 		float x = -0.5F + 1 / 16.0F;
 		float y = -0.5F + 1/ 16.0F;
 		float z = 0;
@@ -105,30 +105,29 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		if (fluidName.isEmpty() || capacity <= 0)
 			return;
 
-		Identifier id = Identifier.tryParse(fluidName);
+		ResourceLocation id = ResourceLocation.tryParse(fluidName);
 		if (id == null)
 			return;
-		Fluid fluid = BuiltInRegistries.FLUID.getValue(id);
+		Fluid fluid = BuiltInRegistries.FLUID.get(id);
 		if (fluid == Fluids.EMPTY)
 			return;
-		FluidState state = fluid.defaultFluidState();
-		FluidModel model = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(state);
-		if (model == null)
+		IClientFluidTypeExtensions fluidExt = IClientFluidTypeExtensions.of(fluid);
+		TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(fluidExt.getStillTexture());
+		if (sprite == null)
 			return;
 
-		TextureAtlasSprite sprite = model.stillMaterial().sprite();
 		float width = 14 / 16.0F * Math.min(reader.getLong("amount"), capacity) / capacity;
 		float height = 0.4375F;
 
-		int color = model.fluidTintSource() != null ? model.fluidTintSource().color(state) : -1;
+		int color = fluidExt.getTintColor();
 		if ((color >>> 24) == 0)
 			color |= 0xFF000000;
 
 		matrixStack.pushPose();
 		matrixStack.scale(displayWidth / 0.875f, displayHeight / 0.875f, 1);
-		RenderHelper.texturedRect(matrixStack, collector, sprite.atlasLocation(), x, y + 0.4375F / 2, x + 0.875F, y + 0.4375F / 2 + height, z,
+		RenderHelper.texturedRect(matrixStack, buffer, TextureAtlas.LOCATION_BLOCKS, x, y + 0.4375F / 2, x + 0.875F, y + 0.4375F / 2 + height, z,
 				sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(), color);
-		IHasBars.drawTransparentRect(matrixStack, collector, x + 0.875F - width, y + height + 0.4375F / 2, x, y + 0.4375F / 2, -0.0001F, 0xB0000000);
+		IHasBars.drawTransparentRect(matrixStack, buffer, x + 0.875F - width, y + height + 0.4375F / 2, x, y + 0.4375F / 2, -0.0001F, 0xB0000000);
 		matrixStack.popPose();
 	}
 }

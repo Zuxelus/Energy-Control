@@ -95,22 +95,22 @@ public class PanelCube {
 		case UP:
 			switch(rotation) {
 			case NORTH:
-				matrixStack.rotate(Axis.XP.rotationDegrees(90));
+				matrixStack.mulPose(Axis.XP.rotationDegrees(90));
 				matrixStack.translate(0.0F, 0.0F, -1.0F);
 				break;
 			case SOUTH:
-				matrixStack.rotate(Axis.XP.rotationDegrees(90));
-				matrixStack.rotate(Axis.ZP.rotationDegrees(180));
+				matrixStack.mulPose(Axis.XP.rotationDegrees(90));
+				matrixStack.mulPose(Axis.ZP.rotationDegrees(180));
 				matrixStack.translate(-1.0F, -1.0F, -1.0F);
 				break;
 			case WEST:
-				matrixStack.rotate(Axis.XP.rotationDegrees(90));
-				matrixStack.rotate(Axis.ZP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.XP.rotationDegrees(90));
+				matrixStack.mulPose(Axis.ZP.rotationDegrees(-90));
 				matrixStack.translate(-1.0F, 0.0F, -1.0F);
 				break;
 			case EAST:
-				matrixStack.rotate(Axis.XP.rotationDegrees(90));
-				matrixStack.rotate(Axis.ZP.rotationDegrees(90));
+				matrixStack.mulPose(Axis.XP.rotationDegrees(90));
+				matrixStack.mulPose(Axis.ZP.rotationDegrees(90));
 				matrixStack.translate(0.0F, -1.0F, -1.0F);
 				break;
 			default:
@@ -120,22 +120,22 @@ public class PanelCube {
 		case DOWN:
 			switch(rotation) {
 			case NORTH:
-				matrixStack.rotate(Axis.XP.rotationDegrees(-90));
-				matrixStack.rotate(Axis.ZP.rotationDegrees(180));
+				matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.ZP.rotationDegrees(180));
 				matrixStack.translate(-1.0F, 0.0F, 0.0F);
 				break;
 			case SOUTH:
-				matrixStack.rotate(Axis.XP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
 				matrixStack.translate(0.0F, -1.0F, 0.0F);
 				break;
 			case WEST:
-				matrixStack.rotate(Axis.XP.rotationDegrees(-90));
-				matrixStack.rotate(Axis.ZP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.ZP.rotationDegrees(-90));
 				matrixStack.translate(0.0F, 0.0F, 0.0F);
 				break;
 			case EAST:
-				matrixStack.rotate(Axis.XP.rotationDegrees(-90));
-				matrixStack.rotate(Axis.ZP.rotationDegrees(90));
+				matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.ZP.rotationDegrees(90));
 				matrixStack.translate(-1.0F, -1.0F, 0.0F);
 				break;
 			default:
@@ -145,15 +145,15 @@ public class PanelCube {
 		case NORTH:
 			break;
 		case SOUTH:
-			matrixStack.rotate(Axis.YP.rotationDegrees(180)); // 180 by Y
+			matrixStack.mulPose(Axis.YP.rotationDegrees(180)); // 180 by Y
 			matrixStack.translate(-1.0F, 0.0F, -1.0F);
 			break;
 		case WEST:
-			matrixStack.rotate(Axis.YP.rotationDegrees(90));
+			matrixStack.mulPose(Axis.YP.rotationDegrees(90));
 			matrixStack.translate(-1.0F, 0.0F, 0.0F);
 			break;
 		case EAST:
-			matrixStack.rotate(Axis.YP.rotationDegrees(-90));
+			matrixStack.mulPose(Axis.YP.rotationDegrees(-90));
 			matrixStack.translate(0.0F, 0.0F, -1.0F);
 			break;
 		}
@@ -167,22 +167,22 @@ public class PanelCube {
 		case UP:
 			switch(rotation) {
 			case NORTH:
-				matrixStack.rotate(Axis.XP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
 				matrixStack.translate(0.0F, -1.0F, 1.0F);
 				break;
 			case SOUTH:
-				matrixStack.rotate(Axis.XP.rotationDegrees(-90));
-				matrixStack.rotate(Axis.YP.rotationDegrees(180));
+				matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(180));
 				matrixStack.translate(-1.0F, -1.0F, 0.0F);
 				break;
 			case WEST:
-				matrixStack.rotate(Axis.XP.rotationDegrees(-90));
-				matrixStack.rotate(Axis.YP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(-90));
 				matrixStack.translate(0.0F, -1.0F, 0.0F);
 				break;
 			case EAST:
-				matrixStack.rotate(Axis.XP.rotationDegrees(-90));
-				matrixStack.rotate(Axis.YP.rotationDegrees(90));
+				matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(90));
 				matrixStack.translate(-1.0F, -1.0F, 1.0F);
 				break;
 			default:
@@ -192,22 +192,22 @@ public class PanelCube {
 		case DOWN:
 			switch(rotation) {
 			case NORTH:
-				matrixStack.rotate(Axis.XP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
 				matrixStack.translate(0.0F, -1.0F, 0.0F);
 				break;
 			case SOUTH:
-				matrixStack.rotate(Axis.XP.rotationDegrees(-90));
-				matrixStack.rotate(Axis.YP.rotationDegrees(180));
+				matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(180));
 				matrixStack.translate(-1.0F, -1.0F, -1.0F);
 				break;
 			case WEST:
-				matrixStack.rotate(Axis.XP.rotationDegrees(-90));
-				matrixStack.rotate(Axis.YP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(-90));
 				matrixStack.translate(0.0F, -1.0F, -1.0F);
 				break;
 			case EAST:
-				matrixStack.rotate(Axis.XP.rotationDegrees(-90));
-				matrixStack.rotate(Axis.YP.rotationDegrees(90));
+				matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(90));
 				matrixStack.translate(-1.0F, -1.0F, 0.0F);
 				break;
 			default:
@@ -215,23 +215,23 @@ public class PanelCube {
 			}
 			break;
 		case NORTH:
-			matrixStack.rotate(Axis.XP.rotationDegrees(-90));
-			matrixStack.rotate(Axis.YP.rotationDegrees(180));
+			matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
+			matrixStack.mulPose(Axis.YP.rotationDegrees(180));
 			matrixStack.translate(-1.0F, -1.0F, 0.0F);
 			break;
 		case SOUTH:
-			matrixStack.rotate(Axis.XP.rotationDegrees(90));
-			matrixStack.rotate(Axis.ZP.rotationDegrees(180));
+			matrixStack.mulPose(Axis.XP.rotationDegrees(90));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(180));
 			matrixStack.translate(-1.0F, -1.0F, 0.0F);
 			break;
 		case WEST:
-			matrixStack.rotate(Axis.XP.rotationDegrees(-90));
-			matrixStack.rotate(Axis.YP.rotationDegrees(180));
+			matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
+			matrixStack.mulPose(Axis.YP.rotationDegrees(180));
 			matrixStack.translate(-1.0F, -1.0F, 0.0F);
 			break;
 		case EAST:
-			matrixStack.rotate(Axis.ZP.rotationDegrees(180));
-			matrixStack.rotate(Axis.XP.rotationDegrees(-90));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(180));
+			matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
 			matrixStack.translate(-1.0F, -1.0F, 0.0F);
 			break;
 		}

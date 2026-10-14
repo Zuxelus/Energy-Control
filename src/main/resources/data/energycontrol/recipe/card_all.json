@@ -2,7 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    "#energycontrol:cards"
+    {
+      "tag": "energycontrol:cards"
+    }
   ],
   "result": {
     "id": "energycontrol:radio_transmitter"

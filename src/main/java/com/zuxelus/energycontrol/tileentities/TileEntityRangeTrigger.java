@@ -17,6 +17,7 @@ import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
@@ -30,8 +31,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 
 public class TileEntityRangeTrigger extends TileEntityInventory implements MenuProvider, ISlotItemFilter, ITilePacketHandler {
 	public static final int SLOT_CARD = 0;
@@ -133,18 +132,18 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements MenuP
 	public void onServerMessageReceived(CompoundTag tag) {
 		if (!tag.contains("type"))
 			return;
-		switch (tag.getIntOr("type", 0)) {
+		switch (tag.getInt("type")) {
 		case 1:
 			if (tag.contains("value"))
-				setLevelStart(tag.getDoubleOr("value", 0.0));
+				setLevelStart(tag.getDouble("value"));
 			break;
 		case 2:
 			if (tag.contains("value"))
-				setInvertRedstone(tag.getIntOr("value", 0) == 1);
+				setInvertRedstone(tag.getInt("value") == 1);
 			break;
 		case 3:
 			if (tag.contains("value"))
-				setLevelEnd(tag.getDoubleOr("value", 0.0));
+				setLevelEnd(tag.getDouble("value"));
 			break;
 		}
 	}
@@ -153,22 +152,22 @@ public class TileEntityRangeTrigger extends TileEntityInventory implements MenuP
 	public void onClientMessageReceived(CompoundTag tag) { }
 
 	@Override
-	protected void writeUpdateData(ValueOutput tag) {
+	protected void writeUpdateData(CompoundTag tag, HolderLookup.Provider registries) {
 		tag.putBoolean("poweredBlock", poweredBlock);
 	}
 
 	@Override
-	protected void readProperties(ValueInput tag) {
-		super.readProperties(tag);
-		invertRedstone = tag.getBooleanOr("invert", false);
-		levelStart = tag.getDoubleOr("levelStart", 0.0);
-		levelEnd = tag.getDoubleOr("levelEnd", 0.0);
-		poweredBlock = tag.getBooleanOr("poweredBlock", poweredBlock);
+	protected void readProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.readProperties(tag, registries);
+		invertRedstone = tag.getBoolean("invert");
+		levelStart = tag.getDouble("levelStart");
+		levelEnd = tag.getDouble("levelEnd");
+		poweredBlock = (tag.contains("poweredBlock") ? tag.getBoolean("poweredBlock") : poweredBlock);
 	}
 
 	@Override
-	protected void writeProperties(ValueOutput tag) {
-		super.writeProperties(tag);
+	protected void writeProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.writeProperties(tag, registries);
 		tag.putBoolean("invert", invertRedstone);
 		tag.putDouble("levelStart", levelStart);
 		tag.putDouble("levelEnd", levelEnd);

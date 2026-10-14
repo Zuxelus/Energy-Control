@@ -1,17 +1,18 @@
 package com.zuxelus.energycontrol.gui.controls;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.ARGB;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
 /** A vanilla button that stays clickable but looks pressed (like a disabled one) while it is on. */
 public class ToggleButton extends Button {
-	private static final Identifier PRESSED = Identifier.withDefaultNamespace("widget/button_disabled");
+	private static final ResourceLocation PRESSED = ResourceLocation.withDefaultNamespace("widget/button_disabled");
 	private boolean pressed;
 
 	public ToggleButton(int x, int y, int width, int height, Component message, boolean pressed, OnPress onPress) {
@@ -28,14 +29,17 @@ public class ToggleButton extends Button {
 	}
 
 	@Override
-	protected void extractContents(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
+	public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		if (!pressed || !active) {
-			extractDefaultSprite(context);
-			extractDefaultLabel(context.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE));
+			super.renderWidget(context, mouseX, mouseY, delta);
 			return;
 		}
-		context.blitSprite(RenderPipelines.GUI_TEXTURED, PRESSED, getX(), getY(), getWidth(), getHeight(), ARGB.white(alpha));
+		context.setColor(1.0F, 1.0F, 1.0F, alpha);
+		RenderSystem.enableBlend();
+		RenderSystem.enableDepthTest();
+		context.blitSprite(PRESSED, getX(), getY(), getWidth(), getHeight());
+		context.setColor(1.0F, 1.0F, 1.0F, 1.0F);
 		Font font = Minecraft.getInstance().font;
-		context.centeredText(font, getMessage(), getX() + getWidth() / 2, getY() + (getHeight() - 8) / 2, ARGB.color(alpha, 0xA0A0A0));
+		context.drawCenteredString(font, getMessage(), getX() + getWidth() / 2, getY() + (getHeight() - 8) / 2, 0xA0A0A0 | Mth.ceil(alpha * 255.0F) << 24);
 	}
 }

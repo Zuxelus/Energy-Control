@@ -7,18 +7,16 @@ import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.input.InputWithModifiers;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.ARGB;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor.ARGB32;
 
 public class GuiInfoPanelCheckBox extends AbstractButton {
-	private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/gui_info_panel.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/gui_info_panel.png");
 
 	private TileEntityInfoPanel panel;
 	private boolean checked;
@@ -34,18 +32,18 @@ public class GuiInfoPanelCheckBox extends AbstractButton {
 	}
 
 	@Override
-	protected void extractContents(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void renderWidget(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (!visible)
 			return;
 		Minecraft minecraft = Minecraft.getInstance();
 		Font fontRenderer = minecraft.font;
 		int delta = checked ? 6 : 0;
-		matrixStack.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, getX(), getY() + 1, 176, delta, 6, 6, 256, 256);
-		matrixStack.text(fontRenderer, getMessage(), getX() + 8, getY(), ARGB.opaque(0x404040), false);
+		matrixStack.blit(TEXTURE, getX(), getY() + 1, 176, delta, 6, 6, 256, 256);
+		matrixStack.drawString(fontRenderer, getMessage(), getX() + 8, getY(), ARGB32.opaque(0x404040), false);
 	}
 
 	@Override
-	public void onPress(InputWithModifiers input) {
+	public void onPress() {
 		checked = !checked;
 		int value;
 		if (checked)

@@ -6,15 +6,16 @@ import com.zuxelus.zlib.network.PacketTileEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public class ChannelHandler {
 
 	public static void register(RegisterPayloadHandlersEvent event) {
 		PayloadRegistrar registrar = event.registrar("1");
-		registrar.playBidirectional(PacketCard.TYPE, PacketCard.STREAM_CODEC, PacketCard::handleServer, null);
-		registrar.playBidirectional(PacketTileEntity.TYPE, PacketTileEntity.STREAM_CODEC, PacketTileEntity::handleServer, null);
-		registrar.playToClient(PacketAlarm.TYPE, PacketAlarm.STREAM_CODEC);
+		registrar.playBidirectional(PacketCard.TYPE, PacketCard.STREAM_CODEC, new DirectionalPayloadHandler<>(PacketCard::handleClient, PacketCard::handleServer));
+		registrar.playBidirectional(PacketTileEntity.TYPE, PacketTileEntity.STREAM_CODEC, new DirectionalPayloadHandler<>(PacketTileEntity::handleClient, PacketTileEntity::handleServer));
+		registrar.playToClient(PacketAlarm.TYPE, PacketAlarm.STREAM_CODEC, PacketAlarm::handle);
 		registrar.playToServer(PacketKeys.TYPE, PacketKeys.STREAM_CODEC, PacketKeys::handle);
 		registrar.playToServer(PacketPortableBars.TYPE, PacketPortableBars.STREAM_CODEC, PacketPortableBars::handle);
 	}
@@ -25,7 +26,7 @@ public class ChannelHandler {
 			return;
 
 		Level world = panel.getLevel();
-		if (world == null || world.isClientSide())
+		if (world == null || world.isClientSide)
 			return;
 
 		NetworkHelper.sendPacketToAllAround(panel.getLevel(), panel.getBlockPos(), new PacketCard(card, panel.getBlockPos(), slot));
@@ -37,7 +38,7 @@ public class ChannelHandler {
 			return;
 
 		Level world = panel.getLevel();
-		if (world == null || !world.isClientSide())
+		if (world == null || !world.isClientSide)
 			return;
 
 		NetworkHelper.sendToServer(new PacketCard(card, panel.getBlockPos(), slot));

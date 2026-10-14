@@ -1,5 +1,7 @@
 package com.zuxelus.energycontrol.blocks;
 
+import com.mojang.serialization.MapCodec;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
@@ -12,6 +14,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -22,6 +25,11 @@ public class InfoPanelExtender extends FacingBlockActive {
 
 	public InfoPanelExtender(Block.Properties properties) {
 		super(metal(properties).lightLevel(state -> state.getValue(ACTIVE) ? 10 : 0));
+	}
+
+	@Override
+	protected MapCodec<? extends BaseEntityBlock> codec() {
+		return simpleCodec(InfoPanelExtender::new);
 	}
 
 	@Override

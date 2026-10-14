@@ -8,14 +8,13 @@ import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.gui.GuiContainerBase;
 import com.zuxelus.zlib.gui.controls.GuiButtonGeneral;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerListener;
@@ -36,8 +35,8 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 	protected boolean modified;
 	protected ItemStack oldStack = ItemStack.EMPTY;
 
-	public GuiPanelBase(T container, Inventory inv, Component name, Identifier texture, int imageHeight) {
-		super(container, inv, name, texture, DEFAULT_IMAGE_WIDTH, imageHeight);
+	public GuiPanelBase(T container, Inventory inv, Component name, ResourceLocation texture, int imageHeight) {
+		super(container, inv, name, texture, 176, imageHeight);
 		activeTab = 0;
 		modified = false;
 	}
@@ -56,21 +55,21 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 	}
 
 	@Override
-	protected void extractLabels(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY) {
+	protected void renderLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
 		drawCenteredText(matrixStack, title, imageWidth, 6);
 	}
 
 	@Override
-	public boolean mouseReleased(MouseButtonEvent event) {
+	public boolean mouseReleased(double mouseX, double mouseY, int button) {
 		if (textboxTitle != null) {
-			textboxTitle.mouseReleased(event);
+			textboxTitle.mouseReleased(mouseX, mouseY, button);
 			// the screen places a carried item in a slot on mouse release, so the release must reach it
 			if (textboxTitle.isFocused())
-				return super.mouseReleased(event);
+				return super.mouseReleased(mouseX, mouseY, button);
 			setFocused(null);
 			updateTitle();
 		}
-		return super.mouseReleased(event);
+		return super.mouseReleased(mouseX, mouseY, button);
 	}
 
 	protected void updateTitle() {
@@ -105,7 +104,7 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 			break;
 		case ID_COLORS:
 			Screen colorGui = new GuiScreenColor(this, panel);
-			minecraft.gui.setScreen(colorGui);
+			minecraft.setScreen(colorGui);
 			break;
 		case ID_TEXT:
 			// the controls are rebuilt from the card when this gui comes back, so save the typed title first
@@ -115,7 +114,7 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 			break;
 		case ID_TICKRATE:
 			GuiHorizontalSlider slider = new GuiHorizontalSlider(this, panel);
-			minecraft.gui.setScreen(slider);
+			minecraft.setScreen(slider);
 			break;
 		}
 	}
@@ -123,7 +122,7 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 	protected void openTextGui() {
 		ItemStack card = panel.getCards().get(activeTab);
 		if (!card.isEmpty() && card.getItem() instanceof ItemCardText)
-			minecraft.gui.setScreen(new GuiCardText(card, panel, this, activeTab));
+			minecraft.setScreen(new GuiCardText(card, panel, this, activeTab));
 	}
 
 	@Override

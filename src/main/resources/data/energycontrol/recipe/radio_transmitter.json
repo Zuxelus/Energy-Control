@@ -6,9 +6,15 @@
     " S "
   ],
   "key": {
-    "#": "energycontrol:strong_string",
-    "C": "#c:circuits/basic",
-    "S": "#minecraft:wooden_slabs"
+    "#": {
+      "item": "energycontrol:strong_string"
+    },
+    "C": {
+      "tag": "c:circuits/basic"
+    },
+    "S": {
+      "tag": "minecraft:wooden_slabs"
+    }
   },
   "result": {
     "id": "energycontrol:radio_transmitter"

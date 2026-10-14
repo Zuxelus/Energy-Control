@@ -7,19 +7,16 @@ import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.input.InputWithModifiers;
-import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.ARGB;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor.ARGB32;
 
 public class GuiHowlerAlarmSlider extends AbstractButton {
-	private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/gui_howler_alarm.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/gui_howler_alarm.png");
 
 	public float sliderValue;
 	public boolean dragging;
@@ -65,7 +62,7 @@ public class GuiHowlerAlarmSlider extends AbstractButton {
 	}
 
 	@Override
-	protected void extractContents(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void renderWidget(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (!visible)
 			return;
 		Minecraft minecraft = Minecraft.getInstance();
@@ -73,22 +70,21 @@ public class GuiHowlerAlarmSlider extends AbstractButton {
 		if (dragging)
 			setSliderPos(mouseX);
 
-		matrixStack.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, getX() + (int) (sliderValue * (width - 8)), getY(), 131, 0, 8, 16, 256, 256);
-		matrixStack.text(fontRenderer, getMessage(), getX(), getY() - 12, ARGB.opaque(0x404040), false);
+		matrixStack.blit(TEXTURE, getX() + (int) (sliderValue * (width - 8)), getY(), 131, 0, 8, 16, 256, 256);
+		matrixStack.drawString(fontRenderer, getMessage(), getX(), getY() - 12, ARGB32.opaque(0x404040), false);
 	}
 
 	@Override
-	public void onPress(InputWithModifiers input) { }
+	public void onPress() { }
 
 	@Override
-	public void onClick(MouseButtonEvent event, boolean doubleClick) {
-		double mouseX = event.x();
+	public void onClick(double mouseX, double mouseY) {
 		setSliderPos(mouseX);
 		dragging = true;
 	}
 
 	@Override
-	public void onRelease(MouseButtonEvent event) {
+	public void onRelease(double mouseX, double mouseY) {
 		dragging = false;
 	}
 

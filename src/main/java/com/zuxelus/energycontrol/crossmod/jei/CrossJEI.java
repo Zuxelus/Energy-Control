@@ -18,16 +18,16 @@ import mezz.jei.api.registration.IRecipeTransferRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
 @JeiPlugin
 public class CrossJEI implements IModPlugin {
-	private static final Identifier id = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "jei_plugin");
+	private static final ResourceLocation id = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "jei_plugin");
 
 	@Override
-	public Identifier getPluginUid() {
+	public ResourceLocation getPluginUid() {
 		return id;
 	}
 
@@ -92,6 +92,6 @@ public class CrossJEI implements IModPlugin {
 
 	@Override
 	public void registerRecipeCatalysts(IRecipeCatalystRegistration registry) {
-		registry.addCraftingStation(KitAssemblerRecipeCategory.recipeType, ModItems.kit_assembler.get());
+		registry.addRecipeCatalyst(new ItemStack(ModItems.kit_assembler.get()), KitAssemblerRecipeCategory.recipeType);
 	}
 }

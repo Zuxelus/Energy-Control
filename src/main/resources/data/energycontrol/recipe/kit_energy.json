@@ -6,10 +6,18 @@
     "PO"
   ],
   "key": {
-    "P": "minecraft:paper",
-    "R": "#c:dusts/redstone",
-    "F": "energycontrol:radio_transmitter",
-    "O": "#c:dyes/red"
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    },
+    "F": {
+      "item": "energycontrol:radio_transmitter"
+    },
+    "O": {
+      "tag": "c:dyes/red"
+    }
   },
   "result": {
     "id": "energycontrol:kit_energy"

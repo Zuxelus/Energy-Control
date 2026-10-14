@@ -1,6 +1,6 @@
 package com.zuxelus.energycontrol.blocks;
 
-import org.jspecify.annotations.Nullable;
+import com.mojang.serialization.MapCodec;
 
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
@@ -17,10 +17,10 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -33,13 +33,18 @@ public class AdvancedInfoPanel extends InfoPanel {
 	}
 
 	@Override
+	protected MapCodec<? extends BaseEntityBlock> codec() {
+		return simpleCodec(AdvancedInfoPanel::new);
+	}
+
+	@Override
 	protected BlockEntityFacing createBlockEntity(BlockPos pos, BlockState state) {
 		return ModTileEntityTypes.info_panel_advanced.get().create(pos, state);
 	}
 
 	// on/off depends on the power mode, so the block entity sets ACTIVE (light) instead of the redstone signal
 	@Override
-	protected void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, @Nullable Orientation orientation, boolean isMoving) {
+	protected void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
 		if (world.isClientSide())
 			return;
 		BlockEntity be = world.getBlockEntity(pos);

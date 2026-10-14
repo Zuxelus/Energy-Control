@@ -24,18 +24,16 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.registries.RegisterEvent;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.energy.EnergyHandler;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.item.ItemUtil;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 
 public class CrossModLoader {
 	private static final Map<String, CrossModBase> CROSS_MODS = new HashMap<>();
 	private static final CrossModBase EMPTY = new CrossModBase();
 
 	public static void init() {
-		// Integrations with other mods are not ported to 26.3 yet
+		// Integrations with other mods are not ported yet
 		//loadCrossMod(ModIDs.ADV_GENERATORS, CrossAdvGenerators::new);
 		//loadCrossMod(ModIDs.APPLIED_ENERGISTICS, CrossAppEng::new);
 		//loadCrossMod(ModIDs.BIG_REACTORS, CrossBigReactors::new);
@@ -84,12 +82,12 @@ public class CrossModLoader {
 			if (tag != null)
 				return tag;
 		}
-		EnergyHandler handler = te.getLevel().getCapability(Capabilities.Energy.BLOCK, te.getBlockPos(), te.getBlockState(), te, null);
+		IEnergyStorage handler = te.getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, te.getBlockPos(), te.getBlockState(), te, null);
 		if (handler != null) {
 			CompoundTag tag = new CompoundTag();
 			tag.putString(DataHelper.EUTYPE, "FE");
-			tag.putDouble(DataHelper.ENERGY, handler.getAmountAsLong());
-			tag.putDouble(DataHelper.CAPACITY, handler.getCapacityAsLong());
+			tag.putDouble(DataHelper.ENERGY, handler.getEnergyStored());
+			tag.putDouble(DataHelper.CAPACITY, handler.getMaxEnergyStored());
 			return tag;
 		}
 		return null;
@@ -104,13 +102,11 @@ public class CrossModLoader {
 			if (list != null)
 				return list;
 		}
-		ResourceHandler<FluidResource> handler = world.getCapability(Capabilities.Fluid.BLOCK, pos, te.getBlockState(), te, null);
+		IFluidHandler handler = world.getCapability(Capabilities.FluidHandler.BLOCK, pos, te.getBlockState(), te, null);
 		if (handler != null) {
 			List<FluidInfo> result = new ArrayList<>();
-			for (int i = 0; i < handler.size(); i++) {
-				FluidResource resource = handler.getResource(i);
-				result.add(new FluidInfo(resource, handler.getAmountAsLong(i), handler.getCapacityAsLong(i, resource)));
-			}
+			for (int i = 0; i < handler.getTanks(); i++)
+				result.add(new FluidInfo(handler.getFluidInTank(i), handler.getTankCapacity(i)));
 			return result;
 		}
 		return null;
@@ -138,16 +134,16 @@ public class CrossModLoader {
 			if (tag != null)
 				return tag;
 		}
-		ResourceHandler<ItemResource> handler = te.getLevel().getCapability(Capabilities.Item.BLOCK, te.getBlockPos(), te.getBlockState(), te, null);
+		IItemHandler handler = te.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, te.getBlockPos(), te.getBlockState(), te, null);
 		if (handler == null && !(te instanceof Container))
 			return null;
 		CompoundTag tag = new CompoundTag();
 		if (handler != null) {
 			int inUse = 0;
 			int items = 0;
-			tag.putInt("size", handler.size());
-			for (int i = 0; i < Math.min(6, handler.size()); i++) {
-				ItemStack stack = ItemUtil.getStack(handler, i);
+			tag.putInt("size", handler.getSlots());
+			for (int i = 0; i < Math.min(6, handler.getSlots()); i++) {
+				ItemStack stack = handler.getStackInSlot(i);
 				if (!stack.isEmpty()) {
 					inUse++;
 					items += stack.getCount();

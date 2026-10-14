@@ -1,6 +1,5 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import com.mojang.serialization.Codec;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
@@ -8,13 +7,12 @@ import com.zuxelus.energycontrol.utils.TileEntitySound;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 
 public class TileEntityHowlerAlarm extends BlockEntityFacing implements ITilePacketHandler {
 	private static final String DEFAULT_SOUND_NAME = "default";
@@ -85,14 +83,14 @@ public class TileEntityHowlerAlarm extends BlockEntityFacing implements ITilePac
 	public void onServerMessageReceived(CompoundTag tag) {
 		if (!tag.contains("type"))
 			return;
-		switch (tag.getIntOr("type", 0)) {
+		switch (tag.getInt("type")) {
 		case 1:
 			if (tag.contains("string"))
-				setSoundName(tag.getStringOr("string", ""));
+				setSoundName(tag.getString("string"));
 			break;
 		case 2:
 			if (tag.contains("value"))
-				setRange(tag.getIntOr("value", 0));
+				setRange(tag.getInt("value"));
 			break;
 		}
 	}
@@ -101,22 +99,24 @@ public class TileEntityHowlerAlarm extends BlockEntityFacing implements ITilePac
 	public void onClientMessageReceived(CompoundTag tag) { }
 
 	@Override
-	protected void writeUpdateData(ValueOutput tag) {
+	protected void writeUpdateData(CompoundTag tag, HolderLookup.Provider registries) {
 		powered = level.hasNeighborSignal(worldPosition);
 		tag.putBoolean("powered", powered);
 	}
 
 	@Override
-	protected void readProperties(ValueInput tag) {
-		super.readProperties(tag);
-		tag.getString("soundName").ifPresent(v -> soundName = prevSoundName = v);
-		range = tag.getIntOr("range", range);
-		tag.read("powered", Codec.BOOL).ifPresent(this::updatePowered);
+	protected void readProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.readProperties(tag, registries);
+		if (tag.contains("soundName"))
+			soundName = prevSoundName = tag.getString("soundName");
+		range = (tag.contains("range") ? tag.getInt("range") : range);
+		if (tag.contains("powered"))
+			updatePowered(tag.getBoolean("powered"));
 	}
 
 	@Override
-	protected void writeProperties(ValueOutput tag) {
-		super.writeProperties(tag);
+	protected void writeProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.writeProperties(tag, registries);
 		tag.putString("soundName", soundName);
 		tag.putInt("range", range);
 	}

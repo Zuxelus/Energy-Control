@@ -1,5 +1,7 @@
 package com.zuxelus.energycontrol.blocks;
 
+import com.mojang.serialization.MapCodec;
+
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
 import com.zuxelus.zlib.blocks.FacingBlock;
@@ -11,6 +13,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -20,6 +23,11 @@ public class KitAssembler extends FacingHorizontalActive {
 
 	public KitAssembler(Block.Properties properties) {
 		super(FacingBlock.metal(properties));
+	}
+
+	@Override
+	protected MapCodec<? extends BaseEntityBlock> codec() {
+		return simpleCodec(KitAssembler::new);
 	}
 
 	@Override

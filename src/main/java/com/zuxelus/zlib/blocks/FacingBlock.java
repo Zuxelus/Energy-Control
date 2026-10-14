@@ -9,6 +9,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -54,9 +55,19 @@ public abstract class FacingBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		InteractionResult result = onUse(state, world, pos, player, hand, hit);
-		return result == InteractionResult.PASS ? InteractionResult.TRY_WITH_EMPTY_HAND : result;
+	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		switch (onUse(state, world, pos, player, hand, hit)) {
+		case SUCCESS:
+			return ItemInteractionResult.SUCCESS;
+		case CONSUME:
+			return ItemInteractionResult.CONSUME;
+		case CONSUME_PARTIAL:
+			return ItemInteractionResult.CONSUME_PARTIAL;
+		case FAIL:
+			return ItemInteractionResult.FAIL;
+		default:
+			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+		}
 	}
 
 	@Override

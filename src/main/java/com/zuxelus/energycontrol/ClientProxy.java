@@ -2,29 +2,25 @@ package com.zuxelus.energycontrol;
 
 import com.zuxelus.energycontrol.gui.*;
 import com.zuxelus.energycontrol.renderers.PanelModel;
-import net.neoforged.neoforge.client.event.RegisterBlockStateModels;
 import com.zuxelus.energycontrol.init.ModContainerTypes;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
-import com.zuxelus.energycontrol.network.PacketAlarm;
-import com.zuxelus.energycontrol.network.PacketCard;
 import com.zuxelus.energycontrol.renderers.*;
 import com.zuxelus.energycontrol.utils.SoundHelper;
-import com.zuxelus.zlib.network.PacketTileEntity;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.ModelEvent;
+import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
-import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent;
 
 @Mod(value = EnergyControl.MODID, dist = Dist.CLIENT)
 public class ClientProxy {
@@ -35,24 +31,22 @@ public class ClientProxy {
 		modEventBus.addListener(ClientProxy::onClientSetup);
 		modEventBus.addListener(ClientProxy::registerScreens);
 		modEventBus.addListener(ClientProxy::registerRenders);
-		modEventBus.addListener(ModRenderTypes::registerPipelines);
-		modEventBus.addListener(ClientProxy::registerPayloadHandlers);
 		modEventBus.addListener(SoundHelper::locatePacks);
 		modEventBus.addListener(ClientProxy::registerReloadListeners);
-		modEventBus.addListener(ClientProxy::registerBlockStateModels);
+		modEventBus.addListener(ClientProxy::registerGeometryLoaders);
 	}
 
-	// panel bodies are baked into the chunk mesh, see PanelModel and the panel blockstate files
-	private static void registerBlockStateModels(RegisterBlockStateModels event) {
-		event.registerModel(PanelModel.ID, PanelModel.CODEC);
+	// "loader": "energycontrol:panel" in the info panel block models
+	private static void registerGeometryLoaders(ModelEvent.RegisterGeometryLoaders event) {
+		event.register(ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "panel"), new PanelModel.Loader());
 	}
 
 	private static void onClientSetup(final FMLClientSetupEvent event) {
 		event.enqueueWork(() -> SoundHelper.initSoundPack(Minecraft.getInstance().gameDirectory));
 	}
 
-	private static void registerReloadListeners(AddClientReloadListenersEvent event) {
-		event.addListener(Identifier.fromNamespaceAndPath(EnergyControl.MODID, "alarms"), (ResourceManagerReloadListener) SoundHelper::importSound);
+	private static void registerReloadListeners(RegisterClientReloadListenersEvent event) {
+		event.registerReloadListener((ResourceManagerReloadListener) SoundHelper::importSound);
 	}
 
 	private static void registerScreens(RegisterMenuScreensEvent event) {
@@ -74,11 +68,5 @@ public class ClientProxy {
 		event.registerBlockEntityRenderer(ModTileEntityTypes.info_panel_advanced.get(), TEAdvancedInfoPanelRenderer::new);
 		event.registerBlockEntityRenderer(ModTileEntityTypes.holo_panel.get(), TileEntityHoloPanelRenderer::new);
 		event.registerBlockEntityRenderer(ModTileEntityTypes.timer.get(), TileEntityTimerRenderer::new);
-	}
-
-	private static void registerPayloadHandlers(RegisterClientPayloadHandlersEvent event) {
-		event.register(PacketCard.TYPE, PacketCard::handleClient);
-		event.register(PacketTileEntity.TYPE, PacketTileEntity::handleClient);
-		event.register(PacketAlarm.TYPE, PacketAlarm::handle);
 	}
 }

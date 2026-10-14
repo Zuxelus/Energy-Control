@@ -10,7 +10,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ContainerInput;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 
 public class ContainerCardHolder extends ContainerBase<InventoryCardHolder> {
@@ -24,7 +24,7 @@ public class ContainerCardHolder extends ContainerBase<InventoryCardHolder> {
 
 	public ContainerCardHolder(int windowId, Inventory inventory, InteractionHand hand) {
 		super(new InventoryCardHolder(inventory.player.getItemInHand(hand), hand), ModContainerTypes.card_holder.get(), windowId);
-		this.holderSlot = hand == InteractionHand.OFF_HAND ? ContainerPortablePanel.OFF_HAND_SLOT : inventory.getSelectedSlot();
+		this.holderSlot = hand == InteractionHand.OFF_HAND ? ContainerPortablePanel.OFF_HAND_SLOT : inventory.selected;
 		for (int i = 0; i < 6; i++)
 			for (int j = 0; j < 9; j++)
 				addSlot(new SlotFilter(te, j + i * 9, 8 + j * 18, 18 + i * 18));
@@ -42,9 +42,9 @@ public class ContainerCardHolder extends ContainerBase<InventoryCardHolder> {
 	}
 
 	@Override
-	public void clicked(int slotIndex, int button, ContainerInput action, Player player) {
+	public void clicked(int slotIndex, int button, ClickType action, Player player) {
 		// number keys (or F for the off hand) would swap the card holder out of its slot
-		if (action == ContainerInput.SWAP && button == holderSlot)
+		if (action == ClickType.SWAP && button == holderSlot)
 			return;
 		super.clicked(slotIndex, button, action, player);
 	}

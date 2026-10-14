@@ -8,15 +8,15 @@ import com.zuxelus.zlib.blocks.FacingHorizontalActive;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.model.data.ModelData;
+import net.neoforged.neoforge.client.model.data.ModelData;
 
 public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IScreenPart {
 	protected boolean init;
@@ -27,7 +27,7 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	private int coreX;
 	private int coreY;
 	private int coreZ;
-	private boolean broken;
+	private boolean unloaded;
 
 	public TileEntityInfoPanelExtender(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -69,12 +69,12 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	}
 
 	@Override
-	protected void readProperties(ValueInput tag) {
-		super.readProperties(tag);
-		partOfScreen = tag.getBooleanOr("partOfScreen", partOfScreen);
-		coreX = tag.getIntOr("coreX", coreX);
-		coreY = tag.getIntOr("coreY", coreY);
-		coreZ = tag.getIntOr("coreZ", coreZ);
+	protected void readProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.readProperties(tag, registries);
+		partOfScreen = (tag.contains("partOfScreen") ? tag.getBoolean("partOfScreen") : partOfScreen);
+		coreX = (tag.contains("coreX") ? tag.getInt("coreX") : coreX);
+		coreY = (tag.contains("coreY") ? tag.getInt("coreY") : coreY);
+		coreZ = (tag.contains("coreZ") ? tag.getInt("coreZ") : coreZ);
 		if (level != null) {
 			updateScreen();
 			if (level.isClientSide())
@@ -98,26 +98,26 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	}
 
 	@Override
-	protected void writeProperties(ValueOutput tag) {
-		super.writeProperties(tag);
+	protected void writeProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.writeProperties(tag, registries);
 		tag.putBoolean("partOfScreen", partOfScreen);
 		tag.putInt("coreX", coreX);
 		tag.putInt("coreY", coreY);
 		tag.putInt("coreZ", coreZ);
 	}
 
-	// server, only when the block is broken or replaced; setRemoved() is also called on chunk unload
+	// setRemoved() is called both when the block is broken or replaced and on chunk unload, only the latter is announced
 	@Override
-	public void preRemoveSideEffects(BlockPos pos, BlockState state) {
-		broken = true;
-		super.preRemoveSideEffects(pos, state);
+	public void onChunkUnloaded() {
+		unloaded = true;
+		super.onChunkUnloaded();
 	}
 
 	@Override
 	public void setRemoved() {
 		if (!level.isClientSide()) {
 			// on chunk unload only forget the screen: changing blocks or reading neighbours here loads chunks again and stalls saving
-			if (broken)
+			if (!unloaded)
 				EnergyControl.screenManager.unregisterScreenPart(this);
 			else
 				EnergyControl.screenManager.unloadScreenPart(this);

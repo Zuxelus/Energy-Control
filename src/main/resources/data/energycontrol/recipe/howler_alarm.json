@@ -7,9 +7,15 @@
     "III"
   ],
   "key": {
-    "I": "#c:ingots/iron",
-    "N": "minecraft:note_block",
-    "C": "#c:circuits/basic"
+    "I": {
+      "tag": "c:ingots/iron"
+    },
+    "N": {
+      "item": "minecraft:note_block"
+    },
+    "C": {
+      "tag": "c:circuits/basic"
+    }
   },
   "result": {
     "id": "energycontrol:howler_alarm"

@@ -2,12 +2,14 @@ package com.zuxelus.energycontrol.recipes;
 
 import java.util.Vector;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.PlacementInfo;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.Level;
@@ -28,11 +30,11 @@ public class StorageArrayRecipe implements CraftingRecipe {
 
 	@Override
 	public boolean matches(CraftingInput inv, Level level) {
-		return !assemble(inv).isEmpty();
+		return !assemble(inv, level.registryAccess()).isEmpty();
 	}
 
 	@Override
-	public ItemStack assemble(CraftingInput inv) {
+	public ItemStack assemble(CraftingInput inv, HolderLookup.Provider registries) {
 		int inventoryLength = inv.size();
 		int cardCount = 0;
 		int arrayCount = 0;
@@ -151,13 +153,23 @@ public class StorageArrayRecipe implements CraftingRecipe {
 	}
 
 	@Override
-	public String group() {
+	public String getGroup() {
 		return "";
 	}
 
 	@Override
-	public PlacementInfo placementInfo() {
-		return PlacementInfo.NOT_PLACEABLE;
+	public NonNullList<Ingredient> getIngredients() {
+		return recipe.getIngredients();
+	}
+
+	@Override
+	public boolean canCraftInDimensions(int width, int height) {
+		return recipe.canCraftInDimensions(width, height);
+	}
+
+	@Override
+	public ItemStack getResultItem(HolderLookup.Provider registries) {
+		return recipe.getResultItem(registries);
 	}
 
 	@Override

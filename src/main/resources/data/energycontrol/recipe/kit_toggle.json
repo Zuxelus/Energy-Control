@@ -6,10 +6,18 @@
     "PW"
   ],
   "key": {
-    "D": "minecraft:lever",
-    "P": "minecraft:paper",
-    "F": "energycontrol:radio_transmitter",
-    "W": "#c:dyes/gray"
+    "D": {
+      "item": "minecraft:lever"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "F": {
+      "item": "energycontrol:radio_transmitter"
+    },
+    "W": {
+      "tag": "c:dyes/gray"
+    }
   },
   "result": {
     "id": "energycontrol:kit_toggle"

@@ -11,10 +11,10 @@ import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.renderers.RenderHelper;
 
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -34,8 +34,8 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 	private static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 	private static final EnumProperty<AttachFace> FACE = BlockStateProperties.ATTACH_FACE;
 	private static final EnumProperty<Direction> HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
-	private static final Identifier TEXTURE_ON = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/green.png");
-	private static final Identifier TEXTURE_OFF = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/grey.png");
+	private static final ResourceLocation TEXTURE_ON = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/green.png");
+	private static final ResourceLocation TEXTURE_OFF = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/grey.png");
 
 	@Override
 	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
@@ -107,7 +107,7 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 	}
 
 	@Override
-	public void renderImage(ICardReader reader, PoseStack matrixStack, SubmitNodeCollector buffer) {
+	public void renderImage(ICardReader reader, PoseStack matrixStack, MultiBufferSource buffer) {
 		float x = -0.5F;
 		float y = -0.5F;
 		float z = 0.009F;

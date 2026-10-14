@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -16,9 +15,8 @@ import com.zuxelus.energycontrol.config.ConfigHandler;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackLocationInfo;
-import net.minecraft.server.packs.PackMetadataResources;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackSelectionConfig;
 import net.minecraft.server.packs.PackType;
@@ -61,13 +59,13 @@ public class SoundHelper implements RepositorySource {
 		PackLocationInfo location = new PackLocationInfo(EnergyControl.MODID + "_alarms", Component.translatable("resourcePack.energycontrol"), PackSource.DEFAULT, Optional.empty());
 		Pack.ResourcesSupplier resources = new Pack.ResourcesSupplier() {
 			@Override
-			public PackMetadataResources openMetadata(PackLocationInfo info) {
+			public PackResources openPrimary(PackLocationInfo info) {
 				return new AlarmFolderPack(info, folder);
 			}
 
 			@Override
-			public Stream<PackResources> openResources(PackLocationInfo info, Pack.Metadata metadata) {
-				return Stream.of(new AlarmFolderPack(info, folder));
+			public PackResources openFull(PackLocationInfo info, Pack.Metadata metadata) {
+				return new AlarmFolderPack(info, folder);
 			}
 		};
 		// required: the pack is always enabled, there is nothing to switch on in the resource pack screen
@@ -80,7 +78,7 @@ public class SoundHelper implements RepositorySource {
 	public static void importSound(ResourceManager manager) {
 		List<String> alarms = new ArrayList<>();
 
-		List<Resource> list = manager.getResourceStack(Identifier.fromNamespaceAndPath(EnergyControl.MODID, "sounds.json"));
+		List<Resource> list = manager.getResourceStack(ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "sounds.json"));
 		for (int i = list.size() - 1; i >= 0; --i) {
 			try (Reader reader = list.get(i).openAsReader()) {
 				JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();

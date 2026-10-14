@@ -15,20 +15,20 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.zuxelus.energycontrol.EnergyControl;
 
-import net.minecraft.resources.Identifier;
-import net.minecraft.server.packs.AbstractPackMetadataResources;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.AbstractPackResources;
 import net.minecraft.server.packs.PackLocationInfo;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.IoSupplier;
-import org.jspecify.annotations.Nullable;
+import javax.annotation.Nullable;
 
 /**
  * A resource pack made of a folder of files named alarm-NAME.ogg, nothing else has to be in the folder.
  * The sounds.json is generated from the file names, so a player only copies the sound files.
  */
-public class AlarmFolderPack extends AbstractPackMetadataResources implements PackResources {
-	private static final String META = "{\"pack\":{\"description\":\"Energy Control custom alarms\",\"min_format\":97,\"max_format\":97}}";
+public class AlarmFolderPack extends AbstractPackResources {
+	private static final String META = "{\"pack\":{\"description\":\"Energy Control custom alarms\",\"pack_format\":34}}";
 	private static final String PREFIX = "alarm-";
 	private static final String EXTENSION = ".ogg";
 
@@ -47,7 +47,7 @@ public class AlarmFolderPack extends AbstractPackMetadataResources implements Pa
 	}
 
 	@Override
-	public @Nullable IoSupplier<InputStream> getResource(PackType type, Identifier location) {
+	public @Nullable IoSupplier<InputStream> getResource(PackType type, ResourceLocation location) {
 		if (type != PackType.CLIENT_RESOURCES || !EnergyControl.MODID.equals(location.getNamespace()))
 			return null;
 		String path = location.getPath();
@@ -67,7 +67,7 @@ public class AlarmFolderPack extends AbstractPackMetadataResources implements Pa
 		if (type != PackType.CLIENT_RESOURCES || !EnergyControl.MODID.equals(namespace) || !"sounds".equals(directory))
 			return;
 		for (String file : getAlarmFiles())
-			output.accept(Identifier.fromNamespaceAndPath(EnergyControl.MODID, "sounds/" + file), IoSupplier.create(folder.resolve(file)));
+			output.accept(ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "sounds/" + file), IoSupplier.create(folder.resolve(file)));
 	}
 
 	@Override

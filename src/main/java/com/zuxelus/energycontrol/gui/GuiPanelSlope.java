@@ -5,9 +5,7 @@ import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
 import com.zuxelus.zlib.gui.GuiBase;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.gui.GuiGraphics;
 
 public class GuiPanelSlope extends GuiBase {
 	private GuiPanelBase<?> parentGui;
@@ -20,9 +18,9 @@ public class GuiPanelSlope extends GuiBase {
 	}
 
 	@Override
-	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-		double mouseX = event.x() - guiLeft;
-		double mouseY = event.y() - guiTop;
+	public boolean mouseClicked(double x, double y, int button) {
+		double mouseX = x - guiLeft;
+		double mouseY = y - guiTop;
 		if (mouseY >= 23 && mouseY <= 89) {
 			int amount = (int) ((87 - mouseY + 2) / 4);
 			int offset = 0;
@@ -43,21 +41,21 @@ public class GuiPanelSlope extends GuiBase {
 			panel.setValues(offset + amount);
 			return true;
 		}
-		return super.mouseClicked(event, doubleClick);
+		return super.mouseClicked(x, y, button);
 	}
 
 	@Override
-	public void drawGuiContainerBackgroundLayer(GuiGraphicsExtractor matrixStack, float partialTicks, int mouseX, int mouseY) {
+	public void drawGuiContainerBackgroundLayer(GuiGraphics matrixStack, float partialTicks, int mouseX, int mouseY) {
 		super.drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
 		int textureHeight = 4 * (16 - panel.thickness);
 
-		matrixStack.blit(RenderPipelines.GUI_TEXTURED, texture, guiLeft + 21, guiTop + 25, 172, 0, 14, textureHeight, 256, 256);
-		matrixStack.blit(RenderPipelines.GUI_TEXTURED, texture, guiLeft + 79, guiTop + 25 + (panel.rotateHor < 0 ? 32 + panel.rotateHor * 4 / 7 : 32), 186, 0, 14, Math.abs(panel.rotateHor * 4 / 7), 256, 256);
-		matrixStack.blit(RenderPipelines.GUI_TEXTURED, texture, guiLeft + 137, guiTop + 25 + (panel.rotateVert < 0 ? 32 + panel.rotateVert * 4 / 7 : 32), 186, 0, 14, Math.abs(panel.rotateVert * 4 / 7), 256, 256);
+		matrixStack.blit(texture, guiLeft + 21, guiTop + 25, 172, 0, 14, textureHeight, 256, 256);
+		matrixStack.blit(texture, guiLeft + 79, guiTop + 25 + (panel.rotateHor < 0 ? 32 + panel.rotateHor * 4 / 7 : 32), 186, 0, 14, Math.abs(panel.rotateHor * 4 / 7), 256, 256);
+		matrixStack.blit(texture, guiLeft + 137, guiTop + 25 + (panel.rotateVert < 0 ? 32 + panel.rotateVert * 4 / 7 : 32), 186, 0, 14, Math.abs(panel.rotateVert * 4 / 7), 256, 256);
 	}
 
 	@Override
 	public void onClose() {
-		minecraft.gui.setScreen(parentGui);
+		minecraft.setScreen(parentGui);
 	}
 }

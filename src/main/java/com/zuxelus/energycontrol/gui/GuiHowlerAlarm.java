@@ -8,9 +8,9 @@ import com.zuxelus.energycontrol.gui.controls.GuiHowlerAlarmSlider;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 import com.zuxelus.zlib.gui.GuiBase;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.ARGB;
+import net.minecraft.util.FastColor.ARGB32;
 
 public class GuiHowlerAlarm extends GuiBase {
 	private TileEntityHowlerAlarm alarm;
@@ -39,8 +39,8 @@ public class GuiHowlerAlarm extends GuiBase {
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY) {
+	protected void drawGuiContainerForegroundLayer(GuiGraphics matrixStack, int mouseX, int mouseY) {
 		drawTitle(matrixStack);
-		matrixStack.text(font, Component.translatable("msg.ec.HowlerAlarmSound"), 12, 53, ARGB.opaque(0x404040), false);
+		matrixStack.drawString(font, Component.translatable("msg.ec.HowlerAlarmSound"), 12, 53, ARGB32.opaque(0x404040), false);
 	}
 }

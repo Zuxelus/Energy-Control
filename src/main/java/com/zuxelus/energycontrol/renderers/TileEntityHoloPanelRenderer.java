@@ -9,7 +9,7 @@ import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityHoloPanel;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.AABB;
@@ -18,7 +18,7 @@ public class TileEntityHoloPanelRenderer extends TileRenderer<TileEntityHoloPane
 	private final Font font;
 
 	public TileEntityHoloPanelRenderer(Context ctx) {
-		font = ctx.font();
+		font = ctx.getFont();
 	}
 
 	@Override
@@ -27,29 +27,29 @@ public class TileEntityHoloPanelRenderer extends TileRenderer<TileEntityHoloPane
 	}
 
 	@Override
-	protected void render(TileEntityHoloPanel te, PoseStack matrixStack, SubmitNodeCollector collector, int combinedLight, int combinedOverlay) {
+	protected void render(TileEntityHoloPanel te, PoseStack matrixStack, MultiBufferSource collector, int combinedLight, int combinedOverlay) {
 		matrixStack.pushPose();
 		switch (te.getFacing()) {
 		case UP:
 			break;
 		case NORTH:
-			matrixStack.rotate(Axis.XP.rotationDegrees(-90));
+			matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
 			matrixStack.translate(0.0F, -1.5F, 0.0F);
 			break;
 		case SOUTH:
-			matrixStack.rotate(Axis.XP.rotationDegrees(90));
+			matrixStack.mulPose(Axis.XP.rotationDegrees(90));
 			matrixStack.translate(0.0F, -0.5F, -1.0F);
 			break;
 		case DOWN:
-			matrixStack.rotate(Axis.XP.rotationDegrees(180));
+			matrixStack.mulPose(Axis.XP.rotationDegrees(180));
 			matrixStack.translate(0.0F, -1.0F, -1.0F);
 			break;
 		case WEST:
-			matrixStack.rotate(Axis.ZP.rotationDegrees(90));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(90));
 			matrixStack.translate(0.0F, -1.5F, 0.0F);
 			break;
 		case EAST:
-			matrixStack.rotate(Axis.ZP.rotationDegrees(-90));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(-90));
 			matrixStack.translate(-1.0F, -0.5F, 0.0F);
 			break;
 		}
@@ -61,7 +61,7 @@ public class TileEntityHoloPanelRenderer extends TileRenderer<TileEntityHoloPane
 		matrixStack.popPose();
 	}
 
-	private void drawText(TileEntityHoloPanel panel, List<PanelString> joinedData, PoseStack matrixStack, SubmitNodeCollector buffer, int combinedLight) {
+	private void drawText(TileEntityHoloPanel panel, List<PanelString> joinedData, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight) {
 		Screen screen = panel.getScreen();
 		BlockPos pos = panel.getBlockPos();
 		int power = panel.getPower();
@@ -100,19 +100,19 @@ public class TileEntityHoloPanelRenderer extends TileRenderer<TileEntityHoloPane
 		}
 
 		matrixStack.translate(0.5F - dy / 2, 1.01F - dx / 2 , 0.5F - dz / 2);
-		matrixStack.rotate(Axis.XP.rotationDegrees(-90));
+		matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
 		switch(panel.getFacing())
 		{
 		case NORTH:
-			matrixStack.rotate(Axis.ZP.rotationDegrees(180));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(180));
 			break;
 		case SOUTH:
 			break;
 		case WEST:
-			matrixStack.rotate(Axis.ZP.rotationDegrees(-90));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(-90));
 			break;
 		case EAST:
-			matrixStack.rotate(Axis.ZP.rotationDegrees(90));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(90));
 			break;
 		default:
 			break;

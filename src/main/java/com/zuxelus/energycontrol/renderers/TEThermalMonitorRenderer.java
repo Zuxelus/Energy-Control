@@ -6,27 +6,27 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.tileentities.TileEntityThermalMonitor;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.resources.Identifier;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 
 public class TEThermalMonitorRenderer extends TileRenderer<TileEntityThermalMonitor> {
-	private static final Identifier TEXTURE0 = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "textures/block/thermal_monitor/all0.png");
-	private static final Identifier TEXTURE1 = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "textures/block/thermal_monitor/all1.png");
-	private static final Identifier TEXTURE2 = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "textures/block/thermal_monitor/all2.png");
+	private static final ResourceLocation TEXTURE0 = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/block/thermal_monitor/all0.png");
+	private static final ResourceLocation TEXTURE1 = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/block/thermal_monitor/all1.png");
+	private static final ResourceLocation TEXTURE2 = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/block/thermal_monitor/all2.png");
 	private final Font font;
 
 	public TEThermalMonitorRenderer(Context ctx) {
-		font = ctx.font();
+		font = ctx.getFont();
 	}
 
 	@Override
-	protected void render(TileEntityThermalMonitor te, PoseStack matrixStack, SubmitNodeCollector collector, int combinedLight, int combinedOverlay) {
+	protected void render(TileEntityThermalMonitor te, PoseStack matrixStack, MultiBufferSource collector, int combinedLight, int combinedOverlay) {
 		matrixStack.pushPose();
 		CubeRenderer.rotateBlock(matrixStack, te.getFacing(), te.getRotation());
 
-		Identifier texture;
+		ResourceLocation texture;
 		switch (te.getStatus()) {
 		case 0:
 			texture = TEXTURE1;
@@ -38,9 +38,9 @@ public class TEThermalMonitorRenderer extends TileRenderer<TileEntityThermalMoni
 			texture = TEXTURE0;
 			break;
 		}
-		CubeRenderer.MODEL.render(matrixStack, collector, RenderTypes.entitySolid(texture), CubeRenderer.getBlockLight(te), combinedOverlay);
+		CubeRenderer.MODEL.render(matrixStack, collector, RenderType.entitySolid(texture), CubeRenderer.getBlockLight(te), combinedOverlay);
 
-		matrixStack.rotate(Axis.XP.rotationDegrees(90.0F));
+		matrixStack.mulPose(Axis.XP.rotationDegrees(90.0F));
 		matrixStack.translate(0.5F, 0.45F, -0.4376F);
 		matrixStack.scale(0.015625F, 0.015625F, 0.015625F);
 

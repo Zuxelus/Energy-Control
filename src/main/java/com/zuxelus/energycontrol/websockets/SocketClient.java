@@ -1,65 +1,38 @@
 package com.zuxelus.energycontrol.websockets;
 
 import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.WebSocket;
+import java.time.Duration;
 
 import com.zuxelus.energycontrol.config.ConfigHandler;
 
-import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.MultiThreadIoEventLoopGroup;
-import io.netty.channel.nio.NioIoHandler;
-import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.http.DefaultHttpHeaders;
-import io.netty.handler.codec.http.HttpClientCodec;
-import io.netty.handler.codec.http.HttpObjectAggregator;
-import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.WebSocketClientHandshakerFactory;
-import io.netty.handler.codec.http.websocketx.WebSocketFrame;
-import io.netty.handler.codec.http.websocketx.WebSocketVersion;
-import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketClientCompressionHandler;
-
+// uses the websocket client of the JDK, netty-codec-http is not on the 1.21.1 classpath
 public class SocketClient {
-	// limit of the decompressed size of a message 1 MiB
-	private static final int MAX_MESSAGE_SIZE = 1024 * 1024;
-	private static EventLoopGroup group;
-	private static Channel channel;
+	private static volatile WebSocket socket;
 
 	public static void connect(String host, int port) {
-		if (group == null)
-			group = new MultiThreadIoEventLoopGroup(NioIoHandler.newFactory());
 		try {
-			final SocketClientHandler handler = new SocketClientHandler(WebSocketClientHandshakerFactory.newHandshaker(
-					new URI(String.format("ws://%s:%s/?token=%s&id=%s", host, port, ConfigHandler.WS_TOKEN.get(), ConfigHandler.WS_SERVER_ID.get())), WebSocketVersion.V13, null, true, new DefaultHttpHeaders()));
-
-			Bootstrap bootstrap = new Bootstrap().group(group).channel(NioSocketChannel.class)
-					.handler(new ChannelInitializer<SocketChannel>() {
-						@Override
-						protected void initChannel(SocketChannel ch) {
-							ChannelPipeline p = ch.pipeline();
-							p.addLast(new HttpClientCodec(), new HttpObjectAggregator(8192), new WebSocketClientCompressionHandler(MAX_MESSAGE_SIZE), handler);
-						}
+			URI uri = new URI(String.format("ws://%s:%s/?token=%s&id=%s", host, port, ConfigHandler.WS_TOKEN.get(), ConfigHandler.WS_SERVER_ID.get()));
+			HttpClient.newHttpClient().newWebSocketBuilder().connectTimeout(Duration.ofSeconds(10))
+					.buildAsync(uri, new SocketClientHandler()).whenComplete((webSocket, error) -> {
+						if (error == null)
+							socket = webSocket;
 					});
-
-			channel = bootstrap.connect(host, port).sync().channel();
-			handler.handshakeFuture().sync();
 		} catch (Throwable t) {}
 	}
 
 	public static void sendMessage(String message) {
-		if (channel == null)
+		WebSocket webSocket = socket;
+		if (webSocket == null || webSocket.isOutputClosed())
 			return;
-		WebSocketFrame frame = new TextWebSocketFrame(message);
-		channel.writeAndFlush(frame);
+		webSocket.sendText(message, true);
 	}
 
 	public static void close() {
-		if (group == null)
-			return;
-		if (!group.isShuttingDown())
-			group.shutdownGracefully();
+		WebSocket webSocket = socket;
+		socket = null;
+		if (webSocket != null && !webSocket.isOutputClosed())
+			webSocket.sendClose(WebSocket.NORMAL_CLOSURE, "");
 	}
 }

@@ -15,7 +15,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ContainerInput;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -35,7 +35,7 @@ public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel
 	public ContainerPortablePanel(int windowId, Inventory inventory, InteractionHand hand) {
 		super(new InventoryPortablePanel(inventory.player.getItemInHand(hand), hand), ModContainerTypes.portable_panel.get(), windowId);
 		this.player = inventory.player;
-		this.panelSlot = hand == InteractionHand.OFF_HAND ? OFF_HAND_SLOT : inventory.getSelectedSlot();
+		this.panelSlot = hand == InteractionHand.OFF_HAND ? OFF_HAND_SLOT : inventory.selected;
 
 		addSlot(new SlotCard(te, 0, 174, 17));
 		addSlot(new SlotRange(te, 1, 174, 35));
@@ -54,15 +54,15 @@ public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel
 	}
 
 	@Override
-	public void clicked(int slotIndex, int button, ContainerInput actionType, Player player) {
+	public void clicked(int slotIndex, int button, ClickType actionType, Player player) {
 		// number keys (or F for the off hand) would swap the panel out of its slot
-		if (actionType == ContainerInput.SWAP && button == panelSlot)
+		if (actionType == ClickType.SWAP && button == panelSlot)
 			return;
 		super.clicked(slotIndex, button, actionType, player);
 	}
 
 	public boolean getShowBars() {
-		return ItemStackHelper.getTag(te.getParent()).getBooleanOr(SHOW_BARS, false);
+		return ItemStackHelper.getTag(te.getParent()).getBoolean(SHOW_BARS);
 	}
 
 	public void setShowBars(boolean value) {

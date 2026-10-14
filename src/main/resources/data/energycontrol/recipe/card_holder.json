@@ -7,8 +7,12 @@
     " L "
   ],
   "key": {
-    "C": "minecraft:chest",
-    "L": "#c:leathers"
+    "C": {
+      "item": "minecraft:chest"
+    },
+    "L": {
+      "tag": "c:leathers"
+    }
   },
   "result": {
     "id": "energycontrol:card_holder"

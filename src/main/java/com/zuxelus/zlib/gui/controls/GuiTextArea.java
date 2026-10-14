@@ -4,14 +4,13 @@ import com.mojang.blaze3d.platform.InputConstants;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.input.CharacterEvent;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.util.ARGB;
+import net.minecraft.util.FastColor.ARGB32;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringUtil;
 
@@ -205,10 +204,10 @@ public class GuiTextArea extends AbstractWidget {
 	}
 
 	@Override
-	protected void extractWidgetRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float partialTicks) {
+	public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float partialTicks) {
 		clampCursor();
-		context.fill(getX() - 1, getY() - 1, getX() + width + 1, getY() + height + 1, ARGB.opaque(0xA0A0A0));
-		context.fill(getX(), getY(), getX() + width, getY() + height, ARGB.opaque(0x000000));
+		context.fill(getX() - 1, getY() - 1, getX() + width + 1, getY() + height + 1, ARGB32.opaque(0xA0A0A0));
+		context.fill(getX(), getY(), getX() + width, getY() + height, ARGB32.opaque(0x000000));
 		int textColor = 0xE0E0E0;
 
 		int textLeft = getX() + TEXT_MARGIN;
@@ -220,7 +219,7 @@ public class GuiTextArea extends AbstractWidget {
 			int visible = Math.min(line.length() - scrollOffset, maxGuiLength);
 			for (int j = 0; j < visible; j++) {
 				String character = line.substring(scrollOffset + j, scrollOffset + j + 1);
-				context.text(fontRenderer, character, textLeft + j * CELL_WIDTH + (CELL_WIDTH - fontRenderer.width(character)) / 2, textTop + lineHeight * i, ARGB.opaque(textColor));
+				context.drawString(fontRenderer, character, textLeft + j * CELL_WIDTH + (CELL_WIDTH - fontRenderer.width(character)) / 2, textTop + lineHeight * i, textColor);
 			}
 		}
 
@@ -230,19 +229,27 @@ public class GuiTextArea extends AbstractWidget {
 			int from = Math.max(selectionStart(), scrollOffset);
 			int to = Math.min(selectionEnd(), scrollOffset + maxGuiLength);
 			if (from < to)
-				context.textHighlight(textLeft + (from - scrollOffset) * CELL_WIDTH - 1, lineTop - 1, textLeft + (to - scrollOffset) * CELL_WIDTH - 1, lineTop + 1 + fontRenderer.lineHeight, true);
+				drawHighlight(context, textLeft + (from - scrollOffset) * CELL_WIDTH - 1, lineTop - 1, textLeft + (to - scrollOffset) * CELL_WIDTH - 1, lineTop + 1 + fontRenderer.lineHeight);
 		}
 		if (isFocused() && cursorCounter / 6 % 2 == 0) {
 			int cursorX = textLeft + (caret - scrollOffset) * CELL_WIDTH - 1;
-			context.textHighlight(cursorX, lineTop - 1, cursorX + 1, lineTop + 1 + fontRenderer.lineHeight, true);
+			drawHighlight(context, cursorX, lineTop - 1, cursorX + 1, lineTop + 1 + fontRenderer.lineHeight);
 		}
 	}
 
-	// since SDL input the game only sends typed characters while text input is started, like EditBox does
-	@Override
-	public void setFocused(boolean focused) {
-		super.setFocused(focused);
-		Minecraft.getInstance().onTextInputFocusChange(this, focused);
+	// copy of EditBox.renderHighlight
+	private void drawHighlight(GuiGraphics context, int left, int top, int right, int bottom) {
+		if (left < right) {
+			int i = left;
+			left = right;
+			right = i;
+		}
+		if (top < bottom) {
+			int j = top;
+			top = bottom;
+			bottom = j;
+		}
+		context.fill(RenderType.guiTextHighlight(), left, top, right, bottom, -16776961);
 	}
 
 	private int lineAt(double mouseY) {
@@ -255,53 +262,51 @@ public class GuiTextArea extends AbstractWidget {
 	}
 
 	@Override
-	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-		double mouseX = event.x();
-		double mouseY = event.y();
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		boolean inside = mouseX >= getX() && mouseX < (getX() + width) && mouseY >= getY() && mouseY < (getY() + height);
-		if (!inside || event.button() != InputConstants.MOUSE_BUTTON_LEFT)
+		if (!inside || button != InputConstants.MOUSE_BUTTON_LEFT)
 			return false;
 		// returning true lets the screen focus this widget, so a click into an unfocused area starts typing
 		cursorLine = lineAt(mouseY);
-		moveCursor(columnAt(mouseX), event.hasShiftDown());
+		moveCursor(columnAt(mouseX), Screen.hasShiftDown());
 		return true;
 	}
 
 	// selecting with the mouse
 	@Override
-	protected void onDrag(MouseButtonEvent event, double dx, double dy) {
-		moveCursor(columnAt(event.x()), true);
+	protected void onDrag(double mouseX, double mouseY, double dx, double dy) {
+		moveCursor(columnAt(mouseX), true);
 	}
 
 	@Override
-	public boolean keyPressed(KeyEvent event) {
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (!isFocused())
 			return false;
 		clampCursor();
-		if (event.isSelectAll()) {
+		if (Screen.isSelectAll(keyCode)) {
 			anchor = 0;
 			caret = text[cursorLine].length();
 			scrollToCursor();
 			return true;
 		}
-		if (event.isCopy()) {
+		if (Screen.isCopy(keyCode)) {
 			Minecraft.getInstance().keyboardHandler.setClipboard(getSelectedText());
 			return true;
 		}
-		if (event.isPaste()) {
+		if (Screen.isPaste(keyCode)) {
 			writeText(Minecraft.getInstance().keyboardHandler.getClipboard());
 			return true;
 		}
-		if (event.isCut()) {
+		if (Screen.isCut(keyCode)) {
 			Minecraft.getInstance().keyboardHandler.setClipboard(getSelectedText());
 			if (hasSelection())
 				deleteSelection();
 			return true;
 		}
 
-		boolean shift = event.hasShiftDown();
-		boolean ctrl = event.hasControlDown();
-		switch (event.key()) {
+		boolean shift = Screen.hasShiftDown();
+		boolean ctrl = Screen.hasControlDown();
+		switch (keyCode) {
 		case InputConstants.KEY_RETURN:
 		case InputConstants.KEY_NUMPADENTER:
 			splitLine();
@@ -336,9 +341,9 @@ public class GuiTextArea extends AbstractWidget {
 	}
 
 	@Override
-	public boolean charTyped(CharacterEvent event) {
-		if (isFocused() && event.isAllowedChatCharacter()) {
-			writeText(event.codepointAsString());
+	public boolean charTyped(char codePoint, int modifiers) {
+		if (isFocused() && StringUtil.isAllowedChatCharacter(codePoint)) {
+			writeText(Character.toString(codePoint));
 			return true;
 		}
 		return false;

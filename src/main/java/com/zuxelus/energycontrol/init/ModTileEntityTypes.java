@@ -12,34 +12,34 @@ public class ModTileEntityTypes {
 	public static final DeferredRegister<BlockEntityType<?>> TILE_ENTITY_TYPES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, EnergyControl.MODID);
 
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TileEntityHowlerAlarm>> howler_alarm = TILE_ENTITY_TYPES.register("howler_alarm", () ->
-		new BlockEntityType<>(TileEntityHowlerAlarm::new, ModItems.howler_alarm.get()));
+		BlockEntityType.Builder.of(TileEntityHowlerAlarm::new, ModItems.howler_alarm.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TileEntityIndustrialAlarm>> industrial_alarm = TILE_ENTITY_TYPES.register("industrial_alarm", () ->
-		new BlockEntityType<>(TileEntityIndustrialAlarm::new, ModItems.industrial_alarm.get()));
+		BlockEntityType.Builder.of(TileEntityIndustrialAlarm::new, ModItems.industrial_alarm.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TileEntityThermalMonitor>> thermal_monitor = TILE_ENTITY_TYPES.register("thermal_monitor", () ->
-		new BlockEntityType<>(TileEntityThermalMonitor::new, ModItems.thermal_monitor.get()));
+		BlockEntityType.Builder.of(TileEntityThermalMonitor::new, ModItems.thermal_monitor.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TileEntityRangeTrigger>> range_trigger = TILE_ENTITY_TYPES.register("range_trigger", () ->
-		new BlockEntityType<>(TileEntityRangeTrigger::new, ModItems.range_trigger.get()));
+		BlockEntityType.Builder.of(TileEntityRangeTrigger::new, ModItems.range_trigger.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TileEntityRemoteThermalMonitor>> remote_thermo = TILE_ENTITY_TYPES.register("remote_thermo", () ->
-		new BlockEntityType<>(TileEntityRemoteThermalMonitor::new, ModItems.remote_thermo.get()));
+		BlockEntityType.Builder.of(TileEntityRemoteThermalMonitor::new, ModItems.remote_thermo.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TileEntityInfoPanel>> info_panel = TILE_ENTITY_TYPES.register("info_panel", () ->
-		new BlockEntityType<>(TileEntityInfoPanel::new, ModItems.info_panel.get()));
+		BlockEntityType.Builder.of(TileEntityInfoPanel::new, ModItems.info_panel.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TileEntityInfoPanelExtender>> info_panel_extender = TILE_ENTITY_TYPES.register("info_panel_extender", () ->
-		new BlockEntityType<>(TileEntityInfoPanelExtender::new, ModItems.info_panel_extender.get()));
+		BlockEntityType.Builder.of(TileEntityInfoPanelExtender::new, ModItems.info_panel_extender.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TileEntityAdvancedInfoPanel>> info_panel_advanced = TILE_ENTITY_TYPES.register("info_panel_advanced", () ->
-		new BlockEntityType<>(TileEntityAdvancedInfoPanel::new, ModItems.info_panel_advanced.get()));
+		BlockEntityType.Builder.of(TileEntityAdvancedInfoPanel::new, ModItems.info_panel_advanced.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TileEntityAdvancedInfoPanelExtender>> info_panel_advanced_extender = TILE_ENTITY_TYPES.register("info_panel_advanced_extender", () ->
-		new BlockEntityType<>(TileEntityAdvancedInfoPanelExtender::new, ModItems.info_panel_advanced_extender.get()));
+		BlockEntityType.Builder.of(TileEntityAdvancedInfoPanelExtender::new, ModItems.info_panel_advanced_extender.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TileEntityHoloPanel>> holo_panel = TILE_ENTITY_TYPES.register("holo_panel", () ->
-		new BlockEntityType<>(TileEntityHoloPanel::new, ModItems.holo_panel.get()));
+		BlockEntityType.Builder.of(TileEntityHoloPanel::new, ModItems.holo_panel.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TileEntityHoloPanelExtender>> holo_panel_extender = TILE_ENTITY_TYPES.register("holo_panel_extender", () ->
-		new BlockEntityType<>(TileEntityHoloPanelExtender::new, ModItems.holo_panel_extender.get()));
+		BlockEntityType.Builder.of(TileEntityHoloPanelExtender::new, ModItems.holo_panel_extender.get()).build(null));
 	/*public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TileEntityAverageCounter>> average_counter = TILE_ENTITY_TYPES.register("average_counter", () ->
-		new BlockEntityType<>(TileEntityAverageCounter::new, ModItems.average_counter.get()));
+		BlockEntityType.Builder.of(TileEntityAverageCounter::new, ModItems.average_counter.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TileEntityEnergyCounter>> energy_counter = TILE_ENTITY_TYPES.register("energy_counter", () ->
-		new BlockEntityType<>(TileEntityEnergyCounter::new, ModItems.energy_counter.get()));*/
+		BlockEntityType.Builder.of(TileEntityEnergyCounter::new, ModItems.energy_counter.get()).build(null));*/
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TileEntityKitAssembler>> kit_assembler = TILE_ENTITY_TYPES.register("kit_assembler", () ->
-		new BlockEntityType<>(TileEntityKitAssembler::new, ModItems.kit_assembler.get()));
+		BlockEntityType.Builder.of(TileEntityKitAssembler::new, ModItems.kit_assembler.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TileEntityTimer>> timer = TILE_ENTITY_TYPES.register("timer", () ->
-		new BlockEntityType<>(TileEntityTimer::new, ModItems.timer.get()));
+		BlockEntityType.Builder.of(TileEntityTimer::new, ModItems.timer.get()).build(null));
 
 }

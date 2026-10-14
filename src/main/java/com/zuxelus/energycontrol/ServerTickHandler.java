@@ -9,14 +9,12 @@ import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.containers.ContainerTimer;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.network.PacketAlarm;
-import com.zuxelus.energycontrol.recipes.KitAssemblerRecipeType;
 import com.zuxelus.energycontrol.websockets.SocketClient;
 import com.zuxelus.zlib.containers.ContainerBase;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
@@ -71,11 +69,6 @@ public class ServerTickHandler {
 					cards.clear();
 				}
 			}
-	}
-
-	@SubscribeEvent
-	public void onDatapackSync(OnDatapackSyncEvent event) {
-		event.sendRecipes(KitAssemblerRecipeType.TYPE);
 	}
 
 	@SubscribeEvent

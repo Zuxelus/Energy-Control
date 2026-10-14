@@ -10,9 +10,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
 
 public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
@@ -65,16 +65,10 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 
 		public void draw(PoseStack.Pose pose, VertexConsumer buffer, int light, int combinedOverlay, int color) {
 			Matrix4f matrix4f = pose.pose();
-			Vector3f vector3f = pose.transformNormal(normal, new Vector3f());
-
-			float f = vector3f.x();
-			float g = vector3f.y();
-			float h = vector3f.z();
-
 			for (int i = 0; i < 4; ++i) {
 				PositionTextureVertex vertex = vertexPositions[i];
 				Vector4f vector4f = matrix4f.transform(new Vector4f(vertex.position.x() / 16.0F, vertex.position.y() / 16.0F, vertex.position.z() / 16.0F, 1.0F));
-				buffer.addVertex(vector4f.x(), vector4f.y(), vector4f.z(), color, vertex.textureU, vertex.textureV, combinedOverlay, light, f, g, h);
+				buffer.addVertex(vector4f.x(), vector4f.y(), vector4f.z()).setColor(color).setUv(vertex.textureU, vertex.textureV).setOverlay(combinedOverlay).setLight(light).setNormal(pose, normal.x(), normal.y(), normal.z());
 			}
 		}
 	}
@@ -109,10 +103,10 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 		}
 	}
 
-	public void render(PoseStack matrixStack, SubmitNodeCollector collector, RenderType type, int[] light, int combinedOverlay) {
+	public void render(PoseStack matrixStack, MultiBufferSource buffer, RenderType type, int[] light, int combinedOverlay) {
 		matrixStack.pushPose();
 		matrixStack.scale(0.5F, 0.5F, 0.5F);
-		collector.submitCustomGeometry(matrixStack, type, (pose, buffer) -> cube.render(pose, buffer, light, combinedOverlay, 0xFFFFFFFF));
+		cube.render(matrixStack.last(), buffer.getBuffer(type), light, combinedOverlay, 0xFFFFFFFF);
 		matrixStack.popPose();
 	}
 
@@ -125,104 +119,104 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 		case UP:
 			switch (rotation) {
 			case NORTH:
-				matrixStack.rotate(Axis.YP.rotationDegrees(180.0F));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(180.0F));
 				matrixStack.translate(-1.0F, 0.0F, -1.0F);
 				break;
 			case SOUTH:
 				break;
 			case WEST:
-				matrixStack.rotate(Axis.YP.rotationDegrees(-90.0F));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
 				matrixStack.translate(0.0F, 0.0F, -1.0F);
 				break;
 			case EAST:
-				matrixStack.rotate(Axis.YP.rotationDegrees(90.0F));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(90.0F));
 				matrixStack.translate(-1.0F, 0.0F, 0.0F);
 				break;
 			}
 			break;
 		case NORTH:
-			matrixStack.rotate(Axis.XP.rotationDegrees(-90.0F));
-			matrixStack.rotate(Axis.YP.rotationDegrees(180.0F));
+			matrixStack.mulPose(Axis.XP.rotationDegrees(-90.0F));
+			matrixStack.mulPose(Axis.YP.rotationDegrees(180.0F));
 			matrixStack.translate(-1.0F, -1.0F, -1.0F);
 			switch (rotation) {
 			case UP:
-				matrixStack.rotate(Axis.YP.rotationDegrees(180.0F));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(180.0F));
 				matrixStack.translate(-1.0F, 0.0F, -1.0F);
 				break;
 			case DOWN:
 				break;
 			case EAST:
-				matrixStack.rotate(Axis.YP.rotationDegrees(-90.0F));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
 				matrixStack.translate(0.0F, 0.0F, -1.0F);
 				break;
 			case WEST:
-				matrixStack.rotate(Axis.YP.rotationDegrees(90.0F));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(90.0F));
 				matrixStack.translate(-1.0F, 0.0F, 0.0F);
 				break;
 			}
 			break;
 		case SOUTH:
-			matrixStack.rotate(Axis.XP.rotationDegrees(90.0F));
+			matrixStack.mulPose(Axis.XP.rotationDegrees(90.0F));
 			matrixStack.translate(0.0F, 0.0F, -1.0F);
 			switch (rotation) {
 			case UP:
-				matrixStack.rotate(Axis.YP.rotationDegrees(180.0F));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(180.0F));
 				matrixStack.translate(-1.0F, 0.0F, -1.0F);
 				break;
 			case DOWN:
 				break;
 			case WEST:
-				matrixStack.rotate(Axis.YP.rotationDegrees(-90.0F));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
 				matrixStack.translate(0.0F, 0.0F, -1.0F);
 				break;
 			case EAST:
-				matrixStack.rotate(Axis.YP.rotationDegrees(90.0F));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(90.0F));
 				matrixStack.translate(-1.0F, 0.0F, 0.0F);
 				break;
 			}
 			break;
 		case DOWN:
-			matrixStack.rotate(Axis.XP.rotationDegrees(180.0F));
+			matrixStack.mulPose(Axis.XP.rotationDegrees(180.0F));
 			matrixStack.translate(0.0F, -1.0F, -1.0F);
 			break;
 		case WEST:
-			matrixStack.rotate(Axis.ZP.rotationDegrees(90.0F));
-			matrixStack.rotate(Axis.YP.rotationDegrees(-90.0F));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(90.0F));
+			matrixStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
 			matrixStack.translate(0.0F, -1.0F, -1.0F);
 			switch (rotation) {
 			case UP:
-				matrixStack.rotate(Axis.YP.rotationDegrees(180.0F));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(180.0F));
 				matrixStack.translate(-1.0F, 0.0F, -1.0F);
 				break;
 			case DOWN:
 				break;
 			case NORTH:
-				matrixStack.rotate(Axis.YP.rotationDegrees(-90.0F));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
 				matrixStack.translate(0.0F, 0.0F, -1.0F);
 				break;
 			case SOUTH:
-				matrixStack.rotate(Axis.YP.rotationDegrees(90.0F));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(90.0F));
 				matrixStack.translate(-1.0F, 0.0F, 0.0F);
 				break;
 			}
 			break;
 		case EAST:
-			matrixStack.rotate(Axis.ZP.rotationDegrees(-90.0F));
-			matrixStack.rotate(Axis.YP.rotationDegrees(90.0F));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(-90.0F));
+			matrixStack.mulPose(Axis.YP.rotationDegrees(90.0F));
 			matrixStack.translate(-1.0F, 0.0F, -1.0F);
 			switch (rotation) {
 			case UP:
-				matrixStack.rotate(Axis.YP.rotationDegrees(180.0F));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(180.0F));
 				matrixStack.translate(-1.0F, 0.0F, -1.0F);
 				break;
 			case DOWN:
 				break;
 			case SOUTH:
-				matrixStack.rotate(Axis.YP.rotationDegrees(-90.0F));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
 				matrixStack.translate(0.0F, 0.0F, -1.0F);
 				break;
 			case NORTH:
-				matrixStack.rotate(Axis.YP.rotationDegrees(90.0F));
+				matrixStack.mulPose(Axis.YP.rotationDegrees(90.0F));
 				matrixStack.translate(-1.0F, 0.0F, 0.0F);
 				break;
 			}
@@ -250,13 +244,13 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 			sides = new Direction[QUAD_SIDES.length];
 			for (int i = 0; i < QUAD_SIDES.length; i++) {
 				Vector3f v = normal.transform(new Vector3f(QUAD_SIDES[i].step()));
-				sides[i] = Direction.getApproximateNearest(v.x(), v.y(), v.z());
+				sides[i] = Direction.getNearest(v.x(), v.y(), v.z());
 			}
 			cache[facing.get3DDataValue()][rotation.get3DDataValue()] = sides;
 		}
 		int[] light = new int[sides.length];
 		for (int i = 0; i < sides.length; i++)
-			light[i] = LightCoordsUtil.getLightCoords(te.getLevel(), te.getBlockPos().relative(sides[i]));
+			light[i] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(sides[i]));
 		return light;
 	}
 }

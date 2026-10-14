@@ -1,5 +1,7 @@
 package com.zuxelus.energycontrol.blocks;
 
+import com.mojang.serialization.MapCodec;
+
 import com.zuxelus.energycontrol.gui.ScreenHandler;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityThermalMonitor;
@@ -8,12 +10,12 @@ import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -35,13 +37,19 @@ public class ThermalMonitor extends FacingBlockSmall {
 	}
 
 	@Override
+	protected MapCodec<? extends BaseEntityBlock> codec() {
+		return simpleCodec(ThermalMonitor::new);
+	}
+
+	@Override
 	protected BlockEntityFacing createBlockEntity(BlockPos pos, BlockState state) {
 		return ModTileEntityTypes.thermal_monitor.get().create(pos, state);
 	}
 
 	@Override
-	protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
-		if (!movedByPiston)
+	protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+		super.onRemove(state, level, pos, newState, movedByPiston);
+		if (!movedByPiston && !state.is(newState.getBlock()))
 			level.updateNeighborsAt(pos, this);
 	}
 

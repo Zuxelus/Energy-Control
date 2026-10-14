@@ -7,15 +7,15 @@ import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityTimer;
 import com.zuxelus.zlib.gui.GuiContainerBase;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public class GuiTimer extends GuiContainerBase<ContainerTimer> {
-	private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/gui_timer.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/gui_timer.png");
 	private TileEntityTimer timer;
 	private EditBox textboxTimer;
 	private boolean lastIsWorking;
@@ -65,13 +65,13 @@ public class GuiTimer extends GuiContainerBase<ContainerTimer> {
 	}
 
 	@Override
-	public void extractBackground(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY, float partialTicks) {
-		super.extractBackground(matrixStack, mouseX, mouseY, partialTicks);
-		textboxTimer.extractRenderState(matrixStack, mouseX, mouseY, partialTicks);
+	public void renderBackground(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
+		super.renderBackground(matrixStack, mouseX, mouseY, partialTicks);
+		textboxTimer.render(matrixStack, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
-	protected void extractLabels(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY) {
+	protected void renderLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
 		drawCenteredText(matrixStack, title, imageWidth, 6);
 	}
 

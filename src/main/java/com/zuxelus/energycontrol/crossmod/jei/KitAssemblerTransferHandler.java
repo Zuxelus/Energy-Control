@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.jspecify.annotations.Nullable;
-
 import com.zuxelus.energycontrol.containers.ContainerKitAssembler;
 import com.zuxelus.energycontrol.init.ModContainerTypes;
 import com.zuxelus.energycontrol.recipes.KitAssemblerRecipe;
@@ -15,15 +13,15 @@ import com.zuxelus.energycontrol.recipes.KitAssemblerRecipe;
 import mezz.jei.api.gui.ingredient.IRecipeSlotView;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
-import mezz.jei.api.recipe.types.IRecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ContainerInput;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
@@ -55,13 +53,13 @@ public class KitAssemblerTransferHandler implements IRecipeTransferHandler<Conta
 	}
 
 	@Override
-	public IRecipeType<KitAssemblerRecipe> getRecipeType() {
+	public RecipeType<KitAssemblerRecipe> getRecipeType() {
 		return KitAssemblerRecipeCategory.recipeType;
 	}
 
 	@Override
 	@SuppressWarnings("removal") // the replacement is a default method that calls this one
-	public @Nullable IRecipeTransferError transferRecipe(ContainerKitAssembler menu, KitAssemblerRecipe recipe, IRecipeSlotsView slots, Player player, boolean maxTransfer, boolean doTransfer) {
+	public IRecipeTransferError transferRecipe(ContainerKitAssembler menu, KitAssemblerRecipe recipe, IRecipeSlotsView slots, Player player, boolean maxTransfer, boolean doTransfer) {
 		int[] counts = { recipe.count1, recipe.count2, recipe.count3 };
 		List<IRecipeSlotView> inputs = slots.getSlotViews(RecipeIngredientRole.INPUT);
 		List<Slot> inventory = getPlayerSlots(menu);
@@ -101,7 +99,7 @@ public class KitAssemblerTransferHandler implements IRecipeTransferHandler<Conta
 		for (int i = 0; i < INPUTS; i++) {
 			Slot input = menu.getSlot(FIRST_INPUT + i);
 			if (input.hasItem())
-				click(mc, menu, input.index, 0, ContainerInput.QUICK_MOVE);
+				click(mc, menu, input.index, 0, ClickType.QUICK_MOVE);
 		}
 		for (int i = 0; i < INPUTS; i++)
 			if (chosen[i] != null)
@@ -141,21 +139,21 @@ public class KitAssemblerTransferHandler implements IRecipeTransferHandler<Conta
 				return;
 			if (!source.getItem().is(item))
 				continue;
-			click(mc, menu, source.index, 0, ContainerInput.PICKUP); // pick up the whole stack
+			click(mc, menu, source.index, 0, ClickType.PICKUP); // pick up the whole stack
 			int before = target.getItem().getCount();
 			if (menu.getCarried().getCount() <= amount)
-				click(mc, menu, target.index, 0, ContainerInput.PICKUP); // place all of it
+				click(mc, menu, target.index, 0, ClickType.PICKUP); // place all of it
 			else
 				for (int j = 0; j < amount; j++)
-					click(mc, menu, target.index, 1, ContainerInput.PICKUP); // place one at a time
+					click(mc, menu, target.index, 1, ClickType.PICKUP); // place one at a time
 			amount -= target.getItem().getCount() - before;
 			if (!menu.getCarried().isEmpty())
-				click(mc, menu, source.index, 0, ContainerInput.PICKUP); // put the rest back
+				click(mc, menu, source.index, 0, ClickType.PICKUP); // put the rest back
 		}
 	}
 
-	private static void click(Minecraft mc, ContainerKitAssembler menu, int slotId, int button, ContainerInput action) {
-		mc.gameMode.handleContainerInput(menu.containerId, slotId, button, action, mc.player);
+	private static void click(Minecraft mc, ContainerKitAssembler menu, int slotId, int button, ClickType action) {
+		mc.gameMode.handleInventoryMouseClick(menu.containerId, slotId, button, action, mc.player);
 	}
 
 	private static List<Slot> getPlayerSlots(ContainerKitAssembler menu) {

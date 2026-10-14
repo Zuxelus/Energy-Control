@@ -1,11 +1,7 @@
 {
-    "variants": {
-        "": {
-            "type": "energycontrol:panel",
-            "body": "energycontrol:block/info_panel/extender_advanced_all",
-            "screen": "energycontrol:block/info_panel/panel_screen",
-            "particle": "energycontrol:block/info_panel/extender_advanced_back",
-            "default_color": -12171706
-        }
+  "variants": {
+    "": {
+      "model": "energycontrol:block/panel/info_panel_advanced_extender"
     }
+  }
 }

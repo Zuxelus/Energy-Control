@@ -1,0 +1,9 @@
+{
+  "loader": "energycontrol:panel",
+  "default_color": -16724992,
+  "textures": {
+    "body": "energycontrol:block/info_panel/extender_all",
+    "screen": "energycontrol:block/info_panel/panel_screen",
+    "particle": "energycontrol:block/info_panel/extender_back"
+  }
+}

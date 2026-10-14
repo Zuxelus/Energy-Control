@@ -2,6 +2,8 @@ package com.zuxelus.zlib.tileentities;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
@@ -9,12 +11,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.item.VanillaContainerWrapper;
-import net.neoforged.neoforge.transfer.item.WorldlyContainerWrapper;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.wrapper.InvWrapper;
+import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
 
 public abstract class TileEntityInventory extends BlockEntityFacing implements WorldlyContainer {
 	protected NonNullList<ItemStack> inventory;
@@ -25,16 +24,16 @@ public abstract class TileEntityInventory extends BlockEntityFacing implements W
 	}
 
 	@Override
-	protected void readProperties(ValueInput tag) {
-		super.readProperties(tag);
+	protected void readProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.readProperties(tag, registries);
 		inventory = NonNullList.<ItemStack>withSize(getContainerSize(), ItemStack.EMPTY);
-		ContainerHelper.loadAllItems(tag, inventory);
+		ContainerHelper.loadAllItems(tag, inventory, registries);
 	}
 
 	@Override
-	protected void writeProperties(ValueOutput tag) {
-		super.writeProperties(tag);
-		ContainerHelper.saveAllItems(tag, inventory);
+	protected void writeProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.writeProperties(tag, registries);
+		ContainerHelper.saveAllItems(tag, inventory, registries);
 	}
 
 	@Override
@@ -85,8 +84,8 @@ public abstract class TileEntityInventory extends BlockEntityFacing implements W
 		inventory.clear();
 	}
 
-	public ResourceHandler<ItemResource> getItemHandler(Direction side) { // forge only
-		return side == null ? VanillaContainerWrapper.of(this) : new WorldlyContainerWrapper(this, side);
+	public IItemHandler getItemHandler(Direction side) { // forge only
+		return side == null ? new InvWrapper(this) : new SidedInvWrapper(this, side);
 	}
 
 	// ISidedInventory

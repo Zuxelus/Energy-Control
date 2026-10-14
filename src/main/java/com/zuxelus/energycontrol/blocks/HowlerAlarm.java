@@ -1,6 +1,6 @@
 package com.zuxelus.energycontrol.blocks;
 
-import org.jspecify.annotations.Nullable;
+import com.mojang.serialization.MapCodec;
 
 import com.zuxelus.energycontrol.gui.ScreenHandler;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
@@ -14,10 +14,10 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -35,12 +35,17 @@ public class HowlerAlarm extends FacingBlockSmall {
 	}
 
 	@Override
+	protected MapCodec<? extends BaseEntityBlock> codec() {
+		return simpleCodec(HowlerAlarm::new);
+	}
+
+	@Override
 	protected BlockEntityFacing createBlockEntity(BlockPos pos, BlockState state) {
 		return ModTileEntityTypes.howler_alarm.get().create(pos, state);
 	}
 
 	@Override
-	protected void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, @Nullable Orientation orientation, boolean isMoving) {
+	protected void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
 		if (!world.isClientSide())
 			world.sendBlockUpdated(pos, state, state, 2);
 	}

@@ -1,6 +1,6 @@
 package com.zuxelus.energycontrol.blocks;
 
-import org.jspecify.annotations.Nullable;
+import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -14,7 +14,6 @@ import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.MapColor;
-import net.minecraft.world.level.redstone.Orientation;
 
 public class BlockLight extends Block {
 	public static final BooleanProperty LIT = BlockStateProperties.LIT;
@@ -22,6 +21,11 @@ public class BlockLight extends Block {
 	public BlockLight(Block.Properties properties, MapColor color) {
 		super(properties.mapColor(color).lightLevel(state -> state.getValue(LIT) ? 15 : 0).strength(1.0F, 3.0F).sound(SoundType.GLASS));
 		registerDefaultState(defaultBlockState().setValue(LIT, Boolean.valueOf(false)));
+	}
+
+	@Override
+	protected MapCodec<? extends Block> codec() {
+		return simpleCodec(p -> new BlockLight(p, MapColor.NONE));
 	}
 
 	@Override
@@ -35,7 +39,7 @@ public class BlockLight extends Block {
 	}
 
 	@Override
-	protected void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, @Nullable Orientation orientation, boolean isMoving) {
+	protected void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
 		if (world.isClientSide())
 			return;
 

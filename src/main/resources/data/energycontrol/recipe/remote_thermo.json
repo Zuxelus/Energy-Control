@@ -7,10 +7,18 @@
     "ITI"
   ],
   "key": {
-    "T": "energycontrol:thermal_monitor",
-    "M": "energycontrol:machine_casing",
-    "F": "energycontrol:radio_transmitter",
-    "I": "#c:ingots/iron"
+    "T": {
+      "item": "energycontrol:thermal_monitor"
+    },
+    "M": {
+      "item": "energycontrol:machine_casing"
+    },
+    "F": {
+      "item": "energycontrol:radio_transmitter"
+    },
+    "I": {
+      "tag": "c:ingots/iron"
+    }
   },
   "result": {
     "id": "energycontrol:remote_thermo"

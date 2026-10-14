@@ -12,17 +12,17 @@ import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardText;
 import com.zuxelus.zlib.gui.controls.GuiButtonGeneral;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 
 public class GuiHoloPanel extends GuiPanelBase<ContainerHoloPanel> { 
-	private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/gui_holo_panel.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/gui_holo_panel.png");
 	private GuiButtonGeneral colorButton;
 
 	public GuiHoloPanel(ContainerHoloPanel container, Inventory inventory, Component title) {
@@ -86,9 +86,9 @@ public class GuiHoloPanel extends GuiPanelBase<ContainerHoloPanel> {
 	}
 
 	@Override
-	public void extractBackground(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY, float partialTicks) {
-		super.extractBackground(matrixStack, mouseX, mouseY, partialTicks);
+	public void renderBackground(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
+		super.renderBackground(matrixStack, mouseX, mouseY, partialTicks);
 		if (textboxTitle != null)
-			textboxTitle.extractRenderState(matrixStack, mouseX, mouseY, partialTicks);
+			textboxTitle.render(matrixStack, mouseX, mouseY, partialTicks);
 	}
 }

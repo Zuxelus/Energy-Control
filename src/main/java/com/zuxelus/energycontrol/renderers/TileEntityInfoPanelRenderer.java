@@ -9,10 +9,10 @@ import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.world.phys.AABB;
 
 public class TileEntityInfoPanelRenderer extends TileRenderer<TileEntityInfoPanel> {
@@ -36,7 +36,7 @@ public class TileEntityInfoPanelRenderer extends TileRenderer<TileEntityInfoPane
 	}
 
 	public TileEntityInfoPanelRenderer(Context ctx) {
-		font = ctx.font();
+		font = ctx.getFont();
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class TileEntityInfoPanelRenderer extends TileRenderer<TileEntityInfoPane
 	}
 
 	@Override
-	protected void render(TileEntityInfoPanel te, PoseStack matrixStack, SubmitNodeCollector buffer, int combinedLight, int combinedOverlay) {
+	protected void render(TileEntityInfoPanel te, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
 		// the panel body is a baked model (PanelModel), only the text is drawn here
 		if (!te.getPowered())
 			return;
@@ -58,7 +58,7 @@ public class TileEntityInfoPanelRenderer extends TileRenderer<TileEntityInfoPane
 		matrixStack.popPose();
 	}
 
-	private void drawText(TileEntityInfoPanel panel, List<PanelString> joinedData, PoseStack matrixStack, SubmitNodeCollector buffer, int combinedLight) {
+	private void drawText(TileEntityInfoPanel panel, List<PanelString> joinedData, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight) {
 		Screen screen = panel.getScreen();
 		BlockPos pos = panel.getBlockPos();
 		float displayWidth = 1 - 2F / 16;
@@ -128,30 +128,30 @@ public class TileEntityInfoPanelRenderer extends TileRenderer<TileEntityInfoPane
 		}
 
 		matrixStack.translate(0.5F - dy / 2, 1.01F - dx / 2 , -0.5F - dz / 2);
-		matrixStack.rotate(Axis.XP.rotationDegrees(-90));
+		matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
 		switch(panel.getRotation())
 		{
 		case UP:
 			break;
 		case NORTH:
-			matrixStack.rotate(Axis.ZP.rotationDegrees(180));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(180));
 			break;
 		case SOUTH:
 			break;
 		case DOWN:
 			break;
 		case WEST:
-			matrixStack.rotate(Axis.ZP.rotationDegrees(-90));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(-90));
 			break;
 		case EAST:
-			matrixStack.rotate(Axis.ZP.rotationDegrees(90));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(90));
 			break;
 		}
 
 		if (panel.isTouchCard() || panel.hasBars()) {
-			matrixStack.rotate(Axis.YP.rotationDegrees(180));
+			matrixStack.mulPose(Axis.YP.rotationDegrees(180));
 			panel.renderImage(displayWidth, displayHeight, matrixStack, buffer);
-			matrixStack.rotate(Axis.YP.rotationDegrees(180));
+			matrixStack.mulPose(Axis.YP.rotationDegrees(180));
 		}
 		if (joinedData != null) {
 			matrixStack.translate(0, 0, 0.0002F);
@@ -162,7 +162,7 @@ public class TileEntityInfoPanelRenderer extends TileRenderer<TileEntityInfoPane
 		}
 	}
 
-	public static void renderText(List<PanelString> joinedData, float displayWidth, float displayHeight, int colorHex, PoseStack matrixStack, SubmitNodeCollector buffer, Font fontRenderer) {
+	public static void renderText(List<PanelString> joinedData, float displayWidth, float displayHeight, int colorHex, PoseStack matrixStack, MultiBufferSource buffer, Font fontRenderer) {
 		int maxWidth = 1;
 		for (PanelString panelString : joinedData) {
 			String currentString = implodeArray(new String[] { panelString.textLeft, panelString.textCenter, panelString.textRight }, " ");
@@ -204,7 +204,7 @@ public class TileEntityInfoPanelRenderer extends TileRenderer<TileEntityInfoPane
 	}
 
 	// full bright; the polygon offset keeps the text off the screen face
-	private static void drawString(SubmitNodeCollector collector, PoseStack matrixStack, String text, float x, float y, int color) {
-		RenderHelper.drawString(matrixStack, collector, text, x, y, color, Font.DisplayMode.POLYGON_OFFSET, LightCoordsUtil.FULL_BRIGHT);
+	private static void drawString(MultiBufferSource collector, PoseStack matrixStack, String text, float x, float y, int color) {
+		RenderHelper.drawString(matrixStack, collector, text, x, y, color, Font.DisplayMode.POLYGON_OFFSET, LightTexture.FULL_BRIGHT);
 	}
 }

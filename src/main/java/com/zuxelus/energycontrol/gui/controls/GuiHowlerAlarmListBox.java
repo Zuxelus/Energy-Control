@@ -8,19 +8,15 @@ import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.input.InputWithModifiers;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.ARGB;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor.ARGB32;
 
 public class GuiHowlerAlarmListBox extends AbstractButton {
-	private static final Identifier TEXTURE = Identifier.parse("energycontrol:textures/gui/gui_howler_alarm.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.parse("energycontrol:textures/gui/gui_howler_alarm.png");
 
 	private static final int BASIC_X_OFFSET = 2;
 	private static final int BASIC_Y_OFFSET = 2;
@@ -80,7 +76,7 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 	}
 
 	@Override
-	protected void extractContents(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void renderWidget(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (dragging) {
 			int pos = (mouseY - getY() - SCROLL_BUTTON_HEIGHT - dragDelta)
 					* (lineHeight * items.size() + BASIC_Y_OFFSET - height)
@@ -112,10 +108,10 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 
 		for (String row : items) {
 			if(row.equals(currentItem)) {
-				matrixStack.fill(getX(), getY() + rowTop - scrollTop - 1, getX() + width - SCROLL_WIDTH, getY() + rowTop - scrollTop + lineHeight - 1, ARGB.opaque(selectedColor));
-				matrixStack.text(fontRenderer, row, getX() + BASIC_X_OFFSET, getY() + rowTop - scrollTop, ARGB.opaque(selectedFontColor), false);
+				matrixStack.fill(getX(), getY() + rowTop - scrollTop - 1, getX() + width - SCROLL_WIDTH, getY() + rowTop - scrollTop + lineHeight - 1, ARGB32.opaque(selectedColor));
+				matrixStack.drawString(fontRenderer, row, getX() + BASIC_X_OFFSET, getY() + rowTop - scrollTop, ARGB32.opaque(selectedFontColor), false);
 			} else
-				matrixStack.text(fontRenderer, row, getX() + BASIC_X_OFFSET, getY() + rowTop - scrollTop, ARGB.opaque(fontColor), false);
+				matrixStack.drawString(fontRenderer, row, getX() + BASIC_X_OFFSET, getY() + rowTop - scrollTop, ARGB32.opaque(fontColor), false);
 			
 			rowTop += lineHeight;
 		}
@@ -125,10 +121,10 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 		// Slider
 		int sliderX = getX() + width - SCROLL_WIDTH + 1;
 		sliderY = getY() + SCROLL_BUTTON_HEIGHT + ((height - 2 * SCROLL_BUTTON_HEIGHT - sliderHeight) * scrollTop) / (lineHeight * items.size() + BASIC_Y_OFFSET - height);
-		matrixStack.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, sliderX, sliderY, 131, 16, SCROLL_WIDTH - 1, 1, 256, 256);
+		matrixStack.blit(TEXTURE, sliderX, sliderY, 131, 16, SCROLL_WIDTH - 1, 1, 256, 256);
 		// slider body: one texture row stretched to the slider height
-		matrixStack.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, sliderX, sliderY + 1, 131, 17, SCROLL_WIDTH - 1, sliderHeight - 2, SCROLL_WIDTH - 1, 1, 256, 256);
-		matrixStack.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, sliderX, sliderY + sliderHeight - 1, 131, 19, SCROLL_WIDTH - 1, 1, 256, 256);
+		matrixStack.blit(TEXTURE, sliderX, sliderY + 1, SCROLL_WIDTH - 1, sliderHeight - 2, 131, 17, SCROLL_WIDTH - 1, 1, 256, 256);
+		matrixStack.blit(TEXTURE, sliderX, sliderY + sliderHeight - 1, 131, 19, SCROLL_WIDTH - 1, 1, 256, 256);
 	}
 
 	private void setCurrent(double targetY) {
@@ -147,8 +143,7 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 	}
 
 	@Override
-	public boolean keyPressed(KeyEvent event) {
-		int keyCode = event.key();
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (keyCode == InputConstants.KEY_DOWN) { // down
 			scrollDown();
 			return true;
@@ -157,7 +152,7 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 			scrollUp();
 			return true;
 		}
-		return super.keyPressed(event);
+		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 
 	@Override
@@ -172,12 +167,10 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 	}
 
 	@Override
-	public void onPress(InputWithModifiers input) { }
+	public void onPress() { }
 
 	@Override
-	public void onClick(MouseButtonEvent event, boolean doubleClick) {
-		double mouseX = event.x();
-		double mouseY = event.y();
+	public void onClick(double mouseX, double mouseY) {
 		if (mouseX > getX() + width - SCROLL_WIDTH) {// scroll click
 			if (mouseY - getY() < SCROLL_BUTTON_HEIGHT)
 				scrollUp();
@@ -192,7 +185,7 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 	}
 
 	@Override
-	public void onRelease(MouseButtonEvent event) {
+	public void onRelease(double mouseX, double mouseY) {
 		dragging = false;
 	}
 

@@ -4,19 +4,25 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.ShapelessRecipe;
 
-public final class ArrayRecipeSerializer {
+public class ArrayRecipeSerializer implements RecipeSerializer<StorageArrayRecipe> {
 	// a storage array recipe is a plain shapeless recipe with custom matching
-	private static final MapCodec<StorageArrayRecipe> CODEC = ShapelessRecipe.MAP_CODEC
+	private static final MapCodec<StorageArrayRecipe> CODEC = RecipeSerializer.SHAPELESS_RECIPE.codec()
 			.xmap(StorageArrayRecipe::new, StorageArrayRecipe::getRecipe);
-	private static final StreamCodec<RegistryFriendlyByteBuf, StorageArrayRecipe> PACKET_CODEC = ShapelessRecipe.STREAM_CODEC
+	private static final StreamCodec<RegistryFriendlyByteBuf, StorageArrayRecipe> PACKET_CODEC = RecipeSerializer.SHAPELESS_RECIPE.streamCodec()
 			.map(StorageArrayRecipe::new, StorageArrayRecipe::getRecipe);
 
-	// RecipeSerializer is a record since 26.1
 	public static RecipeSerializer<StorageArrayRecipe> create() {
-		return new RecipeSerializer<>(CODEC, PACKET_CODEC);
+		return new ArrayRecipeSerializer();
 	}
 
-	private ArrayRecipeSerializer() {}
+	@Override
+	public MapCodec<StorageArrayRecipe> codec() {
+		return CODEC;
+	}
+
+	@Override
+	public StreamCodec<RegistryFriendlyByteBuf, StorageArrayRecipe> streamCodec() {
+		return PACKET_CODEC;
+	}
 }

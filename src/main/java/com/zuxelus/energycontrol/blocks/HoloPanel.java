@@ -1,6 +1,6 @@
 package com.zuxelus.energycontrol.blocks;
 
-import org.jspecify.annotations.Nullable;
+import com.mojang.serialization.MapCodec;
 
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityHoloPanel;
@@ -20,12 +20,12 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ScheduledTickAccess;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -39,6 +39,11 @@ public class HoloPanel extends FacingHorizontalActive {
 	}
 
 	@Override
+	protected MapCodec<? extends BaseEntityBlock> codec() {
+		return simpleCodec(HoloPanel::new);
+	}
+
+	@Override
 	protected BlockEntityFacing createBlockEntity(BlockPos pos, BlockState state) {
 		return ModTileEntityTypes.holo_panel.get().create(pos, state);
 	}
@@ -49,7 +54,7 @@ public class HoloPanel extends FacingHorizontalActive {
 	}
 
 	@Override
-	protected void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, @Nullable Orientation orientation, boolean isMoving) {
+	protected void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
 		if (world.isClientSide())
 			return;
 
@@ -93,8 +98,8 @@ public class HoloPanel extends FacingHorizontalActive {
 	}
 
 	@Override
-	protected BlockState updateShape(BlockState state, LevelReader world, ScheduledTickAccess ticks, BlockPos currentPos, Direction facing, BlockPos facingPos, BlockState facingState, RandomSource random) {
-		return canSurvive(state, world, currentPos) ? super.updateShape(state, world, ticks, currentPos, facing, facingPos, facingState, random) : Blocks.AIR.defaultBlockState();
+	protected BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor world, BlockPos currentPos, BlockPos facingPos) {
+		return canSurvive(state, world, currentPos) ? super.updateShape(state, facing, facingState, world, currentPos, facingPos) : Blocks.AIR.defaultBlockState();
 	}
 
 	@Override

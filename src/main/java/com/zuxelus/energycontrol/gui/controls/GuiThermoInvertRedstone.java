@@ -4,16 +4,14 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityThermalMonitor;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.input.InputWithModifiers;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public class GuiThermoInvertRedstone extends AbstractButton {
-	private static final Identifier TEXTURE = Identifier.parse(EnergyControl.MODID + ":textures/gui/gui_thermal_monitor.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.parse(EnergyControl.MODID + ":textures/gui/gui_thermal_monitor.png");
 
 	TileEntityThermalMonitor thermo;
 	private boolean checked;
@@ -27,17 +25,17 @@ public class GuiThermoInvertRedstone extends AbstractButton {
 	}
 
 	@Override
-	protected void extractContents(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void renderWidget(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (!visible)
 			return;
 
 		int delta = checked ? 15 : 0;
-		matrixStack.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, getX(), getY() + 1, 199, delta, 51, 15, 256, 256);
+		matrixStack.blit(TEXTURE, getX(), getY() + 1, 199, delta, 51, 15, 256, 256);
 	}
 
 	@SuppressWarnings("resource")
 	@Override
-	public void onPress(InputWithModifiers input) {
+	public void onPress() {
 		checked = !checked;
 		if (thermo.getLevel().isClientSide() && thermo.getInvertRedstone() != checked) {
 			NetworkHelper.updateSeverTileEntity(thermo.getBlockPos(), 2, checked ? (int) 1 : (int) 0);

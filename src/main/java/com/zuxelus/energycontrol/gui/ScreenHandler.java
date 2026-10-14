@@ -22,14 +22,14 @@ public class ScreenHandler {
 
 	public static void openHowlerAlarmScreen(TileEntityHowlerAlarm be) {
 		List<String> items = getAlarms();
-		Minecraft.getInstance().gui.setScreen(new GuiHowlerAlarm(be, items.size() > 10));
+		Minecraft.getInstance().setScreen(new GuiHowlerAlarm(be, items.size() > 10));
 	}
 
 	public static void openIndustrialAlarmScreen(TileEntityIndustrialAlarm be) {
-		Minecraft.getInstance().gui.setScreen(new GuiIndustrialAlarm(be));
+		Minecraft.getInstance().setScreen(new GuiIndustrialAlarm(be));
 	}
 
 	public static void openThermalMonitorScreen(TileEntityThermalMonitor be) {
-		Minecraft.getInstance().gui.setScreen(new GuiThermalMonitor(be));
+		Minecraft.getInstance().setScreen(new GuiThermalMonitor(be));
 	}
 }

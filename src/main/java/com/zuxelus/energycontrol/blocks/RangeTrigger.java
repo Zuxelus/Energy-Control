@@ -1,5 +1,7 @@
 package com.zuxelus.energycontrol.blocks;
 
+import com.mojang.serialization.MapCodec;
+
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityRangeTrigger;
 import com.zuxelus.zlib.blocks.FacingHorizontal;
@@ -16,6 +18,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
@@ -26,6 +29,11 @@ public class RangeTrigger extends FacingHorizontal {
 
 	public RangeTrigger(Block.Properties properties) {
 		super(FacingBlock.metal(properties));
+	}
+
+	@Override
+	protected MapCodec<? extends BaseEntityBlock> codec() {
+		return simpleCodec(RangeTrigger::new);
 	}
 	public static final EnumProperty<EnumState> STATE = EnumProperty.create("state", EnumState.class);
 

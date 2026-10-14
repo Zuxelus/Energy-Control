@@ -8,7 +8,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.material.EmptyFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 public class FluidInfo {
 	String translationKey;
@@ -30,15 +29,6 @@ public class FluidInfo {
 				translationKey = stack.getDescriptionId();
 				fluidId = BuiltInRegistries.FLUID.getKey(stack.getFluid()).toString();
 			}
-		}
-		this.capacity = capacity;
-	}
-
-	public FluidInfo(FluidResource resource, long amount, long capacity) {
-		this.amount = amount;
-		if (resource != null && !resource.isEmpty() && amount > 0) {
-			translationKey = resource.getFluidType().getDescriptionId();
-			fluidId = BuiltInRegistries.FLUID.getKey(resource.getFluid()).toString();
 		}
 		this.capacity = capacity;
 	}

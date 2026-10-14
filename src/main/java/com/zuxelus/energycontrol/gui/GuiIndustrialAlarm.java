@@ -5,7 +5,7 @@ import com.zuxelus.energycontrol.gui.controls.GuiHowlerAlarmSlider;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 import com.zuxelus.zlib.gui.GuiBase;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 
 public class GuiIndustrialAlarm extends GuiBase {
 	private TileEntityHowlerAlarm alarm;
@@ -24,7 +24,7 @@ public class GuiIndustrialAlarm extends GuiBase {
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY) {
+	protected void drawGuiContainerForegroundLayer(GuiGraphics matrixStack, int mouseX, int mouseY) {
 		drawTitle(matrixStack);
 	}
 }

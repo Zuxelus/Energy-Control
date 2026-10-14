@@ -4,7 +4,7 @@ import com.zuxelus.energycontrol.renderers.RotationOffset;
 
 import net.minecraft.core.Direction;
 
-import net.neoforged.neoforge.model.data.ModelProperty;
+import net.neoforged.neoforge.client.model.data.ModelProperty;
 
 /**
  * Snapshot of what the baked panel model needs, taken on the main thread when the chunk mesh is built.

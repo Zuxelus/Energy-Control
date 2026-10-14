@@ -8,11 +8,9 @@ import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.gui.GuiBase;
 import com.zuxelus.zlib.gui.controls.GuiTextArea;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -50,9 +48,9 @@ public class GuiCardText extends GuiBase {
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(GuiGraphicsExtractor matrixStack, float partialTicks, int mouseX, int mouseY) {
+	protected void drawGuiContainerBackgroundLayer(GuiGraphics matrixStack, float partialTicks, int mouseX, int mouseY) {
 		super.drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
-		textArea.extractRenderState(matrixStack, mouseX, mouseY, partialTicks);
+		textArea.render(matrixStack, mouseX, mouseY, partialTicks);
 	}
 
 	@Override
@@ -71,7 +69,7 @@ public class GuiCardText extends GuiBase {
 						reader.setString("line_" + i, lines[i]);
 			}
 			reader.updateServer(stack, panel, slot);
-			minecraft.gui.setScreen(parentGui);
+			minecraft.setScreen(parentGui);
 			break;
 		case 2:
 			textArea.writeText("@");
@@ -80,23 +78,23 @@ public class GuiCardText extends GuiBase {
 	}
 
 	@Override
-	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		GuiEventListener control = getFocused();
 		if (control instanceof GuiTextArea) {
-			boolean result = super.mouseClicked(event, doubleClick);
+			boolean result = super.mouseClicked(mouseX, mouseY, button);
 			setFocused(control);
 			return result;
 		}
-		return super.mouseClicked(event, doubleClick);
+		return super.mouseClicked(mouseX, mouseY, button);
 	}
 
 	@Override
-	public boolean keyPressed(KeyEvent event) {
-		if (event.key() == InputConstants.KEY_ESCAPE) {
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		if (keyCode == InputConstants.KEY_ESCAPE) {
 			actionPerformed(1);
 			return true;
 		}
-		return super.keyPressed(event);
+		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 
 	@Override

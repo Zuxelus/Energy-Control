@@ -12,7 +12,7 @@ import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.utils.DataHelper;
 
-import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -39,9 +39,9 @@ public class ItemCardEnergy extends ItemCardMain implements IHasBars {
 
 		CompoundTag tag = CrossModLoader.getEnergyData(te);
 		if (tag != null) {
-			reader.setDouble(DataHelper.ENERGY, tag.getDoubleOr(DataHelper.ENERGY, 0.0));
-			reader.setDouble(DataHelper.CAPACITY, tag.getDoubleOr(DataHelper.CAPACITY, 0.0));
-			reader.setString(DataHelper.EUTYPE, tag.getStringOr(DataHelper.EUTYPE, ""));
+			reader.setDouble(DataHelper.ENERGY, tag.getDouble(DataHelper.ENERGY));
+			reader.setDouble(DataHelper.CAPACITY, tag.getDouble(DataHelper.CAPACITY));
+			reader.setString(DataHelper.EUTYPE, tag.getString(DataHelper.EUTYPE));
 			return CardState.OK;
 		}
 		return CardState.NO_TARGET;
@@ -90,7 +90,7 @@ public class ItemCardEnergy extends ItemCardMain implements IHasBars {
 
 	// same place and size as the liquid card bar: a band across the middle of the screen
 	@Override
-	public void renderBars(float displayWidth, float displayHeight, ICardReader reader, PoseStack matrixStack, SubmitNodeCollector collector) {
+	public void renderBars(float displayWidth, float displayHeight, ICardReader reader, PoseStack matrixStack, MultiBufferSource buffer) {
 		double storage = reader.getDouble(DataHelper.CAPACITY);
 		if (storage <= 0)
 			return;
@@ -100,8 +100,8 @@ public class ItemCardEnergy extends ItemCardMain implements IHasBars {
 		float width = 14 / 16.0F * (float) (Math.min(reader.getDouble(DataHelper.ENERGY), storage) / storage);
 
 		matrixStack.scale(displayWidth / 0.875F, displayHeight / 0.875F, 1);
-		IHasBars.drawTransparentRect(matrixStack, collector, x + 0.875F, y + height, x, y, 0, BAR_COLOR);
-		IHasBars.drawTransparentRect(matrixStack, collector, x + 0.875F - width, y + height, x, y, -0.0001F, EMPTY_COLOR);
+		IHasBars.drawTransparentRect(matrixStack, buffer, x + 0.875F, y + height, x, y, 0, BAR_COLOR);
+		IHasBars.drawTransparentRect(matrixStack, buffer, x + 0.875F - width, y + height, x, y, -0.0001F, EMPTY_COLOR);
 		matrixStack.scale(0.875F / displayWidth, 0.875F / displayHeight, 1);
 	}
 }

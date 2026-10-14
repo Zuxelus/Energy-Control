@@ -9,17 +9,16 @@ import com.zuxelus.energycontrol.network.NetworkHelper;
 import com.zuxelus.energycontrol.tileentities.TileEntityRemoteThermalMonitor;
 import com.zuxelus.zlib.gui.GuiContainerBase;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public class GuiRemoteThermalMonitor extends GuiContainerBase<ContainerRemoteThermalMonitor> {
-	private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/gui_remote_thermo.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/gui_remote_thermo.png");
 
 	private TileEntityRemoteThermalMonitor te;
 	private EditBox textboxHeat;
@@ -50,9 +49,9 @@ public class GuiRemoteThermalMonitor extends GuiContainerBase<ContainerRemoteThe
 	}
 
 	@Override
-	public void extractRenderState(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY, float partialTicks) {
-		super.extractRenderState(matrixStack, mouseX, mouseY, partialTicks);
-		textboxHeat.extractRenderState(matrixStack, mouseX, mouseY, partialTicks);
+	public void render(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
+		super.render(matrixStack, mouseX, mouseY, partialTicks);
+		textboxHeat.render(matrixStack, mouseX, mouseY, partialTicks);
 	}
 
 	@SuppressWarnings("resource")
@@ -79,17 +78,16 @@ public class GuiRemoteThermalMonitor extends GuiContainerBase<ContainerRemoteThe
 
 	// Enter applies the heat level, the other keys go to the focused field through GuiContainerBase
 	@Override
-	public boolean keyPressed(KeyEvent event) {
-		int keyCode = event.key();
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (textboxHeat.isFocused() && (keyCode == InputConstants.KEY_RETURN || keyCode == InputConstants.KEY_NUMPADENTER)) {
 			updateHeat(0);
 			return true;
 		}
-		return super.keyPressed(event);
+		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 
 	@Override
-	protected void extractLabels(GuiGraphicsExtractor matrixStack, int mouseX, int mouseY) {
+	protected void renderLabels(GuiGraphics matrixStack, int mouseX, int mouseY) {
 		drawCenteredText(matrixStack, title, imageWidth, 6);
 		drawLeftAlignedText(matrixStack, I18n.get("container.inventory"), 8, (imageHeight - 96) + 2);
 	}

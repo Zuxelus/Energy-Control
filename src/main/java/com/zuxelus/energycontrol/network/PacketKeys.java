@@ -6,11 +6,11 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record PacketKeys(boolean altPressed) implements CustomPacketPayload {
-	public static final CustomPacketPayload.Type<PacketKeys> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(EnergyControl.MODID, "keys"));
+	public static final CustomPacketPayload.Type<PacketKeys> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "keys"));
 	public static final StreamCodec<RegistryFriendlyByteBuf, PacketKeys> STREAM_CODEC = StreamCodec.composite(
 			ByteBufCodecs.BOOL, PacketKeys::altPressed,
 			PacketKeys::new);

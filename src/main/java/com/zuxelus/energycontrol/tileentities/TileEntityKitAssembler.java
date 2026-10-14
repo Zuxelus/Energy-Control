@@ -14,6 +14,7 @@ import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -28,12 +29,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.energy.EnergyHandler;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 
 public class TileEntityKitAssembler extends TileEntityInventory implements MenuProvider, ITilePacketHandler, ISlotItemFilter, IEnergyBlockEntity {
 	public static final byte SLOT_INFO = 0;
@@ -108,12 +105,12 @@ public class TileEntityKitAssembler extends TileEntityInventory implements MenuP
 	public void onServerMessageReceived(CompoundTag tag) {
 		if (!tag.contains("type"))
 			return;
-		switch (tag.getIntOr("type", 0)) {
+		switch (tag.getInt("type")) {
 		case 4:
 			if (tag.contains("slot") && tag.contains("title")) {
-				ItemStack itemStack = getItem(tag.getIntOr("slot", 0));
+				ItemStack itemStack = getItem(tag.getInt("slot"));
 				if (ItemCardMain.isCard(itemStack))
-					new ItemCardReader(itemStack).setTitle(tag.getStringOr("title", ""));
+					new ItemCardReader(itemStack).setTitle(tag.getString("title"));
 			}
 			break;
 		}
@@ -123,14 +120,14 @@ public class TileEntityKitAssembler extends TileEntityInventory implements MenuP
 	public void onClientMessageReceived(CompoundTag tag) {
 		if (!tag.contains("type"))
 			return;
-		switch (tag.getIntOr("type", 0)) {
+		switch (tag.getInt("type")) {
 		case 1:
 			if (tag.contains("energy") && tag.contains("production")) {
-				storage.setEnergy(tag.getIntOr("energy", 0));
-				production = tag.getDoubleOr("production", 0.0);
+				storage.setEnergy(tag.getInt("energy"));
+				production = tag.getDouble("production");
 			}
 			if (tag.contains("time"))
-				recipeTime = tag.getIntOr("time", 0);
+				recipeTime = tag.getInt("time");
 			else
 				recipeTime = 0;
 			break;
@@ -138,23 +135,24 @@ public class TileEntityKitAssembler extends TileEntityInventory implements MenuP
 	}
 
 	@Override
-	protected void writeUpdateData(ValueOutput tag) {
+	protected void writeUpdateData(CompoundTag tag, HolderLookup.Provider registries) {
 		updateActive();
 		tag.putBoolean("active", active);
 	}
 
 	@Override
-	protected void readProperties(ValueInput tag) {
-		super.readProperties(tag);
-		tag.getInt("energy").ifPresent(storage::setEnergy);
-		buffer = tag.getIntOr("buffer", buffer);
-		production = tag.getDoubleOr("production", production);
-		active = tag.getBooleanOr("active", active);
+	protected void readProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.readProperties(tag, registries);
+		if (tag.contains("energy"))
+			storage.setEnergy(tag.getInt("energy"));
+		buffer = (tag.contains("buffer") ? tag.getInt("buffer") : buffer);
+		production = (tag.contains("production") ? tag.getDouble("production") : production);
+		active = (tag.contains("active") ? tag.getBoolean("active") : active);
 	}
 
 	@Override
-	protected void writeProperties(ValueOutput tag) {
-		super.writeProperties(tag);
+	protected void writeProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.writeProperties(tag, registries);
 		tag.putInt("energy", storage.getEnergyStored());
 		tag.putInt("buffer", buffer);
 		tag.putDouble("production", production);
@@ -203,7 +201,7 @@ public class TileEntityKitAssembler extends TileEntityInventory implements MenuP
 				if (result.isEmpty())
 					setItem(SLOT_RESULT, recipe.getOutput());
 				else
-					result.grow(recipe.output.count());
+					result.grow(recipe.output.getCount());
 				production = 0;
 				updateState();
 			}
@@ -230,13 +228,9 @@ public class TileEntityKitAssembler extends TileEntityInventory implements MenuP
 			setItem(slot, new ItemStack(Items.BUCKET));
 			return;
 		}
-		EnergyHandler stackStorage = getStackEnergyStorage(stack);
+		IEnergyStorage stackStorage = getStackEnergyStorage(stack);
 		if (stackStorage != null) {
-			int extracted;
-			try (Transaction tx = Transaction.openRoot()) {
-				extracted = stackStorage.extract(needed, tx);
-				tx.commit();
-			}
+			int extracted = stackStorage.extractEnergy(needed, false);
 			if (storage.receiveEnergy(extracted, false) > 0)
 				active = true;
 		} else if (CrossModLoader.isElectricItem(stack)) {
@@ -247,10 +241,10 @@ public class TileEntityKitAssembler extends TileEntityInventory implements MenuP
 		}
 	}
 
-	private EnergyHandler getStackEnergyStorage(ItemStack stack) { // forge only
+	private IEnergyStorage getStackEnergyStorage(ItemStack stack) { // forge only
 		if (stack.isEmpty())
 			return null;
-		return ItemAccess.forStack(stack).getCapability(Capabilities.Energy.ITEM);
+		return stack.getCapability(Capabilities.EnergyStorage.ITEM);
 	}
 
 	public void notifyBlockUpdate() {
@@ -384,7 +378,7 @@ public class TileEntityKitAssembler extends TileEntityInventory implements MenuP
 		return 0;
 	}
 
-	public EnergyHandler getEnergyHandler(Direction side) {
+	public IEnergyStorage getEnergyHandler(Direction side) {
 		return storage;
 	}
 

@@ -1,23 +1,19 @@
 package com.zuxelus.energycontrol.recipes;
 
-import java.util.List;
-
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
 
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeBookCategories;
-import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -26,7 +22,7 @@ import net.minecraft.world.level.Level;
 public class KitAssemblerRecipe implements Recipe<RecipeInput> {
 	public record CountedIngredient(Ingredient ingredient, int count) {
 		public static final Codec<CountedIngredient> CODEC = RecordCodecBuilder.create(i -> i.group(
-				Ingredient.CODEC.fieldOf("ingredient").forGetter(CountedIngredient::ingredient),
+				Ingredient.CODEC_NONEMPTY.fieldOf("ingredient").forGetter(CountedIngredient::ingredient),
 				Codec.INT.optionalFieldOf("count", 1).forGetter(CountedIngredient::count)
 			).apply(i, CountedIngredient::new));
 		public static final StreamCodec<RegistryFriendlyByteBuf, CountedIngredient> STREAM_CODEC = StreamCodec.composite(
@@ -39,17 +35,27 @@ public class KitAssemblerRecipe implements Recipe<RecipeInput> {
 			CountedIngredient.CODEC.fieldOf("input1").forGetter(o -> new CountedIngredient(o.input1, o.count1)),
 			CountedIngredient.CODEC.fieldOf("input2").forGetter(o -> new CountedIngredient(o.input2, o.count2)),
 			CountedIngredient.CODEC.fieldOf("input3").forGetter(o -> new CountedIngredient(o.input3, o.count3)),
-			ItemStackTemplate.CODEC.fieldOf("result").forGetter(o -> o.output),
+			ItemStack.STRICT_CODEC.fieldOf("result").forGetter(o -> o.output),
 			Codec.INT.optionalFieldOf("time", 300).forGetter(o -> o.time)
 		).apply(i, KitAssemblerRecipe::new));
 	public static final StreamCodec<RegistryFriendlyByteBuf, KitAssemblerRecipe> STREAM_CODEC = StreamCodec.composite(
 			CountedIngredient.STREAM_CODEC, o -> new CountedIngredient(o.input1, o.count1),
 			CountedIngredient.STREAM_CODEC, o -> new CountedIngredient(o.input2, o.count2),
 			CountedIngredient.STREAM_CODEC, o -> new CountedIngredient(o.input3, o.count3),
-			ItemStackTemplate.STREAM_CODEC, o -> o.output,
+			ItemStack.STREAM_CODEC, o -> o.output,
 			ByteBufCodecs.INT, o -> o.time,
 			KitAssemblerRecipe::new);
-	public static final RecipeSerializer<KitAssemblerRecipe> SERIALIZER = new RecipeSerializer<>(MAP_CODEC, STREAM_CODEC);
+	public static final RecipeSerializer<KitAssemblerRecipe> SERIALIZER = new RecipeSerializer<>() {
+		@Override
+		public MapCodec<KitAssemblerRecipe> codec() {
+			return MAP_CODEC;
+		}
+
+		@Override
+		public StreamCodec<RegistryFriendlyByteBuf, KitAssemblerRecipe> streamCodec() {
+			return STREAM_CODEC;
+		}
+	};
 
 	public final Ingredient input1;
 	public final Ingredient input2;
@@ -57,11 +63,10 @@ public class KitAssemblerRecipe implements Recipe<RecipeInput> {
 	public final int count1;
 	public final int count2;
 	public final int count3;
-	// since 26.1 recipes are loaded before item components exist, so results are templates
-	public final ItemStackTemplate output;
+	public final ItemStack output;
 	public final int time;
 
-	public KitAssemblerRecipe(CountedIngredient input1, CountedIngredient input2, CountedIngredient input3, ItemStackTemplate output, int time) {
+	public KitAssemblerRecipe(CountedIngredient input1, CountedIngredient input2, CountedIngredient input3, ItemStack output, int time) {
 		this.input1 = input1.ingredient();
 		this.count1 = input1.count();
 		this.input2 = input2.ingredient();
@@ -73,7 +78,7 @@ public class KitAssemblerRecipe implements Recipe<RecipeInput> {
 	}
 
 	public ItemStack getOutput() {
-		return output.create();
+		return output.copy();
 	}
 
 	public boolean isSuitable(TileEntityKitAssembler te) {
@@ -88,16 +93,17 @@ public class KitAssemblerRecipe implements Recipe<RecipeInput> {
 			return false;
 		ItemStack result = te.getItem(TileEntityKitAssembler.SLOT_RESULT);
 		if (!result.isEmpty()) {
-			if (!result.is(output.item()))
+			if (!ItemStack.isSameItemSameComponents(result, output))
 				return false;
-			if (result.getCount() + output.count() > result.getMaxStackSize())
+			if (result.getCount() + output.getCount() > result.getMaxStackSize())
 				return false;
 		}
 		return true;
 	}
 
-	public List<Ingredient> getIngredients() {
-		return List.of(input1, input2, input3);
+	@Override
+	public NonNullList<Ingredient> getIngredients() {
+		return NonNullList.of(Ingredient.EMPTY, input1, input2, input3);
 	}
 
 	@Override
@@ -116,24 +122,23 @@ public class KitAssemblerRecipe implements Recipe<RecipeInput> {
 	}
 
 	@Override
-	public String group() {
+	public String getGroup() {
 		return "";
 	}
 
 	@Override
-	public ItemStack assemble(RecipeInput inv) {
+	public ItemStack assemble(RecipeInput inv, HolderLookup.Provider registries) {
 		return getOutput();
 	}
 
-	// the kit assembler is not a recipe book block
 	@Override
-	public PlacementInfo placementInfo() {
-		return PlacementInfo.NOT_PLACEABLE;
+	public boolean canCraftInDimensions(int width, int height) {
+		return true;
 	}
 
 	@Override
-	public RecipeBookCategory recipeBookCategory() {
-		return RecipeBookCategories.CRAFTING_MISC;
+	public ItemStack getResultItem(HolderLookup.Provider registries) {
+		return ItemStack.EMPTY;
 	}
 
 	@Override

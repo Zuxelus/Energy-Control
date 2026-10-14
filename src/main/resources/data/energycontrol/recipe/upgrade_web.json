@@ -7,8 +7,12 @@
     " U "
   ],
   "key": {
-    "U": "energycontrol:upgrade_range",
-    "C": "#c:circuits/advanced"
+    "U": {
+      "item": "energycontrol:upgrade_range"
+    },
+    "C": {
+      "tag": "c:circuits/advanced"
+    }
   },
   "result": {
     "id": "energycontrol:upgrade_web"

@@ -1,11 +1,14 @@
 package com.zuxelus.energycontrol.blocks;
 
+import com.mojang.serialization.MapCodec;
+
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityHoloPanelExtender;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -19,6 +22,11 @@ public class HoloPanelExtender extends HoloPanel {
 
 	public HoloPanelExtender(Block.Properties properties) {
 		super(properties);
+	}
+
+	@Override
+	protected MapCodec<? extends BaseEntityBlock> codec() {
+		return simpleCodec(HoloPanelExtender::new);
 	}
 
 	@Override

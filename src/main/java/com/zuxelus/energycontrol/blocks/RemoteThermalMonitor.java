@@ -1,5 +1,7 @@
 package com.zuxelus.energycontrol.blocks;
 
+import com.mojang.serialization.MapCodec;
+
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityRemoteThermalMonitor;
 import com.zuxelus.energycontrol.tileentities.TileEntityThermalMonitor;
@@ -8,6 +10,7 @@ import com.zuxelus.zlib.blocks.FacingBlock;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -23,6 +26,11 @@ public class RemoteThermalMonitor extends FacingHorizontal {
 
 	public RemoteThermalMonitor(Block.Properties properties) {
 		super(FacingBlock.metal(properties));
+	}
+
+	@Override
+	protected MapCodec<? extends BaseEntityBlock> codec() {
+		return simpleCodec(RemoteThermalMonitor::new);
 	}
 
 	@Override

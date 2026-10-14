@@ -7,10 +7,18 @@
     " R "
   ],
   "key": {
-    "I": "#c:ingots/iron",
-    "R": "#c:dusts/redstone",
-    "C": "minecraft:clock",
-    "B": "#c:circuits/basic"
+    "I": {
+      "tag": "c:ingots/iron"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    },
+    "C": {
+      "item": "minecraft:clock"
+    },
+    "B": {
+      "tag": "c:circuits/basic"
+    }
   },
   "result": {
     "id": "energycontrol:timer"

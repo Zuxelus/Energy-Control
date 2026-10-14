@@ -2,58 +2,52 @@ package com.zuxelus.energycontrol.renderers;
 
 import java.util.function.Function;
 
-import com.mojang.renderpearl.api.pipeline.BlendFunction;
-import com.mojang.renderpearl.api.pipeline.ColorTargetState;
-import com.mojang.renderpearl.api.pipeline.CompareOp;
-import com.mojang.renderpearl.api.pipeline.DepthStencilState;
-import com.mojang.renderpearl.api.pipeline.RenderPipeline;
-import com.zuxelus.energycontrol.EnergyControl;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
 
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.rendertype.RenderSetup;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.Util;
-import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
+import net.minecraft.Util;
+import net.minecraft.client.renderer.RenderStateShard;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 
 // Render types for things drawn on top of a screen (images, bars, holo background).
-// They use the world text pipeline with polygon offset, so they are drawn over the screen face without z-fighting
+// They use the text shaders with polygon offset, so they are drawn over the screen face without z-fighting
 public final class ModRenderTypes {
-	public static final Identifier WHITE = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "textures/misc/white.png");
+	private static final Function<ResourceLocation, RenderType> SCREEN_IMAGE = Util.memoize(texture -> RenderType.create("energycontrol_screen_image",
+			DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, false, true,
+			RenderType.CompositeState.builder().setShaderState(RenderStateShard.RENDERTYPE_TEXT_SHADER)
+			.setTextureState(new RenderStateShard.TextureStateShard(texture, false, false))
+			.setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY).setCullState(RenderStateShard.NO_CULL)
+			.setLightmapState(RenderStateShard.LIGHTMAP).setLayeringState(RenderStateShard.POLYGON_OFFSET_LAYERING).createCompositeState(false)));
 
-	// like TEXT_POLYGON_OFFSET, but without depth write: translucent features are drawn before water and other
-	// translucent terrain, so a depth-writing holo background would hide everything translucent behind it
-	public static final RenderPipeline HOLO_PIPELINE = RenderPipeline.builder(RenderPipelines.WORLD_TEXT_SNIPPET)
-			.withLocation(Identifier.fromNamespaceAndPath(EnergyControl.MODID, "pipeline/holo_background"))
-			.withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
-			.withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, false, 1.0F, 10.0F))
-			.build();
+	private static final RenderType SCREEN_COLOR = RenderType.create("energycontrol_screen_color",
+			DefaultVertexFormat.POSITION_COLOR_LIGHTMAP, VertexFormat.Mode.QUADS, 256, false, true,
+			RenderType.CompositeState.builder().setShaderState(RenderStateShard.RENDERTYPE_TEXT_BACKGROUND_SHADER)
+			.setTextureState(RenderStateShard.NO_TEXTURE)
+			.setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY).setCullState(RenderStateShard.NO_CULL)
+			.setLightmapState(RenderStateShard.LIGHTMAP).setLayeringState(RenderStateShard.POLYGON_OFFSET_LAYERING).createCompositeState(false));
 
-	private static final Function<Identifier, RenderType> SCREEN_IMAGE = Util.memoize(texture -> RenderType.create("energycontrol_screen_image",
-			RenderSetup.builder(RenderPipelines.TEXT_POLYGON_OFFSET).setOitPipelines(RenderPipelines.OIT_TEXT_POLYGON_OFFSET)
-			.withTexture("Sampler0", texture).useLightmap().sortOnUpload().createRenderSetup()));
-
+	// back-face culled and without depth write: a depth-writing holo background would hide translucent terrain behind it
 	private static final RenderType HOLO_COLOR = RenderType.create("energycontrol_holo_color",
-			RenderSetup.builder(HOLO_PIPELINE).setOitPipelines(RenderPipelines.OIT_TEXT_POLYGON_OFFSET)
-			.withTexture("Sampler0", WHITE).useLightmap().sortOnUpload().createRenderSetup());
+			DefaultVertexFormat.POSITION_COLOR_LIGHTMAP, VertexFormat.Mode.QUADS, 256, false, true,
+			RenderType.CompositeState.builder().setShaderState(RenderStateShard.RENDERTYPE_TEXT_BACKGROUND_SHADER)
+			.setTextureState(RenderStateShard.NO_TEXTURE)
+			.setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY).setWriteMaskState(RenderStateShard.COLOR_WRITE)
+			.setLightmapState(RenderStateShard.LIGHTMAP).setLayeringState(RenderStateShard.POLYGON_OFFSET_LAYERING).createCompositeState(false));
 
 	private ModRenderTypes() { }
 
-	public static void registerPipelines(RegisterRenderPipelinesEvent event) {
-		event.registerPipeline(HOLO_PIPELINE);
-	}
-
 	// POSITION_COLOR_TEX_LIGHTMAP
-	public static RenderType screenImage(Identifier texture) {
+	public static RenderType screenImage(ResourceLocation texture) {
 		return SCREEN_IMAGE.apply(texture);
 	}
 
-	// POSITION_COLOR_TEX_LIGHTMAP, use uv inside 0..1
+	// POSITION_COLOR_LIGHTMAP
 	public static RenderType screenColor() {
-		return SCREEN_IMAGE.apply(WHITE);
+		return SCREEN_COLOR;
 	}
 
-	// POSITION_COLOR_TEX_LIGHTMAP, use uv inside 0..1; doesn't write depth
+	// POSITION_COLOR_LIGHTMAP; doesn't write depth
 	public static RenderType holoColor() {
 		return HOLO_COLOR;
 	}
