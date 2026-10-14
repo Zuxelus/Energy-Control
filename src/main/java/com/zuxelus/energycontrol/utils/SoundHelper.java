@@ -1,68 +1,79 @@
 package com.zuxelus.energycontrol.utils;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.Reader;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonWriter;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.config.ConfigHandler;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.PackLocationInfo;
+import net.minecraft.server.packs.PackMetadataResources;
+import net.minecraft.server.packs.PackResources;
+import net.minecraft.server.packs.PackSelectionConfig;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.PackSource;
+import net.minecraft.server.packs.repository.RepositorySource;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.neoforged.neoforge.event.AddPackFindersEvent;
 
-public class SoundHelper {
+public class SoundHelper implements RepositorySource {
+	private static final SoundHelper INSTANCE = new SoundHelper();
+	private static File alarms;
+
+	private SoundHelper() {}
+
 	// available alarms are read by the client reload listener (see ClientProxy), here only the custom pack folder is created
-	public static void initSoundPack(File configFolder) {
-		if (configFolder == null || !ConfigHandler.USE_CUSTOM_SOUNDS.get())
+	public static void initSoundPack(File gameFolder) {
+		if (gameFolder == null || !ConfigHandler.USE_CUSTOM_SOUNDS.get())
 			return;
 
-		if (SoundLoader.alarms == null)
-			SoundLoader.alarms = new File(configFolder, "alarms");
-		File audioLoc = new File(SoundLoader.alarms, "assets" + File.separator + EnergyControl.MODID + File.separator + "sounds");
+		// the sound files alarm-NAME.ogg are put into this folder, see AlarmFolderPack
+		if (alarms == null)
+			alarms = new File(gameFolder, "alarms");
+		if (!alarms.exists())
+			alarms.mkdirs();
+	}
 
-		if (!SoundLoader.alarms.exists()) {
-			try {
-				SoundLoader.alarms.mkdir();
-				audioLoc.mkdirs();
-				createSoundsJson();
-				createPackMeta();
-			} catch (IOException e) {
-				e.printStackTrace();
+	public static void locatePacks(AddPackFindersEvent event) {
+		if (event.getPackType() == PackType.CLIENT_RESOURCES)
+			event.addRepositorySource(INSTANCE);
+	}
+
+	@Override
+	public void loadPacks(Consumer<Pack> packs) { // client
+		alarms = new File(Minecraft.getInstance().gameDirectory, "alarms");
+		if (!alarms.exists())
+			return;
+		Path folder = alarms.toPath();
+		PackLocationInfo location = new PackLocationInfo(EnergyControl.MODID + "_alarms", Component.translatable("resourcePack.energycontrol"), PackSource.DEFAULT, Optional.empty());
+		Pack.ResourcesSupplier resources = new Pack.ResourcesSupplier() {
+			@Override
+			public PackMetadataResources openMetadata(PackLocationInfo info) {
+				return new AlarmFolderPack(info, folder);
 			}
-		}
-	}
 
-	private static void createSoundsJson() throws IOException {
-		JsonWriter writer = new JsonWriter(new FileWriter(SoundLoader.alarms.getAbsolutePath() + File.separator + "assets" + File.separator + EnergyControl.MODID + File.separator + "sounds.json"));
-		writer.beginObject();
-		writer.name("_comment").value("EXAMPLE 'alarm-name': {'category': 'master','sounds': [{'name': 'energycontrol:alarm-name','stream': true}]}");
-		writer.endObject();
-		writer.close();
-	}
-
-	private static void createPackMeta() throws IOException {
-		JsonWriter writer = new JsonWriter(new FileWriter(SoundLoader.alarms.getAbsolutePath() + File.separator + "pack.mcmeta"));
-		writer.beginObject();
-		writer.name("pack");
-		writer.beginObject();
-		writer.name("description").value("Energy Control custom alarms");
-		writer.name("min_format").value(97); // for 26.3
-		writer.name("max_format").value(97);
-		writer.endObject();
-		writer.endObject();
-		writer.close();
-	}
-
-	public static void importSound() {
-		importSound(Minecraft.getInstance().getResourceManager());
+			@Override
+			public Stream<PackResources> openResources(PackLocationInfo info, Pack.Metadata metadata) {
+				return Stream.of(new AlarmFolderPack(info, folder));
+			}
+		};
+		// required: the pack is always enabled, there is nothing to switch on in the resource pack screen
+		Pack pack = Pack.readMetaAndCreate(location, resources, PackType.CLIENT_RESOURCES, new PackSelectionConfig(true, Pack.Position.BOTTOM, false));
+		if (pack != null)
+			packs.accept(pack);
 	}
 
 	// called on every client resource reload, so alarms from resource packs are picked up

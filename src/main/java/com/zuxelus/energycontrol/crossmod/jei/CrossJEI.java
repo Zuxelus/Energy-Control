@@ -80,6 +80,9 @@ public class CrossJEI implements IModPlugin {
 		registerItem(registry, ModItems.card_liquid.get(), "ec.jei.cards");
 		registerItem(registry, ModItems.card_redstone.get(), "ec.jei.cards");
 		registerItem(registry, ModItems.card_toggle.get(), "ec.jei.cards");
+
+		registerItem(registry, ModItems.card_holder.get(), "ec.jei.itemCardHolder");
+		registerItem(registry, ModItems.portable_panel.get(), "ec.jei.itemPortablePanel");
 	}
 
 	private void registerItem(IRecipeRegistration registry, ItemLike item, String name) {

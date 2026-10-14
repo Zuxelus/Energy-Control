@@ -9,7 +9,6 @@ import com.zuxelus.energycontrol.network.PacketAlarm;
 import com.zuxelus.energycontrol.network.PacketCard;
 import com.zuxelus.energycontrol.renderers.*;
 import com.zuxelus.energycontrol.utils.SoundHelper;
-import com.zuxelus.energycontrol.utils.SoundLoader;
 import com.zuxelus.zlib.network.PacketTileEntity;
 
 import net.minecraft.client.Minecraft;
@@ -38,7 +37,7 @@ public class ClientProxy {
 		modEventBus.addListener(ClientProxy::registerRenders);
 		modEventBus.addListener(ModRenderTypes::registerPipelines);
 		modEventBus.addListener(ClientProxy::registerPayloadHandlers);
-		modEventBus.addListener(SoundLoader::locatePacks);
+		modEventBus.addListener(SoundHelper::locatePacks);
 		modEventBus.addListener(ClientProxy::registerReloadListeners);
 		modEventBus.addListener(ClientProxy::registerBlockStateModels);
 	}
