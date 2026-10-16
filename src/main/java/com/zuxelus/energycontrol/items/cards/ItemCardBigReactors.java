@@ -25,12 +25,12 @@ public class ItemCardBigReactors extends ItemCardMain {
 	private static final DecimalFormat df = new DecimalFormat("0.0");
 
 	@Override
-	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
+	public CardState update(Level level, ICardReader reader, int range, BlockPos pos) {
 		BlockPos target = reader.getTarget();
 		if (target == null)
 			return CardState.NO_TARGET;
 
-		BlockEntity te = world.getBlockEntity(target);
+		BlockEntity te = level.getBlockEntity(target);
 		CompoundTag tag = CrossModLoader.getCrossMod(ModIDs.BIG_REACTORS).getCardData(te);
 		if (tag == null)
 			tag = CrossModLoader.getCrossMod(ModIDs.BIGGER_REACTORS).getCardData(te);
@@ -42,7 +42,7 @@ public class ItemCardBigReactors extends ItemCardMain {
 	}
 
 	@Override
-	public List<PanelString> getStringData(Level world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(Level level, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		switch (reader.getInt("type")) {
 		case 1:

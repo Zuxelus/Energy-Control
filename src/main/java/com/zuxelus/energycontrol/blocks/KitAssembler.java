@@ -11,14 +11,13 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class KitAssembler extends FacingHorizontalActive {
 
-	public KitAssembler(Block.Properties properties) {
+	public KitAssembler(Properties properties) {
 		super(FacingBlock.metal(properties));
 	}
 
@@ -28,11 +27,11 @@ public class KitAssembler extends FacingHorizontalActive {
 	}
 
 	@Override
-	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		BlockEntity te = world.getBlockEntity(pos);
+	protected InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		BlockEntity te = level.getBlockEntity(pos);
 		if (!(te instanceof TileEntityKitAssembler))
 			return InteractionResult.PASS;
-		if (!world.isClientSide())
+		if (!level.isClientSide())
 			player.openMenu((TileEntityKitAssembler) te, buf -> buf.writeBlockPos(pos));
 		return InteractionResult.SUCCESS;
 	}

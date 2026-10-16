@@ -1,30 +1,19 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import com.zuxelus.energycontrol.api.IItemCard;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.api.CardState;
-import com.zuxelus.energycontrol.api.ICardReader;
-import com.zuxelus.energycontrol.api.ItemStackHelper;
-import com.zuxelus.energycontrol.api.PanelString;
+import com.zuxelus.energycontrol.api.*;
 import com.zuxelus.energycontrol.network.ChannelHandler;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.locale.Language;
-import net.minecraft.nbt.ByteTag;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.DoubleTag;
-import net.minecraft.nbt.IntTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.LongTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -45,9 +34,9 @@ public class ItemCardReader implements ICardReader {
 	@Override
 	public BlockPos getTarget() {
 		CompoundTag tag = tag();
-		if (!tag.contains("x") || !tag.contains("y") || !tag.contains("z"))
+		if (!(tag.get("x") instanceof IntTag x) || !(tag.get("y") instanceof IntTag y) || !(tag.get("z") instanceof IntTag z))
 			return null;
-		return new BlockPos(tag.getIntOr("x", 0), tag.getIntOr("y", 0), tag.getIntOr("z", 0));
+		return new BlockPos(x.intValue(), y.intValue(), z.intValue());
 	}
 
 	@Override
@@ -244,17 +233,17 @@ public class ItemCardReader implements ICardReader {
 	}
 
 	public static List<PanelString> getStateMessage(CardState state) {
-		List<PanelString> result = new LinkedList<>();
+		List<PanelString> result = new LinkedList<PanelString>();
 		PanelString line = new PanelString();
 		switch (state) {
 		case OUT_OF_RANGE:
-			line.textCenter = Language.getInstance().getOrDefault("msg.ec.InfoPanelOutOfRange");
+			line.textCenter = I18n.get("msg.ec.InfoPanelOutOfRange");
 			break;
 		case INVALID_CARD:
-			line.textCenter = Language.getInstance().getOrDefault("msg.ec.InfoPanelInvalidCard");
+			line.textCenter = I18n.get("msg.ec.InfoPanelInvalidCard");
 			break;
 		case NO_TARGET:
-			line.textCenter = Language.getInstance().getOrDefault("msg.ec.InfoPanelNoTarget");
+			line.textCenter = I18n.get("msg.ec.InfoPanelNoTarget");
 			break;
 		case CUSTOM_ERROR:
 			break;
@@ -269,7 +258,7 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public List<PanelString> getTitleList() {
-		List<PanelString> result = new LinkedList<>();
+		List<PanelString> result = new LinkedList<PanelString>();
 		String title = getTitle();
 		if (title != null && !title.isEmpty()) {
 			PanelString titleString = new PanelString();
@@ -279,8 +268,8 @@ public class ItemCardReader implements ICardReader {
 		return result;
 	}
 
-	public List<PanelString> getStringData(Level world, int settings, boolean isServer, boolean showLabels) {
-		return ((IItemCard) card.getItem()).getStringData(world, settings, this, isServer, showLabels);
+	public List<PanelString> getStringData(Level level, int settings, boolean isServer, boolean showLabels) {
+		return ((IItemCard) card.getItem()).getStringData(level, settings, this, isServer, showLabels);
 	}
 
 	public List<PanelString> getAllData() {
@@ -290,26 +279,26 @@ public class ItemCardReader implements ICardReader {
 		CompoundTag nbt = tag();
 		List<PanelString> result = new LinkedList<PanelString>();
 
-		if (nbt.get("title") instanceof StringTag) {
-			String title = nbt.getStringOr("title", "");
-			if (!title.equals(""))
+		if (nbt.get("title") instanceof StringTag titleTag) {
+			String title = titleTag.value();
+			if (!title.isEmpty())
 				result.add(new PanelString(String.format("title : %s", title)));
 			nbt.remove("title");
 		}
-		if (nbt.get("x") instanceof IntTag && nbt.get("y") instanceof IntTag && nbt.get("z") instanceof IntTag) {
-			result.add(new PanelString(String.format("xyz : %s %s %s", nbt.getIntOr("x", 0), nbt.getIntOr("y", 0), nbt.getIntOr("z", 0))));
+		if (nbt.get("x") instanceof IntTag x && nbt.get("y") instanceof IntTag y && nbt.get("z") instanceof IntTag z) {
+			result.add(new PanelString(String.format("xyz : %s %s %s", x.intValue(), y.intValue(), z.intValue())));
 			nbt.remove("x");
 			nbt.remove("y");
 			nbt.remove("z");
 		}
-		if (nbt.get("cardCount") instanceof IntTag) {
-			int count = nbt.getIntOr("cardCount", 0);
+		if (nbt.get("cardCount") instanceof IntTag countTag) {
+			int count = countTag.intValue();
 			result.add(new PanelString(String.format("cardCount : %s", count)));
 			nbt.remove("cardCount");
 			for (int i = 0; i < count; i++) {
 				String[] value = { String.format("_%dx", i), String.format("_%dy", i), String.format("_%dz", i) };
-				if (nbt.get(value[0]) instanceof IntTag && nbt.get(value[1]) instanceof IntTag && nbt.get(value[2]) instanceof IntTag) {
-					result.add(new PanelString(String.format("_%dxyz : %s %s %s", i, nbt.getIntOr(value[0], 0), nbt.getIntOr(value[1], 0), nbt.getIntOr(value[2], 0))));
+				if (nbt.get(value[0]) instanceof IntTag cx && nbt.get(value[1]) instanceof IntTag cy && nbt.get(value[2]) instanceof IntTag cz) {
+					result.add(new PanelString(String.format("_%dxyz : %s %s %s", i, cx.intValue(), cy.intValue(), cz.intValue())));
 					nbt.remove(value[0]);
 					nbt.remove(value[1]);
 					nbt.remove(value[2]);

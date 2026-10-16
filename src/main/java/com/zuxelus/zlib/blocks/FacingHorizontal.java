@@ -47,19 +47,19 @@ public abstract class FacingHorizontal extends BaseEntityBlock {
 		return be;
 	}
 
-	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	protected InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		return InteractionResult.PASS;
 	}
 
 	@Override
-	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		InteractionResult result = onUse(state, world, pos, player, hand, hit);
+	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		InteractionResult result = onUse(state, level, pos, player, hand, hit);
 		return result == InteractionResult.PASS ? InteractionResult.TRY_WITH_EMPTY_HAND : result;
 	}
 
 	@Override
-	protected InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
-		return onUse(state, world, pos, player, InteractionHand.MAIN_HAND, hit);
+	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+		return onUse(state, level, pos, player, InteractionHand.MAIN_HAND, hit);
 	}
 
 	@Override

@@ -30,14 +30,14 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 	}
 
 	@Override
-	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
+	public CardState update(Level level, ICardReader reader, int range, BlockPos pos) {
 		BlockPos target = reader.getTarget();
 		if (target == null) {
 			reader.reset();
 			return CardState.NO_TARGET;
 		}
 
-		List<FluidInfo> list = CrossModLoader.getAllTanks(world, target);
+		List<FluidInfo> list = CrossModLoader.getAllTanks(level, target);
 		if (list == null || list.size() < 1) {
 			reader.reset();
 			return CardState.NO_TARGET;
@@ -49,7 +49,7 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 	}
 
 	@Override
-	public List<PanelString> getStringData(Level world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(Level level, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		long capacity = reader.getLong("capacity");
 		long amount = reader.getLong("amount");

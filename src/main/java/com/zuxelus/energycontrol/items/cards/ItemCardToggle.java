@@ -38,12 +38,12 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 	private static final Identifier TEXTURE_OFF = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/grey.png");
 
 	@Override
-	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
+	public CardState update(Level level, ICardReader reader, int range, BlockPos pos) {
 		BlockPos target = reader.getTarget();
 		if (target == null)
 			return CardState.NO_TARGET;
 
-		BlockState state = world.getBlockState(target);
+		BlockState state = level.getBlockState(target);
 		Block block = state.getBlock();
 		if (block == Blocks.LEVER || block instanceof ButtonBlock) {
 			reader.setBoolean("value", state.getValue(POWERED));
@@ -53,7 +53,7 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 	}
 
 	@Override
-	public List<PanelString> getStringData(Level world, int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(Level level, int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		PanelString line = new PanelString();
 		line.textCenter = "o";
@@ -73,24 +73,24 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 	}
 
 	@Override
-	public boolean runTouchAction(Level world, ICardReader reader, ItemStack stack) {
+	public boolean runTouchAction(Level level, ICardReader reader, ItemStack stack) {
 		BlockPos pos = reader.getTarget();
 		if (pos == null)
 			return false;
 
-		BlockState state = world.getBlockState(pos);
+		BlockState state = level.getBlockState(pos);
 		Block block = state.getBlock();
 		if (block == Blocks.LEVER) {
 			state = state.cycle(POWERED);
-			world.setBlock(pos, state, 3);
-			world.updateNeighborsAt(pos, block);
-			world.updateNeighborsAt(pos.relative(getFacing(state).getOpposite()), block);
+			level.setBlock(pos, state, 3);
+			level.updateNeighborsAt(pos, block);
+			level.updateNeighborsAt(pos.relative(getFacing(state).getOpposite()), block);
 		}
 		if (block instanceof ButtonBlock) {
-			world.setBlock(pos, state.setValue(POWERED, Boolean.valueOf(true)), 3);
-			world.updateNeighborsAt(pos, block);
-			world.updateNeighborsAt(pos.relative(getFacing(state).getOpposite()), block);
-			world.scheduleTick(pos, block, block.equals(Blocks.STONE_BUTTON) ? 20 : 30);
+			level.setBlock(pos, state.setValue(POWERED, Boolean.valueOf(true)), 3);
+			level.updateNeighborsAt(pos, block);
+			level.updateNeighborsAt(pos.relative(getFacing(state).getOpposite()), block);
+			level.scheduleTick(pos, block, block.equals(Blocks.STONE_BUTTON) ? 20 : 30);
 		}
 		return false;
 	}

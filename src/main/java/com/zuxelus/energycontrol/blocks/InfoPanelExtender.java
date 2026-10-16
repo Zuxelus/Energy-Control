@@ -12,7 +12,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -20,7 +19,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 public class InfoPanelExtender extends FacingBlockActive {
 
-	public InfoPanelExtender(Block.Properties properties) {
+	public InfoPanelExtender(Properties properties) {
 		super(metal(properties).lightLevel(state -> state.getValue(ACTIVE) ? 10 : 0));
 	}
 
@@ -30,10 +29,10 @@ public class InfoPanelExtender extends FacingBlockActive {
 	}
 
 	@Override
-	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		if (world.isClientSide())
+	protected InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		if (level.isClientSide())
 			return InteractionResult.PASS;
-		BlockEntity te = world.getBlockEntity(pos);
+		BlockEntity te = level.getBlockEntity(pos);
 		if (!(te instanceof TileEntityInfoPanelExtender))
 			return InteractionResult.PASS;
 		TileEntityInfoPanel panel = ((TileEntityInfoPanelExtender) te).getCore();

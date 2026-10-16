@@ -60,7 +60,6 @@ public class KitAssemblerTransferHandler implements IRecipeTransferHandler<Conta
 	}
 
 	@Override
-	@SuppressWarnings("removal") // the replacement is a default method that calls this one
 	public @Nullable IRecipeTransferError transferRecipe(ContainerKitAssembler menu, KitAssemblerRecipe recipe, IRecipeSlotsView slots, Player player, boolean maxTransfer, boolean doTransfer) {
 		int[] counts = { recipe.count1, recipe.count2, recipe.count3 };
 		List<IRecipeSlotView> inputs = slots.getSlotViews(RecipeIngredientRole.INPUT);

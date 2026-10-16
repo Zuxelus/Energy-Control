@@ -20,8 +20,8 @@ public class ItemKitLiquid extends ItemKitMain {
 	}
 
 	@Override
-	public ItemStack getSensorCard(ItemStack stack, Player player, Level world, BlockPos pos, Direction side) {
-		List<FluidInfo> list = CrossModLoader.getAllTanks(world, pos);
+	public ItemStack getSensorCard(ItemStack stack, Player player, Level level, BlockPos pos, Direction side) {
+		List<FluidInfo> list = CrossModLoader.getAllTanks(level, pos);
 		if (list != null && list.size() >= 1) {
 			ItemStack card = new ItemStack(ModItems.card_liquid.get());
 			ItemStackHelper.setCoordinates(card, pos);

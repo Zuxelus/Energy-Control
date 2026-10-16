@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
@@ -20,15 +20,11 @@ public final class RenderHelper {
 
 	/** a (translucent) coloured quad, not affected by light */
 	public static void fillRect(PoseStack matrixStack, SubmitNodeCollector collector, float left, float top, float right, float bottom, float z, int color) {
-		fillRect(matrixStack, collector, ModRenderTypes.screenColor(), left, top, right, bottom, z, color);
-	}
-
-	public static void fillRect(PoseStack matrixStack, SubmitNodeCollector collector, RenderType renderType, float left, float top, float right, float bottom, float z, int color) {
-		collector.submitCustomGeometry(matrixStack, renderType, (pose, buffer) -> {
-			buffer.addVertex(pose, right, top, z).setColor(color).setUv(1, 0).setLight(LightCoordsUtil.FULL_BRIGHT);
-			buffer.addVertex(pose, left, top, z).setColor(color).setUv(0, 0).setLight(LightCoordsUtil.FULL_BRIGHT);
-			buffer.addVertex(pose, left, bottom, z).setColor(color).setUv(0, 1).setLight(LightCoordsUtil.FULL_BRIGHT);
-			buffer.addVertex(pose, right, bottom, z).setColor(color).setUv(1, 1).setLight(LightCoordsUtil.FULL_BRIGHT);
+		collector.submitCustomGeometry(matrixStack, RenderTypes.debugQuads(), (pose, buffer) -> {
+			buffer.addVertex(pose, right, top, z).setColor(color);
+			buffer.addVertex(pose, left, top, z).setColor(color);
+			buffer.addVertex(pose, left, bottom, z).setColor(color);
+			buffer.addVertex(pose, right, bottom, z).setColor(color);
 		});
 	}
 
@@ -50,6 +46,7 @@ public final class RenderHelper {
 		collector.submitText(matrixStack, x, y, toSequence(text), false, mode, light, ARGB.opaque(color), 0, 0);
 	}
 
+	// 26.3 only
 	private static FormattedCharSequence toSequence(String text) {
 		return sink -> StringDecomposer.iterateFormatted(text, Style.EMPTY, sink);
 	}

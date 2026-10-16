@@ -3,12 +3,11 @@ package com.zuxelus.energycontrol.blocks;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityRemoteThermalMonitor;
 import com.zuxelus.energycontrol.tileentities.TileEntityThermalMonitor;
-import com.zuxelus.zlib.blocks.FacingHorizontal;
 import com.zuxelus.zlib.blocks.FacingBlock;
+import com.zuxelus.zlib.blocks.FacingHorizontal;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -21,7 +20,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 public class RemoteThermalMonitor extends FacingHorizontal {
 
-	public RemoteThermalMonitor(Block.Properties properties) {
+	public RemoteThermalMonitor(Properties properties) {
 		super(FacingBlock.metal(properties));
 	}
 
@@ -31,11 +30,11 @@ public class RemoteThermalMonitor extends FacingHorizontal {
 	}
 
 	@Override
-	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		BlockEntity te = world.getBlockEntity(pos);
+	protected InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		BlockEntity te = level.getBlockEntity(pos);
 		if (!(te instanceof TileEntityRemoteThermalMonitor))
 			return InteractionResult.PASS;
-		if (!world.isClientSide())
+		if (!level.isClientSide())
 			player.openMenu((TileEntityRemoteThermalMonitor) te, buf -> buf.writeBlockPos(pos));
 		return InteractionResult.SUCCESS;
 	}

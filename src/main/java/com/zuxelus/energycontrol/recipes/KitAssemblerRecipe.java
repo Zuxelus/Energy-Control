@@ -101,7 +101,7 @@ public class KitAssemblerRecipe implements Recipe<RecipeInput> {
 	}
 
 	@Override
-	public boolean matches(RecipeInput inv, Level world) {
+	public boolean matches(RecipeInput inv, Level level) {
 		return false;
 	}
 

@@ -20,8 +20,8 @@ public class ItemKitAdvGenerators extends ItemKitMain {
 	}
 
 	@Override
-	public ItemStack getSensorCard(ItemStack stack, Player player, Level world, BlockPos pos, Direction side) {
-		BlockEntity te = world.getBlockEntity(pos);
+	public ItemStack getSensorCard(ItemStack stack, Player player, Level level, BlockPos pos, Direction side) {
+		BlockEntity te = level.getBlockEntity(pos);
 		CompoundTag tag = CrossModLoader.getCrossMod(ModIDs.ADV_GENERATORS).getCardData(te);
 		if (tag != null) {
 			ItemStack newCard = new ItemStack(ModItems.card_adv_generators);

@@ -21,12 +21,12 @@ public class ItemCardLiquidAdvanced extends ItemCardMain {
 	}
 
 	@Override
-	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
+	public CardState update(Level level, ICardReader reader, int range, BlockPos pos) {
 		BlockPos target = reader.getTarget();
 		if (target == null)
 			return CardState.NO_TARGET;
 
-		List<FluidInfo> tanks = CrossModLoader.getAllTanks(world, target);
+		List<FluidInfo> tanks = CrossModLoader.getAllTanks(level, target);
 		if (tanks == null || tanks.size() < 1)
 			return CardState.NO_TARGET;
 
@@ -40,7 +40,7 @@ public class ItemCardLiquidAdvanced extends ItemCardMain {
 	}
 
 	@Override
-	public List<PanelString> getStringData(Level world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(Level level, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		int count = reader.getInt("count");
 		for (int i = 0; i < count; i++)

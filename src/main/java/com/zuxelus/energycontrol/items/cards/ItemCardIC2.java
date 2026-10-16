@@ -23,12 +23,12 @@ public class ItemCardIC2 extends ItemCardMain {
 	}
 
 	@Override
-	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
+	public CardState update(Level level, ICardReader reader, int range, BlockPos pos) {
 		BlockPos target = reader.getTarget();
 		if (target == null)
 			return CardState.NO_TARGET;
 
-		BlockEntity te = world.getBlockEntity(target);
+		BlockEntity te = level.getBlockEntity(target);
 		CompoundTag tag = CrossModLoader.getCrossMod(ModIDs.IC2).getCardData(te);
 		if (tag == null)
 			return CardState.NO_TARGET;
@@ -38,7 +38,7 @@ public class ItemCardIC2 extends ItemCardMain {
 	}
 
 	@Override
-	public List<PanelString> getStringData(Level world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(Level level, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		if (reader.hasField(DataHelper.HEAT) && (settings & 1) > 0)
 			addHeat(result, "msg.ec.InfoPanelTemp", reader.getInt(DataHelper.HEAT), reader.getInt(DataHelper.MAXHEAT), showLabels);

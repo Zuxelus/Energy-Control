@@ -16,11 +16,11 @@ public class ItemCardTime extends ItemCardMain {
 	}
 
 	@Override
-	public List<PanelString> getStringData(Level world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(Level level, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		int time = 0;
-		if (world != null)
-			time = (int) ((world.getOverworldClockTime() + 6000) % 24000);
+		if (level != null)
+			time = (int) ((level.getOverworldClockTime() + 6000) % 24000);
 		int hours = time / 1000;
 		int minutes = (time % 1000) * 6 / 100;
 		String suffix = "";

@@ -35,7 +35,7 @@ public class CrossModBase {
 		return null;
 	}
 
-	public int getReactorHeat(Level world, BlockPos pos) {
+	public int getReactorHeat(Level level, BlockPos pos) {
 		return -1;
 	}
 

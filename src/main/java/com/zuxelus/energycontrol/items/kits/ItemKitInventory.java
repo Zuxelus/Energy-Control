@@ -18,8 +18,8 @@ public class ItemKitInventory extends ItemKitMain {
 	}
 
 	@Override
-	public ItemStack getSensorCard(ItemStack stack, Player player, Level world, BlockPos pos, Direction side) {
-		BlockEntity te = world.getBlockEntity(pos);
+	public ItemStack getSensorCard(ItemStack stack, Player player, Level level, BlockPos pos, Direction side) {
+		BlockEntity te = level.getBlockEntity(pos);
 		if (te instanceof Container) {
 			ItemStack newCard = new ItemStack(ModItems.card_inventory.get());
 			ItemStackHelper.setCoordinates(newCard, pos);

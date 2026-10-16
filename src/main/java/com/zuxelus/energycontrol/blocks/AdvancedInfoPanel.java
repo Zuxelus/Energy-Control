@@ -27,7 +27,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class AdvancedInfoPanel extends InfoPanel {
 
-	public AdvancedInfoPanel(Block.Properties properties) {
+	public AdvancedInfoPanel(Properties properties) {
 		// the shape follows the panel thickness, so it must not be cached per block state
 		super(properties.dynamicShape().noOcclusion());
 	}
@@ -39,29 +39,29 @@ public class AdvancedInfoPanel extends InfoPanel {
 
 	// on/off depends on the power mode, so the block entity sets ACTIVE (light) instead of the redstone signal
 	@Override
-	protected void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, @Nullable Orientation orientation, boolean isMoving) {
-		if (world.isClientSide())
+	protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean isMoving) {
+		if (level.isClientSide())
 			return;
-		BlockEntity be = world.getBlockEntity(pos);
+		BlockEntity be = level.getBlockEntity(pos);
 		if (be instanceof TileEntityAdvancedInfoPanel)
 			((TileEntityAdvancedInfoPanel) be).updatePower();
 	}
 
 	@Override
-	protected void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) { }
+	protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) { }
 
 	@Override
-	protected VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-		BlockEntity tile = world.getBlockEntity(pos);
+	protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+		BlockEntity tile = level.getBlockEntity(pos);
 		if (!(tile instanceof TileEntityAdvancedInfoPanel))
-			return super.getShape(state, world, pos, context);
+			return super.getShape(state, level, pos, context);
 
 		int thickness = ((TileEntityAdvancedInfoPanel) tile).thickness;
 		if (thickness < 1 || thickness > 16)
 			thickness = 16;
 		Direction enumfacing = state.getValue(FACING);
 		if (enumfacing == null)
-			return super.getShape(state, world, pos, context);
+			return super.getShape(state, level, pos, context);
 		switch (enumfacing) {
 		case EAST:
 			return Block.box(0.0D, 0.0D, 0.0D, thickness, 16.0D, 16.0D);
@@ -76,19 +76,19 @@ public class AdvancedInfoPanel extends InfoPanel {
 		case DOWN:
 			return Block.box(0.0D, 16.0D - thickness, 0.0D, 16.0D, 16.0D, 16.0D);
 		default:
-			return super.getShape(state, world, pos, context);
+			return super.getShape(state, level, pos, context);
 		}
 	}
 
 	@Override
-	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		BlockEntity te = world.getBlockEntity(pos);
+	protected InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		BlockEntity te = level.getBlockEntity(pos);
 		if (!(te instanceof TileEntityInfoPanel))
 			return InteractionResult.PASS;
-		if (!world.isClientSide() && EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) te).getFacing() == hit.getDirection())
+		if (!level.isClientSide() && EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) te).getFacing() == hit.getDirection())
 			if (((TileEntityInfoPanel) te).runTouchAction(player.getItemInHand(hand), pos, hit.getLocation()))
 				return InteractionResult.SUCCESS;
-		if (!world.isClientSide())
+		if (!level.isClientSide())
 			player.openMenu((TileEntityAdvancedInfoPanel) te, buf -> buf.writeBlockPos(pos));
 		return InteractionResult.SUCCESS;
 	}

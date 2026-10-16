@@ -2,8 +2,8 @@ package com.zuxelus.energycontrol.blocks;
 
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityRangeTrigger;
-import com.zuxelus.zlib.blocks.FacingHorizontal;
 import com.zuxelus.zlib.blocks.FacingBlock;
+import com.zuxelus.zlib.blocks.FacingHorizontal;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.core.BlockPos;
@@ -15,19 +15,19 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class RangeTrigger extends FacingHorizontal {
+	public static final EnumProperty<EnumState> STATE = EnumProperty.create("state", EnumState.class);
 
-	public RangeTrigger(Block.Properties properties) {
+	public RangeTrigger(Properties properties) {
 		super(FacingBlock.metal(properties));
 	}
-	public static final EnumProperty<EnumState> STATE = EnumProperty.create("state", EnumState.class);
 
 	@Override
 	protected BlockEntityFacing createBlockEntity(BlockPos pos, BlockState state) {
@@ -46,11 +46,11 @@ public class RangeTrigger extends FacingHorizontal {
 	}
 
 	@Override
-	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		BlockEntity te = world.getBlockEntity(pos);
+	protected InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		BlockEntity te = level.getBlockEntity(pos);
 		if (!(te instanceof TileEntityRangeTrigger))
 			return InteractionResult.PASS;
-		if (!world.isClientSide())
+		if (!level.isClientSide())
 			player.openMenu((TileEntityRangeTrigger) te, buf -> buf.writeBlockPos(pos));
 		return InteractionResult.SUCCESS;
 	}

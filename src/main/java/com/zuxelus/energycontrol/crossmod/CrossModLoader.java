@@ -63,8 +63,8 @@ public class CrossModLoader {
 		return CROSS_MODS.getOrDefault(modid, EMPTY);
 	}
 
-	public static ItemStack getEnergyCard(Level world, BlockPos pos) {
-		BlockEntity te = world.getBlockEntity(pos);
+	public static ItemStack getEnergyCard(Level level, BlockPos pos) {
+		BlockEntity te = level.getBlockEntity(pos);
 		if (te == null)
 			return ItemStack.EMPTY;
 		CompoundTag data = getEnergyData(te);
@@ -95,8 +95,8 @@ public class CrossModLoader {
 		return null;
 	}
 
-	public static List<FluidInfo> getAllTanks(Level world, BlockPos pos) {
-		BlockEntity te = world.getBlockEntity(pos);
+	public static List<FluidInfo> getAllTanks(Level level, BlockPos pos) {
+		BlockEntity te = level.getBlockEntity(pos);
 		if (te == null)
 			return null;
 		for (CrossModBase crossMod : CROSS_MODS.values()) {
@@ -104,7 +104,7 @@ public class CrossModLoader {
 			if (list != null)
 				return list;
 		}
-		ResourceHandler<FluidResource> handler = world.getCapability(Capabilities.Fluid.BLOCK, pos, te.getBlockState(), te, null);
+		ResourceHandler<FluidResource> handler = level.getCapability(Capabilities.Fluid.BLOCK, pos, te.getBlockState(), te, null);
 		if (handler != null) {
 			List<FluidInfo> result = new ArrayList<>();
 			for (int i = 0; i < handler.size(); i++) {
@@ -116,14 +116,14 @@ public class CrossModLoader {
 		return null;
 	}
 
-	public static FluidInfo getTankAt(Level world, BlockPos pos) {
-		List<FluidInfo> tanks = getAllTanks(world, pos);
+	public static FluidInfo getTankAt(Level level, BlockPos pos) {
+		List<FluidInfo> tanks = getAllTanks(level, pos);
 		return tanks != null && tanks.size() > 0 ? tanks.get(0) : null;
 	}
 
-	public static int getReactorHeat(Level world, BlockPos pos) {
+	public static int getReactorHeat(Level level, BlockPos pos) {
 		for (CrossModBase crossMod : CROSS_MODS.values()) {
-			int heat = crossMod.getReactorHeat(world, pos);
+			int heat = crossMod.getReactorHeat(level, pos);
 			if (heat != -1)
 				return heat;
 		}

@@ -19,7 +19,7 @@ import net.minecraft.world.level.redstone.Orientation;
 public class BlockLight extends Block {
 	public static final BooleanProperty LIT = BlockStateProperties.LIT;
 
-	public BlockLight(Block.Properties properties, MapColor color) {
+	public BlockLight(Properties properties, MapColor color) {
 		super(properties.mapColor(color).lightLevel(state -> state.getValue(LIT) ? 15 : 0).strength(1.0F, 3.0F).sound(SoundType.GLASS));
 		registerDefaultState(defaultBlockState().setValue(LIT, Boolean.valueOf(false)));
 	}
@@ -35,23 +35,23 @@ public class BlockLight extends Block {
 	}
 
 	@Override
-	protected void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, @Nullable Orientation orientation, boolean isMoving) {
-		if (world.isClientSide())
+	protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean isMoving) {
+		if (level.isClientSide())
 			return;
 
 		boolean flag = state.getValue(LIT);
-		if (flag == world.hasNeighborSignal(pos))
+		if (flag == level.hasNeighborSignal(pos))
 			return;
 
 		if (flag)
-			world.scheduleTick(pos, this, 4);
+			level.scheduleTick(pos, this, 4);
 		else
-			world.setBlock(pos, state.cycle(LIT), 2);
+			level.setBlock(pos, state.cycle(LIT), 2);
 	}
 
 	@Override
-	protected void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource rand) {
-		if (state.getValue(LIT) && !world.hasNeighborSignal(pos))
-			world.setBlock(pos, state.cycle(LIT), 2);
+	protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+		if (state.getValue(LIT) && !level.hasNeighborSignal(pos))
+			level.setBlock(pos, state.cycle(LIT), 2);
 	}
 }

@@ -24,7 +24,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class AdvancedInfoPanelExtender extends InfoPanelExtender {
 
-	public AdvancedInfoPanelExtender(Block.Properties properties) {
+	public AdvancedInfoPanelExtender(Properties properties) {
 		// the shape follows the panel thickness, so it must not be cached per block state,
 		// and like the core it is not opaque, so neighbours are not culled by a sloped panel
 		super(properties.noOcclusion().dynamicShape());
@@ -36,10 +36,10 @@ public class AdvancedInfoPanelExtender extends InfoPanelExtender {
 	}
 
 	@Override
-	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		if (world.isClientSide())
+	protected InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		if (level.isClientSide())
 			return InteractionResult.PASS;
-		BlockEntity te = world.getBlockEntity(pos);
+		BlockEntity te = level.getBlockEntity(pos);
 		if (!(te instanceof TileEntityInfoPanelExtender))
 			return InteractionResult.PASS;
 		TileEntityInfoPanel panel = ((TileEntityInfoPanelExtender) te).getCore();
@@ -53,11 +53,11 @@ public class AdvancedInfoPanelExtender extends InfoPanelExtender {
 	}
 
 	@Override
-	protected VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-		BlockEntity te = world.getBlockEntity(pos);
+	protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+		BlockEntity te = level.getBlockEntity(pos);
 		Direction enumfacing = state.getValue(FACING);
 		if (!(te instanceof TileEntityAdvancedInfoPanelExtender) || enumfacing == null)
-			return super.getShape(state, world, pos, context);
+			return super.getShape(state, level, pos, context);
 
 		int thickness = ((TileEntityAdvancedInfoPanelExtender) te).getThickness();
 		if (thickness < 1 || thickness > 16)
@@ -76,7 +76,7 @@ public class AdvancedInfoPanelExtender extends InfoPanelExtender {
 		case DOWN:
 			return Block.box(0.0D, 16.0D - thickness, 0.0D, 16.0D, 16.0D, 16.0D);
 		default:
-			return super.getShape(state, world, pos, context);
+			return super.getShape(state, level, pos, context);
 		}
 	}
 }

@@ -10,7 +10,6 @@ import net.minecraft.world.item.ItemStack;
  * Used to draw (progress) bars on Info Panels
  */
 public interface IHasBars {
-
 	boolean enableBars(ItemStack stack);
 
 	void renderBars(float displayWidth, float displayHeight, ICardReader reader, PoseStack matrixStack, SubmitNodeCollector collector);
