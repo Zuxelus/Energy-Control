@@ -18,37 +18,37 @@ import net.minecraft.world.level.block.state.BlockState;
 public class ItemCardRedstone extends ItemCardMain {
 
 	@Override
-	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
+	public CardState update(Level level, ICardReader reader, int range, BlockPos pos) {
 		BlockPos target = reader.getTarget();
 		if (target == null)
 			return CardState.NO_TARGET;
 
-		BlockState state = world.getBlockState(target);
+		BlockState state = level.getBlockState(target);
 		Block block = state.getBlock();
 		if (block != Blocks.AIR) {
 			reader.setString("name", block.getDescriptionId());
-			reader.setBoolean("isPowered", world.hasNeighborSignal(target));
-			reader.setInt("indirect", world.getBestNeighborSignal(target));
+			reader.setBoolean("isPowered", level.hasNeighborSignal(target));
+			reader.setInt("indirect", level.getBestNeighborSignal(target));
 			reader.setBoolean("canProvide", state.isSignalSource());
 			reader.setString("powered", String.format("D:%d U:%d N:%d S:%d W:%d E:%d",
-					world.getSignal(target.below(), Direction.DOWN), world.getSignal(target.above(), Direction.UP),
-					world.getSignal(target.north(), Direction.NORTH), world.getSignal(target.south(), Direction.SOUTH),
-					world.getSignal(target.west(), Direction.WEST), world.getSignal(target.east(), Direction.EAST)));
+					level.getSignal(target.below(), Direction.DOWN), level.getSignal(target.above(), Direction.UP),
+					level.getSignal(target.north(), Direction.NORTH), level.getSignal(target.south(), Direction.SOUTH),
+					level.getSignal(target.west(), Direction.WEST), level.getSignal(target.east(), Direction.EAST)));
 			reader.setString("week", String.format("D:%d U:%d N:%d S:%d W:%d E:%d",
-					state.getSignal(world, target, Direction.UP), state.getSignal(world, target, Direction.DOWN),
-					state.getSignal(world, target, Direction.SOUTH), state.getSignal(world, target, Direction.NORTH),
-					state.getSignal(world, target, Direction.EAST), state.getSignal(world, target, Direction.WEST)));
+					state.getSignal(level, target, Direction.UP), state.getSignal(level, target, Direction.DOWN),
+					state.getSignal(level, target, Direction.SOUTH), state.getSignal(level, target, Direction.NORTH),
+					state.getSignal(level, target, Direction.EAST), state.getSignal(level, target, Direction.WEST)));
 			reader.setString("strong", String.format("D:%d U:%d N:%d S:%d W:%d E:%d",
-					state.getDirectSignal(world, target, Direction.UP), state.getDirectSignal(world, target, Direction.DOWN),
-					state.getDirectSignal(world, target, Direction.SOUTH), state.getDirectSignal(world, target, Direction.NORTH),
-					state.getDirectSignal(world, target, Direction.EAST), state.getDirectSignal(world, target, Direction.WEST)));
+					state.getDirectSignal(level, target, Direction.UP), state.getDirectSignal(level, target, Direction.DOWN),
+					state.getDirectSignal(level, target, Direction.SOUTH), state.getDirectSignal(level, target, Direction.NORTH),
+					state.getDirectSignal(level, target, Direction.EAST), state.getDirectSignal(level, target, Direction.WEST)));
 			return CardState.OK;
 		}
 		return CardState.NO_TARGET;
 	}
 
 	@Override
-	public List<PanelString> getStringData(Level world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(Level level, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = new LinkedList<>();
 		result.add(new PanelString("msg.ec.InfoPanelName", reader.getString("name"), showLabels));
 		result.add(new PanelString("msg.ec.InfoPanelBlockPowered", reader.getBoolean("isPowered").toString(), showLabels));

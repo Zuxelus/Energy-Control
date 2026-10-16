@@ -46,9 +46,9 @@ public class IndustrialAlarm extends HowlerAlarm {
 	}
 
 	@Override
-	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		if (world.isClientSide()) {
-			BlockEntity te = world.getBlockEntity(pos);
+	protected InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		if (level.isClientSide()) {
+			BlockEntity te = level.getBlockEntity(pos);
 			if (te instanceof TileEntityHowlerAlarm)
 				ScreenHandler.openIndustrialAlarmScreen((TileEntityIndustrialAlarm) te);
 		}

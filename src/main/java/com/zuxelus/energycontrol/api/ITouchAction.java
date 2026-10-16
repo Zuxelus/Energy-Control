@@ -10,7 +10,6 @@ import net.minecraft.world.level.Level;
  * Lets players interact with Info Panels, using them as touchscreen
  */
 public interface ITouchAction {
-
 	boolean enableTouch();
 
 	/**
@@ -19,7 +18,7 @@ public interface ITouchAction {
 	 *
 	 * @return whether an action was performed
 	 */
-	boolean runTouchAction(Level world, ICardReader reader, ItemStack stack);
+	boolean runTouchAction(Level level, ICardReader reader, ItemStack stack);
 
 	/**
 	 * Used to draw objects onto Info Panel displays

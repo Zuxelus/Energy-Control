@@ -39,10 +39,10 @@ public record PacketCardS2C(BlockPos pos, int slot, String className, CompoundTa
 	public static void handleClient(PacketCardS2C packet, ClientPlayNetworking.Context context) {
 		Minecraft client = context.client();
 		client.execute(() -> {
-			Level world = client.player.level();
-			if (world == null)
+			Level level = client.player.level();
+			if (level == null)
 				return;
-			BlockEntity te = world.getBlockEntity(packet.pos());
+			BlockEntity te = level.getBlockEntity(packet.pos());
 			if (te == null || !(te instanceof TileEntityInfoPanel))
 				return;
 			TileEntityInfoPanel panel = (TileEntityInfoPanel) te;

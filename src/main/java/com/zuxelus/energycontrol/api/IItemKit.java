@@ -8,5 +8,5 @@ import net.minecraft.world.level.Level;
 
 public interface IItemKit {
 
-	ItemStack getSensorCard(ItemStack stack, Player player, Level world, BlockPos pos, Direction side);
+	ItemStack getSensorCard(ItemStack stack, Player player, Level level, BlockPos pos, Direction side);
 }

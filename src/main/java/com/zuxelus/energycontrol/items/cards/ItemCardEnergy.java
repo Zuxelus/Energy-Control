@@ -26,12 +26,12 @@ public class ItemCardEnergy extends ItemCardMain implements IHasBars {
 	private static final int EMPTY_COLOR = 0xB0000000; // darkens the empty part, as on the liquid card
 
 	@Override
-	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
+	public CardState update(Level level, ICardReader reader, int range, BlockPos pos) {
 		BlockPos target = reader.getTarget();
 		if (target == null)
 			return CardState.NO_TARGET;
 
-		BlockEntity te = world.getBlockEntity(target);
+		BlockEntity te = level.getBlockEntity(target);
 		if (te == null)
 			return CardState.NO_TARGET;
 
@@ -46,7 +46,7 @@ public class ItemCardEnergy extends ItemCardMain implements IHasBars {
 	}
 
 	@Override
-	public List<PanelString> getStringData(Level world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(Level level, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 
 		double energy = reader.getDouble(DataHelper.ENERGY);

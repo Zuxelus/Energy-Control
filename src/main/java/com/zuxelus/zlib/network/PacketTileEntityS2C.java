@@ -30,9 +30,9 @@ public record PacketTileEntityS2C(BlockPos pos, CompoundTag tag) implements Cust
 	public static void handleClient(PacketTileEntityS2C packet, ClientPlayNetworking.Context context) {
 		Minecraft client = context.client();
 		client.execute(() -> {
-			Level world = client.player.level();
-			if (world != null) {
-				BlockEntity te = world.getBlockEntity(packet.pos());
+			Level level = client.player.level();
+			if (level != null) {
+				BlockEntity te = level.getBlockEntity(packet.pos());
 				if (!(te instanceof ITilePacketHandler))
 					return;
 				((ITilePacketHandler) te).onClientMessageReceived(packet.tag());

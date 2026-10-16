@@ -32,28 +32,28 @@ public class BlockLight extends Block {
 	}
 
 	@Override
-	public BlockState getStateForPlacement(BlockPlaceContext ctx) {
-		return defaultBlockState().setValue(LIT, ctx.getLevel().hasNeighborSignal(ctx.getClickedPos()));
+	public BlockState getStateForPlacement(BlockPlaceContext context) {
+		return defaultBlockState().setValue(LIT, context.getLevel().hasNeighborSignal(context.getClickedPos()));
 	}
 
 	@Override
-	protected void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, @Nullable Orientation orientation, boolean moved) {
-		if (world.isClientSide())
+	protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean moved) {
+		if (level.isClientSide())
 			return;
 
 		boolean flag = state.getValue(LIT);
-		if (flag == world.hasNeighborSignal(pos))
+		if (flag == level.hasNeighborSignal(pos))
 			return;
 
 		if (flag)
-			world.scheduleTick(pos, this, 4);
+			level.scheduleTick(pos, this, 4);
 		else
-			world.setBlock(pos, state.cycle(LIT), 2);
+			level.setBlock(pos, state.cycle(LIT), 2);
 	}
 
 	@Override
-	protected void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
-		if (state.getValue(LIT).booleanValue() && !world.hasNeighborSignal(pos))
-			world.setBlock(pos, state.cycle(LIT), 2);
+	protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+		if (state.getValue(LIT).booleanValue() && !level.hasNeighborSignal(pos))
+			level.setBlock(pos, state.cycle(LIT), 2);
 	}
 }

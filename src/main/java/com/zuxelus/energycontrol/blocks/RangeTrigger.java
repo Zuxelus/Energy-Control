@@ -46,12 +46,12 @@ public class RangeTrigger extends FacingHorizontal {
 	}
 
 	@Override
-	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		BlockEntity te = world.getBlockEntity(pos);
+	protected InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		BlockEntity te = level.getBlockEntity(pos);
 		if (!(te instanceof TileEntityRangeTrigger))
 			return InteractionResult.PASS;
-		if (!world.isClientSide())
-			player.openMenu(state.getMenuProvider(world, pos));
+		if (!level.isClientSide())
+			player.openMenu(state.getMenuProvider(level, pos));
 		return InteractionResult.SUCCESS;
 	}
 

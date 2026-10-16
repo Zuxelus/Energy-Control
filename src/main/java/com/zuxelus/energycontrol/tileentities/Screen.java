@@ -37,19 +37,19 @@ public class Screen {
 	}
 
 	// the screen can reach into chunks that are not loaded, Level.getBlockEntity would load them
-	public static BlockEntity getLoadedBlockEntity(Level world, BlockPos pos) {
-		if (!isLoaded(world, pos))
+	public static BlockEntity getLoadedBlockEntity(Level level, BlockPos pos) {
+		if (!isLoaded(level, pos))
 			return null;
-		return world.getBlockEntity(pos);
+		return level.getBlockEntity(pos);
 	}
 
 	// same check as the deprecated World.isChunkLoaded(BlockPos)
-	public static boolean isLoaded(Level world, BlockPos pos) {
-		return world.getChunkSource().hasChunk(SectionPos.blockToSectionCoord(pos.getX()), SectionPos.blockToSectionCoord(pos.getZ()));
+	public static boolean isLoaded(Level level, BlockPos pos) {
+		return level.getChunkSource().hasChunk(SectionPos.blockToSectionCoord(pos.getX()), SectionPos.blockToSectionCoord(pos.getZ()));
 	}
 
-	public TileEntityInfoPanel getCore(Level world) {
-		BlockEntity be = getLoadedBlockEntity(world, corePos);
+	public TileEntityInfoPanel getCore(Level level) {
+		BlockEntity be = getLoadedBlockEntity(level, corePos);
 		if (!(be instanceof TileEntityInfoPanel))
 			return null;
 		return (TileEntityInfoPanel) be;
@@ -76,11 +76,11 @@ public class Screen {
 		return x >= minX && x <= maxX && y >= minY && y <= maxY && z >= minZ && z <= maxZ;
 	}
 
-	public void init(boolean force, Level world) {
+	public void init(boolean force, Level level) {
 		for (int x = minX; x <= maxX; x++) {
 			for (int y = minY; y <= maxY; y++) {
 				for (int z = minZ; z <= maxZ; z++) {
-					BlockEntity te = getLoadedBlockEntity(world, new BlockPos(x, y, z));
+					BlockEntity te = getLoadedBlockEntity(level, new BlockPos(x, y, z));
 					if (te == null || !(te instanceof IScreenPart))
 						continue;
 					((IScreenPart) te).setScreen(this);
@@ -89,11 +89,11 @@ public class Screen {
 		}
 	}
 
-	public void destroy(boolean force, Level world) {
+	public void destroy(boolean force, Level level) {
 		for (int x = minX; x <= maxX; x++) {
 			for (int y = minY; y <= maxY; y++) {
 				for (int z = minZ; z <= maxZ; z++) {
-					BlockEntity be = getLoadedBlockEntity(world, new BlockPos(x, y, z));
+					BlockEntity be = getLoadedBlockEntity(level, new BlockPos(x, y, z));
 					if (!(be instanceof IScreenPart))
 						continue;
 					IScreenPart part = (IScreenPart) be;

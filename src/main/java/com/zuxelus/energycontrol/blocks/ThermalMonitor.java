@@ -55,7 +55,7 @@ public class ThermalMonitor extends FacingBlockSmall {
 	}
 
 	@Override
-	protected VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+	protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
 		switch (state.getValue(FACING)) {
 		case EAST:
 			return AABB_EAST;
@@ -74,9 +74,9 @@ public class ThermalMonitor extends FacingBlockSmall {
 	}
 
 	@Override
-	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		if (world.isClientSide()) {
-			BlockEntity te = world.getBlockEntity(pos);
+	protected InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		if (level.isClientSide()) {
+			BlockEntity te = level.getBlockEntity(pos);
 			if (te instanceof TileEntityThermalMonitor)
 				ScreenHandler.openThermalMonitorScreen((TileEntityThermalMonitor) te);
 		}

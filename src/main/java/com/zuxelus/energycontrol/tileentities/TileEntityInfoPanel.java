@@ -315,11 +315,11 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 					refreshModel(level, new BlockPos(x, y, z));
 	}
 
-	public static void refreshModel(Level world, BlockPos pos) {
-		if (world == null || !world.isClientSide())
+	public static void refreshModel(Level level, BlockPos pos) {
+		if (level == null || !level.isClientSide())
 			return;
-		BlockState state = world.getBlockState(pos);
-		world.sendBlockUpdated(pos, state, state, 8);
+		BlockState state = level.getBlockState(pos);
+		level.sendBlockUpdated(pos, state, state, 8);
 	}
 
 	protected void serializeDisplaySettings(ValueOutput tag) {
@@ -414,11 +414,11 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 		cardData.clear();
 	}
 
-	public List<PanelString> getCardData(Level world, int settings, ItemStack cardStack, ItemCardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getCardData(Level level, int settings, ItemStack cardStack, ItemCardReader reader, boolean isServer, boolean showLabels) {
 		int slot = getCardSlot(cardStack);
 		List<PanelString> data = cardData.get(slot);
 		if (data == null) {
-			data = reader.getStringData(world, settings, isServer, showLabels);
+			data = reader.getStringData(level, settings, isServer, showLabels);
 			cardData.put(slot, data);
 		}
 		return data;
@@ -627,7 +627,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 		notifyBlockUpdate();
 	}
 
-	public void updateExtenders(Level world, Boolean active) { // server
+	public void updateExtenders(Level level, Boolean active) { // server
 		// the block just switched on or off, so update the power now instead of waiting for the next update packet
 		setPowered(active);
 		if (screen == null)
@@ -637,9 +637,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 			for (int y = screen.minY; y <= screen.maxY; y++)
 				for (int z = screen.minZ; z <= screen.maxZ; z++) {
 					BlockPos pos = new BlockPos(x, y, z);
-					BlockState state = world.getBlockState(pos);
+					BlockState state = level.getBlockState(pos);
 					if (state.getBlock() instanceof InfoPanelExtender || state.getBlock() instanceof HoloPanelExtender)
-						world.setBlock(pos, state.setValue(FacingBlockActive.ACTIVE, active), 2);
+						level.setBlock(pos, state.setValue(FacingBlockActive.ACTIVE, active), 2);
 				}
 	}
 

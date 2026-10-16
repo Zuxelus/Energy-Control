@@ -2,7 +2,6 @@ package com.zuxelus.energycontrol.items.kits;
 
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.init.ModItems;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
@@ -16,8 +15,8 @@ import net.minecraft.world.level.block.state.BlockState;
 public class ItemKitToggle extends ItemKitMain {
 
 	@Override
-	public ItemStack getSensorCard(ItemStack stack, Player player, Level world, BlockPos pos, Direction side) {
-		BlockState state = world.getBlockState(pos);
+	public ItemStack getSensorCard(ItemStack stack, Player player, Level level, BlockPos pos, Direction side) {
+		BlockState state = level.getBlockState(pos);
 		Block block = state.getBlock();
 		if (state != null && (block == Blocks.LEVER || block instanceof ButtonBlock)) {
 			ItemStack newCard = new ItemStack(ModItems.card_toggle);

@@ -54,7 +54,7 @@ public class InventoryPortablePanel extends ItemInventory implements ExtendedMen
 
 	// the client needs to know which hand holds the panel
 	@Override
-	public InteractionHand getScreenOpeningData(ServerPlayer player) {
+	public InteractionHand getScreenOpeningData(ServerPlayer player) { // fabric only
 		return hand;
 	}
 }

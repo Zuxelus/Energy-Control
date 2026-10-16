@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.renderers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.Font;
@@ -11,6 +12,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.util.StringDecomposer;
 
 /**
  * Since 26.1 block entities are no longer drawn immediately: geometry and text are submitted
@@ -42,7 +44,14 @@ public final class RenderHelper {
 
 	/** text colours are ARGB now: an RGB colour without alpha would be invisible */
 	public static void drawString(PoseStack matrixStack, SubmitNodeCollector collector, String text, float x, float y, int color, Font.DisplayMode mode, int light) {
-		collector.submitText(matrixStack, x, y, FormattedCharSequence.forward(text, Style.EMPTY), false, mode, light, ARGB.opaque(color), 0, 0);
+		if (text == null)
+			return;
+		collector.submitText(matrixStack, x, y, toSequence(text), false, mode, light, ARGB.opaque(color), 0, 0);
+	}
+
+	// unlike FormattedCharSequence.forward it applies the formatting codes (section sign codes like c or l) of the text
+	private static FormattedCharSequence toSequence(String text) {
+		return sink -> StringDecomposer.iterateFormatted(text, Style.EMPTY, sink);
 	}
 
 	private RenderHelper() {}

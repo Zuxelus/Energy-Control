@@ -16,8 +16,8 @@ import net.minecraft.world.level.Level;
 public class ItemKitLiquidAdvanced extends ItemKitMain {
 
 	@Override
-	public ItemStack getSensorCard(ItemStack stack, Player player, Level world, BlockPos pos, Direction side) {
-		List<FluidInfo> list = CrossModLoader.getAllTanks(world, pos);
+	public ItemStack getSensorCard(ItemStack stack, Player player, Level level, BlockPos pos, Direction side) {
+		List<FluidInfo> list = CrossModLoader.getAllTanks(level, pos);
 		if (list != null && list.size() >= 1) {
 			ItemStack card = new ItemStack(ModItems.card_liquid_advanced);
 			ItemStackHelper.setCoordinates(card, pos);

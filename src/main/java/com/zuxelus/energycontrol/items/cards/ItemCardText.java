@@ -16,12 +16,12 @@ import net.minecraft.world.level.Level;
 public class ItemCardText extends ItemCardMain {
 
 	@Override
-	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
+	public CardState update(Level level, ICardReader reader, int range, BlockPos pos) {
 		return CardState.OK;
 	}
 
 	@Override
-	public List<PanelString> getStringData(Level world, int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(Level level, int displaySettings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = new LinkedList<>();
 		boolean started = false;
 		for (int i = 9; i >= 0; i--) {

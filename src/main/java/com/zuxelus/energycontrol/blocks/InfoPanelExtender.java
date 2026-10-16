@@ -12,11 +12,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
@@ -25,7 +23,7 @@ public class InfoPanelExtender extends FacingBlockActive {
 		this(ModItems.blockSettings());
 	}
 
-	public InfoPanelExtender(BlockBehaviour.Properties properties) {
+	public InfoPanelExtender(Properties properties) {
 		super(properties.lightLevel(state -> state.getValue(ACTIVE) ? 10 : 0));
 	}
 
@@ -35,24 +33,20 @@ public class InfoPanelExtender extends FacingBlockActive {
 	}
 
 	@Override
-	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		if (world.isClientSide())
+	protected InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		if (level.isClientSide())
 			return InteractionResult.PASS;
-		BlockEntity te = world.getBlockEntity(pos);
+		BlockEntity te = level.getBlockEntity(pos);
 		if (!(te instanceof TileEntityInfoPanelExtender))
 			return InteractionResult.PASS;
 		TileEntityInfoPanel panel = ((TileEntityInfoPanelExtender) te).getCore();
 		if (panel == null)
 			return InteractionResult.PASS;
-		if (EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) panel).getFacing() == hit.getDirection())
-			if (((TileEntityInfoPanel) panel).runTouchAction(player.getItemInHand(hand), pos, hit.getLocation()))
+		if (EnergyControl.altPressed.get(player) && panel.getFacing() == hit.getDirection())
+			if (panel.runTouchAction(player.getItemInHand(hand), pos, hit.getLocation()))
 				return InteractionResult.SUCCESS;
 		player.openMenu(panel); // the extender has no GUI of its own, open the core panel's
 		return InteractionResult.SUCCESS;
-	}
-
-	public BlockState getStateForPlacement(BlockPlaceContext ctx) {
-		return super.getStateForPlacement(ctx).setValue(ACTIVE, ctx.getLevel().hasNeighborSignal(ctx.getClickedPos()));
 	}
 
 	@Override

@@ -44,43 +44,43 @@ public class HoloPanel extends FacingHorizontalActive {
 	}
 
 	@Override
-	protected boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
-		return world.getBlockState(pos.below()).isFaceSturdy(world, pos.below(), Direction.UP);
+	protected boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+		return level.getBlockState(pos.below()).isFaceSturdy(level, pos.below(), Direction.UP);
 	}
 
 	@Override
-	protected void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, @Nullable Orientation orientation, boolean isMoving) {
-		if (world.isClientSide())
+	protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean isMoving) {
+		if (level.isClientSide())
 			return;
 
 		boolean flag = state.getValue(ACTIVE);
-		if (flag == world.hasNeighborSignal(pos))
+		if (flag == level.hasNeighborSignal(pos))
 			return;
 
 		if (flag)
-			world.scheduleTick(pos, this, 4);
+			level.scheduleTick(pos, this, 4);
 		else {
-			world.setBlock(pos, state.cycle(ACTIVE), 2);
-			updateExtenders(state, world, pos);
+			level.setBlock(pos, state.cycle(ACTIVE), 2);
+			updateExtenders(state, level, pos);
 		}
 	}
 
 	@Override
-	protected void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
-		if (state.getValue(ACTIVE).booleanValue() && !world.hasNeighborSignal(pos)) {
-			world.setBlock(pos, state.cycle(ACTIVE), 2);
-			updateExtenders(state, world, pos);
+	protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+		if (state.getValue(ACTIVE).booleanValue() && !level.hasNeighborSignal(pos)) {
+			level.setBlock(pos, state.cycle(ACTIVE), 2);
+			updateExtenders(state, level, pos);
 		}
 	}
 
-	private void updateExtenders(BlockState state, Level world, BlockPos pos) { // server
-		BlockEntity be = world.getBlockEntity(pos);
+	private void updateExtenders(BlockState state, Level level, BlockPos pos) { // server
+		BlockEntity be = level.getBlockEntity(pos);
 		if (be instanceof TileEntityInfoPanel)
-			((TileEntityInfoPanel) be).updateExtenders(world, !state.getValue(ACTIVE));
+			((TileEntityInfoPanel) be).updateExtenders(level, !state.getValue(ACTIVE));
 	}
 
 	@Override
-	protected VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+	protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
 		switch (state.getValue(FACING)) {
 		case WEST:
 		case EAST:
@@ -93,17 +93,17 @@ public class HoloPanel extends FacingHorizontalActive {
 	}
 
 	@Override
-	protected BlockState updateShape(BlockState state, LevelReader world, ScheduledTickAccess ticks, BlockPos currentPos, Direction facing, BlockPos facingPos, BlockState facingState, RandomSource random) {
-		return canSurvive(state, world, currentPos) ? super.updateShape(state, world, ticks, currentPos, facing, facingPos, facingState, random) : Blocks.AIR.defaultBlockState();
+	protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos currentPos, Direction facing, BlockPos facingPos, BlockState facingState, RandomSource random) {
+		return canSurvive(state, level, currentPos) ? super.updateShape(state, level, ticks, currentPos, facing, facingPos, facingState, random) : Blocks.AIR.defaultBlockState();
 	}
 
 	@Override
-	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		BlockEntity te = world.getBlockEntity(pos);
+	protected InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		BlockEntity te = level.getBlockEntity(pos);
 		if (!(te instanceof TileEntityHoloPanel))
 			return InteractionResult.PASS;
-		if (!world.isClientSide())
-			player.openMenu(state.getMenuProvider(world, pos));
+		if (!level.isClientSide())
+			player.openMenu(state.getMenuProvider(level, pos));
 		return InteractionResult.SUCCESS;
 	}
 

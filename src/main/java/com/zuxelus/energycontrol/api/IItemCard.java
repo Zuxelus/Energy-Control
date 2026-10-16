@@ -14,12 +14,12 @@ public interface IItemCard {
 	 * @return The new state of the card
 	 * @see CardState
 	 */
-	CardState update(Level world, ICardReader reader, int range, BlockPos pos);
+	CardState update(Level level, ICardReader reader, int range, BlockPos pos);
 
 	/**
 	 * Used to display data on Info Panels.
 	 */
-	List<PanelString> getStringData(Level world, int settings, ICardReader reader, boolean isServer, boolean showLabels);
+	List<PanelString> getStringData(Level level, int settings, ICardReader reader, boolean isServer, boolean showLabels);
 
 	/**
 	 * @return A list of card settings

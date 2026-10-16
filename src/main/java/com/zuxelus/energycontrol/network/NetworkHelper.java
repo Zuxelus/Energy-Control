@@ -25,9 +25,9 @@ public class NetworkHelper {
 	}
 
 	// server
-	public static void sendPacketToAllAround(Level world, BlockPos pos, CustomPacketPayload packet) {
-		if (world instanceof ServerLevel level)
-			for (ServerPlayer player : PlayerLookup.tracking(level, pos))
+	public static void sendPacketToAllAround(Level level, BlockPos pos, CustomPacketPayload packet) {
+		if (level instanceof ServerLevel serverLevel)
+			for (ServerPlayer player : PlayerLookup.tracking(serverLevel, pos))
 				sendToPlayer(player, packet);
 	}
 
@@ -50,8 +50,8 @@ public class NetworkHelper {
 		sendToPlayer(crafter, new PacketTileEntityS2C(pos, tag));
 	}
 
-	public static void updateClientTileEntity(Level world, BlockPos pos, CompoundTag tag) {
-		sendPacketToAllAround(world, pos, new PacketTileEntityS2C(pos, tag));
+	public static void updateClientTileEntity(Level level, BlockPos pos, CompoundTag tag) {
+		sendPacketToAllAround(level, pos, new PacketTileEntityS2C(pos, tag));
 	}
 
 	// client

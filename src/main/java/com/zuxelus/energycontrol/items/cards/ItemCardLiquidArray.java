@@ -21,7 +21,7 @@ public class ItemCardLiquidArray extends ItemCardMain {
 	private static final long STATUS_OUT_OF_RANGE = Integer.MIN_VALUE + 1;
 
 	@Override
-	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
+	public CardState update(Level level, ICardReader reader, int range, BlockPos pos) {
 		int cardCount = reader.getCardCount();
 		if (cardCount == 0)
 			return CardState.INVALID_CARD;
@@ -36,7 +36,7 @@ public class ItemCardLiquidArray extends ItemCardMain {
 			int dy = target.getY() - pos.getY();
 			int dz = target.getZ() - pos.getZ();
 			if (Math.abs(dx) <= range && Math.abs(dy) <= range && Math.abs(dz) <= range) {
-				FluidInfo storage = CrossModLoader.getTankAt(world, target);
+				FluidInfo storage = CrossModLoader.getTankAt(level, target);
 				if (storage != null) {
 					storage.write(reader, i);
 					foundAny = true;
@@ -57,7 +57,7 @@ public class ItemCardLiquidArray extends ItemCardMain {
 	}
 
 	@Override
-	public List<PanelString> getStringData(Level world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(Level level, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		double totalAmount = 0;
 		double totalCapacity = 0;

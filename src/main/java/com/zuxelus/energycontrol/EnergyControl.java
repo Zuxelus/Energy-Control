@@ -53,9 +53,9 @@ public class EnergyControl implements ModInitializer {
 		new ModContainerTypes();
 		ModItems.init();
 		// a kit used on a block makes its sensor card before the block reacts to the click
-		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
+		UseBlockCallback.EVENT.register((player, level, hand, hitResult) -> {
 			ItemStack stack = player.getItemInHand(hand);
-			if (!stack.isEmpty() && stack.getItem() instanceof ItemKitMain kit && kit.onItemUseFirst(world, player, hand, hitResult) == InteractionResult.SUCCESS)
+			if (!stack.isEmpty() && stack.getItem() instanceof ItemKitMain kit && kit.onItemUseFirst(level, player, hand, hitResult) == InteractionResult.SUCCESS)
 				return InteractionResult.SUCCESS;
 			return InteractionResult.PASS;
 		});

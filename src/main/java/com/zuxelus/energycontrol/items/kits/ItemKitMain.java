@@ -19,19 +19,20 @@ public abstract class ItemKitMain extends Item implements IItemKit {
 		super(ModItems.itemSettings().stacksTo(16));
 	}
 
-	public InteractionResult onItemUseFirst(Level world, Player player, InteractionHand hand, BlockHitResult hitResult) {
+	// Call from UseBlockCallback
+	public InteractionResult onItemUseFirst(Level level, Player player, InteractionHand hand, BlockHitResult hitResult) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (!(player instanceof ServerPlayer) || stack.isEmpty())
 			return InteractionResult.PASS;
 
-		ItemStack sensorLocationCard = ((ItemKitMain) stack.getItem()).getSensorCard(stack, player, world, hitResult.getBlockPos(), hitResult.getDirection());
+		ItemStack sensorLocationCard = ((ItemKitMain) stack.getItem()).getSensorCard(stack, player, level, hitResult.getBlockPos(), hitResult.getDirection());
 		if (sensorLocationCard.isEmpty())
 			return InteractionResult.PASS;
 
 		stack.shrink(1);
-		ItemEntity dropItem = new ItemEntity(world, player.getX(), player.getY(), player.getZ(), sensorLocationCard);
+		ItemEntity dropItem = new ItemEntity(level, player.getX(), player.getY(), player.getZ(), sensorLocationCard);
 		dropItem.setPickUpDelay(0);
-		world.addFreshEntity(dropItem);
+		level.addFreshEntity(dropItem);
 		return InteractionResult.SUCCESS;
 	}
 }

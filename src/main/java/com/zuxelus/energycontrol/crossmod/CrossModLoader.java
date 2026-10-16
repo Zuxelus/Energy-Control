@@ -51,8 +51,8 @@ public class CrossModLoader {
 		return CROSS_MODS.get(modid);
 	}
 
-	public static ItemStack getEnergyCard(Level world, BlockPos pos) {
-		BlockEntity te = world.getBlockEntity(pos);
+	public static ItemStack getEnergyCard(Level level, BlockPos pos) {
+		BlockEntity te = level.getBlockEntity(pos);
 		if (te == null)
 			return ItemStack.EMPTY;
 		CompoundTag data = getEnergyData(te);
@@ -85,25 +85,25 @@ public class CrossModLoader {
 	}
 
 	private static EnergyStorage findEnergyStorage(BlockEntity te) { // fabric only
-		Level world = te.getLevel();
-		if (world == null)
+		Level level = te.getLevel();
+		if (level == null)
 			return null;
 		BlockPos pos = te.getBlockPos();
 		BlockState state = te.getBlockState();
-		EnergyStorage storage = EnergyStorage.SIDED.find(world, pos, state, te, null);
+		EnergyStorage storage = EnergyStorage.SIDED.find(level, pos, state, te, null);
 		if (storage != null)
 			return storage;
 		// some providers only answer for a real side
 		for (Direction side : Direction.values()) {
-			storage = EnergyStorage.SIDED.find(world, pos, state, te, side);
+			storage = EnergyStorage.SIDED.find(level, pos, state, te, side);
 			if (storage != null)
 				return storage;
 		}
 		return null;
 	}
 
-	public static List<FluidInfo> getAllTanks(Level world, BlockPos pos) {
-		BlockEntity te = world.getBlockEntity(pos);
+	public static List<FluidInfo> getAllTanks(Level level, BlockPos pos) {
+		BlockEntity te = level.getBlockEntity(pos);
 		if (te == null)
 			return null;
 		for (CrossModBase crossMod : CROSS_MODS.values()) {
@@ -125,31 +125,31 @@ public class CrossModLoader {
 	}
 
 	private static Storage<FluidVariant> findFluidStorage(BlockEntity te) { // fabric only
-		Level world = te.getLevel();
-		if (world == null)
+		Level level = te.getLevel();
+		if (level == null)
 			return null;
 		BlockPos pos = te.getBlockPos();
 		BlockState state = te.getBlockState();
-		Storage<FluidVariant> storage = FluidStorage.SIDED.find(world, pos, state, te, null);
+		Storage<FluidVariant> storage = FluidStorage.SIDED.find(level, pos, state, te, null);
 		if (storage != null)
 			return storage;
 		// some providers only answer for a real side
 		for (Direction side : Direction.values()) {
-			storage = FluidStorage.SIDED.find(world, pos, state, te, side);
+			storage = FluidStorage.SIDED.find(level, pos, state, te, side);
 			if (storage != null)
 				return storage;
 		}
 		return null;
 	}
 
-	public static FluidInfo getTankAt(Level world, BlockPos pos) {
-		List<FluidInfo> tanks = getAllTanks(world, pos);
+	public static FluidInfo getTankAt(Level level, BlockPos pos) {
+		List<FluidInfo> tanks = getAllTanks(level, pos);
 		return tanks != null && tanks.size() > 0 ? tanks.get(0) : null;
 	}
 
-	public static int getReactorHeat(Level world, BlockPos pos) {
+	public static int getReactorHeat(Level level, BlockPos pos) {
 		for (CrossModBase crossMod : CROSS_MODS.values()) {
-			int heat = crossMod.getReactorHeat(world, pos);
+			int heat = crossMod.getReactorHeat(level, pos);
 			if (heat != -1)
 				return heat;
 		}
@@ -197,17 +197,17 @@ public class CrossModLoader {
 	}
 
 	private static Storage<ItemVariant> findItemStorage(BlockEntity te) { // fabric only
-		Level world = te.getLevel();
-		if (world == null)
+		Level level = te.getLevel();
+		if (level == null)
 			return null;
 		BlockPos pos = te.getBlockPos();
 		BlockState state = te.getBlockState();
-		Storage<ItemVariant> storage = ItemStorage.SIDED.find(world, pos, state, te, null);
+		Storage<ItemVariant> storage = ItemStorage.SIDED.find(level, pos, state, te, null);
 		if (storage != null)
 			return storage;
 		// some providers only answer for a real side
 		for (Direction side : Direction.values()) {
-			storage = ItemStorage.SIDED.find(world, pos, state, te, side);
+			storage = ItemStorage.SIDED.find(level, pos, state, te, side);
 			if (storage != null)
 				return storage;
 		}

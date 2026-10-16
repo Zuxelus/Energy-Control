@@ -49,7 +49,7 @@ public class InventoryCardHolder extends ItemInventory implements ExtendedMenuPr
 
 	// the client needs to know which hand holds the card holder
 	@Override
-	public InteractionHand getScreenOpeningData(ServerPlayer player) {
+	public InteractionHand getScreenOpeningData(ServerPlayer player) { // fabric only
 		return hand;
 	}
 }

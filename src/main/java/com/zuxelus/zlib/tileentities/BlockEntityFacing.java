@@ -69,7 +69,6 @@ public abstract class BlockEntityFacing extends BlockEntity {
 	 */
 	protected void writeUpdateData(ValueOutput tag) { }
 
-	// also called on the client for the update tag and data packet
 	@Override
 	protected void loadAdditional(ValueInput input) {
 		super.loadAdditional(input);

@@ -28,16 +28,16 @@ public class HoloPanelExtender extends HoloPanel {
 
 	// an extender follows the core panel (TileEntityInfoPanel.updateExtenders), not its own redstone signal
 	@Override
-	protected void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, @Nullable Orientation orientation, boolean isMoving) { }
+	protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean isMoving) { }
 
 	@Override
-	public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) { }
+	protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) { }
 
 	@Override
-	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		if (world.isClientSide())
+	protected InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		if (level.isClientSide())
 			return InteractionResult.PASS;
-		BlockEntity te = world.getBlockEntity(pos);
+		BlockEntity te = level.getBlockEntity(pos);
 		if (!(te instanceof TileEntityHoloPanelExtender))
 			return InteractionResult.PASS;
 		TileEntityInfoPanel panel = ((TileEntityHoloPanelExtender) te).getCore();

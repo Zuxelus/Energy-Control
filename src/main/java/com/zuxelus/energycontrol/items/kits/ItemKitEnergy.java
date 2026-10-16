@@ -11,7 +11,7 @@ import net.minecraft.world.level.Level;
 public class ItemKitEnergy extends ItemKitMain {
 
 	@Override
-	public ItemStack getSensorCard(ItemStack stack, Player player, Level world, BlockPos pos, Direction side) {
-		return CrossModLoader.getEnergyCard(world, pos);
+	public ItemStack getSensorCard(ItemStack stack, Player player, Level level, BlockPos pos, Direction side) {
+		return CrossModLoader.getEnergyCard(level, pos);
 	}
 }
