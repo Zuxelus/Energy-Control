@@ -1,63 +1,70 @@
 package com.zuxelus.energycontrol.blocks;
 
 import com.mojang.serialization.MapCodec;
-import net.minecraft.block.BlockWithEntity;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityTimer;
 import com.zuxelus.zlib.blocks.FacingBlockSmall;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ShapeContext;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class TimerBlock extends FacingBlockSmall {
-	public static final MapCodec<TimerBlock> CODEC = createCodec(settings -> new TimerBlock());
+	protected static final VoxelShape AABB_DOWN = Block.box(1.0F, 9.0F, 1.0F, 15.0F, 15.0F, 15.0F);
+	protected static final VoxelShape AABB_UP = Block.box(1.0F, 0.0F, 1.0F, 15.0F, 7.0F, 15.0F);
+	protected static final VoxelShape AABB_NORTH = Block.box(1.0F, 1.0F, 9.0F, 15.0F, 15.0F, 15.0F);
+	protected static final VoxelShape AABB_SOUTH = Block.box(1.0F, 1.0F, 0.0F, 15.0F, 15.0F, 7.0F);
+	protected static final VoxelShape AABB_WEST = Block.box(9.0F, 1.0F, 1.0F, 15.0F, 15.0F, 15.0F);
+	protected static final VoxelShape AABB_EAST = Block.box(0.0F, 1.0F, 1.0F, 7.0F, 15.0F, 15.0F);
+	public static final MapCodec<TimerBlock> CODEC = simpleCodec(settings -> new TimerBlock());
 
 	@Override
-	protected MapCodec<? extends BlockWithEntity> getCodec() {
+	protected MapCodec<? extends BaseEntityBlock> codec() {
 		return CODEC;
 	}
-	protected static final VoxelShape AABB_DOWN = Block.createCuboidShape(1.0F, 9.0F, 1.0F, 15.0F, 15.0F, 15.0F);
-	protected static final VoxelShape AABB_UP = Block.createCuboidShape(1.0F, 0.0F, 1.0F, 15.0F, 7.0F, 15.0F);
-	protected static final VoxelShape AABB_NORTH = Block.createCuboidShape(1.0F, 1.0F, 9.0F, 15.0F, 15.0F, 15.0F);
-	protected static final VoxelShape AABB_SOUTH = Block.createCuboidShape(1.0F, 1.0F, 0.0F, 15.0F, 15.0F, 7.0F);
-	protected static final VoxelShape AABB_WEST = Block.createCuboidShape(9.0F, 1.0F, 1.0F, 15.0F, 15.0F, 15.0F);
-	protected static final VoxelShape AABB_EAST = Block.createCuboidShape(0.0F, 1.0F, 1.0F, 7.0F, 15.0F, 15.0F);
 
 	public TimerBlock() {
 		super(ModItems.blockSettings());
 	}
 
 	@Override
-	protected BlockEntityFacing newBlockEntity(BlockPos pos, BlockState state) {
-		return ModTileEntityTypes.timer.instantiate(pos, state);
+	protected BlockEntityFacing createFacingBlockEntity(BlockPos pos, BlockState state) {
+		return ModTileEntityTypes.timer.create(pos, state);
 	}
 
 	@Override
-	public int getWeakRedstonePower(BlockState state, BlockView blockAccess, BlockPos pos, Direction side) {
+	protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+		super.onRemove(state, level, pos, newState, isMoving);
+		if (!isMoving && state.getBlock() != newState.getBlock())
+			level.updateNeighborsAt(pos, this);
+	}
+
+	@Override
+	protected int getSignal(BlockState state, BlockGetter blockAccess, BlockPos pos, Direction side) {
 		BlockEntity te = blockAccess.getBlockEntity(pos);
 		if (!(te instanceof TileEntityTimer))
 			return 0;
-		if (side == state.get(FACING) || side == ((TileEntityTimer) te).getRotation().getOpposite())
+		if (side == state.getValue(FACING) || side == ((TileEntityTimer) te).getRotation().getOpposite())
 			return 0;
 		return ((TileEntityTimer) te).getPowered() ? 15 : 0;
 	}
 
 	@Override
-	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-		switch (state.get(FACING)) {
+	protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+		switch (state.getValue(FACING)) {
 		case EAST:
 			return AABB_EAST;
 		case WEST:
@@ -75,24 +82,24 @@ public class TimerBlock extends FacingBlockSmall {
 	}
 
 	@Override
-	public BlockRenderType getRenderType(BlockState state) {
-		return BlockRenderType.INVISIBLE;
+	protected RenderShape getRenderShape(BlockState state) {
+		return RenderShape.INVISIBLE;
 	}
 
 	@Override
-	protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-		if (world.isClient)
-			return ActionResult.PASS;
-		BlockEntity te = world.getBlockEntity(pos);
+	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+		if (level.isClientSide)
+			return InteractionResult.PASS;
+		BlockEntity te = level.getBlockEntity(pos);
 		if (!(te instanceof TileEntityTimer))
-			return ActionResult.PASS;
-		player.openHandledScreen(state.createScreenHandlerFactory(world, pos));
-		return ActionResult.SUCCESS;
+			return InteractionResult.PASS;
+		player.openMenu(state.getMenuProvider(level, pos));
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
-	public void neighborUpdate(BlockState state, World level, BlockPos pos, Block fromBlock, BlockPos fromPos, boolean isMoving) {
-		if (!level.isClient) {
+	protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block fromBlock, BlockPos fromPos, boolean isMoving) {
+		if (!level.isClientSide) {
 			BlockEntity be = level.getBlockEntity(pos);
 			if (be instanceof TileEntityTimer)
 				((TileEntityTimer) be).onNeighborChange(fromBlock, fromPos);

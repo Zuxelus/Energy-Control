@@ -2,76 +2,63 @@ package com.zuxelus.energycontrol.renderers;
 
 import java.util.List;
 
-import com.zuxelus.energycontrol.EnergyControlClient;
-import com.zuxelus.energycontrol.api.IHasBars;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityHoloPanel;
 
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory.Context;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RotationAxis;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
+import net.minecraft.core.BlockPos;
 
 public class TileEntityHoloPanelRenderer implements BlockEntityRenderer<TileEntityHoloPanel> {
-	private final TextRenderer font;
+	private final Font font;
 
 	public TileEntityHoloPanelRenderer(Context ctx) {
-		font = ctx.getTextRenderer();
+		font = ctx.getFont();
 	}
 
 	@Override
-	public void render(TileEntityHoloPanel te, float partialTicks, MatrixStack matrixStack, VertexConsumerProvider buffer, int combinedLight, int combinedOverlay) {
-		if (partialTicks != -1) {
-			EnergyControlClient.holo_panels.add(te);
-			//return;
-		}
-		matrixStack.push();
+	public void render(TileEntityHoloPanel te, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
+		matrixStack.pushPose();
 		switch (te.getFacing()) {
 		case UP:
 			break;
 		case NORTH:
-			matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-90));
+			matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
 			matrixStack.translate(0.0F, -1.5F, 0.0F);
 			break;
 		case SOUTH:
-			matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90));
+			matrixStack.mulPose(Axis.XP.rotationDegrees(90));
 			matrixStack.translate(0.0F, -0.5F, -1.0F);
 			break;
 		case DOWN:
-			matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180));
+			matrixStack.mulPose(Axis.XP.rotationDegrees(180));
 			matrixStack.translate(0.0F, -1.0F, -1.0F);
 			break;
 		case WEST:
-			matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(90));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(90));
 			matrixStack.translate(0.0F, -1.5F, 0.0F);
 			break;
 		case EAST:
-			matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(-90));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(-90));
 			matrixStack.translate(-1.0F, -0.5F, 0.0F);
 			break;
 		}
 
-		/*int color = 2;
-		if (te.getColored()) {
-			color = te.getColorBackground();
-			if (color > 15 || color < 0)
-				color = 2;
-		}*/
 		if (te.getPowered()) {
 			List<PanelString> joinedData = te.getPanelStringList(false, te.getShowLabels());
-			drawText(te, partialTicks, joinedData, matrixStack, buffer, combinedLight);
+			drawText(te, joinedData, matrixStack, buffer, combinedLight);
 		}
-		matrixStack.pop();
+		matrixStack.popPose();
 	}
 
-	@SuppressWarnings("incomplete-switch")
-	private void drawText(TileEntityHoloPanel panel, float partialTicks, List<PanelString> joinedData, MatrixStack matrixStack, VertexConsumerProvider buffer, int combinedLight) {
+	private void drawText(TileEntityHoloPanel panel, List<PanelString> joinedData, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight) {
 		Screen screen = panel.getScreen();
-		BlockPos pos = panel.getPos();
+		BlockPos pos = panel.getBlockPos();
 		int power = panel.getPower();
 		float displayWidth = 1 - 2F / 16;
 		float displayHeight = power - 2F / 16;
@@ -102,43 +89,44 @@ public class TileEntityHoloPanelRenderer implements BlockEntityRenderer<TileEnti
 				dy = dy + power - 1F;
 				displayWidth += screen.maxZ - screen.minZ;
 				break;
+			default:
+				break;
 			}
 		}
 
 		matrixStack.translate(0.5F - dy / 2, 1.01F - dx / 2 , 0.5F - dz / 2);
-		matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-90));
+		matrixStack.mulPose(Axis.XP.rotationDegrees(-90));
 		switch(panel.getFacing())
 		{
 		case NORTH:
-			matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(180));
 			break;
 		case SOUTH:
 			break;
 		case WEST:
-			matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(-90));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(-90));
 			break;
 		case EAST:
-			matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(90));
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(90));
+			break;
+		default:
 			break;
 		}
 		float imageWidth = 0.475F + (displayWidth - 0.875F) / 2F;
 		float imageHeight = 0.5F + (power - 1) / 2F;
-		if (partialTicks == -1) {
-			IHasBars.drawTransparentRect(matrixStack, imageWidth, imageHeight, -imageWidth, -imageHeight, -0.0001F, 0x40AADDDD);
-			matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
-			IHasBars.drawTransparentRect(matrixStack, imageWidth, imageHeight, -imageWidth, -imageHeight, -0.0001F, 0x40AADDDD);
-			matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
-		} else if (joinedData != null) {
+		// the render type is not culled and doesn't write depth, so one quad is visible from both sides and doesn't hide water behind it
+		RenderHelper.fillRect(matrixStack, buffer, imageWidth, imageHeight, -imageWidth, -imageHeight, -0.0001F, 0x40AADDDD);
+		if (joinedData != null) {
 			matrixStack.translate(0, 0, 0.0002F * (power + 1) / 2);
 			int colorHex = 0x000000;
 			if (panel.getColored())
 				colorHex = panel.getColorTextHex();
-			TileEntityInfoPanelRenderer.renderText(joinedData, displayWidth, displayHeight, colorHex, matrixStack, font);
+			TileEntityInfoPanelRenderer.renderText(joinedData, displayWidth, displayHeight, colorHex, matrixStack, buffer, font);
 		}
 	}
 
 	@Override
-	public int getRenderDistance() {
+	public int getViewDistance() { // fabric only
 		return 65536;
 	}
 }

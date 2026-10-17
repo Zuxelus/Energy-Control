@@ -2,25 +2,29 @@ package com.zuxelus.energycontrol.items.cards;
 
 import java.util.List;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.zuxelus.energycontrol.ServerTickHandler;
 import com.zuxelus.energycontrol.api.*;
+import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 
 public abstract class ItemCardMain extends Item implements IItemCard {
 	public static final int LOCATION_RANGE = 8;
 
 	public ItemCardMain() {
-		super(new Item.Settings().maxCount(1));
+		super(new Item.Properties().stacksTo(1));
 	}
 
 	public static boolean isCard(ItemStack stack) {
@@ -32,27 +36,27 @@ public abstract class ItemCardMain extends Item implements IItemCard {
 		return false;
 	}
 
-	protected void addInformation(ItemCardReader reader, List<Text> tooltip) { }
+	protected void addInformation(ItemCardReader reader, List<Component> tooltip) { }
 
 	@Override
 	@Environment(EnvType.CLIENT)
-	public void appendTooltip(ItemStack stack, Item.TooltipContext context, List<Text> tooltip, TooltipType type) {
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag type) {
 		ItemCardReader reader = new ItemCardReader(stack);
 		String title = reader.getTitle();
 		if (title != null && !title.isEmpty())
-			tooltip.add(Text.translatable(title));
+			tooltip.add(Component.translatable(title));
 
 		addInformation(reader, tooltip);
 
 		BlockPos target = reader.getTarget();
 		if (target != null)
-			tooltip.add(Text.translatable(String.format("x: %d, y: %d, z: %d", target.getX(), target.getY(), target.getZ())));
+			tooltip.add(Component.translatable(String.format("x: %d, y: %d, z: %d", target.getX(), target.getY(), target.getZ())));
 		int count = reader.getCardCount();
 		if (count > 0)
-			tooltip.add(Text.translatable(I18n.translate("msg.ec.cards", reader.getCardCount())));
+			tooltip.add(Component.translatable(I18n.get("msg.ec.cards", reader.getCardCount())));
 	}
 
-	public CardState updateCardNBT(World world, BlockPos pos, ICardReader reader, ItemStack upgradeStack) {
+	public static CardState updateCardNBT(IItemCard card, Level level, BlockPos pos, ICardReader reader, ItemStack upgradeStack) {
 		int upgradeCountRange = 0;
 		if (upgradeStack != ItemStack.EMPTY && upgradeStack.getItem().equals(ModItems.upgrade_range))
 			upgradeCountRange = upgradeStack.getCount();
@@ -61,7 +65,7 @@ public abstract class ItemCardMain extends Item implements IItemCard {
 		int range = LOCATION_RANGE * (int) Math.pow(2, Math.min(upgradeCountRange, 7));
 
 		CardState state = CardState.INVALID_CARD;
-		if (isRemoteCard()) {
+		if (!ConfigHandler.disableRangeCheck && card.isRemoteCard()) {
 			BlockPos target = reader.getTarget();
 			if (target != null) {
 				int dx = target.getX() - pos.getX();
@@ -76,13 +80,13 @@ public abstract class ItemCardMain extends Item implements IItemCard {
 		}
 
 		if (needUpdate)
-			state = update(world, reader, range, pos);
+			state = card.update(level, reader, range, pos);
 		reader.setState(state);
 		return state;
 	}
 
 	@Override
-	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
+	public CardState update(Level level, ICardReader reader, int range, BlockPos pos) {
 		return CardState.OK;
 	}
 
@@ -101,7 +105,7 @@ public abstract class ItemCardMain extends Item implements IItemCard {
 	public void runTouchAction(TileEntityInfoPanel panel, ItemStack cardStack, ItemStack stack, int slot) { 
 		if (cardStack.getItem() instanceof ITouchAction) {
 			ICardReader reader = new ItemCardReader(cardStack);
-			if (((ITouchAction) cardStack.getItem()).runTouchAction(panel.getWorld(), reader, stack))
+			if (((ITouchAction) cardStack.getItem()).runTouchAction(panel.getLevel(), reader, stack))
 				reader.updateClient(cardStack, panel, slot);
 		}
 	}
@@ -111,10 +115,10 @@ public abstract class ItemCardMain extends Item implements IItemCard {
 		int txtColor = 0;
 		if (value) {
 			txtColor = 0x00ff00;
-			text = isServer ? "On" : I18n.translate("msg.ec.InfoPanelOn");
+			text = isServer ? "On" : I18n.get("msg.ec.InfoPanelOn");
 		} else {
 			txtColor = 0xff0000;
-			text = isServer ? "Off" : I18n.translate("msg.ec.InfoPanelOff");
+			text = isServer ? "Off" : I18n.get("msg.ec.InfoPanelOff");
 		}
 		if (result.size() > 0) {
 			PanelString firstLine = result.get(0);
@@ -134,5 +138,32 @@ public abstract class ItemCardMain extends Item implements IItemCard {
 		line.textLeft = text;
 		line.colorLeft = txtColor;
 		result.add(line);
+	}
+
+	public static void sendCardToWS(List<PanelString> list, ICardReader reader) {
+		if (list == null || ConfigHandler.wsHost.isEmpty())
+			return;
+		String id = reader.getId();
+		JsonObject json = new JsonObject();
+		json.addProperty("id", id);
+		JsonArray array = new JsonArray();
+		for (PanelString panelString : list) {
+			JsonObject line = new JsonObject();
+			if (panelString.textLeft != null) {
+				line.addProperty("left", panelString.textLeft);
+				line.addProperty("left_color", panelString.colorLeft);
+			}
+			if (panelString.textCenter != null) {
+				line.addProperty("center", panelString.textCenter);
+				line.addProperty("center_color", panelString.colorCenter);
+			}
+			if (panelString.textRight != null) {
+				line.addProperty("right", panelString.textRight);
+				line.addProperty("right_color", panelString.colorRight);
+			}
+			array.add(line);
+		}
+		json.add("lines", array);
+		ServerTickHandler.instance.cards.put(id, json);
 	}
 }

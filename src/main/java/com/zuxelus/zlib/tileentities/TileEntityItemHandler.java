@@ -1,8 +1,8 @@
 package com.zuxelus.zlib.tileentities;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 // LibBlockAttributes is not available for 1.20.4; other mods see the vanilla Inventory from TileEntityInventory
 public abstract class TileEntityItemHandler extends TileEntityInventory {

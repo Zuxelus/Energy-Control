@@ -2,16 +2,16 @@ package com.zuxelus.energycontrol.recipes;
 
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.recipe.RecipeSerializer;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
 public class ArrayRecipeSerializer implements RecipeSerializer<StorageArrayRecipe> {
 	// a storage array recipe is a plain shapeless recipe with custom matching
-	private static final MapCodec<StorageArrayRecipe> CODEC = RecipeSerializer.SHAPELESS.codec()
+	private static final MapCodec<StorageArrayRecipe> CODEC = RecipeSerializer.SHAPELESS_RECIPE.codec()
 			.xmap(StorageArrayRecipe::new, StorageArrayRecipe::getRecipe);
-	private static final PacketCodec<RegistryByteBuf, StorageArrayRecipe> PACKET_CODEC = RecipeSerializer.SHAPELESS.packetCodec()
-			.xmap(StorageArrayRecipe::new, StorageArrayRecipe::getRecipe);
+	private static final StreamCodec<RegistryFriendlyByteBuf, StorageArrayRecipe> PACKET_CODEC = RecipeSerializer.SHAPELESS_RECIPE.streamCodec()
+			.map(StorageArrayRecipe::new, StorageArrayRecipe::getRecipe);
 
 	@Override
 	public MapCodec<StorageArrayRecipe> codec() {
@@ -19,7 +19,7 @@ public class ArrayRecipeSerializer implements RecipeSerializer<StorageArrayRecip
 	}
 
 	@Override
-	public PacketCodec<RegistryByteBuf, StorageArrayRecipe> packetCodec() {
+	public StreamCodec<RegistryFriendlyByteBuf, StorageArrayRecipe> streamCodec() {
 		return PACKET_CODEC;
 	}
 }

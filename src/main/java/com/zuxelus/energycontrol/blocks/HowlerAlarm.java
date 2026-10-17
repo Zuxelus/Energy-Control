@@ -1,61 +1,61 @@
 package com.zuxelus.energycontrol.blocks;
 
 import com.mojang.serialization.MapCodec;
-import net.minecraft.block.BlockWithEntity;
 import com.zuxelus.energycontrol.gui.ScreenHandler;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
 import com.zuxelus.zlib.blocks.FacingBlockSmall;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ShapeContext;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class HowlerAlarm extends FacingBlockSmall {
-	public static final MapCodec<HowlerAlarm> CODEC = createCodec(HowlerAlarm::new);
+	protected static final VoxelShape AABB_DOWN = Block.box(2.0D, 9.0D, 2.0D, 14.0D, 16.0D, 14.0D);
+	protected static final VoxelShape AABB_UP = Block.box(2.0D, 0.0D, 2.0D, 14.0D, 7.0D, 14.0D);
+	protected static final VoxelShape AABB_NORTH = Block.box(2.0D, 2.0D, 9.0D, 14.0D, 14.0D, 16.0D);
+	protected static final VoxelShape AABB_SOUTH = Block.box(2.0D, 2.0D, 0.0D, 14.0D, 14.0D, 7.0D);
+	protected static final VoxelShape AABB_WEST = Block.box(9.0D, 2.0D, 2.0D, 16.0D, 14.0D, 14.0D);
+	protected static final VoxelShape AABB_EAST = Block.box(0.0D, 2.0D, 2.0D, 7.0D, 14.0D, 14.0D);
+	public static final MapCodec<HowlerAlarm> CODEC = simpleCodec(HowlerAlarm::new);
 
 	@Override
-	protected MapCodec<? extends BlockWithEntity> getCodec() {
+	protected MapCodec<? extends BaseEntityBlock> codec() {
 		return CODEC;
 	}
-	protected static final VoxelShape AABB_DOWN = Block.createCuboidShape(2.0D, 9.0D, 2.0D, 14.0D, 16.0D, 14.0D);
-	protected static final VoxelShape AABB_UP = Block.createCuboidShape(2.0D, 0.0D, 2.0D, 14.0D, 7.0D, 14.0D);
-	protected static final VoxelShape AABB_NORTH = Block.createCuboidShape(2.0D, 2.0D, 9.0D, 14.0D, 14.0D, 16.0D);
-	protected static final VoxelShape AABB_SOUTH = Block.createCuboidShape(2.0D, 2.0D, 0.0D, 14.0D, 14.0D, 7.0D);
-	protected static final VoxelShape AABB_WEST = Block.createCuboidShape(9.0D, 2.0D, 2.0D, 16.0D, 14.0D, 14.0D);
-	protected static final VoxelShape AABB_EAST = Block.createCuboidShape(0.0D, 2.0D, 2.0D, 7.0D, 14.0D, 14.0D);
 
 	public HowlerAlarm() {
 		super(ModItems.blockSettings());
 	}
 
-	public HowlerAlarm(Settings settings) {
+	public HowlerAlarm(Properties settings) {
 		super(settings);
 	}
 
 	@Override
-	protected BlockEntityFacing newBlockEntity(BlockPos pos, BlockState state) {
+	protected BlockEntityFacing createFacingBlockEntity(BlockPos pos, BlockState state) {
 		return new TileEntityHowlerAlarm(pos, state);
 	}
 
 	@Override
-	public void neighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
-		if (!world.isClient)
-			world.updateListeners(pos, state, state, 2);
+	protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+		if (!level.isClientSide)
+			level.sendBlockUpdated(pos, state, state, 2);
 	}
 
 	@Override
-	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-		switch (state.get(FACING)) {
+	protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+		switch (state.getValue(FACING)) {
 		case EAST:
 			return AABB_EAST;
 		case WEST:
@@ -73,12 +73,12 @@ public class HowlerAlarm extends FacingBlockSmall {
 	}
 
 	@Override
-	protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-		if (world.isClient) {
-			BlockEntity be = world.getBlockEntity(pos);
-			if (be instanceof TileEntityHowlerAlarm)
-				ScreenHandler.openHowlerAlarmScreen((TileEntityHowlerAlarm) be);
+	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+		if (level.isClientSide) {
+			BlockEntity te = level.getBlockEntity(pos);
+			if (te instanceof TileEntityHowlerAlarm)
+				ScreenHandler.openHowlerAlarmScreen((TileEntityHowlerAlarm) te);
 		}
-		return ActionResult.SUCCESS;
+		return InteractionResult.SUCCESS;
 	}
 }

@@ -4,92 +4,92 @@ import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.*;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockWithEntity;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityTicker;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.state.StateManager.Builder;
-import net.minecraft.state.property.DirectionProperty;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.BlockMirror;
-import net.minecraft.util.BlockRotation;
-import net.minecraft.util.ItemScatterer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.Container;
+import net.minecraft.world.Containers;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
 
-public abstract class FacingHorizontal extends BlockWithEntity {
-	public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
+public abstract class FacingHorizontal extends BaseEntityBlock {
+	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-	public FacingHorizontal(AbstractBlock.Settings settings) {
-		super(settings);
-		setDefaultState(getDefaultState().with(FACING, Direction.NORTH));
+	public FacingHorizontal(Properties properties) {
+		super(properties);
+		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
 	}
 
-	protected abstract BlockEntityFacing newBlockEntity(BlockPos pos, BlockState state);
+	protected abstract BlockEntityFacing createFacingBlockEntity(BlockPos pos, BlockState state);
 
 	@Override
-	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-		BlockEntityFacing be = newBlockEntity(pos, state);
-		be.setFacing(state.get(FACING).getId());
+	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+		BlockEntityFacing be = createFacingBlockEntity(pos, state);
+		be.setFacing(state.getValue(FACING).get3DDataValue());
 		return be;
 	}
 
 	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
 		if (type == ModTileEntityTypes.holo_panel)
-			return validateTicker(type, type, TileEntityHoloPanel::tickStatic);
+			return createTickerHelper(type, type, TileEntityHoloPanel::tickStatic);
 		if (type == ModTileEntityTypes.holo_panel_extender)
-			return validateTicker(type, type, TileEntityHoloPanelExtender::tickStatic);
-		if (type == ModTileEntityTypes.remote_thermo)
-			return validateTicker(type, type, TileEntityRemoteThermalMonitor::tickStatic);
+			return createTickerHelper(type, type, TileEntityHoloPanelExtender::tickStatic);
 		if (type == ModTileEntityTypes.kit_assembler)
-			return validateTicker(type, type, TileEntityKitAssembler::tickStatic);
+			return createTickerHelper(type, type, TileEntityKitAssembler::tickStatic);
 		if (type == ModTileEntityTypes.range_trigger)
-			return validateTicker(type, type, TileEntityRangeTrigger::tickStatic);
+			return createTickerHelper(type, type, TileEntityRangeTrigger::tickStatic);
+		if (type == ModTileEntityTypes.remote_thermo)
+			return createTickerHelper(type, type, TileEntityRemoteThermalMonitor::tickStatic);
 		return null;
 	}
 
 	@Override
-	protected void appendProperties(Builder<Block, BlockState> builder) {
+	protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
 		builder.add(FACING);
 	}
 
 	@Override
-	public BlockState getPlacementState(ItemPlacementContext context) {
-		return getDefaultState().with(FACING, context.getPlayer().getHorizontalFacing().getOpposite());
+	public BlockState getStateForPlacement(BlockPlaceContext context) {
+		return defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
 	}
 
 	@Override
-	public BlockState rotate(BlockState state, BlockRotation rotation) {
+	protected BlockState rotate(BlockState state, Rotation rotation) {
 		return state;
 	}
 
 	@Override
-	public BlockState mirror(BlockState state, BlockMirror mirror) {
+	protected BlockState mirror(BlockState state, Mirror mirror) {
 		return state;
 	}
 
 	@Override
-	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+	protected RenderShape getRenderShape(BlockState state) {
+		return RenderShape.MODEL;
+	}
+
+	// From 1.21.2, BlockEntity.preRemoveSideEffects drops a Container's contents by default
+	@Override
+	protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
-			BlockEntity te = world.getBlockEntity(pos);
-			if (te instanceof Inventory) {
-				ItemScatterer.spawn(world, pos, (Inventory) te);
-				world.updateComparators(pos, this);
+			BlockEntity te = level.getBlockEntity(pos);
+			if (te instanceof Container) {
+				Containers.dropContents(level, pos, (Container) te);
+				level.updateNeighbourForOutputSignal(pos, this);
 			}
-			super.onStateReplaced(state, world, pos, newState, isMoving);
+			super.onRemove(state, level, pos, newState, isMoving);
 		}
-	}
-
-	@Override
-	public BlockRenderType getRenderType(BlockState state) {
-		return BlockRenderType.MODEL;
 	}
 }

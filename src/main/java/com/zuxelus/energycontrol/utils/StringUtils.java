@@ -5,8 +5,7 @@ import java.text.DecimalFormatSymbols;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public class StringUtils {
 	private static DecimalFormat formatter = null;
@@ -24,7 +23,7 @@ public class StringUtils {
 
 	public static String getFormatted(String resourceName, String value, boolean showLabels) {
 		if (showLabels)
-			return I18n.translate(resourceName, value);
+			return Translator.get(resourceName, value);
 		return value;
 	}
 
@@ -33,11 +32,11 @@ public class StringUtils {
 	}
 
 	public static String getFormattedKey(String resourceName, Object... arguments) {
-		return I18n.translate(resourceName, arguments);
+		return Translator.get(resourceName, arguments);
 	}
 
 	@Environment(EnvType.CLIENT)
 	public static String getItemName(ItemStack stack) {
-		return stack.getName().getString();
+		return stack.getHoverName().getString();
 	}
 }

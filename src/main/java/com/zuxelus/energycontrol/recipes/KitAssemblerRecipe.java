@@ -3,15 +3,15 @@ package com.zuxelus.energycontrol.recipes;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.recipe.Recipe;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.RecipeType;
-import net.minecraft.recipe.input.RecipeInput;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.world.World;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeInput;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 
 public class KitAssemblerRecipe implements Recipe<RecipeInput> {
 	public final Ingredient input1;
@@ -35,53 +35,53 @@ public class KitAssemblerRecipe implements Recipe<RecipeInput> {
 	}
 
 	public boolean isSuitable(TileEntityKitAssembler te) {
-		ItemStack stack1 = te.getStack(TileEntityKitAssembler.SLOT_CARD1);
+		ItemStack stack1 = te.getItem(TileEntityKitAssembler.SLOT_CARD1);
 		if (stack1.isEmpty() || stack1.getCount() < count1 || !input1.test(stack1))
 			return false;
-		ItemStack stack2 = te.getStack(TileEntityKitAssembler.SLOT_ITEM);
+		ItemStack stack2 = te.getItem(TileEntityKitAssembler.SLOT_ITEM);
 		if (stack2.isEmpty() || stack2.getCount() < count2 || !input2.test(stack2))
 			return false;
-		ItemStack stack3 = te.getStack(TileEntityKitAssembler.SLOT_CARD2);
+		ItemStack stack3 = te.getItem(TileEntityKitAssembler.SLOT_CARD2);
 		if (stack3.isEmpty() || stack3.getCount() < count3 || !input3.test(stack3))
 			return false;
-		ItemStack result = te.getStack(TileEntityKitAssembler.SLOT_RESULT);
+		ItemStack result = te.getItem(TileEntityKitAssembler.SLOT_RESULT);
 		if (!result.isEmpty()) {
-			if (!ItemStack.areItemsEqual(result, output))
+			if (!ItemStack.isSameItem(result, output))
 				return false;
-			if (result.getCount() + output.getCount() > result.getMaxCount())
+			if (result.getCount() + output.getCount() > result.getMaxStackSize())
 				return false;
 		}
 		return true;
 	}
 
 	@Override
-	public boolean matches(RecipeInput inv, World world) {
+	public NonNullList<Ingredient> getIngredients() {
+		return NonNullList.of(Ingredient.EMPTY, input1, input2, input3);
+	}
+
+	@Override
+	public boolean matches(RecipeInput inv, Level level) {
 		return false;
 	}
 
 	@Override
-	public boolean isIgnoredInRecipeBook() {
+	public boolean isSpecial() {
 		return true;
 	}
 
 	@Override
-	public ItemStack craft(RecipeInput inv, RegistryWrapper.WrapperLookup registryManager) {
+	public ItemStack assemble(RecipeInput inv, HolderLookup.Provider registryManager) {
 		return output;
 	}
 
 	@Override
-	public boolean fits(int width, int height) {
+	public boolean canCraftInDimensions(int width, int height) {
 		return true;
 	}
 
 	@Override
-	public ItemStack getResult(RegistryWrapper.WrapperLookup registryManager) {
+	public ItemStack getResultItem(HolderLookup.Provider registryManager) {
 		return ItemStack.EMPTY;
-	}
-
-	@Override
-	public DefaultedList<Ingredient> getIngredients() {
-		return DefaultedList.copyOf(Ingredient.EMPTY, input1, input2, input3);
 	}
 
 	@Override

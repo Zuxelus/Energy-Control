@@ -3,14 +3,14 @@ package com.zuxelus.energycontrol.api;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public interface ICardReader {
 
@@ -59,6 +59,20 @@ public interface ICardReader {
 	String getTitle();
 
 	/**
+	 * Changes the id of the card. Used for Web Socket data.
+	 * 
+	 * @param id
+	 */
+	void setId(String id);
+
+	/**
+	 * Get id of the card. Used for Web Socket data.
+	 * 
+	 * @return
+	 */
+	String getId();
+
+	/**
 	 * Get current card state. In most cases shouldn't be called by card.
 	 * 
 	 * @return
@@ -68,7 +82,7 @@ public interface ICardReader {
 	/**
 	 * Set the state of card. In most cases shouldn't be called by card, use
 	 * return value of
-	 * {@link IItemCard#update(World, ICardReader, int, BlockPos)} instead.
+	 * {@link IItemCard#update(Level, ICardReader, int, BlockPos)} instead.
 	 * 
 	 * @param state
 	 */
@@ -91,15 +105,15 @@ public interface ICardReader {
 
 	void updateServer(ItemStack stack, BlockEntity panel, int slot);
 
-	void setTag(String name, NbtElement value);
+	void setTag(String name, Tag value);
 
-	NbtCompound getTag(String name);
+	CompoundTag getTag(String name);
 
-	NbtList getTagList(String name, int type);
+	ListTag getTagList(String name, int type);
 
-	ArrayList<ItemStack> getItemStackList(boolean reset, RegistryWrapper.WrapperLookup registries);
+	ArrayList<ItemStack> getItemStackList(boolean reset, HolderLookup.Provider registries);
 	
-	void setItemStackList(ArrayList<ItemStack> list, RegistryWrapper.WrapperLookup registries);
+	void setItemStackList(ArrayList<ItemStack> list, HolderLookup.Provider registries);
 
 	List<PanelString> getTitleList();
 
@@ -107,5 +121,5 @@ public interface ICardReader {
 
 	void reset();
 
-	void copyFrom(NbtCompound tag);
+	void copyFrom(CompoundTag tag);
 }

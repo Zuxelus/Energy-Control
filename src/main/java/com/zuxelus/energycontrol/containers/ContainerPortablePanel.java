@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.containers;
 
+import com.zuxelus.energycontrol.api.IItemCard;
 import com.zuxelus.energycontrol.api.ItemStackHelper;
 import com.zuxelus.energycontrol.containers.slots.SlotCard;
 import com.zuxelus.energycontrol.containers.slots.SlotRange;
@@ -8,27 +9,28 @@ import com.zuxelus.energycontrol.items.InventoryPortablePanel;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.zlib.containers.ContainerBase;
+import com.zuxelus.zlib.containers.slots.SlotLocked;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.util.Hand;
+import net.minecraft.world.Container;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel> {
 	private static final String SHOW_BARS = "showBars";
-	private PlayerEntity player;
-	private static final int OFF_HAND_SLOT = 40; // PlayerInventory.OFF_HAND_SLOT
+	public static final int OFF_HAND_SLOT = 40; // PlayerInventory.OFF_HAND_SLOT
+	private Player player;
+	// inventory slot of the open panel; it stays in the hand, so it is locked
 	private final int panelSlot;
 
-	public ContainerPortablePanel(int windowId, PlayerInventory inventory, Hand hand) {
-		super(new InventoryPortablePanel(inventory.player.getStackInHand(hand), hand), ModContainerTypes.portable_panel, windowId);
+	public ContainerPortablePanel(int windowId, Inventory inventory, InteractionHand hand) {
+		super(new InventoryPortablePanel(inventory.player.getItemInHand(hand), hand), ModContainerTypes.portable_panel, windowId);
 		this.player = inventory.player;
-		this.panelSlot = hand == Hand.OFF_HAND ? OFF_HAND_SLOT : inventory.selectedSlot;
+		this.panelSlot = hand == InteractionHand.OFF_HAND ? OFF_HAND_SLOT : inventory.selected;
 
 		addSlot(new SlotCard(te, 0, 174, 17));
 		addSlot(new SlotRange(te, 1, 174, 35));
@@ -36,27 +38,26 @@ public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel
 		addPlayerInventoryTopSlots(inventory, 8, 188);
 	}
 
-	// the open panel stays in the hand, so its slot is locked
 	@Override
-	protected void addPlayerInventoryTopSlots(Inventory inventory, int width, int height) {
+	protected void addPlayerInventoryTopSlots(Container inventory, int width, int height) {
 		for (int col = 0; col < 9; col++)
 			if (col == panelSlot)
-				addSlot(new LockedSlot(inventory, col, width + col * 18, height - 24));
+				// the open panel stays in the hand, so its slot is locked
+				addSlot(new SlotLocked(inventory, col, width + col * 18, height - 24));
 			else
 				addSlot(new Slot(inventory, col, width + col * 18, height - 24));
 	}
 
 	@Override
-	public void onSlotClick(int slotIndex, int button, SlotActionType actionType, PlayerEntity player) {
+	public void clicked(int slotIndex, int button, ClickType actionType, Player player) {
 		// number keys (or F for the off hand) would swap the panel out of its slot
-		if (actionType == SlotActionType.SWAP && button == panelSlot)
+		if (actionType == ClickType.SWAP && button == panelSlot)
 			return;
-		super.onSlotClick(slotIndex, button, actionType, player);
+		super.clicked(slotIndex, button, actionType, player);
 	}
 
 	public boolean getShowBars() {
-		NbtCompound tag = ItemStackHelper.getTag(te.getParent());
-		return tag != null && tag.getBoolean(SHOW_BARS);
+		return ItemStackHelper.getTag(te.getParent()).getBoolean(SHOW_BARS);
 	}
 
 	public void setShowBars(boolean value) {
@@ -64,37 +65,21 @@ public class ContainerPortablePanel extends ContainerBase<InventoryPortablePanel
 	}
 
 	@Override
-	public void sendContentUpdates() {
+	public void broadcastChanges() {
 		processCard();
-		super.sendContentUpdates();
+		super.broadcastChanges();
 	}
 
 	private void processCard() {
-		ItemStack card = te.getStack(InventoryPortablePanel.SLOT_CARD);
+		ItemStack card = te.getItem(InventoryPortablePanel.SLOT_CARD);
 		if (card.isEmpty())
 			return;
 
 		Item item = card.getItem();
-		if (!(item instanceof ItemCardMain))
+		if (!ItemCardMain.isCard(card))
 			return;
 
 		ItemCardReader reader = new ItemCardReader(card);
-		((ItemCardMain) item).updateCardNBT(player.getWorld(), player.getBlockPos(), reader, te.getStack(InventoryPortablePanel.SLOT_UPGRADE_RANGE));
-	}
-
-	private static class LockedSlot extends Slot {
-		public LockedSlot(Inventory inventory, int index, int x, int y) {
-			super(inventory, index, x, y);
-		}
-
-		@Override
-		public boolean canTakeItems(PlayerEntity player) {
-			return false;
-		}
-
-		@Override
-		public boolean canInsert(ItemStack stack) {
-			return false;
-		}
+		ItemCardMain.updateCardNBT((IItemCard) item, player.level(), player.blockPosition(), reader, te.getItem(InventoryPortablePanel.SLOT_UPGRADE_RANGE));
 	}
 }

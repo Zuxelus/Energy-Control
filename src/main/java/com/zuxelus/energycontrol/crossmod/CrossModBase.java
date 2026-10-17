@@ -4,30 +4,30 @@ import java.util.List;
 
 import com.zuxelus.energycontrol.utils.FluidInfo;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class CrossModBase {
 
-	public NbtCompound getEnergyData(BlockEntity te) {
+	public CompoundTag getEnergyData(BlockEntity te) {
 		return null;
+	}
+
+	public CompoundTag getCardData(BlockEntity te) {
+		return null;
+	}
+
+	public CompoundTag getInventoryData(BlockEntity te) {
+		return null;
+	}
+
+	public int getReactorHeat(Level level, BlockPos pos) {
+		return -1;
 	}
 
 	public List<FluidInfo> getAllTanks(BlockEntity te) {
 		return null;
-	}
-
-	public NbtCompound getCardData(BlockEntity te) {
-		return null;
-	}
-
-	public NbtCompound getInventoryData(BlockEntity te) {
-		return null;
-	}
-
-	public int getReactorHeat(World world, BlockPos pos) {
-		return -1;
 	}
 }

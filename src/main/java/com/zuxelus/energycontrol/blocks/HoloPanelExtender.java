@@ -1,54 +1,54 @@
 package com.zuxelus.energycontrol.blocks;
 
 import com.mojang.serialization.MapCodec;
-import net.minecraft.block.BlockWithEntity;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityHoloPanelExtender;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 
 public class HoloPanelExtender extends HoloPanel {
-	public static final MapCodec<HoloPanelExtender> CODEC = createCodec(settings -> new HoloPanelExtender());
+	public static final MapCodec<HoloPanelExtender> CODEC = simpleCodec(settings -> new HoloPanelExtender());
 
 	@Override
-	protected MapCodec<? extends BlockWithEntity> getCodec() {
+	protected MapCodec<? extends BaseEntityBlock> codec() {
 		return CODEC;
 	}
 
 	@Override
-	protected BlockEntityFacing newBlockEntity(BlockPos pos, BlockState state) {
-		return ModTileEntityTypes.holo_panel_extender.instantiate(pos, state);
+	protected BlockEntityFacing createFacingBlockEntity(BlockPos pos, BlockState state) {
+		return ModTileEntityTypes.holo_panel_extender.create(pos, state);
 	}
 
 	// an extender follows the core panel (TileEntityInfoPanel.updateExtenders), not its own redstone signal
 	@Override
-	public void neighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) { }
+	protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) { }
 
 	@Override
-	public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) { }
+	protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) { }
 
 	@Override
-	protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-		if (world.isClient)
-			return ActionResult.PASS;
-		BlockEntity te = world.getBlockEntity(pos);
+	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+		if (level.isClientSide)
+			return InteractionResult.PASS;
+		BlockEntity te = level.getBlockEntity(pos);
 		if (!(te instanceof TileEntityHoloPanelExtender))
-			return ActionResult.PASS;
+			return InteractionResult.PASS;
 		TileEntityInfoPanel panel = ((TileEntityHoloPanelExtender) te).getCore();
 		if (panel == null)
-			return ActionResult.PASS;
-		player.openHandledScreen(panel); // the extender has no GUI of its own, open the core panel's
-		return ActionResult.SUCCESS;
+			return InteractionResult.PASS;
+		player.openMenu(panel); // the extender has no GUI of its own, open the core panel's
+		return InteractionResult.SUCCESS;
 	}
 }

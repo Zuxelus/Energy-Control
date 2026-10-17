@@ -1,164 +1,57 @@
 package com.zuxelus.energycontrol.renderers;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.tileentities.TileEntityThermalMonitor;
 
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory.Context;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.RotationAxis;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
+import net.minecraft.resources.ResourceLocation;
 
 public class TEThermalMonitorRenderer implements BlockEntityRenderer<TileEntityThermalMonitor> {
-	private static final Identifier TEXTURE0 = Identifier.of(EnergyControl.MODID, "textures/block/thermal_monitor/all0.png");
-	private static final Identifier TEXTURE1 = Identifier.of(EnergyControl.MODID, "textures/block/thermal_monitor/all1.png");
-	private static final Identifier TEXTURE2 = Identifier.of(EnergyControl.MODID, "textures/block/thermal_monitor/all2.png");
-	private static final CubeRenderer model = new CubeRenderer(2, 0, 2, 28, 14, 28, 128, 64, 0, 0);
-	private final TextRenderer font;
+	private static final ResourceLocation TEXTURE0 = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/block/thermal_monitor/all0.png");
+	private static final ResourceLocation TEXTURE1 = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/block/thermal_monitor/all1.png");
+	private static final ResourceLocation TEXTURE2 = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "textures/block/thermal_monitor/all2.png");
+	private final Font font;
 
 	public TEThermalMonitorRenderer(Context ctx) {
-		font = ctx.getTextRenderer();
+		font = ctx.getFont();
 	}
 
-	@SuppressWarnings("incomplete-switch")
 	@Override
-	public void render(TileEntityThermalMonitor te, float partialTicks, MatrixStack matrixStack, VertexConsumerProvider buffer, int combinedLight, int combinedOverlay) {
-		matrixStack.push();
-		switch (te.getFacing()) {
-		case UP:
-			switch (te.getRotation()) {
-			case NORTH:
-				matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0F));
-				matrixStack.translate(-1.0F, 0.0F, -1.0F);
-				break;
-			case SOUTH:
-				break;
-			case WEST:
-				matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-90.0F));
-				matrixStack.translate(0.0F, 0.0F, -1.0F);
-				break;
-			case EAST:
-				matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(90.0F));
-				matrixStack.translate(-1.0F, 0.0F, 0.0F);
-				break;
-			}
-			break;
-		case NORTH:
-			matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-90.0F));
-			matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0F));
-			matrixStack.translate(-1.0F, -1.0F, -1.0F);
-			switch (te.getRotation()) {
-			case UP:
-				matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0F));
-				matrixStack.translate(-1.0F, 0.0F, -1.0F);
-				break;
-			case DOWN:
-				break;
-			case EAST:
-				matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-90.0F));
-				matrixStack.translate(0.0F, 0.0F, -1.0F);
-				break;
-			case WEST:
-				matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(90.0F));
-				matrixStack.translate(-1.0F, 0.0F, 0.0F);
-				break;
-			}
-			break;
-		case SOUTH:
-			matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90.0F));
-			matrixStack.translate(0.0F, 0.0F, -1.0F);
-			switch (te.getRotation()) {
-			case UP:
-				matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0F));
-				matrixStack.translate(-1.0F, 0.0F, -1.0F);
-				break;
-			case DOWN:
-				break;
-			case WEST:
-				matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-90.0F));
-				matrixStack.translate(0.0F, 0.0F, -1.0F);
-				break;
-			case EAST:
-				matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(90.0F));
-				matrixStack.translate(-1.0F, 0.0F, 0.0F);
-				break;
-			}
-			break;
-		case DOWN:
-			matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180.0F));
-			matrixStack.translate(0.0F, -1.0F, -1.0F);
-			break;
-		case WEST:
-			matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(90.0F));
-			matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-90.0F));
-			matrixStack.translate(0.0F, -1.0F, -1.0F);
-			switch (te.getRotation()) {
-			case UP:
-				matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0F));
-				matrixStack.translate(-1.0F, 0.0F, -1.0F);
-				break;
-			case DOWN:
-				break;
-			case NORTH:
-				matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-90.0F));
-				matrixStack.translate(0.0F, 0.0F, -1.0F);
-				break;
-			case SOUTH:
-				matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(90.0F));
-				matrixStack.translate(-1.0F, 0.0F, 0.0F);
-				break;
-			}
-			break;
-		case EAST:
-			matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(-90.0F));
-			matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(90.0F));
-			matrixStack.translate(-1.0F, 0.0F, -1.0F);
-			switch (te.getRotation()) {
-			case UP:
-				matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0F));
-				matrixStack.translate(-1.0F, 0.0F, -1.0F);
-				break;
-			case DOWN:
-				break;
-			case SOUTH:
-				matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-90.0F));
-				matrixStack.translate(0.0F, 0.0F, -1.0F);
-				break;
-			case NORTH:
-				matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(90.0F));
-				matrixStack.translate(-1.0F, 0.0F, 0.0F);
-				break;
-			}
-			break;
-		}
+	public void render(TileEntityThermalMonitor te, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
+		matrixStack.pushPose();
+		CubeRenderer.rotateBlock(matrixStack, te.getFacing(), te.getRotation());
 
-		VertexConsumer vertexBuilder;
+		ResourceLocation texture;
 		switch (te.getStatus()) {
 		case 0:
-			vertexBuilder = buffer.getBuffer(RenderLayer.getEntitySolid(TEXTURE1));
+			texture = TEXTURE1;
 			break;
 		case 1:
-			vertexBuilder = buffer.getBuffer(RenderLayer.getEntitySolid(TEXTURE2));
+			texture = TEXTURE2;
 			break;
 		default:
-			vertexBuilder = buffer.getBuffer(RenderLayer.getEntitySolid(TEXTURE0));
+			texture = TEXTURE0;
 			break;
 		}
-		model.render(matrixStack, vertexBuilder, TileEntityInfoPanelRenderer.getBlockLight(te), combinedOverlay);
-		int value = te.getHeatLevel();
-		matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90.0F));
+		CubeRenderer.MODEL.render(matrixStack, buffer.getBuffer(RenderType.entitySolid(texture)), CubeRenderer.getBlockLight(te), combinedOverlay);
+
+		matrixStack.mulPose(Axis.XP.rotationDegrees(90.0F));
 		matrixStack.translate(0.5F, 0.45F, -0.4376F);
 		matrixStack.scale(0.015625F, 0.015625F, 0.015625F);
-		font.draw(String.valueOf(value), -font.getWidth(String.valueOf(value)) / 2, -font.fontHeight, 0x000000, false, matrixStack.peek().getPositionMatrix(), buffer, TextRenderer.TextLayerType.NORMAL, 0, combinedLight);
-		matrixStack.pop();
+
+		String value = String.valueOf(te.getHeatLevel());
+		RenderHelper.drawString(matrixStack, buffer, value, -font.width(value) / 2, -font.lineHeight, 0x000000, Font.DisplayMode.NORMAL, combinedLight);
+		matrixStack.popPose();
 	}
 
 	@Override
-	public int getRenderDistance() {
+	public int getViewDistance() { // fabric only
 		return 65536;
 	}
 }

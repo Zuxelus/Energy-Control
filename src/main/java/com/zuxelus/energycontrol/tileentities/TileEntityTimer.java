@@ -7,22 +7,19 @@ import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityTimer extends BlockEntityFacing implements ExtendedScreenHandlerFactory<BlockPos>, ITilePacketHandler {
 	private int time;
@@ -59,7 +56,7 @@ public class TileEntityTimer extends BlockEntityFacing implements ExtendedScreen
 	public void setTime(int value) {
 		int old = time;
 		time = value;
-		if (!world.isClient && time != old)
+		if (!level.isClientSide && time != old)
 			notifyBlockUpdate();
 	}
 
@@ -70,7 +67,7 @@ public class TileEntityTimer extends BlockEntityFacing implements ExtendedScreen
 	public void setInvertRedstone(boolean value) {
 		boolean old = invertRedstone;
 		invertRedstone = value;
-		if (!world.isClient && invertRedstone != old)
+		if (!level.isClientSide && invertRedstone != old)
 			notifyBlockUpdate();
 	}
 
@@ -83,7 +80,7 @@ public class TileEntityTimer extends BlockEntityFacing implements ExtendedScreen
 		isWorking = value;
 		if (isWorking)
 			startingTime = time;
-		if (!world.isClient && isWorking != old)
+		if (!level.isClientSide && isWorking != old)
 			notifyBlockUpdate();
 	}
 
@@ -94,7 +91,7 @@ public class TileEntityTimer extends BlockEntityFacing implements ExtendedScreen
 	public void setIsTicks(boolean value) {
 		boolean old = isTicks;
 		isTicks = value;
-		if (!world.isClient && isTicks != old)
+		if (!level.isClientSide && isTicks != old)
 			notifyBlockUpdate();
 	}
 
@@ -103,7 +100,7 @@ public class TileEntityTimer extends BlockEntityFacing implements ExtendedScreen
 	}
 
 	public void onNeighborChange(Block fromBlock, BlockPos fromPos) { // server
-		boolean newPowered = world.getEmittedRedstonePower(pos.offset(rotation), rotation) > 0;
+		boolean newPowered = level.getSignal(worldPosition.relative(rotation), rotation) > 0;
 		if (newPowered != isPowered) {
 			if (!isPowered && newPowered) {
 				time = startingTime;
@@ -114,7 +111,7 @@ public class TileEntityTimer extends BlockEntityFacing implements ExtendedScreen
 	}
 
 	@Override
-	public void onServerMessageReceived(NbtCompound tag) {
+	public void onServerMessageReceived(CompoundTag tag) {
 		if (!tag.contains("type"))
 			return;
 		switch (tag.getInt("type")) {
@@ -138,7 +135,7 @@ public class TileEntityTimer extends BlockEntityFacing implements ExtendedScreen
 	}
 
 	@Override
-	public void onClientMessageReceived(NbtCompound tag) {
+	public void onClientMessageReceived(CompoundTag tag) {
 		if (!tag.contains("type"))
 			return;
 		switch (tag.getInt("type")) {
@@ -154,26 +151,13 @@ public class TileEntityTimer extends BlockEntityFacing implements ExtendedScreen
 	}
 
 	@Override
-	public Packet<ClientPlayPacketListener> toUpdatePacket() {
-		return BlockEntityUpdateS2CPacket.create(this);
-	}
-
-	@Override
-	public void onDataPacket(BlockEntityUpdateS2CPacket pkt) {
-		readProperties(pkt.getNbt(), world.getRegistryManager());
-	}
-
-	@Override
-	public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registries) {
-		NbtCompound tag = super.toInitialChunkDataNbt(registries);
-		tag = writeProperties(tag, registries);
+	protected void writeUpdateData(CompoundTag tag, HolderLookup.Provider registries) {
 		tag.putBoolean("isTicks", isTicks);
 		tag.putBoolean("poweredBlock", sendSignal);
-		return tag;
 	}
 
 	@Override
-	protected void readProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
+	protected void readProperties(CompoundTag tag, HolderLookup.Provider registries) {
 		super.readProperties(tag, registries);
 		if (tag.contains("timer"))
 			time = tag.getInt("timer");
@@ -192,38 +176,25 @@ public class TileEntityTimer extends BlockEntityFacing implements ExtendedScreen
 	}
 
 	@Override
-	protected void readNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
-		super.readNbt(tag, registries);
-		readProperties(tag, registries);
-	}
-
-	@Override
-	protected NbtCompound writeProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
-		tag = super.writeProperties(tag, registries);
+	protected void writeProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.writeProperties(tag, registries);
 		tag.putInt("timer", time);
 		tag.putInt("startingTime", startingTime);
 		tag.putBoolean("invert", invertRedstone);
 		tag.putBoolean("isWorking", isWorking);
 		tag.putBoolean("isTicks", isTicks);
 		tag.putBoolean("isPowered", isPowered);
-		return tag;
 	}
 
 	@Override
-	protected void writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
-		super.writeNbt(tag, registries);
-		writeProperties(tag, registries);
-	}
-
-	@Override
-	public void markRemoved() {
+	public void setRemoved() {
 		// also called while the chunk unloads; touching the world then loads the chunk again and never finishes unloading
-		if (Screen.isLoaded(world, pos))
-			world.updateNeighborsAlways(pos, world.getBlockState(pos).getBlock());
-		super.markRemoved();
+		if (Screen.isLoaded(level, worldPosition))
+			level.updateNeighborsAt(worldPosition, level.getBlockState(worldPosition).getBlock());
+		super.setRemoved();
 	}
 
-	public static void tickStatic(World level, BlockPos pos, BlockState state, BlockEntity be) {
+	public static void tickStatic(Level level, BlockPos pos, BlockState state, BlockEntity be) {
 		if (!(be instanceof TileEntityTimer))
 			return;
 		TileEntityTimer te = (TileEntityTimer) be;
@@ -231,7 +202,7 @@ public class TileEntityTimer extends BlockEntityFacing implements ExtendedScreen
 	}
 
 	protected void tick() {
-		if (world.isClient)
+		if (level.isClientSide)
 			return;
 		if (!isWorking)
 			return;
@@ -247,15 +218,15 @@ public class TileEntityTimer extends BlockEntityFacing implements ExtendedScreen
 
 	@Override
 	protected void notifyBlockUpdate() {
-		BlockState state = world.getBlockState(pos);
+		BlockState state = level.getBlockState(worldPosition);
 		Block block = state.getBlock();
 		if (block instanceof TimerBlock) {
 			boolean newValue = time > 0 && isWorking ? !invertRedstone : invertRedstone;
 			if (sendSignal != newValue) {
 				sendSignal = newValue;
-				world.updateNeighborsAlways(pos, block);
+				level.updateNeighborsAt(worldPosition, block);
 			}
-			world.updateListeners(pos, state, state, 2);
+			level.sendBlockUpdated(worldPosition, state, state, 2);
 		}
 	}
 
@@ -266,17 +237,17 @@ public class TileEntityTimer extends BlockEntityFacing implements ExtendedScreen
 
 	// NamedScreenHandlerFactory
 	@Override
-	public ScreenHandler createMenu(int windowId, PlayerInventory inventory, PlayerEntity player) {
+	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerTimer(windowId, inventory, this);
 	}
 
 	@Override
-	public Text getDisplayName() {
-		return Text.translatable(ModItems.timer.getTranslationKey());
+	public Component getDisplayName() {
+		return Component.translatable(ModItems.timer.getDescriptionId());
 	}
 
 	@Override
-	public BlockPos getScreenOpeningData(ServerPlayerEntity player) {
-		return pos;
+	public BlockPos getScreenOpeningData(ServerPlayer player) {
+		return worldPosition;
 	}
 }

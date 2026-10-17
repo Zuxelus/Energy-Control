@@ -9,21 +9,22 @@ import com.zuxelus.energycontrol.api.PanelSetting;
 import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.utils.StringUtils;
+import com.zuxelus.energycontrol.utils.DataHelper;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class ItemCardEnergyArray extends ItemCardMain {
 	private static final int STATUS_NOT_FOUND = Integer.MIN_VALUE;
 	private static final int STATUS_OUT_OF_RANGE = Integer.MIN_VALUE + 1;
 
 	@Override
-	public CardState update(World world, ICardReader reader, int range, BlockPos pos) {
+	public CardState update(Level level, ICardReader reader, int range, BlockPos pos) {
 		int cardCount = reader.getCardCount();
 		if (cardCount == 0)
 			return CardState.INVALID_CARD;
@@ -37,15 +38,15 @@ public class ItemCardEnergyArray extends ItemCardMain {
 			int dy = target.getY() - pos.getY();
 			int dz = target.getZ() - pos.getZ();
 			if (Math.abs(dx) <= range && Math.abs(dy) <= range && Math.abs(dz) <= range) {
-				BlockEntity te = world.getBlockEntity(target);
+				BlockEntity te = level.getBlockEntity(target);
 				if (te != null) {
-					NbtCompound tag = CrossModLoader.getEnergyData(te);
+					CompoundTag tag = CrossModLoader.getEnergyData(te);
 					if (tag != null) {
-						double stored = tag.getDouble("storage");
-						double capacity = tag.getDouble("maxStorage");
+						double stored = tag.getDouble(DataHelper.ENERGY);
+						double capacity = tag.getDouble(DataHelper.CAPACITY);
 						totalEnergy += stored;
 						reader.setInt(String.format("_%denergy", i), (int) stored);
-						reader.setInt(String.format("_%dmaxStorage", i), (int) capacity);
+						reader.setInt(String.format("_%dmaxCapacity", i), (int) capacity);
 						foundAny = true;
 					} else
 						reader.setInt(String.format("_%denergy", i), STATUS_NOT_FOUND);
@@ -66,7 +67,7 @@ public class ItemCardEnergyArray extends ItemCardMain {
 	}
 
 	@Override
-	public List<PanelString> getStringData(World world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(Level level, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		double totalEnergy = 0;
 		double totalStorage = 0;
@@ -78,7 +79,7 @@ public class ItemCardEnergyArray extends ItemCardMain {
 		boolean showPercentage = (settings & 32) > 0;
 		for (int i = 0; i < reader.getCardCount(); i++) {
 			int energy = reader.getInt(String.format("_%denergy", i));
-			int storage = reader.getInt(String.format("_%dmaxStorage", i));
+			int storage = reader.getInt(String.format("_%dmaxCapacity", i));
 			boolean isOutOfRange = energy == STATUS_OUT_OF_RANGE;
 			boolean isNotFound = energy == STATUS_NOT_FOUND;
 			if (showSummary && !isOutOfRange && !isNotFound) {
@@ -136,12 +137,12 @@ public class ItemCardEnergyArray extends ItemCardMain {
 	@Environment(EnvType.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(6);
-		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelEachCard"), 1));
-		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelEnergy"), 4));
-		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelFree"), 8));
-		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelStorage"), 16));
-		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelPercentage"), 32));
-		result.add(new PanelSetting(I18n.translate("msg.ec.cbInfoPanelTotal"), 2));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelEachCard"), 1));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelEnergy"), 4));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelFree"), 8));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelStorage"), 16));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelPercentage"), 32));
+		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelTotal"), 2));
 		return result;
 	}
 

@@ -1,7 +1,6 @@
 package com.zuxelus.energycontrol.blocks;
 
 import com.mojang.serialization.MapCodec;
-import net.minecraft.block.BlockWithEntity;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityRemoteThermalMonitor;
@@ -9,21 +8,22 @@ import com.zuxelus.energycontrol.tileentities.TileEntityThermalMonitor;
 import com.zuxelus.zlib.blocks.FacingHorizontal;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 
 public class RemoteThermalMonitor extends FacingHorizontal {
-	public static final MapCodec<RemoteThermalMonitor> CODEC = createCodec(settings -> new RemoteThermalMonitor());
+	public static final MapCodec<RemoteThermalMonitor> CODEC = simpleCodec(settings -> new RemoteThermalMonitor());
 
 	@Override
-	protected MapCodec<? extends BlockWithEntity> getCodec() {
+	protected MapCodec<? extends BaseEntityBlock> codec() {
 		return CODEC;
 	}
 
@@ -32,22 +32,22 @@ public class RemoteThermalMonitor extends FacingHorizontal {
 	}
 
 	@Override
-	protected BlockEntityFacing newBlockEntity(BlockPos pos, BlockState state) {
-		return ModTileEntityTypes.remote_thermo.instantiate(pos, state);
+	protected BlockEntityFacing createFacingBlockEntity(BlockPos pos, BlockState state) {
+		return ModTileEntityTypes.remote_thermo.create(pos, state);
 	}
 
 	@Override
-	protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-		BlockEntity te = world.getBlockEntity(pos);
+	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+		BlockEntity te = level.getBlockEntity(pos);
 		if (!(te instanceof TileEntityRemoteThermalMonitor))
-			return ActionResult.PASS;
-		if (!world.isClient)
-			player.openHandledScreen(state.createScreenHandlerFactory(world, pos));
-		return ActionResult.SUCCESS;
+			return InteractionResult.PASS;
+		if (!level.isClientSide)
+			player.openMenu(state.getMenuProvider(level, pos));
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
-	public int getWeakRedstonePower(BlockState state, BlockView blockAccess, BlockPos pos, Direction side) {
+	protected int getSignal(BlockState state, BlockGetter blockAccess, BlockPos pos, Direction side) {
 		BlockEntity te = blockAccess.getBlockEntity(pos);
 		if (!(te instanceof TileEntityThermalMonitor))
 			return 0;
@@ -55,7 +55,7 @@ public class RemoteThermalMonitor extends FacingHorizontal {
 	}
 
 	@Override
-	public boolean emitsRedstonePower(BlockState state) {
+	protected boolean isSignalSource(BlockState state) {
 		return true;
 	}
 }

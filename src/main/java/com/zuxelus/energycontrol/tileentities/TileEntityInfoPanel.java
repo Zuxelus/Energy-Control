@@ -5,8 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.renderers.RotationOffset;
 import com.zuxelus.energycontrol.api.*;
 import com.zuxelus.energycontrol.blocks.HoloPanelExtender;
 import com.zuxelus.energycontrol.blocks.InfoPanelExtender;
@@ -16,34 +16,32 @@ import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
+import com.zuxelus.energycontrol.renderers.RotationOffset;
 import com.zuxelus.zlib.blocks.FacingBlockActive;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 public class TileEntityInfoPanel extends TileEntityInventory implements ExtendedScreenHandlerFactory<BlockPos>, ITilePacketHandler, IScreenPart, ISlotItemFilter {
 	public static final String NAME = "info_panel";
@@ -59,7 +57,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	private final Map<Integer, List<PanelString>> cardData;
 	protected final Map<Integer, Map<String, Integer>> displaySettings;
 	protected Screen screen;
-	public NbtCompound screenData;
+	public CompoundTag screenData;
 	public boolean init;
 	protected int updateTicker;
 	protected int dataTicker;
@@ -71,6 +69,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 
 	protected boolean colored;
 	public boolean powered;
+	private boolean unloaded;
 
 	public TileEntityInfoPanel(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -92,7 +91,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 
 	private void initData() {
 		init = true;
-		if (world.isClient)
+		if (level.isClientSide)
 			return;
 
 		if (screenData == null) {
@@ -100,14 +99,14 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 		} else {
 			screen = EnergyControl.screenManager.loadScreen(this);
 			if (screen != null)
-				screen.init(true, world);
+				screen.init(true, level);
 		}
 		notifyBlockUpdate();
 	}
 
 	@Override
 	public void setFacing(int meta) {
-		Direction newFacing = Direction.byId(meta);
+		Direction newFacing = Direction.from3DDataValue(meta);
 		if (facing == newFacing)
 			return;
 		facing = newFacing;
@@ -122,7 +121,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	}
 
 	public void setShowLabels(boolean newShowLabels) {
-		if (!world.isClient && showLabels != newShowLabels)
+		if (!level.isClientSide && showLabels != newShowLabels)
 			notifyBlockUpdate();
 		showLabels = newShowLabels;
 	}
@@ -132,7 +131,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	}
 
 	public void setTickRate(int newValue) {
-		if (!world.isClient && tickRate != newValue)
+		if (!level.isClientSide && tickRate != newValue)
 			notifyBlockUpdate();
 		tickRate = newValue;
 	}
@@ -142,7 +141,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	}
 
 	public void setColored(boolean newColored) {
-		if (!world.isClient && colored != newColored)
+		if (!level.isClientSide && colored != newColored)
 			notifyBlockUpdate();
 		boolean changed = colored != newColored;
 		colored = newColored;
@@ -155,7 +154,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	}
 
 	public void setColorBackground(int c) {
-		if (!world.isClient && colorBackground != c)
+		if (!level.isClientSide && colorBackground != c)
 			notifyBlockUpdate();
 		boolean changed = colorBackground != c;
 		colorBackground = c;
@@ -172,7 +171,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	}
 
 	public void setColorText(int c) {
-		if (!world.isClient && colorText != c)
+		if (!level.isClientSide && colorText != c)
 			notifyBlockUpdate();
 		colorText = c;
 	}
@@ -181,31 +180,30 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 		return powered;
 	}
 
-	protected void calcPowered() { // server
-		boolean newPowered = world.isReceivingRedstonePower(pos);
-		if (newPowered != powered) {
-			powered = newPowered;
-			if (screen != null)
-				screen.turnPower(powered, world);
-		}
+	public void setPowered(boolean value) {
+		powered = value;
 	}
 
-	public void setScreenData(NbtCompound nbtTagCompound) {
+	protected void calcPowered() { // server
+		setPowered(level.hasNeighborSignal(worldPosition));
+	}
+
+	public void setScreenData(CompoundTag nbtTagCompound) {
 		screenData = nbtTagCompound;
-		if (screen != null && world.isClient)
-			screen.destroy(true, world);
+		if (screen != null && level.isClientSide)
+			screen.destroy(true, level);
 		if (screenData != null) {
 			screen = EnergyControl.screenManager.loadScreen(this);
 			if (screen != null)
-				screen.init(true, world);
+				screen.init(true, level);
 		}
 	}
 
 	@Override
-	public void onClientMessageReceived(NbtCompound tag) { }
+	public void onClientMessageReceived(CompoundTag tag) { }
 
 	@Override
-	public void onServerMessageReceived(NbtCompound tag) {
+	public void onServerMessageReceived(CompoundTag tag) {
 		if (!tag.contains("type"))
 			return;
 		switch (tag.getInt("type")) {
@@ -219,8 +217,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 			break;
 		case 4:
 			if (tag.contains("slot") && tag.contains("title")) {
-				ItemStack itemStack = getStack(tag.getInt("slot"));
-				if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemCardMain) {
+				ItemStack itemStack = getItem(tag.getInt("slot"));
+				if (ItemCardMain.isCard(itemStack)) {
 					new ItemCardReader(itemStack).setTitle(tag.getString("title"));
 					resetCardData();
 				}
@@ -241,36 +239,23 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	}
 
 	@Override
-	public Packet<ClientPlayPacketListener> toUpdatePacket() {
-		return BlockEntityUpdateS2CPacket.create(this);
-	}
-
-	@Override
-	public void onDataPacket(BlockEntityUpdateS2CPacket pkt) {
-		readProperties(pkt.getNbt(), world.getRegistryManager());
-	}
-
-	@Override
-	public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registries) {
-		NbtCompound tag = super.toInitialChunkDataNbt(registries);
-		tag = writeProperties(tag, registries);
+	protected void writeUpdateData(CompoundTag tag, HolderLookup.Provider registries) {
 		calcPowered();
 		tag.putBoolean("powered", powered);
 		colored = isColoredEval();
 		tag.putBoolean("colored", colored);
-		return tag;
 	}
 
-	protected void deserializeDisplaySettings(NbtCompound tag) {
+	protected void deserializeDisplaySettings(CompoundTag tag) {
 		deserializeSlotSettings(tag, "dSettings", SLOT_CARD);
 	}
 
-	protected void deserializeSlotSettings(NbtCompound tag, String tagName, int slot) {
+	protected void deserializeSlotSettings(CompoundTag tag, String tagName, int slot) {
 		if (!(tag.contains(tagName)))
 			return;
-		NbtList settingsList = tag.getList(tagName, NbtElement.COMPOUND_TYPE);
+		ListTag settingsList = tag.getList(tagName, Tag.TAG_COMPOUND);
 		for (int i = 0; i < settingsList.size(); i++) {
-			NbtCompound compound = settingsList.getCompound(i);
+			CompoundTag compound = settingsList.getCompound(i);
 			try {
 				getDisplaySettingsForSlot(slot).put(compound.getString("key"), compound.getInt("value"));
 			} catch (IllegalArgumentException e) {
@@ -280,7 +265,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	}
 
 	@Override
-	protected void readProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
+	protected void readProperties(CompoundTag tag, HolderLookup.Provider registries) {
 		super.readProperties(tag, registries);
 		if (tag.contains("tickRate"))
 			tickRate = tag.getInt("tickRate");
@@ -296,18 +281,18 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 			setColored(tag.getBoolean("colored"));
 
 		if (tag.contains("screenData")) {
-			if (world != null)
-				setScreenData((NbtCompound) tag.get("screenData"));
+			if (level != null)
+				setScreenData((CompoundTag) tag.get("screenData"));
 			else
-				screenData = (NbtCompound) tag.get("screenData");
+				screenData = (CompoundTag) tag.get("screenData");
 		} else
 			screenData = null;
 		deserializeDisplaySettings(tag);
-		if (tag.contains("powered") && world.isClient) {
+		if (tag.contains("powered") && level.isClientSide) {
 			boolean newPowered = tag.getBoolean("powered");
 			if (powered != newPowered) {
-				powered = newPowered; 
-				world.getChunkManager().getLightingProvider().checkBlock(pos);
+				setPowered(newPowered); // update power on client
+				level.getChunkSource().getLightEngine().checkBlock(worldPosition);
 			}
 		}
 		refreshScreenModel();
@@ -315,7 +300,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 
 	@Override
 	public Object getRenderData() {
-		return new PanelRenderData(findTexture(), getColored() ? colorBackground : getDefaultBackground(), getPowered(), getRenderOffset());
+		return new PanelRenderData(findTexture(), getColored() ? colorBackground : getDefaultBackground(), getPowered(), getRotation(), getRenderOffset());
 	}
 
 	protected int getDefaultBackground() {
@@ -326,50 +311,45 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 		return null;
 	}
 
+	// rebuilds the meshes of all blocks of the screen, e.g. after a color or power change
 	protected void refreshScreenModel() {
-		if (world == null || !world.isClient)
+		if (level == null || !level.isClientSide)
 			return;
 		if (screen == null) {
-			refreshModel(world, pos);
+			refreshModel(level, worldPosition);
 			return;
 		}
 		for (int x = screen.minX; x <= screen.maxX; x++)
 			for (int y = screen.minY; y <= screen.maxY; y++)
 				for (int z = screen.minZ; z <= screen.maxZ; z++)
-					refreshModel(world, new BlockPos(x, y, z));
+					refreshModel(level, new BlockPos(x, y, z));
 	}
 
-	public static void refreshModel(World world, BlockPos pos) {
-		if (world == null || !world.isClient)
+	public static void refreshModel(Level level, BlockPos pos) {
+		if (level == null || !level.isClientSide)
 			return;
-		BlockState state = world.getBlockState(pos);
-		world.updateListeners(pos, state, state, 8);
+		BlockState state = level.getBlockState(pos);
+		level.sendBlockUpdated(pos, state, state, 8);
 	}
 
-	@Override
-	protected void readNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
-		super.readNbt(tag, registries);
-		readProperties(tag, registries);
+	protected void serializeDisplaySettings(CompoundTag tag) {
+		serializeSlotSettings(tag, "dSettings", SLOT_CARD);
 	}
 
-	protected void serializeDisplaySettings(NbtCompound tag) {
-		tag.put("dSettings", serializeSlotSettings(SLOT_CARD));
-	}
-
-	protected NbtList serializeSlotSettings(int slot) {
-		NbtList settingsList = new NbtList();
+	protected void serializeSlotSettings(CompoundTag tag, String tagName, int slot) {
+		ListTag settingsList = new ListTag();
 		for (Map.Entry<String, Integer> item : getDisplaySettingsForSlot(slot).entrySet()) {
-			NbtCompound tag = new NbtCompound();
-			tag.putString("key", item.getKey());
-			tag.putInt("value", item.getValue());
-			settingsList.add(tag);
+			CompoundTag child = new CompoundTag();
+			child.putString("key", item.getKey());
+			child.putInt("value", item.getValue());
+			settingsList.add(child);
 		}
-		return settingsList;
+		tag.put(tagName, settingsList);
 	}
 
 	@Override
-	protected NbtCompound writeProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
-		tag = super.writeProperties(tag, registries);
+	protected void writeProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		super.writeProperties(tag, registries);
 		tag.putInt("tickRate",tickRate);
 		tag.putBoolean("showLabels", getShowLabels());
 		tag.putInt("colorBackground", colorBackground);
@@ -380,23 +360,29 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 			screenData = screen.toTag();
 			tag.put("screenData", screenData);
 		}
-		return tag;
+	}
+
+	// Fabric has no block entity chunk unload callback: ServerChunkEvents.CHUNK_UNLOAD is fired right before the block entities are removed
+	public void onChunkUnloaded() {
+		unloaded = true;
 	}
 
 	@Override
-	protected void writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
-		super.writeNbt(tag, registries);
-		writeProperties(tag, registries);
+	public void setRemoved() {
+		if (!level.isClientSide) {
+			// on chunk unload only forget the screen: changing blocks or reading neighbours here loads chunks again and stalls saving
+			if (!unloaded)
+				EnergyControl.screenManager.unregisterScreenPart(this);
+			else
+				EnergyControl.screenManager.unloadScreenPart(this);
+		} else if (!level.getBlockState(worldPosition).is(getBlockState().getBlock())) {
+			// the core was broken or replaced: the other blocks of the screen were baked with its thickness, rotation and colors
+			refreshScreenModel();
+		}
+		super.setRemoved();
 	}
 
-	@Override
-	public void markRemoved() {
-		if (!world.isClient)
-			EnergyControl.screenManager.unregisterScreenPart(this);
-		super.markRemoved();
-	}
-
-	public static void tickStatic(World level, BlockPos pos, BlockState state, BlockEntity be) {
+	public static void tickStatic(Level level, BlockPos pos, BlockState state, BlockEntity be) {
 		if (!(be instanceof TileEntityInfoPanel))
 			return;
 		TileEntityInfoPanel te = (TileEntityInfoPanel) be;
@@ -413,12 +399,12 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 			resetCardData();
 			dataTicker = 4;
 		}
-		if (!world.isClient) {
+		if (!level.isClientSide) {
 			if (updateTicker-- > 0)
 				return;
 			updateTicker = tickRate - 1;
 			if (hasCards())
-				markDirty();
+				setChanged();
 		}
 	}
 
@@ -438,11 +424,11 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 		cardData.clear();
 	}
 
-	public List<PanelString> getCardData(World world, int settings, ItemStack cardStack, ItemCardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getCardData(Level level, int settings, ItemStack cardStack, ItemCardReader reader, boolean isServer, boolean showLabels) {
 		int slot = getCardSlot(cardStack);
 		List<PanelString> data = cardData.get(slot);
 		if (data == null) {
-			data = reader.getStringData(world, settings, isServer, showLabels);
+			data = reader.getStringData(level, settings, isServer, showLabels);
 			cardData.put(slot, data);
 		}
 		return data;
@@ -454,9 +440,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	}
 
 	// ------- Settings --------
-	public DefaultedList<ItemStack> getCards() {
-		DefaultedList<ItemStack> data = DefaultedList.of();
-		data.add(getStack(SLOT_CARD));
+	public NonNullList<ItemStack> getCards() {
+		NonNullList<ItemStack> data = NonNullList.create();
+		data.add(getItem(SLOT_CARD));
 		return data;
 	}
 
@@ -476,7 +462,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 			if (state != CardState.OK && state != CardState.CUSTOM_ERROR)
 				data = ItemCardReader.getStateMessage(state);
 			else
-				data = getCardData(world, settings, card, reader, isServer, showLabels);
+				data = getCardData(level, settings, card, reader, isServer, showLabels);
 			if (data == null)
 				continue;
 			joinedData.addAll(data);
@@ -489,7 +475,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 
 	public List<String> getPanelStringList() {
 		List<PanelString> joinedData = getPanelStringList(true, false);
-		List<String> list = DefaultedList.of();
+		List<String> list = NonNullList.create();
 		if (joinedData == null || joinedData.size() == 0)
 			return list;
 
@@ -509,8 +495,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 			return 0;
 
 		int slot = 0;
-		for (int i = 0; i < size(); i++) {
-			ItemStack stack = getStack(i);
+		for (int i = 0; i < getContainerSize(); i++) {
+			ItemStack stack = getItem(i);
 			if (!stack.isEmpty() && stack.equals(card)) {
 				slot = i;
 				break;
@@ -522,23 +508,30 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	private void processCard(ItemStack card, int slot, ItemStack stack) {
 		if (ItemCardMain.isCard(card)) {
 			ItemCardReader reader = new ItemCardReader(card);
-			((ItemCardMain) card.getItem()).updateCardNBT(world, pos, reader, stack);
+			ItemCardMain.updateCardNBT((IItemCard) card.getItem(), level, worldPosition, reader, stack);
+			if (hasWebUpgrade())
+				ItemCardMain.sendCardToWS(getPanelStringList(true, getShowLabels()), reader);
 			reader.updateClient(card, this, slot);
 		}
 	}
 
+	// shares the slot with the touch screen upgrade
+	public boolean hasWebUpgrade() {
+		return getItem(SLOT_UPGRADE_TOUCH).getItem().equals(ModItems.upgrade_web);
+	}
+
 	public boolean isColoredEval() {
-		ItemStack stack = getStack(SLOT_UPGRADE_COLOR);
+		ItemStack stack = getItem(SLOT_UPGRADE_COLOR);
 		return !stack.isEmpty() && stack.getItem().equals(ModItems.upgrade_color);
 	}
 
 	@Override
-	public void markDirty() {
-		super.markDirty();
-		if (!world.isClient) {
+	public void setChanged() {
+		super.setChanged();
+		if (!level.isClientSide) {
 			setColored(isColoredEval());
 			if (powered) {
-				ItemStack itemStack = getStack(getSlotUpgradeRange());
+				ItemStack itemStack = getItem(getSlotUpgradeRange());
 				for (ItemStack card : getCards())
 					processCard(card, getCardSlot(card), itemStack);
 			}
@@ -560,10 +553,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	}
 
 	public int getDisplaySettingsForCardInSlot(int slot) {
-		ItemStack card = getStack(slot);
-		if (card.isEmpty()) {
+		ItemStack card = getItem(slot);
+		if (card.isEmpty())
 			return 0;
-		}
 		return getDisplaySettingsByCard(card);
 	}
 
@@ -574,7 +566,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 
 		if (displaySettings.containsKey(slot)) {
 			for (Map.Entry<String, Integer> entry : displaySettings.get(slot).entrySet()) {
-				if (card.getTranslationKey().equals(entry.getKey()))
+				if (card.getDescriptionId().equals(entry.getKey()))
 					return entry.getValue();
 			}
 		}
@@ -585,25 +577,25 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	public void setDisplaySettings(int slot, int settings) {
 		if (!isCardSlot(slot))
 			return;
-		ItemStack stack = getStack(slot);
+		ItemStack stack = getItem(slot);
 		if (!ItemCardMain.isCard(stack))
 			return;
 
 		if (!displaySettings.containsKey(slot))
 			displaySettings.put(slot, new HashMap<>());
-		displaySettings.get(slot).put(stack.getTranslationKey(), settings);
-		if (!world.isClient)
+		displaySettings.get(slot).put(stack.getDescriptionId(), settings);
+		if (!level.isClientSide)
 			notifyBlockUpdate();
 	}
 
 	// ------- Inventory ------- 
 	@Override
-	public int size() {
+	public int getContainerSize() {
 		return 4;
 	}
 
 	@Override
-	public boolean isValid(int index, ItemStack stack) {
+	public boolean canPlaceItem(int index, ItemStack stack) {
 		return isItemValid(index, stack);
 	}
 
@@ -617,7 +609,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 		case SLOT_UPGRADE_COLOR:
 			return stack.getItem().equals(ModItems.upgrade_color);
 		case SLOT_UPGRADE_TOUCH:
-			return stack.getItem().equals(ModItems.upgrade_touch);
+			return stack.getItem().equals(ModItems.upgrade_touch) || stack.getItem().equals(ModItems.upgrade_web);
 		default:
 			return false;
 		}
@@ -626,7 +618,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	@Override
 	public void setScreen(Screen screen) {
 		this.screen = screen;
-		refreshModel(world, pos);
+		refreshModel(level, worldPosition);
 	}
 
 	@Override
@@ -636,7 +628,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 
 	@Override
 	public void updateData() {
-		if (world.isClient)
+		if (level.isClientSide)
 			return;
 
 		if (screen == null) {
@@ -646,7 +638,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 		notifyBlockUpdate();
 	}
 
-	public void updateExtenders(World world, Boolean active) { // server
+	public void updateExtenders(Level level, Boolean active) { // server
 		// the block just switched on or off, so update the power now instead of waiting for the next update packet
 		calcPowered();
 		if (screen == null)
@@ -656,37 +648,53 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 			for (int y = screen.minY; y <= screen.maxY; y++)
 				for (int z = screen.minZ; z <= screen.maxZ; z++) {
 					BlockPos pos = new BlockPos(x, y, z);
-					BlockState state = world.getBlockState(pos);
+					BlockState state = level.getBlockState(pos);
 					if (state.getBlock() instanceof InfoPanelExtender || state.getBlock() instanceof HoloPanelExtender)
-						world.setBlockState(pos, state.with(FacingBlockActive.getActive(state), active), 2);
+						level.setBlock(pos, state.setValue(FacingBlockActive.ACTIVE, active), 2);
 				}
 	}
-
-	/*@Override
-	@Environment(EnvType.CLIENT)
-	public AABB getRenderBoundingBox() {
-		if (screen == null)
-			return new AABB(pos.offset(0, 0, 0), pos.offset(1, 1, 1));
-		return new AABB(new BlockPos(screen.minX, screen.minY, screen.minZ), new BlockPos(screen.maxX + 1, screen.maxY + 1, screen.maxZ + 1));
-	}*/
 
 	public int findTexture() {
 		Screen scr = getScreen();
 		if (scr != null) {
-			BlockPos pos = getPos();
+			BlockPos pos = getBlockPos();
 			switch (getFacing()) {
-			case SOUTH:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 4 * boolToInt(pos.getY() == scr.minY) + 8 * boolToInt(pos.getY() == scr.maxY);
-			case WEST:
-				return 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ) + 1 * boolToInt(pos.getY() == scr.minY) + 2 * boolToInt(pos.getY() == scr.maxY);
-			case EAST:
-				return 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ) + 2 * boolToInt(pos.getY() == scr.minY) + 1 * boolToInt(pos.getY() == scr.maxY);
-			case NORTH:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 8 * boolToInt(pos.getY() == scr.minY) + 4 * boolToInt(pos.getY() == scr.maxY);
 			case UP:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ);
+				switch (getRotation()) {
+				case NORTH:
+					return boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ);
+				case SOUTH:
+					return 2 * boolToInt(pos.getX() == scr.minX) + 1 * boolToInt(pos.getX() == scr.maxX) + 4 * boolToInt(pos.getZ() == scr.minZ) + 8 * boolToInt(pos.getZ() == scr.maxZ);
+				case WEST:
+					return 8 * boolToInt(pos.getX() == scr.minX) + 4 * boolToInt(pos.getX() == scr.maxX) + 2 * boolToInt(pos.getZ() == scr.minZ) + 1 * boolToInt(pos.getZ() == scr.maxZ);
+				case EAST:
+					return 4 * boolToInt(pos.getX() == scr.minX) + 8 * boolToInt(pos.getX() == scr.maxX) + 1 * boolToInt(pos.getZ() == scr.minZ) + 2 * boolToInt(pos.getZ() == scr.maxZ);
+				default:
+					break;
+				}
+				break;
 			case DOWN:
-				return 1 * boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 4 * boolToInt(pos.getZ() == scr.minZ) + 8 * boolToInt(pos.getZ() == scr.maxZ);
+				switch (getRotation()) {
+				case NORTH:
+					return 2 * boolToInt(pos.getX() == scr.minX) + 1 * boolToInt(pos.getX() == scr.maxX) + 8 * boolToInt(pos.getZ() == scr.minZ) + 4 * boolToInt(pos.getZ() == scr.maxZ);
+				case SOUTH:
+					return boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 4 * boolToInt(pos.getZ() == scr.minZ) + 8 * boolToInt(pos.getZ() == scr.maxZ);
+				case WEST:
+					return 8 * boolToInt(pos.getX() == scr.minX) + 4 * boolToInt(pos.getX() == scr.maxX) + 1 * boolToInt(pos.getZ() == scr.minZ) + 2 * boolToInt(pos.getZ() == scr.maxZ);
+				case EAST:
+					return 4 * boolToInt(pos.getX() == scr.minX) + 8 * boolToInt(pos.getX() == scr.maxX) + 2 * boolToInt(pos.getZ() == scr.minZ) + 1 * boolToInt(pos.getZ() == scr.maxZ);
+				default:
+					break;
+				}
+				break;
+			case NORTH:
+				return boolToInt(pos.getX() == scr.minX) + 2 * boolToInt(pos.getX() == scr.maxX) + 8 * boolToInt(pos.getY() == scr.minY) + 4 * boolToInt(pos.getY() == scr.maxY);
+			case SOUTH:
+				return 2 * boolToInt(pos.getX() == scr.minX) + 1 * boolToInt(pos.getX() == scr.maxX) + 8 * boolToInt(pos.getY() == scr.minY) + 4 * boolToInt(pos.getY() == scr.maxY);
+			case WEST:
+				return 2 * boolToInt(pos.getZ() == scr.minZ) + 1 * boolToInt(pos.getZ() == scr.maxZ) + 8 * boolToInt(pos.getY() == scr.minY) + 4 * boolToInt(pos.getY() == scr.maxY);
+			case EAST:
+				return 1 * boolToInt(pos.getZ() == scr.minZ) + 2 * boolToInt(pos.getZ() == scr.maxZ) + 8 * boolToInt(pos.getY() == scr.minY) + 4 * boolToInt(pos.getY() == scr.maxY);
 			}
 		}
 		return 15;
@@ -696,16 +704,16 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 		return b ? 1 : 0;
 	}
 
-	public boolean runTouchAction(ItemStack stack, BlockPos pos, Vec3d hit) {
-		if (world.isClient)
+	public boolean runTouchAction(ItemStack stack, BlockPos pos, Vec3 hit) {
+		if (level.isClientSide)
 			return false;
-		ItemStack card = getStack(SLOT_CARD);
+		ItemStack card = getItem(SLOT_CARD);
 		runTouchAction(this, card, stack, SLOT_CARD, true);
 		return true;
 	}
 
 	public boolean isTouchCard() {
-		return isTouchCard(getStack(SLOT_CARD));
+		return isTouchCard(getItem(SLOT_CARD));
 	}
 
 	public boolean isTouchCard(ItemStack stack) {
@@ -714,7 +722,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	}
 
 	public boolean hasBars() {
-		return hasBars(getStack(SLOT_CARD));
+		return hasBars(getItem(SLOT_CARD));
 	}
 
 	public boolean hasBars(ItemStack stack) {
@@ -724,36 +732,35 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 				&& new ItemCardReader(stack).getState() == CardState.OK;
 	}
 
-	public void renderImage(float displayWidth, float displayHeight, MatrixStack matrixStack) {
-		ItemStack stack = getStack(SLOT_CARD);
+	public void renderImage(float displayWidth, float displayHeight, PoseStack matrixStack, MultiBufferSource buffer) {
+		ItemStack stack = getItem(SLOT_CARD);
 		Item card = stack.getItem();
 		if (isTouchCard())
-			((ITouchAction) card).renderImage(new ItemCardReader(stack), matrixStack);
+			((ITouchAction) card).renderImage(new ItemCardReader(stack), matrixStack, buffer);
 		if (hasBars())
-			((IHasBars) card).renderBars(displayWidth, displayHeight, new ItemCardReader(stack), matrixStack);
+			((IHasBars) card).renderBars(displayWidth, displayHeight, new ItemCardReader(stack), matrixStack, buffer);
 	}
 
 	protected void runTouchAction(TileEntityInfoPanel panel, ItemStack cardStack, ItemStack stack, int slot, boolean needsTouchUpgrade) {
-		if (isTouchCard(cardStack) && (!needsTouchUpgrade || !getStack(SLOT_UPGRADE_TOUCH).isEmpty())) {
+		if (isTouchCard(cardStack) && (!needsTouchUpgrade || getItem(SLOT_UPGRADE_TOUCH).getItem().equals(ModItems.upgrade_touch))) {
 			ICardReader reader = new ItemCardReader(cardStack);
-			if (((ITouchAction) cardStack.getItem()).runTouchAction(panel.getWorld(), reader, stack))
+			if (((ITouchAction) cardStack.getItem()).runTouchAction(panel.getLevel(), reader, stack))
 				reader.updateClient(cardStack, panel, slot);
 		}
 	}
 
-	// NamedScreenHandlerFactory
 	@Override
-	public ScreenHandler createMenu(int windowId, PlayerInventory inventory, PlayerEntity player) {
+	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerInfoPanel(windowId, inventory, this);
 	}
 
 	@Override
-	public Text getDisplayName() {
-		return Text.translatable(ModItems.info_panel.getTranslationKey());
+	public Component getDisplayName() {
+		return Component.translatable(ModItems.info_panel.getDescriptionId());
 	}
 
 	@Override
-	public BlockPos getScreenOpeningData(ServerPlayerEntity player) {
-		return pos;
+	public BlockPos getScreenOpeningData(ServerPlayer player) {
+		return worldPosition;
 	}
 }

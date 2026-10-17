@@ -12,9 +12,9 @@ import me.shedaniel.rei.api.common.display.SimpleGridMenuDisplay;
 import me.shedaniel.rei.api.common.display.basic.BasicDisplay;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.recipe.Ingredient;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 
 public class KitAssemblerDisplay extends BasicDisplay implements SimpleGridMenuDisplay {
 	// kept here, not in the client-only KitAssemblerRecipeCategory, because the server plugin needs it too
@@ -33,7 +33,7 @@ public class KitAssemblerDisplay extends BasicDisplay implements SimpleGridMenuD
 		time = recipe.time;
 	}
 
-	public KitAssemblerDisplay(List<EntryIngredient> input, List<EntryIngredient> output, NbtCompound tag) {
+	public KitAssemblerDisplay(List<EntryIngredient> input, List<EntryIngredient> output, CompoundTag tag) {
 		super(input, output);
 		count1 = tag.getInt("count1");
 		count2 = tag.getInt("count2");
@@ -44,7 +44,7 @@ public class KitAssemblerDisplay extends BasicDisplay implements SimpleGridMenuD
 	// shows the required amount on each ingredient (the recipe keeps counts separately from its ingredients)
 	private static EntryIngredient withCount(Ingredient ingredient, int count) {
 		List<ItemStack> stacks = new ArrayList<>();
-		for (ItemStack stack : ingredient.getMatchingStacks()) {
+		for (ItemStack stack : ingredient.getItems()) {
 			ItemStack copy = stack.copy();
 			copy.setCount(count);
 			stacks.add(copy);

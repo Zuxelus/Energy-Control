@@ -1,6 +1,6 @@
 package com.zuxelus.energycontrol.api;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Object of PanelSetting class defines one checkbox in the card's settings.

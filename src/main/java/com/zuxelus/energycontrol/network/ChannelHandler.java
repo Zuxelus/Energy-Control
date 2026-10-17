@@ -9,9 +9,9 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 public class ChannelHandler {
 
@@ -42,11 +42,11 @@ public class ChannelHandler {
 		if (card.isEmpty() || panel == null || slot < 0)
 			return;
 
-		World world = panel.getWorld();
-		if (world == null || world.isClient)
+		Level level = panel.getLevel();
+		if (level == null || level.isClientSide)
 			return;
 
-		NetworkHelper.sendPacketToAllAround((ServerWorld) world, new PacketCardS2C(card, panel.getPos(), slot));
+		NetworkHelper.sendPacketToAllAround((ServerLevel) level, new PacketCardS2C(card, panel.getBlockPos(), slot));
 	}
 
 	// client
@@ -54,11 +54,11 @@ public class ChannelHandler {
 		if (card.isEmpty() || panel == null || slot < 0)
 			return;
 
-		World world = panel.getWorld();
-		if (world == null || !world.isClient)
+		Level level = panel.getLevel();
+		if (level == null || !level.isClientSide)
 			return;
 
-		NetworkHelper.sendToServer(new PacketCardC2S(card, panel.getPos(), slot));
+		NetworkHelper.sendToServer(new PacketCardC2S(card, panel.getBlockPos(), slot));
 	}
 
 	public static void updateSeverKeys(boolean altPressed) {

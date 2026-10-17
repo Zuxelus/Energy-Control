@@ -15,11 +15,11 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.ItemLike;
 import me.shedaniel.rei.plugin.client.BuiltinClientPlugin;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.RecipeEntry;
-import net.minecraft.text.Text;
 
 @Environment(EnvType.CLIENT)
 public final class ClientPlugin implements REIClientPlugin {
@@ -34,7 +34,7 @@ public final class ClientPlugin implements REIClientPlugin {
 
 	@Override
 	public void registerDisplays(DisplayRegistry registry) {
-		registry.registerRecipeFiller(KitAssemblerRecipe.class, KitAssemblerRecipeType.TYPE, (RecipeEntry<KitAssemblerRecipe> entry) -> new KitAssemblerDisplay(entry.value()));
+		registry.registerRecipeFiller(KitAssemblerRecipe.class, KitAssemblerRecipeType.TYPE, (RecipeHolder<KitAssemblerRecipe> entry) -> new KitAssemblerDisplay(entry.value()));
 		registerInformation();
 	}
 
@@ -55,6 +55,7 @@ public final class ClientPlugin implements REIClientPlugin {
 		registerItem(ModItems.upgrade_color, "ec.jei.upgradeColor");
 		registerItem(ModItems.upgrade_range, "ec.jei.upgradeRange");
 		registerItem(ModItems.upgrade_touch, "ec.jei.upgradeTouch");
+		registerItem(ModItems.upgrade_web, "ec.jei.upgradeWeb");
 
 		registerItem(ModItems.kit_energy, "ec.jei.kitEnergy");
 		registerItem(ModItems.kit_liquid, "ec.jei.kitLiquid");
@@ -72,10 +73,10 @@ public final class ClientPlugin implements REIClientPlugin {
 		registerItem(ModItems.portable_panel, "ec.jei.itemPortablePanel");
 	}
 
-	private static void registerItem(ItemConvertible item, String key) {
+	private static void registerItem(ItemLike item, String key) {
 		if (item != null)
-			BuiltinClientPlugin.getInstance().registerInformation(EntryStacks.of(item), item.asItem().getName(), lines -> {
-				lines.add(Text.translatable(key));
+			BuiltinClientPlugin.getInstance().registerInformation(EntryStacks.of(item), item.asItem().getDescription(), lines -> {
+				lines.add(Component.translatable(key));
 				return lines;
 			});
 	}

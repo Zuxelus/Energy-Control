@@ -4,24 +4,24 @@ import com.mojang.datafixers.util.Pair;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.screen.PlayerScreenHandler;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
+import net.minecraft.world.inventory.InventoryMenu;
 
 public class SlotTransformer extends SlotFilter {
 
-	public SlotTransformer(Inventory inventory, int slotIndex, int x, int y) {
+	public SlotTransformer(Container inventory, int slotIndex, int x, int y) {
 		super(inventory, slotIndex, x, y);
 	}
 
 	@Override
 	@Environment(EnvType.CLIENT)
-	public Pair<Identifier, Identifier> getBackgroundSprite() {
-		return Pair.of(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, Identifier.of("zlib:slots/slot_transformer"));
+	public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
+		return Pair.of(InventoryMenu.BLOCK_ATLAS, ResourceLocation.parse("zlib:slots/slot_transformer"));
 	}
 
 	@Override
-	public int getMaxItemCount() {
+	public int getMaxStackSize() {
 		return 3;
 	}
 }

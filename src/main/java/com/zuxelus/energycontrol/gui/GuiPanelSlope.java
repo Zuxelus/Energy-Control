@@ -7,7 +7,7 @@ import com.zuxelus.zlib.gui.GuiBase;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.GuiGraphics;
 
 @Environment(EnvType.CLIENT)
 public class GuiPanelSlope extends GuiBase {
@@ -40,7 +40,7 @@ public class GuiPanelSlope extends GuiBase {
 				if (amount < 0)
 					amount = 0;
 			}
-			NetworkHelper.updateSeverTileEntity(panel.getPos(), 10, offset + amount);
+			NetworkHelper.updateSeverTileEntity(panel.getBlockPos(), 10, offset + amount);
 			panel.setValues(offset + amount);
 			return true;
 		}
@@ -48,17 +48,17 @@ public class GuiPanelSlope extends GuiBase {
 	}
 
 	@Override
-	public void drawGuiContainerBackgroundLayer(DrawContext context, float partialTicks, int mouseX, int mouseY) {
+	public void drawGuiContainerBackgroundLayer(GuiGraphics context, float partialTicks, int mouseX, int mouseY) {
 		super.drawGuiContainerBackgroundLayer(context, partialTicks, mouseX, mouseY);
 		int textureHeight = 4 * (16 - panel.thickness);
 
-		context.drawTexture(texture, guiLeft + 21, guiTop + 25, 172, 0, 14, textureHeight);
-		context.drawTexture(texture, guiLeft + 79, guiTop + 25 + (panel.rotateHor < 0 ? 32 + panel.rotateHor * 4 / 7 : 32), 186, 0, 14, Math.abs(panel.rotateHor * 4 / 7));
-		context.drawTexture(texture, guiLeft + 137, guiTop + 25 + (panel.rotateVert < 0 ? 32 + panel.rotateVert * 4 / 7 : 32), 186, 0, 14, Math.abs(panel.rotateVert * 4 / 7));
+		context.blit(texture, guiLeft + 21, guiTop + 25, 172, 0, 14, textureHeight, 256, 256);
+		context.blit(texture, guiLeft + 79, guiTop + 25 + (panel.rotateHor < 0 ? 32 + panel.rotateHor * 4 / 7 : 32), 186, 0, 14, Math.abs(panel.rotateHor * 4 / 7), 256, 256);
+		context.blit(texture, guiLeft + 137, guiTop + 25 + (panel.rotateVert < 0 ? 32 + panel.rotateVert * 4 / 7 : 32), 186, 0, 14, Math.abs(panel.rotateVert * 4 / 7), 256, 256);
 	}
 
 	@Override
-	public void close() {
-		client.setScreen(parentGui);
+	public void onClose() {
+		minecraft.setScreen(parentGui);
 	}
 }

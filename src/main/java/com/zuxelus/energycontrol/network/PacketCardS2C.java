@@ -7,46 +7,46 @@ import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.network.PacketBase;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
-public record PacketCardS2C(BlockPos pos, int slot, String className, NbtCompound tag) implements PacketBase {
-	public static final Id<PacketCardS2C> ID = new Id<>(Identifier.of(EnergyControl.MODID, "s2c_card"));
-	public static final PacketCodec<RegistryByteBuf, PacketCardS2C> CODEC = PacketCodec.tuple(
-			BlockPos.PACKET_CODEC, PacketCardS2C::pos,
-			PacketCodecs.VAR_INT, PacketCardS2C::slot,
-			PacketCodecs.STRING, PacketCardS2C::className,
-			PacketCodecs.NBT_COMPOUND, PacketCardS2C::tag,
+public record PacketCardS2C(BlockPos pos, int slot, String className, CompoundTag tag) implements PacketBase {
+	public static final Type<PacketCardS2C> ID = new Type<>(ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "s2c_card"));
+	public static final StreamCodec<RegistryFriendlyByteBuf, PacketCardS2C> CODEC = StreamCodec.composite(
+			BlockPos.STREAM_CODEC, PacketCardS2C::pos,
+			ByteBufCodecs.VAR_INT, PacketCardS2C::slot,
+			ByteBufCodecs.STRING_UTF8, PacketCardS2C::className,
+			ByteBufCodecs.COMPOUND_TAG, PacketCardS2C::tag,
 			PacketCardS2C::new);
 
 	public PacketCardS2C(ItemStack stack, BlockPos pos, int slot) {
-		this(pos, slot, stack.getItem().getClass().getName(), ItemStackHelper.getTagCompound(stack));
+		this(pos, slot, stack.getItem().getClass().getName(), ItemStackHelper.getTag(stack));
 	}
 
 	@Override
-	public Id<PacketCardS2C> getId() {
+	public Type<PacketCardS2C> type() {
 		return ID;
 	}
 
 	public static void handleClient(PacketCardS2C packet, ClientPlayNetworking.Context context) {
-		MinecraftClient client = context.client();
+		Minecraft client = context.client();
 		client.execute(() -> {
-			World world = client.player.getWorld();
-			if (world == null)
+			Level level = client.player.level();
+			if (level == null)
 				return;
-			BlockEntity te = world.getBlockEntity(packet.pos());
+			BlockEntity te = level.getBlockEntity(packet.pos());
 			if (te == null || !(te instanceof TileEntityInfoPanel))
 				return;
 			TileEntityInfoPanel panel = (TileEntityInfoPanel) te;
-			ItemStack stack = panel.getStack(packet.slot());
+			ItemStack stack = panel.getItem(packet.slot());
 			if (stack.isEmpty() || !(stack.getItem() instanceof ItemCardMain))
 				return;
 			if (!stack.getItem().getClass().getName().equals(packet.className())) {

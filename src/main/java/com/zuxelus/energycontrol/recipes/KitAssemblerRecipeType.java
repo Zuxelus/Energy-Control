@@ -5,10 +5,10 @@ import java.util.List;
 
 import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
 
-import net.minecraft.recipe.RecipeEntry;
-import net.minecraft.recipe.RecipeManager;
-import net.minecraft.recipe.RecipeType;
-import net.minecraft.world.World;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 
 public class KitAssemblerRecipeType implements RecipeType<KitAssemblerRecipe> {
 	public static final KitAssemblerRecipeType TYPE = new KitAssemblerRecipeType();
@@ -20,7 +20,7 @@ public class KitAssemblerRecipeType implements RecipeType<KitAssemblerRecipe> {
 		return "energycontrol:kit_assembler";
 	}
 
-	public List<KitAssemblerRecipe> getRecipes(World level) {
+	public List<KitAssemblerRecipe> getRecipes(Level level) {
 		if (level == null)
 			return Collections.emptyList();
 
@@ -31,19 +31,19 @@ public class KitAssemblerRecipeType implements RecipeType<KitAssemblerRecipe> {
 
 	public KitAssemblerRecipe findRecipe(TileEntityKitAssembler te) {
 		if (cachedRecipes.isEmpty())
-			loadRecipes(te.getWorld());
+			loadRecipes(te.getLevel());
 		for(KitAssemblerRecipe recipe : cachedRecipes) {
 			if (recipe.isSuitable(te))
-				return recipe; 
+				return recipe;
 		}
 		return null;
 	}
 
-	private void loadRecipes(World level) {
+	private void loadRecipes(Level level) {
 		if (level == null)
 			return;
 		RecipeManager recipeManager = level.getRecipeManager();
-		List<KitAssemblerRecipe> recipes = recipeManager.listAllOfType(this).stream().map(RecipeEntry::value).toList();
+		List<KitAssemblerRecipe> recipes = recipeManager.getAllRecipesFor(this).stream().map(RecipeHolder::value).toList();
 		cachedRecipes = recipes;
 	}
 }

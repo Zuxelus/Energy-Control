@@ -5,7 +5,7 @@ import com.zuxelus.energycontrol.api.ICardReader;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
-import net.minecraft.registry.Registries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 public class FluidInfo {
 	String name; // display name, translated where the info is created
@@ -41,7 +41,7 @@ public class FluidInfo {
 		if (amount > 0 && !variant.isBlank()) {
 			// works on a dedicated server too: Language there is the server's built-in en_us
 			name = FluidVariantAttributes.getName(variant).getString();
-			fluid = Registries.FLUID.getId(variant.getFluid()).toString();
+			fluid = BuiltInRegistries.FLUID.getKey(variant.getFluid()).toString();
 		}
 		capacity = stack.getCapacity() / 81;
 	}

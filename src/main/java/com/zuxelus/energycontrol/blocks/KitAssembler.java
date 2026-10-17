@@ -1,26 +1,26 @@
 package com.zuxelus.energycontrol.blocks;
 
 import com.mojang.serialization.MapCodec;
-import net.minecraft.block.BlockWithEntity;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
 import com.zuxelus.zlib.blocks.FacingHorizontalActive;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 
 public class KitAssembler extends FacingHorizontalActive {
-	public static final MapCodec<KitAssembler> CODEC = createCodec(settings -> new KitAssembler());
+	public static final MapCodec<KitAssembler> CODEC = simpleCodec(settings -> new KitAssembler());
 
 	@Override
-	protected MapCodec<? extends BlockWithEntity> getCodec() {
+	protected MapCodec<? extends BaseEntityBlock> codec() {
 		return CODEC;
 	}
 
@@ -29,17 +29,17 @@ public class KitAssembler extends FacingHorizontalActive {
 	}
 
 	@Override
-	protected BlockEntityFacing newBlockEntity(BlockPos pos, BlockState state) {
-		return ModTileEntityTypes.kit_assembler.instantiate(pos, state);
+	protected BlockEntityFacing createFacingBlockEntity(BlockPos pos, BlockState state) {
+		return ModTileEntityTypes.kit_assembler.create(pos, state);
 	}
 
 	@Override
-	protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-		BlockEntity te = world.getBlockEntity(pos);
+	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+		BlockEntity te = level.getBlockEntity(pos);
 		if (!(te instanceof TileEntityKitAssembler))
-			return ActionResult.PASS;
-		if (!world.isClient)
-			player.openHandledScreen(state.createScreenHandlerFactory(world, pos));
-		return ActionResult.SUCCESS;
+			return InteractionResult.PASS;
+		if (!level.isClientSide)
+			player.openMenu(state.getMenuProvider(level, pos));
+		return InteractionResult.SUCCESS;
 	}
 }

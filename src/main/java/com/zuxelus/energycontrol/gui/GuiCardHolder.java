@@ -4,39 +4,39 @@ import com.zuxelus.energycontrol.containers.ContainerCardHolder;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 
 @Environment(EnvType.CLIENT)
-public class GuiCardHolder extends HandledScreen<ContainerCardHolder> {
-	private static final Identifier TEXTURE = Identifier.of("textures/gui/container/generic_54.png");
+public class GuiCardHolder extends AbstractContainerScreen<ContainerCardHolder> {
+	private static final ResourceLocation TEXTURE = ResourceLocation.parse("textures/gui/container/generic_54.png");
 	private final int inventoryRows;
 
-	public GuiCardHolder(ContainerCardHolder container, PlayerInventory inventory, Text title) {
+	public GuiCardHolder(ContainerCardHolder container, Inventory inventory, Component title) {
 		super(container, inventory, title);
+		imageHeight = 114 + 6 * 18;
+		inventoryLabelY = imageHeight - 94;
 		inventoryRows = 6;
-		backgroundHeight = 114 + inventoryRows * 18;
 	}
 
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+	public void render(GuiGraphics context, int mouseX, int mouseY, float partialTicks) {
 		super.render(context, mouseX, mouseY, partialTicks);
-		drawMouseoverTooltip(context, mouseX, mouseY);
+		renderTooltip(context, mouseX, mouseY);
 	}
 
 	@Override
-	protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
-		context.drawText(textRenderer, title, 8, 6, 4210752, false);
-		context.drawText(textRenderer, playerInventoryTitle, 8, backgroundHeight - 96 + 2, 4210752, false);
+	protected void renderLabels(GuiGraphics context, int mouseX, int mouseY) {
+		context.drawString(font, title, 8, 6, 0x404040, false);
+		context.drawString(font, playerInventoryTitle, 8, imageHeight - 96 + 2, 0x404040, false);
 	}
 
 	@Override
-	// the last two parameters are the mouse position; x and y below are the screen position fields
-	protected void drawBackground(DrawContext context, float partialTicks, int mouseX, int mouseY) {
-		context.drawTexture(TEXTURE, x, y, 0, 0, backgroundWidth, inventoryRows * 18 + 17);
-		context.drawTexture(TEXTURE, x, y + inventoryRows * 18 + 17, 0, 126, backgroundWidth, 96);
+	protected void renderBg(GuiGraphics context, float partialTicks, int mouseX, int mouseY) {
+		context.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, inventoryRows * 18 + 17, 256, 256);
+		context.blit(TEXTURE, leftPos, topPos + inventoryRows * 18 + 17, 0, 126, imageWidth, 96, 256, 256);
 	}
 }

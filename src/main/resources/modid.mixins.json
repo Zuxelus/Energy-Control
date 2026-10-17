@@ -9,8 +9,7 @@
   ],
   "client": [
     "ClientPlayNetworkHandlerMixin",
-    "ReloadableResourceManagerImplMixin",
-    "WorldRendererMixin"
+    "ReloadableResourceManagerImplMixin"
   ],
   "injectors": {
     "defaultRequire": 1

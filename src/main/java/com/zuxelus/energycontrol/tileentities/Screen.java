@@ -1,10 +1,10 @@
 package com.zuxelus.energycontrol.tileentities;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkSectionPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class Screen {
 	public int minX;
@@ -14,19 +14,17 @@ public class Screen {
 	public int maxY;
 	public int maxZ;
 	private BlockPos corePos;
-	private boolean powered;
 
 	public Screen(TileEntityInfoPanel panel) {
-		BlockPos pos = panel.getPos();
+		BlockPos pos = panel.getBlockPos();
 		maxX = minX = pos.getX();
 		maxY = minY = pos.getY();
 		maxZ = minZ = pos.getZ();
 
 		corePos = pos;
-		powered = panel.getPowered();
 	}
 
-	public Screen(TileEntityInfoPanel panel, NbtCompound tag) {
+	public Screen(TileEntityInfoPanel panel, CompoundTag tag) {
 		minX = tag.getInt("minX");
 		minY = tag.getInt("minY");
 		minZ = tag.getInt("minZ");
@@ -35,30 +33,30 @@ public class Screen {
 		maxY = tag.getInt("maxY");
 		maxZ = tag.getInt("maxZ");
 
-		corePos = panel.getPos();
-		powered = panel.getPowered();
+		corePos = panel.getBlockPos();
 	}
 
-	public static BlockEntity getLoadedBlockEntity(World world, BlockPos pos) {
-		if (!isLoaded(world, pos))
+	// the screen can reach into chunks that are not loaded, Level.getBlockEntity would load them
+	public static BlockEntity getLoadedBlockEntity(Level level, BlockPos pos) {
+		if (!isLoaded(level, pos))
 			return null;
-		return world.getBlockEntity(pos);
+		return level.getBlockEntity(pos);
 	}
 
 	// same check as the deprecated World.isChunkLoaded(BlockPos)
-	public static boolean isLoaded(World world, BlockPos pos) {
-		return world.getChunkManager().isChunkLoaded(ChunkSectionPos.getSectionCoord(pos.getX()), ChunkSectionPos.getSectionCoord(pos.getZ()));
+	public static boolean isLoaded(Level level, BlockPos pos) {
+		return level.getChunkSource().hasChunk(SectionPos.blockToSectionCoord(pos.getX()), SectionPos.blockToSectionCoord(pos.getZ()));
 	}
 
-	public TileEntityInfoPanel getCore(World world) {
-		BlockEntity be = getLoadedBlockEntity(world, corePos);
+	public TileEntityInfoPanel getCore(Level level) {
+		BlockEntity be = getLoadedBlockEntity(level, corePos);
 		if (!(be instanceof TileEntityInfoPanel))
 			return null;
 		return (TileEntityInfoPanel) be;
 	}
 
 	public boolean isBlockNearby(BlockEntity tileEntity) {
-		BlockPos pos = tileEntity.getPos();
+		BlockPos pos = tileEntity.getBlockPos();
 		int x = pos.getX();
 		int y = pos.getY();
 		int z = pos.getZ();
@@ -71,33 +69,31 @@ public class Screen {
 	}
 
 	public boolean isBlockPartOf(BlockEntity tileEntity) {
-		BlockPos pos = tileEntity.getPos();
+		BlockPos pos = tileEntity.getBlockPos();
 		int x = pos.getX();
 		int y = pos.getY();
 		int z = pos.getZ();
 		return x >= minX && x <= maxX && y >= minY && y <= maxY && z >= minZ && z <= maxZ;
 	}
 
-	public void init(boolean force, World world) {
+	public void init(boolean force, Level level) {
 		for (int x = minX; x <= maxX; x++) {
 			for (int y = minY; y <= maxY; y++) {
 				for (int z = minZ; z <= maxZ; z++) {
-					BlockEntity tileEntity = getLoadedBlockEntity(world, new BlockPos(x, y, z));
-					if (tileEntity == null || !(tileEntity instanceof IScreenPart))
+					BlockEntity te = getLoadedBlockEntity(level, new BlockPos(x, y, z));
+					if (te == null || !(te instanceof IScreenPart))
 						continue;
-					((IScreenPart) tileEntity).setScreen(this);
-					if (powered || force)
-						((IScreenPart)tileEntity).updateTileEntity();
+					((IScreenPart) te).setScreen(this);
 				}
 			}
 		}
 	}
 
-	public void destroy(boolean force, World world) {
+	public void destroy(boolean force, Level level) {
 		for (int x = minX; x <= maxX; x++) {
 			for (int y = minY; y <= maxY; y++) {
 				for (int z = minZ; z <= maxZ; z++) {
-					BlockEntity be = getLoadedBlockEntity(world, new BlockPos(x, y, z));
+					BlockEntity be = getLoadedBlockEntity(level, new BlockPos(x, y, z));
 					if (!(be instanceof IScreenPart))
 						continue;
 					IScreenPart part = (IScreenPart) be;
@@ -106,36 +102,13 @@ public class Screen {
 						part.setScreen(null);
 						part.updateData();
 					}
-					if (powered || force) {
-						part.updateTileEntity();
-						//world.checkLight(new BlockPos(x , y, z));
-					}
 				}
 			}
 		}
 	}
 
-	public void turnPower(boolean on, World world) {
-		if (powered == on)
-			return;
-		powered = on;
-		markUpdate(world);
-	}
-
-	private void markUpdate(World world) {
-		for (int x = minX; x <= maxX; x++) {
-			for (int y = minY; y <= maxY; y++) {
-				for (int z = minZ; z <= maxZ; z++) {
-					BlockEntity te = getLoadedBlockEntity(world, new BlockPos(x, y, z));
-					if (te instanceof IScreenPart)
-						((IScreenPart)te).updateTileEntity();
-				}
-			}
-		}
-	}	
-
-	public NbtCompound toTag() {
-		NbtCompound tag = new NbtCompound();
+	public CompoundTag toTag() {
+		CompoundTag tag = new CompoundTag();
 
 		tag.putInt("minX", minX);
 		tag.putInt("minY", minY);

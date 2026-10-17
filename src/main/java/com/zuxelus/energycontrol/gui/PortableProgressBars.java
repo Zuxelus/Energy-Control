@@ -6,10 +6,11 @@ import java.util.Map;
 import com.zuxelus.energycontrol.api.CardState;
 import com.zuxelus.energycontrol.api.ICardReader;
 import com.zuxelus.energycontrol.items.cards.*;
+import com.zuxelus.energycontrol.utils.DataHelper;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 /** Read-only decoration for the portable panel's all-fields row layout.
  * No packet, item component, card setting, or sensor value is written here. */
@@ -22,7 +23,7 @@ final class PortableProgressBars {
 			return bars;
 		int row = reader.getTitleList().size();
 		if (stack.getItem() instanceof ItemCardEnergy) {
-			put(bars, row + 3, reader.getDouble("storage"), reader.getDouble("maxStorage"));
+			put(bars, row + 3, reader.getDouble(DataHelper.ENERGY), reader.getDouble(DataHelper.CAPACITY));
 		} else if (stack.getItem() instanceof ItemCardLiquid) {
 			put(bars, row + 4, reader.getLong("amount"), reader.getLong("capacity"));
 		} else if (stack.getItem() instanceof ItemCardEnergyArray || stack.getItem() instanceof ItemCardLiquidArray) {
@@ -36,7 +37,7 @@ final class PortableProgressBars {
 					row++; // Out-of-range/no-target row.
 					continue;
 				}
-				double size = energy ? reader.getInt("_" + i + "maxStorage") : reader.getLong("_" + i + "capacity");
+				double size = energy ? reader.getInt("_" + i + "maxCapacity") : reader.getLong("_" + i + "capacity");
 				put(bars, row + rowsPerTarget - 1, amount, size);
 				row += rowsPerTarget;
 				total += amount;

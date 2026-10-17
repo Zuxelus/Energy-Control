@@ -1,24 +1,24 @@
 package com.zuxelus.energycontrol.items;
 
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 public class ItemPortablePanel extends Item {
 
 	public ItemPortablePanel() {
-		super(new Item.Settings().maxCount(1));
+		super(new Item.Properties().stacksTo(1));
 	}
 
 	@Override
-	public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
-		ItemStack stack = player.getStackInHand(hand);
-		if (!player.isSneaking() && !world.isClient && stack.getCount() == 1)
-			player.openHandledScreen(new InventoryPortablePanel(stack, hand));
-		return TypedActionResult.success(stack);
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+		ItemStack stack = player.getItemInHand(hand);
+		if (!player.isShiftKeyDown() && !level.isClientSide && stack.getCount() == 1)
+			player.openMenu(new InventoryPortablePanel(stack, hand));
+		return InteractionResultHolder.success(stack);
 	}
 }

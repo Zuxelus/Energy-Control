@@ -1,7 +1,5 @@
 package com.zuxelus.energycontrol.gui;
 
-import net.minecraft.text.Text;
-
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.gui.controls.CompactButton;
 import com.zuxelus.energycontrol.gui.controls.GuiThermoInvertRedstone;
@@ -11,14 +9,15 @@ import com.zuxelus.zlib.gui.GuiBase;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.network.chat.Component;
 
 @Environment(EnvType.CLIENT)
 public class GuiThermalMonitor extends GuiBase {
 	private TileEntityThermalMonitor thermo;
-	private TextFieldWidget textboxHeat = null;
+	private EditBox textboxHeat;
 
 	public GuiThermalMonitor(TileEntityThermalMonitor thermo) {
 		super("block.energycontrol.thermal_monitor", 191, 64, EnergyControl.MODID + ":textures/gui/gui_thermal_monitor.png");
@@ -28,37 +27,38 @@ public class GuiThermalMonitor extends GuiBase {
 	@Override
 	public void init() {
 		super.init();
-		addDrawableChild(new CompactButton(0, guiLeft + 47, guiTop + 20, 22, 12, Text.literal("-1"), (button) -> { actionPerformed(button); }));
-		addDrawableChild(new CompactButton(1, guiLeft + 47, guiTop + 31, 22, 12, Text.literal("-10"), (button) -> { actionPerformed(button); }));
-		addDrawableChild(new CompactButton(2, guiLeft + 12, guiTop + 20, 36, 12, Text.literal("-100"), (button) -> { actionPerformed(button); }));
-		addDrawableChild(new CompactButton(3, guiLeft + 12, guiTop + 31, 36, 12, Text.literal("-1000"), (button) -> { actionPerformed(button); }));
-		addDrawableChild(new CompactButton(4, guiLeft + 12, guiTop + 42, 57, 12, Text.literal("-10000"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(0, guiLeft + 47, guiTop + 20, 22, 12, Component.literal("-1"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(1, guiLeft + 47, guiTop + 31, 22, 12, Component.literal("-10"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(2, guiLeft + 12, guiTop + 20, 36, 12, Component.literal("-100"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(3, guiLeft + 12, guiTop + 31, 36, 12, Component.literal("-1000"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(4, guiLeft + 12, guiTop + 42, 57, 12, Component.literal("-10000"), (button) -> { actionPerformed(button); }));
 
-		addDrawableChild(new CompactButton(5, guiLeft + 122, guiTop + 20, 22, 12, Text.literal("+1"), (button) -> { actionPerformed(button); }));
-		addDrawableChild(new CompactButton(6, guiLeft + 122, guiTop + 31, 22, 12, Text.literal("+10"), (button) -> { actionPerformed(button); }));
-		addDrawableChild(new CompactButton(7, guiLeft + 143, guiTop + 20, 36, 12, Text.literal("+100"), (button) -> { actionPerformed(button); }));
-		addDrawableChild(new CompactButton(8, guiLeft + 143, guiTop + 31, 36, 12, Text.literal("+1000"), (button) -> { actionPerformed(button); }));
-		addDrawableChild(new CompactButton(9, guiLeft + 122, guiTop + 42, 57, 12, Text.literal("+10000"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(5, guiLeft + 122, guiTop + 20, 22, 12, Component.literal("+1"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(6, guiLeft + 122, guiTop + 31, 22, 12, Component.literal("+10"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(7, guiLeft + 143, guiTop + 20, 36, 12, Component.literal("+100"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(8, guiLeft + 143, guiTop + 31, 36, 12, Component.literal("+1000"), (button) -> { actionPerformed(button); }));
+		addRenderableWidget(new CompactButton(9, guiLeft + 122, guiTop + 42, 57, 12, Component.literal("+10000"), (button) -> { actionPerformed(button); }));
 
-		addDrawableChild(new GuiThermoInvertRedstone(guiLeft + 70, guiTop + 38, thermo));
+		addRenderableWidget(new GuiThermoInvertRedstone(guiLeft + 70, guiTop + 38, thermo));
 
 		textboxHeat = addTextFieldWidget(70, 21, 51, 12, true, Integer.toString(thermo.getHeatLevel()));
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(DrawContext context, float partialTicks, int mouseX, int mouseY) {
+	protected void drawGuiContainerBackgroundLayer(GuiGraphics context, float partialTicks, int mouseX, int mouseY) {
 		super.drawGuiContainerBackgroundLayer(context, partialTicks, mouseX, mouseY);
 		textboxHeat.render(context, mouseX, mouseY, partialTicks);
 	}
+
 	@Override
-	protected void drawGuiContainerForegroundLayer(DrawContext context, int mouseX, int mouseY) {
+	protected void drawGuiContainerForegroundLayer(GuiGraphics context, int mouseX, int mouseY) {
 		drawTitle(context);
 	}
 
 	@Override
-	public void close() {
+	public void onClose() {
 		updateHeat(0);
-		super.close();
+		super.onClose();
 	}
 
 	@SuppressWarnings("resource")
@@ -67,37 +67,27 @@ public class GuiThermalMonitor extends GuiBase {
 			return;
 		int heat = 0;
 		try {
-			String value = textboxHeat.getText();
+			String value = textboxHeat.getValue();
 			if (!"".equals(value))
 				heat = Integer.parseInt(value);
-		} catch (NumberFormatException e) {	}
+		} catch (NumberFormatException e) { }
 		heat += delta;
 		if (heat < 0)
 			heat = 0;
 		if (heat >= 1000000)
 			heat = 1000000;
-		if (thermo.getWorld().isClient && thermo.getHeatLevel() != heat) {
-			NetworkHelper.updateSeverTileEntity(thermo.getPos(), 1, heat);
+		if (thermo.getLevel().isClientSide && thermo.getHeatLevel() != heat) {
+			NetworkHelper.updateSeverTileEntity(thermo.getBlockPos(), 1, heat);
 			thermo.setHeatLevel(heat);
 		}
-		textboxHeat.setText(Integer.toString(heat));
+		textboxHeat.setValue(Integer.toString(heat));
 	}
 
-	protected void actionPerformed(ButtonWidget button) {
+	protected void actionPerformed(Button button) {
 		if (((CompactButton) button).getId() >= 10)
 			return;
 
 		int delta = Integer.parseInt(button.getMessage().getString().replace("+", ""));
 		updateHeat(delta);
 	}
-
-	/*@Override
-	protected void keyTyped(char typedChar, int keyCode) {
-		if(keyCode == 1) // Esc button
-			mc.player.closeScreen();
-		else if(typedChar == 13) // Enter
-			updateHeat(0);
-		else if(textboxHeat != null && textboxHeat.isFocused() && (Character.isDigit(typedChar) || typedChar == 0 || typedChar == 8))
-			textboxHeat.textboxKeyTyped(typedChar, keyCode);
-	}*/
 }

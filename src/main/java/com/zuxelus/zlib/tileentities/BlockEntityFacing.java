@@ -1,12 +1,15 @@
 package com.zuxelus.zlib.tileentities;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class BlockEntityFacing extends BlockEntity {
 
@@ -22,7 +25,11 @@ public abstract class BlockEntityFacing extends BlockEntity {
 	}
 
 	public void setFacing(int meta) {
-		facing = Direction.byId(meta);
+		facing = Direction.from3DDataValue(meta);
+	}
+
+	public void setFacing(Direction meta) {
+		facing = meta;
 	}
 
 	protected boolean hasRotation() {
@@ -34,35 +41,68 @@ public abstract class BlockEntityFacing extends BlockEntity {
 	}
 
 	public void setRotation(int meta) {
-		rotation = Direction.byId(meta);
+		rotation = Direction.from3DDataValue(meta);
 	}
 
 	public void setRotation(Direction meta) {
 		rotation = meta;
 	}
 
-	protected void readProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
-		if (tag.contains("facing"))
-			facing = Direction.byId(tag.getInt("facing"));
-		else
-			facing = Direction.NORTH;
-		if (hasRotation()) {
-			if (tag.contains("rotation"))
-				rotation = Direction.byId(tag.getInt("rotation"));
-			else
-				rotation = Direction.NORTH;
-		}
+	protected void readProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		facing = Direction.from3DDataValue(tag.contains("facing") ? tag.getInt("facing") : Direction.NORTH.get3DDataValue());
+		if (hasRotation())
+			rotation = Direction.from3DDataValue(tag.contains("rotation") ? tag.getInt("rotation") : Direction.NORTH.get3DDataValue());
 	}
 
-	protected NbtCompound writeProperties(NbtCompound tag, RegistryWrapper.WrapperLookup registries) {
-		tag.putInt("facing", facing.getId());
+	protected void writeProperties(CompoundTag tag, HolderLookup.Provider registries) {
+		tag.putInt("facing", facing == null ? Direction.NORTH.get3DDataValue() : facing.get3DDataValue());
 		if (hasRotation() && rotation != null)
-			tag.putInt("rotation", rotation.getId());
+			tag.putInt("rotation", rotation.get3DDataValue());
+	}
+
+	/**
+	 * Extra data sent to the client only (update tag / data packet).
+	 */
+	protected void writeUpdateData(CompoundTag tag, HolderLookup.Provider registries) { }
+
+	@Override
+	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+		super.loadAdditional(tag, registries);
+		readProperties(tag, registries);
+	}
+
+	@Override
+	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+		super.saveAdditional(tag, registries);
+		writeProperties(tag, registries);
+	}
+
+	protected boolean sendUpdatePacket() {
+		return true;
+	}
+
+	@Override
+	public Packet<ClientGamePacketListener> getUpdatePacket() {
+		return sendUpdatePacket() ? ClientboundBlockEntityDataPacket.create(this) : null;
+	}
+
+	@Override
+	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+		CompoundTag tag = new CompoundTag();
+		writeProperties(tag, registries);
+		writeUpdateData(tag, registries);
 		return tag;
 	}
 
+	// called from ClientPlayNetworkHandlerMixin for the block entities that implement ITilePacketHandler
+	public void onDataPacket(ClientboundBlockEntityDataPacket pkt) {
+		readProperties(pkt.getTag(), level.registryAccess());
+	}
+
 	protected void notifyBlockUpdate() {
-		BlockState state = world.getBlockState(pos);
-		world.updateListeners(pos, state, state, 2);
+		if (!level.isClientSide) {
+			BlockState state = level.getBlockState(worldPosition);
+			level.sendBlockUpdated(worldPosition, state, state, 2);
+		}
 	}
 }

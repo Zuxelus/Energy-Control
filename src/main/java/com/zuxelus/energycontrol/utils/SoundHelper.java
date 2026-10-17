@@ -19,22 +19,22 @@ import com.zuxelus.energycontrol.config.ConfigHandler;
 
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.sound.SoundEntry;
-import net.minecraft.client.sound.SoundEntryDeserializer;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.resource.Resource;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.SinglePreparationResourceReloader;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
-import net.minecraft.util.profiler.Profiler;
+import net.minecraft.client.resources.sounds.SoundEventRegistration;
+import net.minecraft.client.resources.sounds.SoundEventRegistrationSerializer;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.util.profiling.ProfilerFiller;
 
-public class SoundHelper extends SinglePreparationResourceReloader<Map<String, SoundEntry>> implements IdentifiableResourceReloadListener {
-	public static final Identifier ID = Identifier.of(EnergyControl.MODID, "alarms");
+public class SoundHelper extends SimplePreparableReloadListener<Map<String, SoundEventRegistration>> implements IdentifiableResourceReloadListener {
+	public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "alarms");
 	private static File alarms;
-	private static final Gson GSON = (new GsonBuilder()).registerTypeHierarchyAdapter(Text.class, new Text.Serializer(DynamicRegistryManager.EMPTY)).registerTypeAdapter(SoundEntry.class, new SoundEntryDeserializer()).create();
-	private static final TypeToken<Map<String, SoundEntry>> TYPE = new TypeToken<Map<String, SoundEntry>>() {};
+	private static final Gson GSON = (new GsonBuilder()).registerTypeHierarchyAdapter(Component.class, new Component.SerializerAdapter(RegistryAccess.EMPTY)).registerTypeAdapter(SoundEventRegistration.class, new SoundEventRegistrationSerializer()).create();
+	private static final TypeToken<Map<String, SoundEventRegistration>> TYPE = new TypeToken<Map<String, SoundEventRegistration>>() {};
 
 	public SoundHelper() {
 		File configFolder = FabricLoader.getInstance().getConfigDir().toFile();
@@ -82,20 +82,20 @@ public class SoundHelper extends SinglePreparationResourceReloader<Map<String, S
 	}
 
 	@Override
-	public Identifier getFabricId() {
+	public ResourceLocation getFabricId() {
 		return ID;
 	}
 
 	@Override
-	protected Map<String, SoundEntry> prepare(ResourceManager manager, Profiler profiler) {
+	protected Map<String, SoundEventRegistration> prepare(ResourceManager manager, ProfilerFiller profiler) {
 		EnergyControl.INSTANCE.availableAlarms = new ArrayList<String>();
 
 		try {
-			List<Resource> list = manager.getAllResources(Identifier.of(EnergyControl.MODID, "sounds.json"));
+			List<Resource> list = manager.getResourceStack(ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "sounds.json"));
 
 			for (int i = list.size() - 1; i >= 0; --i) {
 				Resource resource = list.get(i);
-				Map<String, SoundEntry> map = JsonHelper.deserialize(GSON, new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8), TYPE);
+				Map<String, SoundEventRegistration> map = GsonHelper.fromJson(GSON, new InputStreamReader(resource.open(), StandardCharsets.UTF_8), TYPE);
 				map.forEach((string, entry) -> EnergyControl.INSTANCE.availableAlarms.add(string.replace("alarm-", "")));
 			}
 		} catch (IOException ioexception) { 
@@ -105,5 +105,5 @@ public class SoundHelper extends SinglePreparationResourceReloader<Map<String, S
 	}
 
 	@Override
-	protected void apply(Map<String, SoundEntry> loader, ResourceManager manager, Profiler profiler) {}
+	protected void apply(Map<String, SoundEventRegistration> loader, ResourceManager manager, ProfilerFiller profiler) {}
 }

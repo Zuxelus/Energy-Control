@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.UUID;
 
 import com.zuxelus.energycontrol.EnergyControl;
 
@@ -21,6 +22,14 @@ public class ConfigHandler {
 	public static int rangeTriggerRefreshPeriod = 20;
 	public static int SMPMaxAlarmRange = 256;
 	public static boolean useCustomSounds = false;
+	public static boolean disableRangeCheck = false;
+	public static boolean wsEnabled = false;
+	public static String wsHost = "localhost";
+	public static int wsPort = 8000;
+	public static String wsToken = "78c2b80a-1203-43fd-a9af-75cec29f5acf";
+	public static int wsRefreshRate = 100;
+	public static String wsServerId = UUID.randomUUID().toString();
+	public static String serverLanguage = "en_us";
 
 	public ConfigHandler() {
 		loadConfig(CONFIG_FILE);
@@ -40,6 +49,17 @@ public class ConfigHandler {
 			rangeTriggerRefreshPeriod = Integer.parseInt(cfg.getProperty("rangeTriggerRefreshPeriod"));
 			SMPMaxAlarmRange = Integer.parseInt(cfg.getProperty("SMPMaxAlarmRange"));
 			useCustomSounds = Boolean.parseBoolean(cfg.getProperty("useCustomSounds"));
+			disableRangeCheck = Boolean.parseBoolean(cfg.getProperty("disableRangeCheck", String.valueOf(disableRangeCheck)));
+			boolean hasWebSocketKeys = cfg.getProperty("wsServerID") != null;
+			wsEnabled = Boolean.parseBoolean(cfg.getProperty("wsEnabled", String.valueOf(wsEnabled)));
+			wsHost = cfg.getProperty("wsHost", wsHost);
+			wsPort = Math.max(0, Math.min(65535, Integer.parseInt(cfg.getProperty("wsPort", String.valueOf(wsPort)))));
+			wsToken = cfg.getProperty("wsToken", wsToken);
+			wsRefreshRate = Math.max(10, Math.min(20000, Integer.parseInt(cfg.getProperty("wsRefreshRate", String.valueOf(wsRefreshRate)))));
+			wsServerId = cfg.getProperty("wsServerID", wsServerId);
+			serverLanguage = cfg.getProperty("serverLanguage", serverLanguage).trim().toLowerCase(java.util.Locale.ROOT);
+			if (!hasWebSocketKeys)
+				saveConfig(file);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -56,6 +76,14 @@ public class ConfigHandler {
 			fos.write(("rangeTriggerRefreshPeriod=" + rangeTriggerRefreshPeriod + "\n").getBytes());
 			fos.write(("SMPMaxAlarmRange=" + SMPMaxAlarmRange + "\n").getBytes());
 			fos.write(("useCustomSounds=" + useCustomSounds + "\n").getBytes());
+			fos.write(("disableRangeCheck=" + disableRangeCheck + "\n").getBytes());
+			fos.write(("wsEnabled=" + wsEnabled + "\n").getBytes());
+			fos.write(("wsHost=" + wsHost + "\n").getBytes());
+			fos.write(("wsPort=" + wsPort + "\n").getBytes());
+			fos.write(("wsToken=" + wsToken + "\n").getBytes());
+			fos.write(("wsRefreshRate=" + wsRefreshRate + "\n").getBytes());
+			fos.write(("wsServerID=" + wsServerId + "\n").getBytes());
+			fos.write(("serverLanguage=" + serverLanguage + "\n").getBytes());
 			fos.close();
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -1,38 +1,30 @@
 package com.zuxelus.energycontrol.renderers;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.ColorHelper;
-import net.minecraft.util.math.Direction;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
+import com.zuxelus.zlib.tileentities.BlockEntityFacing;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.core.Direction;
+
 public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
-	private ModelBox cube;
+	// timer and thermal monitor: a flat box whose top side is the screen
+	public static final CubeRenderer MODEL = new CubeRenderer(2, 0, 2, 28, 14, 28, 128, 64);
+	// side of each ModelBox quad before rotation (see ModelBox constructor)
+	static final Direction[] QUAD_SIDES = { Direction.EAST, Direction.WEST, Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH };
+	private static final Direction[][][] WORLD_SIDES = new Direction[6][6][];
+	private final ModelBox cube;
 
-	public CubeRenderer(int faceOffsetX, int faceOffsetY) {
-		this(0.0F, 0.0F, 0.0F, 32, 32, 32, 128, 192, faceOffsetX, faceOffsetY);
-	}
-
-	public CubeRenderer(float offX, float offY, float offZ, int width, int height, int depth, float textureWidth, float textureHeight, int faceOffsetX, int faceOffsetY) {
-		this(offX, offY, offZ, width, height, depth, textureWidth, textureHeight, faceOffsetX, faceOffsetY, new RotationOffset());
-	}
-
-	public CubeRenderer(int faceOffsetX, int faceOffsetY, RotationOffset offset) {
-		this(0.0F, 0.0F, 0.0F, 32, 32, 32, 128, 192, faceOffsetX, faceOffsetY, offset);
-	}
-
-	public CubeRenderer(float x, float y, float z, int dx, int dy, int dz, float textureWidth, float textureHeight, int faceTexU, int faceTexV, RotationOffset offset) {
-		cube = new ModelBox(faceTexU, faceTexV, x, y, z, dx, dy, dz, textureWidth, textureHeight, offset.leftTop, offset.leftBottom, offset.rightTop, offset.rightBottom);
-	}
-
-	@Environment(EnvType.CLIENT)
-	public void render(MatrixStack matrixStack, VertexConsumer buffer, int[] light, int combinedOverlay) {
-		cube.render(matrixStack, buffer, light, combinedOverlay);
+	private CubeRenderer(float x, float y, float z, int dx, int dy, int dz, float textureWidth, float textureHeight) {
+		cube = new ModelBox(x, y, z, dx, dy, dz, textureWidth, textureHeight);
 	}
 
 	@Environment(EnvType.CLIENT)
@@ -69,59 +61,201 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 			positionsIn[1] = positionsIn[1].setTextureUV(u1 / texWidth + f, v1 / texHeight + f1);
 			positionsIn[2] = positionsIn[2].setTextureUV(u1 / texWidth + f, v2 / texHeight - f1);
 			positionsIn[3] = positionsIn[3].setTextureUV(u2 / texWidth - f, v2 / texHeight - f1);
-			this.normal = direction.getUnitVector();
+			this.normal = direction.step();
+		}
+
+		public void draw(PoseStack.Pose pose, VertexConsumer buffer, int light, int combinedOverlay, int color) {
+			Matrix4f matrix4f = pose.pose();
+			for (int i = 0; i < 4; ++i) {
+				PositionTextureVertex vertex = vertexPositions[i];
+				Vector4f vector4f = matrix4f.transform(new Vector4f(vertex.position.x() / 16.0F, vertex.position.y() / 16.0F, vertex.position.z() / 16.0F, 1.0F));
+				buffer.addVertex(vector4f.x(), vector4f.y(), vector4f.z()).setColor(color).setUv(vertex.textureU, vertex.textureV).setOverlay(combinedOverlay).setLight(light).setNormal(pose, normal.x(), normal.y(), normal.z());
+			}
 		}
 	}
 
 	@Environment(EnvType.CLIENT)
-	public class ModelBox {
+	private class ModelBox {
 		private final TexturedQuad[] quads;
 
-		public ModelBox(int texOffX, int texOffY, float x, float y, float z, float dx, float dy, float dz, float texWidth, float texHeight, float leftTop, float leftBottom, float rightTop, float rightBottom) {
+		public ModelBox(float x, float y, float z, float dx, float dy, float dz, float texWidth, float texHeight) {
 			quads = new TexturedQuad[6];
 			float f = x + dx;
 			float f1 = y + dy;
 			float f2 = z + dz;
-			PositionTextureVertex vertex = new PositionTextureVertex(x, y, z, 0.0F, 0.0F);
-			PositionTextureVertex vertex2 = new PositionTextureVertex(f, y, z, 0.0F, 8.0F);
-			PositionTextureVertex vertex3 = new PositionTextureVertex(f, f1 - leftTop, z, 8.0F, 8.0F);
-			PositionTextureVertex vertex4 = new PositionTextureVertex(x, f1 - leftBottom, z, 8.0F, 0.0F);
-			PositionTextureVertex vertex5 = new PositionTextureVertex(x, y, f2, 0.0F, 0.0F);
-			PositionTextureVertex vertex6 = new PositionTextureVertex(f, y, f2, 0.0F, 8.0F);
-			PositionTextureVertex vertex7 = new PositionTextureVertex(f, f1 - rightTop, f2, 8.0F, 8.0F);
-			PositionTextureVertex vertex8 = new PositionTextureVertex(x, f1 - rightBottom, f2, 8.0F, 0.0F);
-			quads[2] = new TexturedQuad(new PositionTextureVertex[] { vertex6, vertex5, vertex, vertex2 }, dz, 0, dz + dx, dz, texWidth, texHeight, Direction.DOWN);
-			quads[3] = new TexturedQuad(new PositionTextureVertex[] { vertex3, vertex4, vertex8, vertex7 }, texOffX + dz + dx, texOffY + dz, texOffX + dz + dx + dx, texOffY, texWidth, texHeight, Direction.UP);
-			quads[1] = new TexturedQuad(new PositionTextureVertex[] { vertex, vertex5, vertex8, vertex4 }, 0, dz, dz, dz + dy, texWidth, texHeight, Direction.WEST);
-			quads[4] = new TexturedQuad(new PositionTextureVertex[] { vertex2, vertex, vertex4, vertex3 }, dz, dz, dz + dx, dz + dy, texWidth, texHeight, Direction.NORTH);
-			quads[0] = new TexturedQuad(new PositionTextureVertex[] { vertex6, vertex2, vertex3, vertex7 }, dz + dx, dz, dz + dx + dz, dz + dy, texWidth, texHeight, Direction.EAST);
-			quads[5] = new TexturedQuad(new PositionTextureVertex[] { vertex5, vertex6, vertex7, vertex8 }, dz + dx + dz, dz, dz + dx + dz + dx, dz + dy, texWidth, texHeight, Direction.SOUTH);
+			PositionTextureVertex v = new PositionTextureVertex(x, y, z, 0.0F, 0.0F);
+			PositionTextureVertex v2 = new PositionTextureVertex(f, y, z, 0.0F, 8.0F);
+			PositionTextureVertex v3 = new PositionTextureVertex(f, f1, z, 8.0F, 8.0F);
+			PositionTextureVertex v4 = new PositionTextureVertex(x, f1, z, 8.0F, 0.0F);
+			PositionTextureVertex v5 = new PositionTextureVertex(x, y, f2, 0.0F, 0.0F);
+			PositionTextureVertex v6 = new PositionTextureVertex(f, y, f2, 0.0F, 8.0F);
+			PositionTextureVertex v7 = new PositionTextureVertex(f, f1, f2, 8.0F, 8.0F);
+			PositionTextureVertex v8 = new PositionTextureVertex(x, f1, f2, 8.0F, 0.0F);
+			quads[0] = new TexturedQuad(new PositionTextureVertex[] { v6, v2, v3, v7 }, dz + dx, dz, dz + dx + dz, dz + dy, texWidth, texHeight, Direction.EAST);
+			quads[1] = new TexturedQuad(new PositionTextureVertex[] { v, v5, v8, v4 }, 0, dz, dz, dz + dy, texWidth, texHeight, Direction.WEST);
+			quads[2] = new TexturedQuad(new PositionTextureVertex[] { v6, v5, v, v2 }, dz, 0, dz + dx, dz, texWidth, texHeight, Direction.DOWN);
+			quads[3] = new TexturedQuad(new PositionTextureVertex[] { v3, v4, v8, v7 }, dz + dx, dz, dz + dx + dx, 0, texWidth, texHeight, Direction.UP);
+			quads[4] = new TexturedQuad(new PositionTextureVertex[] { v2, v, v4, v3 }, dz, dz, dz + dx, dz + dy, texWidth, texHeight, Direction.NORTH);
+			quads[5] = new TexturedQuad(new PositionTextureVertex[] { v5, v6, v7, v8 }, dz + dx + dz, dz, dz + dx + dz + dx, dz + dy, texWidth, texHeight, Direction.SOUTH);
 		}
 
-		public void render(MatrixStack matrixStack, VertexConsumer buffer, int[] light, int combinedOverlay) {
-			matrixStack.scale(0.5F, 0.5F, 0.5F);
-			render(matrixStack.peek(), buffer, light, combinedOverlay, 1.0F, 1.0F, 1.0F, 1.0F);
-			matrixStack.scale(2.0F, 2.0F, 2.0F);
+		public void render(PoseStack.Pose pose, VertexConsumer buffer, int[] light, int combinedOverlay, int color) {
+			for (int n = 0; n < quads.length; ++n)
+				quads[n].draw(pose, buffer, light[n], combinedOverlay, color);
 		}
+	}
 
-		public void render(MatrixStack.Entry matrixEntry, VertexConsumer buffer, int[] light, int combinedOverlay, float red, float green, float blue, float alpha) {
-			Matrix4f matrix4f = matrixEntry.getPositionMatrix();
-			Matrix3f matrix3f = matrixEntry.getNormalMatrix();
+	@Environment(EnvType.CLIENT)
+	public void render(PoseStack matrixStack, VertexConsumer buffer, int[] light, int combinedOverlay) {
+		matrixStack.pushPose();
+		matrixStack.scale(0.5F, 0.5F, 0.5F);
+		cube.render(matrixStack.last(), buffer, light, combinedOverlay, 0xFFFFFFFF);
+		matrixStack.popPose();
+	}
 
-			for (int n = 0; n < quads.length; ++n) {
-				TexturedQuad quad = quads[n];
-				Vector3f vector3f = matrix3f.transform(new Vector3f(quad.normal));
-				float f = vector3f.x();
-				float g = vector3f.y();
-				float h = vector3f.z();
+	@Environment(EnvType.CLIENT)
+	@SuppressWarnings("incomplete-switch")
+	public static void rotateBlock(PoseStack matrixStack, Direction facing, Direction rotation) {
+		if (rotation == null)
+			rotation = facing.getAxis().isVertical() ? Direction.SOUTH : Direction.DOWN;
 
-				for (int i = 0; i < 4; ++i) {
-					PositionTextureVertex vertex = quad.vertexPositions[i];
-					Vector4f vector4f = new Vector4f(vertex.position.x() / 16.0F, vertex.position.y() / 16.0F, vertex.position.z() / 16.0F, 1.0F);
-					matrix4f.transform(vector4f);
-					buffer.vertex(vector4f.x(), vector4f.y(), vector4f.z(), ColorHelper.Argb.fromFloats(alpha, red, green, blue), vertex.textureU, vertex.textureV, combinedOverlay, light[n], f, g, h);
-				}
+		switch (facing) {
+		case UP:
+			switch (rotation) {
+			case NORTH:
+				matrixStack.mulPose(Axis.YP.rotationDegrees(180.0F));
+				matrixStack.translate(-1.0F, 0.0F, -1.0F);
+				break;
+			case SOUTH:
+				break;
+			case WEST:
+				matrixStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
+				matrixStack.translate(0.0F, 0.0F, -1.0F);
+				break;
+			case EAST:
+				matrixStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+				matrixStack.translate(-1.0F, 0.0F, 0.0F);
+				break;
 			}
+			break;
+		case NORTH:
+			matrixStack.mulPose(Axis.XP.rotationDegrees(-90.0F));
+			matrixStack.mulPose(Axis.YP.rotationDegrees(180.0F));
+			matrixStack.translate(-1.0F, -1.0F, -1.0F);
+			switch (rotation) {
+			case UP:
+				matrixStack.mulPose(Axis.YP.rotationDegrees(180.0F));
+				matrixStack.translate(-1.0F, 0.0F, -1.0F);
+				break;
+			case DOWN:
+				break;
+			case EAST:
+				matrixStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
+				matrixStack.translate(0.0F, 0.0F, -1.0F);
+				break;
+			case WEST:
+				matrixStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+				matrixStack.translate(-1.0F, 0.0F, 0.0F);
+				break;
+			}
+			break;
+		case SOUTH:
+			matrixStack.mulPose(Axis.XP.rotationDegrees(90.0F));
+			matrixStack.translate(0.0F, 0.0F, -1.0F);
+			switch (rotation) {
+			case UP:
+				matrixStack.mulPose(Axis.YP.rotationDegrees(180.0F));
+				matrixStack.translate(-1.0F, 0.0F, -1.0F);
+				break;
+			case DOWN:
+				break;
+			case WEST:
+				matrixStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
+				matrixStack.translate(0.0F, 0.0F, -1.0F);
+				break;
+			case EAST:
+				matrixStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+				matrixStack.translate(-1.0F, 0.0F, 0.0F);
+				break;
+			}
+			break;
+		case DOWN:
+			matrixStack.mulPose(Axis.XP.rotationDegrees(180.0F));
+			matrixStack.translate(0.0F, -1.0F, -1.0F);
+			break;
+		case WEST:
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(90.0F));
+			matrixStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
+			matrixStack.translate(0.0F, -1.0F, -1.0F);
+			switch (rotation) {
+			case UP:
+				matrixStack.mulPose(Axis.YP.rotationDegrees(180.0F));
+				matrixStack.translate(-1.0F, 0.0F, -1.0F);
+				break;
+			case DOWN:
+				break;
+			case NORTH:
+				matrixStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
+				matrixStack.translate(0.0F, 0.0F, -1.0F);
+				break;
+			case SOUTH:
+				matrixStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+				matrixStack.translate(-1.0F, 0.0F, 0.0F);
+				break;
+			}
+			break;
+		case EAST:
+			matrixStack.mulPose(Axis.ZP.rotationDegrees(-90.0F));
+			matrixStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+			matrixStack.translate(-1.0F, 0.0F, -1.0F);
+			switch (rotation) {
+			case UP:
+				matrixStack.mulPose(Axis.YP.rotationDegrees(180.0F));
+				matrixStack.translate(-1.0F, 0.0F, -1.0F);
+				break;
+			case DOWN:
+				break;
+			case SOUTH:
+				matrixStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
+				matrixStack.translate(0.0F, 0.0F, -1.0F);
+				break;
+			case NORTH:
+				matrixStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+				matrixStack.translate(-1.0F, 0.0F, 0.0F);
+				break;
+			}
+			break;
 		}
+	}
+
+	@Environment(EnvType.CLIENT)
+	public static int[] getBlockLight(BlockEntityFacing te) {
+		return getBlockLight(te, WORLD_SIDES, CubeRenderer::rotateBlock);
+	}
+
+	interface Rotator {
+		void rotate(PoseStack matrixStack, Direction facing, Direction rotation);
+	}
+
+	// Light of the neighbour block each quad faces, in quad order. The sides each quad faces after the rotation are cached
+	static int[] getBlockLight(BlockEntityFacing te, Direction[][][] cache, Rotator rotator) {
+		Direction facing = te.getFacing();
+		Direction rotation = te.getRotation() == null ? Direction.NORTH : te.getRotation();
+		Direction[] sides = cache[facing.get3DDataValue()][rotation.get3DDataValue()];
+		if (sides == null) {
+			PoseStack matrixStack = new PoseStack();
+			rotator.rotate(matrixStack, facing, rotation);
+			Matrix3f normal = matrixStack.last().normal();
+			sides = new Direction[QUAD_SIDES.length];
+			for (int i = 0; i < QUAD_SIDES.length; i++) {
+				Vector3f v = normal.transform(new Vector3f(QUAD_SIDES[i].step()));
+				sides[i] = Direction.getNearest(v.x(), v.y(), v.z());
+			}
+			cache[facing.get3DDataValue()][rotation.get3DDataValue()] = sides;
+		}
+		int[] light = new int[sides.length];
+		for (int i = 0; i < sides.length; i++)
+			light[i] = LevelRenderer.getLightColor(te.getLevel(), te.getBlockPos().relative(sides[i]));
+		return light;
 	}
 }
