@@ -1,5 +1,7 @@
 package com.zuxelus.energycontrol.items.cards;
 
+import com.zuxelus.energycontrol.utils.Translator;
+
 import java.util.List;
 
 import com.zuxelus.energycontrol.api.CardState;
@@ -9,7 +11,6 @@ import com.zuxelus.energycontrol.api.PanelString;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.crossmod.ModIDs;
 
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
@@ -22,12 +23,12 @@ public class ItemCardAppEng extends ItemCardMain {
 	}
 
 	@Override
-	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
+	public CardState update(Level level, ICardReader reader, int range, BlockPos pos) {
 		BlockPos target = reader.getTarget();
 		if (target == null)
 			return CardState.NO_TARGET;
 
-		BlockEntity te = world.getBlockEntity(target);
+		BlockEntity te = level.getBlockEntity(target);
 		CompoundTag tag = CrossModLoader.getCrossMod(ModIDs.APPLIED_ENERGISTICS).getCardData(te);
 		if (tag == null)
 			return CardState.NO_TARGET;
@@ -37,7 +38,7 @@ public class ItemCardAppEng extends ItemCardMain {
 	}
 
 	@Override
-	public List<PanelString> getStringData(Level world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(Level level, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		switch (reader.getInt("type")) {
 		case 1:
@@ -47,8 +48,8 @@ public class ItemCardAppEng extends ItemCardMain {
 				result.add(new PanelString(String.format("%d of %d Bytes Used", reader.getInt("bytesUsed"), reader.getInt("bytesTotal"))));
 				result.add(new PanelString(String.format("%d of %d Types", reader.getInt("typesUsed"), reader.getInt("typesTotal"))));
 			} else {
-				result.add(new PanelString(I18n.get("msg.ec.InfoPanelBytesUsed", reader.getInt("bytesUsed"), reader.getInt("bytesTotal"))));
-				result.add(new PanelString(I18n.get("msg.ec.InfoPanelTypes", reader.getInt("typesUsed"), reader.getInt("typesTotal"))));
+				result.add(new PanelString(Translator.get("msg.ec.InfoPanelBytesUsed", reader.getInt("bytesUsed"), reader.getInt("bytesTotal"))));
+				result.add(new PanelString(Translator.get("msg.ec.InfoPanelTypes", reader.getInt("typesUsed"), reader.getInt("typesTotal"))));
 			}
 			result.add(new PanelString("msg.ec.InfoPanelTotalItems", reader.getInt("items"), showLabels));
 			break;

@@ -24,6 +24,7 @@ public final class ConfigHandler {
 	public static ModConfigSpec.ConfigValue<String> WS_TOKEN;
 	public static ModConfigSpec.IntValue WS_REFRESH_RATE;
 	public static ModConfigSpec.ConfigValue<String> WS_SERVER_ID;
+	public static ModConfigSpec.ConfigValue<String> SERVER_LANGUAGE;
 
 	static {
 		ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -44,6 +45,7 @@ public final class ConfigHandler {
 		WS_TOKEN =  builder.comment("Web Socket Token").define("wsToken", "78c2b80a-1203-43fd-a9af-75cec29f5acf");
 		WS_REFRESH_RATE =  builder.comment("Web Socket Refresh Rate").defineInRange("wsRefreshRate", 100, 10, 20000);
 		WS_SERVER_ID =  builder.comment("Web Socket Server ID").define("wsServerID", UUID.randomUUID().toString());
+		SERVER_LANGUAGE = builder.comment("Language of the text created on a dedicated server, for example en_us or ru_ru").define("serverLanguage", "en_us");
 		//builder.pop();
 		COMMON_CONFIG = builder.build();
 	}

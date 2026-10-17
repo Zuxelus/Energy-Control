@@ -60,8 +60,8 @@ public class GuiKitAssembler extends GuiContainerBase<ContainerKitAssembler> {
 	}
 
 	@Override
-	protected void renderBg(GuiGraphics matrixStack, float partialTicks, int mouseX, int mouseY) {
-		super.renderBg(matrixStack, partialTicks, mouseX, mouseY);
+	public void renderBackground(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
+		super.renderBackground(matrixStack, mouseX, mouseY, partialTicks);
 
 		int energyHeight = container.te.getEnergyFactor();
 		if (energyHeight > 0)

@@ -18,9 +18,9 @@ public class GuiPanelSlope extends GuiBase {
 	}
 
 	@Override
-	public boolean mouseClicked(double x, double y, int button) {
-		double mouseX = x - guiLeft;
-		double mouseY = y - guiTop;
+	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
+		mouseX -= guiLeft;
+		mouseY -= guiTop;
 		if (mouseY >= 23 && mouseY <= 89) {
 			int amount = (int) ((87 - mouseY + 2) / 4);
 			int offset = 0;
@@ -41,7 +41,7 @@ public class GuiPanelSlope extends GuiBase {
 			panel.setValues(offset + amount);
 			return true;
 		}
-		return super.mouseClicked(x, y, button);
+		return super.mouseClicked(mouseX, mouseY, mouseButton);
 	}
 
 	@Override

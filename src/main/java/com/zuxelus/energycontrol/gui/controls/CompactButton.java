@@ -5,10 +5,10 @@ import com.zuxelus.energycontrol.EnergyControl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.util.FastColor.ARGB32;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor.ARGB32;
 import net.minecraft.util.FormattedCharSequence;
 
 public class CompactButton extends Button {
@@ -21,10 +21,7 @@ public class CompactButton extends Button {
 	}
 
 	@Override
-	public void renderWidget(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
-		if (!visible)
-			return;
-
+	protected void renderWidget(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
 		Minecraft minecraft = Minecraft.getInstance();
 		Font fontRenderer = minecraft.font;
 		int i = !active ? 0 : isHoveredOrFocused() ? 2 : 1;

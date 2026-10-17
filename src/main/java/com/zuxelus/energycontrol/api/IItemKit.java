@@ -12,5 +12,5 @@ public interface IItemKit {
 	 * Called when this item is used on a block, trigerring a {@link PlayerInteractEvent.RightClickBlock}
 	 * @return This kit's corresponding card
 	 */
-	ItemStack getSensorCard(ItemStack stack, Player player, Level world, BlockPos pos, Direction side);
+	ItemStack getSensorCard(ItemStack stack, Player player, Level level, BlockPos pos, Direction side);
 }

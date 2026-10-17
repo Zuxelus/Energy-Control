@@ -57,7 +57,7 @@ neoForge {
         }
 
         data {
-            clientData()
+            data()
             // example of overriding the workingDirectory set in configureEach above, uncomment if you want to use it
             // gameDirectory = project.file('run-data')
 
@@ -84,11 +84,13 @@ configurations {
 }
 
 dependencies {
+    compileOnly "curse.maven:ae2-223794:8992605"
     compileOnly "curse.maven:extremereactors-250277:7344744"
     compileOnly "curse.maven:jei-238222:9173201"
     localRuntime "curse.maven:jei-238222:9173201"
     compileOnly "curse.maven:mekanism-268560:7904058"
     compileOnly "curse.maven:mekanismgenerators-268566:7904061"
+    compileOnly "curse.maven:zerocore2-247921:7344742"
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {

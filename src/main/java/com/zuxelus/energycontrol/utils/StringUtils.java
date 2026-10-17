@@ -5,7 +5,6 @@ import java.text.DecimalFormatSymbols;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -27,7 +26,7 @@ public class StringUtils {
 
 	public static String getFormatted(String resourceName, String value, boolean showLabels) {
 		if (showLabels)
-			return I18n.get(resourceName, value);
+			return Translator.get(resourceName, value);
 		return value;
 	}
 
@@ -36,7 +35,7 @@ public class StringUtils {
 	}
 
 	public static String getFormattedKey(String resourceName, Object... arguments) {
-		return I18n.get(resourceName, arguments);
+		return Translator.get(resourceName, arguments);
 	}
 
 	public static String getItemName(ItemStack stack) {

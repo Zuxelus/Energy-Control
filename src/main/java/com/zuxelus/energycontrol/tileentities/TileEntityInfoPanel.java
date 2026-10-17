@@ -7,12 +7,7 @@ import java.util.Map;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.api.CardState;
-import com.zuxelus.energycontrol.api.ICardReader;
-import com.zuxelus.energycontrol.api.IHasBars;
-import com.zuxelus.energycontrol.api.IItemCard;
-import com.zuxelus.energycontrol.api.ITouchAction;
-import com.zuxelus.energycontrol.api.PanelString;
+import com.zuxelus.energycontrol.api.*;
 import com.zuxelus.energycontrol.blocks.HoloPanelExtender;
 import com.zuxelus.energycontrol.blocks.InfoPanelExtender;
 import com.zuxelus.energycontrol.config.ConfigHandler;
@@ -28,8 +23,8 @@ import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -319,14 +314,14 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 					refreshModel(level, new BlockPos(x, y, z));
 	}
 
-	public static void refreshModel(Level world, BlockPos pos) {
-		if (world == null || !world.isClientSide())
+	public static void refreshModel(Level level, BlockPos pos) {
+		if (level == null || !level.isClientSide())
 			return;
-		BlockEntity be = world.getBlockEntity(pos);
+		BlockEntity be = level.getBlockEntity(pos);
 		if (be != null)
 			be.requestModelDataUpdate(); // forge only
-		BlockState state = world.getBlockState(pos);
-		world.sendBlockUpdated(pos, state, state, 8);
+		BlockState state = level.getBlockState(pos);
+		level.sendBlockUpdated(pos, state, state, 8);
 	}
 
 	protected void serializeDisplaySettings(CompoundTag tag) {
@@ -423,11 +418,11 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 		cardData.clear();
 	}
 
-	public List<PanelString> getCardData(Level world, int settings, ItemStack cardStack, ItemCardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getCardData(Level level, int settings, ItemStack cardStack, ItemCardReader reader, boolean isServer, boolean showLabels) {
 		int slot = getCardSlot(cardStack);
 		List<PanelString> data = cardData.get(slot);
 		if (data == null) {
-			data = reader.getStringData(world, settings, isServer, showLabels);
+			data = reader.getStringData(level, settings, isServer, showLabels);
 			cardData.put(slot, data);
 		}
 		return data;
@@ -636,7 +631,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 		notifyBlockUpdate();
 	}
 
-	public void updateExtenders(Level world, Boolean active) { // server
+	public void updateExtenders(Level level, Boolean active) { // server
 		// the block just switched on or off, so update the power now instead of waiting for the next update packet
 		setPowered(active);
 		if (screen == null)
@@ -646,9 +641,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements MenuProv
 			for (int y = screen.minY; y <= screen.maxY; y++)
 				for (int z = screen.minZ; z <= screen.maxZ; z++) {
 					BlockPos pos = new BlockPos(x, y, z);
-					BlockState state = world.getBlockState(pos);
+					BlockState state = level.getBlockState(pos);
 					if (state.getBlock() instanceof InfoPanelExtender || state.getBlock() instanceof HoloPanelExtender)
-						world.setBlock(pos, state.setValue(FacingBlockActive.ACTIVE, active), 2);
+						level.setBlock(pos, state.setValue(FacingBlockActive.ACTIVE, active), 2);
 				}
 	}
 

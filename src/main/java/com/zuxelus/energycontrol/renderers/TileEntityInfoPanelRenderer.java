@@ -9,10 +9,10 @@ import com.zuxelus.energycontrol.tileentities.Screen;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
 import net.minecraft.core.BlockPos;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.world.phys.AABB;
 
 public class TileEntityInfoPanelRenderer extends TileRenderer<TileEntityInfoPanel> {
@@ -44,9 +44,9 @@ public class TileEntityInfoPanelRenderer extends TileRenderer<TileEntityInfoPane
 		return te.getRenderBoundingBox();
 	}
 
+	// the panel body is a baked model (PanelModel), only the text is drawn here
 	@Override
 	protected void render(TileEntityInfoPanel te, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
-		// the panel body is a baked model (PanelModel), only the text is drawn here
 		if (!te.getPowered())
 			return;
 		matrixStack.pushPose();

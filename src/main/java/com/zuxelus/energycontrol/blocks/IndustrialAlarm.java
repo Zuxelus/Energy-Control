@@ -1,7 +1,6 @@
 package com.zuxelus.energycontrol.blocks;
 
 import com.mojang.serialization.MapCodec;
-
 import com.zuxelus.energycontrol.gui.ScreenHandler;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
@@ -9,7 +8,6 @@ import com.zuxelus.energycontrol.tileentities.TileEntityIndustrialAlarm;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -26,14 +24,15 @@ public class IndustrialAlarm extends HowlerAlarm {
 	public static final IntegerProperty LIGHT = IntegerProperty.create("light", 0, 3);
 	// light level of each LIGHT state, the alarm steps through them in order
 	public static final int[] lightSteps = { 0, 7, 14, 7 };
-
-	public IndustrialAlarm(Block.Properties properties) {
-		super(properties.lightLevel(state -> lightSteps[state.getValue(LIGHT)]));
-	}
+	public static final MapCodec<IndustrialAlarm> CODEC = simpleCodec(IndustrialAlarm::new);
 
 	@Override
 	protected MapCodec<? extends BaseEntityBlock> codec() {
-		return simpleCodec(IndustrialAlarm::new);
+		return CODEC;
+	}
+
+	public IndustrialAlarm(Properties properties) {
+		super(properties.lightLevel(state -> lightSteps[state.getValue(LIGHT)]));
 	}
 
 	@Override
@@ -53,9 +52,9 @@ public class IndustrialAlarm extends HowlerAlarm {
 	}
 
 	@Override
-	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		if (world.isClientSide()) {
-			BlockEntity te = world.getBlockEntity(pos);
+	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+		if (level.isClientSide()) {
+			BlockEntity te = level.getBlockEntity(pos);
 			if (te instanceof TileEntityHowlerAlarm)
 				ScreenHandler.openIndustrialAlarmScreen((TileEntityIndustrialAlarm) te);
 		}

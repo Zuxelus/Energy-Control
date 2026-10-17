@@ -1,9 +1,10 @@
 package com.zuxelus.energycontrol.api;
 
+import com.zuxelus.energycontrol.utils.Translator;
+
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
-import net.minecraft.locale.Language;
 
 public class PanelString {
 
@@ -51,7 +52,7 @@ public class PanelString {
 
 	private static String getFormatted(String resourceName, String value, boolean showLabels) {
 		if (showLabels)
-			return String.format(Language.getInstance().getOrDefault(resourceName), value);
+			return Translator.get(resourceName, value);
 		return value;
 	}
 }

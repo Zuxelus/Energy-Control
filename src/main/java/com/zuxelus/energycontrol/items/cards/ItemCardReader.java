@@ -1,30 +1,20 @@
 package com.zuxelus.energycontrol.items.cards;
 
-import com.zuxelus.energycontrol.api.IItemCard;
+import com.zuxelus.energycontrol.utils.Translator;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.api.CardState;
-import com.zuxelus.energycontrol.api.ICardReader;
-import com.zuxelus.energycontrol.api.ItemStackHelper;
-import com.zuxelus.energycontrol.api.PanelString;
+import com.zuxelus.energycontrol.api.*;
 import com.zuxelus.energycontrol.network.ChannelHandler;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.locale.Language;
-import net.minecraft.nbt.ByteTag;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.DoubleTag;
-import net.minecraft.nbt.IntTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.LongTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -45,9 +35,9 @@ public class ItemCardReader implements ICardReader {
 	@Override
 	public BlockPos getTarget() {
 		CompoundTag tag = tag();
-		if (!tag.contains("x") || !tag.contains("y") || !tag.contains("z"))
+		if (!(tag.get("x") instanceof IntTag x) || !(tag.get("y") instanceof IntTag y) || !(tag.get("z") instanceof IntTag z))
 			return null;
-		return new BlockPos(tag.getInt("x"), tag.getInt("y"), tag.getInt("z"));
+		return new BlockPos(x.getAsInt(), y.getAsInt(), z.getAsInt());
 	}
 
 	@Override
@@ -194,7 +184,7 @@ public class ItemCardReader implements ICardReader {
 		ArrayList<ItemStack> result = new ArrayList<ItemStack> ();
 		for (int i = 0; i < list.size(); i++) {
 			CompoundTag stackTag = list.getCompound(i);
-			ItemStack stack = ItemStackHelper.parseOptional(registries, stackTag);
+			ItemStack stack = ItemStack.parseOptional(registries, stackTag);
 			if (reset)
 				stack.setCount(1);
 			result.add(stack);
@@ -206,7 +196,7 @@ public class ItemCardReader implements ICardReader {
 	public void setItemStackList(ArrayList<ItemStack> list, HolderLookup.Provider registries) {
 		ListTag values = new ListTag();
 		for (ItemStack stack : list)
-			values.add(ItemStackHelper.saveOptional(stack, registries));
+			values.add(stack.saveOptional(registries));
 		setTag("Items", values);
 	}
 
@@ -245,17 +235,17 @@ public class ItemCardReader implements ICardReader {
 	}
 
 	public static List<PanelString> getStateMessage(CardState state) {
-		List<PanelString> result = new LinkedList<>();
+		List<PanelString> result = new LinkedList<PanelString>();
 		PanelString line = new PanelString();
 		switch (state) {
 		case OUT_OF_RANGE:
-			line.textCenter = Language.getInstance().getOrDefault("msg.ec.InfoPanelOutOfRange");
+			line.textCenter = Translator.get("msg.ec.InfoPanelOutOfRange");
 			break;
 		case INVALID_CARD:
-			line.textCenter = Language.getInstance().getOrDefault("msg.ec.InfoPanelInvalidCard");
+			line.textCenter = Translator.get("msg.ec.InfoPanelInvalidCard");
 			break;
 		case NO_TARGET:
-			line.textCenter = Language.getInstance().getOrDefault("msg.ec.InfoPanelNoTarget");
+			line.textCenter = Translator.get("msg.ec.InfoPanelNoTarget");
 			break;
 		case CUSTOM_ERROR:
 			break;
@@ -270,7 +260,7 @@ public class ItemCardReader implements ICardReader {
 
 	@Override
 	public List<PanelString> getTitleList() {
-		List<PanelString> result = new LinkedList<>();
+		List<PanelString> result = new LinkedList<PanelString>();
 		String title = getTitle();
 		if (title != null && !title.isEmpty()) {
 			PanelString titleString = new PanelString();
@@ -280,8 +270,8 @@ public class ItemCardReader implements ICardReader {
 		return result;
 	}
 
-	public List<PanelString> getStringData(Level world, int settings, boolean isServer, boolean showLabels) {
-		return ((IItemCard) card.getItem()).getStringData(world, settings, this, isServer, showLabels);
+	public List<PanelString> getStringData(Level level, int settings, boolean isServer, boolean showLabels) {
+		return ((IItemCard) card.getItem()).getStringData(level, settings, this, isServer, showLabels);
 	}
 
 	public List<PanelString> getAllData() {
@@ -297,8 +287,8 @@ public class ItemCardReader implements ICardReader {
 				result.add(new PanelString(String.format("title : %s", title)));
 			nbt.remove("title");
 		}
-		if (nbt.get("x") instanceof IntTag && nbt.get("y") instanceof IntTag && nbt.get("z") instanceof IntTag) {
-			result.add(new PanelString(String.format("xyz : %s %s %s", nbt.getInt("x"), nbt.getInt("y"), nbt.getInt("z"))));
+		if (nbt.get("x") instanceof IntTag x && nbt.get("y") instanceof IntTag y && nbt.get("z") instanceof IntTag z) {
+			result.add(new PanelString(String.format("xyz : %s %s %s", x.getAsInt(), y.getAsInt(), z.getAsInt())));
 			nbt.remove("x");
 			nbt.remove("y");
 			nbt.remove("z");

@@ -1,7 +1,6 @@
 package com.zuxelus.energycontrol.blocks;
 
 import com.mojang.serialization.MapCodec;
-
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityTimer;
 import com.zuxelus.zlib.blocks.FacingBlockSmall;
@@ -9,7 +8,6 @@ import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
@@ -30,26 +28,20 @@ public class TimerBlock extends FacingBlockSmall {
 	protected static final VoxelShape AABB_SOUTH = Block.box(1.0F, 1.0F, 0.0F, 15.0F, 15.0F, 7.0F);
 	protected static final VoxelShape AABB_WEST = Block.box(9.0F, 1.0F, 1.0F, 15.0F, 15.0F, 15.0F);
 	protected static final VoxelShape AABB_EAST = Block.box(0.0F, 1.0F, 1.0F, 7.0F, 15.0F, 15.0F);
-
-	public TimerBlock(Block.Properties properties) {
-		super(metal(properties));
-	}
+	public static final MapCodec<TimerBlock> CODEC = simpleCodec(TimerBlock::new);
 
 	@Override
 	protected MapCodec<? extends BaseEntityBlock> codec() {
-		return simpleCodec(TimerBlock::new);
+		return CODEC;
+	}
+
+	public TimerBlock(Properties properties) {
+		super(metal(properties));
 	}
 
 	@Override
 	protected BlockEntityFacing createBlockEntity(BlockPos pos, BlockState state) {
 		return ModTileEntityTypes.timer.get().create(pos, state);
-	}
-
-	@Override
-	protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-		super.onRemove(state, level, pos, newState, movedByPiston);
-		if (!movedByPiston && !state.is(newState.getBlock()))
-			level.updateNeighborsAt(pos, this);
 	}
 
 	@Override
@@ -63,7 +55,7 @@ public class TimerBlock extends FacingBlockSmall {
 	}
 
 	@Override
-	protected VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+	protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
 		switch (state.getValue(FACING)) {
 		case EAST:
 			return AABB_EAST;
@@ -87,10 +79,10 @@ public class TimerBlock extends FacingBlockSmall {
 	}
 
 	@Override
-	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		if (world.isClientSide())
+	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+		if (level.isClientSide())
 			return InteractionResult.PASS;
-		BlockEntity te = world.getBlockEntity(pos);
+		BlockEntity te = level.getBlockEntity(pos);
 		if (!(te instanceof TileEntityTimer))
 			return InteractionResult.PASS;
 		player.openMenu((TileEntityTimer) te, buf -> buf.writeBlockPos(pos));

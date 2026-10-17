@@ -7,8 +7,8 @@ import com.zuxelus.energycontrol.tileentities.TileEntityTimer;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
 import net.minecraft.resources.ResourceLocation;
 
 public class TileEntityTimerRenderer extends TileRenderer<TileEntityTimer> {
@@ -23,7 +23,6 @@ public class TileEntityTimerRenderer extends TileRenderer<TileEntityTimer> {
 	@Override
 	protected void render(TileEntityTimer te, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
 		matrixStack.pushPose();
-
 		CubeRenderer.rotateBlock(matrixStack, te.getFacing(), te.getRotation());
 
 		CubeRenderer.MODEL.render(matrixStack, buffer, RenderType.entitySolid(te.getIsWorking() ? TEXTURE_ACTIVE : TEXTURE), CubeRenderer.getBlockLight(te), combinedOverlay);

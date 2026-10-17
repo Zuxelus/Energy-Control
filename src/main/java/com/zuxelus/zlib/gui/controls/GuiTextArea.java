@@ -204,7 +204,7 @@ public class GuiTextArea extends AbstractWidget {
 	}
 
 	@Override
-	public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float partialTicks) {
+	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float partialTicks) {
 		clampCursor();
 		context.fill(getX() - 1, getY() - 1, getX() + width + 1, getY() + height + 1, ARGB32.opaque(0xA0A0A0));
 		context.fill(getX(), getY(), getX() + width, getY() + height, ARGB32.opaque(0x000000));

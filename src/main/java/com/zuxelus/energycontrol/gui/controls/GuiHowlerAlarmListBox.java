@@ -76,7 +76,7 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 	}
 
 	@Override
-	public void renderWidget(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
+	protected void renderWidget(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (dragging) {
 			int pos = (mouseY - getY() - SCROLL_BUTTON_HEIGHT - dragDelta)
 					* (lineHeight * items.size() + BASIC_Y_OFFSET - height)
@@ -144,6 +144,7 @@ public class GuiHowlerAlarmListBox extends AbstractButton {
 
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		// consumed, otherwise the screen also moves keyboard focus away from the list
 		if (keyCode == InputConstants.KEY_DOWN) { // down
 			scrollDown();
 			return true;

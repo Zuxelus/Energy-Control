@@ -40,8 +40,8 @@ public class GuiPortablePanel extends AbstractContainerScreen<ContainerPortableP
 
 	public GuiPortablePanel(ContainerPortablePanel container, Inventory inventory, Component title) {
 		super(container, inventory, title);
-		imageWidth = 226;
-		imageHeight = 226;
+		this.imageWidth = 226;
+		this.imageHeight = 226;
 		this.te = container.te;
 		this.showBars = container.getShowBars();
 		this.player = inventory.player;
@@ -80,9 +80,9 @@ public class GuiPortablePanel extends AbstractContainerScreen<ContainerPortableP
 	}
 
 	@Override
-	public void render(GuiGraphics context, int x, int y, float partialTicks) {
-		super.render(context, x, y, partialTicks);
-		renderTooltip(context, x, y);
+	public void render(GuiGraphics context, int mouseX, int mouseY, float partialTicks) {
+		super.render(context, mouseX, mouseY, partialTicks);
+		renderTooltip(context, mouseX, mouseY);
 	}
 
 	@Override

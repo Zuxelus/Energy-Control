@@ -23,10 +23,10 @@ import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.registries.RegisterEvent;
 
 public class CrossModLoader {
 	private static final Map<String, CrossModBase> CROSS_MODS = new HashMap<>();
@@ -36,12 +36,12 @@ public class CrossModLoader {
 		// Integrations with other mods are not ported yet
 		//loadCrossMod(ModIDs.ADV_GENERATORS, CrossAdvGenerators::new);
 		//loadCrossMod(ModIDs.APPLIED_ENERGISTICS, CrossAppEng::new);
-		//loadCrossMod(ModIDs.BIG_REACTORS, CrossBigReactors::new);
+		loadCrossMod(ModIDs.BIG_REACTORS, CrossBigReactors::new);
 		//loadCrossMod(ModIDs.BIGGER_REACTORS, CrossBiggerReactors::new);
 		//loadCrossModSafely(ModIDs.COMPUTER_CRAFT, () -> CrossComputerCraft::new);
 		//loadCrossModSafely(ModIDs.IC2, () -> CrossIC2Classic::new);
-		//loadCrossModSafely(ModIDs.MEKANISM, () -> CrossMekanism::new);
-		//loadCrossModSafely(ModIDs.MEKANISM_GENERATORS, () -> CrossMekanismGenerators::new);
+		loadCrossModSafely(ModIDs.MEKANISM, () -> CrossMekanism::new);
+		loadCrossModSafely(ModIDs.MEKANISM_GENERATORS, () -> CrossMekanismGenerators::new);
 		//loadCrossMod(ModIDs.IMMERSIVE_ENGINEERING, CrossImmersiveEngineering::new);
 		//loadCrossModSafely(ModIDs.INDUSTRIAL_REBORN, () -> CrossIndustrialReborn::new);
 		//loadCrossMod(ModIDs.THERMAL_EXPANSION, CrossThermalExpansion::new);
@@ -61,8 +61,8 @@ public class CrossModLoader {
 		return CROSS_MODS.getOrDefault(modid, EMPTY);
 	}
 
-	public static ItemStack getEnergyCard(Level world, BlockPos pos) {
-		BlockEntity te = world.getBlockEntity(pos);
+	public static ItemStack getEnergyCard(Level level, BlockPos pos) {
+		BlockEntity te = level.getBlockEntity(pos);
 		if (te == null)
 			return ItemStack.EMPTY;
 		CompoundTag data = getEnergyData(te);
@@ -93,8 +93,8 @@ public class CrossModLoader {
 		return null;
 	}
 
-	public static List<FluidInfo> getAllTanks(Level world, BlockPos pos) {
-		BlockEntity te = world.getBlockEntity(pos);
+	public static List<FluidInfo> getAllTanks(Level level, BlockPos pos) {
+		BlockEntity te = level.getBlockEntity(pos);
 		if (te == null)
 			return null;
 		for (CrossModBase crossMod : CROSS_MODS.values()) {
@@ -102,7 +102,7 @@ public class CrossModLoader {
 			if (list != null)
 				return list;
 		}
-		IFluidHandler handler = world.getCapability(Capabilities.FluidHandler.BLOCK, pos, te.getBlockState(), te, null);
+		IFluidHandler handler = level.getCapability(Capabilities.FluidHandler.BLOCK, pos, te.getBlockState(), te, null);
 		if (handler != null) {
 			List<FluidInfo> result = new ArrayList<>();
 			for (int i = 0; i < handler.getTanks(); i++)
@@ -112,14 +112,14 @@ public class CrossModLoader {
 		return null;
 	}
 
-	public static FluidInfo getTankAt(Level world, BlockPos pos) {
-		List<FluidInfo> tanks = getAllTanks(world, pos);
+	public static FluidInfo getTankAt(Level level, BlockPos pos) {
+		List<FluidInfo> tanks = getAllTanks(level, pos);
 		return tanks != null && tanks.size() > 0 ? tanks.get(0) : null;
 	}
 
-	public static int getReactorHeat(Level world, BlockPos pos) {
+	public static int getReactorHeat(Level level, BlockPos pos) {
 		for (CrossModBase crossMod : CROSS_MODS.values()) {
-			int heat = crossMod.getReactorHeat(world, pos);
+			int heat = crossMod.getReactorHeat(level, pos);
 			if (heat != -1)
 				return heat;
 		}
@@ -148,7 +148,7 @@ public class CrossModLoader {
 					inUse++;
 					items += stack.getCount();
 				}
-				tag.put("slot" + Integer.toString(i), ItemStackHelper.saveOptional(stack, te.getLevel().registryAccess()));
+				tag.put("slot" + Integer.toString(i), stack.saveOptional(te.getLevel().registryAccess()));
 			}
 			tag.putInt("used", inUse);
 			tag.putInt("items", items);
@@ -167,7 +167,7 @@ public class CrossModLoader {
 						inUse++;
 						items += inv.getItem(i).getCount();
 					}
-					tag.put("slot" + Integer.toString(i), ItemStackHelper.saveOptional(inv.getItem(i), te.getLevel().registryAccess()));
+					tag.put("slot" + Integer.toString(i), inv.getItem(i).saveOptional(te.getLevel().registryAccess()));
 				}
 				tag.putInt("used", inUse);
 				tag.putInt("items", items);

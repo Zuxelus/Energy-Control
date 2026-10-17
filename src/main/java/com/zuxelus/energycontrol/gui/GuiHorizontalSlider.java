@@ -77,9 +77,7 @@ public class GuiHorizontalSlider extends GuiBase {
 		}
 
 		@Override
-		public void renderWidget(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
-			if (!visible)
-				return;
+		protected void renderWidget(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
 			if (dragging)
 				setSliderPos(mouseX);
 

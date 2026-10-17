@@ -11,7 +11,7 @@ import com.zuxelus.energycontrol.utils.FluidInfo;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
@@ -30,14 +30,14 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 	}
 
 	@Override
-	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
+	public CardState update(Level level, ICardReader reader, int range, BlockPos pos) {
 		BlockPos target = reader.getTarget();
 		if (target == null) {
 			reader.reset();
 			return CardState.NO_TARGET;
 		}
 
-		List<FluidInfo> list = CrossModLoader.getAllTanks(world, target);
+		List<FluidInfo> list = CrossModLoader.getAllTanks(level, target);
 		if (list == null || list.size() < 1) {
 			reader.reset();
 			return CardState.NO_TARGET;
@@ -49,7 +49,7 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 	}
 
 	@Override
-	public List<PanelString> getStringData(Level world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(Level level, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		long capacity = reader.getLong("capacity");
 		long amount = reader.getLong("amount");
@@ -112,7 +112,7 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		if (fluid == Fluids.EMPTY)
 			return;
 		IClientFluidTypeExtensions fluidExt = IClientFluidTypeExtensions.of(fluid);
-		TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(fluidExt.getStillTexture());
+		TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(fluidExt.getStillTexture());
 		if (sprite == null)
 			return;
 
@@ -125,7 +125,7 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 
 		matrixStack.pushPose();
 		matrixStack.scale(displayWidth / 0.875f, displayHeight / 0.875f, 1);
-		RenderHelper.texturedRect(matrixStack, buffer, TextureAtlas.LOCATION_BLOCKS, x, y + 0.4375F / 2, x + 0.875F, y + 0.4375F / 2 + height, z,
+		RenderHelper.texturedRect(matrixStack, buffer, InventoryMenu.BLOCK_ATLAS, x, y + 0.4375F / 2, x + 0.875F, y + 0.4375F / 2 + height, z,
 				sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(), color);
 		IHasBars.drawTransparentRect(matrixStack, buffer, x + 0.875F - width, y + height + 0.4375F / 2, x, y + 0.4375F / 2, -0.0001F, 0xB0000000);
 		matrixStack.popPose();

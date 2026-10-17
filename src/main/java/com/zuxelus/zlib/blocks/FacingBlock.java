@@ -7,11 +7,9 @@ import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.Container;
+import net.minecraft.world.Containers;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -23,12 +21,11 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.MapColor;
-import net.minecraft.world.phys.BlockHitResult;
 
 public abstract class FacingBlock extends BaseEntityBlock {
-	public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
+	public static final DirectionProperty FACING = BlockStateProperties.FACING;
 	protected Direction rotation;
 
 	public FacingBlock(Properties properties) {
@@ -48,31 +45,6 @@ public abstract class FacingBlock extends BaseEntityBlock {
 		be.setFacing(state.getValue(FACING).get3DDataValue());
 		be.setRotation(rotation);
 		return be;
-	}
-
-	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		return InteractionResult.PASS;
-	}
-
-	@Override
-	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		switch (onUse(state, world, pos, player, hand, hit)) {
-		case SUCCESS:
-			return ItemInteractionResult.SUCCESS;
-		case CONSUME:
-			return ItemInteractionResult.CONSUME;
-		case CONSUME_PARTIAL:
-			return ItemInteractionResult.CONSUME_PARTIAL;
-		case FAIL:
-			return ItemInteractionResult.FAIL;
-		default:
-			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-		}
-	}
-
-	@Override
-	protected InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
-		return onUse(state, world, pos, player, InteractionHand.MAIN_HAND, hit);
 	}
 
 	@Override
@@ -126,5 +98,18 @@ public abstract class FacingBlock extends BaseEntityBlock {
 			return defaultBlockState().setValue(FACING, Direction.WEST);
 		}
 		return defaultBlockState().setValue(FACING, placer.getDirection().getOpposite());
+	}
+
+	// From 1.21.2, BlockEntity.preRemoveSideEffects drops a Container's contents by default
+	@Override
+	protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+		if (state.getBlock() != newState.getBlock()) {
+			BlockEntity te = level.getBlockEntity(pos);
+			if (te instanceof Container) {
+				Containers.dropContents(level, pos, (Container) te);
+				level.updateNeighbourForOutputSignal(pos, this);
+			}
+			super.onRemove(state, level, pos, newState, isMoving);
+		}
 	}
 }

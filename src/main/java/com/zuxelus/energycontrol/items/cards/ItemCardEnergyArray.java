@@ -25,7 +25,7 @@ public class ItemCardEnergyArray extends ItemCardMain {
 	private static final int STATUS_OUT_OF_RANGE = Integer.MIN_VALUE + 1;
 
 	@Override
-	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
+	public CardState update(Level level, ICardReader reader, int range, BlockPos pos) {
 		int cardCount = reader.getCardCount();
 		if (cardCount == 0)
 			return CardState.INVALID_CARD;
@@ -39,7 +39,7 @@ public class ItemCardEnergyArray extends ItemCardMain {
 			int dy = target.getY() - pos.getY();
 			int dz = target.getZ() - pos.getZ();
 			if (Math.abs(dx) <= range && Math.abs(dy) <= range && Math.abs(dz) <= range) {
-				BlockEntity te = world.getBlockEntity(target);
+				BlockEntity te = level.getBlockEntity(target);
 				if (te != null) {
 					CompoundTag tag = CrossModLoader.getEnergyData(te);
 					if (tag != null) {
@@ -47,7 +47,7 @@ public class ItemCardEnergyArray extends ItemCardMain {
 						double capacity = tag.getDouble(DataHelper.CAPACITY);
 						totalEnergy += stored;
 						reader.setInt(String.format("_%denergy", i), (int) stored);
-						reader.setInt(String.format("_%dmaxStorage", i), (int) capacity);
+						reader.setInt(String.format("_%dmaxCapacity", i), (int) capacity);
 						foundAny = true;
 					} else
 						reader.setInt(String.format("_%denergy", i), STATUS_NOT_FOUND);
@@ -68,7 +68,7 @@ public class ItemCardEnergyArray extends ItemCardMain {
 	}
 
 	@Override
-	public List<PanelString> getStringData(Level world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(Level level, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		double totalEnergy = 0;
 		double totalStorage = 0;
@@ -80,7 +80,7 @@ public class ItemCardEnergyArray extends ItemCardMain {
 		boolean showPercentage = (settings & 32) > 0;
 		for (int i = 0; i < reader.getCardCount(); i++) {
 			int energy = reader.getInt(String.format("_%denergy", i));
-			int storage = reader.getInt(String.format("_%dmaxStorage", i));
+			int storage = reader.getInt(String.format("_%dmaxCapacity", i));
 			boolean isOutOfRange = energy == STATUS_OUT_OF_RANGE;
 			boolean isNotFound = energy == STATUS_NOT_FOUND;
 			if (showSummary && !isOutOfRange && !isNotFound) {

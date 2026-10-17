@@ -1,7 +1,6 @@
 package com.zuxelus.energycontrol.blocks;
 
 import com.mojang.serialization.MapCodec;
-
 import com.zuxelus.energycontrol.gui.ScreenHandler;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityHowlerAlarm;
@@ -9,7 +8,6 @@ import com.zuxelus.zlib.blocks.FacingBlockSmall;
 import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
@@ -29,14 +27,15 @@ public class HowlerAlarm extends FacingBlockSmall {
 	protected static final VoxelShape AABB_SOUTH = Block.box(2.0D, 2.0D, 0.0D, 14.0D, 14.0D, 7.0D);
 	protected static final VoxelShape AABB_WEST = Block.box(9.0D, 2.0D, 2.0D, 16.0D, 14.0D, 14.0D);
 	protected static final VoxelShape AABB_EAST = Block.box(0.0D, 2.0D, 2.0D, 7.0D, 14.0D, 14.0D);
-
-	public HowlerAlarm(Properties properties) {
-		super(metal(properties));
-	}
+	public static final MapCodec<HowlerAlarm> CODEC = simpleCodec(HowlerAlarm::new);
 
 	@Override
 	protected MapCodec<? extends BaseEntityBlock> codec() {
-		return simpleCodec(HowlerAlarm::new);
+		return CODEC;
+	}
+
+	public HowlerAlarm(Properties properties) {
+		super(metal(properties));
 	}
 
 	@Override
@@ -45,13 +44,13 @@ public class HowlerAlarm extends FacingBlockSmall {
 	}
 
 	@Override
-	protected void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
-		if (!world.isClientSide())
-			world.sendBlockUpdated(pos, state, state, 2);
+	protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+		if (!level.isClientSide())
+			level.sendBlockUpdated(pos, state, state, 2);
 	}
 
 	@Override
-	protected VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+	protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
 		switch (state.getValue(FACING)) {
 		case EAST:
 			return AABB_EAST;
@@ -70,9 +69,9 @@ public class HowlerAlarm extends FacingBlockSmall {
 	}
 
 	@Override
-	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		if (world.isClientSide()) {
-			BlockEntity te = world.getBlockEntity(pos);
+	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+		if (level.isClientSide()) {
+			BlockEntity te = level.getBlockEntity(pos);
 			if (te instanceof TileEntityHowlerAlarm)
 				ScreenHandler.openHowlerAlarmScreen((TileEntityHowlerAlarm) te);
 		}

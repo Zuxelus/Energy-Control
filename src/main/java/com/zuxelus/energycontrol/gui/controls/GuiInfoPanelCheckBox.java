@@ -32,9 +32,7 @@ public class GuiInfoPanelCheckBox extends AbstractButton {
 	}
 
 	@Override
-	public void renderWidget(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
-		if (!visible)
-			return;
+	protected void renderWidget(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
 		Minecraft minecraft = Minecraft.getInstance();
 		Font fontRenderer = minecraft.font;
 		int delta = checked ? 6 : 0;

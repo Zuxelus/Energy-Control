@@ -21,8 +21,8 @@ import net.minecraft.world.level.Level;
 public abstract class ItemCardMain extends Item implements IItemCard {
 	public static final int LOCATION_RANGE = 8;
 
-	public ItemCardMain(Item.Properties properties) {
-		super(properties.stacksTo(1));
+	public ItemCardMain(Properties properties) {
+		super(properties.stacksTo(1).setNoRepair());
 	}
 
 	public static boolean isCard(ItemStack stack) {
@@ -48,7 +48,7 @@ public abstract class ItemCardMain extends Item implements IItemCard {
 			tooltip.add(Component.translatable("msg.ec.cards", reader.getCardCount()));
 	}
 
-	public static CardState updateCardNBT(IItemCard card, Level world, BlockPos pos, ICardReader reader, ItemStack upgradeStack) {
+	public static CardState updateCardNBT(IItemCard card, Level level, BlockPos pos, ICardReader reader, ItemStack upgradeStack) {
 		int upgradeCountRange = 0;
 		if (upgradeStack != ItemStack.EMPTY && upgradeStack.getItem().equals(ModItems.upgrade_range.get()))
 			upgradeCountRange = upgradeStack.getCount();
@@ -72,13 +72,13 @@ public abstract class ItemCardMain extends Item implements IItemCard {
 		}
 
 		if (needUpdate)
-			state = card.update(world, reader, range, pos);
+			state = card.update(level, reader, range, pos);
 		reader.setState(state);
 		return state;
 	}
 
 	@Override
-	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
+	public CardState update(Level level, ICardReader reader, int range, BlockPos pos) {
 		return CardState.OK;
 	}
 

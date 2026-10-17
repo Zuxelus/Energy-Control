@@ -244,6 +244,8 @@
     "energycontrol.configuration.wsRefreshRate.tooltip": "Pause between two messages to the web socket server, in ticks",
     "energycontrol.configuration.wsServerID": "Web Socket Server ID",
     "energycontrol.configuration.wsServerID.tooltip": "Identifier of this game server for the web socket server",
+    "energycontrol.configuration.serverLanguage": "Server Language",
+    "energycontrol.configuration.serverLanguage.tooltip": "Language code of the text this mod creates on a dedicated server, for example web socket data: en_us, ru_ru (applies after a restart)",
     "gui.ec.portableBarsOn": "Bars: On",
     "gui.ec.portableBarsOff": "Bars: Off"
 }

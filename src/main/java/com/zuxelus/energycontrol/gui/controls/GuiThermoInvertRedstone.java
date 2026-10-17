@@ -25,10 +25,7 @@ public class GuiThermoInvertRedstone extends AbstractButton {
 	}
 
 	@Override
-	public void renderWidget(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
-		if (!visible)
-			return;
-
+	protected void renderWidget(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
 		int delta = checked ? 15 : 0;
 		matrixStack.blit(TEXTURE, getX(), getY() + 1, 199, delta, 51, 15, 256, 256);
 	}

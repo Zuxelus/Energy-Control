@@ -1,7 +1,6 @@
 package com.zuxelus.energycontrol.blocks;
 
 import com.mojang.serialization.MapCodec;
-
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityAdvancedInfoPanel;
@@ -12,7 +11,6 @@ import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
@@ -26,16 +24,17 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class AdvancedInfoPanelExtender extends InfoPanelExtender {
-
-	public AdvancedInfoPanelExtender(Block.Properties properties) {
-		// the shape follows the panel thickness, so it must not be cached per block state,
-		// and like the core it is not opaque, so neighbours are not culled by a sloped panel
-		super(properties.noOcclusion().dynamicShape());
-	}
+	public static final MapCodec<AdvancedInfoPanelExtender> CODEC = simpleCodec(AdvancedInfoPanelExtender::new);
 
 	@Override
 	protected MapCodec<? extends BaseEntityBlock> codec() {
-		return simpleCodec(AdvancedInfoPanelExtender::new);
+		return CODEC;
+	}
+
+	public AdvancedInfoPanelExtender(Properties properties) {
+		// the shape follows the panel thickness, so it must not be cached per block state,
+		// and like the core it is not opaque, so neighbours are not culled by a sloped panel
+		super(properties.noOcclusion().dynamicShape());
 	}
 
 	@Override
@@ -44,28 +43,28 @@ public class AdvancedInfoPanelExtender extends InfoPanelExtender {
 	}
 
 	@Override
-	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		if (world.isClientSide())
+	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+		if (level.isClientSide())
 			return InteractionResult.PASS;
-		BlockEntity te = world.getBlockEntity(pos);
+		BlockEntity te = level.getBlockEntity(pos);
 		if (!(te instanceof TileEntityInfoPanelExtender))
 			return InteractionResult.PASS;
 		TileEntityInfoPanel panel = ((TileEntityInfoPanelExtender) te).getCore();
 		if (panel == null)
 			return InteractionResult.PASS;
-		if (EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) panel).getFacing() == hit.getDirection())
-			if (((TileEntityInfoPanel) panel).runTouchAction(player.getItemInHand(hand), pos, hit.getLocation()))
+		if (EnergyControl.altPressed.get(player) && panel.getFacing() == hit.getDirection())
+			if (panel.runTouchAction(player.getMainHandItem(), pos, hit.getLocation()))
 				return InteractionResult.SUCCESS;
 		player.openMenu((TileEntityAdvancedInfoPanel) panel, buf -> buf.writeBlockPos(pos)); // the extender has no GUI of its own, open the core panel's
 		return InteractionResult.SUCCESS;
 	}
 
 	@Override
-	protected VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-		BlockEntity te = world.getBlockEntity(pos);
+	protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+		BlockEntity te = level.getBlockEntity(pos);
 		Direction enumfacing = state.getValue(FACING);
 		if (!(te instanceof TileEntityAdvancedInfoPanelExtender) || enumfacing == null)
-			return super.getShape(state, world, pos, context);
+			return super.getShape(state, level, pos, context);
 
 		int thickness = ((TileEntityAdvancedInfoPanelExtender) te).getThickness();
 		if (thickness < 1 || thickness > 16)
@@ -84,7 +83,7 @@ public class AdvancedInfoPanelExtender extends InfoPanelExtender {
 		case DOWN:
 			return Block.box(0.0D, 16.0D - thickness, 0.0D, 16.0D, 16.0D, 16.0D);
 		default:
-			return super.getShape(state, world, pos, context);
+			return super.getShape(state, level, pos, context);
 		}
 	}
 }

@@ -25,10 +25,7 @@ public class GuiRangeTriggerInvertRedstone extends AbstractButton {
 	}
 
 	@Override
-	public void renderWidget(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
-		if (!visible)
-			return;
-
+	protected void renderWidget(GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
 		matrixStack.blit(TEXTURE, getX(), getY() + 1, 176, checked ? 15 : 0, 18, 15, 256, 256);
 	}
 

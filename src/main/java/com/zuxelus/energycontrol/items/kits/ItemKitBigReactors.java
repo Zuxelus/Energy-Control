@@ -20,8 +20,8 @@ public class ItemKitBigReactors extends ItemKitMain {
 	}
 
 	@Override
-	public ItemStack getSensorCard(ItemStack stack, Player player, Level world, BlockPos pos, Direction side) {
-		BlockEntity te = world.getBlockEntity(pos);
+	public ItemStack getSensorCard(ItemStack stack, Player player, Level level, BlockPos pos, Direction side) {
+		BlockEntity te = level.getBlockEntity(pos);
 		CompoundTag tag = CrossModLoader.getCrossMod(ModIDs.BIG_REACTORS).getCardData(te);
 		if (tag == null)
 			tag = CrossModLoader.getCrossMod(ModIDs.BIGGER_REACTORS).getCardData(te);

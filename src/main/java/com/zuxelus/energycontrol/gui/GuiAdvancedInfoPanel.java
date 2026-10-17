@@ -100,7 +100,7 @@ public class GuiAdvancedInfoPanel extends GuiPanelBase<ContainerAdvancedInfoPane
 	}
 
 	@Override
-	public boolean mouseReleased(double mouseX, double mouseY, int button) {
+	public boolean mouseReleased(double mouseX, double mouseY, int mouseButton) {
 		if (mouseX >= leftPos + 7 && mouseX <= leftPos + 24 && mouseY >= topPos + 62 && mouseY <= topPos + 104) {
 			byte newTab = (byte) ((mouseY - topPos - 62) / 14);
 			if (newTab > 2)
@@ -114,7 +114,7 @@ public class GuiAdvancedInfoPanel extends GuiPanelBase<ContainerAdvancedInfoPane
 				initControls();
 			}
 		}
-		return super.mouseReleased(mouseX, mouseY, button);
+		return super.mouseReleased(mouseX, mouseY, mouseButton);
 	}
 
 	@Override

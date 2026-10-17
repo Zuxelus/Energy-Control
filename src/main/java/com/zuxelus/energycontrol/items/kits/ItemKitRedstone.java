@@ -19,8 +19,8 @@ public class ItemKitRedstone extends ItemKitMain {
 	}
 
 	@Override
-	public ItemStack getSensorCard(ItemStack stack, Player player, Level world, BlockPos pos, Direction side) {
-		BlockState state = world.getBlockState(pos);
+	public ItemStack getSensorCard(ItemStack stack, Player player, Level level, BlockPos pos, Direction side) {
+		BlockState state = level.getBlockState(pos);
 		Block block = state.getBlock();
 		if (block != Blocks.AIR) {
 			ItemStack newCard = new ItemStack(ModItems.card_redstone.get());

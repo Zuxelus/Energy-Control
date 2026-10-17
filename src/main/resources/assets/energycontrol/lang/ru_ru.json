@@ -231,6 +231,8 @@
     "energycontrol.configuration.wsRefreshRate.tooltip": "Пауза между сообщениями web socket серверу, в тиках",
     "energycontrol.configuration.wsServerID": "Web Socket: ID сервера",
     "energycontrol.configuration.wsServerID.tooltip": "Идентификатор этого игрового сервера для web socket сервера",
+    "energycontrol.configuration.serverLanguage": "Язык сервера",
+    "energycontrol.configuration.serverLanguage.tooltip": "Код языка текста, который мод формирует на выделенном сервере, например данных web socket: en_us, ru_ru (после перезапуска)",
     "gui.ec.portableBarsOn": "Шкалы: вкл",
     "gui.ec.portableBarsOff": "Шкалы: выкл"
 }

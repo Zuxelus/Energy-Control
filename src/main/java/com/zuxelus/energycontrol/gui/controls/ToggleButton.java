@@ -3,7 +3,6 @@ package com.zuxelus.energycontrol.gui.controls;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -29,7 +28,7 @@ public class ToggleButton extends Button {
 	}
 
 	@Override
-	public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
+	protected void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		if (!pressed || !active) {
 			super.renderWidget(context, mouseX, mouseY, delta);
 			return;
@@ -39,7 +38,6 @@ public class ToggleButton extends Button {
 		RenderSystem.enableDepthTest();
 		context.blitSprite(PRESSED, getX(), getY(), getWidth(), getHeight());
 		context.setColor(1.0F, 1.0F, 1.0F, 1.0F);
-		Font font = Minecraft.getInstance().font;
-		context.drawCenteredString(font, getMessage(), getX() + getWidth() / 2, getY() + (getHeight() - 8) / 2, 0xA0A0A0 | Mth.ceil(alpha * 255.0F) << 24);
+		renderString(context, Minecraft.getInstance().font, 0xA0A0A0 | Mth.ceil(alpha * 255.0F) << 24);
 	}
 }

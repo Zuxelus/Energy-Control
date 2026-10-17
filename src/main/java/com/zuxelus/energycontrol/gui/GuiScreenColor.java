@@ -284,10 +284,10 @@ public class GuiScreenColor extends GuiBase {
 	}
 
 	@Override
-	public boolean charTyped(char codePoint, int modifiers) {
+	public boolean charTyped(char typedChar, int keyCode) {
 		for (GuiTextNumeric text : fieldList) {
 			String value = text.getValue();
-			if (text.charTyped(codePoint, modifiers)) {
+			if (text.charTyped(typedChar, keyCode)) {
 				if (!value.equals(text.getValue()))
 					setColorText(new Color(getColotInt(0), getColotInt(1), getColotInt(2)));
 				return true;
@@ -295,13 +295,13 @@ public class GuiScreenColor extends GuiBase {
 		}
 		for (GuiTextNumeric text : fieldList2) {
 			String value = text.getValue();
-			if (text.charTyped(codePoint, modifiers)) {
+			if (text.charTyped(typedChar, keyCode)) {
 				if (!value.equals(text.getValue()))
 					setColorBackground(new Color(getColotInt2(0), getColotInt2(1), getColotInt2(2)));
 				return true;
 			}
 		}
-		return super.charTyped(codePoint, modifiers);
+		return super.charTyped(typedChar, keyCode);
 	}
 
 	private int getColotInt(int id) {

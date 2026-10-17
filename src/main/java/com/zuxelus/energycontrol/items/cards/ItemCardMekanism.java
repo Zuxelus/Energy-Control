@@ -23,12 +23,12 @@ public class ItemCardMekanism extends ItemCardMain {
 	}
 
 	@Override
-	public CardState update(Level world, ICardReader reader, int range, BlockPos pos) {
+	public CardState update(Level level, ICardReader reader, int range, BlockPos pos) {
 		BlockPos target = reader.getTarget();
 		if (target == null)
 			return CardState.NO_TARGET;
 
-		BlockEntity te = world.getBlockEntity(target);
+		BlockEntity te = level.getBlockEntity(target);
 		CompoundTag tag = CrossModLoader.getCrossMod(ModIDs.MEKANISM).getCardData(te);
 		if (tag == null)
 			tag = CrossModLoader.getCrossMod(ModIDs.MEKANISM_GENERATORS).getCardData(te);
@@ -40,7 +40,7 @@ public class ItemCardMekanism extends ItemCardMain {
 	}
 
 	@Override
-	public List<PanelString> getStringData(Level world, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
+	public List<PanelString> getStringData(Level level, int settings, ICardReader reader, boolean isServer, boolean showLabels) {
 		List<PanelString> result = reader.getTitleList();
 		String euType = reader.getString(DataHelper.EUTYPE);
 		if (reader.hasField(DataHelper.STATUS) && (settings & 64) > 0)

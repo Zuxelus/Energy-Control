@@ -25,8 +25,8 @@ public class ChannelHandler {
 		if (card.isEmpty() || panel == null || slot < 0)
 			return;
 
-		Level world = panel.getLevel();
-		if (world == null || world.isClientSide)
+		Level level = panel.getLevel();
+		if (level == null || level.isClientSide)
 			return;
 
 		NetworkHelper.sendPacketToAllAround(panel.getLevel(), panel.getBlockPos(), new PacketCard(card, panel.getBlockPos(), slot));
@@ -37,8 +37,8 @@ public class ChannelHandler {
 		if (card.isEmpty() || panel == null || slot < 0)
 			return;
 
-		Level world = panel.getLevel();
-		if (world == null || !world.isClientSide)
+		Level level = panel.getLevel();
+		if (level == null || !level.isClientSide)
 			return;
 
 		NetworkHelper.sendToServer(new PacketCard(card, panel.getBlockPos(), slot));

@@ -7,8 +7,8 @@ import com.zuxelus.energycontrol.tileentities.TileEntityThermalMonitor;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
 import net.minecraft.resources.ResourceLocation;
 
 public class TEThermalMonitorRenderer extends TileRenderer<TileEntityThermalMonitor> {

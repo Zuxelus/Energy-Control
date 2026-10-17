@@ -15,7 +15,7 @@ import com.zuxelus.energycontrol.renderers.CubeRenderer.TexturedQuad;
 
 import net.minecraft.core.Direction;
 
-// Geometry of the info panels and the remote thermal monitor, PanelModel bakes it so the screen borders match findTexture()
+// PanelModel bakes it, so the screen borders match findTexture()
 public class PanelCube {
 	public static final PanelCube MODEL = new PanelCube(0, 0, new RotationOffset(), false);
 	// chunk meshes are built on several threads

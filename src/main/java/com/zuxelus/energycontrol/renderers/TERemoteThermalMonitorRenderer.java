@@ -6,11 +6,11 @@ import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.tileentities.TileEntityRemoteThermalMonitor;
 
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.client.renderer.LightTexture;
 
 // The body is a block model (remote_thermo.json); only the heat bar and the heat level text are drawn here
 public class TERemoteThermalMonitorRenderer extends TileRenderer<TileEntityRemoteThermalMonitor> {

@@ -1,7 +1,6 @@
 package com.zuxelus.energycontrol.blocks;
 
 import com.mojang.serialization.MapCodec;
-
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
@@ -11,7 +10,6 @@ import com.zuxelus.zlib.tileentities.BlockEntityFacing;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -24,14 +22,15 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class InfoPanel extends FacingBlockActive {
-
-	public InfoPanel(Block.Properties properties) {
-		super(metal(properties).lightLevel(state -> state.getValue(ACTIVE) ? 10 : 0));
-	}
+	public static final MapCodec<InfoPanel> CODEC = simpleCodec(InfoPanel::new);
 
 	@Override
 	protected MapCodec<? extends BaseEntityBlock> codec() {
-		return simpleCodec(InfoPanel::new);
+		return CODEC;
+	}
+
+	public InfoPanel(Properties properties) {
+		super(metal(properties).lightLevel(state -> state.getValue(ACTIVE) ? 10 : 0));
 	}
 
 	@Override
@@ -40,14 +39,14 @@ public class InfoPanel extends FacingBlockActive {
 	}
 
 	@Override
-	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		BlockEntity te = world.getBlockEntity(pos);
+	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+		BlockEntity te = level.getBlockEntity(pos);
 		if (!(te instanceof TileEntityInfoPanel))
 			return InteractionResult.PASS;
-		if (!world.isClientSide() && EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) te).getFacing() == hit.getDirection())
-			if (((TileEntityInfoPanel) te).runTouchAction(player.getItemInHand(hand), pos, hit.getLocation()))
+		if (!level.isClientSide() && EnergyControl.altPressed.get(player) && ((TileEntityInfoPanel) te).getFacing() == hit.getDirection())
+			if (((TileEntityInfoPanel) te).runTouchAction(player.getMainHandItem(), pos, hit.getLocation()))
 				return InteractionResult.SUCCESS;
-		if (!world.isClientSide())
+		if (!level.isClientSide())
 			player.openMenu((TileEntityInfoPanel) te, buf -> buf.writeBlockPos(pos));
 		return InteractionResult.SUCCESS;
 	}
@@ -58,39 +57,39 @@ public class InfoPanel extends FacingBlockActive {
 	}
 
 	@Override
-	protected void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
-		if (world.isClientSide())
+	protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+		if (level.isClientSide())
 			return;
 
 		boolean flag = state.getValue(ACTIVE);
-		if (flag == world.hasNeighborSignal(pos))
+		if (flag == level.hasNeighborSignal(pos))
 			return;
 
 		if (flag)
-			world.scheduleTick(pos, this, 4);
+			level.scheduleTick(pos, this, 4);
 		else {
-			world.setBlock(pos, state.cycle(ACTIVE), 2);
-			updateExtenders(state, world, pos);
+			level.setBlock(pos, state.cycle(ACTIVE), 2);
+			updateExtenders(state, level, pos);
 		}
 	}
 
 	@Override
-	protected void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource rand) {
-		if (state.getValue(ACTIVE) && !world.hasNeighborSignal(pos)) {
-			world.setBlock(pos, state.cycle(ACTIVE), 2);
-			updateExtenders(state, world, pos);
+	protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+		if (state.getValue(ACTIVE) && !level.hasNeighborSignal(pos)) {
+			level.setBlock(pos, state.cycle(ACTIVE), 2);
+			updateExtenders(state, level, pos);
 		}
 	}
 
-	private void updateExtenders(BlockState state, Level world, BlockPos pos) { // server
-		BlockEntity be = world.getBlockEntity(pos);
+	private void updateExtenders(BlockState state, Level level, BlockPos pos) { // server
+		BlockEntity be = level.getBlockEntity(pos);
 		if (be instanceof TileEntityInfoPanel)
-			((TileEntityInfoPanel) be).updateExtenders(world, !state.getValue(ACTIVE));
+			((TileEntityInfoPanel) be).updateExtenders(level, !state.getValue(ACTIVE));
 	}
 
 	/*@Override // TODO
-	public boolean canConnectRedstone(BlockState state, IBlockReader world, BlockPos pos, Direction side) {
-		BlockEntity te = world.getBlockEntity(pos);
+	public boolean canConnectRedstone(BlockState state, IBlockReader level, BlockPos pos, Direction side) {
+		BlockEntity te = level.getBlockEntity(pos);
 		if (te instanceof BlockEntityFacing)
 			return side == ((BlockEntityFacing) te).getFacing();
 		return false;

@@ -3,11 +3,8 @@ package com.zuxelus.energycontrol.api;
 import java.util.function.Consumer;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
@@ -46,14 +43,5 @@ public final class ItemStackHelper {
 		ItemStack stack = new ItemStack(item);
 		updateTag(stack, tag -> tag.putDouble(name, energy));
 		return stack;
-	}
-
-	/** ItemStack.saveOptional was removed in 1.21.5: encode with the codec instead */
-	public static Tag saveOptional(ItemStack stack, HolderLookup.Provider registries) {
-		return ItemStack.OPTIONAL_CODEC.encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), stack).getOrThrow();
-	}
-
-	public static ItemStack parseOptional(HolderLookup.Provider registries, Tag tag) {
-		return ItemStack.OPTIONAL_CODEC.parse(registries.createSerializationContext(NbtOps.INSTANCE), tag).result().orElse(ItemStack.EMPTY);
 	}
 }

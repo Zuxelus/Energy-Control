@@ -4,8 +4,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
@@ -17,13 +17,13 @@ public abstract class FacingBlockSmall extends FacingBlock {
 	}
 
 	@Override
-	protected boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
-		return canPlaceAt(world, pos, state.getValue(FACING).getOpposite());
+	protected boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+		return canPlaceAt(level, pos, state.getValue(FACING).getOpposite());
 	}
 
-	public static boolean canPlaceAt(LevelReader world, BlockPos pos, Direction direction) {
+	public static boolean canPlaceAt(LevelReader level, BlockPos pos, Direction direction) {
 		BlockPos blockPos = pos.relative(direction);
-		return world.getBlockState(blockPos).isFaceSturdy(world, blockPos, direction.getOpposite());
+		return level.getBlockState(blockPos).isFaceSturdy(level, blockPos, direction.getOpposite());
 	}
 
 	@Override
@@ -47,10 +47,10 @@ public abstract class FacingBlockSmall extends FacingBlock {
 	}
 
 	@Override
-	protected BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor world, BlockPos currentPos, BlockPos facingPos) {
-		return state.getValue(FACING).getOpposite() == facing && !state.canSurvive(world, currentPos)
+	protected BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
+		return state.getValue(FACING).getOpposite() == facing && !state.canSurvive(level, currentPos)
 				? Blocks.AIR.defaultBlockState()
-				: super.updateShape(state, facing, facingState, world, currentPos, facingPos);
+				: super.updateShape(state, facing, facingState, level, currentPos, facingPos);
 	}
 
 	@Override

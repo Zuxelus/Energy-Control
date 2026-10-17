@@ -1,7 +1,6 @@
 package com.zuxelus.energycontrol.blocks;
 
 import com.mojang.serialization.MapCodec;
-
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.tileentities.TileEntityHoloPanel;
 import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
@@ -13,14 +12,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -33,14 +31,15 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 public class HoloPanel extends FacingHorizontalActive {
 	protected static final VoxelShape AABB_NORTH = Block.box(0.0D, 0.0D, 4.0D, 16.0D, 1.0D, 12.0D);
 	protected static final VoxelShape AABB_WEST = Block.box(4.0D, 0.0D, 0.0D, 12.0D, 1.0D, 16.0D);
-
-	public HoloPanel(Block.Properties properties) {
-		super(FacingBlock.metal(properties));
-	}
+	public static final MapCodec<HoloPanel> CODEC = simpleCodec(HoloPanel::new);
 
 	@Override
 	protected MapCodec<? extends BaseEntityBlock> codec() {
-		return simpleCodec(HoloPanel::new);
+		return CODEC;
+	}
+
+	public HoloPanel(Properties properties) {
+		super(FacingBlock.metal(properties));
 	}
 
 	@Override
@@ -49,43 +48,43 @@ public class HoloPanel extends FacingHorizontalActive {
 	}
 
 	@Override
-	protected boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
-		return world.getBlockState(pos.below()).isFaceSturdy(world, pos.below(), Direction.UP);
+	protected boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+		return level.getBlockState(pos.below()).isFaceSturdy(level, pos.below(), Direction.UP);
 	}
 
 	@Override
-	protected void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
-		if (world.isClientSide())
+	protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+		if (level.isClientSide())
 			return;
 
 		boolean flag = state.getValue(ACTIVE);
-		if (flag == world.hasNeighborSignal(pos))
+		if (flag == level.hasNeighborSignal(pos))
 			return;
 
 		if (flag)
-			world.scheduleTick(pos, this, 4);
+			level.scheduleTick(pos, this, 4);
 		else {
-			world.setBlock(pos, state.cycle(ACTIVE), 2);
-			updateExtenders(state, world, pos);
+			level.setBlock(pos, state.cycle(ACTIVE), 2);
+			updateExtenders(state, level, pos);
 		}
 	}
 
 	@Override
-	protected void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource rand) {
-		if (state.getValue(ACTIVE) && !world.hasNeighborSignal(pos)) {
-			world.setBlock(pos, state.cycle(ACTIVE), 2);
-			updateExtenders(state, world, pos);
+	protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+		if (state.getValue(ACTIVE) && !level.hasNeighborSignal(pos)) {
+			level.setBlock(pos, state.cycle(ACTIVE), 2);
+			updateExtenders(state, level, pos);
 		}
 	}
 
-	private void updateExtenders(BlockState state, Level world, BlockPos pos) { // server
-		BlockEntity be = world.getBlockEntity(pos);
+	private void updateExtenders(BlockState state, Level level, BlockPos pos) { // server
+		BlockEntity be = level.getBlockEntity(pos);
 		if (be instanceof TileEntityInfoPanel)
-			((TileEntityInfoPanel) be).updateExtenders(world, !state.getValue(ACTIVE));
+			((TileEntityInfoPanel) be).updateExtenders(level, !state.getValue(ACTIVE));
 	}
 
 	@Override
-	protected VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+	protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
 		switch (state.getValue(FACING)) {
 		case WEST:
 		case EAST:
@@ -98,16 +97,16 @@ public class HoloPanel extends FacingHorizontalActive {
 	}
 
 	@Override
-	protected BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor world, BlockPos currentPos, BlockPos facingPos) {
-		return canSurvive(state, world, currentPos) ? super.updateShape(state, facing, facingState, world, currentPos, facingPos) : Blocks.AIR.defaultBlockState();
+	protected BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
+		return canSurvive(state, level, currentPos) ? super.updateShape(state, facing, facingState, level, currentPos, facingPos) : Blocks.AIR.defaultBlockState();
 	}
 
 	@Override
-	protected InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		BlockEntity te = world.getBlockEntity(pos);
+	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+		BlockEntity te = level.getBlockEntity(pos);
 		if (!(te instanceof TileEntityHoloPanel))
 			return InteractionResult.PASS;
-		if (!world.isClientSide())
+		if (!level.isClientSide())
 			player.openMenu((TileEntityHoloPanel) te, buf -> buf.writeBlockPos(pos));
 		return InteractionResult.SUCCESS;
 	}

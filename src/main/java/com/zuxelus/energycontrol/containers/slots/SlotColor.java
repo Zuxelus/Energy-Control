@@ -1,12 +1,12 @@
 package com.zuxelus.energycontrol.containers.slots;
 
+import com.mojang.datafixers.util.Pair;
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.zlib.containers.slots.SlotFilter;
 
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.Container;
+import net.minecraft.world.inventory.InventoryMenu;
 
 public class SlotColor extends SlotFilter {
 

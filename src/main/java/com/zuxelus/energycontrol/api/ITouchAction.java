@@ -19,7 +19,7 @@ public interface ITouchAction {
 	 *
 	 * @return whether an action was performed
 	 */
-	boolean runTouchAction(Level world, ICardReader reader, ItemStack stack);
+	boolean runTouchAction(Level level, ICardReader reader, ItemStack stack);
 
 	/**
 	 * Used to draw objects onto Info Panel displays

@@ -23,9 +23,9 @@ public class NetworkHelper {
 	}
 
 	// server
-	public static void sendPacketToAllAround(Level world, BlockPos pos, CustomPacketPayload message) {
-		if (world instanceof ServerLevel level)
-			PacketDistributor.sendToPlayersTrackingChunk(level, new ChunkPos(pos), message);
+	public static void sendPacketToAllAround(Level level, BlockPos pos, CustomPacketPayload message) {
+		if (level instanceof ServerLevel serverLevel)
+			PacketDistributor.sendToPlayersTrackingChunk(serverLevel, new ChunkPos(pos), message);
 	}
 
 	// server
@@ -47,8 +47,8 @@ public class NetworkHelper {
 		sendToPlayer(crafter, new PacketTileEntity(pos, tag));
 	}
 
-	public static void updateClientTileEntity(Level world, BlockPos pos, CompoundTag tag) {
-		sendPacketToAllAround(world, pos, new PacketTileEntity(pos, tag));
+	public static void updateClientTileEntity(Level level, BlockPos pos, CompoundTag tag) {
+		sendPacketToAllAround(level, pos, new PacketTileEntity(pos, tag));
 	}
 
 	// client
