@@ -14,7 +14,7 @@ import net.minecraft.util.ARGB;
 
 @Environment(EnvType.CLIENT)
 public class GuiButtonGeneral extends Button {
-	private Identifier texture;
+	private final Identifier texture;
 	public int textureLeft;
 	protected int textureTop;
 	public int textureTopOff;

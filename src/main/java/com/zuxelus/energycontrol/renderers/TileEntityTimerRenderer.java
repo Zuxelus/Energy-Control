@@ -20,7 +20,6 @@ import net.minecraft.world.phys.Vec3;
 public class TileEntityTimerRenderer implements BlockEntityRenderer<TileEntityTimer, BlockEntityFacingRenderState<TileEntityTimer>> {
 	private static final Identifier TEXTURE = Identifier.parse(EnergyControl.MODID + ":textures/block/timer/all.png");
 	private static final Identifier TEXTURE_ACTIVE = Identifier.parse(EnergyControl.MODID + ":textures/block/timer/active.png");
-	private static final CubeRenderer model = new CubeRenderer(2, 0, 2, 28, 14, 28, 128, 64, 0, 0);
 	private final Font font;
 
 	public TileEntityTimerRenderer(Context ctx) {
@@ -46,7 +45,7 @@ public class TileEntityTimerRenderer implements BlockEntityRenderer<TileEntityTi
 		matrixStack.pushPose();
 		CubeRenderer.rotateBlock(matrixStack, te.getFacing(), te.getRotation());
 
-		model.render(matrixStack, collector, RenderTypes.entitySolid(te.getIsWorking() ? TEXTURE_ACTIVE : TEXTURE), state.light);
+		CubeRenderer.MODEL.render(matrixStack, collector, RenderTypes.entitySolid(te.getIsWorking() ? TEXTURE_ACTIVE : TEXTURE), state.light);
 		String time = te.getTimeString();
 		matrixStack.rotate(Axis.XP.rotationDegrees(90.0F));
 		matrixStack.translate(0.5F, 0.575F, -0.4376F);

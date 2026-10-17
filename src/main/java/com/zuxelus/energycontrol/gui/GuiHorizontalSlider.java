@@ -88,13 +88,13 @@ public class GuiHorizontalSlider extends GuiBase {
 		protected void extractContents(GuiGraphicsExtractor context, int mouseX, int mouseY, float partialTicks) {
 			if (!visible)
 				return;
-			Minecraft minecraft = Minecraft.getInstance();
-			Font fontRenderer = minecraft.font;
 			if (dragging)
 				setSliderPos(mouseX);
 
 			context.blit(RenderPipelines.GUI_TEXTURED, texture, getX() - 2 + sliderValue, getY(), 152, 0, 8, 16, 256, 256);
 			FormattedCharSequence ireorderingprocessor = getMessage().getVisualOrderText();
+			Minecraft minecraft = Minecraft.getInstance();
+			Font fontRenderer = minecraft.font;
 			context.text(fontRenderer, ireorderingprocessor, getX() - 10 + (width - fontRenderer.width(ireorderingprocessor)) / 2, getY() - 12, ARGB.opaque(0x404040), false);
 		}
 
@@ -112,8 +112,6 @@ public class GuiHorizontalSlider extends GuiBase {
 		}
 
 		@Override
-		protected void updateWidgetNarration(NarrationElementOutput var1) {
-			// TODO Auto-generated method stub
-		}
+		protected void updateWidgetNarration(NarrationElementOutput output) { }
 	}
 }

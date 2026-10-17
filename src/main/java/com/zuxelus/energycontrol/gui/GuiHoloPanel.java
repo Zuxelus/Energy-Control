@@ -10,7 +10,6 @@ import com.zuxelus.energycontrol.gui.controls.GuiInfoPanelCheckBox;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
 import com.zuxelus.energycontrol.items.cards.ItemCardReader;
 import com.zuxelus.energycontrol.items.cards.ItemCardText;
-import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
 import com.zuxelus.zlib.gui.controls.GuiButtonGeneral;
 
 import net.fabricmc.api.EnvType;
@@ -31,7 +30,7 @@ public class GuiHoloPanel extends GuiPanelBase<ContainerHoloPanel> {
 
 	public GuiHoloPanel(ContainerHoloPanel container, Inventory inventory, Component title) {
 		super(container, inventory, title, TEXTURE, 201);
-		panel = (TileEntityInfoPanel) container.te;
+		panel = container.te;
 		name = I18n.get("block.energycontrol.holo_panel");
 	}
 

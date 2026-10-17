@@ -49,7 +49,7 @@ public final class RenderHelper {
 		collector.submitText(matrixStack, x, y, toSequence(text), false, mode, light, ARGB.opaque(color), 0, 0);
 	}
 
-	// unlike FormattedCharSequence.forward it applies the formatting codes (section sign codes like c or l) of the text
+	// 26.3 only
 	private static FormattedCharSequence toSequence(String text) {
 		return sink -> StringDecomposer.iterateFormatted(text, Style.EMPTY, sink);
 	}

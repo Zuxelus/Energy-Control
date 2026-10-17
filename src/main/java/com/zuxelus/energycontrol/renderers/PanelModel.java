@@ -6,7 +6,6 @@ import java.util.function.Predicate;
 import org.joml.Vector3f;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import com.zuxelus.energycontrol.tileentities.PanelRenderData;
 import com.zuxelus.zlib.blocks.FacingBlock;
 import com.zuxelus.zlib.blocks.FacingBlockActive;

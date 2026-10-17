@@ -2,12 +2,14 @@ package com.zuxelus.energycontrol.recipes;
 
 import java.util.Collections;
 import java.util.List;
+
+import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
+
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import com.zuxelus.energycontrol.tileentities.TileEntityKitAssembler;
 
 public class KitAssemblerRecipeType implements RecipeType<KitAssemblerRecipe> {
 	public static final KitAssemblerRecipeType TYPE = new KitAssemblerRecipeType();
@@ -33,7 +35,7 @@ public class KitAssemblerRecipeType implements RecipeType<KitAssemblerRecipe> {
 			loadRecipes(te.getLevel());
 		for(KitAssemblerRecipe recipe : cachedRecipes) {
 			if (recipe.isSuitable(te))
-				return recipe; 
+				return recipe;
 		}
 		return null;
 	}

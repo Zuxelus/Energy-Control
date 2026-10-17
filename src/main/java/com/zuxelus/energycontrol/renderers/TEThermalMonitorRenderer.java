@@ -21,7 +21,6 @@ public class TEThermalMonitorRenderer implements BlockEntityRenderer<TileEntityT
 	private static final Identifier TEXTURE0 = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "textures/block/thermal_monitor/all0.png");
 	private static final Identifier TEXTURE1 = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "textures/block/thermal_monitor/all1.png");
 	private static final Identifier TEXTURE2 = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "textures/block/thermal_monitor/all2.png");
-	private static final CubeRenderer model = new CubeRenderer(2, 0, 2, 28, 14, 28, 128, 64, 0, 0);
 	private final Font font;
 
 	public TEThermalMonitorRenderer(Context ctx) {
@@ -59,7 +58,7 @@ public class TEThermalMonitorRenderer implements BlockEntityRenderer<TileEntityT
 			texture = TEXTURE0;
 			break;
 		}
-		model.render(matrixStack, collector, RenderTypes.entitySolid(texture), state.light);
+		CubeRenderer.MODEL.render(matrixStack, collector, RenderTypes.entitySolid(texture), state.light);
 
 		matrixStack.rotate(Axis.XP.rotationDegrees(90.0F));
 		matrixStack.translate(0.5F, 0.45F, -0.4376F);

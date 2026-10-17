@@ -25,7 +25,7 @@ public abstract class ItemKitMain extends Item implements IItemKit {
 		if (!(player instanceof ServerPlayer) || stack.isEmpty())
 			return InteractionResult.PASS;
 
-		ItemStack sensorLocationCard = ((ItemKitMain) stack.getItem()).getSensorCard(stack, player, level, hitResult.getBlockPos(), hitResult.getDirection());
+		ItemStack sensorLocationCard = getSensorCard(stack, player, level, hitResult.getBlockPos(), hitResult.getDirection());
 		if (sensorLocationCard.isEmpty())
 			return InteractionResult.PASS;
 

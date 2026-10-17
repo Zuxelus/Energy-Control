@@ -37,7 +37,7 @@ final class PortableProgressBars {
 					row++; // Out-of-range/no-target row.
 					continue;
 				}
-				double size = energy ? reader.getInt("_" + i + "maxStorage") : reader.getLong("_" + i + "capacity");
+				double size = energy ? reader.getInt("_" + i + "maxCapacity") : reader.getLong("_" + i + "capacity");
 				put(bars, row + rowsPerTarget - 1, amount, size);
 				row += rowsPerTarget;
 				total += amount;

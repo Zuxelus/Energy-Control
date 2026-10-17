@@ -25,7 +25,6 @@ public class TERemoteThermalMonitorRenderer implements BlockEntityRenderer<TileE
 	private static final float BAR_HEIGHT = 11 / 32.0F;
 	private static final float BAR_U = 0.25F;
 	private static final float BAR_V = 11 / 128.0F;
-	private static final int FULL_BRIGHT = LightCoordsUtil.FULL_BRIGHT;
 	private final Font font;
 
 	public TERemoteThermalMonitorRenderer(Context ctx) {
@@ -71,7 +70,7 @@ public class TERemoteThermalMonitorRenderer implements BlockEntityRenderer<TileE
 		matrixStack.scale(0.015625F, 0.015625F, 0.015625F);
 
 		String text = Integer.toString(level);
-		RenderHelper.drawString(matrixStack, collector, text, -font.width(text) / 2, -font.lineHeight, 0x000000, Font.DisplayMode.NORMAL, FULL_BRIGHT);
+		RenderHelper.drawString(matrixStack, collector, text, -font.width(text) / 2, -font.lineHeight, 0x000000, Font.DisplayMode.NORMAL, LightCoordsUtil.FULL_BRIGHT);
 		matrixStack.popPose();
 	}
 }

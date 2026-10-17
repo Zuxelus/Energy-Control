@@ -111,6 +111,8 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 			minecraft.gui.setScreen(colorGui);
 			break;
 		case ID_TEXT:
+			// the controls are rebuilt from the card when this gui comes back, so save the typed title first
+			updateTitle();
 			oldStack = ItemStack.EMPTY;
 			openTextGui();
 			break;
