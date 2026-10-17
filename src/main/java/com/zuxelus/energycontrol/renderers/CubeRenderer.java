@@ -21,7 +21,6 @@ public class CubeRenderer { // net.minecraft.client.model.geom.ModelPart
 	// side of each ModelBox quad before rotation (see ModelBox constructor)
 	static final Direction[] QUAD_SIDES = { Direction.EAST, Direction.WEST, Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH };
 	private static final Direction[][][] WORLD_SIDES = new Direction[6][6][];
-
 	private final ModelBox cube;
 
 	private CubeRenderer(float x, float y, float z, int dx, int dy, int dz, float textureWidth, float textureHeight) {

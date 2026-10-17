@@ -44,9 +44,9 @@ public class TileEntityInfoPanelRenderer extends TileRenderer<TileEntityInfoPane
 		return te.getRenderBoundingBox();
 	}
 
+	// the panel body is a baked model (PanelModel), only the text is drawn here
 	@Override
 	protected void render(TileEntityInfoPanel te, PoseStack matrixStack, SubmitNodeCollector buffer, int combinedLight, int combinedOverlay) {
-		// the panel body is a baked model (PanelModel), only the text is drawn here
 		if (!te.getPowered())
 			return;
 		matrixStack.pushPose();

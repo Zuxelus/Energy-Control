@@ -11,7 +11,7 @@ import net.minecraft.world.level.Level;
 
 public class ItemCardHolder extends Item {
 
-	public ItemCardHolder(Item.Properties properties) {
+	public ItemCardHolder(Properties properties) {
 		super(properties.stacksTo(1));
 	}
 

@@ -115,6 +115,7 @@ public class GuiScreenColor extends GuiBase {
 		double mouseY = event.y();
 		int mouseButton = event.button();
 		if (mouseButton == InputConstants.MOUSE_BUTTON_LEFT) {
+			// the fields are not children of the screen, and since 26.1 an EditBox no longer focuses itself on click
 			for (GuiTextNumeric text : fieldList) {
 				text.setFocused(text.isMouseOver(mouseX, mouseY));
 				text.mouseClicked(event, doubleClick);

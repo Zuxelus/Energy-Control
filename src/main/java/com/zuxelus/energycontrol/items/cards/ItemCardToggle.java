@@ -4,11 +4,7 @@ import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.energycontrol.api.CardState;
-import com.zuxelus.energycontrol.api.ICardReader;
-import com.zuxelus.energycontrol.api.ITouchAction;
-import com.zuxelus.energycontrol.api.PanelSetting;
-import com.zuxelus.energycontrol.api.PanelString;
+import com.zuxelus.energycontrol.api.*;
 import com.zuxelus.energycontrol.renderers.RenderHelper;
 
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -27,15 +23,15 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 
 public class ItemCardToggle extends ItemCardMain implements ITouchAction {
-
-	public ItemCardToggle(Properties properties) {
-		super(properties);
-	}
 	private static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 	private static final EnumProperty<AttachFace> FACE = BlockStateProperties.ATTACH_FACE;
 	private static final EnumProperty<Direction> HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
 	private static final Identifier TEXTURE_ON = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/green.png");
 	private static final Identifier TEXTURE_OFF = Identifier.fromNamespaceAndPath(EnergyControl.MODID, "textures/gui/grey.png");
+
+	public ItemCardToggle(Properties properties) {
+		super(properties);
+	}
 
 	@Override
 	public CardState update(Level level, ICardReader reader, int range, BlockPos pos) {
@@ -87,10 +83,7 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 			level.updateNeighborsAt(pos.relative(getFacing(state).getOpposite()), block);
 		}
 		if (block instanceof ButtonBlock) {
-			level.setBlock(pos, state.setValue(POWERED, Boolean.valueOf(true)), 3);
-			level.updateNeighborsAt(pos, block);
-			level.updateNeighborsAt(pos.relative(getFacing(state).getOpposite()), block);
-			level.scheduleTick(pos, block, block.equals(Blocks.STONE_BUTTON) ? 20 : 30);
+			((ButtonBlock) block).press(state, level, pos, null);
 		}
 		return false;
 	}
@@ -107,14 +100,10 @@ public class ItemCardToggle extends ItemCardMain implements ITouchAction {
 	}
 
 	@Override
-	public void renderImage(ICardReader reader, PoseStack matrixStack, SubmitNodeCollector buffer) {
+	public void renderImage(ICardReader reader, PoseStack matrixStack, SubmitNodeCollector collector) {
 		float x = -0.5F;
 		float y = -0.5F;
 		float z = 0.009F;
-		float height = 1;
-		float width = 1;
-		float textureX = 0;
-		float textureY = 0;
-		RenderHelper.texturedRect(matrixStack, buffer, reader.getBoolean("value") ? TEXTURE_ON : TEXTURE_OFF, x, y, x + width, y + height, z, textureX, textureY, textureX + width, textureY + height, 0xFFFFFFFF);
+		RenderHelper.texturedRect(matrixStack, collector, reader.getBoolean("value") ? TEXTURE_ON : TEXTURE_OFF, x, y, x + 1, y + 1, z, 0, 0, 1, 1, 0xFFFFFFFF);
 	}
 }

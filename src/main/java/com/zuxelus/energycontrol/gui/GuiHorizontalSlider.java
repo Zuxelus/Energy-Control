@@ -108,9 +108,6 @@ public class GuiHorizontalSlider extends GuiBase {
 		}
 
 		@Override
-		protected void updateWidgetNarration(NarrationElementOutput output) {
-			// TODO Auto-generated method stub
-			
-		}
+		protected void updateWidgetNarration(NarrationElementOutput output) { }
 	}
 }

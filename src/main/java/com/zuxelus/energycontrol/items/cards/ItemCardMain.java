@@ -24,7 +24,7 @@ import net.minecraft.world.level.Level;
 public abstract class ItemCardMain extends Item implements IItemCard {
 	public static final int LOCATION_RANGE = 8;
 
-	public ItemCardMain(Item.Properties properties) {
+	public ItemCardMain(Properties properties) {
 		super(properties.stacksTo(1).setNoCombineRepair());
 	}
 

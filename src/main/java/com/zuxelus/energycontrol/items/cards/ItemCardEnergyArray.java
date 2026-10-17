@@ -47,7 +47,7 @@ public class ItemCardEnergyArray extends ItemCardMain {
 						double capacity = tag.getDoubleOr(DataHelper.CAPACITY, 0.0);
 						totalEnergy += stored;
 						reader.setInt(String.format("_%denergy", i), (int) stored);
-						reader.setInt(String.format("_%dmaxStorage", i), (int) capacity);
+						reader.setInt(String.format("_%dmaxCapacity", i), (int) capacity);
 						foundAny = true;
 					} else
 						reader.setInt(String.format("_%denergy", i), STATUS_NOT_FOUND);
@@ -80,7 +80,7 @@ public class ItemCardEnergyArray extends ItemCardMain {
 		boolean showPercentage = (settings & 32) > 0;
 		for (int i = 0; i < reader.getCardCount(); i++) {
 			int energy = reader.getInt(String.format("_%denergy", i));
-			int storage = reader.getInt(String.format("_%dmaxStorage", i));
+			int storage = reader.getInt(String.format("_%dmaxCapacity", i));
 			boolean isOutOfRange = energy == STATUS_OUT_OF_RANGE;
 			boolean isNotFound = energy == STATUS_NOT_FOUND;
 			if (showSummary && !isOutOfRange && !isNotFound) {

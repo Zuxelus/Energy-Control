@@ -18,8 +18,9 @@ public class GuiHowlerAlarm extends GuiBase {
 	private GuiHowlerAlarmListBox listBox;
 	private boolean isBig;
 
+	// the big screen shows a longer alarm list, for when the server allows more than 10 alarms
 	public GuiHowlerAlarm(TileEntityHowlerAlarm alarm, boolean isBig) {
-		super("block.energycontrol.howler_alarm", 131, isBig ? 236 : 136, isBig ? 
+		super("block.energycontrol.howler_alarm", 131, isBig ? 236 : 136, isBig ?
 			EnergyControl.MODID + ":textures/gui/gui_howler_alarm_big.png" :
 			EnergyControl.MODID + ":textures/gui/gui_howler_alarm.png");
 		this.alarm = alarm;
@@ -33,7 +34,7 @@ public class GuiHowlerAlarm extends GuiBase {
 
 		List<String> items = ScreenHandler.getAlarms();
 
-		listBox = new GuiHowlerAlarmListBox(guiLeft + 13, guiTop + 63, 105, isBig? 165 : 65, items, alarm);
+		listBox = new GuiHowlerAlarmListBox(guiLeft + 13, guiTop + 63, 105, isBig ? 165 : 65, items, alarm);
 		addRenderableWidget(slider);
 		addRenderableWidget(listBox);
 	}

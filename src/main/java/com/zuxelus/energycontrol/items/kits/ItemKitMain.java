@@ -12,7 +12,7 @@ import net.minecraft.world.item.context.UseOnContext;
 
 public abstract class ItemKitMain extends Item implements IItemKit {
 
-	public ItemKitMain(Item.Properties properties) {
+	public ItemKitMain(Properties properties) {
 		super(properties.stacksTo(16).setNoCombineRepair());
 	}
 
@@ -22,7 +22,7 @@ public abstract class ItemKitMain extends Item implements IItemKit {
 		if (!(player instanceof ServerPlayer) || stack.isEmpty())
 			return InteractionResult.PASS;
 
-		ItemStack sensorLocationCard = ((ItemKitMain) stack.getItem()).getSensorCard(stack, player, context.getLevel(), context.getClickedPos(), context.getClickedFace());
+		ItemStack sensorLocationCard = getSensorCard(stack, player, context.getLevel(), context.getClickedPos(), context.getClickedFace());
 		if (sensorLocationCard.isEmpty())
 			return InteractionResult.PASS;
 
