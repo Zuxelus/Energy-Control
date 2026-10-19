@@ -52,6 +52,9 @@ public abstract class GuiPanelBase<T extends AbstractContainerMenu> extends GuiC
 	public void init() {
 		super.init();
 		initButtons();
+		// the screen cleared its widgets, so the controls must be rebuilt even if the card did not change
+		// (a sync from the server while the text gui was open already made initControls() remember this card)
+		oldStack = ItemStack.EMPTY;
 		initControls();
 		menu.removeSlotListener(this);
 		menu.addSlotListener(this);

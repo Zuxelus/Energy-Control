@@ -50,7 +50,7 @@ public abstract class GuiBase extends Screen {
 	protected void drawGuiContainerForegroundLayer(GuiGraphics context, int mouseX, int mouseY) {}
 
 	protected void drawGuiContainerBackgroundLayer(GuiGraphics context, float partialTicks, int mouseX, int mouseY) {
-		context.blit(texture, guiLeft, guiTop, 0, 0, xSize, ySize);
+		context.blit(texture, guiLeft, guiTop, 0, 0, xSize, ySize, 256, 256);
 	}
 
 	@Override

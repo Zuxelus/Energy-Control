@@ -2,16 +2,18 @@ package com.zuxelus.energycontrol.items.cards;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import com.zuxelus.energycontrol.api.CardState;
+import com.zuxelus.energycontrol.api.ICardReader;
+import com.zuxelus.energycontrol.api.PanelSetting;
+import com.zuxelus.energycontrol.api.PanelString;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import com.zuxelus.energycontrol.api.CardState;
-import com.zuxelus.energycontrol.api.ICardReader;
-import com.zuxelus.energycontrol.api.PanelSetting;
-import com.zuxelus.energycontrol.api.PanelString;
 
 public class ItemCardRedstone extends ItemCardMain {
 

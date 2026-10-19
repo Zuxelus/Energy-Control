@@ -152,7 +152,7 @@ public class TileEntityInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 			matrixStack.translate(0, 0, 0.0002F);
 			int colorHex = 0x000000;
 			if (panel.getColored())
-				colorHex = panel.getColorTextHex();
+				colorHex = panel.getColorText();
 			renderText(joinedData, displayWidth, displayHeight, colorHex, matrixStack, buffer, font);
 		}
 	}

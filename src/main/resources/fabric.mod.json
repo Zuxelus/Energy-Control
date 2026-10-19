@@ -32,6 +32,9 @@
 		],
 		"rei_client": [
 			"com.zuxelus.energycontrol.crossmod.rei.ClientPlugin"
+		],
+		"jei_mod_plugin": [
+			"com.zuxelus.energycontrol.crossmod.jei.CrossJEI"
 		]
 	},
 	"mixins": [

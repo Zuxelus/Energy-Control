@@ -37,7 +37,6 @@ public class InventoryCardHolder extends ItemInventory implements ExtendedScreen
 		return ItemCardMain.isCard(stack);
 	}
 
-	// NamedScreenHandlerFactory
 	@Override
 	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerCardHolder(windowId, inventory, hand);
@@ -50,7 +49,7 @@ public class InventoryCardHolder extends ItemInventory implements ExtendedScreen
 
 	// the client needs to know which hand holds the card holder
 	@Override
-	public InteractionHand getScreenOpeningData(ServerPlayer player) {
+	public InteractionHand getScreenOpeningData(ServerPlayer player) { // fabric only
 		return hand;
 	}
 }

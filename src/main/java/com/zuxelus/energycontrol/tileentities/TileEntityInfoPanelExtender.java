@@ -23,7 +23,7 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 	private int coreX;
 	private int coreY;
 	private int coreZ;
-	private boolean unloaded;
+	private boolean broken;
 
 	public TileEntityInfoPanelExtender(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -97,16 +97,18 @@ public class TileEntityInfoPanelExtender extends BlockEntityFacing implements IS
 		tag.putInt("coreZ", coreZ);
 	}
 
-	// Fabric has no block entity chunk unload callback: ServerChunkEvents.CHUNK_UNLOAD is fired right before the block entities are removed
-	public void onChunkUnloaded() {
-		unloaded = true;
+	// server, only when the block is broken or replaced; setRemoved() is also called on chunk unload
+	@Override
+	public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+		broken = true;
+		super.preRemoveSideEffects(pos, state);
 	}
 
 	@Override
 	public void setRemoved() {
 		if (!level.isClientSide) {
 			// on chunk unload only forget the screen: changing blocks or reading neighbours here loads chunks again and stalls saving
-			if (!unloaded)
+			if (broken)
 				EnergyControl.screenManager.unregisterScreenPart(this);
 			else
 				EnergyControl.screenManager.unloadScreenPart(this);

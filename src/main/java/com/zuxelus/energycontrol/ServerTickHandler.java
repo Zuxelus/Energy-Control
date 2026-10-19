@@ -6,14 +6,10 @@ import java.util.Map;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.zuxelus.energycontrol.config.ConfigHandler;
-import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanel;
-import com.zuxelus.energycontrol.tileentities.TileEntityInfoPanelExtender;
 import com.zuxelus.energycontrol.websockets.SocketClient;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class ServerTickHandler {
 	public final static ServerTickHandler instance = new ServerTickHandler();
@@ -23,13 +19,6 @@ public class ServerTickHandler {
 	public static void init() {
 		ServerLifecycleEvents.SERVER_STARTING.register(server -> instance.onServerStarting());
 		ServerLifecycleEvents.SERVER_STOPPING.register(server -> instance.onServerStopping());
-		ServerChunkEvents.CHUNK_UNLOAD.register((level, chunk) -> {
-			for (BlockEntity be : chunk.getBlockEntities().values())
-				if (be instanceof TileEntityInfoPanel panel)
-					panel.onChunkUnloaded();
-				else if (be instanceof TileEntityInfoPanelExtender extender)
-					extender.onChunkUnloaded();
-		});
 		ServerTickEvents.END_SERVER_TICK.register(server -> instance.onServerTick());
 	}
 

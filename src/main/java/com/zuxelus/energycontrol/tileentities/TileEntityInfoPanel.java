@@ -46,7 +46,7 @@ import net.minecraft.world.phys.Vec3;
 public class TileEntityInfoPanel extends TileEntityInventory implements ExtendedScreenHandlerFactory<BlockPos>, ITilePacketHandler, IScreenPart, ISlotItemFilter {
 	public static final String NAME = "info_panel";
 	public static final int DISPLAY_DEFAULT = Integer.MAX_VALUE - 1024;
-	public static final int GREEN = 0xFF14E300;
+	public static final int GREEN = -16724992; // 00CC00
 	public static final int BLACK = 0xFF000000;
 
 	private static final byte SLOT_CARD = 0;
@@ -68,8 +68,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	public int colorText;
 
 	protected boolean colored;
-	public boolean powered;
-	private boolean unloaded;
+	protected boolean powered;
+	private boolean broken;
 
 	public TileEntityInfoPanel(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -121,7 +121,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	}
 
 	public void setShowLabels(boolean newShowLabels) {
-		if (!level.isClientSide && showLabels != newShowLabels)
+		if (level != null && !level.isClientSide && showLabels != newShowLabels)
 			notifyBlockUpdate();
 		showLabels = newShowLabels;
 	}
@@ -131,7 +131,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	}
 
 	public void setTickRate(int newValue) {
-		if (!level.isClientSide && tickRate != newValue)
+		if (level != null && !level.isClientSide && tickRate != newValue)
 			notifyBlockUpdate();
 		tickRate = newValue;
 	}
@@ -141,7 +141,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	}
 
 	public void setColored(boolean newColored) {
-		if (!level.isClientSide && colored != newColored)
+		if (level != null && !level.isClientSide && colored != newColored)
 			notifyBlockUpdate();
 		boolean changed = colored != newColored;
 		colored = newColored;
@@ -154,7 +154,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	}
 
 	public void setColorBackground(int c) {
-		if (!level.isClientSide && colorBackground != c)
+		if (level != null && !level.isClientSide && colorBackground != c)
 			notifyBlockUpdate();
 		boolean changed = colorBackground != c;
 		colorBackground = c;
@@ -166,12 +166,8 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 		return colorText;
 	}
 
-	public int getColorTextHex() {
-		return colorText & 0xFFFFFF;
-	}
-
 	public void setColorText(int c) {
-		if (!level.isClientSide && colorText != c)
+		if (level != null && !level.isClientSide && colorText != c)
 			notifyBlockUpdate();
 		colorText = c;
 	}
@@ -251,11 +247,9 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	}
 
 	protected void deserializeSlotSettings(CompoundTag tag, String tagName, int slot) {
-		if (!(tag.contains(tagName)))
-			return;
-		ListTag settingsList = tag.getList(tagName, Tag.TAG_COMPOUND);
-		for (int i = 0; i < settingsList.size(); i++) {
-			CompoundTag compound = settingsList.getCompound(i);
+		ListTag list = tag.getList(tagName, Tag.TAG_COMPOUND);
+		for (int i = 0; i < list.size(); i++) {
+			CompoundTag compound = list.getCompound(i);
 			try {
 				getDisplaySettingsForSlot(slot).put(compound.getString("key"), compound.getInt("value"));
 			} catch (IllegalArgumentException e) {
@@ -267,30 +261,23 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	@Override
 	protected void readProperties(CompoundTag tag, HolderLookup.Provider registries) {
 		super.readProperties(tag, registries);
-		if (tag.contains("tickRate"))
-			tickRate = tag.getInt("tickRate");
-		if (tag.contains("showLabels"))
-			showLabels = tag.getBoolean("showLabels");
-
-		if (tag.contains("colorText"))
-			colorText = tag.getInt("colorText");
-		if (tag.contains("colorBackground"))
-			colorBackground = tag.getInt("colorBackground");
-
-		if (tag.contains("colored"))
-			setColored(tag.getBoolean("colored"));
-
-		if (tag.contains("screenData")) {
+		tickRate = (tag.contains("tickRate") ? tag.getInt("tickRate") : tickRate);
+		showLabels = (tag.contains("showLabels") ? tag.getBoolean("showLabels") : showLabels);
+		colorText = (tag.contains("colorText") ? tag.getInt("colorText") : colorText);
+		colorBackground = (tag.contains("colorBackground") ? tag.getInt("colorBackground") : colorBackground);
+		setColored((tag.contains("colored") ? tag.getBoolean("colored") : colored));
+		CompoundTag newScreenData = tag.contains("screenData", Tag.TAG_COMPOUND) ? tag.getCompound("screenData") : null;
+		if (newScreenData != null) {
 			if (level != null)
-				setScreenData((CompoundTag) tag.get("screenData"));
+				setScreenData(newScreenData);
 			else
-				screenData = (CompoundTag) tag.get("screenData");
+				screenData = newScreenData;
 		} else
 			screenData = null;
 		deserializeDisplaySettings(tag);
-		if (tag.contains("powered") && level.isClientSide) {
-			boolean newPowered = tag.getBoolean("powered");
-			if (powered != newPowered) {
+		if (level != null && level.isClientSide()) {
+			boolean newPowered = (tag.contains("powered") ? tag.getBoolean("powered") : powered);
+			if (newPowered != powered) {
 				setPowered(newPowered); // update power on client
 				level.getChunkSource().getLightEngine().checkBlock(worldPosition);
 			}
@@ -362,16 +349,18 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 		}
 	}
 
-	// Fabric has no block entity chunk unload callback: ServerChunkEvents.CHUNK_UNLOAD is fired right before the block entities are removed
-	public void onChunkUnloaded() {
-		unloaded = true;
+	// server, only when the block is broken or replaced; setRemoved() is also called on chunk unload
+	@Override
+	public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+		broken = true;
+		super.preRemoveSideEffects(pos, state);
 	}
 
 	@Override
 	public void setRemoved() {
 		if (!level.isClientSide) {
 			// on chunk unload only forget the screen: changing blocks or reading neighbours here loads chunks again and stalls saving
-			if (!unloaded)
+			if (broken)
 				EnergyControl.screenManager.unregisterScreenPart(this);
 			else
 				EnergyControl.screenManager.unloadScreenPart(this);
@@ -471,23 +460,6 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 		if (anyCardFound)
 			return joinedData;
 		return null;
-	}
-
-	public List<String> getPanelStringList() {
-		List<PanelString> joinedData = getPanelStringList(true, false);
-		List<String> list = NonNullList.create();
-		if (joinedData == null || joinedData.size() == 0)
-			return list;
-
-		for (PanelString panelString : joinedData) {
-			if (panelString.textLeft != null)
-				list.add(panelString.textLeft);
-			if (panelString.textCenter != null)
-				list.add(panelString.textCenter);
-			if (panelString.textRight != null)
-				list.add(panelString.textRight);
-		}
-		return list;
 	}
 
 	public int getCardSlot(ItemStack card) {
@@ -601,18 +573,13 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 
 	@Override
 	public boolean isItemValid(int index, ItemStack stack) { // ISlotItemFilter
-		switch (index) {
-		case SLOT_CARD:
-			return ItemCardMain.isCard(stack);
-		case SLOT_UPGRADE_RANGE:
-			return stack.getItem().equals(ModItems.upgrade_range);
-		case SLOT_UPGRADE_COLOR:
-			return stack.getItem().equals(ModItems.upgrade_color);
-		case SLOT_UPGRADE_TOUCH:
-			return stack.getItem().equals(ModItems.upgrade_touch) || stack.getItem().equals(ModItems.upgrade_web);
-		default:
-			return false;
-		}
+		return switch (index) {
+		case SLOT_CARD -> ItemCardMain.isCard(stack);
+		case SLOT_UPGRADE_RANGE -> stack.getItem().equals(ModItems.upgrade_range);
+		case SLOT_UPGRADE_COLOR -> stack.getItem().equals(ModItems.upgrade_color);
+		case SLOT_UPGRADE_TOUCH -> stack.getItem().equals(ModItems.upgrade_touch) || stack.getItem().equals(ModItems.upgrade_web);
+		default -> false;
+		};
 	}
 
 	@Override
@@ -640,7 +607,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 
 	public void updateExtenders(Level level, Boolean active) { // server
 		// the block just switched on or off, so update the power now instead of waiting for the next update packet
-		calcPowered();
+		setPowered(active);
 		if (screen == null)
 			return;
 
@@ -760,7 +727,7 @@ public class TileEntityInfoPanel extends TileEntityInventory implements Extended
 	}
 
 	@Override
-	public BlockPos getScreenOpeningData(ServerPlayer player) {
+	public BlockPos getScreenOpeningData(ServerPlayer player) { // fabric only
 		return worldPosition;
 	}
 }

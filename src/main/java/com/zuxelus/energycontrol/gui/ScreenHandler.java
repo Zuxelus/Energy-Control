@@ -2,9 +2,11 @@ package com.zuxelus.energycontrol.gui;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.client.Minecraft;
+
 import com.zuxelus.energycontrol.EnergyControl;
 import com.zuxelus.energycontrol.tileentities.*;
+
+import net.minecraft.client.Minecraft;
 
 public class ScreenHandler {
 

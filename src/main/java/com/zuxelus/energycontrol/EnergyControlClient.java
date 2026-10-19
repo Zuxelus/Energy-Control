@@ -56,6 +56,9 @@ public class EnergyControlClient implements ClientModInitializer {
 		ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new SoundHelper());
 
 		ClientTickEvents.START_CLIENT_TICK.register(client -> {
+			// the client ticks in menus too, where there is no connection to send the key state to
+			if (client.player == null)
+				return;
 			boolean alt = Screen.hasAltDown();
 			if (altPressed != alt) {
 				altPressed = alt;

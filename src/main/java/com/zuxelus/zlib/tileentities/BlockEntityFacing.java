@@ -94,10 +94,8 @@ public abstract class BlockEntityFacing extends BlockEntity {
 		return tag;
 	}
 
-	// called from ClientPlayNetworkHandlerMixin for the block entities that implement ITilePacketHandler
-	public void onDataPacket(ClientboundBlockEntityDataPacket pkt) {
-		readProperties(pkt.getTag(), level.registryAccess());
-	}
+	// called by the block when it is broken or replaced (not on chunk unload), like BlockEntity.preRemoveSideEffects from 1.21.2
+	public void preRemoveSideEffects(BlockPos pos, BlockState state) { }
 
 	protected void notifyBlockUpdate() {
 		if (!level.isClientSide) {

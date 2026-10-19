@@ -45,7 +45,7 @@ dependencies {
 		exclude(group: "net.fabricmc", module: "fabric-loader")
 	}
 	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
-	//modImplementation "alexiil.mc.lib:${project.lba_version}"
+
 	// REI pulls its own older fabric-loader, which clashes with ours at runtime
 	modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}") {
 		exclude(group: "net.fabricmc", module: "fabric-loader")
@@ -57,6 +57,8 @@ dependencies {
 	modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
 		exclude(group: "net.fabricmc", module: "fabric-loader")
 	}
+	
+	modImplementation "curse.maven:jei-238222:9205120"
 	modImplementation "curse.maven:reborncore-237903:6664366"
 	modImplementation "curse.maven:techreborn-233564:6664367"
 	include(modApi("teamreborn:energy:${project.energy_version}")) {

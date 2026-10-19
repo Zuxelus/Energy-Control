@@ -2,6 +2,7 @@ package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.blocks.KitAssembler;
 import com.zuxelus.energycontrol.containers.ContainerKitAssembler;
+import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.init.ModItems;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.energycontrol.items.cards.ItemCardMain;
@@ -10,11 +11,15 @@ import com.zuxelus.energycontrol.recipes.KitAssemblerRecipe;
 import com.zuxelus.energycontrol.recipes.KitAssemblerRecipeType;
 import com.zuxelus.zlib.containers.EnergyStorage;
 import com.zuxelus.zlib.containers.slots.ISlotItemFilter;
-import com.zuxelus.zlib.tileentities.TileEntityItemHandler;
+import com.zuxelus.zlib.tileentities.TileEntityInventory;
 
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.core.BlockPos;
@@ -25,7 +30,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -36,9 +41,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
 import team.reborn.energy.api.EnergyStorageUtil;
 
-public class TileEntityKitAssembler extends TileEntityItemHandler implements ExtendedScreenHandlerFactory<BlockPos>, ITilePacketHandler, ISlotItemFilter, WorldlyContainer {
+public class TileEntityKitAssembler extends TileEntityInventory implements ExtendedScreenHandlerFactory<BlockPos>, ITilePacketHandler, ISlotItemFilter {
 	public static final byte SLOT_INFO = 0;
 	public static final byte SLOT_CARD1 = 1;
 	public static final byte SLOT_ITEM = 2;
@@ -51,32 +57,47 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 	private static final int[] SLOTS_NONE = {};
 	private static final ResourceLocation TRANSFORMER_UPGRADE = ResourceLocation.fromNamespaceAndPath("techreborn", "transformer_upgrade");
 	private EnergyStorage storage;
-	// what cables and other mods see: insert only, at the rate set by the transformer upgrades
-	private final team.reborn.energy.api.EnergyStorage energyInput = new EnergyInput();
 	private int buffer;
 	private static final long CONSUMPTION = 5;
 	private KitAssemblerRecipe recipe;
 	private int recipeTime; // client Only
 	public static final long CAPACITY = 5000;
 	public static final long OUTPUT = 32;
+	private static final int LAVA_ENERGY = 5000; // per bucket of lava
 	private double production;
 	private boolean active;
-	private long lastEnergy;
 
 	public TileEntityKitAssembler(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
-		// the input rate depends on the upgrades, so it is limited by getInputRate() instead of the storage
-		storage = new EnergyStorage(CAPACITY, CAPACITY, CAPACITY, 0);
+		// what cables and other mods see: insert only, at the rate set by the transformer upgrades
+		storage = new EnergyStorage(CAPACITY, CAPACITY, CAPACITY, 0) {
+			@Override
+			public long insert(long maxAmount, TransactionContext transaction) {
+				return super.insert(Math.min(maxAmount, getInputRate()), transaction);
+			}
+
+			// cables and batteries change the energy through transactions, which do not mark the chunk for saving
+			@Override
+			protected void onFinalCommit() {
+				markEnergyChanged();
+			}
+
+			@Override
+			public boolean supportsExtraction() {
+				return false;
+			}
+
+			@Override
+			public long extract(long maxAmount, TransactionContext transaction) {
+				return 0;
+			}
+		};
 		active = false;
 		production = 0;
 	}
 
 	public TileEntityKitAssembler(BlockPos pos, BlockState state) {
 		this(ModTileEntityTypes.kit_assembler, pos, state);
-	}
-
-	public team.reborn.energy.api.EnergyStorage getEnergyInput(Direction side) {
-		return energyInput;
 	}
 
 	public double getEnergy() {
@@ -107,7 +128,6 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 		return getItem(SLOT_TRANSFORMER).getCount();
 	}
 
-	// each transformer upgrade doubles speed and consumption and quadruples the input rate
 	private long getInputRate() {
 		return OUTPUT * (long) Math.pow(4, getUpgrades());
 	}
@@ -124,7 +144,7 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 		case 4:
 			if (tag.contains("slot") && tag.contains("title")) {
 				ItemStack itemStack = getItem(tag.getInt("slot"));
-				if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemCardMain)
+				if (ItemCardMain.isCard(itemStack))
 					new ItemCardReader(itemStack).setTitle(tag.getString("title"));
 			}
 			break;
@@ -186,11 +206,6 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 	protected void tick() {
 		if (level.isClientSide)
 			return;
-		// energy also changes from cables, which do not mark the chunk for saving
-		if (storage.getAmount() != lastEnergy) {
-			lastEnergy = storage.getAmount();
-			level.blockEntityChanged(worldPosition);
-		}
 		handleDischarger(SLOT_DISCHARGER);
 		long energyNeeded = getEnergyNeeded();
 		if (!active) {
@@ -200,7 +215,8 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 			return;
 		}
 		if (storage.getAmount() >= energyNeeded) {
-			storage.extract(energyNeeded, false);
+			storage.consume(energyNeeded);
+			markEnergyChanged(); // fabric only
 			production += Math.pow(2, getUpgrades());
 			if (recipe != null && production >= recipe.time) {
 				ItemStack stack1 = getItem(SLOT_CARD1);
@@ -221,14 +237,14 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 			}
 		} else {
 			storage.setEnergy(0);
+			markEnergyChanged(); // fabric only
 			production = 0;
 			updateState();
 		}
 	}
 
 	private void handleDischarger(int slot) {
-		long rate = getInputRate();
-		long needed = Math.min(rate, storage.getCapacity() - storage.getAmount());
+		long needed = Math.min(getInputRate(), storage.getCapacity() - storage.getAmount());
 		if (needed <= 0)
 			return;
 		if (buffer > 0) {
@@ -240,9 +256,14 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 		if (stack.isEmpty() || needed <= 0)
 			return;
 		if (stack.getItem().equals(Items.LAVA_BUCKET)) {
-			buffer += 5000;
+			buffer += LAVA_ENERGY;
 			buffer -= (int) storage.insert(Math.min(buffer, needed), false);
 			setItem(slot, new ItemStack(Items.BUCKET));
+			return;
+		}
+		// TechReborn Lava Cell and any other item holding a bucket of lava (Fabric Transfer API)
+		if (burnLava(slot, stack)) {
+			buffer -= (int) storage.insert(Math.min(buffer, needed), false);
 			return;
 		}
 		// TechReborn batteries and other items with Team Reborn Energy
@@ -253,6 +274,42 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 			EnergyStorageUtil.move(itemStorage, storage, needed, transaction);
 			transaction.commit();
 		}
+	}
+
+	// takes a bucket of lava out of the item in the slot, the item keeps its other contents (an empty cell stays in the slot).
+	// The item is emptied in a temporary container: the real slot would check the emptied item with isItemValid() in the middle of the transaction
+	private boolean burnLava(int slot, ItemStack stack) {
+		if (stack.getCount() != 1) // the emptied item could not stay in the slot next to the rest of the stack
+			return false;
+		SimpleContainer temp = new SimpleContainer(stack.copy());
+		Storage<FluidVariant> fluids = FluidStorage.ITEM.find(temp.getItem(0), ContainerItemContext.ofSingleSlot(InventoryStorage.of(temp, null).getSlot(0)));
+		if (fluids == null)
+			return false;
+		try (Transaction transaction = Transaction.openOuter()) {
+			if (fluids.extract(FluidVariant.of(Fluids.LAVA), FluidConstants.BUCKET, transaction) != FluidConstants.BUCKET)
+				return false;
+			transaction.commit();
+		}
+		setItem(slot, temp.getItem(0));
+		buffer += LAVA_ENERGY;
+		return true;
+	}
+
+	// isItemValid() is also called by the transfer api in the middle of other transactions, so the check joins the current one
+	@SuppressWarnings("deprecation") // getCurrentUnsafe() is meant for exactly this: code that cannot know whether a transaction is open
+	private static boolean isLavaContainer(ItemStack stack) {
+		Storage<FluidVariant> fluids = FluidStorage.ITEM.find(stack, ContainerItemContext.withConstant(stack));
+		if (fluids == null)
+			return false;
+		try (Transaction transaction = Transaction.openNested(Transaction.getCurrentUnsafe())) {
+			return fluids.extract(FluidVariant.of(Fluids.LAVA), FluidConstants.BUCKET, transaction) == FluidConstants.BUCKET;
+		}
+	}
+
+	// each transformer upgrade doubles speed and consumption and quadruples the input rate
+	private void markEnergyChanged() { // fabric only
+		if (level != null && !level.isClientSide)
+			level.blockEntityChanged(worldPosition);
 	}
 
 	@Override
@@ -321,15 +378,19 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 		case SLOT_ITEM:
 			return true;
 		case SLOT_INFO:
-			return stack.getItem() instanceof ItemCardMain;
+			return ItemCardMain.isCard(stack);
 		case SLOT_DISCHARGER:
-			return EnergyStorageUtil.isEnergyStorage(stack) || stack.getItem().equals(Items.LAVA_BUCKET);
+			return CrossModLoader.isElectricItem(stack) || stack.getItem().equals(Items.LAVA_BUCKET) || isLavaContainer(stack);
 		case SLOT_TRANSFORMER:
 			return BuiltInRegistries.ITEM.getKey(stack.getItem()).equals(TRANSFORMER_UPGRADE);
 		case SLOT_RESULT:
 		default:
 			return false;
 		}
+	}
+
+	public team.reborn.energy.api.EnergyStorage getEnergyInput(Direction side) {
+		return storage;
 	}
 
 	// SidedInventory: hoppers fill the recipe inputs from the top and take the result from the bottom
@@ -352,7 +413,6 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 		return side == Direction.DOWN && slot == SLOT_RESULT;
 	}
 
-	// NamedScreenHandlerFactory
 	@Override
 	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerKitAssembler(windowId, inventory, this);
@@ -364,34 +424,7 @@ public class TileEntityKitAssembler extends TileEntityItemHandler implements Ext
 	}
 
 	@Override
-	public BlockPos getScreenOpeningData(ServerPlayer player) {
+	public BlockPos getScreenOpeningData(ServerPlayer player) { // fabric only
 		return worldPosition;
-	}
-
-	private class EnergyInput implements team.reborn.energy.api.EnergyStorage {
-		@Override
-		public long insert(long maxAmount, TransactionContext transaction) {
-			return storage.insert(Math.min(maxAmount, getInputRate()), transaction);
-		}
-
-		@Override
-		public boolean supportsExtraction() {
-			return false;
-		}
-
-		@Override
-		public long extract(long maxAmount, TransactionContext transaction) {
-			return 0;
-		}
-
-		@Override
-		public long getAmount() {
-			return storage.getAmount();
-		}
-
-		@Override
-		public long getCapacity() {
-			return storage.getCapacity();
-		}
 	}
 }

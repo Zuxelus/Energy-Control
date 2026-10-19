@@ -1,17 +1,21 @@
 package com.zuxelus.zlib.tileentities;
 
+import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.Container;
+import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public abstract class TileEntityInventory extends BlockEntityFacing implements Container {
+public abstract class TileEntityInventory extends BlockEntityFacing implements WorldlyContainer {
 	protected NonNullList<ItemStack> inventory;
 
 	public TileEntityInventory(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -78,5 +82,25 @@ public abstract class TileEntityInventory extends BlockEntityFacing implements C
 	@Override
 	public void clearContent() {
 		inventory.clear();
+	}
+
+	public Storage<ItemVariant> getItemStorage(Direction side) {
+		return InventoryStorage.of(this, side);
+	}
+
+	// ISidedInventory
+	@Override
+	public int[] getSlotsForFace(Direction side) {
+		return new int[0];
+	}
+
+	@Override
+	public boolean canPlaceItemThroughFace(int slot, ItemStack stack, Direction side) {
+		return false;
+	}
+
+	@Override
+	public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) {
+		return false;
 	}
 }

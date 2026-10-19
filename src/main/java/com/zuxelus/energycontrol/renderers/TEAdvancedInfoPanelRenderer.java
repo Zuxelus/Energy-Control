@@ -155,7 +155,7 @@ public class TEAdvancedInfoPanelRenderer implements BlockEntityRenderer<TileEnti
 
 		int colorHex = 0x000000;
 		if (panel.getColored())
-			colorHex = panel.getColorTextHex();
+			colorHex = panel.getColorText();
 		TileEntityInfoPanelRenderer.renderText(joinedData, displayWidth, displayHeight, colorHex, matrixStack, buffer, font);
 	}
 

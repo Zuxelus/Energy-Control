@@ -1,5 +1,6 @@
 package com.zuxelus.energycontrol.api;
 
+import net.minecraft.locale.Language;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -20,11 +21,11 @@ public class PanelSetting {
 	public int displayBit;
 
 	/**
-	 * @param title Name of the option
+	 * @param title Translation key of the name of the option
 	 * @param displayBit Bit number in display settings. Should be in the range 0-31.
 	 */
 	public PanelSetting(String title, int displayBit) {
-		this.title = title;
+		this.title = Language.getInstance().getOrDefault(title);
 		this.displayBit = displayBit;
 	}
 }

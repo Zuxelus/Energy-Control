@@ -39,4 +39,3 @@ public class TileEntitySound {
 		return sound == null ? false : Minecraft.getInstance().getSoundManager().isActive(sound);
 	}
 }
-

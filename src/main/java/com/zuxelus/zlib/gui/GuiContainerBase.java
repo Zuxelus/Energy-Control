@@ -52,7 +52,7 @@ public class GuiContainerBase<T extends AbstractContainerMenu> extends AbstractC
 
 	@Override
 	protected void renderBg(GuiGraphics context, float partialTicks, int mouseX, int mouseY) {
-		context.blit(texture, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+		context.blit(texture, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
 	}
 
 	public void drawCenteredText(GuiGraphics context, Component text, int x, int y) {

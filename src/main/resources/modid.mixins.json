@@ -4,11 +4,9 @@
   "package": "com.zuxelus.energycontrol.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "AbstractBlockStateMixin",
     "PlayerManagerMixin"
   ],
   "client": [
-    "ClientPlayNetworkHandlerMixin",
     "ReloadableResourceManagerImplMixin"
   ],
   "injectors": {

@@ -8,10 +8,8 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 
 public abstract class ItemKitMain extends Item implements IItemKit {
 
@@ -19,16 +17,13 @@ public abstract class ItemKitMain extends Item implements IItemKit {
 		super(new Item.Properties().stacksTo(16));
 	}
 
-	public InteractionResult onItemUseFirst(Level level, Player player, InteractionHand hand) {
+	// Call from UseBlockCallback
+	public InteractionResult onItemUseFirst(Level level, Player player, InteractionHand hand, BlockHitResult hitResult) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (!(player instanceof ServerPlayer) || stack.isEmpty())
 			return InteractionResult.PASS;
 
-		BlockHitResult hitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
-		if (hitResult.getType() != HitResult.Type.BLOCK)
-			return InteractionResult.PASS;
-
-		ItemStack sensorLocationCard = ((ItemKitMain) stack.getItem()).getSensorCard(stack, player, level, hitResult.getBlockPos(), hitResult.getDirection());
+		ItemStack sensorLocationCard = getSensorCard(stack, player, level, hitResult.getBlockPos(), hitResult.getDirection());
 		if (sensorLocationCard.isEmpty())
 			return InteractionResult.PASS;
 

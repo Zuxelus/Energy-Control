@@ -8,29 +8,17 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.minecraft.core.registries.BuiltInRegistries;
 
 public class FluidInfo {
-	String name; // display name, translated where the info is created
-	String fluid; // fluid id; the client looks up its texture and tint color for the bar
+	String displayName;
+	String fluidId;
 	long amount;
 	long capacity;
 
 	public FluidInfo(String name, String fluid, long amount, long capacity) {
-		this.name = name;
-		this.fluid = fluid;
+		this.displayName = name;
+		this.fluidId = fluid;
 		this.amount = amount;
 		this.capacity = capacity;
 	}
-
-	/*public FluidInfo(IFluidTank tank) {
-		if (tank.getFluid() != null) {
-			amount = tank.getFluidAmount();
-			if (amount > 0) {
-				translationKey = tank.getFluid().getTranslationKey();
-				texture = tank.getFluid().getFluid().getAttributes().getStillTexture().toString();
-				color = tank.getFluid().getFluid().getAttributes().getColor();
-			}
-		}
-		capacity = tank.getCapacity();
-	}*/
 
 	// amounts are in droplets (81000 per bucket), stored as mB
 	public FluidInfo(StorageView<FluidVariant> stack) {
@@ -40,21 +28,21 @@ public class FluidInfo {
 		FluidVariant variant = stack.getResource();
 		if (amount > 0 && !variant.isBlank()) {
 			// works on a dedicated server too: Language there is the server's built-in en_us
-			name = FluidVariantAttributes.getName(variant).getString();
-			fluid = BuiltInRegistries.FLUID.getKey(variant.getFluid()).toString();
+			displayName = FluidVariantAttributes.getName(variant).getString();
+			fluidId = BuiltInRegistries.FLUID.getKey(variant.getFluid()).toString();
 		}
 		capacity = stack.getCapacity() / 81;
 	}
 
 	public void write(ICardReader reader) {
-		reader.setString("name", name != null ? name : "");
-		reader.setString("fluid", fluid != null ? fluid : "");
+		reader.setString("name", displayName != null ? displayName : "");
+		reader.setString("fluid", fluidId != null ? fluidId : "");
 		reader.setLong("amount", amount);
 		reader.setLong("capacity", capacity);
 	}
 
 	public void write(ICardReader reader, int i) {
-		reader.setString(String.format("_%dname", i), name != null ? name : "");
+		reader.setString(String.format("_%dname", i), displayName != null ? displayName : "");
 		reader.setLong(String.format("_%damount", i), amount);
 		reader.setLong(String.format("_%dcapacity", i), capacity);
 	}

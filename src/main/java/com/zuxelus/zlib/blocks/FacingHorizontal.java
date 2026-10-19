@@ -85,6 +85,8 @@ public abstract class FacingHorizontal extends BaseEntityBlock {
 	protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
 			BlockEntity te = level.getBlockEntity(pos);
+			if (te instanceof BlockEntityFacing facing)
+				facing.preRemoveSideEffects(pos, state);
 			if (te instanceof Container) {
 				Containers.dropContents(level, pos, (Container) te);
 				level.updateNeighbourForOutputSignal(pos, this);

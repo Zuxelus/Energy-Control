@@ -4,21 +4,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import com.zuxelus.energycontrol.EnergyControl;
-import com.zuxelus.zlib.network.PacketBase;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 
-public record PacketAlarm(String alarms) implements PacketBase {
+public record PacketAlarm(int maxAlarmRange, String alarms) implements CustomPacketPayload {
 	public static final Type<PacketAlarm> ID = new Type<>(ResourceLocation.fromNamespaceAndPath(EnergyControl.MODID, "s2c_alarm"));
-	public static final StreamCodec<RegistryFriendlyByteBuf, PacketAlarm> CODEC = ByteBufCodecs.STRING_UTF8.<RegistryFriendlyByteBuf>cast().map(PacketAlarm::new, PacketAlarm::alarms);
-
-	public PacketAlarm(int range, String alarms) {
-		this(alarms);
-	}
+	public static final StreamCodec<RegistryFriendlyByteBuf, PacketAlarm> CODEC = StreamCodec.composite(
+			ByteBufCodecs.INT, PacketAlarm::maxAlarmRange,
+			ByteBufCodecs.STRING_UTF8, PacketAlarm::alarms,
+			PacketAlarm::new);
 
 	@Override
 	public Type<PacketAlarm> type() {
@@ -27,7 +26,7 @@ public record PacketAlarm(String alarms) implements PacketBase {
 
 	public static void handleClient(PacketAlarm packet, ClientPlayNetworking.Context context) {
 		context.client().execute(() -> {
-			//ConfigHandler.MAX_ALARM_RANGE.set(buf.readVarInt());
+			EnergyControl.INSTANCE.serverMaxAlarmRange = packet.maxAlarmRange();
 			EnergyControl.INSTANCE.serverAllowedAlarms = new ArrayList<String>(Arrays.asList(packet.alarms().split(",")));
 		});
 	}

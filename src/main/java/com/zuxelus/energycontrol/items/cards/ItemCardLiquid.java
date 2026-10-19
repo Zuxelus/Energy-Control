@@ -4,11 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.zuxelus.energycontrol.api.CardState;
-import com.zuxelus.energycontrol.api.ICardReader;
-import com.zuxelus.energycontrol.api.IHasBars;
-import com.zuxelus.energycontrol.api.PanelSetting;
-import com.zuxelus.energycontrol.api.PanelString;
+import com.zuxelus.energycontrol.api.*;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.renderers.RenderHelper;
 import com.zuxelus.energycontrol.utils.FluidInfo;
@@ -18,7 +14,6 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
@@ -75,12 +70,12 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 	@Environment(EnvType.CLIENT)
 	public List<PanelSetting> getSettingsList() {
 		List<PanelSetting> result = new ArrayList<>(5);
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidName"), 1));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidAmount"), 2));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidFree"), 4));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidCapacity"), 8));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelLiquidPercentage"), 16));
-		result.add(new PanelSetting(I18n.get("msg.ec.cbInfoPanelShowBar"), 1024));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelLiquidName", 1));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelLiquidAmount", 2));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelLiquidFree", 4));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelLiquidCapacity", 8));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelLiquidPercentage", 16));
+		result.add(new PanelSetting("msg.ec.cbInfoPanelShowBar", 1024));
 		return result;
 	}
 
@@ -95,7 +90,6 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		return true;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void renderBars(float displayWidth, float displayHeight, ICardReader reader, PoseStack matrixStack, MultiBufferSource buffer) {
 		float x = -0.5F + 1 / 16.0F;
@@ -114,17 +108,13 @@ public class ItemCardLiquid extends ItemCardMain implements IHasBars {
 		if (sprite == null)
 			return;
 
-		float textureX = sprite.getU0();
-		float textureY = sprite.getV0();
 		float width = 14 / 16.0F * Math.min(reader.getLong("amount"), capacity) / capacity;
 		float height = 0.4375F;
-
 		int color = 0xFF000000 | FluidVariantRendering.getColor(fluid); // tint has no alpha
 
 		matrixStack.scale(displayWidth / 0.875f, displayHeight / 0.875f, 1);
-		RenderHelper.texturedRect(matrixStack, buffer, TextureAtlas.LOCATION_BLOCKS, x, y + 0.4375F / 2, x + 0.875F, y + 0.4375F / 2 + height, z,
-				textureX, textureY, sprite.getU1(), sprite.getV1(), color);
-
+		RenderHelper.texturedRect(matrixStack, buffer, sprite.atlasLocation(), x, y + 0.4375F / 2, x + 0.875F, y + 0.4375F / 2 + height, z,
+				sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(), color);
 		IHasBars.drawTransparentRect(matrixStack, buffer, x + 0.875F - width, y + height + 0.4375F / 2, x, y + 0.4375F / 2, -0.0001F, 0xB0000000);
 		matrixStack.scale(0.875F / displayWidth, 0.875F / displayHeight, 1);
 	}

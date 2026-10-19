@@ -8,7 +8,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.PackLocationInfo;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.PathPackResources;
 import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import org.spongepowered.asm.mixin.Final;
@@ -17,6 +16,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
+import com.zuxelus.energycontrol.utils.AlarmFolderPack;
 import com.zuxelus.energycontrol.utils.SoundHelper;
 
 @Mixin(ReloadableResourceManager.class)
@@ -32,7 +32,7 @@ public class ReloadableResourceManagerImplMixin {
 			return packs;
 
 		List<PackResources> list = new ArrayList<>(packs);
-		list.add(new PathPackResources(new PackLocationInfo("energycontrol_alarms", Component.literal("energycontrol_alarms"), PackSource.DEFAULT, Optional.empty()), alarms.toPath()));
+		list.add(new AlarmFolderPack(new PackLocationInfo("energycontrol_alarms", Component.literal("energycontrol_alarms"), PackSource.DEFAULT, Optional.empty()), alarms.toPath()));
 		return list;
 	}
 }

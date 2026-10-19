@@ -2,6 +2,7 @@ package com.zuxelus.energycontrol.tileentities;
 
 import com.zuxelus.energycontrol.blocks.RemoteThermalMonitor;
 import com.zuxelus.energycontrol.blocks.ThermalMonitor;
+import com.zuxelus.energycontrol.config.ConfigHandler;
 import com.zuxelus.energycontrol.crossmod.CrossModLoader;
 import com.zuxelus.energycontrol.init.ModTileEntityTypes;
 import com.zuxelus.zlib.tileentities.TileEntityInventory;
@@ -29,7 +30,7 @@ public class TileEntityThermalMonitor extends TileEntityInventory implements ITi
 		invertRedstone = false;
 		heatLevel = 500;
 		updateTicker = 0;
-		tickRate = -1;
+		tickRate = ConfigHandler.thermalMonitorRefreshPeriod;
 		status = -1;
 	}
 

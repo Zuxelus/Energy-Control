@@ -1,6 +1,7 @@
 package com.zuxelus.energycontrol.items.cards;
 
 import com.zuxelus.energycontrol.items.InventoryCardHolder;
+
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;

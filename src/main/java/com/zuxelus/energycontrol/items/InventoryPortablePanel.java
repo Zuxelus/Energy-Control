@@ -34,7 +34,7 @@ public class InventoryPortablePanel extends ItemInventory implements ExtendedScr
 	public boolean isItemValid(int index, ItemStack stack) { // ISlotItemFilter
 		switch (index) {
 		case SLOT_CARD:
-			return stack.getItem() instanceof ItemCardMain;
+			return ItemCardMain.isCard(stack);
 		case SLOT_UPGRADE_RANGE:
 			return !stack.isEmpty() && stack.getItem().equals(ModItems.upgrade_range);
 		default:
@@ -42,7 +42,6 @@ public class InventoryPortablePanel extends ItemInventory implements ExtendedScr
 		}
 	}
 
-	// NamedScreenHandlerFactory
 	@Override
 	public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
 		return new ContainerPortablePanel(windowId, inventory, hand);
@@ -55,7 +54,7 @@ public class InventoryPortablePanel extends ItemInventory implements ExtendedScr
 
 	// the client needs to know which hand holds the panel
 	@Override
-	public InteractionHand getScreenOpeningData(ServerPlayer player) {
+	public InteractionHand getScreenOpeningData(ServerPlayer player) { // fabric only
 		return hand;
 	}
 }
